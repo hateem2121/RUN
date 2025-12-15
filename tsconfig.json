@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "files": ["drizzle.config.ts", "vite.config.ts", "vitest.config.ts"],
+  "references": [
+    { "path": "./scripts" },
+    { "path": "./utils" },
+    { "path": "./client" },
+    { "path": "./server" },
+    { "path": "./shared" }
+  ]
+}

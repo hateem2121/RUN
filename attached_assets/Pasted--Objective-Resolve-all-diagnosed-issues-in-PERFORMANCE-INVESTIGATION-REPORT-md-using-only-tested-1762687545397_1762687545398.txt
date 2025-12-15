@@ -1,0 +1,42 @@
+**Objective:**
+Resolve all diagnosed issues in PERFORMANCE_INVESTIGATION_REPORT.md using only tested, verified best practices.  
+Before you apply any fix:
+- Double-check that the needed logic does not already exist.
+- Do NOT introduce new dependencies, modules, or duplicate logic.
+
+---
+
+**Reference Best Practices (2025):**
+- Use in-place schema updates for indexes and timestamps following Drizzle’s official [index patterns], batching API, and Neon connection rules
+- For batch queries, use the Drizzle ORM batch API, never invent custom batching logic.
+- When optimizing queries, use composite, partial, and covering indexes
+- For connection handling, validate pooling/max-concurrency based on Neon’s docs
+- For monitoring, log EXPLAIN ANALYZE output and benchmark before/after in the dev environment only
+- For all migrations, always use additive-safe strategies—never remove fields or constraints without phased migration
+- For existing timestamp columns, use `{ mode: 'date', precision: 3 }` for best perf
+- Never duplicate type or schema definitions; leverage Drizzle’s type derivation & documented code blocks
+
+**Checklist For Each Issue:**
+1. Review the actual codebase and schema definitions to **confirm** which tables/columns/fks/indexes/timestamps require change.
+    - Skip changes if matching implementations already exist (avoid duplication).
+    - For purely missing elements, apply code only in the exact file and pattern referenced by Drizzle’s official docs.
+    - Make all changes additive-first, using current migration and validation workflow.
+    - Batch repetitive changes using Drizzle batch API, not custom scripts.
+    - Benchmark before/after performance using EXPLAIN ANALYZE, query logs and existing monitoring.
+2. For query optimizations (e.g., footer endpoint N1 problem), only implement batch logic if not already present; prefer Drizzle batch API.
+3. Retain and extend current monitoring, performance logging, and stale-while-revalidate patterns already in place.
+4. Output every change as a copy-paste code block, mapping each to its specific reason (e.g., “Index for isactive on CMS table, not yet present”).
+5. For any recommendation already implemented, output “Already Exists,” referencing the actual code location.
+
+**Constraints:**
+- Do not add new modules, dependencies, caches, or batch systems.
+- Operate exclusively in existing files and code patterns.
+- All code and migration steps must avoid redundancy, duplication, or breaking backward compatibility.
+- Document the before/after perf numbers for each fix using native logs/monitoring.
+
+**Success Criteria:**
+- Every fix is fully in line with 2025 best practices
+- No code, logic or infrastructure is duplicated or unnecessarily overwritten.
+- All performance gains are verified and logged before completion.
+
+Begin your resolution workflow now, and output each implementation, skip, or benchmark result in copy-paste markdown blocks.

@@ -1,0 +1,51 @@
+Conduct a complete cache performance analysis across our web application using 
+EXISTING infrastructure only. System context: NEON PostgreSQL (serverless, 
+idles after 5 mins), Replit KV Store, Replit Object Storage, in-memory state.
+
+Perform the following investigation WITHOUT adding new dependencies or libraries:
+
+1. DATABASE CACHE LAYER
+   - Query neon_stat_file_cache and pg_stat_statements views
+   - Identify cache hit ratios and queries with poorest cache performance
+   - Document connection pool efficiency and idle timeout patterns
+   - Calculate NEON compute time wasted by cache misses
+
+2. APPLICATION CACHE PATTERNS
+   - Map all Replit KV Store usage (search codebase for db[key] patterns)
+   - Document key naming conventions, data sizes, and access frequencies
+   - Identify in-memory caching mechanisms (variables, memoization, temp structures)
+   - Audit session management and state persistence patterns
+
+3. STATIC ASSET DELIVERY
+   - Review Cache-Control headers on CSS/JS/images
+   - Verify Replit Object Storage configuration for static files
+   - Check browser caching directives (max-age, immutable tags)
+   - Document current CDN/edge caching setup if any
+
+4. CACHE INVALIDATION & CONSISTENCY
+   - Trace how cached data refreshes when source data changes
+   - Identify manual cache clearing processes
+   - Flag stale data risks and missing invalidation logic
+   - Document events that should trigger cache invalidation
+
+5. PERFORMANCE CORRELATION & COST ANALYSIS
+   - Cross-reference slow endpoints with cache hit/miss patterns
+   - Calculate potential NEON compute savings from improved caching
+   - Prioritize 3-5 queries that would benefit most from result caching
+   - Estimate monthly cost reduction in compute minutes
+
+DELIVERABLES:
+- Comprehensive report with cache hit percentages across all layers
+- List of top 5 performance bottlenecks addressable via caching
+- Prioritized recommendations using ONLY existing infrastructure
+- Cost-benefit analysis showing compute time savings
+- Implementation roadmap ranked by effort vs impact
+
+CONSTRAINTS:
+- Use ONLY existing NEON, Replit KV, Object Storage, and in-memory tools
+- Do NOT suggest new libraries, services, or major architectural changes
+- Focus on optimizing current patterns, not redesigning the system
+- Provide specific file locations and code references in findings
+
+SUCCESS CRITERIA: Report identifies concrete cache improvements that reduce 
+NEON active compute time by at least 20% using existing infrastructure.

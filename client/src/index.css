@@ -1,0 +1,341 @@
+/* Google Fonts moved to index.html for performance (REV-006) */
+@import "tailwindcss";
+
+/* CRITICAL: Restore orphaned legacy styles */
+/* CRITICAL: Restore orphaned legacy styles - MANAGED LAYER ORDER */
+@layer components {
+  @import "./styles/style1-design-tokens.css";
+  @import "./styles/luxury-light-theme.css";
+  @import "./styles/monochromatic-luxury-utilities.css";
+  @import "./styles/unified-media-theater.css";
+  @import "./styles/map-animations.css";
+  @import "./styles/media-library-optimized.css";
+
+  @import "./styles/performance-optimizations.css";
+  @import "./styles/responsive-media-library.css";
+  @import "./styles/webgl-pointer-events.css";
+}
+
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/container-queries";
+
+@source "../src/**/*.{ts,tsx}";
+
+/* Optimizations (Utilities Layer) */
+@import "./styles/mobile-optimizations.css";
+
+/* RESTORE MANUAL DARK MODE SUPPORT */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Modern Reset & Base */
+@theme {
+  /* Fonts */
+  @font-face {
+    font-family: "Neue Stance";
+    src: url("/fonts/NeueStance-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  --font-neue-stance: "Neue Stance", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Fluid Typography (Late 2025 Standard) */
+  --text-display-xl: clamp(3.5rem, 10vw + 1rem, 10rem);
+  --text-display-lg: clamp(2.5rem, 8vw + 1rem, 6rem);
+  --text-display-md: clamp(1.75rem, 5vw + 1rem, 4rem);
+  --text-body-lg: clamp(1.125rem, 1vw + 0.5rem, 1.5rem);
+  --text-body-base: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+
+  /* Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: 0.375rem;
+  --radius-sm: 0.25rem;
+
+  /* P3 Wide Gamut Colors (OKLCH Mapped to Vars) */
+  --color-background: oklch(var(--background));
+  --color-foreground: oklch(var(--foreground));
+
+  --color-card: oklch(var(--card));
+  --color-card-foreground: oklch(var(--card-foreground));
+
+  --color-popover: oklch(var(--popover));
+  --color-popover-foreground: oklch(var(--popover-foreground));
+
+  --color-primary: oklch(var(--primary));
+  --color-primary-foreground: oklch(var(--primary-foreground));
+
+  --color-secondary: oklch(var(--secondary));
+  --color-secondary-foreground: oklch(var(--secondary-foreground));
+
+  --color-muted: oklch(var(--muted));
+  --color-muted-foreground: oklch(var(--muted-foreground));
+
+  --color-accent: oklch(var(--accent));
+  --color-accent-foreground: oklch(var(--accent-foreground));
+
+  --color-destructive: oklch(var(--destructive));
+  --color-destructive-foreground: oklch(var(--destructive-foreground));
+
+  --color-border: oklch(var(--border));
+  --color-input: oklch(var(--input));
+  --color-ring: oklch(var(--ring));
+
+  /* Z-Index Scale (Fixed for Tailwind v4) */
+  --z-index-below: -1;
+  --z-index-default: 1;
+  --z-index-dock: 50;
+  --z-index-modal-backdrop: 90;
+  --z-index-modal: 100;
+  --z-index-popover: 150;
+  --z-index-toast: 200;
+
+  /* Luxury Extensions */
+  --color-luxury-surface: oklch(var(--luxury-surface));
+  --color-luxury-interactive: oklch(var(--luxury-interactive));
+  --color-luxury-accent: oklch(var(--luxury-accent));
+  --color-luxury-text: oklch(var(--luxury-text));
+  --color-luxury-primary-hover: oklch(var(--luxury-primary-hover));
+  --color-luxury-primary-active: oklch(var(--luxury-primary-active));
+  --color-luxury-border: oklch(var(--luxury-border) / 0.6); /* 60% opacity matches legacy */
+
+  /* Normalized Primitives (Migrated from Legacy) */
+  --color-white: oklch(1 0 0);
+  --color-black: oklch(0 0 0);
+
+  --color-cream-50: oklch(0.99 0.01 95);
+  --color-cream-100: oklch(0.98 0.01 95);
+
+  --color-gray-200: oklch(0.96 0 0);
+  --color-gray-300: oklch(0.7 0 0);
+  --color-gray-400: oklch(0.55 0 0);
+
+  --color-slate-500: oklch(0.55 0.05 240);
+  --color-slate-900: oklch(0.2 0.05 240);
+
+  --color-blue-500: oklch(0.6 0.15 250);
+  --color-green-500: oklch(0.65 0.18 145);
+  --color-purple-500: oklch(0.55 0.2 290);
+  --color-pink-500: oklch(0.65 0.2 350);
+  --color-cyan-500: oklch(0.8 0.1 190);
+
+  --color-teal-300: oklch(0.8 0.1 190);
+  --color-teal-400: oklch(0.7 0.12 190);
+  --color-teal-500: oklch(0.6 0.12 190);
+  --color-teal-600: oklch(0.5 0.12 190);
+  --color-teal-700: oklch(0.4 0.12 190);
+  --color-teal-800: oklch(0.3 0.1 190);
+
+  --color-red-400: oklch(0.7 0.15 29);
+  --color-red-500: oklch(0.63 0.2 29);
+
+  --color-orange-400: oklch(0.75 0.15 50);
+  --color-orange-500: oklch(0.65 0.18 50);
+
+  --color-brown-600: oklch(0.45 0.08 60);
+  --color-charcoal-700: oklch(0.25 0.02 240);
+  --color-charcoal-800: oklch(0.2 0.02 240);
+
+  /* P3 Product Specifics */
+  --color-product-bg: oklch(var(--product-bg));
+  --color-product-text: oklch(var(--product-text));
+  --color-product-hover: oklch(var(--product-hover));
+
+  /* Manufacturing Context (Migrated from design-tokens.css) */
+  --color-manufacturing-primary: #3b82f6;
+  --color-manufacturing-primary-dark: #2563eb;
+  --color-manufacturing-primary-light: #60a5fa;
+
+  --gradient-manufacturing-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --gradient-manufacturing-hero: linear-gradient(to right, #3b82f6, #2563eb, #1e40af);
+
+  --timing-mechanical-slow: 1200ms;
+  --timing-mechanical-medium: 800ms;
+  --timing-mechanical-fast: 400ms;
+
+  --ease-mechanical: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-industrial: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* Base Styles & Theme Variables */
+@layer base {
+  @import "./styles/style1-design-tokens.css";
+  :root {
+    color-scheme: light dark;
+    /* Pure White/Cream */
+    --background: 0.99 0 0;
+    /* Soft Black */
+    --foreground: 0.15 0 0;
+
+    --card: 1 0 0;
+    --card-foreground: 0.15 0 0;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0 0;
+
+    /* Deep Charcoal */
+    --primary: 0.2 0 0;
+    --primary-foreground: 0.99 0 0;
+
+    /* Light Grey */
+    --secondary: 0.97 0 0;
+    --secondary-foreground: 0.2 0 0;
+
+    --muted: 0.97 0 0;
+    --muted-foreground: 0.55 0 0;
+
+    --accent: 0.97 0 0;
+    --accent-foreground: 0.2 0 0;
+
+    /* Vibrant Red */
+    --destructive: 0.63 0.26 29.23;
+    --destructive-foreground: 0.99 0 0;
+
+    --border: 0.92 0 0;
+    --input: 0.92 0 0;
+    --ring: 0.15 0 0;
+
+    /* Luxury Extensions - Light */
+    --luxury-surface: 0.99 0.005 100; /* Replaces #FEFEFE */
+    --luxury-interactive: 0.18 0 0; /* Replaces #2D2D2D */
+    --luxury-accent: 0.92 0 0; /* Replaces #E8E8E8 */
+    --luxury-text: 0.2 0.02 0; /* Replaces #1A1A1A */
+
+    --luxury-primary-hover: 0.2 0.02 0; /* Replaces #1A1A1A */
+    --luxury-primary-active: 0 0 0; /* Replaces #000000 */
+    --luxury-border: 0.92 0 0; /* Replaces rgba(232, 232, 232) */
+
+    /* Product Specifics - Light */
+    --product-bg: 1 0 0;
+    --product-text: 0 0 0;
+    --product-hover: 0.98 0 0;
+  }
+
+  .dark {
+    color-scheme: dark;
+    /* Dark Mode Overrides */
+    --background: 0.15 0 0;
+    --foreground: 0.98 0 0;
+
+    --card: 0.18 0 0;
+    --card-foreground: 0.98 0 0;
+
+    --popover: 0.18 0 0;
+    --popover-foreground: 0.98 0 0;
+
+    --primary: 0.98 0 0;
+    --primary-foreground: 0.15 0 0;
+
+    --secondary: 0.25 0 0;
+    --secondary-foreground: 0.98 0 0;
+
+    --muted: 0.25 0 0;
+    --muted-foreground: 0.65 0 0;
+
+    --accent: 0.25 0 0;
+    --accent-foreground: 0.98 0 0;
+
+    --destructive: 0.4 0.2 29.23;
+    --destructive-foreground: 0.98 0 0;
+
+    --border: 0.25 0 0;
+    --input: 0.25 0 0;
+    --ring: 0.98 0 0;
+
+    /* Luxury Extensions - Dark */
+    --luxury-surface: 0.12 0.01 95;
+    --luxury-interactive: 0.98 0 0;
+    --luxury-accent: 0.25 0 0;
+    --luxury-border: 0.25 0 0; /* Dark mode border */
+
+    /* Product Specifics - Dark */
+    --product-bg: 0.18 0 0;
+    --product-text: 0.98 0 0;
+    --product-hover: 0.25 0 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative; /* Fixes Framer Motion useScroll warning */
+  }
+
+  body {
+    position: relative; /* Fixes Framer Motion useScroll warning */
+  }
+
+  /* Typography Polish - Global Heading Balance */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance; /* Standard 2025 Prop */
+    font-family: var(--font-neue-stance), sans-serif;
+    font-feature-settings: "ss01", "ss02"; /* Modern Font Features */
+  }
+
+  /* Pretty body text to prevent orphans */
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Form Control Defaults (Restored for v4 Preflight) */
+  input,
+  textarea,
+  select {
+    @apply border border-input bg-background text-foreground rounded-md shadow-xs;
+    @apply outline-hidden ring-0;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted-foreground;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply ring-2 ring-ring border-transparent;
+  }
+}
+
+/* Utilities */
+@layer utilities {
+  .clip-path-inset {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-trigger:hover .clip-path-inset {
+    clip-path: inset(2% 2% 2% 2%);
+  }
+
+  /* Container Query Utilities */
+}

@@ -1,0 +1,48 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "rootDir": "..",
+    "outDir": "../dist/client",
+    "tsBuildInfoFile": "../dist/client/.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@shared/*": [
+        "../shared/*"
+      ],
+      "@assets/*": [
+        "../attached_assets/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "../utils/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "../server/**/*",
+  ],
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ]
+}

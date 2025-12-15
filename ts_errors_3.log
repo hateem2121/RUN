@@ -1,0 +1,55 @@
+
+> rest-express@1.0.0 check
+> tsc --build
+
+server/middleware/rate-limiter.ts(111,11): error TS6133: 'skipSuccessfulRequests' is declared but its value is never read.
+server/migration-utilities.ts(209,43): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { title: string | SQL<unknown> | Placeholder<string, any>; id?: number | SQL<unknown> | Placeholder<string, any> | undefined; sortOrder?: number | SQL<...> | Placeholder<...> | null | undefined; ... 6 more ...; ctaLink?: string | ... 3 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'primaryImageId' does not exist in type '{ title: string | SQL<unknown> | Placeholder<string, any>; id?: number | SQL<unknown> | Placeholder<string, any> | undefined; sortOrder?: number | SQL<unknown> | Placeholder<...> | null | undefined; ... 6 more ...; ctaLink?: string | ... 3 more ... | undefined; }'.
+  Overload 2 of 2, '(values: { title: string | SQL<unknown> | Placeholder<string, any>; id?: number | SQL<unknown> | Placeholder<string, any> | undefined; sortOrder?: number | SQL<...> | Placeholder<...> | null | undefined; ... 6 more ...; ctaLink?: string | ... 3 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type '{ title: string | SQL<unknown> | Placeholder<string, any>; id?: number | SQL<unknown> | Placeholder<string, any> | undefined; sortOrder?: number | SQL<unknown> | Placeholder<...> | null | undefined; ... 6 more ...; ctaLink?: string | ... 3 more ... | undefined; }[]'.
+scripts/check-sections.ts(3,1): error TS6133: 'eq' is declared but its value is never read.
+scripts/cleanup-broken-media.ts(4,10): error TS6133: 'eq' is declared but its value is never read.
+scripts/cleanup-broken-media.ts(4,14): error TS6133: 'like' is declared but its value is never read.
+scripts/clear-media-cache.ts(13,1): error TS6133: 'unifiedCache' is declared but its value is never read.
+scripts/clear-media-cache.ts(13,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../server/lib/unified-replit-cache.js'?
+scripts/clear-media-cache.ts(22,9): error TS6133: 'clearedCount' is declared but its value is never read.
+scripts/fix-fabric-fields.ts(21,9): error TS2353: Object literal may only specify known properties, and 'finish' does not exist in type '{ name?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | undefined; id?: number | SQL<unknown> | PgColumn<...> | undefined; ... 19 more ...; keyApplications?: SQL<...> | ... 3 more ... | undefined; }'.
+scripts/fix-fabric-fields.ts(121,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(221,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(314,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(410,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(512,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(600,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-fabric-fields.ts(700,9): error TS2322: Type 'string' is not assignable to type 'number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | null | undefined'.
+scripts/fix-field-mapping-template.ts(2,19): error TS6133: 'fibers' is declared but its value is never read.
+scripts/fix-field-mapping-template.ts(59,7): error TS6133: 'FIBER_MAP' is declared but its value is never read.
+scripts/fix-section-names.ts(4,1): error TS6133: 'logger' is declared but its value is never read.
+scripts/fix-wetsuit-duplicate.ts(17,19): error TS18048: 'fabric' is possibly 'undefined'.
+scripts/fix-wetsuit-duplicate.ts(34,29): error TS18048: 'fabric' is possibly 'undefined'.
+scripts/investigate-homepage.ts(3,1): error TS6133: 'eq' is declared but its value is never read.
+scripts/list-gcs-assets.ts(4,1): error TS6133: 'mediaAssets' is declared but its value is never read.
+scripts/list-gcs-assets.ts(5,1): error TS6133: 'inArray' is declared but its value is never read.
+scripts/map-certifications.ts(2,1): error TS6133: 'fabrics' is declared but its value is never read.
+scripts/reproduce-issue.ts(37,32): error TS2532: Object is possibly 'undefined'.
+scripts/reproduce-issue.ts(38,33): error TS2532: Object is possibly 'undefined'.
+scripts/reset-media-db.ts(12,15): error TS6133: 'result' is declared but its value is never read.
+scripts/seed-fabrics.ts(4,1): error TS6133: 'eq' is declared but its value is never read.
+scripts/update-fabric-content.ts(858,11): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ name?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}> | undefined; id?: number | SQL<unknown> | PgColumn<...> | undefined; ... 19 more ...; keyApplications?: SQL<...> | ... 3 more ... | undefined; }'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(223,30): error TS2339: Property 'researchArea' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(224,24): error TS2339: Property 'status' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(225,27): error TS2339: Property 'startDate' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(226,36): error TS2339: Property 'expectedCompletion' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(227,25): error TS2339: Property 'funding' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(227,51): error TS2339: Property 'funding' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(228,29): error TS2339: Property 'teamMembers' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(229,28): error TS2339: Property 'objectives' does not exist on type 'TechnologyResearch'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(588,28): error TS2304: Cannot find name 'X'.
+client/src/components/admin/technology/TechnologyResearchManagement.tsx(630,28): error TS2304: Cannot find name 'X'.
+client/src/components/TechnologyCta.tsx(23,9): error TS6133: 'isMobile' is declared but its value is never read.
+client/src/lib/request-manager.ts(6,11): error TS2430: Interface 'RequestOptions' incorrectly extends interface 'RequestInit'.
+  Types of property 'priority' are incompatible.
+    Type '"normal" | "high" | "low" | undefined' is not assignable to type 'RequestPriority | undefined'.
+      Type '"normal"' is not assignable to type 'RequestPriority | undefined'.
+client/src/pages/admin/HomepageManagement.tsx(223,13): error TS2322: Type '{ sections: { id: number; name: string; isActive: boolean | null; sortOrder: number | null; createdAt: Date | null; data: Record<string, any> | null; title: string | null; ... 4 more ...; mediaIds: number[] | null; }[]; setSections: Dispatch<...>; }' is not assignable to type 'IntrinsicAttributes & Readonly<HomepageSectionsManagerProps>'.
+  Property 'setSections' does not exist on type 'IntrinsicAttributes & Readonly<HomepageSectionsManagerProps>'. Did you mean 'sections'?

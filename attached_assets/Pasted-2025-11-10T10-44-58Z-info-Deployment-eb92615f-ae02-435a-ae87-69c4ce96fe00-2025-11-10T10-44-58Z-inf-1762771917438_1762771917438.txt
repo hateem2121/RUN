@@ -1,0 +1,125 @@
+2025-11-10T10:44:58Z info: Deployment: eb92615f-ae02-435a-ae87-69c4ce96fe00
+2025-11-10T10:44:58Z info: Running Security Scan
+2025-11-10T10:45:09Z info: Security Scan Complete
+2025-11-10T10:45:09Z info: Connecting to builder
+2025-11-10T10:45:10Z info: Builder connected
+2025-11-10T10:45:11Z info: Installing packages
+2025-11-10T10:45:13Z info: Starting Build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+
+vite v7.1.12 building for production...
+
+transforming...
+
+✓ 8897 modules transformed.
+
+rendering chunks...
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/node_modules/gsap/index.js is dynamically imported by /home/runner/workspace/client/src/lib/lazy-loading-optimizer.ts but also statically imported by /home/runner/workspace/client/src/components/homepage/dot-grid.tsx, /home/runner/workspace/client/src/components/navigation/staggered-menu.tsx, /home/runner/workspace/client/src/components/public/manufacturing/PublicHeroSection.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingAnimations.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingCard.tsx, dynamic import will not move module into another chunk.
+
+
+computing gzip size...
+
+../dist/public/index.html                                                3.56 kB │ gzip:   1.61 kB
+
+../dist/public/assets/technology-BOxLV88u.css                            1.24 kB │ gzip:   0.27 kB
+
+../dist/public/assets/GradientBlinds-CKIaOlIi.css                        1.57 kB │ gzip:   0.60 kB
+
+../dist/public/assets/about-CIGW-MKW.css                                15.61 kB │ gzip:   6.46 kB
+
+../dist/public/assets/collapsible-Chb8Cea6.js                            0.10 kB │ gzip:   0.11 kB
+
+../dist/public/assets/index-D2wpeGwE.js                                  0.14 kB │ gzip:   0.14 kB
+
+../dist/public/assets/use-debounce-BvkAIuey.js                           0.19 kB │ gzip:   0.17 kB
+
+../dist/public/assets/useOptimizedQuery-Cyi_2f_r.js                      0.27 kB │ gzip:   0.21 kB
+
+../dist/public/assets/fiber-utils-C3r3xPDq.js                            0.29 kB │ gzip:   0.20 kB
+
+../dist/public/assets/factory-BYRXbfOi.js                                0.58 kB │ gzip:   0.36 kB
+
+../dist/public/assets/progressive-image-BSMsWqXN.js                      2.87 kB │ gzip:   1.43 kB
+
+../dist/public/assets/admin-Ccznabzm.js                                 25.97 kB │ gzip:   7.91 kB
+
+../dist/public/assets/technology-DaoUtLPk.js                            27.36 kB │ gzip:   6.17 kB
+
+✓ built in 30.64s
+
+
+  dist/index.js  950.3kb
+
+⚡ Done in 584ms
+
+npm notice
+npm notice New minor version of npm available! 11.4.2 -> 11.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+npm notice To update run: npm install -g npm@11.6.2
+npm notice
+
+2025-11-10T10:45:53Z info: Pushing pid1 binary layer...
+2025-11-10T10:46:02Z info: Created pid1 binary layer
+2025-11-10T10:46:05Z info: Pushing Repl layer...
+2025-11-10T10:46:05Z info: Pushing hosting layer...
+2025-11-10T10:46:05Z info: Retrieved cached nix layer
+2025-11-10T10:46:06Z info: Created hosting layer
+2025-11-10T10:48:48Z info: Created Repl layer
+2025-11-10T10:48:57Z info: Pushed image manifest
+2025-11-10T10:49:00Z info: Pushed soci index manifest
+2025-11-10T10:49:05Z info: Creating Autoscale service
+starting up user application
+> NODE_ENV=production node dist/index.js
+✅ Example correct format:
+    throw new Error(
+          ^
+1. Go to Replit Secrets (Tools → Secrets)
+> NODE_ENV=production node dist/index.js
+2. Find DATABASE_URL
+✅ Example correct format:
+file:///home/runner/workspace/dist/index.js:2452
+1. Go to Replit Secrets (Tools → Secrets)
+2. Find DATABASE_URL
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+[Environment] ✅ Configuration validated and loaded successfully
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+command finished with error [npm run start]: exit status 1
+    at server/db.ts (file:///home/runner/workspace/dist/index.js:2516:5)
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+✅ Example correct format:
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+    at server/lib/postgresql-direct-storage.js (file:///home/runner/workspace/dist/index.js:7120:5)
+📋 HOW TO FIX:
+Error: ❌ NEON connection pooling is NOT enabled - Production deployment blocked!
+file:///home/runner/workspace/dist/index.js:2452
+    at validateDatabaseUrl (file:///home/runner/workspace/dist/index.js:2452:11)
+Node.js v24.4.0
+1. Go to Replit Secrets (Tools → Secrets)
+          ^
+2. Find DATABASE_URL
+
+    at ModuleJob.run (node:internal/modules/esm/module_job:370:25)
+command finished with error [npm run start]: exit status 1
+> rest-express@1.0.0 start
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+    at file:///home/runner/workspace/dist/index.js:10392:1
+1. Go to Replit Secrets (Tools → Secrets)
+
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+
+file:///home/runner/workspace/dist/index.js:2452
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+[Environment] ✅ Configuration validated and loaded successfully
+1. Go to Replit Secrets (Tools → Secrets)
+🔴 CRITICAL: DATABASE_URL must include "-pooler" suffix for serverless environments.
+Node.js v24.4.0
+crash loop detected
+2025-11-10T10:51:46Z error: The deployment is crash looping. This can happen if the run command fails or exits immediately after starting. Check the logs for more information.

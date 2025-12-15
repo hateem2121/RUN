@@ -1,0 +1,159 @@
+Consolidate fabric and sizeChart queries into main product query using LEFT JOINs:
+
+CONTEXT:
+
+- getProductByPath executes 9 queries (1 main + 8 parallel)
+
+- Fabric and sizeChart are independent queries that could JOIN with main product query
+
+- Current: Query 1 (product) → Query 3 (fabric), Query 4 (sizeChart) in parallel
+
+TASK:
+
+1. Open server/lib/repositories/product-repository.ts
+
+2. Find getProductByPath() function (around line 441)
+
+3. Locate main product query (lines 469-479):
+
+   const product = await db.select(PRODUCT_DETAIL_COLUMNS)...
+
+4. Modify to include LEFT JOINs:
+
+   const productResult = await db
+
+     .select({
+
+       ...PRODUCT_DETAIL_COLUMNS,
+
+       fabric: fabrics,      // Add entire fabric row
+
+       sizeChart: sizeCharts, // Add entire size chart row
+
+     })
+
+     .from(products)
+
+     .leftJoin(fabrics, eq(products.fabricId, fabrics.id))
+
+     .leftJoin(sizeCharts, eq(products.sizeChartId, sizeCharts.id))
+
+     .where(and(
+
+       eq(products.urlPath, urlPath),
+
+       eq(products.isActive, true),
+
+       isNull(products.deletedAt)
+
+     ))
+
+     .limit(1);
+
+5. Extract results:
+
+   const product = productResult[0];
+
+   const fabric = product?.fabric || null;
+
+   const sizeChart = product?.sizeChart || null;
+
+6. REMOVE queries 3 and 4 from Promise.all batch (fabricResult, sizeChartResult)
+
+7. Update Promise.all destructuring to remove these 2 variables
+
+8. Update final response construction to use new fabric and sizeChart variables
+
+CONSTRAINTS:
+
+- Do NOT modify query 2 (category with eager loading - already optimized)
+
+- Do NOT touch queries 5-9 yet
+
+- Preserve all existing null checks and error handling
+
+- Test that fabric and sizeChart are still in final response
+
+SUCCESS CRITERIA:
+
+- Main product query now includes 2 LEFT JOINs
+
+- Promise.all batch reduced from 8 to 6 queries
+
+- fabricResult and sizeChartResult removed from parallel queries
+
+- Final response still includes fabric and sizeChart data
+
+- Total query count: 7 (down from 9)
+
+---
+
+Wrap unprotected database queries with circuit breaker to prevent cascading failures:
+
+CONTEXT:
+
+- Circuit breaker currently covers ~30% of queries (hot paths only)
+
+- Many repository methods use direct db.select() without protection
+
+- Risk: Database failures could cascade to entire application
+
+TASK:
+
+1. Open server/lib/db-circuit-breaker.ts to review dbCircuitBreaker.execute() usage pattern
+
+2. Open server/lib/repositories/media-repository.ts
+
+3. Find functions using direct db queries without circuit breaker:
+
+   - getMediaAsset() (line ~57)
+
+   - getMediaAssetsByIds() (line ~440)
+
+   
+
+4. Wrap each query with circuit breaker:
+
+   BEFORE:
+
+   const assets = await db.select()...;
+
+   
+
+   AFTER:
+
+   const assets = await dbCircuitBreaker.execute(
+
+     async () => await db.select()...,
+
+     'getMediaAsset'
+
+   );
+
+5. Repeat for server/lib/repositories/misc-repository.ts:
+
+   - getFabric(), getCertificate(), getSizeChart(), getAccessory()
+
+6. Do NOT modify functions that already use circuit breaker
+
+7. Do NOT wrap cache.get() operations (only database queries)
+
+CONSTRAINTS:
+
+- Only wrap db.select(), db.insert(), db.update(), db.delete() calls
+
+- Do NOT wrap Promise.all() - wrap individual queries inside it
+
+- Preserve existing error handling
+
+- Do NOT change function signatures
+
+SUCCESS CRITERIA:
+
+- All direct database queries wrapped with dbCircuitBreaker.execute()
+
+- Operation names match function names for traceability
+
+- No duplicate circuit breaker wrapping
+
+- Existing circuit breaker calls unchanged

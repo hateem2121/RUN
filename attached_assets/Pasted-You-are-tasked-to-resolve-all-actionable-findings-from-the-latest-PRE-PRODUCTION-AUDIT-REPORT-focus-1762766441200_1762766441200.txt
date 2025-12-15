@@ -1,0 +1,20 @@
+You are tasked to resolve all actionable findings from the latest PRE_PRODUCTION_AUDIT_REPORT, focusing on maximizing production readiness and performance for our B2B textile e-commerce platform.  
+**Do NOT recommend or perform any file splits or major structural changes unless they are absolutely blocking.**  
+**Do NOT add new files or boilerplate code unless it addresses a critical vulnerability that cannot be resolved otherwise.**  
+Our system is well-engineered; ONLY address debilities, vulnerabilities, and hidden inefficiencies identified by the audit, and avoid unnecessary refactoring or clutter.
+
+**Your tasks are:**
+- Review the audit's HIGH and MEDIUM PRIORITY action items and resolve all issues (database indexes, documentation, security headers, CSS bundle optimization, dependency pruning, React cleanup, memory leak checks, lazy-loading improvements, monitoring setup).
+- For each issue, update code/config inline or modify only what's necessary to resolve vulnerabilities, hidden risks, or resource bottlenecks.
+- Do not split large files unless you explicitly find a blocking problem that cannot be managed otherwise (for example, memory leaks or untestable code).
+- For any recommendations where new code/files are suggested (e.g., .env.example, external monitoring integration), only proceed if this cannot be accomplished by improving existing infrastructure or documentation; otherwise, suggest concise inline config additions.
+- Keep all changes readable, minimal, and based on proven production best practices—favor configuration and parameter updates over new code.
+- After each change, explicitly state which audit item was resolved, how it was resolved, and reference the audit section or line number.
+- As you work, check for any hidden or subtle debilities in memory, performance, or security, even if not flagged by the audit—they may exist in deeply nested code or rarely used paths. Remove all such weaknesses, but only where substantiated.
+- DO NOT perform structural overhauls, code reorganizations, or add new dependencies unless it is strictly necessary for production readiness.
+- Maintain the current file and directory structure unless absolutely required by a fix.
+
+**OUTPUT:**  
+- Summarize each issue you resolved, with a brief explanation for how and where it was fixed (file, component, config, etc.), referencing the audit item.
+- List any remaining concerns that should be monitored post-launch rather than addressed now.
+- Do not provide code for new files unless absolutely required; always prefer updating in-place.

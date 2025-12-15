@@ -1,0 +1,299 @@
+/* Light Luxury Theme - Monochromatic Minimalist Design */
+
+/* Monochromatic Luxury Color Variables */
+/* Monochromatic Luxury Color Variables - MAPPED TO INDEX.CSS */
+/* :root block removed to prevent overriding OKLCH channels with HEX values */
+/* Use definitions in client/src/index.css instead */
+
+/* Refined Minimal Solid Card Effects - NO GLASSMORPHISM */
+.glass-light {
+  background: var(--color-luxury-surface);
+  border: 1px solid var(--color-luxury-border);
+  box-shadow: var(--luxury-shadow-sm-subtle);
+}
+
+.glass-card-light {
+  background: var(--color-luxury-surface);
+  border: 1px solid var(--color-luxury-border);
+  box-shadow: var(--luxury-shadow-sm-elevated);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Professional Executive Solid Card - NO GLASSMORPHISM */
+.executive-glass-card {
+  background: var(--color-luxury-surface);
+  border: 1px solid var(--color-luxury-border);
+  box-shadow:
+    0 16px 64px rgba(59, 130, 246, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.executive-glass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-luxury-border);
+}
+
+.glass-card-light:hover {
+  background: var(--color-luxury-surface);
+  box-shadow:
+    var(--luxury-shadow-sm-elevated),
+    0 8px 24px rgba(26, 26, 26, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Monochromatic Luxury Gradients */
+.gradient-light-luxury {
+  background: linear-gradient(135deg, var(--color-luxury-surface) 0%, var(--color-background) 100%);
+}
+
+.gradient-light-accent {
+  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-luxury-accent) 100%);
+}
+
+/* Monochromatic Luxury Shadows */
+.shadow-sm-luxury-light {
+  box-shadow: var(--luxury-shadow-sm-subtle);
+}
+
+.shadow-sm-luxury-elevated {
+  box-shadow: var(--luxury-shadow-sm-elevated);
+}
+
+/* Monochromatic Typography */
+.luxury-text-light {
+  color: var(--luxury-text-primary);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.luxury-text-secondary {
+  color: var(--luxury-text-secondary);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.luxury-heading-light {
+  color: var(--luxury-text-primary);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.luxury-heading-secondary {
+  color: var(--luxury-text-secondary);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* Smooth Animations */
+.smooth-entrance {
+  animation: smoothEntranceLight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+@keyframes smoothEntranceLight {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floating-element {
+  animation: floatingLight 6s ease-in-out infinite;
+}
+
+@keyframes floatingLight {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+/* Light Parallax Effects */
+.parallax-light {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Interactive Light Elements */
+.interactive-light {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.interactive-light:hover {
+  transform: scale(1.02) translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* Monochromatic Luxury Components */
+.luxury-button-primary {
+  background: var(--luxury-interactive);
+  color: var(--luxury-surface);
+  border: 1px solid var(--luxury-interactive);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  letter-spacing: -0.025em;
+}
+
+.luxury-button-primary:hover {
+  background: var(--luxury-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--luxury-shadow-sm-elevated);
+}
+
+.luxury-button-secondary {
+  background: var(--luxury-surface);
+  color: var(--luxury-text-primary);
+  border: 1px solid var(--luxury-border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  letter-spacing: -0.025em;
+}
+
+.luxury-button-secondary:hover {
+  background: var(--luxury-hover);
+  border-color: var(--luxury-text-secondary);
+  transform: translateY(-1px);
+}
+
+.luxury-badge {
+  background: var(--luxury-accent);
+  color: var(--luxury-text-secondary);
+  border: 1px solid var(--luxury-border);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+.luxury-input {
+  background: var(--luxury-surface);
+  color: var(--luxury-text-primary);
+  border: 1px solid var(--luxury-border);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-input:focus {
+  outline: none;
+  border-color: var(--luxury-interactive);
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.1);
+}
+
+/* Light Theme Statistics Cards - Solid Style */
+.stat-card-light {
+  background: var(--luxury-surface);
+  border: 1px solid var(--luxury-border);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Executive Timeline 3D Effects */
+.timeline-3d-light {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+}
+
+.timeline-card-3d {
+  transform: rotateX(5deg) rotateY(-5deg);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-card-3d:hover {
+  transform: rotateX(0deg) rotateY(0deg) translateZ(20px);
+}
+
+/* Professional Executive Layout Classes */
+.executive-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (min-width: 1024px) {
+  .executive-container {
+    padding: 0 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .executive-container {
+    padding: 0 4rem;
+  }
+}
+
+/* Executive Section Heights */
+.section-hero {
+  min-height: 100vh;
+}
+.section-featured {
+  min-height: 75vh;
+}
+.section-standard {
+  min-height: 50vh;
+}
+
+/* Executive Typography Scale */
+.executive-heading-xl {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.executive-heading-lg {
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.executive-text-lg {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Executive Grid System */
+.grid-executive-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .grid-executive-12 {
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-executive-12 {
+    gap: 3rem;
+  }
+}

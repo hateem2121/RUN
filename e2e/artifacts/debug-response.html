@@ -1,0 +1,161 @@
+* Host localhost:5001 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:5001...
+* connect to ::1 port 5001 from ::1 port 52686 failed: Connection refused
+*   Trying 127.0.0.1:5001...
+* Connected to localhost (127.0.0.1) port 5001
+> GET /e2e-overlay HTTP/1.1
+> Host: localhost:5001
+> User-Agent: curl/8.7.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Vary: Origin, Accept-Encoding
+< Access-Control-Allow-Credentials: true
+< Access-Control-Expose-Headers: X-Correlation-ID
+< X-Correlation-ID: 4e7ee60c-ebe5-4413-8669-a88b294332c2
+< Content-Type: text/html; charset=utf-8
+< Date: Fri, 12 Dec 2025 16:55:40 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=65
+< Transfer-Encoding: chunked
+< 
+{ [7252 bytes data]
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RUN APPAREL (PVT) LTD - B2B Sportswear Manufacturing</title>
+    <meta
+      name="description"
+      content="Professional B2B sportswear manufacturing with 3D visualization, premium athletic wear, and sustainable practices for global sports brands."
+    />
+
+    <!-- MODEL-VIEWER: Using local package only to avoid conflicts -->
+    <!-- REMOVED CDN loading to prevent duplicate registration with @google/model-viewer package -->
+
+    <!-- Critical Font Preloading for Performance -->
+    <link
+      rel="preload"
+      href="/assets/NeueStance-Regular-BF677cd1babab7f_1751100032838.ttf"
+      as="font"
+      type="font/truetype"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/NeueStance-Medium-BF677cd1baba544_1750161804183_1751100032838.ttf"
+      as="font"
+      type="font/truetype"
+      crossorigin
+    />
+
+    <!-- Critical inline CSS to prevent broken appearance during CSS loading -->
+    <style>
+      /* Critical base styles loaded immediately to prevent broken appearance */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+      }
+
+      /* Loading skeleton animation */
+      .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      /* Critical layout stability */
+      #root {
+        min-height: 100vh;
+      }
+
+      /* Prevent broken media flashing */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* Basic responsive grid */
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .flex {
+        display: flex;
+      }
+
+      /* Hide content until CSS loads to prevent FOUC */
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .css-loaded .main-content {
+        opacity: 1;
+      }
+
+      /* Static Noise Overlay - Performance Optimized */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9900; /* Lower than Cursor (10000) and Nav (10001) */
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        mix-blend-mode: overlay;
+      }
+    </style>
+  
+              <title data-rh="true"></title>
+              
+              
+              
+              
+            </head>
+  <body>
+    <div id="root"><div class="min-h-screen bg-white"><header class="relative z-dock h-16 w-full bg-white/50 border-b border-black/10" data-testid="mock-header"><div class="fixed top-4 left-4 z-modal bg-white p-2 border border-black" data-testid="mock-header-logo"><span class="font-bold">RUN APPAREL (MOCK)</span></div></header><main class="p-20 relative z-0"><h1 class="text-2xl font-bold mb-4">Z-Index Interaction Proof</h1><div data-testid="hydration-status" class="mb-4 p-2 bg-green-100 border border-green-500 inline-block">LOADING</div><button class="px-4 py-2 bg-100  7220    0  7220    0     0   227k      0 --:--:-- --:--:-- --:--:--  235k
+* Connection #0 to host localhost left intact
+blue-600 text-white rounded hover:bg-blue-700 transition" data-testid="open-dialog-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-_R_e_" data-state="closed">Open Overlay Dialog</button><div class="mt-8 text-sm text-gray-500"><p>Test Scenario:</p><ul class="list-disc pl-5"><li>Header is z-dock (50) / Logo z-modal (100)</li><li>Dialog Overlay should be &gt; 100</li><li>Clicking Header Logo should be impossible when Dialog is open</li></ul></div></main></div>
+                  <script>
+                    window.__REACT_QUERY_STATE__ = {"mutations":[],"queries":[{"dehydratedAt":1765558540655,"state":{"data":[{"id":27,"name":"Athletic Wear","slug":"athletic-wear","description":"High-performance athletic and sportswear","parentId":null,"primaryImageId":null,"sortOrder":1,"isActive":true,"level":0,"fullPath":null,"metaTitle":null,"metaDescription":null,"featuredOnHomepage":true,"gridPosition":0,"displayOrder":0,"featuredContent":null,"bannerUrl":null,"imageUrl":null,"createdAt":"2025-11-22T14:56:34.854Z","updatedAt":"2025-11-22T14:56:34.854Z","deletedAt":null,"version":1,"mediaUrl":null,"mediaFilename":null},{"id":28,"name":"Team Uniforms","slug":"team-uniforms","description":"Custom team uniforms for sports and organizations","parentId":null,"primaryImageId":null,"sortOrder":2,"isActive":true,"level":0,"fullPath":null,"metaTitle":null,"metaDescription":null,"featuredOnHomepage":true,"gridPosition":0,"displayOrder":0,"featuredContent":null,"bannerUrl":null,"imageUrl":null,"createdAt":"2025-11-22T14:56:34.854Z","updatedAt":"2025-11-22T14:56:34.854Z","deletedAt":null,"version":1,"mediaUrl":null,"mediaFilename":null},{"id":29,"name":"Corporate Apparel","slug":"corporate-apparel","description":"Professional corporate and workwear","parentId":null,"primaryImageId":null,"sortOrder":3,"isActive":true,"level":0,"fullPath":null,"metaTitle":null,"metaDescription":null,"featuredOnHomepage":true,"gridPosition":0,"displayOrder":0,"featuredContent":null,"bannerUrl":null,"imageUrl":null,"createdAt":"2025-11-22T14:56:34.854Z","updatedAt":"2025-11-22T14:56:34.854Z","deletedAt":null,"version":1,"mediaUrl":null,"mediaFilename":null},{"id":30,"name":"Custom Design","slug":"custom-design","description":"Fully customizable apparel solutions","parentId":null,"primaryImageId":null,"sortOrder":4,"isActive":true,"level":0,"fullPath":null,"metaTitle":null,"metaDescription":null,"featuredOnHomepage":false,"gridPosition":0,"displayOrder":0,"featuredContent":null,"bannerUrl":null,"imageUrl":null,"createdAt":"2025-11-22T14:56:34.854Z","updatedAt":"2025-11-22T14:56:34.854Z","deletedAt":null,"version":1,"mediaUrl":null,"mediaFilename":null}],"dataUpdateCount":1,"dataUpdatedAt":1765558540649,"error":null,"errorUpdateCount":0,"errorUpdatedAt":0,"fetchFailureCount":0,"fetchFailureReason":null,"fetchMeta":null,"isInvalidated":false,"status":"success","fetchStatus":"idle"},"queryKey":["/api/categories"],"queryHash":"[\"/api/categories\"]"}]};
+                  </script>
+                </div>
+    <script type="module" src="/src/entry-client.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,244 @@
+/* Monochromatic Luxury Utility Classes */
+
+/* Layout & Spacing */
+.luxury-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.luxury-section {
+  padding: 3rem 0;
+}
+
+.luxury-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.luxury-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.luxury-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .luxury-grid-2,
+  .luxury-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .luxury-container {
+    padding: 0 1rem;
+  }
+
+  .luxury-section {
+    padding: 2rem 0;
+  }
+}
+
+/* Typography Utilities */
+.luxury-h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: var(--luxury-text-primary);
+}
+
+.luxury-h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  color: var(--luxury-text-primary);
+}
+
+.luxury-h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  color: var(--luxury-text-secondary);
+}
+
+.luxury-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--luxury-text-secondary);
+  letter-spacing: -0.015em;
+}
+
+.luxury-small {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--luxury-text-secondary);
+}
+
+/* Component Utilities */
+.luxury-card {
+  background: var(--luxury-surface);
+  border: 1px solid var(--luxury-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--luxury-shadow-sm-subtle);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-card:hover {
+  box-shadow: var(--luxury-shadow-sm-elevated);
+  transform: translateY(-2px);
+}
+
+.luxury-card-elevated {
+  box-shadow: var(--luxury-shadow-sm-elevated);
+}
+
+.luxury-card-flat {
+  box-shadow: none;
+  border: 1px solid var(--luxury-border);
+}
+
+/* Interactive States */
+.luxury-interactive {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.luxury-interactive:hover {
+  transform: translateY(-1px);
+}
+
+.luxury-interactive:active {
+  transform: translateY(0);
+  opacity: 0.9;
+}
+
+/* Focus States */
+.luxury-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--luxury-interactive) 20%, transparent);
+  border-color: var(--luxury-interactive);
+}
+
+/* Loading States */
+.luxury-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--luxury-accent) 25%,
+    color-mix(in oklch, var(--luxury-accent) 80%, transparent) 50%,
+    var(--luxury-accent) 75%
+  );
+  background-size: 200% 100%;
+  animation: luxury-skeleton-loading 1.5s infinite;
+}
+
+@keyframes luxury-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Dividers */
+.luxury-divider {
+  height: 1px;
+  background: var(--luxury-border);
+  border: none;
+  margin: 2rem 0;
+}
+
+.luxury-divider-vertical {
+  width: 1px;
+  background: var(--luxury-border);
+  height: 100%;
+}
+
+/* Category Hints (Normalized primitives) */
+.luxury-category-hint-blue {
+  border-left: 2px solid var(--color-blue-500);
+}
+
+.luxury-category-hint-green {
+  border-left: 2px solid var(--color-green-500);
+}
+
+.luxury-category-hint-red {
+  border-left: 2px solid var(--color-red-500);
+}
+
+.luxury-category-hint-purple {
+  border-left: 2px solid var(--color-purple-500);
+}
+
+.luxury-category-hint-orange {
+  border-left: 2px solid var(--color-orange-500);
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+  .luxury-h1 {
+    font-size: 2rem;
+  }
+
+  .luxury-h2 {
+    font-size: 1.5rem;
+  }
+
+  .luxury-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+}
+
+/* Animation Utilities */
+.luxury-fade-in {
+  animation: luxury-fade-in 0.6s ease-out;
+}
+
+@keyframes luxury-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.luxury-slide-up {
+  animation: luxury-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes luxury-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .luxury-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .luxury-button-primary,
+  .luxury-button-secondary {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+  }
+}

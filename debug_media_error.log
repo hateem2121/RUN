@@ -1,0 +1,1455 @@
+[2025-11-20T03:44:50.895Z] Error serving media 177: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.",
+  "stack": "Error: Failed to generate signed URL: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:01.545Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:01.952Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:01.958Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:01.970Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:01.996Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:02.075Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.432Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.433Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.435Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.438Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.441Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:23.737Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:04:47.559Z] Error serving media 177: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:15:28.494Z] Error serving media 177: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:20.713Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:20.713Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:20.714Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:20.720Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:20.721Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:21.066Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T04:27:21.166Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:05:44.341Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:03.977Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:04.179Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:56.313Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:56.314Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:56.315Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:56.407Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.215Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.239Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.240Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.241Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.305Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.756Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.921Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.923Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.924Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.926Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:06:57.941Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:14.854Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:14.854Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:14.854Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:14.855Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:14.855Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:15.212Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:15.311Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:16.450Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:16.450Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:16.451Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:08:16.452Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.014Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.015Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.016Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.022Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.024Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.225Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:13:32.325Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.695Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.713Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.793Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.797Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.843Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.848Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.849Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.856Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.856Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.858Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.953Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:30:55.957Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.554Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.555Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.556Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.557Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.575Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:39.956Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:33:40.041Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.138Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.139Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.139Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.139Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.143Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.497Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:47.593Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:49.371Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:49.668Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:50.394Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:50.395Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:50.901Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:52.797Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:52.911Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:54.042Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:54.042Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:54.045Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:54.046Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:54.054Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.069Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.070Z] Error serving media 280: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.070Z] Error serving media 283: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.073Z] Error serving media 270: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.081Z] Error serving media 271: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.081Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.091Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.375Z] Error serving media 266: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.382Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.383Z] Error serving media 282: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:36:58.384Z] Error serving media 274: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:00.899Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:01.626Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:02.647Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:03.877Z] Error serving media 266: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:04.609Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:05.043Z] Error serving media 274: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:05.540Z] Error serving media 282: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:06.957Z] Error serving media 283: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:07.450Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:08.010Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:27.532Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:27.623Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:28.031Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:28.032Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:28.032Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:28.033Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:30.942Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:30.950Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.842Z] Error serving media 283: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.842Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.842Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.843Z] Error serving media 270: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.850Z] Error serving media 280: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.850Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.850Z] Error serving media 266: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.855Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.856Z] Error serving media 271: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.858Z] Error serving media 274: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:35.859Z] Error serving media 282: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:37.967Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:37.971Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:39.200Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.611Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.611Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.612Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.613Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.613Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.942Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:43.950Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:44.862Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T05:37:44.865Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.030Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.032Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.032Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.037Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.039Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T08:37:13.437Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:07.174Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:07.175Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:07.175Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:07.176Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:07.182Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:08.144Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:06:08.328Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:11.103Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:11.106Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:11.155Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:11.157Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:13.225Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:27:18.801Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:41.923Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:41.924Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:41.924Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:41.924Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:45.673Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:29:51.041Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:40.898Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:40.911Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:40.911Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:40.914Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:40.921Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:30:48.125Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:10.219Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:36.196Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:36.222Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:36.295Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:36.297Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:39.384Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:32:44.481Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:24.249Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:24.252Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:24.256Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:24.268Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:28.441Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:56:33.873Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:00.282Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:00.541Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:59.203Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:59.205Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:59.209Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:59.212Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:57:59.214Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:27.482Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:27.487Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:27.487Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:27.503Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:30.994Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:36.311Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:44.847Z] Error serving media 193: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:45.356Z] Error serving media 192: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:45.364Z] Error serving media 179: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T09:58:45.364Z] Error serving media 183: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:14.852Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:15.054Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:15.086Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:15.393Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:15.631Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:17.702Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:24.602Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:24.656Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:24.668Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:24.743Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:25.017Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:30.829Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:39.886Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:39.898Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:39.898Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:39.898Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:39.932Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.004Z] Error serving media 170: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.005Z] Error serving media 263: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.015Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.018Z] Error serving media 260: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.024Z] Error serving media 166: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.507Z] Error serving media 167: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.781Z] Error serving media 262: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.787Z] Error serving media 169: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.801Z] Error serving media 240: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.827Z] Error serving media 180: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:46.834Z] Error serving media 168: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:47.645Z] Error serving media 178: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:47.684Z] Error serving media 181: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:50.590Z] Error serving media 239: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:50.598Z] Error serving media 221: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:50.787Z] Error serving media 176: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:50.951Z] Error serving media 220: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:51.131Z] Error serving media 223: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:51.591Z] Error serving media 222: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:51.592Z] Error serving media 212: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:51.594Z] Error serving media 216: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.053Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.071Z] Error serving media 263: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.487Z] Error serving media 260: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.549Z] Error serving media 171: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.549Z] Error serving media 240: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:52.919Z] Error serving media 262: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:54.113Z] Error serving media 213: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:54.145Z] Error serving media 186: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:01:56.150Z] Error serving media 187: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:09.706Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:09.979Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:35.008Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:35.026Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:35.065Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:35.079Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:37.341Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.281Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.282Z] Error serving media 283: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.437Z] Error serving media 280: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.469Z] Error serving media 266: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.639Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.639Z] Error serving media 271: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.910Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.924Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.992Z] Error serving media 274: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:44.995Z] Error serving media 270: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:02:45.203Z] Error serving media 282: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:21.554Z] Error serving media 244: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:21.560Z] Error serving media 246: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:21.806Z] Error serving media 257: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:21.813Z] Error serving media 258: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.048Z] Error serving media 259: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.577Z] Error serving media 280: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.578Z] Error serving media 274: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.596Z] Error serving media 270: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.825Z] Error serving media 261: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.832Z] Error serving media 272: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:22.854Z] Error serving media 266: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:23.079Z] Error serving media 279: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:23.086Z] Error serving media 271: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:23.108Z] Error serving media 282: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:23.331Z] Error serving media 281: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-20T10:04:24.015Z] Error serving media 283: {
+  "name": "Error",
+  "message": "Failed to generate signed URL: Cannot sign data without `client_email`.",
+  "stack": "Error: Failed to generate signed URL: Cannot sign data without `client_email`.\n    at AppStorageService.generateSignedUrl (/Users/hateemjamshaid/Downloads/RUN-Remix/server/app-storage-service.ts:208:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:693:23)"
+}
+[2025-11-24T16:26:53.928Z] Error serving media 635: {
+  "name": "Error",
+  "message": "Failed query: select \"id\", \"filename\", \"original_name\", \"file_size\", \"size\", \"mime_type\", \"type\", \"url\", \"thumbnail_url\", \"thumbnail_filename\", \"thumbnail_storage_path\", \"image_variants\", \"storage_path\", \"bucket_name\", \"folder_id\", \"tags\", \"alt_text\", \"caption\", \"metadata\", \"is_active\", \"deleted_at\", \"created_at\", \"updated_at\", \"uploaded_at\" from \"media_assets\" where (\"media_assets\".\"id\" = $1 and \"media_assets\".\"deleted_at\" is null and \"media_assets\".\"is_active\" = $2)\nparams: 635,true",
+  "stack": "Error: Failed query: select \"id\", \"filename\", \"original_name\", \"file_size\", \"size\", \"mime_type\", \"type\", \"url\", \"thumbnail_url\", \"thumbnail_filename\", \"thumbnail_storage_path\", \"image_variants\", \"storage_path\", \"bucket_name\", \"folder_id\", \"tags\", \"alt_text\", \"caption\", \"metadata\", \"is_active\", \"deleted_at\", \"created_at\", \"updated_at\", \"uploaded_at\" from \"media_assets\" where (\"media_assets\".\"id\" = $1 and \"media_assets\".\"deleted_at\" is null and \"media_assets\".\"is_active\" = $2)\nparams: 635,true\n    at NeonHttpPreparedQuery.queryWithCache (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/src/pg-core/session.ts:73:11)\n    at async NeonHttpPreparedQuery.execute (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/src/neon-http/session.ts:83:18)\n    at async <anonymous> (/Users/hateemjamshaid/Downloads/RUN-Remix/server/lib/repositories/media-repository.ts:143:9)\n    at async DatabaseCircuitBreaker.execute (/Users/hateemjamshaid/Downloads/RUN-Remix/server/lib/db-circuit-breaker.ts:79:26)\n    at async MediaRepository.getMediaAsset (/Users/hateemjamshaid/Downloads/RUN-Remix/server/lib/repositories/media-repository.ts:141:21)\n    at async DirectPostgreSQLStorage.getMediaAsset (/Users/hateemjamshaid/Downloads/RUN-Remix/server/lib/postgresql-direct-storage.ts:314:12)\n    at async getMediaContent (/Users/hateemjamshaid/Downloads/RUN-Remix/server/routes/media/handlers.ts:691:19)"
+}

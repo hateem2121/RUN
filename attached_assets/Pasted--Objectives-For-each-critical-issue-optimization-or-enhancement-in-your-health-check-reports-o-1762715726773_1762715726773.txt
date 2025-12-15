@@ -1,0 +1,51 @@
+## Objectives
+- For each critical issue, optimization, or enhancement in your health check reports or monitoring dashboards, implement the fix directly or generate a patch/migration.
+- Use **atomic commits per fix** and enable “Checkpoints” after each significant step for rollback capability.
+- Ensure each modification is minimal, targeted, and cost-efficient per 2025 best practices:
+  - *No new dependencies.*
+  - *Always batch DB/cache operations where possible.*
+  - *Prioritize smallest, measurable patch per issue.*
+
+---
+
+## Workflow
+
+1. **Preparation**
+   - Parse: DATABASE_HEALTH_CHECK_REPORT.md, CACHE_EFFICIENCY_HEALTH_CHECK.md, NODEJS_MEMORY_HEALTH_REPORT.md, ERROR_MONITORING_HEALTH_CHECK.md, and COMPREHENSIVE_HEALTH_CHECK_SUMMARY.md.
+   - For each specified file/line reference, pin file location using code context (use advanced context construction if sub-optimal code is only described, not referenced directly).
+   - Summarize all actionable items as a checklist.
+
+2. **Iterative Remediation**
+   - For each checklist item, adopt this iterative loop (per Agent 3 guidelines[61][11]):
+     - *BACKUP*: Create an automatic Replit “Checkpoint” 
+     - *PATCH*: Apply the fix. If a migration, generate/run .sql or .ts file as required.
+     - *TEST*: Run related health check, endpoint, or script (e.g. tsx scripts/nodejs-memory-health-check.ts).
+     - *REVERT*: If tests fail or new warnings emerge, roll back via checkpoint and generate a remediation plan or human-resolution note.
+     - *LOG*: After every action, emit before/after code diff, referenced problem, test status, and expected impact.
+
+3. **Coverage Guidance**
+   - **Database**: Run/publish all SQL migrations; verify DATABASE_URL uses -pooler suffix for NEON.
+   - **Cache**: Apply precise TTL changes in the specified files for cache effectiveness; verify actual hit rate.
+   - **Memory**: Update and test the AlertManager leak fix; review all large structures for other potential leaks.
+   - **Monitoring**: Define SLOs in metrics configuration; integrate disk usage and Neon cost tracking; suggest log shipping if persistence isn’t set.
+   - **All**: List each resolved issue, file/line changed, and affected system.
+
+4. **Post-Remediation**
+   - Provide a single, merged change log of:
+     - Code diffs for each fix,
+     - File/line number(s),
+     - Root cause per report,
+     - Impact measurement (benchmark, cost, metric).
+   - If any remediation is not possible automatically, create a recommended manual action block (with context and example code/snippet).
+
+---
+
+## Success Criteria
+
+- All critical and optimization points from audits are resolved, tested, and summarized in the agent log.
+- Each change is atomic, revertible, and includes pre/post metrics or evidence of improvement.
+- No new dependencies, with full cost-awareness for NEON/postgres, cache, and monitoring.
+- Agent session provides navigation for Checkpoints and rollbacks for any user review 
+
+---
+

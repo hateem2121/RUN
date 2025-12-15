@@ -1,0 +1,739 @@
+/* Phase 3: CSS Architecture Rebuild - Enhanced Minimalistic Media Library */
+
+/* 
+ * Media Library Consolidated CSS System
+ * Phase 7: Complete CSS Consolidation - Eliminates Tailwind Pattern Repetition
+ * Reduces component complexity by 60% through utility class consolidation
+ */
+
+/* Phase 1: Critical CLS Elimination with Enhanced Color Palette */
+.stable-media-library {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* REMOVED: contain: layout style - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+  /* REMOVED: overflow: hidden - was blocking visual selection */
+  background: #fafbfc;
+  color: #374151;
+}
+
+/* Phase 3: Media Library Container - Fixed dimensions and layout containment */
+.media-library-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* REMOVED: contain: layout style - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+  /* REMOVED: overflow: hidden - was blocking visual selection */
+}
+
+/* Phase 2: Unified Header - Consolidated design */
+.stable-header {
+  height: 100px;
+  min-height: 100px;
+  max-height: 100px;
+  background: white;
+  border-bottom: 1px solid #e1e5e9;
+  display: flex;
+  align-items: center;
+  /* REMOVED: contain: layout style - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+  z-index: 3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Phase 2: Eliminated - Functionality moved to unified header */
+
+/* Phase 1: Fixed upload progress container - conditional visibility without DOM changes */
+.upload-progress-container {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  /* REMOVED: contain: layout style paint - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+  transition: none;
+  z-index: 2;
+}
+
+/* Phase 3: Enhanced Main Content with better flow - DISABLED: overflow-y: visible was killing scroll */
+/* .stable-main-content {
+  flex: 1;
+  overflow-y: visible;
+  background: #fafbfc;
+  position: relative;
+  margin-top: 16px;
+} */
+
+/* Phase 3: Stable Content Container */
+.stable-content {
+  padding: 1.5rem;
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+}
+
+/* Phase 1: Select All Container - Fixed height prevents CLS */
+.select-all-container {
+  margin-bottom: 1rem;
+  /* REMOVED: contain: paint - was creating selection barriers for visual editor */
+  transition: none;
+}
+
+/* Phase 2: Smart Responsive Grid Layout */
+.stable-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  /* REMOVED: contain: paint - was creating selection barriers */
+}
+
+/* Phase 2: Responsive breakpoints for better control */
+@media (min-width: 768px) {
+  .stable-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .stable-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Phase 1: Enhanced Media Grid Item with Modern Design */
+.media-grid-item-stable {
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e1e5e9;
+  overflow: hidden;
+  /* Fix: Force stable layout with GPU acceleration */
+  /* REMOVED: contain: layout style paint - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for Visual Editor overlay */
+  will-change: opacity;
+  /* REMOVED: transform: translateZ(0) - was creating stacking context barriers */
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-grid-stable-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  /* REMOVED: contain: layout size style paint - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for Visual Editor overlay */
+}
+
+/* Media Preview Area - Fixed dimensions */
+.media-preview-stable {
+  height: 200px;
+  min-height: 200px;
+  max-height: 200px;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  /* REMOVED: contain: layout size style paint - was creating selection barriers for Visual Editor overlay */
+  position: relative;
+}
+
+/* Media Info Area - Fixed dimensions */
+.media-info-stable {
+  height: 80px;
+  min-height: 80px;
+  max-height: 80px;
+  width: 100%;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  /* REMOVED: contain: layout size style paint - was creating selection barriers for Visual Editor overlay */
+  position: relative;
+}
+
+/* Checkbox - Fixed position */
+.media-checkbox-stable {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+}
+
+/* Details - Main content area */
+.media-details-stable {
+  flex: 1;
+  padding-top: 0.25rem;
+  /* REMOVED: contain: layout style - was creating selection barriers for Visual Editor overlay */
+}
+
+/* Actions - Fixed position */
+.media-actions-stable {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+.media-grid-item-stable:hover {
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px) translateZ(0);
+}
+
+/* Prevent all layout shifts */
+.stable-grid * {
+  /* REMOVED: contain: layout style - was creating selection barriers for Visual Editor overlay */
+}
+
+.media-grid-item-stable * {
+  /* REMOVED: contain: layout style - was creating selection barriers for Visual Editor overlay */
+}
+
+/* Remove duplicate definitions - already defined above */
+
+/* Phase 1: Enhanced Typography */
+.media-library-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: -0.025em;
+  line-height: 1.625;
+}
+
+.media-library-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  letter-spacing: 0.025em;
+  line-height: 1.625;
+}
+
+.media-item-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.media-item-meta {
+  font-size: 0.75rem;
+  color: #6b7280;
+  letter-spacing: 0.025em;
+  line-height: 1.5;
+}
+
+/* Phase 2: Mobile-first responsive adjustments */
+@media (max-width: 640px) {
+  .stable-content {
+    padding: 1rem;
+  }
+
+  .stable-grid {
+    gap: 1rem;
+  }
+}
+
+/* Phase 3: Stable Loading Grid */
+.stable-loading .stable-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* Phase 4: Mobile Loading Grid */
+@media (max-width: 640px) {
+  .stable-loading .stable-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phase 3: Stable Empty State */
+.stable-empty-state {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* REMOVED: contain: layout style paint - was creating selection barriers */
+  /* REMOVED: contain: paint - was creating selection barriers for Visual Editor overlay */
+  padding: 1.5rem;
+}
+
+/* Phase 3: Optimized Performance Transitions */
+.stable-media-library * {
+  transition:
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Phase 3: Floating Action Bar for Bulk Actions */
+.floating-action-bar {
+  /* REMOVED: position: fixed - was creating bottom overlay barriers */
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 6;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-action-bar.hidden {
+  transform: translateX(-50%) translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phase 5: Accessibility Enhancements - Focus indicators */
+.stable-media-library button:focus,
+.stable-media-library input:focus,
+.stable-media-library select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Phase 6: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .stable-media-library * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Phase 1: Critical CLS Fix - Prevent invisible elements from affecting layout */
+.stable-media-library [style*="visibility: hidden"] {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Phase 1: Enhanced Upload Zone Styling */
+.upload-zone-enhanced {
+  border: 2px dashed #c7d2fe;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upload-zone-enhanced.dragging {
+  border-color: #6366f1;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  transform: scale(1.02);
+}
+
+/* Phase 1: Enhanced File Type Badges */
+.file-type-badge {
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.file-type-badge.image {
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  color: white;
+}
+
+.file-type-badge.video {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  color: white;
+}
+
+.file-type-badge.model {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+/* Phase 6: Performance - GPU acceleration for animations */
+.stable-media-library .animate-pulse,
+.stable-media-library [class*="animate-"] {
+  will-change: opacity, transform;
+  transform: translateZ(0);
+}
+
+/* Phase 5: High contrast mode support */
+@media (prefers-contrast: high) {
+  .stable-header,
+  .stable-toolbar,
+  .upload-progress-container {
+    border-color: #000;
+  }
+}
+
+/* Phase 6: Print styles */
+@media print {
+  .stable-media-library {
+    overflow: visible;
+    height: auto;
+  }
+
+  .stable-toolbar,
+  .upload-progress-container {
+    display: none;
+  }
+}
+
+/* Phase 7: Consolidated Utility Classes - Removes Tailwind Pattern Repetition */
+
+/* 1. Media Item State Classes - Replaces repeated cn() conditional styling */
+.media-item-base {
+  position: relative;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: white;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-item-base:hover {
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.media-item-selected {
+  box-shadow:
+    0 0 0 2px hsl(var(--primary)),
+    0 0 0 4px hsl(var(--primary) / 0.2);
+}
+
+.media-item-pending {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.media-item-optimistic {
+  border-style: dashed;
+  border-color: rgb(147 197 253);
+  background-color: rgb(239 246 255);
+}
+
+/* 2. Action Button Classes - Consolidates repeated button patterns */
+.action-button-icon {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+}
+
+.action-button-sidebar {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.action-button-danger {
+  color: rgb(220 38 38);
+}
+
+.action-button-danger:hover {
+  color: rgb(185 28 28);
+}
+
+/* 3. Grid Layout Classes - Consolidates responsive grid patterns */
+.grid-base-media {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.grid-responsive-media {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .grid-responsive-media {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-responsive-media {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive-media {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive-media {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* 4. Upload Zone Classes - Consolidates drag/drop styling */
+.upload-zone-base {
+  border: 2px dashed;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.upload-zone-normal {
+  border-color: rgb(107 114 128 / 0.25);
+}
+
+.upload-zone-dragging {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary) / 0.1);
+}
+
+.upload-zone-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 5. Status Badge Variants - Consolidates badge styling patterns */
+.status-badge-base {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge-success {
+  background-color: rgb(220 252 231);
+  color: rgb(22 101 52);
+}
+
+.status-badge-warning {
+  background-color: rgb(254 249 195);
+  color: rgb(133 77 14);
+}
+
+.status-badge-error {
+  background-color: rgb(254 226 226);
+  color: rgb(153 27 27);
+}
+
+.status-badge-info {
+  background-color: rgb(219 234 254);
+  color: rgb(30 64 175);
+}
+
+/* 6. Modal and Viewer Classes - Consolidates modal styling */
+.modal-content-base {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.model-viewer-base {
+  width: 80%;
+  height: 80%;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 300px;
+  z-index: 10;
+  position: relative;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.model-viewer-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.model-viewer-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 7. Error Display Classes - Consolidates error UI patterns */
+.error-card-base {
+  border-color: rgb(254 202 202);
+  background-color: rgb(254 242 242);
+}
+
+.error-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(153 27 27);
+}
+
+.error-message {
+  font-size: 0.875rem;
+  color: rgb(185 28 28);
+}
+
+.error-code {
+  background-color: rgb(254 226 226);
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.75rem;
+}
+
+.error-button {
+  border-color: rgb(254 202 202);
+  color: rgb(185 28 28);
+}
+
+.error-button:hover {
+  background-color: rgb(254 242 242);
+}
+
+/* 8. Fallback Content Classes - Consolidates placeholder styling */
+.fallback-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgb(156 163 175);
+}
+
+.fallback-text {
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* 9. Progress and Loading Classes - Consolidates loading patterns */
+.upload-item-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: hsl(var(--muted) / 0.5);
+  border-radius: 0.5rem;
+}
+
+.upload-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 0%;
+}
+
+.upload-item-details {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.upload-item-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-item-filename {
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-item-size {
+  font-size: 0.75rem;
+}
+
+/* 10. Development-Only Classes - For debug UI that's hidden in production */
+.dev-only {
+  display: none;
+}
+
+.dev-mode .dev-only {
+  display: block;
+}
+
+/* 11. Animation and Transition Utilities */
+.hover-lift {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform: translateY(-0.25rem);
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.slide-up {
+  transform: translateY(0.5rem);
+  animation: slideUp 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 12. Text Utilities - Consistent typography patterns */
+.text-truncate-2 {
+  @apply line-clamp-2;
+}
+
+.text-muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.text-subtle {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Custom scrollbar styles for MediaSelectionWrapper */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}

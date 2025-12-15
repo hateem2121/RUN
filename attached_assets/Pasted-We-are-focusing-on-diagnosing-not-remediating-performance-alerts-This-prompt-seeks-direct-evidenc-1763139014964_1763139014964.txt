@@ -1,0 +1,41 @@
+We are focusing on diagnosing—not remediating—performance alerts.  
+This prompt seeks direct evidence and system observations for the most probable root causes identified in our recent audits and analysis.
+
+## Checklist – Please Provide for Each Item:
+
+**1. Query Plan Analysis**
+   - For each top slow query (e.g., getAccessories, getProductByPath), retrieve and share EXPLAIN and/or ANALYZE output for both fast and slow cases.
+   - Note index usage vs full table scans.
+
+**2. Cache Hit/Miss Ratio**
+   - Supply UnifiedCache L1/L2 memory and remote hit/miss ratios for slow query hours. Note TTL expiry, eviction, or cache-churn patterns.
+
+**3. Sequential vs Batch Loading**
+   - Map request flow from TanStack Query/React Query in the frontend to backend batch endpoints. Show if requests for media assets/content are sequential or in efficient batches.
+   - Trace any correlation between refetch/invalidations and slow backend spikes.
+
+**4. Cold Start, NEON Connection**
+   - Collect NEON wakeup/cold start timings from your logs. Note effectiveness of keep-alive, and provide typical latency after idle periods.
+
+**5. Resource Indicators**
+   - Provide metrics or logs on RAM, CPU, connection pool health, and queue lengths during SLOW QUERY/SLOW REQUEST times.
+   - Indicate if any resource indicator correlates with alert spikes.
+
+**6. Distributed Tracing Evidence**
+   - Link user-facing slow requests (frontend console, UX timelines) with backend correlation IDs and log timestamps.
+   - Share complete traces for at least two recent incidents.
+
+**7. Index & Dead Tuple Monitoring**
+   - For all main tables/involved queries, provide recent pg_stat_statements output, especially for possible index drift or bloat.
+
+**8. External Latency**
+   - Note evidence of third-party service latency during slow requests (e.g., object storage, email), including retry/circuit breaker stats.
+
+**9. Frontend Impact**
+   - Provide browser or client console logs for slow loading pages. Note any excessive re-renders, sequential JS requests, or network waterfall evidence.
+
+---
+
+**Instructions:**  
+Respond with raw logs, screenshots, query plan outputs, trace snippets, and summary metrics for each point.  
+**Do NOT propose any code changes or fixes—focus entirely on diagnosis and evidence.**

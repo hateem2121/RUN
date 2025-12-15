@@ -1,0 +1,253 @@
+import { memo } from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown, ChevronRight, Palette, CheckCircle, AlertCircle, Plus, X, Search } from 'lucide-react';
+import { ProductFormFieldValue } from '../shared/types';
+
+interface CustomizationSectionProps{
+  formData: {
+    customizationOptions: string[];
+    metaTitle: string;
+    metaDescription: string;
+  };
+  formErrors: Record<string, string>;
+  isOpen: boolean;
+  onToggle: () => void;
+  onInputChange: (field: string, value: ProductFormFieldValue) => void;
+  generateMetaTitle: () => void;
+  generateMetaDescription: () => void;
+}
+
+const CustomizationSection = memo(function CustomizationSection({
+  formData,
+  formErrors,
+  isOpen,
+  onToggle,
+  onInputChange,
+  generateMetaTitle,
+  generateMetaDescription
+}: CustomizationSectionProps) {
+  // Calculate completion status
+  const recommendedFields = ['metaTitle', 'metaDescription'];
+  const completedFields = recommendedFields.filter(field => {
+    const value = formData[field as keyof typeof formData];
+    return typeof value === 'string' ? value.trim().length > 0 : !!value;
+  });
+  const completionRate = (completedFields.length / recommendedFields.length) * 100;
+
+  const addCustomizationOption = () => {
+    onInputChange('customizationOptions', [...(formData.customizationOptions || []), '']);
+  };
+
+  const updateCustomizationOption = (index: number, value: string) => {
+    const updated = [...(formData.customizationOptions || [])];
+    updated[index] = value;
+    onInputChange('customizationOptions', updated);
+  };
+
+  const removeCustomizationOption = (index: number) => {
+    const updated = (formData.customizationOptions || []).filter((_, i) => i !== index);
+    onInputChange('customizationOptions', updated);
+  };
+
+  const addPresetCustomizationOption = (option: string) => {
+    if (!(formData.customizationOptions || []).includes(option)) {
+      onInputChange('customizationOptions', [...(formData.customizationOptions || []), option]);
+    }
+  };
+
+  const presetOptions = [
+    'Custom logo placement',
+    'Color customization',
+    'Size modifications',
+    'Material upgrades',
+    'Personalized embroidery',
+    'Custom patterns',
+    'Bulk quantity discounts',
+    'Private labeling',
+    'Custom packaging',
+    'Specialized fits'
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={onToggle}>
+      <CollapsibleTrigger className="flex items-center justify-between w-full p-4 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+        <div className="flex items-center gap-3">
+          <Palette className="h-5 w-5 text-indigo-600" />
+          <div className="text-left">
+            <h3 className="font-semibold text-gray-900">Customization & SEO</h3>
+            <p className="text-sm text-gray-600">
+              {(formData.customizationOptions || []).length} customization options, SEO optimization
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {completionRate === 100 ? (
+            <CheckCircle className="h-5 w-5 text-green-600" />
+          ) : completionRate > 0 ? (
+            <AlertCircle className="h-5 w-5 text-amber-600" />
+          ) : (
+            <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+          )}
+          {isOpen ? (
+            <ChevronDown className="h-4 w-4 text-gray-500" />
+          ) : (
+            <ChevronRight className="h-4 w-4 text-gray-500" />
+          )}
+        </div>
+      </CollapsibleTrigger>
+      
+      <CollapsibleContent className="mt-4 space-y-6 px-4 pb-4">
+        {/* Customization Options */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <Label className="text-sm font-medium text-gray-700">Customization Options</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addCustomizationOption}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Custom Option
+            </Button>
+          </div>
+
+          {/* Preset Options */}
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-600 mb-2">Quick Add Options</h4>
+            <div className="flex flex-wrap gap-2">
+              {presetOptions.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => addPresetCustomizationOption(option)}
+                  disabled={(formData.customizationOptions || []).includes(option)}
+                  className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                    (formData.customizationOptions || []).includes(option)
+                      ? 'bg-gray-100 text-gray-400 border-gray-200'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-indigo-50 hover:border-indigo-300'
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Custom Options */}
+          <div className="space-y-2">
+            {(formData.customizationOptions || []).map((option, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  value={option}
+                  onChange={(e) => updateCustomizationOption(index, e.target.value)}
+                  placeholder="Enter customization option"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removeCustomizationOption(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            {(formData.customizationOptions || []).length === 0 && (
+              <div className="text-center py-6 text-gray-500">
+                <Palette className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p>No customization options added yet</p>
+                <p className="text-sm">Add options to showcase your B2B customization capabilities.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* SEO Optimization */}
+        <div className="border-t pt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Search className="h-5 w-5 text-indigo-600" />
+            <h3 className="font-semibold text-gray-900">SEO Optimization</h3>
+          </div>
+
+          {/* Meta Title */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="metaTitle" className="text-sm font-medium text-gray-700">
+                Meta Title
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={generateMetaTitle}
+              >
+                Generate
+              </Button>
+            </div>
+            <Input
+              id="metaTitle"
+              value={formData.metaTitle}
+              onChange={(e) => onInputChange('metaTitle', e.target.value)}
+              className={`${formErrors.metaTitle ? 'border-red-500' : ''}`}
+              placeholder="Enter SEO-optimized title"
+              maxLength={60}
+            />
+            {formErrors.metaTitle && (
+              <p className="text-red-600 text-sm mt-1">{formErrors.metaTitle}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-1">
+              {formData.metaTitle.length}/60 characters
+              {formData.metaTitle.length > 60 && (
+                <span className="text-red-600 ml-2">Too long for optimal SEO</span>
+              )}
+            </p>
+          </div>
+
+          {/* Meta Description */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="metaDescription" className="text-sm font-medium text-gray-700">
+                Meta Description
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={generateMetaDescription}
+              >
+                Generate
+              </Button>
+            </div>
+            <Textarea
+              id="metaDescription"
+              value={formData.metaDescription}
+              onChange={(e) => onInputChange('metaDescription', e.target.value)}
+              className={`${formErrors.metaDescription ? 'border-red-500' : ''}`}
+              placeholder="Enter SEO-optimized description"
+              rows={3}
+              maxLength={160}
+            />
+            {formErrors.metaDescription && (
+              <p className="text-red-600 text-sm mt-1">{formErrors.metaDescription}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-1">
+              {formData.metaDescription.length}/160 characters
+              {formData.metaDescription.length > 160 && (
+                <span className="text-red-600 ml-2">Too long for optimal SEO</span>
+              )}
+            </p>
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+});
+
+// Default export for lazy loading compatibility
+export default CustomizationSection;

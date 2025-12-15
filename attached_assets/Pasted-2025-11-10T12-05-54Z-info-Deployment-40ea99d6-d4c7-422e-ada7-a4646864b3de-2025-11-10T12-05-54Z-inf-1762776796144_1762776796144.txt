@@ -1,0 +1,122 @@
+2025-11-10T12:05:54Z info: Deployment: 40ea99d6-d4c7-422e-ada7-a4646864b3de
+2025-11-10T12:05:54Z info: Running Security Scan
+2025-11-10T12:06:06Z info: Security Scan Complete
+2025-11-10T12:06:06Z info: Connecting to builder
+2025-11-10T12:06:07Z info: Builder connected
+2025-11-10T12:06:08Z info: Installing packages
+2025-11-10T12:06:10Z info: Starting Build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+
+vite v7.1.12 building for production...
+
+transforming...
+
+✓ 8897 modules transformed.
+
+rendering chunks...
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/client/src/lib/queryClient.ts is dynamically imported by /home/runner/workspace/client/src/components/admin/media-library/MediaLibraryContextEnhanced.tsx, /home/runner/workspace/client/src/hooks/use-replit-media.ts, /home/runner/workspace/client/src/hooks/use-replit-media.ts but also statically imported by /home/runner/workspace/client/src/App.tsx, /home/runner/workspace/client/src/components/Footer.tsx, /home/runner/workspace/client/src/components/InquiryCartButton.tsx, /home/runner/workspace/client/src/components/admin/about-hero-tab.tsx, /home/runner/workspace/client/src/components/admin/about-locations-tab.tsx, /home/runner/workspace/client/src/components/admin/about-sections-tab.tsx, /home/runner/workspace/client/src/components/admin/about-statistics-tab.tsx, /home/runner/workspace/client/src/components/admin/about-team-message-tab.tsx, /home/runner/workspace/client/src/components/admin/about-timeline-tab.tsx, /home/runner/workspace/client/src/components/admin/accessory-management-enhanced.tsx, /home/runner/workspace/client/src/components/admin/certificate-management.tsx, /home/runner/workspace/client/src/components/admin/contact-management/ContactPageSettings.tsx, /home/runner/workspace/client/src/components/admin/fabric-management-enhanced-v2.tsx, /home/runner/workspace/client/src/components/admin/fiber-management.tsx, /home/runner/workspace/client/src/components/admin/manufacturing/HeroManagement.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaGrid.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaLibraryContainerEnhanced.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaUploadEnhanced.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaViewerModal.tsx, /home/runner/workspace/client/src/components/admin/navigation-management.tsx, /home/runner/workspace/client/src/components/admin/product-management-unified/admin/ProductCreateEditModal.tsx, /home/runner/workspace/client/src/components/admin/product-management-unified/core/ProductGrid.tsx, /home/runner/workspace/client/src/components/admin/size-chart-management-enhanced.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyCtaManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyEquipmentManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyGradientSettings.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyHeroManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyInnovationManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyResearchManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyRoadmapManagement.tsx, /home/runner/workspace/client/src/components/product/enhanced/InquiryModal.tsx, /home/runner/workspace/client/src/components/ui/UnifiedModelViewer.tsx, /home/runner/workspace/client/src/context/AdminContext.tsx, /home/runner/workspace/client/src/hooks/admin/categories/useCategoryOperationsConsolidated.ts, /home/runner/workspace/client/src/hooks/use-admin-sustainability-mutations.ts, /home/runner/workspace/client/src/hooks/useManufacturingMutations.ts, /home/runner/workspace/client/src/hooks/usePrefetch.ts, /home/runner/workspace/client/src/lib/auth.ts, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageAnimationsManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageHeroManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageProcessManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSectionsManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSlogansManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSustainabilityManager.tsx, /home/runner/workspace/client/src/pa
+[plugin vite:reporter] 
+(!) /home/runner/workspace/node_modules/gsap/index.js is dynamically imported by /home/runner/workspace/client/src/lib/lazy-loading-optimizer.ts but also statically imported by /home/runner/workspace/client/src/components/homepage/dot-grid.tsx, /home/runner/workspace/client/src/components/navigation/staggered-menu.tsx, /home/runner/workspace/client/src/components/public/manufacturing/PublicHeroSection.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingAnimations.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingCard.tsx, dynamic import will not move module into another chunk.
+
+
+computing gzip size...
+
+../dist/public/index.html                                                3.56 kB │ gzip:   1.61 kB
+
+../dist/public/assets/index-BdQq_4o_.js                                  0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/collapsible-Chb8Cea6.js                            0.10 kB │ gzip:   0.11 kB
+
+../dist/public/assets/index-D2wpeGwE.js                                  0.14 kB │ gzip:   0.14 kB
+
+../dist/public/assets/index-D9dS9Nd3.js                                  0.23 kB │ gzip:   0.21 kB
+../dist/public/assets/index-NWAs2qLQ.js                                  0.23 kB │ gzip:   0.17 kB
+
+../dist/public/assets/useOptimizedQuery-Cyi_2f_r.js                      0.27 kB │ gzip:   0.21 kB
+
+../dist/public/assets/arrow-up-B8r7RrPV.js                               0.34 kB │ gzip:   0.27 kB
+
+../dist/public/assets/arrow-down-BP9p3mEc.js                             0.34 kB │ gzip:   0.27 kB
+../dist/public/assets/clock-Djcpa4Us.js                                  0.34 kB │ gzip:   0.27 kB
+
+../dist/public/assets/target-CPkf6fTJ.js                                 0.40 kB │ gzip:   0.27 kB
+
+../dist/public/assets/download-CrLAjrka.js                               0.41 kB │ gzip:   0.30 kB
+../dist/public/assets/message-square-DMUL6IqG.js                         0.41 kB │ gzip:   0.31 kB
+
+../dist/public/assets/table-BmkroqtY.js                                  1.49 kB │ gzip:   0.52 kB
+../dist/public/assets/performance-intersection-observer-FSnZk_UX.js      1.87 kB │ gzip:   0.90 kB
+../dist/public/assets/progress-DuB8Dy07.js                               1.90 kB │ gzip:   0.94 kB
+
+../dist/public/assets/hyperspace-background-qUuB7YHQ.js                  1.91 kB │ gzip:   1.03 kB
+../dist/public/assets/useMutation-DtfeVVeV.js                            2.08 kB │ gzip:   0.89 kB
+
+../dist/public/assets/TechnologyCta-C396Sd3P.js                         30.70 kB │ gzip:  11.63 kB
+
+../dist/public/assets/contact-DXCzU0zW.js                               31.61 kB │ gzip:   8.47 kB
+
+✓ built in 31.07s
+
+
+  dist/index.js  951.6kb
+
+⚡ Done in 602ms
+
+npm notice
+npm notice New minor version of npm available! 11.4.2 -> 11.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+npm notice To update run: npm install -g npm@11.6.2
+npm notice
+
+2025-11-10T12:06:52Z info: Pushing pid1 binary layer...
+2025-11-10T12:07:01Z info: Created pid1 binary layer
+2025-11-10T12:07:03Z info: Pushing Repl layer...
+2025-11-10T12:07:03Z info: Pushing hosting layer...
+2025-11-10T12:07:03Z info: Retrieved cached nix layer
+2025-11-10T12:07:04Z info: Created hosting layer
+2025-11-10T12:09:38Z info: Created Repl layer
+2025-11-10T12:09:47Z info: Pushed image manifest
+2025-11-10T12:09:51Z info: Pushed soci index manifest
+2025-11-10T12:09:55Z info: Creating Autoscale service
+forwarding local port 5000 to external port 80 (mapped as 1104)
+> rest-express@1.0.0 start
+
+📋 HOW TO FIX:
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+    at ModuleJob.run (node:internal/modules/esm/module_job:370:25)
+command finished with error [npm run start]: exit status 1
+> rest-express@1.0.0 start
+
+Node.js v24.4.0
+    at validateDatabaseUrl (file:///home/runner/workspace/dist/index.js:2453:11)
+1. Go to Replit Secrets (Tools → Secrets)
+
+2. Find DATABASE_URL
+    at ModuleJob.run (node:internal/modules/esm/module_job:370:25)
+📋 HOW TO FIX:
+
+command finished with error [npm run start]: exit status 1
+> NODE_ENV=production node dist/index.js
+> rest-express@1.0.0 start
+[Environment] ✅ Configuration validated and loaded successfully
+🔴 CRITICAL: DATABASE_URL must include "-pooler" suffix for serverless environments.
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+> rest-express@1.0.0 start
+file:///home/runner/workspace/dist/index.js:2453
+Error: ❌ NEON connection pooling is NOT enabled - Production deployment blocked!
+
+
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+2. Find DATABASE_URL
+
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+> rest-express@1.0.0 start
+📋 HOW TO FIX:
+
+
+Error: ❌ NEON connection pooling is NOT enabled - Production deployment blocked!
+2025-11-10T12:12:45Z error: The deployment is crash looping. This can happen if the run command fails or exits immediately after starting. Check the logs for more information.

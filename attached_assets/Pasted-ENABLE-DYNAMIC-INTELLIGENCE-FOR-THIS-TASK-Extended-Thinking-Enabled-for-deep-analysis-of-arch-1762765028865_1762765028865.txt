@@ -1,0 +1,121 @@
+ENABLE DYNAMIC INTELLIGENCE FOR THIS TASK:
+- ✅ Extended Thinking: Enabled (for deep analysis of architectural issues)
+- ✅ High Power Mode: Enabled (for analyzing large codebases and integrations)
+- ✅ Web Search: Enabled (fetches latest NEON, Drizzle, React Query best practices)
+
+INVESTIGATION SCOPE: Pre-production performance and scalability audit  
+APPLICATION STACK: React 19 + Express.js + Drizzle ORM + NEON PostgreSQL + React Query v5 + TailwindCSS + shadcn/ui  
+DEPLOYMENT: Replit (Autoscale/Reserved VM)  
+AUTONOMY LEVEL: Extended (200-minute sessions for deep analysis)
+---
+ROLE:  
+You are a senior DevOps/Performance Engineer with 10+ years' experience:
+- Node.js/Express.js production systems
+- PostgreSQL serverless optimization (NEON)
+- React/JS performance profiling, cost-efficient cloud architecture
+
+TASK:  
+Conduct a comprehensive pre-publication system audit.  
+Output all findings in a highly structured, actionable diagnostic report.
+
+CRITICAL CONSTRAINT: INVESTIGATION ONLY – DO NOT MODIFY ANY CODE
+
+APPROACH (Chain-of-Thought):  
+1. Context Discovery: Map architecture, stack, and integrations  
+2. Segment Analysis: DB (NEON, Drizzle), API (Express), Frontend (React, Query), Caching (KV, Query), Memory, Network, Deployment  
+3. In-depth Investigation by segment  
+4. Synthesis & Prioritization  
+5. Report: Executive summary, categorized findings, actionable steps, monitoring, and cost recommendations
+
+EVIDENCE FOR EACH FINDING:
+- File path & line number(s)
+- Code snippets showing problems
+- Severity, impact, suggested fixes, and references to up-to-date docs
+---
+### DATABASE ANALYSIS
+
+**1. Connection Management**
+- Examine src/db/index.ts (NEON config)
+- Confirm pooling: @neondatabase/serverless HTTP driver
+- Assess: Connection reuse, cleanup, production timeouts, retry logic
+- Document: Cold start times and init overhead
+
+**2. Query Optimization**
+- Flag N+1 queries (looped queries vs. bulk-fetch)
+- Check all .select() for explicit column selection (avoid *)
+- Identify missing limits/pagination in queries
+- Analyze JOIN complexity, subquery flattening opportunities
+- Audit for prepared statements, parameter binding, unsafe SQL
+
+**3. Index & Schema**
+- Identify missing indexes on FK/WIDTH columns, timestamp fields
+- Avoid over-indexing
+- Audit problematic migrations (locking, missing rollbacks)
+- Recommend schema/data-type changes for performance
+
+**OUTPUT FOR EACH ISSUE**  
+- Title, location, severity, quantified impact, recommended fix, code excerpt, doc references
+---
+### CACHING AUDIT
+
+**1. React Query Config**
+- Audit ALL useQuery/useMutation: staleTime, cacheTime (gcTime)
+- Flag missing limits, dynamic keys (cache bloat), background polling
+- Recommend deduplication, explicit configs, cleanup logic
+
+**2. KV Store Analysis**
+- Is @replit/database used? Yes → TTL, error handling, size/rate limits; No → Identify easy wins for DB offload
+- Estimate current usage, flag overages, optimize structure for key limits and cost minimization
+
+**3. API & Middleware Cache**
+- Check express middleware for cache-control, ETag, static asset headers, compression settings
+
+**OUTPUT FOR EACH ISSUE**  
+- Issue, location, current & recommended config, est. memory/cost/API reduction, code changes
+---
+### MEMORY & RESOURCE ANALYSIS
+
+**1. Node.js Memory**
+- Flag global state/leaks, missing event listener and timer cleanup, closure over-capture, stream handling
+
+**2. React Cleanup**
+- Check all useEffect hooks for cleanup, recommend memoization, check for large objects in state
+
+**3. Dependency Bloat**
+- Audit package.json, package-lock.json for unused/duplicate/obsolete dependencies, bundle size risks
+
+**OUTPUT FOR EACH ISSUE**  
+- Issue, file:line, memory leak size estimate, fix, verification method
+---
+### API/NW PERFORMANCE
+
+- Ensure gzip/brotli compression, request body limits, Zod validation
+- Identify blocking code, synchronous ops, missing error handling
+- Audit endpoint response size, pagination, and streaming for large payloads
+- Check for batch endpoints, inefficient auth, repetitive queries
+
+**OUTPUT FOR EACH ENDPOINT**  
+- Current vs. optimized metrics, issues, recommended changes, implementation effort
+---
+### FRONTEND/BUNDLE
+
+- Check Vite production/mode build settings, tree-shaking, manualChunks (code splitting)
+- Audit main bundle (<200KB gzipped target), enable analyzer
+- Track React re-renders (why-did-you-render or React Profiler)
+- Flag missing memo/useCallback, missed virtualization on lists
+- Optimize images (WebP/lazy loading), LCP/INP/CLS metrics
+
+**OUTPUT FOR EACH METRIC**  
+- Current, target, root cause, solution, before/after impact, implementation effort
+---
+### DEPLOYMENT READINESS
+
+- Ensure .replit, replit.nix, run command, secrets are all correct
+- Review asset CDN usage, type (Autoscale/VM/Static), and DB branch pool setup
+- Confirm /health endpoint, error log config, alerting/monitoring integration, backup/rollback strategy
+- CORS/security headers, environment variable safety, rate limiting on API
+
+**OUTPUT**  
+- Config item, state, required change, action, priority, verification, impact
+---
+

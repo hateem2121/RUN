@@ -1,0 +1,113 @@
+2025-11-10T10:56:32Z info: Deployment: eb92615f-ae02-435a-ae87-69c4ce96fe00
+2025-11-10T10:56:32Z info: Running Security Scan
+2025-11-10T10:56:44Z info: Security Scan Complete
+2025-11-10T10:56:44Z info: Connecting to builder
+2025-11-10T10:56:45Z info: Builder connected
+2025-11-10T10:56:47Z info: Installing packages
+2025-11-10T10:56:48Z info: Starting Build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+
+vite v7.1.12 building for production...
+
+transforming...
+
+✓ 8897 modules transformed.
+
+rendering chunks...
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/client/src/lib/queryClient.ts is dynamically imported by /home/runner/workspace/client/src/components/admin/media-library/MediaLibraryContextEnhanced.tsx, /home/runner/workspace/client/src/hooks/use-replit-media.ts, /home/runner/workspace/client/src/hooks/use-replit-media.ts but also statically imported by /home/runner/workspace/client/src/App.tsx, /home/runner/workspace/client/src/components/Footer.tsx, /home/runner/workspace/client/src/components/InquiryCartButton.tsx, /home/runner/workspace/client/src/components/admin/about-hero-tab.tsx, /home/runner/workspace/client/src/components/admin/about-locations-tab.tsx, /home/runner/workspace/client/src/components/admin/about-sections-tab.tsx, /home/runner/workspace/client/src/components/admin/about-statistics-tab.tsx, /home/runner/workspace/client/src/components/admin/about-team-message-tab.tsx, /home/runner/workspace/client/src/components/admin/about-timeline-tab.tsx, /home/runner/workspace/client/src/components/admin/accessory-management-enhanced.tsx, /home/runner/workspace/client/src/components/admin/certificate-management.tsx, /home/runner/workspace/client/src/components/admin/contact-management/ContactPageSettings.tsx, /home/runner/workspace/client/src/components/admin/fabric-management-enhanced-v2.tsx, /home/runner/workspace/client/src/components/admin/fiber-management.tsx, /home/runner/workspace/client/src/components/admin/manufacturing/HeroManagement.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaGrid.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaLibraryContainerEnhanced.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaUploadEnhanced.tsx, /home/runner/workspace/client/src/components/admin/media-library/MediaViewerModal.tsx, /home/runner/workspace/client/src/components/admin/navigation-management.tsx, /home/runner/workspace/client/src/components/admin/product-management-unified/admin/ProductCreateEditModal.tsx, /home/runner/workspace/client/src/components/admin/product-management-unified/core/ProductGrid.tsx, /home/runner/workspace/client/src/components/admin/size-chart-management-enhanced.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyCtaManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyEquipmentManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyGradientSettings.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyHeroManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyInnovationManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyResearchManagement.tsx, /home/runner/workspace/client/src/components/admin/technology/TechnologyRoadmapManagement.tsx, /home/runner/workspace/client/src/components/product/enhanced/InquiryModal.tsx, /home/runner/workspace/client/src/components/ui/UnifiedModelViewer.tsx, /home/runner/workspace/client/src/context/AdminContext.tsx, /home/runner/workspace/client/src/hooks/admin/categories/useCategoryOperationsConsolidated.ts, /home/runner/workspace/client/src/hooks/use-admin-sustainability-mutations.ts, /home/runner/workspace/client/src/hooks/useManufacturingMutations.ts, /home/runner/workspace/client/src/hooks/usePrefetch.ts, /home/runner/workspace/client/src/lib/auth.ts, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageAnimationsManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageHeroManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageProcessManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSectionsManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSlogansManager.tsx, /home/runner/workspace/client/src/pages/admin/content-management/homepage/HomepageSustainabilityManager.tsx, /home/runner/workspace/client/src/pa
+[plugin vite:reporter] 
+(!) /home/runner/workspace/node_modules/gsap/index.js is dynamically imported by /home/runner/workspace/client/src/lib/lazy-loading-optimizer.ts but also statically imported by /home/runner/workspace/client/src/components/homepage/dot-grid.tsx, /home/runner/workspace/client/src/components/navigation/staggered-menu.tsx, /home/runner/workspace/client/src/components/public/manufacturing/PublicHeroSection.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingAnimations.tsx, /home/runner/workspace/client/src/components/shared/manufacturing/ManufacturingCard.tsx, dynamic import will not move module into another chunk.
+
+
+computing gzip size...
+
+../dist/public/assets/target-CPkf6fTJ.js                                 0.40 kB │ gzip:   0.27 kB
+
+../dist/public/assets/download-CrLAjrka.js                               0.41 kB │ gzip:   0.30 kB
+../dist/public/assets/message-square-DMUL6IqG.js                         0.41 kB │ gzip:   0.31 kB
+
+../dist/public/assets/calendar-DjPFcTor.js                               0.43 kB │ gzip:   0.31 kB
+../dist/public/assets/map-pin-DIM6XFrD.js                                0.43 kB │ gzip:   0.33 kB
+../dist/public/assets/zap-asfYcAEN.js                                    0.44 kB │ gzip:   0.31 kB
+../dist/public/assets/triangle-alert-D62t810i.js                         0.44 kB │ gzip:   0.32 kB
+../dist/public/assets/leaf-DajmxhHD.js                                   0.44 kB │ gzip:   0.33 kB
+../dist/public/assets/image-CsWT8uRn.js                                  0.44 kB │ gzip:   0.32 kB
+
+../dist/public/assets/shield-CvAKRFX_.js                                 0.45 kB │ gzip:   0.33 kB
+../dist/public/assets/award-N8IjUjKJ.js                                  0.45 kB │ gzip:   0.33 kB
+../dist/public/assets/house-Bax4xoTF.js                                  0.46 kB │ gzip:   0.32 kB
+
+✓ built in 31.07s
+
+
+  dist/index.js  950.3kb
+
+⚡ Done in 532ms
+
+npm notice
+npm notice New minor version of npm available! 11.4.2 -> 11.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+npm notice To update run: npm install -g npm@11.6.2
+npm notice
+
+2025-11-10T10:57:27Z info: Pushing pid1 binary layer...
+2025-11-10T10:57:36Z info: Created pid1 binary layer
+2025-11-10T10:57:38Z info: Pushing hosting layer...
+2025-11-10T10:57:38Z info: Retrieved cached nix layer
+2025-11-10T10:57:39Z info: Created hosting layer
+2025-11-10T11:00:06Z info: Created Repl layer
+2025-11-10T11:00:15Z info: Pushed image manifest
+2025-11-10T11:00:18Z info: Pushed soci index manifest
+2025-11-10T11:00:28Z info: Creating Autoscale service
+metasidecar: loaded enterprise status from environment is_enterprise=false
+starting up user application
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+   postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/dbname
+    at server/db.ts (file:///home/runner/workspace/dist/index.js:2516:5)
+✅ Example correct format:
+4. To (with -pooler):   ep-withered-silence-aeidkbnf-pooler.c-2.us-east-2.aws.neon.tech
+3. Change hostname from: ep-withered-silence-aeidkbnf.c-2.us-east-2.aws.neon.tech
+3. Change hostname from: ep-withered-silence-aeidkbnf.c-2.us-east-2.aws.neon.tech
+npm notice New minor version of npm available! 11.4.2 -> 11.6.2
+> rest-express@1.0.0 start
+Node.js v24.4.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+npm notice
+📋 HOW TO FIX:
+    throw new Error(
+Error: ❌ NEON connection pooling is NOT enabled - Production deployment blocked!
+[Environment] ✅ Configuration validated and loaded successfully
+🔴 CRITICAL: DATABASE_URL must include "-pooler" suffix for serverless environments.
+    at server/lib/postgresql-direct-storage.js (file:///home/runner/workspace/dist/index.js:7120:5)
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+🔴 CRITICAL: DATABASE_URL must include "-pooler" suffix for serverless environments.
+
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+🔴 CRITICAL: DATABASE_URL must include "-pooler" suffix for serverless environments.
+file:///home/runner/workspace/dist/index.js:2452
+          ^
+Without pooling, the database will experience connection exhaustion under load (50-100+ concurrent users).
+    at __init (file:///home/runner/workspace/dist/index.js:10:56)
+    throw new Error(
+file:///home/runner/workspace/dist/index.js:2452
+    at server/lib/storage-singleton.js (file:///home/runner/workspace/dist/index.js:8353:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+file:///home/runner/workspace/dist/index.js:2452
+command finished with error [npm run start]: exit status 1
+file:///home/runner/workspace/dist/index.js:2452
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+[Environment] ✅ Configuration validated and loaded successfully
+crash loop detected
+Error: ❌ NEON connection pooling is NOT enabled - Production deployment blocked!
+    at validateDatabaseUrl (file:///home/runner/workspace/dist/index.js:2452:11)
+    at file:///home/runner/workspace/dist/index.js:10392:1
+
+Node.js v24.4.0
+2025-11-10T11:02:40Z error: The deployment is crash looping. This can happen if the run command fails or exits immediately after starting. Check the logs for more information.

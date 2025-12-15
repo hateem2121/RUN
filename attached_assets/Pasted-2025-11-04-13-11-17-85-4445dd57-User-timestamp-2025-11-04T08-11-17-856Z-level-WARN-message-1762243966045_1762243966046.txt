@@ -1,0 +1,76 @@
+2025-11-04 13:11:17.85
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:17.856Z","level":"WARN","message":"[SLOW REQUEST] GET /272/content took 776.73ms","service":"run-apparel-api","correlationId":"736e4186-7ea5-439f-ab7c-dfc1db74f226"}
+2025-11-04 13:11:18.88
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.886Z","level":"WARN","message":"[SLOW REQUEST] GET /183/content took 1679ms","service":"run-apparel-api","correlationId":"c4ead33a-1239-44ba-bd19-3a9da114b4a1"}
+2025-11-04 13:11:18.88
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.886Z","level":"WARN","message":"[SLOW REQUEST] GET /183/content took 1678.86ms","service":"run-apparel-api","correlationId":"c4ead33a-1239-44ba-bd19-3a9da114b4a1"}
+2025-11-04 13:11:18.90
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.904Z","level":"WARN","message":"[SLOW REQUEST] GET /193/content took 1693ms","service":"run-apparel-api","correlationId":"73230f82-bb80-4cab-a040-67fb895ae0a3"}
+2025-11-04 13:11:18.90
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.905Z","level":"WARN","message":"[SLOW REQUEST] GET /193/content took 1695.49ms","service":"run-apparel-api","correlationId":"73230f82-bb80-4cab-a040-67fb895ae0a3"}
+2025-11-04 13:11:18.97
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.976Z","level":"WARN","message":"[Cache] Skipping cache for public/media/images/2025/10/1760287189715-factory-img.png: 8.30MB exceeds 4.5MB limit","service":"run-apparel-api","correlationId":"5892ec9b-acfb-4a31-8a58-87ead7e2b04a"}
+2025-11-04 13:11:18.99
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.989Z","level":"WARN","message":"[SLOW REQUEST] GET /179/content took 1115ms","service":"run-apparel-api","correlationId":"5892ec9b-acfb-4a31-8a58-87ead7e2b04a"}
+2025-11-04 13:11:18.99
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:18.989Z","level":"WARN","message":"[SLOW REQUEST] GET /179/content took 1114.96ms","service":"run-apparel-api","correlationId":"5892ec9b-acfb-4a31-8a58-87ead7e2b04a"}
+2025-11-04 13:11:19.21
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:19.213Z","level":"WARN","message":"[SLOW REQUEST] GET /192/content took 1334ms","service":"run-apparel-api","correlationId":"4f4b4234-89f4-47af-80fe-3b48a810f29e"}
+2025-11-04 13:11:19.21
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:19.213Z","level":"WARN","message":"[SLOW REQUEST] GET /192/content took 1334.72ms","service":"run-apparel-api","correlationId":"4f4b4234-89f4-47af-80fe-3b48a810f29e"}
+2025-11-04 13:11:27.37
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:27.373Z","level":"ERROR","message":"[DB Retry] Get product by path failed: non-retryable error (logic/validation issue)","service":"run-apparel-api","correlationId":"21a7c766-288b-40f9-87a6-a7bbbba2198f","metadata":{"error":"getStorage(...).getProductByPath is not a function","retryable":false,"attempts":1,"totalRetries":0,"failureReason":"non-retryable error (logic/validation issue)"}}
+2025-11-04 13:11:27.37
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:27.373Z","level":"ERROR","message":"Route: Error fetching product by path:","service":"run-apparel-api","correlationId":"21a7c766-288b-40f9-87a6-a7bbbba2198f","metadata":{}}
+2025-11-04 13:11:28.81
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:28.817Z","level":"ERROR","message":"[DB Retry] Get product by path failed: non-retryable error (logic/validation issue)","service":"run-apparel-api","correlationId":"d784221e-32be-4efe-ac79-826563b5feed","metadata":{"error":"getStorage(...).getProductByPath is not a function","retryable":false,"attempts":1,"totalRetries":0,"failureReason":"non-retryable error (logic/validation issue)"}}
+2025-11-04 13:11:28.81
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:28.818Z","level":"ERROR","message":"Route: Error fetching product by path:","service":"run-apparel-api","correlationId":"d784221e-32be-4efe-ac79-826563b5feed","metadata":{}}
+2025-11-04 13:11:31.33
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:31.332Z","level":"ERROR","message":"Route: Error fetching product by path:","service":"run-apparel-api","correlationId":"942353af-96d4-4f7c-92a0-80e060f9bf64","metadata":{}}
+2025-11-04 13:11:35.76
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:35.763Z","level":"ERROR","message":"[DB Retry] Get product by path failed: non-retryable error (logic/validation issue)","service":"run-apparel-api","correlationId":"ac667ed8-511f-4641-af69-815bf766e158","metadata":{"error":"getStorage(...).getProductByPath is not a function","retryable":false,"attempts":1,"totalRetries":0,"failureReason":"non-retryable error (logic/validation issue)"}}
+2025-11-04 13:11:35.76
+4445dd57
+User
+{"timestamp":"2025-11-04T08:11:35.763Z","level":"ERROR","message":"Route: Error fetching product by path:","service":"run-apparel-api","correlationId":"ac667ed8-511f-4641-af69-815bf766e158","metadata":{}}
+2025-11-04 13:12:30.92
+4445dd57
+User
+{"timestamp":"2025-11-04T08:12:30.917Z","level":"ERROR","message":"[DB Retry] Get product by path failed: non-retryable error (logic/validation issue)","service":"run-apparel-api","correlationId":"176bc680-6916-480b-b607-97e2a26d05d9","metadata":{"error":"getStorage(...).getProductByPath is not a function","retryable":false,"attempts":1,"totalRetries":0,"failureReason":"non-retryable error (logic/validation issue)"}}
+2025-11-04 13:12:30.92
+4445dd57
+User
+{"timestamp":"2025-11-04T08:12:30.926Z","level":"ERROR","message":"Route: Error fetching product by path:","service":"run-apparel-api","correlationId":"176bc680-6916-480b-b607-97e2a26d05d9","metadata":{}}

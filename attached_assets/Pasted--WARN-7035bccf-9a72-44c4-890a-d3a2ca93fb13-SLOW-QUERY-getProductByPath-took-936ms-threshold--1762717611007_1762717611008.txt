@@ -1,0 +1,38 @@
+[WARN] [7035bccf-9a72-44c4-890a-d3a2ca93fb13] 🐌 SLOW QUERY: getProductByPath took 936ms (threshold: 400ms, category: UNCATEGORIZED) {"cacheHit":false}
+[WARN] [7035bccf-9a72-44c4-890a-d3a2ca93fb13] [URL Validation] ❌ 404 NOT FOUND for path "/categories/outer-wear/heritage-leather-jacket" - No matching product in database
+[INFO] [7035bccf-9a72-44c4-890a-d3a2ca93fb13] [ERROR] GET /products/by-path 404 1269ms
+[WARN] [7035bccf-9a72-44c4-890a-d3a2ca93fb13] [SLOW REQUEST] GET /products/by-path took 1269ms
+[WARN] [7035bccf-9a72-44c4-890a-d3a2ca93fb13] [SLOW REQUEST] GET /products/by-path took 1269.27ms
+7:46:28 PM [express] GET /api/products/by-path 404 in 1269ms :: {"success":false,"error":{"message":…
+[INFO] [fc251897-fdb2-4588-ac3e-63807b520c2e] [URL Validation] 🔍 Requested path: "/categories/outer-wear/heritage-leather-jacket"
+[INFO] [fc251897-fdb2-4588-ac3e-63807b520c2e] [DbCircuitBreaker] getProductByPath {"durationMs":230,"attempt":1,"isRetry":false,"timestamp":"2025-11-09T19:46:30.653Z"}
+[WARN] [fc251897-fdb2-4588-ac3e-63807b520c2e] 🐌 SLOW QUERY: getProductByPath took 561ms (threshold: 400ms, category: UNCATEGORIZED) {"cacheHit":false}
+[WARN] [fc251897-fdb2-4588-ac3e-63807b520c2e] [URL Validation] ❌ 404 NOT FOUND for path "/categories/outer-wear/heritage-leather-jacket" - No matching product in database
+[INFO] [fc251897-fdb2-4588-ac3e-63807b520c2e] [ERROR] GET /products/by-path 404 792ms
+[WARN] [fc251897-fdb2-4588-ac3e-63807b520c2e] [SLOW REQUEST] GET /products/by-path took 792ms
+[WARN] [fc251897-fdb2-4588-ac3e-63807b520c2e] [SLOW REQUEST] GET /products/by-path took 792.79ms
+7:46:30 PM [express] GET /api/products/by-path 404 in 792ms :: {"success":false,"error":{"message":"…
+[INFO] [2216ae50-5213-449f-a0da-ab085d5c652c] [URL Validation] 🔍 Requested path: "/categories/outer-wear/heritage-leather-jacket"
+[INFO] [2216ae50-5213-449f-a0da-ab085d5c652c] [DbCircuitBreaker] getProductByPath {"durationMs":229,"attempt":1,"isRetry":false,"timestamp":"2025-11-09T19:46:33.435Z"}
+[ERROR] [2216ae50-5213-449f-a0da-ab085d5c652c] 🚨 SLOW QUERY ALERT: getProductByPath exceeded 400ms threshold (category: UNCATEGORIZED) {"duration":461,"threshold":400,"category":"UNCATEGORIZED","cacheHit":false,"consecutiveSlowQueries":3,"averageResponseTime":943.63,"slowQueryRate":44}
+[WARN] [2216ae50-5213-449f-a0da-ab085d5c652c] [URL Validation] ❌ 404 NOT FOUND for path "/categories/outer-wear/heritage-leather-jacket" - No matching product in database
+[INFO] [2216ae50-5213-449f-a0da-ab085d5c652c] [ERROR] GET /products/by-path 404 696ms
+[WARN] [2216ae50-5213-449f-a0da-ab085d5c652c] [SLOW REQUEST] GET /products/by-path took 696ms
+[WARN] [2216ae50-5213-449f-a0da-ab085d5c652c] [SLOW REQUEST] GET /products/by-path took 695.65ms
+7:46:33 PM [express] GET /api/products/by-path 404 in 695ms :: {"success":false,"error":{"message":"…
+[INFO] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [URL Validation] 🔍 Requested path: "/categories/outer-wear/heritage-leather-jacket"
+[INFO] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [DbCircuitBreaker] getProductByPath {"durationMs":699,"attempt":1,"isRetry":false,"timestamp":"2025-11-09T19:46:38.788Z"}
+[WARN] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] 🐌 SLOW QUERY: getProductByPath took 952ms (threshold: 400ms, category: UNCATEGORIZED) {"cacheHit":false}
+[WARN] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [URL Validation] ❌ 404 NOT FOUND for path "/categories/outer-wear/heritage-leather-jacket" - No matching product in database
+[INFO] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [ERROR] GET /products/by-path 404 1183ms
+[WARN] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [SLOW REQUEST] GET /products/by-path took 1183ms
+[WARN] [58dc628a-6941-4bc7-b2c4-fea88b6c935e] [SLOW REQUEST] GET /products/by-path took 1182.77ms
+7:46:38 PM [express] GET /api/products/by-path 404 in 1182ms :: {"success":false,"error":{"message":…
+[INFO] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [URL Validation] 🔍 Requested path: "/categories/outer-wear/heritage-leather-jacket"
+[INFO] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [DbCircuitBreaker] getProductByPath {"durationMs":732,"attempt":1,"isRetry":false,"timestamp":"2025-11-09T19:46:48.238Z"}
+[WARN] [74b9f96d-62a7-4c38-a422-8af46c49b17d] 🐌 SLOW QUERY: getProductByPath took 992ms (threshold: 400ms, category: UNCATEGORIZED) {"cacheHit":false}
+[WARN] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [URL Validation] ❌ 404 NOT FOUND for path "/categories/outer-wear/heritage-leather-jacket" - No matching product in database
+[INFO] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [ERROR] GET /products/by-path 404 1333ms
+[WARN] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [SLOW REQUEST] GET /products/by-path took 1333ms
+[WARN] [74b9f96d-62a7-4c38-a422-8af46c49b17d] [SLOW REQUEST] GET /products/by-path took 1332.28ms
+7:46:48 PM [express] GET /api/products/by-path 404 in 1332ms :: {"success":false,"error":{"message":…

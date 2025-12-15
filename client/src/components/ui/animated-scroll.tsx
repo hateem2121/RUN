@@ -1,0 +1,226 @@
+import { useState, useEffect, useRef } from 'react';
+import { MediaUrlBuilder } from '@/lib/media-url-builder';
+import type { AboutSection, MediaAsset } from '@shared/schema';
+
+interface AnimatedScrollProps {
+  sections: AboutSection[];
+  mediaAssets: MediaAsset[];
+  title?: string;
+  description?: string;
+}
+
+// Helper function to get media URL
+const getMediaUrl = (mediaId: number | undefined, mediaAssets: MediaAsset[]): string | null => {
+  if (!mediaId) return null;
+  const asset = mediaAssets.find(a => a.id === mediaId);
+  return MediaUrlBuilder.buildContentUrl(asset?.id);
+};
+
+// Helper function to get first media ID from array
+const getFirstMediaId = (mediaIds: number[] | undefined): number | undefined => {
+  return mediaIds && mediaIds.length > 0 ? mediaIds[0] : undefined;
+};
+
+export default function AnimatedScroll({ sections, mediaAssets, title, description }: AnimatedScrollProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const animTime = 1000;
+  const scrolling = useRef(false);
+
+  // Filter active sections and create pages
+  const activeSections = sections.filter(section => section.isActive);
+
+  // Create pages from sections data
+  const pages = activeSections.map((section, index) => {
+    const isEven = index % 2 === 0;
+    const mediaId = getFirstMediaId(section.mediaIds || undefined);
+    const mediaUrl = getMediaUrl(mediaId, mediaAssets);
+
+    return {
+      leftBgImage: isEven ? mediaUrl : null,
+      rightBgImage: !isEven ? mediaUrl : null,
+      leftContent: !isEven ? {
+        heading: section.title,
+        description: section.content || `Professional ${section.sectionType || 'manufacturing'} services`,
+      } : null,
+      rightContent: isEven ? {
+        heading: section.title,
+        description: section.content || `Advanced ${section.sectionType || 'manufacturing'} capabilities`,
+      } : null,
+    };
+  });
+
+  // Add intro page if we have title/description
+  if (title && pages.length > 0) {
+    pages.unshift({
+      leftBgImage: pages[0]?.leftBgImage || pages[0]?.rightBgImage || null,
+      rightBgImage: null,
+      leftContent: null,
+      rightContent: {
+        heading: title,
+        description: description || 'Comprehensive B2B sportswear solutions from design to delivery',
+      },
+    });
+  }
+
+  const finalNumOfPages = pages.length;
+
+  const navigateUp = () => {
+    if (currentPage > 1) setCurrentPage(p => p - 1);
+  };
+
+  const navigateDown = () => {
+    if (currentPage < finalNumOfPages) setCurrentPage(p => p + 1);
+  };
+
+  const handleWheel = (e: WheelEvent) => {
+    if (scrolling.current) return;
+    scrolling.current = true;
+    e.deltaY > 0 ? navigateDown() : navigateUp();
+    setTimeout(() => (scrolling.current = false), animTime);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (scrolling.current) return;
+    if (e.key === 'ArrowUp') {
+      scrolling.current = true;
+      navigateUp();
+      setTimeout(() => (scrolling.current = false), animTime);
+    } else if (e.key === 'ArrowDown') {
+      scrolling.current = true;
+      navigateDown();
+      setTimeout(() => (scrolling.current = false), animTime);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentPage, finalNumOfPages]);
+
+  // Don't render if no pages
+  if (pages.length === 0) {
+    return (
+      <section className="py-20 bg-muted/20">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <h2 className="text-3xl font-bold mb-4">{title || 'Manufacturing Capabilities'}</h2>
+          <p className="text-muted-foreground">{description || 'No sections configured yet.'}</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <div className="relative overflow-hidden h-screen bg-black">
+      {/* Page Indicator */}
+      <div className="absolute top-8 right-8 z-50 flex flex-col gap-2">
+        {Array.from({ length: finalNumOfPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => {
+              if (!scrolling.current) {
+                setCurrentPage(i + 1);
+              }
+            }}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentPage === i + 1
+                ? 'bg-white scale-125'
+                : 'bg-white/50 hover:bg-white/70'
+              }`}
+          />
+        ))}
+      </div>
+
+      {/* Navigation Instructions */}
+      <div className="absolute bottom-8 left-8 z-50 text-white/70 text-sm">
+        <p>Use arrow keys or scroll to navigate</p>
+        <p className="text-xs mt-1">{currentPage} of {finalNumOfPages}</p>
+      </div>
+
+      {pages.map((page, i) => {
+        const idx = i + 1;
+        const isActive = currentPage === idx;
+        const upOff = 'translateY(-100%)';
+        const downOff = 'translateY(100%)';
+        const leftTrans = isActive ? 'translateY(0)' : downOff;
+        const rightTrans = isActive ? 'translateY(0)' : upOff;
+
+        return (
+          <div key={idx} className="absolute inset-0">
+            {/* Left Half */}
+            <div
+              className="absolute top-0 left-0 w-1/2 h-full transition-transform duration-style1-slow ease-out"
+              style={{ transform: leftTrans }}
+            >
+              <div
+                className="w-full h-full bg-cover bg-center bg-no-repeat relative"
+                style={{
+                  backgroundImage: page.leftBgImage ? `url(${page.leftBgImage})` : undefined,
+                  backgroundColor: !page.leftBgImage ? '#1a1a1a' : undefined
+                }}
+              >
+                {/* Overlay for better text readability */}
+                {page.leftBgImage && (
+                  <div className="absolute inset-0 bg-black/40"></div>
+                )}
+
+                <div className="relative z-10 flex flex-col items-center justify-center h-full text-white p-8">
+                  {page.leftContent && (
+                    <>
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl uppercase mb-6 text-center font-bold tracking-wide">
+                        {page.leftContent.heading}
+                      </h2>
+                      <p className="text-lg md:text-xl text-center max-w-md leading-relaxed">
+                        {page.leftContent.description}
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Half */}
+            <div
+              className="absolute top-0 left-1/2 w-1/2 h-full transition-transform duration-style1-slow ease-out"
+              style={{ transform: rightTrans }}
+            >
+              <div
+                className="w-full h-full bg-cover bg-center bg-no-repeat relative"
+                style={{
+                  backgroundImage: page.rightBgImage ? `url(${page.rightBgImage})` : undefined,
+                  backgroundColor: !page.rightBgImage ? '#2a2a2a' : undefined
+                }}
+              >
+                {/* Overlay for better text readability */}
+                {page.rightBgImage && (
+                  <div className="absolute inset-0 bg-black/40"></div>
+                )}
+
+                <div className="relative z-10 flex flex-col items-center justify-center h-full text-white p-8">
+                  {page.rightContent && (
+                    <>
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl uppercase mb-6 text-center font-bold tracking-wide">
+                        {page.rightContent.heading}
+                      </h2>
+                      {typeof page.rightContent.description === 'string' ? (
+                        <p className="text-lg md:text-xl text-center max-w-md leading-relaxed">
+                          {page.rightContent.description}
+                        </p>
+                      ) : (
+                        <div className="text-lg md:text-xl text-center max-w-md leading-relaxed">
+                          {page.rightContent.description}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

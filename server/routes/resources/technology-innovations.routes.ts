@@ -1,0 +1,261 @@
+/**
+ * TECHNOLOGY INNOVATIONS RESOURCE ROUTER
+ * 
+ * Modular Express Router for Technology Innovations management
+ * Handles full CRUD + reorder operations for technology innovations
+ * 
+ * Routes:
+ * - GET    /api/v1/technology-innovations           - List all innovations
+ * - GET    /api/v1/technology-innovations/:id       - Get single innovation
+ * - POST   /api/v1/technology-innovations           - Create new innovation
+ * - PATCH  /api/v1/technology-innovations/:id       - Update innovation
+ * - DELETE /api/v1/technology-innovations/:id       - Delete innovation
+ * - PATCH  /api/v1/technology-innovations/reorder   - Reorder innovations
+ */
+
+import { Router, Request } from 'express';
+import { z } from 'zod';
+import { getStorage } from '../../lib/storage-singleton.js';
+import { logger } from '../../lib/smart-logger.js';
+import { unifiedCache } from '../../lib/unified-cache.js';
+import { CacheKeys, CacheOperations } from '../../lib/cache-strategies.js';
+import { insertTechnologyInnovationSchema, type TechnologyInnovation } from '../../../shared/schema.js';
+import { withTimeout } from '../../lib/request-timeout.js';
+
+const router = Router();
+
+// Cache TTL constants (in seconds) - CHUNK 34: Optimized by data volatility
+// PHASE 1 OPTIMIZATION: Increased from 3600s (60min) to 10800s (180min)
+const CACHE_TTL_STATIC = 10800; // 180 minutes (3 hours) - static content changes rarely
+
+/**
+ * CHUNK 7: Admin Cache Bypass Utility
+ * Determines if cache should be bypassed for admin or debugging requests
+ */
+function shouldBypassCache(req: Request): boolean {
+  return req.headers.referer?.includes('/admin') || req.query.nocache === 'true';
+}
+
+const idParamSchema = z.object({
+  id: z.string().transform(Number).pipe(z.number().int().positive())
+});
+
+const reorderSchema = z.object({
+  innovations: z.array(z.object({
+    id: z.number().int().positive(),
+    position: z.number().int().min(0)
+  }))
+});
+
+router.get('/', async (req, res) => {
+  try {
+    // CHUNK 7: Check cache first (unless admin bypass)
+    const cacheKey = CacheKeys.technology.innovations();
+    const cached = await unifiedCache.get<TechnologyInnovation[]>(cacheKey);
+    
+    if (cached && !shouldBypassCache(req)) {
+      logger.info('[TechnologyInnovations] Cache hit - returning cached innovations');
+      res.setHeader('X-Cache-Hit', 'true');
+      return res.json(cached);
+    }
+
+    // Cache miss or admin bypass - fetch from database
+    if (shouldBypassCache(req)) {
+      logger.info('[TechnologyInnovations] Admin/debug request - bypassing cache');
+    } else {
+      logger.info('[TechnologyInnovations] Cache miss - fetching from database');
+    }
+    const innovations = await withTimeout(
+      getStorage().getTechnologyInnovations(),
+      10000,
+      'Get technology innovations'
+    );
+    
+    // Store in cache
+    await unifiedCache.set(cacheKey, innovations, CACHE_TTL_STATIC * 1000);
+    logger.info(`[TechnologyInnovations] ✅ ${innovations.length} innovations cached for 180 minutes / 3 hours`);
+    
+    return res.json(innovations);
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error getting innovations:', error);
+    return res.status(500).json({
+      success: false,
+      error: {
+        message: error instanceof Error ? error.message : 'Failed to get innovations'
+      }
+    });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = idParamSchema.parse(req.params);
+    
+    const innovation = await withTimeout(
+      getStorage().getTechnologyInnovation(id),
+      10000,
+      'Get technology innovation'
+    );
+    
+    if (!innovation) {
+      return res.status(404).json({ error: 'Innovation not found' });
+    }
+    
+    logger.info(`[TechnologyInnovations] Retrieved innovation ${id}`);
+    return res.json(innovation);
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error getting innovation:', error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to get innovation'
+    });
+  }
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const validation = insertTechnologyInnovationSchema.safeParse(req.body);
+    
+    if (!validation.success) {
+      logger.warn('[TechnologyInnovations] Validation failed:', validation.error);
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: validation.error.issues 
+      });
+    }
+
+    const newInnovation = await withTimeout(
+      getStorage().createTechnologyInnovation(validation.data),
+      10000,
+      'Create technology innovation'
+    );
+
+    try {
+      await CacheOperations.invalidateTechnology();
+      logger.info('[TechnologyInnovations] ✅ Cache invalidated after creation');
+    } catch (cacheError) {
+      logger.error('[TechnologyInnovations] ❌ Cache invalidation failed:', cacheError);
+    }
+
+    logger.info(`[TechnologyInnovations] Created innovation ${newInnovation.id}`);
+    return res.status(201).json(newInnovation);
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error creating innovation:', error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to create innovation'
+    });
+  }
+});
+
+router.patch('/:id', async (req, res) => {
+  try {
+    const { id } = idParamSchema.parse(req.params);
+    const validation = insertTechnologyInnovationSchema.partial().safeParse(req.body);
+    
+    if (!validation.success) {
+      logger.warn('[TechnologyInnovations] Validation failed:', validation.error);
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: validation.error.issues 
+      });
+    }
+
+    const updated = await withTimeout(
+      getStorage().updateTechnologyInnovation(id, validation.data),
+      10000,
+      'Update technology innovation'
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Innovation not found' });
+    }
+
+    try {
+      await CacheOperations.invalidateTechnology();
+      logger.info('[TechnologyInnovations] ✅ Cache invalidated after update');
+    } catch (cacheError) {
+      logger.error('[TechnologyInnovations] ❌ Cache invalidation failed:', cacheError);
+    }
+
+    logger.info(`[TechnologyInnovations] Updated innovation ${id}`);
+    return res.json(updated);
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error updating innovation:', error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to update innovation'
+    });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = idParamSchema.parse(req.params);
+    
+    const deleted = await withTimeout(
+      getStorage().deleteTechnologyInnovation(id),
+      10000,
+      'Delete technology innovation'
+    );
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Innovation not found' });
+    }
+
+    try {
+      await CacheOperations.invalidateTechnology();
+      logger.info('[TechnologyInnovations] ✅ Cache invalidated after deletion');
+    } catch (cacheError) {
+      logger.error('[TechnologyInnovations] ❌ Cache invalidation failed:', cacheError);
+    }
+
+    logger.info(`[TechnologyInnovations] Deleted innovation ${id}`);
+    return res.status(204).send();
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error deleting innovation:', error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to delete innovation'
+    });
+  }
+});
+
+router.patch('/reorder', async (req, res) => {
+  try {
+    const validation = reorderSchema.safeParse(req.body);
+    
+    if (!validation.success) {
+      logger.warn('[TechnologyInnovations] Reorder validation failed:', validation.error);
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: validation.error.issues 
+      });
+    }
+
+    const updates = await Promise.all(
+      validation.data.innovations.map(({ id, position }) =>
+        getStorage().updateTechnologyInnovation(id, { sortOrder: position })
+      )
+    );
+
+    try {
+      await CacheOperations.invalidateTechnology();
+      logger.info('[TechnologyInnovations] ✅ Cache invalidated after reorder');
+    } catch (cacheError) {
+      logger.error('[TechnologyInnovations] ❌ Cache invalidation failed:', cacheError);
+    }
+
+    logger.info(`[TechnologyInnovations] Reordered ${updates.length} innovations`);
+    return res.json({ success: true, updated: updates.length });
+  } catch (error) {
+    logger.error('[TechnologyInnovations] Error reordering innovations:', error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to reorder innovations'
+    });
+  }
+});
+
+/**
+ * PHASE 4: Cache warming now handled by CacheWarmupRegistry
+ * Old HTTP-based warming removed to eliminate duplicate DB queries
+ * See: server/lib/cache-warmup-registry.ts -> technologyInnovations
+ */
+
+export default router;

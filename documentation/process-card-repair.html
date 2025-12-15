@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Process Card Database Repair</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        button { padding: 10px 20px; margin: 10px 5px; cursor: pointer; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Process Card Database Repair Tool</h1>
+    
+    <div class="status warning">
+        <strong>Issue Identified:</strong> Process cards reference media assets [184, 185, 186] that no longer exist in database.
+        <br>Asset 265 exists and works properly - we'll use this for the repairs.
+    </div>
+    
+    <button onclick="investigateIssue()">1. Investigate Current State</button>
+    <button onclick="repairOrphanedReferences()">2. Repair Orphaned References</button>
+    <button onclick="verifyRepairs()">3. Verify Repairs</button>
+    <button onclick="testAdminPreview()">4. Test Admin Preview</button>
+    
+    <div id="output"></div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const statusClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'warning';
+            output.innerHTML += `<div class="status ${statusClass}">${message}</div>`;
+            console.log(message);
+        }
+        
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return await response.json();
+            } catch (error) {
+                log(`❌ API Error (${endpoint}): ${error.message}`, 'error');
+                throw error;
+            }
+        }
+        
+        async function investigateIssue() {
+            log('🔍 Investigating current database state...');
+            
+            try {
+                // Get media assets
+                const mediaData = await apiRequest('/v2/media?limit=50');
+                const validImages = mediaData.data.filter(asset => 
+                    asset.type === 'image' && asset.filename && asset.id
+                );
+                
+                log(`✅ Found ${validImages.length} valid image assets`);
+                validImages.slice(0, 5).forEach(asset => {
+                    log(`  - ID ${asset.id}: ${asset.filename}`);
+                });
+                
+                // Get process cards
+                const processCards = await apiRequest('/homepage-process-cards');
+                log(`📋 Found ${processCards.length} process cards:`);
+                
+                processCards.forEach(card => {
+                    const hasValidMedia = validImages.some(asset => asset.id === card.iconMediaId);
+                    const status = hasValidMedia ? '✅' : '❌';
+                    log(`  ${status} "${card.title}": iconMediaId=${card.iconMediaId}, type=${card.iconType}`);
+                });
+                
+                return { validImages, processCards };
+                
+            } catch (error) {
+                log(`💥 Investigation failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function repairOrphanedReferences() {
+            log('🔧 Starting orphaned reference repair...');
+            
+            try {
+                const data = await investigateIssue();
+                if (!data) return;
+                
+                const { validImages, processCards } = data;
+                const workingAssetId = 265; // Known working asset from logs
+                
+                // Find cards that need repair
+                const orphanedCards = processCards.filter(card => 
+                    !validImages.some(asset => asset.id === card.iconMediaId)
+                );
+                
+                log(`🔄 Found ${orphanedCards.length} cards needing repair`);
+                
+                let successCount = 0;
+                for (const card of orphanedCards) {
+                    try {
+                        const response = await fetch(`${API_BASE}/homepage-process-cards/${card.id}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                iconMediaId: workingAssetId,
+                                iconType: 'image'
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            log(`  ✅ Repaired "${card.title}" (${card.iconMediaId} → ${workingAssetId})`);
+                            successCount++;
+                        } else {
+                            log(`  ❌ Failed to repair "${card.title}": HTTP ${response.status}`, 'error');
+                        }
+                    } catch (error) {
+                        log(`  ❌ Error repairing "${card.title}": ${error.message}`, 'error');
+                    }
+                }
+                
+                log(`✅ Successfully repaired ${successCount}/${orphanedCards.length} process cards`, 'success');
+                
+            } catch (error) {
+                log(`💥 Repair failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function verifyRepairs() {
+            log('🔍 Verifying repairs...');
+            await investigateIssue();
+        }
+        
+        async function testAdminPreview() {
+            log('🖼️ Testing admin preview functionality...');
+            
+            try {
+                const processCards = await apiRequest('/homepage-process-cards');
+                
+                log('Admin preview URLs:');
+                processCards.forEach(card => {
+                    if (card.iconMediaId && card.iconType === 'image') {
+                        const previewUrl = `/api/media/proxy/${card.iconMediaId}`;
+                        log(`  - "${card.title}": <a href="${previewUrl}" target="_blank">${previewUrl}</a>`);
+                    } else {
+                        log(`  - "${card.title}": Text icon "${card.icon}"`);
+                    }
+                });
+                
+                log('✅ Admin preview test completed', 'success');
+                
+            } catch (error) {
+                log(`💥 Admin preview test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-run investigation on page load
+        window.addEventListener('load', () => {
+            setTimeout(investigateIssue, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+Your task is to resolve the following *confirmed* technical root causes without introducing unnecessary code, new dependencies, files, or generic caching—focus ONLY on surgical, evidence-based fixes.
+
+## Root Causes To Fix
+1. getMediaAssetsByIds() (server/lib/repositories/media-repository.ts, lines 589–611) bypasses the cache for media batch requests—every call hits the NEON database directly (>3s per request).
+2. L2 cache async write queue adds a 50ms delay before persistence, causing race conditions and cache misses (this impacts hit rate and causes underpopulation in cache).
+3. Database accessory/product queries are slow (notably getAccessories/getProductByPath)—there may be a missing index (needs validation, but *do not* add by default).
+4. Cache memory is underutilized (0.28MB used of 150MB allocated; cache does not warm properly due to item bypass and timing issues).
+
+## Principles & Constraints
+- **No new files, new features, major refactors, or added dependencies** unless strictly needed to resolve the listed confirmed points.
+- Use the *existing* cache layer, queue logic, and database tech stack.
+- Focus only on lines/functions proven to be the issue.
+- Any cache or DB optimization should be limited in scope and attached to the problematic function (e.g., wrap getMediaAssetsByIds() with the project’s standard cache interface).
+- Do not propose architectural bloat, speculative rewrites, or generic “add more caching.”
+- If adding an index, output the `EXPLAIN` plan showing it’s needed before changing database schema.
+
+## Fix Task List
+- Refactor getMediaAssetsByIds() to properly check and utilize the existing cache before querying NEON. Use the cache interface already present in the system.
+- Address the async write queue delay. Minimize the 50ms window if possible, or ensure that requests check cache state after the async queue is processed to prevent race conditions/misses.
+- For slow accessory/product queries, output an EXPLAIN plan and recommend only an index directly proven by the plan to cut latency or remove full table scans.
+- Review and fix cache population logic so memory grows toward the intended 150MB cap when real traffic is present (but do **not** just increase configured limits).
+- Provide a summary of what was changed, with file and line references, and validate that all improvements are strictly limited to the issues and locations listed above.
+
+## Prohibited Actions
+- No new config, API design, database tables, or generic cache “warming” unless *proven necessary for exact bug*.
+- No redundant code, no extension of cache logic to unrelated endpoints, no updates outside the impacted functions.
+
+## Output
+- Step-by-step resolution, with before/after code snippets at only the impacted locations.
+- Summary of how each change addresses exactly the confirmed issue, with expected before/after performance metrics.
+
+Apply advanced diagnostics and apply only the *minimum effective change* to resolve these performance bottlenecks—nothing more, nothing less.

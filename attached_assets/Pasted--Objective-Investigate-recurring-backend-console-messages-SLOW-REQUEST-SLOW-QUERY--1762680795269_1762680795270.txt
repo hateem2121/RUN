@@ -1,0 +1,32 @@
+**Objective:**  
+Investigate recurring backend console messages: `[SLOW REQUEST]`, `[SLOW QUERY]`, `[WARN]`, `[ALERT]`, `[ERROR]`. Deliver a root cause analysis and actionable, modern, cost-efficient code-level recommendations.
+
+**Investigative Checklist (Apply All):**
+- Reference `src/db/index.ts` to confirm NEON usage, connection pooling config, and max pool size—ensure optimal pooling, no singleton clients.
+- Audit Drizzle ORM usage for:
+  - Over-indexing (too many DB indexes slow down writes)
+  - Missing indexes, especially on foreign keys and frequently filtered columns
+  - Excessive data retrieval (avoid `SELECT *`, fetch only required fields)
+  - Unoptimized joins or subqueries (avoid N+1 problems, batch queries)
+  - Timestamp usage: prefer `date` mode with precision 3 over `string` for speed
+  - Always use prepared statements—never interpolate SQL manually
+- Inspect API endpoints for:
+  - Awaiting on multiple slow DB calls in sequence (should batch or parallelize where safe)
+  - Any blocking/synchronous code in the request handler thread
+  - Caching opportunities: use KV (`@replit/database`) for transient/frequent data, minimize NEON query calls
+  - Consider Neon read replicas for read-heavy operations
+- Validate system setup:
+  - Proper NODE_ENV and production optimizations
+  - Use of monitoring/observability (e.g., query execution plans, slow query logging)
+  - Investigate connection/network latency if queries are slow even with optimal code
+- For each anomaly type (slow, warn, error), output:
+  - The underlying root cause
+  - File/function responsible (with internal code reference)
+  - Short explanation and a concrete/modern fix (2025-optimized)
+- Format each finding in a copy-paste code block for rapid remediation.
+
+**Strict Constraints:**  
+- **No new dependencies** added.
+- Each recommendation leverages only the existing stack.
+- Minimize Neon active time: prioritize caching and batch DB ops.
+- Do NOT comment on frontend, build, or deploy files; confine all findings to backend performance and database usage.

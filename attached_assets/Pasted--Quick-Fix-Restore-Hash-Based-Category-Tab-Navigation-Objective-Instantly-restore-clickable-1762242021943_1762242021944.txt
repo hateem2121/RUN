@@ -1,0 +1,105 @@
+## Quick Fix: Restore Hash-Based Category Tab Navigation
+
+**Objective:** Instantly restore clickable category tab UX, avoid 404 errors.
+
+1. **Edit category navigation button:**
+   - Open `client/src/pages/categories.tsx`
+   - Find the line (around 338) for the category nav button:
+     ```
+     <CircularNavButton href={`/categories/${category.slug}`} />
+     ```
+   - **Replace with:**
+     ```
+     <CircularNavButton href={`/products#${category.name.toUpperCase().replace(/\s+/g, "_")}`} />
+     ```
+2. **Verify:**
+   - Clicking a category now navigates to `/products` and selects the correct tab.
+   - No route or backend changes required.
+
+---
+
+## Long-Term Upgrade: Dedicated SEO-Friendly Category Pages
+
+**Objective:** Add deep-linkable, SEO-friendly category pages per best practices.
+
+### Frontend
+
+1. **Add Category Route**
+   - Edit `client/src/App.tsx`
+     ```
+     import CategoryDetail from "@/pages/category-detail";
+     ...
+     <Route path="/categories/:slug" component={CategoryDetail} />
+     ```
+2. **Create Category Detail Page**
+   - Create new file `client/src/pages/category-detail.tsx`
+     ```
+     import { useParams } from "wouter";
+     import { useQuery } from "@tanstack/react-query";
+     import { ProductGrid } from "@/components/products/ProductGrid";
+     export default function CategoryDetail() {
+       const { slug } = useParams();
+       const { data: category } = useQuery({
+         queryKey: ['/api/categories/by-slug', slug],
+       });
+       const { data: products } = useQuery({
+         queryKey: ['/api/products', { categoryId: category?.id }],
+         enabled: !!category,
+       });
+       return (
+         <div>
+           <h1>{category?.name}</h1>
+           <ProductGrid products={products?.data || []} />
+         </div>
+       );
+     }
+     ```
+
+### Backend
+
+1. **Add Category By Slug Route**
+   - Edit `server/routes/core/categories.ts`
+     ```
+     router.get("/categories/by-slug/:slug", async (req, res) => {
+       try {
+         const { slug } = req.params;
+         const category = await getStorage().getCategoryBySlug(slug);
+         if (!category) {
+           return res.status(404).json({
+             success: false,
+             error: { message: "Category not found" },
+           });
+         }
+         return res.json(category);
+       } catch (error) {
+         logger.error("Route: Error fetching category by slug:", error);
+         return res.status(500).json({
+           success: false,
+           error: { message: "Failed to fetch category" },
+         });
+       }
+     });
+     ```
+2. **Add Storage Method**
+   - Edit `server/storage.ts` (interface and implementation):
+     ```
+     async getCategoryBySlug(slug: string): Promise<Category | null>
+     // Implement: SELECT * FROM categories WHERE slug = $1 LIMIT 1
+     ```
+
+### Consistency and Performance
+
+- Normalize slugs: Use `lowercase-kebab-case` everywhere.
+- Index `categories.slug` column in your Neon/Drizzle schema.
+- Cache category/product lists in `@replit/database` KV where possible.
+- Batch Drizzle queries for product grids.
+
+---
+
+## Success Criteria
+- Clicking a category tab instantly works (quick fix).
+- Visiting `/categories/:slug` shows filtered products with proper data (SEO upgrade).
+- URLs always use lowercase kebab-case slugs.
+- No excessive DB usage; leverage cache & batching.
+
+---

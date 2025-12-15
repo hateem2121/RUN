@@ -1,0 +1,216 @@
+# ============================================================================
+# OBJECT STORAGE LIFECYCLE POLICY CONFIGURATION
+# ============================================================================
+#
+# This file documents the desired lifecycle rules for Replit Object Storage.
+#
+# NOTE: Replit Object Storage (backed by Google Cloud Storage) does not currently
+# support native lifecycle policies through the API. These policies are implemented
+# at the application level via scheduled cleanup tasks.
+#
+# For future reference, if native lifecycle support is added, this configuration
+# can be applied directly to the bucket.
+#
+# ============================================================================
+
+# Lifecycle Policy Version
+version: "1.0"
+bucket: "${REPLIT_OBJSTORE_BUCKET_ID}"
+
+# ============================================================================
+# LIFECYCLE RULES
+# ============================================================================
+
+rules:
+  # Rule 1: Auto-delete temporary upload chunks after 24 hours
+  - id: "temp-uploads-cleanup"
+    description: "Automatically delete temporary upload chunks older than 24 hours"
+    status: "enabled"
+    
+    # Filter: Match temp upload chunks
+    filter:
+      prefix: "media/temp/uploads/"
+      # Matches: media/temp/uploads/{uploadId}/chunk-*
+    
+    # Action: Delete objects
+    action:
+      type: "delete"
+    
+    # Condition: Age greater than 1 day
+    condition:
+      age_days: 1
+      # In hours: 24
+      # In seconds: 86400
+    
+    # Implementation: Application-level cleanup scheduler
+    # See: server/lib/storage-lifecycle-scheduler.ts
+    implementation: "application"
+    
+    # Expected Impact:
+    # - Prevents storage bloat from abandoned uploads
+    # - Automatic cleanup of failed/incomplete chunked uploads
+    # - No manual intervention required
+    # - Estimated savings: ~5-10% of total storage for high-upload workloads
+
+
+  # Rule 2: Transition old media to cold storage (optional)
+  - id: "cold-storage-transition"
+    description: "Move media files older than 180 days to cold storage tier"
+    status: "disabled"  # Enable when cold storage tier is available
+    
+    # Filter: Match permanent media files (not temp or thumbnails)
+    filter:
+      prefix: "media/"
+      exclude:
+        - "media/temp/"
+        - "media/thumbnails/"
+      # Matches: media/images/*, media/videos/*, media/models/*, media/documents/*
+    
+    # Action: Transition to cold storage
+    action:
+      type: "transition"
+      storage_class: "COLDLINE"  # GCS storage class
+      # Alternatives: NEARLINE (30-day minimum), ARCHIVE (365-day minimum)
+    
+    # Condition: Age greater than 180 days
+    condition:
+      age_days: 180
+      # In months: ~6
+    
+    # Implementation: Requires native GCS lifecycle support
+    # Current: Disabled (manual migration required)
+    implementation: "native"  # Would require native GCS API access
+    
+    # Cost Impact:
+    # - Coldline storage: ~$0.004 per GB/month (vs $0.020 for standard)
+    # - Retrieval cost: $0.01 per GB
+    # - Best for: Archived products, historical media, compliance retention
+
+
+  # Rule 3: Delete orphaned thumbnails older than 7 days
+  - id: "orphaned-thumbnails-cleanup"
+    description: "Delete thumbnails for media that no longer exists"
+    status: "disabled"  # Currently using dynamic thumbnail generation
+    
+    # Filter: Match thumbnails
+    filter:
+      prefix: "media/thumbnails/"
+    
+    # Action: Delete if parent media doesn't exist
+    action:
+      type: "delete"
+      condition: "parent_missing"
+    
+    # Condition: Age greater than 7 days and parent asset deleted
+    condition:
+      age_days: 7
+      requires_validation: true
+    
+    # Implementation: Application-level cleanup with DB cross-reference
+    implementation: "application"
+    
+    # Note: Currently, thumbnails are generated dynamically on-demand,
+    # so this rule is disabled. Enable if switching to stored thumbnails.
+
+
+# ============================================================================
+# CLEANUP SCHEDULE CONFIGURATION
+# ============================================================================
+
+cleanup_schedule:
+  # How often to run cleanup checks
+  interval: "1h"  # Run every hour
+  
+  # Timezone for scheduled operations
+  timezone: "UTC"
+  
+  # Enable/disable automatic cleanup
+  enabled: true
+  
+  # Batch size for processing (to avoid memory issues)
+  batch_size: 100
+  
+  # Retry failed deletions
+  retry_failures: true
+  retry_delay: "5m"
+  max_retries: 3
+  
+  # Logging and monitoring
+  log_level: "info"
+  metrics_enabled: true
+  
+  # Safety limits
+  max_deletions_per_run: 1000  # Prevent runaway deletions
+  dry_run: false  # Set to true for testing
+
+
+# ============================================================================
+# MONITORING & ALERTING
+# ============================================================================
+
+monitoring:
+  # Track cleanup metrics
+  metrics:
+    - name: "cleanup_files_deleted"
+      type: "counter"
+    
+    - name: "cleanup_storage_freed"
+      type: "gauge"
+      unit: "bytes"
+    
+    - name: "cleanup_duration"
+      type: "histogram"
+      unit: "milliseconds"
+    
+    - name: "cleanup_errors"
+      type: "counter"
+  
+  # Alert thresholds
+  alerts:
+    - name: "high_temp_storage"
+      condition: "temp_storage_size > 1GB"
+      severity: "warning"
+      description: "Temporary storage exceeds 1GB - may indicate cleanup failures"
+    
+    - name: "cleanup_failures"
+      condition: "cleanup_errors > 10 in 1h"
+      severity: "error"
+      description: "Multiple cleanup failures detected"
+
+
+# ============================================================================
+# REFERENCE: GOOGLE CLOUD STORAGE LIFECYCLE POLICY FORMAT
+# ============================================================================
+# 
+# If native lifecycle support becomes available, here's the GCS-compatible format:
+#
+# {
+#   "lifecycle": {
+#     "rule": [
+#       {
+#         "action": {
+#           "type": "Delete"
+#         },
+#         "condition": {
+#           "age": 1,
+#           "matchesPrefix": ["media/temp/uploads/"]
+#         }
+#       },
+#       {
+#         "action": {
+#           "type": "SetStorageClass",
+#           "storageClass": "COLDLINE"
+#         },
+#         "condition": {
+#           "age": 180,
+#           "matchesPrefix": ["media/images/", "media/videos/", "media/models/", "media/documents/"]
+#         }
+#       }
+#     ]
+#   }
+# }
+#
+# CLI command to apply (if supported):
+# gcloud storage buckets update gs://${BUCKET_NAME} --lifecycle-file=storage-lifecycle-policy.json
+#
+# ============================================================================

@@ -1,0 +1,219 @@
+/* Style 1 Enhanced Design Tokens - Production Ready */
+:root {
+  /* Primitive Color Tokens (Mapped to unified index.css) */
+  --color-white: var(--color-white);
+  --color-black: var(--color-black);
+
+  --color-cream-50: var(--color-cream-50);
+  --color-cream-100: var(--color-cream-100);
+
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+
+  --color-slate-500: var(--color-slate-500);
+  --color-slate-900: var(--color-slate-900);
+
+  --color-brown-600: var(--color-brown-600);
+
+  --color-charcoal-700: var(--color-charcoal-700);
+  --color-charcoal-800: var(--color-charcoal-800);
+
+  --color-teal-300: var(--color-teal-300);
+  --color-teal-400: var(--color-teal-400);
+  --color-teal-500: var(--color-teal-500);
+  --color-teal-600: var(--color-teal-600);
+  --color-teal-700: var(--color-teal-700);
+  --color-teal-800: var(--color-teal-800);
+
+  --color-red-400: var(--color-red-400);
+  --color-red-500: var(--color-red-500);
+
+  --color-orange-400: var(--color-orange-400);
+  --color-orange-500: var(--color-orange-500);
+
+  /* RGB versions for opacity control - DEPRECATED/MAPPED */
+  /* Note: OKLCH doesn't support convenient RGB destructuring like this without conversions.
+     For safety in stabilization, we will hardcode these to match the approximate OKLCH color 
+     but keeping the RGB semantic if used by legacy code opacity tricks. 
+     (Ideally we remove usage of these variables later) */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Enhanced Background Palette (Normalized) */
+  --style1-bg-1: color-mix(in oklch, var(--color-blue-500, blue) 8%, transparent);
+  --style1-bg-2: color-mix(in oklch, var(--color-orange-500) 8%, transparent);
+  --style1-bg-3: color-mix(in oklch, var(--color-green-500, green) 8%, transparent);
+  --style1-bg-4: color-mix(in oklch, var(--color-red-500) 8%, transparent);
+  --style1-bg-5: color-mix(in oklch, var(--color-purple-500, purple) 8%, transparent);
+  --style1-bg-6: color-mix(in oklch, var(--color-orange-400) 8%, transparent);
+  --style1-bg-7: color-mix(in oklch, var(--color-pink-500, pink) 8%, transparent);
+  --style1-bg-8: color-mix(in oklch, var(--color-cyan-500, cyan) 8%, transparent);
+
+  /* Monochromatic Luxury Tokens (Mapped to Luxury Extension) */
+  --style1-surface: var(--color-luxury-surface);
+  --style1-background: var(--color-luxury-surface); /* Assuming same */
+  --style1-text: var(--color-luxury-text);
+  --style1-text-secondary: var(--color-gray-400);
+
+  --style1-primary: var(--color-luxury-interactive);
+  --style1-primary-hover: var(--color-luxury-primary-hover);
+  --style1-primary-active: var(--color-luxury-primary-active);
+
+  --style1-secondary: color-mix(in oklch, var(--color-luxury-interactive) 5%, transparent);
+  --style1-secondary-hover: color-mix(in oklch, var(--color-luxury-interactive) 8%, transparent);
+  --style1-secondary-active: color-mix(in oklch, var(--color-luxury-interactive) 12%, transparent);
+
+  --style1-border: oklch(var(--border)); /* Use standard border */
+  --style1-accent: var(--color-luxury-accent);
+  --style1-focus-ring: color-mix(in oklch, var(--color-luxury-interactive) 20%, transparent);
+
+  /* Enhanced Typography */
+  --style1-font-family: var(--font-sans);
+  --style1-font-mono: var(--font-mono);
+
+  /* Enhanced Animation & Transitions */
+  --style1-duration-fast: 150ms;
+  --style1-duration-normal: 250ms;
+  --style1-duration-slow: 350ms;
+  --style1-ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --style1-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --style1-ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Monochromatic Luxury Shadows */
+  --style1-shadow-sm-xs: 0 1px 3px color-mix(in oklch, var(--color-black) 4%, transparent);
+  --style1-shadow-md: 0 4px 12px color-mix(in oklch, var(--color-black) 8%, transparent);
+  --style1-shadow-lg: 0 8px 24px color-mix(in oklch, var(--color-black) 12%, transparent);
+  --style1-shadow-sm-inset: inset 0 1px 0 color-mix(in oklch, var(--color-white) 80%, transparent);
+
+  /* Enhanced Focus States */
+  --style1-focus-ring-shadow-sm: 0 0 0 3px var(--style1-focus-ring);
+  --style1-focus-outline: 2px solid var(--style1-primary);
+}
+
+/* Dark mode enhancements (Normalized) */
+/* Dark mode enhancements (Normalized to System Strategy) */
+/* Replaces @media (prefers-color-scheme: dark) with .dark selector */
+.dark {
+  /* Style 1 Enhanced Component Classes */
+  .style1-card {
+    background-color: var(--style1-surface);
+    border: 1px solid var(--style1-border);
+    box-shadow: var(--style1-shadow-sm-xs);
+    transition: box-shadow var(--style1-duration-normal) var(--style1-ease-standard);
+  }
+
+  .style1-card:hover {
+    box-shadow: var(--style1-shadow-md);
+  }
+
+  .style1-button-primary {
+    background: var(--style1-primary);
+    color: var(--color-cream-50);
+    border: none;
+    transition: all var(--style1-duration-normal) var(--style1-ease-standard);
+  }
+
+  .style1-button-primary:hover {
+    background: var(--style1-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  .style1-button-primary:focus-visible {
+    outline: none;
+    /* FIX SYS-02: Use system ring token */
+    box-shadow: 0 0 0 3px oklch(var(--ring));
+  }
+
+  .style1-button-secondary {
+    background: var(--style1-secondary);
+    color: var(--style1-text);
+    border: 1px solid var(--style1-border);
+    transition: all var(--style1-duration-normal) var(--style1-ease-standard);
+  }
+
+  .style1-button-secondary:hover {
+    background: var(--style1-secondary-hover);
+    transform: translateY(-1px);
+  }
+
+  .style1-text-primary {
+    color: var(--style1-text);
+  }
+
+  .style1-text-secondary {
+    color: var(--style1-text-secondary);
+  }
+
+  .style1-surface {
+    background-color: var(--style1-surface);
+  }
+
+  /* Enhanced interactive elements */
+  .style1-interactive {
+    transition: all var(--style1-duration-fast) var(--style1-ease-standard);
+    cursor: pointer;
+  }
+
+  .style1-interactive:hover {
+    transform: translateY(-2px);
+  }
+
+  .style1-interactive:focus-visible {
+    outline: var(--style1-focus-outline);
+    outline-offset: 2px;
+  }
+
+  /* Enhanced accessibility support */
+  .style1-focus-ring:focus-visible {
+    outline: none;
+    /* FIX SYS-02: Use system ring token */
+    box-shadow: 0 0 0 3px oklch(var(--ring));
+  }
+}
+/* Enhanced media queries for responsive design */
+@media (max-width: 768px) {
+  :root {
+    --style1-duration-normal: 200ms;
+    --style1-shadow-lg: 0 4px 8px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+}
+
+/* Smooth animations for all Style 1 components */
+* {
+  scroll-behavior: smooth;
+}
+
+.style1-animate-in {
+  animation: style1-fade-in var(--style1-duration-normal) var(--style1-ease-out);
+}
+
+@keyframes style1-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.style1-animate-scale {
+  animation: style1-scale var(--style1-duration-fast) var(--style1-ease-out);
+}
+
+@keyframes style1-scale {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,1282 @@
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+[Environment] ✅ Configuration validated and loaded successfully
+{"timestamp":"2025-12-13T03:45:34.345Z","level":"INFO","message":"[Database] ✅ DATABASE_URL validation passed","service":"run-apparel-api"}
+[Database] ✅ HTTP-based PostgreSQL connection initialized (no more TCP pool exhaustion)
+{"timestamp":"2025-12-13T03:45:34.351Z","level":"INFO","message":"[Cache] ✅ Unified In-Memory Cache initialized","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.351Z","level":"INFO","message":"[Storage] Initialized Google Cloud Storage with bucket: run-media","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.352Z","level":"INFO","message":"DatabaseCircuitBreaker initialized with retry logic (max 3 attempts) and circuit breaker","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.352Z","level":"INFO","message":"[DB Retry] Database retry logic initialized (maxRetries=3, backoffMs=50, exponential)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.357Z","level":"WARN","message":"[Email] Gmail credentials not configured - email notifications disabled","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.358Z","level":"INFO","message":"[RateLimiter] Production-grade rate limiters initialized","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.358Z","level":"INFO","message":"[RateLimiter] General: 100 req/900000ms","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.359Z","level":"INFO","message":"[RateLimiter] Admin: 30 req/900000ms","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.360Z","level":"INFO","message":"[RateLimiter] Diagnostic: 10 req/60000ms","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.361Z","level":"INFO","message":"[TwoTierBatchCache] 🚀 Initialized: Delegating to UnifiedCache with SWR support","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.419Z","level":"INFO","message":"[StorageSingleton] Initializing Direct PostgreSQL Storage...","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.419Z","level":"INFO","message":"[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.419Z","level":"WARN","message":"[AlertManager] GC monitoring enabled but --expose-gc flag not set. GC pause tracking unavailable.","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.419Z","level":"INFO","message":"[AlertManager] Initialized with thresholds:","service":"run-apparel-api","metadata":{"slowQuery":{"durationMs":500,"consecutiveCount":3},"errorRate":{"percentageThreshold":10,"timeWindowMinutes":5},"httpErrorRate":{"percentageThreshold":5},"circuitBreaker":{"alertOnOpen":true,"alertOnHalfOpen":false},"memory":{"percentageThreshold":80},"dbConnection":{"alertOnError":true,"alertOnTimeout":true},"gcPause":{"enabled":true,"thresholdMs":100}}}
+[Server] 🚀 Starting in production mode
+{"timestamp":"2025-12-13T03:45:34.422Z","level":"INFO","message":"[CORS] Middleware initialized for production environment","service":"run-apparel-api","metadata":{"allowedOrigins":["http://localhost:5173","http://localhost:5000","http://localhost:5001"],"credentials":"[REDACTED]"}}
+[Server] ✅ CORS middleware enabled with origin restrictions
+[Server] ✅ Production security middleware enabled
+[Server] ✅ Correlation ID middleware enabled for distributed tracing
+[Server] ✅ HTTP metrics tracking enabled (latency, status codes, routes)
+[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latency monitoring)
+[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP
+[Server] ✅ Production static asset caching enabled (CSS, JS, fonts, images)
+[Server] ✅ Raw binary parser configured for chunk uploads
+{"timestamp":"2025-12-13T03:45:34.438Z","level":"INFO","message":"[Auth] ✅ Google Auth configured","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.438Z","level":"INFO","message":"[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.438Z","level":"INFO","message":"[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.438Z","level":"INFO","message":"[Routes] Mounting API routes with flat structure (/api/*)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.438Z","level":"INFO","message":"[Auth] ✅ Admin routes protected with requireAdmin + strict validation","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.439Z","level":"INFO","message":"[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.439Z","level":"INFO","message":"[Routes] Registering taxonomy routes module","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.439Z","level":"INFO","message":"[Routes] Taxonomy routes registered successfully","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.439Z","level":"INFO","message":"[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.440Z","level":"INFO","message":"[Routes] ✅ All routes registered successfully","service":"run-apparel-api"}
+[Server] ✅ OpenAPI documentation available at /api-docs
+{"timestamp":"2025-12-13T03:45:34.444Z","level":"INFO","message":"[Backup] Using PostgreSQL automatic backups - enhanced backup archived","service":"run-apparel-api"}
+[Server] ✅ Production backup scheduler started
+{"timestamp":"2025-12-13T03:45:34.444Z","level":"INFO","message":"[Workflow] Using simplified automation - enhanced workflow archived","service":"run-apparel-api"}
+[Server] ✅ Workflow automation started
+{"timestamp":"2025-12-13T03:45:34.462Z","level":"INFO","message":"[Lifecycle] Scheduler initialized","service":"run-apparel-api","metadata":{"enabled":true,"interval":"3600s","dryRun":false}}
+{"timestamp":"2025-12-13T03:45:34.463Z","level":"INFO","message":"[Lifecycle] Starting scheduler (interval: 3600000ms)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.463Z","level":"INFO","message":"[Lifecycle] Starting cleanup run #1","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.463Z","level":"INFO","message":"[Lifecycle] Starting temp uploads cleanup (maxAge: 24h, dryRun: false)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:34.465Z","level":"INFO","message":"[Lifecycle] Scheduler started successfully","service":"run-apparel-api"}
+[Server] ✅ Storage lifecycle scheduler started (temp uploads auto-cleanup every 1h)
+{"timestamp":"2025-12-13T03:45:34.465Z","level":"INFO","message":"[DB Keep-Alive] ✅ Started (ping every 4 minutes to prevent auto-suspend)","service":"run-apparel-api"}
+[Server] ✅ Database keep-alive started (prevents cold starts)
+{"timestamp":"2025-12-13T03:45:34.465Z","level":"INFO","message":"[DB] Using PostgreSQL built-in optimization","service":"run-apparel-api"}
+[Server] ✅ Database performance optimizations applied
+[Server] ✅ Enhanced health monitoring and error recovery systems initialized
+{"timestamp":"2025-12-13T03:45:36.177Z","level":"INFO","message":"[Database] ✅ Database wakeup successful (1709ms)","service":"run-apparel-api"}
+[Server] ⏳ Warming cache (this may take a few seconds)...
+{"timestamp":"2025-12-13T03:45:36.177Z","level":"INFO","message":"[Cache] Cache warming skipped (No persistent L2 cache)","service":"run-apparel-api"}
+[Server] ✅ Cache warming completed - critical routes ready
+{"timestamp":"2025-12-13T03:45:36.269Z","level":"INFO","message":"[Database] ✅ Connection pool metrics initialized:","service":"run-apparel-api","metadata":{"pooling":"enabled","driver":"Neon HTTP (stateless)","concurrencyTracking":"enabled","metricsEndpoint":"/api/metrics/database"}}
+{"timestamp":"2025-12-13T03:45:36.269Z","level":"INFO","message":"[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users","service":"run-apparel-api"}
+[Server] ✅ Database health check passed (1531.25ms latency)
+[Server] 🎯 Production readiness complete - production mode
+[Server] ✅ Server timeouts configured (timeout: 120s, keep-alive: 65s)
+{"timestamp":"2025-12-13T03:45:37.709Z","level":"INFO","message":"Server running on port 3006","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:37.735Z","level":"INFO","message":"✅ Listed 0 assets with prefix: private/temp/uploads/","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:37.735Z","level":"INFO","message":"[Lifecycle] No temp upload files found","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:37.736Z","level":"INFO","message":"[Lifecycle] Starting orphaned files cleanup (directories: public/media/, public/thumbnails/, dryRun: false)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:38.083Z","level":"INFO","message":"[Lifecycle] Found 115 storage paths in database","service":"run-apparel-api"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:45:38.444Z","level":"INFO","message":"[ERROR] GET / 500 94ms","service":"run-apparel-api","correlationId":"9398f63c-261f-4f0f-81c9-04a560b3c000"}
+{"timestamp":"2025-12-13T03:45:40.173Z","level":"INFO","message":"✅ Listed 114 assets with prefix: public/media/","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.173Z","level":"INFO","message":"[Lifecycle] Found 114 files in public/media/","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.173Z","level":"INFO","message":"[Lifecycle] Processed public/media/: 0 orphaned files deleted (114 files checked)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.573Z","level":"INFO","message":"✅ Listed 0 assets with prefix: public/thumbnails/","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.574Z","level":"INFO","message":"[Lifecycle] Found 0 files in public/thumbnails/","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.574Z","level":"INFO","message":"[Lifecycle] Processed public/thumbnails/: 0 orphaned files deleted (114 files checked)","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.574Z","level":"INFO","message":"[Lifecycle] Orphaned files cleanup complete: 0 deleted, ~0.00MB freed, 0 errors, 114 files checked","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:45:40.574Z","level":"INFO","message":"[Lifecycle] Cleanup run complete","service":"run-apparel-api","metadata":{"duration":"6111ms","totalFilesDeleted":0,"totalStorageFreedMB":"0.00"}}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:45:40.613Z","level":"INFO","message":"[ERROR] GET / 500 6ms","service":"run-apparel-api","correlationId":"503313c0-8b83-4dc5-be20-96678120a09b"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:45:50.592Z","level":"INFO","message":"[ERROR] GET / 500 7ms","service":"run-apparel-api","correlationId":"1237e602-fbe4-4ef5-9a1a-eaf14a96b735"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:00.707Z","level":"INFO","message":"[ERROR] GET / 500 2ms","service":"run-apparel-api","correlationId":"24fa0f62-95a6-47ab-bd06-333ce81082f1"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:10.312Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"3d41e682-4024-4223-9dd1-556b48d80406"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:11.806Z","level":"INFO","message":"[ERROR] GET / 500 2ms","service":"run-apparel-api","correlationId":"2f061bcc-3446-455d-9f54-222fa9979a3f"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:13.368Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"9a9c7fdf-67c5-41b6-b86b-88d9bb32c6ec"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:14.880Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"f969a0fa-7ab8-4a7e-89ac-3d76698e04ff"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:22.634Z","level":"INFO","message":"[ERROR] GET /products 500 3ms","service":"run-apparel-api","correlationId":"18855ca2-c588-41e8-ad54-b1b50d502d62"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:30.589Z","level":"INFO","message":"[ERROR] GET /products 500 4ms","service":"run-apparel-api","correlationId":"04728a7c-6321-4b4e-8123-83285547a2ed"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:38.462Z","level":"INFO","message":"[ERROR] GET /products 500 2ms","service":"run-apparel-api","correlationId":"bc2842cd-931e-40c5-b6de-69c6869a4db8"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:39.111Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"9e8ad4e1-3f6e-4dca-99d7-d46782ddb6ed"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:46:48.614Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"8f37338b-3b02-4053-a62c-0200b3d44c06"}
+[SSR] Handling Request: /about
+Error: ENOENT: no such file or directory, open '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+    at Object.readFileSync (node:fs:442:20)
+    at file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25013:23
+    at Layer.handleRequest (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:342:13)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:297:9
+    at processParams (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:582:12)
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:291:5)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:688:15
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:276:14)
+    at Function.handle (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:186:3) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+}
+{"timestamp":"2025-12-13T03:46:58.408Z","level":"INFO","message":"[ERROR] GET /about 500 2ms","service":"run-apparel-api","correlationId":"ba632a88-d5a9-4310-ae48-750a24d37c84"}
+[SSR] Handling Request: /about
+Error: ENOENT: no such file or directory, open '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+    at Object.readFileSync (node:fs:442:20)
+    at file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25013:23
+    at Layer.handleRequest (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:342:13)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:297:9
+    at processParams (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:582:12)
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:291:5)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:688:15
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:276:14)
+    at Function.handle (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:186:3) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+}
+{"timestamp":"2025-12-13T03:47:07.790Z","level":"INFO","message":"[ERROR] GET /about 500 2ms","service":"run-apparel-api","correlationId":"02a9f6d6-7064-42f2-8f7d-239f2b7e6641"}
+[SSR] Handling Request: /about
+Error: ENOENT: no such file or directory, open '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+    at Object.readFileSync (node:fs:442:20)
+    at file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25013:23
+    at Layer.handleRequest (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:342:13)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:297:9
+    at processParams (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:582:12)
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:291:5)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:688:15
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:276:14)
+    at Function.handle (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:186:3) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+}
+{"timestamp":"2025-12-13T03:47:09.378Z","level":"INFO","message":"[ERROR] GET /about 500 2ms","service":"run-apparel-api","correlationId":"7574365f-e921-4fe4-81f5-67cfb2f05ffc"}
+[SSR] Handling Request: /about
+Error: ENOENT: no such file or directory, open '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+    at Object.readFileSync (node:fs:442:20)
+    at file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25013:23
+    at Layer.handleRequest (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:342:13)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:297:9
+    at processParams (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:582:12)
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:291:5)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:688:15
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:276:14)
+    at Function.handle (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:186:3) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+}
+{"timestamp":"2025-12-13T03:47:10.944Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"8fb3a75c-f3ac-4292-97fc-62529d470f86"}
+[SSR] Handling Request: /contact
+Error: ENOENT: no such file or directory, open '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+    at Object.readFileSync (node:fs:442:20)
+    at file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25013:23
+    at Layer.handleRequest (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:342:13)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:297:9
+    at processParams (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:582:12)
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:291:5)
+    at /Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:688:15
+    at next (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:276:14)
+    at Function.handle (/Users/hateemjamshaid/Downloads/RUN-Remix/node_modules/router/index.js:186:3) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/public/index.html'
+}
+{"timestamp":"2025-12-13T03:47:12.465Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"e125ddd6-2a2b-402f-98b6-c363006793f4"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:19.498Z","level":"INFO","message":"[ERROR] GET /contact 500 2ms","service":"run-apparel-api","correlationId":"9f4a6542-0d5e-4ade-8587-3ff5c2756ec7"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:26.784Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"d22aabfd-edd4-47f6-aa58-9067d840a382"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:33.941Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"f4ebdab0-d545-4b41-8d11-969f23b7b97c"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:34.087Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"bde4c817-858d-43bc-a1d2-408f6097d385"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:34.617Z","level":"INFO","message":"[ERROR] GET /categories 500 2ms","service":"run-apparel-api","correlationId":"3ccbc66c-a8f2-4c21-8fe0-1e5c03c42d25"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:36.298Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"5ad384fd-04d5-4e46-990c-b18c7803fe3f"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:41.639Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"457ba208-6701-4d17-8e43-ef956ab73afb"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:46.525Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"9bd7dd9d-9965-42a1-b750-2d44518880e4"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:48.691Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"ca95f881-5432-4bc0-b786-ef2cbb5ea94b"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:55.628Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"ea950e8e-e8fa-46bf-95a5-e44f91475953"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:56.560Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"e9b914d2-db54-4921-b192-176c2e46eafa"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:57.186Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"1c0a1e08-7bc0-46d5-8b1e-a6d010a38e8e"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:47:58.732Z","level":"INFO","message":"[ERROR] GET /categories 500 0ms","service":"run-apparel-api","correlationId":"d1db2afb-062c-4edf-b828-49c09ce7d7ad"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:00.246Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"73d48132-881a-4058-8c9f-897d5302922a"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:06.016Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"bfc7862b-6b6f-401e-8636-3e15eca41333"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:06.652Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"6a550563-bce2-416b-a1c8-78a342cb1218"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:08.203Z","level":"INFO","message":"[ERROR] GET / 500 0ms","service":"run-apparel-api","correlationId":"527bcf93-b6e3-497a-bd29-2d5f5e00e3d2"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:09.759Z","level":"INFO","message":"[ERROR] GET / 500 0ms","service":"run-apparel-api","correlationId":"34d26134-6b7f-4115-83fa-ce4928039b0e"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:11.275Z","level":"INFO","message":"[ERROR] GET /products 500 0ms","service":"run-apparel-api","correlationId":"463a8626-36de-4c24-81f1-1a9109597b0f"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:11.816Z","level":"INFO","message":"[ERROR] GET / 500 0ms","service":"run-apparel-api","correlationId":"bf323290-1c92-4e81-a67e-6de610aabb67"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:17.581Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"198cccfd-6aaf-4884-b740-0ab204966599"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:19.160Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"b59bb880-6eaa-4271-a822-80fb75189245"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:27.296Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"631c56f8-25e1-43e0-b58a-688afe02b3a2"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:33.500Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"c1231d4d-271f-492d-becd-27c0803b1036"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:35.295Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"f63153d5-72c9-4e8a-8e98-5fa1ffcd26a4"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:35.956Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"f372a929-e7d4-4da6-91de-6da730ba91bc"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:45.402Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"c261a4dc-8f51-4bb7-a808-8183c21ac3e5"}
+{"timestamp":"2025-12-13T03:48:48.004Z","level":"INFO","message":"[RateLimiter] Shutting down rate limiters...","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:48:48.005Z","level":"INFO","message":"[DB Keep-Alive] ⏹️ Stopped","service":"run-apparel-api"}
+{"timestamp":"2025-12-13T03:48:48.663Z","level":"INFO","message":"[RateLimiter] Shutting down rate limiters...","service":"run-apparel-api"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:49.567Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"cb2c7074-2580-40fe-be19-e5621def3f29"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:55.034Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"ade24f93-e617-4471-9fb2-7c3ae2d38452"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:57.314Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"20b609bc-f7da-43c0-85f0-87696c7700cc"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:48:59.116Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"6308c35a-73ad-44e5-bb5c-3decc2f3ae41"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:04.449Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"a4d6f705-24ac-43f7-8668-294e14607e2f"}
+[SSR] Handling Request: /e2e-overlay
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:05.383Z","level":"INFO","message":"[ERROR] GET /e2e-overlay 500 1ms","service":"run-apparel-api","correlationId":"f293ee57-e22d-40c5-a3f8-5d92649d7e9f"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:06.071Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"dfb05516-5ac6-4433-bc86-4a22e976959b"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:07.659Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"c9fa422f-0806-4a24-aeb3-d18a9260fbfa"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:09.055Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"e51d8ad5-6a6c-4b5a-ad75-401c892393e3"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:09.314Z","level":"INFO","message":"[ERROR] GET /contact 500 0ms","service":"run-apparel-api","correlationId":"9f75b646-9fe7-4bab-8cef-24d2dc607072"}
+[SSR] Handling Request: /e2e-overlay
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:11.190Z","level":"INFO","message":"[ERROR] GET /e2e-overlay 500 1ms","service":"run-apparel-api","correlationId":"8b4be489-e64f-4846-895a-96c327b58f14"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:16.554Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"a161fb43-0a16-4a9b-add7-d5405663c6ae"}
+[SSR] Handling Request: /e2e-overlay
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:17.017Z","level":"INFO","message":"[ERROR] GET /e2e-overlay 500 1ms","service":"run-apparel-api","correlationId":"615302c4-4b89-4260-8566-ae3d99de68a7"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:19.516Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"4c25d93c-6dc0-4210-ac78-7e939ed8c56a"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:23.538Z","level":"INFO","message":"[ERROR] GET /contact 500 2ms","service":"run-apparel-api","correlationId":"0c7e5f98-093f-47bb-af85-edc300fda8fa"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:29.572Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"3965564b-047b-4764-aaa5-268d9092ad3c"}
+[SSR] Handling Request: /contact
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:30.532Z","level":"INFO","message":"[ERROR] GET /contact 500 1ms","service":"run-apparel-api","correlationId":"2ff52688-71aa-46eb-95bc-e805db85d124"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:31.197Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"cffc6265-38ce-495d-9f4a-ef080aadbf67"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:31.211Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"666a7e97-b07a-4915-b82f-172c903e6a12"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:32.782Z","level":"INFO","message":"[ERROR] GET / 500 0ms","service":"run-apparel-api","correlationId":"3364278c-ac2a-49c4-aa99-040c2015c6e7"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:34.327Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"c8b4701d-74bd-406d-bd7c-a315d45ff7a2"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:38.196Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"f1ddf51e-ff5b-45c8-af2c-6459e1b5bca5"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:42.296Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"eb6a411f-0289-46bc-9d30-fbdf917a1478"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:45.174Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"0c6ae605-d739-479d-99c1-0c2cdc0a917b"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:50.335Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"42e9a376-1c1e-4262-bcb6-5979ef235e90"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:52.310Z","level":"INFO","message":"[ERROR] GET /categories 500 2ms","service":"run-apparel-api","correlationId":"e597f553-412b-49f5-8727-c4e0a39343f3"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:53.953Z","level":"INFO","message":"[ERROR] GET /categories 500 1ms","service":"run-apparel-api","correlationId":"19ea51b0-5cfb-4ef3-96cc-00caed9e56e8"}
+[SSR] Handling Request: /categories
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:55.572Z","level":"INFO","message":"[ERROR] GET /categories 500 0ms","service":"run-apparel-api","correlationId":"25675852-a092-483e-b031-88410364b341"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:57.193Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"13d8213f-5fe1-42e9-aec5-50a303959e0e"}
+[SSR] Handling Request: /products
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:58.421Z","level":"INFO","message":"[ERROR] GET /products 500 1ms","service":"run-apparel-api","correlationId":"7f8730a6-070a-4722-9521-e392d2c6e499"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:49:59.102Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"badfd540-59d3-463b-a7ad-328d0735b450"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:50:03.195Z","level":"INFO","message":"[ERROR] GET / 500 0ms","service":"run-apparel-api","correlationId":"c881b13c-0bff-4ef8-979b-bb6334a0a3ca"}
+[SSR] Handling Request: /about
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:50:08.556Z","level":"INFO","message":"[ERROR] GET /about 500 1ms","service":"run-apparel-api","correlationId":"fffac446-0d32-4711-90ff-9cb387443981"}
+[SSR] Handling Request: /
+file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/server/entry-server.js:6
+import { HelmetProvider } from "react-helmet-async";
+         ^^^^^^^^^^^^^^
+SyntaxError: Named export 'HelmetProvider' not found. The requested module 'react-helmet-async' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'react-helmet-async';
+const { HelmetProvider } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:180:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:263:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+    at async file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:25015:24
+{"timestamp":"2025-12-13T03:50:09.196Z","level":"INFO","message":"[ERROR] GET / 500 1ms","service":"run-apparel-api","correlationId":"5309f771-940a-4326-bbc6-a7ab09130fd7"}

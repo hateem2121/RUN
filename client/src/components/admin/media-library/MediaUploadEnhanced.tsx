@@ -1,0 +1,1118 @@
+import React, { useRef, useCallback, useState, useEffect } from "react";
+import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Upload,
+  X,
+  Pause,
+  Play,
+  RefreshCw,
+  CheckCircle,
+  AlertCircle,
+  FileImage,
+  FileVideo,
+  FileText,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { MediaAsset } from "@shared/schema";
+// PHASE 3.1: Single Cache Strategy - Use only React Query, remove competing cache systems
+import { getQueryClient, apiRequest } from "@/lib/queryClient";
+import { invalidateMediaQueries } from "@/lib/media-query-keys";
+// Removed server-side imports that were causing build failures
+// REMOVED: Server-side imports replaced with browser-safe fallbacks below
+
+// Browser-safe fallbacks
+const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] => assets as MediaAsset[];
+const logTypeError = (error: Error, context: string) => console.error(`[${context}]`, error);
+
+// CRITICAL FIX: Dedicated Web Worker for uploads to bypass DevTools monkeypatching
+// Web Workers run in isolated global scope where DevTools cannot patch self.fetch
+import type { UploadMessage, WorkerResponse } from "@/workers/uploader";
+
+let uploadWorker: Worker | null = null;
+const getUploadWorker = (): Worker => {
+  if (uploadWorker) return uploadWorker;
+
+  uploadWorker = new Worker(new URL("@/workers/uploader.ts?ver=20250916", import.meta.url), {
+    type: "module",
+  });
+
+  console.log("[Upload Worker] ✅ Dedicated worker initialized for DevTools-free uploads");
+  return uploadWorker;
+};
+
+// PHASE 1.1: Enhanced MIME Type Detection for GLTF and other files (Fixed for chunked uploads)
+const detectMimeType = (file: File): string => {
+  // 1. Try browser detection first (but allow fallback for chunked uploads)
+  if (file.type && file.type.trim() !== "" && file.type !== "application/octet-stream") {
+    return file.type;
+  }
+
+  // 2. Enhanced fallback to extension-based detection (critical for GLTF files and chunked uploads)
+  const extension = file.name.toLowerCase().split(".").pop();
+  const extensionMap: Record<string, string> = {
+    gltf: "model/gltf+json",
+    glb: "model/gltf-binary",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    mp4: "video/mp4",
+    webm: "video/webm",
+    pdf: "application/pdf",
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  };
+
+  // CRITICAL FIX: For chunked uploads, prefer extension-based detection over octet-stream
+  const detectedMimeType = extensionMap[extension || ""];
+  if (detectedMimeType) {
+    console.log(
+      `[MIME Fix] Detected ${file.name} (${file.type || "no browser type"}) → ${detectedMimeType}`,
+    );
+    return detectedMimeType;
+  }
+
+  return "application/octet-stream";
+};
+
+// PHASE 3.1: Pre-upload File Validation (FIXED: Changed to warnings instead of hard blocks)
+const validateFile = (file: File) => {
+  const maxSize = 500 * 1024 * 1024; // 500MB
+  const allowedExtensions = [
+    ".gltf",
+    ".glb",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".svg",
+    ".mp4",
+    ".webm",
+    ".pdf",
+  ];
+
+  const extension = "." + file.name.toLowerCase().split(".").pop();
+
+  // LOG: Show validation for GLTF files
+  if (extension === ".gltf" || extension === ".glb") {
+    console.log(`[File Validation] GLTF file detected: ${file.name}`);
+    console.log(`[File Validation] → Extension: ${extension} ✅ (in allowed list)`);
+    console.log(`[File Validation] → Size: ${Math.round(file.size / 1024 / 1024)}MB`);
+  }
+
+  // CRITICAL FIX: Change hard errors to warnings for better UX
+  if (!allowedExtensions.includes(extension)) {
+    console.warn(
+      `[Upload] File type ${extension} may not be fully supported. Recommended: ${allowedExtensions.join(", ")}`,
+    );
+    // Don't throw error - let upload attempt continue
+  }
+
+  if (file.size > maxSize) {
+    console.warn(
+      `[Upload] File size ${Math.round(file.size / 1024 / 1024)}MB is large. Maximum recommended: ${maxSize / 1024 / 1024}MB`,
+    );
+    // Don't throw error - let upload attempt continue
+  }
+
+  const mimeType = detectMimeType(file);
+  if (!mimeType || mimeType === "application/octet-stream") {
+    console.warn(`[Upload] Unknown MIME type for ${file.name}, using extension-based fallback`);
+  }
+
+  // LOG: Show final validation result
+  if (extension === ".gltf" || extension === ".glb") {
+    console.log(`[File Validation] Validated: ${file.name} → ${mimeType}`);
+  }
+
+  return { valid: true, mimeType };
+};
+
+// UPLOAD OPTIMIZATION: Enhanced Upload Metrics with Performance Tracking
+const uploadMetrics = {
+  attempts: 0,
+  successes: 0,
+  failures: 0,
+  gltfUploads: 0,
+  mimeTypeIssues: 0,
+  // Performance metrics
+  totalUploadTime: 0,
+  averageUploadSpeed: 0,
+  concurrentUploads: 0,
+  maxConcurrentUploads: 2, // Reduced for better stability - matches frontend limit
+  queuedUploads: 0,
+};
+
+// UPLOAD OPTIMIZATION: Intelligent Queue Manager
+class UploadQueueManager {
+  private activeUploads = new Set<string>();
+  private maxConcurrent = 2; // Reduced for upload stability
+  private pendingQueue: UploadQueueItem[] = [];
+
+  canStartUpload(): boolean {
+    return this.activeUploads.size < this.maxConcurrent;
+  }
+
+  addToActive(itemId: string): void {
+    this.activeUploads.add(itemId);
+    uploadMetrics.concurrentUploads = this.activeUploads.size;
+  }
+
+  removeFromActive(itemId: string): void {
+    this.activeUploads.delete(itemId);
+    uploadMetrics.concurrentUploads = this.activeUploads.size;
+  }
+
+  // CRITICAL FIX: Pure peek function for render - no mutation
+  peekNextInQueue(): UploadQueueItem | null {
+    if (this.pendingQueue.length === 0) return null;
+
+    // Create a sorted copy without mutating the original queue
+    const sortedQueue = [...this.pendingQueue].sort((a, b) => {
+      const priorityOrder = { high: 3, normal: 2, low: 1 };
+      const aPriority = priorityOrder[a.priority || "normal"];
+      const bPriority = priorityOrder[b.priority || "normal"];
+
+      if (aPriority !== bPriority) {
+        return bPriority - aPriority;
+      }
+
+      return (a.startTime || 0) - (b.startTime || 0);
+    });
+
+    return sortedQueue[0] || null;
+  }
+
+  // CRITICAL FIX: Separate function for actual dequeuing
+  getNextInQueue(): UploadQueueItem | null {
+    // Sort by priority: high -> normal -> low, then by creation time
+    this.pendingQueue.sort((a, b) => {
+      const priorityOrder = { high: 3, normal: 2, low: 1 };
+      const aPriority = priorityOrder[a.priority || "normal"];
+      const bPriority = priorityOrder[b.priority || "normal"];
+
+      if (aPriority !== bPriority) {
+        return bPriority - aPriority;
+      }
+
+      return (a.startTime || 0) - (b.startTime || 0);
+    });
+
+    const next = this.pendingQueue.shift() || null;
+    uploadMetrics.queuedUploads = this.pendingQueue.length;
+    return next;
+  }
+
+  // CRITICAL FIX: Helper to get queue position for display purposes
+  getQueuePosition(itemId: string): number {
+    const sortedQueue = [...this.pendingQueue].sort((a, b) => {
+      const priorityOrder = { high: 3, normal: 2, low: 1 };
+      const aPriority = priorityOrder[a.priority || "normal"];
+      const bPriority = priorityOrder[b.priority || "normal"];
+
+      if (aPriority !== bPriority) {
+        return bPriority - aPriority;
+      }
+
+      return (a.startTime || 0) - (b.startTime || 0);
+    });
+
+    return sortedQueue.findIndex((item) => item.id === itemId) + 1; // 1-indexed for display
+  }
+
+  addToQueue(item: UploadQueueItem): void {
+    this.pendingQueue.push(item);
+    uploadMetrics.queuedUploads = this.pendingQueue.length;
+  }
+
+  removeFromQueue(itemId: string): void {
+    this.pendingQueue = this.pendingQueue.filter((item) => item.id !== itemId);
+    uploadMetrics.queuedUploads = this.pendingQueue.length;
+  }
+}
+
+const queueManager = new UploadQueueManager();
+
+// UPLOAD OPTIMIZATION: Enhanced Performance Tracking
+const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Promise<T> => {
+  const start = Date.now();
+  try {
+    const result = await fn();
+    const duration = Date.now() - start;
+    console.log(`[Performance] ${operation}: ${duration}ms`);
+
+    // Track upload metrics
+    if (operation.includes("upload")) {
+      uploadMetrics.totalUploadTime += duration;
+      uploadMetrics.attempts++;
+    }
+
+    return result;
+  } catch (error) {
+    const duration = Date.now() - start;
+    console.error(`[Performance] ${operation} failed: ${duration}ms`, error);
+
+    if (operation.includes("upload")) {
+      uploadMetrics.failures++;
+    }
+
+    throw error;
+  }
+};
+
+// Removed unused calculateUploadMetrics function
+
+// UPLOAD OPTIMIZATION: Format upload speed for display
+const formatUploadSpeed = (bytesPerSecond: number): string => {
+  if (bytesPerSecond < 1024) return `${bytesPerSecond} B/s`;
+  if (bytesPerSecond < 1024 * 1024) return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
+  return `${(bytesPerSecond / (1024 * 1024)).toFixed(1)} MB/s`;
+};
+
+// UPLOAD OPTIMIZATION: Format time remaining for display
+const formatTimeRemaining = (seconds: number): string => {
+  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+  return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
+};
+// PHASE 2.2: Removed complex error boundary - using simple try-catch instead
+
+// UPLOAD OPTIMIZATION: Enhanced Upload Queue with Performance Tracking
+interface UploadQueueItem {
+  file: File;
+  id: string;
+  status: "pending" | "uploading" | "paused" | "completed" | "error";
+  progress: number;
+  optimisticAsset?: MediaAsset;
+  errorMessage?: string;
+  abortController?: AbortController;
+  // OPTIMIZATION: Performance tracking
+  startTime?: number;
+  uploadSpeed?: number; // bytes per second
+  estimatedTimeRemaining?: number; // seconds
+  retryCount?: number;
+  priority?: "high" | "normal" | "low";
+}
+
+// File type icon mapping
+const getFileTypeIcon = (type: string) => {
+  if (type.startsWith("image/")) return FileImage;
+  if (type.startsWith("video/")) return FileVideo;
+  return FileText;
+};
+
+// Removed unused retryWithBackoff function
+
+// Enhanced upload item component
+const UploadItem = React.memo(
+  ({
+    item,
+    onCancel,
+    onRetry,
+    onPause,
+    onResume,
+  }: {
+    item: UploadQueueItem;
+    onCancel: (id: string) => void;
+    onRetry: (id: string) => void;
+    onPause: (id: string) => void;
+    onResume: (id: string) => void;
+  }) => {
+    const Icon = getFileTypeIcon(item.file.type);
+
+    // Removed unused getStatusColor function
+
+    const getStatusIcon = () => {
+      switch (item.status) {
+        case "completed":
+          return <CheckCircle className="h-4 w-4 text-green-500" />;
+        case "error":
+          return <AlertCircle className="h-4 w-4 text-red-500" />;
+        case "paused":
+          return <Pause className="h-4 w-4 text-yellow-500" />;
+        case "uploading":
+          return (
+            <div className="h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          );
+        default:
+          return <Icon className="h-4 w-4 text-gray-500" />;
+      }
+    };
+
+    const formatFileSize = (bytes: number) => {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const sizes = ["Bytes", "KB", "MB", "GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    };
+
+    return (
+      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="shrink-0">{getStatusIcon()}</div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium truncate">{item.file.name}</p>
+              <Badge variant="outline" className="text-xs">
+                {formatFileSize(item.file.size)}
+              </Badge>
+            </div>
+
+            {item.status === "uploading" && (
+              <div className="mt-1">
+                <Progress value={item.progress} className="h-1" />
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>{item.progress.toFixed(1)}% uploaded</span>
+                  <div className="flex gap-2">
+                    {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
+                    {item.estimatedTimeRemaining && item.estimatedTimeRemaining > 0 && (
+                      <span>• {formatTimeRemaining(item.estimatedTimeRemaining)} remaining</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {item.status === "error" && item.errorMessage && (
+              <div className="mt-1">
+                <p className="text-xs text-red-500">{item.errorMessage}</p>
+                {item.retryCount && item.retryCount > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Retry attempts: {item.retryCount}/3
+                  </p>
+                )}
+              </div>
+            )}
+
+            {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Queued • Position: {queueManager.getQueuePosition(item.id)}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1">
+          {item.status === "uploading" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onPause(item.id)}
+              className="h-8 w-8 p-0"
+            >
+              <Pause className="h-3 w-3" />
+            </Button>
+          )}
+
+          {item.status === "paused" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onResume(item.id)}
+              className="h-8 w-8 p-0"
+            >
+              <Play className="h-3 w-3" />
+            </Button>
+          )}
+
+          {item.status === "error" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onRetry(item.id)}
+              className="h-8 w-8 p-0"
+            >
+              <RefreshCw className="h-3 w-3" />
+            </Button>
+          )}
+
+          {(item.status === "pending" || item.status === "paused" || item.status === "error") && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onRetry(item.id)}
+              className="h-8 w-8 p-0"
+            >
+              <RefreshCw className="h-3 w-3" />
+            </Button>
+          )}
+
+          {item.status !== "completed" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onCancel(item.id)}
+              className="h-8 w-8 p-0"
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  },
+);
+
+export default function MediaUploadEnhanced() {
+  const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibraryEnhanced();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // PHASE 1.2: Create optimistic media entries for immediate UI feedback
+  const createOptimisticEntries = useCallback((items: UploadQueueItem[]) => {
+    console.log("[MediaUpload] 🔮 Creating optimistic entries for immediate UI feedback...");
+
+    const optimisticEntries = items.map((item, index) => {
+      const detectedMime = detectMimeType(item.file);
+      return {
+        id: Date.now() + index, // Temporary ID
+        filename: `uploading-${item.id}`,
+        originalName: item.file.name,
+        mimeType: detectedMime,
+        type: detectedMime.startsWith("image/")
+          ? ("image" as const)
+          : detectedMime.startsWith("video/")
+            ? ("video" as const)
+            : ("document" as const),
+        size: item.file.size,
+        uploadedAt: new Date().toISOString(),
+        isOptimistic: true, // Mark as optimistic for special handling
+        url: URL.createObjectURL(item.file), // Temporary blob URL for preview
+      };
+    });
+
+    // Use standardized MediaQueryKeys for consistency
+    // Update all cached media queries with optimistic entries
+    getQueryClient().setQueriesData(
+      { predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia" },
+      (oldData: any) => {
+        if (!oldData?.data?.data) return oldData;
+
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: [...optimisticEntries, ...oldData.data.data],
+            total: oldData.data.total + optimisticEntries.length,
+          },
+        };
+      },
+    );
+
+    console.log(`[MediaUpload] ✅ Created ${optimisticEntries.length} optimistic entries`);
+  }, []);
+
+  // Process upload queue
+  const processUploadQueue = useCallback(async () => {
+    if (isUploading) return;
+
+    const pendingItems = uploadQueue.filter((item) => item.status === "pending");
+    if (pendingItems.length === 0) return;
+
+    setIsUploading(true);
+    setSyncStatus("syncing");
+
+    // PHASE 1.2: Create optimistic entries immediately
+    createOptimisticEntries(pendingItems);
+
+    try {
+      // UPLOAD OPTIMIZATION: Limit concurrency for better reliability
+      const MAX_CONCURRENT_UPLOADS = 2; // Consistent with queue manager
+
+      for (let i = 0; i < pendingItems.length; i += MAX_CONCURRENT_UPLOADS) {
+        const batch = pendingItems.slice(i, i + MAX_CONCURRENT_UPLOADS);
+
+        await Promise.all(
+          batch.map(async (item) => {
+            // PHASE 1.1 FIX: Remove AbortController timeout logic, keep only for user cancellation
+            const controller = new AbortController();
+
+            // Update item status
+            setUploadQueue((prev) =>
+              prev.map((qItem) =>
+                qItem.id === item.id
+                  ? { ...qItem, status: "uploading", abortController: controller }
+                  : qItem,
+              ),
+            );
+
+            try {
+              // Track upload performance with comprehensive monitoring
+              await trackPerformance("Media Upload", async () => {
+                // INFRASTRUCTURE FIX: Use chunked upload for files > 8MB to bypass Replit's ~10MB network limit
+                const CHUNK_THRESHOLD = 8 * 1024 * 1024; // 8MB (prevents 413 infrastructure errors)
+
+                if (item.file.size > CHUNK_THRESHOLD) {
+                  // Use chunked upload for large files (handles its own validation and progress)
+                  await uploadLargeFile(item, controller, setUploadQueue);
+                } else {
+                  // PHASE 1.1 FIX: Use apiRequest for regular uploads (fixed FormData handling)
+                  const formData = new FormData();
+                  formData.append("file", item.file);
+
+                  // Add retry logic for network errors only (NOT HTTP errors like 413)
+                  let retryCount = 0;
+                  const maxRetries = 3;
+                  let result;
+
+                  while (retryCount <= maxRetries) {
+                    try {
+                      result = await apiRequest("/api/media/upload", {
+                        method: "POST",
+                        body: formData,
+                      });
+
+                      // PHASE 1: IMMEDIATE CACHE FIX - Invalidate all media queries for instant sync
+                      await invalidateMediaQueries(getQueryClient());
+
+                      break; // Success - exit retry loop
+                    } catch (error) {
+                      // Check if this is an HTTP error (has status property)
+                      const isHttpError = error && typeof error === "object" && "status" in error;
+
+                      if (isHttpError) {
+                        // HTTP errors (400, 413, 500, etc.) should NOT be retried
+                        const status = (error as any).status;
+                        if (status === 413) {
+                          throw new Error(
+                            `File too large: ${item.file.name} exceeds server size limits`,
+                          );
+                        } else {
+                          throw error; // Re-throw other HTTP errors as-is
+                        }
+                      }
+
+                      // Only retry for genuine network/TypeError errors (connection issues)
+                      retryCount++;
+                      if (
+                        error instanceof TypeError &&
+                        error.message.includes("Failed to fetch") &&
+                        retryCount <= maxRetries
+                      ) {
+                        console.log(
+                          `[Upload] Retry ${retryCount}/${maxRetries} for ${item.file.name} due to network error`,
+                        );
+                        // Exponential backoff: 1s, 2s, 4s
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, Math.pow(2, retryCount - 1) * 1000),
+                        );
+                      } else {
+                        throw error; // Re-throw non-retryable errors or max retries exceeded
+                      }
+                    }
+                  }
+
+                  // Schema validation on upload response
+                  if (result.data && Array.isArray(result.data)) {
+                    const validatedAssets = filterValidMediaAssets(result.data);
+                    if (validatedAssets.length !== result.data.length) {
+                      logTypeError(
+                        new Error(
+                          `Upload validation failed: ${result.data.length - validatedAssets.length} invalid assets`,
+                        ),
+                        `Upload Response Validation - ${item.file.name}`,
+                      );
+                    }
+                  }
+
+                  // Update progress to 100% and mark as completed for regular uploads
+                  setUploadQueue((prev) =>
+                    prev.map((qItem) =>
+                      qItem.id === item.id
+                        ? { ...qItem, status: "completed", progress: 100 }
+                        : qItem,
+                    ),
+                  );
+                }
+              });
+            } catch (error) {
+              // PHASE 2.2: Simplified Error Handling - Don't stop entire upload process
+              if (error instanceof Error && error.name === "AbortError") {
+                // Upload was cancelled
+                setUploadQueue((prev) => prev.filter((qItem) => qItem.id !== item.id));
+              } else {
+                // Simple error handling - just update UI with user-friendly message
+                console.warn(
+                  `[Upload] ${item.file.name} failed. Continuing with other uploads.`,
+                  error,
+                );
+
+                setUploadQueue((prev) =>
+                  prev.map((qItem) =>
+                    qItem.id === item.id
+                      ? {
+                          ...qItem,
+                          status: "error",
+                          errorMessage: `${item.file.name} upload failed. Would you like to try again?`,
+                        }
+                      : qItem,
+                  ),
+                );
+              }
+            }
+          }),
+        );
+      }
+
+      setSyncStatus("success");
+
+      // PHASE 1.2 FIX: Simple optimistic entry cleanup with improved invalidation
+      console.log("[MediaUpload] 🧹 Simple optimistic entries cleanup...");
+      // Remove optimistic entries and invalidate all media queries with forced refetch
+      await invalidateMediaQueries(getQueryClient());
+
+      // Standardized cache invalidation with forced refetch
+      console.log("[MediaUpload] 🔄 Simple cache invalidation after successful uploads...");
+      try {
+        // Use standardized MediaQueryKeys for consistent invalidation
+        await getQueryClient().refetchQueries({
+          predicate: (query) => {
+            const key = query.queryKey;
+            return Array.isArray(key) && key[0] === "apimedia";
+          },
+        });
+        console.log("[MediaUpload] ✅ Simple cache invalidation successful");
+      } catch (error) {
+        console.warn("[MediaUpload] Simple cache invalidation failed:", error);
+      }
+
+      // Clear completed items after delay
+      setTimeout(() => {
+        setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+      }, 3000);
+    } catch (error) {
+      setSyncStatus("error");
+      setErrorState({
+        hasError: true,
+        errorMessage: error instanceof Error ? error.message : "Upload failed",
+        // No recovery options in base error state
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  }, [uploadQueue, isUploading, setSyncStatus, setErrorState]);
+
+  // CRITICAL FIX: Worker-based upload function to bypass DevTools completely
+  const uploadLargeFile = async (
+    item: UploadQueueItem,
+    controller: AbortController,
+    setUploadQueue: React.Dispatch<React.SetStateAction<UploadQueueItem[]>>,
+  ) => {
+    const { file } = item;
+
+    try {
+      // Validate file before upload
+      const validation = validateFile(file);
+      console.log(`[Worker Upload] Validated: ${file.name} → ${validation.mimeType}`);
+
+      // Track upload metrics
+      uploadMetrics.attempts++;
+      if (file.name.toLowerCase().includes(".gltf")) {
+        uploadMetrics.gltfUploads++;
+      }
+      if (!file.type || file.type === "") {
+        uploadMetrics.mimeTypeIssues++;
+      }
+
+      console.log(
+        `[Worker Upload] Starting worker-based upload for ${Math.round(file.size / 1024 / 1024)}MB file`,
+      );
+
+      // Get the upload worker
+      const worker = getUploadWorker();
+
+      // Promise to handle worker communication
+      const uploadPromise = new Promise<void>((resolve, reject) => {
+        // Handle worker messages
+        const messageHandler = (event: MessageEvent<WorkerResponse>) => {
+          const { type, fileId, percent, uploadId, totalChunks, serverResponse, message } =
+            event.data;
+
+          // Only handle messages for this specific file
+          if (fileId !== item.id) return;
+
+          switch (type) {
+            case "init":
+              console.log(`[Worker Upload] Initialized: ${uploadId}, ${totalChunks} chunks`);
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id ? { ...qItem, status: "uploading" } : qItem,
+                ),
+              );
+              break;
+
+            case "progress":
+              console.log(`[Worker Upload] Progress: ${percent}%`);
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id
+                    ? { ...qItem, progress: percent || 0, status: "uploading" }
+                    : qItem,
+                ),
+              );
+              break;
+
+            case "chunkComplete":
+              // Optional: log chunk completion
+              break;
+
+            case "completed":
+              console.log(`[Worker Upload] ✅ Upload completed: ${file.name}`, serverResponse);
+
+              // Invalidate cache after successful upload with forced refetch
+              (async () => {
+                await invalidateMediaQueries(getQueryClient());
+                console.log("[Worker Upload] Cache invalidated with forced refetch");
+              })().catch((error) => {
+                console.warn("[Worker Upload] Cache invalidation failed:", error);
+              });
+
+              // Update UI to completed
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id ? { ...qItem, progress: 100, status: "completed" } : qItem,
+                ),
+              );
+
+              // Cleanup listener and resolve
+              worker.removeEventListener("message", messageHandler);
+              resolve();
+              break;
+
+            case "error":
+              console.error(`[Worker Upload] Error: ${message}`);
+              worker.removeEventListener("message", messageHandler);
+              reject(new Error(message || "Worker upload failed"));
+              break;
+          }
+        };
+
+        // Listen for worker messages
+        worker.addEventListener("message", messageHandler);
+
+        // Handle controller abort
+        controller.signal.addEventListener("abort", () => {
+          worker.postMessage({
+            type: "cancel",
+            fileId: item.id,
+          } as UploadMessage);
+
+          worker.removeEventListener("message", messageHandler);
+          reject(new Error("Upload cancelled"));
+        });
+
+        // Start the upload in worker
+        worker.postMessage({
+          type: "start",
+          fileId: item.id,
+          name: file.name,
+          size: file.size,
+          mimeType: validation.mimeType,
+          file: file,
+        } as UploadMessage);
+      });
+
+      // Wait for upload completion
+      await uploadPromise;
+    } catch (error) {
+      // Simplified error handling - user-friendly message, don't stop process
+      console.warn(`[Worker Upload] ${file.name} failed. Continuing with other uploads.`, error);
+
+      // Simple user-friendly error message
+      const errorMessage = `${file.name} upload failed. Would you like to try again?`;
+
+      // Update metrics
+      uploadMetrics.failures++;
+
+      // Update UI with error message
+      setUploadQueue((prev) =>
+        prev.map((qItem) =>
+          qItem.id === item.id ? { ...qItem, status: "error", errorMessage } : qItem,
+        ),
+      );
+
+      // DON'T re-throw error - allow other uploads to continue
+    }
+  };
+
+  // Auto-process queue when new items are added
+  useEffect(() => {
+    processUploadQueue();
+  }, [processUploadQueue]);
+
+  // Handle file selection with optimistic updates
+  const handleFileSelect = useCallback(
+    async (files: FileList): Promise<void> => {
+      if (files.length === 0) return;
+
+      const newQueueItems: UploadQueueItem[] = [];
+
+      Array.from(files).forEach((file) => {
+        const id = `${file.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+
+        // Create optimistic asset with all required fields
+        const optimisticAsset: MediaAsset = {
+          id: Date.now() + Math.random(), // Temporary ID
+          filename: file.name,
+          originalName: file.name,
+          size: file.size,
+          type: detectMimeType(file).startsWith("image/")
+            ? "image"
+            : detectMimeType(file).startsWith("video/")
+              ? "video"
+              : detectMimeType(file).startsWith("model/")
+                ? "model"
+                : "document",
+          mimeType: detectMimeType(file),
+          url: URL.createObjectURL(file),
+          tags: [],
+          metadata: {},
+          uploadedAt: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isActive: true,
+          folderId: null,
+          altText: null,
+          caption: null,
+          // downloadCount: 0,
+          thumbnailStoragePath: null,
+          imageVariants: null,
+          // lastAccessedAt: null,
+          fileSize: file.size,
+          thumbnailUrl: null,
+          thumbnailFilename: null,
+          storagePath: "",
+          bucketName: "",
+          deletedAt: null,
+        };
+
+        newQueueItems.push({
+          file,
+          id,
+          status: "pending",
+          progress: 0,
+          optimisticAsset,
+        });
+      });
+
+      setUploadQueue((prev) => [...prev, ...newQueueItems]);
+
+      // Use context upload for better UX
+      try {
+        await uploadFiles(files);
+      } catch (error) {
+        console.error("Upload failed:", error);
+      }
+    },
+    [uploadFiles],
+  );
+
+  // Queue management functions
+  const cancelUpload = useCallback((id: string): void => {
+    setUploadQueue((prev) => {
+      const item = prev.find((item) => item.id === id);
+      if (item?.abortController) {
+        item.abortController.abort();
+      }
+      return prev.filter((item) => item.id !== id);
+    });
+  }, []);
+
+  const retryUpload = useCallback((id: string): void => {
+    setUploadQueue((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, status: "pending", progress: 0, errorMessage: undefined }
+          : item,
+      ),
+    );
+  }, []);
+
+  const pauseUpload = useCallback((id: string): void => {
+    setUploadQueue((prev) =>
+      prev.map((item) => {
+        if (item.id === id && item.abortController) {
+          item.abortController.abort();
+          return { ...item, status: "paused" };
+        }
+        return item;
+      }),
+    );
+  }, []);
+
+  const resumeUpload = useCallback((id: string): void => {
+    setUploadQueue((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, status: "pending" } : item)),
+    );
+  }, []);
+
+  // Clear all completed uploads
+  const clearCompleted = useCallback((): void => {
+    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+  }, []);
+
+  // Drag and drop handlers
+  const handleDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      setIsDragging(true);
+    },
+    [setIsDragging],
+  );
+
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      setIsDragging(false);
+    },
+    [setIsDragging],
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      setIsDragging(false);
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFileSelect(files);
+      }
+    },
+    [handleFileSelect, setIsDragging],
+  );
+
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      const files = e.target.files;
+      if (files) {
+        // LOG: Show selected files for debugging
+        console.log(`[File Input] Selected ${files.length} file(s):`);
+        Array.from(files).forEach((file, index) => {
+          console.log(
+            `  ${index + 1}. ${file.name} (${file.type || "no MIME type"}, ${Math.round(file.size / 1024)}KB)`,
+          );
+        });
+        handleFileSelect(files);
+      }
+    },
+    [handleFileSelect],
+  );
+
+  const hasActiveUploads = uploadQueue.some(
+    (item) => item.status === "uploading" || item.status === "pending",
+  );
+
+  const completedCount = uploadQueue.filter((item) => item.status === "completed").length;
+  const errorCount = uploadQueue.filter((item) => item.status === "error").length;
+
+  return (
+    <div className="space-y-4">
+      {/* Upload area */}
+      <div
+        className={cn(
+          "border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer",
+          isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25",
+          hasActiveUploads && "opacity-50",
+        )}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => {
+          // LOG: Show accepted file types when file picker opens
+          const acceptedTypes =
+            ".gltf,.glb,.jpg,.jpeg,.png,.gif,.svg,.mp4,.webm,.pdf,.doc,.docx,image/*,video/*,audio/*";
+          console.log(`[File Picker] Opening with accepted types: ${acceptedTypes}`);
+          console.log(`[File Picker] GLTF files: ✅ .gltf and .glb are included`);
+          fileInputRef.current?.click();
+        }}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept=".gltf,.glb,.jpg,.jpeg,.png,.gif,.svg,.mp4,.webm,.pdf,.doc,.docx,image/*,video/*,audio/*"
+          onChange={handleFileInputChange}
+          className="hidden"
+          id="media-upload-file-input"
+          aria-label="Upload media files"
+          aria-hidden="true"
+        />
+
+        <div className="flex flex-col items-center gap-2">
+          <Upload className="h-8 w-8 text-muted-foreground" />
+          <div>
+            <p className="text-sm font-medium">
+              {isDragging ? "Drop files here" : "Drag and drop files here"}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">or click to select files</p>
+          </div>
+
+          <Button variant="outline" size="sm" disabled={hasActiveUploads}>
+            Select Files
+          </Button>
+        </div>
+      </div>
+
+      {/* Upload queue */}
+      {uploadQueue.length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Upload Queue</h3>
+              <div className="flex items-center gap-2">
+                {completedCount > 0 && (
+                  <Badge variant="default" className="text-xs">
+                    {completedCount} completed
+                  </Badge>
+                )}
+                {errorCount > 0 && (
+                  <Badge variant="destructive" className="text-xs">
+                    {errorCount} errors
+                  </Badge>
+                )}
+                {completedCount > 0 && (
+                  <Button variant="outline" size="sm" onClick={clearCompleted} className="text-xs">
+                    Clear Completed
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {uploadQueue.map((item) => (
+                <UploadItem
+                  key={item.id}
+                  item={item}
+                  onCancel={cancelUpload}
+                  onRetry={retryUpload}
+                  onPause={pauseUpload}
+                  onResume={resumeUpload}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Overall progress */}
+      {hasActiveUploads && (
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            Processing uploads...
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

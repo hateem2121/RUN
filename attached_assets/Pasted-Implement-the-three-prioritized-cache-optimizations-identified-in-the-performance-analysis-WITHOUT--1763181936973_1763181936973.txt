@@ -1,0 +1,95 @@
+Implement the three prioritized cache optimizations identified in the performance 
+analysis WITHOUT adding new dependencies. System context: UnifiedReplitCache 
+(2-tier L1+L2) exists, TwoTierBatchCache exists, NEON PostgreSQL with connection 
+pooling enabled.
+
+CURRENT STATE (from real-time metrics):
+- Unified cache hit rate: 61.0% (target: 85%+)
+- Batch cache hit rate: 0.0% (never used)
+- Database avg response: 571ms (4 slow queries detected)
+- SWR serves: 37 requests (0.2% of hits, underutilized)
+- Total potential savings: 13196.92%
+
+IMPLEMENTATION TASKS:
+
+1. EXTEND TTL FOR SEMI-STATIC CONTENT (7903.15% savings)
+   Location: server/lib/unified-replit-cache.ts
+   Current: SEMI_STATIC = 2 hours
+   Change to: SEMI_STATIC = 6 hours
+   Rationale: 34% gap to optimal suggests cache expiring too quickly
+   
+   Additional tuning:
+   - Review other TTL constants (VOLATILE, STATIC, LONG_LIVED)
+   - If any are < 30 mins, consider 2x increase
+   - Maintain existing cache key patterns unchanged
+
+2. ADOPT SWR FOR PRODUCT LISTINGS (5268.77% savings)
+   Evidence: SWR infrastructure exists but only serving 0.2% of hits
+   
+   Files to modify:
+   a) server/lib/repositories/product-repository.ts
+      - Find all cache.get() calls for product queries
+      - Replace with cache.getSWR() using existing method signature
+      - Preserve existing cache keys and TTL values
+      
+   b) server/routes/core/products.ts
+      - Replace cache.get() with cache.getSWR() for:
+        * Product listings endpoints
+        * Category browse endpoints
+        * Search results (if cached)
+      - Keep error handling identical
+   
+   CRITICAL: Use EXISTING getSWR() method already in UnifiedReplitCache class.
+   Do NOT create new SWR implementation.
+
+3. CACHE SLOW QUERY RESULTS (25% savings)
+   Context: 4 slow queries averaging 571ms each
+   
+   Steps:
+   a) Identify slow queries in repositories:
+      - Search for database queries in server/lib/repositories/*.ts
+      - Target SELECT queries with JOINs or aggregations
+      
+   b) Wrap slow queries with UnifiedReplitCache:
+      - Import existing cache instance
+      - Use cache.get() with TTL: 300-600 seconds
+      - Cache key format: `query:${tableName}:${params}`
+      - On cache miss, execute query and store result
+      
+   c) Target these query types first:
+      - Dashboard statistics/counts
+      - Product aggregations (avg price, total inventory)
+      - User activity summaries
+      - Any query taking >300ms (use EXPLAIN ANALYZE if needed)
+
+CONSTRAINTS:
+- Do NOT install new npm packages
+- Do NOT create new cache classes
+- Use ONLY UnifiedReplitCache and TwoTierBatchCache (both already exist)
+- Do NOT modify database schema or connection pool config
+- Keep existing error handling patterns
+- Preserve all current cache invalidation logic
+
+VALIDATION STEPS:
+After implementation, verify via API endpoints:
+1. GET /api/metrics/cache - Check hit rate increases toward 85%
+2. GET /api/metrics/database - Confirm avg query time drops below 300ms
+3. GET /api/batch-cache-metrics - Monitor if batch cache starts being used
+4. Monitor for 1 hour, then check:
+   - Total cache hits increased
+   - SWR serves increased from 37 to 500+ requests
+   - Database slow queries reduced from 4 to 1-2
+
+SUCCESS CRITERIA:
+- Unified cache hit rate: 75%+ (up from 61%)
+- Database avg response: <350ms (down from 571ms)
+- SWR usage: 5%+ of total hits (up from 0.2%)
+- Zero breaking changes or errors in production
+- Total estimated NEON compute reduction: 8000%+
+
+IMPLEMENTATION ORDER:
+1st: Extend TTL (2 min, highest ROI)
+2nd: Enable SWR for products (15 min, moderate effort)
+3rd: Cache slow queries (30 min, requires identification)
+
+Total implementation time: ~45-50 minutes
