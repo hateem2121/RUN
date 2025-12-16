@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { MediaUrlBuilder } from '@/lib/media-url-builder';
-import type { AboutSection, MediaAsset } from '@shared/schema';
+import { useState, useEffect, useRef } from "react";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import type { AboutSection, MediaAsset } from "@shared/schema";
 
 interface AnimatedScrollProps {
   sections: AboutSection[];
@@ -12,7 +12,7 @@ interface AnimatedScrollProps {
 // Helper function to get media URL
 const getMediaUrl = (mediaId: number | undefined, mediaAssets: MediaAsset[]): string | null => {
   if (!mediaId) return null;
-  const asset = mediaAssets.find(a => a.id === mediaId);
+  const asset = mediaAssets.find((a) => a.id === mediaId);
   return MediaUrlBuilder.buildContentUrl(asset?.id);
 };
 
@@ -21,13 +21,18 @@ const getFirstMediaId = (mediaIds: number[] | undefined): number | undefined => 
   return mediaIds && mediaIds.length > 0 ? mediaIds[0] : undefined;
 };
 
-export default function AnimatedScroll({ sections, mediaAssets, title, description }: AnimatedScrollProps) {
+export default function AnimatedScroll({
+  sections,
+  mediaAssets,
+  title,
+  description,
+}: AnimatedScrollProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const animTime = 1000;
   const scrolling = useRef(false);
 
   // Filter active sections and create pages
-  const activeSections = sections.filter(section => section.isActive);
+  const activeSections = sections.filter((section) => section.isActive);
 
   // Create pages from sections data
   const pages = activeSections.map((section, index) => {
@@ -38,14 +43,20 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
     return {
       leftBgImage: isEven ? mediaUrl : null,
       rightBgImage: !isEven ? mediaUrl : null,
-      leftContent: !isEven ? {
-        heading: section.title,
-        description: section.content || `Professional ${section.sectionType || 'manufacturing'} services`,
-      } : null,
-      rightContent: isEven ? {
-        heading: section.title,
-        description: section.content || `Advanced ${section.sectionType || 'manufacturing'} capabilities`,
-      } : null,
+      leftContent: !isEven
+        ? {
+            heading: section.title,
+            description:
+              section.content || `Professional ${section.sectionType || "manufacturing"} services`,
+          }
+        : null,
+      rightContent: isEven
+        ? {
+            heading: section.title,
+            description:
+              section.content || `Advanced ${section.sectionType || "manufacturing"} capabilities`,
+          }
+        : null,
     };
   });
 
@@ -57,7 +68,8 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
       leftContent: null,
       rightContent: {
         heading: title,
-        description: description || 'Comprehensive B2B sportswear solutions from design to delivery',
+        description:
+          description || "Comprehensive B2B sportswear solutions from design to delivery",
       },
     });
   }
@@ -65,11 +77,11 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
   const finalNumOfPages = pages.length;
 
   const navigateUp = () => {
-    if (currentPage > 1) setCurrentPage(p => p - 1);
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
   };
 
   const navigateDown = () => {
-    if (currentPage < finalNumOfPages) setCurrentPage(p => p + 1);
+    if (currentPage < finalNumOfPages) setCurrentPage((p) => p + 1);
   };
 
   const handleWheel = (e: WheelEvent) => {
@@ -81,11 +93,11 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (scrolling.current) return;
-    if (e.key === 'ArrowUp') {
+    if (e.key === "ArrowUp") {
       scrolling.current = true;
       navigateUp();
       setTimeout(() => (scrolling.current = false), animTime);
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === "ArrowDown") {
       scrolling.current = true;
       navigateDown();
       setTimeout(() => (scrolling.current = false), animTime);
@@ -93,11 +105,11 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
   };
 
   useEffect(() => {
-    window.addEventListener('wheel', handleWheel);
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("wheel", handleWheel);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [currentPage, finalNumOfPages]);
 
@@ -106,8 +118,8 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
     return (
       <section className="py-20 bg-muted/20">
         <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="text-3xl font-bold mb-4">{title || 'Manufacturing Capabilities'}</h2>
-          <p className="text-muted-foreground">{description || 'No sections configured yet.'}</p>
+          <h2 className="text-3xl font-bold mb-4">{title || "Manufacturing Capabilities"}</h2>
+          <p className="text-muted-foreground">{description || "No sections configured yet."}</p>
         </div>
       </section>
     );
@@ -116,7 +128,7 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
   return (
     <div className="relative overflow-hidden h-screen bg-black">
       {/* Page Indicator */}
-      <div className="absolute top-8 right-8 z-50 flex flex-col gap-2">
+      <div className="absolute top-8 right-8 z-dock flex flex-col gap-2">
         {Array.from({ length: finalNumOfPages }, (_, i) => (
           <button
             key={i + 1}
@@ -125,27 +137,28 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
                 setCurrentPage(i + 1);
               }
             }}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${currentPage === i + 1
-                ? 'bg-white scale-125'
-                : 'bg-white/50 hover:bg-white/70'
-              }`}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              currentPage === i + 1 ? "bg-white scale-125" : "bg-white/50 hover:bg-white/70"
+            }`}
           />
         ))}
       </div>
 
       {/* Navigation Instructions */}
-      <div className="absolute bottom-8 left-8 z-50 text-white/70 text-sm">
+      <div className="absolute bottom-8 left-8 z-dock text-white/70 text-sm">
         <p>Use arrow keys or scroll to navigate</p>
-        <p className="text-xs mt-1">{currentPage} of {finalNumOfPages}</p>
+        <p className="text-xs mt-1">
+          {currentPage} of {finalNumOfPages}
+        </p>
       </div>
 
       {pages.map((page, i) => {
         const idx = i + 1;
         const isActive = currentPage === idx;
-        const upOff = 'translateY(-100%)';
-        const downOff = 'translateY(100%)';
-        const leftTrans = isActive ? 'translateY(0)' : downOff;
-        const rightTrans = isActive ? 'translateY(0)' : upOff;
+        const upOff = "translateY(-100%)";
+        const downOff = "translateY(100%)";
+        const leftTrans = isActive ? "translateY(0)" : downOff;
+        const rightTrans = isActive ? "translateY(0)" : upOff;
 
         return (
           <div key={idx} className="absolute inset-0">
@@ -158,13 +171,11 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
                 className="w-full h-full bg-cover bg-center bg-no-repeat relative"
                 style={{
                   backgroundImage: page.leftBgImage ? `url(${page.leftBgImage})` : undefined,
-                  backgroundColor: !page.leftBgImage ? '#1a1a1a' : undefined
+                  backgroundColor: !page.leftBgImage ? "#1a1a1a" : undefined,
                 }}
               >
                 {/* Overlay for better text readability */}
-                {page.leftBgImage && (
-                  <div className="absolute inset-0 bg-black/40"></div>
-                )}
+                {page.leftBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
                 <div className="relative z-10 flex flex-col items-center justify-center h-full text-white p-8">
                   {page.leftContent && (
@@ -190,13 +201,11 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
                 className="w-full h-full bg-cover bg-center bg-no-repeat relative"
                 style={{
                   backgroundImage: page.rightBgImage ? `url(${page.rightBgImage})` : undefined,
-                  backgroundColor: !page.rightBgImage ? '#2a2a2a' : undefined
+                  backgroundColor: !page.rightBgImage ? "#2a2a2a" : undefined,
                 }}
               >
                 {/* Overlay for better text readability */}
-                {page.rightBgImage && (
-                  <div className="absolute inset-0 bg-black/40"></div>
-                )}
+                {page.rightBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
                 <div className="relative z-10 flex flex-col items-center justify-center h-full text-white p-8">
                   {page.rightContent && (
@@ -204,7 +213,7 @@ export default function AnimatedScroll({ sections, mediaAssets, title, descripti
                       <h2 className="text-2xl md:text-3xl lg:text-4xl uppercase mb-6 text-center font-bold tracking-wide">
                         {page.rightContent.heading}
                       </h2>
-                      {typeof page.rightContent.description === 'string' ? (
+                      {typeof page.rightContent.description === "string" ? (
                         <p className="text-lg md:text-xl text-center max-w-md leading-relaxed">
                           {page.rightContent.description}
                         </p>

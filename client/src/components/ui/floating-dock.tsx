@@ -7,6 +7,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
+  useReducedMotion,
 } from "framer-motion";
 
 import { useRef, useState } from "react";
@@ -20,6 +21,7 @@ export const FloatingDock = ({
   desktopClassName,
   mobileClassName,
   iconSize = "medium",
+  disableMobile = false,
 }: {
   items: {
     id?: number | string;
@@ -31,11 +33,14 @@ export const FloatingDock = ({
   desktopClassName?: string;
   mobileClassName?: string;
   iconSize?: "small" | "medium" | "large";
+  disableMobile?: boolean;
 }) => {
   return (
     <>
       <FloatingDockDesktop items={items} className={desktopClassName} iconSize={iconSize} />
-      <FloatingDockMobile items={items} className={mobileClassName} iconSize={iconSize} />
+      {!disableMobile && (
+        <FloatingDockMobile items={items} className={mobileClassName} iconSize={iconSize} />
+      )}
     </>
   );
 };
@@ -184,14 +189,14 @@ const FloatingDockDesktop = ({
       blurIntensity="lg"
       glowIntensity="md"
       shadowIntensity="lg"
-      className={cn("mx-auto hidden items-center gap-4 px-4 py-3 md:flex z-dock", className)}
+      className={cn("mx-auto hidden items-center gap-3 px-16 py-6 md:flex z-dock", className)}
     >
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         role="navigation"
         aria-label="Desktop navigation dock"
-        className="flex items-center gap-4 w-full transform-gpu"
+        className="flex items-center gap-3 w-full transform-gpu"
       >
         {items.map((item) => (
           <IconContainer
@@ -220,6 +225,7 @@ function IconContainer({
   iconSize?: string;
 }) {
   let ref = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   let distance = useTransform(mouseX, (val) => {
     let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
@@ -230,7 +236,7 @@ function IconContainer({
   // Dynamic size values based on iconSize
   const sizeMap = {
     small: { base: 32, hover: 64, icon: 16, iconHover: 32 },
-    medium: { base: 40, hover: 80, icon: 20, iconHover: 40 },
+    medium: { base: 44, hover: 80, icon: 24, iconHover: 40 }, // Updated to meet 44px min touch target
     large: { base: 48, hover: 96, icon: 24, iconHover: 48 },
   };
 
@@ -261,30 +267,30 @@ function IconContainer({
   let width = useSpring(widthTransform, {
     mass: 0.1,
     stiffness: 150,
-    damping: 12,
+    damping: shouldReduceMotion ? 20 : 12,
   });
   let height = useSpring(heightTransform, {
     mass: 0.1,
     stiffness: 150,
-    damping: 12,
+    damping: shouldReduceMotion ? 20 : 12,
   });
 
   let widthIcon = useSpring(widthTransformIcon, {
     mass: 0.1,
     stiffness: 150,
-    damping: 12,
+    damping: shouldReduceMotion ? 20 : 12,
   });
   let heightIcon = useSpring(heightTransformIcon, {
     mass: 0.1,
     stiffness: 150,
-    damping: 12,
+    damping: shouldReduceMotion ? 20 : 12,
   });
 
   return (
     <a
       href={href}
       aria-label={title}
-      className="flex flex-col items-center gap-1 min-h-[44px] group"
+      className="flex flex-col items-center gap-2 min-h-[44px] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
     >
       <motion.div
         ref={ref}
@@ -312,8 +318,8 @@ function IconContainer({
 
       {/* Permanent title label with improved contrast */}
       <div
-        className="text-[10px] text-gray-700 dark:text-gray-300 whitespace-nowrap max-w-[80px] md:max-w-[100px] truncate text-center"
-        style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)" }}
+        className="text-xs text-gray-800 dark:text-gray-200 whitespace-nowrap max-w-[80px] md:max-w-[100px] truncate text-center drop-shadow-sm font-medium"
+        style={{ textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)" }} // Light mode glow for glass contrast
       >
         {title}
       </div>

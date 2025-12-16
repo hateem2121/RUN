@@ -39,7 +39,7 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
   return (
     <>
       {/* Desktop Navigation - Floating Dock (hidden on mobile) - positioned to avoid logo overlap */}
-      <div className="hidden md:block fixed top-4 left-1/2 -translate-x-1/2 z-modal px-4 md:px-8 lg:px-12">
+      <div className="hidden lg:block fixed top-4 left-1/2 -translate-x-1/2 z-[50] px-4 md:px-8 lg:px-12">
         {desktopLoading || !mounted ? (
           <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-white shadow-sm-luxury-sm border border-luxury-light">
             <IconLoader className="h-6 w-6 animate-spin text-luxury-gray-600" />
@@ -49,12 +49,13 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
             items={dockItems}
             desktopClassName="shadow-sm-luxury-md border border-luxury-light"
             mobileClassName="shadow-sm-luxury-md border border-luxury-light"
+            disableMobile={true}
           />
         )}
       </div>
 
       {/* Mobile Navigation - Staggered Menu (visible on mobile only) */}
-      <div className="md:hidden">
+      <div className="lg:hidden">
         {mounted && !mobileLoading && mobileItems.length > 0 && (
           <StaggeredMenu
             position="right"

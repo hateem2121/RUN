@@ -533,7 +533,7 @@ export function UnifiedMediaTheater({
     <div
       className={cn(
         "space-y-4",
-        isFullscreen && "fixed inset-0 z-50 bg-black flex flex-col",
+        isFullscreen && "fixed inset-0 z-modal bg-black flex flex-col",
         className,
       )}
       onKeyDown={handleKeyDown}

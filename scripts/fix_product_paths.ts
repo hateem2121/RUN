@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from "../server/db.js";
 import { sql } from "drizzle-orm";
 

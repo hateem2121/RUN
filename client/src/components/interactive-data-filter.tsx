@@ -26,7 +26,7 @@ export function InteractiveDataFilter({
   onFilterChange,
   categories = [],
   showScoreFilter = false,
-  showStatusFilter = false
+  showStatusFilter = false,
 }: InteractiveDataFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<FilterConfig>({});
@@ -40,7 +40,7 @@ export function InteractiveDataFilter({
       searchTerm: localSearch,
       categories: selectedCategories.length > 0 ? selectedCategories : undefined,
       scoreRange: showScoreFilter ? { min: scoreRange[0]!, max: scoreRange[1]! } : undefined,
-      status: selectedStatuses.length > 0 ? selectedStatuses : undefined
+      status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
     };
     setFilters(newFilters);
     onFilterChange(newFilters);
@@ -55,7 +55,7 @@ export function InteractiveDataFilter({
     onFilterChange({});
   };
 
-  const activeFilterCount = Object.values(filters).filter(v => v !== undefined).length;
+  const activeFilterCount = Object.values(filters).filter((v) => v !== undefined).length;
 
   return (
     <div className="relative">
@@ -73,11 +73,7 @@ export function InteractiveDataFilter({
           />
         </div>
 
-        <Button
-          variant="outline"
-          onClick={() => setIsOpen(!isOpen)}
-          className="relative"
-        >
+        <Button variant="outline" onClick={() => setIsOpen(!isOpen)} className="relative">
           <Filter className="w-4 h-4 mr-2" />
           Filters
           {activeFilterCount > 0 && (
@@ -85,7 +81,9 @@ export function InteractiveDataFilter({
               {activeFilterCount}
             </span>
           )}
-          <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown
+            className={`w-4 h-4 ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          />
         </Button>
 
         {activeFilterCount > 0 && (
@@ -103,7 +101,7 @@ export function InteractiveDataFilter({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 mt-2 z-50"
+            className="absolute top-full left-0 right-0 mt-2 z-dock"
           >
             <Card className="shadow-lg">
               <CardContent className="p-6">
@@ -122,7 +120,9 @@ export function InteractiveDataFilter({
                                 if (checked) {
                                   setSelectedCategories([...selectedCategories, category]);
                                 } else {
-                                  setSelectedCategories(selectedCategories.filter(c => c !== category));
+                                  setSelectedCategories(
+                                    selectedCategories.filter((c) => c !== category),
+                                  );
                                 }
                               }}
                             />
@@ -176,7 +176,7 @@ export function InteractiveDataFilter({
                                 if (checked) {
                                   setSelectedStatuses([...selectedStatuses, status]);
                                 } else {
-                                  setSelectedStatuses(selectedStatuses.filter(s => s !== status));
+                                  setSelectedStatuses(selectedStatuses.filter((s) => s !== status));
                                 }
                               }}
                             />

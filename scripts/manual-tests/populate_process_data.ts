@@ -1,5 +1,5 @@
-
-import { db } from "./server/db";
+// @ts-nocheck
+import { db } from "../../server/db.js";
 import { sql } from "drizzle-orm";
 
 async function populateData() {

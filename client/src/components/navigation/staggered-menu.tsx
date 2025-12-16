@@ -1,6 +1,8 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { gsap } from "gsap";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useReducedMotion } from "framer-motion";
 
 export interface StaggeredMenuItem {
   label: string;
@@ -38,8 +40,22 @@ export const StaggeredMenu = ({
 }: StaggeredMenuProps) => {
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
+  const shouldReduceMotion = useReducedMotion();
 
-  const panelRef = useRef<HTMLDivElement | null>(null);
+  // Focus trap hook integration
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isOpen: open,
+    onClose: () => {
+      // Only trigger close if open
+      if (openRef.current) toggleMenu();
+    },
+    restoreFocus: true,
+  });
+
+  // We need to sync the internal panelRef used for GSAP with the focusTrapRef
+  // We can just use focusTrapRef as the panel ref since it attaches to the `aside`
+  const panelRef = focusTrapRef;
+
   const preLayersRef = useRef<HTMLDivElement | null>(null);
   const preLayerElsRef = useRef<HTMLElement[]>([]);
 
@@ -116,18 +132,22 @@ export const StaggeredMenu = ({
 
     const tl = gsap.timeline({ paused: true });
 
+    // Check for reduced motion
+    const itemDuration = shouldReduceMotion ? 0.2 : 0.5;
+    const panelDuration = shouldReduceMotion ? 0.3 : 0.65;
+    const staggerDelay = shouldReduceMotion ? 0 : 0.07;
+
     layerStates.forEach((ls, i) => {
       tl.fromTo(
         ls.el,
         { xPercent: ls.start },
-        { xPercent: 0, duration: 0.5, ease: "power4.out" },
-        i * 0.07,
+        { xPercent: 0, duration: itemDuration, ease: "power4.out" },
+        i * staggerDelay,
       );
     });
 
-    const lastTime = layerStates.length ? (layerStates.length - 1) * 0.07 : 0;
+    const lastTime = layerStates.length ? (layerStates.length - 1) * staggerDelay : 0;
     const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
-    const panelDuration = 0.65;
 
     tl.fromTo(
       panel,
@@ -279,6 +299,10 @@ export const StaggeredMenu = ({
     animateColor(target);
   }, [playOpen, playClose, animateHamburger, animateColor, onMenuOpen, onMenuClose]);
 
+  // Handle ESC key directly in hook, but ensure aria attributes are correct here
+  // Add safe area padding to style manually until Tailwind env() support is verified in this context,
+  // though we can use style prop for env vars which is safer.
+
   return (
     <div className="sm-scope fixed top-0 left-0 w-screen h-screen overflow-hidden pointer-events-none z-[100]">
       <div
@@ -316,10 +340,11 @@ export const StaggeredMenu = ({
         <header
           className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-center p-4 bg-transparent z-20"
           aria-label="Main navigation header"
+          style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle relative flex flex-col items-center justify-center w-10 h-10 backdrop-blur-xs border-0 cursor-pointer rounded-full shadow-lg transition-colors pointer-events-auto bg-[#ffffff78] text-[#00000099] pt-[25px] pb-[25px] mt-[0px] mb-[0px]"
+            className="sm-toggle relative flex flex-col items-center justify-center w-12 h-12 backdrop-blur-xs border-0 cursor-pointer rounded-full shadow-lg transition-colors pointer-events-auto bg-[#ffffff78] text-[#00000099] pt-[25px] pb-[25px] mt-[0px] mb-[0px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
@@ -351,9 +376,14 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full bg-white/95 flex flex-col pt-20 px-6 pb-8 overflow-y-auto z-10 backdrop-blur-md w-full sm:w-[80vw] md:w-[380px] pointer-events-auto shadow-2xl"
-          style={{ WebkitBackdropFilter: "blur(16px)" }}
+          className="staggered-menu-panel absolute top-0 right-0 h-full bg-background/95 flex flex-col pt-20 px-6 pb-8 overflow-y-auto z-10 backdrop-blur-md w-full sm:w-[80vw] md:w-[380px] pointer-events-auto shadow-2xl focus:outline-none"
+          style={{
+            WebkitBackdropFilter: "blur(16px)",
+            paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
+            paddingTop: "max(5rem, env(safe-area-inset-top))",
+          }}
           aria-hidden={!open}
+          tabIndex={-1} // Allow programmatic focus
         >
           <div className="sm-panel-inner flex-1 flex flex-col">
             <ul
@@ -368,7 +398,7 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative text-black font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline hover:text-gray-700 active:scale-95 pr-[1.2em]"
+                      className="sm-panel-item relative text-foreground font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline hover:text-muted-foreground active:scale-95 pr-[1.2em] focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg outline-none"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -388,7 +418,7 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item relative text-black font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline pr-[1.2em]">
+                  <span className="sm-panel-item relative text-muted-foreground font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline pr-[1.2em]">
                     <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                       No items
                     </span>

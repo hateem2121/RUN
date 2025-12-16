@@ -432,7 +432,7 @@ const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => {
 
   return (
     <div
-      className="group overflow-hidden rounded-lg glass-card-light hover:shadow-sm-luxury-elevated transition-all duration-300 bg-white/50 border border-white/20"
+      className="group overflow-hidden rounded-lg glass-card-light hover:shadow-sm-luxury-elevated transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       aria-label={product.name}

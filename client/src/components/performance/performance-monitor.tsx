@@ -3,8 +3,8 @@
  * Comprehensive performance tracking for animation components
  */
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { AnimationErrorBoundary } from '@/components/error-boundaries/animation-error-boundary';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 
 interface PerformanceMetrics {
   componentName: string;
@@ -30,7 +30,7 @@ const DEFAULT_THRESHOLDS: PerformanceThresholds = {
   maxMemoryUsage: 50 * 1024 * 1024, // 50MB
   minAnimationFPS: 55, // Minimum acceptable FPS
   maxGsapInstances: 10, // Maximum GSAP instances
-  maxErrorCount: 3 // Maximum errors before warning
+  maxErrorCount: 3, // Maximum errors before warning
 };
 
 interface PerformanceMonitorProps {
@@ -46,7 +46,7 @@ function PerformanceMonitorComponent({
   enabled = true,
   thresholds = {},
   onPerformanceAlert,
-  children
+  children,
 }: PerformanceMonitorProps) {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     componentName,
@@ -56,7 +56,7 @@ function PerformanceMonitorComponent({
     gsapInstances: 0,
     scrollTriggerInstances: 0,
     errorCount: 0,
-    lastUpdated: Date.now()
+    lastUpdated: Date.now(),
   });
 
   const renderStartTime = useRef<number>(0);
@@ -74,159 +74,159 @@ function PerformanceMonitorComponent({
 
   const endRenderMeasurement = useCallback(() => {
     if (!enabled || renderStartTime.current === 0) return;
-    
+
     const renderTime = performance.now() - renderStartTime.current;
-    
+
     // Alert on slow renders
     if (renderTime > finalThresholds.maxRenderTime && onPerformanceAlert) {
-      onPerformanceAlert('renderTime', renderTime, finalThresholds.maxRenderTime);
+      onPerformanceAlert("renderTime", renderTime, finalThresholds.maxRenderTime);
     }
-    
-    setMetrics(prev => ({
+
+    setMetrics((prev) => ({
       ...prev,
       renderTime,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     }));
-    
+
     renderStartTime.current = 0;
   }, [enabled, finalThresholds.maxRenderTime, onPerformanceAlert]);
 
   // Phase 3: Memory Usage Monitoring
   const measureMemoryUsage = useCallback(() => {
-    if (!enabled || !('memory' in performance)) return;
-    
+    if (!enabled || !("memory" in performance)) return;
+
     const memory = (performance as any).memory;
     const memoryUsage = memory?.usedJSHeapSize || 0;
-    
+
     // Alert on high memory usage
     if (memoryUsage > finalThresholds.maxMemoryUsage && onPerformanceAlert) {
-      onPerformanceAlert('memoryUsage', memoryUsage, finalThresholds.maxMemoryUsage);
+      onPerformanceAlert("memoryUsage", memoryUsage, finalThresholds.maxMemoryUsage);
     }
-    
-    setMetrics(prev => ({
+
+    setMetrics((prev) => ({
       ...prev,
       memoryUsage,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     }));
   }, [enabled, finalThresholds.maxMemoryUsage, onPerformanceAlert]);
 
   // Phase 3: Animation FPS Monitoring
   const measureAnimationFPS = useCallback(() => {
     if (!enabled) return;
-    
+
     const now = performance.now();
-    
+
     if (lastFrameTime.current !== 0) {
       const deltaTime = now - lastFrameTime.current;
       const fps = 1000 / deltaTime;
-      
+
       frameCounter.current++;
-      
+
       // Update FPS every 10 frames for stability
       if (frameCounter.current >= 10) {
         // Alert on low FPS
         if (fps < finalThresholds.minAnimationFPS && onPerformanceAlert) {
-          onPerformanceAlert('animationFPS', fps, finalThresholds.minAnimationFPS);
+          onPerformanceAlert("animationFPS", fps, finalThresholds.minAnimationFPS);
         }
-        
-        setMetrics(prev => ({
+
+        setMetrics((prev) => ({
           ...prev,
           animationFPS: Math.round(fps),
-          lastUpdated: Date.now()
+          lastUpdated: Date.now(),
         }));
-        
+
         frameCounter.current = 0;
       }
     }
-    
+
     lastFrameTime.current = now;
     animationId.current = requestAnimationFrame(measureAnimationFPS);
   }, [enabled, finalThresholds.minAnimationFPS, onPerformanceAlert]);
 
   // Phase 3: GSAP Instance Monitoring
   const measureGSAPInstances = useCallback(() => {
-    if (!enabled || typeof window === 'undefined') return;
-    
+    if (!enabled || typeof window === "undefined") return;
+
     let gsapInstances = 0;
     let scrollTriggerInstances = 0;
-    
+
     // Count GSAP instances
     if (window.gsap && window.gsap.globalTimeline) {
       const timeline = window.gsap.globalTimeline;
       gsapInstances = timeline.getChildren ? timeline.getChildren().length : 0;
     }
-    
+
     // Count ScrollTrigger instances
     if (window.ScrollTrigger && window.ScrollTrigger.getAll) {
       scrollTriggerInstances = window.ScrollTrigger.getAll().length;
     }
-    
+
     // Alert on too many instances
     if (gsapInstances > finalThresholds.maxGsapInstances && onPerformanceAlert) {
-      onPerformanceAlert('gsapInstances', gsapInstances, finalThresholds.maxGsapInstances);
+      onPerformanceAlert("gsapInstances", gsapInstances, finalThresholds.maxGsapInstances);
     }
-    
-    setMetrics(prev => ({
+
+    setMetrics((prev) => ({
       ...prev,
       gsapInstances,
       scrollTriggerInstances,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     }));
   }, [enabled, finalThresholds.maxGsapInstances, onPerformanceAlert]);
 
   // Phase 3: Error Count Tracking
   const incrementErrorCount = useCallback(() => {
     if (!enabled) return;
-    
+
     errorCountRef.current++;
-    
+
     // Alert on high error count
     if (errorCountRef.current > finalThresholds.maxErrorCount && onPerformanceAlert) {
-      onPerformanceAlert('errorCount', errorCountRef.current, finalThresholds.maxErrorCount);
+      onPerformanceAlert("errorCount", errorCountRef.current, finalThresholds.maxErrorCount);
     }
-    
-    setMetrics(prev => ({
+
+    setMetrics((prev) => ({
       ...prev,
       errorCount: errorCountRef.current,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     }));
   }, [enabled, finalThresholds.maxErrorCount, onPerformanceAlert]);
 
   // Phase 3: Performance Monitoring Lifecycle
   useEffect(() => {
     if (!enabled) return;
-    
+
     // Start render measurement
     startRenderMeasurement();
-    
+
     // Start FPS monitoring
     animationId.current = requestAnimationFrame(measureAnimationFPS);
-    
+
     // Set up periodic measurements
     const memoryInterval = setInterval(measureMemoryUsage, 2000); // Every 2 seconds
     const gsapInterval = setInterval(measureGSAPInstances, 5000); // Every 5 seconds
-    
+
     // Global error handler for this component
     const errorHandler = (event: ErrorEvent) => {
       if (event.error && event.error.stack && event.error.stack.includes(componentName)) {
         incrementErrorCount();
       }
     };
-    
-    window.addEventListener('error', errorHandler);
-    
+
+    window.addEventListener("error", errorHandler);
+
     // Cleanup on unmount
     return () => {
       endRenderMeasurement();
-      
+
       if (animationId.current) {
         cancelAnimationFrame(animationId.current);
       }
-      
+
       clearInterval(memoryInterval);
       clearInterval(gsapInterval);
-      window.removeEventListener('error', errorHandler);
-      
+      window.removeEventListener("error", errorHandler);
+
       console.log(`🔍 PerformanceMonitor[${componentName}]: Monitoring stopped`);
     };
   }, [
@@ -237,13 +237,13 @@ function PerformanceMonitorComponent({
     measureAnimationFPS,
     measureMemoryUsage,
     measureGSAPInstances,
-    incrementErrorCount
+    incrementErrorCount,
   ]);
 
   // Phase 3: Performance Metrics Logging
   useEffect(() => {
     if (!enabled) return;
-    
+
     console.log(`🔍 PerformanceMonitor[${componentName}]: Metrics Updated`, {
       renderTime: `${metrics.renderTime.toFixed(2)}ms`,
       memoryUsage: `${(metrics.memoryUsage / 1024 / 1024).toFixed(2)}MB`,
@@ -251,7 +251,7 @@ function PerformanceMonitorComponent({
       gsapInstances: metrics.gsapInstances,
       scrollTriggerInstances: metrics.scrollTriggerInstances,
       errorCount: metrics.errorCount,
-      lastUpdated: new Date(metrics.lastUpdated).toLocaleTimeString()
+      lastUpdated: new Date(metrics.lastUpdated).toLocaleTimeString(),
     });
   }, [enabled, componentName, metrics]);
 
@@ -263,7 +263,7 @@ function PerformanceMonitorComponent({
 
   // Expose metrics for external access
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (!window.performanceMetrics) {
         window.performanceMetrics = {};
       }
@@ -274,8 +274,8 @@ function PerformanceMonitorComponent({
   return (
     <>
       {children}
-      {enabled && process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-2 right-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-50">
+      {enabled && process.env.NODE_ENV === "development" && (
+        <div className="fixed bottom-2 right-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-dock">
           <div className="font-bold text-green-400">🔍 {componentName}</div>
           <div>Render: {metrics.renderTime.toFixed(1)}ms</div>
           <div>Memory: {(metrics.memoryUsage / 1024 / 1024).toFixed(1)}MB</div>
