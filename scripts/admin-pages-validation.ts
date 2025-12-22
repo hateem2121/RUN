@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 // @ts-nocheck
 
 /**
@@ -7,9 +8,9 @@
  * Identifies schema mismatches between frontend and backend
  */
 
-import { db } from '../server/db.js';
 import { eq } from 'drizzle-orm';
 import fetch from 'node-fetch';
+import { db } from '../server/db.js';
 
 console.log('🔍 Starting admin pages validation...');
 

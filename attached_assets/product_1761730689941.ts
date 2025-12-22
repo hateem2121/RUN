@@ -1,4 +1,4 @@
-import { Product, MediaType } from '../../types';
+import { MediaType, type Product } from '../../types';
 
 export const mockProduct: Product = {
   id: 'RA-ACTIVE-001',

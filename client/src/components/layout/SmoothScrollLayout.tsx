@@ -1,7 +1,8 @@
-import React, { useLayoutEffect, useRef, useState, useMemo } from "react";
-import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import type React from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { LenisContext } from "./LenisContext";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,7 +19,7 @@ const SmoothScrollLayout: React.FC<SmoothScrollLayoutProps> = ({ children }) => 
     // 1. Initialize Lenis
     const lenisInstance = new Lenis({
       duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,

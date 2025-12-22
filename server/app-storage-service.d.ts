@@ -222,4 +222,3 @@ export declare class AppStorageService {
     }>;
 }
 export declare const appStorageService: AppStorageService;
-export {};

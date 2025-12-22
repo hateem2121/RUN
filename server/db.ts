@@ -5,10 +5,10 @@
  */
 
 import { neon } from "@neondatabase/serverless";
-import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http";
-import type { PgTransaction } from "drizzle-orm/pg-core";
-import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
+import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
+import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
+import type { PgTransaction } from "drizzle-orm/pg-core";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
 import { logger } from "./lib/smart-logger.js";

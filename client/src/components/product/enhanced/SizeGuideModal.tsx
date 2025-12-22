@@ -3,10 +3,11 @@
  * Features: Comprehensive size charts, accessibility, responsive design
  */
 
-import React, { useState, useEffect, useCallback } from "react";
-import { X, Ruler, Info, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Info, Ruler, X } from "lucide-react";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface SizeData {
   size: string;

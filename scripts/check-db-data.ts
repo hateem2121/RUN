@@ -1,6 +1,6 @@
 
 import { db } from '../server/db.js';
-import { products, categories, navigationItems } from '../shared/schema.js';
+import { categories, navigationItems, products } from '../shared/schema.js';
 
 async function checkData() {
     try {

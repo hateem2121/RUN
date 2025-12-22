@@ -1,10 +1,10 @@
+import type { Accessory, Certificate, Product } from '@shared/schema';
+import { Award, CheckCircle, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { memo } from 'react';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Award, CheckCircle, X } from 'lucide-react';
-import { Certificate, Accessory, Product } from '@shared/schema';
-import { ProductFormFieldValue } from '../shared/types';
+import { Label } from '@/components/ui/label';
+import type { ProductFormFieldValue } from '../shared/types';
 
 interface CertificationsSectionProps {
   formData: {

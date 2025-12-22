@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { useMediaLibraryEnhanced } from '@/components/admin/media-library/MediaLibraryContextEnhanced';
-import MediaLibraryContainerEnhanced from '@/components/admin/media-library/MediaLibraryContainerEnhanced';
-import { Button } from '@/components/ui/button';
-import { X, Check, Image, Video, FileIcon, AlertCircle } from 'lucide-react';
 import type { MediaAsset } from '@shared/schema';
+import { AlertCircle, Check, FileIcon, Image, Video, X } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import MediaLibraryContainerEnhanced from '@/components/admin/media-library/MediaLibraryContainerEnhanced';
+import { useMediaLibraryEnhanced } from '@/components/admin/media-library/MediaLibraryContextEnhanced';
+import { Button } from '@/components/ui/button';
 
 interface UnifiedMediaSelectionProps {
   onSelect: (assets: MediaAsset[] | MediaAsset) => void;

@@ -27,25 +27,24 @@
  * Only HTTP/browser caching is disabled to ensure real-time updates.
  */
 
-import express, { Request } from "express";
+import express, { type Request } from "express";
+// Import validation schemas and types
+import {
+  type HomepageFeaturedProductsSettings,
+  type HomepageHero,
+  type HomepageSection,
+  type HomepageSlogan,
+  insertHomepageFeaturedProductsSettingsSchema,
+  insertHomepageHeroSchema,
+  insertHomepageProcessCardSchema,
+  insertHomepageSectionSchema,
+  insertHomepageSloganSchema,
+} from "../../../shared/schema.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
-import { CacheOperations, CacheKeys } from "../../lib/cache-strategies.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
-
-// Import validation schemas and types
-import {
-  insertHomepageHeroSchema,
-  insertHomepageSloganSchema,
-  insertHomepageProcessCardSchema,
-  insertHomepageSectionSchema,
-  insertHomepageFeaturedProductsSettingsSchema,
-  type HomepageHero,
-  type HomepageSlogan,
-  type HomepageSection,
-  type HomepageFeaturedProductsSettings,
-} from "../../../shared/schema.js";
 
 const router = express.Router();
 

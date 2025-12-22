@@ -1,9 +1,9 @@
-import * as React from "react";
+import { motion } from "framer-motion";
+import type * as React from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useFeaturedProducts } from "@/hooks/use-homepage-data";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
-import { useFeaturedProducts } from "@/hooks/use-homepage-data";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import { motion } from "framer-motion";
 
 const FeaturedProducts: React.FC = () => {
   const products = useFeaturedProducts();

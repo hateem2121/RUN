@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
-import { TransformedProduct } from '@/lib/product-transformers';
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import type { TransformedProduct } from '@/lib/product-transformers';
 
 interface InquiryItem {
   product: TransformedProduct;

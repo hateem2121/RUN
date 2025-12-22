@@ -1,10 +1,11 @@
-import React, { useRef, useMemo } from "react";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
+import type React from "react";
+import { useMemo, useRef } from "react";
+import { Color, type Mesh, type ShaderMaterial } from "three";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
-import { ShieldCheck, Leaf, Globe, Zap } from "lucide-react";
-import { Color, Mesh, ShaderMaterial } from "three";
 
 // Shaders moved outside for performance
 const vertexShader = `

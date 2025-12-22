@@ -3,11 +3,11 @@
  * Previous/Next product navigation within category
  */
 
+import type { Product } from "@shared/schema";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Product } from "@shared/schema";
 
 interface ProductNavigationProps {
   previousProduct: Product | null;

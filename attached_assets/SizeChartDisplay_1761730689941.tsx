@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Product } from '../../types';
+import type React from 'react';
+import { useState } from 'react';
+import type { Product } from '../../types';
 import ClippedElement from '../ClippedElement';
 
 const SizeChartDisplay: React.FC<{ product: Product }> = ({ product }) => {

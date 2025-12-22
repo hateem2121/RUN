@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import type { ManufacturingProcess } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ManufacturingProcess } from "@shared/schema";
 
 export function ManufacturingProcessFlow() {
   const containerRef = useRef<HTMLDivElement>(null);

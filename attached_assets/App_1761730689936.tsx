@@ -1,13 +1,14 @@
-import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import ProductGallery from './components/ProductGallery';
+import type React from 'react';
+import { useRef, useState } from 'react';
+import EthicalManufacturing from './components/EthicalManufacturing';
+import Footer from './components/Footer';
+import InquiryModal from './components/InquiryModal';
 import type { ProductGalleryHandle } from './components/ProductGallery';
+import ProductGallery from './components/ProductGallery';
 import ProductInfo from './components/ProductInfo';
 import ProductSpecs from './components/ProductSpecs';
-import EthicalManufacturing from './components/EthicalManufacturing';
 import Recommendations from './components/Recommendations';
-import InquiryModal from './components/InquiryModal';
-import Footer from './components/Footer';
 import { mockProduct } from './data/products';
 
 const App: React.FC = () => {

@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 // @ts-nocheck
 
 /**
@@ -6,17 +7,17 @@
  * Seeds the database with realistic sportswear manufacturing B2B data
  */
 
-import { db } from '../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../server/db.js';
 import { 
+  accessories, 
   categories, 
-  products, 
-  mediaAssets,
+  certificates,
   fabrics,
   fibers,
-  certificates,
-  sizeCharts,
-  accessories
+  mediaAssets,
+  products, 
+  sizeCharts
 } from '../shared/schema.js';
 
 console.log('🌱 Starting database seeding...');

@@ -1,12 +1,12 @@
-import { ProductSummary, MediaAsset, Category } from "@shared/schema";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
-import { LazyMediaEnhanced } from "./LazyMediaEnhanced";
-import { LayoutGrid, Play } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { Category, MediaAsset, ProductSummary } from "@shared/schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { LayoutGrid, Play } from "lucide-react";
+import { Link } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
+import { LazyMediaEnhanced } from "./LazyMediaEnhanced";
 
 interface ProductGridProps {
   products: ProductSummary[];

@@ -22,9 +22,9 @@
  * - Monitors L1/L2 distribution
  */
 
-import { unifiedCache } from "./unified-cache.js";
 import { logger } from "./smart-logger.js";
 import type { SWRConfig } from "./unified-cache.js";
+import { unifiedCache } from "./unified-cache.js";
 
 interface CacheMetrics {
   l1Hits: number;
@@ -161,13 +161,14 @@ export class TwoTierBatchCache {
           this.metrics.l2Hits++;
           this.recordL2Time(timingValue);
           break;
-        case "loader":
+        case "loader": {
           benchmark.hit = "MISS";
           const loaderTime = result.timings.loaderTime || result.timings.totalTime;
           benchmark.dbTime = loaderTime;
           this.metrics.misses++;
           this.recordDbTime(loaderTime);
           break;
+        }
       }
 
       logger.debug(

@@ -1,8 +1,8 @@
-import React from 'react';
 import { DivIcon } from 'leaflet';
-import { createRoot, Root } from 'react-dom/client';
+import React from 'react';
+import { createRoot, type Root } from 'react-dom/client';
 import { LottieIcon } from '../components/LottieIcon';
-import { animationCache, type AnimationType } from './AnimationCache';
+import { type AnimationType, animationCache } from './AnimationCache';
 
 /**
  * Optimized icon manager that prevents memory leaks and improves performance

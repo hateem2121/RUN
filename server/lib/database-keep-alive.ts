@@ -4,8 +4,8 @@
  * Neon suspends after 5 minutes of inactivity, causing 200-500ms cold start penalty
  */
 
-import { db } from '../db.js';
 import { sql } from 'drizzle-orm';
+import { db } from '../db.js';
 import { logger } from './smart-logger.js';
 
 export class DatabaseKeepAlive {

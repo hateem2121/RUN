@@ -9,6 +9,18 @@
 import { db } from "../server/db.js";
 // import { eq } from 'drizzle-orm'; // Unused
 import {
+
+  // About Page Management
+  aboutHero,
+  aboutMapLocations,
+  aboutSections,
+  aboutStatistics,
+  aboutTeamMessages,
+  aboutTimelineEntries,
+
+  // Footer Management
+  footerConfiguration,
+  homepageFeaturedProductsSettings,
   // Core Business Entities (commented out - not used in this script)
   // categories,
   // products,
@@ -21,39 +33,27 @@ import {
 
   // Homepage Management
   homepageHero,
-  homepageSlogans,
   homepageProcessCards,
   homepageSections,
-  homepageFeaturedProductsSettings,
-
-  // About Page Management
-  aboutHero,
-  aboutTimelineEntries,
-  aboutMapLocations,
-  aboutSections,
-  aboutStatistics,
-  aboutTeamMessages,
-
-  // Sustainability Management
-  sustainabilityHero,
-  sustainabilityMetrics,
-  sustainabilityInitiatives,
-  sustainabilityGoals,
+  homepageSlogans,
+  manufacturingCapabilities,
 
   // Manufacturing Management
   manufacturingHero,
   manufacturingProcesses,
-  manufacturingCapabilities,
   manufacturingQualities,
+  sustainabilityGoals,
+
+  // Sustainability Management
+  sustainabilityHero,
+  sustainabilityInitiatives,
+  sustainabilityMetrics,
+  technologyEquipment,
 
   // Technology Management
   technologyHero,
   technologyInnovations,
-  technologyEquipment,
   technologyResearch,
-
-  // Footer Management
-  footerConfiguration,
 } from "../shared/schema.js";
 
 console.log("🌱 Starting comprehensive CMS seeding...");

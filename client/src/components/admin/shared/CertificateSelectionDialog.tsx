@@ -5,23 +5,23 @@
  * Follows the same pattern as StandardMediaSelectionDialog.
  */
 
-import { useState, useMemo } from "react";
+import type { Certificate } from '@shared/schema';
 import { useQuery } from "@tanstack/react-query";
+import { Award, CheckCircle2, Search } from 'lucide-react';
+import { useMemo, useState } from "react";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
   EnhancedDialogBody,
-  EnhancedDialogTitle,
+  EnhancedDialogContent,
   EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
 } from '@/components/ui/enhanced-dialog';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Award, CheckCircle2 } from 'lucide-react';
-import type { Certificate } from '@shared/schema';
 
 interface CertificateSelectionDialogProps {
   /** Whether the dialog is open */

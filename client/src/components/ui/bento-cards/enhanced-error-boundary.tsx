@@ -1,6 +1,6 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, AlertTriangle, Home } from 'lucide-react';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

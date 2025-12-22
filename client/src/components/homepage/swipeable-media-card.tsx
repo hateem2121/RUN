@@ -1,13 +1,14 @@
-import React, { useState, useEffect, memo } from "react";
-import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Box } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { validateAnimationSettings } from "@/lib/animation-utils";
-import { useOptimizedMedia } from "@/hooks/use-optimized-media";
+import type { MediaAsset } from "@shared/schema";
+import { AnimatePresence, motion } from "framer-motion";
+import { Box, ChevronLeft, ChevronRight } from "lucide-react";
+import type React from "react";
+import { memo, useEffect, useState } from "react";
+import { LiquidGlassCard } from "@/components/ui/glass-card";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
-import type { MediaAsset } from "@shared/schema";
+import { useOptimizedMedia } from "@/hooks/use-optimized-media";
+import { validateAnimationSettings } from "@/lib/animation-utils";
+import { cn } from "@/lib/utils";
 
 interface MediaItem {
   id: number;

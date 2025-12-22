@@ -1,6 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { fabrics } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 // Fabric data (abbreviated for brevity - same as before)
 const fabricsData = [

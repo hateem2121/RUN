@@ -10,7 +10,7 @@
  * - Integration with existing metrics system
  */
 
-import { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { logger } from "./smart-logger.js";
 
 interface RateLimitEntry {

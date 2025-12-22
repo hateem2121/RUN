@@ -1,7 +1,7 @@
+import { desc, sql } from "drizzle-orm";
 import { appStorageService } from '../server/app-storage-service.js';
 import { db } from '../server/db.js';
 import { mediaAssets } from '../shared/schema.js';
-import { desc, sql } from "drizzle-orm";
 
 async function main() {
     console.log("Checking consistency for last 50 media assets...");

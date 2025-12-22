@@ -1,19 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { Factory, Cpu, Leaf, TrendingUp, Zap, Shield, Target, ArrowRight } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import type { 
-  SustainabilityMetric, 
-  SustainabilityGoal,
+  Fabric, 
   ManufacturingProcess,
   ManufacturingQuality,
+  SustainabilityGoal,
+  SustainabilityMetric, 
   TechnologyInnovation,
-  TechnologyResearch,
-  Fabric 
+  TechnologyResearch
 } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { ArrowRight, Cpu, Factory, Leaf, Shield, Target, TrendingUp, Zap } from "lucide-react";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 export function CrossPageDashboard() {
   // Fetch data from all three pages

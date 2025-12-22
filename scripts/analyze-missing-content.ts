@@ -1,7 +1,7 @@
 
+import { desc } from 'drizzle-orm';
 import { db } from '../server/db.js';
 import { fabrics } from '../shared/schema.js';
-import { desc } from 'drizzle-orm';
 
 async function analyzeMissingContent() {
   try {

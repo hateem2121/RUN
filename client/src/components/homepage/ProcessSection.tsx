@@ -1,9 +1,9 @@
+import type { HomepageProcessCard, HomepageSection, MediaAsset } from "@shared/schema";
 import { Suspense } from "react";
 import {
-  OptimizedDraggableCardsWrapper,
   convertProcessCardsToDraggableCards,
+  OptimizedDraggableCardsWrapper,
 } from "@/components/homepage/optimized-draggable-cards-wrapper";
-import type { HomepageSection, HomepageProcessCard, MediaAsset } from "@shared/schema";
 
 interface ProcessSectionProps {
   processSection: HomepageSection;

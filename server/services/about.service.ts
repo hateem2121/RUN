@@ -1,21 +1,21 @@
-import { db } from "../db.js";
-import { eq, asc } from "drizzle-orm";
-import {
-  aboutHero,
-  aboutTimelineEntries,
-  aboutMapLocations,
-  aboutSections,
-  aboutStatistics,
-  aboutTeamMessages,
-} from "../../shared/schema.js";
+import { asc, eq } from "drizzle-orm";
 import type {
   InsertAboutHero,
-  InsertAboutTimelineEntry,
   InsertAboutMapLocation,
   InsertAboutSection,
   InsertAboutStatistic,
   InsertAboutTeamMessage,
+  InsertAboutTimelineEntry,
 } from "../../shared/schema.js";
+import {
+  aboutHero,
+  aboutMapLocations,
+  aboutSections,
+  aboutStatistics,
+  aboutTeamMessages,
+  aboutTimelineEntries,
+} from "../../shared/schema.js";
+import { db } from "../db.js";
 
 /**
  * AboutService - Centralized business logic for About page management

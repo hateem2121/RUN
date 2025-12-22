@@ -4,9 +4,9 @@
  */
 
 import type { Request, Response } from "express";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { performanceMonitor } from "../../lib/performance-monitor.js";
-import { createSuccessResponse, createErrorResponse } from "./utils.js";
+import { unifiedCache } from "../../lib/unified-cache.js";
+import { createErrorResponse, createSuccessResponse } from "./utils.js";
 
 /**
  * GET /api/media/cache/stats

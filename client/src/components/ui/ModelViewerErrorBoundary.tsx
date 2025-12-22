@@ -5,19 +5,20 @@
  * recovery mechanisms, and meaningful error messages for users.
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { MediaAsset } from '@shared/schema';
+import type { MediaAsset } from '@shared/schema';
+import { 
+  AlertCircle, 
+  Box, 
+  Download,
+  FileX, 
+  RefreshCw, 
+  Shield
+} from 'lucide-react';
+import type React from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 // Removed unused Alert components import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  AlertCircle, 
-  RefreshCw, 
-  Box, 
-  FileX, 
-  Download,
-  Shield
-} from 'lucide-react';
 import { MODEL_VIEWER_ENVIRONMENT } from '@/lib/model-viewer-config';
 
 interface Props {
@@ -162,7 +163,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     }
 
     // Exponential backoff: 1s, 2s, 4s
-    const delay = 1000 * Math.pow(2, this.state.retryCount);
+    const delay = 1000 * 2 ** this.state.retryCount;
 
     this.retryTimeout = setTimeout(() => {
       this.setState({

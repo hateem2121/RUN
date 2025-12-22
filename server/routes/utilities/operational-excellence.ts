@@ -1,15 +1,15 @@
 // Operational Excellence API Routes
 // PHASE 5: Operational Excellence - Management Endpoints
 
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { z } from 'zod';
+import { apiRateLimiter } from '../../lib/api-rate-limiter.js';
+import { businessIntelligence } from '../../lib/business-intelligence.js';
 // import { getConfig } from '../../config/production.js';
 import { memoryOptimizer } from '../../lib/memory-optimizer.js';
-import { businessIntelligence } from '../../lib/business-intelligence.js';
-import { workflowAutomation } from '../../lib/workflow-automation.js';
-import { apiRateLimiter } from '../../lib/api-rate-limiter.js';
-import { logger } from '../../lib/smart-logger.js';
 import { withTimeout } from '../../lib/request-timeout.js';
+import { logger } from '../../lib/smart-logger.js';
+import { workflowAutomation } from '../../lib/workflow-automation.js';
 
 // const config = getConfig();
 

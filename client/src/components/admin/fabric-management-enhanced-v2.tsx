@@ -1,19 +1,51 @@
-import { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import type { Certificate, Fabric, Fiber, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Activity,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  Edit,
+  FileText,
+  Globe,
+  Grid3X3,
+  Image,
+  Layers,
+  List,
+  Palette,
+  Plus,
+  Recycle,
+  Search,
+  Shield,
+  Shirt,
+  Star,
+  Table,
+  Trash2,
+  X,
+  Zap,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+// Removed problematic hook imports - using inline implementations
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   EnhancedDialog,
+  EnhancedDialogBody,
   EnhancedDialogContent,
+  EnhancedDialogFooter,
   EnhancedDialogHeader,
   EnhancedDialogTitle,
-  EnhancedDialogBody,
-  EnhancedDialogFooter,
 } from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,42 +53,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-// Removed problematic hook imports - using inline implementations
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Search,
-  Grid3X3,
-  List,
-  Table,
-  Star,
-  ChevronDown,
-  ChevronUp,
-  X,
-  Zap,
-  Layers,
-  Shield,
-  Activity,
-  Award,
-  Shirt,
-  Image,
-  FileText,
-  Globe,
-  Recycle,
-  Palette,
-} from "lucide-react";
-import type { Fabric, Fiber, Certificate, MediaAsset } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 interface EnhancedFormData {
   // === PRODUCT ESSENCE - B2B Core Fields ===
@@ -277,7 +277,7 @@ export default function FabricManagementEnhancedV2() {
   });
 
   const filteredAndSortedFabrics = useMemo(() => {
-    let filtered = fabrics.filter((fabric) => {
+    const filtered = fabrics.filter((fabric) => {
       // Search filter
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();

@@ -5,16 +5,16 @@
 
 import { db } from '../../server/db.js';
 import {
+    accessories, 
     categories,
-    products,
+    certificates,
+    fabricCompositions,
     fabrics,
     fibers,
-    fabricCompositions,
-    certificates,
-    sizeCharts,
-    accessories
+    products,
+    sizeCharts
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed product categories

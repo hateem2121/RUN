@@ -1,7 +1,7 @@
 
+import { eq } from 'drizzle-orm';
 import { db } from '../server/db.js';
 import { fabrics } from '../shared/schema.js';
-import { eq } from 'drizzle-orm';
 
 // Hardcoded map of fiber names to IDs based on previous analysis
 const FIBER_MAP: Record<string, number> = {

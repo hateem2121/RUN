@@ -1,28 +1,30 @@
 import React from "react";
+
 // PHASE C: Lazy load heavy components to reduce initial bundle by ~350-500KB
 const GradientBlinds = React.lazy(() => import("@/components/GradientBlinds"));
 const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
 const TechnologyCta = React.lazy(() => import("@/components/TechnologyCta"));
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
-import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
-import { Loader2 } from "lucide-react";
+
 import type {
+  MediaAsset,
+  TechnologyCta as TechnologyCtaType,
+  TechnologyEquipment,
+  TechnologyGradientSettings,
   TechnologyHero,
   TechnologyInnovation,
-  TechnologyGradientSettings,
-  TechnologyEquipment,
   TechnologyResearch,
   TechnologyRoadmap,
-  TechnologyCta as TechnologyCtaType,
-  MediaAsset,
 } from "@shared/schema";
+import { Loader2 } from "lucide-react";
+import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import "@/styles/webgl-pointer-events.css";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
-import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
-import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
-import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
 import { ClientOnly } from "@/components/ClientOnly";
+import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
+import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
+import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; fallback: React.ReactNode },

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ImageOff, Play } from "lucide-react";
 import type { MediaAsset } from "@shared/schema";
+import { AnimatePresence, motion } from "framer-motion";
+import { ImageOff, Play } from "lucide-react";
+import React, { useState } from "react";
 
 interface ManufacturingMediaDisplayProps {
   mediaAssets: MediaAsset[];

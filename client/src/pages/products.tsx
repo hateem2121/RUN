@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import type { Accessory, Category, Certificate, Fabric, MediaAsset, ProductSummary, SizeChart } from "@shared/schema";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { apiRequest } from "@/lib/queryClient";
-import { ProductSummary, Category, MediaAsset, Fabric, Certificate, SizeChart, Accessory } from "@shared/schema";
+import { ProductFilters } from "@/components/products/ProductFilters";
+import { ProductGrid } from "@/components/products/ProductGrid";
+// CLEANED: Removed deprecated useInfiniteScroll - using traditional pagination
+import { ProductsListSEO } from "@/components/products/ProductsListSEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Search, Grid3X3, Grid2X2, LayoutGrid } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ProductFilters } from "@/components/products/ProductFilters";
-// CLEANED: Removed deprecated useInfiniteScroll - using traditional pagination
-import { ProductsListSEO } from "@/components/products/ProductsListSEO";
-import { ProductGrid } from "@/components/products/ProductGrid";
-import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import { useAnalyticsTracker } from "@/hooks/useAnalyticsTracker";
+import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
+import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 
 export default function ProductsPage() {
   const [location, setLocation] = useLocation();

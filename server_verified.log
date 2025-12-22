@@ -1,0 +1,117 @@
+[Environment] ✅ Configuration validated and loaded successfully
+{"level":30,"time":"2025-12-22T12:07:40.572Z","service":"run-apparel-api","msg":"DatabaseCircuitBreaker initialized with retry logic (max 3 attempts) and circuit breaker"}
+[Database] ✅ HTTP-based PostgreSQL connection initialized (no more TCP pool exhaustion)
+[Security Config] Environment: production
+[Security Config] Security keys: rateLimiting,cors,headers
+[Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+[Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+[OTel] Starting OpenTelemetry SDK...
+[Server] ✅ Production security middleware enabled (Partial Debug Mode)
+[Server] ✅ Correlation ID & Build SHA headers enabled
+[Server] ✅ HTTP metrics tracking enabled (latency, status codes, routes)
+[Server] ✅ Prometheus metrics middleware enabled
+[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latency monitoring)
+[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP
+[Server] ✅ Production static asset caching enabled (CSS, JS, fonts, images)
+[Server] ✅ Raw binary parser configured for chunk uploads
+[Server] ✅ OpenAPI documentation available at /api-docs
+[Server] ✅ Production backup scheduler started
+[Server] ✅ Workflow automation started
+[Server] ✅ Storage lifecycle scheduler started (temp uploads auto-cleanup every 1h)
+[Server] ✅ Database keep-alive started (prevents cold starts)
+[Server] ✅ Database performance optimizations applied
+[Server] ✅ Enhanced health monitoring and error recovery systems initialized
+{"level":30,"time":"2025-12-22T12:07:40.573Z","service":"run-apparel-api","msg":"[Database] ✅ DATABASE_URL validation passed"}
+{"level":30,"time":"2025-12-22T12:07:40.582Z","service":"run-apparel-api","msg":"[Storage] Initialized Google Cloud Storage with bucket: run-media"}
+{"level":40,"time":"2025-12-22T12:07:40.585Z","service":"run-apparel-api","msg":"[Cache] ℹ️ Redis L2 credentials missing - falling back to L1 only"}
+{"level":30,"time":"2025-12-22T12:07:40.585Z","service":"run-apparel-api","msg":"[Cache] ✅ Unified Cache System initialized"}
+{"level":30,"time":"2025-12-22T12:07:40.586Z","service":"run-apparel-api","msg":"[StorageSingleton] Initializing Direct PostgreSQL Storage..."}
+{"level":30,"time":"2025-12-22T12:07:40.586Z","service":"run-apparel-api","msg":"[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully"}
+{"level":30,"time":"2025-12-22T12:07:40.586Z","service":"run-apparel-api","msg":"[RateLimiter] Production-grade rate limiters initialized"}
+{"level":30,"time":"2025-12-22T12:07:40.586Z","service":"run-apparel-api","msg":"[RateLimiter] General: 100 req/900000ms"}
+{"level":30,"time":"2025-12-22T12:07:40.586Z","service":"run-apparel-api","msg":"[RateLimiter] Admin: 30 req/900000ms"}
+{"level":30,"time":"2025-12-22T12:07:40.587Z","service":"run-apparel-api","msg":"[RateLimiter] Diagnostic: 10 req/60000ms"}
+{"level":30,"time":"2025-12-22T12:07:40.591Z","service":"run-apparel-api","msg":"[DB Retry] Database retry logic initialized (maxRetries=3, backoffMs=50, exponential)"}
+{"level":40,"time":"2025-12-22T12:07:40.592Z","service":"run-apparel-api","msg":"UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting will fall back to in-memory storage."}
+{"level":40,"time":"2025-12-22T12:07:40.596Z","service":"run-apparel-api","msg":"[Email] Gmail credentials not configured - email notifications disabled"}
+{"level":30,"time":"2025-12-22T12:07:40.657Z","service":"run-apparel-api","msg":"[UnifiedMemoryCache] 🚀 Initialized: Delegating to UnifiedCache (In-Memory)"}
+{"level":40,"time":"2025-12-22T12:07:40.662Z","service":"run-apparel-api","msg":"[AlertManager] GC monitoring enabled but --expose-gc flag not set. GC pause tracking unavailable."}
+{"level":30,"time":"2025-12-22T12:07:40.662Z","service":"run-apparel-api","slowQuery":{"durationMs":500,"consecutiveCount":3},"errorRate":{"percentageThreshold":10,"timeWindowMinutes":5},"httpErrorRate":{"percentageThreshold":5},"circuitBreaker":{"alertOnOpen":true,"alertOnHalfOpen":false},"memory":{"percentageThreshold":80},"dbConnection":{"alertOnError":true,"alertOnTimeout":true},"gcPause":{"enabled":true,"thresholdMs":100},"msg":"[AlertManager] Initialized with thresholds:"}
+{"level":30,"time":"2025-12-22T12:07:40.664Z","service":"run-apparel-api","msg":"[Config] ✅ Environment variables validated successfully"}
+{"level":30,"time":"2025-12-22T12:07:40.671Z","service":"run-apparel-api","msg":"[Server] 🚀 Starting in production mode (CSP configured for Vite/GCP)"}
+{"level":30,"time":"2025-12-22T12:07:40.671Z","service":"run-apparel-api","msg":"[Server] ✅ Helmet security headers enabled (CSP configured for GCP)"}
+{"level":30,"time":"2025-12-22T12:07:40.671Z","service":"run-apparel-api","allowedOrigins":["http://localhost:5173","http://localhost:5000","http://localhost:5001"],"credentials":"[REDACTED]","msg":"[CORS] Middleware initialized for production environment"}
+{"level":30,"time":"2025-12-22T12:07:40.671Z","service":"run-apparel-api","msg":"[Server] ✅ CORS middleware enabled with origin restrictions"}
+{"level":30,"time":"2025-12-22T12:07:40.671Z","service":"run-apparel-api","msg":"[Server] Build Version: ef422c5b"}
+{"level":30,"time":"2025-12-22T12:07:40.702Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth configured"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Routes] Mounting API routes with flat structure (/api/*)"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Auth] ✅ Admin routes protected with requireAdmin + strict validation"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Routes] Registering taxonomy routes module"}
+{"level":30,"time":"2025-12-22T12:07:40.703Z","service":"run-apparel-api","msg":"[Routes] Taxonomy routes registered successfully"}
+{"level":30,"time":"2025-12-22T12:07:40.704Z","service":"run-apparel-api","msg":"[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time"}
+{"level":30,"time":"2025-12-22T12:07:40.704Z","service":"run-apparel-api","msg":"[Routes] ✅ All routes registered successfully"}
+{"level":30,"time":"2025-12-22T12:07:40.731Z","service":"run-apparel-api","msg":"[Backup] Using PostgreSQL automatic backups - enhanced backup archived"}
+{"level":30,"time":"2025-12-22T12:07:40.731Z","service":"run-apparel-api","msg":"[Workflow] Using simplified automation - enhanced workflow archived"}
+{"level":30,"time":"2025-12-22T12:07:40.732Z","service":"run-apparel-api","enabled":true,"interval":"3600s","dryRun":false,"msg":"[Lifecycle] Scheduler initialized"}
+{"level":30,"time":"2025-12-22T12:07:40.732Z","service":"run-apparel-api","msg":"[Lifecycle] Starting scheduler (interval: 3600000ms)"}
+{"level":30,"time":"2025-12-22T12:07:40.732Z","service":"run-apparel-api","msg":"[Lifecycle] Starting cleanup run #1"}
+{"level":30,"time":"2025-12-22T12:07:40.732Z","service":"run-apparel-api","msg":"[Lifecycle] Starting temp uploads cleanup (maxAge: 24h, dryRun: false)"}
+{"level":30,"time":"2025-12-22T12:07:40.735Z","service":"run-apparel-api","msg":"[Lifecycle] Scheduler started successfully"}
+{"level":30,"time":"2025-12-22T12:07:40.736Z","service":"run-apparel-api","msg":"[DB Keep-Alive] ✅ Started (ping every 4 minutes to prevent auto-suspend)"}
+{"level":30,"time":"2025-12-22T12:07:40.736Z","service":"run-apparel-api","msg":"[DB] Using PostgreSQL built-in optimization"}
+{"level":30,"time":"2025-12-22T12:07:41.737Z","service":"run-apparel-api","durationMs":997,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:07:41.737Z","msg":"[DbCircuitBreaker] db-query"}
+[Server] ⏳ Warming cache (this may take a few seconds)...
+[Server] ✅ Cache warming completed - critical routes ready
+{"level":30,"time":"2025-12-22T12:07:41.738Z","service":"run-apparel-api","msg":"[Database] ✅ Database wakeup successful (998ms)"}
+{"level":40,"time":"2025-12-22T12:07:41.746Z","service":"run-apparel-api","durationMs":1169.3756669999998,"queryIndex":2,"msg":"[Slow Query] Database operation took 1169ms"}
+{"level":30,"time":"2025-12-22T12:07:41.746Z","service":"run-apparel-api","durationMs":1169,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:07:41.746Z","msg":"[DbCircuitBreaker] db-query"}
+{"level":30,"time":"2025-12-22T12:07:41.746Z","service":"run-apparel-api","pooling":"enabled","driver":"Neon HTTP (stateless)","concurrencyTracking":"enabled","metricsEndpoint":"/api/metrics/database","msg":"[Database] ✅ Connection pool metrics initialized:"}
+{"level":30,"time":"2025-12-22T12:07:41.746Z","service":"run-apparel-api","msg":"[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users"}
+{"level":30,"time":"2025-12-22T12:07:41.984Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: private/temp/uploads/"}
+{"level":30,"time":"2025-12-22T12:07:41.984Z","service":"run-apparel-api","msg":"[Lifecycle] No temp upload files found"}
+{"level":30,"time":"2025-12-22T12:07:41.984Z","service":"run-apparel-api","msg":"[Lifecycle] Starting orphaned files cleanup (directories: public/media/, public/thumbnails/, dryRun: false)"}
+{"level":30,"time":"2025-12-22T12:07:42.229Z","service":"run-apparel-api","msg":"[Lifecycle] Found 115 storage paths in database"}
+[Server] ✅ Database health check passed (696.99ms latency)
+[Server] ✅ Production security middleware enabled
+[Server] 🎯 Production readiness complete - production mode
+[Server] serving static assets from: /Users/hateemjamshaid/Downloads/RUN-Remix/dist/public
+[Server] ✅ Server timeouts configured (timeout: 120s, keep-alive: 65s)
+{"level":30,"time":"2025-12-22T12:07:42.442Z","service":"run-apparel-api","msg":"Server running on port 5006"}
+Server running on port 5006
+{"level":30,"time":"2025-12-22T12:07:43.467Z","service":"run-apparel-api","msg":"✅ Listed 114 assets with prefix: public/media/"}
+{"level":30,"time":"2025-12-22T12:07:43.467Z","service":"run-apparel-api","msg":"[Lifecycle] Found 114 files in public/media/"}
+{"level":30,"time":"2025-12-22T12:07:43.468Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/media/: 0 orphaned files deleted (114 files checked)"}
+{"level":30,"time":"2025-12-22T12:07:43.735Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: public/thumbnails/"}
+{"level":30,"time":"2025-12-22T12:07:43.735Z","service":"run-apparel-api","msg":"[Lifecycle] Found 0 files in public/thumbnails/"}
+{"level":30,"time":"2025-12-22T12:07:43.735Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/thumbnails/: 0 orphaned files deleted (114 files checked)"}
+{"level":30,"time":"2025-12-22T12:07:43.735Z","service":"run-apparel-api","msg":"[Lifecycle] Orphaned files cleanup complete: 0 deleted, ~0.00MB freed, 0 errors, 114 files checked"}
+{"level":30,"time":"2025-12-22T12:07:43.736Z","service":"run-apparel-api","duration":"3004ms","totalFilesDeleted":0,"totalStorageFreedMB":"0.00","msg":"[Lifecycle] Cleanup run complete"}
+[SSR] Handling Request: /
+[SSR] Running in Production/Build Mode
+[SSR Preload] Total imports to preload: 7
+[Entry Server] Render called with URL: /
+[SSR] onShellReady called
+[SSR] Writing beforeApp length: 2180
+[SSR] beforeApp TAIL: gZ.js">
+    <link rel="stylesheet" crossorigin href="/assets/styles-core-BOxLV88u.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CU_lqMa3.css">
+  </head>
+  <body>
+    <div id="root">
+[SSR] Piping React stream...
+{"level":30,"time":"2025-12-22T12:07:45.306Z","service":"run-apparel-api","correlationId":"dec93da8-059e-4edd-8b9e-cf52be3ae1da","msg":"[INFO] GET /products 200 405ms"}
+{"level":30,"time":"2025-12-22T12:07:45.307Z","service":"run-apparel-api","req":{"id":"dc5d084a-98db-4607-92d4-b7b387d3cf53","method":"GET","url":"/api/products?featured=true","query":{"featured":"true"},"params":{},"headers":{"host":"localhost:5006","connection":"keep-alive","accept":"*/*","accept-language":"*","sec-fetch-mode":"cors","user-agent":"node","accept-encoding":"gzip, deflate","traceparent":"00-fa2aabd63c413d85fec13e71927026a1-15d4bc9d04e02304-01"},"remoteAddress":"::1","remotePort":61568},"correlationId":"dec93da8-059e-4edd-8b9e-cf52be3ae1da","correlationId":"dec93da8-059e-4edd-8b9e-cf52be3ae1da","res":{"statusCode":200,"headers":{"content-security-policy":"default-src 'self';script-src 'self' 'nonce-ktW/68INYhi9F3Rv+sk6GA==';style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;font-src 'self' https://fonts.gstatic.com;img-src 'self' data: https://images.unsplash.com https://*.unsplash.com https://storage.googleapis.com https://*;worker-src 'self' blob:;connect-src 'self' https://storage.googleapis.com;base-uri 'self';form-action 'self';frame-ancestors 'self';object-src 'none';script-src-attr 'none';upgrade-insecure-requests","cross-origin-opener-policy":"same-origin","cross-origin-resource-policy":"same-origin","origin-agent-cluster":"?1","referrer-policy":"no-referrer","strict-transport-security":"max-age=31536000; includeSubDomains","x-content-type-options":"nosniff","x-dns-prefetch-control":"off","x-download-options":"noopen","x-frame-options":"SAMEORIGIN","x-permitted-cross-domain-policies":"none","x-xss-protection":"0","vary":"Origin, Accept-Encoding","access-control-allow-credentials":"true","access-control-expose-headers":"X-Correlation-ID","x-correlation-id":"dec93da8-059e-4edd-8b9e-cf52be3ae1da","ratelimit-limit":"1000","ratelimit-remaining":"999","ratelimit-reset":"900","cache-control":"public, max-age=60, stale-while-revalidate=300","content-type":"application/json; charset=utf-8","etag":"W/\"ca3-g9kEhIJzvxRKnV3VkPe2yo+pG7c\"","content-encoding":"gzip"}},"responseTime":404,"msg":"request completed"}
+[SSR] res.end called! Writing footer...
+[SSR] Footer length: 25
+[SSR] Calling originalEnd
+{"level":40,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","method":"GET","path":"/","duration":"1465ms","ttfb":"417ms","statusCode":200,"msg":"[Performance] Slow request detected"}
+{"level":30,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","msg":"[INFO] GET / 200 1465ms"}
+{"level":40,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","msg":"[SLOW REQUEST] GET / took 1465ms"}
+{"level":40,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","msg":"[SLOW REQUEST] GET / took 1464.79ms"}
+{"level":30,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","req":{"id":"abf5edd3-60d2-44cb-b655-560c2cdc4845","method":"GET","url":"/","query":{},"params":{},"headers":{"host":"localhost:5006","user-agent":"curl/8.7.1","accept":"*/*"},"remoteAddress":"::1","remotePort":61567},"correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","res":{"statusCode":200,"headers":{"content-security-policy":"default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://modelviewer.dev https://cdn.jsdelivr.net https://replit.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://images.unsplash.com https://*.unsplash.com https://storage.googleapis.com https:; connect-src 'self' https: data: blob: https://storage.googleapis.com; worker-src 'self' blob:; media-src 'self' https:;","cross-origin-opener-policy":"same-origin","cross-origin-resource-policy":"same-origin","origin-agent-cluster":"?1","referrer-policy":"strict-origin-when-cross-origin","strict-transport-security":"max-age=31536000; includeSubDomains","x-content-type-options":"nosniff","x-dns-prefetch-control":"off","x-download-options":"noopen","x-frame-options":"DENY","x-permitted-cross-domain-policies":"none","x-xss-protection":"1; mode=block","vary":"Origin, Accept-Encoding","access-control-allow-credentials":"true","access-control-expose-headers":"X-Correlation-ID","x-correlation-id":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","permissions-policy":"geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()","content-type":"text/html; charset=utf-8"}},"responseTime":1464,"msg":"request completed"}
+{"level":30,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","msg":"[INFO] GET / 200 1460ms"}
+{"level":40,"time":"2025-12-22T12:07:45.317Z","service":"run-apparel-api","correlationId":"08dba2da-32c3-4efe-bfaa-a9dcf750dfab","msg":"[SLOW REQUEST] GET / took 1460ms"}
+{"level":30,"time":"2025-12-22T12:56:46.906Z","service":"run-apparel-api","msg":"Received SIGINT, starting graceful shutdown..."}

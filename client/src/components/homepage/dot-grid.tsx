@@ -1,6 +1,7 @@
 'use client';
-import React, { useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { gsap } from "gsap";
+import type React from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import "./dot-grid.css";
 
 function throttle<F extends (...args: any[]) => any>(

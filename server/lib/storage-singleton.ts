@@ -1,4 +1,5 @@
 import { logger } from '../lib/smart-logger.js';
+
 /**
  * DIRECT POSTGRESQL STORAGE SINGLETON
  * Provides single, shared PostgreSQL-only storage instance
@@ -7,8 +8,8 @@ import { logger } from '../lib/smart-logger.js';
  * Uses NEON PostgreSQL + Drizzle ORM exclusively
  */
 
-import { DirectPostgreSQLStorage } from './postgresql-direct-storage.js';
 import type { IStorage } from '../storage.js';
+import { DirectPostgreSQLStorage } from './postgresql-direct-storage.js';
 
 
 class StorageSingleton {
@@ -20,30 +21,30 @@ class StorageSingleton {
    * Thread-safe initialization with PostgreSQL-only architecture
    */
   public static getInstance(): IStorage {
-    if (this.instance !== null) {
-      return this.instance;
+    if (StorageSingleton.instance !== null) {
+      return StorageSingleton.instance;
     }
 
-    if (this.isInitializing) {
+    if (StorageSingleton.isInitializing) {
       throw new Error('Storage singleton is currently being initialized. Please wait.');
     }
 
-    this.isInitializing = true;
+    StorageSingleton.isInitializing = true;
 
     try {
       logger.info('[StorageSingleton] Initializing Direct PostgreSQL Storage...');
 
       // Initialize PostgreSQL-only storage (eliminates hybrid complexity)
-      this.instance = new DirectPostgreSQLStorage();
+      StorageSingleton.instance = new DirectPostgreSQLStorage();
 
       logger.info('[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully');
 
-      return this.instance;
+      return StorageSingleton.instance;
     } catch (error) {
       logger.error('[StorageSingleton] ❌ Failed to initialize PostgreSQL storage:', error);
       throw new Error(`PostgreSQL storage initialization failed: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
-      this.isInitializing = false;
+      StorageSingleton.isInitializing = false;
     }
   }
 
@@ -51,7 +52,7 @@ class StorageSingleton {
    * Check if singleton is initialized
    */
   public static isInitialized(): boolean {
-    return this.instance !== null;
+    return StorageSingleton.instance !== null;
   }
 
   /**
@@ -60,8 +61,8 @@ class StorageSingleton {
    */
   public static reset(): void {
     logger.info('[StorageSingleton] Resetting singleton instance');
-    this.instance = null;
-    this.isInitializing = false;
+    StorageSingleton.instance = null;
+    StorageSingleton.isInitializing = false;
   }
 
   /**
@@ -73,8 +74,8 @@ class StorageSingleton {
     databaseUrl: boolean;
   } {
     return {
-      initialized: this.instance !== null,
-      isInitializing: this.isInitializing,
+      initialized: StorageSingleton.instance !== null,
+      isInitializing: StorageSingleton.isInitializing,
       databaseUrl: !!process.env.DATABASE_URL
     };
   }

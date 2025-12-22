@@ -5,15 +5,15 @@
 
 import { db } from '../../server/db.js';
 import {
-    inquiries,
-    auditLogs,
+    animationErrors, 
     auditConfiguration,
+    auditLogs,
+    inquiries,
     performanceMetrics,
     storageAnalysisResults,
-    storageChangeLogs,
-    animationErrors
+    storageChangeLogs
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed sample inquiries

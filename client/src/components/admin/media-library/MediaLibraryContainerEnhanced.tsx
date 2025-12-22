@@ -1,20 +1,22 @@
-import React, { useEffect, Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useToast } from "@/hooks/use-toast";
 import { getQueryClient } from "@/lib/queryClient";
 import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+
 const MediaGrid = React.lazy(() => import("./MediaGrid"));
 const MediaFiltersPanel = React.lazy(() => import("./MediaFiltersPanel"));
 const MediaUploadEnhanced = React.lazy(() => import("./MediaUploadEnhanced"));
 const MediaViewerModal = React.lazy(() => import("./MediaViewerModal"));
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import type { MediaAsset } from "@shared/schema";
+import { AlertTriangle, PanelLeft, RefreshCw, Settings, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, RefreshCw, PanelLeft, Trash2, Settings } from "lucide-react";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { cn } from "@/lib/utils";
-import type { MediaAsset } from "@shared/schema";
 
 // Phase 2: Enhanced Container with Error Boundaries & Performance Monitoring
 function ErrorFallback({

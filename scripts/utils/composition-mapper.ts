@@ -4,7 +4,7 @@
  * Maps fiber compositions to existing fiber IDs in the database
  */
 
-import { ReplitStorage } from '../../server/replit-storage.js';
+import type { ReplitStorage } from '../../server/replit-storage.js';
 import { Fiber } from '../../shared/schema-types.js';
 
 interface CompositionMappingResult {

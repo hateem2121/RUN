@@ -4,8 +4,8 @@
  * Created: October 22, 2025
  */
 
-import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
+import nodemailer from 'nodemailer';
 import { logger } from './smart-logger.js';
 
 interface EmailOptions {

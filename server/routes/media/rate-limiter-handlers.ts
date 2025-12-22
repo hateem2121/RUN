@@ -3,8 +3,8 @@
  */
 
 import type { Request, Response } from "express";
-import { generalLimiter, adminLimiter, diagnosticLimiter } from "../../lib/rate-limiter.js";
-import { createSuccessResponse, createErrorResponse } from "./utils.js";
+import { adminLimiter, diagnosticLimiter, generalLimiter } from "../../lib/rate-limiter.js";
+import { createErrorResponse, createSuccessResponse } from "./utils.js";
 
 /**
  * GET /api/media/rate-limiter/stats

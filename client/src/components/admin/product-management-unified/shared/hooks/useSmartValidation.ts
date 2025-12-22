@@ -1,5 +1,5 @@
-import { useCallback, useRef, useMemo } from 'react';
-import { ProductFormFieldValue } from '../types';
+import { useCallback, useMemo, useRef } from 'react';
+import type { ProductFormFieldValue } from '../types';
 
 // UPGRADED: Using unified validation system (Phase 3.2 Integration)
 interface ValidationResult {

@@ -1,16 +1,16 @@
 /* eslint-disable react/no-unknown-property */
-import { useRef, useEffect, useState, useCallback, memo } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
-  Scene,
-  WebGLRenderer,
-  PerspectiveCamera,
-  Mesh,
   AmbientLight,
   DirectionalLight,
-  SphereGeometry,
+  type Material,
+  Mesh,
   MeshPhysicalMaterial,
-  Object3D,
-  Material,
+  type Object3D,
+  PerspectiveCamera,
+  Scene,
+  SphereGeometry,
+  WebGLRenderer,
 } from "three";
 
 type Mode = "lens" | "bar" | "cube";

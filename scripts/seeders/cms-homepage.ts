@@ -3,17 +3,17 @@
  * Seeds all homepage-related CMS tables
  */
 
-import { db } from "../../server/db.js";
 import { eq } from "drizzle-orm";
+import { db } from "../../server/db.js";
 import {
+  homepageFeaturedProductsSettings,
   homepageHero,
+  homepageProcessCards,
   homepageSections,
   homepageSlogans,
-  homepageProcessCards,
-  homepageFeaturedProductsSettings,
   mediaAssets,
 } from "../../shared/schema.js";
-import { SeedResult, seedWithTransaction } from "../utils/seed-helpers.js";
+import { type SeedResult, seedWithTransaction } from "../utils/seed-helpers.js";
 
 /**
  * Seed homepage hero section

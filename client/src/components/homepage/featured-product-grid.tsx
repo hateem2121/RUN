@@ -1,19 +1,19 @@
-import { lazy, Suspense } from "react";
-import { Link } from "wouter";
-import { ArrowRight } from "lucide-react";
-import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
-import { LiquidGlassTitle } from "@/components/ui/glass-card";
-import { SwipeableMediaCard } from "@/components/homepage/swipeable-media-card";
-import { ButtonHoverMultiple } from "@/components/ui/button-hover-multiple";
-import {
-  buildProductUrl,
-  buildProductMediaItems,
-} from "@/lib/product-transformers";
 import type {
-  Product,
   Category,
   HomepageFeaturedProductsSettings,
+  Product,
 } from "@shared/schema";
+import { ArrowRight } from "lucide-react";
+import { lazy, Suspense } from "react";
+import { Link } from "wouter";
+import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
+import { SwipeableMediaCard } from "@/components/homepage/swipeable-media-card";
+import { ButtonHoverMultiple } from "@/components/ui/button-hover-multiple";
+import { LiquidGlassTitle } from "@/components/ui/glass-card";
+import {
+  buildProductMediaItems,
+  buildProductUrl,
+} from "@/lib/product-transformers";
 
 const DotGrid = lazy(() =>
   import("@/components/homepage/dot-grid").then((m) => ({

@@ -1,16 +1,16 @@
 
+import { and, eq, isNotNull, isNull, lt, lte, notLike, sql } from "drizzle-orm";
 import { db } from "../server/db.js";
 import {
-    mediaAssets, products, categories, fabrics, fabricCompositions,
+    aboutHero,categories, fabricCompositions,fabrics, footerConfiguration,
     homepageHero, homepageSections,
-    aboutHero,
+    inquiries, 
     manufacturingHero, manufacturingProcesses,
-    sustainabilityHero, sustainabilityGoals,
-    technologyHero,
-    navigationItems, footerConfiguration,
-    inquiries, performanceMetrics
+    mediaAssets, 
+    navigationItems, performanceMetrics, products, sustainabilityGoals,
+    sustainabilityHero, 
+    technologyHero
 } from "../shared/schema.js";
-import { eq, sql, and, isNotNull, lte, isNull, notLike, lt } from "drizzle-orm";
 
 // ANSI Colors
 const colors = {

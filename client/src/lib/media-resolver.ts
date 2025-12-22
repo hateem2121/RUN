@@ -35,23 +35,23 @@ export class MediaResolver {
   private static isInitialized = false;
 
   static initialize(assets: MediaAsset[], options?: MediaResolverOptions) {
-    this.assets = assets || [];
-    this.enableLogging = options?.enableLogging || false;
-    this.isInitialized = true;
+    MediaResolver.assets = assets || [];
+    MediaResolver.enableLogging = options?.enableLogging || false;
+    MediaResolver.isInitialized = true;
   }
 
   static getAsset(id?: number): MediaAsset | null {
-    if (!id || !this.isInitialized || !this.assets) {
+    if (!id || !MediaResolver.isInitialized || !MediaResolver.assets) {
       return null;
     }
     
-    const asset = this.assets.find(asset => asset.id === id);
+    const asset = MediaResolver.assets.find(asset => asset.id === id);
     
     return asset || null;
   }
 
   static getAssetUrl(id?: number, fallbackId?: number): string | null {
-    const asset = this.getAsset(id) || this.getAsset(fallbackId);
+    const asset = MediaResolver.getAsset(id) || MediaResolver.getAsset(fallbackId);
     
     if (!asset) {
       return null;
@@ -67,13 +67,13 @@ export class MediaResolver {
   }
 
   static validateAssetExists(id?: number): boolean {
-    if (!id || !this.isInitialized || !this.assets) return false;
-    return this.assets.some(asset => asset.id === id);
+    if (!id || !MediaResolver.isInitialized || !MediaResolver.assets) return false;
+    return MediaResolver.assets.some(asset => asset.id === id);
   }
 
   static getFirstValidAssetId(ids: (number | undefined)[]): number | null {
     for (const id of ids) {
-      if (id && this.validateAssetExists(id)) {
+      if (id && MediaResolver.validateAssetExists(id)) {
         return id;
       }
     }
@@ -81,14 +81,14 @@ export class MediaResolver {
   }
 
   static getAssetsByType(type: string): MediaAsset[] {
-    if (!this.isInitialized || !this.assets) return [];
-    return this.assets.filter(asset => asset.type === type);
+    if (!MediaResolver.isInitialized || !MediaResolver.assets) return [];
+    return MediaResolver.assets.filter(asset => asset.type === type);
   }
 
   static getRandomAssetId(type?: string): number | null {
-    if (!this.isInitialized || !this.assets) return null;
+    if (!MediaResolver.isInitialized || !MediaResolver.assets) return null;
     
-    const filteredAssets = type ? this.getAssetsByType(type) : this.assets;
+    const filteredAssets = type ? MediaResolver.getAssetsByType(type) : MediaResolver.assets;
     if (filteredAssets.length === 0) return null;
     
     const randomIndex = Math.floor(Math.random() * filteredAssets.length);
@@ -103,7 +103,7 @@ export class MediaResolver {
     availableIds: number[];
     isInitialized: boolean;
   } {
-    if (!this.isInitialized || !this.assets) {
+    if (!MediaResolver.isInitialized || !MediaResolver.assets) {
       return {
         totalAssets: 0,
         imageAssets: 0,
@@ -114,10 +114,10 @@ export class MediaResolver {
     }
 
     return {
-      totalAssets: this.assets.length,
-      imageAssets: this.getAssetsByType('image').length,
-      videoAssets: this.getAssetsByType('video').length,
-      availableIds: this.assets.map(a => a.id).sort((a, b) => a - b),
+      totalAssets: MediaResolver.assets.length,
+      imageAssets: MediaResolver.getAssetsByType('image').length,
+      videoAssets: MediaResolver.getAssetsByType('video').length,
+      availableIds: MediaResolver.assets.map(a => a.id).sort((a, b) => a - b),
       isInitialized: true
     };
   }

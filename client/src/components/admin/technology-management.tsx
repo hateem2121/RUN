@@ -1,13 +1,13 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
-import { useTechnologyFeatureFlags } from "@/hooks/useTechnologyFeatureFlags";
-import { TechnologyGradientSettings } from "@/components/admin/technology/TechnologyGradientSettings";
+import { TechnologyCtaManagement } from "@/components/admin/technology/TechnologyCtaManagement";
 import { TechnologyEquipmentManagement } from "@/components/admin/technology/TechnologyEquipmentManagement";
+import { TechnologyGradientSettings } from "@/components/admin/technology/TechnologyGradientSettings";
+import { TechnologyHeroManagement } from "@/components/admin/technology/TechnologyHeroManagement";
 import { TechnologyInnovationManagement } from "@/components/admin/technology/TechnologyInnovationManagement";
 import { TechnologyResearchManagement } from "@/components/admin/technology/TechnologyResearchManagement";
 import { TechnologyRoadmapManagement } from "@/components/admin/technology/TechnologyRoadmapManagement";
-import { TechnologyHeroManagement } from "@/components/admin/technology/TechnologyHeroManagement";
-import { TechnologyCtaManagement } from "@/components/admin/technology/TechnologyCtaManagement";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTechnologyFeatureFlags } from "@/hooks/useTechnologyFeatureFlags";
+import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
 
 /**
  * PHASE 4.1: TECHNOLOGY MANAGEMENT - COMPLETE MONOLITH DECOMPOSITION

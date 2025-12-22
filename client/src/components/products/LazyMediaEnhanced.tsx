@@ -3,11 +3,11 @@
  * Replaces LazyMedia to use OptimizedImage for better performance
  */
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AlertTriangle } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface LazyMediaEnhancedProps {
   mediaId: number;

@@ -4,7 +4,7 @@
  * Maps certification names to existing certification IDs in the database
  */
 
-import { ReplitStorage } from '../../server/replit-storage.js';
+import type { ReplitStorage } from '../../server/replit-storage.js';
 import { Certificate } from '../../shared/schema-types.js';
 
 interface CertificationMappingResult {
@@ -292,7 +292,7 @@ export class CertificationMapper {
     };
     
     // Find matching properties or use defaults
-    let certProps = certificationData[normalizedName] || 
+    const certProps = certificationData[normalizedName] || 
                     certificationData[normalizedName.replace(/[^a-z0-9]/g, '')] ||
                     {
                       type: 'General',

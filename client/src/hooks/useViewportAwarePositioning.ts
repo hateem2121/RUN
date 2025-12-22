@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface ViewportDimensions {
   width: number;
@@ -210,12 +210,13 @@ export function useViewportAwarePositioning() {
         }
         break;
 
-      default:
+      default: {
         // Default modal sizing with responsive scaling
         const baseWidth = deviceType === 'mobile' ? 320 : deviceType === 'tablet' ? 400 : 480;
         optimalWidth = Math.min(availableWidth * 0.9, Math.max(baseWidth, maxContentWidth));
         optimalHeight = Math.min(availableHeight * 0.8, maxContentHeight);
         break;
+      }
     }
 
     return {

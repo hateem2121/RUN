@@ -251,7 +251,7 @@ class PerformanceRegressionSuite {
       if (context.product) {
         const requiredProductFields = ['id', 'name', 'slug'];
         const missingProductFields = requiredProductFields.filter(
-          field => !context.product.hasOwnProperty(field)
+          field => !Object.hasOwn(context.product, field)
         );
         
         if (missingProductFields.length > 0) {
@@ -540,7 +540,7 @@ class PerformanceRegressionSuite {
       if (categories.length > 0) {
         const category = categories[0];
         const requiredFields = ['id', 'name', 'slug', 'isActive'];
-        const missingFields = requiredFields.filter(field => !category.hasOwnProperty(field));
+        const missingFields = requiredFields.filter(field => !Object.hasOwn(category, field));
         
         if (missingFields.length > 0) {
           throw new Error(`Category missing fields: ${missingFields.join(', ')}`);

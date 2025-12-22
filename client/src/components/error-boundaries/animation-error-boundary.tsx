@@ -1,5 +1,6 @@
-import React, { Component, ReactNode } from 'react';
 import { AlertTriangle, RotateCcw, Zap } from 'lucide-react';
+import type React from 'react';
+import { Component, type ReactNode } from 'react'
 
 // GSAP type definitions for error boundary cleanup
 // Not augmenting Window interface to avoid conflicts with external type declarations

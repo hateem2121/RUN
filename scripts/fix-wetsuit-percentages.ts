@@ -1,7 +1,7 @@
 
+import { eq } from 'drizzle-orm';
 import { db } from '../server/db.js';
 import { fabrics } from '../shared/schema.js';
-import { eq } from 'drizzle-orm';
 
 async function fixWetsuitPercentages() {
   try {

@@ -1,9 +1,10 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import { fileURLToPath } from "url";
+import { defineConfig } from "vite";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ command: _command, mode: _mode, isSsrBuild }) => ({
     plugins: [

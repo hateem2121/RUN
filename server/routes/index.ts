@@ -36,55 +36,49 @@
  * API STRUCTURE: Flat routes at /api/* (e.g., /api/products, /api/homepage-hero, /api/health/db)
  */
 
+import compression from "compression";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import compression from "compression";
-
+// Import authentication modules
+import { isAuthenticated, setupAuth } from "../googleAuth.js";
+import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";
+import { logger } from "../lib/smart-logger.js";
+import { getStorage } from "../lib/storage-singleton.js";
+import {
+  clearAdminCacheHandler,
+  getAdminCacheStatsHandler,
+  requireAdmin,
+} from "../middleware/auth.js";
+import { enforceValidation } from "../middleware/strict-validation.js";
+import adminRouter from "./admin/admin.js";
+import accessoriesRouter from "./core/accessories.js";
 // Import distributed route modules
 import categoriesRouter from "./core/categories.js";
-import productsRouter from "./core/products.js";
-import fabricsRouter from "./core/fabrics.js";
-import accessoriesRouter from "./core/accessories.js";
 import certificatesRouter from "./core/certificates.js";
+import fabricsRouter from "./core/fabrics.js";
 import materialsRouter from "./core/materials.js";
+import productsRouter from "./core/products.js";
 import sizeChartsRouter from "./core/size-charts.js";
+// Import utility/diagnostic routes
+import { registerTaxonomyRoutes } from "./core/taxonomy-routes.js";
 import featureFlagsRouter from "./feature-flags.js";
 import foldersRouter from "./media/folder-management.routes.js";
-import adminRouter from "./admin/admin.js";
-import pageContentRouter from "./resources/page-content-routes.js";
-import contentManagementRouter from "./resources/content-management-routes.js";
-import workerRouter from "./worker.js";
-
 // Import media routes
 import mediaRoutes from "./media/index.js";
-
+import contentManagementRouter from "./resources/content-management-routes.js";
 // Import modular resource routes (PHASE 3.3: Modular Resource Routers)
 // Now includes homepage and contact routes (relocated from modules/ on October 15, 2025)
 import resourceRouter from "./resources/index.js";
-
-// Import utility/diagnostic routes
-import { registerTaxonomyRoutes } from "./core/taxonomy-routes.js";
-import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
-import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
+import pageContentRouter from "./resources/page-content-routes.js";
+import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
 import { registerDataCreationRoutes } from "./utilities/data-creation.js";
 import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postgres-population.js";
-import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
-import { registerMetricsRoutes } from "./utilities/metrics.js";
-import inquiryAdminRouter from "./utilities/inquiry-admin.js";
 import footerConfigRouter from "./utilities/footer-config.js";
-
-import { logger } from "../lib/smart-logger.js";
-import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";
-
-// Import authentication modules
-import { setupAuth, isAuthenticated } from "../googleAuth.js";
-import {
-  requireAdmin,
-  clearAdminCacheHandler,
-  getAdminCacheStatsHandler,
-} from "../middleware/auth.js";
-import { enforceValidation } from "../middleware/strict-validation.js";
-import { getStorage } from "../lib/storage-singleton.js";
+import inquiryAdminRouter from "./utilities/inquiry-admin.js";
+import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
+import { registerMetricsRoutes } from "./utilities/metrics.js";
+import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
+import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize HTTP server

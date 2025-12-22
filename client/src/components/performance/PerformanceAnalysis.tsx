@@ -1,10 +1,10 @@
 // Performance Optimization: Week 3 - Real-time Performance Analysis Component
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { performanceMonitor } from '../../lib/performance-monitor';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BundleUtils } from '../../lib/bundle-optimizer';
+import { performanceMonitor } from '../../lib/performance-monitor';
 
 interface PerformanceMetrics {
   fcp: number | null;

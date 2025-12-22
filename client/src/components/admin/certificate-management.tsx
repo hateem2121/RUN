@@ -1,22 +1,22 @@
-import { useState, useMemo } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Certificate } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Award, BarChart3, Calendar, CheckCircle, Clock, Copy, Edit2, ExternalLink, FileText, Grid3X3, Image, List, MoreVertical, Plus, Search, Settings, Shield, Table, Trash2, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { EnhancedDialog, EnhancedDialogBody, EnhancedDialogContent, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogBody, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Search, Plus, MoreVertical, Edit2, Trash2, Copy, BarChart3, X, Grid3X3, List, Table, Settings, Shield, Award, CheckCircle, FileText, ExternalLink, Image, AlertTriangle, Clock, Calendar } from "lucide-react";
-import type { Certificate } from "@shared/schema";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getCertificateTypeIcon = (type: string | undefined) => {
   if (!type) return <FileText className="w-4 h-4" />;
@@ -837,7 +837,7 @@ export default function CertificateManagement() {
   const filteredAndSortedCertificates = useMemo(() => {
     if (!certificates) return [];
 
-    let filtered = certificates.filter(cert => {
+    const filtered = certificates.filter(cert => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();

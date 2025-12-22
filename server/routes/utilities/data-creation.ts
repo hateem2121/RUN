@@ -2,8 +2,8 @@
 // Creates the 47 structured business items mentioned by user
 
 import type { Express } from 'express';
-import { getStorage } from '../../lib/storage-singleton.js';
 import { logger } from '../../lib/smart-logger.js';
+import { getStorage } from '../../lib/storage-singleton.js';
 
 export function registerDataCreationRoutes(app: Express): void {
 

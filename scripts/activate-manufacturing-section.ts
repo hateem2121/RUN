@@ -1,6 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { homepageSections } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 async function activateSection() {
   console.log("Activating 'manufacturing' section...\n");

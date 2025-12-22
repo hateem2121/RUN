@@ -3,7 +3,7 @@
  * Smart animation scheduling and viewport-based rendering
  */
 
-import React, { RefObject, useEffect, useMemo, useCallback, useState, useRef } from 'react';
+import React, { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface IntersectionOptions {
   threshold?: number | number[];

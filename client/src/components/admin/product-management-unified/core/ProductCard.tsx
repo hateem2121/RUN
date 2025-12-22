@@ -1,33 +1,32 @@
-import { useState, memo } from 'react';
-import { Product, Category, Fabric, MediaAsset } from '@shared/schema';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import type { Category, Fabric, MediaAsset, Product } from '@shared/schema';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  Box,
+  Edit,
+  Eye,
+  Image as ImageIcon,
+  Layers,
+  MoreHorizontal,
+  Package,
+  Tag,
+  Trash2, 
+  Video
+} from 'lucide-react';
+import { memo, useState } from 'react';
+import { DeleteConfirmationDialog } from '@/components/admin/shared';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Package,
-  Eye,
-  Edit,
-  MoreHorizontal,
-  Image as ImageIcon,
-  Video,
-  Box,
-  Tag,
-  Layers,
-  Trash2
-} from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { RelationshipIndicators } from './RelationshipIndicators';
-
-import { DeleteConfirmationDialog } from '@/components/admin/shared';
-import { useToast } from '@/hooks/use-toast';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UnifiedModelViewer from '@/components/ui/UnifiedModelViewer';
+import { useToast } from '@/hooks/use-toast';
+import { RelationshipIndicators } from './RelationshipIndicators';
 
 interface ProductCardProps {
   product: Product;

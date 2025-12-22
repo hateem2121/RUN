@@ -1,5 +1,6 @@
 import { db } from "../server/db.js";
-import { homepageHero, homepageSections, homepageProcessCards } from "../shared/schema.js";
+import { homepageHero, homepageProcessCards, homepageSections } from "../shared/schema.js";
+
 // import { eq } from "drizzle-orm";
 
 async function investigate() {

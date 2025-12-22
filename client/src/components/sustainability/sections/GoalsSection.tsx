@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import type { SustainabilityGoal } from "@shared/schema";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 import { Progress } from "@/components/ui/progress";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
-import type { SustainabilityGoal } from "@shared/schema";
 
 export function GoalsSection({
   goals,

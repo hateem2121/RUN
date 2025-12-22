@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 // @ts-nocheck
 
 /**
@@ -7,17 +8,17 @@
  * Includes complete data model coverage with relationships and validation
  */
 
-import { db } from '../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../server/db.js';
 import {
+  accessories, 
   categories,
-  products,
-  mediaAssets,
+  certificates,
   fabrics,
   fibers,
-  certificates,
-  sizeCharts,
-  accessories
+  mediaAssets,
+  products,
+  sizeCharts
 } from '../shared/schema.js';
 
 console.log('🌱 Starting comprehensive database seeding...');

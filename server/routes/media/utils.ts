@@ -3,14 +3,14 @@
  * Business logic, data processing, and helper functions for media operations
  */
 
-import { getStorage } from "../../lib/storage-singleton.js";
+import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
 import { appStorageService } from "../../app-storage-service.js";
-import { processImage, isImageFile } from "../../image-processor.js";
-import { isGLTFFile, getGLTFProcessor } from "../../lib/gltf-processor.js";
-import { correctMimeType } from "../../utils.js";
-import UPLOAD_CONFIG from "../../lib/upload-config.js";
+import { isImageFile, processImage } from "../../image-processor.js";
+import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
 import { logger, serializeError } from "../../lib/smart-logger.js";
-import type { MediaAsset, InsertMediaAsset } from "../../../shared/schema.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import UPLOAD_CONFIG from "../../lib/upload-config.js";
+import { correctMimeType } from "../../utils.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
 
 // ============================================================================
@@ -280,7 +280,7 @@ export const MediaUrlResolver = {
 export const enhancedValidation = {
   validateFilename: (filename: string) => {
     if (!filename || filename.length < 1 || filename.length > 255) return false;
-    const dangerousChars = /[\/\\:*?"<>|\x00-\x1f]/;
+    const dangerousChars = /[/\\:*?"<>|\x00-\x1f]/;
     return !dangerousChars.test(filename);
   },
 

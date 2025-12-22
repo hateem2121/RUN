@@ -1,0 +1,71 @@
+================================================================================
+          🤖 FINAL REMEDIATION PROMPT: RUN-REMIX HYDRATION FIXES
+================================================================================
+
+OBJECTIVE: Implement critical hydration fixes for RUN-Remix v2.0
+DATE:      December 22, 2025
+CONTEXT:   Fixing 3 issues identified in Hydration Audit (HYD-01 to HYD-03)
+
+================================================================================
+                           INSTRUCTIONS FOR AGENT
+================================================================================
+
+1. FIX CRITICAL CRASH (HYD-01)
+--------------------------------------------------------------------------------
+FILE: client/src/pages/sustainability.tsx
+ISSUE: Double JSON parsing causes 'TypeError: res.json is not a function'
+
+ACTION: Remove .json() call in useQuery code.
+
+CODE CHANGE:
+  // FIND THIS:
+  queryFn: async () => {
+    const res = await apiRequest("/api/sustainability/batch");
+    return res.json();
+  }
+
+  // REPLACE WITH THIS:
+  queryFn: async () => {
+    return await apiRequest("/api/sustainability/batch");
+  }
+
+2. FIX SSR WARNING (HYD-02)
+--------------------------------------------------------------------------------
+FILE: client/src/components/layout/SmoothScrollLayout.tsx
+ISSUE: useLayoutEffect throws warning on server
+
+ACTION: Change useLayoutEffect to useEffect
+
+CODE CHANGE:
+  // FIND THIS:
+  import { useLayoutEffect, ... } from "react";
+  useLayoutEffect(() => { ... }, []);
+
+  // REPLACE WITH THIS:
+  import { useEffect, ... } from "react";
+  useEffect(() => { ... }, []);
+
+3. FIX HYDRATION STABILITY (HYD-03)
+--------------------------------------------------------------------------------
+FILE: client/src/App.tsx
+ISSUE: Conditional rendering based on 'typeof window' risks mismatches
+
+ACTION: Use 'useMounted' pattern for client-only rendering if needed, 
+        or ensure identical initial render.
+
+CODE CHANGE (Safe Pattern):
+  function App() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    
+    // Use 'mounted' validation instead of 'typeof window !== undefined'
+    // for output that differs between server/client.
+  }
+
+================================================================================
+                              VERIFICATION
+================================================================================
+
+[ ] 1. Start Server: npm run dev
+[ ] 2. Visit /sustainability -> Page MUST Load (No Error Screen)
+[ ] 3. Check Console -> No "useLayoutEffect" warnings

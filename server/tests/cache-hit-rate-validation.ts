@@ -6,8 +6,8 @@
  * Target: 75%+ hit rate (currently at 69% baseline from Phase 2A)
  */
 
-import { UnifiedCache } from '../lib/unified-cache';
 import { logger } from '../lib/smart-logger';
+import { UnifiedCache } from '../lib/unified-cache';
 
 interface TrafficPattern {
   route: string;

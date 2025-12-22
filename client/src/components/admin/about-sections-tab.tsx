@@ -1,24 +1,23 @@
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
+import type { AboutSection, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CustomDropdown } from "@/components/admin/CustomDropdown";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogBody, EnhancedDialogContent, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogBody, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, GripVertical, Image, X } from "lucide-react";
-import { CustomDropdown } from "@/components/admin/CustomDropdown";
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import type { AboutSection, MediaAsset } from "@shared/schema";
-import { buildMediaApiParams, ADMIN_MEDIA_QUERIES } from "@shared/api-constants";
 import { createMediaQueryKey } from '@/lib/media-query-keys';
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface SectionItemProps {
   section: AboutSection;

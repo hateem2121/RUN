@@ -1,11 +1,11 @@
-import { useEffect, useRef, memo } from "react";
 import {
+  animate,
   motion,
   useInView,
   useMotionValue,
   useTransform,
-  animate,
 } from "framer-motion";
+import { memo, useEffect, useRef } from "react";
 
 interface CircularProgressStatProps {
   icon: React.ReactNode;

@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 /**
  * COMPREHENSIVE CACHE PERFORMANCE ANALYSIS
  *
@@ -14,10 +15,10 @@
  * Usage: tsx scripts/cache-performance-analysis.ts
  */
 
-import { db, getPoolMetrics } from "../server/db.js";
 import { sql } from "drizzle-orm";
 import fs from "fs/promises";
 import path from "path";
+import { db, getPoolMetrics } from "../server/db.js";
 
 // Lazy imports to avoid circular dependencies
 let UnifiedReplitCache: any;

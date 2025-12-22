@@ -1,8 +1,10 @@
+import type { Accessory, Certificate, Fabric, SizeChart } from "@shared/schema";
+import { Filter, X } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -10,9 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Filter, X } from "lucide-react";
-import { Fabric, Certificate, SizeChart, Accessory } from "@shared/schema";
+import { Slider } from "@/components/ui/slider";
 
 interface ProductFiltersProps {
   fabrics: Fabric[];

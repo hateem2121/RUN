@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Play, Image } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import type { ManufacturingHero, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Image, Play } from "lucide-react";
+import { useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared";
 import { ManufacturingLoadingState } from "@/components/shared/manufacturing";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
-import type { ManufacturingHero, MediaAsset } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface HeroFormData {
   headline: string;

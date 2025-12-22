@@ -1,6 +1,7 @@
 // Direct PostgreSQL Migration: Key-Value Store → PostgreSQL using native pg
-import { storage } from '../server/storage.js';
+
 import { Pool } from 'pg';
+import { storage } from '../server/storage.js';
 
 const kvDb = (storage as any).db;
 

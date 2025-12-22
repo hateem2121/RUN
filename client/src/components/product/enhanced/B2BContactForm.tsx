@@ -3,17 +3,17 @@
  * Features: Professional inquiry forms, validation, B2B workflows
  */
 
-import { useState, useCallback } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Building, Download, Loader2, Mail, MessageSquare, Package, Phone, User } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Loader2, Mail, Phone, Building, User, MessageSquare, Package, Download } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const b2bContactSchema = z.object({
   companyName: z.string().min(2, 'Company name is required'),

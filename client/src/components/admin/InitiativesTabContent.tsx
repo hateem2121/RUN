@@ -1,4 +1,13 @@
+import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import type { MediaAsset, SustainabilityInitiative } from "@shared/schema";
+import { Eye, Plus, Upload } from "lucide-react";
 import { useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +15,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  EnhancedDialog,
+  EnhancedDialogBody,
+  EnhancedDialogContent,
+  EnhancedDialogDescription,
+  EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { TabsContent } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -20,24 +34,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-  EnhancedDialogBody,
-  EnhancedDialogFooter,
-} from "@/components/ui/enhanced-dialog";
-import { Plus, Eye, Upload } from "lucide-react";
-import type { SustainabilityInitiative, MediaAsset } from "@shared/schema";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { IconPicker, IconDisplay } from "./shared/IconPicker";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Switch } from "@/components/ui/switch";
+import { TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { IconDisplay, IconPicker } from "./shared/IconPicker";
 
 interface InitiativeFormData {
   title: string;

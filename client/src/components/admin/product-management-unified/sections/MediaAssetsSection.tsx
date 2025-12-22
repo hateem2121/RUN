@@ -1,11 +1,12 @@
-import { useState, memo } from 'react';
-import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
-import { Label } from '@/components/ui/label';
+import type { MediaAsset } from '@shared/schema';
+import { Box, Camera, ChevronDown, ChevronRight, Image as ImageIcon, Star, Trash2, Video } from 'lucide-react';
+import { memo, useState } from 'react';
+import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Camera, Image as ImageIcon, Video, Box, Star, Trash2 } from 'lucide-react';
-import { MediaAsset } from '@shared/schema';
-import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import { Label } from '@/components/ui/label';
+
 // import UnifiedModelViewer from '@/components/ui/UnifiedModelViewer';
 // Simple Media Grid Component for Product Management
 interface SimpleMediaGridProps {
@@ -129,10 +130,11 @@ function SimpleMediaGrid({
     </div>
   );
 }
-import { mapMediaIdsToAssets, extractMediaIds } from '../shared/utils';
-import { logger } from '../shared/logger';
+
 import { AdminProductsErrorBoundary } from '../shared/ErrorBoundary';
-import { ProductFormFieldValue } from '../shared/types';
+import { logger } from '../shared/logger';
+import type { ProductFormFieldValue } from '../shared/types';
+import { extractMediaIds, mapMediaIdsToAssets } from '../shared/utils';
 
 interface MediaAssetsSectionProps {
   formData: {

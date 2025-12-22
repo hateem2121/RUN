@@ -4,17 +4,17 @@
  * Relocated from modules/ to resources/ for consistent architecture (October 15, 2025)
  */
 
-import express, { Request } from "express";
+import { BigQuery } from "@google-cloud/bigquery";
+import { CloudTasksClient } from "@google-cloud/tasks";
+import express, { type Request } from "express";
 import { z } from "zod";
+import type { ContactPageConfiguration } from "../../../shared/schema.js";
+import { CacheKeys } from "../../lib/cache-strategies.js";
+import { emailService } from "../../lib/email-service.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
-import { CacheKeys } from "../../lib/cache-strategies.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
-import { emailService } from "../../lib/email-service.js";
-import type { ContactPageConfiguration } from "../../../shared/schema.js";
-import { CloudTasksClient } from "@google-cloud/tasks";
-import { BigQuery } from "@google-cloud/bigquery";
 
 // Initialize Google Cloud Clients
 const tasksClient = new CloudTasksClient();

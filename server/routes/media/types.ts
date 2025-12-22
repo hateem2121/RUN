@@ -4,7 +4,7 @@
  */
 
 import { z } from "zod";
-import type { MediaAsset, InsertMediaAsset } from "../../../shared/schema.js";
+import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
 
 // Re-export shared types
 export type { MediaAsset, InsertMediaAsset };

@@ -1,9 +1,9 @@
-import { memo, useState, useEffect } from "react";
-import { FloatingDock } from "@/components/ui/floating-dock";
-import { StaggeredMenu } from "./staggered-menu";
-import { NavigationIcon } from "./navigation-icon";
-import { useDesktopNavigationItems, useStaggeredMenuItems } from "@/hooks/use-navigation";
 import { IconLoader } from "@tabler/icons-react";
+import { memo, useEffect, useState } from "react";
+import { FloatingDock } from "@/components/ui/floating-dock";
+import { useDesktopNavigationItems, useStaggeredMenuItems } from "@/hooks/use-navigation";
+import { NavigationIcon } from "./navigation-icon";
+import { StaggeredMenu } from "./staggered-menu";
 
 const ResponsiveNavigation = memo(function ResponsiveNavigation() {
   // Desktop navigation items (filtered by showOnDesktop)

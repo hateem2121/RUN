@@ -1,0 +1,50 @@
+name: Visual Safeguards v2
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  safeguard:
+    name: 🛡️ Visual & CSS Governance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🎨 CSS Contract Audit
+        run: npm run lint:css-contract
+
+      - name: 🔨 Build Application
+        run: npm run build
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🧪 Run Visual Regression Tests
+        run: npm run test:visual
+        env:
+          CI: true
+          PORT: 5001
+
+      - name: 📤 Upload Quality Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

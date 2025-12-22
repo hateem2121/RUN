@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { 
   BarChart, 
-  TrendingUp, 
-  Eye, 
-  Package, 
-  Filter,
-  Search,
   Clock,
-  MousePointer
+  Eye, 
+  Filter,
+  MousePointer, 
+  Package, 
+  Search,
+  TrendingUp 
 } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AnalyticsData {
   pageViews: number;

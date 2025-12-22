@@ -7,15 +7,15 @@
  * - Invalidation: Clear ALL keys matching `accessories:paginated:` prefix
  */
 
-import { db } from '../../db.js';
-import { accessories } from '../../../shared/schema.js';
-import { eq, desc, and, sql, isNull, ilike, or } from 'drizzle-orm';
+import { and, desc, eq, ilike, isNull, or, sql } from 'drizzle-orm';
 import type { Accessory, InsertAccessory } from '../../../shared/schema.js';
-import { logger } from '../smart-logger.js';
-import { queryPerformanceMonitor } from '../query-performance-monitor.js';
-import { dbCircuitBreaker } from '../db-circuit-breaker.js';
-import { UnifiedCache } from '../unified-cache.js';
+import { accessories } from '../../../shared/schema.js';
+import { db } from '../../db.js';
 import { emitCacheInvalidation } from '../cache-events.js';
+import { dbCircuitBreaker } from '../db-circuit-breaker.js';
+import { queryPerformanceMonitor } from '../query-performance-monitor.js';
+import { logger } from '../smart-logger.js';
+import { UnifiedCache } from '../unified-cache.js';
 
 const unifiedCache = UnifiedCache.getInstance();
 const ACCESSORY_CACHE_TTL = 86400 * 1000; // 24 hours (accessories change infrequently)

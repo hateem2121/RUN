@@ -1,17 +1,17 @@
+import { eq, sql } from "drizzle-orm";
+import { appStorageService } from "../server/app-storage-service.js";
 import { db } from "../server/db.js";
+import { logger } from "../server/lib/smart-logger.js";
 import {
-  mediaAssets,
+  aboutHero,
+  aboutTimelineEntries,
   categories,
-  products,
   fabrics,
   homepageHero,
   homepageSections,
-  aboutHero,
-  aboutTimelineEntries,
+  mediaAssets,
+  products,
 } from "../shared/schema.js";
-import { appStorageService } from "../server/app-storage-service.js";
-import { sql, eq } from "drizzle-orm";
-import { logger } from "../server/lib/smart-logger.js";
 
 async function cleanupMedia() {
   logger.info("🗑️ Starting complete media cleanup...");

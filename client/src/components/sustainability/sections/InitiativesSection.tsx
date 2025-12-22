@@ -1,6 +1,6 @@
+import type { MediaAsset, SustainabilityInitiative } from "@shared/schema";
 import { motion } from "framer-motion";
 import { InitiativeCard } from "../cards";
-import type { SustainabilityInitiative, MediaAsset } from "@shared/schema";
 
 export function InitiativesSection({
   initiatives,

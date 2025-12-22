@@ -5,7 +5,7 @@
 
 import { db } from '../../server/db.js';
 import { folders, mediaAssets } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction, randomInt } from '../utils/seed-helpers.js';
+import { randomInt, type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed folder structure for media organization

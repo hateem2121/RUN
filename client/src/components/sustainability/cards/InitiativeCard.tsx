@@ -1,6 +1,6 @@
-import { memo } from "react";
+import type { MediaAsset, SustainabilityInitiative } from "@shared/schema";
 import { motion } from "framer-motion";
-import type { SustainabilityInitiative, MediaAsset } from "@shared/schema";
+import { memo } from "react";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 
 export const InitiativeCard = memo(

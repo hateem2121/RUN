@@ -15,6 +15,7 @@
     "googlecloudtools.cloudcode",         // Google Cloud Platform tools
     
     // === TypeScript & React ===
+    "dsznajder.es7-react-js-snippets",    // React snippets (Audit Fix)
     "mattpocock.ts-error-translator",     // Better TypeScript errors
     "previewjs.previewjs",                // React component preview (FIXED - successor to zenclabs)
     "wallabyjs.console-ninja",            // Enhanced debugging

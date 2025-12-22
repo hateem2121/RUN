@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
+import type { AboutTeamMessage, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Save, Trash2, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Upload, Trash2 } from "lucide-react";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import type { AboutTeamMessage, MediaAsset } from "@shared/schema";
-import { buildMediaApiParams, ADMIN_MEDIA_QUERIES } from "@shared/api-constants";
 import { createMediaQueryKey } from '@/lib/media-query-keys';
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutTeamMessageTab() {
   const { toast } = useToast();

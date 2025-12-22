@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { XIcon } from './Icons';
+import type React from 'react';
+import { useState } from 'react';
 import ClippedElement from './ClippedElement';
+import { XIcon } from './Icons';
 
 interface InquiryModalProps {
   isOpen: boolean;

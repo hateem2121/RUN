@@ -1,7 +1,8 @@
 // import { appStorageService } from "./app-storage-service.js";
 // import { db } from "./db.js";
-import { getStorage } from "./lib/storage-singleton.js";
+
 import { logger } from "./lib/smart-logger.js";
+import { getStorage } from "./lib/storage-singleton.js";
 // import type { MediaAsset, InsertMediaAsset } from "../shared/schema.js";
 
 /**

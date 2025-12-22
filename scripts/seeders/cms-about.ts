@@ -3,18 +3,18 @@
  * Seeds all about-page-related CMS tables
  */
 
-import { db } from '../../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../../server/db.js';
 import {
     aboutHero,
+    aboutMapLocations,
     aboutSections,
     aboutStatistics,
     aboutTeamMessages,
     aboutTimelineEntries,
-    aboutMapLocations,
     mediaAssets
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed about hero section

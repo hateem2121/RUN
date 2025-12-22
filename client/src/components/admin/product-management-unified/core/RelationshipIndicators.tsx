@@ -1,15 +1,16 @@
 // import React from 'react';
-import { Badge } from '@/components/ui/badge';
+
 import {
-  Image as ImageIcon,
-  Video,
+  Award,
   Box,
+  Image as ImageIcon,
+  Layers,
+  Link as LinkIcon, 
   Tag,
   Users,
-  Award,
-  Layers,
-  Link as LinkIcon
+  Video
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface RelationshipCounts {
   images: number;

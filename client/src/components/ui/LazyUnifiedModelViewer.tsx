@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
 import type { ComponentProps } from 'react';
+import { lazy, Suspense } from 'react';
 
 // Lazy-load the actual UnifiedModelViewer component
 const UnifiedModelViewer = lazy(() => import('./UnifiedModelViewer'));

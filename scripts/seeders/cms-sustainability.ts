@@ -3,18 +3,18 @@
  * Seeds all sustainability-page-related CMS tables
  */
 
-import { db } from '../../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../../server/db.js';
 import {
+    mediaAssets, 
+    sustainabilityFeatures,
+    sustainabilityGoals,
     sustainabilityHero,
     sustainabilityInitiatives,
-    sustainabilityGoals,
     sustainabilityMetrics,
-    sustainabilityFeatures,
-    unifiedSustainability,
-    mediaAssets
+    unifiedSustainability
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed sustainability hero section

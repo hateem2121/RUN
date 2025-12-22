@@ -1,40 +1,6 @@
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-  EnhancedDialogBody, // Added missing import
-} from "@/components/ui/enhanced-dialog";
-import { useQuery } from "@tanstack/react-query";
-import {
-  Plus,
-  Edit,
-  GripVertical,
-  ImageIcon,
-  Trash2,
-  Eye,
-  EyeOff,
-  LayoutTemplate,
-} from "lucide-react";
-import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -44,19 +10,51 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
   useSortable,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-
 import { CSS } from "@dnd-kit/utilities";
+import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Edit,
+  Eye,
+  EyeOff,
+  GripVertical,
+  ImageIcon,
+  LayoutTemplate,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
 import { DeleteConfirmationDialog, StatusBadge } from "@/components/admin/shared";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { ProcessCard } from "@/components/shared/manufacturing";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  EnhancedDialog,
+  EnhancedDialogBody, // Added missing import
+  EnhancedDialogContent,
+  EnhancedDialogDescription,
+  EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useManufacturingMutations } from "@/hooks/useManufacturingMutations";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { LivePreviewGrid } from "./LivePreviewGrid";
-import { ProcessCard } from "@/components/shared/manufacturing";
-
-import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
 
 // Derive form data type from schema to ensure consistency
 type ProcessFormData = Omit<

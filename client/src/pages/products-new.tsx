@@ -22,29 +22,29 @@
  * ============================================================================
  */
 
-import { useState, useEffect, useRef, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "wouter";
-import {
-  ProductSummary,
-  Category,
-  Fabric,
-  Certificate,
-  SizeChart,
+import type {
   Accessory,
+  Category,
+  Certificate,
+  Fabric,
+  ProductSummary,
+  SizeChart,
 } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { ExternalLink, Loader2, Search } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "wouter";
+import { InquiryCartButton } from "@/components/InquiryCartButton";
+import { ProductFilters } from "@/components/products/ProductFilters";
+import { CardContent, CardFooter } from "@/components/ui/card";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import {
+  type TransformContext,
+  type TransformedProduct,
   transformProducts,
-  TransformedProduct,
-  TransformContext,
 } from "@/lib/product-transformers";
 import { batchFetchMediaContent } from "@/lib/queryClient";
-import { useInquiryCart } from "@/contexts/InquiryCartContext";
-import { Loader2, Search, ExternalLink } from "lucide-react";
-import { InquiryCartButton } from "@/components/InquiryCartButton";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { ProductFilters } from "@/components/products/ProductFilters";
-import { OptimizedImage } from "@/components/ui/optimized-image";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 2. CUSTOM HOOKS

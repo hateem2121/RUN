@@ -3,15 +3,15 @@
  * Eliminates timer conflicts and scroll lag by using scroll progress for all animations
  */
 
-import { useState, useEffect, useRef, useCallback, memo } from "react";
+import type { HomepageHero, MediaAsset } from "@shared/schema";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { ButtonHoverMultiple } from "@/components/ui/button-hover-multiple";
+import { cn } from "@/lib/utils";
 import { OptimizedHeroMedia } from "./optimized-hero-media";
 import { OptimizedMatrixSloganWrapper } from "./optimized-matrix-slogan-wrapper";
-import { cn } from "@/lib/utils";
-import type { HomepageHero, MediaAsset } from "@shared/schema";
 
 interface ScrollResponsiveHeroProps {
   hero?: HomepageHero | null;

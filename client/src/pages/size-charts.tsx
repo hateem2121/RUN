@@ -1,17 +1,16 @@
-import { useState } from "react";
+import type { SizeChart } from "@shared/schema";
 import { motion } from "framer-motion";
-import { Ruler, Globe } from "lucide-react";
+import { Globe, Ruler } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ResourceCard } from "@/components/resources/ResourceCard";
+import { ResourceGrid } from "@/components/resources/ResourceGrid";
+import { ResourceSearch } from "@/components/resources/ResourceSearch";
+import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
+import { SEOMeta } from "@/components/seo-meta";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { SEOMeta } from "@/components/seo-meta";
-import { ResourceSearch } from "@/components/resources/ResourceSearch";
-import { ResourceGrid } from "@/components/resources/ResourceGrid";
-import { ResourceCard } from "@/components/resources/ResourceCard";
-import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { SizeChart } from "@shared/schema";
-import { useMemo } from "react";
 
 export default function SizeCharts() {
   const [searchTerm, setSearchTerm] = useState("");

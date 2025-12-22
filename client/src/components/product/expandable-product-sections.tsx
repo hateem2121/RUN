@@ -4,13 +4,13 @@
  * Includes visual swatches for materials, colors, and variations
  */
 
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle, ChevronRight, Info, Layers, Package2, Palette, Shield } from "lucide-react";
 import { useState } from "react";
-import { ChevronRight, CheckCircle, Shield, Info, Palette, Layers, Package2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 // import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "framer-motion";
 
 interface ProductSectionProps {
   product: any;

@@ -1,7 +1,8 @@
-import React, { useState, lazy, Suspense, useEffect, useMemo, useCallback } from 'react';
+import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from '@shared/api-constants';
+import type { Accessory, Category, Certificate, Fabric, Fiber, MediaAsset, Product, SizeChart } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
-import { Product, Category, Fabric, MediaAsset, Certificate, Accessory, SizeChart, Fiber } from '@shared/schema';
-import { buildMediaApiParams, ADMIN_MEDIA_QUERIES } from '@shared/api-constants';
+import type React from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { createMediaQueryKey } from '@/lib/media-query-keys';
 
 // Type definitions for API responses
@@ -24,17 +25,18 @@ type SectionProgress = {
   total: number;
   icon: React.ComponentType<{ className?: string }>;
 };
+
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import { AlertCircle, Camera, CheckCircle, Package, Search, Settings, Star, Tag, X, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
   EnhancedDialogBody,
-  EnhancedDialogTitle,
+  EnhancedDialogContent,
   EnhancedDialogDescription,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
 } from '@/components/ui/enhanced-dialog';
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import { Button } from '@/components/ui/button';
-import { X, CheckCircle, AlertCircle, Zap, Package, Tag, Camera, Settings, Star, Search } from 'lucide-react';
 
 // Phase 5.1: Lazy load section components for code splitting - Fixed for default exports
 const BasicInfoSection = lazy(() => import('../sections/BasicInfoSection'));
@@ -44,18 +46,16 @@ const SpecificationsSection = lazy(() => import('../sections/SpecificationsSecti
 const CertificationsSection = lazy(() => import('../sections/CertificationsSection'));
 const CustomizationSection = lazy(() => import('../sections/CustomizationSection'));
 
+import type { InsertProduct } from '@shared/schema';
 // Import mutations and queries
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { apiRequest } from '@/lib/queryClient';
+import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
 import { useToast } from '@/hooks/use-toast';
-import type { InsertProduct } from '@shared/schema';
-
+import { apiRequest } from '@/lib/queryClient';
+import { useAccordionPersistence, useProductForm } from '../shared/hooks';
 // Import StandardMediaSelectionDialog and shared hooks
 import { logger } from '../shared/logger';
-import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
-import { useProductForm, useAccordionPersistence } from '../shared/hooks';
-import { ProductFormFieldValue } from '../shared/types';
+import type { ProductFormFieldValue } from '../shared/types';
 
 interface ProductCreateEditModalProps {
   product?: Product | null;

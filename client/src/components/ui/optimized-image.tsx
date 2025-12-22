@@ -6,10 +6,10 @@
  * CLS Mitigation: Handles aspect ratio and blur-sm-up states.
  */
 
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import type * as React from "react";
+import { useEffect, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import { cn } from "@/lib/utils";
 
 interface OptimizedImageProps extends Omit<
   React.ImgHTMLAttributes<HTMLImageElement>,

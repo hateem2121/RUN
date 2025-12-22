@@ -1,11 +1,10 @@
-import { Suspense, lazy } from "react";
-import { motion } from "framer-motion";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
-
-import { MagneticButton } from "@/components/homepage/magnetic-button";
-import { NewsletterSignup } from "@/components/homepage/newsletter-signup";
 import type { HomepageSection } from "@shared/schema";
 import type { SustainabilitySectionData } from "@shared/types/homepage";
+import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
+import { MagneticButton } from "@/components/homepage/magnetic-button";
+import { NewsletterSignup } from "@/components/homepage/newsletter-signup";
+import { LiquidGlassCard } from "@/components/ui/glass-card";
 
 const HyperspaceBackground = lazy(() =>
   import("@/components/ui/hyperspace-background").then((m) => ({

@@ -1,5 +1,5 @@
-import { motion, MotionProps } from "framer-motion";
-import { ReactNode } from "react";
+import { type MotionProps, motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 interface SmoothTransitionProps extends MotionProps {
   children: ReactNode;

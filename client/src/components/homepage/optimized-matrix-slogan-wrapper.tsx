@@ -3,9 +3,9 @@
  * Uses intersection observer to pause animations when not visible
  */
 
-import { useRef, memo } from 'react';
+import { memo, useRef } from 'react';
+import { useDeviceCapabilities, usePerformanceObserver } from '@/lib/performance-intersection-observer';
 import { MatrixSloganTransition } from './matrix-slogan-transition';
-import { usePerformanceObserver, useDeviceCapabilities } from '@/lib/performance-intersection-observer';
 
 
 interface OptimizedMatrixSloganWrapperProps {

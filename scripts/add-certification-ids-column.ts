@@ -1,8 +1,9 @@
 /**
  * Add certification_ids column to homepage_sustainability table
  */
-import { db } from '../server/db.js';
+
 import { sql } from 'drizzle-orm';
+import { db } from '../server/db.js';
 import { logger } from '../server/lib/smart-logger.js';
 
 async function addCertificationIdsColumn() {

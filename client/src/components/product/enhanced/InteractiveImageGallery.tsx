@@ -3,11 +3,11 @@
  * Features: Advanced gallery with zoom, thumbnails, keyboard navigation
  */
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Maximize2, X, ZoomIn, ZoomOut } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
+import { cn } from "@/lib/utils";
 
 interface GalleryImage {
   id: string | number;

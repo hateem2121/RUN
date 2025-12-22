@@ -1,14 +1,15 @@
+import type { folders } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { folders } from "@shared/schema";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 type FolderType = typeof folders.$inferSelect;
-import { Folder, FolderOpen, Plus, Edit2, Trash2, ChevronRight, ChevronDown } from "lucide-react";
+
+import { ChevronDown, ChevronRight, Edit2, Folder, FolderOpen, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 

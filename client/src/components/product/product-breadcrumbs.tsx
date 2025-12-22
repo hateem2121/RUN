@@ -3,8 +3,8 @@
  * Displays hierarchical navigation path for products
  */
 
-import { Link } from "wouter";
 import { ChevronRight, Home } from "lucide-react";
+import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 
 interface BreadcrumbItem {

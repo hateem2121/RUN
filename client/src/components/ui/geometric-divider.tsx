@@ -1,6 +1,5 @@
-import React from "react";
 import { useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface GeometricDividerProps {

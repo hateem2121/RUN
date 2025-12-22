@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+
 // REMOVED: import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"; - replaced with traditional pagination
 // import { Loader2 } from "lucide-react"; // Loader2 is not used in the current implementation
 

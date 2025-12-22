@@ -1,14 +1,11 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import type { Category, Fabric, MediaAsset, Product } from '@shared/schema';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Product, Category, Fabric, MediaAsset } from '@shared/schema';
-import { ProductCard } from './ProductCard';
-import { ProductBulkOperations } from '../advanced/ProductBulkOperations';
-import { ProductAdvancedFilters } from '../advanced/ProductAdvancedFilters';
-import { Search, Filter, Grid, List, Package, Plus } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Filter, Grid, List, Package, Plus, Search } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'wouter';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -17,6 +14,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getOptimizedQueryOptions } from '@/lib/queryClient';
+import { ProductAdvancedFilters } from '../advanced/ProductAdvancedFilters';
+import { ProductBulkOperations } from '../advanced/ProductBulkOperations';
+import { ProductCard } from './ProductCard';
 
 interface ProductGridProps {
   onProductSelect?: (product: Product) => void;

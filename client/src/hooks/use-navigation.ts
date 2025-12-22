@@ -1,7 +1,7 @@
+import type { MediaAsset, NavigationItem } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { NavigationItem, MediaAsset } from "@shared/schema";
+import type { StaggeredMenuItem } from "@/components/navigation/staggered-menu";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-import { StaggeredMenuItem } from "@/components/navigation/staggered-menu";
 
 interface NavigationItemWithMedia extends NavigationItem {
   mediaIcon?: MediaAsset;

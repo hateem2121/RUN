@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import type { ManufacturingQuality, MediaAsset } from "@shared/schema";
 import { motion } from "framer-motion";
 import { CheckCircle2, Shield } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { BentoCard, analyzeContent, calculateGridSpan } from "@/components/ui/smart-bento-grid";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { analyzeContent, BentoCard, calculateGridSpan } from "@/components/ui/smart-bento-grid";
+import { cn } from "@/lib/utils";
 import { CardDecorator } from "./CardDecorator";
-import type { ManufacturingQuality, MediaAsset } from "@shared/schema";
 
 interface QualityCardProps {
   quality: ManufacturingQuality;

@@ -7,8 +7,8 @@
  * - Development: Allow all origins for local testing
  */
 
-import cors from "cors";
 import type { CorsOptions } from "cors";
+import cors from "cors";
 import { getConfig } from "../config/production.js";
 import { logger } from "../lib/smart-logger.js";
 

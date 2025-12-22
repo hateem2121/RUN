@@ -1,6 +1,6 @@
+import type { Certificate } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
-import type { Certificate } from "@shared/schema";
 
 interface CertificateSelectionProps {
   selectedIds: number[];

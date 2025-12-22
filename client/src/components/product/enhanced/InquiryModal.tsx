@@ -3,11 +3,11 @@
  * Styled with ClippedElement for geometric angular cuts and smooth animations
  */
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { ClippedElement } from "./PremiumProductComponents";
+import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { ClippedElement } from "./PremiumProductComponents";
 
 interface InquiryModalProps {
   isOpen: boolean;

@@ -1,0 +1,26 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90m/Users/hateemjamshaid/Downloads/RUN-Remix[39m
+
+ [31m❯[39m tests/integration/slow-query.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 7965[2mms[22m[39m
+[31m     [31m×[31m should emit a [Slow Query] warning with duration context when query exceeds 1s[39m[33m 7963[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/slow-query.test.ts[2m > [22mSlow Query Logging (Integration Tier)[2m > [22mshould emit a [Slow Query] warning with duration context when query exceeds 1s
+[31m[1mAssertionError[22m: expected undefined to be defined[39m
+[36m [2m❯[22m tests/integration/slow-query.test.ts:[2m53:21[22m[39m
+    [90m 51| [39m    )[33m;[39m
+    [90m 52| [39m
+    [90m 53| [39m    [34mexpect[39m(slowLog)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m   | [39m                    [31m^[39m
+    [90m 54| [39m    [34mexpect[39m([33mNumber[39m(slowLog[33m.[39mdurationMs))[33m.[39m[34mtoBeGreaterThan[39m([34m1000[39m)[33m;[39m
+    [90m 55| [39m    [34mexpect[39m(slowLog[33m.[39msql)[33m.[39m[34mtoContain[39m([32m"pg_sleep"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 08:41:59
+[2m   Duration [22m 8.70s[2m (transform 98ms, setup 169ms, import 30ms, tests 7.97s, environment 361ms)[22m
+

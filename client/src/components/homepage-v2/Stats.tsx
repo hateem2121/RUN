@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type React from "react";
+import { useEffect, useRef } from "react";
 import { KEY_STATS } from "./constants";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -68,7 +69,7 @@ const Stats: React.FC = () => {
 
       ScrollTrigger.matchMedia({
         // Desktop
-        "(min-width: 1024px)": function () {
+        "(min-width: 1024px)": () => {
           // Pin logic for left side
           ScrollTrigger.create({
             trigger: containerRef.current,

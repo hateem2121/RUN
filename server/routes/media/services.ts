@@ -1,15 +1,15 @@
-import { logger, serializeError } from "../../lib/smart-logger.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
-import { getStorage } from "../../lib/storage-singleton.js";
+import type { MediaAsset } from "@shared/schema.js";
 import { appStorageService } from "../../app-storage-service.js";
-import UPLOAD_CONFIG from "../../lib/upload-config.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { withTimeout } from "../../lib/request-timeout.js";
+import { logger, serializeError } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { unifiedCache } from "../../lib/unified-cache.js";
+import UPLOAD_CONFIG from "../../lib/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
 import { correctMimeType } from "../../utils.js";
-import { buildInsertMediaAsset, generateOrganizedStoragePath, detectMediaType, slugifyFilename } from "./utils.js";
-import type { MediaAsset } from "@shared/schema.js";
-import { withTimeout } from "../../lib/request-timeout.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
+import { buildInsertMediaAsset, detectMediaType, generateOrganizedStoragePath, slugifyFilename } from "./utils.js";
 
 /**
  * Upload session management for chunk tracking

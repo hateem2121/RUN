@@ -26,7 +26,7 @@ async function testEndpoint(endpoint, expectedStructure = {}) {
     
     // Validate expected structure
     const hasExpectedStructure = Object.keys(expectedStructure).every(key => 
-      data.hasOwnProperty(key)
+      Object.hasOwn(data, key)
     );
     
     return { 

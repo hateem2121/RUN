@@ -1,5 +1,5 @@
-import { Component, ReactNode, ErrorInfo } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface ErrorBoundaryProps {

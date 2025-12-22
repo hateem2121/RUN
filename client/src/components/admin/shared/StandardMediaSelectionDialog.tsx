@@ -14,16 +14,16 @@
  * - Unified error handling
  */
 
+import type { MediaAsset } from '@shared/schema';
 import { lazy, Suspense } from 'react';
+import { MediaLibraryEnhancedProvider } from '@/components/admin/media-library/MediaLibraryContextEnhanced';
 import {
   EnhancedDialog,
+  EnhancedDialogBody,
   EnhancedDialogContent,
   EnhancedDialogHeader,
-  EnhancedDialogBody,
   EnhancedDialogTitle,
 } from '@/components/ui/enhanced-dialog';
-import { MediaLibraryEnhancedProvider } from '@/components/admin/media-library/MediaLibraryContextEnhanced';
-import type { MediaAsset } from '@shared/schema';
 
 // CRITICAL FIX: Lazy-load MediaSelectionWrapperUnified to break circular dependency chain
 // This prevents: StandardMediaSelectionDialog → MediaSelectionWrapperUnified → MediaLibraryContainerEnhanced

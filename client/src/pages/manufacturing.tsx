@@ -1,25 +1,26 @@
-import { Suspense, lazy } from "react";
-
-import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { useMotionValue, useTransform } from "framer-motion";
+import { lazy, Suspense } from "react";
 import {
   ManufacturingErrorBoundary,
   ManufacturingLoadingSkeleton,
 } from "@/components/manufacturing-error-boundary";
+import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 import { PublicProcessSection } from "@/components/public/manufacturing/PublicProcessSection";
-import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
 import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
+import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+
 // CHUNK 6: Lazy-load CallToAction to defer lottie-web (168KB) from main bundle
 const CallToAction = lazy(() =>
   import("@/components/public/manufacturing/CallToAction").then((m) => ({
     default: m.CallToAction,
   })),
 );
+
 import type {
+  ManufacturingCapability,
   ManufacturingHero,
   ManufacturingProcess,
-  ManufacturingCapability,
   ManufacturingQuality,
 } from "@shared/schema";
 

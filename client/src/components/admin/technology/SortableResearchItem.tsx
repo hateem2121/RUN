@@ -1,11 +1,11 @@
 // import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Edit, GripVertical, Microscope, FlaskConical, Atom, Dna, Lightbulb, Cpu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Atom, Cpu, Dna, Edit, FlaskConical, GripVertical, Lightbulb, Microscope } from "lucide-react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 // Types
 interface ResearchProject {

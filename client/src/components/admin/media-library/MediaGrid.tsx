@@ -1,30 +1,32 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
-import { useToast } from "@/hooks/use-toast";
-import { getQueryClient, apiRequest, batchFetchMediaContent } from "@/lib/queryClient";
 import type { MediaAsset } from "@shared/schema";
-import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  Grid3X3,
-  List,
   AlertCircle,
-  ChevronLeft,
-  ChevronRight,
-  MoreHorizontal,
-  Loader2,
-  Trash2,
-  Download,
   Archive,
-  Eye,
-  Play,
-  FileImage,
-  File,
   Box,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Eye,
+  File,
+  FileImage,
+  Grid3X3,
+  List,
+  Loader2,
+  MoreHorizontal,
+  Play,
+  Trash2,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -32,18 +34,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
 // Removed: react-window virtual scrolling for simplified grid layout
 // Import removed - using direct API response
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
+import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+
 // STEP 3 INTEGRATION: Import UnifiedModelViewer for 3D preview thumbnails
 const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
+
 // Import centralized standardized query keys
 import { createMediaQueryKey, invalidateMediaQueries } from "@/lib/media-query-keys";
 
@@ -939,7 +941,7 @@ export default function MediaGrid({
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+    return Number.parseFloat((bytes / k ** i).toFixed(1)) + " " + sizes[i];
   }, []);
 
   // Simplified selection handling - using context methods properly
