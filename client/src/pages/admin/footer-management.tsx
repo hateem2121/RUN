@@ -1,17 +1,17 @@
+import type { Certificate, FooterConfiguration } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Award, Plus, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { CertificateSelectionDialog } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Trash2, Save, Award } from "lucide-react";
-import { CertificateSelectionDialog } from "@/components/admin/shared";
-import type { Certificate, FooterConfiguration } from "@shared/schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 // Helper types inferred from the JSON structure in schema or defined explicitly
 // Since schema uses jsonb.$type, we can rely on FooterConfiguration for the main structure,

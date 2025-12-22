@@ -1,21 +1,21 @@
 // PostgreSQL Schema with Drizzle ORM
 // This is the main schema file that drizzle.config.ts uses
 
+import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
+  decimal,
+  foreignKey,
+  index,
+  integer,
+  jsonb,
   pgTableCreator,
   serial,
-  varchar,
   text,
-  integer,
-  boolean,
   timestamp,
-  jsonb,
-  decimal,
-  index,
   uniqueIndex,
-  foreignKey,
+  varchar,
 } from "drizzle-orm/pg-core";
-import { sql, relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 

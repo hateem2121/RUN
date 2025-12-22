@@ -27,7 +27,7 @@ if (!fs.existsSync(INDEX_CSS)) {
 const indexContent = fs.readFileSync(INDEX_CSS, "utf8");
 
 // 3. Verify imports
-let missingImports = [];
+const missingImports = [];
 
 console.log("Checking for Ghost Styles...");
 console.log(`Scanning ${styleFiles.length} files in ${STYLES_DIR}...`);

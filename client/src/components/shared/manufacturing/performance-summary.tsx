@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle2, Clock, Shield, TrendingUp } from "lucide-react";
+import type React from "react";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, TrendingUp, Clock, Shield } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PerformanceMetric {
   name: string;

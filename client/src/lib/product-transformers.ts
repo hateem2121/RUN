@@ -1,5 +1,5 @@
-import { ProductSummary, Category, Fabric, Certificate, MediaAsset, Product } from "@shared/schema";
-import { ProductMediaItem } from "@shared/types/homepage";
+import type { Category, Certificate, Fabric, MediaAsset, Product, ProductSummary } from "@shared/schema";
+import type { ProductMediaItem } from "@shared/types/homepage";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 
 // Types matching the attached component design

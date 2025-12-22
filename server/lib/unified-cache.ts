@@ -129,7 +129,6 @@ export class UnifiedCache {
     const isRegex = pattern.startsWith("^") || pattern.includes("*");
     const regex = isRegex ? new RegExp(pattern.replace("*", ".*")) : null;
 
-    // @ts-ignore - accessing internal keys or using iterator if available
     for (const key of this.memoryCache.keys()) {
       if (regex) {
         if (regex.test(key)) {

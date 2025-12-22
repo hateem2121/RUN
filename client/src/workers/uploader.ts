@@ -245,7 +245,7 @@ const processFileUpload = async (session: UploadSession): Promise<void> => {
               }
               
               // Exponential backoff
-              const delay = Math.min(1000 * Math.pow(2, retries - 1), 5000);
+              const delay = Math.min(1000 * 2 ** (retries - 1), 5000);
               await new Promise(resolve => setTimeout(resolve, delay));
             }
           }
@@ -285,7 +285,7 @@ self.onmessage = async (event: MessageEvent<UploadMessage>) => {
 
   try {
     switch (type) {
-      case 'start':
+      case 'start': {
         if (!name || !size || !mimeType || !file) {
           throw new Error('Missing required upload parameters');
         }
@@ -317,28 +317,32 @@ self.onmessage = async (event: MessageEvent<UploadMessage>) => {
         // Start uploading
         processFileUpload(session);
         break;
+      }
 
-      case 'pause':
+      case 'pause': {
         const pauseSession = uploadSessions.get(fileId);
         if (pauseSession) {
           pauseSession.isPaused = true;
         }
         break;
+      }
 
-      case 'resume':
+      case 'resume': {
         const resumeSession = uploadSessions.get(fileId);
         if (resumeSession) {
           resumeSession.isPaused = false;
         }
         break;
+      }
 
-      case 'cancel':
+      case 'cancel': {
         const cancelSession = uploadSessions.get(fileId);
         if (cancelSession) {
           cancelSession.abortController.abort();
           uploadSessions.delete(fileId);
         }
         break;
+      }
 
       default:
         throw new Error(`Unknown message type: ${type}`);

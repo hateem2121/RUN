@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
+import type { Category, MediaAsset } from "@shared/schema";
+import { FileText, Search, Star } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogBody, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogBody } from "@/components/ui/enhanced-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Search, Star } from "lucide-react";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Textarea } from "@/components/ui/textarea";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import type { MediaAsset } from "@shared/schema";
-import type { Category } from "@shared/schema";
 
 
 interface CategoryFormProps {

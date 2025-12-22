@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Product } from '../../types';
-import { SpecsIcon, InfoIcon, ShieldCheckIcon } from '../Icons';
-import SectionHeader from './SectionHeader';
+import type React from 'react';
+import { useState } from 'react';
+import type { Product } from '../../types';
 import ClippedElement from '../ClippedElement';
+import { InfoIcon, ShieldCheckIcon, SpecsIcon } from '../Icons';
+import SectionHeader from './SectionHeader';
 
 type Tab = 'specs' | 'info' | 'certs';
 

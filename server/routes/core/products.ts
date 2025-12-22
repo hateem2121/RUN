@@ -4,15 +4,15 @@
  * Handles all product CRUD operations, pagination, filtering, and search
  */
 
-import { Router, Request, Response } from "express";
+import { type Request, type Response, Router } from "express";
 import { z } from "zod";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { insertProductSchema } from "../../../shared/schema.js";
-import { validateAndSanitizeInput, checkRateLimit, shouldBypassCache } from "../../utils.js";
-import { logger } from "../../lib/smart-logger.js";
-import { validateIdParam } from "../../utils.js";
-import { withTimeout } from "../../lib/request-timeout.js";
 import { retryDbOperation } from "../../lib/db-retry.js";
+import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { checkRateLimit, shouldBypassCache, validateAndSanitizeInput, validateIdParam } from "../../utils.js";
+
 // import { UnifiedCache } from "../../lib/unified-cache.js";
 
 // const unifiedCache = UnifiedCache.getInstance();

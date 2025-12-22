@@ -1,12 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import type {
-  UnifiedSustainability,
-  SustainabilityMetric,
-  SustainabilityInitiative,
   SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
+  UnifiedSustainability,
 } from "@shared/schema";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface UseAdminSustainabilityMutationsReturn {
   updateConfig: ReturnType<typeof useMutation<any, Error, Partial<UnifiedSustainability>, unknown>>;

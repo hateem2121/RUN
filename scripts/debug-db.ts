@@ -1,8 +1,8 @@
 import { db } from "../server/db.js";
 import {
-  technologyResearch,
-  technologyInnovations,
   technologyEquipment,
+  technologyInnovations,
+  technologyResearch,
 } from "../shared/schema.js";
 
 async function main() {

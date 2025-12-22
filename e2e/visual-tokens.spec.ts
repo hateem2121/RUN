@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Visual Tokens Smoke Test", () => {
   test("should verify luxury theme tokens are applied", async ({ page }) => {

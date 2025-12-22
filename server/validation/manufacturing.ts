@@ -5,12 +5,12 @@
  * Provides consistent error formatting and reusable validation logic
  */
 
-import { z, ZodSchema } from 'zod';
+import { type ZodSchema, z } from 'zod';
 import {
-  insertManufacturingProcessSchema,
   insertManufacturingCapabilitySchema,
-  insertManufacturingQualitySchema,
   insertManufacturingHeroSchema,
+  insertManufacturingProcessSchema,
+  insertManufacturingQualitySchema,
 } from '../../shared/schema.js';
 
 /**

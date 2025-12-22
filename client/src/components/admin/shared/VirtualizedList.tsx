@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+
 // Removed: import { FixedSizeList as List } from 'react-window';
 
 interface VirtualizedListProps<T> {

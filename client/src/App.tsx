@@ -1,29 +1,32 @@
-import { Switch, Route, useParams, Redirect } from "wouter";
+import type React from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { Toaster as SonnerToaster } from "sonner";
+import { Redirect, Route, Switch, useParams } from "wouter";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useConcurrentLocation } from "@/hooks/useConcurrentLocation";
 import E2EOverlayTest from "@/pages/e2e-overlay";
-import React, { lazy, Suspense, useEffect } from "react";
 import {
   prefetchCriticalHomepageData,
   prefetchSecondaryHomepageData,
   startAutomaticCacheCleanup,
 } from "./lib/queryClient";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as SonnerToaster } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
 const FloatingDockHeader = lazy(() => import("@/components/navigation/floating-dock-header"));
 const Footer = lazy(() => import("@/components/homepage-v2/Footer"));
-// import FloatingDockHeader from "@/components/navigation/floating-dock-header";
-import LazyLoadingUtils from "./lib/lazy-loading-optimizer";
-import { BundleUtils } from "@/lib/bundle-optimizer";
+
 import { AccessibilityWrapper } from "@/components/accessibility-wrapper";
-import { PerformanceMonitor } from "@/components/ui/performance-monitor";
-import { ResourceErrorBoundary } from "@/components/resources/ResourceErrorBoundary";
+import SmoothScrollLayout from "@/components/layout/SmoothScrollLayout";
 import { MobileOptimizations } from "@/components/mobile-optimizations";
+import { ResourceErrorBoundary } from "@/components/resources/ResourceErrorBoundary";
+import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 // import Footer from "@/components/homepage-v2/Footer";
 import { InquiryCartProvider } from "@/contexts/InquiryCartContext";
+import { BundleUtils } from "@/lib/bundle-optimizer";
 // FORENSIC INVESTIGATION - Phase 5: Core Web Vitals tracking
 import { performanceTracker } from "@/lib/performance-tracker";
-import SmoothScrollLayout from "@/components/layout/SmoothScrollLayout";
+// import FloatingDockHeader from "@/components/navigation/floating-dock-header";
+import LazyLoadingUtils from "./lib/lazy-loading-optimizer";
 
 // Lazy load all pages for better performance
 const Homepage = lazy(() => import("@/pages/homepage"));
@@ -46,8 +49,10 @@ const Fabrics = lazy(() => import("@/pages/fabrics"));
 const Fibers = lazy(() => import("@/pages/fibers"));
 const Resources = lazy(() => import("@/pages/resources"));
 const Analytics = lazy(() => import("@/pages/analytics"));
+
 // Static import for debugging E2E routing fallthrough
 import NotFound from "@/pages/not-found";
+
 // const NotFound = lazy(() => import("@/pages/not-found"));
 
 function PageLoader() {

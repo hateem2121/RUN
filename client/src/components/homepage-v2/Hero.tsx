@@ -1,10 +1,11 @@
-import React, { useRef, useMemo, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
-import { Color, MathUtils, Mesh, ShaderMaterial, DoubleSide } from "three";
-import { HERO_TEXT } from "./constants";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { motion, useScroll, useTransform } from "framer-motion";
+import type React from "react";
+import { useMemo, useRef, useState } from "react";
+import { Color, DoubleSide, MathUtils, type Mesh, type ShaderMaterial } from "three";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { HERO_TEXT } from "./constants";
 
 // --- SHADERS REMAIN UNCHANGED FOR PERFORMANCE ---
 const vertexShader = `

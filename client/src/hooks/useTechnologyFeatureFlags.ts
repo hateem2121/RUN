@@ -7,7 +7,7 @@
  * Prevents deployment-based rollbacks by enabling runtime switching
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Development-only logging
 const warnLog = (message: string, ...args: any[]) => {

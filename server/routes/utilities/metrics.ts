@@ -2,18 +2,18 @@
 // Aggregates metrics from cache, database, and performance monitoring systems
 
 import type { Express } from "express";
+import os from "os";
 import { z } from "zod";
-import { UnifiedCache } from "../../lib/unified-cache.js";
-import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
-import { queryPerformanceMonitor } from "../../lib/query-performance-monitor.js";
-import { httpMetricsTracker } from "../../lib/http-metrics-tracker.js";
+import { getPoolMetrics } from "../../db.js";
+import { type AlertThresholds, alertManager } from "../../lib/alert-manager.js";
 import { errorAggregator } from "../../lib/error-aggregator.js";
-import { alertManager, type AlertThresholds } from "../../lib/alert-manager.js";
+import { httpMetricsTracker } from "../../lib/http-metrics-tracker.js";
+import { queryPerformanceMonitor } from "../../lib/query-performance-monitor.js";
+import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { withTimeout } from "../../lib/request-timeout.js";
-import { getPoolMetrics } from "../../db.js";
-import os from "os";
+import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
+import { UnifiedCache } from "../../lib/unified-cache.js";
 
 // Validation schema for alert threshold updates
 const alertThresholdsUpdateSchema = z

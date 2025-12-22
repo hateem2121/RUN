@@ -5,13 +5,13 @@
 
 import { db } from '../../server/db.js';
 import {
-    navigationItems,
-    footerConfiguration,
     contactPageConfigurations,
+    footerConfiguration,
     logoAnimationSettings,
-    navigationGlassmorphismSettings
+    navigationGlassmorphismSettings, 
+    navigationItems
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 // import { sql } from 'drizzle-orm';
 
 /**

@@ -1,38 +1,36 @@
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-
-import { HeroSection } from "@/components/sections/HeroSection";
-
-import { Timeline } from "@/components/ui/timeline";
-import StackingCards from "@/components/ui/stacking-cards";
-import { GlowingShadow } from "@/components/ui/glowing-shadow";
-// Removed dependency on manufacturing-stacking-cards - using simple card layout instead
-import {
-  Globe2,
-  Factory,
-  Package,
-  Users,
-  Award,
-  TrendingUp,
-  MessageSquare,
-  ArrowUp,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useMediaResolver } from "@/lib/media-resolver";
-// REMOVED: media-migration utility no longer needed after consolidation
-import { OptimizedMapContainer, type MapLocation } from "@/components/ui/map";
 import type {
   AboutHero,
-  AboutTimelineEntry,
   AboutMapLocation,
   AboutSection,
   AboutStatistic,
   AboutTeamMessage,
+  AboutTimelineEntry,
   MediaAsset,
 } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+// Removed dependency on manufacturing-stacking-cards - using simple card layout instead
+import {
+  ArrowUp,
+  Award,
+  Factory,
+  Globe2,
+  MessageSquare,
+  Package,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { GlowingShadow } from "@/components/ui/glowing-shadow";
+// REMOVED: media-migration utility no longer needed after consolidation
+import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import StackingCards from "@/components/ui/stacking-cards";
+import { Timeline } from "@/components/ui/timeline";
+import { useMediaResolver } from "@/lib/media-resolver";
 
 // Hook to detect mobile devices
 function useIsMobile() {

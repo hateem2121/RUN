@@ -2,7 +2,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { storage } from '../server/storage.js';
-import { InsertFiber } from '../shared/schema-types.js';
+import type { InsertFiber } from '../shared/schema-types.js';
 
 const fiberData = [
   {

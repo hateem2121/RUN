@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { AnimatePresence, motion } from "framer-motion";
 import { MagneticButton } from "@/components/homepage/magnetic-button";
+import { LiquidGlassCard } from "@/components/ui/glass-card";
 
 interface NewsletterData {
   title?: string;

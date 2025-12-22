@@ -1,10 +1,10 @@
-import { memo } from 'react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronRight, Package } from 'lucide-react';
-import { ProductFormFieldValue } from '../shared/types';
+import { memo } from 'react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import type { ProductFormFieldValue } from '../shared/types';
 
 interface BasicInfoSectionProps {
   formData: {

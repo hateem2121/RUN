@@ -4,37 +4,37 @@
  */
 
 import type { Request, Response } from "express";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { appStorageService } from "../../app-storage-service.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
-import { logger, serializeError } from "../../lib/smart-logger.js";
 import {
-  MediaNotFoundError,
-  CacheInvalidationError,
-} from "../../lib/errors/media-errors.js";
-import {
+  generateResponsiveVariants,
   isImageFile,
   processImage,
-  generateResponsiveVariants,
 } from "../../image-processor.js";
 import {
-  createPaginatedResponse,
-  createErrorResponse,
-  createSuccessResponse,
+  CacheInvalidationError,
+  MediaNotFoundError,
+} from "../../lib/errors/media-errors.js";
+import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { withTimeout } from "../../lib/request-timeout.js";
+import { logger, serializeError } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { unifiedCache } from "../../lib/unified-cache.js";
+import { shouldBypassCache } from "../../utils.js";
+import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
+import { backendUploadManager, uploadMetrics } from "./middleware.js";
+import { enhancedUploadService, uploadSessions } from "./services.js";
+import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
+import {
   buildInsertMediaAsset,
-  processUploadedFile,
-  generateOrganizedStoragePath,
+  createErrorResponse,
+  createPaginatedResponse,
+  createSuccessResponse,
   detectMediaType,
+  generateOrganizedStoragePath,
+  processUploadedFile,
   slugifyFilename,
   type UploadOptions,
 } from "./utils.js";
-import { shouldBypassCache } from "../../utils.js";
-import { backendUploadManager, uploadMetrics } from "./middleware.js";
-import { uploadSessions, enhancedUploadService } from "./services.js";
-import { withTimeout } from "../../lib/request-timeout.js";
-import type { MediaMetadata, UploadSession, MediaAsset } from "./types.js";
-import { isGLTFFile, getGLTFProcessor } from "../../lib/gltf-processor.js";
-import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 
 // Session cleanup - remove stale uploads after 1 hour
 setInterval(

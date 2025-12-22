@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Component Interaction & Ref Integrity", () => {
   test("should verify button receives events and updates styles on hover", async ({ page }) => {

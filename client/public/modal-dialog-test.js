@@ -1,8 +1,8 @@
 /**
  * MODAL DIALOG INTEGRATION TEST - Browser Execution Version
  */
-(function() {
-  'use strict';
+(() => {
+  
 
   console.log('🧪 Starting Modal Dialog Integration Tests...');
   

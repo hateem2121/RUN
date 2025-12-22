@@ -3,11 +3,11 @@ process.env.NODE_ENV = "production";
 process.env.GOOGLE_CLOUD_PROJECT = "test-project";
 process.env.RECAPTCHA_SECRET_KEY = "test-secret";
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import express from "express";
 import request from "supertest";
-import { registerRoutes } from "../server/routes/index.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { emailService } from "../server/lib/email-service.js";
+import { registerRoutes } from "../server/routes/index.js";
 
 // Mock Logger to avoid environment validation
 vi.mock("../server/lib/smart-logger.js", () => ({

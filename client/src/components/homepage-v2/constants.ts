@@ -1,4 +1,4 @@
-import { Partner, ProcessStep, StatItem } from "./types";
+import type { Partner, ProcessStep, StatItem } from "./types";
 
 export const HERO_TEXT = ["YOUR STRATEGIC", "B2B MANUFACTURING", "PARTNER"];
 

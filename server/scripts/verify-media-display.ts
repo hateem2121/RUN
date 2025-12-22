@@ -1,7 +1,7 @@
-import { db } from "../db.js";
+import { isNull } from "drizzle-orm";
 import { mediaAssets } from "../../shared/schema.js";
 import { appStorageService } from "../app-storage-service.js";
-import { isNull } from "drizzle-orm";
+import { db } from "../db.js";
 
 async function verifyMediaDisplay() {
   console.log("🔍 MEDIA DISPLAY VERIFICATION");

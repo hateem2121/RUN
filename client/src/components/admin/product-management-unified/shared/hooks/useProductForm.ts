@@ -1,7 +1,7 @@
-import { useReducer, useCallback, useEffect } from 'react';
-import { Product } from '@shared/schema';
+import type { Product } from '@shared/schema';
+import { useCallback, useEffect, useReducer } from 'react';
 import { logger } from '../logger';
-import { ProductFormFieldValue } from '../types';
+import type { ProductFormFieldValue } from '../types';
 
 // Product form state interface
 interface ProductFormState {

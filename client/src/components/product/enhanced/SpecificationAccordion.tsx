@@ -3,8 +3,9 @@
  * Features: Progressive disclosure, keyboard navigation, smooth animations
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { ChevronDown, Package, Zap, Leaf, Shirt, Settings } from 'lucide-react';
+import { ChevronDown, Leaf, Package, Settings, Shirt, Zap } from 'lucide-react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface SpecificationItem {

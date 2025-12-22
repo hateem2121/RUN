@@ -10,10 +10,10 @@
  */
 
 import { Router } from "express";
-import { logger } from "../../lib/smart-logger.js";
-import { CacheOperations } from "../../lib/cache-strategies.js";
 import { insertAboutTeamMessageSchema } from "../../../shared/schema.js";
+import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
 import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
 

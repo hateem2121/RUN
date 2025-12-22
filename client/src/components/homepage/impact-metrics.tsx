@@ -1,5 +1,5 @@
-import { Droplets, Wind, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Droplets, Trash2, Wind } from "lucide-react";
 
 interface ImpactMetricsProps {
   metrics?: {

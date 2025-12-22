@@ -6,8 +6,8 @@
  * Validates that uploads appear immediately in admin interface after cache refresh
  */
 
-import { QueryClient } from '@tanstack/react-query';
-import { MediaCacheInvalidator, createMediaQueryKey } from '@/lib/media-query-keys';
+import type { QueryClient } from '@tanstack/react-query';
+import { createMediaQueryKey, MediaCacheInvalidator } from '@/lib/media-query-keys';
 
 export interface UploadFlowTest {
   testId: string;

@@ -1,0 +1,53 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90m/Users/hateemjamshaid/Downloads/RUN-Remix[39m
+
+ [31m❯[39m tests/integration/crash.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 19717[2mms[22m[39m
+[31m     [31m×[31m should exit with code 1 on uncaught exception[39m[33m 10509[2mms[22m[39m
+[31m     [31m×[31m should exit with code 1 on unhandled rejection[39m[33m 9205[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/crash.test.ts[2m > [22mProcess Crash Integrity (Integration Tier)[2m > [22mshould exit with code 1 on uncaught exception
+[31m[1mAssertionError[22m: expected -1 to be 1 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ -1[39m
+
+[36m [2m❯[22m tests/integration/crash.test.ts:[2m36:22[22m[39m
+    [90m 34| [39m    })[33m;[39m
+    [90m 35| [39m
+    [90m 36| [39m    [34mexpect[39m(exitCode)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m 37| [39m  }[33m,[39m [34m20000[39m)[33m;[39m
+    [90m 38| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/crash.test.ts[2m > [22mProcess Crash Integrity (Integration Tier)[2m > [22mshould exit with code 1 on unhandled rejection
+[31m[1mAssertionError[22m: expected -1 to be 1 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ -1[39m
+
+[36m [2m❯[22m tests/integration/crash.test.ts:[2m54:22[22m[39m
+    [90m 52| [39m    })[33m;[39m
+    [90m 53| [39m
+    [90m 54| [39m    [34mexpect[39m(exitCode)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m 55| [39m  }[33m,[39m [34m20000[39m)[33m;[39m
+    [90m 56| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m   Start at [22m 08:41:54
+[2m   Duration [22m 20.56s[2m (transform 99ms, setup 184ms, import 28ms, tests 19.72s, environment 462ms)[22m
+

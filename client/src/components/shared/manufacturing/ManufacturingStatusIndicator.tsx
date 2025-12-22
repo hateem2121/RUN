@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Clock, AlertCircle, TrendingUp } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 interface ManufacturingStatusIndicatorProps {

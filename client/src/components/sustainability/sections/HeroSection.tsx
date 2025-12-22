@@ -1,9 +1,9 @@
+import type { MediaAsset, SustainabilityFeatures } from "@shared/schema";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
+import { Button } from "@/components/ui/button";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
-import type { MediaAsset, SustainabilityFeatures } from "@shared/schema";
 
 export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
   // FIX: removed raw window access to prevent Hydration Mismatch (Server vs Client)

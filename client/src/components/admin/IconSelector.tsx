@@ -1,19 +1,19 @@
+import type { MediaAsset } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   EnhancedDialog, 
+  EnhancedDialogClose, 
   EnhancedDialogContent, 
-  EnhancedDialogHeader, 
-  EnhancedDialogTitle,
   EnhancedDialogFooter,
-  EnhancedDialogClose
+  EnhancedDialogHeader, 
+  EnhancedDialogTitle
 } from "@/components/ui/enhanced-dialog";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import { useQuery } from "@tanstack/react-query";
-import type { MediaAsset } from "@shared/schema";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 interface IconSelectorProps {

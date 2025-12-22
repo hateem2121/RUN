@@ -6,16 +6,15 @@
 
 import { Router } from "express";
 import { z } from "zod";
-import { getStorage } from "../../lib/storage-singleton.js";
-import { insertCategorySchema, type Category } from "../../../shared/schema.js";
-import { validateAndSanitizeInput, checkRateLimit, shouldBypassCache } from "../../utils.js";
-import { logger } from "../../lib/smart-logger.js";
-import { validateIdParam } from "../../utils.js";
+import { type Category, insertCategorySchema } from "../../../shared/schema.js";
 import { db } from "../../db.js";
-import { withTimeout } from "../../lib/request-timeout.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db-retry.js";
+import { withTimeout } from "../../lib/request-timeout.js";
 import { normalizeSlug } from "../../lib/slug-utils.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { checkRateLimit, shouldBypassCache, validateAndSanitizeInput, validateIdParam } from "../../utils.js";
 
 const router = Router();
 

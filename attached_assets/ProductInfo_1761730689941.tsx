@@ -1,8 +1,8 @@
-import React from 'react';
-import { Product } from '../types';
-import { AsteriskIcon, CubeIcon } from './Icons';
+import type React from 'react';
+import type { Product } from '../types';
 import Breadcrumb from './Breadcrumb';
 import ClippedElement from './ClippedElement';
+import { AsteriskIcon, CubeIcon } from './Icons';
 
 interface ProductInfoProps {
   product: Product;

@@ -10,9 +10,7 @@ import { z } from "zod";
 // Environment validation schema
 const environmentSchema = z.object({
   // Node.js Environment
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z
     .string()
     .default("5000")
@@ -47,6 +45,8 @@ const environmentSchema = z.object({
     .string()
     .default("false")
     .transform((val) => val === "true"),
+  SENTRY_DSN: z.string().optional().describe("Sentry DSN for error tracking"),
+  SENTRY_ENVIRONMENT: z.string().optional().describe("Sentry environment tag"),
 
   // Security Configuration
   CORS_ALLOWED_ORIGINS: z
@@ -62,18 +62,9 @@ const environmentSchema = z.object({
     .string()
     .default("true")
     .transform((val) => val === "true"),
-  ADMIN_API_KEY: z
-    .string()
-    .optional()
-    .describe("Admin API key for management endpoints"),
-  ENTERPRISE_API_KEY: z
-    .string()
-    .optional()
-    .describe("Enterprise API key for advanced features"),
-  MIGRATION_API_KEY: z
-    .string()
-    .optional()
-    .describe("Migration API key for data operations"),
+  ADMIN_API_KEY: z.string().optional().describe("Admin API key for management endpoints"),
+  ENTERPRISE_API_KEY: z.string().optional().describe("Enterprise API key for advanced features"),
+  MIGRATION_API_KEY: z.string().optional().describe("Migration API key for data operations"),
   SESSION_SECRET: z.string().optional().describe("Session secret for Express sessions"),
   INITIAL_ADMIN_EMAIL: z.string().optional().describe("Email of the initial admin user"),
 
@@ -83,10 +74,7 @@ const environmentSchema = z.object({
     .transform((val) => val === "true")
     .optional()
     .describe("Development mode flag"),
-  npm_package_version: z
-    .string()
-    .optional()
-    .describe("Package version from npm"),
+  npm_package_version: z.string().optional().describe("Package version from npm"),
 
   // Feature Flags
   ENABLE_DEBUG_LOGS: z
@@ -149,29 +137,25 @@ const parseEnvironment = () => {
       const issues = error.issues || [];
 
       const missingVars = issues
-        .filter(
-          (err) =>
-            err.code === "invalid_type" &&
-            (err as any).received === "undefined",
-        )
+        .filter((err) => err.code === "invalid_type" && (err as any).received === "undefined")
         .map((err) => err.path.join("."));
 
       const invalidVars = issues
-        .filter(
-          (err) =>
-            err.code !== "invalid_type" ||
-            (err as any).received !== "undefined",
-        )
+        .filter((err) => err.code !== "invalid_type" || (err as any).received !== "undefined")
         .map((err) => `${err.path.join(".")}: ${err.message}`);
 
       let errorMessage = "❌ Environment Configuration Error:\n";
 
       if (missingVars.length > 0) {
-        errorMessage += `\n🔴 Missing required environment variables:\n${missingVars.map((v) => `  - ${v}`).join("\n")}\n`;
+        errorMessage += `\n🔴 Missing required environment variables:\n${missingVars
+          .map((v) => `  - ${v}`)
+          .join("\n")}\n`;
       }
 
       if (invalidVars.length > 0) {
-        errorMessage += `\n🟡 Invalid environment variables:\n${invalidVars.map((v) => `  - ${v}`).join("\n")}\n`;
+        errorMessage += `\n🟡 Invalid environment variables:\n${invalidVars
+          .map((v) => `  - ${v}`)
+          .join("\n")}\n`;
       }
 
       // If we have issues but couldn't categorize them, print the raw issues
@@ -199,9 +183,9 @@ export const database = {
   url: env.DATABASE_URL,
   ssl: env.DATABASE_SSL_ENABLED
     ? {
-      rejectUnauthorized: env.DATABASE_SSL_REJECT_UNAUTHORIZED,
-      ca: env.DATABASE_SSL_CA || undefined,
-    }
+        rejectUnauthorized: env.DATABASE_SSL_REJECT_UNAUTHORIZED,
+        ca: env.DATABASE_SSL_CA || undefined,
+      }
     : false,
 } as const;
 
@@ -229,6 +213,10 @@ export const logging = {
   level: env.LOG_LEVEL,
   enableDebug: env.ENABLE_DEBUG_LOGS || isDevelopment,
   enablePerformanceMonitoring: env.ENABLE_PERFORMANCE_MONITORING,
+  sentry: {
+    dsn: env.SENTRY_DSN,
+    environment: env.SENTRY_ENVIRONMENT || env.NODE_ENV,
+  },
 } as const;
 
 // Security configuration
@@ -297,8 +285,8 @@ export const getConfigSummary = () => ({
       typeof server.corsOrigin === "string"
         ? server.corsOrigin
         : Array.isArray(server.corsOrigin)
-          ? server.corsOrigin.length
-          : 0,
+        ? server.corsOrigin.length
+        : 0,
     credentials: server.corsCredentials,
   },
   features: {

@@ -3,9 +3,9 @@
  * Ensures all GLTF files have embedded textures and no external dependencies
  */
 
-import { Document, NodeIO } from '@gltf-transform/core';
+import { type Document, NodeIO } from '@gltf-transform/core';
 import { KHRONOS_EXTENSIONS } from '@gltf-transform/extensions';
-import { prune, dedup, draco } from '@gltf-transform/functions';
+import { dedup, draco, prune } from '@gltf-transform/functions';
 import { logger, serializeError } from './smart-logger.js';
 
 export interface GLTFProcessingResult {

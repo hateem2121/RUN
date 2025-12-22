@@ -4,19 +4,19 @@
  * Refactored to use Drizzle ORM directly for type safety and performance
  */
 
+import { eq, inArray } from "drizzle-orm";
 import express from "express";
-import { db } from "../../db.js";
 import {
+  certificates,
   footerConfiguration,
   insertFooterConfigurationSchema,
-  certificates,
   mediaAssets,
 } from "../../../shared/schema.js";
-import { eq, inArray } from "drizzle-orm";
+import { db } from "../../db.js";
+import { CacheKeys } from "../../lib/cache-strategies.js";
 import { logger } from "../../lib/smart-logger.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
-import { CacheKeys } from "../../lib/cache-strategies.js";
 
 const router = express.Router();
 

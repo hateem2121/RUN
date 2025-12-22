@@ -1,5 +1,6 @@
 import { db } from "../server/db.js";
 import { fabrics, fibers } from "../shared/schema.js";
+
 // import { eq } from 'drizzle-orm';
 
 // Helper to find fiber ID by name (fuzzy match)

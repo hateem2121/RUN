@@ -10,7 +10,7 @@
  * Real enforcement happens server-side via requireAdmin middleware on /api/admin/* routes
  */
 
-import { useAuth, login } from "@/lib/auth";
+import { login, useAuth } from "@/lib/auth";
 
 interface ProtectedAdminRouteProps {
   children: React.ReactNode;

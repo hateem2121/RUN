@@ -3,7 +3,8 @@
  * Features: Interactive color switching, accessibility, smooth animations
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ColorVariant {

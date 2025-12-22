@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+
 /**
  * Quick test script to verify GCS credentials are working
  */
 
+import { Storage } from "@google-cloud/storage";
 // @ts-nocheck
 import { config } from "dotenv";
-import { Storage } from "@google-cloud/storage";
 
 // Load environment variables
 config();

@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MediaAsset } from "@shared/schema";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import type { MediaAsset } from "@shared/schema";
 import {
-  Loader2,
   AlertCircle,
-  RefreshCw,
   Box,
   Download,
+  Loader2,
   Play,
+  RefreshCw,
 } from "lucide-react";
-import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
-import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { batchFetchMediaContent } from "@/lib/queryClient";
-import {
-  type ModelViewerConfig,
-  getModelViewerConfig,
-  getErrorConfig,
-  MODEL_VIEWER_ENVIRONMENT,
-} from "@/lib/model-viewer-config";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
-import { useModelViewerErrorRecovery } from "@/hooks/use-model-viewer-error-recovery";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useModelViewerErrorRecovery } from "@/hooks/use-model-viewer-error-recovery";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import {
+  getErrorConfig,
+  getModelViewerConfig,
+  MODEL_VIEWER_ENVIRONMENT,
+  type ModelViewerConfig,
+} from "@/lib/model-viewer-config";
+import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
+import { batchFetchMediaContent } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 
 // Type definitions for model-viewer and browser APIs
 type ModelViewerEvent = {
@@ -281,7 +281,7 @@ export default function UnifiedModelViewer({
     setRetryTimeouts([]);
 
     // Use central error config for retry delay
-    const delay = errorConfig.retryDelayBase * Math.pow(2, nextRetryCount - 1);
+    const delay = errorConfig.retryDelayBase * 2 ** (nextRetryCount - 1);
 
     setLoadingState((prev) => ({
       ...prev,

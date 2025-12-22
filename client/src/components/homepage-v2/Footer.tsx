@@ -1,7 +1,7 @@
 // import { useStore } from "./store"; // Unused if setCursor is unused
 
-import { Instagram, Linkedin, Twitter } from "lucide-react";
 import { motion } from "framer-motion";
+import { Instagram, Linkedin, Twitter } from "lucide-react";
 import NewsletterSignup from "./NewsletterSignup";
 
 const Footer: React.FC = () => {

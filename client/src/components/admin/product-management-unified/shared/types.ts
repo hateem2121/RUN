@@ -1,7 +1,7 @@
 /**
  * Shared types for admin products unified system
  */
-import { MediaAsset } from '@shared/schema';
+import type { MediaAsset } from '@shared/schema';
 
 // =============================================================================
 // FABRIC & COMPOSITION TYPES

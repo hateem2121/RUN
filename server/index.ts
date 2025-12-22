@@ -1,31 +1,31 @@
-import express, { Request, Response, NextFunction } from "express";
-import { createServer } from "http"; // HMR FIX: Import createServer explicitly
 import compression from "compression";
-import { registerRoutes } from "./routes/index.js";
-import { createSsrHandler } from "./lib/ssr-handler.js";
+import express, { type NextFunction, type Request, type Response } from "express";
+import { createServer } from "http"; // HMR FIX: Import createServer explicitly
+import path from "path";
 // PHASE 4: Production Readiness Imports
 import { getConfig } from "./config/production.js";
-import {
-  securityHeaders,
-  requestValidation,
-  requestTimeout,
-  productionLogging,
-} from "./middleware/production-security.js";
-import {
-  productionErrorHandler,
-  notFoundHandler,
-  setupGlobalErrorHandlers,
-} from "./middleware/production-error-handler.js";
-import { healthCheckHandler, quickHealthHandler } from "./middleware/enhanced-health.js";
-import { correlationIdMiddleware } from "./middleware/correlation-id.js";
-import { createCorsMiddleware } from "./middleware/cors-config.js";
-import { logger } from "./lib/smart-logger.js";
 import { dbKeepAlive } from "./lib/database-keep-alive.js";
 import { httpMetricsTracker } from "./lib/http-metrics-tracker.js";
+import { logger } from "./lib/smart-logger.js";
+import { createSsrHandler } from "./lib/ssr-handler.js";
 import { getStorage } from "./lib/storage-singleton.js";
+import { correlationIdMiddleware } from "./middleware/correlation-id.js";
+import { createCorsMiddleware } from "./middleware/cors-config.js";
+import { healthCheckHandler, quickHealthHandler } from "./middleware/enhanced-health.js";
 // generalLimiter replaced by middleware/rateLimiter
 import { performanceTrackingMiddleware } from "./middleware/performance-tracking.js";
-import path from "path";
+import {
+  notFoundHandler,
+  productionErrorHandler,
+  setupGlobalErrorHandlers,
+} from "./middleware/production-error-handler.js";
+import {
+  productionLogging,
+  requestTimeout,
+  requestValidation,
+  securityHeaders,
+} from "./middleware/production-security.js";
+import { registerRoutes } from "./routes/index.js";
 
 // ============================================================================
 // SIMPLIFIED SERVICES (replacing archived files)
@@ -53,6 +53,19 @@ app.set("trust proxy", true);
 // PHASE 4: Initialize production configuration
 const config = getConfig();
 console.log(`[Server] 🚀 Starting in ${config.app.environment} mode`);
+
+// PHASE 5: Sentry Initialization (Must be first)
+import {
+  initSentry,
+  sentryErrorHandler,
+  sentryRequestHandler,
+  sentryTracingHandler,
+} from "./lib/sentry.js";
+initSentry();
+
+// The request handler must be the first middleware on the app
+app.use(sentryRequestHandler);
+app.use(sentryTracingHandler);
 
 // PHASE 4: Setup global error handlers
 setupGlobalErrorHandlers();
@@ -87,6 +100,7 @@ console.log("[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latenc
 
 // CHUNK 13: Production-Grade Rate Limiting (API routes only)
 import { apiRateLimiter } from "./middleware/rateLimiter.js";
+
 app.use("/api", apiRateLimiter.middleware());
 console.log("[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP");
 
@@ -164,10 +178,10 @@ app.use(express.urlencoded({ extended: false, limit: "10mb" })); // 10MB limit f
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJsonResponse: Record<string, any> | undefined;
 
   const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
+  res.json = (bodyJson, ...args) => {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
@@ -195,7 +209,7 @@ app.use((req, res, next) => {
   // HMR FIX: Create HTTP server early to attach Vite HMR
   const httpServer = createServer(app);
 
-  const server = await registerRoutes(app);
+  await registerRoutes(app);
 
   // PHASE 4: Enhanced health check endpoints
   app.get("/health", quickHealthHandler);
@@ -353,6 +367,10 @@ app.use((req, res, next) => {
 
   // PHASE 4: Production error handling (AFTER frontend setup)
   app.use(notFoundHandler);
+
+  // The error handler must be before any other error middleware and after all controllers
+  app.use(sentryErrorHandler);
+
   app.use(productionErrorHandler);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -362,8 +380,8 @@ app.use((req, res, next) => {
     console.error(err);
   });
 
-  // ALWAYS serve the app on port 5000 (mapped to 5001 in dev)
-  const port = parseInt(process.env.PORT || "5000", 10);
+  // ALWAYS serve the app on port 5001 (default)
+  const port = parseInt(process.env.PORT || "5001", 10);
 
   // HMR FIX: Listen on the pre-created httpServer instance
   httpServer.listen(port, "0.0.0.0", () => {

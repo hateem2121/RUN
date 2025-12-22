@@ -1,10 +1,20 @@
-import { useState, useEffect } from "react";
-import { useParams, useLocation } from "wouter";
+import type { Category, MediaAsset, Product } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Product, Category, MediaAsset } from "@shared/schema";
-import { Card } from "@/components/ui/card";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Grid2X2,
+  Grid3X3,
+  LayoutGrid,
+  Loader2,
+  Play,
+  Search,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "wouter";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,22 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import {
-  Loader2,
-  Search,
-  Grid3X3,
-  Grid2X2,
-  LayoutGrid,
-  Play,
-  ChevronRight,
-  ChevronLeft,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Link } from "wouter";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
-import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 
 export default function CategoryProductsPage() {
   const { slug } = useParams();

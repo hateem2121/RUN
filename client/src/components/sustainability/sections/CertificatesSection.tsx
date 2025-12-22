@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import type { Certificate } from "@shared/schema";
+import { motion } from "framer-motion";
 
 export function CertificatesSection({
   certificates,

@@ -1,7 +1,7 @@
-import { useTransform, motion, useScroll, MotionValue } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
-import { OptimizedImage } from "@/components/ui/optimized-image";
 import type { AboutSection, MediaAsset } from "@shared/schema";
+import { type MotionValue, motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface StackingCard {
   title: string;

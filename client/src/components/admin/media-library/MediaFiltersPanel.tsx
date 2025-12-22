@@ -1,9 +1,9 @@
-import { useMediaLibraryEnhanced } from './MediaLibraryContextEnhanced';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowDown, ArrowUp, Folder, PanelLeftClose, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Search, ArrowUp, ArrowDown, PanelLeftClose, Plus, Folder } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useMediaLibraryEnhanced } from './MediaLibraryContextEnhanced';
 
 // Phase 1: Search and Filtering Interface (90 lines target)
 export default function MediaFiltersPanel() {

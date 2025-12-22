@@ -7,8 +7,8 @@
  * that don't exist in object storage, preventing 404 errors.
  */
 
-import { storage } from '../server/storage.ts';
 import { Client } from '@replit/object-storage';
+import { storage } from '../server/storage.ts';
 
 const objectStorageClient = new Client();
 

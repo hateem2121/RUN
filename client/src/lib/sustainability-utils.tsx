@@ -1,10 +1,10 @@
 import {
   Droplets,
-  Wind,
-  Recycle,
-  TreePine,
-  Target,
   Leaf,
+  Recycle,
+  Target,
+  TreePine,
+  Wind,
 } from "lucide-react";
 
 type IconSize = "sm" | "md" | "lg";

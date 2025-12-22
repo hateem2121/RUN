@@ -1,4 +1,4 @@
-import { Transition } from "framer-motion";
+import type { Transition } from "framer-motion";
 
 // Spring animation config for "Organic/Spring" feel
 export const springTransition: Transition = {

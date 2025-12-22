@@ -1,53 +1,53 @@
-import express, { Router } from "express";
+import express, { type Router } from "express";
+import { createRateLimiter } from "../../middleware/rate-limiter.js";
 import {
-  getMediaAssets,
-  getMediaAssetById,
-  getMediaCount,
-  searchMediaAssets,
-  updateMediaAsset,
-  deleteMediaAsset,
-  batchOperations,
   batchGetContent,
+  batchOperations,
+  cancelUpload,
+  clearAssetCache,
+  deleteMediaAsset,
+  finalizeUpload,
+  getActiveUploads,
+  getAnalytics,
+  getCacheStats,
+  getHealthScan,
+  getMediaAssetById,
+  getMediaAssets,
   getMediaContent,
   getMediaContentWithPath,
+  getMediaCount,
   getMediaGeometry,
-  getMediaRaw,
   getMediaProxy,
-  getThumbnail,
-  getThumbnailProxy,
-  getAnalytics,
+  getMediaRaw,
   getPerformanceDashboard,
   getPerformanceMetrics,
   getSystemStatus,
-  getHealthScan,
-  getCacheStats,
-  clearAssetCache,
-  testObjectStorageConnectivity,
+  getThumbnail,
+  getThumbnailProxy,
+  getUploadMetrics,
+  getUploadProgress,
+  initializeUpload,
   repairDatabaseIntegrity,
   repairMimeTypes,
-  initializeUpload,
+  searchMediaAssets,
+  testObjectStorageConnectivity,
+  updateMediaAsset,
+  uploadBase64,
   uploadChunk,
   uploadChunkRaw,
-  finalizeUpload,
-  getUploadProgress,
-  cancelUpload,
-  getActiveUploads,
-  uploadBase64,
   uploadGltfPackage,
   uploadSingleFile,
-  getUploadMetrics,
 } from "./handlers.js";
 import {
-  uploadOptimized,
   regularUpload,
+  uploadOptimized,
   validateMagicNumbers,
 } from "./middleware.js";
-import { createRateLimiter } from "../../middleware/rate-limiter.js";
-import { createErrorResponse } from "./utils.js";
 import {
-  getRateLimiterStats,
   getRateLimiterHealth,
+  getRateLimiterStats,
 } from "./rate-limiter-handlers.js";
+import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
 

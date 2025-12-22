@@ -9,9 +9,9 @@
  * Usage: npm run backfill-thumbnails
  */
 
+import type { MediaAsset } from '../../shared/schema.js';
 import { processImage } from '../image-processor.js';
 import { storage } from '../storage.js';
-import type { MediaAsset } from '../../shared/schema.js';
 
 // Concurrency control
 const BATCH_SIZE = 5; // Process 5 assets at a time to avoid overwhelming the system

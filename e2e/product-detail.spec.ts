@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const BASE_URL = process.env.E2E_BASE_URL || "http://127.0.0.1:5001";
 

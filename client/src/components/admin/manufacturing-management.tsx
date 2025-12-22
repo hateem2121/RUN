@@ -1,12 +1,12 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { MediaAsset } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { CapabilityManagement } from "@/components/admin/manufacturing/CapabilityManagement";
 import { HeroManagement } from "@/components/admin/manufacturing/HeroManagement";
 import { ProcessManagement } from "@/components/admin/manufacturing/ProcessManagement";
-import { CapabilityManagement } from "@/components/admin/manufacturing/CapabilityManagement";
 import { QualityManagement } from "@/components/admin/manufacturing/QualityManagement";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-import type { MediaAsset } from "@shared/schema";
 
 export default function ManufacturingManagement() {
   // OPTIMIZATION: Defer heavy media loading until editing mode is active (Refactor Phase 4)

@@ -1,6 +1,6 @@
-import { db } from "../db.js";
-import { certificates, mediaAssets } from "../../shared/schema.js";
 import { eq, inArray } from "drizzle-orm";
+import { certificates, mediaAssets } from "../../shared/schema.js";
+import { db } from "../db.js";
 
 async function main() {
   console.log("--- DEBUGGING SUSTAINABILITY CERTIFICATES ---");

@@ -3,31 +3,31 @@
  * Handles product and category operations with caching and performance monitoring
  */
 
-import { db, type DbClient } from "../../db.js";
-import {
-  products,
-  categories,
-  mediaAssets,
-  sizeCharts,
-  certificates,
-  fabrics,
-  accessories,
-} from "../../../shared/schema.js";
-import { eq, desc, and, sql, asc, isNull, ne, or, like, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, like, ne, or, sql } from "drizzle-orm";
 import type {
-  Product,
-  InsertProduct,
   Category,
   InsertCategory,
-  ProductSummary,
+  InsertProduct,
+  Product,
   ProductDetail,
+  ProductSummary,
 } from "../../../shared/schema.js";
-import { logger } from "../smart-logger.js";
-import { queryPerformanceMonitor } from "../query-performance-monitor.js";
-import { dbCircuitBreaker } from "../db-circuit-breaker.js";
-import { UnifiedCache } from "../unified-cache.js";
-import type { RepositoryCacheOptions } from "../cache-strategies.js";
+import {
+  accessories,
+  categories,
+  certificates,
+  fabrics,
+  mediaAssets,
+  products,
+  sizeCharts,
+} from "../../../shared/schema.js";
+import { type DbClient, db } from "../../db.js";
 import { CacheKeys } from "../cache-keys.js";
+import type { RepositoryCacheOptions } from "../cache-strategies.js";
+import { dbCircuitBreaker } from "../db-circuit-breaker.js";
+import { queryPerformanceMonitor } from "../query-performance-monitor.js";
+import { logger } from "../smart-logger.js";
+import { UnifiedCache } from "../unified-cache.js";
 import { MiscRepository } from "./misc-repository.js";
 
 const unifiedCache = UnifiedCache.getInstance();

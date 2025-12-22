@@ -1,6 +1,6 @@
-import { db } from "../server/db.js";
 import { sql } from "drizzle-orm";
 import fs from "fs";
+import { db } from "../server/db.js";
 
 async function main() {
   console.log("Applying migration to add media fields to technology_roadmap...");

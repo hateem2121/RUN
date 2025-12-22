@@ -1,11 +1,40 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type {
+  HomepageProcessCard,
+  HomepageSection,
+  InsertHomepageProcessCard,
+  MediaAsset,
+} from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GripVertical, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  EnhancedDialog,
+  EnhancedDialogContent,
+  EnhancedDialogTrigger,
+} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -14,39 +43,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogTrigger,
-} from "@/components/ui/enhanced-dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Trash2, GripVertical } from "lucide-react";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-import type {
-  HomepageProcessCard,
-  MediaAsset,
-  InsertHomepageProcessCard,
-  HomepageSection,
-} from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface ProcessCardForm {
   title: string;

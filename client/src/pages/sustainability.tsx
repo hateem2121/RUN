@@ -1,22 +1,22 @@
+import type { MediaAsset } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { SEOMeta } from "@/components/seo-meta";
-import { Button } from "@/components/ui/button";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
-import { apiRequest } from "@/lib/queryClient";
-import type { MediaAsset } from "@shared/schema";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { MetricCard } from "@/components/sustainability/cards";
 import {
-  OptimizedSustainabilityHero,
-  InitiativesSection,
-  GoalsSection,
   CertificatesSection,
   FabricPortfolioSection,
+  GoalsSection,
+  InitiativesSection,
+  OptimizedSustainabilityHero,
 } from "@/components/sustainability/sections";
-import { springTransition, fadeInUp } from "@/lib/animations";
+import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
+import { Button } from "@/components/ui/button";
+import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { fadeInUp, springTransition } from "@/lib/animations";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Sustainability() {
   const { scrollY } = useScroll();

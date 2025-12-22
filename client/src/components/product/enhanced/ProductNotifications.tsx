@@ -3,8 +3,9 @@
  * Features: Toast notifications, accessibility, rich content support
  */
 
-import React, { useState, useCallback, useEffect, createContext, useContext } from "react";
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, Info, X } from "lucide-react";
+import type React from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface Notification {

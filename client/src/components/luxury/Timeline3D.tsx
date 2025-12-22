@@ -1,7 +1,7 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Calendar, Sparkles } from "lucide-react";
 import type { AboutTimelineEntry } from "@shared/schema";
+import { motion, useInView } from "framer-motion";
+import { Calendar, Sparkles } from "lucide-react";
+import { useRef } from "react";
 
 interface Timeline3DProps {
   entries: AboutTimelineEntry[];

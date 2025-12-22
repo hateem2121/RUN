@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["client/src/entry-client.tsx", "server/index.ts"],
+  "project": ["client/src/**/*.{ts,tsx}", "server/**/*.ts"],
+  "ignore": [
+    "postcss.config.js",
+    "tailwind.config.ts",
+    "eslint.config.js",
+    "vite.config.ts",
+    "drizzle.config.ts",
+    "**/*.d.ts",
+    "migrations/**/*",
+    ".github/**/*"
+  ],
+  "ignoreDependencies": [
+    "tailwindcss-animate",
+    "@tailwindcss/typography",
+    "@tailwindcss/container-queries",
+    "tailwindcss-debug-screens"
+  ],
+  "eslint": false,
+  "github-actions": false
+}

@@ -1,21 +1,21 @@
+import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
 import {
-  Factory,
-  Cpu,
-  Cog,
-  Settings,
-  Gauge,
-  Zap,
-  Shield,
-  CheckCircle2,
   Activity,
+  CheckCircle2,
+  Cog,
+  Cpu,
+  Factory,
+  Gauge,
+  Settings,
+  Shield,
+  Zap,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { BentoCard, analyzeContent, calculateGridSpan } from "@/components/ui/smart-bento-grid";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { ManufacturingStatusIndicator } from "./ManufacturingStatusIndicator";
+import { analyzeContent, BentoCard, calculateGridSpan } from "@/components/ui/smart-bento-grid";
+import { cn } from "@/lib/utils";
 import { CardDecorator } from "./CardDecorator";
-import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
+import { ManufacturingStatusIndicator } from "./ManufacturingStatusIndicator";
 
 interface ProcessCardProps {
   process: ManufacturingProcess;

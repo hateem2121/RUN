@@ -1,8 +1,8 @@
+import { useReducedMotion } from "framer-motion";
+import { gsap } from "gsap";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { gsap } from "gsap";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { useReducedMotion } from "framer-motion";
 
 export interface StaggeredMenuItem {
   label: string;
@@ -322,7 +322,7 @@ export const StaggeredMenu = ({
         >
           {(() => {
             const raw = colors && colors.length ? colors.slice(0, 4) : ["#1e1e22", "#35353c"];
-            let arr = [...raw];
+            const arr = [...raw];
             if (arr.length >= 3) {
               const mid = Math.floor(arr.length / 2);
               arr.splice(mid, 1);

@@ -8,8 +8,8 @@
  * PHASE 5: Added primedByLoader flag to prevent double caching during warmup
  */
 
-import { CacheKeys } from "./cache-keys.js";
 import type { IStorage } from "../storage.js";
+import { CacheKeys } from "./cache-keys.js";
 
 export type CacheWarmupTask = {
   key: string;

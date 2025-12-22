@@ -1,10 +1,11 @@
-import type { Request, Response, NextFunction } from "express";
+import { dehydrate } from "@tanstack/react-query";
+import type { NextFunction, Request, Response } from "express";
 import fs from "fs";
+import type { Server as HttpServer } from "http"; // HMR FIX: Import HttpServer type
 import path from "path";
 import { pathToFileURL } from "url";
-import { createServer as createViteServer, ViteDevServer } from "vite";
-import { Server as HttpServer } from "http"; // HMR FIX: Import HttpServer type
-import { dehydrate } from "@tanstack/react-query";
+import { createServer as createViteServer, type ViteDevServer } from "vite";
+import { logging } from "../config/environment.js";
 import { getStorage } from "./storage-singleton.js";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -76,6 +77,15 @@ async function createSsrHandler(app: any, server?: HttpServer) {
 
       if (vite) {
         template = fs.readFileSync(path.resolve(root, "client/index.html"), "utf-8");
+        // FIX: Inject CSS manually in dev mode to prevent FOUC
+        // We preferentially use the new <!--ssr-styles--> placeholder
+        const cssLink = `<link rel="stylesheet" href="/src/index.css" />`;
+        if (template.includes("<!--ssr-styles-->")) {
+          template = template.replace("<!--ssr-styles-->", cssLink);
+        } else if (template.includes("<!--app-head-->")) {
+          template = template.replace("<!--app-head-->", `${cssLink}\n<!--app-head-->`);
+        }
+
         template = await vite.transformIndexHtml(url, template);
         const module = await vite.ssrLoadModule("/src/entry-server.tsx");
         render = module.render;
@@ -85,9 +95,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
         template = fs.readFileSync(path.resolve(root, "dist/public/index.html"), "utf-8");
         const entryServerPath = path.resolve(root, "dist/server/entry-server.js");
         const module = await import(pathToFileURL(entryServerPath).href);
-        // @ts-ignore
         render = module.render;
-        // @ts-ignore
         createQueryClient = module.createQueryClient;
 
         // P1: FOUC Prevention - Inject Critical CSS
@@ -96,26 +104,20 @@ async function createSsrHandler(app: any, server?: HttpServer) {
           if (fs.existsSync(manifestPath)) {
             const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
             // Find entry chunk (index.html or entry-client.tsx)
-            // Vite manifest keys are relative to root (client/index.html)
             const entryKey = "index.html";
             const entry = manifest[entryKey];
 
             if (entry && entry.css) {
               const cssLinks = entry.css
+                .filter((file: string) => !template.includes(file))
                 .map((file: string) => `<link rel="stylesheet" href="/${file}">`)
                 .join("\n");
 
-              // Inject into template head placeholder immediately
-              // (Note: we use dynamic injection in onShellReady, but we can also pre-inject here if we want
-              // the shell to have it before React streams.
-              // React streaming writes the head EARLY.
-              // So we should append it to the head of the *template* variable now,
-              // so when createSsrHandler's onShellReady writes `beforeApp`, it includes it.)
-
-              if (template.includes("<!--app-head-->")) {
+              if (template.includes("<!--ssr-styles-->")) {
+                template = template.replace("<!--ssr-styles-->", cssLinks);
+              } else if (template.includes("<!--app-head-->")) {
                 template = template.replace("<!--app-head-->", `${cssLinks}\n<!--app-head-->`);
               } else {
-                // Fallback
                 template = template.replace("</head>", `${cssLinks}</head>`);
               }
             }
@@ -195,7 +197,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             // Override res.end immediately to ensure we capture the end of the stream
             // even if it happens synchronously (no Suspense)
             const originalEnd = res.end.bind(res);
-            res.end = function (chunk: any, encoding: any, cb: any) {
+            res.end = ((chunk: any, encoding: any, cb: any) => {
               console.log("[SSR] res.end called! Writing footer...");
               // Inject Dehydrated State and invalidation scripts
               // We dehydrate here to get the final state
@@ -203,11 +205,15 @@ async function createSsrHandler(app: any, server?: HttpServer) {
               const dehydratedState = dehydrate(queryClient);
 
               res.write(`
-                  <script>
+                  <script nonce="${res.locals.cspNonce || ""}">
                     window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState).replace(
                       /</g,
                       "\\u003c",
                     )};
+                    window.ENV = {
+                      SENTRY_DSN: "${logging.sentry.dsn || ""}",
+                      SENTRY_ENVIRONMENT: "${logging.sentry.environment || "production"}"
+                    };
                   </script>
                 `);
 
@@ -221,7 +227,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
 
               console.log("[SSR] Calling originalEnd");
               return originalEnd(chunk, encoding, cb);
-            } as any;
+            }) as any;
 
             // Flush the first part (pre-app HTML)
             console.log("[SSR] Writing beforeApp length:", beforeApp.length);
@@ -236,6 +242,14 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             // No-op - we handle cleanup in res.end wrapper
           },
           onShellError(error: any) {
+            import("@sentry/node")
+              .then((Sentry) => {
+                Sentry.captureException(error, {
+                  tags: { context: "ssr-shell" },
+                });
+              })
+              .catch(() => {});
+
             if (!res.headersSent) {
               res.status(500).send("<h1>Server Error</h1><pre>" + error?.message + "</pre>");
             } else {
@@ -245,6 +259,14 @@ async function createSsrHandler(app: any, server?: HttpServer) {
           },
           onError(error: any) {
             console.error("SSR Render Error:", error);
+            import("@sentry/node")
+              .then((Sentry) => {
+                Sentry.captureException(error, {
+                  tags: { context: "ssr-render" },
+                });
+              })
+              .catch(() => {});
+
             if (!res.headersSent) {
               res.status(500).send("<h1>Server Error (Render)</h1>");
             }

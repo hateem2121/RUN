@@ -1,9 +1,9 @@
 // Relationship Query Examples: PostgreSQL vs Current Key-Value Store
 // This demonstrates the power of proper database relationships
 
-import { eq, and, desc } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
+import { categories, fabricCompositions, fabrics, fibers, mediaAssets, products } from '../shared/schema.js';
 import { db } from './db.js';
-import { products, categories, fabrics, mediaAssets, fabricCompositions, fibers } from '../shared/schema.js';
 import { storage } from './storage.js'; // Your current Key-Value Store
 
 // =============================================================================

@@ -1,8 +1,8 @@
+import type { HomepageSection } from "@shared/schema";
+import { GripVertical, Home, Layers, LayoutTemplate, Leaf, Sparkles, Type } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import type { HomepageSection } from "@shared/schema";
-import { Home, Type, Layers, Leaf, Sparkles, LayoutTemplate, GripVertical } from "lucide-react";
 
 interface HomepageSidebarProps {
   activeTab: string;

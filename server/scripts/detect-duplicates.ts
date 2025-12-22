@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { createHash } from 'crypto';
+import { mediaAssets } from '../../shared/schema.js';
 import { appStorageService } from '../app-storage-service.js';
 import { db } from '../db.js';
-import { mediaAssets } from '../../shared/schema.js';
 
 interface FileInfo {
   path: string;
@@ -213,7 +213,7 @@ function formatBytes(bytes: number): string {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / k ** i) * 100) / 100 + ' ' + sizes[i];
 }
 
 // Run detection

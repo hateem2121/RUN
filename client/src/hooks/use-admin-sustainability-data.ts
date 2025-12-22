@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect, useMemo } from "react";
 import type {
-  UnifiedSustainability,
-  SustainabilityMetric,
-  SustainabilityInitiative,
-  SustainabilityGoal,
   Certificate,
+  SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
+  UnifiedSustainability,
 } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
 interface BatchData {
   hero: UnifiedSustainability | null;

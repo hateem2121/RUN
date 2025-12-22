@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 import { useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { invalidateMediaQueries } from "@/lib/media-query-keys";
+// Removed unused Progress import
+// import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import { ChevronLeft, ChevronRight, Download, Edit, Loader2, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 // import type { MediaAsset } from "@shared/schema";
 import {
   EnhancedDialog,
   EnhancedDialogContent,
+  EnhancedDialogDescription,
   EnhancedDialogHeader,
   EnhancedDialogTitle,
-  EnhancedDialogDescription,
 } from "@/components/ui/enhanced-dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// Removed unused Progress import
-// import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { ChevronLeft, ChevronRight, Download, Edit, Trash2, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { invalidateMediaQueries } from "@/lib/media-query-keys";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 // PHASE 1: Progressive Loading Integration
 declare global {

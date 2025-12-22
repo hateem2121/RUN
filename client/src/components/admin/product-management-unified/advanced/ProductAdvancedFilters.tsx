@@ -1,10 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { Product, Category, Fabric } from '@shared/schema';
-// Phase 2: Import debounced search hook
-import { useDebouncedSearch } from '../shared/hooks';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import type { Category, Fabric, Product } from '@shared/schema';
+import {
+  Archive,
+  Calendar,
+  Filter,
+  Layers,
+  Package,
+  Search,
+  Star,
+  X,
+  // Tag,
+  // clearSearch
+} from 'lucide-react';
+import React, { useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -12,18 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Search,
-  Filter,
-  X,
-  Star,
-  Archive,
-  Package,
-  Layers,
-  Calendar,
-  // Tag,
-  // clearSearch
-} from 'lucide-react';
+// Phase 2: Import debounced search hook
+import { useDebouncedSearch } from '../shared/hooks';
 
 interface ProductAdvancedFiltersProps {
   products: Product[];
@@ -57,7 +57,7 @@ export function ProductAdvancedFilters({
   // Phase 2/3: Advanced Features - Complex Filtering System with debounced search
   const filteredAndSortedProducts = useMemo(() => {
     // Start with search-filtered products from the debounced hook
-    let filtered = searchFilteredProducts.filter(product => {
+    const filtered = searchFilteredProducts.filter(product => {
       // Status filter
       const matchesStatus = statusFilter === 'all' ||
         (statusFilter === 'active' && product.isActive) ||
@@ -97,18 +97,20 @@ export function ProductAdvancedFilters({
           aValue = a.id; // Using ID as proxy for creation order
           bValue = b.id;
           break;
-        case 'category':
+        case 'category': {
           const aCat = categories.find(c => c.id === a.categoryId);
           const bCat = categories.find(c => c.id === b.categoryId);
           aValue = aCat?.name.toLowerCase() || '';
           bValue = bCat?.name.toLowerCase() || '';
           break;
-        case 'fabric':
+        }
+        case 'fabric': {
           const aFab = fabrics.find(f => f.id === a.fabricId);
           const bFab = fabrics.find(f => f.id === b.fabricId);
           aValue = aFab?.name.toLowerCase() || '';
           bValue = bFab?.name.toLowerCase() || '';
           break;
+        }
         case 'status':
           aValue = a.isActive ? 'active' : 'inactive';
           bValue = b.isActive ? 'active' : 'inactive';

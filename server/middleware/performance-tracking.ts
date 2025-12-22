@@ -7,7 +7,7 @@
  * - Cache hit/miss tracking
  */
 
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { logger } from '../lib/smart-logger.js';
 
 // Performance metrics storage (in-memory, last 1000 requests)

@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import type { AboutSection, MediaAsset } from "@shared/schema";
+import { useEffect, useRef, useState } from "react";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
 
 interface AnimatedScrollProps {
   sections: AboutSection[];

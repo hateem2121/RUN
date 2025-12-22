@@ -1,10 +1,10 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { cn } from "@/lib/utils";
 
 const blurIntensityMap = {
   none: "backdrop-blur-none",

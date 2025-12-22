@@ -1,0 +1,171 @@
+.config/.semgrep/semgrep_rules.json check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i The size of the file is 1.7 MiB, which exceeds the configured maximum of 1.0 MiB for this project.
+    Use the `files.maxSize` configuration to change the maximum size of files processed, or `files.includes` to ignore the file.
+  
+
+.config/replit/.semgrep/semgrep_rules.json check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i The size of the file is 1.7 MiB, which exceeds the configured maximum of 1.0 MiB for this project.
+    Use the `files.maxSize` configuration to change the maximum size of files processed, or `files.includes` to ignore the file.
+  
+
+clean_lint.json check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i The size of the file is 5.4 MiB, which exceeds the configured maximum of 1.0 MiB for this project.
+    Use the `files.maxSize` configuration to change the maximum size of files processed, or `files.includes` to ignore the file.
+  
+
+client/public/modal-dialog-test.js:204:22 lint/correctness/useParseIntRadix  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Missing radix parameter
+  
+    203 │     // Verify hierarchy
+  > 204 │     const backdrop = parseInt(rootStyle.getPropertyValue("--z-modal-backdrop")) || 40;
+        │                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    205 │     const modal = parseInt(rootStyle.getPropertyValue("--z-modal")) || 50;
+    206 │     const nested = parseInt(rootStyle.getPropertyValue("--z-modal-nested")) || 55;
+  
+  i Add a non-fractional number between 2 and 36
+  
+  i Unsafe fix: Add a radix of 10
+  
+    204 │ ····const·backdrop·=·parseInt(rootStyle.getPropertyValue("--z-modal-backdrop"),·10)·||·40;
+        │                                                                               ++++        
+
+client/public/modal-dialog-test.js:205:19 lint/correctness/useParseIntRadix  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Missing radix parameter
+  
+    203 │     // Verify hierarchy
+    204 │     const backdrop = parseInt(rootStyle.getPropertyValue("--z-modal-backdrop")) || 40;
+  > 205 │     const modal = parseInt(rootStyle.getPropertyValue("--z-modal")) || 50;
+        │                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    206 │     const nested = parseInt(rootStyle.getPropertyValue("--z-modal-nested")) || 55;
+    207 │ 
+  
+  i Add a non-fractional number between 2 and 36
+  
+  i Unsafe fix: Add a radix of 10
+  
+    205 │ ····const·modal·=·parseInt(rootStyle.getPropertyValue("--z-modal"),·10)·||·50;
+        │                                                                   ++++        
+
+client/public/modal-dialog-test.js:206:20 lint/correctness/useParseIntRadix  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Missing radix parameter
+  
+    204 │     const backdrop = parseInt(rootStyle.getPropertyValue("--z-modal-backdrop")) || 40;
+    205 │     const modal = parseInt(rootStyle.getPropertyValue("--z-modal")) || 50;
+  > 206 │     const nested = parseInt(rootStyle.getPropertyValue("--z-modal-nested")) || 55;
+        │                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    207 │ 
+    208 │     const hierarchyCorrect = backdrop < modal && modal < nested;
+  
+  i Add a non-fractional number between 2 and 36
+  
+  i Unsafe fix: Add a radix of 10
+  
+    206 │ ····const·nested·=·parseInt(rootStyle.getPropertyValue("--z-modal-nested"),·10)·||·55;
+        │                                                                           ++++        
+
+NEW HOMEPAGE/components/Stats.tsx:25:19 lint/correctness/noUnusedFunctionParameters  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! This parameter is unused.
+  
+    23 │           prev
+    24 │             .split("")
+  > 25 │             .map((letter, index) => {
+       │                   ^^^^^^
+    26 │               if (index < iterations) return value[index];
+    27 │               return chars[Math.floor(Math.random() * chars.length)];
+  
+  i Unused parameters might be the result of an incomplete refactoring.
+  
+  i Unsafe fix: If this is intentional, prepend letter with an underscore.
+  
+     23  23 │             prev
+     24  24 │               .split("")
+     25     │ - ············.map((letter,·index)·=>·{
+         25 │ + ············.map((_letter,·index)·=>·{
+     26  26 │                 if (index < iterations) return value[index];
+     27  27 │                 return chars[Math.floor(Math.random() * chars.length)];
+  
+
+client/public/modal-dialog-test.js:154:13 lint/correctness/noUnusedVariables  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! This variable testEvent is unused.
+  
+    152 │     let keyboardSetup = false;
+    153 │     try {
+  > 154 │       const testEvent = new KeyboardEvent("keydown", { key: "Tab" });
+        │             ^^^^^^^^^
+    155 │       keyboardSetup = true;
+    156 │     } catch (e) {
+  
+  i Unused variables are often the result of typos, incomplete refactors, or other sources of bugs.
+  
+  i Unsafe fix: If this is intentional, prepend testEvent with an underscore.
+  
+    152 152 │       let keyboardSetup = false;
+    153 153 │       try {
+    154     │ - ······const·testEvent·=·new·KeyboardEvent("keydown",·{·key:·"Tab"·});
+        154 │ + ······const·_testEvent·=·new·KeyboardEvent("keydown",·{·key:·"Tab"·});
+    155 155 │         keyboardSetup = true;
+    156 156 │       } catch (e) {
+  
+
+client/src/App.tsx:160:16 lint/correctness/noUnusedVariables  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! This variable e is unused.
+  
+    158 │           }, 2000);
+    159 │         }
+  > 160 │       } catch (e) {
+        │                ^
+    161 │         // Fallback if import.meta.env is not available
+    162 │       }
+  
+  i Unused variables are often the result of typos, incomplete refactors, or other sources of bugs.
+  
+  i Unsafe fix: If this is intentional, prepend e with an underscore.
+  
+    158 158 │             }, 2000);
+    159 159 │           }
+    160     │ - ······}·catch·(e)·{
+        160 │ + ······}·catch·(_e)·{
+    161 161 │           // Fallback if import.meta.env is not available
+    162 162 │         }
+  
+
+client/src/components/TechnologyCta.tsx:81:26 lint/a11y/noRedundantRoles  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Using the role attribute 'list' on the 'ul' element is redundant, because it is implied by its semantic.
+  
+    79 │                     group-hover:text-foreground
+    80 │                   "
+  > 81 │                     role="list"
+       │                          ^^^^^^
+    82 │                   >
+    83 │                     {benefits.map((benefit, index) => (
+  
+  i Unsafe fix: Remove the role attribute.
+  
+     79  79 │                       group-hover:text-foreground
+     80  80 │                     "
+     81     │ - ····················role="list"
+     82  81 │                     >
+     83  82 │                       {benefits.map((benefit, index) => (
+  
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 4426.
+Checked 1023 files in 12s. No fixes applied.
+Found 1187 errors.
+Found 2991 warnings.
+Found 253 infos.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+

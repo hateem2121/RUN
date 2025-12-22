@@ -1,5 +1,5 @@
-import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 
 interface CircularNavButtonProps {
   href: string;

@@ -1,44 +1,43 @@
-import { useState, useEffect, memo } from "react";
+import { KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type {
+  MediaAsset,
+  SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
+  UnifiedSustainability,
+} from "@shared/schema";
+import {
+  Droplets,
+  Edit,
+  GripVertical,
+  Leaf,
+  Recycle,
+  Save,
+  Target,
+  TreePine,
+  TrendingUp,
+  Undo2,
+  Wind,
+} from "lucide-react";
+import { memo, useEffect, useState } from "react";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminSustainabilityData } from "@/hooks/use-admin-sustainability-data";
 import { useAdminSustainabilityMutations } from "@/hooks/use-admin-sustainability-mutations";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Leaf,
-  GripVertical,
-  Edit,
-  Target,
-  TrendingUp,
-  Droplets,
-  Wind,
-  Recycle,
-  TreePine,
-  Save,
-  Undo2,
-} from "lucide-react";
-import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
-import { HeroTabContent } from "./HeroTabContent";
-import { CertificationsTabContent } from "./CertificationsTabContent";
-import { MetricsTabContent } from "./sustainability/metrics-tab";
-import { InitiativesTabContent } from "./InitiativesTabContent";
-import { GoalsTabContent } from "./GoalsTabContent";
-import { FeaturesTabContent } from "./FeaturesTabContent";
-import { FabricPortfolioTabContent } from "./FabricPortfolioTabContent";
 import { CallToActionTabContent } from "./CallToActionTabContent";
+import { CertificationsTabContent } from "./CertificationsTabContent";
+import { FabricPortfolioTabContent } from "./FabricPortfolioTabContent";
+import { FeaturesTabContent } from "./FeaturesTabContent";
+import { GoalsTabContent } from "./GoalsTabContent";
+import { HeroTabContent } from "./HeroTabContent";
+import { InitiativesTabContent } from "./InitiativesTabContent";
 import { SectionHeadersTabContent } from "./SectionHeadersTabContent";
-import { KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import type {
-  UnifiedSustainability,
-  MediaAsset,
-  SustainabilityMetric,
-  SustainabilityInitiative,
-  SustainabilityGoal,
-} from "@shared/schema";
+import { MetricsTabContent } from "./sustainability/metrics-tab";
 
 // Sortable item components (Keeping these local as they are used by other tabs still using the old pattern if any, but MetricsTab now handles its own)
 // Wait, MetricsTab uses SortableMetricItem which was moved inside it?

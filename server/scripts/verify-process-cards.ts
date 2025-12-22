@@ -1,6 +1,6 @@
-import { db } from "../db.js";
-import { homepageProcessCards } from "../../shared/schema.js";
 import { desc } from "drizzle-orm"; // Added 'eq' as per snippet, kept 'desc' for the orderBy in the snippet's context
+import { homepageProcessCards } from "../../shared/schema.js";
+import { db } from "../db.js";
 
 async function main() {
   console.log("🔍 Verifying Homepage Process Cards...");

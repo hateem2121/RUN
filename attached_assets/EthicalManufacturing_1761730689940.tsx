@@ -1,6 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheckIcon, LeafIcon, CubeIcon } from './Icons';
+import type React from 'react';
+import { CubeIcon, LeafIcon, ShieldCheckIcon } from './Icons';
 
 const EthicalManufacturing: React.FC = () => {
     

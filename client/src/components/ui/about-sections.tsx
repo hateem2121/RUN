@@ -2,14 +2,14 @@
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Sparkles,
-  Zap,
   Award,
-  TrendingUp,
-  Globe2,
   Factory,
-  Users,
+  Globe2,
   Package,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

@@ -2,10 +2,10 @@
 // Executes the actual data transfer from Key-Value to PostgreSQL
 
 import type { Express } from 'express';
-import { migrationUtilities } from '../../migration-utilities.js';
+import { categories, homepageHero, homepageSections, products } from '../../../shared/schema.js';
 import { db } from '../../db.js';
-import { categories, products, homepageHero, homepageSections } from '../../../shared/schema.js';
 import { logger } from '../../lib/smart-logger.js';
+import { migrationUtilities } from '../../migration-utilities.js';
 
 export function registerMigrationExecutionRoutes(app: Express): void {
 

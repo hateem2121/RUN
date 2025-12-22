@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useReducer, useCallback, ReactNode, useMemo, useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
-import { useDebounce } from '@/hooks/use-debounce';
-import { useLocation } from 'wouter';
 import type { MediaAsset } from '@shared/schema';
-import { MediaQueryKeys, invalidateMediaQueries } from '@/lib/media-query-keys';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type React from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react'
+import { useLocation } from 'wouter';
+import { useDebounce } from '@/hooks/use-debounce';
+import { useToast } from '@/hooks/use-toast';
+import { invalidateMediaQueries, MediaQueryKeys } from '@/lib/media-query-keys';
 
 // Type aliases for union types to reduce complexity
 type UploadStatus = 'pending' | 'uploading' | 'processing' | 'complete' | 'error';

@@ -1,10 +1,10 @@
+import type { MediaAsset } from "@shared/schema";
+import { Box, FileX, Image as ImageIcon, Video } from "lucide-react";
 import { useState } from "react";
-import { Video, Box, Image as ImageIcon, FileX } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { MediaAsset } from "@shared/schema";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
+import { cn } from "@/lib/utils";
 
 interface MediaPreviewProps {
   asset: MediaAsset;

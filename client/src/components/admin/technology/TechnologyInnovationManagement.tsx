@@ -11,36 +11,9 @@
  * - Zero functional changes - pure extraction
  */
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogBody,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Plus, Edit, GripVertical, X } from "lucide-react";
-import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -49,14 +22,40 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,useSortable, 
+  verticalListSortingStrategy
 } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import type { MediaAsset, TechnologyInnovation } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Edit, GripVertical, Plus, X } from "lucide-react";
+import { useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
-import type { TechnologyInnovation, MediaAsset } from "@shared/schema";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  EnhancedDialog,
+  EnhancedDialogBody,
+  EnhancedDialogContent,
+  EnhancedDialogDescription,
+  EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface InnovationFormData {
   name: string;

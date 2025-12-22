@@ -1,10 +1,10 @@
-import { useState, memo } from "react";
-import { cn } from "@/lib/utils";
 import { ArrowRight, Repeat2 } from "lucide-react";
-// import { motion } from "framer-motion";
-import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
+import { memo, useState } from "react";
+import { cn } from "@/lib/utils";
 // import { LoadingState } from "./enhanced-loading-states";
 import { AnimatedCardWrapper } from "./enhanced-animations";
+// import { motion } from "framer-motion";
+import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 
 interface FlipCardProps {
   title?: string;

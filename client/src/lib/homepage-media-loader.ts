@@ -3,9 +3,9 @@
  * Phase 1 Optimization: Intersection observer + smart batching for 75+ media assets
  */
 
-import { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // Partial media type for batch endpoint responses
 type BatchMediaAsset = Pick<

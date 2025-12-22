@@ -81,7 +81,7 @@ export class FileSecurityScanner {
         const textContent = buffer.slice(0, 1024 * 1024).toString('utf8', 0, Math.min(buffer.length, 1024 * 1024));
         
         // Scan for malicious text patterns
-        for (const signature of this.MALICIOUS_SIGNATURES) {
+        for (const signature of FileSecurityScanner.MALICIOUS_SIGNATURES) {
           if (signature instanceof Buffer) {
             // Binary signature check - only for non-media files
             if (buffer.indexOf(signature) !== -1) {

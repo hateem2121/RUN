@@ -1,5 +1,5 @@
-import { useLocation } from 'wouter';
 import { useCallback } from 'react';
+import { useLocation } from 'wouter';
 import { getQueryClient } from '@/lib/queryClient';
 
 export function useAdminNavigation() {

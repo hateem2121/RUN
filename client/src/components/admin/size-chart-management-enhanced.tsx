@@ -1,22 +1,22 @@
+import type { SizeChart } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Edit, Eye, Flag, Plus, RotateCcw, Ruler, X } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Edit, Eye, Flag, Ruler, AlertTriangle, RotateCcw, Plus, X } from "lucide-react";
-import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
-import type { SizeChart } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getRegionFlag = (region: string) => {
   const flags: Record<string, string> = {

@@ -3,10 +3,10 @@
  * Displays grid of related products based on category or tags
  */
 
-import { Link } from "wouter";
+import type { MediaAsset, Product } from "@shared/schema";
 import { Package } from "lucide-react";
+import { Link } from "wouter";
 import { cn } from "@/lib/utils";
-import type { Product, MediaAsset } from "@shared/schema";
 
 interface RelatedProductsGridProps {
   products: Product[];

@@ -10,11 +10,11 @@
  * - Error handling and recovery
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import request from 'supertest';
 import express from 'express';
-import { mediaPerformanceMonitor } from '../lib/media-performance-monitor.js';
+import request from 'supertest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { assetHealthMonitor } from '../lib/asset-health-monitor.js';
+import { mediaPerformanceMonitor } from '../lib/media-performance-monitor.js';
 import { getStorage } from '../lib/storage-singleton.js';
 
 // Test app setup
@@ -23,6 +23,7 @@ app.use(express.json());
 
 // Import and mount media routes
 import mediaRoutes from '../routes/media-consolidated.js';
+
 app.use('/api/media', mediaRoutes);
 
 describe('Media System Integration Tests', () => {

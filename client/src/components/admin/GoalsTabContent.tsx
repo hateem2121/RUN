@@ -1,4 +1,12 @@
+import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import type { SustainabilityGoal } from "@shared/schema";
+import { Eye, Plus } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +14,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  EnhancedDialog,
+  EnhancedDialogBody,
+  EnhancedDialogContent,
+  EnhancedDialogDescription,
+  EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { TabsContent } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -20,22 +33,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-  EnhancedDialogBody,
-  EnhancedDialogFooter,
-} from "@/components/ui/enhanced-dialog";
-import { Plus, Eye } from "lucide-react";
-import type { SustainabilityGoal } from "@shared/schema";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { Switch } from "@/components/ui/switch";
+import { TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 
 interface GoalFormData {
   title: string;

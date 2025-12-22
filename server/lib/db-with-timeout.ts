@@ -3,10 +3,10 @@
  * Wraps Drizzle ORM methods with timeout protection using safeQuery
  */
 
+import type { PgTable } from 'drizzle-orm/pg-core';
 import { db } from '../db.js';
 import { safeQuery } from './query-wrapper.js';
 import { logger } from './smart-logger.js';
-import type { PgTable } from 'drizzle-orm/pg-core';
 
 const DEFAULT_QUERY_TIMEOUT = 10000; // 10 seconds
 

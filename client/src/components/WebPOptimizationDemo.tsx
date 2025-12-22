@@ -3,15 +3,15 @@
  * Shows before/after comparison and performance metrics
  */
 
-import { useState } from 'react';
+import type { MediaAsset } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { ProgressiveImage } from '@/components/ui/progressive-image';
-import { MediaAsset } from '@shared/schema';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MediaQueryKeys } from '@/lib/media-query-keys';
 
 interface OptimizationStats {
@@ -98,7 +98,7 @@ export function WebPOptimizationDemo() {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / k ** i).toFixed(1)) + ' ' + sizes[i];
   };
 
   const testImageLoad = async (asset: MediaAsset) => {

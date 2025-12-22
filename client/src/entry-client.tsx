@@ -6,7 +6,10 @@ import { QueryClientProvider, HydrationBoundary } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App from "./App";
 import { createQueryClient } from "./lib/queryClient";
+import { initSentry } from "./lib/sentry";
 import "./index.css";
+
+initSentry();
 
 const queryClient = createQueryClient();
 

@@ -1,6 +1,6 @@
-import { lazy, Suspense, ComponentType, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { type ComponentType, lazy, Suspense, useEffect, useState } from "react";
 
 interface LazyLoadWrapperProps {
   component: () => Promise<{ default: ComponentType<any> }>;

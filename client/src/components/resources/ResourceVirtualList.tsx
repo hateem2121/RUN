@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState, ReactNode } from "react";
 import { motion } from "framer-motion";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 interface VirtualListProps<T> {
   items: T[];

@@ -1,10 +1,9 @@
-import { useRef } from "react";
-import { LazyMotion, domAnimation, m } from "framer-motion";
-import { Factory, ArrowDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
-
 import type { ManufacturingHero, MediaAsset } from "@shared/schema";
+import { domAnimation, LazyMotion, m } from "framer-motion";
+import { ArrowDown, Factory } from "lucide-react";
+import { useRef } from "react";
+import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface PublicHeroSectionProps {

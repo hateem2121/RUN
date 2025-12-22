@@ -1,10 +1,10 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Product } from '../types';
-import TabbedDetails from './product-specs/TabbedDetails';
-import SizeChartDisplay from './product-specs/SizeChartDisplay';
-import DetailImage from './product-specs/DetailImage';
+import type React from 'react';
+import type { Product } from '../types';
 import { AsteriskIcon } from './Icons';
+import DetailImage from './product-specs/DetailImage';
+import SizeChartDisplay from './product-specs/SizeChartDisplay';
+import TabbedDetails from './product-specs/TabbedDetails';
 
 const ProductSpecs: React.FC<{ product: Product }> = ({ product }) => {
     

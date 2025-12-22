@@ -8,11 +8,11 @@
  * - GET /api/sustainability/batch - Get all sustainability data in parallel
  */
 
-import { Router, Request } from 'express';
-import { getStorage } from '../../lib/storage-singleton.js';
-import { logger } from '../../lib/smart-logger.js';
-import { twoTierBatchCache } from '../../lib/two-tier-batch-cache.js';
+import { type Request, Router } from 'express';
 import { withTimeout } from '../../lib/request-timeout.js';
+import { logger } from '../../lib/smart-logger.js';
+import { getStorage } from '../../lib/storage-singleton.js';
+import { twoTierBatchCache } from '../../lib/two-tier-batch-cache.js';
 
 const router = Router();
 

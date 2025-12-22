@@ -1,42 +1,42 @@
-import { db, type DbClient } from "../../db.js";
+import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
 import {
-  fibers,
-  fabrics,
-  certificates,
-  sizeCharts,
-  accessories,
-  navigationItems,
-  navigationGlassmorphismSettings,
-  contactPageConfigurations,
-  inquiries,
-  footerConfiguration,
-  type Fiber,
-  type Fabric,
-  type Certificate,
-  type SizeChart,
   type Accessory,
-  type NavigationItem,
-  type NavigationGlassmorphismSettings,
+  accessories,
+  type Certificate,
   type ContactPageConfiguration,
-  type Inquiry,
+  certificates,
+  contactPageConfigurations,
+  type Fabric,
+  type Fiber,
   type FooterConfiguration,
-  type InsertFiber,
-  type InsertFabric,
-  type InsertCertificate,
-  type InsertSizeChart,
+  fabrics,
+  fibers,
+  footerConfiguration,
+  type Inquiry,
   type InsertAccessory,
-  type InsertNavigationItem,
-  type InsertNavigationGlassmorphismSettings,
+  type InsertCertificate,
   type InsertContactPageConfiguration,
-  type InsertInquiry,
+  type InsertFabric,
+  type InsertFiber,
   type InsertFooterConfiguration,
+  type InsertInquiry,
+  type InsertNavigationGlassmorphismSettings,
+  type InsertNavigationItem,
+  type InsertSizeChart,
+  inquiries,
   mediaAssets,
+  type NavigationGlassmorphismSettings,
+  type NavigationItem,
+  navigationGlassmorphismSettings,
+  navigationItems,
+  type SizeChart,
+  sizeCharts,
 } from "../../../shared/schema.js";
-import { eq, and, isNull, asc, sql, desc, count, like, or, getTableColumns } from "drizzle-orm";
+import { type DbClient, db } from "../../db.js";
+import { emitCacheInvalidation } from "../cache-events.js";
+import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 import { logger } from "../smart-logger.js";
 import { UnifiedCache } from "../unified-cache.js";
-import { dbCircuitBreaker } from "../db-circuit-breaker.js";
-import { emitCacheInvalidation } from "../cache-events.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
@@ -378,7 +378,7 @@ export class MiscRepository {
     if (finish !== undefined) technicalProperties.finish = finish;
 
     // Convert sustainabilityScore to number if it's a string
-    let scoreParsed: number | undefined = undefined;
+    let scoreParsed: number | undefined ;
     if (sustainabilityScore !== undefined) {
       if (typeof sustainabilityScore === "number") {
         scoreParsed = sustainabilityScore;

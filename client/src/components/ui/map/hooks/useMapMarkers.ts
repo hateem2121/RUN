@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
-import { DivIcon } from 'leaflet';
+import type { DivIcon } from 'leaflet';
+import { useEffect, useMemo, useState } from 'react';
+import { type AnimationType, animationCache } from '../services/AnimationCache';
 import { iconManager } from '../services/IconManager';
-import { animationCache, type AnimationType } from '../services/AnimationCache';
 
 export interface MapLocation {
   id: number;

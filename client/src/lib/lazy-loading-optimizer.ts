@@ -1,7 +1,7 @@
 // Performance Optimization: Week 3 - Advanced Lazy Loading System
 // Intelligent component and resource lazy loading with intersection observer
 
-import { lazy, ComponentType, LazyExoticComponent } from "react";
+import { type ComponentType, type LazyExoticComponent, lazy } from "react";
 
 interface LazyComponentOptions {
   preload?: boolean;
@@ -96,7 +96,8 @@ export const lazyImport = <T>(importFn: () => Promise<T>): (() => Promise<T>) =>
 // loadThreeJS, loadThreeFiber, loadThreeDrei removed - will be replaced with @google/model-viewer loader
 
 // Animation library lazy loaders
-export const loadGSAP = lazyImport(() => import("gsap"));
+// loadGSAP removed to fix split-chunk warning (GSAP is statically imported in critical path)
+// export const loadGSAP = lazyImport(() => import("gsap"));
 // loadLocomotiveScroll removed - package no longer used (Block 4A cleanup)
 
 // Lazy image loading with intersection observer
@@ -259,7 +260,7 @@ export const LazyLoadingUtils = {
       // Example: '/api/media/proxy/1', '/api/media/proxy/2'
     ];
 
-    const criticalFonts = ["/fonts/NeueStance-Regular.ttf"];
+    const criticalFonts: string[] = []; // Removed deleted font
 
     // Preload in parallel
     await Promise.all([

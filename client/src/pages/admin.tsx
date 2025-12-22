@@ -1,10 +1,10 @@
-import { useLocation } from "wouter";
 import { lazy, Suspense } from "react";
-import AdminLayout from "@/components/admin-layout";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { useLocation } from "wouter";
 import { ProductsErrorFallback } from "@/components/admin/ProductsErrorFallback";
-import { AdminProvider } from "@/context/AdminContext";
+import AdminLayout from "@/components/admin-layout";
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { AdminProvider } from "@/context/AdminContext";
 
 // Lazy load all admin modules for better performance
 const AdminCMS = lazy(() => import("@/components/admin-cms"));

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 gsap.registerPlugin(ScrollTrigger);
 

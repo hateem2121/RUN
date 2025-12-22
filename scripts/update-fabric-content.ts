@@ -1,6 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { fabrics, fibers } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 // Full content from user
 const fabricsData = [

@@ -1,9 +1,8 @@
-import { motion } from "framer-motion";
-
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
-import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
-import { CapabilityCard } from "@/components/shared/manufacturing";
 import type { ManufacturingCapability, MediaAsset } from "@shared/schema";
+import { motion } from "framer-motion";
+import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { CapabilityCard } from "@/components/shared/manufacturing";
+import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 
 interface PublicCapabilitySectionProps {
   mediaAssets: MediaAsset[];

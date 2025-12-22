@@ -1,5 +1,5 @@
-import { useLocation as useWouterLocation } from "wouter";
 import { startTransition, useCallback } from "react";
+import { useLocation as useWouterLocation } from "wouter";
 
 /**
  * A wrapper around wouter's useLocation that wraps navigation state updates

@@ -1,11 +1,11 @@
-import { useRef, memo } from 'react';
+import { AlertCircle, CheckCircle, ChevronDown, ChevronRight, Plus, Settings, X } from 'lucide-react';
+import { memo, useRef } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Settings, CheckCircle, AlertCircle, Plus, X } from 'lucide-react';
-import { ProductFormFieldValue } from '../shared/types';
+import type { ProductFormFieldValue } from '../shared/types';
 
 interface SpecificationsSectionProps {
   formData: {

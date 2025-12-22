@@ -6,13 +6,13 @@
  * Reference: https://developers.google.com/identity/protocols/oauth2
  */
 
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import passport from "passport";
-import session from "express-session";
-import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
-import { getStorage } from "./lib/storage-singleton.js";
+import type { Express, RequestHandler } from "express";
+import session from "express-session";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { logger } from "./lib/smart-logger.js";
+import { getStorage } from "./lib/storage-singleton.js";
 
 /**
  * Session configuration with PostgreSQL storage

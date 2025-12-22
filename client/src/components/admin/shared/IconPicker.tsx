@@ -1,8 +1,8 @@
+import { Droplets, Leaf, type LucideIcon, Recycle, Target, TreePine, TrendingUp, Wind } from "lucide-react";
 import { useState } from "react";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogDescription, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Button } from "@/components/ui/button";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogDescription, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Label } from "@/components/ui/label";
-import { Leaf, Droplets, Wind, Recycle, TreePine, Target, TrendingUp, type LucideIcon } from "lucide-react";
 
 export interface IconOption {
   name: string;

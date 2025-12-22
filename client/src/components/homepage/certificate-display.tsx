@@ -1,8 +1,8 @@
-import { useState, memo } from "react";
-import { motion } from "framer-motion";
-import { Shield, Leaf, Award, CheckCircle, ExternalLink } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import type { Certificate } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Award, CheckCircle, ExternalLink, Leaf, Shield } from "lucide-react";
+import { memo, useState } from "react";
 
 interface CertificateDisplayProps {
   certificateIds?: number[] | null;

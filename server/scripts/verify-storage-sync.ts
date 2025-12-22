@@ -4,10 +4,10 @@
  * Verifies all MediaAsset DB records have corresponding files in object storage
  */
 
-import { db } from '../db';
-import { mediaAssets } from '../../shared/schema';
 import { isNull } from 'drizzle-orm';
+import { mediaAssets } from '../../shared/schema';
 import { appStorageService } from '../app-storage-service';
+import { db } from '../db';
 import { logger } from '../lib/smart-logger';
 
 interface SyncResult {

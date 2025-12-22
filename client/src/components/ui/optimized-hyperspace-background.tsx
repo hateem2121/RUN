@@ -4,8 +4,9 @@
  */
 
 import { useRef } from 'react';
+import { useDeviceCapabilities, usePerformanceObserver } from '@/lib/performance-intersection-observer';
 import { HyperspaceBackground } from './hyperspace-background';
-import { usePerformanceObserver, useDeviceCapabilities } from '@/lib/performance-intersection-observer';
+
 // PHASE 1 CLEANUP: Removed Three.js singleton to prevent conflicts with @google/model-viewer
 
 interface OptimizedHyperspaceBackgroundProps {

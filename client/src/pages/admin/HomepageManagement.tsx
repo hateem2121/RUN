@@ -1,20 +1,18 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { toast } from "@/hooks/use-toast";
+import type { HomepageSection, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/hooks/use-toast";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { HomepageAnimationsManager } from "./content-management/homepage/HomepageAnimationsManager";
+import { HomepageFeaturedManager } from "./content-management/homepage/HomepageFeaturedManager";
 // Import modular components
 import { HomepageHeroManager } from "./content-management/homepage/HomepageHeroManager";
-import { HomepageSlogansManager } from "./content-management/homepage/HomepageSlogansManager";
 import { HomepageProcessManager } from "./content-management/homepage/HomepageProcessManager";
-import { HomepageAnimationsManager } from "./content-management/homepage/HomepageAnimationsManager";
+import { HomepageSlogansManager } from "./content-management/homepage/HomepageSlogansManager";
 import { HomepageStatsManager } from "./content-management/homepage/HomepageStatsManager";
 import { HomepageValuesManager } from "./content-management/homepage/HomepageValuesManager";
-import { HomepageFeaturedManager } from "./content-management/homepage/HomepageFeaturedManager";
-
-import type { HomepageSection, MediaAsset } from "@shared/schema";
 
 export default function HomepageManagement() {
   const [activeTab, setActiveTab] = useState("hero");

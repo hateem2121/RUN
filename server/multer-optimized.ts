@@ -1,5 +1,5 @@
+import type { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
-import type { Request, Response, NextFunction } from 'express';
 
 // PHASE 1.2 FIX: Unified multer configuration - REMOVED file size limits per user request
 // File size limits disabled to allow large file uploads (8-12MB+ files were failing)

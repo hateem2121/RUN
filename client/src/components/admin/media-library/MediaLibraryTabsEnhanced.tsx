@@ -1,7 +1,8 @@
 // import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import { Activity, Database, Gauge, Settings, Shield, TestTube } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Database, Shield, TestTube, Gauge, Activity, Settings } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MediaLibraryContainerEnhanced from './MediaLibraryContainerEnhanced';
 
 // Enhanced Media Library with All 6 Phases Integrated

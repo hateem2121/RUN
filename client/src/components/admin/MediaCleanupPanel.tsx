@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-// import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import {
-  Trash2,
-  RefreshCw,
   AlertTriangle,
   CheckCircle,
   Clock,
-  HardDrive,
   Database,
   FileX,
-  Link2Off
+  HardDrive,
+  Link2Off, 
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
+import { useState } from 'react';
+// import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import { apiRequest } from '@/lib/queryClient';
 
 interface CleanupReport {
@@ -86,7 +86,7 @@ export function MediaCleanupPanel() {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / k ** i).toFixed(1)) + ' ' + sizes[i];
   };
 
   const formatTimestamp = (timestamp: string) => {

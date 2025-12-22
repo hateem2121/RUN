@@ -1,21 +1,21 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import type { Accessory, Category, Certificate, Fabric, Product, SizeChart } from '@shared/schema';
 import {
-  CheckCircle,
   AlertCircle,
   AlertTriangle,
-  Package,
-  ImageIcon,
-  Video,
   Box,
+  CheckCircle,
   ExternalLink,
-  Info
+  ImageIcon,
+  Info, 
+  Package,
+  Video
 } from 'lucide-react';
+import type React from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import type { Product, Category, Fabric, Certificate, Accessory, SizeChart } from '@shared/schema';
 
 interface ValidationItem {
   level: 'error' | 'warning' | 'success';

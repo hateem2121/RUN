@@ -3,8 +3,8 @@
  * Handles media loading failures using Replit's native infrastructure
  */
 
-import { useState, useEffect } from "react";
-import { ImageIcon, VideoIcon, AlertCircle } from "lucide-react";
+import { AlertCircle, ImageIcon, VideoIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface MediaWithFallbackProps {

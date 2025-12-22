@@ -3,9 +3,9 @@
  * Run with: npx tsx scripts/fix-user-conflict.ts
  */
 
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { users } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 const TARGET_EMAIL = "team@wear-run.com";
 

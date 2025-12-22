@@ -1,6 +1,7 @@
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { homepageSections } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
+
 // import { logger } from "../server/lib/smart-logger.js";
 
 /**

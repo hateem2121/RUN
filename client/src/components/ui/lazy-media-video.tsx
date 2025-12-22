@@ -3,11 +3,12 @@
  * Phase 1 Optimization: Video lazy loading with poster prioritization
  */
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/schema";
+import { Play } from "lucide-react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getOptimizedMediaUrl } from "@/lib/homepage-media-loader";
 import { cn } from "@/lib/utils";
-import { Play } from "lucide-react";
 
 interface LazyMediaVideoProps {
   asset: MediaAsset;

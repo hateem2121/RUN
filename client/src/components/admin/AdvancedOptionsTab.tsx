@@ -3,19 +3,20 @@
  * Organized advanced features for power users and detailed product configuration
  */
 
-import React, { useState } from 'react';
+
+// Import schema types
+import type { Accessory, Certificate } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
+import { Info, Plus, Search, X } from 'lucide-react';
+import type React from 'react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, X, Info, Search } from 'lucide-react';
-
-// Import schema types
-import { Certificate, Accessory } from '@shared/schema';
 
 interface ProductFormData {
   name: string;

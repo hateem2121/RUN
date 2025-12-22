@@ -1,15 +1,16 @@
 "use client";
-import { cn } from "@/lib/utils";
-import React, { useRef, useState, useEffect } from "react";
 import {
+  animate,
   motion,
+  useAnimationControls,
   useMotionValue,
   useSpring,
   useTransform,
-  animate,
   useVelocity,
-  useAnimationControls,
 } from "framer-motion";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 // Hook to detect mobile devices
 function useIsMobile() {

@@ -10,15 +10,15 @@
  */
 
 import type { Express } from "express";
-import { logger } from "../../lib/smart-logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import {
   insertCategorySchema,
-  insertFiberSchema,
   insertFabricSchema,
+  insertFiberSchema,
 } from "../../../shared/schema.js";
-import { withTimeout } from "../../lib/request-timeout.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
+import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
 
 export function registerTaxonomyRoutes(app: Express): void {
   logger.info('[Routes] Registering taxonomy routes module');

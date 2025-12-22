@@ -1,8 +1,8 @@
+import type { ManufacturingQuality, MediaAsset } from "@shared/schema";
 import { motion } from "framer-motion";
 import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
-import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 import { QualityCard } from "@/components/shared/manufacturing";
-import type { ManufacturingQuality, MediaAsset } from "@shared/schema";
+import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 
 interface PublicQualitySectionProps {
   mediaAssets: MediaAsset[];

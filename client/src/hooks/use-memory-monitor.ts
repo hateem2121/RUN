@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export function useMemoryMonitor() {
   const checkMemory = useCallback(() => {

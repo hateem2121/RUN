@@ -3,10 +3,10 @@
  * Premium grid layout with hover effects and proper navigation
  */
 
+import type { Product } from '@shared/schema';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { ClippedElement } from './PremiumProductComponents';
-import type { Product } from '@shared/schema';
 
 interface EnhancedRecommendationsProps {
   products: Product[];
