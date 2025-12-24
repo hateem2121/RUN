@@ -1,5 +1,5 @@
+import { Droplets, Leaf, Recycle, Zap } from "lucide-react";
 import { memo } from "react";
-import { Droplets, Leaf, Zap, Recycle } from "lucide-react";
 import { CircularProgressStatOptimized } from "./circular-progress-stat-optimized";
 
 interface SustainabilityStatsProps {

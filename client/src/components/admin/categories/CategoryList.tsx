@@ -1,10 +1,10 @@
-import React, { memo, useState, useCallback } from "react";
-import { DndContext, DragOverlay, closestCenter, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { closestCenter, DndContext, type DragEndEvent, DragOverlay, type DragStartEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import type { Category } from "@shared/schema";
+import React, { memo, useCallback, useState } from "react";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CategoryDisplay from "./CategoryDisplay";
-import type { Category } from "@shared/schema";
 
 interface CategoryListProps {
   categories: Category[];
@@ -143,7 +143,7 @@ const CategoryTreeView = memo(({ categories, ...props }: CategoryListProps & { a
 
   return (
     <div className="space-y-1">
-      {hierarchy.map(category => renderTreeItem(category)).flat()}
+      {hierarchy.flatMap(category => renderTreeItem(category))}
     </div>
   );
 });

@@ -3,9 +3,9 @@
  * Implements blur-to-sharp loading with multiple resolution support
  */
 
-import { useState, useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
 import type { MediaAsset } from '@shared/schema';
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface ProgressiveImageProps {
   src?: string;

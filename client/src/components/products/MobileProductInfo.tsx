@@ -1,8 +1,8 @@
+import type { Product } from "@shared/schema";
+import { Info, Package, Ruler, Shield, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingBag, Package, Info, Shield, Ruler } from "lucide-react";
-import { Product } from "@shared/schema";
 
 interface MobileProductInfoProps {
   product: Product;

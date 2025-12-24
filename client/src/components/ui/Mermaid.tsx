@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, memo } from "react";
 import mermaid from "mermaid";
+import { memo, useEffect, useRef, useState } from "react";
 
 export interface MermaidProps {
   chart: string;

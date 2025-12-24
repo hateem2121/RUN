@@ -1,5 +1,5 @@
+import type { Category } from "@shared/schema";
 import { useEffect } from "react";
-import { Category } from "@shared/schema";
 
 interface ProductsListSEOProps {
   category?: Category;

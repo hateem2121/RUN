@@ -5,19 +5,19 @@
  * Extracted from main routes.ts for better organization
  */
 
-import { Router, Request } from 'express';
+import { type Request, Router } from 'express';
 import { z } from 'zod';
-import { getStorage } from '../../lib/storage-singleton.js';
-import { unifiedCache } from '../../lib/unified-cache.js';
-import { logger } from '../../lib/smart-logger.js';
-import { CacheOperations, CacheKeys } from '../../lib/cache-strategies.js';
 import { 
   insertContactPageConfigurationSchema,
-  insertNavigationItemSchema,
+  insertLogoAnimationSettingsSchema, 
   insertNavigationGlassmorphismSettingsSchema,
-  insertLogoAnimationSettingsSchema
+  insertNavigationItemSchema
 } from '../../../shared/schema.js';
+import { CacheKeys, CacheOperations } from '../../lib/cache-strategies.js';
 import { withTimeout } from '../../lib/request-timeout.js';
+import { logger } from '../../lib/smart-logger.js';
+import { getStorage } from '../../lib/storage-singleton.js';
+import { unifiedCache } from '../../lib/unified-cache.js';
 
 const router = Router();
 

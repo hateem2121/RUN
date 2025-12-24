@@ -1,13 +1,10 @@
-import { useState } from "react";
-import { useInquiryCart } from "@/contexts/InquiryCartContext";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, X, Send } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { Send, ShoppingCart, X } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,6 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useInquiryCart } from "@/contexts/InquiryCartContext";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 const inquiryFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

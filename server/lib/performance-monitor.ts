@@ -7,8 +7,8 @@
  * - GCS request timing
  */
 
-import { logger } from './smart-logger.js';
 import { getPerformanceStats } from '../middleware/performance-tracking.js';
+import { logger } from './smart-logger.js';
 import { UnifiedCache } from './unified-cache.js';
 
 export interface SystemPerformance {

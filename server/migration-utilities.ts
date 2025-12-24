@@ -1,19 +1,19 @@
 // Migration Utilities for Bulk Data Transfer with Validation
 // Handles systematic transfer of 43 entity types from Key-Value to PostgreSQL
 
-import { db } from "./db.js";
-import { storage } from "./storage.js";
 // import { eq, and, sql } from 'drizzle-orm';
 import {
   categories,
-  products,
   // fabrics,
   // fibers,
   // certificates,
   // sizeCharts,
   homepageHero,
   homepageSections,
+  products,
 } from "../shared/schema.js";
+import { db } from "./db.js";
+import { storage } from "./storage.js";
 
 export class MigrationUtilities {
   private kvStorage = storage;

@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { useMapMarkers, type MapLocation } from './hooks/useMapMarkers';
+import { type MapLocation, useMapMarkers } from './hooks/useMapMarkers';
 
 interface MapMarkersProps {
   locations: MapLocation[];

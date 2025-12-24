@@ -1,3 +1,5 @@
+import type { Certificate, UnifiedSustainability } from "@shared/schema";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,10 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { TabsContent } from "@/components/ui/tabs";
-import type { UnifiedSustainability, Certificate } from "@shared/schema";
 
 interface CertificationsTabContentProps {
   localForm: Partial<UnifiedSustainability>;

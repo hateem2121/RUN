@@ -1,4 +1,4 @@
-import { MediaAsset } from '@shared/schema';
+import type { MediaAsset } from '@shared/schema';
 
 /**
  * PHASE 3 ENHANCED: MediaService - Frontend service with WebP optimization support
@@ -23,14 +23,14 @@ export class MediaService {
     asset: MediaAsset | null | undefined, 
     options: ResponsiveImageOptions = {}
   ): string | null {
-    if (!asset || asset.type !== 'image') return this.getSafeUrl(asset);
+    if (!asset || asset.type !== 'image') return MediaService.getSafeUrl(asset);
 
     const { width = 800, format = 'auto', quality = 85 } = options;
-    const baseUrl = this.getSafeUrl(asset);
+    const baseUrl = MediaService.getSafeUrl(asset);
     if (!baseUrl) return null;
 
     // Check if browser supports WebP (for format=auto)
-    const supportsWebP = this.supportsWebP();
+    const supportsWebP = MediaService.supportsWebP();
     const targetFormat = format === 'auto' ? (supportsWebP ? 'webp' : 'jpeg') : format;
 
     // Generate responsive parameters
@@ -49,7 +49,7 @@ export class MediaService {
     if (!asset) return null;
     
     // Use responsive image system for thumbnails
-    return this.getResponsiveImageUrl(asset, { width: size, height: size });
+    return MediaService.getResponsiveImageUrl(asset, { width: size, height: size });
   }
 
   static getSafeUrl(asset: MediaAsset | null | undefined): string | null {
@@ -61,7 +61,7 @@ export class MediaService {
         // Validate URL doesn't contain 'undefined'
         if (asset.url.includes('undefined') || asset.url.includes('null')) {
           console.warn('[MediaService] Invalid URL detected:', asset.url);
-          return this.generateIdBasedUrl(asset);
+          return MediaService.generateIdBasedUrl(asset);
         }
         
         // Return valid API-provided URL
@@ -69,7 +69,7 @@ export class MediaService {
       }
       
       // Fallback to ID-based proxy URL (recommended)
-      return this.generateIdBasedUrl(asset);
+      return MediaService.generateIdBasedUrl(asset);
       
     } catch (error) {
       console.error('[MediaService] Error generating safe URL:', error, asset);
@@ -83,7 +83,7 @@ export class MediaService {
   private static generateIdBasedUrl(asset: MediaAsset): string | null {
     if (!asset.id || typeof asset.id !== 'number') {
       console.warn('[MediaService] No valid ID for asset:', asset);
-      return this.generateFallbackUrl(asset);
+      return MediaService.generateFallbackUrl(asset);
     }
     
     // SAFETY: Prevent PostgreSQL integer overflow by checking ID size
@@ -137,7 +137,7 @@ export class MediaService {
    * Get video thumbnail URL (placeholder for future video thumbnail generation)
    */
   static getVideoThumbnailUrl(asset: MediaAsset): string | null {
-    if (asset.type !== 'video') return this.getSafeUrl(asset);
+    if (asset.type !== 'video') return MediaService.getSafeUrl(asset);
     
     // For video assets, check if thumbnailFilename exists (actual property)
     if (asset.thumbnailFilename && asset.thumbnailFilename.length > 0) {
@@ -147,7 +147,7 @@ export class MediaService {
     }
     
     // Fallback to main URL
-    return this.getSafeUrl(asset);
+    return MediaService.getSafeUrl(asset);
   }
   
   /**
@@ -168,7 +168,7 @@ export class MediaService {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
   }
   
   /**
@@ -232,7 +232,7 @@ export class MediaService {
   static generateSrcSet(asset: MediaAsset | null | undefined): string {
     if (!asset || asset.type !== 'image') return '';
 
-    const baseUrl = this.getSafeUrl(asset);
+    const baseUrl = MediaService.getSafeUrl(asset);
     if (!baseUrl) return '';
 
     const sizes = [480, 768, 1200];

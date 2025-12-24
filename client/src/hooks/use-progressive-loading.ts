@@ -3,7 +3,7 @@
  * Manages progressive loading states with delays for hero and secondary content
  */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ProgressiveLoadingState {
   isLoading: boolean;

@@ -1,11 +1,11 @@
-import { useState, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { memo, useState } from "react";
 import { createPortal } from "react-dom";
-import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
+import { cn } from "@/lib/utils";
 // import { LoadingState } from "./enhanced-loading-states";
 import { AnimatedCardWrapper } from "./enhanced-animations";
+import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 
 interface ExpandableCardProps {
   title: string;

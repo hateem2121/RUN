@@ -3,7 +3,7 @@
  * Manages newsletter subscription form state and submission
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useNewsletterForm(autoResetMs: number = 5000) {
   const [emailSubmitted, setEmailSubmitted] = useState(false);

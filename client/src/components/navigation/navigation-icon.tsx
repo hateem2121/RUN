@@ -1,6 +1,5 @@
-import { memo } from "react";
-import { MediaAsset } from "@shared/schema";
-import * as TablerIcons from "@tabler/icons-react";
+import type { MediaAsset } from "@shared/schema";
+import { memo, lazy, Suspense, useMemo } from "react";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 
 interface NavigationIconProps {
@@ -10,6 +9,17 @@ interface NavigationIconProps {
   className?: string;
   useAbsolutePositioning?: boolean; // for floating dock vs admin display
 }
+
+// Define the type for the glob import module
+type IconModule = { default: React.ComponentType<{ className?: string }> };
+
+// Use import.meta.glob with a relative path to the project root's node_modules.
+// Relative path from client/src/components/navigation/navigation-icon.tsx to node_modules/
+const iconModules = import.meta.glob<IconModule>(
+  "../../../../node_modules/@tabler/icons-react/dist/esm/icons/*.mjs",
+);
+
+const DefaultHomeIcon = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconHome.mjs"));
 
 export const NavigationIcon = memo(function NavigationIcon({
   iconType,
@@ -24,6 +34,23 @@ export const NavigationIcon = memo(function NavigationIcon({
     quality: 90,
     format: "webp",
   });
+
+  // Memoize the lazy component
+  const LazyIconComponent = useMemo(() => {
+    if (iconType === "fallback" && fallbackIcon) {
+      // Construct the key matching the glob pattern
+      const path = `../../../../node_modules/@tabler/icons-react/dist/esm/icons/${fallbackIcon}.mjs`;
+      const loader = iconModules[path];
+
+      if (loader) {
+        return lazy(loader);
+      } else {
+        console.warn(`[NavigationIcon] Icon not found: ${fallbackIcon} (Path: ${path})`);
+        return null; // Will fallback to DefaultHomeIcon in render
+      }
+    }
+    return null;
+  }, [iconType, fallbackIcon]);
 
   if (iconType === "media" && mediaIcon) {
     if (useAbsolutePositioning) {
@@ -73,16 +100,24 @@ export const NavigationIcon = memo(function NavigationIcon({
     }
   }
 
-  if (iconType === "fallback" && fallbackIcon) {
-    // Get the icon component from Tabler Icons
-    const IconComponent = (TablerIcons as any)[fallbackIcon];
+  const commonClasses = `${className} text-neutral-500 dark:text-neutral-300`;
 
-    if (IconComponent) {
-      return <IconComponent className={`${className} text-neutral-500 dark:text-neutral-300`} />;
-    }
+  const Loader = (
+    <div className={`animate-pulse bg-neutral-200 dark:bg-neutral-700 rounded ${className}`} />
+  );
+
+  if (LazyIconComponent) {
+    return (
+      <Suspense fallback={Loader}>
+        <LazyIconComponent className={commonClasses} />
+      </Suspense>
+    );
   }
 
-  // Default fallback icon if nothing is configured
-  const DefaultIcon = TablerIcons.IconHome;
-  return <DefaultIcon className={`${className} text-neutral-500 dark:text-neutral-300`} />;
+  // Default fallback
+  return (
+    <Suspense fallback={Loader}>
+      <DefaultHomeIcon className={commonClasses} />
+    </Suspense>
+  );
 });

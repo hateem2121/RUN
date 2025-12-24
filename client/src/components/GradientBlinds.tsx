@@ -84,8 +84,9 @@
  * - Keyboard navigation preserved for content overlay
  */
 
-import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Renderer, Program, Mesh, Triangle } from "ogl";
+import { Mesh, Program, Renderer, Triangle } from "ogl";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./GradientBlinds.css";
 
 export interface GradientBlindsProps {

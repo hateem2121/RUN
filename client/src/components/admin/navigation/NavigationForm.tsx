@@ -1,47 +1,47 @@
-import { useState } from "react";
+import { type InsertNavigationItem, insertNavigationItemSchema, type MediaAsset, type NavigationItem } from "@shared/schema";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconBolt,
+  IconBrandTabler, 
+  IconBuildingStore,
+  IconCategory,
+  IconCertificate,
+  IconCpu,
+  IconDatabase,
+  IconFileFilled,
+  IconHeart,
+  IconHome,
+  IconInfoCircle,
+  IconLeaf,
+  IconMail,
+  IconMenu2,
+  IconMinus,
+  IconNavigation,
+  IconPalette,
+  IconPhone,
+  IconPhoto,
+  IconPlus,
+  IconRuler,
+  IconSearch,
+  IconSettings,
+  IconShirt,
+  IconShoppingCart,
+  IconStar,
+  IconTool,
+  IconUser
+} from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { NavigationItem, MediaAsset, InsertNavigationItem, insertNavigationItemSchema } from "@shared/schema";
+import { Image } from "lucide-react";
+import { useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import { Image } from "lucide-react";
-import { MediaQueryKeys } from "@/lib/media-query-keys";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import {
-  IconHome,
-  IconShoppingCart,
-  IconCategory,
-  IconShirt,
-  IconPhoto,
-  IconBolt,
-  IconLeaf,
-  IconTool,
-  IconCpu,
-  IconBuildingStore,
-  IconMail,
-  IconPhone,
-  IconInfoCircle,
-  IconUser,
-  IconSettings,
-  IconHeart,
-  IconStar,
-  IconSearch,
-  IconMenu2,
-  IconArrowRight,
-  IconArrowLeft,
-  IconPlus,
-  IconMinus,
-  IconNavigation,
-  IconDatabase,
-  IconFileFilled,
-  IconCertificate,
-  IconRuler,
-  IconPalette,
-  IconBrandTabler
-} from "@tabler/icons-react";
+import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 // Common navigation icons with their display names
 const TABLER_ICONS = [

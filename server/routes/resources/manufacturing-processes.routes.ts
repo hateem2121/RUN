@@ -13,19 +13,19 @@
  * - PATCH  /api/v1/manufacturing-processes/reorder   - Reorder processes
  */
 
-import { Router, Request } from "express";
+import { type Request, Router } from "express";
 import { z } from "zod";
-import { getStorage } from "../../lib/storage-singleton.js";
-import { logger } from "../../lib/smart-logger.js";
-import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
+import { requireAdmin } from "../../middleware/auth.js";
 import {
   validateManufacturingProcess,
   validateManufacturingProcessPartial,
   validateReorderProcesses,
 } from "../../validation/manufacturing.js";
-import { requireAdmin } from "../../middleware/auth.js";
 
 const router = Router();
 

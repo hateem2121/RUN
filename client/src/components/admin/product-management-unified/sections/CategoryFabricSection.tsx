@@ -1,10 +1,10 @@
+import type { Category, Fabric, Fiber, SizeChart } from '@shared/schema';
+import { AlertCircle, CheckCircle, ChevronDown, ChevronRight, Tag } from 'lucide-react';
 import { memo } from 'react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Tag, CheckCircle, AlertCircle } from 'lucide-react';
-import { Category, Fabric, SizeChart, Fiber } from '@shared/schema';
-import { FabricWithCompositions, FabricComposition, FiberCompositionItem, ProductFormFieldValue } from '../shared/types';
+import type { FabricComposition, FabricWithCompositions, FiberCompositionItem, ProductFormFieldValue } from '../shared/types';
 
 interface CategoryFabricSectionProps {
   formData: {

@@ -1,18 +1,18 @@
-import { useRef, useState } from "react";
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useLenis } from "@/components/layout/LenisContext";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useStore } from "@/components/homepage-v2/store";
-import Preloader from "@/components/homepage-v2/Preloader";
-import CustomCursor from "@/components/homepage-v2/CustomCursor";
-import Hero from "@/components/homepage-v2/Hero";
-import Stats from "@/components/homepage-v2/Stats";
+import { useRef, useState } from "react";
 import Categories from "@/components/homepage-v2/Categories";
+import CustomCursor from "@/components/homepage-v2/CustomCursor";
 import FeaturedProducts from "@/components/homepage-v2/FeaturedProducts";
-import Values from "@/components/homepage-v2/Values";
-import Process from "@/components/homepage-v2/Process";
 import Footer from "@/components/homepage-v2/Footer";
+import Hero from "@/components/homepage-v2/Hero";
+import Preloader from "@/components/homepage-v2/Preloader";
+import Process from "@/components/homepage-v2/Process";
+import Stats from "@/components/homepage-v2/Stats";
+import { useStore } from "@/components/homepage-v2/store";
+import Values from "@/components/homepage-v2/Values";
+import { useLenis } from "@/components/layout/LenisContext";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 
 // Register Plugin Globally

@@ -1,6 +1,6 @@
-import { db } from "../server/db.js";
 // import { fabrics } from '../shared/schema.js';
 import { sql } from "drizzle-orm";
+import { db } from "../server/db.js";
 
 // Certification mapping based on tags
 const fabricCertifications: Record<string, number[]> = {

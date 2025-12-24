@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 // @ts-nocheck
 
 /**
@@ -7,28 +8,28 @@
  * Covers: Homepage, About, Sustainability, Manufacturing, Technology
  */
 
-import { db } from '../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../server/db.js';
 import { 
-  // Homepage Management
-  homepageHero,
-  homepageSlogans,
-  homepageProcessCards,
-  homepageSections,
-  homepageSustainability,
   
   // About Page Management
   aboutHero,
-  aboutTimelineEntries,
   aboutMapLocations,
   aboutStatistics,
+  aboutTimelineEntries,
+  // Homepage Management
+  homepageHero,
+  homepageProcessCards,
+  homepageSections,
+  homepageSlogans,
+  homepageSustainability,
+  
+  // Manufacturing Management
+  manufacturingProcesses,
   
   // Sustainability Management
   sustainabilityHero,
   sustainabilityMetrics,
-  
-  // Manufacturing Management
-  manufacturingProcesses,
   
   // Technology Management
   technologyInnovations

@@ -10,35 +10,35 @@
  * NO ad-hoc cache keys allowed - prevents phantom/stale records and sync bugs.
  */
 
-import { db } from "../../db.js";
-import { mediaAssets, folders } from "../../../shared/schema.js";
 import {
-  eq,
-  desc,
   and,
-  sql,
   asc,
-  isNull,
-  inArray,
+  desc,
+  eq,
   ilike,
+  inArray,
+  isNull,
   or,
+  sql,
 } from "drizzle-orm";
 import type {
-  MediaAsset,
-  MediaAssetSummary,
-  InsertMediaAsset,
   Folder,
   InsertFolder,
+  InsertMediaAsset,
+  MediaAsset,
+  MediaAssetSummary,
 } from "../../../shared/schema.js";
-import { logger } from "../smart-logger.js";
-import { queryPerformanceMonitor } from "../query-performance-monitor.js";
-import { dbCircuitBreaker } from "../db-circuit-breaker.js";
-import { UnifiedCache } from "../unified-cache.js";
-import {
-  MediaNotFoundError,
-  CacheInvalidationError,
-} from "../errors/media-errors.js";
+import { folders, mediaAssets } from "../../../shared/schema.js";
+import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../cache-events.js";
+import { dbCircuitBreaker } from "../db-circuit-breaker.js";
+import {
+  CacheInvalidationError,
+  MediaNotFoundError,
+} from "../errors/media-errors.js";
+import { queryPerformanceMonitor } from "../query-performance-monitor.js";
+import { logger } from "../smart-logger.js";
+import { UnifiedCache } from "../unified-cache.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 // PHASE 1 OPTIMIZATION: Use optimized media TTL from cache presets (6 hours)

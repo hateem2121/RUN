@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { AboutHero, MediaAsset } from "@shared/schema";
+import { insertAboutHeroSchema } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Eye, Save, Trash2, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,12 +17,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Upload, Trash2, Eye } from "lucide-react";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import { HeroSection } from "@/components/sections/HeroSection";
-import type { AboutHero, MediaAsset } from "@shared/schema";
-import { insertAboutHeroSchema } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutHeroTab() {
   const { toast } = useToast();

@@ -5,14 +5,14 @@
  * Mobile-responsive: Uses swipeable carousel on mobile, draggable cards on desktop
  */
 
+import type { MediaAsset } from "@shared/schema";
 import { memo, useRef } from "react";
-import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
+import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 import {
   DraggableCardBody,
   DraggableCardContainer,
 } from "@/components/ui/draggable-card";
-import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
-import type { MediaAsset } from "@shared/schema";
+import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 
 // Type for draggable card items
 export interface DraggableCardItem {

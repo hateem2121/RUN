@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from "react";
 import { useNestedModalFocus } from "@/hooks/use-nested-modal-focus";
 import { useModalPositioning } from "@/hooks/useViewportAwarePositioning";
+import { cn } from "@/lib/utils";
 
 // Re-export the basic components that don't need enhancement
 const EnhancedDialog = DialogPrimitive.Root;
@@ -225,7 +225,7 @@ const EnhancedDialogContent = ({
           layout: "flex flex-col",
         };
 
-      default:
+      default: {
         // 3. Fallback to enhanced nesting-based sizing
         const fallbackSizes = {
           0: { width: "max-w-lg", height: "auto" }, // Base modal
@@ -242,6 +242,7 @@ const EnhancedDialogContent = ({
           padding: nestingLevel > 0 ? "p-4" : "p-6",
           layout: "grid",
         };
+      }
     }
   }, [contentType, preferredSize, nestingLevel, sizeClassMap]);
 

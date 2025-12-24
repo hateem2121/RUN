@@ -1,20 +1,35 @@
-import type { Request, Response, NextFunction } from "express";
+import { dehydrate } from "@tanstack/react-query";
+import type { NextFunction, Request, Response } from "express";
 import fs from "fs";
+import type { Server as HttpServer } from "http"; // HMR FIX: Import HttpServer type
 import path from "path";
 import { pathToFileURL } from "url";
-import { createServer as createViteServer, ViteDevServer } from "vite";
-import { dehydrate } from "@tanstack/react-query";
+import { createServer as createViteServer, type ViteDevServer } from "vite";
+import { logging } from "../config/environment.js";
 import { getStorage } from "./storage-singleton.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = process.cwd();
 
-async function createSsrHandler(app: any) {
+// HMR FIX: Update signature to accept optional http server
+async function createSsrHandler(app: any, server?: HttpServer) {
   let vite: ViteDevServer | undefined;
 
   if (!isProduction) {
     vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        // HMR FIX: Attach to existing server if provided
+        ...(server
+          ? {
+              hmr: {
+                server: server,
+                host: "localhost", // Explicit connection host
+                port: 5001, // Match the Express port
+              },
+            }
+          : {}),
+      },
       appType: "custom",
       configFile: path.resolve(root, "vite.config.ts"),
     });
@@ -28,7 +43,6 @@ async function createSsrHandler(app: any) {
       req.originalUrl.startsWith("/api") ||
       req.originalUrl.includes(".")
     ) {
-      // console.log("[SSR] Skipping:", req.originalUrl); // Verbose
       return next();
     }
 
@@ -36,33 +50,86 @@ async function createSsrHandler(app: any) {
 
     try {
       const url = req.originalUrl;
+
+      // P0: Harden Routing - Explicitly ignore static assets
+      const ext = path.extname(url.split("?")[0] || "");
+      if (
+        (ext && ext !== ".html") ||
+        url.startsWith("/assets/") ||
+        url.startsWith("/fonts/") ||
+        url.startsWith("/images/") ||
+        url.startsWith("/favicon.ico")
+      ) {
+        return next();
+      }
+
+      if (
+        req.headers.accept &&
+        !req.headers.accept.includes("text/html") &&
+        !req.headers.accept.includes("*/*")
+      ) {
+        return next();
+      }
+
       let template: string;
-      let render: any;
+      let render: (url: string, res: any, options?: any, queryClient?: any) => any;
       let createQueryClient: any;
 
       if (vite) {
         template = fs.readFileSync(path.resolve(root, "client/index.html"), "utf-8");
+        // FIX: Inject CSS manually in dev mode to prevent FOUC
+        // We preferentially use the new <!--ssr-styles--> placeholder
+        const cssLink = `<link rel="stylesheet" href="/src/index.css" />`;
+        if (template.includes("<!--ssr-styles-->")) {
+          template = template.replace("<!--ssr-styles-->", cssLink);
+        } else if (template.includes("<!--app-head-->")) {
+          template = template.replace("<!--app-head-->", `${cssLink}\n<!--app-head-->`);
+        }
+
         template = await vite.transformIndexHtml(url, template);
         const module = await vite.ssrLoadModule("/src/entry-server.tsx");
         render = module.render;
         createQueryClient = module.createQueryClient;
       } else {
-        // Prod: Read built template and server bundle
         console.log("[SSR] Running in Production/Build Mode");
         template = fs.readFileSync(path.resolve(root, "dist/public/index.html"), "utf-8");
         const entryServerPath = path.resolve(root, "dist/server/entry-server.js");
         const module = await import(pathToFileURL(entryServerPath).href);
-        // @ts-ignore
         render = module.render;
-        // @ts-ignore
         createQueryClient = module.createQueryClient;
+
+        // P1: FOUC Prevention - Inject Critical CSS
+        try {
+          const manifestPath = path.resolve(root, "dist/public/.vite/manifest.json");
+          if (fs.existsSync(manifestPath)) {
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+            // Find entry chunk (index.html or entry-client.tsx)
+            const entryKey = "index.html";
+            const entry = manifest[entryKey];
+
+            if (entry && entry.css) {
+              const cssLinks = entry.css
+                .filter((file: string) => !template.includes(file))
+                .map((file: string) => `<link rel="stylesheet" href="/${file}">`)
+                .join("\n");
+
+              if (template.includes("<!--ssr-styles-->")) {
+                template = template.replace("<!--ssr-styles-->", cssLinks);
+              } else if (template.includes("<!--app-head-->")) {
+                template = template.replace("<!--app-head-->", `${cssLinks}\n<!--app-head-->`);
+              } else {
+                template = template.replace("</head>", `${cssLinks}</head>`);
+              }
+            }
+          }
+        } catch (e) {
+          console.error("[SSR] Failed to inject critical CSS:", e);
+        }
       }
 
       // PREFETCH DATA
-      // Create a fresh QueryClient for this request
       const queryClient = createQueryClient();
 
-      // 1. Prefetch Categories (common across all pages)
       try {
         const categories = await getStorage().getCategories();
         queryClient.setQueryData(["/api/categories"], categories);
@@ -70,10 +137,8 @@ async function createSsrHandler(app: any) {
         console.error("SSR Prefetch Error (Categories):", err);
       }
 
-      // 2. Route-Specific Prefetching (Fix for ISSUE-004)
       try {
         if (url === "/contact" || url.startsWith("/contact?")) {
-          console.log("[SSR] Prefetching Contact Config");
           const contactConfig = await getStorage().getContactPageConfiguration();
           if (contactConfig) {
             queryClient.setQueryData(["/api/contact-info"], contactConfig);
@@ -83,57 +148,27 @@ async function createSsrHandler(app: any) {
         console.error("SSR Prefetch Error (Route Specific):", err);
       }
 
-      // Split template into head and footer
-      // Assumes template has <!--app-root--> placeholder or similar
-      // If not, we can split at <div id="root"></div> or inject into body.
-      // Standard Vite templates often look like: <div id="root"></div>
-
-      // Robustly finding the root div to inject app content
-      // Handle potential whitespace/indentation around the root div
-      const rootDivRegex = /<div id="root">\s*<\/div>/;
-      let [head, footer] = template.split(rootDivRegex);
-
-      if (!footer) {
-        // Fallback: Try splitting by body tag if root div is missing or different
-        const bodyRegex = /<body>/;
-        const bodyMatch = template.match(bodyRegex);
-        if (bodyMatch) {
-          [head, footer] = template.split(bodyRegex);
-          head += '<body><div id="root">';
-          footer = "</div>" + footer;
-        } else {
-          console.error("SSR Error: Could not find <div id='root'> or <body> in template");
-          // Emergency fallback
-          head = template;
-          footer = "";
-        }
-      } else {
-        // Standard case: we found the root div, so we reconstruct the opening
-        head += '<div id="root">';
-        footer = "</div>" + footer;
-      }
+      // Template Marker Strategy
+      // We no longer split by strings/regex. We use exact placeholder replacements.
+      // This ensures 1 head and 1 body.
 
       const {
         pipe,
-        queryClient: finalClient,
+        // queryClient: finalClient,
         helmetContext,
       } = render(
         url,
         res,
         {
           onShellReady() {
-            // The instruction implies a `didError` variable, but it's not present in the original code.
-            // Assuming the intent is to set status code based on rendering success/failure,
-            // but for onShellReady, it's typically 200 unless an error occurred before this point.
-            // Sticking to the original 200 for now, as `didError` is not defined.
-            res.status(200); // Original: res.status(200);
-            res.set("Content-Type", "text/html"); // Original: res.set("Content-Type", "text/html");
+            console.log("[SSR] onShellReady called");
+            res.status(200);
+            res.set("Content-Type", "text/html");
 
-            // Extract helmet data from context
             const { helmet } = helmetContext as any;
 
-            // Generate head tags string
-            const headTags = `
+            // Construct Head Content
+            const headContent = `
               ${helmet.title.toString()}
               ${helmet.priority.toString()}
               ${helmet.meta.toString()}
@@ -141,37 +176,80 @@ async function createSsrHandler(app: any) {
               ${helmet.script.toString()}
             `;
 
-            // Inject into head
-            // Replace existing <title> tag if present to avoid duplicates, or just append if strict replacement isn't critical (Helmet usually manages this on client, but for SSR we want clean HTML)
-            // A simple replacement for </head> works well to ensure it's at the end of head
-            const finalHead = (head || "").replace("</head>", `${headTags}</head>`);
+            // Prepare the stream with STRICT marker replacement
+            // We expect index.html to have <!--app-head--> and <!--app-html-->
 
-            res.write(finalHead);
-          },
-          async onAllReady() {
-            const dehydratedState = dehydrate(finalClient);
-            // Intercept res.end to inject scripts before closing
+            if (!template.includes("<!--app-head-->") || !template.includes("<!--app-html-->")) {
+              console.error("[SSR] CRITICAL: Missing template markers in index.html");
+              // We cannot recover gracefully if markers are missing in production
+              res
+                .status(500)
+                .send("<h1>Server Configuration Error</h1><p>Missing SSR markers.</p>");
+              return;
+            }
+
+            const parts = template.split("<!--app-html-->");
+            let beforeApp = parts[0] || ""; // Fallback for TS safety, though check above covers it
+
+            // Deterministic Replacement: HEAD
+            beforeApp = beforeApp.replace("<!--app-head-->", headContent);
+
+            // Override res.end immediately to ensure we capture the end of the stream
+            // even if it happens synchronously (no Suspense)
             const originalEnd = res.end.bind(res);
-            res.end = function (chunk: any, encoding: any, cb: any) {
-              // Vital: Ensure entry-client is injected.
-              // React's pipe() might close the stream before we can write the footer normally on some environments.
+            res.end = ((chunk: any, encoding: any, cb: any) => {
+              console.log("[SSR] res.end called! Writing footer...");
+              // Inject Dehydrated State and invalidation scripts
+              // We dehydrate here to get the final state
+              // USE SAFE VARIABLE: queryClient (from outer scope) instead of finalClient (from return value)
+              const dehydratedState = dehydrate(queryClient);
+
               res.write(`
-                  <script>
-                    window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState).replace(/</g, "\\u003c")};
+                  <script nonce="${res.locals.cspNonce || ""}">
+                    window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState).replace(
+                      /</g,
+                      "\\u003c",
+                    )};
+                    window.ENV = {
+                      SENTRY_DSN: "${logging.sentry.dsn || ""}",
+                      SENTRY_ENVIRONMENT: "${logging.sentry.environment || "production"}"
+                    };
                   </script>
                 `);
 
-              if (!footer.includes("entry-client.tsx")) {
-                res.write('<script type="module" src="/src/entry-client.tsx"></script>');
-              }
+              const parts = template.split("<!--app-html-->");
+              const footer = parts[1] || "";
+
+              console.log("[SSR] Footer length:", footer.length);
+              // Vite handles script injection via transformIndexHtml (Dev) and manifest/index.html (Prod).
+              // So we just write the footer (which contains the scripts)
               res.write(footer);
 
+              console.log("[SSR] Calling originalEnd");
               return originalEnd(chunk, encoding, cb);
-            } as any;
+            }) as any;
 
+            // Flush the first part (pre-app HTML)
+            console.log("[SSR] Writing beforeApp length:", beforeApp.length);
+            console.log("[SSR] beforeApp TAIL:", beforeApp.slice(-200));
+            res.write(beforeApp);
+
+            // Pipe the React Render Stream (app HTML)
+            console.log("[SSR] Piping React stream...");
             pipe(res);
           },
+          onAllReady() {
+            // No-op - we handle cleanup in res.end wrapper
+          },
           onShellError(error: any) {
+            import("@sentry/node")
+              .then((Sentry) => {
+                Sentry.captureException(error, {
+                  tags: { context: "ssr-shell" },
+                });
+              })
+              .catch(() => {});
+
             if (!res.headersSent) {
               res.status(500).send("<h1>Server Error</h1><pre>" + error?.message + "</pre>");
             } else {
@@ -181,14 +259,21 @@ async function createSsrHandler(app: any) {
           },
           onError(error: any) {
             console.error("SSR Render Error:", error);
+            import("@sentry/node")
+              .then((Sentry) => {
+                Sentry.captureException(error, {
+                  tags: { context: "ssr-render" },
+                });
+              })
+              .catch(() => {});
+
             if (!res.headersSent) {
-              // If error happens before shell is ready, we can send a 500
               res.status(500).send("<h1>Server Error (Render)</h1>");
             }
           },
         },
         queryClient,
-      ); // Pass the prefetched client
+      );
     } catch (e) {
       vite?.ssrFixStacktrace(e as Error);
       next(e);

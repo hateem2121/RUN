@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import type { Fabric, MediaAsset, SustainabilityFabricPortfolio } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import type { Fabric, MediaAsset, SustainabilityFabricPortfolio } from "@shared/schema";
+import { useMemo } from "react";
 
 export function FabricPortfolioSection({
   mediaAssets = [],

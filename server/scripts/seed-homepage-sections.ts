@@ -1,6 +1,6 @@
-import { db } from "../db.js";
-import { homepageSections, homepageFeaturedProductsSettings } from "../../shared/schema.js";
 import { eq } from "drizzle-orm";
+import { homepageFeaturedProductsSettings, homepageSections } from "../../shared/schema.js";
+import { db } from "../db.js";
 
 async function seedHomepageSections() {
   console.log("🌱 Seeding homepage sections...");

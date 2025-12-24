@@ -1,18 +1,18 @@
-import { Link } from "wouter";
-import { Card, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { MediaQueryKeys } from "@/lib/media-query-keys";
 import type {
-  Product,
+  Accessory,
   Category,
-  MediaAsset,
+  Certificate,
   Fabric,
   Fiber,
-  Certificate,
-  SizeChart,
-  Accessory,
+  MediaAsset,
   NavigationItem,
+  Product,
+  SizeChart,
 } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Card, CardContent } from "@/components/ui/card";
+import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 export default function AdminCMS() {
   // Enhanced data fetching with proper typing and error handling

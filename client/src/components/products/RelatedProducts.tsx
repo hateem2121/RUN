@@ -1,12 +1,12 @@
+import type { Category, Product } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { Product, Category } from "@shared/schema";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
-import { LazyMediaEnhanced } from "./LazyMediaEnhanced";
 import { LayoutGrid } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { batchFetchMediaContent } from "@/lib/queryClient";
-import { useMemo, useState, useEffect } from "react";
+import { LazyMediaEnhanced } from "./LazyMediaEnhanced";
 
 interface RelatedProductsProps {
   currentProductId: number;

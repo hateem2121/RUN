@@ -8,7 +8,7 @@
  * - All /api/admin/* routes are protected server-side regardless of frontend checks
  */
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "./queryClient";
 
 /**

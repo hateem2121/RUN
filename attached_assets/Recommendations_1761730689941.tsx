@@ -1,6 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { RecommendedProduct } from '../types';
+import type React from 'react';
+import type { RecommendedProduct } from '../types';
 import ClippedElement from './ClippedElement';
 
 interface RecommendationsProps {

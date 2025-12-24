@@ -2,72 +2,62 @@ import { logger } from "../lib/smart-logger.js";
 // Production Security Middleware
 // PHASE 4: Production Readiness - Security Hardening
 
-import { Request, Response, NextFunction } from "express";
-import { getConfig } from "../config/production.js";
+import type { NextFunction, Request, Response } from "express";
 import { security } from "../config/environment.js";
+import { getConfig } from "../config/production.js";
 
 const config = getConfig();
 
 // Security Headers Middleware
-export function securityHeaders(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+import crypto from "crypto";
+import helmet from "helmet";
+
+export function securityHeaders(req: Request, res: Response, next: NextFunction) {
   if (config.security.headers.enableSecurity) {
-    // Prevent clickjacking
-    res.setHeader("X-Frame-Options", "DENY");
+    // Generate Nonce for this request
+    const nonce = crypto.randomBytes(16).toString("base64");
+    res.locals.cspNonce = nonce;
 
-    // Prevent MIME type sniffing
-    res.setHeader("X-Content-Type-Options", "nosniff");
-
-    // XSS Protection
-    res.setHeader("X-XSS-Protection", "1; mode=block");
-
-    // Referrer Policy
-    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-
-    // Content Security Policy - Enhanced for @google/model-viewer embedded texture support
-    res.setHeader(
-      "Content-Security-Policy",
-      "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://modelviewer.dev https://cdn.jsdelivr.net https://replit.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
-        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
-        "img-src 'self' data: blob: https:; " +
-        "connect-src 'self' https: data: blob:; " +
-        "worker-src 'self' blob:; " +
-        "media-src 'self' https:;",
-    );
-
-    // HTTP Strict Transport Security (HSTS)
-    if (config.security.headers.hsts && req.secure) {
-      res.setHeader(
-        "Strict-Transport-Security",
-        "max-age=31536000; includeSubDomains",
-      );
-    }
-
-    // Feature Policy / Permissions Policy
-    res.setHeader(
-      "Permissions-Policy",
-      "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()",
-    );
+    // Use Helmet for security headers
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'", // Kept for hydration compatibility until client refactor
+            "'wasm-unsafe-eval'",
+            `'nonce-${nonce}'`,
+            "https://modelviewer.dev",
+            "https://cdn.jsdelivr.net",
+            "https://replit.com",
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+            "https://cdnjs.cloudflare.com",
+          ],
+          fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+          imgSrc: ["'self'", "data:", "blob:", "https:"],
+          connectSrc: ["'self'", "https:", "data:", "blob:"],
+          workerSrc: ["'self'", "blob:"],
+          mediaSrc: ["'self'", "https:"],
+        },
+      },
+      crossOriginEmbedderPolicy: false, // Often causes issues with 3rd party assets
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    })(req, res, next);
+  } else {
+    next();
   }
-
-  next();
 }
 
 // Request Validation Middleware
-export function requestValidation(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function requestValidation(req: Request, res: Response, next: NextFunction) {
   // Validate request size
   const contentLength = parseInt(req.get("Content-Length") || "0");
-  const maxSize =
-    parseInt(config.app.maxRequestSize.replace("mb", "")) * 1024 * 1024;
+  const maxSize = parseInt(config.app.maxRequestSize.replace("mb", "")) * 1024 * 1024;
 
   if (contentLength > maxSize) {
     return res.status(413).json({
@@ -101,10 +91,7 @@ export function requestValidation(
       allowedTypes.push("application/octet-stream");
     }
 
-    if (
-      contentType &&
-      !allowedTypes.some((type) => contentType.startsWith(type))
-    ) {
+    if (contentType && !allowedTypes.some((type) => contentType.startsWith(type))) {
       return res.status(415).json({
         error: "Unsupported Media Type",
         allowedTypes,
@@ -116,27 +103,16 @@ export function requestValidation(
 }
 
 // API Key Validation (for future use)
-export function apiKeyValidation(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function apiKeyValidation(req: Request, res: Response, next: NextFunction) {
   // Skip API key validation in development
   if (config.app.environment === "development") {
     return next();
   }
 
   // For production, check API key for sensitive endpoints
-  const sensitiveEndpoints = [
-    "/api/admin",
-    "/api/enterprise",
-    "/api/migration",
-    "/api/backup",
-  ];
+  const sensitiveEndpoints = ["/api/admin", "/api/enterprise", "/api/migration", "/api/backup"];
 
-  const isSensitive = sensitiveEndpoints.some((endpoint) =>
-    req.path.startsWith(endpoint),
-  );
+  const isSensitive = sensitiveEndpoints.some((endpoint) => req.path.startsWith(endpoint));
 
   if (isSensitive) {
     const apiKey = req.headers["x-api-key"] || req.query.apiKey;
@@ -173,11 +149,7 @@ export function apiKeyValidation(
 }
 
 // Request Timeout Middleware
-export function requestTimeout(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function requestTimeout(req: Request, res: Response, next: NextFunction) {
   // Skip timeout for media upload and streaming routes
   const mediaRoutes = [
     "/api/media",
@@ -214,11 +186,7 @@ export function requestTimeout(
 }
 
 // Production-specific request logging
-export function productionLogging(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function productionLogging(req: Request, res: Response, next: NextFunction) {
   if (config.app.environment === "production") {
     // Log only essential information in production
     const startTime = Date.now();
@@ -227,15 +195,11 @@ export function productionLogging(
       const duration = Date.now() - startTime;
       const logLevel = res.statusCode >= 400 ? "ERROR" : "INFO";
 
-      logger.info(
-        `[${logLevel}] ${req.method} ${req.path} ${res.statusCode} ${duration}ms`,
-      );
+      logger.info(`[${logLevel}] ${req.method} ${req.path} ${res.statusCode} ${duration}ms`);
 
       // Log slow requests
       if (duration > config.monitoring.alertThresholds.responseTime) {
-        logger.warn(
-          `[SLOW REQUEST] ${req.method} ${req.path} took ${duration}ms`,
-        );
+        logger.warn(`[SLOW REQUEST] ${req.method} ${req.path} took ${duration}ms`);
       }
     });
   }

@@ -8,10 +8,10 @@
  * PHASE 5: Added CacheFetchStrategy for warmup optimization
  */
 
-import { UnifiedCache } from './unified-cache.js';
-import { logger } from './smart-logger.js';
 import type { IStorage } from '../storage.js';
 import { CacheKeys, InvalidationPatterns } from './cache-keys.js';
+import { logger } from './smart-logger.js';
+import { UnifiedCache } from './unified-cache.js';
 
 // PHASE 4: Lazy initialization to avoid circular dependency
 // Use getter function instead of module-level constant

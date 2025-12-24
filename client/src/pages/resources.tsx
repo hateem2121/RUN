@@ -1,21 +1,20 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Shield, Package, Ruler, Shirt, Sparkles, ArrowRight, Filter } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, Filter, Package, Ruler, Shield, Shirt, Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
+import { ResourceCard } from "@/components/resources/ResourceCard";
+import { ResourceGrid } from "@/components/resources/ResourceGrid";
+import { ResourceSearch } from "@/components/resources/ResourceSearch";
+import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { SEOMeta } from "@/components/seo-meta";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard3D } from "@/components/ui/hover-card-3d";
-import { ResourceSearch } from "@/components/resources/ResourceSearch";
-import { ResourceGrid } from "@/components/resources/ResourceGrid";
-import { ResourceCard } from "@/components/resources/ResourceCard";
-import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useResourceSearch } from "@/hooks/resources/useResourceSearch";
-import { useMemo } from "react";
 
 const resourceCategories = [
   {

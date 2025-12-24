@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
 import type Lenis from "lenis";
+import { createContext, useContext } from "react";
 
 interface LenisContextValue {
   lenis: Lenis | null;

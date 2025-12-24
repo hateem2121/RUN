@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { motion } from "framer-motion";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface LetterState {

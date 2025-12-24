@@ -2,8 +2,9 @@
  * Error Boundary for Admin Products sections
  * Prevents cascade failures between product management components
  */
-import { Component, ReactNode } from 'react';
+
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { Component, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { logger } from './logger';
 

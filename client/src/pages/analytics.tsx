@@ -1,7 +1,7 @@
-import { ProductAnalytics } from "@/components/products/ProductAnalytics";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download, RefreshCw } from "lucide-react";
 import { Link } from "wouter";
+import { ProductAnalytics } from "@/components/products/ProductAnalytics";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AnalyticsPage() {

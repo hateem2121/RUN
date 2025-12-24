@@ -3,19 +3,19 @@
  * Seeds all technology-page-related CMS tables
  */
 
-import { db } from '../../server/db.js';
 import { eq } from 'drizzle-orm';
+import { db } from '../../server/db.js';
 import {
+    mediaAssets, 
+    technologyCta,
+    technologyEquipment,
+    technologyGradientSettings,
     technologyHero,
     technologyInnovations,
-    technologyEquipment,
     technologyResearch,
-    technologyRoadmap,
-    technologyGradientSettings,
-    technologyCta,
-    mediaAssets
+    technologyRoadmap
 } from '../../shared/schema.js';
-import { SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
+import { type SeedResult, seedWithTransaction } from '../utils/seed-helpers.js';
 
 /**
  * Seed technology hero section

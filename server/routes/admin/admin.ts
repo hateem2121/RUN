@@ -6,11 +6,11 @@
 
 import { Router } from 'express';
 import { z } from 'zod';
-import { logger } from '../../lib/smart-logger.js';
-import { validateIdParam } from '../../utils.js';
 import type { MediaAsset, Product } from '../../../shared/schema.js';
-import { getStorage } from '../../lib/storage-singleton.js';
 import { withTimeout } from '../../lib/request-timeout.js';
+import { logger } from '../../lib/smart-logger.js';
+import { getStorage } from '../../lib/storage-singleton.js';
+import { validateIdParam } from '../../utils.js';
 
 const router = Router();
 

@@ -1,26 +1,27 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import type { MediaAsset } from "@shared/schema";
 import {
-  Upload,
-  X,
+  AlertCircle,
+  CheckCircle,
+  FileImage,
+  FileText,
+  FileVideo,
   Pause,
   Play,
   RefreshCw,
-  CheckCircle,
-  AlertCircle,
-  FileImage,
-  FileVideo,
-  FileText,
+  Upload,
+  X,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { MediaAsset } from "@shared/schema";
-// PHASE 3.1: Single Cache Strategy - Use only React Query, remove competing cache systems
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
+// PHASE 3.1: Single Cache Strategy - Use only React Query, remove competing cache systems
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
+import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+
 // Removed server-side imports that were causing build failures
 // REMOVED: Server-side imports replaced with browser-safe fallbacks below
 
@@ -349,7 +350,7 @@ const UploadItem = React.memo(
       const k = 1024;
       const sizes = ["Bytes", "KB", "MB", "GB"];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+      return parseFloat((bytes / k ** i).toFixed(2)) + " " + sizes[i];
     };
 
     return (
@@ -604,7 +605,7 @@ export default function MediaUploadEnhanced() {
                         );
                         // Exponential backoff: 1s, 2s, 4s
                         await new Promise((resolve) =>
-                          setTimeout(resolve, Math.pow(2, retryCount - 1) * 1000),
+                          setTimeout(resolve, 2 ** (retryCount - 1) * 1000),
                         );
                       } else {
                         throw error; // Re-throw non-retryable errors or max retries exceeded

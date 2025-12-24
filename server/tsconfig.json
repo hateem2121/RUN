@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["../shared/*"]
-    }
+    },
+    "lib": ["es2022"]
   },
   "include": ["**/*.ts", "**/*.d.ts"],
   "exclude": ["node_modules", "../dist", "**/*.spec.ts", "**/*.test.ts"],

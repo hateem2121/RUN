@@ -3,11 +3,12 @@
  * Provides graceful error handling and recovery UI
  */
 
-import React, { Component, ReactNode, ErrorInfo } from 'react';
+import { AlertTriangle, ArrowLeft, Bug, RefreshCw } from "lucide-react";
+import type React from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, RefreshCw, Bug, ArrowLeft } from "lucide-react";
 
 interface Props {
   children: ReactNode;

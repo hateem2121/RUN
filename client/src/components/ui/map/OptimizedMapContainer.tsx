@@ -1,11 +1,11 @@
 // import React from 'react';
 import { motion } from 'framer-motion';
-import { MapContainer, TileLayer } from 'react-leaflet';
 import { Map, Satellite } from 'lucide-react';
-import { MapMarkers } from './MapMarkers';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import { MapErrorBoundary } from './components/MapErrorBoundary';
-import { useMapState } from './hooks/useMapState';
 import type { MapLocation } from './hooks/useMapMarkers';
+import { useMapState } from './hooks/useMapState';
+import { MapMarkers } from './MapMarkers';
 import "leaflet/dist/leaflet.css";
 
 interface OptimizedMapContainerProps {

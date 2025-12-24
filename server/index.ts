@@ -1,31 +1,31 @@
-import express, { Request, Response, NextFunction } from "express";
 import compression from "compression";
-import { registerRoutes } from "./routes/index.js";
-import { createSsrHandler } from "./lib/ssr-handler.js";
+import express, { type NextFunction, type Request, type Response } from "express";
+import { createServer } from "http"; // HMR FIX: Import createServer explicitly
+import path from "path";
 // PHASE 4: Production Readiness Imports
 import { getConfig } from "./config/production.js";
-import {
-  securityHeaders,
-  requestValidation,
-  requestTimeout,
-  productionLogging,
-} from "./middleware/production-security.js";
-import {
-  productionErrorHandler,
-  notFoundHandler,
-  setupGlobalErrorHandlers,
-} from "./middleware/production-error-handler.js";
-import { healthCheckHandler, quickHealthHandler } from "./middleware/enhanced-health.js";
-import { correlationIdMiddleware } from "./middleware/correlation-id.js";
-import { createCorsMiddleware } from "./middleware/cors-config.js";
-import { logger } from "./lib/smart-logger.js";
 import { dbKeepAlive } from "./lib/database-keep-alive.js";
 import { httpMetricsTracker } from "./lib/http-metrics-tracker.js";
+import { logger } from "./lib/smart-logger.js";
+import { createSsrHandler } from "./lib/ssr-handler.js";
 import { getStorage } from "./lib/storage-singleton.js";
+import { correlationIdMiddleware } from "./middleware/correlation-id.js";
+import { createCorsMiddleware } from "./middleware/cors-config.js";
+import { healthCheckHandler, quickHealthHandler } from "./middleware/enhanced-health.js";
 // generalLimiter replaced by middleware/rateLimiter
 import { performanceTrackingMiddleware } from "./middleware/performance-tracking.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import {
+  notFoundHandler,
+  productionErrorHandler,
+  setupGlobalErrorHandlers,
+} from "./middleware/production-error-handler.js";
+import {
+  productionLogging,
+  requestTimeout,
+  requestValidation,
+  securityHeaders,
+} from "./middleware/production-security.js";
+import { registerRoutes } from "./routes/index.js";
 
 // ============================================================================
 // SIMPLIFIED SERVICES (replacing archived files)
@@ -54,6 +54,19 @@ app.set("trust proxy", true);
 const config = getConfig();
 console.log(`[Server] 🚀 Starting in ${config.app.environment} mode`);
 
+// PHASE 5: Sentry Initialization (Must be first)
+import {
+  initSentry,
+  sentryErrorHandler,
+  sentryRequestHandler,
+  sentryTracingHandler,
+} from "./lib/sentry.js";
+initSentry();
+
+// The request handler must be the first middleware on the app
+app.use(sentryRequestHandler);
+app.use(sentryTracingHandler);
+
 // PHASE 4: Setup global error handlers
 setupGlobalErrorHandlers();
 
@@ -63,11 +76,12 @@ console.log("[Server] ✅ CORS middleware enabled with origin restrictions");
 
 // PHASE 4: Production Security Middleware (Production Only)
 if (config.app.environment === "production") {
-  app.use(securityHeaders);
-  app.use(requestValidation);
+  // DEBUG: Temporarily disabled to isolate 500 error on assets
+  // app.use(securityHeaders);
+  // app.use(requestValidation);
   app.use(requestTimeout);
   app.use(productionLogging);
-  console.log("[Server] ✅ Production security middleware enabled");
+  console.log("[Server] ✅ Production security middleware enabled (Partial Debug Mode)");
 } else {
   console.log("[Server] 🔧 Development mode - security middleware disabled for Vite compatibility");
 }
@@ -86,6 +100,7 @@ console.log("[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latenc
 
 // CHUNK 13: Production-Grade Rate Limiting (API routes only)
 import { apiRateLimiter } from "./middleware/rateLimiter.js";
+
 app.use("/api", apiRateLimiter.middleware());
 console.log("[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP");
 
@@ -163,10 +178,10 @@ app.use(express.urlencoded({ extended: false, limit: "10mb" })); // 10MB limit f
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJsonResponse: Record<string, any> | undefined;
 
   const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
+  res.json = (bodyJson, ...args) => {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
@@ -191,13 +206,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  // HMR FIX: Create HTTP server early to attach Vite HMR
+  const httpServer = createServer(app);
+
+  await registerRoutes(app);
 
   // PHASE 4: Enhanced health check endpoints
   app.get("/health", quickHealthHandler);
   app.get("/health/detailed", healthCheckHandler);
 
-  // OpenAPI/Swagger Documentation - Comprehensive API docs for all media endpoints
+  // OpenAPI/Swagger Documentation
   app.get("/api-docs", async (_req, res) => {
     try {
       res.setHeader("Content-Type", "application/json");
@@ -248,7 +266,7 @@ app.use((req, res, next) => {
 
   // PHASE 3.1: Initialize database performance optimizations
   try {
-    // Simplified database optimization (replacing archived database-performance-optimizer.js)
+    // Simplified database optimization
     const DatabasePerformanceOptimizer = {
       optimize: async () => logger.info("[DB] Using PostgreSQL built-in optimization"),
     };
@@ -258,10 +276,8 @@ app.use((req, res, next) => {
     console.error("[Server] ⚠️ Database optimization failed:", error);
   }
 
-  // PHASE 3.2: Initialize enhanced error handling and monitoring
+  // PHASE 3.2: Initialize enhanced error handling
   try {
-    // Simplified health monitoring (replacing archived enhanced-health-monitoring.js)
-    // Enhanced monitoring starts automatically
     console.log("[Server] ✅ Enhanced health monitoring and error recovery systems initialized");
   } catch (error) {
     console.error("[Server] ⚠️ Enhanced health monitoring initialization failed:", error);
@@ -280,12 +296,10 @@ app.use((req, res, next) => {
   }
 
   // PHASE 1 OPTIMIZATION: Non-blocking cache warming with progressive retries
-  // Uses Promise.allSettled to prevent startup blocking if warming fails
   const { unifiedCache } = await import("./lib/unified-cache.js");
   const { retryDbOperation } = await import("./lib/db-retry.js");
 
-  // PHASE 1 OPTIMIZATION: Awaited Cache Warming (Directive #4)
-  // Ensures critical data is in memory before accepting traffic, preventing race conditions
+  // PHASE 1 OPTIMIZATION: Awaited Cache Warming
   try {
     console.log("[Server] ⏳ Warming cache (this may take a few seconds)...");
     await retryDbOperation(() => unifiedCache.warmCache(), {
@@ -318,18 +332,33 @@ app.use((req, res, next) => {
     );
   }
 
+  // PHASE 4: Production Security Middleware (Production Only)
+  if (config.app.environment === "production") {
+    app.use(securityHeaders);
+    app.use(requestValidation);
+    app.use(requestTimeout);
+    app.use(productionLogging);
+    console.log("[Server] ✅ Production security middleware enabled");
+  } else {
+    console.log(
+      "[Server] 🔧 Development mode - security middleware disabled for Vite compatibility",
+    );
+  }
+
   console.log(`[Server] 🎯 Production readiness complete - ${config.app.environment} mode`);
 
-  // Setup SSR handler (handles both Dev Vite and Prod SSR)
-  const ssrHandler = await createSsrHandler(app);
-  app.use(ssrHandler);
-
-  // Serve static files in production (SSR handler skips them, but Express needs to serve them or Nginx)
-  // In production, assets are in dist/public (mapped to /)
-  if (app.get("env") !== "development") {
-    const __dirname = fileURLToPath(new URL(".", import.meta.url));
-    app.use(express.static(path.resolve(__dirname, "public")));
+  // Serve static files in production BEFORE SSR handler
+  if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
+    // When running from dist/index.js, verify the asset path relative to the process CWD
+    const staticPath = path.resolve(process.cwd(), "dist/public");
+    app.use(express.static(staticPath, { index: false }));
+    console.log(`[Server] serving static assets from: ${staticPath}`);
   }
+
+  // Setup SSR handler (handles both Dev Vite and Prod SSR)
+  // HMR FIX: Pass httpServer to ssrHandler so Vite can attach
+  const ssrHandler = await createSsrHandler(app, httpServer);
+  app.use(ssrHandler);
 
   // Error handling - if SSR didn't handle it
   app.use((_req, res, _next) => {
@@ -338,6 +367,10 @@ app.use((req, res, next) => {
 
   // PHASE 4: Production error handling (AFTER frontend setup)
   app.use(notFoundHandler);
+
+  // The error handler must be before any other error middleware and after all controllers
+  app.use(sentryErrorHandler);
+
   app.use(productionErrorHandler);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -346,21 +379,19 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     console.error(err);
   });
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  // Cloud Run requires listening on the PORT environment variable
-  // Default to 5000 for local development if not set
-  const port = parseInt(process.env.PORT || "5000", 10);
-  const httpServer = server.listen(port, "0.0.0.0", () => {
+
+  // ALWAYS serve the app on port 5001 (default)
+  const port = parseInt(process.env.PORT || "5001", 10);
+
+  // HMR FIX: Listen on the pre-created httpServer instance
+  httpServer.listen(port, "0.0.0.0", () => {
     logger.info(`Server running on port ${port}`);
   });
 
   // FORENSIC INVESTIGATION FIX: Server timeout and keep-alive configuration
-  // Prevents connection resets observed during page reloads
-  httpServer.timeout = 120000; // 120 seconds (2 minutes)
-  httpServer.keepAliveTimeout = 65000; // 65 seconds (longer than default ALB timeout)
-  httpServer.headersTimeout = 66000; // Slightly longer than keepAliveTimeout
+  httpServer.timeout = 120000;
+  httpServer.keepAliveTimeout = 65000;
+  httpServer.headersTimeout = 66000;
 
   console.log("[Server] ✅ Server timeouts configured (timeout: 120s, keep-alive: 65s)");
 })();

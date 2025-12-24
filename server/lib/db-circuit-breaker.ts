@@ -123,7 +123,7 @@ export class DatabaseCircuitBreaker {
           }
 
           retryCount++;
-          const delay = this.INITIAL_RETRY_DELAY * Math.pow(2, attempt - 1);
+          const delay = this.INITIAL_RETRY_DELAY * 2 ** (attempt - 1);
           logger.warn(
             `⚠️ ${operationName} failed (attempt ${attempt}/${this.MAX_RETRIES}), retrying in ${delay}ms: ${(error as Error).message}`
           );

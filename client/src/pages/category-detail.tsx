@@ -1,19 +1,18 @@
-import { useParams, Link } from "wouter";
+import type { Category, Certificate, Fabric, ProductSummary } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, Loader2, AlertCircle } from "lucide-react";
-import { Category, ProductSummary, Fabric, Certificate } from "@shared/schema";
-import {
-  transformProducts,
-  TransformedProduct,
-  TransformContext,
-} from "@/lib/product-transformers";
-import { batchFetchMediaContent } from "@/lib/queryClient";
+import { AlertCircle, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link, useParams } from "wouter";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
-import { ExternalLink } from "lucide-react";
+import {
+  type TransformContext,
+  type TransformedProduct,
+  transformProducts,
+} from "@/lib/product-transformers";
+import { batchFetchMediaContent } from "@/lib/queryClient";
 
 interface ProductCardProps {
   product: TransformedProduct;

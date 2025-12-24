@@ -1,14 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogDescription } from "@/components/ui/enhanced-dialog";
-import { Plus, Search, Settings, Grid3X3, List, TreePine, Download, Eye, BarChart3, Trash2, RotateCcw } from "lucide-react";
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import { closestCenter, DndContext } from '@dnd-kit/core';
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
+import { BarChart3, Download, Eye, Grid3X3, List, Plus, RotateCcw, Search, Settings, Trash2, TreePine } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogDescription, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 // Consolidated hook
 import useCategoryOperationsConsolidated from "@/hooks/admin/categories/useCategoryOperationsConsolidated";

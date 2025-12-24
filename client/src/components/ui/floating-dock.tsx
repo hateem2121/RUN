@@ -1,17 +1,16 @@
-import { cn } from "@/lib/utils";
 import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
   AnimatePresence,
-  MotionValue,
+  type MotionValue,
   motion,
   useMotionValue,
+  useReducedMotion,
   useSpring,
   useTransform,
-  useReducedMotion,
 } from "framer-motion";
-
 import { useRef, useState } from "react";
 import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { cn } from "@/lib/utils";
 
 // Maximum stagger delay to prevent sluggish animations on long lists
 const MAX_STAGGER_DELAY = 0.15; // seconds
@@ -182,7 +181,7 @@ const FloatingDockDesktop = ({
   className?: string;
   iconSize?: "small" | "medium" | "large";
 }) => {
-  let mouseX = useMotionValue(Infinity);
+  const mouseX = useMotionValue(Infinity);
 
   return (
     <LiquidGlassCard
@@ -224,11 +223,11 @@ function IconContainer({
   href: string;
   iconSize?: string;
 }) {
-  let ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  let distance = useTransform(mouseX, (val) => {
-    let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+  const distance = useTransform(mouseX, (val) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
 
     return val - bounds.x - bounds.width / 2;
   });
@@ -242,45 +241,45 @@ function IconContainer({
 
   const sizes = sizeMap[iconSize as keyof typeof sizeMap] || sizeMap.medium;
 
-  let widthTransform = useTransform(
+  const widthTransform = useTransform(
     distance,
     [-150, 0, 150],
     [sizes.base, sizes.hover, sizes.base],
   );
-  let heightTransform = useTransform(
+  const heightTransform = useTransform(
     distance,
     [-150, 0, 150],
     [sizes.base, sizes.hover, sizes.base],
   );
 
-  let widthTransformIcon = useTransform(
+  const widthTransformIcon = useTransform(
     distance,
     [-150, 0, 150],
     [sizes.icon, sizes.iconHover, sizes.icon],
   );
-  let heightTransformIcon = useTransform(
+  const heightTransformIcon = useTransform(
     distance,
     [-150, 0, 150],
     [sizes.icon, sizes.iconHover, sizes.icon],
   );
 
-  let width = useSpring(widthTransform, {
+  const width = useSpring(widthTransform, {
     mass: 0.1,
     stiffness: 150,
     damping: shouldReduceMotion ? 20 : 12,
   });
-  let height = useSpring(heightTransform, {
+  const height = useSpring(heightTransform, {
     mass: 0.1,
     stiffness: 150,
     damping: shouldReduceMotion ? 20 : 12,
   });
 
-  let widthIcon = useSpring(widthTransformIcon, {
+  const widthIcon = useSpring(widthTransformIcon, {
     mass: 0.1,
     stiffness: 150,
     damping: shouldReduceMotion ? 20 : 12,
   });
-  let heightIcon = useSpring(heightTransformIcon, {
+  const heightIcon = useSpring(heightTransformIcon, {
     mass: 0.1,
     stiffness: 150,
     damping: shouldReduceMotion ? 20 : 12,

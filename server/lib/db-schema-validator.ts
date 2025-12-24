@@ -19,10 +19,10 @@
  * console.log(result.summary);
  */
 
-import { db } from '../db.js';
-import * as schema from '../../shared/schema.js';
-import { logger } from './smart-logger.js';
 import { sql } from 'drizzle-orm';
+import * as schema from '../../shared/schema.js';
+import { db } from '../db.js';
+import { logger } from './smart-logger.js';
 
 interface SchemaValidationResult {
   valid: boolean;

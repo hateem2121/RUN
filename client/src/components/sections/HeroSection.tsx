@@ -1,5 +1,5 @@
-import { ScrollExpandMedia } from "@/components/ui/scroll-expansion-hero";
 import type { AboutHero } from "@shared/schema";
+import { ScrollExpandMedia } from "@/components/ui/scroll-expansion-hero";
 
 interface HeroSectionProps {
   heroData: Partial<AboutHero>;

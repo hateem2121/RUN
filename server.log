@@ -1,0 +1,107 @@
+[Environment] ✅ Configuration validated and loaded successfully
+{"level":30,"time":"2025-12-22T12:05:08.286Z","service":"run-apparel-api","msg":"DatabaseCircuitBreaker initialized with retry logic (max 3 attempts) and circuit breaker"}
+[Database] ✅ HTTP-based PostgreSQL connection initialized (no more TCP pool exhaustion)
+[Security Config] Environment: production
+[Security Config] Security keys: rateLimiting,cors,headers
+[Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+[Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+[OTel] Starting OpenTelemetry SDK...
+[Server] ✅ Production security middleware enabled (Partial Debug Mode)
+[Server] ✅ Correlation ID & Build SHA headers enabled
+[Server] ✅ HTTP metrics tracking enabled (latency, status codes, routes)
+[Server] ✅ Prometheus metrics middleware enabled
+[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latency monitoring)
+[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP
+[Server] ✅ Production static asset caching enabled (CSS, JS, fonts, images)
+[Server] ✅ Raw binary parser configured for chunk uploads
+[Server] ✅ OpenAPI documentation available at /api-docs
+[Server] ✅ Production backup scheduler started
+[Server] ✅ Workflow automation started
+[Server] ✅ Storage lifecycle scheduler started (temp uploads auto-cleanup every 1h)
+[Server] ✅ Database keep-alive started (prevents cold starts)
+[Server] ✅ Database performance optimizations applied
+[Server] ✅ Enhanced health monitoring and error recovery systems initialized
+{"level":30,"time":"2025-12-22T12:05:08.286Z","service":"run-apparel-api","msg":"[Database] ✅ DATABASE_URL validation passed"}
+{"level":30,"time":"2025-12-22T12:05:08.295Z","service":"run-apparel-api","msg":"[Storage] Initialized Google Cloud Storage with bucket: run-media"}
+{"level":40,"time":"2025-12-22T12:05:08.296Z","service":"run-apparel-api","msg":"[Cache] ℹ️ Redis L2 credentials missing - falling back to L1 only"}
+{"level":30,"time":"2025-12-22T12:05:08.296Z","service":"run-apparel-api","msg":"[Cache] ✅ Unified Cache System initialized"}
+{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[StorageSingleton] Initializing Direct PostgreSQL Storage..."}
+{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully"}
+{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] Production-grade rate limiters initialized"}
+{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] General: 100 req/900000ms"}
+{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] Admin: 30 req/900000ms"}
+{"level":30,"time":"2025-12-22T12:05:08.298Z","service":"run-apparel-api","msg":"[RateLimiter] Diagnostic: 10 req/60000ms"}
+{"level":30,"time":"2025-12-22T12:05:08.302Z","service":"run-apparel-api","msg":"[DB Retry] Database retry logic initialized (maxRetries=3, backoffMs=50, exponential)"}
+{"level":40,"time":"2025-12-22T12:05:08.303Z","service":"run-apparel-api","msg":"UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting will fall back to in-memory storage."}
+{"level":40,"time":"2025-12-22T12:05:08.311Z","service":"run-apparel-api","msg":"[Email] Gmail credentials not configured - email notifications disabled"}
+{"level":30,"time":"2025-12-22T12:05:08.367Z","service":"run-apparel-api","msg":"[UnifiedMemoryCache] 🚀 Initialized: Delegating to UnifiedCache (In-Memory)"}
+{"level":40,"time":"2025-12-22T12:05:08.370Z","service":"run-apparel-api","msg":"[AlertManager] GC monitoring enabled but --expose-gc flag not set. GC pause tracking unavailable."}
+{"level":30,"time":"2025-12-22T12:05:08.370Z","service":"run-apparel-api","slowQuery":{"durationMs":500,"consecutiveCount":3},"errorRate":{"percentageThreshold":10,"timeWindowMinutes":5},"httpErrorRate":{"percentageThreshold":5},"circuitBreaker":{"alertOnOpen":true,"alertOnHalfOpen":false},"memory":{"percentageThreshold":80},"dbConnection":{"alertOnError":true,"alertOnTimeout":true},"gcPause":{"enabled":true,"thresholdMs":100},"msg":"[AlertManager] Initialized with thresholds:"}
+{"level":30,"time":"2025-12-22T12:05:08.371Z","service":"run-apparel-api","msg":"[Config] ✅ Environment variables validated successfully"}
+{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] 🚀 Starting in production mode (CSP configured for Vite/GCP)"}
+{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] ✅ Helmet security headers enabled (CSP configured for GCP)"}
+{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","allowedOrigins":["http://localhost:5173","http://localhost:5000","http://localhost:5001"],"credentials":"[REDACTED]","msg":"[CORS] Middleware initialized for production environment"}
+{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] ✅ CORS middleware enabled with origin restrictions"}
+{"level":30,"time":"2025-12-22T12:05:08.378Z","service":"run-apparel-api","msg":"[Server] Build Version: ef422c5b"}
+{"level":30,"time":"2025-12-22T12:05:08.402Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth configured"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] Mounting API routes with flat structure (/api/*)"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Admin routes protected with requireAdmin + strict validation"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)"}
+{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] Registering taxonomy routes module"}
+{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] Taxonomy routes registered successfully"}
+{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time"}
+{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] ✅ All routes registered successfully"}
+{"level":30,"time":"2025-12-22T12:05:08.449Z","service":"run-apparel-api","msg":"[Backup] Using PostgreSQL automatic backups - enhanced backup archived"}
+{"level":30,"time":"2025-12-22T12:05:08.449Z","service":"run-apparel-api","msg":"[Workflow] Using simplified automation - enhanced workflow archived"}
+{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","enabled":true,"interval":"3600s","dryRun":false,"msg":"[Lifecycle] Scheduler initialized"}
+{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting scheduler (interval: 3600000ms)"}
+{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting cleanup run #1"}
+{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting temp uploads cleanup (maxAge: 24h, dryRun: false)"}
+{"level":30,"time":"2025-12-22T12:05:08.455Z","service":"run-apparel-api","msg":"[Lifecycle] Scheduler started successfully"}
+{"level":30,"time":"2025-12-22T12:05:08.455Z","service":"run-apparel-api","msg":"[DB Keep-Alive] ✅ Started (ping every 4 minutes to prevent auto-suspend)"}
+{"level":30,"time":"2025-12-22T12:05:08.456Z","service":"run-apparel-api","msg":"[DB] Using PostgreSQL built-in optimization"}
+{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: private/temp/uploads/"}
+{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"[Lifecycle] No temp upload files found"}
+{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"[Lifecycle] Starting orphaned files cleanup (directories: public/media/, public/thumbnails/, dryRun: false)"}
+{"level":40,"time":"2025-12-22T12:05:09.675Z","service":"run-apparel-api","durationMs":1215.8217920000002,"queryIndex":2,"msg":"[Slow Query] Database operation took 1216ms"}
+[Server] ⏳ Warming cache (this may take a few seconds)...
+[Server] ✅ Cache warming completed - critical routes ready
+{"level":30,"time":"2025-12-22T12:05:09.676Z","service":"run-apparel-api","durationMs":1217,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:05:09.676Z","msg":"[DbCircuitBreaker] db-query"}
+{"level":30,"time":"2025-12-22T12:05:09.678Z","service":"run-apparel-api","msg":"[Database] ✅ Database wakeup successful (1218ms)"}
+{"level":40,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","durationMs":1396.5621250000002,"queryIndex":2,"msg":"[Slow Query] Database operation took 1397ms"}
+{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","durationMs":1397,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:05:09.687Z","msg":"[DbCircuitBreaker] db-query"}
+{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","pooling":"enabled","driver":"Neon HTTP (stateless)","concurrencyTracking":"enabled","metricsEndpoint":"/api/metrics/database","msg":"[Database] ✅ Connection pool metrics initialized:"}
+{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","msg":"[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users"}
+{"level":30,"time":"2025-12-22T12:05:10.146Z","service":"run-apparel-api","msg":"[Lifecycle] Found 115 storage paths in database"}
+[Server] ✅ Database health check passed (715.90ms latency)
+[Server] ✅ Production security middleware enabled
+[Server] 🎯 Production readiness complete - production mode
+[Server] serving static assets from: /Users/hateemjamshaid/Downloads/RUN-Remix/dist/public
+[Server] ✅ Server timeouts configured (timeout: 120s, keep-alive: 65s)
+Server running on port 5005
+{"level":30,"time":"2025-12-22T12:05:10.398Z","service":"run-apparel-api","msg":"Server running on port 5005"}
+{"level":30,"time":"2025-12-22T12:05:11.129Z","service":"run-apparel-api","msg":"✅ Listed 114 assets with prefix: public/media/"}
+{"level":30,"time":"2025-12-22T12:05:11.130Z","service":"run-apparel-api","msg":"[Lifecycle] Found 114 files in public/media/"}
+{"level":30,"time":"2025-12-22T12:05:11.130Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/media/: 0 orphaned files deleted (114 files checked)"}
+{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: public/thumbnails/"}
+{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Found 0 files in public/thumbnails/"}
+{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/thumbnails/: 0 orphaned files deleted (114 files checked)"}
+{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Orphaned files cleanup complete: 0 deleted, ~0.00MB freed, 0 errors, 114 files checked"}
+{"level":30,"time":"2025-12-22T12:05:11.398Z","service":"run-apparel-api","duration":"2948ms","totalFilesDeleted":0,"totalStorageFreedMB":"0.00","msg":"[Lifecycle] Cleanup run complete"}
+[SSR] Handling Request: /
+[SSR] Running in Production/Build Mode
+[SSR Preload] Total imports to preload: 7
+{"level":50,"time":"2025-12-22T12:05:12.038Z","service":"run-apparel-api","correlationId":"41b40b2d-42fb-4eee-80a5-74d8dd4085aa","reason":"ReferenceError: document is not defined","err":{"type":"Error","message":"ReferenceError: document is not defined","stack":"Error: ReferenceError: document is not defined\n    at process.<anonymous> (file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:27481:7)\n    at process.emit (node:events:518:28)\n    at emitUnhandledRejection (node:internal/process/promises:252:13)\n    at throwUnhandledRejectionsMode (node:internal/process/promises:388:19)\n    at processPromiseRejections (node:internal/process/promises:475:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:106:32)"},"msg":"Unhandled Rejection detected"}
+{"level":50,"time":"2025-12-22T12:05:12.038Z","service":"run-apparel-api","correlationId":"41b40b2d-42fb-4eee-80a5-74d8dd4085aa","msg":"🛑 Critical: Exiting process due to unhandled rejection"}
+[Entry Server] Render called with URL: /
+[SSR] onShellReady called
+[SSR] Writing beforeApp length: 2180
+[SSR] beforeApp TAIL: gZ.js">
+    <link rel="stylesheet" crossorigin href="/assets/styles-core-BOxLV88u.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CU_lqMa3.css">
+  </head>
+  <body>
+    <div id="root">
+[SSR] Piping React stream...

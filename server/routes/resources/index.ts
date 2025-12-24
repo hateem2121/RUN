@@ -19,41 +19,35 @@
  */
 
 import { Router } from "express";
-
-// Homepage Page Resources (relocated from modules/ on October 15, 2025)
-import homepageBatchRouter from "./homepage-batch.routes.js";
-import homepageManagementRouter from "./homepage-management.routes.js";
-
-// Contact Page Resources (relocated from modules/ on October 15, 2025)
-import contactRouter from "./contact.routes.js";
-
 // About Page Resources
 import aboutHeroRouter from "./about-hero.routes.js";
-import aboutTimelineRouter from "./about-timeline.routes.js";
 import aboutLocationsRouter from "./about-locations.routes.js";
 import aboutSectionsRouter from "./about-sections.routes.js";
 import aboutStatisticsRouter from "./about-statistics.routes.js";
 import aboutTeamMessageRouter from "./about-team-message.routes.js";
-
-// Sustainability Page Resources
-import sustainabilityBatchRouter from "./sustainability-batch.routes.js";
-import sustainabilityRouter from "./sustainability.routes.js";
-import sustainabilityMetricsRouter from "./sustainability-metrics.routes.js";
-import sustainabilityInitiativesRouter from "./sustainability-initiatives.routes.js";
-import sustainabilityGoalsRouter from "./sustainability-goals.routes.js";
-
+import aboutTimelineRouter from "./about-timeline.routes.js";
+// Contact Page Resources (relocated from modules/ on October 15, 2025)
+import contactRouter from "./contact.routes.js";
+// Homepage Page Resources (relocated from modules/ on October 15, 2025)
+import homepageBatchRouter from "./homepage-batch.routes.js";
+import homepageManagementRouter from "./homepage-management.routes.js";
+import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
-import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
-
+import sustainabilityRouter from "./sustainability.routes.js";
+// Sustainability Page Resources
+import sustainabilityBatchRouter from "./sustainability-batch.routes.js";
+import sustainabilityGoalsRouter from "./sustainability-goals.routes.js";
+import sustainabilityInitiativesRouter from "./sustainability-initiatives.routes.js";
+import sustainabilityMetricsRouter from "./sustainability-metrics.routes.js";
+import technologyCTARouter from "./technology-cta.routes.js";
+import technologyEquipmentRouter from "./technology-equipment.routes.js";
+import technologyGradientSettingsRouter from "./technology-gradient-settings.routes.js";
 // Technology Page Resources
 import technologyInnovationsRouter from "./technology-innovations.routes.js";
-import technologyEquipmentRouter from "./technology-equipment.routes.js";
 import technologyResearchRouter from "./technology-research.routes.js";
 import technologyRoadmapRouter from "./technology-roadmap.routes.js";
-import technologyCTARouter from "./technology-cta.routes.js";
-import technologyGradientSettingsRouter from "./technology-gradient-settings.routes.js";
 
 const router = Router();
 
@@ -106,6 +100,7 @@ router.use("/technology-gradient-settings", technologyGradientSettingsRouter);
 
 // Manufacturing Hero (Relocated from page-content-routes.ts)
 import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
+
 router.use("/", manufacturingHeroRouter); // Mounts /manufacturing-hero
 
 export default router;

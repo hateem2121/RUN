@@ -1,33 +1,32 @@
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import {
-  NavigationItem,
-  MediaAsset,
+import type {
   InsertNavigationItem,
+  MediaAsset,
+  NavigationItem,
 } from "@shared/schema";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Navigation, Plus } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   EnhancedDialog,
+  EnhancedDialogBody,
   EnhancedDialogContent,
   EnhancedDialogHeader,
   EnhancedDialogTitle,
   EnhancedDialogTrigger,
-  EnhancedDialogBody,
 } from "@/components/ui/enhanced-dialog";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Navigation } from "lucide-react";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { NavigationForm } from "./navigation/NavigationForm";
 // Import the new smaller components
 import { NavigationItemList } from "./navigation/NavigationItemList";
-import { NavigationForm } from "./navigation/NavigationForm";
 
 interface NavigationItemWithMedia extends NavigationItem {
   mediaIcon?: MediaAsset;

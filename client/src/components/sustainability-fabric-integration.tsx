@@ -1,10 +1,10 @@
+import type { Fabric } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Leaf, TrendingUp, Award, BarChart3, ArrowRight } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, Award, BarChart3, Leaf, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
-import type { Fabric } from "@shared/schema";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SustainabilityScore {
   score: number;

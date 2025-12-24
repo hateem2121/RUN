@@ -1,34 +1,34 @@
-import { useState, useMemo } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
-import { useToast } from "@/hooks/use-toast";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
-import { DeleteConfirmationDialog } from '@/components/admin/shared/DeleteConfirmationDialog';
-import { MediaQueryKeys } from '@/lib/media-query-keys';
-import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
+import type { Accessory, MediaAsset } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { 
   Edit, 
   Eye, 
-  Settings, 
-  Palette, 
-  Wrench, 
-  Scissors, 
-  Package, 
-  Tags,
-  Plus,
-  X,
+  Image, 
   Layers,
-  Image
+  Package, 
+  Palette, 
+  Plus,
+  Scissors, 
+  Settings, 
+  Tags,
+  Wrench, 
+  X
 } from "lucide-react";
-import type { Accessory, MediaAsset } from "@shared/schema";
+import { useMemo, useState } from "react";
+import { DeleteConfirmationDialog } from '@/components/admin/shared/DeleteConfirmationDialog';
+import { StandardMediaSelectionDialog } from '@/components/admin/shared/StandardMediaSelectionDialog';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
+import { MediaQueryKeys } from '@/lib/media-query-keys';
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 
 const getCategoryIcon = (category: string) => {

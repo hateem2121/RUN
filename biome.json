@@ -1,0 +1,113 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/coverage",
+      "!**/.agent",
+      "!**/*.css",
+      "!**/*.html",
+      "!.config",
+      "!e2e/artifacts",
+      "!playwright-report",
+      "!lint_output*.json",
+      "!clean_lint.json"
+    ]
+  },
+  "formatter": {
+    "enabled": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "off",
+        "noUnusedImports": "off",
+        "noUnusedFunctionParameters": "off",
+        "useParseIntRadix": "off",
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "off",
+        "noUnreachable": "off",
+        "noUnknownFunction": "off",
+        "noEmptyPattern": "off",
+        "noVoidTypeReturn": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useConst": "warn",
+        "useTemplate": "off",
+        "useNodejsImportProtocol": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
+        "noCommentText": "off",
+        "noAssignInExpressions": "off",
+        "noImplicitAnyLet": "off",
+        "noGlobalIsNan": "off",
+        "noRedeclare": "off",
+        "useIterableCallbackReturn": "off",
+        "noConfusingVoidType": "off",
+        "noShadowRestrictedNames": "off",
+        "noAsyncPromiseExecutor": "off",
+        "noDoubleEquals": "off",
+        "noControlCharactersInRegex": "off",
+        "noExportsInTest": "off",
+        "noUnsafeDeclarationMerging": "off",
+        "noDuplicateObjectKeys": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off",
+        "noGlobalEval": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      },
+      "a11y": {
+        "useButtonType": "off",
+        "noSvgWithoutTitle": "off",
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions": "off",
+        "useSemanticElements": "off",
+        "noRedundantRoles": "off",
+        "useAltText": "off",
+        "useValidAnchor": "off",
+        "useMediaCaption": "off",
+        "noAriaUnsupportedElements": "off",
+        "noLabelWithoutControl": "off",
+        "noAriaHiddenOnFocusable": "off",
+        "noNoninteractiveTabindex": "off",
+        "useHeadingContent": "off",
+        "useIframeTitle": "off",
+        "useAriaPropsSupportedByRole": "off",
+        "useAnchorContent": "off",
+        "useFocusableInteractive": "off",
+        "useAriaPropsForRole": "off"
+      },
+      "complexity": {
+        "noBannedTypes": "off",
+        "noImportantStyles": "off",
+        "useOptionalChain": "off",
+        "noCommaOperator": "off",
+        "noUselessFragments": "off",
+        "useLiteralKeys": "off",
+        "noStaticOnlyClass": "off",
+        "noUselessSwitchCase": "off",
+        "useIndexOf": "off",
+        "noArguments": "off",
+        "noUselessConstructor": "off",
+        "noUselessCatch": "off"
+      }
+    }
+  },
+  "javascript": { "formatter": { "quoteStyle": "double" } }
+}

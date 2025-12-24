@@ -1,8 +1,8 @@
-import { useState, Suspense, lazy } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3, Clock, Image, Layout, MapPin, MessageSquare } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, Clock, BarChart3, MessageSquare, Image, Layout } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Lazy load tab components for bundle optimization
 const AboutHeroTab = lazy(() =>

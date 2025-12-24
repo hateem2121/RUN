@@ -9,11 +9,11 @@
  */
 
 import "dotenv/config";
+import { eq } from "drizzle-orm";
 import fetch from "node-fetch";
+import { appStorageService } from "../server/app-storage-service.js";
 import { db } from "../server/db.js";
 import { mediaAssets } from "../shared/schema.js";
-import { appStorageService } from "../server/app-storage-service.js";
-import { eq } from "drizzle-orm";
 
 // Configuration
 const REPLIT_BUCKET = "replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6";

@@ -1,14 +1,13 @@
+import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import type { MediaAsset, NavigationItem } from "@shared/schema";
+import { Edit, GripVertical, Trash2 } from "lucide-react";
 import { memo } from 'react';
-import { NavigationItem, MediaAsset } from "@shared/schema";
+import { NavigationIcon } from "@/components/navigation/navigation-icon";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, GripVertical } from "lucide-react";
-import { NavigationIcon } from "@/components/navigation/navigation-icon";
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 interface NavigationItemWithMedia extends NavigationItem {
   mediaIcon?: MediaAsset;

@@ -10,8 +10,8 @@
  * Usage: tsx server/scripts/validate-query-plans.ts
  */
 
-import { db } from '../db.js';
 import { sql } from 'drizzle-orm';
+import { db } from '../db.js';
 import { logger } from '../lib/smart-logger.js';
 
 interface QueryPlanMetrics {

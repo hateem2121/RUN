@@ -1,10 +1,48 @@
-import { useState, useEffect, useMemo } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Fiber } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  ArrowUpDown,
+  BarChart3,
+  CheckSquare,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Edit,
+  Eye,
+  Grid2X2,
+  Layers,
+  List,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Square,
+  Star,
+  Trash2,
+  X,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  EnhancedDialog,
+  EnhancedDialogBody,
+  EnhancedDialogContent,
+  EnhancedDialogDescription,
+  EnhancedDialogFooter,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -12,48 +50,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-  EnhancedDialogDescription,
-  EnhancedDialogBody,
-  EnhancedDialogFooter,
-} from "@/components/ui/enhanced-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import {
-  Edit,
-  Trash2,
-  MoreHorizontal,
-  Plus,
-  Search,
-  X,
-  ChevronUp,
-  ChevronDown,
-  CheckSquare,
-  Square,
-  ArrowUpDown,
-  List,
-  Eye,
-  Copy,
-  BarChart3,
-  Layers,
-  Grid2X2,
-  Star,
-} from "lucide-react";
 import { getPropertiesArray, propertiesToObject } from "@/lib/fiber-utils";
-import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
-import type { Fiber } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getFiberTypeColor = (type: string) => {
   switch (type) {

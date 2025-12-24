@@ -9,8 +9,8 @@
  * Usage: tsx server/scripts/monitor-index-usage.ts
  */
 
-import { db } from '../db.js';
 import { sql } from 'drizzle-orm';
+import { db } from '../db.js';
 import { logger } from '../lib/smart-logger.js';
 
 interface IndexUsageStats {
@@ -186,7 +186,7 @@ export class IndexUsageMonitor {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / k ** i) * 100) / 100 + ' ' + sizes[i];
   }
 
   /**

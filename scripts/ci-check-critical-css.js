@@ -37,7 +37,7 @@ const cssContent = fs.readFileSync(cssPath, "utf8");
 
 console.log(`Inspecting artifact: ${cssFile}`);
 
-let missingSelectors = [];
+const missingSelectors = [];
 
 CRITICAL_SELECTORS.forEach((selector) => {
   if (!cssContent.includes(selector)) {

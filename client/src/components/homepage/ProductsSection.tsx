@@ -1,11 +1,11 @@
-import { Suspense } from "react";
-import { FeaturedProductGrid } from "@/components/homepage/featured-product-grid";
 import type {
-  HomepageSection,
-  Product,
   Category,
   HomepageFeaturedProductsSettings,
+  HomepageSection,
+  Product,
 } from "@shared/schema";
+import { Suspense } from "react";
+import { FeaturedProductGrid } from "@/components/homepage/featured-product-grid";
 
 interface ProductsSectionProps {
   productsSection: HomepageSection;

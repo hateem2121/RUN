@@ -3,7 +3,7 @@
  * Specialized performance tracking for GSAP animations
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 interface AnimationPerformanceMetrics {
   componentName: string;

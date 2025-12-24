@@ -1,24 +1,24 @@
+import type { Category, Fabric, MediaAsset, Product } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
-import { Product, Category, Fabric, MediaAsset } from '@shared/schema';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import {
-  X,
+  Award,
+  Box,
   Edit,
+  Image as ImageIcon,
+  Layers,
+  Link as LinkIcon, 
   Package,
   Tag,
-  Layers,
-  Image as ImageIcon,
-  Video,
-  Box,
   Users,
-  Award,
-  Link as LinkIcon
+  Video,
+  X
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 // STEP 3 INTEGRATION: Import UnifiedModelViewer to replace manual model-viewer
 import { LazyUnifiedModelViewer } from '@/components/ui/LazyUnifiedModelViewer';
+import { Separator } from '@/components/ui/separator';
 
 interface ProductDetailsPanelProps {
   product: Product;

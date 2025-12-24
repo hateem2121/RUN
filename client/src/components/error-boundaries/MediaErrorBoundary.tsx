@@ -1,5 +1,6 @@
-import React, { Component, ReactNode } from 'react';
-import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import { AlertCircle, Home, RefreshCw } from 'lucide-react';
+import type React from 'react';
+import { Component, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -73,7 +74,7 @@ export class MediaErrorBoundary extends Component<MediaErrorBoundaryProps, Media
     }
 
     // Exponential backoff: 1s, 2s, 4s
-    const delay = Math.pow(2, this.state.retryCount) * 1000;
+    const delay = 2 ** this.state.retryCount * 1000;
     
     this.retryTimeout = setTimeout(() => {
       this.setState(prevState => ({

@@ -1,5 +1,5 @@
-import { db } from "../server/db.js";
 import { sql } from "drizzle-orm";
+import { db } from "../server/db.js";
 
 async function checkPaths() {
   try {

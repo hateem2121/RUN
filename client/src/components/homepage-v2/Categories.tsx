@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useCategories } from "@/hooks/use-homepage-data";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
 const Categories = () => {
   const categories = useCategories(); // Dynamic Data Hook

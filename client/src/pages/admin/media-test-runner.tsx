@@ -3,15 +3,15 @@
  * Automated testing interface for verifying upload/delete cache synchronization
  */
 
-import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, CheckCircle2, Loader2, PlayCircle, XCircle } from 'lucide-react';
+import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UploadFlowValidator, UploadFlowTestResult } from '@/lib/upload-flow-validator';
-import { CheckCircle2, XCircle, Loader2, PlayCircle, AlertTriangle } from 'lucide-react';
+import { type UploadFlowTestResult, UploadFlowValidator } from '@/lib/upload-flow-validator';
 
 export default function MediaTestRunner() {
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
-import { appStorageService } from '../server/app-storage-service.ts';
-import { logger } from '../server/lib/smart-logger.ts';
 import fs from 'fs';
 import path from 'path';
+import { appStorageService } from '../server/app-storage-service.ts';
+import { logger } from '../server/lib/smart-logger.ts';
 
 /**
  * GLTF 2.0 Format Fix Script

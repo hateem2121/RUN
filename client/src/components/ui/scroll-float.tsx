@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef, ReactNode, RefObject } from "react";
-import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
-
 // Fallback imports for development
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type React from "react";
+import { type ReactNode, type RefObject, useEffect, useMemo, useRef } from "react"
+import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 
 // Use global GSAP instance from HTML head
 declare global {

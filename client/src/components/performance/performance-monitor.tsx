@@ -3,7 +3,8 @@
  * Comprehensive performance tracking for animation components
  */
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 
 interface PerformanceMetrics {

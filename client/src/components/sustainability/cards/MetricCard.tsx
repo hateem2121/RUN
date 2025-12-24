@@ -1,6 +1,6 @@
-import { memo } from "react";
-import { motion } from "framer-motion";
 import type { SustainabilityMetric } from "@shared/schema";
+import { motion } from "framer-motion";
+import { memo } from "react";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 
 export const MetricCard = memo(

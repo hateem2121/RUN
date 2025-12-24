@@ -73,10 +73,10 @@
  *    - dynamic: Fallback for uncategorized data (30s)
  */
 
-import { QueryClient, QueryFunction, MutationCache, QueryCache } from "@tanstack/react-query";
-import { invalidateMediaQueries, createMediaQueryKey } from "@/lib/media-query-keys";
+import { MutationCache, QueryCache, QueryClient, type QueryFunction } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
-import { apiRequest, ApiError } from "./api";
+import { createMediaQueryKey, invalidateMediaQueries } from "@/lib/media-query-keys";
+import { ApiError, apiRequest } from "./api";
 
 // Re-export apiRequest for backward compatibility
 export { apiRequest };
@@ -203,7 +203,7 @@ export const createQueryClient = () =>
 
           return failureCount < 2;
         },
-        retryDelay: (attemptIndex) => Math.min(1000 * Math.pow(2, attemptIndex), 2000),
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 2000),
       },
       mutations: {
         retry: false,
@@ -217,7 +217,7 @@ function makeQueryClient() {
   return createQueryClient();
 }
 
-let browserQueryClient: QueryClient | undefined = undefined;
+let browserQueryClient: QueryClient | undefined ;
 
 export function getQueryClient() {
   if (typeof window === "undefined") {

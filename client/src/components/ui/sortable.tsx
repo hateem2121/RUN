@@ -1,19 +1,19 @@
 "use client";
 
 import {
+  closestCenter,
+  closestCorners,
   DndContext,
   type DndContextProps,
   type DragEndEvent,
-  DragOverlay,
   type DraggableSyntheticListeners,
+  DragOverlay,
   type DropAnimation,
+  defaultDropAnimationSideEffects,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
   type UniqueIdentifier,
-  closestCenter,
-  closestCorners,
-  defaultDropAnimationSideEffects,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -23,10 +23,10 @@ import {
   restrictToVerticalAxis,
 } from "@dnd-kit/modifiers";
 import {
-  SortableContext,
-  type SortableContextProps,
   arrayMove,
   horizontalListSortingStrategy,
+  SortableContext,
+  type SortableContextProps,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,

@@ -6,19 +6,19 @@
  */
 
 import { Router } from "express";
-import { getStorage } from "../../lib/storage-singleton.js";
-import { logger } from "../../lib/smart-logger.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
 import {
   insertSustainabilityHeroSchema,
   insertTechnologyHeroSchema,
 } from "../../../shared/schema.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
+import { extractMediaIds } from "../../lib/media-utils.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { unifiedCache } from "../../lib/unified-cache.js";
 import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
-import { extractMediaIds } from "../../lib/media-utils.js";
 
 const router = Router();
 

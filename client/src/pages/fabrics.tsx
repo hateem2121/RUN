@@ -1,18 +1,18 @@
+import type { Certificate, Fabric, Fiber } from "@shared/schema";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, ChevronUp, Layers, Leaf, Loader2, Search, Shirt, Wind } from "lucide-react";
 import { useState } from "react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
-import { Shirt, Wind, Layers, Search, ChevronDown, ChevronUp, Leaf, Loader2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { SEOMeta } from "@/components/seo-meta";
-import { cn } from "@/lib/utils";
-import type { Fabric, Fiber, Certificate } from "@shared/schema";
 // CLEANED: Removed deprecated use-infinite-scroll - using traditional pagination
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard3D } from "@/components/ui/hover-card-3d";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 // Helper to get the default composition from a fabric
 const getDefaultComposition = (fabric: Fabric) => {

@@ -45,7 +45,7 @@ export class MediaUrlBuilder {
     if (import.meta.env.DEV) {
       console.warn('[MediaUrlBuilder] DEPRECATED: buildRawContentUrl is deprecated. Use buildContentUrl instead.');
     }
-    return this.buildContentUrl(id);
+    return MediaUrlBuilder.buildContentUrl(id);
   }
 
   /**
@@ -99,9 +99,9 @@ export class MediaUrlBuilder {
    * Enhanced error handling and logging
    */
   static buildUrlSafe(id: number | undefined | null, fallback?: string): string {
-    const url = this.buildContentUrl(id);
+    const url = MediaUrlBuilder.buildContentUrl(id);
     
-    if (url && this.isValidUrl(url)) {
+    if (url && MediaUrlBuilder.isValidUrl(url)) {
       return url;
     }
     
@@ -122,12 +122,12 @@ export class MediaUrlBuilder {
     fallback?: string
   ): string {
     if (!id || id <= 0) {
-      return fallback || this.buildUrlSafe(id, fallback);
+      return fallback || MediaUrlBuilder.buildUrlSafe(id, fallback);
     }
 
-    const baseUrl = this.buildContentUrl(id);
+    const baseUrl = MediaUrlBuilder.buildContentUrl(id);
     if (!baseUrl) {
-      return fallback || this.buildUrlSafe(id, fallback);
+      return fallback || MediaUrlBuilder.buildUrlSafe(id, fallback);
     }
 
     // Add thumbnail query parameters for backend optimization
@@ -144,9 +144,9 @@ export class MediaUrlBuilder {
     fallback?: string
   ): string {
     if (context === 'grid' || context === 'thumbnail') {
-      return this.buildThumbnailUrl(id, priority, fallback);
+      return MediaUrlBuilder.buildThumbnailUrl(id, priority, fallback);
     }
-    return this.buildUrlSafe(id, fallback);
+    return MediaUrlBuilder.buildUrlSafe(id, fallback);
   }
 
   /**
@@ -167,19 +167,19 @@ export class MediaUrlBuilder {
       if (import.meta.env.DEV) {
         console.warn('[MediaUrlBuilder] Invalid model asset ID:', id);
       }
-      return fallback || this.getDefaultModelFallback();
+      return fallback || MediaUrlBuilder.getDefaultModelFallback();
     }
 
     // PHASE 2.2: UNIFIED - Single endpoint for all model files
     // Since Phase 1 validation ensures embedded textures, use content endpoint for everything
-    const url = this.buildContentUrl(id);
+    const url = MediaUrlBuilder.buildContentUrl(id);
     
     if (import.meta.env.DEV) {
       const filename = asset?.originalName || asset?.filename || 'unknown';
       console.log(`[MediaUrlBuilder] UNIFIED: Using /content endpoint for model: "${filename}"`);
     }
     
-    if (url && this.isValidUrl(url)) {
+    if (url && MediaUrlBuilder.isValidUrl(url)) {
       return url;
     }
     
@@ -187,7 +187,7 @@ export class MediaUrlBuilder {
       console.warn('[MediaUrlBuilder] URL validation failed - using fallback:', { id, url });
     }
     
-    return fallback || this.getDefaultModelFallback();
+    return fallback || MediaUrlBuilder.getDefaultModelFallback();
   }
 
 
@@ -215,10 +215,10 @@ export class MediaUrlBuilder {
       const cacheKey = `model_${id}_${asset?.mimeType || ''}_${asset?.originalName || ''}`;
       
       // Check for existing in-flight request
-      const existing = this.inFlightRequests.get(cacheKey);
+      const existing = MediaUrlBuilder.inFlightRequests.get(cacheKey);
       const now = Date.now();
       
-      if (existing && (now - existing.timestamp) < this.REQUEST_TTL) {
+      if (existing && (now - existing.timestamp) < MediaUrlBuilder.REQUEST_TTL) {
         // Return existing promise to prevent duplicate requests
         existing.promise.then(resolve).catch(reject);
         return;
@@ -227,22 +227,22 @@ export class MediaUrlBuilder {
       // Cancel any existing request
       if (existing) {
         existing.controller.abort();
-        this.inFlightRequests.delete(cacheKey);
+        MediaUrlBuilder.inFlightRequests.delete(cacheKey);
       }
       
       // Create new AbortController for this request
       const controller = new AbortController();
       
       // Create the promise with retry logic
-      const promise = this.executeWithRetry(id, asset, fallback, retryCount, controller.signal);
+      const promise = MediaUrlBuilder.executeWithRetry(id, asset, fallback, retryCount, controller.signal);
       
       // Track in-flight request
-      this.inFlightRequests.set(cacheKey, { promise, controller, timestamp: now });
+      MediaUrlBuilder.inFlightRequests.set(cacheKey, { promise, controller, timestamp: now });
       
       // Clean up when done
       promise.finally(() => {
-        this.inFlightRequests.delete(cacheKey);
-        this.cleanupInFlightRequests();
+        MediaUrlBuilder.inFlightRequests.delete(cacheKey);
+        MediaUrlBuilder.cleanupInFlightRequests();
       });
       
       promise.then(resolve).catch(reject);
@@ -266,21 +266,21 @@ export class MediaUrlBuilder {
       }
       
       // Build URL using current logic
-      const url = this.buildModelUrlSafe(id, asset, fallback);
+      const url = MediaUrlBuilder.buildModelUrlSafe(id, asset, fallback);
       
       // Validate URL can be fetched (for HTTP URLs only)
       if (url.startsWith('/api/media/')) {
-        await this.validateEndpoint(url, signal);
+        await MediaUrlBuilder.validateEndpoint(url, signal);
       }
       
       return url;
     } catch (error) {
       // Check if we should retry
-      if (retryCount < this.MAX_RETRIES && !signal?.aborted) {
-        const delay = this.RETRY_DELAY_BASE * Math.pow(2, retryCount); // Exponential backoff
+      if (retryCount < MediaUrlBuilder.MAX_RETRIES && !signal?.aborted) {
+        const delay = MediaUrlBuilder.RETRY_DELAY_BASE * 2 ** retryCount; // Exponential backoff
         
         if (import.meta.env.DEV) {
-          console.warn(`[MediaUrlBuilder] Retry ${retryCount + 1}/${this.MAX_RETRIES} for asset ${id} in ${delay}ms`);
+          console.warn(`[MediaUrlBuilder] Retry ${retryCount + 1}/${MediaUrlBuilder.MAX_RETRIES} for asset ${id} in ${delay}ms`);
         }
         
         // Wait before retry
@@ -289,11 +289,11 @@ export class MediaUrlBuilder {
         // Try endpoint failover on retry
         if (retryCount === 1) {
           // On second retry, try switching endpoint if possible
-          const altAsset = this.createAlternativeAsset(asset);
-          return this.executeWithRetry(id, altAsset, fallback, retryCount + 1, signal);
+          const altAsset = MediaUrlBuilder.createAlternativeAsset(asset);
+          return MediaUrlBuilder.executeWithRetry(id, altAsset, fallback, retryCount + 1, signal);
         }
         
-        return this.executeWithRetry(id, asset, fallback, retryCount + 1, signal);
+        return MediaUrlBuilder.executeWithRetry(id, asset, fallback, retryCount + 1, signal);
       }
       
       // Max retries reached or cancelled, use fallback
@@ -301,7 +301,7 @@ export class MediaUrlBuilder {
         console.error(`[MediaUrlBuilder] Max retries reached for asset ${id}, using fallback`);
       }
       
-      return fallback || this.getDefaultModelFallback();
+      return fallback || MediaUrlBuilder.getDefaultModelFallback();
     }
   }
 
@@ -356,10 +356,10 @@ export class MediaUrlBuilder {
    */
   private static cleanupInFlightRequests(): void {
     const now = Date.now();
-    for (const [key, entry] of this.inFlightRequests.entries()) {
-      if (now - entry.timestamp > this.REQUEST_TTL) {
+    for (const [key, entry] of MediaUrlBuilder.inFlightRequests.entries()) {
+      if (now - entry.timestamp > MediaUrlBuilder.REQUEST_TTL) {
         entry.controller.abort();
-        this.inFlightRequests.delete(key);
+        MediaUrlBuilder.inFlightRequests.delete(key);
       }
     }
   }
@@ -437,8 +437,8 @@ export class MediaUrlBuilder {
    * Facilitates migration from old proxy/fast URLs to new endpoint
    */
   static migrateToConsolidatedUrl(url: string): string | null {
-    const assetId = this.extractAssetId(url);
-    return assetId ? this.buildContentUrl(assetId) : null;
+    const assetId = MediaUrlBuilder.extractAssetId(url);
+    return assetId ? MediaUrlBuilder.buildContentUrl(assetId) : null;
   }
 
   /**
@@ -450,13 +450,13 @@ export class MediaUrlBuilder {
     
     // Prefer ID-based URL generation for consistency
     if (asset.id) {
-      return this.buildContentUrl(asset.id);
+      return MediaUrlBuilder.buildContentUrl(asset.id);
     }
     
     // Fallback to existing URL if valid
-    if (asset.url && this.isValidUrl(asset.url)) {
+    if (asset.url && MediaUrlBuilder.isValidUrl(asset.url)) {
       // Migrate legacy URLs to consolidated format
-      return this.migrateToConsolidatedUrl(asset.url) || asset.url;
+      return MediaUrlBuilder.migrateToConsolidatedUrl(asset.url) || asset.url;
     }
     
     return null;

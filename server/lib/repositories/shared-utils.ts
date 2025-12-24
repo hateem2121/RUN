@@ -4,8 +4,8 @@
  */
 
 import { db } from '../../db.js';
-import { UnifiedCache } from '../unified-cache.js';
 import { logger } from '../smart-logger.js';
+import { UnifiedCache } from '../unified-cache.js';
 
 const unifiedCache = UnifiedCache.getInstance();
 

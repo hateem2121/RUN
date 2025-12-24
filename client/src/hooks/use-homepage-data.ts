@@ -1,6 +1,6 @@
+import { selectCategorySchema, selectProductSchema } from "@shared/schema";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { selectProductSchema, selectCategorySchema } from "@shared/schema";
 
 // Extend shared schemas for API responses which might include relations or extra fields
 // We strictly validate the core fields against the DB schema

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Media, MediaType, Hotspot } from '../types';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { type Hotspot, type Media, MediaType } from '../types';
 import { XIcon } from './Icons';
 
 // Define a more specific type for the model-viewer element

@@ -1,11 +1,11 @@
+import { AlertCircle, CheckCircle, ChevronDown, ChevronRight, Palette, Plus, Search, X } from 'lucide-react';
 import { memo } from 'react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight, Palette, CheckCircle, AlertCircle, Plus, X, Search } from 'lucide-react';
-import { ProductFormFieldValue } from '../shared/types';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import type { ProductFormFieldValue } from '../shared/types';
 
 interface CustomizationSectionProps{
   formData: {

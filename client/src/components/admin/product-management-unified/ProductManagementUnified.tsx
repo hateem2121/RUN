@@ -1,17 +1,15 @@
-import { useState, lazy, Suspense } from 'react';
-import { Product } from '@shared/schema';
-import { ProductGrid } from './core/ProductGrid';
-import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import type { Product } from '@shared/schema';
+import { lazy, Suspense, useState } from 'react';
 import { ProductErrorBoundary } from '@/components/admin/ProductErrorBoundary';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { ProductGrid } from './core/ProductGrid';
 import { PerformanceMonitor } from './PerformanceMonitor';
 
 // Lazy load advanced components
 const ProductDetailsPanel = lazy(() => import('./shared/ProductDetailsPanel'));
 const ProductCreateEditModal = lazy(() => import('./admin/ProductCreateEditModal'));
 
-interface ProductManagementUnifiedProps {
-  // Reserved for future customization options
-}
+type ProductManagementUnifiedProps = {}
 
 function ModuleLoader() {
   return (

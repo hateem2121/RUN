@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/schema";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface MediaTransitionProps {

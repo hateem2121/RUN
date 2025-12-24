@@ -2,11 +2,12 @@ import { logger } from '../lib/smart-logger.js';
 // Enhanced Health Monitoring System
 // PHASE 4: Production Readiness - Comprehensive Health Checks
 
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import { appStorageService } from '../app-storage-service.js';
+import { database, development } from '../config/environment.js';
 import { getConfig } from '../config/production.js';
 import { storage } from '../storage.js';
-import { database, development } from '../config/environment.js';
-import { appStorageService } from '../app-storage-service.js';
+
 // import { IndexUsageMonitor } from '../scripts/monitor-index-usage.js';
 
 const config = getConfig();

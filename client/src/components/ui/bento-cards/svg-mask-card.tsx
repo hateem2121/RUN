@@ -1,4 +1,5 @@
-import { useState, useEffect, memo } from "react";
+import { memo, useEffect, useState } from "react";
+
 // import { motion } from "framer-motion";
 // import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 // import { LoadingState } from "./enhanced-loading-states";

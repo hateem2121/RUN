@@ -1,17 +1,17 @@
+import type { AboutMapLocation } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CustomDropdown } from "@/components/admin/CustomDropdown";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CustomDropdown } from "@/components/admin/CustomDropdown";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, MapPin, Building2, Download } from "lucide-react";
-import type { AboutMapLocation } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutLocationsTab() {
   const { toast } = useToast();

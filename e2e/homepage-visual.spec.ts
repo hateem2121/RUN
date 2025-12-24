@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // Routes to snapshot
 const ROUTES = ["/", "/products", "/about", "/contact", "/categories"];

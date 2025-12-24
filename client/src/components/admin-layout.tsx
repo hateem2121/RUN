@@ -1,28 +1,29 @@
-import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
+  IconArrowLeft,
+  IconBolt,
   IconBrandTabler,
   IconCategory,
-  IconForms,
-  IconFileFilled,
   IconCertificate,
-  IconRuler,
-  IconBolt,
-  IconPhoto,
-  IconShirt,
-  IconHome,
-  IconArrowLeft,
-  IconNavigation,
-  IconLeaf,
-  IconTool,
   IconCpu,
   IconDatabase,
-  IconMail,
+  IconFileFilled,
+  IconForms,
+  IconHome,
   IconInbox,
+  IconLeaf,
+  IconMail,
+  IconNavigation,
+  IconPhoto,
+  IconRuler,
+  IconShirt,
+  IconTool,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import type React from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { usePrefetchAdminData } from "@/hooks/usePrefetch";
 
 interface AdminLayoutProps {

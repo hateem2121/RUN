@@ -1,6 +1,6 @@
-import { TECHNOLOGY_DEFAULTS, TECHNOLOGY_THEME } from "../client/src/lib/technology-constants.js";
 import fs from "fs";
 import path from "path";
+import { TECHNOLOGY_DEFAULTS, TECHNOLOGY_THEME } from "../client/src/lib/technology-constants.js";
 
 // ANSI colors for console output
 const colors = {

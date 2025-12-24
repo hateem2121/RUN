@@ -1,14 +1,14 @@
-import * as React from "react";
+import type { MediaAsset } from "@shared/schema";
 import { ArrowRight, Box } from "lucide-react";
+import * as React from "react";
 import {
-  LiquidGlassCard,
-  LiquidButton,
-  CardHeader,
   CardContent,
+  CardHeader,
+  LiquidButton,
+  LiquidGlassCard,
 } from "@/components/ui/glass-card";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
-import type { MediaAsset } from "@shared/schema";
 
 interface ProductCardProps {
   id: number;

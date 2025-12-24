@@ -4,10 +4,11 @@
  * Consolidated from resources-api.ts and feature-flags.ts for better maintainability
  */
 
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 // PHASE 2B: Removed pagination imports - eliminated after pagination cleanup
 import { logger } from '../../lib/smart-logger.js';
+
 // Feature flags implementation - stubbed for now
 const featureFlags = {
   // Internal flags storage (stub - would be real flag registry in production)

@@ -1,11 +1,11 @@
-import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import lottie from 'lottie-web/build/player/lottie_light';
-import type { AnimationItem } from 'lottie-web';
-import { ctaBackgroundAnimation } from './lottie-animations';
 import type { ManufacturingHero } from "@shared/schema";
+import { motion } from "framer-motion";
+import type { AnimationItem } from 'lottie-web';
+import lottie from 'lottie-web/build/player/lottie_light';
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { ctaBackgroundAnimation } from './lottie-animations';
 
 interface CallToActionProps {
   hero?: ManufacturingHero | null;

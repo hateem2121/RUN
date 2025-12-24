@@ -1,6 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { homepageProcessCards } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 async function reproduce() {
   console.log(

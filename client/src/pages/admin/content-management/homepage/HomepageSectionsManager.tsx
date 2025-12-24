@@ -1,15 +1,15 @@
-import { useState } from "react";
+import type { HomepageSection } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Save, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Save, X } from "lucide-react";
-import type { HomepageSection } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface HomepageSectionsManagerProps {
   readonly sections: HomepageSection[];

@@ -5,8 +5,8 @@
  * Usage: tsx scripts/verify-database-health.ts
  */
 
-import { db } from '../server/db.js';
 import { sql } from 'drizzle-orm';
+import { db } from '../server/db.js';
 
 interface IndexInfo extends Record<string, unknown> {
   schemaname: string;

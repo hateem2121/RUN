@@ -1,14 +1,14 @@
+import { motion } from "framer-motion";
 import {
+  type ReactNode,
+  type TouchEvent,
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  ReactNode,
-  TouchEvent,
-  WheelEvent,
-  useCallback,
-  useMemo,
+  type WheelEvent,
 } from "react";
-import { motion } from "framer-motion";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 

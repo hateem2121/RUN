@@ -3,8 +3,8 @@
  * Direct media loading for hero content without lazy loading complexity
  */
 
-import { useState, useCallback, memo, useRef, useEffect } from 'react';
-import { MediaAsset } from '@shared/schema';
+import type { MediaAsset } from '@shared/schema';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface OptimizedHeroMediaProps {

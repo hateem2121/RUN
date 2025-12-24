@@ -13,14 +13,14 @@
  * - PATCH  /api/v1/sustainability-metrics/reorder   - Reorder metrics
  */
 
-import { Router, Request } from "express";
+import { type Request, Router } from "express";
 import { z } from "zod";
-import { getStorage } from "../../lib/storage-singleton.js";
-import { logger } from "../../lib/smart-logger.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
 import { insertSustainabilityMetricSchema } from "../../../shared/schema.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
+import { logger } from "../../lib/smart-logger.js";
+import { getStorage } from "../../lib/storage-singleton.js";
+import { unifiedCache } from "../../lib/unified-cache.js";
 import { requireAdmin } from "../../middleware/auth.js";
 
 const router = Router();

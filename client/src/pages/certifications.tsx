@@ -1,15 +1,14 @@
-import { useState } from "react";
+import type { Certificate } from "@shared/schema";
 import { motion } from "framer-motion";
-import { Shield, Award, Leaf, FileCheck, ExternalLink } from "lucide-react";
-import { SEOMeta } from "@/components/seo-meta";
-import { ResourceSearch } from "@/components/resources/ResourceSearch";
-import { ResourceGrid } from "@/components/resources/ResourceGrid";
+import { Award, ExternalLink, FileCheck, Leaf, Shield } from "lucide-react";
+import { useMemo, useState } from "react";
 import { ResourceCard } from "@/components/resources/ResourceCard";
+import { ResourceGrid } from "@/components/resources/ResourceGrid";
+import { ResourceSearch } from "@/components/resources/ResourceSearch";
 import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
+import { SEOMeta } from "@/components/seo-meta";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { Certificate } from "@shared/schema";
-import { useMemo } from "react";
 
 export default function Certifications() {
   const [searchTerm, setSearchTerm] = useState("");

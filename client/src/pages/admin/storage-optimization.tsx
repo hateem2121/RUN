@@ -1,28 +1,27 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  AlertTriangle,
+  BarChart3,
+  CheckCircle,
+  Copy,
+  FileText,
+  HardDrive,
+  Image,
+  RefreshCw,
+
+  Sparkles, 
+  Trash2,
+  Zap
+} from 'lucide-react';
 import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-
-import { Badge } from '@/components/ui/badge';
 
 import { useToast } from '@/hooks/use-toast';
-import {
-  HardDrive,
-  Trash2,
-  Copy,
-  Zap,
-  AlertTriangle,
-  CheckCircle,
-  FileText,
-  Image,
-  BarChart3,
-  RefreshCw,
-
-  Sparkles
-} from 'lucide-react';
+import { apiRequest } from '@/lib/queryClient';
 
 interface StorageStats {
   totalFiles: number;
@@ -122,7 +121,7 @@ const formatBytes = (bytes: number): string => {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
 };
 
 function StorageOptimization() {

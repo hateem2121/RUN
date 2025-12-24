@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect, memo } from "react";
 import { motion } from "framer-motion";
+import { memo, useEffect, useRef, useState } from "react";
 
 interface MagneticButtonProps {
   children: React.ReactNode;

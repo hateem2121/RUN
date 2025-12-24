@@ -1,9 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RUN APPAREL (PVT) LTD - B2B Sportswear Manufacturing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RUN APPAREL - B2B Sportswear Manufacturing</title>
+    <!-- Critical Base Styles: Prevent White Flash -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #09090b; /* Zinc-950/Black */
+        color: #ffffff;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      #root {
+        display: contents;
+      }
+    </style>
+    <!--ssr-styles-->
     <meta
       name="description"
       content="Professional B2B sportswear manufacturing with 3D visualization, premium athletic wear, and sustainable practices for global sports brands."
@@ -20,7 +34,7 @@
       rel="stylesheet"
     />
 
-    <link rel="preload" href="/fonts/NeueStance-Regular.ttf" as="font" crossorigin />
+    <!-- <link rel="preload" href="/fonts/NeueStance-Regular.ttf" as="font" crossorigin /> -->
 
     <!-- Critical inline CSS to prevent broken appearance during CSS loading -->
     <style>
@@ -31,11 +45,7 @@
         padding: 0;
       }
       body {
-        font-family:
-          system-ui,
-          -apple-system,
-          "Segoe UI",
-          sans-serif;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
         line-height: 1.6;
       }
 
@@ -100,9 +110,10 @@
         mix-blend-mode: overlay;
       }
     </style>
+    <!--app-head-->
   </head>
   <body suppressHydrationWarning>
-    <div id="root"></div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/entry-client.tsx"></script>
   </body>
 </html>

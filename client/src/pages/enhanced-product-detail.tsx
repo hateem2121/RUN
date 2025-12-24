@@ -3,19 +3,19 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
-import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
 import {
-  useState,
-  useRef,
-  useEffect,
-  useOptimistic,
-  useTransition,
   createContext,
   useContext,
+  useEffect,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
 } from "react";
-import { motion } from "framer-motion";
-import { AlertCircle, ShoppingBag, Check, Share2, Heart, Ruler } from "lucide-react";
+import { Link, useParams } from "wouter";
 import { ProductBreadcrumbs } from "@/components/product/product-breadcrumbs";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { cn } from "@/lib/utils";

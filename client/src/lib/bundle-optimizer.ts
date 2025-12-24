@@ -5,7 +5,7 @@ interface ChunkInfo {
   name: string;
   size: number;
   gzippedSize: number;
-  type: 'js' | 'css' | 'font' | 'image' | 'other';
+  type: "js" | "css" | "font" | "image" | "other";
   isAsync: boolean;
   preloaded: boolean;
 }
@@ -27,7 +27,10 @@ class BundleOptimizer {
   }
 
   private async analyzeCurrentBundle() {
-    if (process.env.NODE_ENV === 'development') console.log('[BundleOptimizer] Starting bundle analysis...');
+    if (typeof window === "undefined") return;
+
+    if (process.env.NODE_ENV === "development")
+      console.log("[BundleOptimizer] Starting bundle analysis...");
 
     // Analyze JavaScript chunks
     await this.analyzeScripts();
@@ -41,70 +44,77 @@ class BundleOptimizer {
     // Generate recommendations
     this.generateRecommendations();
 
-    if (process.env.NODE_ENV === 'development') console.log('[BundleOptimizer] Bundle analysis complete');
+    if (process.env.NODE_ENV === "development")
+      console.log("[BundleOptimizer] Bundle analysis complete");
   }
 
   private async analyzeScripts() {
-    const scripts = Array.from(document.querySelectorAll('script[src]')) as HTMLScriptElement[];
+    const scripts = Array.from(document.querySelectorAll("script[src]")) as HTMLScriptElement[];
 
     for (const script of scripts) {
-      if (script.src && (script.src.includes('/assets/') || script.src.includes('vite'))) {
+      if (script.src && (script.src.includes("/assets/") || script.src.includes("vite"))) {
         try {
-          const info = await this.getResourceInfo(script.src, 'js');
+          const info = await this.getResourceInfo(script.src, "js");
           if (info) {
             info.isAsync = script.async;
             info.preloaded = this.isPreloaded(script.src);
             this.chunks.push(info);
           }
         } catch (e) {
-          if (process.env.NODE_ENV === 'development') console.warn('Could not analyze script:', script.src);
+          if (process.env.NODE_ENV === "development")
+            console.warn("Could not analyze script:", script.src);
         }
       }
     }
   }
 
   private async analyzeStylesheets() {
-    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]')) as HTMLLinkElement[];
+    const links = Array.from(
+      document.querySelectorAll('link[rel="stylesheet"]'),
+    ) as HTMLLinkElement[];
 
     for (const link of links) {
-      if (link.href && link.href.includes('/assets/')) {
+      if (link.href && link.href.includes("/assets/")) {
         try {
-          const info = await this.getResourceInfo(link.href, 'css');
+          const info = await this.getResourceInfo(link.href, "css");
           if (info) {
             info.preloaded = this.isPreloaded(link.href);
             this.chunks.push(info);
           }
         } catch (e) {
-          if (process.env.NODE_ENV === 'development') console.warn('Could not analyze stylesheet:', link.href);
+          if (process.env.NODE_ENV === "development")
+            console.warn("Could not analyze stylesheet:", link.href);
         }
       }
     }
   }
 
   private async analyzeFonts() {
-    const fontLinks = Array.from(document.querySelectorAll('link[rel="preload"][as="font"]')) as HTMLLinkElement[];
+    const fontLinks = Array.from(
+      document.querySelectorAll('link[rel="preload"][as="font"]'),
+    ) as HTMLLinkElement[];
 
     for (const link of fontLinks) {
       try {
-        const info = await this.getResourceInfo(link.href, 'font');
+        const info = await this.getResourceInfo(link.href, "font");
         if (info) {
           info.preloaded = true;
           this.chunks.push(info);
         }
       } catch (e) {
-        console.warn('Could not analyze font:', link.href);
+        console.warn("Could not analyze font:", link.href);
       }
     }
   }
 
-  private async getResourceInfo(url: string, type: ChunkInfo['type']): Promise<ChunkInfo | null> {
+  private async getResourceInfo(url: string, type: ChunkInfo["type"]): Promise<ChunkInfo | null> {
     try {
-      const response = await fetch(url, { method: 'HEAD' });
-      const size = parseInt(response.headers.get('content-length') || '0');
+      const response = await fetch(url, { method: "HEAD" });
+      const size = parseInt(response.headers.get("content-length") || "0");
 
       if (size === 0) return null;
 
-      const name = url.split('/').pop()?.split('?')[0] || 'unknown';
+      const name = url.split("/").pop()?.split("?")[0] || "unknown";
       const gzippedSize = this.estimateGzippedSize(size, type);
 
       return {
@@ -120,14 +130,14 @@ class BundleOptimizer {
     }
   }
 
-  private estimateGzippedSize(originalSize: number, type: ChunkInfo['type']): number {
+  private estimateGzippedSize(originalSize: number, type: ChunkInfo["type"]): number {
     // Compression ratios based on content type
     const compressionRatios = {
-      js: 0.35,   // JavaScript compresses well
-      css: 0.25,  // CSS compresses very well
+      js: 0.35, // JavaScript compresses well
+      css: 0.25, // CSS compresses very well
       font: 0.95, // Fonts are already compressed
-      image: 0.90, // Images are usually already compressed
-      other: 0.60,
+      image: 0.9, // Images are usually already compressed
+      other: 0.6,
     };
 
     return Math.round(originalSize * compressionRatios[type]);
@@ -135,49 +145,62 @@ class BundleOptimizer {
 
   private isPreloaded(url: string): boolean {
     const preloadLinks = document.querySelectorAll('link[rel="preload"]');
-    return Array.from(preloadLinks).some(link => (link as HTMLLinkElement).href === url);
+    return Array.from(preloadLinks).some((link) => (link as HTMLLinkElement).href === url);
   }
 
   private generateRecommendations() {
     const totalSize = this.chunks.reduce((sum, chunk) => sum + chunk.size, 0);
-    const jsSize = this.chunks.filter(c => c.type === 'js').reduce((sum, chunk) => sum + chunk.size, 0);
-    const cssSize = this.chunks.filter(c => c.type === 'css').reduce((sum, chunk) => sum + chunk.size, 0);
+    const jsSize = this.chunks
+      .filter((c) => c.type === "js")
+      .reduce((sum, chunk) => sum + chunk.size, 0);
+    const cssSize = this.chunks
+      .filter((c) => c.type === "css")
+      .reduce((sum, chunk) => sum + chunk.size, 0);
 
     // Size-based recommendations
-    if (totalSize > 2 * 1024 * 1024) { // 2MB
-      this.recommendations.push('Consider code splitting to reduce initial bundle size');
+    if (totalSize > 2 * 1024 * 1024) {
+      // 2MB
+      this.recommendations.push("Consider code splitting to reduce initial bundle size");
     }
 
-    if (jsSize > 1 * 1024 * 1024) { // 1MB
-      this.recommendations.push('JavaScript bundle is large - implement dynamic imports for non-critical features');
+    if (jsSize > 1 * 1024 * 1024) {
+      // 1MB
+      this.recommendations.push(
+        "JavaScript bundle is large - implement dynamic imports for non-critical features",
+      );
     }
 
-    if (cssSize > 500 * 1024) { // 500KB
-      this.recommendations.push('CSS bundle is large - consider CSS-in-JS or split CSS by routes');
+    if (cssSize > 500 * 1024) {
+      // 500KB
+      this.recommendations.push("CSS bundle is large - consider CSS-in-JS or split CSS by routes");
     }
 
     // Async loading recommendations
-    const syncScripts = this.chunks.filter(c => c.type === 'js' && !c.isAsync);
+    const syncScripts = this.chunks.filter((c) => c.type === "js" && !c.isAsync);
     if (syncScripts.length > 3) {
-      this.recommendations.push('Consider loading non-critical JavaScript asynchronously');
+      this.recommendations.push("Consider loading non-critical JavaScript asynchronously");
     }
 
     // Preloading recommendations
-    const largeUnpreloadedChunks = this.chunks.filter(c => c.size > 100 * 1024 && !c.preloaded);
+    const largeUnpreloadedChunks = this.chunks.filter((c) => c.size > 100 * 1024 && !c.preloaded);
     if (largeUnpreloadedChunks.length > 0) {
-      this.recommendations.push('Consider preloading large chunks that are needed early');
+      this.recommendations.push("Consider preloading large chunks that are needed early");
     }
 
     // Three.js specific recommendations
-    const hasThreeJS = this.chunks.some(c => c.name.includes('three') || c.name.includes('fiber'));
+    const hasThreeJS = this.chunks.some(
+      (c) => c.name.includes("three") || c.name.includes("fiber"),
+    );
     if (hasThreeJS) {
-      this.recommendations.push('Three.js detected - consider lazy loading 3D components that are below the fold');
+      this.recommendations.push(
+        "Three.js detected - consider lazy loading 3D components that are below the fold",
+      );
     }
 
     // Animation library recommendations
-    const hasGSAP = this.chunks.some(c => c.name.includes('gsap'));
+    const hasGSAP = this.chunks.some((c) => c.name.includes("gsap"));
     if (hasGSAP) {
-      this.recommendations.push('GSAP detected - lazy load if used for non-critical animations');
+      this.recommendations.push("GSAP detected - lazy load if used for non-critical animations");
     }
   }
 
@@ -198,7 +221,7 @@ class BundleOptimizer {
     else if (this.chunks.length > 5) score -= 5;
 
     // Deduct points for sync scripts
-    const syncScripts = this.chunks.filter(c => c.type === 'js' && !c.isAsync);
+    const syncScripts = this.chunks.filter((c) => c.type === "js" && !c.isAsync);
     if (syncScripts.length > 3) score -= 10;
 
     return {
@@ -218,7 +241,7 @@ class BundleOptimizer {
 📦 Bundle Analysis Report - RUN APPAREL
 ======================================
 
-Overall Score: ${score}/100 ${score >= 90 ? '🟢' : score >= 70 ? '🟡' : '🔴'}
+Overall Score: ${score}/100 ${score >= 90 ? "🟢" : score >= 70 ? "🟡" : "🔴"}
 
 Bundle Overview:
 - Total Size: ${this.formatSize(totalSize)}
@@ -246,8 +269,10 @@ ${type.toUpperCase()} Files (${typeChunks.length}):
 `;
 
       // Show largest files in this category
-      typeChunks.slice(0, 3).forEach(chunk => {
-        output += `  • ${chunk.name}: ${this.formatSize(chunk.size)} ${chunk.isAsync ? '(async)' : ''} ${chunk.preloaded ? '(preloaded)' : ''}\n`;
+      typeChunks.slice(0, 3).forEach((chunk) => {
+        output += `  • ${chunk.name}: ${this.formatSize(chunk.size)} ${
+          chunk.isAsync ? "(async)" : ""
+        } ${chunk.preloaded ? "(preloaded)" : ""}\n`;
       });
     });
 
@@ -262,8 +287,10 @@ Optimization Recommendations:
 
     output += `
 Performance Impact:
-- LCP Impact: ${totalGzippedSize > 1024 * 1024 ? 'High' : totalGzippedSize > 500 * 1024 ? 'Medium' : 'Low'}
-- FCP Impact: ${chunks.filter(c => c.type === 'css').length > 3 ? 'Medium' : 'Low'}
+- LCP Impact: ${
+      totalGzippedSize > 1024 * 1024 ? "High" : totalGzippedSize > 500 * 1024 ? "Medium" : "Low"
+    }
+- FCP Impact: ${chunks.filter((c) => c.type === "css").length > 3 ? "Medium" : "Low"}
 - Bundle Parse Time: ~${Math.round(totalGzippedSize / (1024 * 50))}ms (estimated)
 `;
 
@@ -271,11 +298,11 @@ Performance Impact:
   }
 
   private formatSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / k ** i).toFixed(1)) + " " + sizes[i];
   }
 
   // Tree shaking analysis (basic)
@@ -284,11 +311,11 @@ Performance Impact:
       // This would need build-time analysis for accurate results
       // For now, we provide general recommendations
       const suggestions = [
-        'Use ES6 imports instead of CommonJS requires',
-        'Import only specific functions from large libraries',
-        'Check for unused CSS classes and animations',
-        'Remove unused Three.js modules',
-        'Optimize GSAP imports to only needed features',
+        "Use ES6 imports instead of CommonJS requires",
+        "Import only specific functions from large libraries",
+        "Check for unused CSS classes and animations",
+        "Remove unused Three.js modules",
+        "Optimize GSAP imports to only needed features",
       ];
 
       setTimeout(() => resolve(suggestions), 100);
@@ -300,23 +327,23 @@ Performance Impact:
     const opportunities = [];
 
     // Check for large chunks that could be split
-    const largeChunks = this.chunks.filter(c => c.size > 500 * 1024);
+    const largeChunks = this.chunks.filter((c) => c.size > 500 * 1024);
     if (largeChunks.length > 0) {
-      opportunities.push('Split large chunks into smaller route-based chunks');
+      opportunities.push("Split large chunks into smaller route-based chunks");
     }
 
     // Check for vendor chunks
-    const hasLargeVendorCode = this.chunks.some(c =>
-      c.name.includes('vendor') || c.name.includes('node_modules')
+    const hasLargeVendorCode = this.chunks.some(
+      (c) => c.name.includes("vendor") || c.name.includes("node_modules"),
     );
     if (hasLargeVendorCode) {
-      opportunities.push('Separate vendor dependencies into dedicated chunks');
+      opportunities.push("Separate vendor dependencies into dedicated chunks");
     }
 
     // Three.js specific
-    const hasThreeJS = this.chunks.some(c => c.name.includes('three'));
+    const hasThreeJS = this.chunks.some((c) => c.name.includes("three"));
     if (hasThreeJS) {
-      opportunities.push('Lazy load Three.js components for below-the-fold 3D content');
+      opportunities.push("Lazy load Three.js components for below-the-fold 3D content");
     }
 
     return opportunities;

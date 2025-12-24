@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BarChart3, Zap, AlertTriangle, Download, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertTriangle, BarChart3, Download, X, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface PerformanceMetrics {
   cls: number;

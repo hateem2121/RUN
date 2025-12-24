@@ -1,15 +1,14 @@
-import { useState } from "react";
+import type { Fiber } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Leaf, Beaker, Search, ChevronDown, ChevronUp, Star } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { AnimatePresence, motion } from "framer-motion";
+import { Beaker, ChevronDown, ChevronUp, Leaf, Search, Sparkles, Star } from "lucide-react";
+import { useMemo, useState } from "react";
+import { SEOMeta } from "@/components/seo-meta";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SEOMeta } from "@/components/seo-meta";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { getPropertiesArray } from "@/lib/fiber-utils";
-import type { Fiber } from "@shared/schema";
 
 export default function Fibers() {
   const [searchTerm, setSearchTerm] = useState("");

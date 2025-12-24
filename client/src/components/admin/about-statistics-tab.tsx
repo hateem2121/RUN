@@ -1,20 +1,19 @@
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
-import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, GripVertical, BarChart3, TrendingUp, Package, Users, Zap, Globe, Award, Shield } from "lucide-react";
-import { IconSelector } from "@/components/admin/IconSelector";
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { AboutStatistic } from "@shared/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Award, BarChart3, Edit, Globe, GripVertical, Package, Plus, Shield, Trash2, TrendingUp, Users, Zap } from "lucide-react";
+import { useState } from "react";
+import { IconSelector } from "@/components/admin/IconSelector";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface StatisticItemProps {
   statistic: AboutStatistic;

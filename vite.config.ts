@@ -1,16 +1,21 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import ReactScan from "@react-scan/vite-plugin-react-scan";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { fileURLToPath } from "url";
+import { defineConfig } from "vite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig(({ command: _command, mode: _mode, isSsrBuild }) => ({
+export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [["babel-plugin-react-compiler", { target: "19" }]],
+      },
+    }),
     tailwindcss(),
     // TanStackRouterVite(), // DISABLE: Using Wouter, this plugin causes alias resolution conflicts
     // FORENSIC: Bundle analysis to identify large chunks
@@ -19,6 +24,16 @@ export default defineConfig(({ command: _command, mode: _mode, isSsrBuild }) => 
       open: false,
       gzipSize: true,
       brotliSize: true,
+    }),
+    ReactScan({
+      enable: mode === "development",
+    }),
+    // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
+    sentryVitePlugin({
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      disable: mode !== "production", // Only upload in production
     }),
   ],
   resolve: {
@@ -60,6 +75,9 @@ export default defineConfig(({ command: _command, mode: _mode, isSsrBuild }) => 
       },
     },
   },
+  ssr: {
+    noExternal: ["react-helmet-async"],
+  },
   server: {
     // FORENSIC: Dev server optimizations for faster module loading
     warmup: {
@@ -72,6 +90,7 @@ export default defineConfig(({ command: _command, mode: _mode, isSsrBuild }) => 
     // Increase module graph size limit for admin pages
     hmr: {
       overlay: true,
+      clientPort: 5001, // Force HMR to use the same port as the server
     },
     fs: {
       strict: true,

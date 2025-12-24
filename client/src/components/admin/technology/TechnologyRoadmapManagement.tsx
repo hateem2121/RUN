@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Calendar, Target, Image as ImageIcon, Video as VideoIcon, X } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { MediaAsset } from "@shared/schema";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Calendar, Edit, Image as ImageIcon, Plus, Target, Trash2, Video as VideoIcon, X } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EnhancedDialog, EnhancedDialogContent, EnhancedDialogDescription, EnhancedDialogBody, EnhancedDialogHeader, EnhancedDialogTitle, EnhancedDialogFooter } from "@/components/ui/enhanced-dialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedDialog, EnhancedDialogBody, EnhancedDialogContent, EnhancedDialogDescription, EnhancedDialogFooter, EnhancedDialogHeader, EnhancedDialogTitle } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import type { MediaAsset } from "@shared/schema";
 
 // Types
 interface RoadmapFormData {

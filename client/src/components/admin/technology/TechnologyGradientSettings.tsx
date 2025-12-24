@@ -11,18 +11,18 @@
  * - Zero functional changes - pure extraction
  */
 
+import type { TechnologyGradientSettings } from "@shared/schema";
+import { useMutation } from "@tanstack/react-query";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { getQueryClient, apiRequest } from "@/lib/queryClient";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import type { TechnologyGradientSettings } from "@shared/schema";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 /**
  * REACTBITS.DEV SPECIFICATION COMPLIANCE: January 25, 2025

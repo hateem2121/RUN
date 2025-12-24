@@ -76,7 +76,7 @@ export async function retryDbOperation<T>(
       }
       
       // Calculate exponential backoff delay: backoffMs * 2^(attempt-1)
-      const delayMs = backoffMs * Math.pow(2, attempt - 1);
+      const delayMs = backoffMs * 2 ** (attempt - 1);
       const retriesSoFar = attempt - 1; // Number of retries we've already done
       const upcomingRetryNumber = attempt; // The retry we're about to perform
       

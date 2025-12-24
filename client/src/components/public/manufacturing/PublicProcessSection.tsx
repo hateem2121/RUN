@@ -1,8 +1,8 @@
+import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
 import { motion } from "framer-motion";
 import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
-import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 import { ProcessCard } from "@/components/shared/manufacturing";
-import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
+import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 
 interface PublicProcessSectionProps {
   mediaAssets: MediaAsset[];

@@ -1,6 +1,6 @@
+import { inArray } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { mediaAssets, products } from "../shared/schema.js";
-import { inArray } from "drizzle-orm";
 
 async function cleanupBrokenMedia() {
   console.log("🧹 Starting cleanup of broken media records...");

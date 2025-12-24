@@ -1,30 +1,28 @@
-import { useState, useEffect, useMemo, Component, ReactNode } from "react";
+import type { Category } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "@shared/schema";
-import { Loader2, AlertCircle, Eye } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
-import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
-import { cn } from "@/lib/utils";
-import { batchFetchMediaContent } from "@/lib/queryClient";
-import { isModelUrl } from "@/lib/media-type-detector";
-
+import { AlertCircle, Eye, Loader2 } from "lucide-react";
 // CHUNK 6: Lazy-load FluidGlass to defer three.js (565KB) from main bundle
-import { lazy, Suspense } from "react";
-
-// Direct imports for immediate rendering
-import SvgMaskCard from "@/components/ui/bento-cards/svg-mask-card";
+import { Component, lazy, type ReactNode, Suspense, useEffect, useMemo, useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import ExpandableCard from "@/components/ui/bento-cards/expandable-card";
 import FlipCard from "@/components/ui/bento-cards/flip-card";
+// Direct imports for immediate rendering
+import SvgMaskCard from "@/components/ui/bento-cards/svg-mask-card";
+import { Button } from "@/components/ui/button";
+import { isModelUrl } from "@/lib/media-type-detector";
+import { batchFetchMediaContent } from "@/lib/queryClient";
+import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
+import { cn } from "@/lib/utils";
 
 // Lazy-load FluidGlass (imports three.js)
 const FluidGlass = lazy(() => import("@/components/ui/bento-cards/fluid-glass-final"));
-// CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
-import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+
 import { CircularNavButton } from "@/components/ui/circular-nav-button";
 import { GeometricDivider } from "@/components/ui/geometric-divider";
+// CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 
 // Error boundary for FluidGlass component
 class FluidGlassErrorBoundary extends Component<

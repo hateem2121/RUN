@@ -1,7 +1,7 @@
 // HTTP Request/Response Metrics Tracker
 // Tracks latency, status codes, routes, and request counts
 
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { logger } from './smart-logger.js';
 
 interface HttpMetric {

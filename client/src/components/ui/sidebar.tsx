@@ -1,9 +1,10 @@
 "use client";
-import { cn } from "@/lib/utils";
-import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
+import type React from "react";
+import { createContext, useContext, useState } from "react";
 import { useConcurrentLocation } from "@/hooks/useConcurrentLocation";
+import { cn } from "@/lib/utils";
 
 interface Links {
   label: string;

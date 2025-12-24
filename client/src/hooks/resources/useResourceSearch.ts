@@ -1,6 +1,6 @@
+import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/schema";
 import { useMemo } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { Certificate, Accessory, SizeChart, Fabric, Fiber } from "@shared/schema";
 
 export interface SearchResult {
   id: number | string;

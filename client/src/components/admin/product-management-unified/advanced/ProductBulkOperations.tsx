@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import type { Product } from '@shared/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Product } from '@shared/schema';
-import { Button } from '@/components/ui/button';
+import { 
+  Archive, 
+  CheckSquare, 
+  Download,
+  Edit3, 
+  Square,
+  Star, 
+  Trash2 
+} from 'lucide-react';
+import { useState } from 'react';
+import { DeleteConfirmationDialog } from '@/components/admin/shared';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Select,
   SelectContent,
@@ -10,16 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { 
-  Trash2, 
-  Archive, 
-  Star, 
-  CheckSquare, 
-  Square,
-  Download,
-  Edit3
-} from 'lucide-react';
-import { DeleteConfirmationDialog } from '@/components/admin/shared';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProductBulkOperationsProps {

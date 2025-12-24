@@ -2,8 +2,8 @@
 // Creates all 47 business items directly in PostgreSQL
 
 import type { Express } from 'express';
+import { accessories, categories, certificates, fabrics, fibers } from '../../../shared/schema.js';
 import { db } from '../../db.js';
-import { categories, fabrics, fibers, certificates, accessories } from '../../../shared/schema.js';
 import { logger } from '../../lib/smart-logger.js';
 
 export function registerDirectPostgresPopulationRoutes(app: Express): void {

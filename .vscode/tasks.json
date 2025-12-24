@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Redis L2",
+      "type": "shell",
+      "command": "docker run --name redis-l2 -p 6379:6379 -d redis:alpine",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent"
+      }
+    },
+    {
+      "label": "Start Express Debug",
+      "type": "npm",
+      "script": "dev",
+      "dependsOn": ["Start Redis L2"],
+      "problemMatcher": ["$tsc-watch"]
+    }
+  ]
+}

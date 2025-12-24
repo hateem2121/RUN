@@ -4,6 +4,7 @@
  */
 import { z } from 'zod';
 import { parseApiDate } from './date-helpers.js';
+
 // Zod schema that matches the MediaAsset interface exactly
 const MediaAssetSchema = z.object({
     id: z.number(),

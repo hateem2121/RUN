@@ -1,11 +1,12 @@
-import { z } from 'zod';
 import type { MediaAsset } from '@shared/schema';
-import { validateMediaAsset, validateApiResponse, filterValidMediaAssets, monitorSchemaDrift } from '../../../utils/schema-validator';
+import { z } from 'zod';
+import { filterValidMediaAssets, monitorSchemaDrift, validateApiResponse, validateMediaAsset } from '../../../utils/schema-validator';
+
 // Removed server-side import that was causing build failures
 // REMOVED: Dead import - replaced with browser-safe fallback
 
 // Re-export the comprehensive schema validator for backward compatibility
-export { validateMediaAsset, filterValidMediaAssets } from '../../../utils/schema-validator';
+export { filterValidMediaAssets, validateMediaAsset } from '../../../utils/schema-validator';
 
 // Browser-safe logging fallback (since we can't import server-side replit-monitor)
 const logSchemaError = (data: unknown, validationErrors: string[], context: string, severity: 'low' | 'medium' | 'high' | 'critical' = 'high') => {

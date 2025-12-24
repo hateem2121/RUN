@@ -1,32 +1,32 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/schema";
+// Removed useMediaErrorHandler - using console.error for error handling
+import { AnimatePresence, motion } from "framer-motion";
 import {
+  Box,
   ChevronLeft,
   ChevronRight,
-  Play,
-  Pause,
-  ZoomIn,
+  Eye,
+  Image,
   Layers,
   Maximize2,
-  X,
-  Box,
-  Share2,
+  Pause,
   PictureInPicture,
-  Image,
+  Play,
+  Share2,
   Video,
-  Eye,
+  X,
+  ZoomIn,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { useSwipeGesture } from "@/hooks/use-swipe-gesture";
-import { useMediaPerformance } from "./MediaPerformanceMonitor";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // STEP 3 INTEGRATION: Import UnifiedModelViewer to replace manual model-viewer elements
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
-// Removed useMediaErrorHandler - using console.error for error handling
-import { AnimatePresence, motion } from "framer-motion";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useSwipeGesture } from "@/hooks/use-swipe-gesture";
+import { cn } from "@/lib/utils";
+import { useMediaPerformance } from "./MediaPerformanceMonitor";
 // PHASE 6 FIX: Consolidated features from MediaTabsViewer and LazyMediaGallery
 
 export interface EnhancedMediaAsset extends MediaAsset {

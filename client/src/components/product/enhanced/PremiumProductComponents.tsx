@@ -3,21 +3,21 @@
  * Clipped geometric elements, enhanced galleries, and premium UI components
  */
 
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import type { Product } from "@shared/schema";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Package,
-  Info,
-  Shield,
   Box,
-  Leaf,
-  FileText,
-  Heart,
-  Play,
   Boxes,
   ChevronDown,
+  FileText,
+  Heart,
+  Info,
+  Leaf,
+  Package,
+  Play,
+  Shield,
 } from "lucide-react";
-import type { Product } from "@shared/schema";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 

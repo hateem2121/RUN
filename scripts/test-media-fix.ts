@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm";
 import { appStorageService } from "../server/app-storage-service.js";
 import { db } from "../server/db.js";
 import { mediaAssets } from "../shared/schema.js";
-import { eq } from "drizzle-orm";
 
 async function main() {
     const assetId = 332; // Known missing variant from previous check

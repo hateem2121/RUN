@@ -8,15 +8,15 @@
 
 import { db } from '../server/db.js';
 import { 
-  homepageFeaturedProductsSettings,
   aboutTeamMessages,
-  sustainabilityInitiatives,
-  sustainabilityGoals,
-  manufacturingHero,
+  homepageFeaturedProductsSettings,
   manufacturingCapabilities,
+  manufacturingHero,
   manufacturingQualities,
-  technologyHero,
+  sustainabilityGoals,
+  sustainabilityInitiatives,
   technologyEquipment,
+  technologyHero,
   technologyResearch
 } from '../shared/schema.js';
 

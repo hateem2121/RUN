@@ -1,0 +1,38 @@
+groups:
+  - name: api_alerts
+    rules:
+      - alert: API_Down
+        expr: up{job="api-server"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API Server is down"
+          description: "The API server at {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: High_5xx_Rate
+        expr: rate(http_requests_total{status_code=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High 5xx error rate"
+          description: "API is returning errors (>5% of traffic) for over 2 minutes."
+
+      - alert: High_P95_Latency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High P95 Latency"
+          description: "95th percentile of request duration is > 2s for over 5 minutes."
+
+      - alert: Low_Cache_Hit_Rate
+        expr: rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) < 0.2
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low Cache Hit Rate"
+          description: "Cache hit rate has dropped below 20%."

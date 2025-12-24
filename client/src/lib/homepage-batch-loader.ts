@@ -4,14 +4,14 @@
  */
 
 import type {
+  Category,
+  HomepageFeaturedProductsSettings,
   HomepageHero,
-  HomepageSlogan,
   HomepageProcessCard,
   HomepageSection,
-  UnifiedSustainability,
-  HomepageFeaturedProductsSettings,
+  HomepageSlogan,
   Product,
-  Category,
+  UnifiedSustainability,
 } from "@/../../shared/schema";
 
 export interface HomepageBatchData {
@@ -64,15 +64,15 @@ export class HomepageBatchLoader {
       const totalTime = endTime - startTime;
 
       // Track performance metrics
-      this.performanceMetrics.batchTime = totalTime;
-      this.performanceMetrics.requestsSaved = 6; // 7 requests reduced to 1
+      HomepageBatchLoader.performanceMetrics.batchTime = totalTime;
+      HomepageBatchLoader.performanceMetrics.requestsSaved = 6; // 7 requests reduced to 1
 
       // Check cache status from headers
       const cacheStatus = response.headers.get("X-Cache");
       if (cacheStatus === "HIT") {
-        this.performanceMetrics.cacheHits++;
+        HomepageBatchLoader.performanceMetrics.cacheHits++;
       } else {
-        this.performanceMetrics.cacheMisses++;
+        HomepageBatchLoader.performanceMetrics.cacheMisses++;
       }
 
       // const responseTime = response.headers.get('X-Response-Time');
@@ -81,7 +81,7 @@ export class HomepageBatchLoader {
       return data;
     } catch (error) {
       const endTime = performance.now();
-      this.performanceMetrics.batchTime = endTime - startTime;
+      HomepageBatchLoader.performanceMetrics.batchTime = endTime - startTime;
       // Removed debug console statement for production
       throw error;
     }
@@ -137,7 +137,7 @@ export class HomepageBatchLoader {
       const endTime = performance.now();
       const totalTime = endTime - startTime;
 
-      this.performanceMetrics.separateTime = totalTime;
+      HomepageBatchLoader.performanceMetrics.separateTime = totalTime;
 
       // Removed debug console statement for production
 
@@ -159,7 +159,7 @@ export class HomepageBatchLoader {
       };
     } catch (error) {
       const endTime = performance.now();
-      this.performanceMetrics.separateTime = endTime - startTime;
+      HomepageBatchLoader.performanceMetrics.separateTime = endTime - startTime;
       // Removed debug console statement for production
       throw error;
     }
@@ -170,14 +170,14 @@ export class HomepageBatchLoader {
    */
   static getPerformanceMetrics() {
     const improvement =
-      this.performanceMetrics.separateTime > 0
-        ? ((this.performanceMetrics.separateTime - this.performanceMetrics.batchTime) /
-            this.performanceMetrics.separateTime) *
+      HomepageBatchLoader.performanceMetrics.separateTime > 0
+        ? ((HomepageBatchLoader.performanceMetrics.separateTime - HomepageBatchLoader.performanceMetrics.batchTime) /
+            HomepageBatchLoader.performanceMetrics.separateTime) *
           100
         : 0;
 
     return {
-      ...this.performanceMetrics,
+      ...HomepageBatchLoader.performanceMetrics,
       improvement: improvement.toFixed(2),
       networkRequests: {
         before: 7,
@@ -195,13 +195,13 @@ export class HomepageBatchLoader {
 
     try {
       // Test separate requests first
-      await this.loadSeparateData();
+      await HomepageBatchLoader.loadSeparateData();
 
       // Wait a moment to avoid cache conflicts
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Test batch request
-      await this.loadBatchData();
+      await HomepageBatchLoader.loadBatchData();
 
       // const metrics = this.getPerformanceMetrics();
 

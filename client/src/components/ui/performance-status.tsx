@@ -3,10 +3,10 @@
  * Real-time performance monitoring display
  */
 
+import { motion } from "framer-motion";
+import { Activity, CheckCircle, TrendingUp, Zap } from "lucide-react";
 import { useState } from "react";
 import { usePerformanceMonitor } from "@/hooks/use-performance-monitor";
-import { motion } from "framer-motion";
-import { Activity, Zap, TrendingUp, CheckCircle } from "lucide-react";
 
 interface PerformanceStatusProps {
   componentName: string;

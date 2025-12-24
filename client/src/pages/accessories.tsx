@@ -1,17 +1,16 @@
-import { useState } from "react";
+import type { Accessory } from "@shared/schema";
 import { motion } from "framer-motion";
-import { Package, Wrench, Settings } from "lucide-react";
+import { Package, Settings, Wrench } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ResourceCard } from "@/components/resources/ResourceCard";
+import { ResourceGrid } from "@/components/resources/ResourceGrid";
+import { ResourceSearch } from "@/components/resources/ResourceSearch";
+import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { SEOMeta } from "@/components/seo-meta";
-import { ResourceSearch } from "@/components/resources/ResourceSearch";
-import { ResourceGrid } from "@/components/resources/ResourceGrid";
-import { ResourceCard } from "@/components/resources/ResourceCard";
-import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { Accessory } from "@shared/schema";
-import { useMemo } from "react";
 
 export default function Accessories() {
   const [searchTerm, setSearchTerm] = useState("");

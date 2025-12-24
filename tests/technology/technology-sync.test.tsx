@@ -1,7 +1,7 @@
-import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { render, screen, waitFor } from '@testing-library/react'
+import type React from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Critical Integration Test: Admin-Public Synchronization
 describe('Technology Page - Admin Sync Integration', () => {

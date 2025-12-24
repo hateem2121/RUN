@@ -1,5 +1,6 @@
-import React, { useOptimistic, useTransition, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import type React from "react";
+import { useOptimistic, useState, useTransition } from "react";
 
 // Simulated Server Action
 const subscribeToNewsletter = async (

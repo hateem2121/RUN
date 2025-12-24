@@ -1,7 +1,7 @@
+import { Calendar, type LucideIcon, MapIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { Calendar, LucideIcon, MapIcon } from 'lucide-react'
-import { ReactNode } from 'react'
 
 export function Features() {
     return (

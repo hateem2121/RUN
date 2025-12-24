@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 const LOADING_TEXTS = [
   "INITIALIZING KINETIC FRAMEWORK",

@@ -1,6 +1,6 @@
-import { appStorageService } from "../app-storage-service.js";
 // import { getStorage } from "../lib/storage-singleton.js";
 import crypto from "crypto";
+import { appStorageService } from "../app-storage-service.js";
 
 async function cleanupDuplicates() {
   console.log("🧹 Starting duplicate files cleanup...\n");
