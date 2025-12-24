@@ -31,7 +31,7 @@ export function FeaturedProductGrid({
   featuredProductsSettings,
 }: FeaturedProductGridProps) {
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-black">
+    <section className="relative overflow-hidden bg-black px-4 py-20 sm:px-6 lg:px-8">
       {/* GSAP-based Dot Grid Background */}
       <div className="absolute inset-0">
         <Suspense fallback={<div className="absolute inset-0 bg-black" />}>
@@ -51,8 +51,8 @@ export function FeaturedProductGrid({
         </Suspense>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="flex justify-center mb-12">
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="mb-12 flex justify-center">
           <LiquidGlassTitle
             title={productsSection.title ?? "Featured Products"}
             subtitle={productsSection.content ?? undefined}
@@ -61,7 +61,7 @@ export function FeaturedProductGrid({
 
         {/* Product Grid */}
         {/* PATTERN: Responsive Grid - 1 col mobile, 2 col tablet, 3 col desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredProducts.map((product) => {
             // Build product media items with proper priority ordering
             const mediaItems = buildProductMediaItems(product);
@@ -88,7 +88,7 @@ export function FeaturedProductGrid({
         </div>
 
         {/* View All Products Button */}
-        <div className="text-center mt-12">
+        <div className="mt-12 text-center">
           <Link href="/products">
             <ButtonHoverMultiple data-testid="button-view-all-products">
               View All Products

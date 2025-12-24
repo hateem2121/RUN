@@ -10,63 +10,51 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ProductNavigationProps {
-	previousProduct: Product | null;
-	nextProduct: Product | null;
-	className?: string;
+  previousProduct: Product | null;
+  nextProduct: Product | null;
+  className?: string;
 }
 
 export function ProductNavigation({
-	previousProduct,
-	nextProduct,
-	className,
+  previousProduct,
+  nextProduct,
+  className,
 }: ProductNavigationProps) {
-	if (!previousProduct && !nextProduct) {
-		return null;
-	}
+  if (!previousProduct && !nextProduct) {
+    return null;
+  }
 
-	return (
-		<div className={cn("flex items-center justify-between py-6", className)}>
-			<div className="flex-1">
-				{previousProduct && (
-					<Link
-						href={
-							(previousProduct as any).canonicalUrl ||
-							`/products/${previousProduct.slug}`
-						}
-					>
-						<Button variant="ghost" className="group">
-							<ChevronLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-							<div className="text-left">
-								<div className="text-xs text-gray-500">Previous</div>
-								<div className="text-sm font-medium truncate max-w-[150px]">
-									{previousProduct.name}
-								</div>
-							</div>
-						</Button>
-					</Link>
-				)}
-			</div>
+  return (
+    <div className={cn("flex items-center justify-between py-6", className)}>
+      <div className="flex-1">
+        {previousProduct && (
+          <Link href={(previousProduct as any).canonicalUrl || `/products/${previousProduct.slug}`}>
+            <Button variant="ghost" className="group">
+              <ChevronLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <div className="text-left">
+                <div className="text-gray-500 text-xs">Previous</div>
+                <div className="max-w-[150px] truncate font-medium text-sm">
+                  {previousProduct.name}
+                </div>
+              </div>
+            </Button>
+          </Link>
+        )}
+      </div>
 
-			<div className="flex-1 text-right">
-				{nextProduct && (
-					<Link
-						href={
-							(nextProduct as any).canonicalUrl ||
-							`/products/${nextProduct.slug}`
-						}
-					>
-						<Button variant="ghost" className="group">
-							<div className="text-right">
-								<div className="text-xs text-gray-500">Next</div>
-								<div className="text-sm font-medium truncate max-w-[150px]">
-									{nextProduct.name}
-								</div>
-							</div>
-							<ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-						</Button>
-					</Link>
-				)}
-			</div>
-		</div>
-	);
+      <div className="flex-1 text-right">
+        {nextProduct && (
+          <Link href={(nextProduct as any).canonicalUrl || `/products/${nextProduct.slug}`}>
+            <Button variant="ghost" className="group">
+              <div className="text-right">
+                <div className="text-gray-500 text-xs">Next</div>
+                <div className="max-w-[150px] truncate font-medium text-sm">{nextProduct.name}</div>
+              </div>
+              <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
 }

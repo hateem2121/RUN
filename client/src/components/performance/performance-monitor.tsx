@@ -152,13 +152,13 @@ function PerformanceMonitorComponent({
     let scrollTriggerInstances = 0;
 
     // Count GSAP instances
-    if (window.gsap && window.gsap.globalTimeline) {
+    if (window.gsap?.globalTimeline) {
       const timeline = window.gsap.globalTimeline;
       gsapInstances = timeline.getChildren ? timeline.getChildren().length : 0;
     }
 
     // Count ScrollTrigger instances
-    if (window.ScrollTrigger && window.ScrollTrigger.getAll) {
+    if (window.ScrollTrigger?.getAll) {
       scrollTriggerInstances = window.ScrollTrigger.getAll().length;
     }
 
@@ -209,7 +209,7 @@ function PerformanceMonitorComponent({
 
     // Global error handler for this component
     const errorHandler = (event: ErrorEvent) => {
-      if (event.error && event.error.stack && event.error.stack.includes(componentName)) {
+      if (event.error?.stack?.includes(componentName)) {
         incrementErrorCount();
       }
     };
@@ -242,7 +242,7 @@ function PerformanceMonitorComponent({
   // Phase 3: Performance Metrics Logging
   useEffect(() => {
     if (!enabled) return;
-  }, [enabled, componentName, metrics]);
+  }, [enabled]);
 
   // Phase 3: Render the monitored component
   useEffect(() => {
@@ -264,7 +264,7 @@ function PerformanceMonitorComponent({
     <>
       {children}
       {enabled && process.env.NODE_ENV === "development" && (
-        <div className="fixed bottom-2 right-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-dock">
+        <div className="fixed right-2 bottom-2 z-dock rounded bg-black/80 p-2 font-mono text-white text-xs">
           <div className="font-bold text-green-400">🔍 {componentName}</div>
           <div>Render: {metrics.renderTime.toFixed(1)}ms</div>
           <div>Memory: {(metrics.memoryUsage / 1024 / 1024).toFixed(1)}MB</div>

@@ -197,6 +197,7 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
     transitionDuration,
     getRandomMatrixChar,
     maxLength,
+    paused,
   ]);
 
   // Auto-transition effect

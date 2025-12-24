@@ -161,7 +161,9 @@ model-viewer .hotspot:hover .annotation {
 .media-transition-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 300ms ease-out, transform 300ms ease-out;
+  transition:
+    opacity 300ms ease-out,
+    transform 300ms ease-out;
 }
 
 .media-transition-exit {
@@ -171,5 +173,7 @@ model-viewer .hotspot:hover .annotation {
 .media-transition-exit-active {
   opacity: 0;
   transform: translateX(-100px);
-  transition: opacity 300ms ease-in, transform 300ms ease-in;
+  transition:
+    opacity 300ms ease-in,
+    transform 300ms ease-in;
 }

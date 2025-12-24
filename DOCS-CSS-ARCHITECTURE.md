@@ -1,8 +1,8 @@
 # CSS Architecture & Quality Guide
 
-**Status:** Draft
-**Last Updated:** Late 2025
-**Stack:** React 19, Tailwind v4, Biome, Vite, Express 5
+**Status:** Stable
+**Last Updated:** Late 2025 (Refined)
+**Stack:** React 19, Tailwind v4, Biome v2+, Vite, Express 5
 
 This document serves as the source of truth for styling, CSS architecture, and code quality standards for the `run-remix-b2b` project.
 
@@ -56,6 +56,16 @@ We strictly adhere to the Tailwind v4 layering system to ensure predictability:
   --color-primary: oklch(0.6 0.15 250);
   --font-sans: "Inter", sans-serif;
   --spacing-container: 1280px;
+
+  /* Z-Index Semantic Scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-tooltip: 600;
+  --z-toast: 700;
 }
 
 @layer base {
@@ -103,6 +113,16 @@ Style Radix Primitives properties using `data-state` and standard Tailwind modif
   - Keyframe animations.
   - Complex selectors impossible with Tailwind.
   - 3rd-party library overrides.
+
+**Standard Form Input Pattern:**
+
+Use the `FormInput` component for consistent accessibility and styling:
+
+```tsx
+import { FormInput } from "@/components/ui/form-input";
+
+<FormInput label="Email" error={errors.email?.message} {...register("email")} />;
+```
 
 **Sample `Button` Component (`cva`):**
 
@@ -165,10 +185,10 @@ We use **Biome** for linting and formatting. It replaces Prettier and ESLint.
 
 ### Linting Rules
 
-Ensure `biome.json` has the following enabled (or implied via `recommended` presets):
+Ensure `biome.json` uses schema v2.3.10+ and has the following enabled:
 
-- **`useSortedClasses`**: Enforces a consistent order for utility classes.
-- **`noUnknownClass`**: Checks for invalid Tailwind classes (if configured with Biome's experimental Tailwind support, otherwise relying on the IDE extension).
+- **`useSortedClasses`**: Enforces a consistent order for utility classes (moves to `nursery` in v2+).
+- **`css` configuration**: Must enable `tailwindDirectives: true` to support `@theme`, `@utility`, etc.
 
 ### Formatting & Class Order
 

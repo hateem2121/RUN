@@ -1,6 +1,6 @@
-import { Suspense, lazy, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Map, Satellite, Loader2 } from "lucide-react";
+import { Loader2, Map, Satellite } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { MapErrorBoundary } from "./components/MapErrorBoundary";
 import type { MapLocation } from "./hooks/useMapMarkers";
 import { useMapState } from "./hooks/useMapState";
@@ -36,9 +36,9 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className={`bg-background rounded-3xl p-8 shadow-lg ${className}`}
+      className={`rounded-3xl bg-background p-8 shadow-lg ${className}`}
     >
-      <div className="h-[500px] w-full rounded-2xl overflow-hidden relative">
+      <div className="relative h-[500px] w-full overflow-hidden rounded-2xl">
         {/* Map Layer Toggle Button */}
         <motion.div
           className="absolute top-4 right-4 z-max"
@@ -48,7 +48,7 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
         >
           <motion.button
             onClick={toggleLayer}
-            className="bg-background/90 border border-border/50 rounded-xl px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm font-medium"
+            className="flex items-center gap-2 rounded-xl border border-border/50 bg-background/90 px-4 py-2 font-medium text-sm shadow-lg transition-all duration-200 hover:shadow-xl"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -69,8 +69,8 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
         <MapErrorBoundary>
           <Suspense
             fallback={
-              <div className="h-full w-full flex items-center justify-center bg-muted/20">
-                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              <div className="flex h-full w-full items-center justify-center bg-muted/20">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             }
           >
@@ -96,16 +96,16 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       </div>
 
       {/* Map Legend */}
-      <div className="flex justify-center items-center gap-8 mt-6">
+      <div className="mt-6 flex items-center justify-center gap-8">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-          <span className="text-sm text-muted-foreground">
+          <div className="h-3 w-3 rounded-full bg-blue-600"></div>
+          <span className="text-muted-foreground text-sm">
             Client Locations ({clientLocations.length})
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-          <span className="text-sm text-muted-foreground">
+          <div className="h-3 w-3 rounded-full bg-green-600"></div>
+          <span className="text-muted-foreground text-sm">
             Manufacturing Facilities ({facilityLocations.length})
           </span>
         </div>

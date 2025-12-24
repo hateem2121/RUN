@@ -13,7 +13,7 @@ export function ProductsListSEO({ category, searchTerm, totalProducts }: Product
     let title = "Products";
     if (searchTerm) {
       title = `Search Results for "${searchTerm}"`;
-    } else if (category && category.name) {
+    } else if (category?.name) {
       title = category.name;
     }
     document.title = `${title} - B2B Sportswear Manufacturing | RUN APPAREL`;
@@ -24,7 +24,7 @@ export function ProductsListSEO({ category, searchTerm, totalProducts }: Product
       let description = `Browse our professional sportswear manufacturing catalog. ${totalProducts} products available.`;
       if (searchTerm) {
         description = `Search results for "${searchTerm}" in our B2B sportswear catalog. ${totalProducts} products found.`;
-      } else if (category && category.name) {
+      } else if (category?.name) {
         description = `${
           category.name
         } manufacturing solutions. Browse ${totalProducts} professional ${category.name.toLowerCase()} products for B2B textile needs.`;

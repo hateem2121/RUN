@@ -3,7 +3,7 @@
  * Uses intersection observer to pause animations when not visible
  */
 
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import {
   useDeviceCapabilities,
   usePerformanceObserver,

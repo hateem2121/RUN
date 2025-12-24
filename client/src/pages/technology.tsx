@@ -16,14 +16,14 @@ import type {
   TechnologyRoadmap,
 } from "@shared/schema";
 import { Loader2 } from "lucide-react";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
-import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 // NOTE: webgl-pointer-events.css is imported globally in index.css via @layer components
 // Removed duplicate import here to reduce CSS bundle duplication
 import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
 
@@ -40,7 +40,7 @@ class ErrorBoundary extends React.Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: unknown, errorInfo: React.ErrorInfo) {}
+  componentDidCatch(_error: unknown, _errorInfo: React.ErrorInfo) {}
 
   render() {
     if (this.state.hasError) {
@@ -440,30 +440,30 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   return (
     <div
       ref={containerRef}
-      className="hero-3d-model relative bg-transparent rounded-2xl overflow-hidden border border-white/10"
+      className="hero-3d-model relative overflow-hidden rounded-2xl border border-white/10 bg-transparent"
     >
       {media.type === "3d_model" ? (
         <div className="relative aspect-[4/3]">
           {/* PHASE E: Enhanced progressive enhancement with intersection awareness */}
           {!shouldLoadModel && (
             <div className="absolute inset-0 z-modal flex flex-col items-center justify-center bg-gradient-to-br from-slate-900/90 to-blue-900/90">
-              <div className="text-center p-6">
-                <div className="w-16 h-16 mx-auto mb-4 bg-blue-500/20 rounded-full flex items-center justify-center">
-                  <div className="w-8 h-8 border-2 border-blue-400/60 rounded-lg"></div>
+              <div className="p-6 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/20">
+                  <div className="h-8 w-8 rounded-lg border-2 border-blue-400/60"></div>
                 </div>
-                <p className="text-white font-medium mb-2">Interactive 3D Model</p>
-                <p className="text-blue-200 text-sm mb-4">
+                <p className="mb-2 font-medium text-white">Interactive 3D Model</p>
+                <p className="mb-4 text-blue-200 text-sm">
                   {isIntersecting ? "Preparing to load..." : "Scroll to view"}
                 </p>
                 <button
                   onClick={() => {
                     setUserRequestedLoad(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors duration-200 hover:bg-blue-700"
                 >
                   Load 3D Model
                 </button>
-                <p className="text-xs text-blue-300 mt-2">
+                <p className="mt-2 text-blue-300 text-xs">
                   Interactive 3D experience • Optimized streaming
                 </p>
               </div>
@@ -473,8 +473,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {/* Loading Overlay - only shows when model is actually loading */}
           {isLoading && shouldLoadModel && (
             <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/60">
-              <Loader2 className="w-8 h-8 text-blue-400 animate-spin mb-3" />
-              <p className="text-white text-sm font-medium mb-2">Loading 3D Model...</p>
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-blue-400" />
+              <p className="mb-2 font-medium text-sm text-white">Loading 3D Model...</p>
               <p className="text-gray-300 text-xs">Loading interactive 3D model...</p>
             </div>
           )}
@@ -482,9 +482,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {/* Error Fallback */}
           {false && (
             <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/70">
-              <div className="text-center p-6">
-                <div className="text-red-400 text-lg mb-2">⚠️</div>
-                <p className="text-white font-medium mb-1">3D preview unavailable</p>
+              <div className="p-6 text-center">
+                <div className="mb-2 text-lg text-red-400">⚠️</div>
+                <p className="mb-1 font-medium text-white">3D preview unavailable</p>
                 <p className="text-gray-300 text-sm">Showing fallback content</p>
               </div>
             </div>
@@ -495,8 +495,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {shouldLoadModel && (
             <React.Suspense
               fallback={
-                <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-black/20 rounded-xl">
-                  <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+                <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded-xl bg-black/20">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
                 </div>
               }
             >
@@ -523,7 +523,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                   shadowIntensity: 1,
                   exposure: 1,
                 }}
-                className="w-full h-full transition-opacity duration-500 min-h-[400px]"
+                className="h-full min-h-[400px] w-full transition-opacity duration-500"
               />
             </React.Suspense>
           )}
@@ -539,7 +539,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
             autoPlay
             loop
             muted
-            className="w-full h-full object-cover rounded-xl"
+            className="h-full w-full rounded-xl object-cover"
           />
         </div>
       ) : (
@@ -550,7 +550,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
               (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
             }
             alt="Technology Hero Display"
-            className="w-full h-full object-cover rounded-xl"
+            className="h-full w-full rounded-xl object-cover"
           />
         </div>
       )}
@@ -639,9 +639,9 @@ export default function Technology() {
   // OPTIMIZED: Simplified loading state using batch query
   if (batchLoading) {
     return (
-      <div className="min-h-screen relative isolate overflow-hidden bg-black flex items-center justify-center">
+      <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-black">
         <div className="text-center text-white">
-          <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
           <p className="text-sm opacity-75">Loading technology interface...</p>
         </div>
       </div>
@@ -655,7 +655,7 @@ export default function Technology() {
   const backgroundMedia = mainHeroMediaId ? getMediaAsset(mainHeroMediaId) : null;
 
   return (
-    <div className="technology-page-root min-h-screen relative isolate overflow-hidden">
+    <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
       {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
       <div className="fixed inset-0 -z-10">
         {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
@@ -713,40 +713,40 @@ export default function Technology() {
         {/* 2025-08-25: Hero section architecture refactored for simplicity, clarity, and best-practice UX. */}
         <section className="hero-section mb-16">
           {/* Mobile: flex-col stack, Desktop: grid-cols-2 side-by-side */}
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="flex flex-col items-center gap-8 lg:grid lg:grid-cols-2 lg:gap-12">
             {/* Hero Content - Column 1 - Content First on All Devices */}
             <div className="hero-content order-1 w-full max-w-2xl">
               <LiquidGlassCard
                 blurIntensity="md"
                 glowIntensity="sm"
-                className="w-full block cursor-default p-8"
+                className="block w-full cursor-default p-8"
               >
                 {batchLoading ? (
                   <LoadingSkeleton type="text" className="text-center lg:text-left" />
                 ) : (
                   <div className="text-center lg:text-left">
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
+                    <h1 className="mb-6 font-bold text-3xl text-white leading-tight drop-shadow-lg sm:text-4xl lg:text-5xl">
                       {vm.hero?.title || "Technology & Innovation"}
                     </h1>
-                    <h2 className="text-lg lg:text-xl text-white/90 mb-6 drop-shadow-sm leading-relaxed font-medium">
+                    <h2 className="mb-6 font-medium text-lg text-white/90 leading-relaxed drop-shadow-sm lg:text-xl">
                       {vm.hero?.subtitle ||
                         "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
                     </h2>
 
                     {/* Clean interaction hint */}
                     {backgroundMedia?.type === "3d_model" && (
-                      <p className="text-white/70 text-sm mb-6 flex justify-center lg:justify-start">
+                      <p className="mb-6 flex justify-center text-sm text-white/70 lg:justify-start">
                         Drag to rotate • Scroll to zoom • Touch to explore
                       </p>
                     )}
 
                     {/* CTA Buttons */}
                     {(vm.hero?.primaryCtaText || vm.hero?.secondaryCtaText) && (
-                      <div className="flex flex-col sm:flex-row gap-4 items-center lg:items-start mb-6">
+                      <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
                         {vm.hero?.primaryCtaText && (
                           <a
                             href={vm.hero?.primaryCtaLink || "#"}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-center"
+                            className="rounded-lg bg-blue-600 px-8 py-3 text-center font-semibold text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
                           >
                             {vm.hero.primaryCtaText}
                           </a>
@@ -754,7 +754,7 @@ export default function Technology() {
                         {vm.hero?.secondaryCtaText && (
                           <a
                             href={vm.hero?.secondaryCtaLink || "#"}
-                            className="text-white/90 hover:text-white font-medium underline transition-colors duration-200"
+                            className="font-medium text-white/90 underline transition-colors duration-200 hover:text-white"
                           >
                             {vm.hero.secondaryCtaText}
                           </a>
@@ -762,7 +762,7 @@ export default function Technology() {
                       </div>
                     )}
 
-                    <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mx-auto lg:mx-0"></div>
+                    <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 lg:mx-0"></div>
                   </div>
                 )}
               </LiquidGlassCard>
@@ -775,10 +775,10 @@ export default function Technology() {
                   <OptimizedTechnologyHero media={backgroundMedia} />
                 </div>
               ) : (
-                <div className="aspect-[4/3] bg-transparent rounded-2xl border border-white/10 flex items-center justify-center">
+                <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-white/10 bg-transparent">
                   <div className="text-center text-white/40">
-                    <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center">
-                      <div className="w-8 h-8 border-2 border-white/20 rounded border-dashed"></div>
+                    <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
+                      <div className="h-8 w-8 rounded border-2 border-white/20 border-dashed"></div>
                     </div>
                     <p className="text-sm">No media configured</p>
                   </div>
@@ -788,13 +788,13 @@ export default function Technology() {
           </div>
         </section>
         {/* Enhanced Innovations Section - ALL FIELDS */}
-        <div className="mb-16 tech-cards-section">
+        <div className="tech-cards-section mb-16">
           <LiquidGlassCard
             blurIntensity="md"
             glowIntensity="sm"
-            className="w-full block cursor-default p-8"
+            className="block w-full cursor-default p-8"
           >
-            <h2 className="text-3xl font-bold text-white text-center mb-8">
+            <h2 className="mb-8 text-center font-bold text-3xl text-white">
               Technology Innovations
             </h2>
             {batchLoading ? (
@@ -808,63 +808,63 @@ export default function Technology() {
                 {vm.innovations.map((innovation) => (
                   <div
                     key={innovation.id}
-                    className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-xl p-4 border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden"
+                    className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-4 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
                   >
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                     {/* Inner glow */}
-                    <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
                     {/* Hover shimmer - disabled on mobile for performance */}
                     {!isMobile && (
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                       </div>
                     )}
 
-                    <div className="relative z-10 grid gap-6 sm:grid-cols-1 lg:grid-cols-2 max-w-7xl mx-auto">
+                    <div className="relative z-10 mx-auto grid max-w-7xl gap-6 sm:grid-cols-1 lg:grid-cols-2">
                       {/* Content */}
                       <div className="space-y-4">
                         <div className="space-y-3">
-                          <div className="flex items-center gap-3 flex-wrap">
-                            <h3 className="text-xl font-bold text-white leading-tight">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h3 className="font-bold text-white text-xl leading-tight">
                               {innovation.name}
                             </h3>
-                            <span className="inline-block px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium">
+                            <span className="inline-block rounded-full bg-blue-500/20 px-3 py-1 font-medium text-blue-300 text-sm">
                               {innovation.category}
                             </span>
                             {innovation.status && innovation.status !== "Active" && (
-                              <span className="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm font-medium">
+                              <span className="inline-block rounded-full bg-yellow-500/20 px-3 py-1 font-medium text-sm text-yellow-300">
                                 {innovation.status}
                               </span>
                             )}
                           </div>
 
                           {innovation.shortDescription && (
-                            <p className="text-white/90 font-medium text-sm">
+                            <p className="font-medium text-sm text-white/90">
                               {innovation.shortDescription}
                             </p>
                           )}
 
                           {innovation.description && (
-                            <p className="text-white/80 leading-relaxed text-sm">
+                            <p className="text-sm text-white/80 leading-relaxed">
                               {innovation.description}
                             </p>
                           )}
 
                           {innovation.benefits && innovation.benefits.length > 0 && (
-                            <div className="bg-white/5 rounded-lg p-3">
-                              <h4 className="text-sm font-semibold text-white/90 mb-2">
+                            <div className="rounded-lg bg-white/5 p-3">
+                              <h4 className="mb-2 font-semibold text-sm text-white/90">
                                 Key Benefits
                               </h4>
                               <ul className="space-y-1">
                                 {innovation.benefits.map((benefit: string, idx: number) => (
                                   <li
                                     key={idx}
-                                    className="flex items-start gap-2 text-white/70 text-sm"
+                                    className="flex items-start gap-2 text-sm text-white/70"
                                   >
-                                    <span className="text-green-400 mt-0.5 text-xs">✓</span>
+                                    <span className="mt-0.5 text-green-400 text-xs">✓</span>
                                     {benefit}
                                   </li>
                                 ))}
@@ -873,8 +873,8 @@ export default function Technology() {
                           )}
 
                           {(innovation.technicalDetails || innovation.developmentYear) && (
-                            <div className="bg-white/5 rounded-lg p-3">
-                              <h4 className="text-sm font-semibold text-white/90 mb-2">
+                            <div className="rounded-lg bg-white/5 p-3">
+                              <h4 className="mb-2 font-semibold text-sm text-white/90">
                                 Technical Specifications
                               </h4>
                               <div className="space-y-1">
@@ -900,11 +900,11 @@ export default function Technology() {
                           )}
 
                           {innovation.relatedProducts && innovation.relatedProducts.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
+                            <div className="mt-2 flex flex-wrap gap-2">
                               {innovation.relatedProducts.map((product, idx) => (
                                 <span
                                   key={idx}
-                                  className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded"
+                                  className="rounded bg-white/10 px-2 py-1 text-white/80 text-xs"
                                 >
                                   {product}
                                 </span>
@@ -919,7 +919,7 @@ export default function Technology() {
                         {/* Innovation Image */}
                         {innovation.imageId && (
                           <div>
-                            <h4 className="text-xs font-medium text-white/70 mb-3">
+                            <h4 className="mb-3 font-medium text-white/70 text-xs">
                               Innovation Media
                             </h4>
                             <div className="flex justify-center">
@@ -933,15 +933,15 @@ export default function Technology() {
                                   alt={`${innovation.name} - ${
                                     innovation.category || "Innovation"
                                   } innovation showcasing technology implementation`}
-                                  className="max-w-full max-h-64 object-contain transition-opacity duration-500 rounded-lg"
+                                  className="max-h-64 max-w-full rounded-lg object-contain transition-opacity duration-500"
                                   loading="lazy"
                                   onError={(e) => {
                                     (e.target as HTMLImageElement).style.display = "none";
                                   }}
                                 />
                               ) : (
-                                <div className="w-full max-h-64 flex items-center justify-center animate-pulse">
-                                  <span className="text-white/40 text-sm">Loading media...</span>
+                                <div className="flex max-h-64 w-full animate-pulse items-center justify-center">
+                                  <span className="text-sm text-white/40">Loading media...</span>
                                 </div>
                               )}
                             </div>
@@ -951,7 +951,7 @@ export default function Technology() {
                         {/* Innovation Video */}
                         {innovation.videoId && (
                           <div>
-                            <h4 className="text-xs font-medium text-white/70 mb-3">
+                            <h4 className="mb-3 font-medium text-white/70 text-xs">
                               Innovation Demo
                             </h4>
                             <div className="flex justify-center">
@@ -963,14 +963,14 @@ export default function Technology() {
                                       : undefined
                                   }
                                   controls
-                                  className="max-w-full max-h-64 object-contain rounded-lg"
+                                  className="max-h-64 max-w-full rounded-lg object-contain"
                                   preload="metadata"
                                   aria-label={`Video demonstration of ${innovation.name} technology`}
                                   onError={() => {}}
                                 />
                               ) : (
-                                <div className="w-full max-h-64 flex items-center justify-center animate-pulse">
-                                  <span className="text-white/40 text-sm">Loading video...</span>
+                                <div className="flex max-h-64 w-full animate-pulse items-center justify-center">
+                                  <span className="text-sm text-white/40">Loading video...</span>
                                 </div>
                               )}
                             </div>
@@ -982,50 +982,50 @@ export default function Technology() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-white/70">
+              <div className="py-12 text-center text-white/70">
                 <p>No technology innovations configured yet.</p>
-                <p className="text-sm mt-2">Visit the admin panel to add innovations.</p>
+                <p className="mt-2 text-sm">Visit the admin panel to add innovations.</p>
               </div>
             )}
           </LiquidGlassCard>
         </div>
         {/* Equipment Section - ALL FIELDS */}
-        <div className="mb-16 tech-cards-section">
+        <div className="tech-cards-section mb-16">
           <LiquidGlassCard
             blurIntensity="md"
             glowIntensity="sm"
-            className="w-full block cursor-default p-8"
+            className="block w-full cursor-default p-8"
           >
-            <h2 className="text-3xl font-bold text-white text-center mb-8">
+            <h2 className="mb-8 text-center font-bold text-3xl text-white">
               Manufacturing Equipment
             </h2>
             {batchLoading ? (
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
+              <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <LoadingSkeleton key={i} type="card" className="h-64" />
                 ))}
               </div>
             ) : vm.equipment.length > 0 ? (
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 max-w-7xl mx-auto">
+              <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {vm.equipment.map((item) => (
                   <div
                     key={item.id}
-                    className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-xl p-4 border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] min-h-[400px] flex flex-col overflow-hidden"
+                    className="group relative flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-4 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
                   >
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                     {/* Inner glow */}
-                    <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
                     {/* Hover shimmer - disabled on mobile for performance */}
                     {!isMobile && (
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                       </div>
                     )}
 
-                    <div className="relative z-10 flex-1 flex flex-col">
+                    <div className="relative z-10 flex flex-1 flex-col">
                       {/* Equipment Image */}
                       {item.imageId && (
                         <div className="mb-4 flex justify-center">
@@ -1037,36 +1037,36 @@ export default function Technology() {
                                   : undefined
                               }
                               alt={`${item.name} - Professional Equipment for sportswear manufacturing`}
-                              className="max-w-full max-h-64 object-contain transition-opacity duration-500 rounded-lg"
+                              className="max-h-64 max-w-full rounded-lg object-contain transition-opacity duration-500"
                               loading="lazy"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = "none";
                               }}
                             />
                           ) : (
-                            <div className="w-full max-h-64 flex items-center justify-center animate-pulse">
-                              <span className="text-white/40 text-sm">Loading image...</span>
+                            <div className="flex max-h-64 w-full animate-pulse items-center justify-center">
+                              <span className="text-sm text-white/40">Loading image...</span>
                             </div>
                           )}
                         </div>
                       )}
 
                       <div className="flex-1">
-                        <div className="space-y-3 mb-4">
-                          <h3 className="text-lg font-bold text-white leading-tight">
+                        <div className="mb-4 space-y-3">
+                          <h3 className="font-bold text-lg text-white leading-tight">
                             {item.name}
                           </h3>
                           <div className="flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium">
+                            <span className="rounded bg-purple-500/20 px-2 py-1 font-medium text-purple-300 text-xs">
                               Equipment
                             </span>
                             {item.brand && (
-                              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs font-medium">
+                              <span className="rounded bg-blue-500/20 px-2 py-1 font-medium text-blue-300 text-xs">
                                 {item.brand}
                               </span>
                             )}
                             {item.model && (
-                              <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs font-medium">
+                              <span className="rounded bg-green-500/20 px-2 py-1 font-medium text-green-300 text-xs">
                                 {item.model}
                               </span>
                             )}
@@ -1079,8 +1079,8 @@ export default function Technology() {
                           item.capacity ||
                           item.category ||
                           item.maintenanceSchedule) && (
-                          <div className="bg-white/5 rounded-lg p-3 mb-3">
-                            <h4 className="text-xs font-semibold text-white/90 mb-2">
+                          <div className="mb-3 rounded-lg bg-white/5 p-3">
+                            <h4 className="mb-2 font-semibold text-white/90 text-xs">
                               Technical Specifications
                             </h4>
                             <div className="space-y-1">
@@ -1112,7 +1112,7 @@ export default function Technology() {
                             {item.certifications.map((cert, idx) => (
                               <span
                                 key={idx}
-                                className="text-[10px] bg-yellow-500/20 text-yellow-200 px-2 py-0.5 rounded border border-yellow-500/30"
+                                className="rounded border border-yellow-500/30 bg-yellow-500/20 px-2 py-0.5 text-[10px] text-yellow-200"
                               >
                                 {cert}
                               </span>
@@ -1125,21 +1125,21 @@ export default function Technology() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-white/70">
+              <div className="py-12 text-center text-white/70">
                 <p>No equipment configured yet.</p>
-                <p className="text-sm mt-2">Visit the admin panel to add equipment.</p>
+                <p className="mt-2 text-sm">Visit the admin panel to add equipment.</p>
               </div>
             )}
           </LiquidGlassCard>
         </div>
         {/* Research Section - ALL FIELDS */}
-        <div className="mb-16 tech-cards-section">
+        <div className="tech-cards-section mb-16">
           <LiquidGlassCard
             blurIntensity="md"
             glowIntensity="sm"
-            className="w-full block cursor-default p-8"
+            className="block w-full cursor-default p-8"
           >
-            <h2 className="text-3xl font-bold text-white text-center mb-8">
+            <h2 className="mb-8 text-center font-bold text-3xl text-white">
               Research & Development
             </h2>
             {batchLoading ? (
@@ -1159,18 +1159,18 @@ export default function Technology() {
                   return (
                     <div
                       key={research.id}
-                      className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-xl p-6 border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden"
+                      className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
                     >
                       {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                       {/* Inner glow */}
-                      <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                      <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
                       {/* Hover shimmer - disabled on mobile for performance */}
                       {!isMobile && (
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                          <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         </div>
                       )}
 
@@ -1179,17 +1179,17 @@ export default function Technology() {
                           hasResearchMedia ? "md:grid-cols-2" : "grid-cols-1"
                         }`}
                       >
-                        <div className={hasResearchMedia ? "" : "max-w-4xl mx-auto"}>
-                          <div className="flex items-center gap-3 mb-4 flex-wrap">
-                            <h3 className="text-2xl font-bold text-white">{research.name}</h3>
+                        <div className={hasResearchMedia ? "" : "mx-auto max-w-4xl"}>
+                          <div className="mb-4 flex flex-wrap items-center gap-3">
+                            <h3 className="font-bold text-2xl text-white">{research.name}</h3>
                             {research.researchArea && (
-                              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-medium">
+                              <span className="rounded-full bg-purple-500/20 px-3 py-1 font-medium text-purple-300 text-sm">
                                 {research.researchArea}
                               </span>
                             )}
                             {research.status && (
                               <span
-                                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                className={`rounded-full px-3 py-1 font-medium text-sm ${
                                   research.status === "Completed"
                                     ? "bg-green-500/20 text-green-300"
                                     : research.status === "Planned"
@@ -1202,16 +1202,16 @@ export default function Technology() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+                          <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
                             {research.startDate && (
-                              <div className="bg-white/5 p-2 rounded">
-                                <span className="text-white/50 block text-xs">Start Date</span>
+                              <div className="rounded bg-white/5 p-2">
+                                <span className="block text-white/50 text-xs">Start Date</span>
                                 <span className="text-white/90">{research.startDate}</span>
                               </div>
                             )}
                             {research.expectedCompletion && (
-                              <div className="bg-white/5 p-2 rounded">
-                                <span className="text-white/50 block text-xs">
+                              <div className="rounded bg-white/5 p-2">
+                                <span className="block text-white/50 text-xs">
                                   Target Completion
                                 </span>
                                 <span className="text-white/90">{research.expectedCompletion}</span>
@@ -1220,23 +1220,23 @@ export default function Technology() {
                           </div>
 
                           {research.description && (
-                            <p className="text-white/80 mb-6 leading-relaxed">
+                            <p className="mb-6 text-white/80 leading-relaxed">
                               {research.description}
                             </p>
                           )}
 
                           {research.objectives && research.objectives.length > 0 && (
                             <div className="mb-6">
-                              <h4 className="text-sm font-semibold text-white/90 mb-3">
+                              <h4 className="mb-3 font-semibold text-sm text-white/90">
                                 Objectives
                               </h4>
                               <ul className="space-y-2">
                                 {research.objectives.map((obj, idx) => (
                                   <li
                                     key={idx}
-                                    className="flex items-start gap-2 text-white/70 text-sm"
+                                    className="flex items-start gap-2 text-sm text-white/70"
                                   >
-                                    <span className="text-purple-400 mt-1">🎯</span>
+                                    <span className="mt-1 text-purple-400">🎯</span>
                                     {obj}
                                   </li>
                                 ))}
@@ -1246,14 +1246,14 @@ export default function Technology() {
 
                           {research.teamMembers && research.teamMembers.length > 0 && (
                             <div className="mb-6">
-                              <h4 className="text-sm font-semibold text-white/90 mb-2">
+                              <h4 className="mb-2 font-semibold text-sm text-white/90">
                                 Research Team
                               </h4>
                               <div className="flex flex-wrap gap-2">
                                 {research.teamMembers.map((member, idx) => (
                                   <span
                                     key={idx}
-                                    className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded text-xs text-white/80"
+                                    className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-white/80 text-xs"
                                   >
                                     <span>👤</span> {member}
                                   </span>
@@ -1268,7 +1268,7 @@ export default function Technology() {
                           <div className="space-y-4">
                             {hasMediaAsset(research.imageId ?? null) && (
                               <div>
-                                <h4 className="text-sm font-medium text-white/70 mb-2">
+                                <h4 className="mb-2 font-medium text-sm text-white/70">
                                   Research Image
                                 </h4>
                                 <img
@@ -1278,7 +1278,7 @@ export default function Technology() {
                                       : undefined
                                   }
                                   alt={research.name}
-                                  className="w-full h-48 object-cover rounded-lg"
+                                  className="h-48 w-full rounded-lg object-cover"
                                   loading="lazy"
                                 />
                               </div>
@@ -1286,7 +1286,7 @@ export default function Technology() {
 
                             {hasMediaAsset(research.videoId ?? null) && (
                               <div>
-                                <h4 className="text-sm font-medium text-white/70 mb-2">
+                                <h4 className="mb-2 font-medium text-sm text-white/70">
                                   Research Video
                                 </h4>
                                 <video
@@ -1296,7 +1296,7 @@ export default function Technology() {
                                       : undefined
                                   }
                                   controls
-                                  className="w-full h-48 object-cover rounded-lg"
+                                  className="h-48 w-full rounded-lg object-cover"
                                   preload="metadata"
                                 />
                               </div>
@@ -1304,8 +1304,8 @@ export default function Technology() {
 
                             {/* Research Media Loading State */}
                             {mediaLoading && (research.imageId || research.videoId) && (
-                              <div className="w-full h-48 bg-white/10 rounded-lg animate-pulse flex items-center justify-center">
-                                <span className="text-white/50 text-sm">
+                              <div className="flex h-48 w-full animate-pulse items-center justify-center rounded-lg bg-white/10">
+                                <span className="text-sm text-white/50">
                                   Loading research media...
                                 </span>
                               </div>
@@ -1318,21 +1318,21 @@ export default function Technology() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-12 text-white/70">
+              <div className="py-12 text-center text-white/70">
                 <p>No research projects configured yet.</p>
-                <p className="text-sm mt-2">Visit the admin panel to add research areas.</p>
+                <p className="mt-2 text-sm">Visit the admin panel to add research areas.</p>
               </div>
             )}
           </LiquidGlassCard>
         </div>
         {/* Roadmap Section - ALL FIELDS */}
-        <div className="mb-16 tech-cards-section">
+        <div className="tech-cards-section mb-16">
           <LiquidGlassCard
             blurIntensity="md"
             glowIntensity="sm"
-            className="w-full block cursor-default p-8"
+            className="block w-full cursor-default p-8"
           >
-            <h2 className="text-3xl font-bold text-white text-center mb-8">Technology Roadmap</h2>
+            <h2 className="mb-8 text-center font-bold text-3xl text-white">Technology Roadmap</h2>
             {batchLoading ? (
               <div className="space-y-8">
                 {[1, 2, 3].map((i) => (
@@ -1351,27 +1351,27 @@ export default function Technology() {
                     <div key={milestone.id} className="relative">
                       {/* Timeline connector */}
                       {index < vm.roadmap.length - 1 && (
-                        <div className="absolute left-6 top-16 w-0.5 h-full bg-gradient-to-b from-blue-500 to-purple-500 opacity-50"></div>
+                        <div className="absolute top-16 left-6 h-full w-0.5 bg-gradient-to-b from-blue-500 to-purple-500 opacity-50"></div>
                       )}
 
                       <div className="flex gap-6">
                         {/* Timeline dot */}
-                        <div className="shrink-0 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm relative z-modal-backdrop">
+                        <div className="relative z-modal-backdrop flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-500 font-bold text-sm text-white">
                           {index + 1}
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1 relative group bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-xl p-6 border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
+                        <div className="group relative flex-1 overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
                           {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                           {/* Inner glow */}
-                          <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                          <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
                           {/* Hover shimmer - disabled on mobile for performance */}
                           {!isMobile && (
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                              <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                             </div>
                           )}
 
@@ -1380,16 +1380,16 @@ export default function Technology() {
                               hasRoadmapMedia ? "md:grid-cols-2" : "grid-cols-1"
                             }`}
                           >
-                            <div className={hasRoadmapMedia ? "" : "max-w-4xl mx-auto"}>
-                              <h3 className="text-xl font-bold text-white mb-3">
+                            <div className={hasRoadmapMedia ? "" : "mx-auto max-w-4xl"}>
+                              <h3 className="mb-3 font-bold text-white text-xl">
                                 {milestone.name}
                               </h3>
-                              <div className="text-sm text-blue-300 mb-4">
+                              <div className="mb-4 text-blue-300 text-sm">
                                 Target: {milestone.timeline}
                               </div>
 
                               {milestone.description && (
-                                <p className="text-white/80 mb-6 leading-relaxed">
+                                <p className="mb-6 text-white/80 leading-relaxed">
                                   {milestone.description}
                                 </p>
                               )}
@@ -1400,7 +1400,7 @@ export default function Technology() {
                               <div className="space-y-4">
                                 {hasMediaAsset(milestone.imageId ?? null) && (
                                   <div>
-                                    <h4 className="text-sm font-medium text-white/70 mb-2">
+                                    <h4 className="mb-2 font-medium text-sm text-white/70">
                                       Roadmap Image
                                     </h4>
                                     <img
@@ -1410,7 +1410,7 @@ export default function Technology() {
                                           : undefined
                                       }
                                       alt={milestone.name}
-                                      className="w-full h-48 object-cover rounded-lg"
+                                      className="h-48 w-full rounded-lg object-cover"
                                       loading="lazy"
                                     />
                                   </div>
@@ -1418,7 +1418,7 @@ export default function Technology() {
 
                                 {hasMediaAsset(milestone.videoId ?? null) && (
                                   <div>
-                                    <h4 className="text-sm font-medium text-white/70 mb-2">
+                                    <h4 className="mb-2 font-medium text-sm text-white/70">
                                       Roadmap Video
                                     </h4>
                                     <video
@@ -1428,7 +1428,7 @@ export default function Technology() {
                                           : undefined
                                       }
                                       controls
-                                      className="w-full h-48 object-cover rounded-lg"
+                                      className="h-48 w-full rounded-lg object-cover"
                                       preload="metadata"
                                     />
                                   </div>
@@ -1436,8 +1436,8 @@ export default function Technology() {
 
                                 {/* Roadmap Media Loading State */}
                                 {mediaLoading && (milestone.imageId || milestone.videoId) && (
-                                  <div className="w-full h-48 bg-white/10 rounded-lg animate-pulse flex items-center justify-center">
-                                    <span className="text-white/50 text-sm">
+                                  <div className="flex h-48 w-full animate-pulse items-center justify-center rounded-lg bg-white/10">
+                                    <span className="text-sm text-white/50">
                                       Loading roadmap media...
                                     </span>
                                   </div>
@@ -1452,20 +1452,20 @@ export default function Technology() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-12 text-white/70">
+              <div className="py-12 text-center text-white/70">
                 <p>No roadmap milestones configured yet.</p>
-                <p className="text-sm mt-2">Visit the admin panel to add roadmap items.</p>
+                <p className="mt-2 text-sm">Visit the admin panel to add roadmap items.</p>
               </div>
             )}
           </LiquidGlassCard>
         </div>
         {/* CTA Section */}
         {/* PHASE C: Suspense wrapper for lazy-loaded TechnologyCta */}
-        {cta && cta.isActive && (
+        {cta?.isActive && (
           <React.Suspense
             fallback={
-              <div className="w-full h-32 bg-white/5 rounded-xl animate-pulse flex items-center justify-center">
-                <span className="text-white/50 text-sm">Loading CTA...</span>
+              <div className="flex h-32 w-full animate-pulse items-center justify-center rounded-xl bg-white/5">
+                <span className="text-sm text-white/50">Loading CTA...</span>
               </div>
             }
           >
@@ -1481,8 +1481,8 @@ export default function Technology() {
         {/* Real-time Sync Status */}
         {batchLoading && (
           <div className="text-center">
-            <div className="bg-black/10 rounded-xl p-4 border border-white/10 ">
-              <p className="text-white/70 text-sm">Synchronizing content and effects...</p>
+            <div className="rounded-xl border border-white/10 bg-black/10 p-4">
+              <p className="text-sm text-white/70">Synchronizing content and effects...</p>
             </div>
           </div>
         )}

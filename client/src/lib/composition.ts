@@ -9,20 +9,17 @@ import * as React from "react";
  * Executes originalEventHandler first, then ourEventHandler unless prevented.
  */
 function composeEventHandlers<E>(
-	originalEventHandler?: (event: E) => void,
-	ourEventHandler?: (event: E) => void,
-	{ checkForDefaultPrevented = true } = {},
+  originalEventHandler?: (event: E) => void,
+  ourEventHandler?: (event: E) => void,
+  { checkForDefaultPrevented = true } = {},
 ) {
-	return function handleEvent(event: E) {
-		originalEventHandler?.(event);
+  return function handleEvent(event: E) {
+    originalEventHandler?.(event);
 
-		if (
-			checkForDefaultPrevented === false ||
-			!(event as unknown as Event).defaultPrevented
-		) {
-			return ourEventHandler?.(event);
-		}
-	};
+    if (checkForDefaultPrevented === false || !(event as unknown as Event).defaultPrevented) {
+      return ourEventHandler?.(event);
+    }
+  };
 }
 
 /**
@@ -36,11 +33,11 @@ type PossibleRef<T> = React.Ref<T> | undefined;
  * This utility takes care of different types of refs: callback refs and RefObject(s).
  */
 function setRef<T>(ref: PossibleRef<T>, value: T) {
-	if (typeof ref === "function") {
-		ref(value);
-	} else if (ref !== null && ref !== undefined) {
-		(ref as React.MutableRefObject<T>).current = value;
-	}
+  if (typeof ref === "function") {
+    ref(value);
+  } else if (ref !== null && ref !== undefined) {
+    (ref as React.MutableRefObject<T>).current = value;
+  }
 }
 
 /**
@@ -48,11 +45,11 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
  * Accepts callback refs and RefObject(s).
  */
 function composeRefs<T>(...refs: PossibleRef<T>[]) {
-	return (node: T) => {
-		for (const ref of refs) {
-			setRef(ref, node);
-		}
-	};
+  return (node: T) => {
+    for (const ref of refs) {
+      setRef(ref, node);
+    }
+  };
 }
 
 /**
@@ -60,8 +57,8 @@ function composeRefs<T>(...refs: PossibleRef<T>[]) {
  * Accepts callback refs and RefObject(s).
  */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]) {
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	return React.useCallback(composeRefs(...refs), refs);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return React.useCallback(composeRefs(...refs), refs);
 }
 
 export { composeEventHandlers, composeRefs, useComposedRefs };

@@ -63,7 +63,7 @@ const FloatingDockMobile = ({
 
   return (
     <div
-      className={cn("relative block md:hidden z-dock", className)}
+      className={cn("relative z-dock block md:hidden", className)}
       role="navigation"
       aria-label="Mobile navigation dock"
       style={{
@@ -75,7 +75,7 @@ const FloatingDockMobile = ({
         {open && (
           <motion.div
             layoutId="nav"
-            className="absolute inset-x-0 bottom-full mb-2 flex flex-col gap-2 z-dock"
+            className="absolute inset-x-0 bottom-full z-dock mb-2 flex flex-col gap-2"
             role="menu"
           >
             {items.map((item, idx) => {
@@ -108,15 +108,15 @@ const FloatingDockMobile = ({
                     blurIntensity="md"
                     glowIntensity="sm"
                     shadowIntensity="md"
-                    className="min-w-[140px] min-h-[44px]"
+                    className="min-h-[44px] min-w-[140px]"
                   >
                     <a
                       href={item.href}
                       aria-label={item.title}
                       className={cn(
-                        "flex items-center gap-3 px-4 py-2 w-full h-full",
+                        "flex h-full w-full items-center gap-3 px-4 py-2",
                         // GPU acceleration and touch feedback
-                        "transform-gpu active:scale-95 transition-transform duration-150",
+                        "transform-gpu transition-transform duration-150 active:scale-95",
                       )}
                     >
                       <div
@@ -132,7 +132,7 @@ const FloatingDockMobile = ({
                       </div>
 
                       {/* Permanent title label for mobile navigation */}
-                      <span className="text-sm text-foreground whitespace-nowrap relative z-10">
+                      <span className="relative z-10 whitespace-nowrap text-foreground text-sm">
                         {item.title}
                       </span>
                     </a>
@@ -154,12 +154,12 @@ const FloatingDockMobile = ({
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={open}
           className={cn(
-            "flex h-full w-full items-center justify-center relative z-dock rounded-full",
+            "relative z-dock flex h-full w-full items-center justify-center rounded-full",
             // GPU acceleration and touch feedback
-            "transform-gpu active:scale-95 transition-transform duration-150",
+            "transform-gpu transition-transform duration-150 active:scale-95",
           )}
         >
-          <IconLayoutNavbarCollapse className="h-5 w-5 text-neutral-500 dark:text-neutral-400 relative z-10" />
+          <IconLayoutNavbarCollapse className="relative z-10 h-5 w-5 text-neutral-500 dark:text-neutral-400" />
         </button>
       </LiquidGlassCard>
     </div>
@@ -188,14 +188,14 @@ const FloatingDockDesktop = ({
       blurIntensity="lg"
       glowIntensity="md"
       shadowIntensity="lg"
-      className={cn("mx-auto hidden items-center gap-3 px-16 py-6 md:flex z-dock", className)}
+      className={cn("z-dock mx-auto hidden items-center gap-3 px-16 py-6 md:flex", className)}
     >
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         role="navigation"
         aria-label="Desktop navigation dock"
-        className="flex items-center gap-3 w-full transform-gpu isolate"
+        className="isolate flex w-full transform-gpu items-center gap-3"
       >
         {items.map((item) => (
           <IconContainer
@@ -289,27 +289,27 @@ function IconContainer({
     <a
       href={href}
       aria-label={title}
-      className="flex flex-col items-center gap-2 min-h-[44px] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
+      className="group flex min-h-[44px] flex-col items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <motion.div
         ref={ref}
         style={{ width, height }}
-        className="relative flex items-center justify-center rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden transition-transform duration-150 group-active:scale-95"
+        className="relative flex items-center justify-center overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
       >
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none rounded-full" />
+        <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
-        <div className="absolute inset-[1px] rounded-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+        <div className="pointer-events-none absolute inset-[1px] rounded-full bg-gradient-to-br from-white/5 to-transparent" />
 
         {/* Hover shimmer */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-full">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer rounded-full" />
+        <div className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <div className="absolute inset-0 animate-shimmer rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </div>
 
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="flex items-center justify-center relative z-10"
+          className="relative z-10 flex items-center justify-center"
         >
           {icon}
         </motion.div>
@@ -317,7 +317,7 @@ function IconContainer({
 
       {/* Permanent title label with improved contrast */}
       <div
-        className="text-xs text-gray-800 dark:text-gray-200 whitespace-nowrap max-w-[80px] md:max-w-[100px] truncate text-center drop-shadow-sm font-medium"
+        className="max-w-[80px] truncate whitespace-nowrap text-center font-medium text-gray-800 text-xs drop-shadow-sm md:max-w-[100px] dark:text-gray-200"
         style={{ textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)" }} // Light mode glow for glass contrast
       >
         {title}

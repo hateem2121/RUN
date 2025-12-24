@@ -23,9 +23,9 @@ import {
 import { useEffect, useState } from "react";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
+import { ClientOnly } from "@/components/ui/ClientOnly";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
-import { ClientOnly } from "@/components/ui/ClientOnly";
 // REMOVED: media-migration utility no longer needed after consolidation
 import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -126,12 +126,12 @@ export default function About() {
   // Show loading state until all data is ready
   if (!heroData || !isDataReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-blue-600 border-b-2"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading about page...</p>
           {batchLoading && (
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+            <p className="mt-2 text-gray-500 text-sm dark:text-gray-500">
               Loading about page data...
             </p>
           )}
@@ -144,20 +144,20 @@ export default function About() {
   const timelineData = sortedTimeline.map((item) => ({
     title: item.year.toString(),
     content: (
-      <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-800/60 dark:border-gray-900/70 p-6 rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] group relative overflow-hidden">
+      <div className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
         {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none rounded-xl" />
+        <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
-        <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+        <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
         {/* Content */}
-        <div className="relative z-10">
-          <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-neutral-100">
+        <div className="relative z-default">
+          <h3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
             {item.title}
           </h3>
           {item.description && (
-            <p className="text-neutral-700 dark:text-neutral-300 mb-4">{item.description}</p>
+            <p className="mb-4 text-neutral-700 dark:text-neutral-300">{item.description}</p>
           )}
           {item.imageId && getAsset(item.imageId) && (
             <div className="mt-4">
@@ -165,7 +165,7 @@ export default function About() {
                 mediaId={item.imageId}
                 alt={item.title}
                 quality={85}
-                className="w-full h-40 object-cover rounded-lg"
+                className="h-40 w-full rounded-lg object-cover"
               />
             </div>
           )}
@@ -173,8 +173,8 @@ export default function About() {
 
         {/* Hover shimmer effect - disabled on mobile for performance */}
         {!isMobile && (
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+          <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </div>
         )}
       </div>
@@ -211,38 +211,38 @@ export default function About() {
 
       {/* Executive Team Message - Providing Context */}
       {teamMessage && (
-        <section className="py-20 bg-muted/20">
+        <section className="bg-muted/20 py-20">
           <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="max-w-4xl mx-auto"
+              className="mx-auto max-w-4xl"
             >
-              <Card className="bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] overflow-hidden group relative">
+              <Card className="group relative overflow-hidden border border-gray-800/60 bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
                 {/* Gradient overlay for depth */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                 {/* Inner glow */}
-                <div className="absolute inset-[1px] rounded-[calc(0.5rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.5rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
                 {/* Hover shimmer effect - disabled on mobile for performance */}
                 {!isMobile && (
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                   </div>
                 )}
 
-                <CardContent className="p-8 md:p-12 relative z-10">
-                  <div className="grid md:grid-cols-2 gap-8 items-center">
+                <CardContent className="relative z-default p-8 md:p-12">
+                  <div className="grid items-center gap-8 md:grid-cols-2">
                     <div>
                       {teamMessage.imageId && getAsset(teamMessage.imageId) && (
                         <div className="mb-6">
                           <OptimizedImage
                             mediaId={teamMessage.imageId}
                             alt="Team"
-                            className="w-full h-64 object-cover rounded-xl"
+                            className="h-64 w-full rounded-xl object-cover"
                             quality={90}
                             priority={false}
                           />
@@ -250,19 +250,19 @@ export default function About() {
                       )}
                     </div>
                     <div>
-                      <MessageSquare className="h-8 w-8 text-primary mb-4" />
+                      <MessageSquare className="mb-4 h-8 w-8 text-primary" />
                       {teamMessage.title && (
-                        <h3 className="text-2xl font-bold mb-4">{teamMessage.title}</h3>
+                        <h3 className="mb-4 font-bold text-2xl">{teamMessage.title}</h3>
                       )}
                       {teamMessage.message && (
-                        <p className="text-muted-foreground mb-6 leading-relaxed">
+                        <p className="mb-6 text-muted-foreground leading-relaxed">
                           {teamMessage.message}
                         </p>
                       )}
                       {teamMessage.signature && (
                         <div className="border-t pt-4">
                           <p className="font-semibold text-foreground">{teamMessage.signature}</p>
-                          <p className="text-sm text-muted-foreground">Executive Team</p>
+                          <p className="text-muted-foreground text-sm">Executive Team</p>
                         </div>
                       )}
                     </div>
@@ -281,16 +281,16 @@ export default function About() {
 
       {/* Key Statistics Section */}
       {sortedStatistics.length > 0 && (
-        <section className="py-20 bg-background">
+        <section className="bg-background py-20">
           <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              className="mb-16 text-center"
             >
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+              <h2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                 Key Statistics
               </h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -298,7 +298,7 @@ export default function About() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
               {sortedStatistics.map((stat, index) => {
                 const iconName = stat.icon || "Package";
                 const IconComponent =
@@ -326,17 +326,17 @@ export default function About() {
                     className="h-full"
                   >
                     <GlowingShadow>
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-4">
+                      <div className="flex h-full flex-col items-center justify-center">
+                        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
                           <IconComponent className="h-8 w-8 text-white" />
                         </div>
-                        <h3 className="text-3xl font-bold mb-2 text-white">
+                        <h3 className="mb-2 font-bold text-3xl text-white">
                           {stat.value}
                           {stat.unit && (
-                            <span className="text-lg text-white/70 ml-1">{stat.unit}</span>
+                            <span className="ml-1 text-lg text-white/70">{stat.unit}</span>
                           )}
                         </h3>
-                        <p className="text-white/80 font-medium">{stat.label}</p>
+                        <p className="font-medium text-white/80">{stat.label}</p>
                       </div>
                     </GlowingShadow>
                   </motion.div>
@@ -349,16 +349,16 @@ export default function About() {
 
       {/* Global Presence Map Section */}
       {(clientLocations.length > 0 || facilityLocations.length > 0) && (
-        <section className="py-20 bg-muted/20">
+        <section className="bg-muted/20 py-20">
           <div className="container mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              className="mb-16 text-center"
             >
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+              <h2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                 Global Presence
               </h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -368,7 +368,7 @@ export default function About() {
 
             <ClientOnly
               fallback={
-                <div className="h-[500px] w-full bg-muted animate-pulse rounded-2xl flex items-center justify-center">
+                <div className="flex h-[500px] w-full animate-pulse items-center justify-center rounded-2xl bg-muted">
                   Loading map...
                 </div>
               }
@@ -380,10 +380,10 @@ export default function About() {
       )}
 
       {/* Back to Top Button */}
-      <div className="fixed bottom-8 right-8 z-modal">
+      <div className="fixed right-8 bottom-8 z-modal">
         <Button
           size="icon"
-          className="rounded-full w-12 h-12 shadow-lg hover:shadow-xl transition-shadow-sm"
+          className="h-12 w-12 rounded-full shadow-lg transition-shadow-sm hover:shadow-xl"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
           <ArrowUp className="h-4 w-4" />

@@ -7,8 +7,8 @@ import { hydrateRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import { Router } from "wouter";
 import App from "./App";
-import { createQueryClient } from "./lib/queryClient";
 import { sanitizeExtensionAttributes } from "./lib/dom-sanitizer";
+import { createQueryClient } from "./lib/queryClient";
 import { initSentry } from "./lib/sentry";
 import "./index.css";
 
@@ -43,13 +43,13 @@ hydrateRoot(
     </HelmetProvider>
   </React.StrictMode>,
   {
-    onCaughtError: (error, errorInfo) => {
+    onCaughtError: (_error, _errorInfo) => {
       // Sentry or other logging logic here
     },
-    onUncaughtError: (error, errorInfo) => {
+    onUncaughtError: (_error, _errorInfo) => {
       // Final telemetry ping or fatal error logging
     },
-    onRecoverableError: (error, errorInfo) => {},
+    onRecoverableError: (_error, _errorInfo) => {},
   },
 );
 

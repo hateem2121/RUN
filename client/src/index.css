@@ -3,6 +3,9 @@
 
 @import "tailwindcss";
 
+/* Import notifications CSS for animation keyframes */
+@import "./styles/notifications.css";
+
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/container-queries";
@@ -66,6 +69,10 @@
   --color-brand-magenta: oklch(0.75 0.2 330);
   /* Brand lavender - replaces #B19EEF */
   --color-brand-lavender: oklch(0.72 0.12 290);
+  /* Brand lime accent - replaces #CCFF00 */
+  --color-brand-lime: oklch(0.9 0.3 100);
+  /* Brand blue - replaces #3300FF */
+  --color-brand-blue: oklch(0.4 0.35 265);
 
   /* ===== Gradient Colors (Admin Configurable) ===== */
   --color-gradient-start: var(--color-brand-magenta);
@@ -87,6 +94,52 @@
   --color-chart-amber: oklch(0.75 0.18 85);
   --color-chart-red: oklch(0.6 0.22 25);
   --color-chart-purple: oklch(0.6 0.2 290);
+
+  /* ===== Shadows (Glass/Glow System) ===== */
+  --shadow-glow-xs: 0 0 5px rgba(255, 255, 255, 0.08);
+  --shadow-glow-sm: 0 0 8px rgba(255, 255, 255, 0.1);
+  --shadow-glow-md: 0 0 12px rgba(255, 255, 255, 0.12);
+  --shadow-glow-lg: 0 0 15px rgba(255, 255, 255, 0.15);
+  --shadow-glow-xl: 0 0 20px rgba(255, 255, 255, 0.18);
+  --shadow-glow-2xl: 0 0 25px rgba(255, 255, 255, 0.2);
+
+  --shadow-glow-xs-desktop: 0 0 10px rgba(255, 255, 255, 0.1);
+  --shadow-glow-sm-desktop: 0 0 15px rgba(255, 255, 255, 0.15);
+  --shadow-glow-md-desktop: 0 0 20px rgba(255, 255, 255, 0.2);
+  --shadow-glow-lg-desktop: 0 0 30px rgba(255, 255, 255, 0.25);
+  --shadow-glow-xl-desktop: 0 0 40px rgba(255, 255, 255, 0.3);
+  --shadow-glow-2xl-desktop: 0 0 50px rgba(255, 255, 255, 0.35);
+
+  --shadow-inner-xs: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  --shadow-inner-sm: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  --shadow-inner-md: inset 0 2px 3px rgba(255, 255, 255, 0.12);
+  --shadow-inner-lg: inset 0 3px 4px rgba(255, 255, 255, 0.15);
+  --shadow-inner-xl: inset 0 4px 6px rgba(255, 255, 255, 0.18);
+  --shadow-inner-2xl: inset 0 6px 8px rgba(255, 255, 255, 0.2);
+
+  --shadow-inner-xs-desktop: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  --shadow-inner-sm-desktop: inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  --shadow-inner-md-desktop: inset 0 4px 6px rgba(255, 255, 255, 0.2);
+  --shadow-inner-lg-desktop: inset 0 6px 8px rgba(255, 255, 255, 0.25);
+  --shadow-inner-xl-desktop: inset 0 8px 12px rgba(255, 255, 255, 0.3);
+  --shadow-inner-2xl-desktop: inset 0 12px 16px rgba(255, 255, 255, 0.35);
+
+  /* ===== Z-Index Semantic Scale (Complete) ===== */
+  --z-behind: -1; /* Background decorations */
+  --z-base: 0; /* Default document flow */
+  --z-default: 1; /* General content layer */
+  --z-elevated: 10; /* Slightly raised content */
+  --z-dropdown: 100; /* Dropdown menus */
+  --z-sticky: 200; /* Sticky headers */
+  --z-dock: 250; /* Floating dock/navigation */
+  --z-modal-backdrop: 300; /* Modal backgrounds */
+  --z-modal: 400; /* Modal content */
+  --z-modal-nested: 450; /* Nested dialog support */
+  --z-popover: 500; /* Popovers, color pickers */
+  --z-tooltip: 600; /* Tooltips */
+  --z-toast: 700; /* Toast notifications */
+  --z-cursor: 800; /* Custom cursor layer */
+  --z-max: 9999; /* Emergency escape hatch (document usage) */
 }
 
 /* Base Reset & Defaults */
@@ -142,6 +195,13 @@
   button {
     font-family: inherit;
   }
+
+  /* Global Focus Accessibility */
+  a:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
 }
 
 /* Utility Layer - Custom Classes */
@@ -166,6 +226,10 @@
   transform-style: preserve-3d;
 }
 
+@utility perspective-deep {
+  perspective: 2000px;
+}
+
 @utility backface-hidden {
   backface-visibility: hidden;
 }
@@ -174,5 +238,98 @@
   transform: rotateY(180deg);
 }
 
-/* Import notifications CSS for animation keyframes */
-@import "./styles/notifications.css";
+/* ===== Z-Index Utility Classes ===== */
+/* Map semantic z-index tokens to utility classes */
+@utility z-behind {
+  z-index: var(--z-behind);
+}
+@utility z-base {
+  z-index: var(--z-base);
+}
+@utility z-default {
+  z-index: var(--z-default);
+}
+@utility z-elevated {
+  z-index: var(--z-elevated);
+}
+@utility z-dropdown {
+  z-index: var(--z-dropdown);
+}
+@utility z-sticky {
+  z-index: var(--z-sticky);
+}
+@utility z-dock {
+  z-index: var(--z-dock);
+}
+@utility z-modal-backdrop {
+  z-index: var(--z-modal-backdrop);
+}
+@utility z-modal {
+  z-index: var(--z-modal);
+}
+@utility z-modal-nested {
+  z-index: var(--z-modal-nested);
+}
+@utility z-popover {
+  z-index: var(--z-popover);
+}
+@utility z-tooltip {
+  z-index: var(--z-tooltip);
+}
+@utility z-toast {
+  z-index: var(--z-toast);
+}
+@utility z-cursor {
+  z-index: var(--z-cursor);
+}
+@utility z-max {
+  z-index: var(--z-max);
+}
+
+@utility backdrop-blur-xs {
+  backdrop-filter: blur(2px);
+}
+
+/* ===== Component Layer Classes ===== */
+@layer components {
+  /* Admin sortable card - consolidates 45+ repeated patterns */
+  .admin-sortable-card {
+    @apply mb-2 rounded-lg border border-border bg-card p-4 shadow-sm;
+    @apply transition-shadow duration-200;
+  }
+
+  .admin-sortable-card:hover {
+    @apply shadow-md;
+  }
+
+  /* Glassmorphism card - Standardized */
+  .glass-card,
+  .glass-card-interactive {
+    @apply relative overflow-hidden rounded-xl border bg-white/10 shadow-lg backdrop-blur-md;
+    @apply border-gray-800/60 dark:border-gray-900/70 dark:bg-white/5;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    @apply transition-all duration-300;
+  }
+
+  .glass-card:hover,
+  .glass-card-interactive:hover {
+    @apply shadow-xl;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* ===== Center-Flex Utility ===== */
+/* Replaces 93+ occurrences of "flex items-center justify-center" */
+@utility center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility center-absolute {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -71,6 +71,7 @@ This project adheres to a strict Free/Open Source Software policy.
   - ❌ **BANNED**: Thunder Client (Proprietary/Freemium).
 - **Linting & Formatting**:
   - ✅ **USE**: **Biome** (VS Code extension: `biomejs.biome`).
+    - _Note:_ Configured for v2.3.10+ schema with CSS linting enabled (`tailwindDirectives: true`).
   - ❌ **BANNED**: ESLint extension (due to configuration mismatch).
 - **Security Scanning**:
   - **Trivy**: Used for filesystem scanning in CI.

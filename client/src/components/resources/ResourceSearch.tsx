@@ -3,37 +3,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface ResourceSearchProps {
-	value: string;
-	onChange: (value: string) => void;
-	placeholder?: string;
-	className?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
 }
 
 export function ResourceSearch({
-	value,
-	onChange,
-	placeholder = "Search resources...",
-	className = "",
+  value,
+  onChange,
+  placeholder = "Search resources...",
+  className = "",
 }: ResourceSearchProps) {
-	return (
-		<div className={`relative ${className}`}>
-			<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-			<Input
-				placeholder={placeholder}
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-				className="pl-10 pr-10 py-6 text-base"
-			/>
-			{value && (
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => onChange("")}
-					className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 h-auto"
-				>
-					<X className="w-4 h-4" />
-				</Button>
-			)}
-		</div>
-	);
+  return (
+    <div className={`relative ${className}`}>
+      <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+      <Input
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="py-6 pr-10 pl-10 text-base"
+      />
+      {value && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onChange("")}
+          className="absolute top-1/2 right-2 h-auto -translate-y-1/2 transform p-1"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+  );
 }

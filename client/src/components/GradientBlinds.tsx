@@ -131,7 +131,7 @@ const detectWebGLSupport = (): { supported: boolean; error?: string } => {
     }
 
     // Check for reduced motion preference
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       return { supported: false, error: "Reduced motion preference detected" };
     }
 
@@ -263,8 +263,8 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
       gradientColors.length >= 2
         ? [gradientColors[0], gradientColors[1]]
         : gradientColors.length === 1
-        ? [gradientColors[0], gradientColors[0]]
-        : ["var(--color-brand-magenta)", "var(--color-brand-purple)"]; // Last resort defaults
+          ? [gradientColors[0], gradientColors[0]]
+          : ["var(--color-brand-magenta)", "var(--color-brand-purple)"]; // Last resort defaults
 
     return {
       "--gb-color1": colors[0],
@@ -557,7 +557,7 @@ void main() {
               setWebglInitialized(true);
               onWebGLReady?.();
             }
-          } catch (e) {
+          } catch (_e) {
             setWebglSupport({ supported: false, error: "Rendering failed" });
             onWebGLError?.("Rendering failed");
           }
@@ -589,7 +589,27 @@ void main() {
       onWebGLError?.(errorMsg);
       return undefined;
     }
-  }, [webglSupport?.supported, dpr, onWebGLReady, onWebGLError]); // OPTIMIZED: Only rebuild context when absolutely necessary
+  }, [
+    webglSupport?.supported,
+    dpr,
+    onWebGLReady,
+    onWebGLError,
+    angle,
+    blindCount,
+    blindMinWidth,
+    callIfFn,
+    distortAmount,
+    gradientColors,
+    mirrorGradient,
+    mouseDampening,
+    noise,
+    paused,
+    shineDirection,
+    spotlightOpacity,
+    spotlightRadius,
+    spotlightSoftness,
+    webglInitialized,
+  ]); // OPTIMIZED: Only rebuild context when absolutely necessary
 
   // Separate effect for updating uniforms without rebuilding WebGL context
   useEffect(() => {
@@ -647,7 +667,7 @@ void main() {
       if (program.uniforms.uPaused) {
         program.uniforms.uPaused.value = paused ? 1.0 : 0.0;
       }
-    } catch (error) {}
+    } catch (_error) {}
   }, [
     webglSupport?.supported,
     gradientColors,

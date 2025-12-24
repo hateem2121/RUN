@@ -102,7 +102,7 @@ export const StaggeredMenu = ({
       if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
     return () => ctx.revert();
-  }, [menuButtonColor, position]);
+  }, [menuButtonColor, position, panelRef.current]);
 
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
@@ -188,7 +188,7 @@ export const StaggeredMenu = ({
 
     openTlRef.current = tl;
     return tl;
-  }, [position]);
+  }, [panelRef.current, shouldReduceMotion]);
 
   const playOpen = useCallback(() => {
     if (busyRef.current) return;
@@ -235,7 +235,7 @@ export const StaggeredMenu = ({
         busyRef.current = false;
       },
     });
-  }, [position]);
+  }, [position, panelRef.current]);
 
   const animateHamburger = useCallback((opening: boolean) => {
     const top = hamburgerTopRef.current;
@@ -304,11 +304,11 @@ export const StaggeredMenu = ({
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope fixed top-0 left-0 w-screen h-screen overflow-hidden pointer-events-none z-modal">
+    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-modal h-screen w-screen overflow-hidden">
       <div
-        className={
-          (className ? className + " " : "") + "staggered-menu-wrapper relative w-full h-full z-40"
-        }
+        className={`${
+          className ? `${className} ` : ""
+        }staggered-menu-wrapper relative z-40 h-full w-full`}
         style={
           accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
@@ -317,14 +317,13 @@ export const StaggeredMenu = ({
       >
         <div
           ref={preLayersRef}
-          className="sm-prelayers absolute top-0 right-0 bottom-0 pointer-events-none z-default w-full"
+          className="sm-prelayers pointer-events-none absolute top-0 right-0 bottom-0 z-default w-full"
           aria-hidden="true"
         >
           {(() => {
-            const raw =
-              colors && colors.length
-                ? colors.slice(0, 4)
-                : ["var(--color-neutral-900)", "var(--color-neutral-800)"];
+            const raw = colors?.length
+              ? colors.slice(0, 4)
+              : ["var(--color-neutral-900)", "var(--color-neutral-800)"];
             const arr = [...raw];
             if (arr.length >= 3) {
               const mid = Math.floor(arr.length / 2);
@@ -341,13 +340,13 @@ export const StaggeredMenu = ({
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-center p-4 bg-transparent z-dock"
+          className="staggered-menu-header absolute top-0 left-0 z-dock flex w-full items-center justify-center bg-transparent p-4"
           aria-label="Main navigation header"
           style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle relative flex flex-col items-center justify-center w-12 h-12 backdrop-blur-xs border-0 cursor-pointer rounded-full shadow-lg transition-colors pointer-events-auto bg-white/50 text-black/60 pt-[25px] pb-[25px] mt-[0px] mb-[0px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
@@ -357,20 +356,20 @@ export const StaggeredMenu = ({
           >
             <span
               ref={iconRef}
-              className="sm-hamburger relative w-5 h-4 inline-flex flex-col items-center justify-center gap-[5px]"
+              className="sm-hamburger relative inline-flex h-4 w-5 flex-col items-center justify-center gap-1"
               aria-hidden="true"
             >
               <span
                 ref={hamburgerTopRef}
-                className="sm-hamburger-line w-full h-[2px] bg-current rounded-full [will-change:transform]"
+                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
               />
               <span
                 ref={hamburgerMiddleRef}
-                className="sm-hamburger-line w-full h-[2px] bg-current rounded-full [will-change:transform]"
+                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
               />
               <span
                 ref={hamburgerBottomRef}
-                className="sm-hamburger-line w-full h-[2px] bg-current rounded-full [will-change:transform]"
+                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
               />
             </span>
           </button>
@@ -379,7 +378,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full bg-background/95 flex flex-col pt-20 px-6 pb-8 overflow-y-auto z-default backdrop-blur-md w-full sm:w-[80vw] md:w-[380px] pointer-events-auto shadow-2xl focus:outline-none"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus:outline-none sm:w-[80vw] md:w-[380px]"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
@@ -388,20 +387,19 @@ export const StaggeredMenu = ({
           aria-hidden={!open}
           tabIndex={-1} // Allow programmatic focus
         >
-          <div className="sm-panel-inner flex-1 flex flex-col">
+          <div className="sm-panel-inner flex flex-1 flex-col">
             <ul
-              className="sm-panel-list list-none m-0 p-0 flex flex-col gap-6"
-              role="list"
+              className="sm-panel-list m-0 flex list-none flex-col gap-6 p-0"
               data-numbering={displayItemNumbering || undefined}
             >
-              {items && items.length ? (
+              {items?.length ? (
                 items.map((it, idx) => (
                   <li
                     className="sm-panel-itemWrap relative overflow-hidden leading-none"
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative text-foreground font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline hover:text-muted-foreground active:scale-95 pr-[1.2em] focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg outline-none"
+                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-[2.5rem] text-foreground uppercase leading-[1.1] tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-[3rem]"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -410,7 +408,7 @@ export const StaggeredMenu = ({
                         toggleMenu();
                       }}
                     >
-                      <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
+                      <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                         {it.label}
                       </span>
                     </Link>
@@ -421,8 +419,8 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item relative text-muted-foreground font-bold text-[2.5rem] sm:text-[3rem] cursor-pointer leading-[1.1] tracking-tight uppercase transition-all duration-200 ease-out inline-block no-underline pr-[1.2em]">
-                    <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
+                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-[2.5rem] text-muted-foreground uppercase leading-[1.1] tracking-tight no-underline transition-all duration-200 ease-out sm:text-[3rem]">
+                    <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                       No items
                     </span>
                   </span>

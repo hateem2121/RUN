@@ -2,47 +2,40 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 import type { FallbackProps } from "react-error-boundary";
 import { Button } from "@/components/ui/button";
 
-export const AppErrorFallback = ({
-	error,
-	resetErrorBoundary,
-}: FallbackProps) => {
-	const version = (import.meta as any).env?.VITE_APP_VERSION || "unknown";
+export const AppErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+  const version = (import.meta as any).env?.VITE_APP_VERSION || "unknown";
 
-	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-background p-6 text-center">
-			<div className="max-w-md w-full flex flex-col gap-6">
-				<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 mb-2">
-					<AlertTriangle className="w-8 h-8" />
-				</div>
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 text-center">
+      <div className="flex w-full max-w-md flex-col gap-6">
+        <div className="mb-2 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/30">
+          <AlertTriangle className="h-8 w-8" />
+        </div>
 
-				<h1 className="text-2xl font-bold tracking-tight text-foreground">
-					Something went wrong
-				</h1>
+        <h1 className="font-bold text-2xl text-foreground tracking-tight">Something went wrong</h1>
 
-				<p className="text-muted-foreground">
-					We've encountered an unexpected error while rendering the application.
-					Our team has been notified.
-				</p>
+        <p className="text-muted-foreground">
+          We've encountered an unexpected error while rendering the application. Our team has been
+          notified.
+        </p>
 
-				<div className="p-4 bg-muted rounded-lg text-left overflow-auto max-h-48">
-					<p className="text-xs font-mono text-muted-foreground break-all">
-						{error.message}
-					</p>
-				</div>
+        <div className="max-h-48 overflow-auto rounded-lg bg-muted p-4 text-left">
+          <p className="break-all font-mono text-muted-foreground text-xs">{error.message}</p>
+        </div>
 
-				<div className="flex flex-col gap-3">
-					<Button onClick={resetErrorBoundary} className="w-full gap-2">
-						<RefreshCw className="w-4 h-4" />
-						Try Again
-					</Button>
-				</div>
+        <div className="flex flex-col gap-3">
+          <Button onClick={resetErrorBoundary} className="w-full gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Try Again
+          </Button>
+        </div>
 
-				<div className="pt-8 border-t border-border">
-					<p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-						Build: {version}
-					</p>
-				</div>
-			</div>
-		</div>
-	);
+        <div className="border-border border-t pt-8">
+          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+            Build: {version}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };

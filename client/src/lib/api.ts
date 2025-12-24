@@ -1,92 +1,92 @@
 export class ApiError extends Error {
-	status: number;
-	retryAfter?: number;
+  status: number;
+  retryAfter?: number;
 
-	constructor(message: string, status: number, retryAfter?: number) {
-		super(message);
-		this.status = status;
-		this.retryAfter = retryAfter;
-		this.name = "ApiError";
-	}
+  constructor(message: string, status: number, retryAfter?: number) {
+    super(message);
+    this.status = status;
+    this.retryAfter = retryAfter;
+    this.name = "ApiError";
+  }
 }
 
 export async function apiRequest(
-	urlOrOptions:
-		| string
-		| {
-				url: string;
-				method?: string;
-				body?: any;
-				headers?: Record<string, string>;
-		  },
-	options?: { method?: string; body?: any; headers?: Record<string, string> },
+  urlOrOptions:
+    | string
+    | {
+        url: string;
+        method?: string;
+        body?: any;
+        headers?: Record<string, string>;
+      },
+  options?: { method?: string; body?: any; headers?: Record<string, string> },
 ): Promise<any> {
-	let url: string;
-	let method: string;
-	let body: any;
-	let headers: Record<string, string>;
+  let url: string;
+  let method: string;
+  let body: any;
+  let headers: Record<string, string>;
 
-	if (typeof urlOrOptions === "string") {
-		url = urlOrOptions;
-		method = options?.method || "GET";
-		body = options?.body;
-		headers = options?.headers || {};
-	} else {
-		url = urlOrOptions.url;
-		method = urlOrOptions.method || "GET";
-		body = urlOrOptions.body;
-		headers = urlOrOptions.headers || {};
-	}
+  if (typeof urlOrOptions === "string") {
+    url = urlOrOptions;
+    method = options?.method || "GET";
+    body = options?.body;
+    headers = options?.headers || {};
+  } else {
+    url = urlOrOptions.url;
+    method = urlOrOptions.method || "GET";
+    body = urlOrOptions.body;
+    headers = urlOrOptions.headers || {};
+  }
 
-	const isFormData = body instanceof FormData;
-	const finalHeaders = { ...headers };
+  const isFormData = body instanceof FormData;
+  const finalHeaders = { ...headers };
 
-	if (!isFormData && body) {
-		finalHeaders["Content-Type"] = "application/json";
-		body = JSON.stringify(body);
-	}
+  if (!isFormData && body) {
+    finalHeaders["Content-Type"] = "application/json";
+    body = JSON.stringify(body);
+  }
 
-	const res = await fetch(url, {
-		method,
-		headers: finalHeaders,
-		body: body as BodyInit,
-	});
+  const res = await fetch(url, {
+    method,
+    headers: finalHeaders,
+    body: body as BodyInit,
+  });
 
-	if (!res.ok) {
-		let errorMessage = res.statusText;
-		let retryAfter: number | undefined;
+  if (!res.ok) {
+    let errorMessage = res.statusText;
+    let retryAfter: number | undefined;
 
-		try {
-			const text = await res.text();
-			if (text) {
-				try {
-					const json = JSON.parse(text);
-					errorMessage = json.message || json.error?.message || errorMessage;
+    try {
+      const text = await res.text();
+      if (text) {
+        try {
+          const json = JSON.parse(text);
+          errorMessage = json.message || json.error?.message || errorMessage;
 
-					// Handle Rate Limit Error specifically
-					if (res.status === 429 && json.error?.retryAfter) {
-						retryAfter = json.error.retryAfter;
-					}
-				} catch {
-					errorMessage = text;
-				}
-			}
-		} catch {
-			// Ignore parsing errors
-		}
+          // Handle Rate Limit Error specifically
+          if (res.status === 429 && json.error?.retryAfter) {
+            retryAfter = json.error.retryAfter;
+          }
+        } catch {
+          errorMessage = text;
+        }
+      }
+    } catch {
+      // Ignore parsing errors
+    }
 
-		throw new ApiError(errorMessage, res.status, retryAfter);
-	}
+    throw new ApiError(errorMessage, res.status, retryAfter);
+  }
 
-	// Handle empty responses
-	if (res.status === 204) {
-		return {};
-	}
+  // Handle empty responses
+  if (res.status === 204) {
+    return {};
+  }
 
-	const contentType = res.headers.get("content-type");
-	if (contentType && contentType.includes("application/json")) {
-		return res.json();
-	}
+  const contentType = res.headers.get("content-type");
+  if (contentType?.includes("application/json")) {
+    return res.json();
+  }
 
-	return res.text();
+  return res.text();
 }

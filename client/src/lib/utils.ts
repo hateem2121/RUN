@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
  * Formats bytes into a human-readable string (e.g., "1.5 MB").
  */
 export function formatFileSize(bytes: number | undefined | null): string {
-  if (bytes === null || bytes === undefined || isNaN(bytes) || bytes < 0) {
+  if (bytes === null || bytes === undefined || Number.isNaN(bytes) || bytes < 0) {
     return "0 Bytes";
   }
 
@@ -31,5 +31,5 @@ export function formatFileSize(bytes: number | undefined | null): string {
     return "0 Bytes";
   }
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }

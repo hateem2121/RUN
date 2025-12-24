@@ -7,19 +7,19 @@ import { useLocation as useWouterLocation } from "wouter";
  * urgent updates to interrupt navigation rendering.
  */
 export function useConcurrentLocation(): [
-	string,
-	(to: string, options?: { replace?: boolean }) => void,
+  string,
+  (to: string, options?: { replace?: boolean }) => void,
 ] {
-	const [location, setLocation] = useWouterLocation();
+  const [location, setLocation] = useWouterLocation();
 
-	const setLocationConcurrent = useCallback(
-		(to: string, options?: { replace?: boolean }) => {
-			startTransition(() => {
-				setLocation(to, options);
-			});
-		},
-		[setLocation],
-	);
+  const setLocationConcurrent = useCallback(
+    (to: string, options?: { replace?: boolean }) => {
+      startTransition(() => {
+        setLocation(to, options);
+      });
+    },
+    [setLocation],
+  );
 
-	return [location, setLocationConcurrent];
+  return [location, setLocationConcurrent];
 }

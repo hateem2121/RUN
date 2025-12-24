@@ -19,110 +19,110 @@ import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Homepage() {
-	const [isPreloaded, setIsPreloaded] = useState(false);
-	const setIsLoading = useStore((state) => state.setIsLoading);
+  const [isPreloaded, setIsPreloaded] = useState(false);
+  const setIsLoading = useStore((state) => state.setIsLoading);
 
-	// Stable refs for skewable sections
-	const heroRef = useRef<HTMLDivElement>(null);
-	const contentRef = useRef<HTMLDivElement>(null);
+  // Stable refs for skewable sections
+  const heroRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-	const { lenis } = useLenis();
-	const skewProxy = useRef({ val: 0 });
+  const { lenis } = useLenis();
+  const skewProxy = useRef({ val: 0 });
 
-	useGSAP(
-		() => {
-			if (!lenis) return;
+  useGSAP(
+    () => {
+      if (!lenis) return;
 
-			const onScroll = ({ velocity }: { velocity: number }) => {
-				const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
-				gsap.to(skewProxy.current, {
-					val: targetSkew,
-					duration: 0.5,
-					ease: "power3.out",
-					overwrite: true,
-				});
-			};
+      const onScroll = ({ velocity }: { velocity: number }) => {
+        const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
+        gsap.to(skewProxy.current, {
+          val: targetSkew,
+          duration: 0.5,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      };
 
-			const onTicker = () => {
-				const val = skewProxy.current.val;
-				// Footer removed from skew targets to support Sticky Reveal
-				const targets = [heroRef.current, contentRef.current];
-				targets.forEach((el) => {
-					if (el) {
-						gsap.set(el, {
-							skewY: val,
-							rotateY: val * 0.2, // Subtle 3D rotation
-							force3D: true, // Force GPU layer
-							transformOrigin: "center center",
-						});
-					}
-				});
-			};
+      const onTicker = () => {
+        const val = skewProxy.current.val;
+        // Footer removed from skew targets to support Sticky Reveal
+        const targets = [heroRef.current, contentRef.current];
+        targets.forEach((el) => {
+          if (el) {
+            gsap.set(el, {
+              skewY: val,
+              rotateY: val * 0.2, // Subtle 3D rotation
+              force3D: true, // Force GPU layer
+              transformOrigin: "center center",
+            });
+          }
+        });
+      };
 
-			lenis.on("scroll", onScroll);
-			gsap.ticker.add(onTicker);
+      lenis.on("scroll", onScroll);
+      gsap.ticker.add(onTicker);
 
-			return () => {
-				lenis.off("scroll", onScroll);
-				gsap.ticker.remove(onTicker);
-			};
-		},
-		{ dependencies: [lenis] },
-	);
+      return () => {
+        lenis.off("scroll", onScroll);
+        gsap.ticker.remove(onTicker);
+      };
+    },
+    { dependencies: [lenis] },
+  );
 
-	const handlePreloadComplete = () => {
-		setIsPreloaded(true);
-		setIsLoading(false);
-	};
+  const handlePreloadComplete = () => {
+    setIsPreloaded(true);
+    setIsLoading(false);
+  };
 
-	return (
-		<>
-			{/* Global Cursor */}
-			<CustomCursor />
+  return (
+    <>
+      {/* Global Cursor */}
+      <CustomCursor />
 
-			{/* Preloader */}
-			{!isPreloaded && <Preloader onComplete={handlePreloadComplete} />}
+      {/* Preloader */}
+      {!isPreloaded && <Preloader onComplete={handlePreloadComplete} />}
 
-			{/* Navigation */}
-			<FloatingDockHeader />
+      {/* Navigation */}
+      <FloatingDockHeader />
 
-			{/* 
+      {/* 
         MAIN CONTENT: 
         Needs relative positioning, z-index > 0, and a background color
         to cover the fixed footer until the end.
       */}
-			<main
-				className={`relative z-10 w-full bg-[#FAFAFA] transition-opacity duration-500 ${
-					isPreloaded ? "opacity-100" : "opacity-0"
-				}`}
-			>
-				{/* GROUP 1: Skewable Top Section */}
-				<div ref={heroRef} className="will-change-transform origin-top">
-					<Hero />
-				</div>
+      <main
+        className={`relative z-elevated w-full bg-background transition-opacity duration-500 ${
+          isPreloaded ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {/* GROUP 1: Skewable Top Section */}
+        <div ref={heroRef} className="origin-top will-change-transform">
+          <Hero />
+        </div>
 
-				{/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
-				<Stats />
+        {/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
+        <Stats />
 
-				{/* GROUP 2: Skewable Middle Content */}
-				<div ref={contentRef} className="will-change-transform origin-top">
-					<Categories />
-					<FeaturedProducts />
-					<Values />
-				</div>
+        {/* GROUP 2: Skewable Middle Content */}
+        <div ref={contentRef} className="origin-top will-change-transform">
+          <Categories />
+          <FeaturedProducts />
+          <Values />
+        </div>
 
-				{/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
-				<Process />
+        {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
+        <Process />
 
-				{/* 
+        {/* 
           Footer component now handles its own Spacer div internally.
           We just render it here at the end of the flow.
           The Spacer will take up space in this main container,
           pushing the scroll height down, allowing the fixed footer 
           (rendered by this same component) to be revealed.
         */}
-				<Footer />
-			</main>
-		</>
-	);
+        <Footer />
+      </main>
+    </>
+  );
 }

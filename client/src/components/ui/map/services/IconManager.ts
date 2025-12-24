@@ -151,7 +151,7 @@ class IconManagerService {
         return icon;
       }
       return this.createFallbackIcon(config);
-    } catch (error) {
+    } catch (_error) {
       return this.createFallbackIcon(config);
     }
   }

@@ -75,7 +75,7 @@ const CustomCursor: React.FC = () => {
         width: 80,
         height: 80,
         opacity: 1,
-        backgroundColor: "#3300FF",
+        backgroundColor: "var(--color-brand-purple)",
         mixBlendMode: "exclusion",
         borderWidth: 0,
         borderColor: "transparent",
@@ -89,17 +89,17 @@ const CustomCursor: React.FC = () => {
         width: 16,
         height: 16,
         opacity: 1,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#fff",
         mixBlendMode: "difference",
         borderWidth: 1,
-        borderColor: "#FFFFFF",
+        borderColor: "#fff",
         duration: 0.3,
         ease: "power2.out",
       });
       gsap.to(cursor, {
         opacity: 1,
         scale: 1,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#fff",
         mixBlendMode: "difference",
       });
     }
@@ -111,17 +111,17 @@ const CustomCursor: React.FC = () => {
     <>
       <div
         ref={cursorRef}
-        className="hidden md:block fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-modal mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-modal hidden h-2 w-2 rounded-full bg-white mix-blend-difference md:block"
       />
       <div
         ref={followerRef}
-        className="hidden md:flex fixed top-0 left-0 w-4 h-4 border border-white rounded-full pointer-events-none z-modal overflow-hidden items-center justify-center bg-white mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-modal hidden h-4 w-4 items-center justify-center overflow-hidden rounded-full border border-white bg-white mix-blend-difference md:flex"
       >
         {cursorVariant === CursorVariant.VIEW && cursorImage && (
           <img
             src={cursorImage}
             alt="Cursor View"
-            className="w-full h-full object-cover animate-in fade-in zoom-in duration-500"
+            className="fade-in zoom-in h-full w-full animate-in object-cover duration-500"
           />
         )}
       </div>

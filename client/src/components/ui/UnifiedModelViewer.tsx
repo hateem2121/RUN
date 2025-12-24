@@ -165,10 +165,10 @@ export default function UnifiedModelViewer({
               modelViewerRef.current.src = modelUrl; // Reapply the source
             }
           }, 100);
-        } catch (error) {}
+        } catch (_error) {}
       }
     },
-    [asset, retryTimeouts],
+    [retryTimeouts],
   );
 
   // Enhanced GLTF file analysis with compression detection
@@ -200,7 +200,7 @@ export default function UnifiedModelViewer({
 
   // Error handler with retry logic
   const handleError = useCallback(
-    (event: any, context?: string) => {
+    (event: any, _context?: string) => {
       const errorDetail = event.detail || {};
       const errorMessage =
         errorDetail.message ||
@@ -300,7 +300,14 @@ export default function UnifiedModelViewer({
     }, delay);
 
     setRetryTimeouts([timeout as unknown as number]);
-  }, [loadingState.retryCount, asset.id]); // Remove unstable dependencies
+  }, [
+    loadingState.retryCount,
+    errorConfig.maxRetries,
+    errorConfig.retryDelayBase,
+    finalConfig.autoRotate,
+    finalConfig.cameraControls,
+    retryTimeouts,
+  ]); // Remove unstable dependencies
 
   // MEMORY LEAK FIX: Enhanced WebGL context recovery with aggressive cleanup
   const handleWebGLRecovery = useCallback(() => {
@@ -327,7 +334,11 @@ export default function UnifiedModelViewer({
         handleError(error as Error, "WebGL Recovery");
       }
     }
-  }, [handleError]);
+  }, [
+    handleError, // Force immediate memory cleanup before recovery
+    forceWebGLMemoryCleanup, // Restart memory monitoring after recovery
+    startMemoryMonitoring,
+  ]);
 
   // MEMORY LEAK FIX: WebGL memory monitoring and cleanup
   const checkWebGLMemoryUsage = useCallback((): number => {
@@ -350,7 +361,7 @@ export default function UnifiedModelViewer({
       estimatedMemory += maxVertexAttribs * 1; // Rough estimate
 
       return Math.round(estimatedMemory * 100) / 100; // Round to 2 decimals
-    } catch (error) {
+    } catch (_error) {
       return 0;
     }
   }, []);
@@ -373,7 +384,7 @@ export default function UnifiedModelViewer({
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
           }
         }
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, []);
 
@@ -419,7 +430,7 @@ export default function UnifiedModelViewer({
 
       setLastWebGLMemoryCheck(currentTime);
     }, 30000); // Every 30 seconds
-  }, [memoryMonitorActive]); // Remove function dependencies that cause re-renders
+  }, [memoryMonitorActive, checkWebGLMemoryUsage, forceWebGLMemoryCleanup]); // Remove function dependencies that cause re-renders
 
   // MEMORY LEAK FIX: Stop memory monitoring and cleanup GLTF blobs
   const stopMemoryMonitoring = useCallback(() => {
@@ -429,11 +440,11 @@ export default function UnifiedModelViewer({
     }
 
     // SAFE cleanup of cached GLTF blob URLs to prevent memory leaks
-    if (cachedModelBlob && cachedModelBlob.startsWith("blob:")) {
+    if (cachedModelBlob?.startsWith("blob:")) {
       URL.revokeObjectURL(cachedModelBlob);
       setCachedModelBlob(null);
     }
-    if (optimizedModelUrl && optimizedModelUrl.startsWith("blob:")) {
+    if (optimizedModelUrl?.startsWith("blob:")) {
       URL.revokeObjectURL(optimizedModelUrl);
       setOptimizedModelUrl(null);
     }
@@ -519,8 +530,8 @@ export default function UnifiedModelViewer({
         typeof errorDetail === "string"
           ? errorDetail
           : typeof errorDetail === "object" && errorDetail
-          ? JSON.stringify(errorDetail)
-          : "Model loading failed";
+            ? JSON.stringify(errorDetail)
+            : "Model loading failed";
       handleError(errorMessage, "Model Loading");
     };
 
@@ -600,7 +611,18 @@ export default function UnifiedModelViewer({
         webglContextRef.current = null;
       }
     };
-  }, [asset.id]); // Only depend on asset.id, not the full asset or callbacks
+  }, [
+    asset.id,
+    asset, // Force immediate WebGL cleanup before removing listeners
+    forceWebGLMemoryCleanup,
+    handleError,
+    handleProgress,
+    loadingState.startTime,
+    onInteraction, // CRITICAL FIX: Call callbacks inside requestAnimationFrame to avoid ReferenceError
+    onLoad, // MEMORY LEAK FIX: Start memory monitoring after model loads
+    startMemoryMonitoring, // Stop memory monitoring
+    stopMemoryMonitoring,
+  ]); // Only depend on asset.id, not the full asset or callbacks
 
   // Enhanced GLTF initialization with intelligent caching
   useEffect(() => {
@@ -619,16 +641,16 @@ export default function UnifiedModelViewer({
               // Properly handle different content types
               try {
                 // Revoke any existing blob URL to prevent memory leaks
-                if (cachedModelBlob && cachedModelBlob.startsWith("blob:")) {
+                if (cachedModelBlob?.startsWith("blob:")) {
                   URL.revokeObjectURL(cachedModelBlob);
                 }
-                if (optimizedModelUrl && optimizedModelUrl.startsWith("blob:")) {
+                if (optimizedModelUrl?.startsWith("blob:")) {
                   URL.revokeObjectURL(optimizedModelUrl);
                 }
 
                 if (result.content) {
                   // Check content type - log first 20 chars for debugging
-                  const contentPreview =
+                  const _contentPreview =
                     typeof result.content === "string" ? result.content.slice(0, 20) : "binary";
 
                   if (typeof result.content === "string") {
@@ -657,7 +679,7 @@ export default function UnifiedModelViewer({
                         });
                         const blobUrl = URL.createObjectURL(modelBlob);
                         setCachedModelBlob(blobUrl);
-                      } catch (base64Error) {
+                      } catch (_base64Error) {
                         // Fall through to network fallback
                       }
                     }
@@ -679,13 +701,13 @@ export default function UnifiedModelViewer({
                   status: "loading",
                   progress: 50, // Cached content gives us significant head start
                 }));
-              } catch (blobError) {
+              } catch (_blobError) {
                 // Clear any partial state and fallback to direct URL loading
                 setCachedModelBlob(null);
                 setOptimizedModelUrl(null);
               }
             }
-          } catch (cacheError) {}
+          } catch (_cacheError) {}
         }
 
         await ensureModelViewerLoaded();
@@ -698,7 +720,7 @@ export default function UnifiedModelViewer({
     };
 
     initializeModelViewer();
-  }, [handleError, asset.id, asset.size, asset.originalName, asset.mimeType]);
+  }, [handleError, asset.id, analyzeFile, cachedModelBlob, optimizedModelUrl]);
 
   // Setup model viewer events when ready
   useEffect(() => {
@@ -706,7 +728,7 @@ export default function UnifiedModelViewer({
       return setupModelViewerEvents();
     }
     return undefined;
-  }, [isModelViewerReady]); // Remove setupModelViewerEvents dependency - it's stable within the effect
+  }, [isModelViewerReady, setupModelViewerEvents]); // Remove setupModelViewerEvents dependency - it's stable within the effect
 
   // Intersection observer for proper lazy loading - Fixed to work with shouldLoadModel
   useEffect(() => {
@@ -764,15 +786,7 @@ export default function UnifiedModelViewer({
       };
     }
     return undefined;
-  }, [
-    finalConfig.loading,
-    shouldLoadModel,
-    isModelViewerReady,
-    isVisible,
-    cachedModelBlob,
-    optimizedModelUrl,
-    asset,
-  ]);
+  }, [finalConfig.loading, shouldLoadModel]);
 
   // Programmatically set src to prevent Lit element update conflicts
   // Gate src assignment behind userActivated to prevent premature loading
@@ -820,6 +834,7 @@ export default function UnifiedModelViewer({
     asset.id,
     cachedModelBlob,
     optimizedModelUrl,
+    asset,
   ]);
 
   // MEMORY LEAK FIX: Enhanced cleanup on unmount with aggressive memory management
@@ -844,7 +859,7 @@ export default function UnifiedModelViewer({
           if (extension) {
             extension.loseContext();
           }
-        } catch (error) {}
+        } catch (_error) {}
       }
 
       // Clear all refs
@@ -858,13 +873,13 @@ export default function UnifiedModelViewer({
 
       // Clean up cached GLTF blob URLs on unmount - access via state setters
       setCachedModelBlob((current) => {
-        if (current && current.startsWith("blob:")) {
+        if (current?.startsWith("blob:")) {
           URL.revokeObjectURL(current);
         }
         return null;
       });
       setOptimizedModelUrl((current) => {
-        if (current && current.startsWith("blob:")) {
+        if (current?.startsWith("blob:")) {
           URL.revokeObjectURL(current);
         }
         return null;
@@ -930,13 +945,13 @@ export default function UnifiedModelViewer({
       <div
         className={cn(
           "flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200",
-          "dark:from-gray-800 dark:to-gray-900 rounded-lg aspect-square",
+          "aspect-square rounded-lg dark:from-gray-800 dark:to-gray-900",
           className,
         )}
       >
-        <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">Initializing 3D viewer...</p>
+        <div className="space-y-3 text-center">
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
+          <p className="text-gray-600 text-sm dark:text-gray-400">Initializing 3D viewer...</p>
         </div>
       </div>
     );
@@ -948,19 +963,19 @@ export default function UnifiedModelViewer({
       <div
         className={cn(
           "flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100",
-          "dark:from-red-900/20 dark:to-red-800/20 rounded-lg aspect-square",
+          "aspect-square rounded-lg dark:from-red-900/20 dark:to-red-800/20",
           className,
         )}
       >
-        <div className="text-center space-y-4 p-6">
-          <AlertCircle className="w-12 h-12 mx-auto text-red-500" />
+        <div className="space-y-4 p-6 text-center">
+          <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
           <Alert variant="destructive">
             <AlertDescription>
               {loadingState.errorMessage || "Failed to load 3D model"}
             </AlertDescription>
           </Alert>
           <Button variant="outline" size="sm" onClick={handleRetry} className="mt-2">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Retry ({loadingState.retryCount}/3)
           </Button>
         </div>
@@ -981,7 +996,7 @@ export default function UnifiedModelViewer({
       <div
         ref={containerRef}
         className={cn(
-          "relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg overflow-hidden",
+          "relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-50 to-gray-100",
           "dark:from-gray-800 dark:to-gray-900",
           className,
         )}
@@ -990,8 +1005,8 @@ export default function UnifiedModelViewer({
         {/* Simplified file info - only for large files */}
         {showFileInfo && fileInfo.isLarge && (
           <div className="absolute top-2 left-2 z-20">
-            <div className="bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200 px-2 py-1 rounded text-xs flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" />
+            <div className="flex items-center gap-1 rounded bg-orange-100 px-2 py-1 text-orange-800 text-xs dark:bg-orange-900/50 dark:text-orange-200">
+              <AlertCircle className="h-3 w-3" />
               {fileInfo.sizeInMB}MB
             </div>
           </div>
@@ -1001,10 +1016,10 @@ export default function UnifiedModelViewer({
         {showLoadingProgress &&
           loadingState.status === "loading" &&
           loadingState.progress < 100 && (
-            <div className="absolute inset-0 flex items-center justify-center z-20 bg-gray-50/80 dark:bg-gray-900/80">
-              <div className="text-center space-y-2">
-                <div className="w-8 h-8 mx-auto border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{loadingState.progress}%</p>
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-50/80 dark:bg-gray-900/80">
+              <div className="space-y-2 text-center">
+                <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
+                <p className="text-gray-600 text-sm dark:text-gray-400">{loadingState.progress}%</p>
               </div>
             </div>
           )}
@@ -1016,10 +1031,10 @@ export default function UnifiedModelViewer({
               variant="secondary"
               size="sm"
               onClick={handleDownload}
-              className="bg-white/80 hover:bg-white dark:bg-black/80 dark:hover:bg-black w-8 h-8 p-0"
+              className="h-8 w-8 bg-white/80 p-0 hover:bg-white dark:bg-black/80 dark:hover:bg-black"
               data-testid="button-download"
             >
-              <Download className="w-3 h-3" />
+              <Download className="h-3 w-3" />
             </Button>
           </div>
         )}
@@ -1028,7 +1043,7 @@ export default function UnifiedModelViewer({
         {webglLost && (
           <div className="absolute inset-4 z-40 flex items-center justify-center">
             <Alert>
-              <AlertCircle className="w-4 h-4" />
+              <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 Graphics context lost.
                 <Button variant="link" size="sm" onClick={handleWebGLRecovery} className="ml-2 p-0">
@@ -1068,7 +1083,7 @@ export default function UnifiedModelViewer({
         {/* Enhanced placeholder - poster image + "View 3D Model" button */}
         {!userActivated && isVisible && shouldLoadModel && (
           <div
-            className="absolute inset-0 flex items-center justify-center group cursor-pointer"
+            className="group absolute inset-0 flex cursor-pointer items-center justify-center"
             onClick={handleActivateModel}
             data-testid="view-3d-overlay"
           >
@@ -1077,20 +1092,20 @@ export default function UnifiedModelViewer({
               <img
                 src={asset.thumbnailUrl}
                 alt={asset.originalName || "3D Model Preview"}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
               />
             )}
 
             {/* Gradient overlay for better button visibility */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 transition-all duration-300 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60" />
 
             {/* "View 3D Model" button */}
-            <div className="relative z-10 text-center space-y-3">
-              <div className="dark:bg-black/90 backdrop-blur-xs rounded-full p-4 group-hover:scale-110 transition-transform duration-300 shadow-xl pt-[33px] pb-[33px] pl-[16px] pr-[16px] ml-[87px] mr-[87px] mt-[53px] mb-[53px] bg-[#ffffffd1]">
-                <Play className="w-8 h-8 text-gray-900 dark:text-white" fill="currentColor" />
+            <div className="relative z-10 space-y-3 text-center">
+              <div className="mt-[53px] mr-[87px] mb-[53px] ml-[87px] rounded-full bg-[#ffffffd1] p-4 pt-[33px] pr-[16px] pb-[33px] pl-[16px] shadow-xl backdrop-blur-xs transition-transform duration-300 group-hover:scale-110 dark:bg-black/90">
+                <Play className="h-8 w-8 text-gray-900 dark:text-white" fill="currentColor" />
               </div>
-              <p className="text-white font-medium text-lg drop-shadow-lg">View 3D Model</p>
+              <p className="font-medium text-lg text-white drop-shadow-lg">View 3D Model</p>
               <p className="text-white/80 text-xs">Click to load interactive 3D viewer</p>
             </div>
           </div>
@@ -1099,12 +1114,12 @@ export default function UnifiedModelViewer({
         {/* Lazy loading placeholder - shown before viewport intersection */}
         {(!shouldLoadModel || !isVisible) && (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
-            <div className="text-center space-y-2">
-              <Box className="w-8 h-8 mx-auto text-gray-400" />
+            <div className="space-y-2 text-center">
+              <Box className="mx-auto h-8 w-8 text-gray-400" />
               {!shouldLoadModel ? (
-                <p className="text-xs text-gray-500">Scroll to load</p>
+                <p className="text-gray-500 text-xs">Scroll to load</p>
               ) : (
-                <p className="text-xs text-gray-500">Model hidden</p>
+                <p className="text-gray-500 text-xs">Model hidden</p>
               )}
             </div>
           </div>

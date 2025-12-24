@@ -58,7 +58,7 @@ class BundleOptimizer {
             info.preloaded = this.isPreloaded(script.src);
             this.chunks.push(info);
           }
-        } catch (e) {}
+        } catch (_e) {}
       }
     }
   }
@@ -69,14 +69,14 @@ class BundleOptimizer {
     ) as HTMLLinkElement[];
 
     for (const link of links) {
-      if (link.href && link.href.includes("/assets/")) {
+      if (link.href?.includes("/assets/")) {
         try {
           const info = await this.getResourceInfo(link.href, "css");
           if (info) {
             info.preloaded = this.isPreloaded(link.href);
             this.chunks.push(info);
           }
-        } catch (e) {}
+        } catch (_e) {}
       }
     }
   }
@@ -93,14 +93,14 @@ class BundleOptimizer {
           info.preloaded = true;
           this.chunks.push(info);
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
   }
 
   private async getResourceInfo(url: string, type: ChunkInfo["type"]): Promise<ChunkInfo | null> {
     try {
       const response = await fetch(url, { method: "HEAD" });
-      const size = parseInt(response.headers.get("content-length") || "0");
+      const size = parseInt(response.headers.get("content-length") || "0", 10);
 
       if (size === 0) return null;
 
@@ -202,8 +202,10 @@ class BundleOptimizer {
     let score = 100;
 
     // Deduct points for large bundles
-    if (totalGzippedSize > 2 * 1024 * 1024) score -= 30; // 2MB
-    else if (totalGzippedSize > 1 * 1024 * 1024) score -= 20; // 1MB
+    if (totalGzippedSize > 2 * 1024 * 1024)
+      score -= 30; // 2MB
+    else if (totalGzippedSize > 1 * 1024 * 1024)
+      score -= 20; // 1MB
     else if (totalGzippedSize > 500 * 1024) score -= 10; // 500KB
 
     // Deduct points for number of chunks
@@ -243,11 +245,14 @@ Chunk Breakdown:
 `;
 
     // Group chunks by type
-    const chunksByType = chunks.reduce((acc, chunk) => {
-      if (!acc[chunk.type]) acc[chunk.type] = [];
-      acc[chunk.type]!.push(chunk);
-      return acc;
-    }, {} as Record<string, ChunkInfo[]>);
+    const chunksByType = chunks.reduce(
+      (acc, chunk) => {
+        if (!acc[chunk.type]) acc[chunk.type] = [];
+        acc[chunk.type]?.push(chunk);
+        return acc;
+      },
+      {} as Record<string, ChunkInfo[]>,
+    );
 
     Object.entries(chunksByType).forEach(([type, typeChunks]) => {
       const typeSize = typeChunks.reduce((sum, chunk) => sum + chunk.size, 0);
@@ -292,7 +297,7 @@ Performance Impact:
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / k ** i).toFixed(1)) + " " + sizes[i];
+    return `${parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
   }
 
   // Tree shaking analysis (basic)
@@ -362,11 +367,14 @@ export const BundleUtils = {
   // Get size breakdown
   getSizeBreakdown: () => {
     const report = bundleOptimizer.generateReport();
-    const breakdown = report.chunks.reduce((acc, chunk) => {
-      if (!acc[chunk.type]) acc[chunk.type] = 0;
-      acc[chunk.type]! += chunk.gzippedSize;
-      return acc;
-    }, {} as Record<string, number>);
+    const breakdown = report.chunks.reduce(
+      (acc, chunk) => {
+        if (!acc[chunk.type]) acc[chunk.type] = 0;
+        acc[chunk.type]! += chunk.gzippedSize;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return breakdown;
   },

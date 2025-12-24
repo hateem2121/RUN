@@ -18,46 +18,46 @@ import type { MediaAsset } from "@shared/schema";
 import { lazy, Suspense } from "react";
 import { MediaLibraryEnhancedProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import {
-	EnhancedDialog,
-	EnhancedDialogBody,
-	EnhancedDialogContent,
-	EnhancedDialogHeader,
-	EnhancedDialogTitle,
+  EnhancedDialog,
+  EnhancedDialogBody,
+  EnhancedDialogContent,
+  EnhancedDialogHeader,
+  EnhancedDialogTitle,
 } from "@/components/ui/enhanced-dialog";
 
 // CRITICAL FIX: Lazy-load MediaSelectionWrapperUnified to break circular dependency chain
 // This prevents: StandardMediaSelectionDialog → MediaSelectionWrapperUnified → MediaLibraryContainerEnhanced
 // from loading synchronously and blocking admin module initialization
 const MediaSelectionWrapperUnified = lazy(() =>
-	import("./MediaSelectionWrapperUnified").then((m) => ({
-		default: m.MediaSelectionWrapperUnified,
-	})),
+  import("./MediaSelectionWrapperUnified").then((m) => ({
+    default: m.MediaSelectionWrapperUnified,
+  })),
 );
 
 interface StandardMediaSelectionDialogProps {
-	/** Whether the dialog is open */
-	isOpen: boolean;
+  /** Whether the dialog is open */
+  isOpen: boolean;
 
-	/** Called when dialog should close */
-	onClose: () => void;
+  /** Called when dialog should close */
+  onClose: () => void;
 
-	/** Called when media is selected */
-	onSelect: (assets: MediaAsset[] | MediaAsset) => void;
+  /** Called when media is selected */
+  onSelect: (assets: MediaAsset[] | MediaAsset) => void;
 
-	/** Dialog title */
-	title?: string;
+  /** Dialog title */
+  title?: string;
 
-	/** Media picker context identifier for filtering */
-	mediaPickerTarget: string;
+  /** Media picker context identifier for filtering */
+  mediaPickerTarget: string;
 
-	/** Selection mode */
-	selectionMode?: "single" | "multiple";
+  /** Selection mode */
+  selectionMode?: "single" | "multiple";
 
-	/** Maximum number of assets for multiple selection */
-	maxSelection?: number;
+  /** Maximum number of assets for multiple selection */
+  maxSelection?: number;
 
-	/** Pre-selected asset IDs */
-	initialSelectedIds?: number[];
+  /** Pre-selected asset IDs */
+  initialSelectedIds?: number[];
 }
 
 /**
@@ -71,61 +71,59 @@ interface StandardMediaSelectionDialogProps {
  * 5. Proper event handlers
  */
 export function StandardMediaSelectionDialog({
-	isOpen,
-	onClose,
-	onSelect,
-	title = "Select Media",
-	mediaPickerTarget,
-	selectionMode = "single",
-	maxSelection = 10,
-	initialSelectedIds = [],
+  isOpen,
+  onClose,
+  onSelect,
+  title = "Select Media",
+  mediaPickerTarget,
+  selectionMode = "single",
+  maxSelection = 10,
+  initialSelectedIds = [],
 }: StandardMediaSelectionDialogProps) {
-	const handleSelect = (assets: MediaAsset[] | MediaAsset) => {
-		onSelect(assets);
-		onClose();
-	};
+  const handleSelect = (assets: MediaAsset[] | MediaAsset) => {
+    onSelect(assets);
+    onClose();
+  };
 
-	return (
-		<EnhancedDialog open={isOpen} onOpenChange={onClose}>
-			<EnhancedDialogContent
-				contentType="media-library"
-				preferredSize="5xl" // Optimal size for media selection across all devices - EnhancedDialogContent handles all sizing
-				className="flex flex-col" // Explicit flex layout for proper slot distribution
-			>
-				<EnhancedDialogHeader className="shrink-0 border-b border-border pb-4">
-					<EnhancedDialogTitle>{title}</EnhancedDialogTitle>
-				</EnhancedDialogHeader>
+  return (
+    <EnhancedDialog open={isOpen} onOpenChange={onClose}>
+      <EnhancedDialogContent
+        contentType="media-library"
+        preferredSize="5xl" // Optimal size for media selection across all devices - EnhancedDialogContent handles all sizing
+        className="flex flex-col" // Explicit flex layout for proper slot distribution
+      >
+        <EnhancedDialogHeader className="shrink-0 border-border border-b pb-4">
+          <EnhancedDialogTitle>{title}</EnhancedDialogTitle>
+        </EnhancedDialogHeader>
 
-				{/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
-				<EnhancedDialogBody className="p-0">
-					<MediaLibraryEnhancedProvider>
-						<Suspense
-							fallback={
-								<div className="flex items-center justify-center h-[600px]">
-									<div className="text-center">
-										<div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-										<p className="text-sm text-gray-600">
-											Loading media library...
-										</p>
-									</div>
-								</div>
-							}
-						>
-							<MediaSelectionWrapperUnified
-								onSelect={handleSelect}
-								onCancel={onClose}
-								mediaPickerTarget={mediaPickerTarget}
-								selectionMode={selectionMode}
-								maxSelection={maxSelection}
-								initialSelectedIds={initialSelectedIds}
-								className="h-full"
-							/>
-						</Suspense>
-					</MediaLibraryEnhancedProvider>
-				</EnhancedDialogBody>
-			</EnhancedDialogContent>
-		</EnhancedDialog>
-	);
+        {/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
+        <EnhancedDialogBody className="p-0">
+          <MediaLibraryEnhancedProvider>
+            <Suspense
+              fallback={
+                <div className="flex h-[600px] items-center justify-center">
+                  <div className="text-center">
+                    <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+                    <p className="text-gray-600 text-sm">Loading media library...</p>
+                  </div>
+                </div>
+              }
+            >
+              <MediaSelectionWrapperUnified
+                onSelect={handleSelect}
+                onCancel={onClose}
+                mediaPickerTarget={mediaPickerTarget}
+                selectionMode={selectionMode}
+                maxSelection={maxSelection}
+                initialSelectedIds={initialSelectedIds}
+                className="h-full"
+              />
+            </Suspense>
+          </MediaLibraryEnhancedProvider>
+        </EnhancedDialogBody>
+      </EnhancedDialogContent>
+    </EnhancedDialog>
+  );
 }
 
 /**

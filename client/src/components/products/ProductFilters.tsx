@@ -102,7 +102,7 @@ export function ProductFilters({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" className="relative">
-            <Filter className="w-4 h-4 mr-2" />
+            <Filter className="mr-2 h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
               <Badge variant="secondary" className="ml-2">
@@ -111,13 +111,13 @@ export function ProductFilters({
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-full sm:w-[400px] md:w-[540px] overflow-y-auto">
+        <SheetContent className="w-full overflow-y-auto sm:w-[400px] md:w-[540px]">
           <SheetHeader>
             <SheetTitle className="flex items-center justify-between">
               Product Filters
               {activeFilterCount > 0 && (
                 <Button variant="ghost" size="sm" onClick={clearAllFilters}>
-                  <X className="w-4 h-4 mr-1" />
+                  <X className="mr-1 h-4 w-4" />
                   Clear All
                 </Button>
               )}
@@ -128,7 +128,7 @@ export function ProductFilters({
             {/* Fabrics */}
             {fabrics.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Fabrics</Label>
+                <Label className="font-semibold text-base">Fabrics</Label>
                 <div className="space-y-2">
                   {fabrics.map((fabric) => (
                     <div key={fabric.id} className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`fabric-${fabric.id}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {fabric?.name || "Unknown Fabric"}
                       </Label>
@@ -152,7 +152,7 @@ export function ProductFilters({
             {/* Certificates */}
             {certificates.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Certifications</Label>
+                <Label className="font-semibold text-base">Certifications</Label>
                 <div className="space-y-2">
                   {certificates.map((cert) => (
                     <div key={cert.id} className="flex items-center space-x-2">
@@ -163,7 +163,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`cert-${cert.id}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {cert?.name || "Unknown Certificate"}
                       </Label>
@@ -176,7 +176,7 @@ export function ProductFilters({
             {/* Size Charts */}
             {sizeCharts.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Size Standards</Label>
+                <Label className="font-semibold text-base">Size Standards</Label>
                 <div className="space-y-2">
                   {sizeCharts.map((size) => (
                     <div key={size.id} className="flex items-center space-x-2">
@@ -187,7 +187,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`size-${size.id}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {size?.name || "Unknown Size"}
                       </Label>
@@ -200,7 +200,7 @@ export function ProductFilters({
             {/* Accessories */}
             {accessories.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Available Accessories</Label>
+                <Label className="font-semibold text-base">Available Accessories</Label>
                 <div className="space-y-2">
                   {accessories.map((acc) => (
                     <div key={acc.id} className="flex items-center space-x-2">
@@ -211,7 +211,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`acc-${acc.id}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {acc?.name || "Unknown Accessory"}
                       </Label>
@@ -224,7 +224,7 @@ export function ProductFilters({
             {/* Tags */}
             {availableTags.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Product Tags</Label>
+                <Label className="font-semibold text-base">Product Tags</Label>
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tag) => (
                     <Badge
@@ -242,7 +242,7 @@ export function ProductFilters({
 
             {/* MOQ Range */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold">Minimum Order Quantity</Label>
+              <Label className="font-semibold text-base">Minimum Order Quantity</Label>
               <div className="px-2">
                 <Slider
                   value={selectedFilters.moqRange}
@@ -252,7 +252,7 @@ export function ProductFilters({
                   step={100}
                   className="mb-2"
                 />
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-gray-600 text-sm">
                   <span>{selectedFilters.moqRange[0]} units</span>
                   <span>{selectedFilters.moqRange[1]} units</span>
                 </div>
@@ -264,23 +264,23 @@ export function ProductFilters({
 
       {/* Active Filter Pills */}
       {activeFilterCount > 0 && (
-        <div className="overflow-x-auto pb-2 -mx-1 px-1">
-          <div className="flex flex-nowrap sm:flex-wrap gap-2 min-w-max sm:min-w-0">
+        <div className="-mx-1 overflow-x-auto px-1 pb-2">
+          <div className="flex min-w-max flex-nowrap gap-2 sm:min-w-0 sm:flex-wrap">
             {selectedFilters.fabrics.map((fabricId) => {
               const fabric = fabrics.find((f) => f.id === fabricId);
               return fabric ? (
                 <Badge
                   key={`fabric-${fabricId}`}
                   variant="secondary"
-                  className="shrink-0 pl-3 pr-1 py-1"
+                  className="shrink-0 py-1 pr-1 pl-3"
                 >
                   {fabric.name}
                   <button
                     onClick={() => handleFabricToggle(fabricId)}
-                    className="ml-2 hover:text-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center -my-1 -mr-1"
+                    className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${fabric.name} filter`}
                   >
-                    <X className="w-4 h-4" />
+                    <X className="h-4 w-4" />
                   </button>
                 </Badge>
               ) : null;
@@ -292,42 +292,42 @@ export function ProductFilters({
                 <Badge
                   key={`cert-${certId}`}
                   variant="secondary"
-                  className="shrink-0 pl-3 pr-1 py-1"
+                  className="shrink-0 py-1 pr-1 pl-3"
                 >
                   {cert.name}
                   <button
                     onClick={() => handleCertificateToggle(certId)}
-                    className="ml-2 hover:text-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center -my-1 -mr-1"
+                    className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${cert.name} filter`}
                   >
-                    <X className="w-4 h-4" />
+                    <X className="h-4 w-4" />
                   </button>
                 </Badge>
               ) : null;
             })}
 
             {selectedFilters.tags.map((tag) => (
-              <Badge key={`tag-${tag}`} variant="secondary" className="shrink-0 pl-3 pr-1 py-1">
+              <Badge key={`tag-${tag}`} variant="secondary" className="shrink-0 py-1 pr-1 pl-3">
                 {tag}
                 <button
                   onClick={() => handleTagToggle(tag)}
-                  className="ml-2 hover:text-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center -my-1 -mr-1"
+                  className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
                   aria-label={`Remove ${tag} filter`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </Badge>
             ))}
 
             {(selectedFilters.moqRange[0] > 0 || selectedFilters.moqRange[1] < 10000) && (
-              <Badge variant="secondary" className="shrink-0 pl-3 pr-1 py-1">
+              <Badge variant="secondary" className="shrink-0 py-1 pr-1 pl-3">
                 MOQ: {selectedFilters.moqRange[0]}-{selectedFilters.moqRange[1]}
                 <button
                   onClick={() => handleMoqChange([0, 10000])}
-                  className="ml-2 hover:text-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center -my-1 -mr-1"
+                  className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
                   aria-label="Remove MOQ filter"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </Badge>
             )}

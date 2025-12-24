@@ -7,9 +7,9 @@
   height: 100%;
   overflow: hidden;
   pointer-events: auto;
-  /* Dynamic CSS custom properties for admin sync */
-  --gb-color1: #ff9ffc;
-  --gb-color2: #5227ff;
+  /* Dynamic CSS custom properties for admin sync - Using design tokens */
+  --gb-color1: var(--color-brand-magenta);
+  --gb-color2: var(--color-brand-purple);
   --gb-angle: 45deg;
   --gb-noise: 0.3;
   --gb-blend-mode: lighten;

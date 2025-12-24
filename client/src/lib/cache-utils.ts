@@ -10,9 +10,9 @@
 type MaybeCached<T> = { result: T } | T;
 
 export function unwrapResult<T>(x: MaybeCached<T> | undefined): T | undefined {
-	if (!x) return undefined;
-	if (typeof x === "object" && x !== null && "result" in x) {
-		return x.result;
-	}
-	return x as T;
+  if (!x) return undefined;
+  if (typeof x === "object" && x !== null && "result" in x) {
+    return x.result;
+  }
+  return x as T;
 }

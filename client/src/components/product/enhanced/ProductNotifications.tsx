@@ -73,7 +73,7 @@ export function NotificationProvider({
         }, newNotification.duration);
       }
     },
-    [maxNotifications, defaultDuration],
+    [maxNotifications, defaultDuration, removeNotification],
   );
 
   const removeNotification = useCallback((id: string) => {
@@ -106,7 +106,7 @@ function NotificationContainer() {
 
   return (
     <div
-      className="fixed top-4 right-4 z-toast space-y-3 pointer-events-none"
+      className="pointer-events-none fixed top-4 right-4 z-toast space-y-3"
       aria-live="polite"
       aria-label="Notifications"
     >
@@ -172,30 +172,30 @@ function NotificationItem({ notification }: NotificationItemProps) {
   return (
     <div
       className={cn(
-        "pointer-events-auto max-w-md w-full",
+        "pointer-events-auto w-full max-w-md",
         "transform transition-all duration-300 ease-out",
         isVisible && !isExiting
-          ? "translate-x-0 opacity-100 scale-100"
-          : "translate-x-full opacity-0 scale-95",
+          ? "translate-x-0 scale-100 opacity-100"
+          : "translate-x-full scale-95 opacity-0",
       )}
       role="alert"
       aria-live="assertive"
     >
-      <div className={cn("p-4 border rounded-lg shadow-lg", bgColorMap[notification.type])}>
+      <div className={cn("rounded-lg border p-4 shadow-lg", bgColorMap[notification.type])}>
         <div className="flex items-start">
           {/* Icon */}
-          <div className={cn("shrink-0 mr-3 mt-0.5", colorMap[notification.type])}>
-            <Icon className="w-5 h-5" aria-hidden="true" />
+          <div className={cn("mt-0.5 mr-3 shrink-0", colorMap[notification.type])}>
+            <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {notification.title && (
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
+              <h4 className="mb-1 font-semibold text-gray-900 text-sm dark:text-gray-100">
                 {notification.title}
               </h4>
             )}
-            <p className="text-sm text-gray-700 dark:text-gray-300">{notification.message}</p>
+            <p className="text-gray-700 text-sm dark:text-gray-300">{notification.message}</p>
 
             {/* Action Button */}
             {notification.action && (
@@ -203,7 +203,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
                 <button
                   onClick={handleAction}
                   className={cn(
-                    "text-sm font-medium px-3 py-1.5 rounded-md",
+                    "rounded-md px-3 py-1.5 font-medium text-sm",
                     "hover:bg-white/50 dark:hover:bg-gray-800/50",
                     "focus:outline-hidden focus:ring-2 focus:ring-offset-1",
                     "transition-colors duration-200",
@@ -217,28 +217,28 @@ function NotificationItem({ notification }: NotificationItemProps) {
           </div>
 
           {/* Close Button */}
-          <div className="shrink-0 ml-3">
+          <div className="ml-3 shrink-0">
             <button
               onClick={handleClose}
               className={cn(
                 "inline-flex rounded-md p-1.5",
                 "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
                 "hover:bg-gray-100 dark:hover:bg-gray-800",
-                "focus:outline-hidden focus:ring-2 focus:ring-offset-1 focus:ring-gray-500",
+                "focus:outline-hidden focus:ring-2 focus:ring-gray-500 focus:ring-offset-1",
                 "transition-colors duration-200",
               )}
               aria-label="Dismiss notification"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
 
         {/* Progress Bar for timed notifications */}
         {!notification.persistent && notification.duration && notification.duration > 0 && (
-          <div className="mt-3 bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
+          <div className="mt-3 h-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className={cn("h-full rounded-full notification-progress", {
+              className={cn("notification-progress h-full rounded-full", {
                 "bg-green-500": notification.type === "success",
                 "bg-red-500": notification.type === "error",
                 "bg-amber-500": notification.type === "warning",

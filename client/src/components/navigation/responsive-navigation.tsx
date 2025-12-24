@@ -39,9 +39,9 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
   return (
     <>
       {/* Desktop Navigation - Floating Dock (hidden on mobile) - positioned to avoid logo overlap */}
-      <div className="hidden lg:block fixed top-4 left-1/2 -translate-x-1/2 z-dock px-4 md:px-8 lg:px-12">
+      <div className="fixed top-4 left-1/2 z-dock hidden -translate-x-1/2 px-4 md:px-8 lg:block lg:px-12">
         {desktopLoading || !mounted ? (
-          <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-white shadow-sm-luxury-sm border border-luxury-light">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-luxury-light bg-white shadow-sm-luxury-sm">
             <IconLoader className="h-6 w-6 animate-spin text-luxury-gray-600" />
           </div>
         ) : (

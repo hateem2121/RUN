@@ -38,137 +38,105 @@ import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
  * - Maintains backward compatibility during transition phases
  */
 export function TechnologyManagement() {
-	const featureFlags = useTechnologyFeatureFlags();
+  const featureFlags = useTechnologyFeatureFlags();
 
-	// If modular components are disabled, show fallback message
-	if (!featureFlags.useModularTechnologyComponents) {
-		return (
-			<div className="p-6 max-w-4xl mx-auto">
-				<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-					<h2 className="text-lg font-semibold text-yellow-800 mb-2">
-						Technology Management - Legacy Mode
-					</h2>
-					<p className="text-yellow-700">
-						Modular technology components are currently disabled. Please enable
-						the modular components feature flag to access the full technology
-						management interface.
-					</p>
-				</div>
-			</div>
-		);
-	}
+  // If modular components are disabled, show fallback message
+  if (!featureFlags.useModularTechnologyComponents) {
+    return (
+      <div className="mx-auto max-w-4xl p-6">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+          <h2 className="mb-2 font-semibold text-lg text-yellow-800">
+            Technology Management - Legacy Mode
+          </h2>
+          <p className="text-yellow-700">
+            Modular technology components are currently disabled. Please enable the modular
+            components feature flag to access the full technology management interface.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-	return (
-		<div className="p-6 max-w-7xl mx-auto space-y-6">
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 mb-2">
-					Technology Management
-				</h1>
-				<p className="text-gray-600">
-					Manage your technology showcase, research, equipment, and innovation
-					content
-				</p>
-				<div className="mt-4 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg inline-block">
-					✅ Modular Architecture Active -{" "}
-					{
-						Object.keys({
-							hero: "TechnologyHeroManagement",
-							innovations: "TechnologyInnovationManagement",
-							equipment: "TechnologyEquipmentManagement",
-							research: "TechnologyResearchManagement",
-							roadmap: "TechnologyRoadmapManagement",
-							cta: "TechnologyCtaManagement",
-							background: "TechnologyGradientSettings",
-						}).length
-					}{" "}
-					components loaded
-				</div>
-			</div>
+  return (
+    <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <div className="mb-8">
+        <h1 className="mb-2 font-bold text-3xl text-gray-900">Technology Management</h1>
+        <p className="text-gray-600">
+          Manage your technology showcase, research, equipment, and innovation content
+        </p>
+        <div className="mt-4 inline-block rounded-lg bg-green-50 px-3 py-2 text-green-600 text-sm">
+          ✅ Modular Architecture Active -{" "}
+          {
+            Object.keys({
+              hero: "TechnologyHeroManagement",
+              innovations: "TechnologyInnovationManagement",
+              equipment: "TechnologyEquipmentManagement",
+              research: "TechnologyResearchManagement",
+              roadmap: "TechnologyRoadmapManagement",
+              cta: "TechnologyCtaManagement",
+              background: "TechnologyGradientSettings",
+            }).length
+          }{" "}
+          components loaded
+        </div>
+      </div>
 
-			<Tabs defaultValue="hero" className="space-y-6">
-				<TabsList className="grid w-full grid-cols-7">
-					<TabsTrigger value="hero" data-testid="tab-hero">
-						Hero Section
-					</TabsTrigger>
-					<TabsTrigger value="innovations" data-testid="tab-innovations">
-						Innovations
-					</TabsTrigger>
-					<TabsTrigger value="equipment" data-testid="tab-equipment">
-						Equipment
-					</TabsTrigger>
-					<TabsTrigger value="research" data-testid="tab-research">
-						Research
-					</TabsTrigger>
-					<TabsTrigger value="roadmap" data-testid="tab-roadmap">
-						Roadmap
-					</TabsTrigger>
-					<TabsTrigger value="cta" data-testid="tab-cta">
-						Call to Action
-					</TabsTrigger>
-					<TabsTrigger value="background" data-testid="tab-background">
-						Background
-					</TabsTrigger>
-				</TabsList>
+      <Tabs defaultValue="hero" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="hero" data-testid="tab-hero">
+            Hero Section
+          </TabsTrigger>
+          <TabsTrigger value="innovations" data-testid="tab-innovations">
+            Innovations
+          </TabsTrigger>
+          <TabsTrigger value="equipment" data-testid="tab-equipment">
+            Equipment
+          </TabsTrigger>
+          <TabsTrigger value="research" data-testid="tab-research">
+            Research
+          </TabsTrigger>
+          <TabsTrigger value="roadmap" data-testid="tab-roadmap">
+            Roadmap
+          </TabsTrigger>
+          <TabsTrigger value="cta" data-testid="tab-cta">
+            Call to Action
+          </TabsTrigger>
+          <TabsTrigger value="background" data-testid="tab-background">
+            Background
+          </TabsTrigger>
+        </TabsList>
 
-				<TabsContent
-					value="hero"
-					className="space-y-6"
-					data-testid="content-hero"
-				>
-					<TechnologyHeroManagement />
-				</TabsContent>
+        <TabsContent value="hero" className="space-y-6" data-testid="content-hero">
+          <TechnologyHeroManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="innovations"
-					className="space-y-6"
-					data-testid="content-innovations"
-				>
-					<TechnologyInnovationManagement />
-				</TabsContent>
+        <TabsContent value="innovations" className="space-y-6" data-testid="content-innovations">
+          <TechnologyInnovationManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="equipment"
-					className="space-y-6"
-					data-testid="content-equipment"
-				>
-					<TechnologyEquipmentManagement />
-				</TabsContent>
+        <TabsContent value="equipment" className="space-y-6" data-testid="content-equipment">
+          <TechnologyEquipmentManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="research"
-					className="space-y-6"
-					data-testid="content-research"
-				>
-					<TechnologyResearchManagement />
-				</TabsContent>
+        <TabsContent value="research" className="space-y-6" data-testid="content-research">
+          <TechnologyResearchManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="roadmap"
-					className="space-y-6"
-					data-testid="content-roadmap"
-				>
-					<TechnologyRoadmapManagement />
-				</TabsContent>
+        <TabsContent value="roadmap" className="space-y-6" data-testid="content-roadmap">
+          <TechnologyRoadmapManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="cta"
-					className="space-y-6"
-					data-testid="content-cta"
-				>
-					<TechnologyCtaManagement />
-				</TabsContent>
+        <TabsContent value="cta" className="space-y-6" data-testid="content-cta">
+          <TechnologyCtaManagement />
+        </TabsContent>
 
-				<TabsContent
-					value="background"
-					className="space-y-6"
-					data-testid="content-background"
-				>
-					<TechnologyGradientSettings
-						gradientData={TECHNOLOGY_DEFAULTS.gradientSettings}
-						setGradientData={() => {}} // Component manages its own state internally
-					/>
-				</TabsContent>
-			</Tabs>
-		</div>
-	);
+        <TabsContent value="background" className="space-y-6" data-testid="content-background">
+          <TechnologyGradientSettings
+            gradientData={TECHNOLOGY_DEFAULTS.gradientSettings}
+            setGradientData={() => {}} // Component manages its own state internally
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 }

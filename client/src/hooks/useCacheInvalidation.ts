@@ -9,6 +9,6 @@
  * Current behavior: No-op hook to maintain API compatibility.
  */
 export function useCacheInvalidationListener(_pattern: string) {
-	// No-op - cache invalidation is handled by React Query's built-in mechanisms
-	// and manual invalidation in mutation callbacks
+  // No-op - cache invalidation is handled by React Query's built-in mechanisms
+  // and manual invalidation in mutation callbacks
 }

@@ -109,7 +109,7 @@ export default function Contact() {
         body: JSON.stringify(payload),
       });
     },
-    onSuccess: (result) => {
+    onSuccess: (_result) => {
       setShowSuccess(true);
       form.reset();
       toast({
@@ -146,36 +146,36 @@ export default function Contact() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="h-12 w-12 animate-spin rounded-full border-gray-900 border-b-2"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 pt-32 pb-24">
-      <div className="container mx-auto p-6 md:p-8 lg:p-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+    <div className="min-h-screen bg-gray-50 pt-32 pb-24 text-gray-900">
+      <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
           {/* Left Column: Contact Form */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 relative group bg-white/10 dark:bg-white/5 backdrop-blur-md p-8 md:p-10 lg:p-12 rounded-xl border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
+          <div className="glass-card col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
             {/* Inner glow */}
-            <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
 
             {/* Hover shimmer - disabled on mobile for performance */}
             {!isMobile && (
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               </div>
             )}
 
-            <div className="relative z-10">
+            <div className="relative z-default">
               {!showSuccess ? (
                 <div>
                   <h1
-                    className="tracking-tighter leading-none mb-8 text-gray-800 text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold"
+                    className="mb-8 font-bold text-3xl text-gray-800 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
                     style={{ fontFamily: "'Anton', sans-serif" }}
                   >
                     {contactConfig?.heroTitle || "DROP US A MESSAGE"}
@@ -187,11 +187,11 @@ export default function Contact() {
                     data-testid="form-contact"
                   >
                     {/* Name Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
                         <Label
                           htmlFor="firstName"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           First Name <span className="text-red-500">*</span>
                         </Label>
@@ -199,10 +199,10 @@ export default function Contact() {
                           id="firstName"
                           data-testid="input-first-name"
                           {...form.register("firstName")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.firstName && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.firstName.message}
                           </p>
                         )}
@@ -210,7 +210,7 @@ export default function Contact() {
                       <div>
                         <Label
                           htmlFor="lastName"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Last Name <span className="text-red-500">*</span>
                         </Label>
@@ -218,10 +218,10 @@ export default function Contact() {
                           id="lastName"
                           data-testid="input-last-name"
                           {...form.register("lastName")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.lastName && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.lastName.message}
                           </p>
                         )}
@@ -229,11 +229,11 @@ export default function Contact() {
                     </div>
 
                     {/* Work Information */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
                         <Label
                           htmlFor="jobTitle"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Job Title
                         </Label>
@@ -241,13 +241,13 @@ export default function Contact() {
                           id="jobTitle"
                           data-testid="input-job-title"
                           {...form.register("jobTitle")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                       </div>
                       <div>
                         <Label
                           htmlFor="companyName"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Company Name
                         </Label>
@@ -255,17 +255,17 @@ export default function Contact() {
                           id="companyName"
                           data-testid="input-company-name"
                           {...form.register("companyName")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                       </div>
                     </div>
 
                     {/* Email and Country */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
                         <Label
                           htmlFor="email"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Email Address <span className="text-red-500">*</span>
                         </Label>
@@ -274,16 +274,16 @@ export default function Contact() {
                           type="email"
                           data-testid="input-email"
                           {...form.register("email")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.email && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.email.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="mb-2 block font-medium text-gray-700 text-sm">
                           Country <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
@@ -291,7 +291,7 @@ export default function Contact() {
                             type="button"
                             data-testid="button-country-dropdown"
                             onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs hover:border-gray-400 focus:outline-hidden focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 transition-colors sm:text-sm"
+                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs transition-colors hover:border-gray-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                           >
                             <span className="flex items-center">
                               {selectedCountry && (
@@ -307,7 +307,7 @@ export default function Contact() {
                             </span>
                           </button>
                           {showCountryDropdown && (
-                            <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
+                            <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 text-base shadow-xl sm:text-sm">
                               <div className="p-2">
                                 <Input
                                   type="text"
@@ -327,7 +327,7 @@ export default function Contact() {
                                       setShowCountryDropdown(false);
                                       setCountrySearch("");
                                     }}
-                                    className="text-gray-900 cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white"
+                                    className="cursor-pointer select-none py-2 pr-9 pl-3 text-gray-900 hover:bg-indigo-600 hover:text-white"
                                   >
                                     <div className="flex items-center">
                                       <img
@@ -344,7 +344,7 @@ export default function Contact() {
                           )}
                         </div>
                         {form.formState.errors.country && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.country.message}
                           </p>
                         )}
@@ -352,9 +352,9 @@ export default function Contact() {
                     </div>
 
                     {/* Platform and Contact Number */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="mb-2 block font-medium text-gray-700 text-sm">
                           Preferred Platform
                         </Label>
                         <div className="relative">
@@ -362,12 +362,12 @@ export default function Contact() {
                             type="button"
                             data-testid="button-platform-dropdown"
                             onClick={() => setShowPlatformDropdown(!showPlatformDropdown)}
-                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs hover:border-gray-400 focus:outline-hidden focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 transition-colors sm:text-sm"
+                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs transition-colors hover:border-gray-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                           >
                             <span className="block truncate">{selectedPlatform}</span>
                           </button>
                           {showPlatformDropdown && (
-                            <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
+                            <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 text-base shadow-xl sm:text-sm">
                               {platforms.map((platform) => (
                                 <li
                                   key={platform}
@@ -375,7 +375,7 @@ export default function Contact() {
                                     form.setValue("platform", platform);
                                     setShowPlatformDropdown(false);
                                   }}
-                                  className="text-gray-900 cursor-pointer select-none py-2 px-3 hover:bg-indigo-600 hover:text-white"
+                                  className="cursor-pointer select-none px-3 py-2 text-gray-900 hover:bg-indigo-600 hover:text-white"
                                 >
                                   {platform}
                                 </li>
@@ -387,19 +387,19 @@ export default function Contact() {
                       <div>
                         <Label
                           htmlFor="contactNumber"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Contact Number / Handle
                         </Label>
-                        <div className="flex items-center rounded-lg border border-gray-300 shadow-sm-xs overflow-hidden focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600 transition-colors">
-                          <span className="inline-flex items-center px-3 border-r border-gray-300 bg-gray-50 text-gray-700 sm:text-sm">
+                        <div className="flex items-center overflow-hidden rounded-lg border border-gray-300 shadow-sm-xs transition-colors focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600">
+                          <span className="inline-flex items-center border-gray-300 border-r bg-gray-50 px-3 text-gray-700 sm:text-sm">
                             {selectedCountry ? `+${selectedCountry.phone}` : "--"}
                           </span>
                           <Input
                             id="contactNumber"
                             data-testid="input-contact-number"
                             {...form.register("contactNumber")}
-                            className="flex-1 border-0 p-3 bg-transparent"
+                            className="flex-1 border-0 bg-transparent p-3"
                           />
                         </div>
                       </div>
@@ -410,7 +410,7 @@ export default function Contact() {
                       <div>
                         <Label
                           htmlFor="otherPlatform"
-                          className="block text-sm font-medium text-gray-700 mb-2"
+                          className="mb-2 block font-medium text-gray-700 text-sm"
                         >
                           Please specify platform
                         </Label>
@@ -418,7 +418,7 @@ export default function Contact() {
                           id="otherPlatform"
                           data-testid="input-other-platform"
                           {...form.register("otherPlatform")}
-                          className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                       </div>
                     )}
@@ -427,7 +427,7 @@ export default function Contact() {
                     <div>
                       <Label
                         htmlFor="message"
-                        className="block text-sm font-medium text-gray-700 mb-2"
+                        className="mb-2 block font-medium text-gray-700 text-sm"
                       >
                         Message <span className="text-red-500">*</span>
                       </Label>
@@ -436,10 +436,10 @@ export default function Contact() {
                         data-testid="textarea-message"
                         rows={5}
                         {...form.register("message")}
-                        className="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 shadow-sm-xs p-3 transition-colors"
+                        className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                       />
                       {form.formState.errors.message && (
-                        <p className="text-red-500 text-sm mt-2">
+                        <p className="mt-2 text-red-500 text-sm">
                           {form.formState.errors.message.message}
                         </p>
                       )}
@@ -447,7 +447,7 @@ export default function Contact() {
 
                     {/* Contact Preference */}
                     <div>
-                      <Label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Label className="mb-2 block font-medium text-gray-700 text-sm">
                         How should we contact you?
                       </Label>
                       <RadioGroup
@@ -485,13 +485,14 @@ export default function Contact() {
                         type="submit"
                         data-testid="button-submit"
                         disabled={mutation.isPending}
-                        className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-12 w-full py-3 px-4 hover:bg-[#1a2d40]/90 shadow-md hover:shadow-lg text-[#d4e7fa] bg-[#1a2d40]"
+                        size="lg"
+                        className="h-12 w-full bg-primary text-primary-foreground font-semibold shadow-md hover:shadow-lg"
                       >
                         {mutation.isPending
                           ? "Sending..."
                           : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                       </Button>
-                      <p className="text-xs text-gray-500 text-center mt-4">
+                      <p className="mt-4 text-center text-gray-500 text-xs">
                         {contactConfig?.formPrivacyText ||
                           "We value your privacy and will never share your information."}
                       </p>
@@ -499,14 +500,14 @@ export default function Contact() {
                   </form>
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <div className="inline-block bg-green-100 p-4 rounded-full mb-6">
+                <div className="py-12 text-center">
+                  <div className="mb-6 inline-block rounded-full bg-green-100 p-4">
                     <CheckCircle2 className="h-12 w-12 text-green-600" />
                   </div>
-                  <h2 className="text-3xl font-bold text-gray-800 mb-3">
+                  <h2 className="mb-3 font-bold text-3xl text-gray-800">
                     {contactConfig?.successHeading || "Thank you!"}
                   </h2>
-                  <p className="text-gray-600 mb-8">
+                  <p className="mb-8 text-gray-600">
                     {contactConfig?.successMessage ||
                       "We've received your message and will be in touch shortly."}
                   </p>
@@ -523,20 +524,20 @@ export default function Contact() {
           </div>
 
           {/* Right Column: Info Boxes */}
-          <div className="col-span-1 md:col-span-1 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 gap-6">
+          <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
             {/* Location Box */}
-            <div className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md p-6 lg:p-8 rounded-xl border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
-              <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <div className="glass-card p-6 lg:p-8">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
               <div className="relative z-10">
-                <MapPin className="h-6 w-6 mb-4 text-gray-800" />
-                <h2 className="text-xl font-bold tracking-tight mb-4">LOCATION</h2>
-                <p className="text-gray-600 mb-6">
+                <MapPin className="mb-4 h-6 w-6 text-gray-800" />
+                <h2 className="mb-4 font-bold text-xl tracking-tight">LOCATION</h2>
+                <p className="mb-6 text-gray-600">
                   {contactConfig?.locationLine1 || "123 Main Street,"}
                   <br />
                   {contactConfig?.locationLine2 || "Anytown, USA 12345"}
@@ -548,18 +549,18 @@ export default function Contact() {
             </div>
 
             {/* Contact Box */}
-            <div className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md p-6 lg:p-8 rounded-xl border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
-              <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <div className="glass-card p-6 lg:p-8">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
               <div className="relative z-10">
-                <Mail className="h-6 w-6 mb-4 text-gray-800" />
-                <h2 className="text-xl font-bold tracking-tight mb-4">CONTACT</h2>
-                <ul className="text-gray-600 space-y-2">
+                <Mail className="mb-4 h-6 w-6 text-gray-800" />
+                <h2 className="mb-4 font-bold text-xl tracking-tight">CONTACT</h2>
+                <ul className="space-y-2 text-gray-600">
                   <li>
                     <a
                       href={`mailto:${contactConfig?.email || "info@example.com"}`}
@@ -583,18 +584,18 @@ export default function Contact() {
             </div>
 
             {/* Trading Hours Box */}
-            <div className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md p-6 lg:p-8 rounded-xl border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
-              <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <div className="glass-card p-6 lg:p-8">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
               <div className="relative z-10">
-                <Clock className="h-6 w-6 mb-4 text-gray-800" />
-                <h2 className="text-xl font-bold tracking-tight mb-4">TRADING HOURS</h2>
-                <div className="text-gray-600 space-y-1">
+                <Clock className="mb-4 h-6 w-6 text-gray-800" />
+                <h2 className="mb-4 font-bold text-xl tracking-tight">TRADING HOURS</h2>
+                <div className="space-y-1 text-gray-600">
                   {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
                     contactConfig.tradingHours.map((hours, index) => (
                       <p key={index}>
@@ -619,18 +620,18 @@ export default function Contact() {
             </div>
 
             {/* Social Links Box */}
-            <div className="relative group bg-white/10 dark:bg-white/5 backdrop-blur-md p-6 lg:p-8 rounded-xl border border-gray-800/60 dark:border-gray-900/70 shadow-[0_0_15px_rgba(255,255,255,0.15)] overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 pointer-events-none" />
-              <div className="absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <div className="glass-card p-6 lg:p-8">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
               <div className="relative z-10">
-                <Share2 className="h-6 w-6 mb-4 text-gray-800" />
-                <h2 className="text-xl font-bold tracking-tight mb-4">FOLLOW US</h2>
-                <ul className="text-gray-600 space-y-2">
+                <Share2 className="mb-4 h-6 w-6 text-gray-800" />
+                <h2 className="mb-4 font-bold text-xl tracking-tight">FOLLOW US</h2>
+                <ul className="space-y-2 text-gray-600">
                   {contactConfig?.socialLinks &&
                   Object.keys(contactConfig.socialLinks).length > 0 ? (
                     Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
@@ -639,7 +640,7 @@ export default function Contact() {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hover:underline capitalize"
+                          className="capitalize hover:underline"
                           data-testid={`link-social-${platform.toLowerCase()}`}
                         >
                           {platform}

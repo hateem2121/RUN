@@ -3,20 +3,20 @@
 
 /* Main content container - Allow pointer events to pass through to background */
 .webgl-background {
-	pointer-events: none;
+  pointer-events: none;
 }
 
 /* Hero section - Allow Gradient Blinds interaction */
 .webgl-background .hero-section {
-	pointer-events: none !important;
+  pointer-events: none;
 }
 
 /* Hero section - Force pass-through for all non-interactive elements */
 .webgl-background .hero-section
-	*:not(a):not(button):not(input):not(select):not(textarea):not(
-		[role="button"]
-	):not([tabindex]:not([tabindex="-1"])):not(model-viewer) {
-	pointer-events: none !important;
+  *:not(a):not(button):not(input):not(select):not(textarea):not([role="button"]):not(
+    [tabindex]:not([tabindex="-1"])
+  ):not(model-viewer) {
+  pointer-events: none;
 }
 
 /* Hero section - Interactive elements capture events */
@@ -28,22 +28,22 @@
 .webgl-background .hero-section [role="button"],
 .webgl-background .hero-section [tabindex]:not([tabindex="-1"]),
 .webgl-background .hero-section model-viewer {
-	pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 /* CTA section - Block Gradient Blinds interaction to ensure hover animations work */
 .webgl-background .technology-cta {
-	pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 /* AGGRESSIVE: Force ALL tech card elements to pass through pointer events */
 .webgl-background .tech-cards-section,
 .webgl-background
-	.tech-cards-section
-	*:not(a):not(button):not(input):not(select):not(textarea):not(
-		[role="button"]
-	):not([tabindex]:not([tabindex="-1"])) {
-	pointer-events: none !important;
+  .tech-cards-section
+  *:not(a):not(button):not(input):not(select):not(textarea):not([role="button"]):not(
+    [tabindex]:not([tabindex="-1"])
+  ) {
+  pointer-events: none;
 }
 
 /* Ensure all interactive elements work */
@@ -54,11 +54,11 @@
 .webgl-background textarea,
 .webgl-background [role="button"],
 .webgl-background [tabindex]:not([tabindex="-1"]) {
-	pointer-events: auto;
+  pointer-events: auto;
 }
 
 /* 3D Model interaction guarantee */
 model-viewer {
-	pointer-events: auto !important;
-	touch-action: pan-y;
+  pointer-events: auto;
+  touch-action: pan-y;
 }

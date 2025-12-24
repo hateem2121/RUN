@@ -5,40 +5,40 @@
 
 // Type definitions for animation settings
 export interface AnimationSettings {
-	transitionDuration?: number;
-	easing?: string;
+  transitionDuration?: number;
+  easing?: string;
 }
 
 export interface ValidatedAnimationSettings {
-	transitionDuration: number;
-	easing: string;
+  transitionDuration: number;
+  easing: string;
 }
 
 export interface LiquidGlassSettings {
-	blur?: number;
-	opacity?: number;
-	borderOpacity?: number;
-	cardHoverScale?: number;
+  blur?: number;
+  opacity?: number;
+  borderOpacity?: number;
+  cardHoverScale?: number;
 }
 
 export interface ValidatedLiquidGlassSettings {
-	blur: number;
-	opacity: number;
-	borderOpacity: number;
-	cardHoverScale: number;
+  blur: number;
+  opacity: number;
+  borderOpacity: number;
+  cardHoverScale: number;
 }
 
 export interface ComponentAnimationSettings {
-	swipeAnimation?: AnimationSettings;
-	liquidGlass?: LiquidGlassSettings;
+  swipeAnimation?: AnimationSettings;
+  liquidGlass?: LiquidGlassSettings;
 }
 
 export const easingMap: Record<string, string> = {
-	"ease-in-out": "easeInOut",
-	"ease-in": "easeIn",
-	"ease-out": "easeOut",
-	ease: "easeInOut",
-	linear: "linear",
+  "ease-in-out": "easeInOut",
+  "ease-in": "easeIn",
+  "ease-out": "easeOut",
+  ease: "easeInOut",
+  linear: "linear",
 };
 
 /**
@@ -47,7 +47,7 @@ export const easingMap: Record<string, string> = {
  * @returns Framer Motion compatible easing string
  */
 export function convertEasingToFramerMotion(cssEasing: string): string {
-	return easingMap[cssEasing] || "easeInOut";
+  return easingMap[cssEasing] || "easeInOut";
 }
 
 /**
@@ -56,15 +56,15 @@ export function convertEasingToFramerMotion(cssEasing: string): string {
  * @returns Sanitized animation settings
  */
 export function validateAnimationSettings(
-	settings?: AnimationSettings,
+  settings?: AnimationSettings,
 ): ValidatedAnimationSettings {
-	return {
-		transitionDuration:
-			typeof settings?.transitionDuration === "number"
-				? Math.max(0.1, Math.min(5, settings.transitionDuration))
-				: 0.3,
-		easing: convertEasingToFramerMotion(settings?.easing || "ease-out"),
-	};
+  return {
+    transitionDuration:
+      typeof settings?.transitionDuration === "number"
+        ? Math.max(0.1, Math.min(5, settings.transitionDuration))
+        : 0.3,
+    easing: convertEasingToFramerMotion(settings?.easing || "ease-out"),
+  };
 }
 
 /**
@@ -73,26 +73,21 @@ export function validateAnimationSettings(
  * @returns Sanitized liquid glass settings
  */
 export function validateLiquidGlassSettings(
-	settings?: LiquidGlassSettings,
+  settings?: LiquidGlassSettings,
 ): ValidatedLiquidGlassSettings {
-	return {
-		blur:
-			typeof settings?.blur === "number"
-				? Math.max(0, Math.min(20, settings.blur))
-				: 5,
-		opacity:
-			typeof settings?.opacity === "number"
-				? Math.max(0, Math.min(100, settings.opacity))
-				: 10,
-		borderOpacity:
-			typeof settings?.borderOpacity === "number"
-				? Math.max(0, Math.min(100, settings.borderOpacity))
-				: 20,
-		cardHoverScale:
-			typeof settings?.cardHoverScale === "number"
-				? Math.max(1, Math.min(1.5, settings.cardHoverScale))
-				: 1.05,
-	};
+  return {
+    blur: typeof settings?.blur === "number" ? Math.max(0, Math.min(20, settings.blur)) : 5,
+    opacity:
+      typeof settings?.opacity === "number" ? Math.max(0, Math.min(100, settings.opacity)) : 10,
+    borderOpacity:
+      typeof settings?.borderOpacity === "number"
+        ? Math.max(0, Math.min(100, settings.borderOpacity))
+        : 20,
+    cardHoverScale:
+      typeof settings?.cardHoverScale === "number"
+        ? Math.max(1, Math.min(1.5, settings.cardHoverScale))
+        : 1.05,
+  };
 }
 
 /**
@@ -101,18 +96,18 @@ export function validateLiquidGlassSettings(
  * @param settings - Animation settings
  */
 export function logAnimationConfig(
-	component: string,
-	settings?: ComponentAnimationSettings,
+  _component: string,
+  settings?: ComponentAnimationSettings,
 ): void {
-	// Animation debugging disabled in production for performance
-	// Enable by changing false to true when needed for debugging
-	const DEBUG_ENABLED = false;
+  // Animation debugging disabled in production for performance
+  // Enable by changing false to true when needed for debugging
+  const DEBUG_ENABLED = false;
 
-	if (!DEBUG_ENABLED || process.env.NODE_ENV !== "development" || !settings) {
-		return;
-	}
-	if (settings.swipeAnimation) {
-	}
-	if (settings.liquidGlass) {
-	}
+  if (!DEBUG_ENABLED || process.env.NODE_ENV !== "development" || !settings) {
+    return;
+  }
+  if (settings.swipeAnimation) {
+  }
+  if (settings.liquidGlass) {
+  }
 }

@@ -144,17 +144,41 @@ export class ViteAssetManager {
 
   /**
    * Generates HTML tags for injection
+   * P2 Enhancement: Deferred loading for non-critical CSS
    */
   public generateInjectionHtml(): string {
     const { css, preload } = this.getCriticalAssets();
 
+    // Split CSS into critical (above-fold) and deferred
+    const criticalPatterns = [/index/, /base/, /reset/];
+    const deferredPatterns = [/admin/, /dashboard/, /chart/, /animation/];
+
+    const criticalCss: string[] = [];
+    const deferredCss: string[] = [];
+
+    css.forEach((file) => {
+      const isDeferred = deferredPatterns.some((pattern) => pattern.test(file));
+      if (isDeferred) {
+        deferredCss.push(file);
+      } else {
+        criticalCss.push(file);
+      }
+    });
+
     const linkTags = [
-      // CSS Preloads (High Priority)
-      ...css.map((file) => `<link rel="preload" href="/${file}" as="style">`),
+      // CSS Preloads (High Priority) - Critical only
+      ...criticalCss.map((file) => `<link rel="preload" href="/${file}" as="style">`),
       // JS Preloads (Parallel Fetch)
       ...preload.map((file) => `<link rel="modulepreload" href="/${file}">`),
-      // CSS Stylesheets (Blocking)
-      ...css.map((file) => `<link rel="stylesheet" href="/${file}">`),
+      // CSS Stylesheets (Critical - Blocking)
+      ...criticalCss.map((file) => `<link rel="stylesheet" href="/${file}">`),
+      // CSS Stylesheets (Deferred - Non-blocking)
+      // Uses media="print" trick: loads async, then applies on load
+      ...deferredCss.map(
+        (file) => `<link rel="stylesheet" href="/${file}" media="print" onload="this.media='all'">`,
+      ),
+      // Fallback for no-JS users
+      ...deferredCss.map((file) => `<noscript><link rel="stylesheet" href="/${file}"></noscript>`),
     ];
 
     return linkTags.join("\n");

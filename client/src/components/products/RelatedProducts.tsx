@@ -54,7 +54,7 @@ export function RelatedProducts({
     });
 
     return [...new Set(ids)].filter((id) => id > 0 && id < 1000000000000);
-  }, [products, currentProductId, categoryId, fabricId, tags]);
+  }, [products, currentProductId, getRelevanceScore]);
 
   // PHASE 1A: Batch fetch media for related products to eliminate N+1 requests
   const [batchedProductMedia, setBatchedProductMedia] = useState<Map<number, string>>(new Map());
@@ -76,7 +76,7 @@ export function RelatedProducts({
         });
 
         setBatchedProductMedia(mediaMap);
-      } catch (error) {}
+      } catch (_error) {}
     };
 
     fetchBatchedMedia();
@@ -129,8 +129,8 @@ export function RelatedProducts({
     const primaryId =
       product.primaryImageId ||
       product.primaryVideoId ||
-      (product.imageIds && product.imageIds[0]) ||
-      (product.videos && product.videos[0]);
+      product.imageIds?.[0] ||
+      product.videos?.[0];
     if (!primaryId || typeof primaryId !== "number") return null;
 
     // Return media info for LazyMediaEnhanced component
@@ -156,8 +156,8 @@ export function RelatedProducts({
 
   return (
     <div className="mt-16">
-      <h2 className="text-2xl font-bold mb-6">Related Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <h2 className="mb-6 font-bold text-2xl">Related Products</h2>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {relatedProducts.map((product) => {
           const primaryMedia = getPrimaryMedia(product);
           const productUrl = getProductUrl(product);
@@ -169,19 +169,19 @@ export function RelatedProducts({
 
           return (
             <Link href={productUrl} key={product.id}>
-              <Card className="group cursor-pointer overflow-hidden hover:shadow-lg transition-shadow-sm h-full">
+              <Card className="group h-full cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg">
                 {/* Media Preview */}
-                <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
                   {primaryMedia ? (
                     <LazyMediaEnhanced
                       mediaId={primaryMedia.id}
                       alt={product.name || "Related Product"}
-                      className="w-full h-full"
+                      className="h-full w-full"
                       priority={false}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <LayoutGrid className="w-12 h-12" />
+                    <div className="flex h-full w-full items-center justify-center text-gray-400">
+                      <LayoutGrid className="h-12 w-12" />
                     </div>
                   )}
 
@@ -198,12 +198,12 @@ export function RelatedProducts({
 
                 {/* Product Info */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">
+                  <h3 className="mb-1 font-semibold text-lg transition-colors group-hover:text-blue-600">
                     {product.name || "Unnamed Product"}
                   </h3>
-                  {product.sku && <p className="text-sm text-gray-600 mb-2">SKU: {product.sku}</p>}
+                  {product.sku && <p className="mb-2 text-gray-600 text-sm">SKU: {product.sku}</p>}
                   {product.description && (
-                    <p className="text-sm text-gray-700 line-clamp-2">{product.description}</p>
+                    <p className="line-clamp-2 text-gray-700 text-sm">{product.description}</p>
                   )}
                 </div>
               </Card>

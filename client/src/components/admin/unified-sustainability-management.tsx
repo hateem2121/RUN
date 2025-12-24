@@ -1,34 +1,25 @@
-import {
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	sortableKeyboardCoordinates,
-	useSortable,
-} from "@dnd-kit/sortable";
+import { KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type {
-	MediaAsset,
-	SustainabilityGoal,
-	SustainabilityInitiative,
-	SustainabilityMetric,
-	UnifiedSustainability,
+  MediaAsset,
+  SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
+  UnifiedSustainability,
 } from "@shared/schema";
 import {
-	Droplets,
-	Edit,
-	GripVertical,
-	Leaf,
-	Recycle,
-	Save,
-	Target,
-	TreePine,
-	TrendingUp,
-	Undo2,
-	Wind,
+  Droplets,
+  Edit,
+  GripVertical,
+  Leaf,
+  Recycle,
+  Save,
+  Target,
+  TreePine,
+  TrendingUp,
+  Undo2,
+  Wind,
 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
@@ -57,721 +48,682 @@ import { MetricsTabContent } from "./sustainability/metrics-tab";
 // So I should keep the definition here.
 
 const SortableMetricItem = memo(function SortableMetricItem({
-	metric,
-	onEdit,
-	onDelete,
+  metric,
+  onEdit,
+  onDelete,
 }: {
-	metric: SustainabilityMetric;
-	onEdit: (metric: SustainabilityMetric) => void;
-	onDelete: (id: number) => void;
+  metric: SustainabilityMetric;
+  onEdit: (metric: SustainabilityMetric) => void;
+  onDelete: (id: number) => void;
 }) {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({
-			id: metric.id,
-		});
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: metric.id,
+  });
 
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
-	const IconComponent =
-		{
-			Leaf,
-			Droplets,
-			Wind,
-			Recycle,
-			TreePine,
-			Target,
-			TrendingUp,
-		}[metric.iconName || "Leaf"] || Leaf;
+  const IconComponent =
+    {
+      Leaf,
+      Droplets,
+      Wind,
+      Recycle,
+      TreePine,
+      Target,
+      TrendingUp,
+    }[metric.iconName || "Leaf"] || Leaf;
 
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className="bg-white rounded-lg border p-4 mb-2 shadow-sm-xs"
-		>
-			<div className="flex items-center justify-between">
-				<div className="flex items-center gap-4">
-					<div
-						{...attributes}
-						{...listeners}
-						className="cursor-move text-gray-400 hover:text-gray-600"
-					>
-						<GripVertical className="w-5 h-5" />
-					</div>
-					<div className="flex items-center gap-3">
-						<div className="p-2 bg-green-100 rounded-lg">
-							<IconComponent className="w-5 h-5 text-green-600" />
-						</div>
-						<div>
-							<h4 className="font-medium text-gray-900">{metric.name}</h4>
-							<div className="flex items-center gap-2 text-sm text-gray-600">
-								<span className="font-semibold">
-									{metric.value} {metric.unit}
-								</span>
-								<span className="text-xs px-2 py-0.5 rounded-full bg-gray-100">
-									{metric.category}
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button size="sm" variant="ghost" onClick={() => onEdit(metric)}>
-						<Edit className="w-4 h-4" />
-					</Button>
-					<DeleteConfirmationDialog
-						onConfirm={() => onDelete(metric.id)}
-						title="Delete Metric"
-						description="Are you sure you want to delete this sustainability metric?"
-					/>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div ref={setNodeRef} style={style} className="admin-sortable-card">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div
+            {...attributes}
+            {...listeners}
+            className="cursor-move text-gray-400 hover:text-gray-600"
+          >
+            <GripVertical className="h-5 w-5" />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-green-100 p-2">
+              <IconComponent className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <h4 className="font-medium text-gray-900">{metric.name}</h4>
+              <div className="flex items-center gap-2 text-gray-600 text-sm">
+                <span className="font-semibold">
+                  {metric.value} {metric.unit}
+                </span>
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
+                  {metric.category}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => onEdit(metric)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          <DeleteConfirmationDialog
+            onConfirm={() => onDelete(metric.id)}
+            title="Delete Metric"
+            description="Are you sure you want to delete this sustainability metric?"
+          />
+        </div>
+      </div>
+    </div>
+  );
 });
 
 const SortableInitiativeItem = memo(function SortableInitiativeItem({
-	initiative,
-	onEdit,
-	onDelete,
+  initiative,
+  onEdit,
+  onDelete,
 }: {
-	initiative: SustainabilityInitiative;
-	onEdit: (initiative: SustainabilityInitiative) => void;
-	onDelete: (id: number) => void;
+  initiative: SustainabilityInitiative;
+  onEdit: (initiative: SustainabilityInitiative) => void;
+  onDelete: (id: number) => void;
 }) {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({
-			id: initiative.id,
-		});
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: initiative.id,
+  });
 
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
-	const IconComponent =
-		{
-			Leaf,
-			Droplets,
-			Wind,
-			Recycle,
-			TreePine,
-			Target,
-			TrendingUp,
-		}["Leaf"] || Leaf;
+  const IconComponent =
+    {
+      Leaf,
+      Droplets,
+      Wind,
+      Recycle,
+      TreePine,
+      Target,
+      TrendingUp,
+    }.Leaf || Leaf;
 
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className="bg-white rounded-lg border p-4 mb-2 shadow-sm-xs"
-		>
-			<div className="flex items-start justify-between">
-				<div className="flex items-start gap-4 flex-1">
-					<div
-						{...attributes}
-						{...listeners}
-						className="cursor-move text-gray-400 hover:text-gray-600 mt-1"
-					>
-						<GripVertical className="w-5 h-5" />
-					</div>
-					<div className="flex-1">
-						<div className="flex items-start gap-3">
-							<div className="p-2 bg-green-100 rounded-lg">
-								<IconComponent className="w-5 h-5 text-green-600" />
-							</div>
-							<div className="flex-1">
-								<h4 className="font-medium text-gray-900">
-									{initiative.title}
-								</h4>
-								{initiative.description && (
-									<p className="text-sm text-gray-600 mt-2">
-										{initiative.description}
-									</p>
-								)}
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button size="sm" variant="ghost" onClick={() => onEdit(initiative)}>
-						<Edit className="w-4 h-4" />
-					</Button>
-					<DeleteConfirmationDialog
-						onConfirm={() => onDelete(initiative.id)}
-						title="Delete Initiative"
-						description="Are you sure you want to delete this sustainability initiative?"
-					/>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div ref={setNodeRef} style={style} className="admin-sortable-card">
+      <div className="flex items-start justify-between">
+        <div className="flex flex-1 items-start gap-4">
+          <div
+            {...attributes}
+            {...listeners}
+            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+          >
+            <GripVertical className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-green-100 p-2">
+                <IconComponent className="h-5 w-5 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-medium text-gray-900">{initiative.title}</h4>
+                {initiative.description && (
+                  <p className="mt-2 text-gray-600 text-sm">{initiative.description}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => onEdit(initiative)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          <DeleteConfirmationDialog
+            onConfirm={() => onDelete(initiative.id)}
+            title="Delete Initiative"
+            description="Are you sure you want to delete this sustainability initiative?"
+          />
+        </div>
+      </div>
+    </div>
+  );
 });
 
 const SortableGoalItem = memo(function SortableGoalItem({
-	goal,
-	onEdit,
-	onDelete,
+  goal,
+  onEdit,
+  onDelete,
 }: {
-	goal: SustainabilityGoal;
-	onEdit: (goal: SustainabilityGoal) => void;
-	onDelete: (id: number) => void;
+  goal: SustainabilityGoal;
+  onEdit: (goal: SustainabilityGoal) => void;
+  onDelete: (id: number) => void;
 }) {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id: goal.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: goal.id });
 
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
-	const progressPercentage =
-		goal.targetValue && goal.currentValue
-			? Math.round((Number(goal.currentValue) / Number(goal.targetValue)) * 100)
-			: 0;
+  const progressPercentage =
+    goal.targetValue && goal.currentValue
+      ? Math.round((Number(goal.currentValue) / Number(goal.targetValue)) * 100)
+      : 0;
 
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className="bg-white rounded-lg border p-4 mb-2 shadow-sm-xs"
-		>
-			<div className="flex items-start justify-between">
-				<div className="flex items-start gap-4 flex-1">
-					<div
-						{...attributes}
-						{...listeners}
-						className="cursor-move text-gray-400 hover:text-gray-600 mt-1"
-					>
-						<GripVertical className="w-5 h-5" />
-					</div>
-					<div className="flex-1">
-						<div className="flex items-start gap-3">
-							<div className="p-2 bg-blue-100 rounded-lg">
-								<Target className="w-5 h-5 text-blue-600" />
-							</div>
-							<div className="flex-1">
-								<h4 className="font-medium text-gray-900">{goal.title}</h4>
-								<div className="flex items-center gap-4 mt-2">
-									<div className="text-sm text-gray-600">
-										<span className="font-semibold">{goal.currentValue}</span> /{" "}
-										<span>{goal.targetValue}</span> {goal.unit}
-									</div>
-									<div className="text-xs px-2 py-0.5 rounded-full bg-gray-100">
-										Target: {goal.targetYear || "TBD"}
-									</div>
-									<div
-										className={`text-xs px-2 py-0.5 rounded-full ${
-											progressPercentage >= 100
-												? "bg-green-100 text-green-700"
-												: progressPercentage >= 75
-													? "bg-blue-100 text-blue-700"
-													: progressPercentage >= 50
-														? "bg-yellow-100 text-yellow-700"
-														: "bg-red-100 text-red-700"
-										}`}
-									>
-										{progressPercentage}%
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button size="sm" variant="ghost" onClick={() => onEdit(goal)}>
-						<Edit className="w-4 h-4" />
-					</Button>
-					<DeleteConfirmationDialog
-						onConfirm={() => onDelete(goal.id)}
-						title="Delete Goal"
-						description="Are you sure you want to delete this sustainability goal?"
-					/>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div ref={setNodeRef} style={style} className="admin-sortable-card">
+      <div className="flex items-start justify-between">
+        <div className="flex flex-1 items-start gap-4">
+          <div
+            {...attributes}
+            {...listeners}
+            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+          >
+            <GripVertical className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-blue-100 p-2">
+                <Target className="h-5 w-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-medium text-gray-900">{goal.title}</h4>
+                <div className="mt-2 flex items-center gap-4">
+                  <div className="text-gray-600 text-sm">
+                    <span className="font-semibold">{goal.currentValue}</span> /{" "}
+                    <span>{goal.targetValue}</span> {goal.unit}
+                  </div>
+                  <div className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
+                    Target: {goal.targetYear || "TBD"}
+                  </div>
+                  <div
+                    className={`rounded-full px-2 py-0.5 text-xs ${
+                      progressPercentage >= 100
+                        ? "bg-green-100 text-green-700"
+                        : progressPercentage >= 75
+                        ? "bg-blue-100 text-blue-700"
+                        : progressPercentage >= 50
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {progressPercentage}%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => onEdit(goal)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          <DeleteConfirmationDialog
+            onConfirm={() => onDelete(goal.id)}
+            title="Delete Goal"
+            description="Are you sure you want to delete this sustainability goal?"
+          />
+        </div>
+      </div>
+    </div>
+  );
 });
 
 export function UnifiedSustainabilityManagement() {
-	// Removed unused useLocation hook
+  // Removed unused useLocation hook
 
-	const { toast } = useToast();
+  const { toast } = useToast();
 
-	// URL Param logic for active tab
-	const getTabFromUrl = () => {
-		const searchParams = new URLSearchParams(window.location.search);
-		return searchParams.get("tab") || "hero";
-	};
+  // URL Param logic for active tab
+  const getTabFromUrl = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get("tab") || "hero";
+  };
 
-	const [activeTab, setActiveTab] = useState(getTabFromUrl);
-	const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
-	// Sync state with URL when tab changes
-	const handleTabChange = (value: string) => {
-		setActiveTab(value);
-		const searchParams = new URLSearchParams(window.location.search);
-		searchParams.set("tab", value);
-		const newUrl = window.location.pathname + "?" + searchParams.toString();
-		window.history.pushState({}, "", newUrl);
-	};
+  // Sync state with URL when tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("tab", value);
+    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
 
-	// Listen to popstate (back/forward) to sync tab
-	useEffect(() => {
-		const handlePopState = () => {
-			setActiveTab(getTabFromUrl());
-		};
-		window.addEventListener("popstate", handlePopState);
-		return () => window.removeEventListener("popstate", handlePopState);
-	}, []);
+  // Listen to popstate (back/forward) to sync tab
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTab(getTabFromUrl());
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [getTabFromUrl]);
 
-	// Local form state to prevent auto-saving on every keystroke
-	const [localForm, setLocalForm] = useState<Partial<UnifiedSustainability>>(
-		{},
-	);
-	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  // Local form state to prevent auto-saving on every keystroke
+  const [localForm, setLocalForm] = useState<Partial<UnifiedSustainability>>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-	// Note: Individual tab components manage their own dialog/form/editing states internally
+  // Note: Individual tab components manage their own dialog/form/editing states internally
 
-	// Initiative validation state
-	// Use data and pagination hook
-	const {
-		isLoading,
-		unifiedData,
-		metrics,
-		initiatives,
-		goals,
-		availableCertificates,
-		paginatedMetrics,
-		paginatedInitiatives,
-		paginatedGoals,
-		metricsTotalPages,
-		initiativesTotalPages,
-		goalsTotalPages,
-		pagination,
-	} = useAdminSustainabilityData();
+  // Initiative validation state
+  // Use data and pagination hook
+  const {
+    isLoading,
+    unifiedData,
+    metrics,
+    initiatives,
+    goals,
+    availableCertificates,
+    paginatedMetrics,
+    paginatedInitiatives,
+    paginatedGoals,
+    metricsTotalPages,
+    initiativesTotalPages,
+    goalsTotalPages,
+    pagination,
+  } = useAdminSustainabilityData();
 
-	const {
-		metricsPage,
-		setMetricsPage,
-		initiativesPage,
-		setInitiativesPage,
-		goalsPage,
-		setGoalsPage,
-	} = pagination;
+  const {
+    metricsPage,
+    setMetricsPage,
+    initiativesPage,
+    setInitiativesPage,
+    goalsPage,
+    setGoalsPage,
+  } = pagination;
 
-	// Note: Validation logic now handled within individual tab components
-	// Drag and drop sensors
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		}),
-	);
+  // Note: Validation logic now handled within individual tab components
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
-	// Sync server data to local form state
-	const resetForm = () => {
-		if (unifiedData) {
-			const mappedData: Partial<UnifiedSustainability> = {
-				...unifiedData,
-				data: {
-					...unifiedData.data,
-					headline: unifiedData.headline,
-					subheadline: unifiedData.subheadline,
-					backgroundMediaId: unifiedData.backgroundImageId,
-					ctaText: unifiedData.ctaText,
-					ctaLink: unifiedData.ctaLink,
-					certificationIds: unifiedData.certificationIds,
-				},
-			};
-			setLocalForm(mappedData);
-			setHasUnsavedChanges(false);
-		}
-	};
+  // Sync server data to local form state
+  const resetForm = () => {
+    if (unifiedData) {
+      const mappedData: Partial<UnifiedSustainability> = {
+        ...unifiedData,
+        data: {
+          ...unifiedData.data,
+          headline: unifiedData.headline,
+          subheadline: unifiedData.subheadline,
+          backgroundMediaId: unifiedData.backgroundImageId,
+          ctaText: unifiedData.ctaText,
+          ctaLink: unifiedData.ctaLink,
+          certificationIds: unifiedData.certificationIds,
+        },
+      };
+      setLocalForm(mappedData);
+      setHasUnsavedChanges(false);
+    }
+  };
 
-	useEffect(() => {
-		resetForm();
-	}, [unifiedData]);
+  useEffect(() => {
+    resetForm();
+  }, [resetForm]);
 
-	// Use mutations hook
-	const mutations = useAdminSustainabilityMutations();
-	const updateMutation = mutations.updateConfig;
+  // Use mutations hook
+  const mutations = useAdminSustainabilityMutations();
+  const updateMutation = mutations.updateConfig;
 
-	const handleLocalUpdate = (updates: Partial<UnifiedSustainability>) => {
-		setLocalForm((prev) => ({ ...prev, ...updates }));
-		setHasUnsavedChanges(true);
-	};
+  const handleLocalUpdate = (updates: Partial<UnifiedSustainability>) => {
+    setLocalForm((prev) => ({ ...prev, ...updates }));
+    setHasUnsavedChanges(true);
+  };
 
-	const handleSave = () => {
-		// Map localForm fields to database schema
-		const cleanedData: Partial<UnifiedSustainability> = {};
+  const handleSave = () => {
+    // Map localForm fields to database schema
+    const cleanedData: Partial<UnifiedSustainability> = {};
 
-		// Core fields (database columns)
-		if (localForm.title !== undefined) cleanedData.title = localForm.title;
-		if (localForm.content !== undefined)
-			cleanedData.content = localForm.content;
-		if (localForm.isActive !== undefined)
-			cleanedData.isActive = localForm.isActive;
+    // Core fields (database columns)
+    if (localForm.title !== undefined) cleanedData.title = localForm.title;
+    if (localForm.content !== undefined) cleanedData.content = localForm.content;
+    if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
 
-		// Hero section fields (database columns at top-level, not in data JSONB)
-		// These are stored in localForm.data.* by UI but need to go to top-level columns
-		if (localForm.data?.headline !== undefined)
-			cleanedData.headline = localForm.data.headline;
-		if (localForm.data?.subheadline !== undefined)
-			cleanedData.subheadline = localForm.data.subheadline;
-		if (localForm.data?.backgroundMediaId !== undefined)
-			cleanedData.backgroundImageId = localForm.data.backgroundMediaId;
-		if (localForm.data?.ctaText !== undefined)
-			cleanedData.ctaText = localForm.data.ctaText;
-		if (localForm.data?.ctaLink !== undefined)
-			cleanedData.ctaLink = localForm.data.ctaLink;
+    // Hero section fields (database columns at top-level, not in data JSONB)
+    // These are stored in localForm.data.* by UI but need to go to top-level columns
+    if (localForm.data?.headline !== undefined) cleanedData.headline = localForm.data.headline;
+    if (localForm.data?.subheadline !== undefined)
+      cleanedData.subheadline = localForm.data.subheadline;
+    if (localForm.data?.backgroundMediaId !== undefined)
+      cleanedData.backgroundImageId = localForm.data.backgroundMediaId;
+    if (localForm.data?.ctaText !== undefined) cleanedData.ctaText = localForm.data.ctaText;
+    if (localForm.data?.ctaLink !== undefined) cleanedData.ctaLink = localForm.data.ctaLink;
 
-		// Features Section
-		if (localForm.featuresTitle !== undefined)
-			cleanedData.featuresTitle = localForm.featuresTitle;
-		if (localForm.featuresDescription !== undefined)
-			cleanedData.featuresDescription = localForm.featuresDescription;
+    // Features Section
+    if (localForm.featuresTitle !== undefined) cleanedData.featuresTitle = localForm.featuresTitle;
+    if (localForm.featuresDescription !== undefined)
+      cleanedData.featuresDescription = localForm.featuresDescription;
 
-		// Fabric Portfolio Section
-		if (localForm.fabricPortfolioTitle !== undefined)
-			cleanedData.fabricPortfolioTitle = localForm.fabricPortfolioTitle;
-		if (localForm.fabricPortfolioDescription !== undefined)
-			cleanedData.fabricPortfolioDescription =
-				localForm.fabricPortfolioDescription;
+    // Fabric Portfolio Section
+    if (localForm.fabricPortfolioTitle !== undefined)
+      cleanedData.fabricPortfolioTitle = localForm.fabricPortfolioTitle;
+    if (localForm.fabricPortfolioDescription !== undefined)
+      cleanedData.fabricPortfolioDescription = localForm.fabricPortfolioDescription;
 
-		// Call To Action Section
-		if (localForm.callToActionTitle !== undefined)
-			cleanedData.callToActionTitle = localForm.callToActionTitle;
-		if (localForm.callToActionDescription !== undefined)
-			cleanedData.callToActionDescription = localForm.callToActionDescription;
-		if (localForm.callToActionButtonText !== undefined)
-			cleanedData.callToActionButtonText = localForm.callToActionButtonText;
-		if (localForm.callToActionButtonLink !== undefined)
-			cleanedData.callToActionButtonLink = localForm.callToActionButtonLink;
+    // Call To Action Section
+    if (localForm.callToActionTitle !== undefined)
+      cleanedData.callToActionTitle = localForm.callToActionTitle;
+    if (localForm.callToActionDescription !== undefined)
+      cleanedData.callToActionDescription = localForm.callToActionDescription;
+    if (localForm.callToActionButtonText !== undefined)
+      cleanedData.callToActionButtonText = localForm.callToActionButtonText;
+    if (localForm.callToActionButtonLink !== undefined)
+      cleanedData.callToActionButtonLink = localForm.callToActionButtonLink;
 
-		// Section Headers
-		if (localForm.metricsTitle !== undefined)
-			cleanedData.metricsTitle = localForm.metricsTitle;
-		if (localForm.metricsDescription !== undefined)
-			cleanedData.metricsDescription = localForm.metricsDescription;
-		if (localForm.certificationsTitle !== undefined)
-			cleanedData.certificationsTitle = localForm.certificationsTitle;
-		if (localForm.certificationsDescription !== undefined)
-			cleanedData.certificationsDescription =
-				localForm.certificationsDescription;
-		if (localForm.certificationsFooterNote !== undefined)
-			cleanedData.certificationsFooterNote = localForm.certificationsFooterNote;
-		if (localForm.initiativesTitle !== undefined)
-			cleanedData.initiativesTitle = localForm.initiativesTitle;
-		if (localForm.initiativesDescription !== undefined)
-			cleanedData.initiativesDescription = localForm.initiativesDescription;
-		if (localForm.goalsTitle !== undefined)
-			cleanedData.goalsTitle = localForm.goalsTitle;
-		if (localForm.goalsDescription !== undefined)
-			cleanedData.goalsDescription = localForm.goalsDescription;
+    // Section Headers
+    if (localForm.metricsTitle !== undefined) cleanedData.metricsTitle = localForm.metricsTitle;
+    if (localForm.metricsDescription !== undefined)
+      cleanedData.metricsDescription = localForm.metricsDescription;
+    if (localForm.certificationsTitle !== undefined)
+      cleanedData.certificationsTitle = localForm.certificationsTitle;
+    if (localForm.certificationsDescription !== undefined)
+      cleanedData.certificationsDescription = localForm.certificationsDescription;
+    if (localForm.certificationsFooterNote !== undefined)
+      cleanedData.certificationsFooterNote = localForm.certificationsFooterNote;
+    if (localForm.initiativesTitle !== undefined)
+      cleanedData.initiativesTitle = localForm.initiativesTitle;
+    if (localForm.initiativesDescription !== undefined)
+      cleanedData.initiativesDescription = localForm.initiativesDescription;
+    if (localForm.goalsTitle !== undefined) cleanedData.goalsTitle = localForm.goalsTitle;
+    if (localForm.goalsDescription !== undefined)
+      cleanedData.goalsDescription = localForm.goalsDescription;
 
-		// Certification IDs (database column, JSONB array)
-		if (localForm.data?.certificationIds !== undefined)
-			cleanedData.certificationIds = localForm.data.certificationIds;
+    // Certification IDs (database column, JSONB array)
+    if (localForm.data?.certificationIds !== undefined)
+      cleanedData.certificationIds = localForm.data.certificationIds;
 
-		// JSONB data field - legacy/extra fields
-		const dataFields: Record<string, any> = {};
-		if (localForm.data?.highlightedFeatures !== undefined)
-			dataFields.highlightedFeatures = localForm.data.highlightedFeatures;
-		if (
-			localForm.data?.statistics !== undefined &&
-			localForm.data.statistics !== null
-		)
-			dataFields.statistics = localForm.data.statistics;
-		if (
-			localForm.data?.impactMetrics &&
-			typeof localForm.data.impactMetrics === "object" &&
-			localForm.data.impactMetrics !== null
-		) {
-			dataFields.impactMetrics = localForm.data.impactMetrics;
-		}
-		if (
-			localForm.data?.initiatives !== undefined &&
-			localForm.data.initiatives !== null
-		)
-			dataFields.initiatives = localForm.data.initiatives;
-		if (localForm.data?.goals !== undefined && localForm.data.goals !== null)
-			dataFields.goals = localForm.data.goals;
+    // JSONB data field - legacy/extra fields
+    const dataFields: Record<string, any> = {};
+    if (localForm.data?.highlightedFeatures !== undefined)
+      dataFields.highlightedFeatures = localForm.data.highlightedFeatures;
+    if (localForm.data?.statistics !== undefined && localForm.data.statistics !== null)
+      dataFields.statistics = localForm.data.statistics;
+    if (
+      localForm.data?.impactMetrics &&
+      typeof localForm.data.impactMetrics === "object" &&
+      localForm.data.impactMetrics !== null
+    ) {
+      dataFields.impactMetrics = localForm.data.impactMetrics;
+    }
+    if (localForm.data?.initiatives !== undefined && localForm.data.initiatives !== null)
+      dataFields.initiatives = localForm.data.initiatives;
+    if (localForm.data?.goals !== undefined && localForm.data.goals !== null)
+      dataFields.goals = localForm.data.goals;
 
-		if (Object.keys(dataFields).length > 0) {
-			cleanedData.data = dataFields;
-		}
+    if (Object.keys(dataFields).length > 0) {
+      cleanedData.data = dataFields;
+    }
 
-		// REMOVED: metrics JSONB column update (use sustainability_metrics table instead)
+    // REMOVED: metrics JSONB column update (use sustainability_metrics table instead)
 
-		updateMutation.mutate(cleanedData, {
-			onSuccess: () => {
-				setHasUnsavedChanges(false);
-				toast({
-					title: "Configuration saved",
-					description:
-						"Sustainability settings have been successfully updated.",
-				});
-			},
-			onError: () => {
-				toast({
-					title: "Error saving configuration",
-					description:
-						"Failed to save sustainability settings. Please try again.",
-					variant: "destructive",
-				});
-			},
-		});
-	};
+    updateMutation.mutate(cleanedData, {
+      onSuccess: () => {
+        setHasUnsavedChanges(false);
+        toast({
+          title: "Configuration saved",
+          description: "Sustainability settings have been successfully updated.",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Error saving configuration",
+          description: "Failed to save sustainability settings. Please try again.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
 
-	const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
-		// Handle both single asset and array (dialog uses single mode but type supports both)
-		const media = Array.isArray(assets) ? assets[0] : assets;
-		if (media) {
-			handleLocalUpdate({
-				data: { ...localForm.data, backgroundMediaId: media.id },
-			});
-			setIsMediaPickerOpen(false);
-		}
-	};
+  const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
+    // Handle both single asset and array (dialog uses single mode but type supports both)
+    const media = Array.isArray(assets) ? assets[0] : assets;
+    if (media) {
+      handleLocalUpdate({
+        data: { ...localForm.data, backgroundMediaId: media.id },
+      });
+      setIsMediaPickerOpen(false);
+    }
+  };
 
-	// Get all mutations from the hook
-	const createMetricMutation = mutations.createMetric;
-	const updateMetricMutation = mutations.updateMetric;
-	const deleteMetricMutation = mutations.deleteMetric;
-	const reorderMetricsMutation = mutations.reorderMetrics;
-	const createInitiativeMutation = mutations.createInitiative;
-	const updateInitiativeMutation = mutations.updateInitiative;
-	const deleteInitiativeMutation = mutations.deleteInitiative;
-	const reorderInitiativesMutation = mutations.reorderInitiatives;
-	const createGoalMutation = mutations.createGoal;
-	const updateGoalMutation = mutations.updateGoal;
-	const deleteGoalMutation = mutations.deleteGoal;
+  // Get all mutations from the hook
+  const createMetricMutation = mutations.createMetric;
+  const updateMetricMutation = mutations.updateMetric;
+  const deleteMetricMutation = mutations.deleteMetric;
+  const reorderMetricsMutation = mutations.reorderMetrics;
+  const createInitiativeMutation = mutations.createInitiative;
+  const updateInitiativeMutation = mutations.updateInitiative;
+  const deleteInitiativeMutation = mutations.deleteInitiative;
+  const reorderInitiativesMutation = mutations.reorderInitiatives;
+  const createGoalMutation = mutations.createGoal;
+  const updateGoalMutation = mutations.updateGoal;
+  const deleteGoalMutation = mutations.deleteGoal;
 
-	// Drag and drop handlers
-	const handleMetricDragEnd = (event: {
-		active: { id: string | number };
-		over: { id: string | number } | null;
-	}) => {
-		const { active, over } = event;
-		if (over && active.id !== over.id && metrics) {
-			const oldIndex = metrics.findIndex((item) => item.id === active.id);
-			const newIndex = metrics.findIndex((item) => item.id === over.id);
-			const reorderedMetrics = arrayMove(metrics, oldIndex, newIndex);
-			const updates = reorderedMetrics.map((metric, index) => ({
-				id: metric.id,
-				name: metric.name,
-				description: metric.description,
-				isActive: metric.isActive,
-				sortOrder: index,
-				createdAt: metric.createdAt,
-				updatedAt: metric.updatedAt,
-				value: metric.value,
-				iconName: metric.iconName,
-				category: metric.category,
-				unit: metric.unit,
-				icon: metric.iconName,
-				metric: metric.name,
-				currentValue: metric.value,
-				targetValue: metric.value,
-				targetYear: null,
-			}));
-			reorderMetricsMutation.mutate(updates);
-		}
-	};
+  // Drag and drop handlers
+  const handleMetricDragEnd = (event: {
+    active: { id: string | number };
+    over: { id: string | number } | null;
+  }) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id && metrics) {
+      const oldIndex = metrics.findIndex((item) => item.id === active.id);
+      const newIndex = metrics.findIndex((item) => item.id === over.id);
+      const reorderedMetrics = arrayMove(metrics, oldIndex, newIndex);
+      const updates = reorderedMetrics.map((metric, index) => ({
+        id: metric.id,
+        name: metric.name,
+        description: metric.description,
+        isActive: metric.isActive,
+        sortOrder: index,
+        createdAt: metric.createdAt,
+        updatedAt: metric.updatedAt,
+        value: metric.value,
+        iconName: metric.iconName,
+        category: metric.category,
+        unit: metric.unit,
+        icon: metric.iconName,
+        metric: metric.name,
+        currentValue: metric.value,
+        targetValue: metric.value,
+        targetYear: null,
+      }));
+      reorderMetricsMutation.mutate(updates);
+    }
+  };
 
-	const handleInitiativeDragEnd = (event: {
-		active: { id: string | number };
-		over: { id: string | number } | null;
-	}) => {
-		const { active, over } = event;
-		if (over && active.id !== over.id && initiatives) {
-			// Use full initiatives array (not paginated) for correct global positions
-			const oldIndex = initiatives.findIndex((item) => item.id === active.id);
-			const newIndex = initiatives.findIndex((item) => item.id === over.id);
-			const reorderedInitiatives = arrayMove(initiatives, oldIndex, newIndex);
-			// Map all initiatives with their new zero-based positions
-			const updates = reorderedInitiatives.map((initiative, index) => ({
-				id: initiative.id,
-				position: index,
-			}));
-			reorderInitiativesMutation.mutate(updates);
-		}
-	};
+  const handleInitiativeDragEnd = (event: {
+    active: { id: string | number };
+    over: { id: string | number } | null;
+  }) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id && initiatives) {
+      // Use full initiatives array (not paginated) for correct global positions
+      const oldIndex = initiatives.findIndex((item) => item.id === active.id);
+      const newIndex = initiatives.findIndex((item) => item.id === over.id);
+      const reorderedInitiatives = arrayMove(initiatives, oldIndex, newIndex);
+      // Map all initiatives with their new zero-based positions
+      const updates = reorderedInitiatives.map((initiative, index) => ({
+        id: initiative.id,
+        position: index,
+      }));
+      reorderInitiativesMutation.mutate(updates);
+    }
+  };
 
-	if (isLoading) {
-		return (
-			<div className="flex items-center justify-center h-64">
-				<div className="text-center">
-					<div className="w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-					<p className="text-gray-600">Loading sustainability data...</p>
-				</div>
-			</div>
-		);
-	}
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+          <p className="text-gray-600">Loading sustainability data...</p>
+        </div>
+      </div>
+    );
+  }
 
-	return (
-		<div className="space-y-6 relative">
-			{/* Global Sticky Header */}
-			<div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xs border-b pb-4 -mx-6 px-6 pt-4 mb-4 flex items-center justify-between shadow-sm-xs">
-				<div>
-					<h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-						<Leaf className="h-6 w-6 text-green-600" />
-						Unified Sustainability Management
-					</h1>
-					<p className="text-gray-600 mt-1 text-sm">
-						Manage all sustainability content from a single, unified interface
-					</p>
-				</div>
-				<div className="flex items-center gap-2">
-					{hasUnsavedChanges && (
-						<span className="text-sm text-yellow-600 font-medium animate-pulse mr-2">
-							Unsaved changes
-						</span>
-					)}
-					<Button
-						variant="outline"
-						onClick={resetForm}
-						disabled={!hasUnsavedChanges || updateMutation.isPending}
-						className="gap-2"
-					>
-						<Undo2 className="w-4 h-4" />
-						Reset
-					</Button>
-					<Button
-						onClick={handleSave}
-						disabled={!hasUnsavedChanges || updateMutation.isPending}
-						className="bg-green-600 hover:bg-green-700 gap-2 min-w-[140px]"
-					>
-						{updateMutation.isPending ? (
-							<div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
-						) : (
-							<Save className="w-4 h-4" />
-						)}
-						{updateMutation.isPending ? "Saving..." : "Save Changes"}
-					</Button>
-				</div>
-			</div>
+  return (
+    <div className="relative space-y-6">
+      {/* Global Sticky Header */}
+      <div className="sticky top-0 z-10 -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 shadow-sm-xs backdrop-blur-xs">
+        <div>
+          <h1 className="flex items-center gap-2 font-bold text-2xl text-gray-900">
+            <Leaf className="h-6 w-6 text-green-600" />
+            Unified Sustainability Management
+          </h1>
+          <p className="mt-1 text-gray-600 text-sm">
+            Manage all sustainability content from a single, unified interface
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {hasUnsavedChanges && (
+            <span className="mr-2 animate-pulse font-medium text-sm text-yellow-600">
+              Unsaved changes
+            </span>
+          )}
+          <Button
+            variant="outline"
+            onClick={resetForm}
+            disabled={!hasUnsavedChanges || updateMutation.isPending}
+            className="gap-2"
+          >
+            <Undo2 className="h-4 w-4" />
+            Reset
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={!hasUnsavedChanges || updateMutation.isPending}
+            className="min-w-[140px] gap-2 bg-green-600 hover:bg-green-700"
+          >
+            {updateMutation.isPending ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {updateMutation.isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </div>
 
-			{unifiedData ? (
-				<Tabs value={activeTab} onValueChange={handleTabChange}>
-					<TabsList className="grid w-full grid-cols-5 mb-6">
-						<TabsTrigger value="hero">Hero</TabsTrigger>
-						<TabsTrigger value="features">Features</TabsTrigger>
-						<TabsTrigger value="metrics">Metrics</TabsTrigger>
-						<TabsTrigger value="initiatives">Initiatives</TabsTrigger>
-						<TabsTrigger value="certifications">Certifications</TabsTrigger>
-						<TabsTrigger value="goals">Goals</TabsTrigger>
-						<TabsTrigger value="fabric-portfolio">Fabric Portfolio</TabsTrigger>
-						<TabsTrigger value="cta">Call to Action</TabsTrigger>
-						<TabsTrigger value="headers">Section Headers</TabsTrigger>
-					</TabsList>
+      {unifiedData ? (
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
+          <TabsList className="mb-6 grid w-full grid-cols-5">
+            <TabsTrigger value="hero">Hero</TabsTrigger>
+            <TabsTrigger value="features">Features</TabsTrigger>
+            <TabsTrigger value="metrics">Metrics</TabsTrigger>
+            <TabsTrigger value="initiatives">Initiatives</TabsTrigger>
+            <TabsTrigger value="certifications">Certifications</TabsTrigger>
+            <TabsTrigger value="goals">Goals</TabsTrigger>
+            <TabsTrigger value="fabric-portfolio">Fabric Portfolio</TabsTrigger>
+            <TabsTrigger value="cta">Call to Action</TabsTrigger>
+            <TabsTrigger value="headers">Section Headers</TabsTrigger>
+          </TabsList>
 
-					<HeroTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave} // Kept for logic internal to tab if any, but button removed in top header
-						onOpenMediaPicker={() => setIsMediaPickerOpen(true)}
-					/>
+          <HeroTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave} // Kept for logic internal to tab if any, but button removed in top header
+            onOpenMediaPicker={() => setIsMediaPickerOpen(true)}
+          />
 
-					<FeaturesTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave}
-					/>
+          <FeaturesTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave}
+          />
 
-					<CertificationsTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						availableCertificates={availableCertificates}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave}
-					/>
+          <CertificationsTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            availableCertificates={availableCertificates}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave}
+          />
 
-					<MetricsTabContent
-						metrics={metrics}
-						paginatedMetrics={paginatedMetrics}
-						metricsPage={metricsPage}
-						metricsTotalPages={metricsTotalPages}
-						sensors={sensors}
-						createMetricMutation={createMetricMutation}
-						updateMetricMutation={updateMetricMutation}
-						deleteMetricMutation={deleteMetricMutation}
-						SortableMetricItem={SortableMetricItem}
-						onMetricDragEnd={handleMetricDragEnd}
-						onSetMetricsPage={setMetricsPage}
-					/>
+          <MetricsTabContent
+            metrics={metrics}
+            paginatedMetrics={paginatedMetrics}
+            metricsPage={metricsPage}
+            metricsTotalPages={metricsTotalPages}
+            sensors={sensors}
+            createMetricMutation={createMetricMutation}
+            updateMetricMutation={updateMetricMutation}
+            deleteMetricMutation={deleteMetricMutation}
+            SortableMetricItem={SortableMetricItem}
+            onMetricDragEnd={handleMetricDragEnd}
+            onSetMetricsPage={setMetricsPage}
+          />
 
-					<InitiativesTabContent
-						initiatives={initiatives}
-						paginatedInitiatives={paginatedInitiatives}
-						initiativesPage={initiativesPage}
-						initiativesTotalPages={initiativesTotalPages}
-						sensors={sensors}
-						createInitiativeMutation={createInitiativeMutation}
-						updateInitiativeMutation={updateInitiativeMutation}
-						deleteInitiativeMutation={deleteInitiativeMutation}
-						SortableInitiativeItem={SortableInitiativeItem}
-						onInitiativeDragEnd={handleInitiativeDragEnd}
-						onSetInitiativesPage={setInitiativesPage}
-					/>
+          <InitiativesTabContent
+            initiatives={initiatives}
+            paginatedInitiatives={paginatedInitiatives}
+            initiativesPage={initiativesPage}
+            initiativesTotalPages={initiativesTotalPages}
+            sensors={sensors}
+            createInitiativeMutation={createInitiativeMutation}
+            updateInitiativeMutation={updateInitiativeMutation}
+            deleteInitiativeMutation={deleteInitiativeMutation}
+            SortableInitiativeItem={SortableInitiativeItem}
+            onInitiativeDragEnd={handleInitiativeDragEnd}
+            onSetInitiativesPage={setInitiativesPage}
+          />
 
-					<GoalsTabContent
-						goals={goals}
-						paginatedGoals={paginatedGoals}
-						goalsPage={goalsPage}
-						goalsTotalPages={goalsTotalPages}
-						sensors={sensors}
-						createGoalMutation={createGoalMutation}
-						updateGoalMutation={updateGoalMutation}
-						deleteGoalMutation={deleteGoalMutation}
-						SortableGoalItem={SortableGoalItem}
-						onSetGoalsPage={setGoalsPage}
-					/>
+          <GoalsTabContent
+            goals={goals}
+            paginatedGoals={paginatedGoals}
+            goalsPage={goalsPage}
+            goalsTotalPages={goalsTotalPages}
+            sensors={sensors}
+            createGoalMutation={createGoalMutation}
+            updateGoalMutation={updateGoalMutation}
+            deleteGoalMutation={deleteGoalMutation}
+            SortableGoalItem={SortableGoalItem}
+            onSetGoalsPage={setGoalsPage}
+          />
 
-					<FabricPortfolioTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave}
-					/>
+          <FabricPortfolioTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave}
+          />
 
-					<CallToActionTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave}
-					/>
+          <CallToActionTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave}
+          />
 
-					<SectionHeadersTabContent
-						localForm={localForm}
-						hasUnsavedChanges={hasUnsavedChanges}
-						isPending={updateMutation.isPending}
-						onLocalUpdate={handleLocalUpdate}
-						onSave={handleSave}
-					/>
-				</Tabs>
-			) : null}
+          <SectionHeadersTabContent
+            localForm={localForm}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isPending={updateMutation.isPending}
+            onLocalUpdate={handleLocalUpdate}
+            onSave={handleSave}
+          />
+        </Tabs>
+      ) : null}
 
-			{/* Media Picker Dialog */}
-			<StandardMediaSelectionDialog
-				isOpen={isMediaPickerOpen}
-				onClose={() => setIsMediaPickerOpen(false)}
-				onSelect={handleMediaSelect}
-				title="Select Background Media"
-				mediaPickerTarget="sustainability-hero-background"
-				selectionMode="single"
-			/>
-		</div>
-	);
+      {/* Media Picker Dialog */}
+      <StandardMediaSelectionDialog
+        isOpen={isMediaPickerOpen}
+        onClose={() => setIsMediaPickerOpen(false)}
+        onSelect={handleMediaSelect}
+        title="Select Background Media"
+        mediaPickerTarget="sustainability-hero-background"
+        selectionMode="single"
+      />
+    </div>
+  );
 }

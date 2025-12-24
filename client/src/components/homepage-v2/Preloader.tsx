@@ -98,26 +98,26 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-max bg-[#050505] text-[#FAFAFA] flex flex-col justify-between overflow-hidden cursor-wait"
+      className="fixed inset-0 z-max flex cursor-wait flex-col justify-between overflow-hidden bg-neutral-950 text-neutral-50"
     >
       {/* Top Bar */}
-      <div className="w-full p-8 md:p-12 flex justify-between items-start">
-        <div className="text-xs md:text-sm font-mono tracking-widest opacity-70">
+      <div className="flex w-full items-start justify-between p-8 md:p-12">
+        <div className="font-mono text-xs tracking-widest opacity-70 md:text-sm">
           RUN APPAREL (PVT) LTD
         </div>
-        <div className="text-xs md:text-sm font-mono tracking-widest opacity-70 text-right">
+        <div className="text-right font-mono text-xs tracking-widest opacity-70 md:text-sm">
           EST. 1889
         </div>
       </div>
 
       {/* Center Percentage */}
       <div
-        className="flex flex-col items-center justify-center relative z-10 w-full"
+        className="relative z-10 flex w-full flex-col items-center justify-center"
         role="status"
         aria-live="polite"
         aria-atomic="true"
       >
-        <h1 className="text-[25vw] leading-[0.8] font-bold tracking-tighter tabular-nums mix-blend-difference select-none">
+        <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter mix-blend-difference">
           {progress}
         </h1>
         <span className="sr-only">Percent Loaded</span>
@@ -125,27 +125,30 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Bottom Section */}
       <div className="w-full p-8 md:p-12">
-        <div className="flex justify-between items-end mb-4">
+        <div className="mb-4 flex items-end justify-between">
           <div
             ref={textRef}
-            className="font-mono text-xs md:text-sm tracking-wider w-full md:w-auto min-h-[20px]"
+            className="min-h-[20px] w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
           >
             [{loadingText}]
           </div>
-          <div className="font-mono text-xs md:text-sm tracking-wider hidden md:block">
+          <div className="hidden font-mono text-xs tracking-wider md:block md:text-sm">
             SYSTEM STATUS: ONLINE
           </div>
         </div>
 
         {/* Progress Bar Line */}
-        <div className="w-full h-[2px] bg-white/20 overflow-hidden">
-          <div ref={barRef} className="h-full bg-[#3300FF] w-full origin-left scale-x-0" />
+        <div className="h-[2px] w-full overflow-hidden bg-white/20">
+          <div
+            ref={barRef}
+            className="h-full w-full origin-left scale-x-0 bg-[var(--color-brand-purple)]"
+          />
         </div>
       </div>
 
       {/* Background Grid */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none opacity-10"
+        className="pointer-events-none absolute inset-0 z-0 opacity-10"
         style={{
           backgroundImage:
             "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",

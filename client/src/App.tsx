@@ -3,10 +3,10 @@ import { lazy, Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Toaster as SonnerToaster } from "sonner";
 import { Redirect, Route, Switch, useParams } from "wouter";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useConcurrentLocation } from "@/hooks/useConcurrentLocation";
-import { ThemeProvider } from "@/components/theme-provider";
 import E2EOverlayTest from "@/pages/e2e-overlay";
 import {
   prefetchCriticalHomepageData,
@@ -16,14 +16,14 @@ import {
 
 function RootErrorFallback({ error }: { error: Error }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh] p-6 text-center">
-      <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
-      <pre className="text-sm bg-gray-100 p-4 rounded mb-4 max-w-lg overflow-auto">
+    <div className="relative flex min-h-dvh w-full flex-col overflow-x-hidden bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+      <h2 className="mb-4 font-bold text-2xl">Something went wrong</h2>
+      <pre className="mb-4 max-w-lg overflow-auto rounded bg-gray-100 p-4 text-sm">
         {error.message}
       </pre>
       <button
         onClick={() => window.location.reload()}
-        className="px-4 py-2 bg-black text-white rounded hover:bg-neutral-800 transition-colors"
+        className="rounded bg-black px-4 py-2 text-white transition-colors hover:bg-neutral-800"
       >
         Reload Page
       </button>
@@ -39,8 +39,8 @@ import { InquiryDrawer } from "@/components/inquiry/InquiryDrawer";
 import SmoothScrollLayout from "@/components/layout/SmoothScrollLayout";
 import { MobileOptimizations } from "@/components/mobile-optimizations";
 import { ResourceErrorBoundary } from "@/components/resources/ResourceErrorBoundary";
-import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import CustomCursor from "@/components/ui/CustomCursor";
+import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 // import Footer from "@/components/homepage-v2/Footer";
 import { InquiryCartProvider } from "@/contexts/InquiryCartContext";
 import { BundleUtils } from "@/lib/bundle-optimizer";
@@ -80,10 +80,10 @@ import NotFound from "@/pages/not-found";
 
 function PageLoader() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-sm text-gray-600 dark:text-gray-400">Loading...</p>
+        <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+        <p className="text-gray-600 text-sm dark:text-gray-400">Loading...</p>
       </div>
     </div>
   );
@@ -163,7 +163,7 @@ function Router() {
             // Removed debug console statement for production
           }, 2000);
         }
-      } catch (e) {
+      } catch (_e) {
         // Fallback if import.meta.env is not available
       }
     }, 500);
@@ -288,7 +288,7 @@ function QuoteOverlay() {
       {/* Floating Action Button */}
       <button
         onClick={openDrawer}
-        className="fixed bottom-6 right-6 z-dock bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 flex items-center justify-center group"
+        className="group fixed right-6 bottom-6 z-dock flex items-center justify-center rounded-full bg-blue-600 p-4 text-white shadow-2xl transition-transform hover:scale-105 hover:bg-blue-700 active:scale-95"
       >
         <div className="relative">
           <svg
@@ -306,7 +306,7 @@ function QuoteOverlay() {
             <polyline points="17 8 12 3 7 8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
-          <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-blue-600">
+          <span className="absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600 bg-red-500 font-bold text-white text-xs">
             {count}
           </span>
         </div>

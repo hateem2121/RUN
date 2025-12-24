@@ -138,7 +138,7 @@ export function useViewportAwarePositioning() {
       bottom: parseInt(computedStyle.getPropertyValue("env(safe-area-inset-bottom)") || "0", 10),
       left: parseInt(computedStyle.getPropertyValue("env(safe-area-inset-left)") || "0", 10),
     };
-  }, [viewport]);
+  }, []);
 
   /**
    * Calculate optimal modal bounds considering viewport constraints

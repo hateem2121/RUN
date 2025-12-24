@@ -7,9 +7,9 @@ import "./dot-grid.css";
 function throttle<F extends (...args: any[]) => any>(
   func: F,
   limit: number,
-): (...args: Parameters<F>) => ReturnType<F> | void {
+): (...args: Parameters<F>) => ReturnType<F> | undefined {
   let lastCall = 0;
-  return function (this: ThisParameterType<F>, ...args: Parameters<F>): ReturnType<F> | void {
+  return function (this: ThisParameterType<F>, ...args: Parameters<F>): ReturnType<F> | undefined {
     const now = performance.now();
     if (now - lastCall >= limit) {
       lastCall = now;
@@ -328,7 +328,7 @@ export const DotGrid = memo(function DotGrid({
       window.removeEventListener("mousemove", throttledMove);
       window.removeEventListener("click", onClick);
     };
-  }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
+  }, [maxSpeed, speedTrigger, proximity, returnDuration, shockRadius, shockStrength]);
 
   return (
     <section className={`dot-grid ${className}`} style={style}>

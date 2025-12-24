@@ -1,5 +1,5 @@
 import type { Category, MediaAsset, ProductSummary } from "@shared/schema";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { LayoutGrid, Play } from "lucide-react";
 import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
@@ -43,8 +43,8 @@ export function ProductGrid({
     const primaryId =
       product.primaryImageId ||
       product.primaryVideoId ||
-      (product.imageIds && product.imageIds[0]) ||
-      (product.videos && product.videos[0]);
+      product.imageIds?.[0] ||
+      product.videos?.[0];
     if (!primaryId) return null;
 
     const media = mediaAssets.find((m) => m.id === primaryId);
@@ -97,13 +97,13 @@ export function ProductGrid({
         return (
           <Link href={productUrl} key={product.id}>
             <Card
-              className="group cursor-pointer overflow-hidden hover:shadow-lg transition-shadow-sm"
+              className="group cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg"
               onMouseEnter={() => handleProductHover(product)}
             >
               {/* Media Preview */}
               <div
                 className={cn(
-                  "relative bg-gray-100 overflow-hidden",
+                  "relative overflow-hidden bg-gray-100",
                   viewMode === "small" ? "aspect-[3/4]" : "aspect-[4/5]",
                 )}
               >
@@ -111,12 +111,12 @@ export function ProductGrid({
                   <LazyMediaEnhanced
                     mediaId={primaryMedia.id}
                     alt={product.name || "Product Image"}
-                    className="w-full h-full"
+                    className="h-full w-full"
                     priority={false}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <LayoutGrid className="w-12 h-12" />
+                  <div className="flex h-full w-full items-center justify-center text-gray-400">
+                    <LayoutGrid className="h-12 w-12" />
                   </div>
                 )}
 
@@ -132,9 +132,9 @@ export function ProductGrid({
 
                 {/* Video indicator */}
                 {isVideo && (
-                  <div className="absolute bottom-2 right-2">
-                    <div className="bg-black/70 text-white rounded-full p-2">
-                      <Play className="w-4 h-4" fill="white" />
+                  <div className="absolute right-2 bottom-2">
+                    <div className="rounded-full bg-black/70 p-2 text-white">
+                      <Play className="h-4 w-4" fill="white" />
                     </div>
                   </div>
                 )}
@@ -142,14 +142,14 @@ export function ProductGrid({
                 {/* Media count badges */}
                 <div className="absolute bottom-2 left-2 flex gap-1">
                   {product.imageIds && product.imageIds.length > 1 && (
-                    <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                    <Badge variant="secondary" className="px-2 py-0.5 text-xs">
                       {product.imageIds.length} images
                     </Badge>
                   )}
                   {product.videos && product.videos.length > 0 && (
                     <Badge
                       variant="secondary"
-                      className="text-xs px-2 py-0.5 bg-green-100 text-green-800"
+                      className="bg-green-100 px-2 py-0.5 text-green-800 text-xs"
                     >
                       {product.videos.length} videos
                     </Badge>
@@ -161,7 +161,7 @@ export function ProductGrid({
               <div className={cn("p-4", viewMode === "small" && "p-3")}>
                 <h3
                   className={cn(
-                    "font-semibold mb-1 group-hover:text-blue-600 transition-colors",
+                    "mb-1 font-semibold transition-colors group-hover:text-blue-600",
                     viewMode === "small" ? "text-sm" : "text-lg",
                   )}
                 >
@@ -169,17 +169,17 @@ export function ProductGrid({
                 </h3>
 
                 {/* Defensive Rendering for Category Relation */}
-                <p className="text-xs text-muted-foreground mb-2">
+                <p className="mb-2 text-muted-foreground text-xs">
                   {categories.find((c) => c.id === product.categoryId)?.name ?? "Uncategorized"}
                 </p>
 
                 {viewMode !== "small" && (
                   <>
                     {product.sku && (
-                      <p className="text-sm text-gray-600 mb-2">SKU: {product.sku}</p>
+                      <p className="mb-2 text-gray-600 text-sm">SKU: {product.sku}</p>
                     )}
                     {product.description && viewMode === "large" && (
-                      <p className="text-sm text-gray-700 line-clamp-2">{product.description}</p>
+                      <p className="line-clamp-2 text-gray-700 text-sm">{product.description}</p>
                     )}
                   </>
                 )}

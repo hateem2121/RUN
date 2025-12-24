@@ -6,5 +6,5 @@
 import { WebPOptimizationDemo } from "@/components/WebPOptimizationDemo";
 
 export default function WebPDemo() {
-	return <WebPOptimizationDemo />;
+  return <WebPOptimizationDemo />;
 }

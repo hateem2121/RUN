@@ -61,10 +61,10 @@ const OptimizedClothMaterial = () => {
   useFrame((state) => {
     if (materialRef.current) {
       const uniforms = materialRef.current.uniforms;
-      if (uniforms && uniforms.uTime) {
+      if (uniforms?.uTime) {
         uniforms.uTime.value = state.clock.getElapsedTime();
       }
-      if (uniforms && uniforms.uScroll) {
+      if (uniforms?.uScroll) {
         uniforms.uScroll.value = MathUtils.lerp(uniforms.uScroll.value, window.scrollY, 0.1);
       }
     }
@@ -138,10 +138,10 @@ const Hero: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-screen bg-luxury-surface overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-luxury-surface"
     >
       {/* 3D Background */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
         <Canvas
           frameloop="always" // Can be optimized based on intersection observer
           dpr={dpr}
@@ -153,8 +153,8 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="absolute inset-0 z-[10] flex items-center justify-center pointer-events-none">
-        <div className="flex flex-col items-center justify-center perspective-[1000px] px-4 text-center">
+      <div className="pointer-events-none absolute inset-0 z-elevated flex items-center justify-center">
+        <div className="perspective-[1000px] flex flex-col items-center justify-center px-4 text-center">
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line overflow-hidden py-1">
               <motion.h1
@@ -176,7 +176,7 @@ const Hero: React.FC = () => {
                   delay: 0.2 + i * 0.1,
                 }}
                 style={{ y: i % 2 === 0 ? y1 : y2, opacity }}
-                className="text-display-xl leading-tight font-bold text-luxury-interactive tracking-tighter mix-blend-multiply will-change-transform"
+                className="font-bold text-display-xl text-luxury-interactive leading-tight tracking-tighter mix-blend-multiply will-change-transform"
               >
                 {line}
               </motion.h1>
@@ -186,20 +186,20 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator - Native CSS Animation */}
-      <div className="absolute bottom-8 right-8 z-[20] pointer-events-auto hidden md:block">
-        <div className="relative w-24 h-24 animate-[spin_10s_linear_infinite]">
-          <svg viewBox="0 0 100 100" className="w-full h-full fill-black">
+      <div className="pointer-events-auto absolute right-8 bottom-8 z-elevated hidden md:block">
+        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
+          <svg viewBox="0 0 100 100" className="h-full w-full fill-black">
             <path
               id="curve"
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
               fill="transparent"
             />
-            <text className="text-[14px] uppercase font-bold tracking-widest">
+            <text className="font-bold text-[14px] uppercase tracking-widest">
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-2 h-2 bg-black rounded-full" />
+            <div className="h-2 w-2 rounded-full bg-black" />
           </div>
         </div>
       </div>

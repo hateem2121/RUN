@@ -44,7 +44,7 @@ const metricSchema = z.object({
   value: z
     .string()
     .min(1, "Value is required")
-    .refine((val) => !isNaN(Number(val)), "Value must be a number"),
+    .refine((val) => !Number.isNaN(Number(val)), "Value must be a number"),
   unit: z.string().min(1, "Unit is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   icon: z.string().default("Leaf"),
@@ -281,7 +281,7 @@ export function MetricsTabContent({
           <CardTitle className="flex items-center justify-between">
             Sustainability Metrics
             <Button onClick={() => openMetricSheet()}>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Add Metric
             </Button>
           </CardTitle>
@@ -352,7 +352,7 @@ export function MetricsTabContent({
               )}
             </>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="py-8 text-center text-gray-500">
               No metrics yet. Create your first sustainability metric.
             </div>
           )}
@@ -371,7 +371,7 @@ export function MetricsTabContent({
             </SheetDescription>
           </SheetHeader>
 
-          <div className="space-y-6 mt-6">
+          <div className="mt-6 space-y-6">
             <div>
               <Label htmlFor="category">Category</Label>
               <Select
@@ -400,7 +400,7 @@ export function MetricsTabContent({
                 </SelectContent>
               </Select>
               {!metricValidation.category.isValid && (
-                <p className="text-sm text-red-500 mt-1">{metricValidation.category.message}</p>
+                <p className="mt-1 text-red-500 text-sm">{metricValidation.category.message}</p>
               )}
             </div>
             <div>
@@ -424,7 +424,7 @@ export function MetricsTabContent({
                 }
               />
               {!metricValidation.metric.isValid && (
-                <p className="text-sm text-red-500 mt-1">{metricValidation.metric.message}</p>
+                <p className="mt-1 text-red-500 text-sm">{metricValidation.metric.message}</p>
               )}
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -449,7 +449,7 @@ export function MetricsTabContent({
                   }
                 />
                 {!metricValidation.value.isValid && (
-                  <p className="text-sm text-red-500 mt-1">{metricValidation.value.message}</p>
+                  <p className="mt-1 text-red-500 text-sm">{metricValidation.value.message}</p>
                 )}
               </div>
               <div>
@@ -473,7 +473,7 @@ export function MetricsTabContent({
                   }
                 />
                 {!metricValidation.unit.isValid && (
-                  <p className="text-sm text-red-500 mt-1">{metricValidation.unit.message}</p>
+                  <p className="mt-1 text-red-500 text-sm">{metricValidation.unit.message}</p>
                 )}
               </div>
             </div>
@@ -498,15 +498,15 @@ export function MetricsTabContent({
                 }
               />
               {!metricValidation.description.isValid && (
-                <p className="text-sm text-red-500 mt-1">{metricValidation.description.message}</p>
+                <p className="mt-1 text-red-500 text-sm">{metricValidation.description.message}</p>
               )}
             </div>
             <div>
               <Label>Icon Selection</Label>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50">
+              <div className="mt-2 flex items-center gap-3">
+                <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
                   <IconDisplay iconName={metricForm.icon} showBackground={true} />
-                  <span className="text-sm font-medium">{metricForm.icon || "Leaf"}</span>
+                  <span className="font-medium text-sm">{metricForm.icon || "Leaf"}</span>
                 </div>
                 <Button
                   type="button"
@@ -527,7 +527,7 @@ export function MetricsTabContent({
                     setMetricForm((prev) => ({ ...prev, isActive: checked }))
                   }
                 />
-                <Label htmlFor="metric-active" className="text-sm font-medium">
+                <Label htmlFor="metric-active" className="font-medium text-sm">
                   Active
                 </Label>
               </div>
@@ -541,7 +541,7 @@ export function MetricsTabContent({
                   onChange={(e) =>
                     setMetricForm((prev) => ({
                       ...prev,
-                      position: parseInt(e.target.value) || 1,
+                      position: parseInt(e.target.value, 10) || 1,
                     }))
                   }
                   placeholder="1"
@@ -550,7 +550,7 @@ export function MetricsTabContent({
             </div>
           </div>
 
-          <SheetFooter className="mt-8 flex-col sm:flex-col gap-2">
+          <SheetFooter className="mt-8 flex-col gap-2 sm:flex-col">
             <Button
               onClick={handleMetricSubmit}
               disabled={createMetricMutation.isPending || updateMetricMutation.isPending}
@@ -561,9 +561,9 @@ export function MetricsTabContent({
             <Button
               variant="secondary"
               onClick={() => setShowMetricPreview(true)}
-              className="flex items-center gap-2 w-full"
+              className="flex w-full items-center gap-2"
             >
-              <Eye className="w-4 h-4" />
+              <Eye className="h-4 w-4" />
               Preview Card
             </Button>
           </SheetFooter>
@@ -576,13 +576,13 @@ export function MetricsTabContent({
           but ensure z-index works, or just render it. */}
       {showMetricPreview && (
         <div className="fixed inset-0 z-toast flex items-center justify-center bg-black/50 p-4">
-          <div className="relative bg-transparent max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
+          <div className="fade-in zoom-in-95 relative w-full max-w-md animate-in bg-transparent duration-200">
             <div className="absolute -top-12 right-0">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => setShowMetricPreview(false)}
-                className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs"
+                className="h-8 w-8 rounded-full bg-white/10 p-0 text-white backdrop-blur-xs hover:bg-white/20"
               >
                 ✕
               </Button>

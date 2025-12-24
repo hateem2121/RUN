@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 interface Props {
-	children: ReactNode;
-	componentName?: string;
-	fallback?: ReactNode;
+  children: ReactNode;
+  componentName?: string;
+  fallback?: ReactNode;
 }
 
 /**
@@ -13,25 +13,17 @@ interface Props {
  * When the ErrorBoundary's "Try Again" button is clicked, it calls `reset()`
  * which clears the query error state and triggers a refetch.
  */
-export function QueryErrorBoundary({
-	children,
-	componentName = "Data Loading",
-	fallback,
-}: Props) {
-	return (
-		<QueryErrorResetBoundary>
-			{({ reset }) => {
-				return (
-					// @ts-expect-error: onReset prop mismatch in v4 types
-					<ErrorBoundary
-						onReset={reset}
-						componentName={componentName}
-						fallback={fallback}
-					>
-						{children}
-					</ErrorBoundary>
-				);
-			}}
-		</QueryErrorResetBoundary>
-	);
+export function QueryErrorBoundary({ children, componentName = "Data Loading", fallback }: Props) {
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => {
+        return (
+          // @ts-expect-error: onReset prop mismatch in v4 types
+          <ErrorBoundary onReset={reset} componentName={componentName} fallback={fallback}>
+            {children}
+          </ErrorBoundary>
+        );
+      }}
+    </QueryErrorResetBoundary>
+  );
 }

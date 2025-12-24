@@ -9,12 +9,12 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
       {/* Brand Logo - Fixed top-left with two-line layout to prevent overlap */}
       <div className="fixed top-4 left-4 z-dock">
         <Link href="/" className="shrink-0">
-          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 px-2">
-            <h1 className="text-sm sm:text-base md:text-lg font-neue-stance font-bold text-luxury-charcoal whitespace-nowrap">
+          <div className="flex flex-col items-center gap-1 px-2 sm:flex-row sm:gap-3">
+            <h1 className="whitespace-nowrap font-bold font-neue-stance text-luxury-charcoal text-sm sm:text-base md:text-lg">
               RUN APPAREL
             </h1>
-            <span className="hidden sm:inline w-1 h-1 bg-luxury-charcoal/20 rounded-full" />
-            <p className="text-[10px] sm:text-sm font-neue-stance text-zinc-600 whitespace-nowrap font-semibold">
+            <span className="hidden h-1 w-1 rounded-full bg-luxury-charcoal/20 sm:inline" />
+            <p className="whitespace-nowrap font-neue-stance font-semibold text-[10px] text-zinc-600 sm:text-sm">
               (PVT) LTD
             </p>
           </div>

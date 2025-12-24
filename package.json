@@ -37,7 +37,9 @@
     "lint": "biome lint .",
     "lint:html": "html-validate \"client/src/**/*.tsx\"",
     "lint:css-contract": "node scripts/lint-css-contract.mjs",
-    "lint:z-index": "node scripts/lint-z-index.mjs",
+    "lint:z-index": "bash scripts/lint-arbitrary-z-index.sh",
+    "lint:colors": "bash scripts/lint-hardcoded-colors.sh",
+    "lint:css-architecture": "bash scripts/lint-arbitrary-z-index.sh && bash scripts/lint-hardcoded-colors.sh",
     "test:visual": "npx playwright test e2e/visual/regression.spec.ts",
     "test:visual:update": "npx playwright test e2e/visual/regression.spec.ts --update-snapshots",
     "test:all-safeguards": "npm run lint:css-contract && npm run test:visual",
@@ -246,7 +248,8 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "biome check --write",
-      "vitest run --bail 1 --passWithNoTests"
+      "vitest run --bail 1 --passWithNoTests",
+      "npm run lint:css-contract"
     ],
     "*.{js,json,md}": [
       "biome check --write"

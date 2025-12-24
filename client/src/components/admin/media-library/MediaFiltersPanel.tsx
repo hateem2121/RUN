@@ -16,12 +16,12 @@ export default function MediaFiltersPanel() {
   const { state, updateState } = useMediaLibraryEnhanced();
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <h2 className="font-semibold">Filters</h2>
         <button
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 z-popover"
+          className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -36,11 +36,11 @@ export default function MediaFiltersPanel() {
       </div>
 
       {/* Search */}
-      <div className="p-4 space-y-4">
+      <div className="space-y-4 p-4">
         <div className="space-y-2">
           <Label htmlFor="filters-search">Search</Label>
           <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="filters-search"
               placeholder="Search media..."
@@ -100,7 +100,7 @@ export default function MediaFiltersPanel() {
               onClick={() => updateState("sortOrder", "asc")}
               className="flex-1"
             >
-              <ArrowUp className="h-4 w-4 mr-2" />
+              <ArrowUp className="mr-2 h-4 w-4" />
               Ascending
             </Button>
             <Button
@@ -109,7 +109,7 @@ export default function MediaFiltersPanel() {
               onClick={() => updateState("sortOrder", "desc")}
               className="flex-1"
             >
-              <ArrowDown className="h-4 w-4 mr-2" />
+              <ArrowDown className="mr-2 h-4 w-4" />
               Descending
             </Button>
           </div>
@@ -117,30 +117,30 @@ export default function MediaFiltersPanel() {
       </div>
 
       {/* Folder tree navigation - simplified */}
-      <div className="flex-1 p-4 border-t">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium">Folders</h3>
+      <div className="flex-1 border-t p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-medium text-sm">Folders</h3>
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
             <Plus className="h-3 w-3" />
           </Button>
         </div>
         <div className="space-y-1">
           {/* Root folder */}
-          <div className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-accent rounded cursor-pointer">
+          <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
             <Folder className="h-4 w-4" />
             <span>All Media</span>
           </div>
           {/* Sample folders - replace with dynamic data */}
           <div className="ml-4">
-            <div className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-accent rounded cursor-pointer">
+            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
               <Folder className="h-4 w-4" />
               <span>Products</span>
             </div>
-            <div className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-accent rounded cursor-pointer">
+            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
               <Folder className="h-4 w-4" />
               <span>Banners</span>
             </div>
-            <div className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-accent rounded cursor-pointer">
+            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
               <Folder className="h-4 w-4" />
               <span>3D Models</span>
             </div>

@@ -3,13 +3,13 @@
 import type { ReactNode } from "react";
 
 interface GlowingShadowProps {
-	children: ReactNode;
+  children: ReactNode;
 }
 
 export function GlowingShadow({ children }: GlowingShadowProps) {
-	return (
-		<>
-			<style>{`
+  return (
+    <>
+      <style>{`
         @property --hue {
           syntax: "<number>";
           inherits: true;
@@ -134,7 +134,7 @@ export function GlowingShadow({ children }: GlowingShadowProps) {
         }
         
         .glow-content * {
-          color: white !important;
+          color: white;
           z-index: 10;
           position: relative;
         }
@@ -316,10 +316,10 @@ export function GlowingShadow({ children }: GlowingShadowProps) {
         }
       `}</style>
 
-			<div className="glow-container" role="button" tabIndex={0}>
-				<span className="glow"></span>
-				<div className="glow-content">{children}</div>
-			</div>
-		</>
-	);
+      <button type="button" className="glow-container">
+        <span className="glow"></span>
+        <div className="glow-content">{children}</div>
+      </button>
+    </>
+  );
 }

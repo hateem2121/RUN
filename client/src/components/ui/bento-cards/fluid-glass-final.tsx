@@ -36,7 +36,7 @@ const FluidGlass = memo(function FluidGlass({
   const mouseRef = useRef({ x: 0, y: 0 });
   const animationIdRef = useRef<number>(0);
   const [isLoading, setIsLoading] = useState(true);
-  const componentId = useId(); // P1 FIX: SSR-stable ID
+  const _componentId = useId(); // P1 FIX: SSR-stable ID
 
   const modeProps = mode === "lens" ? lensProps : mode === "bar" ? barProps : cubeProps;
 
@@ -200,7 +200,7 @@ const FluidGlass = memo(function FluidGlass({
       cameraRef.current = null;
       glassRef.current = null;
     };
-  }, [mode, modeProps.scale]);
+  }, [modeProps.scale]);
 
   // Initialize Three.js with memoized initialization
   useEffect(() => {
@@ -209,13 +209,13 @@ const FluidGlass = memo(function FluidGlass({
   }, [initializeThreeJS]);
 
   return (
-    <div className="w-full h-full relative" style={{ minHeight: "400px" }}>
+    <div className="relative h-full w-full" style={{ minHeight: "400px" }}>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-purple-600 border-b-2"></div>
         </div>
       )}
-      <div ref={mountRef} className="w-full h-full" />
+      <div ref={mountRef} className="h-full w-full" />
     </div>
   );
 });

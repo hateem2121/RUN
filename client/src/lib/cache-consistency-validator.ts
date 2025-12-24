@@ -1,7 +1,7 @@
 export function validateCacheConsistency(): boolean {
-	return true;
+  return true;
 }
 
 export function checkCacheIntegrity(): void {
-	// Stub implementation
+  // Stub implementation
 }

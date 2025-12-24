@@ -10,14 +10,14 @@ import React from "react";
  * PHASE 3.2: Hook for programmatic error boundary control
  */
 export function useModelViewerErrorRecovery() {
-	const [errorBoundaryKey, setErrorBoundaryKey] = React.useState(0);
+  const [errorBoundaryKey, setErrorBoundaryKey] = React.useState(0);
 
-	const resetErrorBoundary = React.useCallback(() => {
-		setErrorBoundaryKey((prev) => prev + 1);
-	}, []);
+  const resetErrorBoundary = React.useCallback(() => {
+    setErrorBoundaryKey((prev) => prev + 1);
+  }, []);
 
-	return {
-		errorBoundaryKey,
-		resetErrorBoundary,
-	};
+  return {
+    errorBoundaryKey,
+    resetErrorBoundary,
+  };
 }

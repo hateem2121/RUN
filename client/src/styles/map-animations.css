@@ -38,8 +38,8 @@
 
 .facility-marker svg,
 .client-marker svg {
-  width: 32px !important;
-  height: 32px !important;
+  width: 32px;
+  height: 32px;
   fill: #ffffff;
   stroke: #2563eb;
   stroke-width: 2;

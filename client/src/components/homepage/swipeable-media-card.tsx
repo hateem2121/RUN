@@ -128,7 +128,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [goToNext, goToPrevious]);
 
   // Optimized media component using ultra-high-resolution variants
   const OptimizedMediaItem = ({ item }: { item: MediaItem }) => {
@@ -140,16 +140,16 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
 
     if (item.type === "video") {
       return (
-        <video className="w-full h-full object-cover" autoPlay loop muted playsInline>
+        <video className="h-full w-full object-cover" autoPlay loop muted playsInline>
           <source src={urls?.large || item.url} type="video/mp4" />
         </video>
       );
     } else if (item.type === "model" && item.asset) {
       return (
-        <div className="w-full h-full relative">
+        <div className="relative h-full w-full">
           <LazyUnifiedModelViewer
             asset={item.asset}
-            className="w-full h-full"
+            className="h-full w-full"
             config={{
               autoRotate: true,
               cameraControls: true,
@@ -162,13 +162,13 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
             showLoadingProgress={true}
             showFileInfo={false}
             onLoad={() => {}}
-            onError={(error: Error) => {}}
-            onInteraction={(type: string, data: any) => {}}
+            onError={(_error: Error) => {}}
+            onInteraction={(_type: string, _data: any) => {}}
           />
 
           {/* 3D Model Indicator */}
-          <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 text-white text-xs rounded-full flex items-center gap-1">
-            <Box className="w-3 h-3" />
+          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-white text-xs">
+            <Box className="h-3 w-3" />
             <span>3D</span>
           </div>
         </div>
@@ -176,10 +176,10 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
     } else if (item.type === "model") {
       // Fallback for models without asset info
       return (
-        <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <Box className="w-16 h-16 mx-auto text-white/60" />
-            <p className="text-white/60 text-sm">3D Model Loading...</p>
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+          <div className="space-y-2 text-center">
+            <Box className="mx-auto h-16 w-16 text-white/60" />
+            <p className="text-sm text-white/60">3D Model Loading...</p>
           </div>
         </div>
       );
@@ -188,7 +188,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
         <img
           src={urls?.large || urls?.medium || item.url}
           alt={item.alt || name}
-          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
+          className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
           draggable={false}
         />
       );
@@ -201,7 +201,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
 
   return (
     <div
-      className={cn("relative group transform-gpu perspective-1000 select-none", className)}
+      className={cn("group perspective-1000 relative transform-gpu select-none", className)}
       style={{ transformStyle: "preserve-3d" }}
     >
       <LiquidGlassCard
@@ -212,7 +212,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
       >
         {/* Media Container - Flexible aspect ratio */}
         <div
-          className="aspect-[4/3] relative overflow-hidden rounded-lg mb-4 cursor-grab active:cursor-grabbing"
+          className="relative mb-4 aspect-[4/3] cursor-grab overflow-hidden rounded-lg active:cursor-grabbing"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -248,25 +248,25 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
                   e.stopPropagation();
                   goToPrevious();
                 }}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-background border border-white/20 dark:border-white/30 text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-card z-10"
+                className="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-background text-foreground opacity-0 transition-opacity duration-300 hover:bg-card group-hover:opacity-100 dark:border-white/30"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   goToNext();
                 }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-background border border-white/20 dark:border-white/30 text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-card z-10"
+                className="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-background text-foreground opacity-0 transition-opacity duration-300 hover:bg-card group-hover:opacity-100 dark:border-white/30"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="h-4 w-4" />
               </button>
             </>
           )}
 
           {/* Media Type Indicator - Only show for 3D models */}
           {currentItem && currentItem.type === "model" && (
-            <div className="absolute top-2 right-2 px-2 py-1 bg-background border border-white/20 dark:border-white/30 text-foreground text-xs rounded-full">
+            <div className="absolute top-2 right-2 rounded-full border border-white/20 bg-background px-2 py-1 text-foreground text-xs dark:border-white/30">
               <span>3D</span>
             </div>
           )}
@@ -274,15 +274,15 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
 
         {/* Content - Clickable Area */}
         <div
-          className="space-y-3 cursor-pointer hover:opacity-90 transition-opacity"
+          className="cursor-pointer space-y-3 transition-opacity hover:opacity-90"
           onClick={onClick}
         >
-          <h3 className="text-xl font-bold text-white font-neue-stance">{name}</h3>
-          {description && <p className="text-sm text-white/80 line-clamp-2">{description}</p>}
+          <h3 className="font-bold font-neue-stance text-white text-xl">{name}</h3>
+          {description && <p className="line-clamp-2 text-sm text-white/80">{description}</p>}
 
           {/* Media Counter */}
           {hasMultipleItems && (
-            <div className="text-xs text-white/60">
+            <div className="text-white/60 text-xs">
               {currentIndex + 1} of {mediaItems.length}
             </div>
           )}
@@ -291,7 +291,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
 
       {/* Swipe Instruction */}
       {hasMultipleItems && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/50 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           Swipe to browse
         </div>
       )}

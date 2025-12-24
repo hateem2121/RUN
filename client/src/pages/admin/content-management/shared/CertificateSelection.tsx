@@ -3,58 +3,52 @@ import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 
 interface CertificateSelectionProps {
-	selectedIds: number[];
-	onChange: (ids: number[]) => void;
+  selectedIds: number[];
+  onChange: (ids: number[]) => void;
 }
 
-export function CertificateSelection({
-	selectedIds,
-	onChange,
-}: CertificateSelectionProps) {
-	const { data: certificates = [] } = useQuery<Certificate[]>({
-		queryKey: ["/api/certificates"],
-	});
+export function CertificateSelection({ selectedIds, onChange }: CertificateSelectionProps) {
+  const { data: certificates = [] } = useQuery<Certificate[]>({
+    queryKey: ["/api/certificates"],
+  });
 
-	const activeCertificates = certificates.filter((cert) => cert.isActive);
+  const activeCertificates = certificates.filter((cert) => cert.isActive);
 
-	const toggleCertificate = (certId: number) => {
-		if (selectedIds.includes(certId)) {
-			onChange(selectedIds.filter((id) => id !== certId));
-		} else {
-			onChange([...selectedIds, certId]);
-		}
-	};
+  const toggleCertificate = (certId: number) => {
+    if (selectedIds.includes(certId)) {
+      onChange(selectedIds.filter((id) => id !== certId));
+    } else {
+      onChange([...selectedIds, certId]);
+    }
+  };
 
-	return (
-		<div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-3">
-			{activeCertificates.length === 0 ? (
-				<p className="text-sm text-muted-foreground">
-					No active certificates available. Add certificates in the Certificates
-					management page.
-				</p>
-			) : (
-				activeCertificates.map((cert) => (
-					<div
-						key={cert.id}
-						className="flex items-center space-x-2 p-2 hover:bg-accent rounded cursor-pointer"
-						onClick={() => toggleCertificate(cert.id)}
-					>
-						<div
-							className={`w-4 h-4 border rounded ${selectedIds.includes(cert.id) ? "bg-primary border-primary" : "border-input"}`}
-						>
-							{selectedIds.includes(cert.id) && (
-								<Check className="w-3 h-3 text-primary-foreground" />
-							)}
-						</div>
-						<div className="flex-1">
-							<div className="font-medium text-sm">{cert.name}</div>
-							<div className="text-xs text-muted-foreground">
-								{cert.issuingBody}
-							</div>
-						</div>
-					</div>
-				))
-			)}
-		</div>
-	);
+  return (
+    <div className="max-h-60 space-y-2 overflow-y-auto rounded-lg border p-3">
+      {activeCertificates.length === 0 ? (
+        <p className="text-muted-foreground text-sm">
+          No active certificates available. Add certificates in the Certificates management page.
+        </p>
+      ) : (
+        activeCertificates.map((cert) => (
+          <div
+            key={cert.id}
+            className="flex cursor-pointer items-center space-x-2 rounded p-2 hover:bg-accent"
+            onClick={() => toggleCertificate(cert.id)}
+          >
+            <div
+              className={`h-4 w-4 rounded border ${selectedIds.includes(cert.id) ? "border-primary bg-primary" : "border-input"}`}
+            >
+              {selectedIds.includes(cert.id) && (
+                <Check className="h-3 w-3 text-primary-foreground" />
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="font-medium text-sm">{cert.name}</div>
+              <div className="text-muted-foreground text-xs">{cert.issuingBody}</div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
 }

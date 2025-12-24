@@ -27,17 +27,17 @@ import {
   CertificateSchema,
   FabricSchema,
   MediaAssetSchema,
+  type ProductSummary,
   ProductSummarySchema,
   SizeChartSchema,
   safeParseArray,
-  type ProductSummary,
 } from "@/schemas/product";
 
 // Loading Fallback Component
 function ProductsLoader() {
   return (
-    <div className="flex justify-center items-center min-h-[400px]">
-      <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+    <div className="flex min-h-[400px] items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
     </div>
   );
 }
@@ -110,7 +110,7 @@ export default function ProductsPage() {
     queryKey: MediaQueryKeys.list,
     queryFn: () => apiRequest("/api/media?all=true", { method: "GET" }),
   });
-  // @ts-ignore - API response shape might vary, safeParse handles it
+  // @ts-expect-error - API response shape might vary, safeParse handles it
   const mediaAssets = safeParseArray(MediaAssetSchema, mediaResponse?.data || []);
 
   // 7. Products
@@ -122,7 +122,7 @@ export default function ProductsPage() {
     queryKey: ["/api/products", searchTerm, selectedCategory],
     placeholderData: keepPreviousData,
   });
-  // @ts-ignore - API response shape might vary, safeParse handles it
+  // @ts-expect-error - API response shape might vary, safeParse handles it
   const products = safeParseArray(ProductSummarySchema, productsResponse?.data || []);
 
   // Track page view on mount
@@ -191,7 +191,7 @@ export default function ProductsPage() {
       // MOQ filter
       const moq =
         typeof product.minimumOrderQuantity === "string"
-          ? parseInt(product.minimumOrderQuantity) || 0
+          ? parseInt(product.minimumOrderQuantity, 10) || 0
           : product.minimumOrderQuantity || 0;
       if (moq < selectedFilters.moqRange[0] || moq > selectedFilters.moqRange[1]) {
         return false;
@@ -204,7 +204,7 @@ export default function ProductsPage() {
         case "name":
           return (a?.name || "").localeCompare(b?.name || "");
         case "newest":
-          // @ts-ignore - Date parsing
+          // @ts-expect-error - Date parsing
           return new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime();
         case "featured":
           return (b?.isFeatured ? 1 : 0) - (a?.isFeatured ? 1 : 0);
@@ -230,27 +230,27 @@ export default function ProductsPage() {
         <Suspense fallback={<ProductsLoader />}>
           {/* SEO Component */}
           <ProductsListSEO
-            // @ts-ignore - Compatibility with shared schema
+            // @ts-expect-error - Compatibility with shared schema
             category={selectedCategoryObj}
             searchTerm={searchTerm}
             totalProducts={sortedProducts.length}
           />
 
           {/* Header */}
-          <div className="bg-white border-b sticky top-0 z-modal-backdrop">
+          <div className="sticky top-0 z-modal-backdrop border-b bg-white">
             <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                <h1 className="text-2xl font-bold">Products</h1>
+              <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+                <h1 className="font-bold text-2xl">Products</h1>
 
-                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                   {/* Search */}
                   <div className="relative flex-1 sm:flex-none">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <Input
                       placeholder="Search products..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 w-full sm:w-[300px]"
+                      className="w-full pl-10 sm:w-[300px]"
                     />
                   </div>
 
@@ -284,14 +284,14 @@ export default function ProductsPage() {
                   </Select>
 
                   {/* View Mode */}
-                  <div className="flex gap-1 bg-gray-100 p-1 rounded-md">
+                  <div className="flex gap-1 rounded-md bg-gray-100 p-1">
                     <Button
                       size="sm"
                       variant={viewMode === "small" ? "default" : "ghost"}
                       onClick={() => setViewMode("small")}
                       className="p-2"
                     >
-                      <Grid3X3 className="w-4 h-4" />
+                      <Grid3X3 className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
@@ -299,7 +299,7 @@ export default function ProductsPage() {
                       onClick={() => setViewMode("medium")}
                       className="p-2"
                     >
-                      <Grid2X2 className="w-4 h-4" />
+                      <Grid2X2 className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
@@ -307,13 +307,13 @@ export default function ProductsPage() {
                       onClick={() => setViewMode("large")}
                       className="p-2"
                     >
-                      <LayoutGrid className="w-4 h-4" />
+                      <LayoutGrid className="h-4 w-4" />
                     </Button>
                   </div>
 
                   {/* Advanced Filters */}
                   <ProductFilters
-                    // @ts-ignore - Schemas match closely enough
+                    // @ts-expect-error - Schemas match closely enough
                     fabrics={fabrics.filter((f) => f.isActive)}
                     certificates={certificates.filter((c) => c.isActive)}
                     sizeCharts={sizeCharts.filter((s) => s.isActive)}
@@ -326,7 +326,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Results count */}
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 text-gray-600 text-sm">
                 Showing {sortedProducts.length} products
                 {searchTerm && ` for "${searchTerm}"`}
                 {selectedCategory &&
@@ -342,7 +342,7 @@ export default function ProductsPage() {
             {isLoading ? (
               <ProductsLoader />
             ) : sortedProducts.length === 0 ? (
-              <div className="text-center py-12">
+              <div className="py-12 text-center">
                 <p className="text-gray-500">No products found</p>
               </div>
             ) : (
@@ -354,7 +354,7 @@ export default function ProductsPage() {
                   )}
                 >
                   <ProductGrid
-                    // @ts-ignore - Schemas match closely enough
+                    // @ts-expect-error - Schemas match closely enough
                     products={displayedProducts}
                     mediaAssets={mediaAssets}
                     viewMode={viewMode}
@@ -365,7 +365,7 @@ export default function ProductsPage() {
                 {/* Infinite scroll observer (Placeholder) */}
                 {hasMore && (
                   <div ref={observerRef} className="flex justify-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                    <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                   </div>
                 )}
               </>

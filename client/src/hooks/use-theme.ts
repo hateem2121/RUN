@@ -16,7 +16,7 @@ export function useTheme() {
     const stored = localStorage.getItem("theme");
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
-    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    } else if (window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
       // Check system preference
       setTheme("dark");
     }
