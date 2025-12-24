@@ -43,47 +43,57 @@
  */
 
 export const MediaQueryKeys = {
-  // Base keys for broad invalidation
-  all: ["/api/media"] as const, // FIXED: Changed from 'apimedia' to valid URL path for queryFn
+	// Base keys for broad invalidation
+	all: ["/api/media"] as const, // FIXED: Changed from 'apimedia' to valid URL path for queryFn
 
-  // Specific query patterns
-  paginated: ["/api/media", "paginated"] as const,
-  single: ["/api/media", "single"] as const,
-  list: ["/api/media", "list"] as const,
-  recent: ["/api/media", "recent"] as const,
-  batch: ["/api/media", "batch"] as const,
-  variants: ["/api/media", "variants"] as const,
-  forPage: ["/api/media", "page"] as const,
-  assets: ["/api/media", "assets"] as const,
+	// Specific query patterns
+	paginated: ["/api/media", "paginated"] as const,
+	single: ["/api/media", "single"] as const,
+	list: ["/api/media", "list"] as const,
+	recent: ["/api/media", "recent"] as const,
+	batch: ["/api/media", "batch"] as const,
+	variants: ["/api/media", "variants"] as const,
+	forPage: ["/api/media", "page"] as const,
+	assets: ["/api/media", "assets"] as const,
 
-  // Legacy support (to be phased out)
-  legacy: {
-    base: ["/api/media"] as const,
-  },
+	// Legacy support (to be phased out)
+	legacy: {
+		base: ["/api/media"] as const,
+	},
 } as const;
 
 /**
  * Helper functions for dynamic query keys
  */
 export const createMediaQueryKey = {
-  paginated: (params?: { page?: number; limit?: number; search?: string; type?: string }) =>
-    [...MediaQueryKeys.paginated, params || {}] as const,
+	paginated: (params?: {
+		page?: number;
+		limit?: number;
+		search?: string;
+		type?: string;
+	}) => [...MediaQueryKeys.paginated, params || {}] as const,
 
-  single: (id: number | string) => [...MediaQueryKeys.single, String(id)] as const,
+	single: (id: number | string) =>
+		[...MediaQueryKeys.single, String(id)] as const,
 
-  list: (params?: { limit?: number; offset?: number }) =>
-    [...MediaQueryKeys.list, params || {}] as const,
+	list: (params?: { limit?: number; offset?: number }) =>
+		[...MediaQueryKeys.list, params || {}] as const,
 
-  recent: (limit: number = 50) => [...MediaQueryKeys.recent, String(limit)] as const,
+	recent: (limit: number = 50) =>
+		[...MediaQueryKeys.recent, String(limit)] as const,
 
-  batch: (ids: (number | string)[]) =>
-    [...MediaQueryKeys.batch, ids.map(String).sort().join(",")] as const,
+	batch: (ids: (number | string)[]) =>
+		[...MediaQueryKeys.batch, ids.map(String).sort().join(",")] as const,
 
-  variants: (id: number | string, options?: Record<string, any>) =>
-    [...MediaQueryKeys.variants, String(id), options || {}] as const,
+	variants: (id: number | string, options?: Record<string, any>) =>
+		[...MediaQueryKeys.variants, String(id), options || {}] as const,
 
-  forPage: (page: string, ids?: (number | string)[]) =>
-    [...MediaQueryKeys.forPage, page, ids ? ids.map(String).sort().join(",") : "all"] as const,
+	forPage: (page: string, ids?: (number | string)[]) =>
+		[
+			...MediaQueryKeys.forPage,
+			page,
+			ids ? ids.map(String).sort().join(",") : "all",
+		] as const,
 };
 
 /**
@@ -98,10 +108,10 @@ export const createMediaQueryKey = {
  * await invalidateMediaQueries(queryClient);
  */
 export const invalidateMediaQueries = (queryClient: any) => {
-  return queryClient.invalidateQueries({
-    queryKey: MediaQueryKeys.all,
-    refetchType: "all",
-  });
+	return queryClient.invalidateQueries({
+		queryKey: MediaQueryKeys.all,
+		refetchType: "all",
+	});
 };
 
 /**
@@ -109,21 +119,24 @@ export const invalidateMediaQueries = (queryClient: any) => {
  * Legacy class kept for backward compatibility during transition
  */
 export class MediaCacheInvalidator {
-  static async invalidateAll(queryClient: any): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
+	static async invalidateAll(queryClient: any): Promise<void> {
+		return invalidateMediaQueries(queryClient);
+	}
 
-  static async invalidateItem(queryClient: any, _mediaId?: number | string): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
+	static async invalidateItem(
+		queryClient: any,
+		_mediaId?: number | string,
+	): Promise<void> {
+		return invalidateMediaQueries(queryClient);
+	}
 
-  static async invalidatePaginated(queryClient: any): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
+	static async invalidatePaginated(queryClient: any): Promise<void> {
+		return invalidateMediaQueries(queryClient);
+	}
 
-  static async invalidateBatch(queryClient: any): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
+	static async invalidateBatch(queryClient: any): Promise<void> {
+		return invalidateMediaQueries(queryClient);
+	}
 }
 
 // Convenience exports

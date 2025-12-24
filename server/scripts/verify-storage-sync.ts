@@ -4,137 +4,132 @@
  * Verifies all MediaAsset DB records have corresponding files in object storage
  */
 
-import { isNull } from 'drizzle-orm';
-import { mediaAssets } from '../../shared/schema';
-import { appStorageService } from '../app-storage-service';
-import { db } from '../db';
-import { logger } from '../lib/smart-logger';
+import { isNull } from "drizzle-orm";
+import { mediaAssets } from "../../shared/schema";
+import { appStorageService } from "../app-storage-service";
+import { db } from "../db";
+import { logger } from "../lib/smart-logger";
 
 interface SyncResult {
-  totalAssets: number;
-  verified: number;
-  missing: number;
-  errors: number;
-  missingFiles: Array<{
-    id: number;
-    filename: string;
-    storagePath: string;
-    bucketName: string;
-    error?: string;
-  }>;
+	totalAssets: number;
+	verified: number;
+	missing: number;
+	errors: number;
+	missingFiles: Array<{
+		id: number;
+		filename: string;
+		storagePath: string;
+		bucketName: string;
+		error?: string;
+	}>;
 }
 
 async function verifyDatabaseStorageSync(): Promise<SyncResult> {
-  logger.info('[Storage Sync] Starting database-storage verification...');
-  
-  const result: SyncResult = {
-    totalAssets: 0,
-    verified: 0,
-    missing: 0,
-    errors: 0,
-    missingFiles: []
-  };
+	logger.info("[Storage Sync] Starting database-storage verification...");
 
-  try {
-    // Query all active media assets
-    const assets = await db
-      .select({
-        id: mediaAssets.id,
-        filename: mediaAssets.filename,
-        storagePath: mediaAssets.storagePath,
-        bucketName: mediaAssets.bucketName,
-        type: mediaAssets.type,
-        fileSize: mediaAssets.fileSize
-      })
-      .from(mediaAssets)
-      .where(isNull(mediaAssets.deletedAt))
-      .orderBy(mediaAssets.id);
+	const result: SyncResult = {
+		totalAssets: 0,
+		verified: 0,
+		missing: 0,
+		errors: 0,
+		missingFiles: [],
+	};
 
-    result.totalAssets = assets.length;
-    logger.info(`[Storage Sync] Found ${assets.length} active media assets in database`);
+	try {
+		// Query all active media assets
+		const assets = await db
+			.select({
+				id: mediaAssets.id,
+				filename: mediaAssets.filename,
+				storagePath: mediaAssets.storagePath,
+				bucketName: mediaAssets.bucketName,
+				type: mediaAssets.type,
+				fileSize: mediaAssets.fileSize,
+			})
+			.from(mediaAssets)
+			.where(isNull(mediaAssets.deletedAt))
+			.orderBy(mediaAssets.id);
 
-    // Verify each asset exists in object storage
-    for (const asset of assets) {
-      try {
-        logger.debug(`[Storage Sync] Checking: ${asset.storagePath}`);
-        
-        // Use fileExists to check if file exists in object storage
-        const exists = await appStorageService.fileExists(asset.storagePath);
-        
-        if (exists) {
-          result.verified++;
-          logger.info(`✅ [Storage Sync] Verified: ${asset.storagePath} (ID: ${asset.id})`);
-        } else {
-          result.missing++;
-          result.missingFiles.push({
-            id: asset.id,
-            filename: asset.filename,
-            storagePath: asset.storagePath,
-            bucketName: asset.bucketName
-          });
-          logger.warn(`❌ [Storage Sync] MISSING: ${asset.storagePath} (ID: ${asset.id})`);
-        }
-      } catch (error) {
-        result.errors++;
-        result.missingFiles.push({
-          id: asset.id,
-          filename: asset.filename,
-          storagePath: asset.storagePath,
-          bucketName: asset.bucketName,
-          error: (error as Error).message
-        });
-        logger.error(`🚨 [Storage Sync] ERROR checking ${asset.storagePath} (ID: ${asset.id}):`, error);
-      }
-    }
+		result.totalAssets = assets.length;
+		logger.info(
+			`[Storage Sync] Found ${assets.length} active media assets in database`,
+		);
 
-    // Log summary
-    logger.info('[Storage Sync] ========================================');
-    logger.info(`[Storage Sync] SUMMARY:`);
-    logger.info(`[Storage Sync]   Total Assets: ${result.totalAssets}`);
-    logger.info(`[Storage Sync]   Verified: ${result.verified}`);
-    logger.info(`[Storage Sync]   Missing: ${result.missing}`);
-    logger.info(`[Storage Sync]   Errors: ${result.errors}`);
-    logger.info('[Storage Sync] ========================================');
+		// Verify each asset exists in object storage
+		for (const asset of assets) {
+			try {
+				logger.debug(`[Storage Sync] Checking: ${asset.storagePath}`);
 
-    if (result.missingFiles.length > 0) {
-      logger.warn('[Storage Sync] Missing/Error Files:');
-      result.missingFiles.forEach(file => {
-        logger.warn(`  - ID ${file.id}: ${file.storagePath} ${file.error ? `(${file.error})` : ''}`);
-      });
-    }
+				// Use fileExists to check if file exists in object storage
+				const exists = await appStorageService.fileExists(asset.storagePath);
 
-    return result;
-  } catch (error) {
-    logger.error('[Storage Sync] Fatal error during verification:', error);
-    throw error;
-  }
+				if (exists) {
+					result.verified++;
+					logger.info(
+						`✅ [Storage Sync] Verified: ${asset.storagePath} (ID: ${asset.id})`,
+					);
+				} else {
+					result.missing++;
+					result.missingFiles.push({
+						id: asset.id,
+						filename: asset.filename,
+						storagePath: asset.storagePath,
+						bucketName: asset.bucketName,
+					});
+					logger.warn(
+						`❌ [Storage Sync] MISSING: ${asset.storagePath} (ID: ${asset.id})`,
+					);
+				}
+			} catch (error) {
+				result.errors++;
+				result.missingFiles.push({
+					id: asset.id,
+					filename: asset.filename,
+					storagePath: asset.storagePath,
+					bucketName: asset.bucketName,
+					error: (error as Error).message,
+				});
+				logger.error(
+					`🚨 [Storage Sync] ERROR checking ${asset.storagePath} (ID: ${asset.id}):`,
+					error,
+				);
+			}
+		}
+
+		// Log summary
+		logger.info("[Storage Sync] ========================================");
+		logger.info(`[Storage Sync] SUMMARY:`);
+		logger.info(`[Storage Sync]   Total Assets: ${result.totalAssets}`);
+		logger.info(`[Storage Sync]   Verified: ${result.verified}`);
+		logger.info(`[Storage Sync]   Missing: ${result.missing}`);
+		logger.info(`[Storage Sync]   Errors: ${result.errors}`);
+		logger.info("[Storage Sync] ========================================");
+
+		if (result.missingFiles.length > 0) {
+			logger.warn("[Storage Sync] Missing/Error Files:");
+			result.missingFiles.forEach((file) => {
+				logger.warn(
+					`  - ID ${file.id}: ${file.storagePath} ${file.error ? `(${file.error})` : ""}`,
+				);
+			});
+		}
+
+		return result;
+	} catch (error) {
+		logger.error("[Storage Sync] Fatal error during verification:", error);
+		throw error;
+	}
 }
 
 // Execute verification
 verifyDatabaseStorageSync()
-  .then(result => {
-    console.log('\n========== DATABASE-STORAGE SYNC REPORT ==========');
-    console.log(`Total Assets in Database: ${result.totalAssets}`);
-    console.log(`Verified in Object Storage: ${result.verified}`);
-    console.log(`Missing from Object Storage: ${result.missing}`);
-    console.log(`Verification Errors: ${result.errors}`);
-    console.log('==================================================\n');
-    
-    if (result.missing > 0 || result.errors > 0) {
-      console.log('⚠️  SYNC ISSUES DETECTED:');
-      result.missingFiles.forEach(file => {
-        console.log(`  - ID ${file.id}: ${file.filename}`);
-        console.log(`    Path: ${file.storagePath}`);
-        if (file.error) console.log(`    Error: ${file.error}`);
-      });
-      console.log('');
-      process.exit(1); // Exit with error code
-    } else {
-      console.log('✅ All database records have corresponding object storage files');
-      process.exit(0);
-    }
-  })
-  .catch(error => {
-    console.error('Fatal error:', error);
-    process.exit(1);
-  });
+	.then((result) => {
+		if (result.missing > 0 || result.errors > 0) {
+			process.exit(1); // Exit with error code
+		} else {
+			process.exit(0);
+		}
+	})
+	.catch((error) => {
+		process.exit(1);
+	});

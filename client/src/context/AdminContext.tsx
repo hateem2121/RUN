@@ -1,6 +1,6 @@
-import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { useLocation } from 'wouter';
-import { getQueryClient } from '@/lib/queryClient';
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { useLocation } from "wouter";
+import { getQueryClient } from "@/lib/queryClient";
 
 interface AdminContextState {
   currentModule: string;
@@ -25,33 +25,37 @@ const AdminContext = createContext<AdminContextValue | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [location, setLocation] = useLocation();
-  const [state, setState] = useState<AdminContextState>({
-    currentModule: location.split('/')[2] || 'dashboard',
+  const [state, setState] = useState<AdminContextState>(() => ({
+    currentModule: location.split("/")[2] || "dashboard",
     isLoading: false,
     error: null,
     sidebarOpen: false,
-    queryParams: new URLSearchParams(window.location.search),
-    hasUnsavedChanges: false
-  });
+    // SSR-safe: defer window access to client
+    queryParams:
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : new URLSearchParams(),
+    hasUnsavedChanges: false,
+  }));
 
   const setCurrentModule = useCallback((module: string) => {
-    setState(prev => ({ ...prev, currentModule: module }));
+    setState((prev) => ({ ...prev, currentModule: module }));
   }, []);
 
   const setLoading = useCallback((loading: boolean) => {
-    setState(prev => ({ ...prev, isLoading: loading }));
+    setState((prev) => ({ ...prev, isLoading: loading }));
   }, []);
 
   const setError = useCallback((error: Error | null) => {
-    setState(prev => ({ ...prev, error }));
+    setState((prev) => ({ ...prev, error }));
   }, []);
 
   const setSidebarOpen = useCallback((open: boolean) => {
-    setState(prev => ({ ...prev, sidebarOpen: open }));
+    setState((prev) => ({ ...prev, sidebarOpen: open }));
   }, []);
 
   const setHasUnsavedChanges = useCallback((hasChanges: boolean) => {
-    setState(prev => ({ ...prev, hasUnsavedChanges: hasChanges }));
+    setState((prev) => ({ ...prev, hasUnsavedChanges: hasChanges }));
   }, []);
 
   const refreshData = useCallback(() => {
@@ -59,31 +63,48 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     getQueryClient().invalidateQueries();
   }, []);
 
-  const navigateWithState = useCallback((path: string, preserveParams = false) => {
-    if (state.hasUnsavedChanges) {
-      const confirmLeave = window.confirm('You have unsaved changes. Are you sure you want to leave?');
-      if (!confirmLeave) return;
-    }
+  const navigateWithState = useCallback(
+    (path: string, preserveParams = false) => {
+      if (state.hasUnsavedChanges && typeof window !== "undefined") {
+        const confirmLeave = window.confirm(
+          "You have unsaved changes. Are you sure you want to leave?",
+        );
+        if (!confirmLeave) return;
+      }
 
-    let finalPath = path;
-    if (preserveParams && state.queryParams.toString()) {
-      finalPath = `${path}?${state.queryParams.toString()}`;
-    }
-    
-    setLocation(finalPath);
-    setCurrentModule(path.split('/')[2] || 'dashboard');
-  }, [state.hasUnsavedChanges, state.queryParams, setLocation, setCurrentModule]);
+      let finalPath = path;
+      if (preserveParams && state.queryParams.toString()) {
+        finalPath = `${path}?${state.queryParams.toString()}`;
+      }
 
-  const value = useMemo(() => ({
-    ...state,
-    setCurrentModule,
-    setLoading,
-    setError,
-    setSidebarOpen,
-    setHasUnsavedChanges,
-    refreshData,
-    navigateWithState
-  }), [state, setCurrentModule, setLoading, setError, setSidebarOpen, setHasUnsavedChanges, refreshData, navigateWithState]);
+      setLocation(finalPath);
+      setCurrentModule(path.split("/")[2] || "dashboard");
+    },
+    [state.hasUnsavedChanges, state.queryParams, setLocation, setCurrentModule],
+  );
+
+  const value = useMemo(
+    () => ({
+      ...state,
+      setCurrentModule,
+      setLoading,
+      setError,
+      setSidebarOpen,
+      setHasUnsavedChanges,
+      refreshData,
+      navigateWithState,
+    }),
+    [
+      state,
+      setCurrentModule,
+      setLoading,
+      setError,
+      setSidebarOpen,
+      setHasUnsavedChanges,
+      refreshData,
+      navigateWithState,
+    ],
+  );
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 }
@@ -91,7 +112,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 export function useAdminContext() {
   const context = useContext(AdminContext);
   if (!context) {
-    throw new Error('useAdminContext must be used within AdminProvider');
+    throw new Error("useAdminContext must be used within AdminProvider");
   }
   return context;
 }

@@ -1,555 +1,665 @@
-import type { Category, Fabric, MediaAsset, Product } from '@shared/schema';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Filter, Grid, List, Package, Plus, Search } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'wouter';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import type { Category, Fabric, MediaAsset, Product } from "@shared/schema";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Filter, Grid, List, Package, Plus, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { getOptimizedQueryOptions } from '@/lib/queryClient';
-import { ProductAdvancedFilters } from '../advanced/ProductAdvancedFilters';
-import { ProductBulkOperations } from '../advanced/ProductBulkOperations';
-import { ProductCard } from './ProductCard';
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { getOptimizedQueryOptions } from "@/lib/queryClient";
+import { ProductAdvancedFilters } from "../advanced/ProductAdvancedFilters";
+import { ProductBulkOperations } from "../advanced/ProductBulkOperations";
+import { ProductCard } from "./ProductCard";
 
 interface ProductGridProps {
-  onProductSelect?: (product: Product) => void;
-  onProductEdit?: (product: Product) => void;
-  onProductCreate?: () => void;
+	onProductSelect?: (product: Product) => void;
+	onProductEdit?: (product: Product) => void;
+	onProductCreate?: () => void;
 }
 
 const PAGINATION_CONFIG = {
-  ITEMS_PER_PAGE: 20,
+	ITEMS_PER_PAGE: 20,
 };
 
 // Product Display Component with Traditional Pagination
 interface ProductDisplayProps {
-  products: Product[];
-  viewMode: 'grid' | 'list';
-  getCategory: (categoryId: number | null) => Category | undefined;
-  getFabric: (fabricId: number | null) => Fabric | undefined;
-  getMediaAsset: (mediaId: number) => MediaAsset | undefined;
-  onProductSelect?: (product: Product) => void;
-  onProductEdit?: (product: Product) => void;
-  selectedProductIds: number[];
-  setSelectedProductIds: (ids: number[]) => void;
+	products: Product[];
+	viewMode: "grid" | "list";
+	getCategory: (categoryId: number | null) => Category | undefined;
+	getFabric: (fabricId: number | null) => Fabric | undefined;
+	getMediaAsset: (mediaId: number) => MediaAsset | undefined;
+	onProductSelect?: (product: Product) => void;
+	onProductEdit?: (product: Product) => void;
+	selectedProductIds: number[];
+	setSelectedProductIds: (ids: number[]) => void;
 }
 
 function ProductDisplay({
-  products,
-  viewMode,
-  getCategory,
-  getFabric,
-  getMediaAsset,
-  onProductSelect,
-  onProductEdit,
-  selectedProductIds,
-  setSelectedProductIds
+	products,
+	viewMode,
+	getCategory,
+	getFabric,
+	getMediaAsset,
+	onProductSelect,
+	onProductEdit,
+	selectedProductIds,
+	setSelectedProductIds,
 }: ProductDisplayProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
+	const containerRef = useRef<HTMLDivElement>(null);
+	const queryClient = useQueryClient();
 
-  // Handle product deletion
-  const handleProductDelete = useCallback(() => {
-    // Refresh the product list after deletion
-    queryClient.invalidateQueries({ queryKey: ['/api/products'] });
-    queryClient.invalidateQueries({ queryKey: ['/api/admin/products/initial-data'] });
-  }, [queryClient]);
+	// Handle product deletion
+	const handleProductDelete = useCallback(() => {
+		// Refresh the product list after deletion
+		queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+		queryClient.invalidateQueries({
+			queryKey: ["/api/admin/products/initial-data"],
+		});
+	}, [queryClient]);
 
-  // Render individual product item
-  const renderProductCard = useCallback((product: Product) => {
-    return (
-      <div key={product.id}>
-        <ProductCard
-          product={product}
-          category={getCategory(product.categoryId)}
-          fabric={getFabric(product.fabricId)}
-          getMediaAsset={getMediaAsset}
-          viewMode={viewMode}
-          onSelect={() => onProductSelect?.(product)}
-          onEdit={() => onProductEdit?.(product)}
-          onDelete={handleProductDelete}
-        />
-      </div>
-    );
-  }, [getCategory, getFabric, getMediaAsset, viewMode, onProductSelect, onProductEdit, handleProductDelete, selectedProductIds, setSelectedProductIds]);
+	// Render individual product item
+	const renderProductCard = useCallback(
+		(product: Product) => {
+			return (
+				<div key={product.id}>
+					<ProductCard
+						product={product}
+						category={getCategory(product.categoryId)}
+						fabric={getFabric(product.fabricId)}
+						getMediaAsset={getMediaAsset}
+						viewMode={viewMode}
+						onSelect={() => onProductSelect?.(product)}
+						onEdit={() => onProductEdit?.(product)}
+						onDelete={handleProductDelete}
+					/>
+				</div>
+			);
+		},
+		[
+			getCategory,
+			getFabric,
+			getMediaAsset,
+			viewMode,
+			onProductSelect,
+			onProductEdit,
+			handleProductDelete,
+			selectedProductIds,
+			setSelectedProductIds,
+		],
+	);
 
-  // Traditional pagination rendering (virtual scrolling eliminated)
-  const ITEMS_PER_PAGE = PAGINATION_CONFIG.ITEMS_PER_PAGE;
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentPageProducts = products.slice(startIndex, endIndex);
+	// Traditional pagination rendering (virtual scrolling eliminated)
+	const ITEMS_PER_PAGE = PAGINATION_CONFIG.ITEMS_PER_PAGE;
+	const [currentPage, setCurrentPage] = useState(1);
+	const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+	const endIndex = startIndex + ITEMS_PER_PAGE;
+	const currentPageProducts = products.slice(startIndex, endIndex);
 
-  const PaginationControls = () => (
-    <div className="flex items-center justify-between mt-6">
-      <p className="text-sm text-muted-foreground">
-        Showing {startIndex + 1}-{Math.min(endIndex, products.length)} of {products.length} products
-      </p>
-      <div className="flex items-center gap-2">
-        <Button
-          data-testid="pagination-previous-button"
-          variant="outline"
-          size="sm"
-          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        <span className="text-sm font-medium px-3">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          data-testid="pagination-next-button"
-          variant="outline"
-          size="sm"
-          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </Button>
-      </div>
-    </div>
-  );
+	const PaginationControls = () => (
+		<div className="flex items-center justify-between mt-6">
+			<p className="text-sm text-muted-foreground">
+				Showing {startIndex + 1}-{Math.min(endIndex, products.length)} of{" "}
+				{products.length} products
+			</p>
+			<div className="flex items-center gap-2">
+				<Button
+					data-testid="pagination-previous-button"
+					variant="outline"
+					size="sm"
+					onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+					disabled={currentPage === 1}
+				>
+					Previous
+				</Button>
+				<span className="text-sm font-medium px-3">
+					Page {currentPage} of {totalPages}
+				</span>
+				<Button
+					data-testid="pagination-next-button"
+					variant="outline"
+					size="sm"
+					onClick={() =>
+						setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+					}
+					disabled={currentPage === totalPages}
+				>
+					Next
+				</Button>
+			</div>
+		</div>
+	);
 
-  return (
-    <div ref={containerRef}>
-      <div className={
-        viewMode === 'grid'
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          : "space-y-4"
-      }>
-        {currentPageProducts.map(product => renderProductCard(product))}
-      </div>
-      {totalPages > 1 && <PaginationControls />}
-    </div>
-  );
+	return (
+		<div ref={containerRef}>
+			<div
+				className={
+					viewMode === "grid"
+						? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+						: "space-y-4"
+				}
+			>
+				{currentPageProducts.map((product) => renderProductCard(product))}
+			</div>
+			{totalPages > 1 && <PaginationControls />}
+		</div>
+	);
 }
 
-export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }: ProductGridProps) {
-  // Phase 3: Advanced Features - Enhanced State Management
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+export function ProductGrid({
+	onProductSelect,
+	onProductEdit,
+	onProductCreate,
+}: ProductGridProps) {
+	// Phase 3: Advanced Features - Enhanced State Management
+	const [searchQuery, setSearchQuery] = useState("");
+	const [categoryFilter, setCategoryFilter] = useState<string>("all");
+	const [statusFilter, setStatusFilter] = useState<string>("all");
+	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+	const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+	const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
+	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [pageSize, setPageSize] = useState(20);
 
-  // URL Synchronization
-  const [location, setLocation] = useLocation();
-  const [isInitialized, setIsInitialized] = useState(false);
+	// URL Synchronization
+	const [location, setLocation] = useLocation();
+	const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize state from URL on mount
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+	// Initialize state from URL on mount
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
 
-    if (params.has('search')) setSearchQuery(params.get('search') || '');
-    if (params.has('category')) setCategoryFilter(params.get('category') || 'all');
-    if (params.has('status')) setStatusFilter(params.get('status') || 'all');
-    if (params.has('view')) setViewMode((params.get('view') as 'grid' | 'list') || 'grid');
-    if (params.has('page')) setCurrentPage(Number(params.get('page')));
-    if (params.has('limit')) setPageSize(Number(params.get('limit')));
-    if (params.has('advanced')) setShowAdvancedFilters(params.get('advanced') === 'true');
+		if (params.has("search")) setSearchQuery(params.get("search") || "");
+		if (params.has("category"))
+			setCategoryFilter(params.get("category") || "all");
+		if (params.has("status")) setStatusFilter(params.get("status") || "all");
+		if (params.has("view"))
+			setViewMode((params.get("view") as "grid" | "list") || "grid");
+		if (params.has("page")) setCurrentPage(Number(params.get("page")));
+		if (params.has("limit")) setPageSize(Number(params.get("limit")));
+		if (params.has("advanced"))
+			setShowAdvancedFilters(params.get("advanced") === "true");
 
-    setIsInitialized(true);
-  }, []);
+		setIsInitialized(true);
+	}, []);
 
-  // Sync state to URL
-  useEffect(() => {
-    if (!isInitialized) return;
+	// Sync state to URL
+	useEffect(() => {
+		if (!isInitialized) return;
 
-    const params = new URLSearchParams();
+		const params = new URLSearchParams();
 
-    if (searchQuery) params.set('search', searchQuery);
-    if (categoryFilter !== 'all') params.set('category', categoryFilter);
-    if (statusFilter !== 'all') params.set('status', statusFilter);
-    if (viewMode !== 'grid') params.set('view', viewMode);
-    if (currentPage > 1) params.set('page', currentPage.toString());
-    if (pageSize !== 20) params.set('limit', pageSize.toString());
-    if (showAdvancedFilters) params.set('advanced', 'true');
+		if (searchQuery) params.set("search", searchQuery);
+		if (categoryFilter !== "all") params.set("category", categoryFilter);
+		if (statusFilter !== "all") params.set("status", statusFilter);
+		if (viewMode !== "grid") params.set("view", viewMode);
+		if (currentPage > 1) params.set("page", currentPage.toString());
+		if (pageSize !== 20) params.set("limit", pageSize.toString());
+		if (showAdvancedFilters) params.set("advanced", "true");
 
-    const newSearch = params.toString();
-    const currentSearch = window.location.search.substring(1);
+		const newSearch = params.toString();
+		const currentSearch = window.location.search.substring(1);
 
-    if (newSearch !== currentSearch) {
-      setLocation(location + (newSearch ? '?' + newSearch : ''));
-    }
-  }, [
-    searchQuery,
-    categoryFilter,
-    statusFilter,
-    viewMode,
-    currentPage,
-    pageSize,
-    showAdvancedFilters,
-    isInitialized,
-    location,
-    setLocation
-  ]);
+		if (newSearch !== currentSearch) {
+			setLocation(location + (newSearch ? "?" + newSearch : ""));
+		}
+	}, [
+		searchQuery,
+		categoryFilter,
+		statusFilter,
+		viewMode,
+		currentPage,
+		pageSize,
+		showAdvancedFilters,
+		isInitialized,
+		location,
+		setLocation,
+	]);
 
-  // Phase 2: Real-time Sync - Enhanced data fetching with pagination
-  interface PaginatedResponse {
-    data: Product[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-      hasMore: boolean;
-    };
-  }
+	// Phase 2: Real-time Sync - Enhanced data fetching with pagination
+	interface PaginatedResponse {
+		data: Product[];
+		pagination: {
+			page: number;
+			limit: number;
+			total: number;
+			totalPages: number;
+			hasMore: boolean;
+		};
+	}
 
-  // Phase 4.1: Use batched endpoint for initial data loading with optimized caching
-  const staticOptions = getOptimizedQueryOptions('static');
-  const { data: initialData, isPending: initialDataLoading } = useQuery({
-    queryKey: ['/api/admin/products/initial-data'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/products/initial-data');
-      if (!response.ok) throw new Error('Failed to fetch initial data');
-      return response.json();
-    },
-    staleTime: staticOptions.staleTime,
-    gcTime: staticOptions.gcTime,
-    refetchOnWindowFocus: staticOptions.refetchOnWindowFocus,
-    refetchInterval: false as const,
-  });
+	// Phase 4.1: Use batched endpoint for initial data loading with optimized caching
+	const staticOptions = getOptimizedQueryOptions("static");
+	const { data: initialData, isPending: initialDataLoading } = useQuery({
+		queryKey: ["/api/admin/products/initial-data"],
+		queryFn: async () => {
+			const response = await fetch("/api/admin/products/initial-data");
+			if (!response.ok) throw new Error("Failed to fetch initial data");
+			return response.json();
+		},
+		staleTime: staticOptions.staleTime,
+		gcTime: staticOptions.gcTime,
+		refetchOnWindowFocus: staticOptions.refetchOnWindowFocus,
+		refetchInterval: false as const,
+	});
 
-  // Use batched data or fall back to individual queries
-  const products: Product[] = initialData?.products || [];
-  // Derive pagination from meta or create default values
-  const pagination = initialData?.meta ? {
-    page: 1,
-    limit: initialData.meta.totalProducts || 50,
-    total: initialData.meta.totalProducts || 0,
-    totalPages: 1,
-    hasMore: false
-  } : undefined;
-  const categories: Category[] = initialData?.categories || [];
-  const fabrics: Fabric[] = initialData?.fabrics || [];
-  // Media assets are now sent directly without pagination wrapper
-  const mediaAssets: MediaAsset[] = initialData?.mediaAssets || [];
+	// Use batched data or fall back to individual queries
+	const products: Product[] = initialData?.products || [];
+	// Derive pagination from meta or create default values
+	const pagination = initialData?.meta
+		? {
+				page: 1,
+				limit: initialData.meta.totalProducts || 50,
+				total: initialData.meta.totalProducts || 0,
+				totalPages: 1,
+				hasMore: false,
+			}
+		: undefined;
+	const categories: Category[] = initialData?.categories || [];
+	const fabrics: Fabric[] = initialData?.fabrics || [];
+	// Media assets are now sent directly without pagination wrapper
+	const mediaAssets: MediaAsset[] = initialData?.mediaAssets || [];
 
-  // Only fetch additional products if paginating beyond initial data
-  const productsOptions = getOptimizedQueryOptions('products');
-  const { data: additionalProductResponse } = useQuery<PaginatedResponse>({
-    queryKey: ['/api/products', currentPage, pageSize],
-    queryFn: async () => {
-      const response = await fetch(`/api/products?page=${currentPage}&limit=${pageSize}`);
-      if (!response.ok) throw new Error('Failed to fetch products');
-      return response.json();
-    },
-    enabled: currentPage > 1, // Only fetch if not on first page
-    staleTime: productsOptions.staleTime,
-    gcTime: productsOptions.gcTime,
-    refetchOnWindowFocus: productsOptions.refetchOnWindowFocus,
-    refetchInterval: false as const,
-  });
+	// Only fetch additional products if paginating beyond initial data
+	const productsOptions = getOptimizedQueryOptions("products");
+	const { data: additionalProductResponse } = useQuery<PaginatedResponse>({
+		queryKey: ["/api/products", currentPage, pageSize],
+		queryFn: async () => {
+			const response = await fetch(
+				`/api/products?page=${currentPage}&limit=${pageSize}`,
+			);
+			if (!response.ok) throw new Error("Failed to fetch products");
+			return response.json();
+		},
+		enabled: currentPage > 1, // Only fetch if not on first page
+		staleTime: productsOptions.staleTime,
+		gcTime: productsOptions.gcTime,
+		refetchOnWindowFocus: productsOptions.refetchOnWindowFocus,
+		refetchInterval: false as const,
+	});
 
-  // Use additional products if available
-  const allProducts = currentPage > 1 && additionalProductResponse
-    ? additionalProductResponse?.data || products
-    : products;
+	// Use additional products if available
+	const allProducts =
+		currentPage > 1 && additionalProductResponse
+			? additionalProductResponse?.data || products
+			: products;
 
-  // Combine loading states
-  const productsLoading = initialDataLoading;
+	// Combine loading states
+	const productsLoading = initialDataLoading;
 
-  // Phase 3: Advanced Features - Callbacks for advanced features  
-  const handleFilteredProductsChange = useCallback((filtered: Product[]) => {
-    setFilteredProducts(filtered);
-  }, []);
+	// Phase 3: Advanced Features - Callbacks for advanced features
+	const handleFilteredProductsChange = useCallback((filtered: Product[]) => {
+		setFilteredProducts(filtered);
+	}, []);
 
-  const handleBulkActionComplete = useCallback(() => {
-    setSelectedProductIds([]);
-  }, []);
+	const handleBulkActionComplete = useCallback(() => {
+		setSelectedProductIds([]);
+	}, []);
 
-  // Phase 3: Basic filtering logic (when advanced filters are off)
-  const displayProducts = useMemo(() => {
-    if (showAdvancedFilters && filteredProducts.length > 0) {
-      return filteredProducts; // Use advanced filtered results
-    }
+	// Phase 3: Basic filtering logic (when advanced filters are off)
+	const displayProducts = useMemo(() => {
+		if (showAdvancedFilters && filteredProducts.length > 0) {
+			return filteredProducts; // Use advanced filtered results
+		}
 
-    return allProducts.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (product.description?.toLowerCase().includes(searchQuery.toLowerCase()));
+		return allProducts.filter((product) => {
+			const matchesSearch =
+				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				product.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				product.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory = categoryFilter === 'all' || product.categoryId?.toString() === categoryFilter;
+			const matchesCategory =
+				categoryFilter === "all" ||
+				product.categoryId?.toString() === categoryFilter;
 
-      const matchesStatus = statusFilter === 'all' ||
-        (statusFilter === 'active' && product.isActive) ||
-        (statusFilter === 'inactive' && !product.isActive);
+			const matchesStatus =
+				statusFilter === "all" ||
+				(statusFilter === "active" && product.isActive) ||
+				(statusFilter === "inactive" && !product.isActive);
 
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
-  }, [allProducts, searchQuery, categoryFilter, statusFilter, showAdvancedFilters, filteredProducts]);
+			return matchesSearch && matchesCategory && matchesStatus;
+		});
+	}, [
+		allProducts,
+		searchQuery,
+		categoryFilter,
+		statusFilter,
+		showAdvancedFilters,
+		filteredProducts,
+	]);
 
-  // Helper functions for getting related data
-  const getCategory = (categoryId: number | null) =>
-    categories.find(c => c.id === categoryId);
+	// Helper functions for getting related data
+	const getCategory = (categoryId: number | null) =>
+		categories.find((c) => c.id === categoryId);
 
-  const getFabric = (fabricId: number | null) =>
-    fabrics.find(f => f.id === fabricId);
+	const getFabric = (fabricId: number | null) =>
+		fabrics.find((f) => f.id === fabricId);
 
-  const getMediaAsset = (mediaId: number) =>
-    Array.isArray(mediaAssets) ? mediaAssets.find(m => m.id === mediaId) : undefined;
+	const getMediaAsset = (mediaId: number) =>
+		Array.isArray(mediaAssets)
+			? mediaAssets.find((m) => m.id === mediaId)
+			: undefined;
 
-  if (productsLoading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-gray-600">Loading products...</p>
-        </div>
-      </div>
-    );
-  }
+	if (productsLoading) {
+		return (
+			<div className="flex items-center justify-center h-[60vh]">
+				<div className="text-center">
+					<div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+					<p className="text-sm text-gray-600">Loading products...</p>
+				</div>
+			</div>
+		);
+	}
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Package className="h-8 w-8 text-blue-600" />
-          <div>
-            <h1 className="text-3xl font-bold">Product Management</h1>
-            <p className="text-gray-600">{displayProducts.length} products</p>
-          </div>
-        </div>
-        <Button data-testid="new-product-button" onClick={onProductCreate} className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="h-4 w-4 mr-2" />
-          New Product
-        </Button>
-      </div>
+	return (
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-3">
+					<Package className="h-8 w-8 text-blue-600" />
+					<div>
+						<h1 className="text-3xl font-bold">Product Management</h1>
+						<p className="text-gray-600">{displayProducts.length} products</p>
+					</div>
+				</div>
+				<Button
+					data-testid="new-product-button"
+					onClick={onProductCreate}
+					className="bg-blue-600 hover:bg-blue-700"
+				>
+					<Plus className="h-4 w-4 mr-2" />
+					New Product
+				</Button>
+			</div>
 
-      {/* Phase 3: Bulk Operations */}
-      <ProductBulkOperations
-        products={displayProducts}
-        selectedProductIds={selectedProductIds}
-        onSelectionChange={setSelectedProductIds}
-        onBulkActionComplete={handleBulkActionComplete}
-      />
+			{/* Phase 3: Bulk Operations */}
+			<ProductBulkOperations
+				products={displayProducts}
+				selectedProductIds={selectedProductIds}
+				onSelectionChange={setSelectedProductIds}
+				onBulkActionComplete={handleBulkActionComplete}
+			/>
 
-      {/* Phase 3: Advanced Filters */}
-      {showAdvancedFilters && (
-        <ProductAdvancedFilters
-          products={products}
-          categories={categories}
-          fabrics={fabrics}
-          onFilteredProductsChange={handleFilteredProductsChange}
-        />
-      )}
+			{/* Phase 3: Advanced Filters */}
+			{showAdvancedFilters && (
+				<ProductAdvancedFilters
+					products={products}
+					categories={categories}
+					fabrics={fabrics}
+					onFilteredProductsChange={handleFilteredProductsChange}
+				/>
+			)}
 
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-lg border">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            data-testid="search-products-input"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+			{/* Search and Filters */}
+			<div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-lg border">
+				<div className="flex-1 relative">
+					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+					<Input
+						data-testid="search-products-input"
+						placeholder="Search products..."
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="pl-10"
+					/>
+				</div>
 
-        <div className="flex gap-2">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger data-testid="category-filter-select" className="w-40">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem data-testid="category-filter-all" value="all">All Categories</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category.id} data-testid={`category-filter-${category.id}`} value={category.id.toString()}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+				<div className="flex gap-2">
+					<Select value={categoryFilter} onValueChange={setCategoryFilter}>
+						<SelectTrigger
+							data-testid="category-filter-select"
+							className="w-40"
+						>
+							<SelectValue placeholder="Category" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem data-testid="category-filter-all" value="all">
+								All Categories
+							</SelectItem>
+							{categories.map((category) => (
+								<SelectItem
+									key={category.id}
+									data-testid={`category-filter-${category.id}`}
+									value={category.id.toString()}
+								>
+									{category.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger data-testid="status-filter-select" className="w-32">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem data-testid="status-filter-all" value="all">All Status</SelectItem>
-              <SelectItem data-testid="status-filter-active" value="active">Active</SelectItem>
-              <SelectItem data-testid="status-filter-inactive" value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
+					<Select value={statusFilter} onValueChange={setStatusFilter}>
+						<SelectTrigger data-testid="status-filter-select" className="w-32">
+							<SelectValue placeholder="Status" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem data-testid="status-filter-all" value="all">
+								All Status
+							</SelectItem>
+							<SelectItem data-testid="status-filter-active" value="active">
+								Active
+							</SelectItem>
+							<SelectItem data-testid="status-filter-inactive" value="inactive">
+								Inactive
+							</SelectItem>
+						</SelectContent>
+					</Select>
 
-          {/* Phase 3: Advanced Filter Toggle */}
-          <Button
-            data-testid="toggle-advanced-filters-button"
-            variant={showAdvancedFilters ? 'default' : 'outline'}
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className="whitespace-nowrap"
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            {showAdvancedFilters ? 'Basic' : 'Advanced'}
-          </Button>
+					{/* Phase 3: Advanced Filter Toggle */}
+					<Button
+						data-testid="toggle-advanced-filters-button"
+						variant={showAdvancedFilters ? "default" : "outline"}
+						onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+						className="whitespace-nowrap"
+					>
+						<Filter className="h-4 w-4 mr-2" />
+						{showAdvancedFilters ? "Basic" : "Advanced"}
+					</Button>
 
-          <div className="flex bg-gray-100 rounded-md p-1">
-            <Button
-              data-testid="view-mode-grid-button"
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="px-3"
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              data-testid="view-mode-list-button"
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="px-3"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+					<div className="flex bg-gray-100 rounded-md p-1">
+						<Button
+							data-testid="view-mode-grid-button"
+							variant={viewMode === "grid" ? "default" : "ghost"}
+							size="sm"
+							onClick={() => setViewMode("grid")}
+							className="px-3"
+						>
+							<Grid className="h-4 w-4" />
+						</Button>
+						<Button
+							data-testid="view-mode-list-button"
+							variant={viewMode === "list" ? "default" : "ghost"}
+							size="sm"
+							onClick={() => setViewMode("list")}
+							className="px-3"
+						>
+							<List className="h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			</div>
 
-      {/* Active Filters */}
-      {(searchQuery || categoryFilter !== 'all' || statusFilter !== 'all') && (
-        <div className="flex flex-wrap gap-2">
-          {searchQuery && (
-            <Badge variant="secondary" className="gap-1">
-              Search: {searchQuery}
-              <button data-testid="clear-search-filter-button" onClick={() => setSearchQuery('')} className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs">×</button>
-            </Badge>
-          )}
-          {categoryFilter !== 'all' && (
-            <Badge variant="secondary" className="gap-1">
-              Category: {categories.find(c => c.id.toString() === categoryFilter)?.name}
-              <button data-testid="clear-category-filter-button" onClick={() => setCategoryFilter('all')} className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs">×</button>
-            </Badge>
-          )}
-          {statusFilter !== 'all' && (
-            <Badge variant="secondary" className="gap-1">
-              Status: {statusFilter}
-              <button data-testid="clear-status-filter-button" onClick={() => setStatusFilter('all')} className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs">×</button>
-            </Badge>
-          )}
-        </div>
-      )}
+			{/* Active Filters */}
+			{(searchQuery || categoryFilter !== "all" || statusFilter !== "all") && (
+				<div className="flex flex-wrap gap-2">
+					{searchQuery && (
+						<Badge variant="secondary" className="gap-1">
+							Search: {searchQuery}
+							<button
+								data-testid="clear-search-filter-button"
+								onClick={() => setSearchQuery("")}
+								className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs"
+							>
+								×
+							</button>
+						</Badge>
+					)}
+					{categoryFilter !== "all" && (
+						<Badge variant="secondary" className="gap-1">
+							Category:{" "}
+							{categories.find((c) => c.id.toString() === categoryFilter)?.name}
+							<button
+								data-testid="clear-category-filter-button"
+								onClick={() => setCategoryFilter("all")}
+								className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs"
+							>
+								×
+							</button>
+						</Badge>
+					)}
+					{statusFilter !== "all" && (
+						<Badge variant="secondary" className="gap-1">
+							Status: {statusFilter}
+							<button
+								data-testid="clear-status-filter-button"
+								onClick={() => setStatusFilter("all")}
+								className="ml-1 hover:bg-gray-300 rounded-full w-4 h-4 flex items-center justify-center text-xs"
+							>
+								×
+							</button>
+						</Badge>
+					)}
+				</div>
+			)}
 
-      {/* Products Grid/List */}
-      {displayProducts.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-          <p className="text-gray-600 mb-4">
-            {products.length === 0
-              ? "Get started by creating your first product."
-              : "Try adjusting your search or filters."}
-          </p>
-          {products.length === 0 && (
-            <Button data-testid="create-first-product-button" onClick={onProductCreate} className="bg-blue-600 hover:bg-blue-700">
-              Create First Product
-            </Button>
-          )}
-        </div>
-      ) : (
-        <ProductDisplay
-          products={displayProducts}
-          viewMode={viewMode}
-          getCategory={getCategory}
-          getFabric={getFabric}
-          getMediaAsset={getMediaAsset}
-          onProductSelect={onProductSelect}
-          onProductEdit={onProductEdit}
-          selectedProductIds={selectedProductIds}
-          setSelectedProductIds={setSelectedProductIds}
-        />
-      )}
+			{/* Products Grid/List */}
+			{displayProducts.length === 0 ? (
+				<div className="text-center py-12 bg-gray-50 rounded-lg">
+					<Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+					<h3 className="text-lg font-medium text-gray-900 mb-2">
+						No products found
+					</h3>
+					<p className="text-gray-600 mb-4">
+						{products.length === 0
+							? "Get started by creating your first product."
+							: "Try adjusting your search or filters."}
+					</p>
+					{products.length === 0 && (
+						<Button
+							data-testid="create-first-product-button"
+							onClick={onProductCreate}
+							className="bg-blue-600 hover:bg-blue-700"
+						>
+							Create First Product
+						</Button>
+					)}
+				</div>
+			) : (
+				<ProductDisplay
+					products={displayProducts}
+					viewMode={viewMode}
+					getCategory={getCategory}
+					getFabric={getFabric}
+					getMediaAsset={getMediaAsset}
+					onProductSelect={onProductSelect}
+					onProductEdit={onProductEdit}
+					selectedProductIds={selectedProductIds}
+					setSelectedProductIds={setSelectedProductIds}
+				/>
+			)}
 
-      {/* Pagination Controls */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="mt-8 flex items-center justify-between bg-white p-4 rounded-lg border">
-          <div className="text-sm text-gray-600">
-            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, pagination.total)} of {pagination.total} products
-          </div>
+			{/* Pagination Controls */}
+			{pagination && pagination.totalPages > 1 && (
+				<div className="mt-8 flex items-center justify-between bg-white p-4 rounded-lg border">
+					<div className="text-sm text-gray-600">
+						Showing {(currentPage - 1) * pageSize + 1} to{" "}
+						{Math.min(currentPage * pageSize, pagination.total)} of{" "}
+						{pagination.total} products
+					</div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              data-testid="pagination-bottom-previous-button"
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
+					<div className="flex items-center gap-2">
+						<Button
+							data-testid="pagination-bottom-previous-button"
+							variant="outline"
+							size="sm"
+							onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+							disabled={currentPage === 1}
+						>
+							Previous
+						</Button>
 
-            {/* Page numbers */}
-            <div className="flex gap-1">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= pagination.totalPages - 2) {
-                  pageNum = pagination.totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
+						{/* Page numbers */}
+						<div className="flex gap-1">
+							{Array.from(
+								{ length: Math.min(5, pagination.totalPages) },
+								(_, i) => {
+									let pageNum;
+									if (pagination.totalPages <= 5) {
+										pageNum = i + 1;
+									} else if (currentPage <= 3) {
+										pageNum = i + 1;
+									} else if (currentPage >= pagination.totalPages - 2) {
+										pageNum = pagination.totalPages - 4 + i;
+									} else {
+										pageNum = currentPage - 2 + i;
+									}
 
-                return (
-                  <Button
-                    key={pageNum}
-                    data-testid={`pagination-page-${pageNum}-button`}
-                    variant={pageNum === currentPage ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className="w-10"
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-            </div>
+									return (
+										<Button
+											key={pageNum}
+											data-testid={`pagination-page-${pageNum}-button`}
+											variant={pageNum === currentPage ? "default" : "outline"}
+											size="sm"
+											onClick={() => setCurrentPage(pageNum)}
+											className="w-10"
+										>
+											{pageNum}
+										</Button>
+									);
+								},
+							)}
+						</div>
 
-            <Button
-              data-testid="pagination-bottom-next-button"
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(p => Math.min(pagination.totalPages, p + 1))}
-              disabled={!pagination.hasMore}
-            >
-              Next
-            </Button>
-          </div>
+						<Button
+							data-testid="pagination-bottom-next-button"
+							variant="outline"
+							size="sm"
+							onClick={() =>
+								setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))
+							}
+							disabled={!pagination.hasMore}
+						>
+							Next
+						</Button>
+					</div>
 
-          <Select value={pageSize.toString()} onValueChange={(value) => {
-            setPageSize(parseInt(value));
-            setCurrentPage(1); // Reset to first page when changing page size
-          }}>
-            <SelectTrigger data-testid="page-size-select" className="w-32 sm:w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem data-testid="page-size-10" value="10">10 per page</SelectItem>
-              <SelectItem data-testid="page-size-20" value="20">20 per page</SelectItem>
-              <SelectItem data-testid="page-size-50" value="50">50 per page</SelectItem>
-              <SelectItem data-testid="page-size-100" value="100">100 per page</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-    </div>
-  );
+					<Select
+						value={pageSize.toString()}
+						onValueChange={(value) => {
+							setPageSize(parseInt(value));
+							setCurrentPage(1); // Reset to first page when changing page size
+						}}
+					>
+						<SelectTrigger
+							data-testid="page-size-select"
+							className="w-32 sm:w-36"
+						>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem data-testid="page-size-10" value="10">
+								10 per page
+							</SelectItem>
+							<SelectItem data-testid="page-size-20" value="20">
+								20 per page
+							</SelectItem>
+							<SelectItem data-testid="page-size-50" value="50">
+								50 per page
+							</SelectItem>
+							<SelectItem data-testid="page-size-100" value="100">
+								100 per page
+							</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			)}
+		</div>
+	);
 }

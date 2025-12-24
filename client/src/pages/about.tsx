@@ -25,6 +25,7 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
+import { ClientOnly } from "@/components/ui/ClientOnly";
 // REMOVED: media-migration utility no longer needed after consolidation
 import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -365,7 +366,15 @@ export default function About() {
               </p>
             </motion.div>
 
-            <OptimizedMapContainer locations={mapLocations} />
+            <ClientOnly
+              fallback={
+                <div className="h-[500px] w-full bg-muted animate-pulse rounded-2xl flex items-center justify-center">
+                  Loading map...
+                </div>
+              }
+            >
+              <OptimizedMapContainer locations={mapLocations} />
+            </ClientOnly>
           </div>
         </section>
       )}

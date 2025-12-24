@@ -26,23 +26,88 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
   letterInterval = 50,
   paused = false, // NEW: Add paused prop for performance optimization
 }: MatrixSloganTransitionProps & { paused?: boolean }) {
+  // SSR Safety: Initialize with first slogan if available
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [letters, setLetters] = useState<LetterState[]>([]);
+  const initialText = slogans[0]?.text || "";
+  const maxLen = slogans.length > 0 ? Math.max(...slogans.map((s) => s.text.length)) : 0;
+
+  const [letters, setLetters] = useState<LetterState[]>(() => {
+    if (!initialText) return [];
+    const paddedText = initialText.padEnd(maxLen, " ");
+    return paddedText.split("").map((char) => ({
+      char,
+      isMatrix: false,
+      isSpace: char === " ",
+    }));
+  });
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const currentText = slogans[currentIndex]?.text || "";
   const currentColor = slogans[currentIndex]?.color || "#00ff00";
-  const maxLength = Math.max(...slogans.map(s => s.text.length));
+  const maxLength = Math.max(...slogans.map((s) => s.text.length));
 
   // Matrix characters - mix of 0s, 1s and Japanese characters for authentic matrix effect
-  const matrixChars = useMemo(() => [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'ｱ', 'ｲ', 'ｳ', 'ｴ', 'ｵ', 'ｶ', 'ｷ', 'ｸ', 'ｹ', 'ｺ',
-    'ｻ', 'ｼ', 'ｽ', 'ｾ', 'ｿ', 'ﾀ', 'ﾁ', 'ﾂ', 'ﾃ', 'ﾄ',
-    'ﾅ', 'ﾆ', 'ﾇ', 'ﾈ', 'ﾉ', 'ﾊ', 'ﾋ', 'ﾌ', 'ﾍ', 'ﾎ',
-    'ﾏ', 'ﾐ', 'ﾑ', 'ﾒ', 'ﾓ', 'ﾔ', 'ﾕ', 'ﾖ', 'ﾗ', 'ﾘ',
-    'ﾙ', 'ﾚ', 'ﾛ', 'ﾜ', 'ｦ', 'ﾝ'
-  ], []);
+  const matrixChars = useMemo(
+    () => [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "ｱ",
+      "ｲ",
+      "ｳ",
+      "ｴ",
+      "ｵ",
+      "ｶ",
+      "ｷ",
+      "ｸ",
+      "ｹ",
+      "ｺ",
+      "ｻ",
+      "ｼ",
+      "ｽ",
+      "ｾ",
+      "ｿ",
+      "ﾀ",
+      "ﾁ",
+      "ﾂ",
+      "ﾃ",
+      "ﾄ",
+      "ﾅ",
+      "ﾆ",
+      "ﾇ",
+      "ﾈ",
+      "ﾉ",
+      "ﾊ",
+      "ﾋ",
+      "ﾌ",
+      "ﾍ",
+      "ﾎ",
+      "ﾏ",
+      "ﾐ",
+      "ﾑ",
+      "ﾒ",
+      "ﾓ",
+      "ﾔ",
+      "ﾕ",
+      "ﾖ",
+      "ﾗ",
+      "ﾘ",
+      "ﾙ",
+      "ﾚ",
+      "ﾛ",
+      "ﾜ",
+      "ｦ",
+      "ﾝ",
+    ],
+    [],
+  );
 
   const getRandomMatrixChar = useCallback(() => {
     return matrixChars[Math.floor(Math.random() * matrixChars.length)];
@@ -50,13 +115,13 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
 
   // Initialize letters for current text
   useEffect(() => {
-    const paddedText = currentText.padEnd(maxLength, ' ');
+    const paddedText = currentText.padEnd(maxLength, " ");
     setLetters(
       paddedText.split("").map((char) => ({
         char,
         isMatrix: false,
         isSpace: char === " ",
-      }))
+      })),
     );
   }, [currentText, maxLength]);
 
@@ -67,12 +132,10 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
     setIsTransitioning(true);
     const nextIndex = (currentIndex + 1) % slogans.length;
     const nextText = slogans[nextIndex]?.text || "";
-    const paddedNextText = nextText.padEnd(maxLength, ' ');
+    const paddedNextText = nextText.padEnd(maxLength, " ");
 
     // Start matrix effect - convert all letters to matrix characters
-    const letterIndices = letters
-      .map((_, index) => index)
-      .filter(i => !letters[i]?.isSpace);
+    const letterIndices = letters.map((_, index) => index).filter((i) => !letters[i]?.isSpace);
 
     // Randomize the order for more organic effect
     const shuffledIndices = [...letterIndices].sort(() => Math.random() - 0.5);
@@ -80,7 +143,7 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
     // Phase 1: Convert to matrix characters
     shuffledIndices.forEach((index, i) => {
       setTimeout(() => {
-        setLetters(prev => {
+        setLetters((prev) => {
           const newLetters = [...prev];
           if (index < newLetters.length && newLetters[index] && !newLetters[index].isSpace) {
             newLetters[index] = {
@@ -97,21 +160,21 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
     // Phase 2: Convert to new text
     setTimeout(() => {
       const newLetterIndices = paddedNextText
-        .split('')
+        .split("")
         .map((_, index) => index)
-        .filter(i => paddedNextText[i] !== ' ');
+        .filter((i) => paddedNextText[i] !== " ");
 
       const shuffledNewIndices = [...newLetterIndices].sort(() => Math.random() - 0.5);
 
       shuffledNewIndices.forEach((index, i) => {
         setTimeout(() => {
-          setLetters(prev => {
+          setLetters((prev) => {
             const newLetters = [...prev];
             if (index < paddedNextText.length) {
               newLetters[index] = {
                 char: paddedNextText[index]!,
                 isMatrix: false,
-                isSpace: paddedNextText[index] === ' ',
+                isSpace: paddedNextText[index] === " ",
               };
             }
             return newLetters;
@@ -125,7 +188,16 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
         setIsTransitioning(false);
       }, shuffledNewIndices.length * letterInterval);
     }, transitionDuration / 2);
-  }, [currentIndex, slogans, letters, isTransitioning, letterInterval, transitionDuration, getRandomMatrixChar, maxLength]);
+  }, [
+    currentIndex,
+    slogans,
+    letters,
+    isTransitioning,
+    letterInterval,
+    transitionDuration,
+    getRandomMatrixChar,
+    maxLength,
+  ]);
 
   // Auto-transition effect
   useEffect(() => {
@@ -141,8 +213,10 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
   const motionVariants = useMemo(
     () => ({
       matrix: {
-        color: currentColor.startsWith('#') ? currentColor : '#00ff00',
-        textShadow: `0 0 10px ${currentColor.startsWith('#') ? currentColor : '#00ff00'}cc, 0 0 20px ${currentColor.startsWith('#') ? currentColor : '#00ff00'}66`,
+        color: currentColor.startsWith("#") ? currentColor : "#00ff00",
+        textShadow: `0 0 10px ${
+          currentColor.startsWith("#") ? currentColor : "#00ff00"
+        }cc, 0 0 20px ${currentColor.startsWith("#") ? currentColor : "#00ff00"}66`,
         filter: "blur(0.5px)",
       },
       normal: {
@@ -151,7 +225,7 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
         filter: "blur(0px)",
       },
     }),
-    [currentColor]
+    [currentColor],
   );
 
   if (slogans.length === 0) return null;
@@ -171,12 +245,12 @@ export const MatrixSloganTransition = memo(function MatrixSloganTransition({
               ease: "easeInOut",
             }}
             style={{
-              display: 'inline-block',
-              whiteSpace: 'pre',
-              fontSize: 'inherit',
-              lineHeight: 'inherit',
-              fontWeight: 'inherit',
-              fontStyle: 'inherit',
+              display: "inline-block",
+              whiteSpace: "pre",
+              fontSize: "inherit",
+              lineHeight: "inherit",
+              fontWeight: "inherit",
+              fontStyle: "inherit",
             }}
           >
             {letter.char}

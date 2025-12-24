@@ -1,10 +1,12 @@
 import type React from "react";
 import { lazy, Suspense, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Toaster as SonnerToaster } from "sonner";
 import { Redirect, Route, Switch, useParams } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useConcurrentLocation } from "@/hooks/useConcurrentLocation";
+import { ThemeProvider } from "@/components/theme-provider";
 import E2EOverlayTest from "@/pages/e2e-overlay";
 import {
   prefetchCriticalHomepageData,
@@ -12,14 +14,33 @@ import {
   startAutomaticCacheCleanup,
 } from "./lib/queryClient";
 
+function RootErrorFallback({ error }: { error: Error }) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] p-6 text-center">
+      <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
+      <pre className="text-sm bg-gray-100 p-4 rounded mb-4 max-w-lg overflow-auto">
+        {error.message}
+      </pre>
+      <button
+        onClick={() => window.location.reload()}
+        className="px-4 py-2 bg-black text-white rounded hover:bg-neutral-800 transition-colors"
+      >
+        Reload Page
+      </button>
+    </div>
+  );
+}
+
 const FloatingDockHeader = lazy(() => import("@/components/navigation/floating-dock-header"));
 const Footer = lazy(() => import("@/components/homepage-v2/Footer"));
 
 import { AccessibilityWrapper } from "@/components/accessibility-wrapper";
+import { InquiryDrawer } from "@/components/inquiry/InquiryDrawer";
 import SmoothScrollLayout from "@/components/layout/SmoothScrollLayout";
 import { MobileOptimizations } from "@/components/mobile-optimizations";
 import { ResourceErrorBoundary } from "@/components/resources/ResourceErrorBoundary";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
+import CustomCursor from "@/components/ui/CustomCursor";
 // import Footer from "@/components/homepage-v2/Footer";
 import { InquiryCartProvider } from "@/contexts/InquiryCartContext";
 import { BundleUtils } from "@/lib/bundle-optimizer";
@@ -27,11 +48,13 @@ import { BundleUtils } from "@/lib/bundle-optimizer";
 import { performanceTracker } from "@/lib/performance-tracker";
 // import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import LazyLoadingUtils from "./lib/lazy-loading-optimizer";
+import { useHydratedStore } from "./lib/useHydratedStore";
+import { useQuoteStore } from "./stores/useQuoteStore";
 
 // Lazy load all pages for better performance
 const Homepage = lazy(() => import("@/pages/homepage"));
 const Admin = lazy(() => import("@/pages/admin"));
-const ProductsNew = lazy(() => import("@/pages/products-new"));
+const ProductShowcase = lazy(() => import("@/components/showcase/ProductShowcase"));
 
 const EnhancedProductDetail = lazy(() => import("@/pages/enhanced-product-detail"));
 const Categories = lazy(() => import("@/pages/categories"));
@@ -91,7 +114,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AccessibilityWrapper>
       <FloatingDockHeader />
-      <main>
+      <main className="pt-32">
         <Suspense fallback={<PageLoader />}>{children}</Suspense>
       </main>
       {location !== "/" && <Footer />}
@@ -113,9 +136,6 @@ function Router() {
   useEffect(() => {
     // CHUNK 4: Start automatic cache cleanup (2min interval, 120MB threshold)
     startAutomaticCacheCleanup();
-
-    // FORENSIC INVESTIGATION - Phase 5: Initialize Core Web Vitals tracking
-    console.log("[Performance] Initializing Core Web Vitals tracking");
     performanceTracker.getHealthStatus(); // Initialize tracker
 
     // Performance optimization: Prefetch critical homepage data immediately
@@ -161,7 +181,7 @@ function Router() {
       <Route path="/e2e-overlay" component={E2EOverlayTest} />
 
       <Route path="/" component={Homepage} />
-      <Route path="/products" component={ProductsNew} />
+      <Route path="/products" component={ProductShowcase} />
       {/* Legacy /products/:slug route removed - now handled by hierarchical URLs */}
       <Route path="/categories" component={Categories} />
       {/* Category redirect - redirects to /products?category=:slug for unified catalog */}
@@ -249,6 +269,55 @@ function Router() {
   );
 }
 
+function QuoteOverlay() {
+  // SSR-safe: Returns undefined until hydrated to prevent mismatch with localStorage state
+  const items = useHydratedStore(useQuoteStore, (state) => state.items);
+  const isDrawerOpen = useHydratedStore(useQuoteStore, (state) => state.isDrawerOpen);
+  const openDrawer = useQuoteStore((state) => state.openDrawer);
+  const closeDrawer = useQuoteStore((state) => state.closeDrawer);
+
+  // Don't render until hydrated to ensure SSR/client parity
+  if (items === undefined) return null;
+
+  const count = items.length;
+
+  if (count === 0 && !isDrawerOpen) return null;
+
+  return (
+    <>
+      {/* Floating Action Button */}
+      <button
+        onClick={openDrawer}
+        className="fixed bottom-6 right-6 z-dock bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 flex items-center justify-center group"
+      >
+        <div className="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-blue-600">
+            {count}
+          </span>
+        </div>
+      </button>
+
+      {/* Drawer */}
+      <InquiryDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+    </>
+  );
+}
+
 function App() {
   // Use location hook to determine if we are on the test route
   // We cannot use useConcurrentLocation inside App because it might depend on context not present,
@@ -294,9 +363,6 @@ function App() {
         event.preventDefault();
         return;
       }
-
-      // Log genuine application errors only - safe string format
-      console.error("[Unhandled Rejection]", reason);
     };
 
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
@@ -312,19 +378,25 @@ function App() {
   }
 
   return (
-    <InquiryCartProvider>
-      <TooltipProvider>
-        <MobileOptimizations />
-        <PerformanceMonitor />
-        <Toaster />
-        <SonnerToaster />
-        <Layout>
-          <SmoothScrollLayout>
-            <Router />
-          </SmoothScrollLayout>
-        </Layout>
-      </TooltipProvider>
-    </InquiryCartProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <InquiryCartProvider>
+        <TooltipProvider>
+          <MobileOptimizations />
+          <CustomCursor />
+          <PerformanceMonitor />
+          <QuoteOverlay /> {/* NEW: Quote System Overlay */}
+          <Toaster />
+          <SonnerToaster />
+          <Layout>
+            <SmoothScrollLayout>
+              <ErrorBoundary FallbackComponent={RootErrorFallback}>
+                <Router />
+              </ErrorBoundary>
+            </SmoothScrollLayout>
+          </Layout>
+        </TooltipProvider>
+      </InquiryCartProvider>
+    </ThemeProvider>
   );
 }
 

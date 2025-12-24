@@ -14,28 +14,34 @@ const getIcon = (type: string, size: "sm" | "md" | "lg" = "md") => {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-5 h-5",
-    lg: "w-8 h-8"
+    lg: "w-8 h-8",
   };
 
   const iconClass = sizeClasses[size];
 
   switch (type.toLowerCase()) {
-    case 'compliance':
+    case "compliance":
       return <Shield className={iconClass} />;
-    case 'sustainability':
+    case "sustainability":
       return <Leaf className={iconClass} />;
-    case 'quality':
+    case "quality":
       return <Award className={iconClass} />;
-    case 'safety':
+    case "safety":
       return <CheckCircle className={iconClass} />;
-    case 'environmental':
+    case "environmental":
       return <Leaf className={iconClass} />;
     default:
       return <Award className={iconClass} />;
   }
 };
 
-function CompactCertificateCard({ certificate, index }: { certificate: Certificate; index: number }) {
+function CompactCertificateCard({
+  certificate,
+  index,
+}: {
+  certificate: Certificate;
+  index: number;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,23 +55,15 @@ function CompactCertificateCard({ certificate, index }: { certificate: Certifica
 
         <div className="relative z-10 flex items-start gap-3">
           <div className="shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-green-400/20 to-emerald-400/20 flex items-center justify-center">
-            <div className="text-green-400">
-              {getIcon(certificate.type || 'quality')}
-            </div>
+            <div className="text-green-400">{getIcon(certificate.type || "quality")}</div>
           </div>
 
           <div className="grow">
-            <h4 className="text-white font-medium text-sm mb-1 line-clamp-1">
-              {certificate.name}
-            </h4>
-            <p className="text-white/60 text-xs line-clamp-1">
-              {certificate.issuingBody}
-            </p>
+            <h4 className="text-white font-medium text-sm mb-1 line-clamp-1">{certificate.name}</h4>
+            <p className="text-white/60 text-xs line-clamp-1">{certificate.issuingBody}</p>
 
             {certificate.description && (
-              <p className="text-white/50 text-xs mt-2 line-clamp-2">
-                {certificate.description}
-              </p>
+              <p className="text-white/50 text-xs mt-2 line-clamp-2">{certificate.description}</p>
             )}
           </div>
 
@@ -75,16 +73,18 @@ function CompactCertificateCard({ certificate, index }: { certificate: Certifica
               alt={certificate.name}
               className="w-8 h-8 object-contain opacity-60 group-hover:opacity-80 transition-opacity"
             />
-          ) : certificate.documentUrl && (
-            <a
-              href={certificate.documentUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-white/40 hover:text-white/80 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ExternalLink className="w-4 h-4" />
-            </a>
+          ) : (
+            certificate.documentUrl && (
+              <a
+                href={certificate.documentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/40 hover:text-white/80 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )
           )}
         </div>
       </div>
@@ -104,14 +104,14 @@ function Certificate3DCard({ certificate, index }: { certificate: Certificate; i
         delay: index * 0.1,
         duration: 0.8,
         type: "spring",
-        stiffness: 100
+        stiffness: 100,
       }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="relative h-64 w-full perspective-1000"
     >
       <motion.div
-        className="relative w-full h-full transition-transform duration-700 transform-style-3d cursor-pointer"
+        className="relative w-full h-full transition-transform duration-700 preserve-3d cursor-pointer"
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         onClick={() => setIsFlipped(!isFlipped)}
         whileHover={{ z: 50 }}
@@ -140,13 +140,11 @@ function Certificate3DCard({ certificate, index }: { certificate: Certificate; i
                   className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400/30 to-emerald-400/30 flex items-center justify-center mb-4"
                   animate={{
                     rotate: isHovered ? 360 : 0,
-                    scale: isHovered ? 1.1 : 1
+                    scale: isHovered ? 1.1 : 1,
                   }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="text-white">
-                    {getIcon(certificate.type || 'quality', "lg")}
-                  </div>
+                  <div className="text-white">{getIcon(certificate.type || "quality", "lg")}</div>
                 </motion.div>
 
                 <h3 className="text-xl font-bold text-white mb-2">{certificate.name}</h3>
@@ -188,9 +186,7 @@ function Certificate3DCard({ certificate, index }: { certificate: Certificate; i
               <h4 className="text-lg font-semibold text-white mb-3">Certificate Details</h4>
 
               {certificate.description && (
-                <p className="text-white/80 text-sm mb-4 grow">
-                  {certificate.description}
-                </p>
+                <p className="text-white/80 text-sm mb-4 grow">{certificate.description}</p>
               )}
 
               <div className="space-y-2 text-sm">
@@ -217,9 +213,7 @@ function Certificate3DCard({ certificate, index }: { certificate: Certificate; i
                 </a>
               )}
 
-              <p className="mt-4 text-center text-white/50 text-xs">
-                Click to flip back
-              </p>
+              <p className="mt-4 text-center text-white/50 text-xs">Click to flip back</p>
             </div>
           </div>
         </div>
@@ -246,7 +240,7 @@ function CertificateBadge({ certificate, index }: { certificate: Certificate; in
       <div className="relative bg-white/10 border border-white/30 rounded-xl p-4 h-full">
         <div className="flex items-start gap-3">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400/30 to-emerald-400/30 flex items-center justify-center shrink-0">
-            {getIcon(certificate.type || 'quality')}
+            {getIcon(certificate.type || "quality")}
           </div>
 
           <div className="flex-1">
@@ -257,7 +251,10 @@ function CertificateBadge({ certificate, index }: { certificate: Certificate; in
 
         <motion.div
           initial={{ height: 0, opacity: 0 }}
-          animate={{ height: isHovered ? "auto" : 0, opacity: isHovered ? 1 : 0 }}
+          animate={{
+            height: isHovered ? "auto" : 0,
+            opacity: isHovered ? 1 : 0,
+          }}
           transition={{ duration: 0.3 }}
           className="overflow-hidden"
         >
@@ -282,7 +279,11 @@ function CertificateBadge({ certificate, index }: { certificate: Certificate; in
   );
 }
 
-export const CertificateDisplay = memo(function CertificateDisplay({ certificateIds, displayMode = "compact", className }: CertificateDisplayProps) {
+export const CertificateDisplay = memo(function CertificateDisplay({
+  certificateIds,
+  displayMode = "compact",
+  className,
+}: CertificateDisplayProps) {
   const { data: certificates } = useQuery<Certificate[]>({
     queryKey: ["/api/certificates"],
     enabled: !!certificateIds && certificateIds.length > 0,
@@ -292,8 +293,8 @@ export const CertificateDisplay = memo(function CertificateDisplay({ certificate
     return null;
   }
 
-  const selectedCertificates = certificates.filter(cert =>
-    certificateIds.includes(cert.id) && cert.isActive
+  const selectedCertificates = certificates.filter(
+    (cert) => certificateIds.includes(cert.id) && cert.isActive,
   );
 
   if (selectedCertificates.length === 0) {
@@ -325,7 +326,11 @@ export const CertificateDisplay = memo(function CertificateDisplay({ certificate
         return (
           <div className="flex gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide">
             {selectedCertificates.map((certificate, index) => (
-              <CompactCertificateCard key={certificate.id} certificate={certificate} index={index} />
+              <CompactCertificateCard
+                key={certificate.id}
+                certificate={certificate}
+                index={index}
+              />
             ))}
           </div>
         );
@@ -357,12 +362,18 @@ export const CertificateDisplay = memo(function CertificateDisplay({ certificate
   };
 
   return (
-    <div className={`${displayMode === "compact" ? "mt-8" : displayMode === "badges" ? "mb-12" : "mb-16"} ${className || ""}`}>
+    <div
+      className={`${
+        displayMode === "compact" ? "mt-8" : displayMode === "badges" ? "mb-12" : "mb-16"
+      } ${className || ""}`}
+    >
       <motion.h3
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className={`${getTitleSize()} font-semibold text-white mb-${displayMode === "compact" ? "4" : displayMode === "badges" ? "6" : "8"} ${displayMode === "compact" ? "" : "text-center"}`}
+        className={`${getTitleSize()} font-semibold text-white mb-${
+          displayMode === "compact" ? "4" : displayMode === "badges" ? "6" : "8"
+        } ${displayMode === "compact" ? "" : "text-center"}`}
       >
         {getTitle()}
       </motion.h3>
@@ -371,28 +382,3 @@ export const CertificateDisplay = memo(function CertificateDisplay({ certificate
     </div>
   );
 });
-
-// CSS for 3D effects
-if (typeof document !== 'undefined') {
-  const style = `
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-    
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-    
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-  `;
-
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = style;
-  document.head.appendChild(styleSheet);
-}

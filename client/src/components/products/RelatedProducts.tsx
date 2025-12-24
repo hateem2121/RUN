@@ -64,9 +64,6 @@ export function RelatedProducts({
 
     const fetchBatchedMedia = async () => {
       try {
-        console.log(
-          `🚀 [RelatedProducts] PHASE 1A: Batching ${relatedProductMediaIds.length} media assets`,
-        );
         const results = await batchFetchMediaContent(relatedProductMediaIds);
 
         const mediaMap = new Map<number, string>();
@@ -79,12 +76,7 @@ export function RelatedProducts({
         });
 
         setBatchedProductMedia(mediaMap);
-        console.log(
-          `✅ [RelatedProducts] PHASE 1A+1B: Batched ${mediaMap.size}/${relatedProductMediaIds.length} assets`,
-        );
-      } catch (error) {
-        console.error("❌ [RelatedProducts] Batch media fetch failed:", error);
-      }
+      } catch (error) {}
     };
 
     fetchBatchedMedia();
@@ -109,16 +101,10 @@ export function RelatedProducts({
 
     // Validate required data before constructing URL
     if (!category || !category.slug) {
-      console.warn(
-        `[RelatedProducts] Missing category slug for product ${product.id} (${product.name})`,
-      );
       return null;
     }
 
     if (!product.slug) {
-      console.warn(
-        `[RelatedProducts] Missing product slug for product ${product.id} (${product.name})`,
-      );
       return null;
     }
 
@@ -189,7 +175,7 @@ export function RelatedProducts({
                   {primaryMedia ? (
                     <LazyMediaEnhanced
                       mediaId={primaryMedia.id}
-                      alt={product.name}
+                      alt={product.name || "Related Product"}
                       className="w-full h-full"
                       priority={false}
                     />
@@ -213,7 +199,7 @@ export function RelatedProducts({
                 {/* Product Info */}
                 <div className="p-4">
                   <h3 className="font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">
-                    {product.name}
+                    {product.name || "Unnamed Product"}
                   </h3>
                   {product.sku && <p className="text-sm text-gray-600 mb-2">SKU: {product.sku}</p>}
                   {product.description && (

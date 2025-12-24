@@ -26,17 +26,17 @@ const router = Router();
 
 // Param validation schema
 const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
+	id: z.string().transform(Number).pipe(z.number().int().positive()),
 });
 
 // Reorder validation schema
 const reorderSchema = z.object({
-  entries: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
+	entries: z.array(
+		z.object({
+			id: z.number().int().positive(),
+			position: z.number().int().min(0),
+		}),
+	),
 });
 
 /**
@@ -44,17 +44,21 @@ const reorderSchema = z.object({
  * Retrieve all map locations
  */
 router.get("/", async (_req, res) => {
-  try {
-    const locations = await withTimeout(aboutService.getLocations(), 10000, "Get map locations");
+	try {
+		const locations = await withTimeout(
+			aboutService.getLocations(),
+			10000,
+			"Get map locations",
+		);
 
-    logger.info(`[AboutLocations] Retrieved ${locations.length} locations`);
-    return res.json(locations);
-  } catch (error) {
-    logger.error("[AboutLocations] Error getting locations:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get locations",
-    });
-  }
+		logger.info(`[AboutLocations] Retrieved ${locations.length} locations`);
+		return res.json(locations);
+	} catch (error) {
+		logger.error("[AboutLocations] Error getting locations:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to get locations",
+		});
+	}
 });
 
 /**
@@ -62,23 +66,27 @@ router.get("/", async (_req, res) => {
  * Retrieve single location
  */
 router.get("/:id", async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const location = await withTimeout(aboutService.getLocation(id), 10000, "Get map location");
+		const location = await withTimeout(
+			aboutService.getLocation(id),
+			10000,
+			"Get map location",
+		);
 
-    if (!location) {
-      return res.status(404).json({ error: "Location not found" });
-    }
+		if (!location) {
+			return res.status(404).json({ error: "Location not found" });
+		}
 
-    logger.info(`[AboutLocations] Retrieved location ${id}`);
-    return res.json(location);
-  } catch (error) {
-    logger.error("[AboutLocations] Error getting location:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get location",
-    });
-  }
+		logger.info(`[AboutLocations] Retrieved location ${id}`);
+		return res.json(location);
+	} catch (error) {
+		logger.error("[AboutLocations] Error getting location:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to get location",
+		});
+	}
 });
 
 /**
@@ -86,48 +94,52 @@ router.get("/:id", async (req, res) => {
  * Create new location
  */
 router.post("/", requireAdmin, async (req, res) => {
-  try {
-    const validation = insertAboutMapLocationSchema.safeParse(req.body);
+	try {
+		const validation = insertAboutMapLocationSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutLocations] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn("[AboutLocations] Validation failed:", validation.error);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const data = {
-      ...validation.data,
-      latitude: String(validation.data.latitude),
-      longitude: String(validation.data.longitude),
-    };
+		const data = {
+			...validation.data,
+			latitude: String(validation.data.latitude),
+			longitude: String(validation.data.longitude),
+		};
 
-    const newLocation = await withTimeout(
-      aboutService.createLocation(data as any),
-      10000,
-      "Create map location",
-    );
+		const newLocation = await withTimeout(
+			aboutService.createLocation(data as any),
+			10000,
+			"Create map location",
+		);
 
-    if (!newLocation) {
-      throw new Error("Failed to create location");
-    }
+		if (!newLocation) {
+			throw new Error("Failed to create location");
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after creation");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutLocations] ✅ Cache invalidated after creation");
+		} catch (cacheError) {
+			logger.error(
+				"[AboutLocations] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[AboutLocations] Created location ${newLocation.id}`);
-    return res.status(201).json(newLocation);
-  } catch (error) {
-    logger.error("[AboutLocations] Error creating location:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to create location",
-    });
-  }
+		logger.info(`[AboutLocations] Created location ${newLocation.id}`);
+		return res.status(201).json(newLocation);
+	} catch (error) {
+		logger.error("[AboutLocations] Error creating location:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to create location",
+		});
+	}
 });
 
 /**
@@ -135,47 +147,53 @@ router.post("/", requireAdmin, async (req, res) => {
  * Update location
  */
 router.patch("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
-    const validation = insertAboutMapLocationSchema.partial().safeParse(req.body);
+	try {
+		const { id } = idParamSchema.parse(req.params);
+		const validation = insertAboutMapLocationSchema
+			.partial()
+			.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutLocations] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn("[AboutLocations] Validation failed:", validation.error);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const data: any = { ...validation.data };
-    if (data.latitude !== undefined) data.latitude = String(data.latitude);
-    if (data.longitude !== undefined) data.longitude = String(data.longitude);
+		const data: any = { ...validation.data };
+		if (data.latitude !== undefined) data.latitude = String(data.latitude);
+		if (data.longitude !== undefined) data.longitude = String(data.longitude);
 
-    const updatedLocation = await withTimeout(
-      aboutService.updateLocation(id, data),
-      10000,
-      "Update map location",
-    );
+		const updatedLocation = await withTimeout(
+			aboutService.updateLocation(id, data),
+			10000,
+			"Update map location",
+		);
 
-    if (!updatedLocation) {
-      return res.status(404).json({ error: "Location not found" });
-    }
+		if (!updatedLocation) {
+			return res.status(404).json({ error: "Location not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutLocations] ✅ Cache invalidated after update");
+		} catch (cacheError) {
+			logger.error(
+				"[AboutLocations] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[AboutLocations] Updated location ${id}`);
-    return res.json(updatedLocation);
-  } catch (error) {
-    logger.error("[AboutLocations] Error updating location:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to update location",
-    });
-  }
+		logger.info(`[AboutLocations] Updated location ${id}`);
+		return res.json(updatedLocation);
+	} catch (error) {
+		logger.error("[AboutLocations] Error updating location:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to update location",
+		});
+	}
 });
 
 /**
@@ -183,34 +201,38 @@ router.patch("/:id", requireAdmin, async (req, res) => {
  * Delete location
  */
 router.delete("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const deleted = await withTimeout(
-      aboutService.deleteLocation(id),
-      10000,
-      "Delete map location",
-    );
+		const deleted = await withTimeout(
+			aboutService.deleteLocation(id),
+			10000,
+			"Delete map location",
+		);
 
-    if (!deleted) {
-      return res.status(404).json({ error: "Location not found" });
-    }
+		if (!deleted) {
+			return res.status(404).json({ error: "Location not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after deletion");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutLocations] ✅ Cache invalidated after deletion");
+		} catch (cacheError) {
+			logger.error(
+				"[AboutLocations] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[AboutLocations] Deleted location ${id}`);
-    return res.status(204).send();
-  } catch (error) {
-    logger.error("[AboutLocations] Error deleting location:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to delete location",
-    });
-  }
+		logger.info(`[AboutLocations] Deleted location ${id}`);
+		return res.status(204).send();
+	} catch (error) {
+		logger.error("[AboutLocations] Error deleting location:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to delete location",
+		});
+	}
 });
 
 /**
@@ -218,40 +240,47 @@ router.delete("/:id", requireAdmin, async (req, res) => {
  * Reorder locations
  */
 router.patch("/reorder", requireAdmin, async (req, res) => {
-  try {
-    const validation = reorderSchema.safeParse(req.body);
+	try {
+		const validation = reorderSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutLocations] Reorder validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn(
+				"[AboutLocations] Reorder validation failed:",
+				validation.error,
+			);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    // Update positions
-    // Note: Implicitly relies on sortOrder existing or being ignored if missing
-    const updates = await Promise.all(
-      validation.data.entries.map(({ id, position }) =>
-        aboutService.updateLocation(id, { sortOrder: position } as any),
-      ),
-    );
+		// Update positions
+		// Note: Implicitly relies on sortOrder existing or being ignored if missing
+		const updates = await Promise.all(
+			validation.data.entries.map(({ id, position }) =>
+				aboutService.updateLocation(id, { sortOrder: position } as any),
+			),
+		);
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after reorder");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutLocations] ✅ Cache invalidated after reorder");
+		} catch (cacheError) {
+			logger.error(
+				"[AboutLocations] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[AboutLocations] Reordered ${updates.length} locations`);
-    return res.json({ success: true, updated: updates.length });
-  } catch (error) {
-    logger.error("[AboutLocations] Error reordering locations:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to reorder locations",
-    });
-  }
+		logger.info(`[AboutLocations] Reordered ${updates.length} locations`);
+		return res.json({ success: true, updated: updates.length });
+	} catch (error) {
+		logger.error("[AboutLocations] Error reordering locations:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to reorder locations",
+		});
+	}
 });
 
 export default router;

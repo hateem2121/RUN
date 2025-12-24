@@ -28,187 +28,164 @@ let adminCacheManager: any;
 let logger: any;
 
 async function initializeServices() {
-  const [cacheModule, batchModule, perfModule, adminModule, logModule] = await Promise.all([
-    import("../server/lib/unified-cache.js"),
-    import("../server/lib/two-tier-batch-cache.js"),
-    import("../server/lib/query-performance-monitor.js"),
-    import("../server/lib/admin-cache.js"),
-    import("../server/lib/smart-logger.js"),
-  ]);
+	const [cacheModule, batchModule, perfModule, adminModule, logModule] =
+		await Promise.all([
+			import("../server/lib/unified-cache.js"),
+			import("../server/lib/two-tier-batch-cache.js"),
+			import("../server/lib/query-performance-monitor.js"),
+			import("../server/lib/admin-cache.js"),
+			import("../server/lib/smart-logger.js"),
+		]);
 
-  UnifiedReplitCache = cacheModule.UnifiedCache;
-  twoTierBatchCache = batchModule.twoTierBatchCache;
-  queryPerformanceMonitor = perfModule.queryPerformanceMonitor;
-  adminCacheManager = adminModule.adminCacheManager;
-  logger = logModule.logger;
+	UnifiedReplitCache = cacheModule.UnifiedCache;
+	twoTierBatchCache = batchModule.twoTierBatchCache;
+	queryPerformanceMonitor = perfModule.queryPerformanceMonitor;
+	adminCacheManager = adminModule.adminCacheManager;
+	logger = logModule.logger;
 }
 
 interface AnalysisReport {
-  timestamp: string;
-  executive_summary: {
-    overall_cache_hit_rate: number;
-    neon_compute_savings_potential: number;
-    top_5_bottlenecks: string[];
-    meets_20_percent_goal: boolean;
-  };
-  neon_postgresql: {
-    cache_hit_ratio: number;
-    top_20_slowest_queries: Array<{
-      query: string;
-      calls: number;
-      mean_time_ms: number;
-      total_time_ms: number;
-      cache_potential: string;
-    }>;
-    connection_pool: {
-      pooling_enabled: boolean;
-      total_queries: number;
-      avg_query_time_ms: number;
-      peak_concurrent: number;
-      failed_queries: number;
-    };
-    compute_cost_analysis: {
-      total_active_time_ms: number;
-      cacheable_query_time_ms: number;
-      estimated_savings_percent: number;
-    };
-  };
-  replit_kv_cache: {
-    unified_cache: {
-      hit_rate: number;
-      l1_memory_hit_rate: number;
-      l2_kv_hit_rate: number;
-      total_hits: number;
-      total_misses: number;
-      avg_response_time_ms: number;
-      memory_usage_mb: number;
-      evicted_entries: number;
-      swr_metrics: {
-        fresh_serves: number;
-        stale_serves: number;
-        background_refreshes: number;
-      };
-    };
-    batch_cache: {
-      hit_rate: number;
-      l1_hit_rate: number;
-      l2_hit_rate: number;
-      avg_l1_time_ms: number;
-      avg_l2_time_ms: number;
-      avg_db_time_ms: number;
-    };
-    key_namespaces: Array<{
-      namespace: string;
-      ttl_ms: number;
-      category: string;
-      usage_pattern: string;
-    }>;
-  };
-  in_memory_caches: {
-    admin_cache: {
-      size: number;
-      max_size: number;
-      ttl_minutes: number;
-      effectiveness: string;
-    };
-    query_performance: {
-      total_queries: number;
-      avg_response_time_ms: number;
-      slow_queries: number;
-      cache_hit_rate: number;
-    };
-  };
-  static_assets: {
-    cache_control_policies: Array<{
-      asset_type: string;
-      current_policy: string;
-      recommendation: string;
-    }>;
-  };
-  cache_invalidation: {
-    patterns_documented: number;
-    coverage_assessment: string;
-    gaps_identified: string[];
-  };
-  recommendations: Array<{
-    priority: number;
-    title: string;
-    impact: string;
-    effort: string;
-    estimated_savings_percent: number;
-    implementation: string;
-    files_affected: string[];
-  }>;
+	timestamp: string;
+	executive_summary: {
+		overall_cache_hit_rate: number;
+		neon_compute_savings_potential: number;
+		top_5_bottlenecks: string[];
+		meets_20_percent_goal: boolean;
+	};
+	neon_postgresql: {
+		cache_hit_ratio: number;
+		top_20_slowest_queries: Array<{
+			query: string;
+			calls: number;
+			mean_time_ms: number;
+			total_time_ms: number;
+			cache_potential: string;
+		}>;
+		connection_pool: {
+			pooling_enabled: boolean;
+			total_queries: number;
+			avg_query_time_ms: number;
+			peak_concurrent: number;
+			failed_queries: number;
+		};
+		compute_cost_analysis: {
+			total_active_time_ms: number;
+			cacheable_query_time_ms: number;
+			estimated_savings_percent: number;
+		};
+	};
+	replit_kv_cache: {
+		unified_cache: {
+			hit_rate: number;
+			l1_memory_hit_rate: number;
+			l2_kv_hit_rate: number;
+			total_hits: number;
+			total_misses: number;
+			avg_response_time_ms: number;
+			memory_usage_mb: number;
+			evicted_entries: number;
+			swr_metrics: {
+				fresh_serves: number;
+				stale_serves: number;
+				background_refreshes: number;
+			};
+		};
+		batch_cache: {
+			hit_rate: number;
+			l1_hit_rate: number;
+			l2_hit_rate: number;
+			avg_l1_time_ms: number;
+			avg_l2_time_ms: number;
+			avg_db_time_ms: number;
+		};
+		key_namespaces: Array<{
+			namespace: string;
+			ttl_ms: number;
+			category: string;
+			usage_pattern: string;
+		}>;
+	};
+	in_memory_caches: {
+		admin_cache: {
+			size: number;
+			max_size: number;
+			ttl_minutes: number;
+			effectiveness: string;
+		};
+		query_performance: {
+			total_queries: number;
+			avg_response_time_ms: number;
+			slow_queries: number;
+			cache_hit_rate: number;
+		};
+	};
+	static_assets: {
+		cache_control_policies: Array<{
+			asset_type: string;
+			current_policy: string;
+			recommendation: string;
+		}>;
+	};
+	cache_invalidation: {
+		patterns_documented: number;
+		coverage_assessment: string;
+		gaps_identified: string[];
+	};
+	recommendations: Array<{
+		priority: number;
+		title: string;
+		impact: string;
+		effort: string;
+		estimated_savings_percent: number;
+		implementation: string;
+		files_affected: string[];
+	}>;
 }
 
 class CachePerformanceAnalyzer {
-  private cache: any;
-  private report: Partial<AnalysisReport> = {};
+	private cache: any;
+	private report: Partial<AnalysisReport> = {};
 
-  constructor() {
-    // Cache will be initialized in runFullAnalysis
-  }
+	constructor() {
+		// Cache will be initialized in runFullAnalysis
+	}
 
-  async runFullAnalysis(): Promise<AnalysisReport> {
-    console.log("═══════════════════════════════════════════════════════════");
-    console.log("      CACHE PERFORMANCE ANALYSIS - COMPREHENSIVE REPORT     ");
-    console.log("═══════════════════════════════════════════════════════════\n");
+	async runFullAnalysis(): Promise<AnalysisReport> {
+		// Initialize services first
+		await initializeServices();
+		this.cache = UnifiedReplitCache.getInstance();
 
-    // Initialize services first
-    await initializeServices();
-    this.cache = UnifiedReplitCache.getInstance();
+		this.report.timestamp = new Date().toISOString();
+		await this.analyzeNeonPostgreSQL();
+		await this.analyzeReplitKVCache();
+		await this.analyzeInMemoryCaches();
+		await this.analyzeStaticAssets();
+		await this.analyzeCacheInvalidation();
+		await this.generateRecommendations();
 
-    this.report.timestamp = new Date().toISOString();
+		// 7. Executive Summary
+		this.generateExecutiveSummary();
 
-    // 1. NEON PostgreSQL Analysis
-    console.log("📊 [1/6] Analyzing NEON PostgreSQL cache performance...");
-    await this.analyzeNeonPostgreSQL();
+		return this.report as AnalysisReport;
+	}
 
-    // 2. Replit KV Cache Analysis
-    console.log("📊 [2/6] Analyzing Replit KV Store (UnifiedReplitCache)...");
-    await this.analyzeReplitKVCache();
+	private async analyzeNeonPostgreSQL(): Promise<void> {
+		const poolMetrics = getPoolMetrics();
 
-    // 3. In-Memory Cache Analysis
-    console.log("📊 [3/6] Analyzing in-memory caches...");
-    await this.analyzeInMemoryCaches();
-
-    // 4. Static Asset Delivery
-    console.log("📊 [4/6] Reviewing static asset Cache-Control headers...");
-    await this.analyzeStaticAssets();
-
-    // 5. Cache Invalidation Patterns
-    console.log("📊 [5/6] Tracing cache invalidation patterns...");
-    await this.analyzeCacheInvalidation();
-
-    // 6. Generate Recommendations
-    console.log("📊 [6/6] Computing NEON savings and generating recommendations...");
-    await this.generateRecommendations();
-
-    // 7. Executive Summary
-    this.generateExecutiveSummary();
-
-    console.log("\n✅ Analysis complete!\n");
-
-    return this.report as AnalysisReport;
-  }
-
-  private async analyzeNeonPostgreSQL(): Promise<void> {
-    const poolMetrics = getPoolMetrics();
-
-    try {
-      // Check if pg_stat_statements is available
-      const extensionCheck = await db.execute(sql`
+		try {
+			// Check if pg_stat_statements is available
+			const extensionCheck = await db.execute(sql`
         SELECT EXISTS (
           SELECT 1 FROM pg_extension WHERE extname = 'pg_stat_statements'
         ) as installed
       `);
 
-      const pgStatStatementsAvailable = extensionCheck.rows[0]?.installed;
+			const pgStatStatementsAvailable = extensionCheck.rows[0]?.installed;
 
-      let topSlowQueries: any[] = [];
-      if (pgStatStatementsAvailable) {
-        // Get top 20 slowest queries
-        const slowQueries = await db.execute(sql`
+			let topSlowQueries: any[] = [];
+			if (pgStatStatementsAvailable) {
+				// Get top 20 slowest queries
+				const slowQueries = await db.execute(sql`
           SELECT 
             LEFT(query, 150) as query,
             calls,
@@ -221,21 +198,21 @@ class CachePerformanceAnalyzer {
           LIMIT 20
         `);
 
-        topSlowQueries = slowQueries.rows.map((row: any) => ({
-          query: row.query || "N/A",
-          calls: Number(row.calls) || 0,
-          mean_time_ms: Number(row.mean_exec_time) || 0,
-          total_time_ms: Number(row.total_exec_time) || 0,
-          cache_potential: this.assessCachePotential(
-            row.query,
-            Number(row.calls),
-            Number(row.mean_exec_time),
-          ),
-        }));
-      }
+				topSlowQueries = slowQueries.rows.map((row: any) => ({
+					query: row.query || "N/A",
+					calls: Number(row.calls) || 0,
+					mean_time_ms: Number(row.mean_exec_time) || 0,
+					total_time_ms: Number(row.total_exec_time) || 0,
+					cache_potential: this.assessCachePotential(
+						row.query,
+						Number(row.calls),
+						Number(row.mean_exec_time),
+					),
+				}));
+			}
 
-      // Get database-level cache hit ratio
-      const cacheHitRatio = await db.execute(sql`
+			// Get database-level cache hit ratio
+			const cacheHitRatio = await db.execute(sql`
         SELECT 
           datname,
           blks_hit,
@@ -248,376 +225,377 @@ class CachePerformanceAnalyzer {
         WHERE datname = current_database()
       `);
 
-      const dbCacheHitRatio = Number(cacheHitRatio.rows[0]?.hit_ratio) || 0;
+			const dbCacheHitRatio = Number(cacheHitRatio.rows[0]?.hit_ratio) || 0;
 
-      // Calculate compute cost analysis
-      const totalActiveTime = topSlowQueries.reduce((sum, q) => sum + q.total_time_ms, 0);
-      const cacheableQueries = topSlowQueries.filter(
-        (q) => q.cache_potential === "HIGH" || q.cache_potential === "MEDIUM",
-      );
-      const cacheableTime = cacheableQueries.reduce((sum, q) => sum + q.total_time_ms, 0);
-      const estimatedSavings = totalActiveTime > 0 ? (cacheableTime / totalActiveTime) * 100 : 0;
+			// Calculate compute cost analysis
+			const totalActiveTime = topSlowQueries.reduce(
+				(sum, q) => sum + q.total_time_ms,
+				0,
+			);
+			const cacheableQueries = topSlowQueries.filter(
+				(q) => q.cache_potential === "HIGH" || q.cache_potential === "MEDIUM",
+			);
+			const cacheableTime = cacheableQueries.reduce(
+				(sum, q) => sum + q.total_time_ms,
+				0,
+			);
+			const estimatedSavings =
+				totalActiveTime > 0 ? (cacheableTime / totalActiveTime) * 100 : 0;
 
-      this.report.neon_postgresql = {
-        cache_hit_ratio: dbCacheHitRatio,
-        top_20_slowest_queries: topSlowQueries,
-        connection_pool: {
-          pooling_enabled: poolMetrics.connectionPooling === "enabled",
-          total_queries: poolMetrics.totalQueries,
-          avg_query_time_ms: poolMetrics.averageQueryTime,
-          peak_concurrent: poolMetrics.peakConcurrentQueries,
-          failed_queries: poolMetrics.failedQueries,
-        },
-        compute_cost_analysis: {
-          total_active_time_ms: totalActiveTime,
-          cacheable_query_time_ms: cacheableTime,
-          estimated_savings_percent: Math.round(estimatedSavings * 100) / 100,
-        },
-      };
+			this.report.neon_postgresql = {
+				cache_hit_ratio: dbCacheHitRatio,
+				top_20_slowest_queries: topSlowQueries,
+				connection_pool: {
+					pooling_enabled: poolMetrics.connectionPooling === "enabled",
+					total_queries: poolMetrics.totalQueries,
+					avg_query_time_ms: poolMetrics.averageQueryTime,
+					peak_concurrent: poolMetrics.peakConcurrentQueries,
+					failed_queries: poolMetrics.failedQueries,
+				},
+				compute_cost_analysis: {
+					total_active_time_ms: totalActiveTime,
+					cacheable_query_time_ms: cacheableTime,
+					estimated_savings_percent: Math.round(estimatedSavings * 100) / 100,
+				},
+			};
+		} catch (error) {
+			this.report.neon_postgresql = {
+				cache_hit_ratio: 0,
+				top_20_slowest_queries: [],
+				connection_pool: {
+					pooling_enabled: poolMetrics.connectionPooling === "enabled",
+					total_queries: poolMetrics.totalQueries,
+					avg_query_time_ms: poolMetrics.averageQueryTime,
+					peak_concurrent: poolMetrics.peakConcurrentQueries,
+					failed_queries: poolMetrics.failedQueries,
+				},
+				compute_cost_analysis: {
+					total_active_time_ms: 0,
+					cacheable_query_time_ms: 0,
+					estimated_savings_percent: 0,
+				},
+			};
+		}
+	}
 
-      console.log(`   ✓ Database cache hit ratio: ${dbCacheHitRatio}%`);
-      console.log(`   ✓ Found ${topSlowQueries.length} slow queries`);
-      console.log(`   ✓ Estimated savings potential: ${estimatedSavings.toFixed(1)}%`);
-    } catch (error) {
-      console.warn("   ⚠ pg_stat_statements not available - using pool metrics only");
-      this.report.neon_postgresql = {
-        cache_hit_ratio: 0,
-        top_20_slowest_queries: [],
-        connection_pool: {
-          pooling_enabled: poolMetrics.connectionPooling === "enabled",
-          total_queries: poolMetrics.totalQueries,
-          avg_query_time_ms: poolMetrics.averageQueryTime,
-          peak_concurrent: poolMetrics.peakConcurrentQueries,
-          failed_queries: poolMetrics.failedQueries,
-        },
-        compute_cost_analysis: {
-          total_active_time_ms: 0,
-          cacheable_query_time_ms: 0,
-          estimated_savings_percent: 0,
-        },
-      };
-    }
-  }
+	private assessCachePotential(
+		query: string,
+		calls: number,
+		meanTime: number,
+	): string {
+		const queryLower = query.toLowerCase();
 
-  private assessCachePotential(query: string, calls: number, meanTime: number): string {
-    const queryLower = query.toLowerCase();
+		// HIGH potential: Frequent reads (>100 calls) with no mutations
+		if (
+			calls > 100 &&
+			meanTime > 100 &&
+			queryLower.includes("select") &&
+			!queryLower.includes("insert") &&
+			!queryLower.includes("update") &&
+			!queryLower.includes("delete")
+		) {
+			return "HIGH";
+		}
 
-    // HIGH potential: Frequent reads (>100 calls) with no mutations
-    if (
-      calls > 100 &&
-      meanTime > 100 &&
-      queryLower.includes("select") &&
-      !queryLower.includes("insert") &&
-      !queryLower.includes("update") &&
-      !queryLower.includes("delete")
-    ) {
-      return "HIGH";
-    }
+		// MEDIUM potential: Moderate frequency (>20 calls) reads
+		if (calls > 20 && meanTime > 50 && queryLower.includes("select")) {
+			return "MEDIUM";
+		}
 
-    // MEDIUM potential: Moderate frequency (>20 calls) reads
-    if (calls > 20 && meanTime > 50 && queryLower.includes("select")) {
-      return "MEDIUM";
-    }
+		// LOW potential: Mutations or infrequent queries
+		if (
+			queryLower.includes("insert") ||
+			queryLower.includes("update") ||
+			queryLower.includes("delete") ||
+			calls < 20
+		) {
+			return "LOW";
+		}
 
-    // LOW potential: Mutations or infrequent queries
-    if (
-      queryLower.includes("insert") ||
-      queryLower.includes("update") ||
-      queryLower.includes("delete") ||
-      calls < 20
-    ) {
-      return "LOW";
-    }
+		return "UNKNOWN";
+	}
 
-    return "UNKNOWN";
-  }
+	private async analyzeReplitKVCache(): Promise<void> {
+		const cacheMetrics = this.cache.getMetrics();
+		const batchMetrics = twoTierBatchCache.getMetrics();
 
-  private async analyzeReplitKVCache(): Promise<void> {
-    const cacheMetrics = this.cache.getMetrics();
-    const batchMetrics = twoTierBatchCache.getMetrics();
+		// Document key namespaces with TTLs
+		const keyNamespaces = [
+			{
+				namespace: "homepage:*",
+				ttl_ms: 900000,
+				category: "data",
+				usage_pattern: "High-traffic landing page, refreshed every 15min",
+			},
+			{
+				namespace: "products:*",
+				ttl_ms: 3600000,
+				category: "data",
+				usage_pattern: "Product listings and details, 1hr TTL",
+			},
+			{
+				namespace: "media:*",
+				ttl_ms: 21600000,
+				category: "media",
+				usage_pattern: "Media assets, 6hr TTL (rarely change)",
+			},
+			{
+				namespace: "categories:*",
+				ttl_ms: 7200000,
+				category: "data",
+				usage_pattern: "Category data, 2hr TTL (semi-static)",
+			},
+			{
+				namespace: "navigation:*",
+				ttl_ms: 86400000,
+				category: "static",
+				usage_pattern: "Navigation items, 24hr TTL (static)",
+			},
+			{
+				namespace: "sustainability:*",
+				ttl_ms: 7200000,
+				category: "data",
+				usage_pattern: "Sustainability content, 2hr TTL",
+			},
+			{
+				namespace: "manufacturing:*",
+				ttl_ms: 7200000,
+				category: "data",
+				usage_pattern: "Manufacturing content, 2hr TTL",
+			},
+			{
+				namespace: "size_charts:*",
+				ttl_ms: 86400000,
+				category: "static",
+				usage_pattern: "Size charts, 24hr TTL (static)",
+			},
+			{
+				namespace: "certificates:*",
+				ttl_ms: 7200000,
+				category: "data",
+				usage_pattern: "Certificates, 2hr TTL (semi-static)",
+			},
+		];
 
-    // Document key namespaces with TTLs
-    const keyNamespaces = [
-      {
-        namespace: "homepage:*",
-        ttl_ms: 900000,
-        category: "data",
-        usage_pattern: "High-traffic landing page, refreshed every 15min",
-      },
-      {
-        namespace: "products:*",
-        ttl_ms: 3600000,
-        category: "data",
-        usage_pattern: "Product listings and details, 1hr TTL",
-      },
-      {
-        namespace: "media:*",
-        ttl_ms: 21600000,
-        category: "media",
-        usage_pattern: "Media assets, 6hr TTL (rarely change)",
-      },
-      {
-        namespace: "categories:*",
-        ttl_ms: 7200000,
-        category: "data",
-        usage_pattern: "Category data, 2hr TTL (semi-static)",
-      },
-      {
-        namespace: "navigation:*",
-        ttl_ms: 86400000,
-        category: "static",
-        usage_pattern: "Navigation items, 24hr TTL (static)",
-      },
-      {
-        namespace: "sustainability:*",
-        ttl_ms: 7200000,
-        category: "data",
-        usage_pattern: "Sustainability content, 2hr TTL",
-      },
-      {
-        namespace: "manufacturing:*",
-        ttl_ms: 7200000,
-        category: "data",
-        usage_pattern: "Manufacturing content, 2hr TTL",
-      },
-      {
-        namespace: "size_charts:*",
-        ttl_ms: 86400000,
-        category: "static",
-        usage_pattern: "Size charts, 24hr TTL (static)",
-      },
-      {
-        namespace: "certificates:*",
-        ttl_ms: 7200000,
-        category: "data",
-        usage_pattern: "Certificates, 2hr TTL (semi-static)",
-      },
-    ];
+		// Calculate L1 vs L2 contribution
+		const totalRequests = cacheMetrics.totalHits + cacheMetrics.totalMisses;
+		const l1Hits = Math.round(cacheMetrics.totalHits * 0.75); // Estimate: 75% from L1
+		const l2Hits = cacheMetrics.totalHits - l1Hits;
+		const l1HitRate = totalRequests > 0 ? (l1Hits / totalRequests) * 100 : 0;
+		const l2HitRate = totalRequests > 0 ? (l2Hits / totalRequests) * 100 : 0;
 
-    // Calculate L1 vs L2 contribution
-    const totalRequests = cacheMetrics.totalHits + cacheMetrics.totalMisses;
-    const l1Hits = Math.round(cacheMetrics.totalHits * 0.75); // Estimate: 75% from L1
-    const l2Hits = cacheMetrics.totalHits - l1Hits;
-    const l1HitRate = totalRequests > 0 ? (l1Hits / totalRequests) * 100 : 0;
-    const l2HitRate = totalRequests > 0 ? (l2Hits / totalRequests) * 100 : 0;
+		this.report.replit_kv_cache = {
+			unified_cache: {
+				hit_rate: cacheMetrics.hitRate,
+				l1_memory_hit_rate: l1HitRate,
+				l2_kv_hit_rate: l2HitRate,
+				total_hits: cacheMetrics.totalHits,
+				total_misses: cacheMetrics.totalMisses,
+				avg_response_time_ms: cacheMetrics.avgResponseTime,
+				memory_usage_mb: cacheMetrics.estimatedMemoryUsage / (1024 * 1024),
+				evicted_entries: cacheMetrics.evictedEntries,
+				swr_metrics: {
+					fresh_serves: cacheMetrics.swrFreshServes,
+					stale_serves: cacheMetrics.swrStaleServes,
+					background_refreshes: cacheMetrics.swrBackgroundRefreshes,
+				},
+			},
+			batch_cache: {
+				hit_rate: batchMetrics.hitRate,
+				l1_hit_rate: batchMetrics.l1HitRate,
+				l2_hit_rate: batchMetrics.l2HitRate,
+				avg_l1_time_ms: batchMetrics.avgL1Time,
+				avg_l2_time_ms: batchMetrics.avgL2Time,
+				avg_db_time_ms: batchMetrics.avgDbTime,
+			},
+			key_namespaces: keyNamespaces,
+		};
+	}
 
-    this.report.replit_kv_cache = {
-      unified_cache: {
-        hit_rate: cacheMetrics.hitRate,
-        l1_memory_hit_rate: l1HitRate,
-        l2_kv_hit_rate: l2HitRate,
-        total_hits: cacheMetrics.totalHits,
-        total_misses: cacheMetrics.totalMisses,
-        avg_response_time_ms: cacheMetrics.avgResponseTime,
-        memory_usage_mb: cacheMetrics.estimatedMemoryUsage / (1024 * 1024),
-        evicted_entries: cacheMetrics.evictedEntries,
-        swr_metrics: {
-          fresh_serves: cacheMetrics.swrFreshServes,
-          stale_serves: cacheMetrics.swrStaleServes,
-          background_refreshes: cacheMetrics.swrBackgroundRefreshes,
-        },
-      },
-      batch_cache: {
-        hit_rate: batchMetrics.hitRate,
-        l1_hit_rate: batchMetrics.l1HitRate,
-        l2_hit_rate: batchMetrics.l2HitRate,
-        avg_l1_time_ms: batchMetrics.avgL1Time,
-        avg_l2_time_ms: batchMetrics.avgL2Time,
-        avg_db_time_ms: batchMetrics.avgDbTime,
-      },
-      key_namespaces: keyNamespaces,
-    };
+	private async analyzeInMemoryCaches(): Promise<void> {
+		const adminStats = adminCacheManager.getStats();
+		const queryPerfMetrics = queryPerformanceMonitor.getMetrics();
+		const queryPerfStats = queryPerformanceMonitor.getPerformanceStats();
 
-    console.log(`   ✓ Unified cache hit rate: ${cacheMetrics.hitRate}%`);
-    console.log(`   ✓ L1 (memory) contributing ${l1HitRate.toFixed(1)}% hit rate`);
-    console.log(`   ✓ L2 (KV) contributing ${l2HitRate.toFixed(1)}% hit rate`);
-    console.log(`   ✓ Documented ${keyNamespaces.length} key namespaces`);
-  }
+		this.report.in_memory_caches = {
+			admin_cache: {
+				size: adminStats.size,
+				max_size: adminStats.maxSize,
+				ttl_minutes: adminStats.ttlMinutes,
+				effectiveness:
+					adminStats.size > 0
+						? "Active - reducing DB queries for admin checks"
+						: "Underutilized",
+			},
+			query_performance: {
+				total_queries: queryPerfMetrics.queryCount,
+				avg_response_time_ms: queryPerfMetrics.avgResponseTime,
+				slow_queries: queryPerfStats.slowQueries,
+				cache_hit_rate: queryPerfStats.cacheHitRate,
+			},
+		};
+	}
 
-  private async analyzeInMemoryCaches(): Promise<void> {
-    const adminStats = adminCacheManager.getStats();
-    const queryPerfMetrics = queryPerformanceMonitor.getMetrics();
-    const queryPerfStats = queryPerformanceMonitor.getPerformanceStats();
+	private async analyzeStaticAssets(): Promise<void> {
+		// Document Cache-Control policies from code analysis
+		const policies = [
+			{
+				asset_type: "Media Assets (Object Storage)",
+				current_policy: "public, max-age=31536000, immutable",
+				recommendation: "✅ Optimal - 1 year cache with immutable flag",
+			},
+			{
+				asset_type: "API Responses (/api/*)",
+				current_policy: "no-cache or no explicit header",
+				recommendation:
+					"⚠️ Add Cache-Control for cacheable endpoints (e.g., public data)",
+			},
+			{
+				asset_type: "Static JS/CSS (Vite)",
+				current_policy:
+					"Handled by Vite dev server (fingerprinted in production)",
+				recommendation: "✅ Vite handles cache-busting via content hashing",
+			},
+		];
 
-    this.report.in_memory_caches = {
-      admin_cache: {
-        size: adminStats.size,
-        max_size: adminStats.maxSize,
-        ttl_minutes: adminStats.ttlMinutes,
-        effectiveness:
-          adminStats.size > 0 ? "Active - reducing DB queries for admin checks" : "Underutilized",
-      },
-      query_performance: {
-        total_queries: queryPerfMetrics.queryCount,
-        avg_response_time_ms: queryPerfMetrics.avgResponseTime,
-        slow_queries: queryPerfStats.slowQueries,
-        cache_hit_rate: queryPerfStats.cacheHitRate,
-      },
-    };
+		this.report.static_assets = {
+			cache_control_policies: policies,
+		};
+	}
 
-    console.log(`   ✓ Admin cache: ${adminStats.size}/${adminStats.maxSize} entries`);
-    console.log(`   ✓ Query performance: ${queryPerfMetrics.queryCount} total queries tracked`);
-  }
+	private async analyzeCacheInvalidation(): Promise<void> {
+		// Document known invalidation patterns from code
+		const patterns = [
+			"homepage:* - Invalidated on content updates",
+			"products:* - Invalidated on product CRUD",
+			"media:* - Invalidated on media uploads/deletes",
+			"sustainability:* - Invalidated on sustainability updates",
+			"manufacturing:* - Invalidated via ManufacturingCacheInvalidation service",
+		];
 
-  private async analyzeStaticAssets(): Promise<void> {
-    // Document Cache-Control policies from code analysis
-    const policies = [
-      {
-        asset_type: "Media Assets (Object Storage)",
-        current_policy: "public, max-age=31536000, immutable",
-        recommendation: "✅ Optimal - 1 year cache with immutable flag",
-      },
-      {
-        asset_type: "API Responses (/api/*)",
-        current_policy: "no-cache or no explicit header",
-        recommendation: "⚠️ Add Cache-Control for cacheable endpoints (e.g., public data)",
-      },
-      {
-        asset_type: "Static JS/CSS (Vite)",
-        current_policy: "Handled by Vite dev server (fingerprinted in production)",
-        recommendation: "✅ Vite handles cache-busting via content hashing",
-      },
-    ];
+		const gaps = [
+			"Manual cache clearing needed for some admin operations",
+			"No automatic invalidation on bulk updates",
+			"Cross-entity invalidation could be improved (e.g., product update should clear related categories)",
+		];
 
-    this.report.static_assets = {
-      cache_control_policies: policies,
-    };
+		this.report.cache_invalidation = {
+			patterns_documented: patterns.length,
+			coverage_assessment:
+				"~70% coverage - most mutations trigger invalidation",
+			gaps_identified: gaps,
+		};
+	}
 
-    console.log(`   ✓ Documented ${policies.length} asset caching policies`);
-  }
+	private async generateRecommendations(): Promise<void> {
+		const recommendations = [
+			{
+				priority: 1,
+				title:
+					"Extend TTL for semi-static content (Categories, Size Charts, Certificates)",
+				impact: "HIGH",
+				effort: "LOW",
+				estimated_savings_percent: 8,
+				implementation:
+					"Increase category TTL from 2hr to 6hr, size charts from 24hr to 7 days",
+				files_affected: ["server/lib/unified-replit-cache.ts"],
+			},
+			{
+				priority: 2,
+				title: "Implement Stale-While-Revalidate for product listings",
+				impact: "HIGH",
+				effort: "MEDIUM",
+				estimated_savings_percent: 12,
+				implementation:
+					"Use SWR pattern for product lists - serve stale data while refreshing in background",
+				files_affected: [
+					"server/routes/core/products.ts",
+					"server/lib/cache-strategies.ts",
+				],
+			},
+			{
+				priority: 3,
+				title: "Add result caching for top 5 slow queries",
+				impact: "MEDIUM",
+				effort: "MEDIUM",
+				estimated_savings_percent: 7,
+				implementation:
+					"Cache query results for slow SELECT queries identified in pg_stat_statements",
+				files_affected: ["server/lib/repositories/*.ts"],
+			},
+			{
+				priority: 4,
+				title: "Optimize homepage cache refresh interval",
+				impact: "MEDIUM",
+				effort: "LOW",
+				estimated_savings_percent: 3,
+				implementation:
+					"Extend homepage cache from 15min to 30min (content updates are infrequent)",
+				files_affected: ["server/lib/unified-replit-cache.ts"],
+			},
+			{
+				priority: 5,
+				title: "Add Cache-Control headers to cacheable API endpoints",
+				impact: "LOW",
+				effort: "LOW",
+				estimated_savings_percent: 2,
+				implementation:
+					"Add public cache headers for read-only endpoints (categories, certificates)",
+				files_affected: ["server/index.ts", "server/routes/**/*.ts"],
+			},
+		];
 
-  private async analyzeCacheInvalidation(): Promise<void> {
-    // Document known invalidation patterns from code
-    const patterns = [
-      "homepage:* - Invalidated on content updates",
-      "products:* - Invalidated on product CRUD",
-      "media:* - Invalidated on media uploads/deletes",
-      "sustainability:* - Invalidated on sustainability updates",
-      "manufacturing:* - Invalidated via ManufacturingCacheInvalidation service",
-    ];
+		this.report.recommendations = recommendations;
+	}
 
-    const gaps = [
-      "Manual cache clearing needed for some admin operations",
-      "No automatic invalidation on bulk updates",
-      "Cross-entity invalidation could be improved (e.g., product update should clear related categories)",
-    ];
+	private generateExecutiveSummary(): void {
+		const kvHitRate = this.report.replit_kv_cache?.unified_cache.hit_rate || 0;
 
-    this.report.cache_invalidation = {
-      patterns_documented: patterns.length,
-      coverage_assessment: "~70% coverage - most mutations trigger invalidation",
-      gaps_identified: gaps,
-    };
+		// Calculate overall cache hit rate (weighted average)
+		const overallHitRate =
+			kvHitRate * 0.7 +
+			(this.report.neon_postgresql?.cache_hit_ratio || 0) * 0.3;
 
-    console.log(`   ✓ Documented ${patterns.length} invalidation patterns`);
-    console.log(`   ⚠ Identified ${gaps.length} gaps in invalidation coverage`);
-  }
+		// Sum up recommendation savings
+		const totalPotentialSavings = (this.report.recommendations || []).reduce(
+			(sum, rec) => sum + rec.estimated_savings_percent,
+			0,
+		);
 
-  private async generateRecommendations(): Promise<void> {
-    const recommendations = [
-      {
-        priority: 1,
-        title: "Extend TTL for semi-static content (Categories, Size Charts, Certificates)",
-        impact: "HIGH",
-        effort: "LOW",
-        estimated_savings_percent: 8,
-        implementation: "Increase category TTL from 2hr to 6hr, size charts from 24hr to 7 days",
-        files_affected: ["server/lib/unified-replit-cache.ts"],
-      },
-      {
-        priority: 2,
-        title: "Implement Stale-While-Revalidate for product listings",
-        impact: "HIGH",
-        effort: "MEDIUM",
-        estimated_savings_percent: 12,
-        implementation:
-          "Use SWR pattern for product lists - serve stale data while refreshing in background",
-        files_affected: ["server/routes/core/products.ts", "server/lib/cache-strategies.ts"],
-      },
-      {
-        priority: 3,
-        title: "Add result caching for top 5 slow queries",
-        impact: "MEDIUM",
-        effort: "MEDIUM",
-        estimated_savings_percent: 7,
-        implementation:
-          "Cache query results for slow SELECT queries identified in pg_stat_statements",
-        files_affected: ["server/lib/repositories/*.ts"],
-      },
-      {
-        priority: 4,
-        title: "Optimize homepage cache refresh interval",
-        impact: "MEDIUM",
-        effort: "LOW",
-        estimated_savings_percent: 3,
-        implementation:
-          "Extend homepage cache from 15min to 30min (content updates are infrequent)",
-        files_affected: ["server/lib/unified-replit-cache.ts"],
-      },
-      {
-        priority: 5,
-        title: "Add Cache-Control headers to cacheable API endpoints",
-        impact: "LOW",
-        effort: "LOW",
-        estimated_savings_percent: 2,
-        implementation:
-          "Add public cache headers for read-only endpoints (categories, certificates)",
-        files_affected: ["server/index.ts", "server/routes/**/*.ts"],
-      },
-    ];
+		const top5Bottlenecks = (this.report.recommendations || [])
+			.slice(0, 5)
+			.map((rec) => `${rec.title} (${rec.estimated_savings_percent}% savings)`);
 
-    this.report.recommendations = recommendations;
-    console.log(`   ✓ Generated ${recommendations.length} prioritized recommendations`);
-  }
+		this.report.executive_summary = {
+			overall_cache_hit_rate: Math.round(overallHitRate * 100) / 100,
+			neon_compute_savings_potential:
+				Math.round(totalPotentialSavings * 100) / 100,
+			top_5_bottlenecks: top5Bottlenecks,
+			meets_20_percent_goal: totalPotentialSavings >= 20,
+		};
+	}
 
-  private generateExecutiveSummary(): void {
-    const kvHitRate = this.report.replit_kv_cache?.unified_cache.hit_rate || 0;
+	async saveReport(): Promise<string> {
+		const reportPath = path.join(
+			process.cwd(),
+			"CACHE_PERFORMANCE_ANALYSIS_REPORT.json",
+		);
+		await fs.writeFile(reportPath, JSON.stringify(this.report, null, 2));
 
-    // Calculate overall cache hit rate (weighted average)
-    const overallHitRate =
-      kvHitRate * 0.7 + (this.report.neon_postgresql?.cache_hit_ratio || 0) * 0.3;
+		// Also save a human-readable markdown version
+		const mdPath = path.join(
+			process.cwd(),
+			"CACHE_PERFORMANCE_ANALYSIS_REPORT.md",
+		);
+		await fs.writeFile(mdPath, this.generateMarkdownReport());
 
-    // Sum up recommendation savings
-    const totalPotentialSavings = (this.report.recommendations || []).reduce(
-      (sum, rec) => sum + rec.estimated_savings_percent,
-      0,
-    );
+		return reportPath;
+	}
 
-    const top5Bottlenecks = (this.report.recommendations || [])
-      .slice(0, 5)
-      .map((rec) => `${rec.title} (${rec.estimated_savings_percent}% savings)`);
+	private generateMarkdownReport(): string {
+		const report = this.report as AnalysisReport;
 
-    this.report.executive_summary = {
-      overall_cache_hit_rate: Math.round(overallHitRate * 100) / 100,
-      neon_compute_savings_potential: Math.round(totalPotentialSavings * 100) / 100,
-      top_5_bottlenecks: top5Bottlenecks,
-      meets_20_percent_goal: totalPotentialSavings >= 20,
-    };
-
-    console.log("\n─────────────────────────────────────────────────────────");
-    console.log("EXECUTIVE SUMMARY:");
-    console.log(`  Overall Cache Hit Rate: ${overallHitRate.toFixed(1)}%`);
-    console.log(`  Total Savings Potential: ${totalPotentialSavings.toFixed(1)}%`);
-    console.log(`  Meets 20% Goal: ${totalPotentialSavings >= 20 ? "✅ YES" : "❌ NO"}`);
-    console.log("─────────────────────────────────────────────────────────");
-  }
-
-  async saveReport(): Promise<string> {
-    const reportPath = path.join(process.cwd(), "CACHE_PERFORMANCE_ANALYSIS_REPORT.json");
-    await fs.writeFile(reportPath, JSON.stringify(this.report, null, 2));
-    console.log(`\n📄 Report saved to: ${reportPath}`);
-
-    // Also save a human-readable markdown version
-    const mdPath = path.join(process.cwd(), "CACHE_PERFORMANCE_ANALYSIS_REPORT.md");
-    await fs.writeFile(mdPath, this.generateMarkdownReport());
-    console.log(`📄 Markdown report saved to: ${mdPath}\n`);
-
-    return reportPath;
-  }
-
-  private generateMarkdownReport(): string {
-    const report = this.report as AnalysisReport;
-
-    return `# Cache Performance Analysis Report
+		return `# Cache Performance Analysis Report
 
 **Generated:** ${report.timestamp}
 
@@ -626,8 +604,8 @@ class CachePerformanceAnalyzer {
 - **Overall Cache Hit Rate:** ${report.executive_summary.overall_cache_hit_rate}%
 - **NEON Compute Savings Potential:** ${report.executive_summary.neon_compute_savings_potential}%
 - **Meets 20% Reduction Goal:** ${
-      report.executive_summary.meets_20_percent_goal ? "✅ YES" : "❌ NO"
-    }
+			report.executive_summary.meets_20_percent_goal ? "✅ YES" : "❌ NO"
+		}
 
 ### Top 5 Performance Bottlenecks
 
@@ -647,28 +625,29 @@ ${report.executive_summary.top_5_bottlenecks.map((b, i) => `${i + 1}. ${b}`).joi
 
 ### Compute Cost Analysis
 - **Total Active Time:** ${(
-      report.neon_postgresql.compute_cost_analysis.total_active_time_ms / 1000
-    ).toFixed(2)}s
+			report.neon_postgresql.compute_cost_analysis.total_active_time_ms / 1000
+		).toFixed(2)}s
 - **Cacheable Query Time:** ${(
-      report.neon_postgresql.compute_cost_analysis.cacheable_query_time_ms / 1000
-    ).toFixed(2)}s
+			report.neon_postgresql.compute_cost_analysis.cacheable_query_time_ms /
+				1000
+		).toFixed(2)}s
 - **Estimated Savings:** ${report.neon_postgresql.compute_cost_analysis.estimated_savings_percent.toFixed(
-      1,
-    )}%
+			1,
+		)}%
 
 ### Top 20 Slowest Queries
 
 | Query | Calls | Avg Time (ms) | Total Time (ms) | Cache Potential |
 |-------|-------|---------------|-----------------|-----------------|
 ${report.neon_postgresql.top_20_slowest_queries
-  .slice(0, 20)
-  .map(
-    (q) =>
-      `| ${q.query.substring(0, 60)}... | ${q.calls} | ${q.mean_time_ms.toFixed(
-        2,
-      )} | ${q.total_time_ms.toFixed(2)} | ${q.cache_potential} |`,
-  )
-  .join("\n")}
+	.slice(0, 20)
+	.map(
+		(q) =>
+			`| ${q.query.substring(0, 60)}... | ${q.calls} | ${q.mean_time_ms.toFixed(
+				2,
+			)} | ${q.total_time_ms.toFixed(2)} | ${q.cache_potential} |`,
+	)
+	.join("\n")}
 
 ## 2. Replit KV Store (UnifiedReplitCache)
 
@@ -700,28 +679,28 @@ ${report.neon_postgresql.top_20_slowest_queries
 | Namespace | TTL | Category | Usage Pattern |
 |-----------|-----|----------|---------------|
 ${report.replit_kv_cache.key_namespaces
-  .map(
-    (ns) =>
-      `| ${ns.namespace} | ${(ns.ttl_ms / 1000 / 60).toFixed(0)}min | ${ns.category} | ${
-        ns.usage_pattern
-      } |`,
-  )
-  .join("\n")}
+	.map(
+		(ns) =>
+			`| ${ns.namespace} | ${(ns.ttl_ms / 1000 / 60).toFixed(0)}min | ${ns.category} | ${
+				ns.usage_pattern
+			} |`,
+	)
+	.join("\n")}
 
 ## 3. In-Memory Caches
 
 ### Admin Cache
 - **Current Size:** ${report.in_memory_caches.admin_cache.size} / ${
-      report.in_memory_caches.admin_cache.max_size
-    }
+			report.in_memory_caches.admin_cache.max_size
+		}
 - **TTL:** ${report.in_memory_caches.admin_cache.ttl_minutes} minutes
 - **Effectiveness:** ${report.in_memory_caches.admin_cache.effectiveness}
 
 ### Query Performance Monitor
 - **Total Queries Tracked:** ${report.in_memory_caches.query_performance.total_queries.toLocaleString()}
 - **Avg Response Time:** ${report.in_memory_caches.query_performance.avg_response_time_ms.toFixed(
-      2,
-    )}ms
+			2,
+		)}ms
 - **Slow Queries:** ${report.in_memory_caches.query_performance.slow_queries}
 - **Cache Hit Rate:** ${report.in_memory_caches.query_performance.cache_hit_rate.toFixed(2)}%
 
@@ -732,8 +711,8 @@ ${report.replit_kv_cache.key_namespaces
 | Asset Type | Current Policy | Recommendation |
 |------------|----------------|----------------|
 ${report.static_assets.cache_control_policies
-  .map((p) => `| ${p.asset_type} | ${p.current_policy} | ${p.recommendation} |`)
-  .join("\n")}
+	.map((p) => `| ${p.asset_type} | ${p.current_policy} | ${p.recommendation} |`)
+	.join("\n")}
 
 ## 5. Cache Invalidation
 
@@ -747,8 +726,8 @@ ${report.cache_invalidation.gaps_identified.map((gap, i) => `${i + 1}. ${gap}`).
 ## 6. Prioritized Recommendations
 
 ${report.recommendations
-  .map(
-    (rec, i) => `
+	.map(
+		(rec, i) => `
 ### ${i + 1}. ${rec.title}
 
 - **Priority:** ${rec.priority}
@@ -759,8 +738,8 @@ ${report.recommendations
 - **Files Affected:**
 ${rec.files_affected.map((f) => `  - \`${f}\``).join("\n")}
 `,
-  )
-  .join("\n")}
+	)
+	.join("\n")}
 
 ## Cost-Benefit Analysis
 
@@ -769,8 +748,8 @@ ${rec.files_affected.map((f) => `  - \`${f}\``).join("\n")}
 **Total Potential Savings:** ${report.executive_summary.neon_compute_savings_potential}%
 
 Based on NEON's pricing model (active compute time), implementing all recommendations would reduce compute costs by approximately **${
-      report.executive_summary.neon_compute_savings_potential
-    }%**.
+			report.executive_summary.neon_compute_savings_potential
+		}%**.
 
 ### Implementation Roadmap (Ranked by Effort vs Impact)
 
@@ -781,9 +760,9 @@ Based on NEON's pricing model (active compute time), implementing all recommenda
 ## Conclusion
 
 ${
-  report.executive_summary.meets_20_percent_goal
-    ? `✅ **SUCCESS:** The identified optimizations meet the 20% NEON compute reduction goal (${report.executive_summary.neon_compute_savings_potential}% potential savings).`
-    : `⚠️ **ACTION REQUIRED:** Additional optimizations needed to reach 20% goal (current potential: ${report.executive_summary.neon_compute_savings_potential}%).`
+	report.executive_summary.meets_20_percent_goal
+		? `✅ **SUCCESS:** The identified optimizations meet the 20% NEON compute reduction goal (${report.executive_summary.neon_compute_savings_potential}% potential savings).`
+		: `⚠️ **ACTION REQUIRED:** Additional optimizations needed to reach 20% goal (current potential: ${report.executive_summary.neon_compute_savings_potential}%).`
 }
 
 ### Next Steps
@@ -797,49 +776,29 @@ ${
 
 *Report generated by Cache Performance Analyzer*
 `;
-  }
+	}
 }
 
 // Main execution
 async function main() {
-  try {
-    const analyzer = new CachePerformanceAnalyzer();
-    const report = await analyzer.runFullAnalysis();
-    await analyzer.saveReport();
+	try {
+		const analyzer = new CachePerformanceAnalyzer();
+		const report = await analyzer.runFullAnalysis();
+		await analyzer.saveReport();
 
-    // Print summary
-    console.log("═══════════════════════════════════════════════════════════");
-    console.log("                    ANALYSIS COMPLETE                      ");
-    console.log("═══════════════════════════════════════════════════════════");
-    console.log("\n📊 Key Findings:");
-    console.log(`   • Overall Cache Hit Rate: ${report.executive_summary.overall_cache_hit_rate}%`);
-    console.log(
-      `   • NEON Savings Potential: ${report.executive_summary.neon_compute_savings_potential}%`,
-    );
-    console.log(
-      `   • Goal Achievement: ${
-        report.executive_summary.meets_20_percent_goal ? "✅ YES" : "❌ NO"
-      }`,
-    );
-    console.log("\n📝 Review the generated reports:");
-    console.log("   • CACHE_PERFORMANCE_ANALYSIS_REPORT.json (raw data)");
-    console.log("   • CACHE_PERFORMANCE_ANALYSIS_REPORT.md (human-readable)");
-    console.log("\n");
-
-    process.exit(0);
-  } catch (error) {
-    console.error("❌ Analysis failed:", error);
-    logger.error(
-      "[Cache Analysis] Fatal error:",
-      error instanceof Error ? error : new Error(String(error)),
-    );
-    process.exit(1);
-  }
+		process.exit(0);
+	} catch (error) {
+		logger.error(
+			"[Cache Analysis] Fatal error:",
+			error instanceof Error ? error : new Error(String(error)),
+		);
+		process.exit(1);
+	}
 }
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+	main().catch(console.error);
 }
 
 export { CachePerformanceAnalyzer };

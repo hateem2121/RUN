@@ -3,97 +3,101 @@ import { Loader2 } from "lucide-react";
 import { type ComponentType, lazy, Suspense, useEffect, useState } from "react";
 
 interface LazyLoadWrapperProps {
-  component: () => Promise<{ default: ComponentType<any> }>;
-  fallback?: React.ReactNode;
-  props?: any;
+	component: () => Promise<{ default: ComponentType<any> }>;
+	fallback?: React.ReactNode;
+	props?: any;
 }
 
-export function LazyLoadWrapper({ component, fallback, props = {} }: LazyLoadWrapperProps) {
-  const LazyComponent = lazy(component);
+export function LazyLoadWrapper({
+	component,
+	fallback,
+	props = {},
+}: LazyLoadWrapperProps) {
+	const LazyComponent = lazy(component);
 
-  const defaultFallback = (
-    <div className="flex items-center justify-center p-8">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      >
-        <Loader2 className="w-8 h-8 text-gray-400" />
-      </motion.div>
-    </div>
-  );
+	const defaultFallback = (
+		<div className="flex items-center justify-center p-8">
+			<motion.div
+				animate={{ rotate: 360 }}
+				transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+			>
+				<Loader2 className="w-8 h-8 text-gray-400" />
+			</motion.div>
+		</div>
+	);
 
-  return (
-    <Suspense fallback={fallback || defaultFallback}>
-      <LazyComponent {...props} />
-    </Suspense>
-  );
+	return (
+		<Suspense fallback={fallback || defaultFallback}>
+			<LazyComponent {...props} />
+		</Suspense>
+	);
 }
 
 // Hook for responsive animation settings
 export function useReducedMotion() {
-  const [matches, setMatches] = useState(false);
+	const [matches, setMatches] = useState(false);
 
-  useEffect(() => {
-    // SSR Check happens safely inside effect (only runs on client)
-    if (typeof window === "undefined") return;
+	useEffect(() => {
+		// SSR Check happens safely inside effect (only runs on client)
+		if (typeof window === "undefined") return;
 
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setMatches(mediaQuery.matches);
+		const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+		setMatches(mediaQuery.matches);
 
-    const handler = (event: MediaQueryListEvent) => setMatches(event.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+		const handler = (event: MediaQueryListEvent) => setMatches(event.matches);
+		mediaQuery.addEventListener("change", handler);
+		return () => mediaQuery.removeEventListener("change", handler);
+	}, []);
 
-  return matches;
+	return matches;
 }
 
 // Mobile-optimized animation variants
 export const mobileAnimationVariants = {
-  fadeIn: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    transition: { duration: 0.3 },
-  },
-  slideUp: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.3, ease: "easeOut" },
-  },
-  scale: {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    transition: { duration: 0.2 },
-  },
+	fadeIn: {
+		initial: { opacity: 0 },
+		animate: { opacity: 1 },
+		transition: { duration: 0.3 },
+	},
+	slideUp: {
+		initial: { opacity: 0, y: 20 },
+		animate: { opacity: 1, y: 0 },
+		transition: { duration: 0.3, ease: "easeOut" },
+	},
+	scale: {
+		initial: { opacity: 0, scale: 0.95 },
+		animate: { opacity: 1, scale: 1 },
+		transition: { duration: 0.2 },
+	},
 };
 
 // Performance-optimized motion component
 export function OptimizedMotion({
-  children,
-  variant = "fadeIn",
-  className = "",
-  delay = 0,
+	children,
+	variant = "fadeIn",
+	className = "",
+	delay = 0,
 }: {
-  children: React.ReactNode;
-  variant?: keyof typeof mobileAnimationVariants;
-  className?: string;
-  delay?: number;
+	children: React.ReactNode;
+	variant?: keyof typeof mobileAnimationVariants;
+	className?: string;
+	delay?: number;
 }) {
-  const reducedMotion = useReducedMotion();
-  const animationProps = mobileAnimationVariants[variant];
+	const reducedMotion = useReducedMotion();
+	const animationProps = mobileAnimationVariants[variant];
 
-  if (reducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
+	if (reducedMotion) {
+		return <div className={className}>{children}</div>;
+	}
 
-  return (
-    <motion.div
-      className={className}
-      initial={animationProps.initial}
-      animate={animationProps.animate}
-      transition={{ ...animationProps.transition, delay } as any}
-    >
-      {children}
-    </motion.div>
-  );
+	return (
+		<motion.div
+			className={className}
+			initial={animationProps.initial}
+			animate={animationProps.animate}
+			transition={{ ...animationProps.transition, delay } as any}
+		>
+			{children}
+		</motion.div>
+	);
 }

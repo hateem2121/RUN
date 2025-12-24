@@ -1,145 +1,357 @@
-// import { useStore } from "./store"; // Unused if setCursor is unused
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import Magnetic from "@/components/ui/Magnetic";
+import { useCursorStore } from "@/stores/useCursorStore";
 
-import { motion } from "framer-motion";
-import { Instagram, Linkedin, Twitter } from "lucide-react";
-import NewsletterSignup from "./NewsletterSignup";
+gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Footer - Command Center style footer with:
+ * - "Start Your Order" form (Company, Email, Project Specs)
+ * - Blueprint grid background
+ * - Parallax "RUN APPAREL" logotype
+ * - GSAP submit animation
+ */
 const Footer: React.FC = () => {
+  const { setCursor, resetCursor } = useCursorStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; specs?: string }>({});
+
+  // Refs
+  const footerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (!footerRef.current || !textRef.current) return;
+
+    const scope = footerRef.current;
+
+    const ctx = gsap.context(() => {
+      // Parallax effect for the massive logotype
+      if (textRef.current) {
+        gsap.fromTo(
+          textRef.current,
+          { y: -100 },
+          {
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: scope,
+              start: "top bottom",
+              end: "bottom bottom",
+              scrub: 1,
+            },
+          },
+        );
+      }
+    }, scope);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+
+    // Get form elements via namedItem for robustness
+    const companyInput = form.elements.namedItem("company") as HTMLInputElement;
+    const emailInput = form.elements.namedItem("email") as HTMLInputElement;
+    const specsInput = form.elements.namedItem("specs") as HTMLTextAreaElement;
+
+    // Validation Logic
+    const newErrors: { email?: string; specs?: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailInput || !emailRegex.test(emailInput.value)) {
+      newErrors.email = "INVALID EMAIL PROTOCOL";
+    }
+
+    if (!specsInput || specsInput.value.trim().length < 10) {
+      newErrors.specs = "INSUFFICIENT DATA (MIN 10 CHARS)";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Clear errors if valid
+    setErrors({});
+
+    const btn = btnRef.current;
+
+    // Initial Click Animation
+    if (btn) {
+      const tl = gsap.timeline();
+      tl.to(btn, { scale: 0.9, duration: 0.1, ease: "power2.inOut" })
+        .to(btn, { scale: 1.1, opacity: 0, duration: 0.15, ease: "power2.out" })
+        .call(() => setIsSubmitting(true))
+        .to(btn, { scale: 1, opacity: 1, duration: 0.2, ease: "power2.in" });
+    } else {
+      setIsSubmitting(true);
+    }
+
+    // Submit to API
+    try {
+      const response = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contact: {
+            company: companyInput?.value || "",
+            email: emailInput?.value || "",
+            projectDescription: specsInput?.value || "",
+          },
+          items: [],
+          source: "footer_form",
+        }),
+      });
+
+      if (response.ok) {
+        setIsSubmitting(false);
+        setIsSent(true);
+        setShowSuccess(true);
+        if (formRef.current) formRef.current.reset();
+
+        // Hide message after 5 seconds
+        setTimeout(() => {
+          setShowSuccess(false);
+          setIsSent(false);
+        }, 5000);
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+      setErrors({ email: "SUBMISSION FAILED - TRY AGAIN" });
+    }
+  };
+
+  // Dynamic input styles based on error state
+  const getInputClasses = (hasError: boolean) =>
+    `w-full bg-transparent border-b ${
+      hasError
+        ? "border-[#FF0033] text-[#FF0033] placeholder:text-[#FF0033]/50"
+        : "border-gray-800 text-gray-300 placeholder:text-gray-600"
+    } py-4 text-xl focus:outline-none focus:border-[#3300FF] focus:shadow-[0_15px_30px_-10px_rgba(51,0,255,0.2)] focus:bg-[#3300FF]/5 focus:pl-4 focus:text-gray-100 transition-all duration-300 ease-out rounded-none font-mono disabled:opacity-50`;
+
   return (
-    <>
-      {/* 
-        SPACER: Mimics footer height on desktop to function as a "margin-bottom".
-        Ensures the main content scrolls away to reveal the fixed footer.
-        Hidden on mobile where footer is just static.
-      */}
-      <div className="hidden lg:block w-full lg:h-[800px] pointer-events-none" aria-hidden="true" />
+    <footer
+      ref={footerRef}
+      className="w-full bg-[#050505] text-[#FAFAFA] pt-32 pb-0 px-4 md:px-8 relative overflow-hidden"
+    >
+      {/* Blueprint Grid Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-      <footer
-        className="
-          w-full bg-[#050505] text-[#FAFAFA] 
-          /* Mobile: Standard Block */
-          relative h-auto
-          /* Desktop: Sticky Reveal */
-          lg:fixed lg:bottom-0 lg:left-0 lg:h-[800px] lg:z-[-10]
-          overflow-hidden flex flex-col
-        "
-      >
-        {/* Blueprint Grid Background */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]"></div>
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-24 mb-24 md:mb-48 relative z-10">
+        <div className="md:col-span-2">
+          <h2 className="text-[12vw] md:text-[5vw] leading-[0.9] uppercase font-bold mb-8">
+            Start Your <br />
+            Order
+          </h2>
 
-        <div className="container mx-auto relative z-10 flex flex-col h-full pt-16 md:pt-24 pb-12 px-4 md:px-8">
-          {/* TOP SECTION: Call to Action + Newsletter */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 flex-1">
-            <div className="lg:col-span-5 flex flex-col justify-center">
-              <h2 className="text-[clamp(2.5rem,4cqw,5rem)] font-bold tracking-tighter leading-[0.9] text-balance mb-6">
-                READY TO <br />
-                <span className="text-blue-600">SCALE UP?</span>
-              </h2>
-              <p className="text-gray-400 max-w-md text-lg text-balance mb-8">
-                Join the industrial revolution. We engineer the textiles that power future
-                performance brands.
+          {/* Success Message - ARIA Live Region */}
+          <div
+            aria-live="polite"
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${
+              showSuccess ? "max-h-24 opacity-100 mb-8" : "max-h-0 opacity-0 mb-0"
+            }`}
+          >
+            <div className="border border-[#CCFF00]/30 bg-[#CCFF00]/5 p-4 flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_10px_#CCFF00]" />
+              <p className="font-mono text-sm tracking-widest text-[#CCFF00]">
+                SUBMISSION CONFIRMED! // PROTOCOL INITIATED.
               </p>
-            </div>
-
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              {/* NEWSLETTER INTEGRATION */}
-              <NewsletterSignup />
             </div>
           </div>
 
-          {/* BOTTOM SECTION: Bento Grid Links */}
-          {/* 
-            BENTO GRID + SUBGRID 
-            Standard Grid on Desktop. Subgrid ensures row alignment.
-          */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 border-t border-gray-900 pt-12 mt-12">
-            {/* Column 1: Brand */}
-            <div className="lg:col-span-1 flex flex-col justify-between h-full">
-              <span className="text-2xl font-black tracking-tighter leading-none text-[#1a1a1a] select-none mix-blend-overlay opacity-50 whitespace-nowrap block mb-4">
-                RUN APPAREL
-              </span>
-              <p className="text-xs text-gray-500 font-mono mt-auto">
-                © 2025 RUN INDUSTRIES.
-                <br />
-                ALL RIGHTS RESERVED.
-              </p>
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-8 mt-12 max-w-lg">
+            <div className="group">
+              <label
+                htmlFor="company"
+                className="text-xs uppercase tracking-widest text-gray-400 mb-2 block font-mono group-focus-within:text-[#3300FF] transition-colors"
+              >
+                01 // Company Name
+              </label>
+              <input
+                id="company"
+                type="text"
+                name="company"
+                autoComplete="organization"
+                required
+                disabled={isSubmitting || isSent}
+                className={getInputClasses(false)}
+                placeholder="ENTER CORPORATION"
+              />
             </div>
-
-            {/* Column 2: Navigation - Uses Subgrid on Desktop if nested, but here top-level grid works fine */}
-            <div className="flex flex-col gap-6">
-              <h4 className="uppercase tracking-widest text-gray-500 text-xs font-mono border-b border-gray-900 pb-2">
-                [ SITEMAP ]
-              </h4>
-              <ul className="space-y-3">
-                {["Products", "Manufacturing", "Sustainability", "Careers"].map((item) => (
-                  <motion.li
-                    key={item}
-                    whileHover={{ x: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+            <div className="group">
+              <div className="flex justify-between items-end mb-2">
+                <label
+                  htmlFor="email"
+                  className={`text-xs uppercase tracking-widest block font-mono group-focus-within:text-[#3300FF] transition-colors ${
+                    errors.email ? "text-[#FF0033]" : "text-gray-400"
+                  }`}
+                >
+                  02 // Email Protocol
+                </label>
+                {errors.email && (
+                  <span
+                    role="alert"
+                    className="text-[#FF0033] text-[10px] tracking-widest font-mono font-bold animate-pulse"
                   >
-                    <a
-                      href="#"
-                      className="text-lg text-gray-300 hover:text-white transition-colors block w-fit"
-                    >
-                      {item}
-                    </a>
-                  </motion.li>
-                ))}
-              </ul>
+                    [{errors.email}]
+                  </span>
+                )}
+              </div>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                disabled={isSubmitting || isSent}
+                className={getInputClasses(!!errors.email)}
+                placeholder="NAME@DOMAIN.COM"
+                onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
+              />
+            </div>
+            <div className="group">
+              <div className="flex justify-between items-end mb-2">
+                <label
+                  htmlFor="specs"
+                  className={`text-xs uppercase tracking-widest block font-mono group-focus-within:text-[#3300FF] transition-colors ${
+                    errors.specs ? "text-[#FF0033]" : "text-gray-400"
+                  }`}
+                >
+                  03 // Project Specifications
+                </label>
+                {errors.specs && (
+                  <span
+                    role="alert"
+                    className="text-[#FF0033] text-[10px] tracking-widest font-mono font-bold animate-pulse"
+                  >
+                    [{errors.specs}]
+                  </span>
+                )}
+              </div>
+              <textarea
+                id="specs"
+                name="specs"
+                rows={3}
+                disabled={isSubmitting || isSent}
+                className={`${getInputClasses(!!errors.specs)} resize-none`}
+                placeholder="FABRIC / QUANTITY / TIMELINE"
+                onChange={() => setErrors((prev) => ({ ...prev, specs: undefined }))}
+              />
             </div>
 
-            {/* Column 3: Socials */}
-            <div className="flex flex-col gap-6">
-              <h4 className="uppercase tracking-widest text-gray-500 text-xs font-mono border-b border-gray-900 pb-2">
-                [ CONNECT ]
-              </h4>
-              <div className="flex gap-4">
-                <SocialLink icon={Twitter} label="Twitter" />
-                <SocialLink icon={Instagram} label="Instagram" />
-                <SocialLink icon={Linkedin} label="LinkedIn" />
-              </div>
-              <div className="mt-auto">
-                <p className="text-sm text-gray-500">
-                  Zurich, Switzerland
-                  <br />
-                  <a href="mailto:hello@run.com" className="hover:text-blue-600 transition-colors">
-                    hello@run.com
-                  </a>
-                </p>
-              </div>
-            </div>
+            <Magnetic strength={0.4}>
+              <button
+                ref={btnRef}
+                type="submit"
+                disabled={isSubmitting || isSent}
+                aria-busy={isSubmitting}
+                className={`mt-8 px-12 py-4 border transition-all duration-300 uppercase tracking-widest text-sm relative overflow-hidden font-bold ${
+                  isSent
+                    ? "border-[#CCFF00] text-[#CCFF00] cursor-default"
+                    : "border-white/30 hover:bg-white hover:text-black hover:border-white"
+                }`}
+                onMouseEnter={() => !isSent && setCursor("button")}
+                onMouseLeave={() => resetCursor()}
+              >
+                {isSubmitting ? "PROCESSING..." : isSent ? "CONFIRMED" : "INITIALIZE ORDER"}
+              </button>
+            </Magnetic>
+          </form>
+        </div>
 
-            {/* Column 4: Legal */}
-            <div className="flex flex-col gap-6">
-              <h4 className="uppercase tracking-widest text-gray-500 text-xs font-mono border-b border-gray-900 pb-2">
-                [ LEGAL ]
-              </h4>
-              <ul className="space-y-3">
-                {["Privacy Policy", "Terms of Service", "Cookie Settings"].map((item) => (
-                  <li key={item}>
-                    <button className="text-sm text-gray-500 hover:text-white transition-colors text-left">
-                      {item}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="md:col-span-1 flex flex-col justify-between border-l border-white/10 pl-8">
+          <div>
+            <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
+              [ HQ COORDINATES ]
+            </h4>
+            <p className="text-lg leading-relaxed text-gray-300">
+              142 Industrial Ave,
+              <br />
+              Zurich, Switzerland
+              <br />
+              8005
+            </p>
+          </div>
+          <div className="mt-12">
+            <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
+              [ DIRECT LINE ]
+            </h4>
+            <a
+              href="mailto:hello@runapparel.com"
+              className="text-lg hover:text-[#3300FF] transition-all duration-300 block text-gray-300 hover:scale-105 origin-left"
+            >
+              hello@runapparel.com
+            </a>
+            <a
+              href="tel:+41441234567"
+              className="text-lg hover:text-[#3300FF] transition-all duration-300 block text-gray-300 hover:scale-105 origin-left"
+            >
+              +41 44 123 45 67
+            </a>
           </div>
         </div>
-      </footer>
-    </>
+
+        <div className="md:col-span-1 flex flex-col justify-between border-l border-white/10 pl-8">
+          <div>
+            <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
+              [ NETWORK ]
+            </h4>
+            <ul className="space-y-2">
+              {["Instagram", "LinkedIn", "Behance"].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="hover:text-[#3300FF] transition-all duration-300 text-gray-300 inline-block hover:scale-105 origin-left"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-12">
+            <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
+              [ PROTOCOLS ]
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-500">
+              {["Privacy Policy", "Terms of Service"].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="hover:text-white transition-all duration-300 inline-block hover:scale-105 origin-left"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Massive Parallax Logotype */}
+      <div className="w-full text-center relative z-10 translate-y-[20%]">
+        <h1
+          ref={textRef}
+          className="text-[18vw] leading-none font-bold tracking-tighter text-[#FAFAFA] select-none mix-blend-overlay opacity-30"
+        >
+          RUN APPAREL
+        </h1>
+      </div>
+    </footer>
   );
 };
-
-const SocialLink = ({ icon: Icon, label }: { icon: any; label: string }) => (
-  <motion.a
-    href="#"
-    whileHover={{ y: -3 }}
-    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors border border-white/10"
-    aria-label={label}
-  >
-    <Icon className="w-5 h-5" />
-  </motion.a>
-);
 
 export default Footer;

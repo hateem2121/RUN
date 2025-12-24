@@ -10,24 +10,26 @@ import { correlationContext } from "../lib/smart-logger.js";
  * @param meta Additional metadata
  */
 export const sendSuccess = <T>(
-  req: Request,
-  res: Response,
-  data: T,
-  statusCode = 200,
-  meta: Record<string, unknown> = {},
+	req: Request,
+	res: Response,
+	data: T,
+	statusCode = 200,
+	meta: Record<string, unknown> = {},
 ): Response => {
-  const requestId =
-    (req as unknown as { id: string }).id || correlationContext.getStore() || "unknown";
+	const requestId =
+		(req as unknown as { id: string }).id ||
+		correlationContext.getStore() ||
+		"unknown";
 
-  const envelope: SuccessEnvelope<T> = {
-    success: true,
-    data,
-    meta: {
-      requestId,
-      timestamp: Date.now(),
-      ...meta,
-    },
-  };
+	const envelope: SuccessEnvelope<T> = {
+		success: true,
+		data,
+		meta: {
+			requestId,
+			timestamp: Date.now(),
+			...meta,
+		},
+	};
 
-  return res.status(statusCode).json(envelope);
+	return res.status(statusCode).json(envelope);
 };

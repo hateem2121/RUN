@@ -27,14 +27,14 @@ export interface StaggeredMenuProps {
 
 export const StaggeredMenu = ({
   position = "right",
-  colors = ["#B19EEF", "#5227FF"],
+  colors = ["var(--color-brand-lavender)", "var(--color-brand-purple)"],
   items = [],
   displayItemNumbering = true,
   className,
-  menuButtonColor = "#fff",
-  openMenuButtonColor = "#fff",
+  menuButtonColor = "var(--color-foreground)",
+  openMenuButtonColor = "var(--color-foreground)",
   changeMenuColorOnOpen = true,
-  accentColor = "#5227FF",
+  accentColor = "var(--color-brand-purple)",
   onMenuOpen,
   onMenuClose,
 }: StaggeredMenuProps) => {
@@ -304,7 +304,7 @@ export const StaggeredMenu = ({
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope fixed top-0 left-0 w-screen h-screen overflow-hidden pointer-events-none z-[100]">
+    <div className="sm-scope fixed top-0 left-0 w-screen h-screen overflow-hidden pointer-events-none z-modal">
       <div
         className={
           (className ? className + " " : "") + "staggered-menu-wrapper relative w-full h-full z-40"
@@ -317,11 +317,14 @@ export const StaggeredMenu = ({
       >
         <div
           ref={preLayersRef}
-          className="sm-prelayers absolute top-0 right-0 bottom-0 pointer-events-none z-[5] w-full"
+          className="sm-prelayers absolute top-0 right-0 bottom-0 pointer-events-none z-default w-full"
           aria-hidden="true"
         >
           {(() => {
-            const raw = colors && colors.length ? colors.slice(0, 4) : ["#1e1e22", "#35353c"];
+            const raw =
+              colors && colors.length
+                ? colors.slice(0, 4)
+                : ["var(--color-neutral-900)", "var(--color-neutral-800)"];
             const arr = [...raw];
             if (arr.length >= 3) {
               const mid = Math.floor(arr.length / 2);
@@ -338,13 +341,13 @@ export const StaggeredMenu = ({
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-center p-4 bg-transparent z-20"
+          className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-center p-4 bg-transparent z-dock"
           aria-label="Main navigation header"
           style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle relative flex flex-col items-center justify-center w-12 h-12 backdrop-blur-xs border-0 cursor-pointer rounded-full shadow-lg transition-colors pointer-events-auto bg-[#ffffff78] text-[#00000099] pt-[25px] pb-[25px] mt-[0px] mb-[0px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="sm-toggle relative flex flex-col items-center justify-center w-12 h-12 backdrop-blur-xs border-0 cursor-pointer rounded-full shadow-lg transition-colors pointer-events-auto bg-white/50 text-black/60 pt-[25px] pb-[25px] mt-[0px] mb-[0px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
@@ -376,7 +379,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full bg-background/95 flex flex-col pt-20 px-6 pb-8 overflow-y-auto z-10 backdrop-blur-md w-full sm:w-[80vw] md:w-[380px] pointer-events-auto shadow-2xl focus:outline-none"
+          className="staggered-menu-panel absolute top-0 right-0 h-full bg-background/95 flex flex-col pt-20 px-6 pb-8 overflow-y-auto z-default backdrop-blur-md w-full sm:w-[80vw] md:w-[380px] pointer-events-auto shadow-2xl focus:outline-none"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
@@ -438,7 +441,7 @@ export const StaggeredMenu = ({
   top: 0;
   font-size: 0.35em;
   font-weight: 500;
-  color: var(--sm-accent, #5227FF);
+  color: var(--sm-accent, var(--color-brand-purple));
   opacity: var(--sm-num-opacity, 0);
   pointer-events: none;
   user-select: none;

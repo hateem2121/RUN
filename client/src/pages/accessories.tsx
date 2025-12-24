@@ -13,155 +13,175 @@ import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export default function Accessories() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [expandedAccessories, setExpandedAccessories] = useState<Set<number>>(new Set());
+	const [searchTerm, setSearchTerm] = useState("");
+	const [expandedAccessories, setExpandedAccessories] = useState<Set<number>>(
+		new Set(),
+	);
 
-  const { accessories, isLoading } = useResourceBatch(['accessory']);
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+	const { accessories, isLoading } = useResourceBatch(["accessory"]);
+	const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // Filter accessories based on search
-  const filteredAccessories = useMemo(() => {
-    if (!debouncedSearchTerm) return accessories;
+	// Filter accessories based on search
+	const filteredAccessories = useMemo(() => {
+		if (!debouncedSearchTerm) return accessories;
 
-    const term = debouncedSearchTerm.toLowerCase();
-    return accessories.filter(acc =>
-      acc.name.toLowerCase().includes(term) ||
-      (acc.type && acc.type.toLowerCase().includes(term)) ||
-      acc.category?.toLowerCase().includes(term) ||
-      acc.description?.toLowerCase().includes(term)
-    );
-  }, [accessories, debouncedSearchTerm]);
+		const term = debouncedSearchTerm.toLowerCase();
+		return accessories.filter(
+			(acc) =>
+				acc.name.toLowerCase().includes(term) ||
+				(acc.type && acc.type.toLowerCase().includes(term)) ||
+				acc.category?.toLowerCase().includes(term) ||
+				acc.description?.toLowerCase().includes(term),
+		);
+	}, [accessories, debouncedSearchTerm]);
 
-  const toggleExpanded = (id: number) => {
-    setExpandedAccessories(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
+	const toggleExpanded = (id: number) => {
+		setExpandedAccessories((prev) => {
+			const newSet = new Set(prev);
+			if (newSet.has(id)) {
+				newSet.delete(id);
+			} else {
+				newSet.add(id);
+			}
+			return newSet;
+		});
+	};
 
-  const getCategoryIcon = (category: string | undefined) => {
-    switch (category?.toLowerCase()) {
-      case 'hardware': return Settings;
-      case 'customization': return Wrench;
-      default: return Package;
-    }
-  };
+	const getCategoryIcon = (category: string | undefined) => {
+		switch (category?.toLowerCase()) {
+			case "hardware":
+				return Settings;
+			case "customization":
+				return Wrench;
+			default:
+				return Package;
+		}
+	};
 
-  const getAccessoryDetails = (accessory: Accessory) => (
-    <div className="space-y-3 text-sm">
-      {accessory.specifications && accessory.specifications.length > 0 && (
-        <div>
-          <span className="font-medium text-gray-700">Specifications:</span>
-          <ul className="mt-2 space-y-1">
-            {accessory.specifications.map((spec: string, index: number) => (
-              <li key={index} className="text-gray-600 pl-4 relative">
-                <span className="absolute left-0">•</span>
-                {spec}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {accessory.description && (
-        <div>
-          <span className="font-medium text-gray-700">Details:</span>
-          <p className="text-gray-600 mt-1">{accessory.description}</p>
-        </div>
-      )}
-    </div>
-  );
+	const getAccessoryDetails = (accessory: Accessory) => (
+		<div className="space-y-3 text-sm">
+			{accessory.specifications && accessory.specifications.length > 0 && (
+				<div>
+					<span className="font-medium text-gray-700">Specifications:</span>
+					<ul className="mt-2 space-y-1">
+						{accessory.specifications.map((spec: string, index: number) => (
+							<li key={index} className="text-gray-600 pl-4 relative">
+								<span className="absolute left-0">•</span>
+								{spec}
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+			{accessory.description && (
+				<div>
+					<span className="font-medium text-gray-700">Details:</span>
+					<p className="text-gray-600 mt-1">{accessory.description}</p>
+				</div>
+			)}
+		</div>
+	);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <SEOMeta
-        title="Accessories - Components & Customization | RUN APPAREL"
-        description="Browse our comprehensive range of sportswear accessories including zippers, buttons, labels, and customization options for professional manufacturing."
-      />
+	return (
+		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+			<SEOMeta
+				title="Accessories - Components & Customization | RUN APPAREL"
+				description="Browse our comprehensive range of sportswear accessories including zippers, buttons, labels, and customization options for professional manufacturing."
+			/>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Accessories & Components
-          </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Premium components and customization options for professional sportswear manufacturing
-          </p>
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+				{/* Header */}
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="text-center mb-12"
+				>
+					<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+						Accessories & Components
+					</h1>
+					<p className="text-lg text-gray-600 max-w-3xl mx-auto">
+						Premium components and customization options for professional
+						sportswear manufacturing
+					</p>
 
-          <div className="flex justify-center gap-6 mt-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{accessories.length}</div>
-              <div className="text-sm text-gray-600">Total Accessories</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">
-                {new Set(accessories.map(a => a.category).filter(Boolean)).size}
-              </div>
-              <div className="text-sm text-gray-600">Categories</div>
-            </div>
-          </div>
-        </motion.div>
+					<div className="flex justify-center gap-6 mt-8">
+						<div className="text-center">
+							<div className="text-3xl font-bold text-blue-600">
+								{accessories.length}
+							</div>
+							<div className="text-sm text-gray-600">Total Accessories</div>
+						</div>
+						<div className="text-center">
+							<div className="text-3xl font-bold text-purple-600">
+								{
+									new Set(accessories.map((a) => a.category).filter(Boolean))
+										.size
+								}
+							</div>
+							<div className="text-sm text-gray-600">Categories</div>
+						</div>
+					</div>
+				</motion.div>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <ResourceSearch
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search accessories..."
-          />
-        </div>
+				{/* Search Bar */}
+				<div className="max-w-2xl mx-auto mb-12">
+					<ResourceSearch
+						value={searchTerm}
+						onChange={setSearchTerm}
+						placeholder="Search accessories..."
+					/>
+				</div>
 
-        {/* Accessories Grid */}
-        {isLoading ? (
-          <ResourceSkeleton count={6} columns={3} />
-        ) : (
-          <ResourceGrid
-            items={filteredAccessories}
-            columns={3}
-            emptyState={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-16"
-              >
-                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {searchTerm ? 'No accessories found' : 'No accessories available'}
-                </h3>
-                <p className="text-gray-600">
-                  {searchTerm ? 'Try adjusting your search terms' : 'Check back later for updates'}
-                </p>
-              </motion.div>
-            }
-            renderItem={(accessory) => {
-              const Icon = getCategoryIcon(accessory.category || undefined);
-              return (
-                <ResourceCard
-                  key={accessory.id}
-                  title={accessory.name}
-                  subtitle={accessory.type || undefined}
-                  description={accessory.description || undefined}
-                  icon={<Icon className="w-5 h-5" />}
-                  tags={[accessory.category || 'Uncategorized']}
-                  isExpanded={expandedAccessories.has(accessory.id)}
-                  onToggleExpand={() => toggleExpanded(accessory.id)}
-                  expandedContent={getAccessoryDetails(accessory)}
-                  badges={accessory.isActive ? [{ label: "Available", variant: "default" }] : []}
-                />
-              );
-            }}
-          />
-        )}
-      </div>
-    </div>
-  );
+				{/* Accessories Grid */}
+				{isLoading ? (
+					<ResourceSkeleton count={6} columns={3} />
+				) : (
+					<ResourceGrid
+						items={filteredAccessories}
+						columns={3}
+						emptyState={
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								className="text-center py-16"
+							>
+								<Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+								<h3 className="text-xl font-semibold text-gray-900 mb-2">
+									{searchTerm
+										? "No accessories found"
+										: "No accessories available"}
+								</h3>
+								<p className="text-gray-600">
+									{searchTerm
+										? "Try adjusting your search terms"
+										: "Check back later for updates"}
+								</p>
+							</motion.div>
+						}
+						renderItem={(accessory) => {
+							const Icon = getCategoryIcon(accessory.category || undefined);
+							return (
+								<ResourceCard
+									key={accessory.id}
+									title={accessory.name}
+									subtitle={accessory.type || undefined}
+									description={accessory.description || undefined}
+									icon={<Icon className="w-5 h-5" />}
+									tags={[accessory.category || "Uncategorized"]}
+									isExpanded={expandedAccessories.has(accessory.id)}
+									onToggleExpand={() => toggleExpanded(accessory.id)}
+									expandedContent={getAccessoryDetails(accessory)}
+									badges={
+										accessory.isActive
+											? [{ label: "Available", variant: "default" }]
+											: []
+									}
+								/>
+							);
+						}}
+					/>
+				)}
+			</div>
+		</div>
+	);
 }

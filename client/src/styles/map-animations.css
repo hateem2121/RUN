@@ -24,7 +24,7 @@
 /* Custom marker styles */
 .facility-marker,
 .client-marker {
-  filter: drop-shadow-sm(0 4px 8px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -32,7 +32,8 @@
 .client-marker:hover {
   animation: markerBounce 0.6s ease-in-out;
   filter: drop-shadow-sm(0 8px 16px rgba(0, 0, 0, 0.3));
-  z-index: 1000 !important;
+  /* P1 FIX: Use semantic z-index variable instead of hardcoded 1000 */
+  z-index: var(--z-popover);
 }
 
 .facility-marker svg,

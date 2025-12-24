@@ -19,8 +19,8 @@ export function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
   }, []);
 
   if (!hasMounted) {
-    return <>{fallback}</>;
+    return fallback as React.ReactElement | null;
   }
 
-  return <>{children}</>;
+  return children as React.ReactElement;
 }

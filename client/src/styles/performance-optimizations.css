@@ -5,148 +5,150 @@
 
 /* GPU Layer Optimization */
 .gpu-accelerated {
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
+	will-change: transform;
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	perspective: 1000px;
 }
 
 /* Animation Container Optimization */
 .animation-container {
-  contain: layout style paint;
-  will-change: transform;
-  position: relative;
+	contain: layout style paint;
+	will-change: transform;
+	position: relative;
 }
 
 /* Optimized Solid Card Effects - NO GLASSMORPHISM */
 .glassmorphism-optimized {
-  contain: layout style paint;
-  isolation: isolate;
-  transform: translateZ(0);
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08);
+	contain: layout style paint;
+	isolation: isolate;
+	transform: translateZ(0);
+	background: hsl(var(--card));
+	border: 1px solid hsl(var(--border));
+	box-shadow:
+		0 4px 12px rgba(0, 0, 0, 0.1),
+		0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Matrix Text Performance Optimization */
 .matrix-text-optimized {
-  will-change: contents;
-  contain: layout style;
-  font-feature-settings: "kern" 0; /* Disable kerning for performance */
-  text-rendering: optimizeSpeed;
+	will-change: contents;
+	contain: layout style;
+	font-feature-settings: "kern" 0; /* Disable kerning for performance */
+	text-rendering: optimizeSpeed;
 }
 
 /* Draggable Cards GPU Acceleration */
 .draggable-card-optimized {
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+	will-change: transform;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 /* Canvas Performance Optimization */
 .canvas-optimized {
-  will-change: auto;
-  image-rendering: optimizeSpeed;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: pixelated;
+	will-change: auto;
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;
 }
 
 /* Cube Animation Optimization */
 .cube-optimized {
-  will-change: transform;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  -webkit-transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
+	will-change: transform;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
 }
 
 /* Navigation Dock Optimization - Solid Style */
 .floating-dock-optimized {
-  contain: layout style paint;
-  will-change: transform, opacity;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+	contain: layout style paint;
+	will-change: transform, opacity;
+	background: hsl(var(--card));
+	border: 1px solid hsl(var(--border));
 }
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
-  .respect-reduced-motion {
-    animation-duration: 0.01s !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01s !important;
-    transform: none !important;
-  }
-  
-  .matrix-text-optimized {
-    animation: none !important;
-  }
-  
-  .draggable-card-optimized {
-    transform: none !important;
-  }
+	.respect-reduced-motion {
+		animation-duration: 0.01s !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01s !important;
+		transform: none !important;
+	}
+
+	.matrix-text-optimized {
+		animation: none !important;
+	}
+
+	.draggable-card-optimized {
+		transform: none !important;
+	}
 }
 
 /* Mobile Performance Optimizations */
 @media (max-width: 768px) {
-  .mobile-optimized {
-    animation-duration: 0.3s !important;
-    transition-duration: 0.3s !important;
-  }
-  
-  .canvas-optimized {
-    image-rendering: auto; /* Better quality on mobile */
-  }
+	.mobile-optimized {
+		animation-duration: 0.3s !important;
+		transition-duration: 0.3s !important;
+	}
+
+	.canvas-optimized {
+		image-rendering: auto; /* Better quality on mobile */
+	}
 }
 
 /* Low-end Device Optimizations */
 @media (max-width: 768px) and (max-resolution: 1.5dppx) {
-  .low-end-optimized {
-    animation: none !important;
-    transform: none !important;
-    will-change: auto !important;
-  }
+	.low-end-optimized {
+		animation: none !important;
+		transform: none !important;
+		will-change: auto !important;
+	}
 }
 
 /* Intersection Observer Paused State */
 .animation-paused {
-  animation-play-state: paused !important;
-  will-change: auto !important;
+	animation-play-state: paused !important;
+	will-change: auto !important;
 }
 
 .animation-active {
-  animation-play-state: running !important;
-  will-change: transform !important;
+	animation-play-state: running !important;
+	will-change: transform !important;
 }
 
 /* Performance Monitoring Classes */
 .perf-monitor {
-  position: relative;
+	position: relative;
 }
 
 .perf-monitor::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: -1;
+	opacity: 0;
 }
 
 /* Smooth Scrolling Performance */
 .smooth-scroll-optimized {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  contain: layout style paint;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	contain: layout style paint;
 }
 
 /* Text Rendering Optimization */
 .text-optimized {
-  text-rendering: optimizeSpeed;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeSpeed;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }

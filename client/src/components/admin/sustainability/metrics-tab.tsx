@@ -181,7 +181,10 @@ export function MetricsTabContent({
             (e: z.ZodIssue) => e.path[0] === field,
           );
           if (!hasError) {
-            newValidation[field as keyof MetricValidation] = { isValid: true, message: "" };
+            newValidation[field as keyof MetricValidation] = {
+              isValid: true,
+              message: "",
+            };
             return true;
           }
           setMetricValidation(newValidation);
@@ -572,7 +575,7 @@ export function MetricsTabContent({
       {/* However, standard shadcn sheet overlay might conflicts. Let's stick to Dialog for Preview, 
           but ensure z-index works, or just render it. */}
       {showMetricPreview && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-toast flex items-center justify-center bg-black/50 p-4">
           <div className="relative bg-transparent max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
             <div className="absolute -top-12 right-0">
               <Button

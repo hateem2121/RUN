@@ -12,20 +12,20 @@
  * @returns Promise that rejects if timeout is reached
  */
 export function withTimeout<T>(
-  promise: Promise<T>,
-  timeoutMs: number = 10000,
-  operation: string = 'Operation'
+	promise: Promise<T>,
+	timeoutMs: number = 10000,
+	operation: string = "Operation",
 ): Promise<T> {
-  let timeoutHandle: NodeJS.Timeout;
-  
-  const timeoutPromise = new Promise<T>((_, reject) => {
-    timeoutHandle = setTimeout(
-      () => reject(new Error(`${operation} timed out after ${timeoutMs}ms`)),
-      timeoutMs
-    );
-  });
-  
-  return Promise.race([promise, timeoutPromise]).finally(() => {
-    clearTimeout(timeoutHandle);
-  });
+	let timeoutHandle: NodeJS.Timeout;
+
+	const timeoutPromise = new Promise<T>((_, reject) => {
+		timeoutHandle = setTimeout(
+			() => reject(new Error(`${operation} timed out after ${timeoutMs}ms`)),
+			timeoutMs,
+		);
+	});
+
+	return Promise.race([promise, timeoutPromise]).finally(() => {
+		clearTimeout(timeoutHandle);
+	});
 }

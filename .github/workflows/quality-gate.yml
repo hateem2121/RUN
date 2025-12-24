@@ -1,0 +1,48 @@
+name: Quality Gate (Cloud)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality-check:
+    name: 🛡️ Late 2025 Quality Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📋 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 🔧 Install Dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Project
+        run: npm run build
+
+      - name: 🔦 React Scan (Production Safety Check)
+        run: |
+          if grep -q "ReactScan({" vite.config.ts; then
+            echo "✅ React Scan plugin found."
+            if grep -q "enable: mode === \"development\"" vite.config.ts; then
+               echo "✅ React Scan is safely restricted to development mode."
+            else
+               echo "❌ CRITICAL: React Scan might be enabled in production!"
+               exit 1
+            fi
+          fi
+
+      - name: ⚡ Lighthouse CI (Performance)
+        run: |
+          # Run Lighthouse against the production build
+          # Note: The 'startServerCommand' in .lighthouserc.json handles the server startup
+          npm run test:lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

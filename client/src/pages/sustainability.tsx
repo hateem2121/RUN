@@ -6,11 +6,11 @@ import { Link } from "wouter";
 import { SEOMeta } from "@/components/seo-meta";
 import { MetricCard } from "@/components/sustainability/cards";
 import {
-  CertificatesSection,
-  FabricPortfolioSection,
-  GoalsSection,
-  InitiativesSection,
-  OptimizedSustainabilityHero,
+	CertificatesSection,
+	FabricPortfolioSection,
+	GoalsSection,
+	InitiativesSection,
+	OptimizedSustainabilityHero,
 } from "@/components/sustainability/sections";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { Button } from "@/components/ui/button";
@@ -19,316 +19,348 @@ import { fadeInUp, springTransition } from "@/lib/animations";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function Sustainability() {
-  const { scrollY } = useScroll();
-  const { isMobile } = useMobileDetection();
+	const { scrollY } = useScroll();
+	const { isMobile } = useMobileDetection();
 
-  // Parallax transforms - disabled opacity fade on mobile to prevent invisible background
-  const heroY = useTransform(scrollY, [0, 500], [0, isMobile ? -50 : -150]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, isMobile ? 1 : 0]);
+	// Parallax transforms - disabled opacity fade on mobile to prevent invisible background
+	const heroY = useTransform(scrollY, [0, 500], [0, isMobile ? -50 : -150]);
+	const heroOpacity = useTransform(scrollY, [0, 300], [1, isMobile ? 1 : 0]);
 
-  // Queries for unified sustainability data (Batch Request)
-  const { data: batchData } = useQuery({
-    queryKey: ["/api/sustainability/batch"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/sustainability/batch");
-      return res.json();
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+	// Queries for unified sustainability data (Batch Request)
+	const { data: batchData } = useQuery({
+		queryKey: ["/api/sustainability/batch"],
+		queryFn: async () => {
+			const res = await apiRequest("/api/sustainability/batch");
+			return res.json();
+		},
+		staleTime: 5 * 60 * 1000,
+	});
 
-  const unifiedData = batchData?.hero;
-  const activeImpactMetrics = batchData?.metrics?.filter((m: any) => m.isActive) || [];
-  const activeInitiatives = batchData?.initiatives?.filter((i: any) => i.isActive) || [];
-  const activeGoals = batchData?.goals?.filter((g: any) => g.isActive) || [];
-  // Use certificates from batch data directly
-  const allCertificates = batchData?.certificates || [];
+	const unifiedData = batchData?.hero;
+	const activeImpactMetrics =
+		batchData?.metrics?.filter((m: any) => m.isActive) || [];
+	const activeInitiatives =
+		batchData?.initiatives?.filter((i: any) => i.isActive) || [];
+	const activeGoals = batchData?.goals?.filter((g: any) => g.isActive) || [];
+	// Use certificates from batch data directly
+	const allCertificates = batchData?.certificates || [];
 
-  // Extract features data from unified model
-  const featuresData = unifiedData?.featuresTitle
-    ? {
-        title: unifiedData.featuresTitle,
-        description: unifiedData.featuresDescription || "",
-        highlightedFeatures: (unifiedData.data?.highlightedFeatures as any[]) || [],
-      }
-    : null;
+	// Extract features data from unified model
+	const featuresData = unifiedData?.featuresTitle
+		? {
+				title: unifiedData.featuresTitle,
+				description: unifiedData.featuresDescription || "",
+				highlightedFeatures:
+					(unifiedData.data?.highlightedFeatures as any[]) || [],
+			}
+		: null;
 
-  // Extract fabric portfolio data from unified model
-  const fabricPortfolioData = unifiedData?.fabricPortfolioTitle
-    ? {
-        title: unifiedData.fabricPortfolioTitle,
-        description: unifiedData.fabricPortfolioDescription || "",
-      }
-    : null;
+	// Extract fabric portfolio data from unified model
+	const fabricPortfolioData = unifiedData?.fabricPortfolioTitle
+		? {
+				title: unifiedData.fabricPortfolioTitle,
+				description: unifiedData.fabricPortfolioDescription || "",
+			}
+		: null;
 
-  // Extract section content with fallbacks from unified data
-  const metricsTitle = unifiedData?.metricsTitle || "Our Impact";
-  const metricsDescription =
-    unifiedData?.metricsDescription ||
-    "Measuring our commitment to environmental sustainability through real metrics and achievements.";
+	// Extract section content with fallbacks from unified data
+	const metricsTitle = unifiedData?.metricsTitle || "Our Impact";
+	const metricsDescription =
+		unifiedData?.metricsDescription ||
+		"Measuring our commitment to environmental sustainability through real metrics and achievements.";
 
-  const certificationsTitle = unifiedData?.certificationsTitle || "Our Certifications";
-  const certificationsDescription =
-    unifiedData?.certificationsDescription ||
-    "We're proud to hold industry-leading certifications that validate our commitment to sustainable and ethical manufacturing practices.";
-  const certificationsFooterNote =
-    unifiedData?.certificationsFooterNote ||
-    "These certifications represent our ongoing commitment to environmental responsibility, social accountability, and quality excellence in everything we do.";
+	const certificationsTitle =
+		unifiedData?.certificationsTitle || "Our Certifications";
+	const certificationsDescription =
+		unifiedData?.certificationsDescription ||
+		"We're proud to hold industry-leading certifications that validate our commitment to sustainable and ethical manufacturing practices.";
+	const certificationsFooterNote =
+		unifiedData?.certificationsFooterNote ||
+		"These certifications represent our ongoing commitment to environmental responsibility, social accountability, and quality excellence in everything we do.";
 
-  const initiativesTitle = unifiedData?.initiativesTitle || "Our Sustainability Initiatives";
-  const initiativesDescription =
-    unifiedData?.initiativesDescription ||
-    "Discover our comprehensive sustainability programs and initiatives driving positive environmental impact.";
+	const initiativesTitle =
+		unifiedData?.initiativesTitle || "Our Sustainability Initiatives";
+	const initiativesDescription =
+		unifiedData?.initiativesDescription ||
+		"Discover our comprehensive sustainability programs and initiatives driving positive environmental impact.";
 
-  const goalsTitle = unifiedData?.goalsTitle || "Our Sustainability Goals";
-  const goalsDescription =
-    unifiedData?.goalsDescription ||
-    "Track our progress toward achieving ambitious sustainability targets and environmental commitments.";
+	const goalsTitle = unifiedData?.goalsTitle || "Our Sustainability Goals";
+	const goalsDescription =
+		unifiedData?.goalsDescription ||
+		"Track our progress toward achieving ambitious sustainability targets and environmental commitments.";
 
-  const callToActionTitle = unifiedData?.callToActionTitle || "Join Our Sustainable Journey";
-  const callToActionDescription =
-    unifiedData?.callToActionDescription ||
-    "Partner with us to create eco-friendly sportswear that performs as well as it protects our planet";
-  const callToActionButtonText = unifiedData?.callToActionButtonText || "Get Started";
-  const callToActionButtonLink = unifiedData?.callToActionButtonLink || "/contact";
+	const callToActionTitle =
+		unifiedData?.callToActionTitle || "Join Our Sustainable Journey";
+	const callToActionDescription =
+		unifiedData?.callToActionDescription ||
+		"Partner with us to create eco-friendly sportswear that performs as well as it protects our planet";
+	const callToActionButtonText =
+		unifiedData?.callToActionButtonText || "Get Started";
+	const callToActionButtonLink =
+		unifiedData?.callToActionButtonLink || "/contact";
 
-  // Extract hero data from unified model
-  const hero = unifiedData
-    ? {
-        headline: unifiedData.headline,
-        subheadline: unifiedData.subheadline,
-        backgroundImageId: unifiedData.backgroundImageId,
-        ctaText: unifiedData.ctaText,
-        ctaLink: unifiedData.ctaLink,
-      }
-    : null;
+	// Extract hero data from unified model
+	const hero = unifiedData
+		? {
+				headline: unifiedData.headline,
+				subheadline: unifiedData.subheadline,
+				backgroundImageId: unifiedData.backgroundImageId,
+				ctaText: unifiedData.ctaText,
+				ctaLink: unifiedData.ctaLink,
+			}
+		: null;
 
-  // OPTIMIZED: Fetch specific background media only if ID exists
-  const { data: backgroundMedia } = useQuery<MediaAsset>({
-    queryKey: ["/api/media", hero?.backgroundImageId],
-    queryFn: () => apiRequest(`/api/media/${hero?.backgroundImageId}`).then((res) => res.json()),
-    enabled: !!hero?.backgroundImageId,
-    staleTime: 10 * 60 * 1000,
-  });
+	// OPTIMIZED: Fetch specific background media only if ID exists
+	const { data: backgroundMedia } = useQuery<MediaAsset>({
+		queryKey: ["/api/media", hero?.backgroundImageId],
+		queryFn: () =>
+			apiRequest(`/api/media/${hero?.backgroundImageId}`).then((res) =>
+				res.json(),
+			),
+		enabled: !!hero?.backgroundImageId,
+		staleTime: 10 * 60 * 1000,
+	});
 
-  // NOTE: For other sections that need media, we should ideally resolve them on the backend
-  // or use the media resolver utility. For now, we rely on passed props or separate optimized queries.
-  // The original code fetched ALL media which is performance suicide.
-  // Passing empty array for mediaAssets to children for now, unless they strictly need it.
-  // If children need specific media, they should fetch it by ID or we should include relevant media in batch response.
-  const mediaAssets: MediaAsset[] = [];
+	// NOTE: For other sections that need media, we should ideally resolve them on the backend
+	// or use the media resolver utility. For now, we rely on passed props or separate optimized queries.
+	// The original code fetched ALL media which is performance suicide.
+	// Passing empty array for mediaAssets to children for now, unless they strictly need it.
+	// If children need specific media, they should fetch it by ID or we should include relevant media in batch response.
+	const mediaAssets: MediaAsset[] = [];
 
-  // Filter certificates based on selected certificationIds from unified data
-  const certificates = unifiedData?.certificationIds
-    ? allCertificates.filter((cert: any) => unifiedData.certificationIds!.includes(cert.id!))
-    : [];
+	// Filter certificates based on selected certificationIds from unified data
+	const certificates = unifiedData?.certificationIds
+		? allCertificates.filter((cert: any) =>
+				unifiedData.certificationIds!.includes(cert.id!),
+			)
+		: [];
 
-  return (
-    <div className="min-h-screen bg-stone-100 overflow-hidden relative">
-      <SEOMeta
-        title="Sustainability & Environmental Responsibility"
-        description="Discover our commitment to sustainable manufacturing, eco-friendly materials, and environmental initiatives. Leading the future of responsible sportswear production."
-      />
+	return (
+		<div className="min-h-screen bg-stone-100 overflow-hidden relative">
+			<SEOMeta
+				title="Sustainability & Environmental Responsibility"
+				description="Discover our commitment to sustainable manufacturing, eco-friendly materials, and environmental initiatives. Leading the future of responsible sportswear production."
+			/>
 
-      <BackgroundRippleEffect />
+			<BackgroundRippleEffect />
 
-      {/* Hero Section with Parallax */}
-      <motion.section
-        className="relative h-[70vh] md:h-screen flex items-center justify-center text-white overflow-hidden"
-        style={{ y: heroY, opacity: heroOpacity }}
-        role="banner"
-        aria-label="Sustainability hero section with interactive water ripple effects"
-      >
-        {/* Background Media */}
-        {backgroundMedia && <OptimizedSustainabilityHero media={backgroundMedia} />}
+			{/* Hero Section with Parallax */}
+			<motion.section
+				className="relative h-[70vh] md:h-screen flex items-center justify-center text-white overflow-hidden"
+				style={{ y: heroY, opacity: heroOpacity }}
+				role="banner"
+				aria-label="Sustainability hero section with interactive water ripple effects"
+			>
+				{/* Background Media */}
+				{backgroundMedia && (
+					<OptimizedSustainabilityHero media={backgroundMedia} />
+				)}
 
-        {/* Hero Content */}
-        <div className="relative z-modal text-center max-w-4xl mx-auto px-4">
-          <motion.h1
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...springTransition, duration: 1 }}
-            className="text-4xl md:text-5xl font-bold mb-6 font-neue-stance text-white"
-          >
-            {hero?.headline || "Sustainable Future"}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...springTransition, delay: 0.3 }}
-            className="text-lg md:text-xl mb-8 text-stone-200"
-          >
-            {hero?.subheadline || "Leading the way in eco-friendly sportswear manufacturing"}
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...springTransition, delay: 0.6 }}
-          >
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-stone-300 text-stone-900 hover:bg-stone-100 hover:text-stone-900 relative overflow-hidden group"
-              asChild
-            >
-              <Link href={hero?.ctaLink || "/contact"} className="relative z-modal-backdrop">
-                <span className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></span>
-                {hero?.ctaText || "Learn More"}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </motion.section>
+				{/* Hero Content */}
+				<div className="relative z-modal text-center max-w-4xl mx-auto px-4">
+					<motion.h1
+						initial={{ opacity: 0, y: 50 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, duration: 1 }}
+						className="text-4xl md:text-5xl font-bold mb-6 font-neue-stance text-white"
+					>
+						{hero?.headline || "Sustainable Future"}
+					</motion.h1>
+					<motion.p
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, delay: 0.3 }}
+						className="text-lg md:text-xl mb-8 text-stone-200"
+					>
+						{hero?.subheadline ||
+							"Leading the way in eco-friendly sportswear manufacturing"}
+					</motion.p>
+					<motion.div
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, delay: 0.6 }}
+					>
+						<Button
+							size="lg"
+							variant="outline"
+							className="border-stone-300 text-stone-900 hover:bg-stone-100 hover:text-stone-900 relative overflow-hidden group"
+							asChild
+						>
+							<Link
+								href={hero?.ctaLink || "/contact"}
+								className="relative z-modal-backdrop"
+							>
+								<span className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></span>
+								{hero?.ctaText || "Learn More"}
+								<ArrowRight className="ml-2 h-5 w-5" />
+							</Link>
+						</Button>
+					</motion.div>
+				</div>
+			</motion.section>
 
-      {/* Sustainability Features Section */}
-      {featuresData && (
-        <section className="py-20 bg-white relative">
-          <div className="container mx-auto px-4">
-            <motion.div {...fadeInUp} className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-stone-900 mb-6 font-neue-stance">
-                {featuresData.title}
-              </h2>
-              <p className="text-lg text-stone-600 max-w-4xl mx-auto">{featuresData.description}</p>
-            </motion.div>
+			{/* Sustainability Features Section */}
+			{featuresData && (
+				<section className="py-20 bg-white relative">
+					<div className="container mx-auto px-4">
+						<motion.div {...fadeInUp} className="text-center mb-16">
+							<h2 className="text-3xl font-bold text-stone-900 mb-6 font-neue-stance">
+								{featuresData.title}
+							</h2>
+							<p className="text-lg text-stone-600 max-w-4xl mx-auto">
+								{featuresData.description}
+							</p>
+						</motion.div>
 
-            {featuresData.highlightedFeatures && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {featuresData.highlightedFeatures.map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ ...springTransition, delay: index * 0.1 }}
-                    className="bg-stone-50 rounded-xl p-6 shadow-xs border border-stone-200"
-                  >
-                    <h3 className="text-xl font-semibold text-stone-900 mb-3">{feature.title}</h3>
-                    <p className="text-stone-600 leading-relaxed">{feature.description}</p>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+						{featuresData.highlightedFeatures && (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+								{featuresData.highlightedFeatures.map((feature, index) => (
+									<motion.div
+										key={index}
+										initial={{ opacity: 0, y: 30 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										viewport={{ once: true }}
+										transition={{ ...springTransition, delay: index * 0.1 }}
+										className="bg-stone-50 rounded-xl p-6 shadow-xs border border-stone-200"
+									>
+										<h3 className="text-xl font-semibold text-stone-900 mb-3">
+											{feature.title}
+										</h3>
+										<p className="text-stone-600 leading-relaxed">
+											{feature.description}
+										</p>
+									</motion.div>
+								))}
+							</div>
+						)}
+					</div>
+				</section>
+			)}
 
-      {/* Our Impact Section */}
-      <section
-        className="py-20 bg-stone-50 relative"
-        role="main"
-        aria-label="Sustainability impact metrics"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div {...fadeInUp} className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-stone-900 mb-4 font-neue-stance">
-              {metricsTitle}
-            </h2>
-            <p className="text-lg text-stone-600 max-w-3xl mx-auto">{metricsDescription}</p>
-          </motion.div>
+			{/* Our Impact Section */}
+			<section
+				className="py-20 bg-stone-50 relative"
+				role="main"
+				aria-label="Sustainability impact metrics"
+			>
+				<div className="container mx-auto px-4">
+					<motion.div {...fadeInUp} className="text-center mb-16">
+						<h2 className="text-3xl font-bold text-stone-900 mb-4 font-neue-stance">
+							{metricsTitle}
+						</h2>
+						<p className="text-lg text-stone-600 max-w-3xl mx-auto">
+							{metricsDescription}
+						</p>
+					</motion.div>
 
-          <div
-            className={`grid grid-cols-1 gap-8 max-w-5xl mx-auto ${
-              activeImpactMetrics.length === 1
-                ? "md:grid-cols-1"
-                : activeImpactMetrics.length === 2
-                  ? "md:grid-cols-2"
-                  : activeImpactMetrics.length === 3
-                    ? "md:grid-cols-3"
-                    : "md:grid-cols-4"
-            }`}
-            role="group"
-            aria-label="Sustainability metrics"
-          >
-            {activeImpactMetrics.map((metric: any, index: number) => (
-              <MetricCard key={metric.id} metric={metric} index={index} />
-            ))}
-          </div>
+					<div
+						className={`grid grid-cols-1 gap-8 max-w-5xl mx-auto ${
+							activeImpactMetrics.length === 1
+								? "md:grid-cols-1"
+								: activeImpactMetrics.length === 2
+									? "md:grid-cols-2"
+									: activeImpactMetrics.length === 3
+										? "md:grid-cols-3"
+										: "md:grid-cols-4"
+						}`}
+						role="group"
+						aria-label="Sustainability metrics"
+					>
+						{activeImpactMetrics.map((metric: any, index: number) => (
+							<MetricCard key={metric.id} metric={metric} index={index} />
+						))}
+					</div>
 
-          {/* Show fallback message if no metrics */}
-          {activeImpactMetrics.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-stone-600">
-                No impact metrics configured. Add metrics in the admin panel to display here.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+					{/* Show fallback message if no metrics */}
+					{activeImpactMetrics.length === 0 && (
+						<div className="text-center py-8">
+							<p className="text-stone-600">
+								No impact metrics configured. Add metrics in the admin panel to
+								display here.
+							</p>
+						</div>
+					)}
+				</div>
+			</section>
 
-      {/* Sustainability Initiatives Section */}
-      {activeInitiatives.length > 0 && (
-        <InitiativesSection
-          initiatives={activeInitiatives}
-          mediaAssets={mediaAssets}
-          title={initiativesTitle}
-          description={initiativesDescription}
-        />
-      )}
+			{/* Sustainability Initiatives Section */}
+			{activeInitiatives.length > 0 && (
+				<InitiativesSection
+					initiatives={activeInitiatives}
+					mediaAssets={mediaAssets}
+					title={initiativesTitle}
+					description={initiativesDescription}
+				/>
+			)}
 
-      {/* Certificates Section */}
-      {certificates.length > 0 && (
-        <CertificatesSection
-          certificates={certificates}
-          title={certificationsTitle}
-          description={certificationsDescription}
-          footerNote={certificationsFooterNote}
-        />
-      )}
+			{/* Certificates Section */}
+			{certificates.length > 0 && (
+				<CertificatesSection
+					certificates={certificates}
+					title={certificationsTitle}
+					description={certificationsDescription}
+					footerNote={certificationsFooterNote}
+				/>
+			)}
 
-      {/* Sustainability Goals Section */}
-      {activeGoals.length > 0 && (
-        <GoalsSection goals={activeGoals} title={goalsTitle} description={goalsDescription} />
-      )}
+			{/* Sustainability Goals Section */}
+			{activeGoals.length > 0 && (
+				<GoalsSection
+					goals={activeGoals}
+					title={goalsTitle}
+					description={goalsDescription}
+				/>
+			)}
 
-      {/* Fabric Portfolio Section */}
-      {fabricPortfolioData && (
-        <section className="py-20 bg-stone-50">
-          <div className="container mx-auto px-4">
-            <motion.div {...fadeInUp} className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-stone-900 mb-6 font-neue-stance">
-                {fabricPortfolioData.title}
-              </h2>
-              {fabricPortfolioData.description && (
-                <p className="text-lg text-stone-600 max-w-4xl mx-auto">
-                  {fabricPortfolioData.description}
-                </p>
-              )}
-            </motion.div>
+			{/* Fabric Portfolio Section */}
+			{fabricPortfolioData && (
+				<section className="py-20 bg-stone-50">
+					<div className="container mx-auto px-4">
+						<motion.div {...fadeInUp} className="text-center mb-16">
+							<h2 className="text-3xl font-bold text-stone-900 mb-6 font-neue-stance">
+								{fabricPortfolioData.title}
+							</h2>
+							{fabricPortfolioData.description && (
+								<p className="text-lg text-stone-600 max-w-4xl mx-auto">
+									{fabricPortfolioData.description}
+								</p>
+							)}
+						</motion.div>
 
-            <FabricPortfolioSection mediaAssets={mediaAssets} />
-          </div>
-        </section>
-      )}
+						<FabricPortfolioSection mediaAssets={mediaAssets} />
+					</div>
+				</section>
+			)}
 
-      {/* Call to Action */}
-      <section className="py-20 bg-stone-800 text-stone-100 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-stone-700 rounded-full" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-stone-700 rounded-full" />
-        </div>
+			{/* Call to Action */}
+			<section className="py-20 bg-stone-800 text-stone-100 relative overflow-hidden">
+				<div className="absolute inset-0 opacity-10">
+					<div className="absolute -top-40 -right-40 w-80 h-80 bg-stone-700 rounded-full" />
+					<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-stone-700 rounded-full" />
+				</div>
 
-        <div className="container mx-auto px-4 text-center relative z-modal-backdrop">
-          <motion.div {...fadeInUp}>
-            <h2 className="text-3xl font-bold mb-4 font-neue-stance text-stone-100">
-              {callToActionTitle}
-            </h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto text-stone-300">
-              {callToActionDescription}
-            </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="bg-white text-emerald-500 hover:bg-emerald-50"
-              asChild
-            >
-              <Link href={callToActionButtonLink}>
-                {callToActionButtonText}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-    </div>
-  );
+				<div className="container mx-auto px-4 text-center relative z-modal-backdrop">
+					<motion.div {...fadeInUp}>
+						<h2 className="text-3xl font-bold mb-4 font-neue-stance text-stone-100">
+							{callToActionTitle}
+						</h2>
+						<p className="text-lg mb-8 max-w-2xl mx-auto text-stone-300">
+							{callToActionDescription}
+						</p>
+						<Button
+							size="lg"
+							variant="secondary"
+							className="bg-white text-emerald-500 hover:bg-emerald-50"
+							asChild
+						>
+							<Link href={callToActionButtonLink}>
+								{callToActionButtonText}
+								<ArrowRight className="ml-2 h-5 w-5" />
+							</Link>
+						</Button>
+					</motion.div>
+				</div>
+			</section>
+		</div>
+	);
 }

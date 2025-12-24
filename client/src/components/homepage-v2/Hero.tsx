@@ -153,20 +153,30 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 z-[10] flex items-center justify-center pointer-events-none">
         <div className="flex flex-col items-center justify-center perspective-[1000px] px-4 text-center">
           {HERO_TEXT.map((line, i) => (
-            <div key={i} className="hero-line overflow-hidden py-2 -my-2">
+            <div key={i} className="hero-line overflow-hidden py-1">
               <motion.h1
-                initial={{ y: "110%", rotateX: 15, opacity: 0, filter: "blur(10px)" }}
-                animate={{ y: "0%", rotateX: 0, opacity: 1, filter: "blur(0px)" }}
+                initial={{
+                  y: "110%",
+                  rotateX: 15,
+                  opacity: 0,
+                  filter: "blur(10px)",
+                }}
+                animate={{
+                  y: "0%",
+                  rotateX: 0,
+                  opacity: 1,
+                  filter: "blur(0px)",
+                }}
                 transition={{
                   duration: 1.2,
                   ease: [0.16, 1, 0.3, 1], // Expo out equivalent
                   delay: 0.2 + i * 0.1,
                 }}
                 style={{ y: i % 2 === 0 ? y1 : y2, opacity }}
-                className="text-display-xl leading-[0.85] font-bold text-luxury-interactive tracking-tighter mix-blend-multiply will-change-transform"
+                className="text-display-xl leading-tight font-bold text-luxury-interactive tracking-tighter mix-blend-multiply will-change-transform"
               >
                 {line}
               </motion.h1>
@@ -176,7 +186,7 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator - Native CSS Animation */}
-      <div className="absolute bottom-8 right-8 z-20 pointer-events-auto hidden md:block">
+      <div className="absolute bottom-8 right-8 z-[20] pointer-events-auto hidden md:block">
         <div className="relative w-24 h-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="w-full h-full fill-black">
             <path

@@ -84,10 +84,7 @@ export default function Contact() {
 
   const mutation = useMutation({
     mutationFn: async (data: ContactFormData) => {
-      console.log("🔍 [Contact Form] Starting submission...", data);
-
       if (data.honeypot) {
-        console.warn("⚠️ [Contact Form] Honeypot filled - rejecting submission");
         throw new Error("Invalid submission");
       }
 
@@ -107,18 +104,12 @@ export default function Contact() {
         honeypot: data.honeypot || "",
       };
 
-      console.log("📤 [Contact Form] Sending payload:", {
-        ...payload,
-        honeypot: payload.honeypot ? "[FILLED]" : "[EMPTY]",
-      });
-
       return await apiRequest("/api/contact", {
         method: "POST",
         body: JSON.stringify(payload),
       });
     },
     onSuccess: (result) => {
-      console.log("✅ [Contact Form] Submission successful:", result);
       setShowSuccess(true);
       form.reset();
       toast({
@@ -129,7 +120,6 @@ export default function Contact() {
       });
     },
     onError: (error: Error) => {
-      console.error("❌ [Contact Form] Submission failed:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to send message. Please try again.",
@@ -139,7 +129,6 @@ export default function Contact() {
   });
 
   const onSubmit = (data: ContactFormData) => {
-    console.log("📝 [Contact Form] Form submitted:", data);
     mutation.mutate(data);
   };
 
@@ -164,7 +153,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 pt-24 pb-24">
+    <div className="min-h-screen bg-gray-50 text-gray-900 pt-32 pb-24">
       <div className="container mx-auto p-6 md:p-8 lg:p-12 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {/* Left Column: Contact Form */}
@@ -318,7 +307,7 @@ export default function Contact() {
                             </span>
                           </button>
                           {showCountryDropdown && (
-                            <div className="absolute z-[60] mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
+                            <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
                               <div className="p-2">
                                 <Input
                                   type="text"
@@ -378,7 +367,7 @@ export default function Contact() {
                             <span className="block truncate">{selectedPlatform}</span>
                           </button>
                           {showPlatformDropdown && (
-                            <ul className="absolute z-[60] mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
+                            <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-white py-1 text-base shadow-xl border border-gray-200 sm:text-sm">
                               {platforms.map((platform) => (
                                 <li
                                   key={platform}

@@ -1,16 +1,19 @@
-import { ArrowDown, ArrowUp, Folder, PanelLeftClose, Plus, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useMediaLibraryEnhanced } from './MediaLibraryContextEnhanced';
+import { ArrowDown, ArrowUp, Folder, PanelLeftClose, Plus, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 // Phase 1: Search and Filtering Interface (90 lines target)
 export default function MediaFiltersPanel() {
-  const { 
-    state, 
-    updateState
-  } = useMediaLibraryEnhanced();
+  const { state, updateState } = useMediaLibraryEnhanced();
 
   return (
     <div className="h-full flex flex-col">
@@ -18,15 +21,15 @@ export default function MediaFiltersPanel() {
       <div className="flex items-center justify-between p-4 border-b">
         <h2 className="font-semibold">Filters</h2>
         <button
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 z-popover"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            updateState('showFiltersPanel', false);
+            updateState("showFiltersPanel", false);
           }}
           title="Hide filters panel"
           data-testid="button-collapse-filters"
-          style={{ zIndex: 9999, pointerEvents: 'auto' }}
+          style={{ pointerEvents: "auto" }}
         >
           <PanelLeftClose className="h-4 w-4" />
         </button>
@@ -42,7 +45,7 @@ export default function MediaFiltersPanel() {
               id="filters-search"
               placeholder="Search media..."
               value={state.searchTerm}
-              onChange={(e) => updateState('searchTerm', e.target.value)}
+              onChange={(e) => updateState("searchTerm", e.target.value)}
               className="pl-10"
             />
           </div>
@@ -51,7 +54,10 @@ export default function MediaFiltersPanel() {
         {/* Media type filter */}
         <div className="space-y-2">
           <Label htmlFor="filters-type">Type</Label>
-          <Select value={state.selectedType} onValueChange={(value) => updateState('selectedType', value)}>
+          <Select
+            value={state.selectedType}
+            onValueChange={(value) => updateState("selectedType", value)}
+          >
             <SelectTrigger id="filters-type">
               <SelectValue placeholder="All types" />
             </SelectTrigger>
@@ -68,7 +74,10 @@ export default function MediaFiltersPanel() {
         {/* Sort options */}
         <div className="space-y-2">
           <Label htmlFor="filters-sort-by">Sort by</Label>
-          <Select value={state.sortBy} onValueChange={(value) => updateState('sortBy', value as any)}>
+          <Select
+            value={state.sortBy}
+            onValueChange={(value) => updateState("sortBy", value as any)}
+          >
             <SelectTrigger id="filters-sort-by">
               <SelectValue />
             </SelectTrigger>
@@ -86,18 +95,18 @@ export default function MediaFiltersPanel() {
           <Label id="filters-sort-order">Sort order</Label>
           <div className="flex gap-2" role="group" aria-labelledby="filters-sort-order">
             <Button
-              variant={state.sortOrder === 'asc' ? 'default' : 'outline'}
+              variant={state.sortOrder === "asc" ? "default" : "outline"}
               size="sm"
-              onClick={() => updateState('sortOrder', 'asc')}
+              onClick={() => updateState("sortOrder", "asc")}
               className="flex-1"
             >
               <ArrowUp className="h-4 w-4 mr-2" />
               Ascending
             </Button>
             <Button
-              variant={state.sortOrder === 'desc' ? 'default' : 'outline'}
+              variant={state.sortOrder === "desc" ? "default" : "outline"}
               size="sm"
-              onClick={() => updateState('sortOrder', 'desc')}
+              onClick={() => updateState("sortOrder", "desc")}
               className="flex-1"
             >
               <ArrowDown className="h-4 w-4 mr-2" />

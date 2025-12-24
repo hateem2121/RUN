@@ -1,0 +1,25 @@
+# CODEOWNERS - Tailwind v4 Migration Critical Files
+#
+# These files require review from designated owners to prevent regressions
+# in CSS cascade, SSR, and visual regression testing.
+
+# Tailwind v4 CSS Configuration - Cascade Layer Critical
+/client/src/index.css @frontend-team
+
+# SSR Handler - FOUC and Hydration Critical
+/server/lib/ssr-handler.ts @backend-team @frontend-team
+
+# Visual Regression Test Suite
+/e2e/visual-regression-audit.spec.ts @qa-team @frontend-team
+/playwright.config.ts @qa-team
+
+# CI Workflows - Pipeline Stability
+/.github/workflows/ @devops-team
+
+# Guardrail Scripts
+/scripts/lint-css-import-order.ts @frontend-team
+/scripts/check-ssr-preload.ts @frontend-team @backend-team
+
+# Post-Migration Documentation
+/TAILWIND_V4_POSTMIGRATION_CHECKLIST.md @frontend-team
+/TAILWIND_V4_SYSTEMWIDE_VISUAL_REGRESSION_AUDIT.md @frontend-team

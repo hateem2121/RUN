@@ -11,134 +11,138 @@ import { useEffect, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { cn } from "@/lib/utils";
 
-interface OptimizedImageProps extends Omit<
-  React.ImgHTMLAttributes<HTMLImageElement>,
-  "onLoad" | "onError"
-> {
-  // Legacy Props
-  mediaId?: number;
-  priority?: boolean;
-  quality?: number;
-  objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+interface OptimizedImageProps
+	extends Omit<
+		React.ImgHTMLAttributes<HTMLImageElement>,
+		"onLoad" | "onError"
+	> {
+	// Legacy Props
+	mediaId?: number;
+	priority?: boolean;
+	quality?: number;
+	objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
 
-  // New Props
-  src?: string;
-  aspectRatio?: number | string; // supports "aspect-square" (string) or 1.5 (number)
-  fallbackSrc?: string;
-  imageClassName?: string;
+	// New Props
+	src?: string;
+	aspectRatio?: number | string; // supports "aspect-square" (string) or 1.5 (number)
+	fallbackSrc?: string;
+	imageClassName?: string;
 
-  // Handlers
-  onLoad?: () => void;
-  onError?: (error: unknown) => void;
+	// Handlers
+	onLoad?: () => void;
+	onError?: (error: unknown) => void;
 }
 
 // === Sub-Component: Direct Image (New V2) ===
 const DirectImage: React.FC<OptimizedImageProps> = ({
-  src: srcProp,
-  alt,
-  className,
-  imageClassName,
-  aspectRatio = "aspect-[3/4]",
-  objectFit = "cover",
-  fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-  onLoad,
-  onError,
-  ...props
+	src: srcProp,
+	alt,
+	className,
+	imageClassName,
+	aspectRatio = "aspect-[3/4]",
+	objectFit = "cover",
+	fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+	onLoad,
+	onError,
+	...props
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentSrc, setCurrentSrc] = useState(srcProp);
-  const [hasError, setHasError] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [currentSrc, setCurrentSrc] = useState(srcProp);
+	const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    setCurrentSrc(srcProp);
-    setIsLoading(true);
-    setHasError(false);
-  }, [srcProp]);
+	useEffect(() => {
+		setCurrentSrc(srcProp);
+		setIsLoading(true);
+		setHasError(false);
+	}, [srcProp]);
 
-  // Handle number vs string aspect ratio
-  const styleObj = typeof aspectRatio === "number" ? { aspectRatio } : undefined;
-  const ratioClass = typeof aspectRatio === "string" ? aspectRatio : "";
+	// Handle number vs string aspect ratio
+	const styleObj =
+		typeof aspectRatio === "number" ? { aspectRatio } : undefined;
+	const ratioClass = typeof aspectRatio === "string" ? aspectRatio : "";
 
-  return (
-    <div
-      className={cn(
-        "relative overflow-hidden bg-gray-200 dark:bg-neutral-800",
-        ratioClass,
-        className,
-      )}
-      style={styleObj}
-    >
-      <img
-        src={hasError ? fallbackSrc : currentSrc}
-        alt={alt}
-        className={cn(
-          "h-full w-full object-cover transition-all duration-700 ease-in-out",
-          objectFit === "contain" && "object-contain", // Tailwind support
-          isLoading ? "scale-110 blur-xl grayscale" : "scale-100 blur-0 grayscale-0",
-          hasError ? "object-contain p-8 opacity-50" : "",
-          imageClassName,
-        )}
-        onLoad={() => {
-          setIsLoading(false);
-          onLoad?.();
-        }}
-        onError={(e) => {
-          setIsLoading(false);
-          setHasError(true);
-          onError?.(e);
-        }}
-        loading="lazy"
-        decoding="async"
-        {...props}
-      />
+	return (
+		<div
+			className={cn(
+				"relative overflow-hidden bg-gray-200 dark:bg-neutral-800",
+				ratioClass,
+				className,
+			)}
+			style={styleObj}
+		>
+			<img
+				src={hasError ? fallbackSrc : currentSrc}
+				alt={alt}
+				className={cn(
+					"h-full w-full object-cover transition-all duration-700 ease-in-out",
+					objectFit === "contain" && "object-contain", // Tailwind support
+					isLoading
+						? "scale-110 blur-xl grayscale"
+						: "scale-100 blur-0 grayscale-0",
+					hasError ? "object-contain p-8 opacity-50" : "",
+					imageClassName,
+				)}
+				onLoad={() => {
+					setIsLoading(false);
+					onLoad?.();
+				}}
+				onError={(e) => {
+					setIsLoading(false);
+					setHasError(true);
+					onError?.(e);
+				}}
+				loading="lazy"
+				decoding="async"
+				{...props}
+			/>
 
-      {/* Skeleton / Pulse Overlay during loading */}
-      {isLoading && (
-        <div className="absolute inset-0 animate-pulse bg-white/10 pointer-events-none" />
-      )}
-    </div>
-  );
+			{/* Skeleton / Pulse Overlay during loading */}
+			{isLoading && (
+				<div className="absolute inset-0 animate-pulse bg-white/10 pointer-events-none" />
+			)}
+		</div>
+	);
 };
 
 // === Sub-Component: Legacy Image (Media ID) ===
 const LegacyImage: React.FC<OptimizedImageProps> = ({
-  mediaId,
-  priority = false,
-  quality = 85,
-  className,
-  imageClassName,
-  alt,
-  onLoad,
-  onError,
-  aspectRatio = "aspect-[3/4]",
-  objectFit = "cover",
-  ...props
+	mediaId,
+	priority = false,
+	quality = 85,
+	className,
+	imageClassName,
+	alt,
+	onLoad,
+	onError,
+	aspectRatio = "aspect-[3/4]",
+	objectFit = "cover",
+	...props
 }) => {
-  if (mediaId === undefined) return null;
+	if (mediaId === undefined) return null;
 
-  // Use the legacy MediaUrlBuilder
-  const src = MediaUrlBuilder.buildUrlSafe(mediaId);
+	// Use the legacy MediaUrlBuilder
+	const src = MediaUrlBuilder.buildUrlSafe(mediaId);
 
-  // Forward to DirectImage to handle all loading states consistently
-  return (
-    <DirectImage
-      src={src}
-      className={className}
-      imageClassName={imageClassName}
-      alt={alt || `Media ${mediaId}`}
-      aspectRatio={aspectRatio}
-      objectFit={objectFit}
-      onLoad={onLoad}
-      onError={onError}
-      {...props}
-    />
-  );
+	// Forward to DirectImage to handle all loading states consistently
+	return (
+		<DirectImage
+			src={src}
+			className={className}
+			imageClassName={imageClassName}
+			alt={alt || `Media ${mediaId}`}
+			aspectRatio={aspectRatio}
+			objectFit={objectFit}
+			onLoad={onLoad}
+			onError={onError}
+			{...props}
+		/>
+	);
 };
 
 // === Main Export ===
 export const OptimizedImage: React.FC<OptimizedImageProps> = (props) => {
-  if (props.mediaId !== undefined) {
-    return <LegacyImage {...props} />;
-  }
-  return <DirectImage {...props} />;
+	if (props.mediaId !== undefined) {
+		return <LegacyImage {...props} />;
+	}
+	return <DirectImage {...props} />;
 };

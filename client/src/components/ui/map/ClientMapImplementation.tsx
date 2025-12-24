@@ -5,7 +5,11 @@ import { MapErrorBoundary } from "./components/MapErrorBoundary";
 import type { MapLocation } from "./hooks/useMapMarkers";
 import { useMapState } from "./hooks/useMapState";
 import { MapMarkers } from "./MapMarkers";
-import "leaflet/dist/leaflet.css";
+
+// SSR-safe CSS import
+if (typeof window !== "undefined") {
+  import("leaflet/dist/leaflet.css");
+}
 
 interface ClientMapProps {
   locations: MapLocation[];

@@ -1,11 +1,12 @@
 import ReactScan from "@react-scan/vite-plugin-react-scan";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
+import Inspect from "vite-plugin-inspect";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,6 +29,8 @@ export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
     ReactScan({
       enable: mode === "development",
     }),
+    // DEBUG: Inspect Vite transformation pipeline (localhost:5173/__inspect)
+    Inspect(),
     // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
     sentryVitePlugin({
       org: process.env.SENTRY_ORG,
@@ -45,6 +48,7 @@ export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
   },
   root: path.resolve(__dirname, "client"),
   build: {
+    sourcemap: true, // Enable source maps for local debugging
     outDir: isSsrBuild
       ? path.resolve(__dirname, "dist/server")
       : path.resolve(__dirname, "dist/public"),
@@ -76,7 +80,9 @@ export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
     },
   },
   ssr: {
-    noExternal: ["react-helmet-async"],
+    // P0: Externalize backend dependencies to match Monorepo structure
+    external: ["pg", "drizzle-orm", "better-sqlite3", "fsevents"],
+    noExternal: ["react-helmet-async", "lucide-react", "recharts", "recharts-scale"],
   },
   server: {
     // FORENSIC: Dev server optimizations for faster module loading

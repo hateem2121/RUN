@@ -4,134 +4,138 @@
  * Created: October 22, 2025
  */
 
-import type { Transporter } from 'nodemailer';
-import nodemailer from 'nodemailer';
-import { logger } from './smart-logger.js';
+import type { Transporter } from "nodemailer";
+import nodemailer from "nodemailer";
+import { logger } from "./smart-logger.js";
 
 interface EmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
+	to: string;
+	subject: string;
+	html: string;
+	text?: string;
 }
 
 interface InquiryEmailData {
-  id: number;
-  name: string;
-  email: string;
-  company?: string;
-  phone?: string;
-  country?: string;
-  message: string;
-  preferredPlatform?: string;
-  submittedAt: Date;
+	id: number;
+	name: string;
+	email: string;
+	company?: string;
+	phone?: string;
+	country?: string;
+	message: string;
+	preferredPlatform?: string;
+	submittedAt: Date;
 }
 
 class EmailService {
-  private transporter: Transporter | null = null;
-  private isConfigured: boolean = false;
+	private transporter: Transporter | null = null;
+	private isConfigured: boolean = false;
 
-  constructor() {
-    this.initialize();
-  }
+	constructor() {
+		this.initialize();
+	}
 
-  private initialize(): void {
-    const gmailUser = process.env.GMAIL_USER;
-    const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+	private initialize(): void {
+		const gmailUser = process.env.GMAIL_USER;
+		const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
-    if (!gmailUser || !gmailAppPassword) {
-      logger.warn('[Email] Gmail credentials not configured - email notifications disabled');
-      this.isConfigured = false;
-      return;
-    }
+		if (!gmailUser || !gmailAppPassword) {
+			logger.warn(
+				"[Email] Gmail credentials not configured - email notifications disabled",
+			);
+			this.isConfigured = false;
+			return;
+		}
 
-    try {
-      this.transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: gmailUser,
-          pass: gmailAppPassword,
-        },
-      });
+		try {
+			this.transporter = nodemailer.createTransport({
+				host: "smtp.gmail.com",
+				port: 587,
+				secure: false,
+				auth: {
+					user: gmailUser,
+					pass: gmailAppPassword,
+				},
+			});
 
-      this.isConfigured = true;
-      logger.info('[Email] Email service initialized successfully');
-      
-      this.transporter.verify((error: Error | null) => {
-        if (error) {
-          logger.error('[Email] SMTP verification failed:', error);
-          this.isConfigured = false;
-        } else {
-          logger.info('[Email] SMTP server ready to send emails');
-        }
-      });
-    } catch (error) {
-      logger.error('[Email] Failed to initialize email service:', error);
-      this.isConfigured = false;
-    }
-  }
+			this.isConfigured = true;
+			logger.info("[Email] Email service initialized successfully");
 
-  private async sendEmail(options: EmailOptions): Promise<boolean> {
-    if (!this.isConfigured || !this.transporter) {
-      logger.warn('[Email] Email service not configured - skipping email send');
-      return false;
-    }
+			this.transporter.verify((error: Error | null) => {
+				if (error) {
+					logger.error("[Email] SMTP verification failed:", error);
+					this.isConfigured = false;
+				} else {
+					logger.info("[Email] SMTP server ready to send emails");
+				}
+			});
+		} catch (error) {
+			logger.error("[Email] Failed to initialize email service:", error);
+			this.isConfigured = false;
+		}
+	}
 
-    try {
-      const info = await this.transporter.sendMail({
-        from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
-        to: options.to,
-        subject: options.subject,
-        html: options.html,
-        text: options.text || options.html.replace(/<[^>]*>/g, ''),
-      });
+	private async sendEmail(options: EmailOptions): Promise<boolean> {
+		if (!this.isConfigured || !this.transporter) {
+			logger.warn("[Email] Email service not configured - skipping email send");
+			return false;
+		}
 
-      logger.info(`[Email] Email sent successfully: ${info.messageId}`);
-      return true;
-    } catch (error) {
-      logger.error('[Email] Failed to send email:', error);
-      return false;
-    }
-  }
+		try {
+			const info = await this.transporter.sendMail({
+				from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
+				to: options.to,
+				subject: options.subject,
+				html: options.html,
+				text: options.text || options.html.replace(/<[^>]*>/g, ""),
+			});
 
-  async sendAdminNotification(inquiry: InquiryEmailData): Promise<boolean> {
-    const adminEmail = process.env.GMAIL_USER;
-    if (!adminEmail) {
-      logger.warn('[Email] Admin email not configured');
-      return false;
-    }
+			logger.info(`[Email] Email sent successfully: ${info.messageId}`);
+			return true;
+		} catch (error) {
+			logger.error("[Email] Failed to send email:", error);
+			return false;
+		}
+	}
 
-    const subject = `New Contact Inquiry from ${inquiry.name}`;
-    const html = this.generateAdminEmailTemplate(inquiry);
+	async sendAdminNotification(inquiry: InquiryEmailData): Promise<boolean> {
+		const adminEmail = process.env.GMAIL_USER;
+		if (!adminEmail) {
+			logger.warn("[Email] Admin email not configured");
+			return false;
+		}
 
-    logger.info(`[Email] Sending admin notification for inquiry #${inquiry.id}`);
-    return await this.sendEmail({
-      to: adminEmail,
-      subject,
-      html,
-    });
-  }
+		const subject = `New Contact Inquiry from ${inquiry.name}`;
+		const html = this.generateAdminEmailTemplate(inquiry);
 
-  async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<boolean> {
-    const subject = 'Thank you for contacting RUN APPAREL';
-    const html = this.generateCustomerEmailTemplate(inquiry);
+		logger.info(
+			`[Email] Sending admin notification for inquiry #${inquiry.id}`,
+		);
+		return await this.sendEmail({
+			to: adminEmail,
+			subject,
+			html,
+		});
+	}
 
-    logger.info(`[Email] Sending customer confirmation to ${inquiry.email}`);
-    return await this.sendEmail({
-      to: inquiry.email,
-      subject,
-      html,
-    });
-  }
+	async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<boolean> {
+		const subject = "Thank you for contacting RUN APPAREL";
+		const html = this.generateCustomerEmailTemplate(inquiry);
 
-  private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
-    const dashboardUrl = process.env.REPLIT_DEV_DOMAIN 
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
-      : `http://localhost:5000/admin/inquiries/${inquiry.id}`;
+		logger.info(`[Email] Sending customer confirmation to ${inquiry.email}`);
+		return await this.sendEmail({
+			to: inquiry.email,
+			subject,
+			html,
+		});
+	}
 
-    return `
+	private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
+		const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
+			? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
+			: `http://localhost:5000/admin/inquiries/${inquiry.id}`;
+
+		return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,7 +153,7 @@ class EmailService {
           <tr>
             <td style="padding: 40px 40px 30px; background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border-radius: 8px 8px 0 0;">
               <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">New Contact Inquiry</h1>
-              <p style="margin: 8px 0 0; color: #cccccc; font-size: 14px;">Received on ${new Date(inquiry.submittedAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}</p>
+              <p style="margin: 8px 0 0; color: #cccccc; font-size: 14px;">Received on ${new Date(inquiry.submittedAt).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" })}</p>
             </td>
           </tr>
 
@@ -177,7 +181,9 @@ class EmailService {
                     <a href="mailto:${inquiry.email}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${inquiry.email}</a>
                   </td>
                 </tr>
-                ${inquiry.company ? `
+                ${
+									inquiry.company
+										? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Company:</strong>
@@ -186,8 +192,12 @@ class EmailService {
                     <span style="color: #000000; font-size: 14px;">${inquiry.company}</span>
                   </td>
                 </tr>
-                ` : ''}
-                ${inquiry.phone ? `
+                `
+										: ""
+								}
+                ${
+									inquiry.phone
+										? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Phone:</strong>
@@ -196,8 +206,12 @@ class EmailService {
                     <a href="tel:${inquiry.phone}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${inquiry.phone}</a>
                   </td>
                 </tr>
-                ` : ''}
-                ${inquiry.country ? `
+                `
+										: ""
+								}
+                ${
+									inquiry.country
+										? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Country:</strong>
@@ -206,8 +220,12 @@ class EmailService {
                     <span style="color: #000000; font-size: 14px;">${inquiry.country}</span>
                   </td>
                 </tr>
-                ` : ''}
-                ${inquiry.preferredPlatform ? `
+                `
+										: ""
+								}
+                ${
+									inquiry.preferredPlatform
+										? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Preferred Platform:</strong>
@@ -216,7 +234,9 @@ class EmailService {
                     <span style="color: #000000; font-size: 14px;">${inquiry.preferredPlatform}</span>
                   </td>
                 </tr>
-                ` : ''}
+                `
+										: ""
+								}
               </table>
 
               <!-- Message -->
@@ -254,10 +274,10 @@ class EmailService {
 </body>
 </html>
     `.trim();
-  }
+	}
 
-  private generateCustomerEmailTemplate(inquiry: InquiryEmailData): string {
-    return `
+	private generateCustomerEmailTemplate(inquiry: InquiryEmailData): string {
+		return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -295,7 +315,7 @@ class EmailService {
                 <h2 style="margin: 0 0 12px; color: #000000; font-size: 16px; font-weight: 600;">What happens next?</h2>
                 <ul style="margin: 0; padding-left: 20px; color: #333333; font-size: 14px; line-height: 1.8;">
                   <li>Our team will review your inquiry within 24-48 hours</li>
-                  <li>We'll respond via ${inquiry.preferredPlatform || 'email'} with the information you requested</li>
+                  <li>We'll respond via ${inquiry.preferredPlatform || "email"} with the information you requested</li>
                   <li>For urgent matters, feel free to call us directly</li>
                 </ul>
               </div>
@@ -332,7 +352,7 @@ class EmailService {
 </body>
 </html>
     `.trim();
-  }
+	}
 }
 
 export const emailService = new EmailService();

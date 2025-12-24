@@ -29,9 +29,6 @@ class BundleOptimizer {
   private async analyzeCurrentBundle() {
     if (typeof window === "undefined") return;
 
-    if (process.env.NODE_ENV === "development")
-      console.log("[BundleOptimizer] Starting bundle analysis...");
-
     // Analyze JavaScript chunks
     await this.analyzeScripts();
 
@@ -43,15 +40,16 @@ class BundleOptimizer {
 
     // Generate recommendations
     this.generateRecommendations();
-
-    if (process.env.NODE_ENV === "development")
-      console.log("[BundleOptimizer] Bundle analysis complete");
   }
 
   private async analyzeScripts() {
     const scripts = Array.from(document.querySelectorAll("script[src]")) as HTMLScriptElement[];
 
     for (const script of scripts) {
+      // Skip Vite dev client - it's a virtual module that doesn't respond to HEAD requests
+      if (script.src.includes("/@vite/client")) {
+        continue;
+      }
       if (script.src && (script.src.includes("/assets/") || script.src.includes("vite"))) {
         try {
           const info = await this.getResourceInfo(script.src, "js");
@@ -60,10 +58,7 @@ class BundleOptimizer {
             info.preloaded = this.isPreloaded(script.src);
             this.chunks.push(info);
           }
-        } catch (e) {
-          if (process.env.NODE_ENV === "development")
-            console.warn("Could not analyze script:", script.src);
-        }
+        } catch (e) {}
       }
     }
   }
@@ -81,10 +76,7 @@ class BundleOptimizer {
             info.preloaded = this.isPreloaded(link.href);
             this.chunks.push(info);
           }
-        } catch (e) {
-          if (process.env.NODE_ENV === "development")
-            console.warn("Could not analyze stylesheet:", link.href);
-        }
+        } catch (e) {}
       }
     }
   }
@@ -101,9 +93,7 @@ class BundleOptimizer {
           info.preloaded = true;
           this.chunks.push(info);
         }
-      } catch (e) {
-        console.warn("Could not analyze font:", link.href);
-      }
+      } catch (e) {}
     }
   }
 
@@ -356,9 +346,7 @@ export const bundleOptimizer = new BundleOptimizer();
 // Utility functions for bundle optimization
 export const BundleUtils = {
   // Print bundle report to console
-  logBundleReport: () => {
-    console.log(bundleOptimizer.generateDetailedReport());
-  },
+  logBundleReport: () => {},
 
   // Get performance score
   getPerformanceScore: (): number => {

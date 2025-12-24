@@ -1,1996 +1,2107 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "RUN APPAREL Media & Asset Management API",
-    "description": "Comprehensive API documentation for media asset management and folder organization endpoints. Handles images, 3D models (GLTF/GLB), and documents with advanced features including chunked uploads, batch operations, hierarchical folder management, event-driven cache invalidation, and analytics. Implements SAGA-inspired atomic deletion with compensating transactions, two-phase commit cache consistency, and stale-while-revalidate caching patterns for optimal performance and reliability.",
-    "version": "2.0.0",
-    "contact": {
-      "name": "RUN APPAREL (PVT) LTD",
-      "email": "admin@runapparel.lk"
-    }
-  },
-  "servers": [
-    {
-      "url": "/api",
-      "description": "Media & Asset Management API"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Core CRUD",
-      "description": "Basic media asset operations"
-    },
-    {
-      "name": "Upload",
-      "description": "Single, batch, and chunked upload operations"
-    },
-    {
-      "name": "Content Delivery",
-      "description": "Content retrieval, proxying, and thumbnails"
-    },
-    {
-      "name": "Batch Operations",
-      "description": "Bulk upload and delete operations"
-    },
-    {
-      "name": "Analytics & Monitoring",
-      "description": "Performance metrics and system health"
-    },
-    {
-      "name": "Cache Management",
-      "description": "Cache operations and statistics"
-    },
-    {
-      "name": "Maintenance",
-      "description": "Database repair and system diagnostics"
-    },
-    {
-      "name": "Folder Management",
-      "description": "Organize media assets into hierarchical folders"
-    },
-    {
-      "name": "Admin Operations",
-      "description": "Administrative endpoints for media maintenance and validation (requires admin authentication)"
-    }
-  ],
-  "paths": {
-    "/media": {
-      "get": {
-        "tags": ["Core CRUD"],
-        "summary": "List all media assets",
-        "description": "Retrieves paginated list of media assets with optional filtering by type, folder, and active status. Results are cached for performance.",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number (1-indexed)",
-            "schema": { "type": "integer", "minimum": 1, "default": 1 }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Items per page",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "description": "Filter by media type",
-            "schema": { "type": "string", "enum": ["image", "video", "model", "document"] }
-          },
-          {
-            "name": "folderId",
-            "in": "query",
-            "description": "Filter by folder ID",
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": true },
-                    "data": {
-                      "type": "array",
-                      "items": { "$ref": "#/components/schemas/MediaAsset" }
-                    },
-                    "pagination": { "$ref": "#/components/schemas/Pagination" }
-                  }
-                }
-              }
-            }
-          },
-          "429": { "$ref": "#/components/responses/RateLimitError" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/count": {
-      "get": {
-        "tags": ["Core CRUD"],
-        "summary": "Get media asset count",
-        "description": "Returns total count of active media assets. Result is cached.",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": true },
-                    "count": { "type": "integer", "example": 142 }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/search": {
-      "get": {
-        "tags": ["Core CRUD"],
-        "summary": "Search media assets",
-        "description": "Search media assets by filename or original name using database-level ILIKE filtering. Supports pagination.",
-        "parameters": [
-          {
-            "name": "q",
-            "in": "query",
-            "required": true,
-            "description": "Search query (searches filename and originalName)",
-            "schema": { "type": "string", "minLength": 1 }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": { "type": "integer", "minimum": 1, "default": 1 }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": {
-                      "type": "array",
-                      "items": { "$ref": "#/components/schemas/MediaAsset" }
-                    },
-                    "pagination": { "$ref": "#/components/schemas/Pagination" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/{id}": {
-      "get": {
-        "tags": ["Core CRUD"],
-        "summary": "Get media asset by ID",
-        "description": "Retrieves a single media asset by ID. Result is cached.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Media asset ID",
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": { "$ref": "#/components/schemas/MediaAsset" }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      },
-      "patch": {
-        "tags": ["Core CRUD"],
-        "summary": "Update media asset",
-        "description": "Updates media asset metadata. Invalidates relevant caches.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "filename": { "type": "string" },
-                  "altText": { "type": "string" },
-                  "caption": { "type": "string" },
-                  "folderId": { "type": "integer", "nullable": true },
-                  "tags": { "type": "array", "items": { "type": "string" } },
-                  "metadata": { "type": "object" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": { "$ref": "#/components/schemas/MediaAsset" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      },
-      "delete": {
-        "tags": ["Core CRUD"],
-        "summary": "Delete media asset",
-        "description": "Soft deletes media asset from database and removes files from Object Storage. Uses compensating transaction pattern for atomicity.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string", "example": "Media asset deleted successfully" }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Upload single file",
-        "description": "Uploads a single file with magic number validation, automatic thumbnail generation, and metadata extraction. On successful upload, automatically invalidates all media list caches to ensure the new asset appears immediately in queries without manual refresh.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": ["file"],
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "File to upload (images, 3D models, documents)"
-                  },
-                  "altText": { "type": "string" },
-                  "caption": { "type": "string" },
-                  "folderId": { "type": "integer" },
-                  "tags": {
-                    "type": "string",
-                    "description": "JSON array of tags"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "File uploaded successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": { "$ref": "#/components/schemas/MediaAsset" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "413": { "$ref": "#/components/responses/PayloadTooLarge" },
-          "415": { "$ref": "#/components/responses/UnsupportedMediaType" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload-base64": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Upload Base64 encoded file",
-        "description": "Uploads a file from Base64 encoded string. Useful for browser-based applications.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["data", "filename"],
-                "properties": {
-                  "data": {
-                    "type": "string",
-                    "description": "Base64 encoded file data (with or without data URI prefix)"
-                  },
-                  "filename": { "type": "string" },
-                  "mimeType": { "type": "string" },
-                  "altText": { "type": "string" },
-                  "caption": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "File uploaded successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": { "$ref": "#/components/schemas/MediaAsset" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload-gltf-package": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Upload GLTF package",
-        "description": "Uploads a complete GLTF/GLB package with associated textures and resources. Automatically processes and links related files.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": ["files"],
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    },
-                    "description": "GLTF/GLB files and associated textures"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "GLTF package uploaded successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": {
-                      "type": "array",
-                      "items": { "$ref": "#/components/schemas/MediaAsset" }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/init": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Initialize chunked upload",
-        "description": "Initializes a multi-part chunked upload session for large files. Returns uploadId to use in subsequent chunk uploads.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["filename", "fileSize", "mimeType", "totalChunks"],
-                "properties": {
-                  "filename": { "type": "string" },
-                  "fileSize": { "type": "integer", "minimum": 1 },
-                  "mimeType": { "type": "string" },
-                  "totalChunks": { "type": "integer", "minimum": 1 },
-                  "altText": { "type": "string" },
-                  "caption": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Upload session initialized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "uploadId": { "type": "string", "format": "uuid" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/chunk": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Upload chunk",
-        "description": "Uploads a single chunk of a multi-part upload. Chunks are validated and stored temporarily until finalization.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": ["uploadId", "chunkIndex", "chunk"],
-                "properties": {
-                  "uploadId": { "type": "string", "format": "uuid" },
-                  "chunkIndex": { "type": "integer", "minimum": 0 },
-                  "chunk": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "Chunk data"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Chunk uploaded successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" },
-                    "uploadId": { "type": "string" },
-                    "chunkIndex": { "type": "integer" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/chunk-raw": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Upload raw chunk",
-        "description": "Uploads a chunk as raw binary data (alternative to multipart). Useful for custom upload implementations.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/octet-stream": {
-              "schema": {
-                "type": "string",
-                "format": "binary"
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "uploadId",
-            "in": "query",
-            "required": true,
-            "schema": { "type": "string", "format": "uuid" }
-          },
-          {
-            "name": "chunkIndex",
-            "in": "query",
-            "required": true,
-            "schema": { "type": "integer", "minimum": 0 }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Chunk uploaded successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/finalize": {
-      "post": {
-        "tags": ["Upload"],
-        "summary": "Finalize chunked upload",
-        "description": "Finalizes a chunked upload by combining all chunks, validating integrity, and creating the media asset record.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["uploadId"],
-                "properties": {
-                  "uploadId": { "type": "string", "format": "uuid" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Upload finalized successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": { "$ref": "#/components/schemas/MediaAsset" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/progress/{uploadId}": {
-      "get": {
-        "tags": ["Upload"],
-        "summary": "Get upload progress",
-        "description": "Retrieves the current progress of a chunked upload session.",
-        "parameters": [
-          {
-            "name": "uploadId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string", "format": "uuid" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "uploadId": { "type": "string" },
-                    "filename": { "type": "string" },
-                    "totalChunks": { "type": "integer" },
-                    "uploadedChunks": { "type": "integer" },
-                    "progress": {
-                      "type": "number",
-                      "format": "float",
-                      "description": "Progress percentage (0-100)"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": ["in_progress", "completed", "failed"]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/cancel/{uploadId}": {
-      "delete": {
-        "tags": ["Upload"],
-        "summary": "Cancel upload",
-        "description": "Cancels an in-progress chunked upload and cleans up temporary files.",
-        "parameters": [
-          {
-            "name": "uploadId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string", "format": "uuid" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Upload cancelled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload/active": {
-      "get": {
-        "tags": ["Upload"],
-        "summary": "Get active uploads",
-        "description": "Lists all active (in-progress) chunked upload sessions.",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "uploads": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "uploadId": { "type": "string" },
-                          "filename": { "type": "string" },
-                          "progress": { "type": "number" },
-                          "startedAt": { "type": "string", "format": "date-time" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/batch": {
-      "post": {
-        "tags": ["Batch Operations"],
-        "summary": "Batch upload or delete",
-        "description": "Performs batch upload of multiple files or batch delete of media assets. Uses compensating transactions for atomicity. Supports both multipart file upload and JSON delete requests. On successful operations, automatically invalidates all media list caches to ensure changes appear immediately.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    },
-                    "description": "Multiple files to upload"
-                  }
-                }
-              }
-            },
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["ids"],
-                "properties": {
-                  "ids": {
-                    "type": "array",
-                    "items": { "type": "integer" },
-                    "description": "Array of media asset IDs to delete"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Batch operation completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": {
-                      "type": "array",
-                      "items": { "$ref": "#/components/schemas/MediaAsset" }
-                    },
-                    "uploaded": { "type": "integer" },
-                    "failed": { "type": "integer" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/batch/content": {
-      "get": {
-        "tags": ["Batch Operations"],
-        "summary": "Get batch content",
-        "description": "Retrieves content for multiple media assets in a single request. Returns a JSON object mapping IDs to content URLs.",
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "required": true,
-            "description": "Comma-separated list of media asset IDs",
-            "schema": { "type": "string" },
-            "example": "1,2,3,4,5"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "data": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "string",
-                        "description": "Content URL for each ID"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/{id}/content": {
-      "get": {
-        "tags": ["Content Delivery"],
-        "summary": "Get media content",
-        "description": "Retrieves the actual file content for a media asset. Returns the raw file with appropriate content-type header.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "File content",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/{id}/thumbnail": {
-      "get": {
-        "tags": ["Content Delivery"],
-        "summary": "Get thumbnail",
-        "description": "Retrieves the thumbnail image for a media asset. Automatically generated for images and 3D models.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Thumbnail image",
-            "content": {
-              "image/jpeg": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              },
-              "image/png": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/{id}/geometry": {
-      "get": {
-        "tags": ["Content Delivery"],
-        "summary": "Get 3D model geometry",
-        "description": "Retrieves geometry metadata for 3D models (GLTF/GLB). Includes polygon count, bounding box, and material information.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Geometry metadata",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "geometry": {
-                      "type": "object",
-                      "properties": {
-                        "polygonCount": { "type": "integer" },
-                        "boundingBox": {
-                          "type": "object",
-                          "properties": {
-                            "min": {
-                              "type": "array",
-                              "items": { "type": "number" },
-                              "minItems": 3,
-                              "maxItems": 3
-                            },
-                            "max": {
-                              "type": "array",
-                              "items": { "type": "number" },
-                              "minItems": 3,
-                              "maxItems": 3
-                            }
-                          }
-                        },
-                        "materials": {
-                          "type": "array",
-                          "items": { "type": "string" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/proxy/{id}": {
-      "get": {
-        "tags": ["Content Delivery"],
-        "summary": "Proxy media content",
-        "description": "Proxies media content through the API server. Useful for CORS-restricted environments or when direct Object Storage access is not available.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Proxied content",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/proxy/{id}/thumbnail": {
-      "get": {
-        "tags": ["Content Delivery"],
-        "summary": "Proxy thumbnail",
-        "description": "Proxies thumbnail content through the API server.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Proxied thumbnail",
-            "content": {
-              "image/jpeg": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/analytics": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Get analytics",
-        "description": "Retrieves media usage analytics including upload trends, storage usage, and access patterns.",
-        "responses": {
-          "200": {
-            "description": "Analytics data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "analytics": {
-                      "type": "object",
-                      "properties": {
-                        "totalAssets": { "type": "integer" },
-                        "totalStorage": { "type": "integer", "description": "Total storage in bytes" },
-                        "uploadTrends": { "type": "object" },
-                        "topAssets": { "type": "array" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/performance-dashboard": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Get performance dashboard",
-        "description": "Comprehensive performance metrics dashboard including API response times, cache hit rates, and system health.",
-        "responses": {
-          "200": {
-            "description": "Performance dashboard data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "dashboard": {
-                      "type": "object",
-                      "properties": {
-                        "apiMetrics": { "type": "object" },
-                        "cacheStats": { "type": "object" },
-                        "systemHealth": { "type": "object" },
-                        "recentErrors": { "type": "array" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/upload-metrics": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Get upload metrics",
-        "description": "Detailed metrics about upload operations including success rates, average sizes, and failure reasons.",
-        "responses": {
-          "200": {
-            "description": "Upload metrics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "metrics": {
-                      "type": "object",
-                      "properties": {
-                        "totalUploads": { "type": "integer" },
-                        "successfulUploads": { "type": "integer" },
-                        "failedUploads": { "type": "integer" },
-                        "averageSize": { "type": "integer" },
-                        "averageUploadTime": { "type": "number" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/performance": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Get performance metrics",
-        "description": "Real-time performance metrics for API endpoints.",
-        "responses": {
-          "200": {
-            "description": "Performance metrics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "metrics": { "type": "object" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/system-status": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Get system status",
-        "description": "Overall system health status including database connectivity, Object Storage status, and cache availability.",
-        "responses": {
-          "200": {
-            "description": "System status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "status": {
-                      "type": "object",
-                      "properties": {
-                        "database": { "type": "string", "enum": ["healthy", "degraded", "down"] },
-                        "objectStorage": { "type": "string", "enum": ["healthy", "degraded", "down"] },
-                        "cache": { "type": "string", "enum": ["healthy", "degraded", "down"] },
-                        "uptime": { "type": "integer", "description": "Server uptime in seconds" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/health-scan": {
-      "get": {
-        "tags": ["Analytics & Monitoring"],
-        "summary": "Health scan",
-        "description": "Comprehensive health check scanning all system components and dependencies.",
-        "responses": {
-          "200": {
-            "description": "Health scan results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "health": {
-                      "type": "object",
-                      "properties": {
-                        "overall": { "type": "string", "enum": ["healthy", "degraded", "unhealthy"] },
-                        "components": { "type": "object" },
-                        "checks": { "type": "array" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/cache/stats": {
-      "get": {
-        "tags": ["Cache Management"],
-        "summary": "Get media cache statistics",
-        "description": "Retrieves comprehensive media cache statistics including hit rates, memory usage, and key counts for media-specific caches.",
-        "responses": {
-          "200": {
-            "description": "Cache statistics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "stats": {
-                      "type": "object",
-                      "properties": {
-                        "hitRate": { "type": "number", "format": "float" },
-                        "totalKeys": { "type": "integer" },
-                        "memoryUsage": { "type": "integer" },
-                        "keysByNamespace": { "type": "object" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/cache/invalidation-time": {
-      "get": {
-        "tags": ["Cache Management"],
-        "summary": "Get cache invalidation timestamp",
-        "description": "Event-driven cache invalidation endpoint that returns the latest invalidation timestamp for a given pattern. Used by frontend polling to detect backend cache invalidations and trigger automatic UI updates. Part of the Phase 4 & 5 two-layer cache invalidation architecture (backend event bus + frontend polling).",
-        "parameters": [
-          {
-            "name": "pattern",
-            "in": "query",
-            "required": true,
-            "description": "Cache pattern to check (e.g., 'media:' for all media-related caches)",
-            "schema": { "type": "string", "example": "media:" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Latest invalidation timestamp",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "pattern": { "type": "string", "example": "media:" },
-                    "timestamp": { "type": "integer", "example": 1729795200000, "description": "Unix timestamp in milliseconds of the latest invalidation event" }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Missing required pattern parameter",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Error" }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/clear-cache/{id}": {
-      "post": {
-        "tags": ["Cache Management"],
-        "summary": "Clear asset cache",
-        "description": "Clears all cache entries related to a specific media asset.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Cache cleared",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" },
-                    "keysCleared": { "type": "integer" }
-                  }
-                }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/test/object-storage-connectivity": {
-      "get": {
-        "tags": ["Maintenance"],
-        "summary": "Test Object Storage connectivity",
-        "description": "Tests connectivity to Replit Object Storage by attempting a read/write operation.",
-        "responses": {
-          "200": {
-            "description": "Connectivity test results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "status": { "type": "string" },
-                    "latency": { "type": "number", "description": "Response time in milliseconds" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/debug/repair-database-integrity": {
-      "post": {
-        "tags": ["Maintenance"],
-        "summary": "Repair database integrity",
-        "description": "Scans and repairs database integrity issues including orphaned records, missing references, and constraint violations.",
-        "responses": {
-          "200": {
-            "description": "Repair completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "repaired": { "type": "integer" },
-                    "issues": { "type": "array", "items": { "type": "string" } },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/media/repair/mime-types": {
-      "post": {
-        "tags": ["Maintenance"],
-        "summary": "Repair MIME types",
-        "description": "Scans media assets and repairs incorrect or missing MIME types based on file extensions and magic numbers.",
-        "responses": {
-          "200": {
-            "description": "Repair completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean" },
-                    "repaired": { "type": "integer" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders": {
-      "get": {
-        "tags": ["Folder Management"],
-        "summary": "List all folders",
-        "description": "Retrieves all folders. Optionally includes children for each folder.",
-        "parameters": [
-          {
-            "name": "includeChildren",
-            "in": "query",
-            "description": "Include child folders for each folder",
-            "schema": { "type": "boolean", "default": false }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Folder" }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      },
-      "post": {
-        "tags": ["Folder Management"],
-        "summary": "Create folder",
-        "description": "Creates a new folder for organizing media assets.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["name"],
-                "properties": {
-                  "name": { "type": "string", "example": "Product Photos" },
-                  "description": { "type": "string", "example": "Product photography assets" },
-                  "parentId": { "type": "integer", "nullable": true, "description": "Parent folder ID for nested folders" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Folder created",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Folder" }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders/tree": {
-      "get": {
-        "tags": ["Folder Management"],
-        "summary": "Get folder tree",
-        "description": "Retrieves hierarchical tree structure of all folders with nested children.",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Folder" }
-                }
-              }
-            }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders/{id}": {
-      "get": {
-        "tags": ["Folder Management"],
-        "summary": "Get folder by ID",
-        "description": "Retrieves a specific folder by ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Folder" }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      },
-      "put": {
-        "tags": ["Folder Management"],
-        "summary": "Update folder",
-        "description": "Updates folder metadata.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "description": { "type": "string" },
-                  "parentId": { "type": "integer", "nullable": true }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Folder" }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      },
-      "delete": {
-        "tags": ["Folder Management"],
-        "summary": "Delete folder",
-        "description": "Deletes a folder. Fails if folder contains child folders.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Folder deleted successfully"
-          },
-          "400": {
-            "description": "Cannot delete folder with children",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Error" }
-              }
-            }
-          },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders/{id}/children": {
-      "get": {
-        "tags": ["Folder Management"],
-        "summary": "Get folder children",
-        "description": "Retrieves all direct child folders of a specified folder.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Folder" }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders/{id}/media": {
-      "get": {
-        "tags": ["Folder Management"],
-        "summary": "Get folder media",
-        "description": "Retrieves all media assets within a specific folder.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/MediaAsset" }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/folders/{id}/move-media": {
-      "post": {
-        "tags": ["Folder Management"],
-        "summary": "Move media to folder",
-        "description": "Moves a media asset to a specified folder.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Target folder ID",
-            "schema": { "type": "integer" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["mediaAssetId"],
-                "properties": {
-                  "mediaAssetId": { "type": "integer", "description": "ID of media asset to move" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Media asset moved successfully",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/MediaAsset" }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/admin/media-sync/fix-urls": {
-      "post": {
-        "tags": ["Admin Operations"],
-        "summary": "Fix media asset URLs",
-        "description": "Administrative endpoint to sanitize and fix URLs for all media assets. Validates each asset using MediaValidator and updates any invalid or malformed URLs. Requires admin authentication.",
-        "security": [{ "adminAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {}
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "URL fix completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": true },
-                    "message": { "type": "string", "example": "URL fix completed: 15 URLs fixed, 0 errors" },
-                    "stats": {
-                      "type": "object",
-                      "properties": {
-                        "totalAssets": { "type": "integer", "example": 100 },
-                        "fixedUrls": { "type": "integer", "example": 15 },
-                        "errors": { "type": "integer", "example": 0 }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/admin/fix-corrupted-media": {
-      "post": {
-        "tags": ["Admin Operations"],
-        "summary": "Fix corrupted media URLs",
-        "description": "Administrative endpoint to find and fix corrupted media URLs in category featured content. Specifically targets URLs containing 'undefined' or '/api/media/proxy/undefined' and clears them. Requires admin authentication.",
-        "security": [{ "adminAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {}
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Corrupted media cleanup completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": true },
-                    "message": { "type": "string", "example": "Corrupted media cleanup completed: 3 categories fixed" },
-                    "fixedCount": { "type": "integer", "example": 3 },
-                    "fixedCategories": { 
-                      "type": "array", 
-                      "items": { "type": "string" },
-                      "example": ["T-Shirts", "Hoodies", "Sportswear"]
-                    },
-                    "timestamp": { "type": "integer", "example": 1729795200000 }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/admin/validate-media": {
-      "post": {
-        "tags": ["Admin Operations"],
-        "summary": "Validate media files",
-        "description": "Administrative endpoint to validate uploaded media files for security threats and malicious signatures. Accepts multipart file upload and checks each file for potential threats. Requires admin authentication.",
-        "security": [{ "adminAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": ["files"],
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    },
-                    "description": "Files to validate for security threats"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Validation completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": true },
-                    "message": { "type": "string", "example": "All files passed validation" },
-                    "results": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "filename": { "type": "string", "example": "product.jpg" },
-                          "size": { "type": "integer", "example": 1024000 },
-                          "mimetype": { "type": "string", "example": "image/jpeg" },
-                          "valid": { "type": "boolean", "example": true },
-                          "threat": { "type": "string", "nullable": true, "example": null }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "MediaAsset": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "example": 1 },
-          "filename": { "type": "string", "example": "product-001.jpg" },
-          "originalName": { "type": "string", "example": "my-product.jpg" },
-          "fileSize": { "type": "integer", "example": 1024000 },
-          "mimeType": { "type": "string", "example": "image/jpeg" },
-          "type": { "type": "string", "enum": ["image", "video", "model", "document"] },
-          "url": { "type": "string", "format": "uri", "example": "https://storage.replit.com/..." },
-          "thumbnailUrl": { "type": "string", "format": "uri", "nullable": true },
-          "storagePath": { "type": "string", "example": "public/media/abc123.jpg" },
-          "bucketName": { "type": "string", "example": "repl-default-bucket-12345" },
-          "folderId": { "type": "integer", "nullable": true },
-          "tags": { "type": "array", "items": { "type": "string" }, "example": ["product", "featured"] },
-          "altText": { "type": "string", "example": "Product showcase image" },
-          "caption": { "type": "string", "example": "Premium sportswear collection" },
-          "metadata": { "type": "object", "example": { "width": 1920, "height": 1080 } },
-          "downloadCount": { "type": "integer", "example": 42 },
-          "isActive": { "type": "boolean", "example": true },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "deletedAt": { "type": "string", "format": "date-time", "nullable": true }
-        }
-      },
-      "Folder": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "example": 1 },
-          "name": { "type": "string", "example": "Product Photos" },
-          "description": { "type": "string", "example": "Product photography assets", "nullable": true },
-          "parentId": { "type": "integer", "nullable": true, "example": null },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "children": { 
-            "type": "array", 
-            "items": { "$ref": "#/components/schemas/Folder" },
-            "description": "Nested child folders (only included when requested)"
-          }
-        }
-      },
-      "Pagination": {
-        "type": "object",
-        "properties": {
-          "page": { "type": "integer", "example": 1 },
-          "limit": { "type": "integer", "example": 20 },
-          "total": { "type": "integer", "example": 100 },
-          "totalPages": { "type": "integer", "example": 5 }
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "success": { "type": "boolean", "example": false },
-          "error": { "type": "string", "example": "Resource not found" },
-          "code": { "type": "string", "example": "NOT_FOUND" },
-          "details": { "type": "object", "nullable": true }
-        }
-      }
-    },
-    "responses": {
-      "BadRequest": {
-        "description": "Bad Request - Invalid input parameters",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "Invalid request parameters",
-              "code": "BAD_REQUEST"
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Not Found - Resource does not exist",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "Media asset not found",
-              "code": "NOT_FOUND"
-            }
-          }
-        }
-      },
-      "RateLimitError": {
-        "description": "Too Many Requests - Rate limit exceeded",
-        "headers": {
-          "Retry-After": {
-            "description": "Number of seconds to wait before retrying",
-            "schema": { "type": "integer" }
-          }
-        },
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "Too many media requests, please try again later",
-              "code": "RATE_LIMIT_EXCEEDED"
-            }
-          }
-        }
-      },
-      "PayloadTooLarge": {
-        "description": "Payload Too Large - File exceeds maximum size",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "File size exceeds maximum allowed (50MB)",
-              "code": "PAYLOAD_TOO_LARGE"
-            }
-          }
-        }
-      },
-      "UnsupportedMediaType": {
-        "description": "Unsupported Media Type - File type not allowed",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "File type not supported or magic number validation failed",
-              "code": "UNSUPPORTED_MEDIA_TYPE"
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized - Admin authentication required",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "Admin authentication required",
-              "code": "UNAUTHORIZED"
-            }
-          }
-        }
-      },
-      "ServerError": {
-        "description": "Internal Server Error",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": {
-              "success": false,
-              "error": "Internal server error",
-              "code": "INTERNAL_ERROR"
-            }
-          }
-        }
-      }
-    }
-  }
+	"openapi": "3.0.3",
+	"info": {
+		"title": "RUN APPAREL Media & Asset Management API",
+		"description": "Comprehensive API documentation for media asset management and folder organization endpoints. Handles images, 3D models (GLTF/GLB), and documents with advanced features including chunked uploads, batch operations, hierarchical folder management, event-driven cache invalidation, and analytics. Implements SAGA-inspired atomic deletion with compensating transactions, two-phase commit cache consistency, and stale-while-revalidate caching patterns for optimal performance and reliability.",
+		"version": "2.0.0",
+		"contact": {
+			"name": "RUN APPAREL (PVT) LTD",
+			"email": "admin@runapparel.lk"
+		}
+	},
+	"servers": [
+		{
+			"url": "/api",
+			"description": "Media & Asset Management API"
+		}
+	],
+	"tags": [
+		{
+			"name": "Core CRUD",
+			"description": "Basic media asset operations"
+		},
+		{
+			"name": "Upload",
+			"description": "Single, batch, and chunked upload operations"
+		},
+		{
+			"name": "Content Delivery",
+			"description": "Content retrieval, proxying, and thumbnails"
+		},
+		{
+			"name": "Batch Operations",
+			"description": "Bulk upload and delete operations"
+		},
+		{
+			"name": "Analytics & Monitoring",
+			"description": "Performance metrics and system health"
+		},
+		{
+			"name": "Cache Management",
+			"description": "Cache operations and statistics"
+		},
+		{
+			"name": "Maintenance",
+			"description": "Database repair and system diagnostics"
+		},
+		{
+			"name": "Folder Management",
+			"description": "Organize media assets into hierarchical folders"
+		},
+		{
+			"name": "Admin Operations",
+			"description": "Administrative endpoints for media maintenance and validation (requires admin authentication)"
+		}
+	],
+	"paths": {
+		"/media": {
+			"get": {
+				"tags": ["Core CRUD"],
+				"summary": "List all media assets",
+				"description": "Retrieves paginated list of media assets with optional filtering by type, folder, and active status. Results are cached for performance.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "Page number (1-indexed)",
+						"schema": { "type": "integer", "minimum": 1, "default": 1 }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"description": "Items per page",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100,
+							"default": 20
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"description": "Filter by media type",
+						"schema": {
+							"type": "string",
+							"enum": ["image", "video", "model", "document"]
+						}
+					},
+					{
+						"name": "folderId",
+						"in": "query",
+						"description": "Filter by folder ID",
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean", "example": true },
+										"data": {
+											"type": "array",
+											"items": { "$ref": "#/components/schemas/MediaAsset" }
+										},
+										"pagination": { "$ref": "#/components/schemas/Pagination" }
+									}
+								}
+							}
+						}
+					},
+					"429": { "$ref": "#/components/responses/RateLimitError" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/count": {
+			"get": {
+				"tags": ["Core CRUD"],
+				"summary": "Get media asset count",
+				"description": "Returns total count of active media assets. Result is cached.",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean", "example": true },
+										"count": { "type": "integer", "example": 142 }
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/search": {
+			"get": {
+				"tags": ["Core CRUD"],
+				"summary": "Search media assets",
+				"description": "Search media assets by filename or original name using database-level ILIKE filtering. Supports pagination.",
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": true,
+						"description": "Search query (searches filename and originalName)",
+						"schema": { "type": "string", "minLength": 1 }
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"schema": { "type": "integer", "minimum": 1, "default": 1 }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100,
+							"default": 20
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": {
+											"type": "array",
+											"items": { "$ref": "#/components/schemas/MediaAsset" }
+										},
+										"pagination": { "$ref": "#/components/schemas/Pagination" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/{id}": {
+			"get": {
+				"tags": ["Core CRUD"],
+				"summary": "Get media asset by ID",
+				"description": "Retrieves a single media asset by ID. Result is cached.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Media asset ID",
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": { "$ref": "#/components/schemas/MediaAsset" }
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			},
+			"patch": {
+				"tags": ["Core CRUD"],
+				"summary": "Update media asset",
+				"description": "Updates media asset metadata. Invalidates relevant caches.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"filename": { "type": "string" },
+									"altText": { "type": "string" },
+									"caption": { "type": "string" },
+									"folderId": { "type": "integer", "nullable": true },
+									"tags": { "type": "array", "items": { "type": "string" } },
+									"metadata": { "type": "object" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": { "$ref": "#/components/schemas/MediaAsset" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			},
+			"delete": {
+				"tags": ["Core CRUD"],
+				"summary": "Delete media asset",
+				"description": "Soft deletes media asset from database and removes files from Object Storage. Uses compensating transaction pattern for atomicity.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"message": {
+											"type": "string",
+											"example": "Media asset deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Upload single file",
+				"description": "Uploads a single file with magic number validation, automatic thumbnail generation, and metadata extraction. On successful upload, automatically invalidates all media list caches to ensure the new asset appears immediately in queries without manual refresh.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": ["file"],
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary",
+										"description": "File to upload (images, 3D models, documents)"
+									},
+									"altText": { "type": "string" },
+									"caption": { "type": "string" },
+									"folderId": { "type": "integer" },
+									"tags": {
+										"type": "string",
+										"description": "JSON array of tags"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "File uploaded successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": { "$ref": "#/components/schemas/MediaAsset" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"413": { "$ref": "#/components/responses/PayloadTooLarge" },
+					"415": { "$ref": "#/components/responses/UnsupportedMediaType" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload-base64": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Upload Base64 encoded file",
+				"description": "Uploads a file from Base64 encoded string. Useful for browser-based applications.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["data", "filename"],
+								"properties": {
+									"data": {
+										"type": "string",
+										"description": "Base64 encoded file data (with or without data URI prefix)"
+									},
+									"filename": { "type": "string" },
+									"mimeType": { "type": "string" },
+									"altText": { "type": "string" },
+									"caption": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "File uploaded successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": { "$ref": "#/components/schemas/MediaAsset" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload-gltf-package": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Upload GLTF package",
+				"description": "Uploads a complete GLTF/GLB package with associated textures and resources. Automatically processes and links related files.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": ["files"],
+								"properties": {
+									"files": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"format": "binary"
+										},
+										"description": "GLTF/GLB files and associated textures"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "GLTF package uploaded successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": {
+											"type": "array",
+											"items": { "$ref": "#/components/schemas/MediaAsset" }
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/init": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Initialize chunked upload",
+				"description": "Initializes a multi-part chunked upload session for large files. Returns uploadId to use in subsequent chunk uploads.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["filename", "fileSize", "mimeType", "totalChunks"],
+								"properties": {
+									"filename": { "type": "string" },
+									"fileSize": { "type": "integer", "minimum": 1 },
+									"mimeType": { "type": "string" },
+									"totalChunks": { "type": "integer", "minimum": 1 },
+									"altText": { "type": "string" },
+									"caption": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Upload session initialized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"uploadId": { "type": "string", "format": "uuid" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/chunk": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Upload chunk",
+				"description": "Uploads a single chunk of a multi-part upload. Chunks are validated and stored temporarily until finalization.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": ["uploadId", "chunkIndex", "chunk"],
+								"properties": {
+									"uploadId": { "type": "string", "format": "uuid" },
+									"chunkIndex": { "type": "integer", "minimum": 0 },
+									"chunk": {
+										"type": "string",
+										"format": "binary",
+										"description": "Chunk data"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Chunk uploaded successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"message": { "type": "string" },
+										"uploadId": { "type": "string" },
+										"chunkIndex": { "type": "integer" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/chunk-raw": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Upload raw chunk",
+				"description": "Uploads a chunk as raw binary data (alternative to multipart). Useful for custom upload implementations.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/octet-stream": {
+							"schema": {
+								"type": "string",
+								"format": "binary"
+							}
+						}
+					}
+				},
+				"parameters": [
+					{
+						"name": "uploadId",
+						"in": "query",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid" }
+					},
+					{
+						"name": "chunkIndex",
+						"in": "query",
+						"required": true,
+						"schema": { "type": "integer", "minimum": 0 }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Chunk uploaded successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/finalize": {
+			"post": {
+				"tags": ["Upload"],
+				"summary": "Finalize chunked upload",
+				"description": "Finalizes a chunked upload by combining all chunks, validating integrity, and creating the media asset record.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["uploadId"],
+								"properties": {
+									"uploadId": { "type": "string", "format": "uuid" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Upload finalized successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": { "$ref": "#/components/schemas/MediaAsset" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/progress/{uploadId}": {
+			"get": {
+				"tags": ["Upload"],
+				"summary": "Get upload progress",
+				"description": "Retrieves the current progress of a chunked upload session.",
+				"parameters": [
+					{
+						"name": "uploadId",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"uploadId": { "type": "string" },
+										"filename": { "type": "string" },
+										"totalChunks": { "type": "integer" },
+										"uploadedChunks": { "type": "integer" },
+										"progress": {
+											"type": "number",
+											"format": "float",
+											"description": "Progress percentage (0-100)"
+										},
+										"status": {
+											"type": "string",
+											"enum": ["in_progress", "completed", "failed"]
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/cancel/{uploadId}": {
+			"delete": {
+				"tags": ["Upload"],
+				"summary": "Cancel upload",
+				"description": "Cancels an in-progress chunked upload and cleans up temporary files.",
+				"parameters": [
+					{
+						"name": "uploadId",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Upload cancelled",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload/active": {
+			"get": {
+				"tags": ["Upload"],
+				"summary": "Get active uploads",
+				"description": "Lists all active (in-progress) chunked upload sessions.",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"uploads": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"uploadId": { "type": "string" },
+													"filename": { "type": "string" },
+													"progress": { "type": "number" },
+													"startedAt": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/batch": {
+			"post": {
+				"tags": ["Batch Operations"],
+				"summary": "Batch upload or delete",
+				"description": "Performs batch upload of multiple files or batch delete of media assets. Uses compensating transactions for atomicity. Supports both multipart file upload and JSON delete requests. On successful operations, automatically invalidates all media list caches to ensure changes appear immediately.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"files": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"format": "binary"
+										},
+										"description": "Multiple files to upload"
+									}
+								}
+							}
+						},
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["ids"],
+								"properties": {
+									"ids": {
+										"type": "array",
+										"items": { "type": "integer" },
+										"description": "Array of media asset IDs to delete"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Batch operation completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": {
+											"type": "array",
+											"items": { "$ref": "#/components/schemas/MediaAsset" }
+										},
+										"uploaded": { "type": "integer" },
+										"failed": { "type": "integer" }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/batch/content": {
+			"get": {
+				"tags": ["Batch Operations"],
+				"summary": "Get batch content",
+				"description": "Retrieves content for multiple media assets in a single request. Returns a JSON object mapping IDs to content URLs.",
+				"parameters": [
+					{
+						"name": "ids",
+						"in": "query",
+						"required": true,
+						"description": "Comma-separated list of media asset IDs",
+						"schema": { "type": "string" },
+						"example": "1,2,3,4,5"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"data": {
+											"type": "object",
+											"additionalProperties": {
+												"type": "string",
+												"description": "Content URL for each ID"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/{id}/content": {
+			"get": {
+				"tags": ["Content Delivery"],
+				"summary": "Get media content",
+				"description": "Retrieves the actual file content for a media asset. Returns the raw file with appropriate content-type header.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "File content",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/{id}/thumbnail": {
+			"get": {
+				"tags": ["Content Delivery"],
+				"summary": "Get thumbnail",
+				"description": "Retrieves the thumbnail image for a media asset. Automatically generated for images and 3D models.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Thumbnail image",
+						"content": {
+							"image/jpeg": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							},
+							"image/png": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/{id}/geometry": {
+			"get": {
+				"tags": ["Content Delivery"],
+				"summary": "Get 3D model geometry",
+				"description": "Retrieves geometry metadata for 3D models (GLTF/GLB). Includes polygon count, bounding box, and material information.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Geometry metadata",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"geometry": {
+											"type": "object",
+											"properties": {
+												"polygonCount": { "type": "integer" },
+												"boundingBox": {
+													"type": "object",
+													"properties": {
+														"min": {
+															"type": "array",
+															"items": { "type": "number" },
+															"minItems": 3,
+															"maxItems": 3
+														},
+														"max": {
+															"type": "array",
+															"items": { "type": "number" },
+															"minItems": 3,
+															"maxItems": 3
+														}
+													}
+												},
+												"materials": {
+													"type": "array",
+													"items": { "type": "string" }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/proxy/{id}": {
+			"get": {
+				"tags": ["Content Delivery"],
+				"summary": "Proxy media content",
+				"description": "Proxies media content through the API server. Useful for CORS-restricted environments or when direct Object Storage access is not available.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Proxied content",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/proxy/{id}/thumbnail": {
+			"get": {
+				"tags": ["Content Delivery"],
+				"summary": "Proxy thumbnail",
+				"description": "Proxies thumbnail content through the API server.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Proxied thumbnail",
+						"content": {
+							"image/jpeg": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/analytics": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Get analytics",
+				"description": "Retrieves media usage analytics including upload trends, storage usage, and access patterns.",
+				"responses": {
+					"200": {
+						"description": "Analytics data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"analytics": {
+											"type": "object",
+											"properties": {
+												"totalAssets": { "type": "integer" },
+												"totalStorage": {
+													"type": "integer",
+													"description": "Total storage in bytes"
+												},
+												"uploadTrends": { "type": "object" },
+												"topAssets": { "type": "array" }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/performance-dashboard": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Get performance dashboard",
+				"description": "Comprehensive performance metrics dashboard including API response times, cache hit rates, and system health.",
+				"responses": {
+					"200": {
+						"description": "Performance dashboard data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"dashboard": {
+											"type": "object",
+											"properties": {
+												"apiMetrics": { "type": "object" },
+												"cacheStats": { "type": "object" },
+												"systemHealth": { "type": "object" },
+												"recentErrors": { "type": "array" }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/upload-metrics": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Get upload metrics",
+				"description": "Detailed metrics about upload operations including success rates, average sizes, and failure reasons.",
+				"responses": {
+					"200": {
+						"description": "Upload metrics",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"metrics": {
+											"type": "object",
+											"properties": {
+												"totalUploads": { "type": "integer" },
+												"successfulUploads": { "type": "integer" },
+												"failedUploads": { "type": "integer" },
+												"averageSize": { "type": "integer" },
+												"averageUploadTime": { "type": "number" }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/performance": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Get performance metrics",
+				"description": "Real-time performance metrics for API endpoints.",
+				"responses": {
+					"200": {
+						"description": "Performance metrics",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"metrics": { "type": "object" }
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/system-status": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Get system status",
+				"description": "Overall system health status including database connectivity, Object Storage status, and cache availability.",
+				"responses": {
+					"200": {
+						"description": "System status",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"status": {
+											"type": "object",
+											"properties": {
+												"database": {
+													"type": "string",
+													"enum": ["healthy", "degraded", "down"]
+												},
+												"objectStorage": {
+													"type": "string",
+													"enum": ["healthy", "degraded", "down"]
+												},
+												"cache": {
+													"type": "string",
+													"enum": ["healthy", "degraded", "down"]
+												},
+												"uptime": {
+													"type": "integer",
+													"description": "Server uptime in seconds"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/health-scan": {
+			"get": {
+				"tags": ["Analytics & Monitoring"],
+				"summary": "Health scan",
+				"description": "Comprehensive health check scanning all system components and dependencies.",
+				"responses": {
+					"200": {
+						"description": "Health scan results",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"health": {
+											"type": "object",
+											"properties": {
+												"overall": {
+													"type": "string",
+													"enum": ["healthy", "degraded", "unhealthy"]
+												},
+												"components": { "type": "object" },
+												"checks": { "type": "array" }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/cache/stats": {
+			"get": {
+				"tags": ["Cache Management"],
+				"summary": "Get media cache statistics",
+				"description": "Retrieves comprehensive media cache statistics including hit rates, memory usage, and key counts for media-specific caches.",
+				"responses": {
+					"200": {
+						"description": "Cache statistics",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"stats": {
+											"type": "object",
+											"properties": {
+												"hitRate": { "type": "number", "format": "float" },
+												"totalKeys": { "type": "integer" },
+												"memoryUsage": { "type": "integer" },
+												"keysByNamespace": { "type": "object" }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/cache/invalidation-time": {
+			"get": {
+				"tags": ["Cache Management"],
+				"summary": "Get cache invalidation timestamp",
+				"description": "Event-driven cache invalidation endpoint that returns the latest invalidation timestamp for a given pattern. Used by frontend polling to detect backend cache invalidations and trigger automatic UI updates. Part of the Phase 4 & 5 two-layer cache invalidation architecture (backend event bus + frontend polling).",
+				"parameters": [
+					{
+						"name": "pattern",
+						"in": "query",
+						"required": true,
+						"description": "Cache pattern to check (e.g., 'media:' for all media-related caches)",
+						"schema": { "type": "string", "example": "media:" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Latest invalidation timestamp",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"pattern": { "type": "string", "example": "media:" },
+										"timestamp": {
+											"type": "integer",
+											"example": 1729795200000,
+											"description": "Unix timestamp in milliseconds of the latest invalidation event"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Missing required pattern parameter",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Error" }
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/clear-cache/{id}": {
+			"post": {
+				"tags": ["Cache Management"],
+				"summary": "Clear asset cache",
+				"description": "Clears all cache entries related to a specific media asset.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Cache cleared",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"message": { "type": "string" },
+										"keysCleared": { "type": "integer" }
+									}
+								}
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/test/object-storage-connectivity": {
+			"get": {
+				"tags": ["Maintenance"],
+				"summary": "Test Object Storage connectivity",
+				"description": "Tests connectivity to Replit Object Storage by attempting a read/write operation.",
+				"responses": {
+					"200": {
+						"description": "Connectivity test results",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"status": { "type": "string" },
+										"latency": {
+											"type": "number",
+											"description": "Response time in milliseconds"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/debug/repair-database-integrity": {
+			"post": {
+				"tags": ["Maintenance"],
+				"summary": "Repair database integrity",
+				"description": "Scans and repairs database integrity issues including orphaned records, missing references, and constraint violations.",
+				"responses": {
+					"200": {
+						"description": "Repair completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"repaired": { "type": "integer" },
+										"issues": {
+											"type": "array",
+											"items": { "type": "string" }
+										},
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/media/repair/mime-types": {
+			"post": {
+				"tags": ["Maintenance"],
+				"summary": "Repair MIME types",
+				"description": "Scans media assets and repairs incorrect or missing MIME types based on file extensions and magic numbers.",
+				"responses": {
+					"200": {
+						"description": "Repair completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean" },
+										"repaired": { "type": "integer" },
+										"message": { "type": "string" }
+									}
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders": {
+			"get": {
+				"tags": ["Folder Management"],
+				"summary": "List all folders",
+				"description": "Retrieves all folders. Optionally includes children for each folder.",
+				"parameters": [
+					{
+						"name": "includeChildren",
+						"in": "query",
+						"description": "Include child folders for each folder",
+						"schema": { "type": "boolean", "default": false }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": { "$ref": "#/components/schemas/Folder" }
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			},
+			"post": {
+				"tags": ["Folder Management"],
+				"summary": "Create folder",
+				"description": "Creates a new folder for organizing media assets.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["name"],
+								"properties": {
+									"name": { "type": "string", "example": "Product Photos" },
+									"description": {
+										"type": "string",
+										"example": "Product photography assets"
+									},
+									"parentId": {
+										"type": "integer",
+										"nullable": true,
+										"description": "Parent folder ID for nested folders"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Folder created",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Folder" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders/tree": {
+			"get": {
+				"tags": ["Folder Management"],
+				"summary": "Get folder tree",
+				"description": "Retrieves hierarchical tree structure of all folders with nested children.",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": { "$ref": "#/components/schemas/Folder" }
+								}
+							}
+						}
+					},
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders/{id}": {
+			"get": {
+				"tags": ["Folder Management"],
+				"summary": "Get folder by ID",
+				"description": "Retrieves a specific folder by ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Folder" }
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			},
+			"put": {
+				"tags": ["Folder Management"],
+				"summary": "Update folder",
+				"description": "Updates folder metadata.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": { "type": "string" },
+									"description": { "type": "string" },
+									"parentId": { "type": "integer", "nullable": true }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Folder" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			},
+			"delete": {
+				"tags": ["Folder Management"],
+				"summary": "Delete folder",
+				"description": "Deletes a folder. Fails if folder contains child folders.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Folder deleted successfully"
+					},
+					"400": {
+						"description": "Cannot delete folder with children",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Error" }
+							}
+						}
+					},
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders/{id}/children": {
+			"get": {
+				"tags": ["Folder Management"],
+				"summary": "Get folder children",
+				"description": "Retrieves all direct child folders of a specified folder.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": { "$ref": "#/components/schemas/Folder" }
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders/{id}/media": {
+			"get": {
+				"tags": ["Folder Management"],
+				"summary": "Get folder media",
+				"description": "Retrieves all media assets within a specific folder.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "integer" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": { "$ref": "#/components/schemas/MediaAsset" }
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/folders/{id}/move-media": {
+			"post": {
+				"tags": ["Folder Management"],
+				"summary": "Move media to folder",
+				"description": "Moves a media asset to a specified folder.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Target folder ID",
+						"schema": { "type": "integer" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": ["mediaAssetId"],
+								"properties": {
+									"mediaAssetId": {
+										"type": "integer",
+										"description": "ID of media asset to move"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Media asset moved successfully",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/MediaAsset" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/admin/media-sync/fix-urls": {
+			"post": {
+				"tags": ["Admin Operations"],
+				"summary": "Fix media asset URLs",
+				"description": "Administrative endpoint to sanitize and fix URLs for all media assets. Validates each asset using MediaValidator and updates any invalid or malformed URLs. Requires admin authentication.",
+				"security": [{ "adminAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "URL fix completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean", "example": true },
+										"message": {
+											"type": "string",
+											"example": "URL fix completed: 15 URLs fixed, 0 errors"
+										},
+										"stats": {
+											"type": "object",
+											"properties": {
+												"totalAssets": { "type": "integer", "example": 100 },
+												"fixedUrls": { "type": "integer", "example": 15 },
+												"errors": { "type": "integer", "example": 0 }
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/admin/fix-corrupted-media": {
+			"post": {
+				"tags": ["Admin Operations"],
+				"summary": "Fix corrupted media URLs",
+				"description": "Administrative endpoint to find and fix corrupted media URLs in category featured content. Specifically targets URLs containing 'undefined' or '/api/media/proxy/undefined' and clears them. Requires admin authentication.",
+				"security": [{ "adminAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Corrupted media cleanup completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean", "example": true },
+										"message": {
+											"type": "string",
+											"example": "Corrupted media cleanup completed: 3 categories fixed"
+										},
+										"fixedCount": { "type": "integer", "example": 3 },
+										"fixedCategories": {
+											"type": "array",
+											"items": { "type": "string" },
+											"example": ["T-Shirts", "Hoodies", "Sportswear"]
+										},
+										"timestamp": { "type": "integer", "example": 1729795200000 }
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		},
+		"/admin/validate-media": {
+			"post": {
+				"tags": ["Admin Operations"],
+				"summary": "Validate media files",
+				"description": "Administrative endpoint to validate uploaded media files for security threats and malicious signatures. Accepts multipart file upload and checks each file for potential threats. Requires admin authentication.",
+				"security": [{ "adminAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": ["files"],
+								"properties": {
+									"files": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"format": "binary"
+										},
+										"description": "Files to validate for security threats"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Validation completed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": { "type": "boolean", "example": true },
+										"message": {
+											"type": "string",
+											"example": "All files passed validation"
+										},
+										"results": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"filename": {
+														"type": "string",
+														"example": "product.jpg"
+													},
+													"size": { "type": "integer", "example": 1024000 },
+													"mimetype": {
+														"type": "string",
+														"example": "image/jpeg"
+													},
+													"valid": { "type": "boolean", "example": true },
+													"threat": {
+														"type": "string",
+														"nullable": true,
+														"example": null
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"500": { "$ref": "#/components/responses/ServerError" }
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"MediaAsset": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "integer", "example": 1 },
+					"filename": { "type": "string", "example": "product-001.jpg" },
+					"originalName": { "type": "string", "example": "my-product.jpg" },
+					"fileSize": { "type": "integer", "example": 1024000 },
+					"mimeType": { "type": "string", "example": "image/jpeg" },
+					"type": {
+						"type": "string",
+						"enum": ["image", "video", "model", "document"]
+					},
+					"url": {
+						"type": "string",
+						"format": "uri",
+						"example": "https://storage.replit.com/..."
+					},
+					"thumbnailUrl": {
+						"type": "string",
+						"format": "uri",
+						"nullable": true
+					},
+					"storagePath": {
+						"type": "string",
+						"example": "public/media/abc123.jpg"
+					},
+					"bucketName": {
+						"type": "string",
+						"example": "repl-default-bucket-12345"
+					},
+					"folderId": { "type": "integer", "nullable": true },
+					"tags": {
+						"type": "array",
+						"items": { "type": "string" },
+						"example": ["product", "featured"]
+					},
+					"altText": { "type": "string", "example": "Product showcase image" },
+					"caption": {
+						"type": "string",
+						"example": "Premium sportswear collection"
+					},
+					"metadata": {
+						"type": "object",
+						"example": { "width": 1920, "height": 1080 }
+					},
+					"downloadCount": { "type": "integer", "example": 42 },
+					"isActive": { "type": "boolean", "example": true },
+					"createdAt": { "type": "string", "format": "date-time" },
+					"updatedAt": { "type": "string", "format": "date-time" },
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				}
+			},
+			"Folder": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "integer", "example": 1 },
+					"name": { "type": "string", "example": "Product Photos" },
+					"description": {
+						"type": "string",
+						"example": "Product photography assets",
+						"nullable": true
+					},
+					"parentId": { "type": "integer", "nullable": true, "example": null },
+					"createdAt": { "type": "string", "format": "date-time" },
+					"updatedAt": { "type": "string", "format": "date-time" },
+					"children": {
+						"type": "array",
+						"items": { "$ref": "#/components/schemas/Folder" },
+						"description": "Nested child folders (only included when requested)"
+					}
+				}
+			},
+			"Pagination": {
+				"type": "object",
+				"properties": {
+					"page": { "type": "integer", "example": 1 },
+					"limit": { "type": "integer", "example": 20 },
+					"total": { "type": "integer", "example": 100 },
+					"totalPages": { "type": "integer", "example": 5 }
+				}
+			},
+			"Error": {
+				"type": "object",
+				"properties": {
+					"success": { "type": "boolean", "example": false },
+					"error": { "type": "string", "example": "Resource not found" },
+					"code": { "type": "string", "example": "NOT_FOUND" },
+					"details": { "type": "object", "nullable": true }
+				}
+			}
+		},
+		"responses": {
+			"BadRequest": {
+				"description": "Bad Request - Invalid input parameters",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "Invalid request parameters",
+							"code": "BAD_REQUEST"
+						}
+					}
+				}
+			},
+			"NotFound": {
+				"description": "Not Found - Resource does not exist",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "Media asset not found",
+							"code": "NOT_FOUND"
+						}
+					}
+				}
+			},
+			"RateLimitError": {
+				"description": "Too Many Requests - Rate limit exceeded",
+				"headers": {
+					"Retry-After": {
+						"description": "Number of seconds to wait before retrying",
+						"schema": { "type": "integer" }
+					}
+				},
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "Too many media requests, please try again later",
+							"code": "RATE_LIMIT_EXCEEDED"
+						}
+					}
+				}
+			},
+			"PayloadTooLarge": {
+				"description": "Payload Too Large - File exceeds maximum size",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "File size exceeds maximum allowed (50MB)",
+							"code": "PAYLOAD_TOO_LARGE"
+						}
+					}
+				}
+			},
+			"UnsupportedMediaType": {
+				"description": "Unsupported Media Type - File type not allowed",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "File type not supported or magic number validation failed",
+							"code": "UNSUPPORTED_MEDIA_TYPE"
+						}
+					}
+				}
+			},
+			"Unauthorized": {
+				"description": "Unauthorized - Admin authentication required",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "Admin authentication required",
+							"code": "UNAUTHORIZED"
+						}
+					}
+				}
+			},
+			"ServerError": {
+				"description": "Internal Server Error",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/Error" },
+						"example": {
+							"success": false,
+							"error": "Internal server error",
+							"code": "INTERNAL_ERROR"
+						}
+					}
+				}
+			}
+		}
+	}
 }

@@ -14,13 +14,13 @@ interface ProductGridProps {
   viewMode: "small" | "medium" | "large";
 }
 
-export function ProductGrid({ products, mediaAssets, viewMode }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  mediaAssets,
+  viewMode,
+  categories,
+}: ProductGridProps & { categories: Category[] }) {
   const queryClient = useQueryClient();
-
-  // Fetch categories to build hierarchical URLs
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-  });
 
   // Get product URL (hierarchical) - only return valid URLs
   const getProductUrl = (product: ProductSummary): string | null => {
@@ -28,16 +28,10 @@ export function ProductGrid({ products, mediaAssets, viewMode }: ProductGridProp
 
     // Validate required data before constructing URL
     if (!category || !category.slug) {
-      console.warn(
-        `[ProductGrid] Missing category slug for product ${product.id} (${product.name})`,
-      );
       return null;
     }
 
     if (!product.slug) {
-      console.warn(
-        `[ProductGrid] Missing product slug for product ${product.id} (${product.name})`,
-      );
       return null;
     }
 
@@ -87,12 +81,16 @@ export function ProductGrid({ products, mediaAssets, viewMode }: ProductGridProp
   return (
     <div className={cn("grid", gridClasses[viewMode])}>
       {products.map((product) => {
+        // Defensive coding: skip undefined products or hydration ghosts
+        if (!product || !product.id) return null;
+
         const primaryMedia = getPrimaryMedia(product);
         const isVideo = primaryMedia?.type === "video";
         const productUrl = getProductUrl(product);
 
         // Skip products with invalid URLs (missing category or product slug)
-        if (!productUrl) {
+        // Defensively check name to prevent hydration crashes
+        if (!productUrl || !product.name) {
           return null;
         }
 
@@ -112,7 +110,7 @@ export function ProductGrid({ products, mediaAssets, viewMode }: ProductGridProp
                 {primaryMedia ? (
                   <LazyMediaEnhanced
                     mediaId={primaryMedia.id}
-                    alt={product.name}
+                    alt={product.name || "Product Image"}
                     className="w-full h-full"
                     priority={false}
                   />
@@ -167,8 +165,13 @@ export function ProductGrid({ products, mediaAssets, viewMode }: ProductGridProp
                     viewMode === "small" ? "text-sm" : "text-lg",
                   )}
                 >
-                  {product.name}
+                  {product?.name || "Unnamed Product"}
                 </h3>
+
+                {/* Defensive Rendering for Category Relation */}
+                <p className="text-xs text-muted-foreground mb-2">
+                  {categories.find((c) => c.id === product.categoryId)?.name ?? "Uncategorized"}
+                </p>
 
                 {viewMode !== "small" && (
                   <>

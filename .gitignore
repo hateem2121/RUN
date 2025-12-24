@@ -25,3 +25,4 @@ client/src/**/*.js.map
 
 # Temporary optimization files
 temp_gltf_optimization/
+trivy

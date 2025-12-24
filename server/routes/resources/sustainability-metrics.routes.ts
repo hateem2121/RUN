@@ -34,222 +34,258 @@ const CACHE_TTL_STATIC = 10800; // 180 minutes (3 hours) - static content change
  * Determines if cache should be bypassed for admin or debugging requests
  */
 function shouldBypassCache(req: Request): boolean {
-  return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
+	return (
+		req.headers.referer?.includes("/admin") || req.query.nocache === "true"
+	);
 }
 
 const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
+	id: z.string().transform(Number).pipe(z.number().int().positive()),
 });
 
 const reorderSchema = z.object({
-  metrics: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
+	metrics: z.array(
+		z.object({
+			id: z.number().int().positive(),
+			position: z.number().int().min(0),
+		}),
+	),
 });
 
 router.get("/", async (req, res) => {
-  try {
-    // CHUNK 7: Check cache first (unless admin bypass)
-    const cacheKey = CacheKeys.sustainability.metrics();
-    const cached = await unifiedCache.get(cacheKey);
+	try {
+		// CHUNK 7: Check cache first (unless admin bypass)
+		const cacheKey = CacheKeys.sustainability.metrics();
+		const cached = await unifiedCache.get(cacheKey);
 
-    if (cached && !shouldBypassCache(req)) {
-      logger.info("[SustainabilityMetrics] Cache hit - returning cached metrics");
-      res.setHeader("X-Cache-Hit", "true");
-      return res.json(cached);
-    }
+		if (cached && !shouldBypassCache(req)) {
+			logger.info(
+				"[SustainabilityMetrics] Cache hit - returning cached metrics",
+			);
+			res.setHeader("X-Cache-Hit", "true");
+			return res.json(cached);
+		}
 
-    // Cache miss or admin bypass - fetch from database
-    if (shouldBypassCache(req)) {
-      logger.info("[SustainabilityMetrics] Admin/debug request - bypassing cache");
-    } else {
-      logger.info("[SustainabilityMetrics] Cache miss - fetching from database");
-    }
-    const metrics = await withTimeout(
-      getStorage().getSustainabilityMetrics(),
-      10000,
-      "Get sustainability metrics",
-    );
+		// Cache miss or admin bypass - fetch from database
+		if (shouldBypassCache(req)) {
+			logger.info(
+				"[SustainabilityMetrics] Admin/debug request - bypassing cache",
+			);
+		} else {
+			logger.info(
+				"[SustainabilityMetrics] Cache miss - fetching from database",
+			);
+		}
+		const metrics = await withTimeout(
+			getStorage().getSustainabilityMetrics(),
+			10000,
+			"Get sustainability metrics",
+		);
 
-    // Store in cache
-    await unifiedCache.set(cacheKey, metrics, CACHE_TTL_STATIC * 1000);
-    logger.info(
-      `[SustainabilityMetrics] ✅ ${metrics.length} metrics cached for 180 minutes / 3 hours`,
-    );
+		// Store in cache
+		await unifiedCache.set(cacheKey, metrics, CACHE_TTL_STATIC * 1000);
+		logger.info(
+			`[SustainabilityMetrics] ✅ ${metrics.length} metrics cached for 180 minutes / 3 hours`,
+		);
 
-    return res.json(metrics);
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error getting metrics:", error);
-    return res.status(500).json({
-      success: false,
-      error: {
-        message: error instanceof Error ? error.message : "Failed to get metrics",
-      },
-    });
-  }
+		return res.json(metrics);
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error getting metrics:", error);
+		return res.status(500).json({
+			success: false,
+			error: {
+				message:
+					error instanceof Error ? error.message : "Failed to get metrics",
+			},
+		});
+	}
 });
 
 router.get("/:id", async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const metric = await withTimeout(
-      getStorage().getSustainabilityMetric(id),
-      10000,
-      "Get sustainability metric",
-    );
+		const metric = await withTimeout(
+			getStorage().getSustainabilityMetric(id),
+			10000,
+			"Get sustainability metric",
+		);
 
-    if (!metric) {
-      return res.status(404).json({ error: "Metric not found" });
-    }
+		if (!metric) {
+			return res.status(404).json({ error: "Metric not found" });
+		}
 
-    logger.info(`[SustainabilityMetrics] Retrieved metric ${id}`);
-    return res.json(metric);
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error getting metric:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get metric",
-    });
-  }
+		logger.info(`[SustainabilityMetrics] Retrieved metric ${id}`);
+		return res.json(metric);
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error getting metric:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to get metric",
+		});
+	}
 });
 
 router.post("/", requireAdmin, async (req, res) => {
-  try {
-    const validation = insertSustainabilityMetricSchema.safeParse(req.body);
+	try {
+		const validation = insertSustainabilityMetricSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[SustainabilityMetrics] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn(
+				"[SustainabilityMetrics] Validation failed:",
+				validation.error,
+			);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const newMetric = await withTimeout(
-      getStorage().createSustainabilityMetric(validation.data),
-      10000,
-      "Create sustainability metric",
-    );
+		const newMetric = await withTimeout(
+			getStorage().createSustainabilityMetric(validation.data),
+			10000,
+			"Create sustainability metric",
+		);
 
-    try {
-      await CacheOperations.invalidateSustainability();
-      logger.info("[SustainabilityMetrics] ✅ Cache invalidated after creation");
-    } catch (cacheError) {
-      logger.error("[SustainabilityMetrics] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateSustainability();
+			logger.info(
+				"[SustainabilityMetrics] ✅ Cache invalidated after creation",
+			);
+		} catch (cacheError) {
+			logger.error(
+				"[SustainabilityMetrics] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[SustainabilityMetrics] Created metric ${newMetric.id}`);
-    return res.status(201).json(newMetric);
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error creating metric:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to create metric",
-    });
-  }
+		logger.info(`[SustainabilityMetrics] Created metric ${newMetric.id}`);
+		return res.status(201).json(newMetric);
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error creating metric:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to create metric",
+		});
+	}
 });
 
 router.patch("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
-    const validation = insertSustainabilityMetricSchema.partial().safeParse(req.body);
+	try {
+		const { id } = idParamSchema.parse(req.params);
+		const validation = insertSustainabilityMetricSchema
+			.partial()
+			.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[SustainabilityMetrics] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn(
+				"[SustainabilityMetrics] Validation failed:",
+				validation.error,
+			);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const updated = await withTimeout(
-      getStorage().updateSustainabilityMetric(id, validation.data),
-      10000,
-      "Update sustainability metric",
-    );
+		const updated = await withTimeout(
+			getStorage().updateSustainabilityMetric(id, validation.data),
+			10000,
+			"Update sustainability metric",
+		);
 
-    if (!updated) {
-      return res.status(404).json({ error: "Metric not found" });
-    }
+		if (!updated) {
+			return res.status(404).json({ error: "Metric not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateSustainability();
-      logger.info("[SustainabilityMetrics] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[SustainabilityMetrics] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateSustainability();
+			logger.info("[SustainabilityMetrics] ✅ Cache invalidated after update");
+		} catch (cacheError) {
+			logger.error(
+				"[SustainabilityMetrics] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[SustainabilityMetrics] Updated metric ${id}`);
-    return res.json(updated);
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error updating metric:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to update metric",
-    });
-  }
+		logger.info(`[SustainabilityMetrics] Updated metric ${id}`);
+		return res.json(updated);
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error updating metric:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to update metric",
+		});
+	}
 });
 
 router.delete("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const deleted = await withTimeout(
-      getStorage().deleteSustainabilityMetric(id),
-      10000,
-      "Delete sustainability metric",
-    );
+		const deleted = await withTimeout(
+			getStorage().deleteSustainabilityMetric(id),
+			10000,
+			"Delete sustainability metric",
+		);
 
-    if (!deleted) {
-      return res.status(404).json({ error: "Metric not found" });
-    }
+		if (!deleted) {
+			return res.status(404).json({ error: "Metric not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateSustainability();
-      logger.info("[SustainabilityMetrics] ✅ Cache invalidated after deletion");
-    } catch (cacheError) {
-      logger.error("[SustainabilityMetrics] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateSustainability();
+			logger.info(
+				"[SustainabilityMetrics] ✅ Cache invalidated after deletion",
+			);
+		} catch (cacheError) {
+			logger.error(
+				"[SustainabilityMetrics] ❌ Cache invalidation failed:",
+				cacheError,
+			);
+		}
 
-    logger.info(`[SustainabilityMetrics] Deleted metric ${id}`);
-    return res.status(204).send();
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error deleting metric:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to delete metric",
-    });
-  }
+		logger.info(`[SustainabilityMetrics] Deleted metric ${id}`);
+		return res.status(204).send();
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error deleting metric:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to delete metric",
+		});
+	}
 });
 
 router.patch("/reorder", requireAdmin, async (req, res) => {
-  try {
-    const validation = reorderSchema.safeParse(req.body);
+	try {
+		const validation = reorderSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[SustainabilityMetrics] Reorder validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn(
+				"[SustainabilityMetrics] Reorder validation failed:",
+				validation.error,
+			);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    await withTimeout(
-      getStorage().reorderSustainabilityMetrics(validation.data.metrics),
-      10000,
-      "Reorder sustainability metrics",
-    );
+		await withTimeout(
+			getStorage().reorderSustainabilityMetrics(validation.data.metrics),
+			10000,
+			"Reorder sustainability metrics",
+		);
 
-    // Cache invalidation is handled internally by reorderSustainabilityMetrics repo method
+		// Cache invalidation is handled internally by reorderSustainabilityMetrics repo method
 
-    logger.info(`[SustainabilityMetrics] Reordered ${validation.data.metrics.length} metrics`);
-    return res.json({ success: true, count: validation.data.metrics.length });
-  } catch (error) {
-    logger.error("[SustainabilityMetrics] Error reordering metrics:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to reorder metrics",
-    });
-  }
+		logger.info(
+			`[SustainabilityMetrics] Reordered ${validation.data.metrics.length} metrics`,
+		);
+		return res.json({ success: true, count: validation.data.metrics.length });
+	} catch (error) {
+		logger.error("[SustainabilityMetrics] Error reordering metrics:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to reorder metrics",
+		});
+	}
 });
 
 /**

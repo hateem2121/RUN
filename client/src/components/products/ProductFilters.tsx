@@ -5,13 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 
 interface ProductFiltersProps {
@@ -48,9 +42,7 @@ export function ProductFilters({
     selectedFilters.sizeCharts.length +
     selectedFilters.accessories.length +
     selectedFilters.tags.length +
-    (selectedFilters.moqRange[0] > 0 || selectedFilters.moqRange[1] < 10000
-      ? 1
-      : 0);
+    (selectedFilters.moqRange[0] > 0 || selectedFilters.moqRange[1] < 10000 ? 1 : 0);
 
   const handleFabricToggle = (fabricId: number) => {
     const newFabrics = selectedFilters.fabrics.includes(fabricId)
@@ -139,10 +131,7 @@ export function ProductFilters({
                 <Label className="text-base font-semibold">Fabrics</Label>
                 <div className="space-y-2">
                   {fabrics.map((fabric) => (
-                    <div
-                      key={fabric.id}
-                      className="flex items-center space-x-2"
-                    >
+                    <div key={fabric.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={`fabric-${fabric.id}`}
                         checked={selectedFilters.fabrics.includes(fabric.id)}
@@ -152,7 +141,7 @@ export function ProductFilters({
                         htmlFor={`fabric-${fabric.id}`}
                         className="text-sm font-normal cursor-pointer"
                       >
-                        {fabric.name}
+                        {fabric?.name || "Unknown Fabric"}
                       </Label>
                     </div>
                   ))}
@@ -163,9 +152,7 @@ export function ProductFilters({
             {/* Certificates */}
             {certificates.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">
-                  Certifications
-                </Label>
+                <Label className="text-base font-semibold">Certifications</Label>
                 <div className="space-y-2">
                   {certificates.map((cert) => (
                     <div key={cert.id} className="flex items-center space-x-2">
@@ -178,7 +165,7 @@ export function ProductFilters({
                         htmlFor={`cert-${cert.id}`}
                         className="text-sm font-normal cursor-pointer"
                       >
-                        {cert.name}
+                        {cert?.name || "Unknown Certificate"}
                       </Label>
                     </div>
                   ))}
@@ -189,9 +176,7 @@ export function ProductFilters({
             {/* Size Charts */}
             {sizeCharts.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">
-                  Size Standards
-                </Label>
+                <Label className="text-base font-semibold">Size Standards</Label>
                 <div className="space-y-2">
                   {sizeCharts.map((size) => (
                     <div key={size.id} className="flex items-center space-x-2">
@@ -204,7 +189,7 @@ export function ProductFilters({
                         htmlFor={`size-${size.id}`}
                         className="text-sm font-normal cursor-pointer"
                       >
-                        {size.name}
+                        {size?.name || "Unknown Size"}
                       </Label>
                     </div>
                   ))}
@@ -215,9 +200,7 @@ export function ProductFilters({
             {/* Accessories */}
             {accessories.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">
-                  Available Accessories
-                </Label>
+                <Label className="text-base font-semibold">Available Accessories</Label>
                 <div className="space-y-2">
                   {accessories.map((acc) => (
                     <div key={acc.id} className="flex items-center space-x-2">
@@ -230,7 +213,7 @@ export function ProductFilters({
                         htmlFor={`acc-${acc.id}`}
                         className="text-sm font-normal cursor-pointer"
                       >
-                        {acc.name}
+                        {acc?.name || "Unknown Accessory"}
                       </Label>
                     </div>
                   ))}
@@ -246,11 +229,7 @@ export function ProductFilters({
                   {availableTags.map((tag) => (
                     <Badge
                       key={tag}
-                      variant={
-                        selectedFilters.tags.includes(tag)
-                          ? "default"
-                          : "outline"
-                      }
+                      variant={selectedFilters.tags.includes(tag) ? "default" : "outline"}
                       className="cursor-pointer"
                       onClick={() => handleTagToggle(tag)}
                     >
@@ -263,9 +242,7 @@ export function ProductFilters({
 
             {/* MOQ Range */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold">
-                Minimum Order Quantity
-              </Label>
+              <Label className="text-base font-semibold">Minimum Order Quantity</Label>
               <div className="px-2">
                 <Slider
                   value={selectedFilters.moqRange}
@@ -330,11 +307,7 @@ export function ProductFilters({
             })}
 
             {selectedFilters.tags.map((tag) => (
-              <Badge
-                key={`tag-${tag}`}
-                variant="secondary"
-                className="shrink-0 pl-3 pr-1 py-1"
-              >
+              <Badge key={`tag-${tag}`} variant="secondary" className="shrink-0 pl-3 pr-1 py-1">
                 {tag}
                 <button
                   onClick={() => handleTagToggle(tag)}
@@ -346,8 +319,7 @@ export function ProductFilters({
               </Badge>
             ))}
 
-            {(selectedFilters.moqRange[0] > 0 ||
-              selectedFilters.moqRange[1] < 10000) && (
+            {(selectedFilters.moqRange[0] > 0 || selectedFilters.moqRange[1] < 10000) && (
               <Badge variant="secondary" className="shrink-0 pl-3 pr-1 py-1">
                 MOQ: {selectedFilters.moqRange[0]}-{selectedFilters.moqRange[1]}
                 <button

@@ -3,54 +3,54 @@ import { motion } from "framer-motion";
 import { InitiativeCard } from "../cards";
 
 export function InitiativesSection({
-  initiatives,
-  mediaAssets = [],
-  title = "Our Sustainability Initiatives",
-  description = "Discover our comprehensive sustainability programs and initiatives driving positive environmental impact.",
+	initiatives,
+	mediaAssets = [],
+	title = "Our Sustainability Initiatives",
+	description = "Discover our comprehensive sustainability programs and initiatives driving positive environmental impact.",
 }: {
-  initiatives: SustainabilityInitiative[];
-  mediaAssets?: MediaAsset[];
-  title?: string;
-  description?: string;
+	initiatives: SustainabilityInitiative[];
+	mediaAssets?: MediaAsset[];
+	title?: string;
+	description?: string;
 }) {
-  return (
-    <section className="py-20 bg-white relative">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl font-bold text-stone-900 mb-4 font-neue-stance">
-            {title}
-          </h2>
-          <p className="text-lg text-stone-600 max-w-3xl mx-auto">
-            {description}
-          </p>
-        </motion.div>
+	return (
+		<section className="py-20 bg-white relative">
+			<div className="container mx-auto px-4">
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.6 }}
+					className="text-center mb-16"
+				>
+					<h2 className="text-3xl font-bold text-stone-900 mb-4 font-neue-stance">
+						{title}
+					</h2>
+					<p className="text-lg text-stone-600 max-w-3xl mx-auto">
+						{description}
+					</p>
+				</motion.div>
 
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
-          role="group"
-          aria-label="Sustainability initiatives"
-        >
-          {initiatives.map((initiative, index) => {
-            const initiativeImage = mediaAssets.find(
-              (asset) => asset.id === initiative.imageId,
-            );
-            return (
-              <InitiativeCard
-                key={initiative.id}
-                initiative={initiative}
-                index={index}
-                initiativeImage={initiativeImage}
-              />
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
+					role="group"
+					aria-label="Sustainability initiatives"
+				>
+					{initiatives.map((initiative, index) => {
+						const initiativeImage = mediaAssets.find(
+							(asset) => asset.id === initiative.imageId,
+						);
+						return (
+							<InitiativeCard
+								key={initiative.id}
+								initiative={initiative}
+								index={index}
+								initiativeImage={initiativeImage}
+							/>
+						);
+					})}
+				</div>
+			</div>
+		</section>
+	);
 }

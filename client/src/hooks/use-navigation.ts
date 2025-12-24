@@ -4,79 +4,79 @@ import type { StaggeredMenuItem } from "@/components/navigation/staggered-menu";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 interface NavigationItemWithMedia extends NavigationItem {
-  mediaIcon?: MediaAsset;
+	mediaIcon?: MediaAsset;
 }
 
 export function useNavigationItems() {
-  const { data: navigationItems = [], isLoading: navigationLoading } = useQuery<
-    NavigationItem[]
-  >({
-    queryKey: ["/api/navigation-items"],
-  });
+	const { data: navigationItems = [], isLoading: navigationLoading } = useQuery<
+		NavigationItem[]
+	>({
+		queryKey: ["/api/navigation-items"],
+	});
 
-  const { data: mediaResponse, isLoading: mediaLoading } = useQuery<{
-    success: boolean;
-    data: { data: MediaAsset[]; pagination: Record<string, unknown> };
-  }>({
-    queryKey: MediaQueryKeys.list,
-  });
+	const { data: mediaResponse, isLoading: mediaLoading } = useQuery<{
+		success: boolean;
+		data: { data: MediaAsset[]; pagination: Record<string, unknown> };
+	}>({
+		queryKey: MediaQueryKeys.list,
+	});
 
-  const mediaAssets = mediaResponse?.data?.data || [];
+	const mediaAssets = mediaResponse?.data?.data || [];
 
-  // Combine navigation items with their media assets
-  const itemsWithMedia: NavigationItemWithMedia[] = navigationItems
-    .filter((item) => item.isActive)
-    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
-    .map((item) => {
-      if (item.iconType === "media" && item.mediaIconId) {
-        const mediaIcon = mediaAssets.find(
-          (asset) => asset.id === item.mediaIconId,
-        );
-        return { ...item, mediaIcon };
-      }
-      return item;
-    });
+	// Combine navigation items with their media assets
+	const itemsWithMedia: NavigationItemWithMedia[] = navigationItems
+		.filter((item) => item.isActive)
+		.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+		.map((item) => {
+			if (item.iconType === "media" && item.mediaIconId) {
+				const mediaIcon = mediaAssets.find(
+					(asset) => asset.id === item.mediaIconId,
+				);
+				return { ...item, mediaIcon };
+			}
+			return item;
+		});
 
-  return {
-    navigationItems: itemsWithMedia,
-    isLoading: navigationLoading || mediaLoading,
-  };
+	return {
+		navigationItems: itemsWithMedia,
+		isLoading: navigationLoading || mediaLoading,
+	};
 }
 
 export function useDesktopNavigationItems() {
-  const { navigationItems, isLoading } = useNavigationItems();
+	const { navigationItems, isLoading } = useNavigationItems();
 
-  // Filter for desktop-visible items
-  const desktopItems = navigationItems.filter(
-    (item) => item.showOnDesktop !== false,
-  );
+	// Filter for desktop-visible items
+	const desktopItems = navigationItems.filter(
+		(item) => item.showOnDesktop !== false,
+	);
 
-  return {
-    navigationItems: desktopItems,
-    isLoading,
-  };
+	return {
+		navigationItems: desktopItems,
+		isLoading,
+	};
 }
 
 export function useStaggeredMenuItems() {
-  const { data: navigationItems = [], isLoading: navigationLoading } = useQuery<
-    NavigationItem[]
-  >({
-    queryKey: ["/api/navigation-items"],
-  });
+	const { data: navigationItems = [], isLoading: navigationLoading } = useQuery<
+		NavigationItem[]
+	>({
+		queryKey: ["/api/navigation-items"],
+	});
 
-  // Transform navigation items to StaggeredMenuItem format
-  // Filter for mobile-visible items only
-  const staggeredItems: StaggeredMenuItem[] = navigationItems
-    .filter((item) => item.isActive && item.showOnMobile !== false)
-    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
-    .map((item) => ({
-      label: item.title || item.label || "Untitled",
-      ariaLabel: `Navigate to ${item.title || item.label || "page"}`,
-      link: item.href || item.url || "#",
-    }));
+	// Transform navigation items to StaggeredMenuItem format
+	// Filter for mobile-visible items only
+	const staggeredItems: StaggeredMenuItem[] = navigationItems
+		.filter((item) => item.isActive && item.showOnMobile !== false)
+		.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+		.map((item) => ({
+			label: item.title || item.label || "Untitled",
+			ariaLabel: `Navigate to ${item.title || item.label || "page"}`,
+			link: item.href || item.url || "#",
+		}));
 
-  return {
-    menuItems: staggeredItems,
-    isLoading: navigationLoading,
-  };
+	return {
+		menuItems: staggeredItems,
+		isLoading: navigationLoading,
+	};
 }

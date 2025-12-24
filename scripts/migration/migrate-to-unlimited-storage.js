@@ -1,115 +1,93 @@
 /**
  * 🚀 UNLIMITED MEDIA MIGRATION SCRIPT
- * 
+ *
  * Migrates existing media assets from Key-Value Store to NEON PostgreSQL
  * Enables unlimited media storage capacity for /admin/media
  */
 
 import Database from "@replit/database";
-import { Client } from 'pg';
+import { Client } from "pg";
 
 // Database connections
 const replitDb = new Database(process.env.REPLIT_DB_URL);
 const postgresClient = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+	connectionString: process.env.DATABASE_URL,
+	ssl: { rejectUnauthorized: false },
 });
 
 async function migrateToUnlimitedStorage() {
-  console.log('🚀 Starting Migration to Unlimited Media Storage...\n');
+	try {
+		// Connect to PostgreSQL
+		await postgresClient.connect();
+		const assetKeys = (await replitDb.listKeys()) || [];
+		const mediaAssetKeys = assetKeys.filter((key) =>
+			key.startsWith("mediaAssets:"),
+		);
 
-  try {
-    // Connect to PostgreSQL
-    await postgresClient.connect();
-    console.log('✅ Connected to NEON PostgreSQL');
+		if (mediaAssetKeys.length === 0) {
+			return;
+		}
 
-    // Step 1: Get existing media assets from Key-Value Store
-    console.log('\n📊 Reading existing media assets from Key-Value Store...');
-    const assetKeys = await replitDb.listKeys() || [];
-    const mediaAssetKeys = assetKeys.filter(key => key.startsWith('mediaAssets:'));
-    
-    console.log(`📁 Found ${mediaAssetKeys.length} media assets to migrate`);
+		// Step 2: Migrate each asset
+		let migrated = 0;
+		let errors = 0;
 
-    if (mediaAssetKeys.length === 0) {
-      console.log('⚠️ No media assets found to migrate');
-      return;
-    }
+		for (const key of mediaAssetKeys) {
+			try {
+				const assetData = await replitDb.get(key);
+				if (!assetData) continue;
 
-    // Step 2: Migrate each asset
-    let migrated = 0;
-    let errors = 0;
+				const asset = JSON.parse(assetData);
 
-    for (const key of mediaAssetKeys) {
-      try {
-        const assetData = await replitDb.get(key);
-        if (!assetData) continue;
+				// Transform data for PostgreSQL schema
+				const migratedAsset = {
+					id: asset.id,
+					name: asset.name || "Untitled Asset",
+					original_name: asset.originalName || asset.name,
+					type: determineAssetType(asset.name, asset.mimeType),
+					mime_type: asset.mimeType || "application/octet-stream",
+					size: asset.size || 0,
+					width: asset.width || null,
+					height: asset.height || null,
+					duration: asset.duration || null,
+					storage_key: asset.storageKey || asset.key || "",
+					storage_url: asset.url || asset.storageUrl || "",
+					thumbnail_url: asset.thumbnailUrl || asset.thumbnail || null,
+					description: asset.description || null,
+					tags: asset.tags ? JSON.stringify(asset.tags) : "[]",
+					folder: asset.folder || null,
+					is_public: asset.isPublic !== undefined ? asset.isPublic : true,
+					download_count: asset.downloadCount || 0,
+					last_accessed: asset.lastAccessed || null,
+					created_at: asset.createdAt || new Date().toISOString(),
+					updated_at: asset.updatedAt || new Date().toISOString(),
+				};
 
-        const asset = JSON.parse(assetData);
-        
-        // Transform data for PostgreSQL schema
-        const migratedAsset = {
-          id: asset.id,
-          name: asset.name || 'Untitled Asset',
-          original_name: asset.originalName || asset.name,
-          type: determineAssetType(asset.name, asset.mimeType),
-          mime_type: asset.mimeType || 'application/octet-stream',
-          size: asset.size || 0,
-          width: asset.width || null,
-          height: asset.height || null,
-          duration: asset.duration || null,
-          storage_key: asset.storageKey || asset.key || '',
-          storage_url: asset.url || asset.storageUrl || '',
-          thumbnail_url: asset.thumbnailUrl || asset.thumbnail || null,
-          description: asset.description || null,
-          tags: asset.tags ? JSON.stringify(asset.tags) : '[]',
-          folder: asset.folder || null,
-          is_public: asset.isPublic !== undefined ? asset.isPublic : true,
-          download_count: asset.downloadCount || 0,
-          last_accessed: asset.lastAccessed || null,
-          created_at: asset.createdAt || new Date().toISOString(),
-          updated_at: asset.updatedAt || new Date().toISOString()
-        };
+				// Insert into PostgreSQL with conflict resolution
+				await insertAssetWithConflictResolution(migratedAsset);
 
-        // Insert into PostgreSQL with conflict resolution
-        await insertAssetWithConflictResolution(migratedAsset);
-        
-        migrated++;
-        console.log(`  ✅ Migrated: ${asset.name} (ID: ${asset.id})`);
-        
-      } catch (error) {
-        errors++;
-        console.error(`  ❌ Error migrating ${key}:`, error.message);
-      }
-    }
-
-    // Step 3: Verify migration
-    console.log('\n📊 Verifying migration...');
-    const { rows } = await postgresClient.query('SELECT COUNT(*) as count FROM media_assets');
-    const postgresCount = parseInt(rows[0].count);
-    
-    console.log(`\n🎉 Migration Complete!`);
-    console.log(`  📁 Assets found: ${mediaAssetKeys.length}`);
-    console.log(`  ✅ Successfully migrated: ${migrated}`);
-    console.log(`  ❌ Errors: ${errors}`);
-    console.log(`  🗄️ PostgreSQL total: ${postgresCount} assets`);
-    
-    // Step 4: Test unlimited capacity
-    console.log('\n🚀 Testing unlimited capacity...');
-    await testUnlimitedCapacity();
-
-  } catch (error) {
-    console.error('💥 Migration failed:', error);
-    throw error;
-  } finally {
-    await postgresClient.end();
-  }
+				migrated++;
+			} catch (error) {
+				errors++;
+			}
+		}
+		const { rows } = await postgresClient.query(
+			"SELECT COUNT(*) as count FROM media_assets",
+		);
+		const postgresCount = parseInt(rows[0].count);
+		await testUnlimitedCapacity();
+	} catch (error) {
+		throw error;
+	} finally {
+		await postgresClient.end();
+	}
 }
 
 /**
  * Insert asset with conflict resolution (update if exists)
  */
 async function insertAssetWithConflictResolution(asset) {
-  const query = `
+	const query = `
     INSERT INTO media_assets (
       id, name, original_name, type, mime_type, size, width, height, duration,
       storage_key, storage_url, thumbnail_url, description, tags, folder, 
@@ -139,93 +117,104 @@ async function insertAssetWithConflictResolution(asset) {
       updated_at = NOW()
   `;
 
-  const values = [
-    asset.id, asset.name, asset.original_name, asset.type, asset.mime_type,
-    asset.size, asset.width, asset.height, asset.duration, asset.storage_key,
-    asset.storage_url, asset.thumbnail_url, asset.description, asset.tags,
-    asset.folder, asset.is_public, asset.download_count, asset.last_accessed,
-    asset.created_at, asset.updated_at
-  ];
+	const values = [
+		asset.id,
+		asset.name,
+		asset.original_name,
+		asset.type,
+		asset.mime_type,
+		asset.size,
+		asset.width,
+		asset.height,
+		asset.duration,
+		asset.storage_key,
+		asset.storage_url,
+		asset.thumbnail_url,
+		asset.description,
+		asset.tags,
+		asset.folder,
+		asset.is_public,
+		asset.download_count,
+		asset.last_accessed,
+		asset.created_at,
+		asset.updated_at,
+	];
 
-  await postgresClient.query(query, values);
+	await postgresClient.query(query, values);
 }
 
 /**
  * Determine asset type based on filename and mime type
  */
 function determineAssetType(filename, mimeType) {
-  if (!filename && !mimeType) return 'document';
-  
-  const name = (filename || '').toLowerCase();
-  const mime = (mimeType || '').toLowerCase();
-  
-  if (mime.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp|svg)$/.test(name)) {
-    return 'image';
-  }
-  
-  if (mime.startsWith('video/') || /\.(mp4|avi|mov|wmv|flv|webm)$/.test(name)) {
-    return 'video';
-  }
-  
-  if (/\.(glb|gltf|obj|fbx|dae)$/.test(name)) {
-    return '3d-model';
-  }
-  
-  return 'document';
+	if (!filename && !mimeType) return "document";
+
+	const name = (filename || "").toLowerCase();
+	const mime = (mimeType || "").toLowerCase();
+
+	if (
+		mime.startsWith("image/") ||
+		/\.(jpg|jpeg|png|gif|webp|svg)$/.test(name)
+	) {
+		return "image";
+	}
+
+	if (mime.startsWith("video/") || /\.(mp4|avi|mov|wmv|flv|webm)$/.test(name)) {
+		return "video";
+	}
+
+	if (/\.(glb|gltf|obj|fbx|dae)$/.test(name)) {
+		return "3d-model";
+	}
+
+	return "document";
 }
 
 /**
  * Test unlimited capacity with PostgreSQL
  */
 async function testUnlimitedCapacity() {
-  try {
-    // Test database storage limits
-    const { rows: dbSize } = await postgresClient.query(`
+	try {
+		// Test database storage limits
+		const { rows: dbSize } = await postgresClient.query(`
       SELECT 
         pg_size_pretty(pg_database_size(current_database())) as db_size,
         (SELECT count(*) FROM media_assets) as asset_count
     `);
-    
-    console.log(`  📊 Current database size: ${dbSize[0].db_size}`);
-    console.log(`  📁 Current asset count: ${dbSize[0].asset_count}`);
-    console.log(`  🚀 Theoretical capacity: 10 GiB (millions of assets)`);
-    console.log(`  💾 Media files: Unlimited (Object Storage)`);
-    console.log(`  🗄️ Metadata: Virtually unlimited (PostgreSQL)`);
-    
-    // Test a sample insert to verify unlimited functionality
-    const testAsset = {
-      name: 'Unlimited Storage Test Asset',
-      type: 'image',
-      mime_type: 'image/jpeg',
-      size: 1024000,
-      storage_key: 'test/unlimited-storage-test.jpg',
-      storage_url: 'https://example.com/test.jpg'
-    };
-    
-    await postgresClient.query(`
+
+		// Test a sample insert to verify unlimited functionality
+		const testAsset = {
+			name: "Unlimited Storage Test Asset",
+			type: "image",
+			mime_type: "image/jpeg",
+			size: 1024000,
+			storage_key: "test/unlimited-storage-test.jpg",
+			storage_url: "https://example.com/test.jpg",
+		};
+
+		await postgresClient.query(
+			`
       INSERT INTO media_assets (name, type, mime_type, size, storage_key, storage_url)
       VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT DO NOTHING
-    `, [testAsset.name, testAsset.type, testAsset.mime_type, testAsset.size, testAsset.storage_key, testAsset.storage_url]);
-    
-    console.log(`  ✅ Unlimited storage test: PASSED`);
-    
-  } catch (error) {
-    console.error(`  ❌ Unlimited storage test failed:`, error.message);
-  }
+    `,
+			[
+				testAsset.name,
+				testAsset.type,
+				testAsset.mime_type,
+				testAsset.size,
+				testAsset.storage_key,
+				testAsset.storage_url,
+			],
+		);
+	} catch (error) {}
 }
 
 // Run migration
 migrateToUnlimitedStorage()
-  .then(() => {
-    console.log('\n🎉 Migration to unlimited media storage completed successfully!');
-    console.log('\n📋 Next Steps:');
-    console.log('  1. Update storage layer to use PostgreSQL');
-    console.log('  2. Test /admin/media with unlimited capacity');
-    console.log('  3. Verify all existing assets are accessible');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('\n💥 Migration failed:', error);
-    process.exit(1);
-  });
+	.then(() => {
+		process.exit(0);
+	})
+	.catch((error) => {
+		process.exit(1);
+	});

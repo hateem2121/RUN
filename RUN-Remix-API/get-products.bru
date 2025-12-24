@@ -1,0 +1,21 @@
+meta {
+  name: Get Products
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/products?limit=10
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  cursor: 0
+  category: Machinery
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:5001
+}

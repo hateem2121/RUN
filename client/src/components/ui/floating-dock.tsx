@@ -124,8 +124,8 @@ const FloatingDockMobile = ({
                           (item.iconSize || iconSize) === "small"
                             ? "h-4 w-4"
                             : (item.iconSize || iconSize) === "large"
-                              ? "h-6 w-6"
-                              : "h-5 w-5"
+                            ? "h-6 w-6"
+                            : "h-5 w-5"
                         } relative z-10 shrink-0`}
                       >
                         {item.icon}
@@ -195,7 +195,7 @@ const FloatingDockDesktop = ({
         onMouseLeave={() => mouseX.set(Infinity)}
         role="navigation"
         aria-label="Desktop navigation dock"
-        className="flex items-center gap-3 w-full transform-gpu"
+        className="flex items-center gap-3 w-full transform-gpu isolate"
       >
         {items.map((item) => (
           <IconContainer

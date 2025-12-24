@@ -3,17 +3,12 @@
  * Replaces console.log with structured logging
  */
 export const logger = {
-  debug: (message: string, data?: Record<string, unknown>) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.debug(`[AdminProducts] ${message}`, data ? data : '');
-    }
-  },
-  
-  info: (message: string, data?: Record<string, unknown>) => {
-    console.info(`[AdminProducts] ${message}`, data ? data : '');
-  },
-  
-  error: (message: string, error?: Error | unknown) => {
-    console.error(`[AdminProducts] ${message}`, error ? error : '');
-  }
+	debug: (message: string, data?: Record<string, unknown>) => {
+		if (process.env.NODE_ENV === "development") {
+		}
+	},
+
+	info: (message: string, data?: Record<string, unknown>) => {},
+
+	error: (message: string, error?: Error | unknown) => {},
 };

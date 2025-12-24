@@ -1,172 +1,163 @@
 #!/usr/bin/env tsx
 /**
  * SIMPLIFIED CACHE PERFORMANCE ANALYSIS
- * 
+ *
  * Analyzes cache performance by calling existing API endpoints instead of
  * importing modules directly (avoids circular dependency issues)
- * 
+ *
  * Usage: tsx scripts/simple-cache-analysis.ts
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
 interface CacheAnalysisReport {
-  timestamp: string;
-  executive_summary: {
-    overall_cache_hit_rate: number;
-    neon_compute_savings_potential: number;
-    meets_20_percent_goal: boolean;
-  };
-  findings: {
-    unified_cache: any;
-    batch_cache: any;
-    database: any;
-    http: any;
-  };
-  recommendations: Array<{
-    priority: number;
-    title: string;
-    impact: string;
-    effort: string;
-    estimated_savings_percent: number;
-    implementation: string;
-    files_affected: string[];
-  }>;
+	timestamp: string;
+	executive_summary: {
+		overall_cache_hit_rate: number;
+		neon_compute_savings_potential: number;
+		meets_20_percent_goal: boolean;
+	};
+	findings: {
+		unified_cache: any;
+		batch_cache: any;
+		database: any;
+		http: any;
+	};
+	recommendations: Array<{
+		priority: number;
+		title: string;
+		impact: string;
+		effort: string;
+		estimated_savings_percent: number;
+		implementation: string;
+		files_affected: string[];
+	}>;
 }
 
 async function analyzeFromExistingMetrics(): Promise<CacheAnalysisReport> {
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log('      CACHE PERFORMANCE ANALYSIS - COMPREHENSIVE REPORT     ');
-  console.log('═══════════════════════════════════════════════════════════\n');
+	// Extract metrics from code analysis instead of runtime
+	const report: CacheAnalysisReport = {
+		timestamp: new Date().toISOString(),
+		executive_summary: {
+			overall_cache_hit_rate: 0,
+			neon_compute_savings_potential: 0,
+			meets_20_percent_goal: false,
+		},
+		findings: {
+			unified_cache: await analyzeUnifiedCache(),
+			batch_cache: analyzeBatchCache(),
+			database: analyzeDatabaseLayer(),
+			http: analyzeHttpCaching(),
+		},
+		recommendations: [],
+	};
 
-  console.log('📊 Analyzing existing cache infrastructure...\n');
+	// Generate recommendations based on findings
+	report.recommendations = generateRecommendations(report.findings);
 
-  // Extract metrics from code analysis instead of runtime
-  const report: CacheAnalysisReport = {
-    timestamp: new Date().toISOString(),
-    executive_summary: {
-      overall_cache_hit_rate: 0,
-      neon_compute_savings_potential: 0,
-      meets_20_percent_goal: false
-    },
-    findings: {
-      unified_cache: await analyzeUnifiedCache(),
-      batch_cache: analyzeBatchCache(),
-      database: analyzeDatabaseLayer(),
-      http: analyzeHttpCaching()
-    },
-    recommendations: []
-  };
+	// Calculate executive summary
+	report.executive_summary = calculateExecutiveSummary(report);
 
-  // Generate recommendations based on findings
-  report.recommendations = generateRecommendations(report.findings);
-  
-  // Calculate executive summary
-  report.executive_summary = calculateExecutiveSummary(report);
-
-  return report;
+	return report;
 }
 
 async function analyzeUnifiedCache() {
-  console.log('   [1/4] Analyzing UnifiedReplitCache configuration...');
-  
-  // Read the cache configuration from source file
-  const cacheSource = await fs.readFile('server/lib/unified-replit-cache.ts', 'utf-8');
-  
-  // Extract TTL presets
-  const ttlMatch = cacheSource.match(/TTL_PRESETS\s*=\s*{([\s\S]*?)}/);
-  const ttls: Record<string, number> = {};
-  
-  if (ttlMatch?.[1]) {
-    const ttlContent = ttlMatch[1];
-    const ttlLines = ttlContent.match(/(\w+):\s*([\d\s*+/*]+),/g) || [];
-    ttlLines.forEach(line => {
-      const parts = line.split(':');
-      const name = parts[0];
-      const value = parts[1];
-      if (name && value) {
-        // Evaluate simple expressions like "24 * 60 * 60 * 1000"
-        const numValue = eval(value.replace(',', ''));
-        ttls[name.trim()] = numValue;
-      }
-    });
-  }
+	// Read the cache configuration from source file
+	const cacheSource = await fs.readFile(
+		"server/lib/unified-replit-cache.ts",
+		"utf-8",
+	);
 
-  console.log(`   ✓ Found ${Object.keys(ttls).length} TTL presets`);
-  
-  return {
-    ttl_presets: ttls,
-    l1_cache_size: '150MB (3000 entries max)',
-    l1_ttl: '20 minutes',
-    l2_ttl: 'Per-entry based on category',
-    swr_enabled: true,
-    assessment: 'Well-configured 2-tier cache with SWR support'
-  };
+	// Extract TTL presets
+	const ttlMatch = cacheSource.match(/TTL_PRESETS\s*=\s*{([\s\S]*?)}/);
+	const ttls: Record<string, number> = {};
+
+	if (ttlMatch?.[1]) {
+		const ttlContent = ttlMatch[1];
+		const ttlLines = ttlContent.match(/(\w+):\s*([\d\s*+/*]+),/g) || [];
+		ttlLines.forEach((line) => {
+			const parts = line.split(":");
+			const name = parts[0];
+			const value = parts[1];
+			if (name && value) {
+				// Evaluate simple expressions like "24 * 60 * 60 * 1000"
+				const numValue = eval(value.replace(",", ""));
+				ttls[name.trim()] = numValue;
+			}
+		});
+	}
+
+	return {
+		ttl_presets: ttls,
+		l1_cache_size: "150MB (3000 entries max)",
+		l1_ttl: "20 minutes",
+		l2_ttl: "Per-entry based on category",
+		swr_enabled: true,
+		assessment: "Well-configured 2-tier cache with SWR support",
+	};
 }
 
 function analyzeBatchCache() {
-  console.log('   [2/4] Analyzing TwoTierBatchCache...');
-  
-  return {
-    implementation: 'TwoTierBatchCache',
-    l1_l2_architecture: 'Yes - Memory + KV',
-    batch_optimization: 'Enabled for bulk queries',
-    assessment: 'Reduces N+1 query problems'
-  };
+	return {
+		implementation: "TwoTierBatchCache",
+		l1_l2_architecture: "Yes - Memory + KV",
+		batch_optimization: "Enabled for bulk queries",
+		assessment: "Reduces N+1 query problems",
+	};
 }
 
 function analyzeDatabaseLayer() {
-  console.log('   [3/4] Analyzing database configuration...');
-  
-  return {
-    driver: 'Neon HTTP (stateless, serverless-optimized)',
-    connection_pooling: '-pooler suffix in production URLs',
-    query_monitoring: 'query-performance-monitor.ts with categorized thresholds',
-    slow_query_threshold: {
-      user_facing: '400ms',
-      cache_warmup: '2000ms',
-      admin: '800ms',
-      background: '1000ms'
-    },
-    admin_cache: {
-      implementation: 'LRU cache',
-      size: '1000 users',
-      ttl: '5 minutes',
-      purpose: 'Reduce admin permission checks'
-    },
-    assessment: 'Optimized for serverless with proper monitoring'
-  };
+	return {
+		driver: "Neon HTTP (stateless, serverless-optimized)",
+		connection_pooling: "-pooler suffix in production URLs",
+		query_monitoring:
+			"query-performance-monitor.ts with categorized thresholds",
+		slow_query_threshold: {
+			user_facing: "400ms",
+			cache_warmup: "2000ms",
+			admin: "800ms",
+			background: "1000ms",
+		},
+		admin_cache: {
+			implementation: "LRU cache",
+			size: "1000 users",
+			ttl: "5 minutes",
+			purpose: "Reduce admin permission checks",
+		},
+		assessment: "Optimized for serverless with proper monitoring",
+	};
 }
 
 function analyzeHttpCaching() {
-  console.log('   [4/4] Analyzing HTTP caching headers...');
-  
-  return {
-    static_assets: {
-      media_object_storage: 'public, max-age=31536000, immutable',
-      js_css_vite: 'Content-hashed filenames for cache-busting',
-      assessment: '✅ Optimal'
-    },
-    api_endpoints: {
-      current: 'Minimal Cache-Control headers',
-      opportunity: 'Add public cache headers for read-only endpoints',
-      assessment: '⚠️ Improvement opportunity'
-    }
-  };
+	return {
+		static_assets: {
+			media_object_storage: "public, max-age=31536000, immutable",
+			js_css_vite: "Content-hashed filenames for cache-busting",
+			assessment: "✅ Optimal",
+		},
+		api_endpoints: {
+			current: "Minimal Cache-Control headers",
+			opportunity: "Add public cache headers for read-only endpoints",
+			assessment: "⚠️ Improvement opportunity",
+		},
+	};
 }
 
-function generateRecommendations(_findings: any): CacheAnalysisReport['recommendations'] {
-  const recommendations: CacheAnalysisReport['recommendations'] = [];
+function generateRecommendations(
+	_findings: any,
+): CacheAnalysisReport["recommendations"] {
+	const recommendations: CacheAnalysisReport["recommendations"] = [];
 
-  // Recommendation 1: Extend TTLs for semi-static content
-  recommendations.push({
-    priority: 1,
-    title: 'Extend TTL for semi-static content (Categories, Size Charts, Certificates)',
-    impact: 'HIGH',
-    effort: 'LOW',
-    estimated_savings_percent: 8,
-    implementation: `
+	// Recommendation 1: Extend TTLs for semi-static content
+	recommendations.push({
+		priority: 1,
+		title:
+			"Extend TTL for semi-static content (Categories, Size Charts, Certificates)",
+		impact: "HIGH",
+		effort: "LOW",
+		estimated_savings_percent: 8,
+		implementation: `
 Current TTLs in server/lib/unified-replit-cache.ts:
 - SEMI_STATIC: 2 hours (categories, size charts, certificates)
 - STATIC: 24 hours (navigation, footer)
@@ -177,17 +168,17 @@ Rationale: These entities rarely change (< 1x/day updates)
 Code change:
 SEMI_STATIC: 6 * 60 * 60 * 1000, // 6 hours (was 2 hours)
     `.trim(),
-    files_affected: ['server/lib/unified-replit-cache.ts']
-  });
+		files_affected: ["server/lib/unified-replit-cache.ts"],
+	});
 
-  // Recommendation 2: Implement SWR for product listings
-  recommendations.push({
-    priority: 2,
-    title: 'Use Stale-While-Revalidate pattern for product listings',
-    impact: 'HIGH',
-    effort: 'MEDIUM',
-    estimated_savings_percent: 12,
-    implementation: `
+	// Recommendation 2: Implement SWR for product listings
+	recommendations.push({
+		priority: 2,
+		title: "Use Stale-While-Revalidate pattern for product listings",
+		impact: "HIGH",
+		effort: "MEDIUM",
+		estimated_savings_percent: 12,
+		implementation: `
 UnifiedReplitCache already has SWR infrastructure (getSWR method).
 Currently unused for product listings.
 
@@ -212,20 +203,20 @@ Benefits:
 - Cache refreshes happen in background
 - Reduces perceived latency from 400ms → <10ms
     `.trim(),
-    files_affected: [
-      'server/lib/repositories/product-repository.ts',
-      'server/routes/core/products.ts'
-    ]
-  });
+		files_affected: [
+			"server/lib/repositories/product-repository.ts",
+			"server/routes/core/products.ts",
+		],
+	});
 
-  // Recommendation 3: Add result caching for aggregation queries
-  recommendations.push({
-    priority: 3,
-    title: 'Cache results of expensive aggregation/count queries',
-    impact: 'MEDIUM',
-    effort: 'MEDIUM',
-    estimated_savings_percent: 7,
-    implementation: `
+	// Recommendation 3: Add result caching for aggregation queries
+	recommendations.push({
+		priority: 3,
+		title: "Cache results of expensive aggregation/count queries",
+		impact: "MEDIUM",
+		effort: "MEDIUM",
+		estimated_savings_percent: 7,
+		implementation: `
 Identify expensive queries via pg_stat_statements (if available):
 - Product counts by category
 - Media asset aggregations
@@ -242,20 +233,20 @@ const result = await expensiveQuery();
 await cache.set(cacheKey, result, TTL_PRESETS.DYNAMIC);
 return result;
     `.trim(),
-    files_affected: [
-      'server/lib/repositories/*.ts',
-      'server/routes/utilities/operational-excellence.ts'
-    ]
-  });
+		files_affected: [
+			"server/lib/repositories/*.ts",
+			"server/routes/utilities/operational-excellence.ts",
+		],
+	});
 
-  // Recommendation 4: Optimize homepage cache refresh
-  recommendations.push({
-    priority: 4,
-    title: 'Extend homepage cache refresh interval',
-    impact: 'MEDIUM',
-    effort: 'LOW',
-    estimated_savings_percent: 3,
-    implementation: `
+	// Recommendation 4: Optimize homepage cache refresh
+	recommendations.push({
+		priority: 4,
+		title: "Extend homepage cache refresh interval",
+		impact: "MEDIUM",
+		effort: "LOW",
+		estimated_savings_percent: 3,
+		implementation: `
 Current: Homepage refreshes every 15 minutes
 Observation: Homepage content updates are infrequent (< 5x/day)
 
@@ -267,17 +258,17 @@ HOMEPAGE_CACHE_TTL_MS = 1800000; // Match refresh interval
 
 Impact: 50% reduction in homepage cache refresh queries
     `.trim(),
-    files_affected: ['server/lib/unified-replit-cache.ts']
-  });
+		files_affected: ["server/lib/unified-replit-cache.ts"],
+	});
 
-  // Recommendation 5: Add Cache-Control headers
-  recommendations.push({
-    priority: 5,
-    title: 'Add Cache-Control headers to cacheable API endpoints',
-    impact: 'LOW',
-    effort: 'LOW',
-    estimated_savings_percent: 2,
-    implementation: `
+	// Recommendation 5: Add Cache-Control headers
+	recommendations.push({
+		priority: 5,
+		title: "Add Cache-Control headers to cacheable API endpoints",
+		impact: "LOW",
+		effort: "LOW",
+		estimated_savings_percent: 2,
+		implementation: `
 Target endpoints:
 - GET /api/categories (public, max-age=3600)
 - GET /api/certificates (public, max-age=7200)
@@ -296,35 +287,34 @@ This enables:
 
 Note: Only for truly public, read-only data
     `.trim(),
-    files_affected: [
-      'server/index.ts',
-      'server/routes/core/*.ts'
-    ]
-  });
+		files_affected: ["server/index.ts", "server/routes/core/*.ts"],
+	});
 
-  return recommendations;
+	return recommendations;
 }
 
-function calculateExecutiveSummary(report: CacheAnalysisReport): CacheAnalysisReport['executive_summary'] {
-  // Calculate total potential savings
-  const totalSavings = report.recommendations.reduce(
-    (sum, rec) => sum + rec.estimated_savings_percent,
-    0
-  );
+function calculateExecutiveSummary(
+	report: CacheAnalysisReport,
+): CacheAnalysisReport["executive_summary"] {
+	// Calculate total potential savings
+	const totalSavings = report.recommendations.reduce(
+		(sum, rec) => sum + rec.estimated_savings_percent,
+		0,
+	);
 
-  // Estimate current cache hit rate based on infrastructure
-  // Well-configured 2-tier cache with SWR suggests high hit rate
-  const estimatedHitRate = 75; // Conservative estimate based on infrastructure quality
+	// Estimate current cache hit rate based on infrastructure
+	// Well-configured 2-tier cache with SWR suggests high hit rate
+	const estimatedHitRate = 75; // Conservative estimate based on infrastructure quality
 
-  return {
-    overall_cache_hit_rate: estimatedHitRate,
-    neon_compute_savings_potential: Math.round(totalSavings * 100) / 100,
-    meets_20_percent_goal: totalSavings >= 20
-  };
+	return {
+		overall_cache_hit_rate: estimatedHitRate,
+		neon_compute_savings_potential: Math.round(totalSavings * 100) / 100,
+		meets_20_percent_goal: totalSavings >= 20,
+	};
 }
 
 function generateMarkdownReport(report: CacheAnalysisReport): string {
-  return `# Cache Performance Analysis Report
+	return `# Cache Performance Analysis Report
 
 **Generated:** ${report.timestamp}
 
@@ -332,11 +322,12 @@ function generateMarkdownReport(report: CacheAnalysisReport): string {
 
 - **Estimated Current Cache Hit Rate:** ${report.executive_summary.overall_cache_hit_rate}%
 - **NEON Compute Savings Potential:** ${report.executive_summary.neon_compute_savings_potential}%
-- **Meets 20% Reduction Goal:** ${report.executive_summary.meets_20_percent_goal ? '✅ YES' : '❌ NO'}
+- **Meets 20% Reduction Goal:** ${report.executive_summary.meets_20_percent_goal ? "✅ YES" : "❌ NO"}
 
-${report.executive_summary.meets_20_percent_goal 
-  ? `**SUCCESS:** The identified optimizations meet the 20% NEON compute reduction goal.`
-  : `**ACTION REQUIRED:** Additional optimizations needed to reach 20% goal.`
+${
+	report.executive_summary.meets_20_percent_goal
+		? `**SUCCESS:** The identified optimizations meet the 20% NEON compute reduction goal.`
+		: `**ACTION REQUIRED:** Additional optimizations needed to reach 20% goal.`
 }
 
 ## Current Infrastructure Analysis
@@ -369,7 +360,9 @@ ${JSON.stringify(report.findings.http.api_endpoints, null, 2)}
 
 ## Prioritized Recommendations
 
-${report.recommendations.map((rec, i) => `
+${report.recommendations
+	.map(
+		(rec, i) => `
 ### ${i + 1}. ${rec.title}
 
 - **Priority:** ${rec.priority}
@@ -383,8 +376,10 @@ ${rec.implementation}
 \`\`\`
 
 **Files Affected:**
-${rec.files_affected.map(f => `- \`${f}\``).join('\n')}
-`).join('\n---\n')}
+${rec.files_affected.map((f) => `- \`${f}\``).join("\n")}
+`,
+	)
+	.join("\n---\n")}
 
 ## Implementation Roadmap
 
@@ -393,13 +388,13 @@ ${rec.files_affected.map(f => `- \`${f}\``).join('\n')}
 - ✅ Recommendation #4: Optimize homepage cache (30 minutes)  
 - ✅ Recommendation #5: Add Cache-Control headers (2 hours)
 
-**Total Phase 1 Savings:** ${report.recommendations.filter(r => [1,4,5].includes(r.priority)).reduce((s,r) => s + r.estimated_savings_percent, 0)}%
+**Total Phase 1 Savings:** ${report.recommendations.filter((r) => [1, 4, 5].includes(r.priority)).reduce((s, r) => s + r.estimated_savings_percent, 0)}%
 
 ### Phase 2: High-Impact Features (Weeks 2-4)
 - 🔄 Recommendation #2: Implement SWR for products (3-5 days)
 - 🔄 Recommendation #3: Cache aggregation queries (2-3 days)
 
-**Total Phase 2 Savings:** ${report.recommendations.filter(r => [2,3].includes(r.priority)).reduce((s,r) => s + r.estimated_savings_percent, 0)}%
+**Total Phase 2 Savings:** ${report.recommendations.filter((r) => [2, 3].includes(r.priority)).reduce((s, r) => s + r.estimated_savings_percent, 0)}%
 
 ### Total Potential Savings
 **${report.executive_summary.neon_compute_savings_potential}%** reduction in NEON active compute time
@@ -429,11 +424,11 @@ ${rec.files_affected.map(f => `- \`${f}\``).join('\n')}
 ### Projected Savings
 - Implementing all recommendations: **${report.executive_summary.neon_compute_savings_potential}%** reduction
 - New compute time: ~${Math.round(1000 * (1 - report.executive_summary.neon_compute_savings_potential / 100))} minutes/month
-- New monthly cost: ~$${((1000 * (1 - report.executive_summary.neon_compute_savings_potential / 100)) * 0.16 / 60).toFixed(2)}
-- **Monthly savings: ~$${((1000 * report.executive_summary.neon_compute_savings_potential / 100) * 0.16 / 60).toFixed(2)}**
+- New monthly cost: ~$${((1000 * (1 - report.executive_summary.neon_compute_savings_potential / 100) * 0.16) / 60).toFixed(2)}
+- **Monthly savings: ~$${((((1000 * report.executive_summary.neon_compute_savings_potential) / 100) * 0.16) / 60).toFixed(2)}**
 
 ### Annual Impact
-- **Annual savings: ~$${((1000 * report.executive_summary.neon_compute_savings_potential / 100) * 0.16 / 60 * 12).toFixed(2)}**
+- **Annual savings: ~$${(((((1000 * report.executive_summary.neon_compute_savings_potential) / 100) * 0.16) / 60) * 12).toFixed(2)}**
 - ROI: Immediate (all changes are configuration/code improvements)
 
 ## Monitoring & Validation
@@ -473,39 +468,31 @@ The application has a **solid caching infrastructure** with UnifiedReplitCache, 
 }
 
 async function main() {
-  try {
-    const report = await analyzeFromExistingMetrics();
-    
-    // Save JSON report
-    const jsonPath = path.join(process.cwd(), 'CACHE_PERFORMANCE_ANALYSIS_REPORT.json');
-    await fs.writeFile(jsonPath, JSON.stringify(report, null, 2));
-    console.log(`\n📄 JSON report saved to: ${jsonPath}`);
-    
-    // Save Markdown report
-    const mdPath = path.join(process.cwd(), 'CACHE_PERFORMANCE_ANALYSIS_REPORT.md');
-    const markdown = generateMarkdownReport(report);
-    await fs.writeFile(mdPath, markdown);
-    console.log(`📄 Markdown report saved to: ${mdPath}\n`);
-    
-    // Print summary
-    console.log('═══════════════════════════════════════════════════════════');
-    console.log('                    ANALYSIS COMPLETE                      ');
-    console.log('═══════════════════════════════════════════════════════════');
-    console.log('\n📊 Key Findings:');
-    console.log(`   • Estimated Cache Hit Rate: ${report.executive_summary.overall_cache_hit_rate}%`);
-    console.log(`   • NEON Savings Potential: ${report.executive_summary.neon_compute_savings_potential}%`);
-    console.log(`   • Goal Achievement (≥20%): ${report.executive_summary.meets_20_percent_goal ? '✅ YES' : '❌ NO'}`);
-    console.log(`   • Recommendations: ${report.recommendations.length}`);
-    console.log('\n📝 Review the generated reports for detailed analysis and implementation guidance.\n');
-    
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Analysis failed:', error);
-    process.exit(1);
-  }
+	try {
+		const report = await analyzeFromExistingMetrics();
+
+		// Save JSON report
+		const jsonPath = path.join(
+			process.cwd(),
+			"CACHE_PERFORMANCE_ANALYSIS_REPORT.json",
+		);
+		await fs.writeFile(jsonPath, JSON.stringify(report, null, 2));
+
+		// Save Markdown report
+		const mdPath = path.join(
+			process.cwd(),
+			"CACHE_PERFORMANCE_ANALYSIS_REPORT.md",
+		);
+		const markdown = generateMarkdownReport(report);
+		await fs.writeFile(mdPath, markdown);
+
+		process.exit(0);
+	} catch (error) {
+		process.exit(1);
+	}
 }
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+	main().catch(console.error);
 }

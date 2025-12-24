@@ -35,3 +35,45 @@ if (typeof window === "undefined") {
 }
 // Browser logic here
 ```
+
+## Developer Guidelines (Updated Late 2025)
+
+### A. Performance Debugging
+
+- **React Scan**: Installed as a dev tool. Use it to visualize re-renders in real-time.
+- **WhyDidYouRender (WDYR)**:
+  - Automatically enabled in `npm run dev`.
+  - Check your **browser console** for component re-render logs.
+  - Configuration: `client/src/wdyr.ts` (strictly excluded from production builds).
+
+### B. Coding Standards
+
+- **Logging**:
+  - ❌ **DO NOT** use `console.log`.
+  - ✅ **USE** `logger.info()` (server) or `debug` (client).
+  - **Enforcement**: Commits with `console.log` will **FAIL** linting (Biome rule: `suspicious.noConsole`).
+- **Testing**:
+  - Use `tests/api.http` (VS Code REST Client) for quick local API validation before pushing.
+
+### C. Infrastructure Notes
+
+- **Rate Limiting**:
+  - **Production**: Requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+  - **Local/Fallback**: Automatically falls back to in-memory limiting if Redis credentials are missing.
+  - **Logic**: Defined in `server/middleware/rateLimiter.ts`. Behavior is "Fail Open" (logs error but allows traffic) if Redis goes down.
+
+### D. STRICT FOSS TOOLING (Mandatory)
+
+This project adheres to a strict Free/Open Source Software policy.
+
+- **API Testing**:
+  - ✅ **USE**: **Bruno** (Open Source, Git-friendly).
+  - ❌ **BANNED**: Thunder Client (Proprietary/Freemium).
+- **Linting & Formatting**:
+  - ✅ **USE**: **Biome** (VS Code extension: `biomejs.biome`).
+  - ❌ **BANNED**: ESLint extension (due to configuration mismatch).
+- **Security Scanning**:
+  - **Trivy**: Used for filesystem scanning in CI.
+  - **Local Command**: `trivy filesystem .`
+- **Validation**:
+  - **HTML**: `npx html-validate` is installed for template checks.

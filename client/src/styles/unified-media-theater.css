@@ -96,8 +96,14 @@ model-viewer .hotspot:hover .annotation {
 }
 
 @keyframes fadeInOut {
-  0%, 100% { opacity: 0; }
-  10%, 90% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
 }
 
 /* Performance Monitor Styles */
@@ -113,7 +119,7 @@ model-viewer .hotspot:hover .annotation {
   border-radius: 0.25rem;
   font-size: 0.75rem;
   font-family: monospace;
-  z-index: 10;
+  z-index: var(--z-default); /* P1 FIX: Use semantic z-index */
 }
 
 .performance-badge.excellent {
@@ -134,12 +140,12 @@ model-viewer .hotspot:hover .annotation {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
   }
-  
+
   .media-theater-touch-indicator {
     font-size: 1rem;
     padding: 0.75rem 1.25rem;
   }
-  
+
   model-viewer .hotspot {
     width: 24px;
     height: 24px;

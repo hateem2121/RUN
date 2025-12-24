@@ -1,23 +1,34 @@
-// import React from 'react';
-import { motion } from 'framer-motion';
-import { Map, Satellite } from 'lucide-react';
-import { MapContainer, TileLayer } from 'react-leaflet';
-import { MapErrorBoundary } from './components/MapErrorBoundary';
-import type { MapLocation } from './hooks/useMapMarkers';
-import { useMapState } from './hooks/useMapState';
-import { MapMarkers } from './MapMarkers';
-import "leaflet/dist/leaflet.css";
+import { Suspense, lazy, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Map, Satellite, Loader2 } from "lucide-react";
+import { MapErrorBoundary } from "./components/MapErrorBoundary";
+import type { MapLocation } from "./hooks/useMapMarkers";
+import { useMapState } from "./hooks/useMapState";
+
+// SSR-safe CSS import - leaflet CSS will be loaded on client only
+if (typeof window !== "undefined") {
+  import("leaflet/dist/leaflet.css");
+}
+
+// Dynamic imports for Leaflet components to prevent SSR crashes
+// All react-leaflet components MUST be dynamically imported because leaflet requires browser globals
+const MapContainer = lazy(() =>
+  import("react-leaflet").then((mod) => ({ default: mod.MapContainer })),
+);
+const TileLayer = lazy(() => import("react-leaflet").then((mod) => ({ default: mod.TileLayer })));
+// MapMarkers also imports react-leaflet, so it must be lazy loaded too
+const MapMarkers = lazy(() => import("./MapMarkers").then((mod) => ({ default: mod.MapMarkers })));
 
 interface OptimizedMapContainerProps {
   locations: MapLocation[];
   className?: string;
 }
 
-export function OptimizedMapContainer({ locations, className = '' }: OptimizedMapContainerProps) {
+export function OptimizedMapContainer({ locations, className = "" }: OptimizedMapContainerProps) {
   const { activeLayer, toggleLayer, mapConfig, tileLayerConfig } = useMapState();
 
-  const clientLocations = locations.filter(l => l.type === 'client' && l.isActive);
-  const facilityLocations = locations.filter(l => l.type === 'facility' && l.isActive);
+  const clientLocations = locations.filter((l) => l.type === "client" && l.isActive);
+  const facilityLocations = locations.filter((l) => l.type === "facility" && l.isActive);
 
   return (
     <motion.div
@@ -30,7 +41,7 @@ export function OptimizedMapContainer({ locations, className = '' }: OptimizedMa
       <div className="h-[500px] w-full rounded-2xl overflow-hidden relative">
         {/* Map Layer Toggle Button */}
         <motion.div
-          className="absolute top-4 right-4 z-[1001]"
+          className="absolute top-4 right-4 z-max"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
@@ -41,7 +52,7 @@ export function OptimizedMapContainer({ locations, className = '' }: OptimizedMa
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            {activeLayer === 'roadmap' ? (
+            {activeLayer === "roadmap" ? (
               <>
                 <Satellite className="h-4 w-4" />
                 Satellite
@@ -56,23 +67,31 @@ export function OptimizedMapContainer({ locations, className = '' }: OptimizedMa
         </motion.div>
 
         <MapErrorBoundary>
-          <MapContainer
-            center={mapConfig.center}
-            zoom={mapConfig.zoom}
-            style={{ height: '100%', width: '100%' }}
-            zoomControl={mapConfig.zoomControl}
-            scrollWheelZoom={mapConfig.scrollWheelZoom}
+          <Suspense
+            fallback={
+              <div className="h-full w-full flex items-center justify-center bg-muted/20">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              </div>
+            }
           >
-            {/* Dynamic Tile Layer */}
-            <TileLayer
-              key={activeLayer}
-              attribution={tileLayerConfig.attribution}
-              url={tileLayerConfig.url}
-            />
+            <MapContainer
+              center={mapConfig.center}
+              zoom={mapConfig.zoom}
+              style={{ height: "100%", width: "100%" }}
+              zoomControl={mapConfig.zoomControl}
+              scrollWheelZoom={mapConfig.scrollWheelZoom}
+            >
+              {/* Dynamic Tile Layer */}
+              <TileLayer
+                key={activeLayer}
+                attribution={tileLayerConfig.attribution}
+                url={tileLayerConfig.url}
+              />
 
-            {/* Optimized Markers */}
-            <MapMarkers locations={locations} />
-          </MapContainer>
+              {/* Optimized Markers */}
+              <MapMarkers locations={locations} />
+            </MapContainer>
+          </Suspense>
         </MapErrorBoundary>
       </div>
 

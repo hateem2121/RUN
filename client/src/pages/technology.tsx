@@ -18,7 +18,8 @@ import type {
 import { Loader2 } from "lucide-react";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
-import "@/styles/webgl-pointer-events.css";
+// NOTE: webgl-pointer-events.css is imported globally in index.css via @layer components
+// Removed duplicate import here to reduce CSS bundle duplication
 import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { LiquidGlassCard } from "@/components/ui/glass-card";
@@ -39,9 +40,7 @@ class ErrorBoundary extends React.Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: unknown, errorInfo: React.ErrorInfo) {
-    console.error("Component Error:", error, errorInfo);
-  }
+  componentDidCatch(error: unknown, errorInfo: React.ErrorInfo) {}
 
   render() {
     if (this.state.hasError) {
@@ -371,6 +370,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   // PHASE B: Optimized intersection observer with global instance sharing
   // Initialize model-viewer
   React.useEffect(() => {
+    // biome-ignore lint/suspicious/noConsole: CLI
     ensureModelViewerLoaded().catch(console.error);
   }, []);
 
@@ -434,8 +434,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
       ? `/api/media/${media.id}/content`
       : undefined
     : media.id && media.id < 1000000000000
-      ? `/api/media/${media.id}/content?thumbnail=true`
-      : undefined;
+    ? `/api/media/${media.id}/content?thumbnail=true`
+    : undefined;
 
   return (
     <div
@@ -1193,8 +1193,8 @@ export default function Technology() {
                                   research.status === "Completed"
                                     ? "bg-green-500/20 text-green-300"
                                     : research.status === "Planned"
-                                      ? "bg-gray-500/20 text-gray-300"
-                                      : "bg-blue-500/20 text-blue-300"
+                                    ? "bg-gray-500/20 text-gray-300"
+                                    : "bg-blue-500/20 text-blue-300"
                                 }`}
                               >
                                 {research.status}

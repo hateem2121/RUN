@@ -1,11 +1,11 @@
 /**
  * PHASE 3: MEDIA SELECTION STANDARDIZATION
- * 
+ *
  * Standard Media Selection Dialog Pattern
- * 
+ *
  * This component demonstrates the unified pattern for media selection across
  * all admin components. All admin pages should follow this exact pattern.
- * 
+ *
  * KEY BENEFITS:
  * - Consistent sizing using EnhancedDialogContent contentType='media-library'
  * - Real asset data integration (no mock data)
@@ -14,141 +14,132 @@
  * - Unified error handling
  */
 
-import type { MediaAsset } from '@shared/schema';
-import { lazy, Suspense } from 'react';
-import { MediaLibraryEnhancedProvider } from '@/components/admin/media-library/MediaLibraryContextEnhanced';
+import type { MediaAsset } from "@shared/schema";
+import { lazy, Suspense } from "react";
+import { MediaLibraryEnhancedProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from '@/components/ui/enhanced-dialog';
+	EnhancedDialog,
+	EnhancedDialogBody,
+	EnhancedDialogContent,
+	EnhancedDialogHeader,
+	EnhancedDialogTitle,
+} from "@/components/ui/enhanced-dialog";
 
 // CRITICAL FIX: Lazy-load MediaSelectionWrapperUnified to break circular dependency chain
 // This prevents: StandardMediaSelectionDialog → MediaSelectionWrapperUnified → MediaLibraryContainerEnhanced
 // from loading synchronously and blocking admin module initialization
-const MediaSelectionWrapperUnified = lazy(() => 
-  import('./MediaSelectionWrapperUnified').then(m => ({ default: m.MediaSelectionWrapperUnified }))
+const MediaSelectionWrapperUnified = lazy(() =>
+	import("./MediaSelectionWrapperUnified").then((m) => ({
+		default: m.MediaSelectionWrapperUnified,
+	})),
 );
 
 interface StandardMediaSelectionDialogProps {
-  /** Whether the dialog is open */
-  isOpen: boolean;
-  
-  /** Called when dialog should close */
-  onClose: () => void;
-  
-  /** Called when media is selected */
-  onSelect: (assets: MediaAsset[] | MediaAsset) => void;
-  
-  /** Dialog title */
-  title?: string;
-  
-  /** Media picker context identifier for filtering */
-  mediaPickerTarget: string;
-  
-  /** Selection mode */
-  selectionMode?: 'single' | 'multiple';
-  
-  /** Maximum number of assets for multiple selection */
-  maxSelection?: number;
-  
-  /** Pre-selected asset IDs */
-  initialSelectedIds?: number[];
+	/** Whether the dialog is open */
+	isOpen: boolean;
+
+	/** Called when dialog should close */
+	onClose: () => void;
+
+	/** Called when media is selected */
+	onSelect: (assets: MediaAsset[] | MediaAsset) => void;
+
+	/** Dialog title */
+	title?: string;
+
+	/** Media picker context identifier for filtering */
+	mediaPickerTarget: string;
+
+	/** Selection mode */
+	selectionMode?: "single" | "multiple";
+
+	/** Maximum number of assets for multiple selection */
+	maxSelection?: number;
+
+	/** Pre-selected asset IDs */
+	initialSelectedIds?: number[];
 }
 
 /**
  * STANDARD PATTERN: All admin components should follow this exact structure
- * 
+ *
  * REQUIRED ELEMENTS:
  * 1. EnhancedDialog with open/onOpenChange props
- * 2. EnhancedDialogContent with contentType='media-library' 
+ * 2. EnhancedDialogContent with contentType='media-library'
  * 3. MediaLibraryEnhancedProvider wrapper
  * 4. MediaSelectionWrapperUnified with className="h-full"
  * 5. Proper event handlers
  */
 export function StandardMediaSelectionDialog({
-  isOpen,
-  onClose,
-  onSelect,
-  title = "Select Media",
-  mediaPickerTarget,
-  selectionMode = 'single',
-  maxSelection = 10,
-  initialSelectedIds = []
+	isOpen,
+	onClose,
+	onSelect,
+	title = "Select Media",
+	mediaPickerTarget,
+	selectionMode = "single",
+	maxSelection = 10,
+	initialSelectedIds = [],
 }: StandardMediaSelectionDialogProps) {
-  
-  const handleSelect = (assets: MediaAsset[] | MediaAsset) => {
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('📬 STANDARD DIALOG: Received selection from wrapper');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('🔹 Selection type:', Array.isArray(assets) ? 'array' : 'single');
-    console.log('🔹 Assets received:', Array.isArray(assets) ? assets.length : 1);
-    console.log('🔹 Asset details:', Array.isArray(assets) 
-      ? assets.map(a => ({ id: a.id, filename: a.filename }))
-      : { id: assets.id, filename: assets.filename }
-    );
-    
-    console.log('📤 Forwarding to parent onSelect...');
-    onSelect(assets);
-    
-    console.log('✅ Parent onSelect called, closing dialog');
-    onClose();
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  };
+	const handleSelect = (assets: MediaAsset[] | MediaAsset) => {
+		onSelect(assets);
+		onClose();
+	};
 
-  return (
-    <EnhancedDialog open={isOpen} onOpenChange={onClose}>
-      <EnhancedDialogContent 
-        contentType="media-library"
-        preferredSize="5xl" // Optimal size for media selection across all devices - EnhancedDialogContent handles all sizing
-        className="flex flex-col" // Explicit flex layout for proper slot distribution
-      >
-        <EnhancedDialogHeader className="shrink-0 border-b border-border pb-4">
-          <EnhancedDialogTitle>{title}</EnhancedDialogTitle>
-        </EnhancedDialogHeader>
-        
-        {/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
-        <EnhancedDialogBody className="p-0">
-          <MediaLibraryEnhancedProvider>
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-[600px]">
-                <div className="text-center">
-                  <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-                  <p className="text-sm text-gray-600">Loading media library...</p>
-                </div>
-              </div>
-            }>
-              <MediaSelectionWrapperUnified
-                onSelect={handleSelect}
-                onCancel={onClose}
-                mediaPickerTarget={mediaPickerTarget}
-                selectionMode={selectionMode}
-                maxSelection={maxSelection}
-                initialSelectedIds={initialSelectedIds}
-                className="h-full"
-              />
-            </Suspense>
-          </MediaLibraryEnhancedProvider>
-        </EnhancedDialogBody>
-      </EnhancedDialogContent>
-    </EnhancedDialog>
-  );
+	return (
+		<EnhancedDialog open={isOpen} onOpenChange={onClose}>
+			<EnhancedDialogContent
+				contentType="media-library"
+				preferredSize="5xl" // Optimal size for media selection across all devices - EnhancedDialogContent handles all sizing
+				className="flex flex-col" // Explicit flex layout for proper slot distribution
+			>
+				<EnhancedDialogHeader className="shrink-0 border-b border-border pb-4">
+					<EnhancedDialogTitle>{title}</EnhancedDialogTitle>
+				</EnhancedDialogHeader>
+
+				{/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
+				<EnhancedDialogBody className="p-0">
+					<MediaLibraryEnhancedProvider>
+						<Suspense
+							fallback={
+								<div className="flex items-center justify-center h-[600px]">
+									<div className="text-center">
+										<div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+										<p className="text-sm text-gray-600">
+											Loading media library...
+										</p>
+									</div>
+								</div>
+							}
+						>
+							<MediaSelectionWrapperUnified
+								onSelect={handleSelect}
+								onCancel={onClose}
+								mediaPickerTarget={mediaPickerTarget}
+								selectionMode={selectionMode}
+								maxSelection={maxSelection}
+								initialSelectedIds={initialSelectedIds}
+								className="h-full"
+							/>
+						</Suspense>
+					</MediaLibraryEnhancedProvider>
+				</EnhancedDialogBody>
+			</EnhancedDialogContent>
+		</EnhancedDialog>
+	);
 }
 
 /**
  * USAGE EXAMPLE for admin components:
- * 
+ *
  * ```tsx
  * // 1. Add state to manage dialog
  * const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
- * 
+ *
  * // 2. Add trigger button
  * <Button onClick={() => setMediaPickerOpen(true)}>
  *   Select Media
  * </Button>
- * 
+ *
  * // 3. Add dialog component
  * <StandardMediaSelectionDialog
  *   isOpen={mediaPickerOpen}
@@ -162,7 +153,7 @@ export function StandardMediaSelectionDialog({
  *   selectionMode="single"
  * />
  * ```
- * 
+ *
  * MIGRATION GUIDE:
  * - Replace all custom media picker implementations with this pattern
  * - Remove hardcoded sizing (max-w-6xl, h-[85vh], etc.)

@@ -1,4 +1,4 @@
-import type { NextFunction, Request, RequestHandler, Response } from 'express';
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 
 /**
  * Async Handler Middleware
@@ -6,9 +6,9 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
  * and forward them to Express error handling middleware
  */
 export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+	fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
 ): RequestHandler => {
-  return (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
+	return (req, res, next) => {
+		Promise.resolve(fn(req, res, next)).catch(next);
+	};
 };

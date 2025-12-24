@@ -8,8 +8,8 @@
   overflow: hidden;
   pointer-events: auto;
   /* Dynamic CSS custom properties for admin sync */
-  --gb-color1: #FF9FFC;
-  --gb-color2: #5227FF;
+  --gb-color1: #ff9ffc;
+  --gb-color2: #5227ff;
   --gb-angle: 45deg;
   --gb-noise: 0.3;
   --gb-blend-mode: lighten;
@@ -58,7 +58,7 @@
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  z-index: 10;
+  z-index: var(--z-default); /* P1 FIX: Use semantic z-index */
   pointer-events: none;
 }
 

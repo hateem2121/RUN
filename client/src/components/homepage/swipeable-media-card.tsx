@@ -153,7 +153,7 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
             config={{
               autoRotate: true,
               cameraControls: true,
-              backgroundColorHex: "#f5f5f5",
+              backgroundColorHex: "var(--color-neutral-100)",
               exposure: 1,
               shadowIntensity: 1,
               loading: "auto",
@@ -161,15 +161,9 @@ export const SwipeableMediaCard = memo(function SwipeableMediaCard({
             showControls={false}
             showLoadingProgress={true}
             showFileInfo={false}
-            onLoad={() => {
-              console.log(`[SwipeableMediaCard] 3D model loaded: ${item.asset?.originalName}`);
-            }}
-            onError={(error: Error) => {
-              console.error("Media load error:", error);
-            }}
-            onInteraction={(type: string, data: any) => {
-              console.log(`[SwipeableMediaCard] 3D interaction: ${type}`, data);
-            }}
+            onLoad={() => {}}
+            onError={(error: Error) => {}}
+            onInteraction={(type: string, data: any) => {}}
           />
 
           {/* 3D Model Indicator */}

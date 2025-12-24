@@ -1,49 +1,49 @@
 /*
  * ROBUST GRADIENT BLINDS COMPONENT - HYBRID RENDERING SYSTEM
- * 
+ *
  * OVERVIEW:
  * This component provides a seamless gradient background experience with automatic
  * WebGL/CSS fallback handling. It ensures brand consistency regardless of browser
  * capabilities or user preferences.
- * 
+ *
  * RENDERING STRATEGY:
  * 1. WebGL Mode: Full interactive experience with mouse effects and advanced features
  *    - Real-time shader rendering with mouse spotlight effects
  *    - Advanced features: distortion, mirror gradients, edge sharpness
  *    - Optimal performance with hardware acceleration
- * 
+ *
  * 2. CSS Fallback Mode: Brand-perfect gradients using current admin settings
  *    - Dynamic CSS custom properties from live admin data
  *    - No hardcoded fallback colors - always current brand colors
  *    - Maintains visual consistency when WebGL unavailable
- * 
+ *
  * WEBGL DETECTION & GRACEFUL DEGRADATION:
  * - Comprehensive WebGL capability detection before initialization
  * - Checks for reduced motion preferences (accessibility)
  * - Detects GPU blacklist/software rendering scenarios
  * - Provides user-friendly notifications for fallback mode
  * - Logs detailed error information for debugging
- * 
+ *
  * ADMIN SYNC GUARANTEE:
  * - Both WebGL and CSS modes use identical props from parent component
  * - Real-time updates from admin panel with zero latency
  * - Perfect synchronization between admin interface and public display
  * - NO hardcoded fallback values - always reflects current database state
- * 
+ *
  * FEATURE COMPATIBILITY:
  * - WebGL-Only Features: distortAmount, spotlightSoftness, spotlightOpacity, mirrorGradient
  * - Universal Features: gradientColors, angle, noise, blindCount, mixBlendMode
  * - Fallback Features: All universal features work in CSS mode with reduced interactivity
- * 
+ *
  * CANONICAL DEFAULTS (Single Source of Truth):
  * - gradientColors: ["#FF9FFC", "#5227FF"] (admin-configurable)
  * - angle: 0°, noise: 0.3, blindCount: 12, blindMinWidth: 50
  * - mouseDampening: 0.15, spotlightRadius: 0.5, spotlightSoftness: 1
  * - spotlightOpacity: 1, distortAmount: 0, shineDirection: "left"
  * - mixBlendMode: "lighten", mirrorGradient: false, paused: false
- * 
+ *
  * USAGE EXAMPLES:
- * 
+ *
  * // Standard usage with admin sync
  * <GradientBlinds
  *   gradientColors={adminSettings.colors}
@@ -51,7 +51,7 @@
  *   onWebGLReady={() => console.log('WebGL ready')}
  *   onWebGLError={(error) => console.warn('Fallback mode:', error)}
  * />
- * 
+ *
  * // Advanced WebGL features (marked as WebGL-only in admin)
  * <GradientBlinds
  *   gradientColors={['#FF0000', '#00FF00']}
@@ -60,23 +60,23 @@
  *   mirrorGradient={true}      // WebGL-only
  *   spotlightSoftness={2.5}    // WebGL-only
  * />
- * 
+ *
  * TROUBLESHOOTING:
  * - Check browser console for WebGL initialization errors
  * - Verify CSS custom properties are being applied in fallback mode
  * - Ensure admin settings are not cached when testing real-time updates
  * - Use React DevTools to verify prop updates are reaching the component
- * 
+ *
  * BROWSER COMPATIBILITY:
  * - WebGL Mode: Chrome 9+, Firefox 4+, Safari 5.1+, Edge 12+
  * - CSS Fallback: All modern browsers (IE11+)
  * - Graceful degradation: Automatic detection and fallback
- * 
+ *
  * PERFORMANCE:
  * - WebGL Mode: ~60 FPS with hardware acceleration
  * - CSS Mode: Minimal CPU usage, optimal for low-power devices
  * - Memory Usage: <10MB in WebGL mode, <1MB in CSS mode
- * 
+ *
  * ACCESSIBILITY:
  * - Respects prefers-reduced-motion setting
  * - Provides ARIA labels for screen readers
@@ -114,7 +114,7 @@ export interface GradientBlindsProps {
 //
 // Comprehensive WebGL support detection that checks for:
 // - WebGL context availability
-// - GPU hardware acceleration 
+// - GPU hardware acceleration
 // - User accessibility preferences
 // - Browser security restrictions
 // - Performance considerations
@@ -124,38 +124,44 @@ const detectWebGLSupport = (): { supported: boolean; error?: string } => {
   try {
     // Check for WebGL context availability
     if (typeof window === "undefined" || !window.WebGLRenderingContext) {
-      return { supported: false, error: "WebGL not available in this environment" };
+      return {
+        supported: false,
+        error: "WebGL not available in this environment",
+      };
     }
 
     // Check for reduced motion preference
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return { supported: false, error: "Reduced motion preference detected" };
     }
 
     // Test WebGL context creation
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
     if (!gl) {
       return { supported: false, error: "WebGL context creation failed" };
     }
 
     // Check for WebGL blocklist/blacklist
     const webglContext = gl as WebGLRenderingContext;
-    const debugInfo = webglContext.getExtension('WEBGL_debug_renderer_info');
+    const debugInfo = webglContext.getExtension("WEBGL_debug_renderer_info");
     if (debugInfo) {
       const renderer = webglContext.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
       // Basic check for software rendering (indicates GPU issues)
-      if (typeof renderer === 'string' && renderer.toLowerCase().includes('software')) {
-        return { supported: false, error: "GPU acceleration unavailable (software rendering)" };
+      if (typeof renderer === "string" && renderer.toLowerCase().includes("software")) {
+        return {
+          supported: false,
+          error: "GPU acceleration unavailable (software rendering)",
+        };
       }
     }
 
     return { supported: true };
   } catch (error) {
-    return { 
-      supported: false, 
-      error: `WebGL detection failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
+    return {
+      supported: false,
+      error: `WebGL detection failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     };
   }
 };
@@ -188,17 +194,17 @@ const hexToRGB = (hex: string): [number, number, number] => {
 const prepStops = (stops: string[]) => {
   // Use admin-provided colors (guaranteed to exist)
   const base = stops.slice(0, MAX_COLORS);
-  
+
   // Ensure at least 2 colors for gradient
   if (base.length === 1) base.push(base[0]!);
-  
+
   // Pad array to MAX_COLORS for consistent shader uniforms
   while (base.length < MAX_COLORS) base.push(base[base.length - 1]!);
-  
+
   // Convert to RGB arrays for WebGL
   const arr: [number, number, number][] = [];
   for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[i]!));
-  
+
   const count = Math.max(2, Math.min(MAX_COLORS, stops.length));
   return { arr, count };
 };
@@ -233,46 +239,44 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
   const lastTimeRef = useRef<number>(0);
   const firstResizeRef = useRef<boolean>(true);
 
-  const [webglSupport, setWebglSupport] = useState<{ supported: boolean; error?: string } | null>(null);
+  const [webglSupport, setWebglSupport] = useState<{
+    supported: boolean;
+    error?: string;
+  } | null>(null);
   const [webglInitialized, setWebglInitialized] = useState(false);
 
   // Detect WebGL support on mount
   useEffect(() => {
     const support = detectWebGLSupport();
     setWebglSupport(support);
-    
+
     if (!support.supported) {
-      console.warn(`[GradientBlinds] WebGL unavailable: ${support.error}`);
-      console.warn(`[GradientBlinds] Falling back to CSS gradient mode`);
-      onWebGLError?.(support.error || 'WebGL not supported');
+      onWebGLError?.(support.error || "WebGL not supported");
     } else {
-      console.log(`[GradientBlinds] WebGL supported - initializing...`);
     }
   }, [onWebGLError]);
 
   // Prepare CSS custom properties for fallback
   const cssCustomProps = useMemo(() => {
     // Ensure exactly 2 colors for CSS gradient
-    const colors = gradientColors.length >= 2 
-      ? [gradientColors[0], gradientColors[1]]
-      : gradientColors.length === 1
+    const colors =
+      gradientColors.length >= 2
+        ? [gradientColors[0], gradientColors[1]]
+        : gradientColors.length === 1
         ? [gradientColors[0], gradientColors[0]]
-        : ["#FF9FFC", "#5227FF"]; // Last resort defaults
+        : ["var(--color-brand-magenta)", "var(--color-brand-purple)"]; // Last resort defaults
 
     return {
-      '--gb-color1': colors[0],
-      '--gb-color2': colors[1],
-      '--gb-angle': `${angle}deg`,
-      '--gb-noise': noise,
-      '--gb-blend-mode': mixBlendMode,
+      "--gb-color1": colors[0],
+      "--gb-color2": colors[1],
+      "--gb-angle": `${angle}deg`,
+      "--gb-noise": noise,
+      "--gb-blend-mode": mixBlendMode,
     } as React.CSSProperties;
   }, [gradientColors, angle, noise, mixBlendMode]);
 
   // Advanced cleanup utility
-  const callIfFn = <T extends object, K extends keyof T>(
-    obj: T | null,
-    key: K
-  ) => {
+  const callIfFn = <T extends object, K extends keyof T>(obj: T | null, key: K) => {
     if (obj && typeof obj[key] === "function") {
       (obj[key] as unknown as () => void).call(obj);
     }
@@ -292,13 +296,13 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
         alpha: true,
         antialias: true,
       });
-      
+
       rendererRef.current = renderer;
       const gl = renderer.gl;
-      
+
       // Set clear color to transparent so gradient shows through
       gl.clearColor(0, 0, 0, 0);
-      
+
       const canvas = gl.canvas as HTMLCanvasElement;
 
       canvas.className = "gradient-blinds-canvas";
@@ -487,28 +491,16 @@ void main() {
       geometryRef.current = geometry;
       const mesh = new Mesh(gl, { geometry, program });
       meshRef.current = mesh;
-      
-      console.log('[GradientBlinds] WebGL renderer initialized successfully');
-      console.log('[GradientBlinds] Gradient colors:', gradientColors);
 
       const resize = () => {
         const rect = container.getBoundingClientRect();
         renderer.setSize(rect.width, rect.height);
-        uniforms.iResolution.value = [
-          gl.drawingBufferWidth,
-          gl.drawingBufferHeight,
-          1,
-        ];
+        uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1];
 
         if (blindMinWidth && blindMinWidth > 0) {
-          const maxByMinWidth = Math.max(
-            1,
-            Math.floor(rect.width / blindMinWidth)
-          );
+          const maxByMinWidth = Math.max(1, Math.floor(rect.width / blindMinWidth));
 
-          const effective = blindCount
-            ? Math.min(blindCount, maxByMinWidth)
-            : maxByMinWidth;
+          const effective = blindCount ? Math.min(blindCount, maxByMinWidth) : maxByMinWidth;
           uniforms.uBlindCount.value = Math.max(1, effective);
         } else {
           uniforms.uBlindCount.value = Math.max(1, blindCount);
@@ -560,14 +552,14 @@ void main() {
           try {
             renderer.render({ scene: meshRef.current });
             // Notify parent when WebGL is ready after first successful render
-            if (!webglInitialized && t > 100) { // Small delay to ensure stability
+            if (!webglInitialized && t > 100) {
+              // Small delay to ensure stability
               setWebglInitialized(true);
               onWebGLReady?.();
             }
           } catch (e) {
-            console.error('[GradientBlinds] Render error:', e);
-            setWebglSupport({ supported: false, error: 'Rendering failed' });
-            onWebGLError?.('Rendering failed');
+            setWebglSupport({ supported: false, error: "Rendering failed" });
+            onWebGLError?.("Rendering failed");
           }
         }
       };
@@ -580,40 +572,31 @@ void main() {
         if (canvas.parentElement === container) {
           container.removeChild(canvas);
         }
-        
+
         // Advanced cleanup pattern from specification
         callIfFn(programRef.current, "remove");
         callIfFn(geometryRef.current, "remove");
         callIfFn(meshRef.current as unknown as { remove?: () => void }, "remove");
-        callIfFn(
-          rendererRef.current as unknown as { destroy?: () => void },
-          "destroy"
-        );
+        callIfFn(rendererRef.current as unknown as { destroy?: () => void }, "destroy");
         programRef.current = null;
         geometryRef.current = null;
         meshRef.current = null;
         rendererRef.current = null;
       };
     } catch (error) {
-      console.error('[GradientBlinds] WebGL initialization error:', error);
-      const errorMsg = error instanceof Error ? error.message : 'WebGL initialization failed';
+      const errorMsg = error instanceof Error ? error.message : "WebGL initialization failed";
       setWebglSupport({ supported: false, error: errorMsg });
       onWebGLError?.(errorMsg);
       return undefined;
     }
-  }, [
-    webglSupport?.supported,
-    dpr,
-    onWebGLReady,
-    onWebGLError,
-  ]); // OPTIMIZED: Only rebuild context when absolutely necessary
+  }, [webglSupport?.supported, dpr, onWebGLReady, onWebGLError]); // OPTIMIZED: Only rebuild context when absolutely necessary
 
   // Separate effect for updating uniforms without rebuilding WebGL context
   useEffect(() => {
     if (!webglSupport?.supported || !programRef.current) return;
 
     const program = programRef.current;
-    
+
     try {
       // Update gradient colors
       const { arr: colorStops, count: colorCount } = prepStops(gradientColors);
@@ -664,9 +647,7 @@ void main() {
       if (program.uniforms.uPaused) {
         program.uniforms.uPaused.value = paused ? 1.0 : 0.0;
       }
-    } catch (error) {
-      console.warn('[GradientBlinds] Uniform update error:', error);
-    }
+    } catch (error) {}
   }, [
     webglSupport?.supported,
     gradientColors,
@@ -687,14 +668,14 @@ void main() {
   // Render WebGL container or CSS fallback
   if (!webglSupport?.supported) {
     return (
-      <div className={`gradient-blinds-container gradient-blinds-fallback ${className || ''}`}>
+      <div className={`gradient-blinds-container gradient-blinds-fallback ${className || ""}`}>
         {/* CSS Fallback with current admin settings */}
-        <div 
+        <div
           className="gradient-blinds-css-fallback"
           style={cssCustomProps}
           aria-label="Gradient background (static preview)"
         />
-        
+
         {/* User feedback for fallback mode */}
         <div className="gradient-blinds-fallback-notice" aria-live="polite">
           <div className="fallback-message">
@@ -711,7 +692,9 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`gradient-blinds-container ${webglInitialized ? 'webgl-ready' : 'webgl-loading'} ${className || ''}`}
+      className={`gradient-blinds-container ${webglInitialized ? "webgl-ready" : "webgl-loading"} ${
+        className || ""
+      }`}
       style={cssCustomProps}
     />
   );

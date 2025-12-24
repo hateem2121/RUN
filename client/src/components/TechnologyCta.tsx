@@ -64,7 +64,7 @@ const TechnologyCta: React.FC<TechnologyCtaProps> = ({
 
                 <p
                   className="
-                  text-base leading-relaxed m-0 text-[#eceff1] text-center
+                  text-base leading-relaxed m-0 text-muted-foreground/80 text-center
                   max-md:text-sm
                   group-hover:text-foreground
                 "

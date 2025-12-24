@@ -238,16 +238,13 @@ function NotificationItem({ notification }: NotificationItemProps) {
         {!notification.persistent && notification.duration && notification.duration > 0 && (
           <div className="mt-3 bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
             <div
-              className={cn("h-full rounded-full transition-all ease-linear", {
+              className={cn("h-full rounded-full notification-progress", {
                 "bg-green-500": notification.type === "success",
                 "bg-red-500": notification.type === "error",
                 "bg-amber-500": notification.type === "warning",
                 "bg-blue-500": notification.type === "info",
               })}
-              style={{
-                animation: `shrink ${notification.duration}ms linear`,
-                transformOrigin: "left center",
-              }}
+              style={{ animationDuration: `${notification.duration}ms` }}
             />
           </div>
         )}
@@ -320,25 +317,6 @@ export function useWarningNotification() {
     },
     [addNotification],
   );
-}
-
-// Add CSS animation for progress bar
-const styles = `
-@keyframes shrink {
-  from {
-    transform: scaleX(1);
-  }
-  to {
-    transform: scaleX(0);
-  }
-}
-`;
-
-// Inject styles into document head
-if (typeof document !== "undefined") {
-  const styleElement = document.createElement("style");
-  styleElement.textContent = styles;
-  document.head.appendChild(styleElement);
 }
 
 export default NotificationProvider;

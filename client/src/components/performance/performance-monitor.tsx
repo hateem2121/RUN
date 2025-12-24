@@ -57,7 +57,7 @@ function PerformanceMonitorComponent({
     gsapInstances: 0,
     scrollTriggerInstances: 0,
     errorCount: 0,
-    lastUpdated: Date.now(),
+    lastUpdated: 0, // Deterministic initial state
   });
 
   const renderStartTime = useRef<number>(0);
@@ -227,8 +227,6 @@ function PerformanceMonitorComponent({
       clearInterval(memoryInterval);
       clearInterval(gsapInterval);
       window.removeEventListener("error", errorHandler);
-
-      console.log(`🔍 PerformanceMonitor[${componentName}]: Monitoring stopped`);
     };
   }, [
     enabled,
@@ -244,16 +242,6 @@ function PerformanceMonitorComponent({
   // Phase 3: Performance Metrics Logging
   useEffect(() => {
     if (!enabled) return;
-
-    console.log(`🔍 PerformanceMonitor[${componentName}]: Metrics Updated`, {
-      renderTime: `${metrics.renderTime.toFixed(2)}ms`,
-      memoryUsage: `${(metrics.memoryUsage / 1024 / 1024).toFixed(2)}MB`,
-      animationFPS: `${metrics.animationFPS}fps`,
-      gsapInstances: metrics.gsapInstances,
-      scrollTriggerInstances: metrics.scrollTriggerInstances,
-      errorCount: metrics.errorCount,
-      lastUpdated: new Date(metrics.lastUpdated).toLocaleTimeString(),
-    });
   }, [enabled, componentName, metrics]);
 
   // Phase 3: Render the monitored component

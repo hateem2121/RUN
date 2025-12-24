@@ -1,12 +1,7 @@
 import type { MediaAsset } from "@shared/schema";
 import { ArrowRight, Box } from "lucide-react";
 import * as React from "react";
-import {
-  CardContent,
-  CardHeader,
-  LiquidButton,
-  LiquidGlassCard,
-} from "@/components/ui/glass-card";
+import { CardContent, CardHeader, LiquidButton, LiquidGlassCard } from "@/components/ui/glass-card";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 
@@ -50,7 +45,7 @@ export const ProductCard = React.memo(function ProductCard({
                 config={{
                   autoRotate: true,
                   cameraControls: true,
-                  backgroundColorHex: "#1e1e1e",
+                  backgroundColorHex: "var(--color-neutral-900)",
                   exposure: 1.2,
                   shadowIntensity: 0.8,
                   loading: "auto",
@@ -71,9 +66,7 @@ export const ProductCard = React.memo(function ProductCard({
             <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center backdrop-blur-xl">
               <div className="text-center space-y-3">
                 <Box className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-white/60" />
-                <p className="text-white/60 text-xs sm:text-sm font-medium">
-                  3D Model
-                </p>
+                <p className="text-white/60 text-xs sm:text-sm font-medium">3D Model</p>
               </div>
             </div>
           ) : imageUrl ? (

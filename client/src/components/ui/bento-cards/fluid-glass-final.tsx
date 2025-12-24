@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   AmbientLight,
   DirectionalLight,
@@ -36,7 +36,7 @@ const FluidGlass = memo(function FluidGlass({
   const mouseRef = useRef({ x: 0, y: 0 });
   const animationIdRef = useRef<number>(0);
   const [isLoading, setIsLoading] = useState(true);
-  const componentId = useRef(`fluid-glass-${Date.now()}-${Math.random()}`);
+  const componentId = useId(); // P1 FIX: SSR-stable ID
 
   const modeProps = mode === "lens" ? lensProps : mode === "bar" ? barProps : cubeProps;
 
@@ -147,7 +147,6 @@ const FluidGlass = memo(function FluidGlass({
 
     // Enhanced cleanup to prevent memory leaks
     return () => {
-      console.log(`[${componentId.current}] Cleaning up Three.js instance...`);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
 

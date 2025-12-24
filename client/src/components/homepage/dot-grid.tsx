@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { gsap } from "gsap";
 import type React from "react";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
@@ -6,7 +6,7 @@ import "./dot-grid.css";
 
 function throttle<F extends (...args: any[]) => any>(
   func: F,
-  limit: number
+  limit: number,
 ): (...args: Parameters<F>) => ReturnType<F> | void {
   let lastCall = 0;
   return function (this: ThisParameterType<F>, ...args: Parameters<F>): ReturnType<F> | void {
@@ -55,8 +55,8 @@ function hexToRgb(hex: string) {
 export const DotGrid = memo(function DotGrid({
   dotSize = 16,
   gap = 32,
-  baseColor = "#5227FF",
-  activeColor = "#5227FF",
+  baseColor = "var(--color-brand-purple)",
+  activeColor = "var(--color-brand-purple)",
   proximity = 150,
   speedTrigger = 100,
   shockRadius = 250,
@@ -218,7 +218,6 @@ export const DotGrid = memo(function DotGrid({
       // CRITICAL FIX: Null safety check before accessing canvas
       const canvas = canvasRef.current;
       if (!canvas) {
-        console.warn('[DotGrid] Canvas ref is null during onMove - skipping interaction');
         return;
       }
 
@@ -255,8 +254,8 @@ export const DotGrid = memo(function DotGrid({
           gsap.killTweensOf(dot);
 
           // Simulate inertia without the plugin
-          const pushX = (dot.cx - pr.x) + vx * 0.01;
-          const pushY = (dot.cy - pr.y) + vy * 0.01;
+          const pushX = dot.cx - pr.x + vx * 0.01;
+          const pushY = dot.cy - pr.y + vy * 0.01;
 
           gsap.to(dot, {
             xOffset: pushX,
@@ -284,7 +283,6 @@ export const DotGrid = memo(function DotGrid({
       // CRITICAL FIX: Null safety check before accessing canvas
       const canvas = canvasRef.current;
       if (!canvas) {
-        console.warn('[DotGrid] Canvas ref is null during onClick - skipping interaction');
         return;
       }
 
@@ -330,15 +328,7 @@ export const DotGrid = memo(function DotGrid({
       window.removeEventListener("mousemove", throttledMove);
       window.removeEventListener("click", onClick);
     };
-  }, [
-    maxSpeed,
-    speedTrigger,
-    proximity,
-    resistance,
-    returnDuration,
-    shockRadius,
-    shockStrength,
-  ]);
+  }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
 
   return (
     <section className={`dot-grid ${className}`} style={style}>

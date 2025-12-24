@@ -1,8 +1,4 @@
-import type {
-  Category,
-  HomepageFeaturedProductsSettings,
-  Product,
-} from "@shared/schema";
+import type { Category, HomepageFeaturedProductsSettings, Product } from "@shared/schema";
 import { ArrowRight } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Link } from "wouter";
@@ -10,10 +6,7 @@ import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-
 import { SwipeableMediaCard } from "@/components/homepage/swipeable-media-card";
 import { ButtonHoverMultiple } from "@/components/ui/button-hover-multiple";
 import { LiquidGlassTitle } from "@/components/ui/glass-card";
-import {
-  buildProductMediaItems,
-  buildProductUrl,
-} from "@/lib/product-transformers";
+import { buildProductMediaItems, buildProductUrl } from "@/lib/product-transformers";
 
 const DotGrid = lazy(() =>
   import("@/components/homepage/dot-grid").then((m) => ({
@@ -45,21 +38,15 @@ export function FeaturedProductGrid({
           <DotGrid
             dotSize={featuredProductsSettings?.dotGrid?.dotSize ?? 10}
             gap={featuredProductsSettings?.dotGrid?.gap ?? 15}
-            baseColor={
-              featuredProductsSettings?.dotGrid?.baseColor ?? "#5227FF"
-            }
+            baseColor={featuredProductsSettings?.dotGrid?.baseColor ?? "var(--color-brand-purple)"}
             activeColor={
-              featuredProductsSettings?.dotGrid?.activeColor ?? "#5227FF"
+              featuredProductsSettings?.dotGrid?.activeColor ?? "var(--color-brand-purple)"
             }
             proximity={featuredProductsSettings?.dotGrid?.proximity ?? 120}
             shockRadius={featuredProductsSettings?.dotGrid?.shockRadius ?? 250}
-            shockStrength={
-              featuredProductsSettings?.dotGrid?.shockStrength ?? 5
-            }
+            shockStrength={featuredProductsSettings?.dotGrid?.shockStrength ?? 5}
             resistance={featuredProductsSettings?.dotGrid?.resistance ?? 750}
-            returnDuration={
-              featuredProductsSettings?.dotGrid?.returnDuration ?? 1.5
-            }
+            returnDuration={featuredProductsSettings?.dotGrid?.returnDuration ?? 1.5}
           />
         </Suspense>
       </div>
@@ -83,10 +70,7 @@ export function FeaturedProductGrid({
             const productUrl = buildProductUrl(product, categories);
 
             return (
-              <AnimationErrorBoundary
-                key={product.id}
-                componentName="SwipeableMediaCard"
-              >
+              <AnimationErrorBoundary key={product.id} componentName="SwipeableMediaCard">
                 <SwipeableMediaCard
                   id={product.id}
                   name={product.name}
@@ -95,9 +79,7 @@ export function FeaturedProductGrid({
                   onClick={() => {
                     window.location.href = productUrl;
                   }}
-                  swipeAnimation={
-                    featuredProductsSettings?.swipeAnimation ?? undefined
-                  }
+                  swipeAnimation={featuredProductsSettings?.swipeAnimation ?? undefined}
                   data-testid={`card-product-${product.id}`}
                 />
               </AnimationErrorBoundary>

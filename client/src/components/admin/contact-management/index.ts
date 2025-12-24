@@ -1,1 +1,1 @@
-export { ContactPageSettings } from './ContactPageSettings';
+export { ContactPageSettings } from "./ContactPageSettings";

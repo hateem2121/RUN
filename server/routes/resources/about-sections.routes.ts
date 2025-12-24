@@ -26,17 +26,17 @@ const router = Router();
 
 // Param validation schema
 const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
+	id: z.string().transform(Number).pipe(z.number().int().positive()),
 });
 
 // Reorder validation schema
 const reorderSchema = z.object({
-  entries: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
+	entries: z.array(
+		z.object({
+			id: z.number().int().positive(),
+			position: z.number().int().min(0),
+		}),
+	),
 });
 
 /**
@@ -44,17 +44,21 @@ const reorderSchema = z.object({
  * Retrieve all sections
  */
 router.get("/", async (_req, res) => {
-  try {
-    const sections = await withTimeout(aboutService.getSections(), 10000, "Get about sections");
+	try {
+		const sections = await withTimeout(
+			aboutService.getSections(),
+			10000,
+			"Get about sections",
+		);
 
-    logger.info(`[AboutSections] Retrieved ${sections.length} sections`);
-    return res.json(sections);
-  } catch (error) {
-    logger.error("[AboutSections] Error getting sections:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get sections",
-    });
-  }
+		logger.info(`[AboutSections] Retrieved ${sections.length} sections`);
+		return res.json(sections);
+	} catch (error) {
+		logger.error("[AboutSections] Error getting sections:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to get sections",
+		});
+	}
 });
 
 /**
@@ -62,23 +66,27 @@ router.get("/", async (_req, res) => {
  * Retrieve single section
  */
 router.get("/:id", async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const section = await withTimeout(aboutService.getSection(id), 10000, "Get about section");
+		const section = await withTimeout(
+			aboutService.getSection(id),
+			10000,
+			"Get about section",
+		);
 
-    if (!section) {
-      return res.status(404).json({ error: "Section not found" });
-    }
+		if (!section) {
+			return res.status(404).json({ error: "Section not found" });
+		}
 
-    logger.info(`[AboutSections] Retrieved section ${id}`);
-    return res.json(section);
-  } catch (error) {
-    logger.error("[AboutSections] Error getting section:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to get section",
-    });
-  }
+		logger.info(`[AboutSections] Retrieved section ${id}`);
+		return res.json(section);
+	} catch (error) {
+		logger.error("[AboutSections] Error getting section:", error);
+		return res.status(500).json({
+			error: error instanceof Error ? error.message : "Failed to get section",
+		});
+	}
 });
 
 /**
@@ -86,42 +94,43 @@ router.get("/:id", async (req, res) => {
  * Create new section
  */
 router.post("/", requireAdmin, async (req, res) => {
-  try {
-    const validation = insertAboutSectionSchema.safeParse(req.body);
+	try {
+		const validation = insertAboutSectionSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutSections] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn("[AboutSections] Validation failed:", validation.error);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const newSection = await withTimeout(
-      aboutService.createSection(validation.data),
-      10000,
-      "Create about section",
-    );
+		const newSection = await withTimeout(
+			aboutService.createSection(validation.data),
+			10000,
+			"Create about section",
+		);
 
-    if (!newSection) {
-      throw new Error("Failed to create section");
-    }
+		if (!newSection) {
+			throw new Error("Failed to create section");
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutSections] ✅ Cache invalidated after creation");
-    } catch (cacheError) {
-      logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutSections] ✅ Cache invalidated after creation");
+		} catch (cacheError) {
+			logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
+		}
 
-    logger.info(`[AboutSections] Created section ${newSection.id}`);
-    return res.status(201).json(newSection);
-  } catch (error) {
-    logger.error("[AboutSections] Error creating section:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to create section",
-    });
-  }
+		logger.info(`[AboutSections] Created section ${newSection.id}`);
+		return res.status(201).json(newSection);
+	} catch (error) {
+		logger.error("[AboutSections] Error creating section:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to create section",
+		});
+	}
 });
 
 /**
@@ -129,43 +138,44 @@ router.post("/", requireAdmin, async (req, res) => {
  * Update section
  */
 router.patch("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
-    const validation = insertAboutSectionSchema.partial().safeParse(req.body);
+	try {
+		const { id } = idParamSchema.parse(req.params);
+		const validation = insertAboutSectionSchema.partial().safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutSections] Validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn("[AboutSections] Validation failed:", validation.error);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    const updatedSection = await withTimeout(
-      aboutService.updateSection(id, validation.data),
-      10000,
-      "Update about section",
-    );
+		const updatedSection = await withTimeout(
+			aboutService.updateSection(id, validation.data),
+			10000,
+			"Update about section",
+		);
 
-    if (!updatedSection) {
-      return res.status(404).json({ error: "Section not found" });
-    }
+		if (!updatedSection) {
+			return res.status(404).json({ error: "Section not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutSections] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutSections] ✅ Cache invalidated after update");
+		} catch (cacheError) {
+			logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
+		}
 
-    logger.info(`[AboutSections] Updated section ${id}`);
-    return res.json(updatedSection);
-  } catch (error) {
-    logger.error("[AboutSections] Error updating section:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to update section",
-    });
-  }
+		logger.info(`[AboutSections] Updated section ${id}`);
+		return res.json(updatedSection);
+	} catch (error) {
+		logger.error("[AboutSections] Error updating section:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to update section",
+		});
+	}
 });
 
 /**
@@ -173,34 +183,35 @@ router.patch("/:id", requireAdmin, async (req, res) => {
  * Delete section
  */
 router.delete("/:id", requireAdmin, async (req, res) => {
-  try {
-    const { id } = idParamSchema.parse(req.params);
+	try {
+		const { id } = idParamSchema.parse(req.params);
 
-    const deleted = await withTimeout(
-      aboutService.deleteSection(id),
-      10000,
-      "Delete about section",
-    );
+		const deleted = await withTimeout(
+			aboutService.deleteSection(id),
+			10000,
+			"Delete about section",
+		);
 
-    if (!deleted) {
-      return res.status(404).json({ error: "Section not found" });
-    }
+		if (!deleted) {
+			return res.status(404).json({ error: "Section not found" });
+		}
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutSections] ✅ Cache invalidated after deletion");
-    } catch (cacheError) {
-      logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutSections] ✅ Cache invalidated after deletion");
+		} catch (cacheError) {
+			logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
+		}
 
-    logger.info(`[AboutSections] Deleted section ${id}`);
-    return res.status(204).send();
-  } catch (error) {
-    logger.error("[AboutSections] Error deleting section:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to delete section",
-    });
-  }
+		logger.info(`[AboutSections] Deleted section ${id}`);
+		return res.status(204).send();
+	} catch (error) {
+		logger.error("[AboutSections] Error deleting section:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to delete section",
+		});
+	}
 });
 
 /**
@@ -208,39 +219,43 @@ router.delete("/:id", requireAdmin, async (req, res) => {
  * Reorder sections
  */
 router.patch("/reorder", requireAdmin, async (req, res) => {
-  try {
-    const validation = reorderSchema.safeParse(req.body);
+	try {
+		const validation = reorderSchema.safeParse(req.body);
 
-    if (!validation.success) {
-      logger.warn("[AboutSections] Reorder validation failed:", validation.error);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: validation.error.issues,
-      });
-    }
+		if (!validation.success) {
+			logger.warn(
+				"[AboutSections] Reorder validation failed:",
+				validation.error,
+			);
+			return res.status(400).json({
+				error: "Validation failed",
+				details: validation.error.issues,
+			});
+		}
 
-    // Update positions
-    const updates = await Promise.all(
-      validation.data.entries.map(({ id, position }) =>
-        aboutService.updateSection(id, { sortOrder: position }),
-      ),
-    );
+		// Update positions
+		const updates = await Promise.all(
+			validation.data.entries.map(({ id, position }) =>
+				aboutService.updateSection(id, { sortOrder: position }),
+			),
+		);
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutSections] ✅ Cache invalidated after reorder");
-    } catch (cacheError) {
-      logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
-    }
+		try {
+			await CacheOperations.invalidateAbout();
+			logger.info("[AboutSections] ✅ Cache invalidated after reorder");
+		} catch (cacheError) {
+			logger.error("[AboutSections] ❌ Cache invalidation failed:", cacheError);
+		}
 
-    logger.info(`[AboutSections] Reordered ${updates.length} sections`);
-    return res.json({ success: true, updated: updates.length });
-  } catch (error) {
-    logger.error("[AboutSections] Error reordering sections:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : "Failed to reorder sections",
-    });
-  }
+		logger.info(`[AboutSections] Reordered ${updates.length} sections`);
+		return res.json({ success: true, updated: updates.length });
+	} catch (error) {
+		logger.error("[AboutSections] Error reordering sections:", error);
+		return res.status(500).json({
+			error:
+				error instanceof Error ? error.message : "Failed to reorder sections",
+		});
+	}
 });
 
 export default router;

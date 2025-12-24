@@ -32,10 +32,11 @@
       text-rendering: optimizeLegibility;
     }
 
-    /* Disable complex transforms */
-    .transform-gpu {
-      transform: none;
-    }
+    /* REMOVED: transform-gpu override that breaks Framer Motion animations
+		.transform-gpu {
+			transform: none;
+		}
+		*/
   }
 
   /* Reduce motion preference */

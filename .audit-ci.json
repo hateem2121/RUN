@@ -1,5 +1,5 @@
 {
-  "moderate": true,
-  "allowlist": [],
-  "retry-count": 3
+	"moderate": true,
+	"allowlist": [],
+	"retry-count": 3
 }

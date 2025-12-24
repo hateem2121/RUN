@@ -3,7 +3,11 @@
  */
 
 import type { Request, Response } from "express";
-import { adminLimiter, diagnosticLimiter, generalLimiter } from "../../lib/rate-limiter.js";
+import {
+	adminLimiter,
+	diagnosticLimiter,
+	generalLimiter,
+} from "../../lib/rate-limiter.js";
 import { createErrorResponse, createSuccessResponse } from "./utils.js";
 
 /**
@@ -11,20 +15,20 @@ import { createErrorResponse, createSuccessResponse } from "./utils.js";
  * Returns detailed rate limiter statistics
  */
 export async function getRateLimiterStats(_req: Request, res: Response) {
-  try {
-    const stats = {
-      general: generalLimiter.getStats(),
-      admin: adminLimiter.getStats(),
-      diagnostic: diagnosticLimiter.getStats(),
-      timestamp: Date.now(),
-    };
+	try {
+		const stats = {
+			general: generalLimiter.getStats(),
+			admin: adminLimiter.getStats(),
+			diagnostic: diagnosticLimiter.getStats(),
+			timestamp: Date.now(),
+		};
 
-    return res.json(createSuccessResponse(stats));
-  } catch (error) {
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to get rate limiter stats"));
-  }
+		return res.json(createSuccessResponse(stats));
+	} catch (error) {
+		return res
+			.status(500)
+			.json(createErrorResponse("Failed to get rate limiter stats"));
+	}
 }
 
 /**
@@ -32,39 +36,38 @@ export async function getRateLimiterStats(_req: Request, res: Response) {
  * Returns rate limiter health status
  */
 export async function getRateLimiterHealth(_req: Request, res: Response) {
-  try {
-    const generalHealth = generalLimiter.getHealthStatus();
-    const adminHealth = adminLimiter.getHealthStatus();
-    const diagnosticHealth = diagnosticLimiter.getHealthStatus();
+	try {
+		const generalHealth = generalLimiter.getHealthStatus();
+		const adminHealth = adminLimiter.getHealthStatus();
+		const diagnosticHealth = diagnosticLimiter.getHealthStatus();
 
-    const allHealthy = 
-      generalHealth.healthy && 
-      adminHealth.healthy && 
-      diagnosticHealth.healthy;
+		const allHealthy =
+			generalHealth.healthy && adminHealth.healthy && diagnosticHealth.healthy;
 
-    const overallStatus = allHealthy
-      ? 'healthy'
-      : [generalHealth, adminHealth, diagnosticHealth].filter(h => !h.healthy).length === 1
-      ? 'degraded'
-      : 'unhealthy';
+		const overallStatus = allHealthy
+			? "healthy"
+			: [generalHealth, adminHealth, diagnosticHealth].filter((h) => !h.healthy)
+						.length === 1
+				? "degraded"
+				: "unhealthy";
 
-    return res.json(
-      createSuccessResponse({
-        overall: {
-          healthy: allHealthy,
-          status: overallStatus,
-        },
-        limiters: {
-          general: generalHealth,
-          admin: adminHealth,
-          diagnostic: diagnosticHealth,
-        },
-        timestamp: Date.now(),
-      })
-    );
-  } catch (error) {
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to get rate limiter health"));
-  }
+		return res.json(
+			createSuccessResponse({
+				overall: {
+					healthy: allHealthy,
+					status: overallStatus,
+				},
+				limiters: {
+					general: generalHealth,
+					admin: adminHealth,
+					diagnostic: diagnosticHealth,
+				},
+				timestamp: Date.now(),
+			}),
+		);
+	} catch (error) {
+		return res
+			.status(500)
+			.json(createErrorResponse("Failed to get rate limiter health"));
+	}
 }

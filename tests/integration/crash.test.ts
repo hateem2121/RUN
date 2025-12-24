@@ -4,54 +4,54 @@ import { startTestServer, type TestServer } from "./test-utils";
 const DEBUG_TOKEN = "test-token-123";
 
 describe("Process Crash Integrity (Integration Tier)", () => {
-  let server: TestServer;
+	let server: TestServer;
 
-  beforeEach(async () => {
-    server = await startTestServer({
-      NODE_ENV: "development",
-      DEBUG_ROUTE_TOKEN: DEBUG_TOKEN,
-      FORCE_EXIT_ON_CRASH: "true",
-      ENABLE_DEBUG_ROUTES: "true",
-    });
-  });
+	beforeEach(async () => {
+		server = await startTestServer({
+			NODE_ENV: "development",
+			DEBUG_ROUTE_TOKEN: DEBUG_TOKEN,
+			FORCE_EXIT_ON_CRASH: "true",
+			ENABLE_DEBUG_ROUTES: "true",
+		});
+	});
 
-  afterEach(() => {
-    server?.kill();
-  });
+	afterEach(() => {
+		server?.kill();
+	});
 
-  it("should exit with code 1 on uncaught exception", async () => {
-    try {
-      await fetch(`${server.baseUrl}/api/debug/crash`, {
-        method: "POST",
-        headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
-      });
-    } catch (e) {
-      // Expected connection reset
-    }
+	it("should exit with code 1 on uncaught exception", async () => {
+		try {
+			await fetch(`${server.baseUrl}/api/debug/crash`, {
+				method: "POST",
+				headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
+			});
+		} catch (e) {
+			// Expected connection reset
+		}
 
-    const exitCode = await new Promise<number | null>((resolve) => {
-      server.process.on("exit", (code) => resolve(code));
-      setTimeout(() => resolve(-1), 5000);
-    });
+		const exitCode = await new Promise<number | null>((resolve) => {
+			server.process.on("exit", (code) => resolve(code));
+			setTimeout(() => resolve(-1), 5000);
+		});
 
-    expect(exitCode).toBe(1);
-  }, 20000);
+		expect(exitCode).toBe(1);
+	}, 20000);
 
-  it("should exit with code 1 on unhandled rejection", async () => {
-    try {
-      await fetch(`${server.baseUrl}/api/debug/crash?type=reject`, {
-        method: "POST",
-        headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
-      });
-    } catch (e) {
-      // Expected
-    }
+	it("should exit with code 1 on unhandled rejection", async () => {
+		try {
+			await fetch(`${server.baseUrl}/api/debug/crash?type=reject`, {
+				method: "POST",
+				headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
+			});
+		} catch (e) {
+			// Expected
+		}
 
-    const exitCode = await new Promise<number | null>((resolve) => {
-      server.process.on("exit", (code) => resolve(code));
-      setTimeout(() => resolve(-1), 5000);
-    });
+		const exitCode = await new Promise<number | null>((resolve) => {
+			server.process.on("exit", (code) => resolve(code));
+			setTimeout(() => resolve(-1), 5000);
+		});
 
-    expect(exitCode).toBe(1);
-  }, 20000);
+		expect(exitCode).toBe(1);
+	}, 20000);
 });

@@ -98,7 +98,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[9999] bg-[#050505] text-[#FAFAFA] flex flex-col justify-between overflow-hidden cursor-wait"
+      className="fixed inset-0 z-max bg-[#050505] text-[#FAFAFA] flex flex-col justify-between overflow-hidden cursor-wait"
     >
       {/* Top Bar */}
       <div className="w-full p-8 md:p-12 flex justify-between items-start">

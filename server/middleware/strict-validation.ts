@@ -21,42 +21,42 @@ import { logger } from "../lib/smart-logger.js";
  * Usage: Apply after requireAdmin middleware on /api/admin/* routes
  */
 export const enforceValidation: RequestHandler = (req, _res, next) => {
-  // Only check mutation methods (POST, PATCH, PUT, DELETE)
-  const mutationMethods = ["POST", "PATCH", "PUT", "DELETE"];
-  if (!mutationMethods.includes(req.method)) {
-    return next();
-  }
+	// Only check mutation methods (POST, PATCH, PUT, DELETE)
+	const mutationMethods = ["POST", "PATCH", "PUT", "DELETE"];
+	if (!mutationMethods.includes(req.method)) {
+		return next();
+	}
 
-  // Check if route is admin route
-  if (!req.path.startsWith("/admin")) {
-    return next();
-  }
+	// Check if route is admin route
+	if (!req.path.startsWith("/admin")) {
+		return next();
+	}
 
-  // Skip if body is empty (some routes like /restore don't need body validation)
-  if (!req.body || Object.keys(req.body).length === 0) {
-    return next();
-  }
+	// Skip if body is empty (some routes like /restore don't need body validation)
+	if (!req.body || Object.keys(req.body).length === 0) {
+		return next();
+	}
 
-  // Check if the route has been validated
-  // This can be set by:
-  // 1. New validateBody middleware
-  // 2. Existing routes that set the flag manually
-  if ((req as any).__bodyValidated) {
-    return next();
-  }
+	// Check if the route has been validated
+	// This can be set by:
+	// 1. New validateBody middleware
+	// 2. Existing routes that set the flag manually
+	if ((req as any).__bodyValidated) {
+		return next();
+	}
 
-  // CHUNK 8: Soft enforcement mode - log warning but allow requests
-  // This allows existing routes with inline validation to continue working
-  // while we migrate to the new middleware pattern
-  logger.warn(`[Validation] ⚠️ Admin route using legacy validation pattern`, {
-    method: req.method,
-    path: req.path,
-    bodyKeys: Object.keys(req.body),
-    note: "Consider migrating to validateBody middleware for consistency",
-  });
+	// CHUNK 8: Soft enforcement mode - log warning but allow requests
+	// This allows existing routes with inline validation to continue working
+	// while we migrate to the new middleware pattern
+	logger.warn(`[Validation] ⚠️ Admin route using legacy validation pattern`, {
+		method: req.method,
+		path: req.path,
+		bodyKeys: Object.keys(req.body),
+		note: "Consider migrating to validateBody middleware for consistency",
+	});
 
-  // Allow request to proceed (existing routes have their own validation)
-  return next();
+	// Allow request to proceed (existing routes have their own validation)
+	return next();
 };
 
 /**
@@ -88,81 +88,81 @@ export const enforceValidation: RequestHandler = (req, _res, next) => {
  * ```
  */
 export function validateBody<T extends z.ZodType>(
-  schema: T,
-  options: {
-    allowEmpty?: boolean; // Default: false - reject empty bodies
-  } = {},
+	schema: T,
+	options: {
+		allowEmpty?: boolean; // Default: false - reject empty bodies
+	} = {},
 ): RequestHandler {
-  const { allowEmpty = false } = options;
+	const { allowEmpty = false } = options;
 
-  return (req, res, next) => {
-    try {
-      // Check for empty body
-      if (!req.body || Object.keys(req.body).length === 0) {
-        if (allowEmpty) {
-          (req as any).__bodyValidated = true;
-          return next();
-        }
+	return (req, res, next) => {
+		try {
+			// Check for empty body
+			if (!req.body || Object.keys(req.body).length === 0) {
+				if (allowEmpty) {
+					(req as any).__bodyValidated = true;
+					return next();
+				}
 
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: "EMPTY_BODY",
-            message: "Request body is required",
-            details: "This endpoint requires a request body with valid data",
-          },
-        });
-      }
+				return res.status(400).json({
+					success: false,
+					error: {
+						code: "EMPTY_BODY",
+						message: "Request body is required",
+						details: "This endpoint requires a request body with valid data",
+					},
+				});
+			}
 
-      // Validate using schema
-      // Note: Strictness should be defined at schema level using z.object().strict()
-      const validated = schema.parse(req.body);
+			// Validate using schema
+			// Note: Strictness should be defined at schema level using z.object().strict()
+			const validated = schema.parse(req.body);
 
-      // Replace req.body with validated data (ensures no extraneous fields)
-      req.body = validated;
+			// Replace req.body with validated data (ensures no extraneous fields)
+			req.body = validated;
 
-      // Mark as validated for enforceValidation middleware
-      (req as any).__bodyValidated = true;
+			// Mark as validated for enforceValidation middleware
+			(req as any).__bodyValidated = true;
 
-      logger.debug(`[Validation] ✅ Request body validated`, {
-        method: req.method,
-        path: req.path,
-      });
+			logger.debug(`[Validation] ✅ Request body validated`, {
+				method: req.method,
+				path: req.path,
+			});
 
-      next();
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        logger.warn(`[Validation] ❌ Validation failed`, {
-          method: req.method,
-          path: req.path,
-          errors: error.issues,
-        });
+			next();
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				logger.warn(`[Validation] ❌ Validation failed`, {
+					method: req.method,
+					path: req.path,
+					errors: error.issues,
+				});
 
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: "VALIDATION_ERROR",
-            message: "Invalid request data",
-            details: error.issues.map((issue) => ({
-              field: issue.path.join("."),
-              message: issue.message,
-              code: issue.code,
-            })),
-          },
-        });
-      }
+				return res.status(400).json({
+					success: false,
+					error: {
+						code: "VALIDATION_ERROR",
+						message: "Invalid request data",
+						details: error.issues.map((issue) => ({
+							field: issue.path.join("."),
+							message: issue.message,
+							code: issue.code,
+						})),
+					},
+				});
+			}
 
-      // Unexpected error
-      logger.error(`[Validation] Unexpected validation error:`, error);
-      return res.status(500).json({
-        success: false,
-        error: {
-          code: "INTERNAL_ERROR",
-          message: "Internal server error during validation",
-        },
-      });
-    }
-  };
+			// Unexpected error
+			logger.error(`[Validation] Unexpected validation error:`, error);
+			return res.status(500).json({
+				success: false,
+				error: {
+					code: "INTERNAL_ERROR",
+					message: "Internal server error during validation",
+				},
+			});
+		}
+	};
 }
 
 /**
@@ -170,7 +170,7 @@ export function validateBody<T extends z.ZodType>(
  * Useful for routes that don't accept any body data (like /restore endpoints)
  */
 export const validateEmptyBody = validateBody(z.object({}).strict(), {
-  allowEmpty: true,
+	allowEmpty: true,
 });
 
 /**
@@ -186,5 +186,5 @@ export const validateEmptyBody = validateBody(z.object({}).strict(), {
  * ```
  */
 export function strictSchema<T extends z.ZodRawShape>(shape: T) {
-  return z.object(shape).strict();
+	return z.object(shape).strict();
 }

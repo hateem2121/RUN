@@ -1,50 +1,44 @@
-# Implementation Plan - UI/UX Regression Resolution
+# Audit Phase 3: Patch Set Proposal
 
-**Status:** Proposed  
-**Date:** December 15, 2025
+**Status**: Ready for Execution
+**Goal**: Make `tsc -b` and `lint` pass while enforcing "No Freemium" policy.
 
-## Goal
+## 1. Script Fixes (TypeScript Build)
 
-Resolve the 3 critical regressions identified in the forensic audit to restore the application's functionality and "Luxury" aesthetic.
+The build is blocked by corrupt scripts (incomplete code).
+**Action**: Apply patches to comment out or stub incomplete logic.
 
-## Proposed Changes
+| File                                     | Issue        | Fix Strategy              |
+| :--------------------------------------- | :----------- | :------------------------ |
+| `scripts/extract-all-admin-data.ts`      | Syntax error | Comment out broken block  |
+| `scripts/focused-remaining-search.ts`    | Syntax error | Comment out broken block  |
+| `scripts/quick-data-sample.ts`           | Syntax error | Comment out broken block  |
+| `scripts/search-specific-content.ts`     | Syntax error | Comment out broken block  |
+| `scripts/show-user-data.ts`              | Syntax error | Comment out broken block  |
+| `client/src/hooks/use-memory-monitor.ts` | Syntax error | Comment out broken block  |
+| `utils/schema-validator.ts`              | Unused vars  | Prefix with `_` or remove |
 
-### 1. Fix Product Detail 404s (Blocker)
+## 2. Freemium Extension Purge
 
-**Problem:** The frontend generates hierarchical URLs (e.g., `/categories/men/running/t-shirt`) but the API expects/validates against a database `path` that doesn't match this format.
-**Solution:**
+**Action**: Update `.vscode/extensions.json`.
 
-- Modify `client/src/lib/product-transformers.ts` (or relevant transformer) to construct the `detailUrl` using the `product.path` directly from the database if available, or ensure the constructed path matches the API expectation.
-- Alternatively, if the frontend URL structure is desired, update the API `products.ts` to support loose matching or redirecting. _Decision: Align frontend to use the canonical `path` if present, or fix the construction logic._
+- **Remove**: `previewjs.previewjs` (Freemium)
+- **Remove**: `bruno-api.bruno` (Freemium)
 
-### 2. Restore Luxury Styles (Major)
+## 3. Lint Policy (Biome)
 
-**Problem:** `ProductCard` looks flat because Tailwind Utility classes (`bg-card`) override custom Component classes (`glass-card-light`).
-**Solution:**
+**Action**: Allow `console` in `scripts/` and `tests/` directories using `overrides` or `ignore` directives.
+Current `biome.json` applies `noConsole: error` globally. We will keep this for `client/` and `server/` but relax it for tools.
 
-- Update `client/src/pages/products-new.tsx`:
-  - Remove conflicting `bg-white` / `bg-card` classes when `glass-card-light` is used.
-  - Explicitly pass `bg-transparent` or similar to the `Card` component if necessary to allow the custom class to show through.
-- Verify `luxury-light-theme.css` variables are resolving correctly.
+## 4. API Testing (Truly Free)
 
-### 3. Fix Z-Index Inconsistencies (Minor)
+**Action**: Create `scripts/api-smoke-test.sh`.
 
-**Problem:** Components use hardcoded `z-50` instead of the design token `--z-index-modal`.
-**Solution:**
+- A simple `curl` based script to check health and a basic endpoint.
+- Zero dependencies, runs on any Mac/Linux/CI env.
 
-- Search and replace hardcoded `z-50` with `z-[var(--z-index-modal)]` (or `z-modal` if mapped in config) in critical components:
-  - `client/src/components/ui/dialog.tsx`
-  - `client/src/components/ui/sheet.tsx`
-  - `client/src/components/ui/toaster.tsx`
+## 5. Verification Plan
 
-## Verification Plan
-
-### Automated Tests
-
-- Run `npx playwright test e2e/forensic-execution.spec.ts`
-
-### Manual Verification
-
-- **Products Page:** Verify cards have the glass/gradient effect and are not just white boxes.
-- **Detail Page:** Click a product and verify it loads (no 404).
-- **Modals:** Open a modal and check it overlays correctly without stacking issues.
+1.  Run `npx tsc -b` -> Expect **Success**.
+2.  Run `npm run lint` -> Expect **Success**.
+3.  Run `sh scripts/api-smoke-test.sh` -> Expect **Success**.

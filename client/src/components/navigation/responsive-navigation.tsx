@@ -39,7 +39,7 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
   return (
     <>
       {/* Desktop Navigation - Floating Dock (hidden on mobile) - positioned to avoid logo overlap */}
-      <div className="hidden lg:block fixed top-4 left-1/2 -translate-x-1/2 z-[50] px-4 md:px-8 lg:px-12">
+      <div className="hidden lg:block fixed top-4 left-1/2 -translate-x-1/2 z-dock px-4 md:px-8 lg:px-12">
         {desktopLoading || !mounted ? (
           <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-white shadow-sm-luxury-sm border border-luxury-light">
             <IconLoader className="h-6 w-6 animate-spin text-luxury-gray-600" />
@@ -61,11 +61,11 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
             position="right"
             items={mobileItems}
             displayItemNumbering={true}
-            menuButtonColor="#000"
-            openMenuButtonColor="#000"
+            menuButtonColor="var(--color-foreground)"
+            openMenuButtonColor="var(--color-foreground)"
             changeMenuColorOnOpen={false}
-            colors={["#f5f5f5", "#e5e5e5"]}
-            accentColor="#000"
+            colors={["var(--color-neutral-100)", "var(--color-neutral-200)"]}
+            accentColor="var(--color-foreground)"
           />
         )}
       </div>

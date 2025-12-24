@@ -3,6 +3,6 @@
   height: 100%;
   position: relative;
   pointer-events: none;
-  z-index: 3;
+  z-index: var(--z-default); /* P1 FIX: Use semantic z-index */
   overflow: hidden;
 }

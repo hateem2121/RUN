@@ -1,107 +1,558 @@
-[Environment] ✅ Configuration validated and loaded successfully
-{"level":30,"time":"2025-12-22T12:05:08.286Z","service":"run-apparel-api","msg":"DatabaseCircuitBreaker initialized with retry logic (max 3 attempts) and circuit breaker"}
-[Database] ✅ HTTP-based PostgreSQL connection initialized (no more TCP pool exhaustion)
-[Security Config] Environment: production
-[Security Config] Security keys: rateLimiting,cors,headers
-[Upstash Redis] The 'url' property is missing or undefined in your Redis config.
-[Upstash Redis] The 'token' property is missing or undefined in your Redis config.
-[OTel] Starting OpenTelemetry SDK...
-[Server] ✅ Production security middleware enabled (Partial Debug Mode)
-[Server] ✅ Correlation ID & Build SHA headers enabled
-[Server] ✅ HTTP metrics tracking enabled (latency, status codes, routes)
-[Server] ✅ Prometheus metrics middleware enabled
-[Server] ✅ Performance tracking enabled (TTFB, p50/p95/p99 latency monitoring)
-[Server] ✅ Rate limiting enabled: 100 requests per 15 minutes per IP
-[Server] ✅ Production static asset caching enabled (CSS, JS, fonts, images)
-[Server] ✅ Raw binary parser configured for chunk uploads
-[Server] ✅ OpenAPI documentation available at /api-docs
-[Server] ✅ Production backup scheduler started
-[Server] ✅ Workflow automation started
-[Server] ✅ Storage lifecycle scheduler started (temp uploads auto-cleanup every 1h)
-[Server] ✅ Database keep-alive started (prevents cold starts)
-[Server] ✅ Database performance optimizations applied
-[Server] ✅ Enhanced health monitoring and error recovery systems initialized
-{"level":30,"time":"2025-12-22T12:05:08.286Z","service":"run-apparel-api","msg":"[Database] ✅ DATABASE_URL validation passed"}
-{"level":30,"time":"2025-12-22T12:05:08.295Z","service":"run-apparel-api","msg":"[Storage] Initialized Google Cloud Storage with bucket: run-media"}
-{"level":40,"time":"2025-12-22T12:05:08.296Z","service":"run-apparel-api","msg":"[Cache] ℹ️ Redis L2 credentials missing - falling back to L1 only"}
-{"level":30,"time":"2025-12-22T12:05:08.296Z","service":"run-apparel-api","msg":"[Cache] ✅ Unified Cache System initialized"}
-{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[StorageSingleton] Initializing Direct PostgreSQL Storage..."}
-{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully"}
-{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] Production-grade rate limiters initialized"}
-{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] General: 100 req/900000ms"}
-{"level":30,"time":"2025-12-22T12:05:08.297Z","service":"run-apparel-api","msg":"[RateLimiter] Admin: 30 req/900000ms"}
-{"level":30,"time":"2025-12-22T12:05:08.298Z","service":"run-apparel-api","msg":"[RateLimiter] Diagnostic: 10 req/60000ms"}
-{"level":30,"time":"2025-12-22T12:05:08.302Z","service":"run-apparel-api","msg":"[DB Retry] Database retry logic initialized (maxRetries=3, backoffMs=50, exponential)"}
-{"level":40,"time":"2025-12-22T12:05:08.303Z","service":"run-apparel-api","msg":"UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting will fall back to in-memory storage."}
-{"level":40,"time":"2025-12-22T12:05:08.311Z","service":"run-apparel-api","msg":"[Email] Gmail credentials not configured - email notifications disabled"}
-{"level":30,"time":"2025-12-22T12:05:08.367Z","service":"run-apparel-api","msg":"[UnifiedMemoryCache] 🚀 Initialized: Delegating to UnifiedCache (In-Memory)"}
-{"level":40,"time":"2025-12-22T12:05:08.370Z","service":"run-apparel-api","msg":"[AlertManager] GC monitoring enabled but --expose-gc flag not set. GC pause tracking unavailable."}
-{"level":30,"time":"2025-12-22T12:05:08.370Z","service":"run-apparel-api","slowQuery":{"durationMs":500,"consecutiveCount":3},"errorRate":{"percentageThreshold":10,"timeWindowMinutes":5},"httpErrorRate":{"percentageThreshold":5},"circuitBreaker":{"alertOnOpen":true,"alertOnHalfOpen":false},"memory":{"percentageThreshold":80},"dbConnection":{"alertOnError":true,"alertOnTimeout":true},"gcPause":{"enabled":true,"thresholdMs":100},"msg":"[AlertManager] Initialized with thresholds:"}
-{"level":30,"time":"2025-12-22T12:05:08.371Z","service":"run-apparel-api","msg":"[Config] ✅ Environment variables validated successfully"}
-{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] 🚀 Starting in production mode (CSP configured for Vite/GCP)"}
-{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] ✅ Helmet security headers enabled (CSP configured for GCP)"}
-{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","allowedOrigins":["http://localhost:5173","http://localhost:5000","http://localhost:5001"],"credentials":"[REDACTED]","msg":"[CORS] Middleware initialized for production environment"}
-{"level":30,"time":"2025-12-22T12:05:08.377Z","service":"run-apparel-api","msg":"[Server] ✅ CORS middleware enabled with origin restrictions"}
-{"level":30,"time":"2025-12-22T12:05:08.378Z","service":"run-apparel-api","msg":"[Server] Build Version: ef422c5b"}
-{"level":30,"time":"2025-12-22T12:05:08.402Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth configured"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] Mounting API routes with flat structure (/api/*)"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Auth] ✅ Admin routes protected with requireAdmin + strict validation"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)"}
-{"level":30,"time":"2025-12-22T12:05:08.403Z","service":"run-apparel-api","msg":"[Routes] Registering taxonomy routes module"}
-{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] Taxonomy routes registered successfully"}
-{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time"}
-{"level":30,"time":"2025-12-22T12:05:08.404Z","service":"run-apparel-api","msg":"[Routes] ✅ All routes registered successfully"}
-{"level":30,"time":"2025-12-22T12:05:08.449Z","service":"run-apparel-api","msg":"[Backup] Using PostgreSQL automatic backups - enhanced backup archived"}
-{"level":30,"time":"2025-12-22T12:05:08.449Z","service":"run-apparel-api","msg":"[Workflow] Using simplified automation - enhanced workflow archived"}
-{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","enabled":true,"interval":"3600s","dryRun":false,"msg":"[Lifecycle] Scheduler initialized"}
-{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting scheduler (interval: 3600000ms)"}
-{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting cleanup run #1"}
-{"level":30,"time":"2025-12-22T12:05:08.450Z","service":"run-apparel-api","msg":"[Lifecycle] Starting temp uploads cleanup (maxAge: 24h, dryRun: false)"}
-{"level":30,"time":"2025-12-22T12:05:08.455Z","service":"run-apparel-api","msg":"[Lifecycle] Scheduler started successfully"}
-{"level":30,"time":"2025-12-22T12:05:08.455Z","service":"run-apparel-api","msg":"[DB Keep-Alive] ✅ Started (ping every 4 minutes to prevent auto-suspend)"}
-{"level":30,"time":"2025-12-22T12:05:08.456Z","service":"run-apparel-api","msg":"[DB] Using PostgreSQL built-in optimization"}
-{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: private/temp/uploads/"}
-{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"[Lifecycle] No temp upload files found"}
-{"level":30,"time":"2025-12-22T12:05:09.451Z","service":"run-apparel-api","msg":"[Lifecycle] Starting orphaned files cleanup (directories: public/media/, public/thumbnails/, dryRun: false)"}
-{"level":40,"time":"2025-12-22T12:05:09.675Z","service":"run-apparel-api","durationMs":1215.8217920000002,"queryIndex":2,"msg":"[Slow Query] Database operation took 1216ms"}
-[Server] ⏳ Warming cache (this may take a few seconds)...
-[Server] ✅ Cache warming completed - critical routes ready
-{"level":30,"time":"2025-12-22T12:05:09.676Z","service":"run-apparel-api","durationMs":1217,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:05:09.676Z","msg":"[DbCircuitBreaker] db-query"}
-{"level":30,"time":"2025-12-22T12:05:09.678Z","service":"run-apparel-api","msg":"[Database] ✅ Database wakeup successful (1218ms)"}
-{"level":40,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","durationMs":1396.5621250000002,"queryIndex":2,"msg":"[Slow Query] Database operation took 1397ms"}
-{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","durationMs":1397,"attempt":1,"isRetry":false,"timestamp":"2025-12-22T12:05:09.687Z","msg":"[DbCircuitBreaker] db-query"}
-{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","pooling":"enabled","driver":"Neon HTTP (stateless)","concurrencyTracking":"enabled","metricsEndpoint":"/api/metrics/database","msg":"[Database] ✅ Connection pool metrics initialized:"}
-{"level":30,"time":"2025-12-22T12:05:09.687Z","service":"run-apparel-api","msg":"[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users"}
-{"level":30,"time":"2025-12-22T12:05:10.146Z","service":"run-apparel-api","msg":"[Lifecycle] Found 115 storage paths in database"}
-[Server] ✅ Database health check passed (715.90ms latency)
-[Server] ✅ Production security middleware enabled
-[Server] 🎯 Production readiness complete - production mode
-[Server] serving static assets from: /Users/hateemjamshaid/Downloads/RUN-Remix/dist/public
-[Server] ✅ Server timeouts configured (timeout: 120s, keep-alive: 65s)
-Server running on port 5005
-{"level":30,"time":"2025-12-22T12:05:10.398Z","service":"run-apparel-api","msg":"Server running on port 5005"}
-{"level":30,"time":"2025-12-22T12:05:11.129Z","service":"run-apparel-api","msg":"✅ Listed 114 assets with prefix: public/media/"}
-{"level":30,"time":"2025-12-22T12:05:11.130Z","service":"run-apparel-api","msg":"[Lifecycle] Found 114 files in public/media/"}
-{"level":30,"time":"2025-12-22T12:05:11.130Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/media/: 0 orphaned files deleted (114 files checked)"}
-{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"✅ Listed 0 assets with prefix: public/thumbnails/"}
-{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Found 0 files in public/thumbnails/"}
-{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Processed public/thumbnails/: 0 orphaned files deleted (114 files checked)"}
-{"level":30,"time":"2025-12-22T12:05:11.397Z","service":"run-apparel-api","msg":"[Lifecycle] Orphaned files cleanup complete: 0 deleted, ~0.00MB freed, 0 errors, 114 files checked"}
-{"level":30,"time":"2025-12-22T12:05:11.398Z","service":"run-apparel-api","duration":"2948ms","totalFilesDeleted":0,"totalStorageFreedMB":"0.00","msg":"[Lifecycle] Cleanup run complete"}
-[SSR] Handling Request: /
-[SSR] Running in Production/Build Mode
-[SSR Preload] Total imports to preload: 7
-{"level":50,"time":"2025-12-22T12:05:12.038Z","service":"run-apparel-api","correlationId":"41b40b2d-42fb-4eee-80a5-74d8dd4085aa","reason":"ReferenceError: document is not defined","err":{"type":"Error","message":"ReferenceError: document is not defined","stack":"Error: ReferenceError: document is not defined\n    at process.<anonymous> (file:///Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js:27481:7)\n    at process.emit (node:events:518:28)\n    at emitUnhandledRejection (node:internal/process/promises:252:13)\n    at throwUnhandledRejectionsMode (node:internal/process/promises:388:19)\n    at processPromiseRejections (node:internal/process/promises:475:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:106:32)"},"msg":"Unhandled Rejection detected"}
-{"level":50,"time":"2025-12-22T12:05:12.038Z","service":"run-apparel-api","correlationId":"41b40b2d-42fb-4eee-80a5-74d8dd4085aa","msg":"🛑 Critical: Exiting process due to unhandled rejection"}
-[Entry Server] Render called with URL: /
-[SSR] onShellReady called
-[SSR] Writing beforeApp length: 2180
-[SSR] beforeApp TAIL: gZ.js">
-    <link rel="stylesheet" crossorigin href="/assets/styles-core-BOxLV88u.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-CU_lqMa3.css">
-  </head>
-  <body>
-    <div id="root">
-[SSR] Piping React stream...
+
+> rest-express@1.0.0 start
+> PORT=5001 NODE_ENV=production node dist/index.js
+
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '11c687009a9fdbe01f72292891d9c228',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'eae377e27b016089',
+  kind: 2,
+  timestamp: 1766509086129000,
+  duration: 23418.292,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'a0234b16e14603ec1ee8c0bfbb5c8e89',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '9c33a950b73a615c',
+  kind: 2,
+  timestamp: 1766509086143000,
+  duration: 9897.125,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'de01b237c81364c62518ca66d740fc74',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'b0a0da0b750822d8',
+  kind: 2,
+  timestamp: 1766509086146000,
+  duration: 7034.916,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '3a120d755c639985739fd42ba380e718',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '241261aca4c9bcaf',
+  kind: 2,
+  timestamp: 1766509086162000,
+  duration: 230735.833,
+  attributes: {
+    'peer.ipv4': '142.250.202.42',
+    'peer[1].ipv4': '142.251.38.10',
+    'peer[2].ipv4': '142.250.202.202',
+    'peer[3].ipv4': '142.250.186.234',
+    'peer[4].ipv4': '142.250.202.170',
+    'peer[5].ipv4': '142.251.38.42',
+    'peer[6].ipv4': '142.250.186.10',
+    'peer[7].ipv4': '142.250.202.234'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '5b3ca505f2e3370d06ff7b5e5c571150',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'f694cc4d2f620af4',
+  kind: 2,
+  timestamp: 1766509087871000,
+  duration: 2288.125,
+  attributes: {
+    'peer.ipv4': '142.250.186.27',
+    'peer[1].ipv4': '142.250.184.123',
+    'peer[2].ipv4': '142.250.202.219',
+    'peer[3].ipv4': '142.250.202.59',
+    'peer[4].ipv4': '142.250.186.251',
+    'peer[5].ipv4': '142.250.202.187',
+    'peer[6].ipv4': '142.251.38.27',
+    'peer[7].ipv4': '142.251.38.59',
+    'peer[8].ipv4': '74.125.90.91',
+    'peer[9].ipv4': '142.250.202.251',
+    'peer[10].ipv4': '142.250.187.27'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '7e1ea9583c344f43ce99a719d50c324f',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '31ec411ae3df5097',
+  kind: 2,
+  timestamp: 1766509086111000,
+  duration: 2008047.666,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 193
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'f5486dfdf6198e051ce69e3fa9a05c86',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '0a2fe75f01a1df61',
+  kind: 2,
+  timestamp: 1766509086145000,
+  duration: 1977949.625,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'e96e043a5f4e5f99b11e840e853522d6',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '8ebc8a007a952ccb',
+  kind: 2,
+  timestamp: 1766509086139000,
+  duration: 1987762.417,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'ef955086ea4b33c17a9834fe57401b8f',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '49b77750e579b30e',
+  kind: 2,
+  timestamp: 1766509088988000,
+  duration: 261246.667,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 7534
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'bee2b55bc0c526f98433b5f47d83e672',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '1185ec9602b0209e',
+  kind: 2,
+  timestamp: 1766509088126000,
+  duration: 2249580.292,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39141,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '1f3a485eef467890441c5f68e3edd491',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '8858594bb82308ce',
+  kind: 2,
+  timestamp: 1766509090377000,
+  duration: 89.5,
+  attributes: { 'peer.ipv4': '0.0.0.0' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}

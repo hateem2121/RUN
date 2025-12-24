@@ -4,9 +4,9 @@
  */
 
 export const SECTION_NAMES = {
-  MANUFACTURING: 'manufacturing',
-  PRODUCTS: 'products',
-  SUSTAINABILITY: 'sustainability',
+	MANUFACTURING: "manufacturing",
+	PRODUCTS: "products",
+	SUSTAINABILITY: "sustainability",
 } as const;
 
-export type SectionName = typeof SECTION_NAMES[keyof typeof SECTION_NAMES];
+export type SectionName = (typeof SECTION_NAMES)[keyof typeof SECTION_NAMES];

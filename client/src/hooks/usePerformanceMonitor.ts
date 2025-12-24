@@ -8,7 +8,18 @@
 //   totalMediaSize: number;
 // }
 
-export function usePerformanceMonitor(_componentName: string, _enabled: boolean = false) {
-  // PERFORMANCE OPTIMIZATION: Disabled to fix visual selection issues
-  return { metrics: { loadTime: 0, renderTime: 0, imagesLoaded: 0, videosLoaded: 0, totalMediaSize: 0 } };
+export function usePerformanceMonitor(
+	_componentName: string,
+	_enabled: boolean = false,
+) {
+	// PERFORMANCE OPTIMIZATION: Disabled to fix visual selection issues
+	return {
+		metrics: {
+			loadTime: 0,
+			renderTime: 0,
+			imagesLoaded: 0,
+			videosLoaded: 0,
+			totalMediaSize: 0,
+		},
+	};
 }

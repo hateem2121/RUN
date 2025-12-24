@@ -4,13 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RUN APPAREL - B2B Sportswear Manufacturing</title>
-    <!-- Critical Base Styles: Prevent White Flash -->
+    <!-- Critical Base Styles: Theme-aware to prevent FOUC -->
     <style>
+      :root {
+        --critical-bg: #fafafa; /* Light mode default (zinc-50) */
+        --critical-fg: #09090b; /* Light mode text */
+      }
+      .dark {
+        --critical-bg: #09090b; /* Dark mode (zinc-950) */
+        --critical-fg: #fafafa; /* Dark mode text */
+      }
       body {
         margin: 0;
         padding: 0;
-        background-color: #09090b; /* Zinc-950/Black */
-        color: #ffffff;
+        background-color: var(--critical-bg);
+        color: var(--critical-fg);
         font-family: system-ui, -apple-system, sans-serif;
       }
       #root {
@@ -38,12 +46,13 @@
 
     <!-- Critical inline CSS to prevent broken appearance during CSS loading -->
     <style>
-      /* Critical base styles loaded immediately to prevent broken appearance */
+      /* Critical base styles - minimal to avoid specificity wars with Tailwind v4 */
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
+
       body {
         font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
         line-height: 1.6;

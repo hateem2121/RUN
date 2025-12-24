@@ -7,6 +7,7 @@ import { pathToFileURL } from "url";
 import { createServer as createViteServer, type ViteDevServer } from "vite";
 import { logging } from "../config/environment.js";
 import { getStorage } from "./storage-singleton.js";
+import { ViteAssetManager } from "./vite-manifest.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = process.cwd();
@@ -46,8 +47,6 @@ async function createSsrHandler(app: any, server?: HttpServer) {
       return next();
     }
 
-    console.log("[SSR] Handling Request:", req.originalUrl);
-
     try {
       const url = req.originalUrl;
 
@@ -77,8 +76,17 @@ async function createSsrHandler(app: any, server?: HttpServer) {
 
       if (vite) {
         template = fs.readFileSync(path.resolve(root, "client/index.html"), "utf-8");
+
+        // P0: Dark Mode - Prevent White Flash (Dev Mode)
+        const rawCookie = req.headers.cookie || "";
+        if (rawCookie.includes("theme=dark")) {
+          template = template.replace(/<html([^>]*)>/, '<html$1 class="dark">');
+          if (!template.includes('class="dark"')) {
+            template = template.replace("<html>", '<html class="dark">');
+          }
+        }
+
         // FIX: Inject CSS manually in dev mode to prevent FOUC
-        // We preferentially use the new <!--ssr-styles--> placeholder
         const cssLink = `<link rel="stylesheet" href="/src/index.css" />`;
         if (template.includes("<!--ssr-styles-->")) {
           template = template.replace("<!--ssr-styles-->", cssLink);
@@ -91,39 +99,59 @@ async function createSsrHandler(app: any, server?: HttpServer) {
         render = module.render;
         createQueryClient = module.createQueryClient;
       } else {
-        console.log("[SSR] Running in Production/Build Mode");
         template = fs.readFileSync(path.resolve(root, "dist/public/index.html"), "utf-8");
+
+        // P0: Dark Mode - Prevent White Flash
+        // Injects 'dark' class into <html> or <body> if 'theme' cookie is 'dark'
+        const rawCookie = req.headers.cookie || "";
+        if (rawCookie.includes("theme=dark")) {
+          // Robust replacement for <html class="..."> or <html>
+          template = template.replace(/<html([^>]*)>/, '<html$1 class="dark">');
+          if (!template.includes('class="dark"')) {
+            // Fallback if class attribute already exists but regex failed
+            template = template.replace("<html>", '<html class="dark">');
+          }
+        }
+
+        // P0: Security - Inject CSP Nonce into static scripts (Vite bundles)
+        if (res.locals.cspNonce) {
+          const nonce = res.locals.cspNonce;
+          // Nonce all script tags
+          template = template.replace(/<script\b([^>]*)>/g, (match, attributes) => {
+            if (attributes && attributes.includes("nonce=")) return match;
+            return `<script nonce="${nonce}"${attributes}>`;
+          });
+          // Nonce preload links
+          template = template.replace(
+            /<link\b([^>]*\brel=["'](?:modulepreload|preload)["'][^>]*)>/g,
+            (match, attributes) => {
+              if (attributes && attributes.includes("nonce=")) return match;
+              return `<link nonce="${nonce}"${attributes}>`;
+            },
+          );
+        }
+
         const entryServerPath = path.resolve(root, "dist/server/entry-server.js");
         const module = await import(pathToFileURL(entryServerPath).href);
         render = module.render;
         createQueryClient = module.createQueryClient;
 
-        // P1: FOUC Prevention - Inject Critical CSS
+        // P1: FOUC Prevention - Inject Critical CSS using Type-Safe Asset Manager
         try {
-          const manifestPath = path.resolve(root, "dist/public/.vite/manifest.json");
-          if (fs.existsSync(manifestPath)) {
-            const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-            // Find entry chunk (index.html or entry-client.tsx)
-            const entryKey = "index.html";
-            const entry = manifest[entryKey];
+          const assetManager = new ViteAssetManager(root);
+          const injectionHtml = assetManager.generateInjectionHtml();
 
-            if (entry && entry.css) {
-              const cssLinks = entry.css
-                .filter((file: string) => !template.includes(file))
-                .map((file: string) => `<link rel="stylesheet" href="/${file}">`)
-                .join("\n");
-
-              if (template.includes("<!--ssr-styles-->")) {
-                template = template.replace("<!--ssr-styles-->", cssLinks);
-              } else if (template.includes("<!--app-head-->")) {
-                template = template.replace("<!--app-head-->", `${cssLinks}\n<!--app-head-->`);
-              } else {
-                template = template.replace("</head>", `${cssLinks}</head>`);
-              }
+          if (injectionHtml) {
+            if (template.includes("<!--ssr-styles-->")) {
+              template = template.replace("<!--ssr-styles-->", injectionHtml);
+            } else if (template.includes("<!--app-head-->")) {
+              template = template.replace("<!--app-head-->", `${injectionHtml}\n<!--app-head-->`);
+            } else {
+              template = template.replace("</head>", `${injectionHtml}</head>`);
             }
           }
         } catch (e) {
-          console.error("[SSR] Failed to inject critical CSS:", e);
+          console.error("[SSR-HANDLER-ERROR] Asset Injection failed:", e);
         }
       }
 
@@ -133,9 +161,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
       try {
         const categories = await getStorage().getCategories();
         queryClient.setQueryData(["/api/categories"], categories);
-      } catch (err) {
-        console.error("SSR Prefetch Error (Categories):", err);
-      }
+      } catch (err) {}
 
       try {
         if (url === "/contact" || url.startsWith("/contact?")) {
@@ -144,9 +170,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             queryClient.setQueryData(["/api/contact-info"], contactConfig);
           }
         }
-      } catch (err) {
-        console.error("SSR Prefetch Error (Route Specific):", err);
-      }
+      } catch (err) {}
 
       // Template Marker Strategy
       // We no longer split by strings/regex. We use exact placeholder replacements.
@@ -161,26 +185,39 @@ async function createSsrHandler(app: any, server?: HttpServer) {
         res,
         {
           onShellReady() {
-            console.log("[SSR] onShellReady called");
+            console.log(`[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: ${url}`);
+            console.log(`[SSR-HANDLER-LOG] FINAL HTML NONCE: ${res.locals.cspNonce}`);
+
             res.status(200);
             res.set("Content-Type", "text/html");
 
             const { helmet } = helmetContext as any;
 
-            // Construct Head Content
+            // Construct Head Content with Nonce Injection for Helmet Scripts
+            const nonceInfo = res.locals.cspNonce ? ` nonce="${res.locals.cspNonce}"` : "";
+            const helmetScripts = helmet.script
+              .toString()
+              .replace(/<script/g, `<script${nonceInfo}`);
+
+            // P2: Dynamic Canonical URL Generation (SEO)
+            // Strip query params to prevent duplicate content penalties
+            const baseUrl = process.env.CANONICAL_BASE_URL || "https://wear-run.com";
+            const canonicalPath = url.split("?")[0] || "/";
+            const canonicalTag = `<link rel="canonical" href="${baseUrl}${canonicalPath}" />`;
+
             const headContent = `
               ${helmet.title.toString()}
               ${helmet.priority.toString()}
               ${helmet.meta.toString()}
+              ${canonicalTag}
               ${helmet.link.toString()}
-              ${helmet.script.toString()}
+              ${helmetScripts}
             `;
 
             // Prepare the stream with STRICT marker replacement
             // We expect index.html to have <!--app-head--> and <!--app-html-->
 
             if (!template.includes("<!--app-head-->") || !template.includes("<!--app-html-->")) {
-              console.error("[SSR] CRITICAL: Missing template markers in index.html");
               // We cannot recover gracefully if markers are missing in production
               res
                 .status(500)
@@ -198,18 +235,23 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             // even if it happens synchronously (no Suspense)
             const originalEnd = res.end.bind(res);
             res.end = ((chunk: any, encoding: any, cb: any) => {
-              console.log("[SSR] res.end called! Writing footer...");
               // Inject Dehydrated State and invalidation scripts
               // We dehydrate here to get the final state
               // USE SAFE VARIABLE: queryClient (from outer scope) instead of finalClient (from return value)
               const dehydratedState = dehydrate(queryClient);
 
+              // Defensive replacer for JSON.stringify to handle undefined/complex types
+              const safeJsonStringify = (obj: any) => {
+                return JSON.stringify(obj, (key, value) => {
+                  if (typeof value === "undefined") return null;
+                  return value;
+                }).replace(/</g, "\\u003c");
+              };
+
               res.write(`
+                  <!-- FAIL-SAFE: Hydration Script must have explicit Nonce -->
                   <script nonce="${res.locals.cspNonce || ""}">
-                    window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState).replace(
-                      /</g,
-                      "\\u003c",
-                    )};
+                    window.__REACT_QUERY_STATE__ = ${safeJsonStringify(dehydratedState)};
                     window.ENV = {
                       SENTRY_DSN: "${logging.sentry.dsn || ""}",
                       SENTRY_ENVIRONMENT: "${logging.sentry.environment || "production"}"
@@ -219,23 +261,12 @@ async function createSsrHandler(app: any, server?: HttpServer) {
 
               const parts = template.split("<!--app-html-->");
               const footer = parts[1] || "";
-
-              console.log("[SSR] Footer length:", footer.length);
               // Vite handles script injection via transformIndexHtml (Dev) and manifest/index.html (Prod).
               // So we just write the footer (which contains the scripts)
               res.write(footer);
-
-              console.log("[SSR] Calling originalEnd");
               return originalEnd(chunk, encoding, cb);
             }) as any;
-
-            // Flush the first part (pre-app HTML)
-            console.log("[SSR] Writing beforeApp length:", beforeApp.length);
-            console.log("[SSR] beforeApp TAIL:", beforeApp.slice(-200));
             res.write(beforeApp);
-
-            // Pipe the React Render Stream (app HTML)
-            console.log("[SSR] Piping React stream...");
             pipe(res);
           },
           onAllReady() {
@@ -253,12 +284,11 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             if (!res.headersSent) {
               res.status(500).send("<h1>Server Error</h1><pre>" + error?.message + "</pre>");
             } else {
-              console.error("SSR Shell Error (Headers already sent):", error);
               res.end();
             }
           },
           onError(error: any) {
-            console.error("SSR Render Error:", error);
+            console.error("[SSR-RENDER-ERROR]", error); // Explicit server-side log
             import("@sentry/node")
               .then((Sentry) => {
                 Sentry.captureException(error, {
@@ -268,7 +298,11 @@ async function createSsrHandler(app: any, server?: HttpServer) {
               .catch(() => {});
 
             if (!res.headersSent) {
-              res.status(500).send("<h1>Server Error (Render)</h1>");
+              res.status(500).send(`
+                <h1>Server Error (Render)</h1>
+                <p>${error?.message || "Unknown error during SSR"}</p>
+                <pre>${error?.stack || ""}</pre>
+              `);
             }
           },
         },

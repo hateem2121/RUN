@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 interface GlowingShadowProps {
-  children: ReactNode
+	children: ReactNode;
 }
 
 export function GlowingShadow({ children }: GlowingShadowProps) {
-   
-  return (
-    <>
-      <style>{`
+	return (
+		<>
+			<style>{`
         @property --hue {
           syntax: "<number>";
           inherits: true;
@@ -317,10 +316,10 @@ export function GlowingShadow({ children }: GlowingShadowProps) {
         }
       `}</style>
 
-      <div className="glow-container" role="button" tabIndex={0}>
-        <span className="glow"></span>
-        <div className="glow-content">{children}</div>
-      </div>
-    </>
-  )
+			<div className="glow-container" role="button" tabIndex={0}>
+				<span className="glow"></span>
+				<div className="glow-content">{children}</div>
+			</div>
+		</>
+	);
 }

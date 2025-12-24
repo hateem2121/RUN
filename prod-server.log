@@ -1,0 +1,2141 @@
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'b0528d79ae0bcd001085741d49914fee',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '92d3c12d9e28fcba',
+  kind: 2,
+  timestamp: 1766509175680000,
+  duration: 230897.166,
+  attributes: {
+    'peer.ipv4': '3.218.140.61',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '54.156.15.30'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'b7c7fdca2adf3be1a250da7e43513997',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '3f34a1486ddb82e7',
+  kind: 2,
+  timestamp: 1766509175696000,
+  duration: 216031.083,
+  attributes: {
+    'peer.ipv4': '3.218.140.61',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '54.156.15.30'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'f173c21fe6251c7e3971da5c4ef93f23',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'd6815f7b2878b11f',
+  kind: 2,
+  timestamp: 1766509175700000,
+  duration: 211239.75,
+  attributes: {
+    'peer.ipv4': '3.218.140.61',
+    'peer[1].ipv4': '44.198.216.75',
+    'peer[2].ipv4': '54.156.15.30'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'cbe1d7f168f223b83dd33d3dc9115b38',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '4c080a777f7178fb',
+  kind: 2,
+  timestamp: 1766509175712000,
+  duration: 200059.625,
+  attributes: {
+    'peer.ipv4': '142.250.202.170',
+    'peer[1].ipv4': '142.250.202.202',
+    'peer[2].ipv4': '142.251.38.10',
+    'peer[3].ipv4': '142.250.186.234',
+    'peer[4].ipv4': '142.251.38.42',
+    'peer[5].ipv4': '142.250.186.10',
+    'peer[6].ipv4': '142.250.202.234',
+    'peer[7].ipv4': '142.250.202.42'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '2f99f9317c61477e6e6a3c7bd75b838a',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '5bcb155eecb384fc',
+  kind: 2,
+  timestamp: 1766509176571000,
+  duration: 2453.125,
+  attributes: {
+    'peer.ipv4': '142.250.202.59',
+    'peer[1].ipv4': '142.250.184.123',
+    'peer[2].ipv4': '142.250.202.219',
+    'peer[3].ipv4': '74.125.90.91',
+    'peer[4].ipv4': '142.250.202.251',
+    'peer[5].ipv4': '142.251.38.59',
+    'peer[6].ipv4': '142.250.186.251',
+    'peer[7].ipv4': '142.250.202.187',
+    'peer[8].ipv4': '142.251.38.27',
+    'peer[9].ipv4': '142.250.187.27',
+    'peer[10].ipv4': '142.250.186.27'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'e27afbf3a726dab0ba0eb7fe213a4e78',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '069676bf1d3e6ca4',
+  kind: 2,
+  timestamp: 1766509175692000,
+  duration: 909764.25,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'c0fadc643db68a0c55c0c55151cce473',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '09f5622bfb087d6c',
+  kind: 2,
+  timestamp: 1766509175661000,
+  duration: 1104790.584,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 193
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'b3300adec187122c1a2e56d171777b55',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: 'b8c364b36487d73e',
+  kind: 2,
+  timestamp: 1766509175697000,
+  duration: 1073766.833,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '129749d3fda52d192b26db88b6a746c0',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '98bc9e4363b06258',
+  kind: 2,
+  timestamp: 1766509176774000,
+  duration: 296009.666,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 189
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '351816201822a55458b312eba4b9c5c8',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'a264369d87695565',
+  kind: 2,
+  timestamp: 1766509177072000,
+  duration: 281.25,
+  attributes: { 'peer.ipv4': '0.0.0.0' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '1ae55f9cfe4afccd4f11ed57ab912035',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '56d7375582094ee0',
+  kind: 2,
+  timestamp: 1766509178343000,
+  duration: 237467.083,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 7534
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: azlQwa2qgQxyWHD+kcKszw==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: 7aACKIyoXn9tbXFuHZMVqg==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: MKAwcXNaE4090TV/gd8tbg==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: AlQgpD3WVhqyNalpyTjYMg==
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '91281da5f094f084f290ad269a83e931',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '6070d61123ce8397',
+  kind: 2,
+  timestamp: 1766509181480000,
+  duration: 3120,
+  attributes: {
+    'peer.ipv4': '44.198.216.75',
+    'peer[1].ipv4': '54.156.15.30',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '519bf928dc2cc605cdb31c801caed01a',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '4ab886458f670abe',
+  kind: 2,
+  timestamp: 1766509181480000,
+  duration: 3012.292,
+  attributes: {
+    'peer.ipv4': '44.198.216.75',
+    'peer[1].ipv4': '54.156.15.30',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'aa06088602c834f7b0534a31ac7dc03d',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '3a705dd6d35305eb',
+  kind: 2,
+  timestamp: 1766509181481000,
+  duration: 2721.584,
+  attributes: {
+    'peer.ipv4': '44.198.216.75',
+    'peer[1].ipv4': '54.156.15.30',
+    'peer[2].ipv4': '3.218.140.61'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'e7163abdac024a49a271d7d272b182f9',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: 'd660cc656fbd3624',
+  kind: 2,
+  timestamp: 1766509181476000,
+  duration: 255092.417,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 3919
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '9748df7d98231b3704df7e17f43c64d1',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'bd1726d094dccfee',
+  kind: 2,
+  timestamp: 1766509182449000,
+  duration: 9245.833,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '79480bb966d82e50758584d45cedac9f',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '92017ec537df9ea3',
+  kind: 2,
+  timestamp: 1766509182474000,
+  duration: 330223.042,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '8f7fc2a5dd38a0c953265a0206ef6d11',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: 'eb7e099d3685007d',
+  kind: 2,
+  timestamp: 1766509181478000,
+  duration: 1332896.125,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 3919
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '278e0bb8c456f4f1e0ba2e0688076559',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '60820c6a9b6747fa',
+  kind: 2,
+  timestamp: 1766509181479000,
+  duration: 1343503.667,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 3919
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'aa7529e5ce556241078bd2c710dc71b2',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '1c2c9f884484d211',
+  kind: 2,
+  timestamp: 1766509182818000,
+  duration: 13393,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '3a96245296bd70d86458ff90ed9c183e',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'd396f9c9c0636ddd',
+  kind: 2,
+  timestamp: 1766509182828000,
+  duration: 4090.75,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '86817d60a2c8aad40be5505fdee134ef',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: '78e9bb6b4e241130',
+  kind: 2,
+  timestamp: 1766509182449000,
+  duration: 386053.834,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '3d38c9aa2dcbb66dbb770d57716fd3cf',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: 'ce126e8f265c980b',
+  kind: 2,
+  timestamp: 1766509182842000,
+  duration: 295641.209,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'cd2f5411846cfd6f885e7982500f01c6',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: '3b4dd224feebcf32',
+  kind: 2,
+  timestamp: 1766509182818000,
+  duration: 324026.459,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '08e23219ed00f4ebb46ae4a31943f680',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '9435fabc902a78ea',
+  kind: 2,
+  timestamp: 1766509182849000,
+  duration: 304750.125,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'd56b313f8de5e986c6d5973ce336ef50',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: 'd12d42039b99de70',
+  kind: 2,
+  timestamp: 1766509181477000,
+  duration: 1678808.708,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 3919
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'ef3eae537270e643ca2c82aefd7f848a',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: '7a4d9edabcf5f5ac',
+  kind: 2,
+  timestamp: 1766509182827000,
+  duration: 346985.125,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'a89245e31a8037889ca36c5d2345dd4a',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '2f61ec93760f0aeb',
+  kind: 2,
+  timestamp: 1766509183173000,
+  duration: 236466.042,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '3.218.140.61',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '0f3248e401e1e77b4a1d22892c90acce',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: 'ce1d8cc6b35414c8',
+  kind: 2,
+  timestamp: 1766509183162000,
+  duration: 249305.375,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: LRmAlcr0AyfKYO5fvNxovA==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: CITot/2h47hcRbxUBbe26A==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: bCyNGY04dia1MuOTzxAVRQ==
+[SSR-HANDLER-LOG] PROOF OF EXECUTION FOR: /
+[SSR-HANDLER-LOG] FINAL HTML NONCE: UNhGpgYJX6tnN8JgiDtkzA==
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '34098204a2ae5e82dfcab492dffbe145',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'e1d8238ed7a0c821',
+  kind: 2,
+  timestamp: 1766509207301000,
+  duration: 2077.334,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '3.218.140.61',
+    'peer[2].ipv4': '44.198.216.75'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '745f702fb87f499888628a88833f6766',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '63995c2b0055f483',
+  kind: 2,
+  timestamp: 1766509207381000,
+  duration: 38132,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '3.218.140.61',
+    'peer[2].ipv4': '44.198.216.75'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '09e610183b9f3d31486b92f4aa505fb3',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'af7369f3aadeead6',
+  kind: 2,
+  timestamp: 1766509207425000,
+  duration: 18659.75,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '3.218.140.61',
+    'peer[2].ipv4': '44.198.216.75'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: '7eee0429169b6a63a66d5f9cc4cb4ee8',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: '33e2793759bf5be0',
+  kind: 2,
+  timestamp: 1766509207439000,
+  duration: 4758.209,
+  attributes: { 'peer.ipv6': '::1', 'peer[1].ipv4': '127.0.0.1' },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-dns',
+    version: '0.52.0',
+    schemaUrl: undefined
+  },
+  traceId: 'f27e43ddb0eef3e9268d54c853f44f8b',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'dns.lookup',
+  id: 'aacc1049b66918f7',
+  kind: 2,
+  timestamp: 1766509207448000,
+  duration: 2388.458,
+  attributes: {
+    'peer.ipv4': '54.156.15.30',
+    'peer[1].ipv4': '3.218.140.61',
+    'peer[2].ipv4': '44.198.216.75'
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '13e8727864b8778200283aee26f39084',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '99f06a1ab66b324b',
+  kind: 2,
+  timestamp: 1766509207299000,
+  duration: 1221735.584,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '762ee186fe767dd29eae462d0a7cbad5',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: 'd47cecd761185d2c',
+  kind: 2,
+  timestamp: 1766509207285000,
+  duration: 1241883.333,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '83dd3064609142fa380adbb66e9eb26c',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '2fe62c1b9e4d7b20',
+  kind: 2,
+  timestamp: 1766509207424000,
+  duration: 1315211.541,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '8567e0a4c5250916e912af526772ae96',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '1c5a6afdcb2bba27',
+  kind: 2,
+  timestamp: 1766509207447000,
+  duration: 1294172.25,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '2fc9b5faf2ce385654696b12223a5509',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'POST',
+  id: '24d2f638f63011b9',
+  kind: 2,
+  timestamp: 1766509207379000,
+  duration: 1362898.75,
+  attributes: {
+    'http.request.method': 'POST',
+    'http.request.method_original': 'POST',
+    'url.full': 'https://api.c-2.us-east-1.aws.neon.tech/sql',
+    'url.path': '/sql',
+    'url.query': '',
+    'url.scheme': 'https',
+    'server.address': 'api.c-2.us-east-1.aws.neon.tech',
+    'server.port': 443,
+    'user_agent.original': 'node',
+    'network.peer.address': '44.198.216.75',
+    'network.peer.port': 443,
+    'http.response.status_code': 200,
+    'http.response.header.content-length': 4998
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: '0b79636cd5ca113803d0cfba21a265ef',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: 'fff0b5e942dfee7c',
+  kind: 2,
+  timestamp: 1766509207406000,
+  duration: 1338410.666,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'cbc4647aca1076d4323458679a0c5cc4',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: '9d3b04fe6bbb26b9',
+  kind: 2,
+  timestamp: 1766509207439000,
+  duration: 1305662.958,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+{
+  resource: {
+    attributes: {
+      'host.name': 'MacBook-Pro.local',
+      'host.arch': 'amd64',
+      'host.id': 'EB95E7B6-302A-581E-8E60-5E3E12F36F7B',
+      'process.pid': 39615,
+      'process.executable.name': 'node',
+      'process.executable.path': '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+      'process.command_args': [
+        '/usr/local/Cellar/node@22/22.14.0_1/bin/node',
+        '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js'
+      ],
+      'process.runtime.version': '22.14.0',
+      'process.runtime.name': 'nodejs',
+      'process.runtime.description': 'Node.js',
+      'process.command': '/Users/hateemjamshaid/Downloads/RUN-Remix/dist/index.js',
+      'process.owner': 'hateemjamshaid',
+      'service.name': 'api-server',
+      'service.version': '7d458790',
+      'deployment.environment': 'production'
+    }
+  },
+  instrumentationScope: {
+    name: '@opentelemetry/instrumentation-undici',
+    version: '0.19.0',
+    schemaUrl: undefined
+  },
+  traceId: 'f4a615406dd3373e36dbd2f00e17e2aa',
+  parentSpanContext: undefined,
+  traceState: undefined,
+  name: 'GET',
+  id: 'a1ad8143f55d8f16',
+  kind: 2,
+  timestamp: 1766509207373000,
+  duration: 1371836.125,
+  attributes: {
+    'http.request.method': 'GET',
+    'http.request.method_original': 'GET',
+    'url.full': 'http://localhost:5002/api/products?featured=true',
+    'url.path': '/api/products',
+    'url.query': '?featured=true',
+    'url.scheme': 'http',
+    'server.address': 'localhost',
+    'server.port': 5002,
+    'user_agent.original': 'node',
+    'network.peer.address': '127.0.0.1',
+    'network.peer.port': 5002,
+    'http.response.status_code': 200
+  },
+  status: { code: 0 },
+  events: [],
+  links: []
+}

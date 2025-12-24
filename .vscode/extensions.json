@@ -1,39 +1,37 @@
 {
-  "recommendations": [
-    // === Essential Development ===
-    "rphlmr.drizzle-lab",                 // Drizzle ORM schema visualizer (FIXED)
-    "bradlc.vscode-tailwindcss",          // TailwindCSS IntelliSense
-    "dbaeumer.vscode-eslint",             // ESLint
-    "esbenp.prettier-vscode",             // Prettier formatter
-    "usernamehw.errorlens",               // Inline error display
-    
-    // === Database & Backend ===
-    "ckolkman.vscode-postgres",           // PostgreSQL management (Best available on OpenVSX)
-    "rangav.vscode-thunder-client",       // API testing
-    
-    // === Cloud & DevOps ===
-    "googlecloudtools.cloudcode",         // Google Cloud Platform tools
-    
-    // === TypeScript & React ===
-    "dsznajder.es7-react-js-snippets",    // React snippets (Audit Fix)
-    "mattpocock.ts-error-translator",     // Better TypeScript errors
-    "previewjs.previewjs",                // React component preview (FIXED - successor to zenclabs)
-    "wallabyjs.console-ninja",            // Enhanced debugging
-    
-    // === 3D Development ===
-    "cesium.gltf-vscode",                 // GLTF model tools
-    
-    // === Testing ===
-    "vitest.explorer",                    // Vitest test runner
-    "ryanluker.vscode-coverage-gutters",  // Test coverage visualization
-    
-    // === Productivity ===
-    "christian-kohler.path-intellisense", // Path autocomplete
-    "formulahendry.auto-rename-tag",      // Auto rename JSX tags
-    "wix.vscode-import-cost",             // Bundle size of imports
-    "aaron-bond.better-comments",         // Color-coded comments
-    "mhutchie.git-graph",                 // Git history visualization
-    "mikestead.dotenv"                    // .env file syntax
-  ],
-  "unwantedRecommendations": []
+	"recommendations": [
+		// === Essential Development ===
+		"biomejs.biome", // FOSS Linter & Formatter (Replaces ESLint)
+		"rphlmr.drizzle-lab", // Drizzle Visualizer
+		"bradlc.vscode-tailwindcss", // TailwindCSS IntelliSense
+		"usernamehw.errorlens", // Inline Errors
+
+		// === API & Backend ===
+		"ckolkman.vscode-postgres", // Postgres Management
+
+		// === Quality & Testing ===
+		"unifiedjs.vscode-html-validate", // HTML Validation
+		"vitest.explorer", // Test Runner
+		"ryanluker.vscode-coverage-gutters", // Coverage
+
+		// === Productivity ===
+		"christian-kohler.path-intellisense",
+		"formulahendry.auto-rename-tag",
+		"wix.vscode-import-cost",
+		"aaron-bond.better-comments",
+		"mhutchie.git-graph",
+		"mikestead.dotenv",
+
+		// === React & 3D ===
+		"dsznajder.es7-react-js-snippets",
+		"mattpocock.ts-error-translator",
+		"cesium.gltf-vscode",
+		"chakrounanas.turbo-console-log",
+		"bruno-api.bruno"
+	],
+	"unwantedRecommendations": [
+		"rangav.vscode-thunder-client",
+		"wallabyjs.console-ninja",
+		"dbaeumer.vscode-eslint"
+	]
 }

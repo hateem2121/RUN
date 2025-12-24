@@ -13,7 +13,7 @@ export function ProductsListSEO({ category, searchTerm, totalProducts }: Product
     let title = "Products";
     if (searchTerm) {
       title = `Search Results for "${searchTerm}"`;
-    } else if (category) {
+    } else if (category && category.name) {
       title = category.name;
     }
     document.title = `${title} - B2B Sportswear Manufacturing | RUN APPAREL`;
@@ -24,8 +24,10 @@ export function ProductsListSEO({ category, searchTerm, totalProducts }: Product
       let description = `Browse our professional sportswear manufacturing catalog. ${totalProducts} products available.`;
       if (searchTerm) {
         description = `Search results for "${searchTerm}" in our B2B sportswear catalog. ${totalProducts} products found.`;
-      } else if (category) {
-        description = `${category.name} manufacturing solutions. Browse ${totalProducts} professional ${category.name.toLowerCase()} products for B2B textile needs.`;
+      } else if (category && category.name) {
+        description = `${
+          category.name
+        } manufacturing solutions. Browse ${totalProducts} professional ${category.name.toLowerCase()} products for B2B textile needs.`;
       }
       metaDescription.setAttribute("content", description);
     }
@@ -36,36 +38,40 @@ export function ProductsListSEO({ category, searchTerm, totalProducts }: Product
     script.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      "name": category ? category.name : "Products",
-      "description": category?.description || "Professional B2B sportswear manufacturing catalog",
-      "breadcrumb": {
+      name: category ? category.name : "Products",
+      description: category?.description || "Professional B2B sportswear manufacturing catalog",
+      breadcrumb: {
         "@type": "BreadcrumbList",
-        "itemListElement": [
+        itemListElement: [
           {
             "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "/"
+            position: 1,
+            name: "Home",
+            item: "/",
           },
           {
             "@type": "ListItem",
-            "position": 2,
-            "name": "Products",
-            "item": "/products"
+            position: 2,
+            name: "Products",
+            item: "/products",
           },
-          ...(category ? [{
-            "@type": "ListItem",
-            "position": 3,
-            "name": category.name,
-            "item": `/categories/${category.slug}`
-          }] : [])
-        ]
+          ...(category
+            ? [
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: category.name || "Category",
+                  item: `/categories/${category.slug || ""}`,
+                },
+              ]
+            : []),
+        ],
       },
-      "mainEntity": {
+      mainEntity: {
         "@type": "ItemList",
-        "numberOfItems": totalProducts,
-        "itemListOrder": "https://schema.org/ItemListUnordered"
-      }
+        numberOfItems: totalProducts,
+        itemListOrder: "https://schema.org/ItemListUnordered",
+      },
     });
 
     document.head.appendChild(script);
