@@ -87,11 +87,10 @@ export const ProductCard = React.memo(function ProductCard({
         <CardHeader title={name} subtitle={description} />
 
         <CardContent>
-          <LiquidButton
-                <Button variant="glass" size="lg" className="w-full">
-                  Configure{" "}
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
+          <Button variant="glass" size="lg" className="w-full">
+            Configure{" "}
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </CardContent>
       </LiquidGlassCard>
     </div>

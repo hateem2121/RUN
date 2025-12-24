@@ -307,13 +307,14 @@
   .glass-card-interactive {
     @apply relative overflow-hidden rounded-xl border bg-white/10 shadow-lg backdrop-blur-md;
     @apply border-gray-800/60 dark:border-gray-900/70 dark:bg-white/5;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow-glow-lg);
     @apply transition-all duration-300;
   }
 
   .glass-card:hover,
   .glass-card-interactive:hover {
     @apply shadow-xl;
+    box-shadow: var(--shadow-glow-xl);
     border-color: rgba(255, 255, 255, 0.2);
   }
 }
