@@ -1,5 +1,6 @@
 import type { AboutHero } from "@shared/schema";
 import { ScrollExpandMedia } from "@/components/ui/scroll-expansion-hero";
+import { Typography } from "@/components/ui/typography";
 
 interface HeroSectionProps {
   heroData: Partial<AboutHero>;
@@ -24,9 +25,9 @@ export function HeroSection({ heroData, mediaUrl, mediaType = "image" }: HeroSec
     >
       {heroData.description && (
         <div className="mx-auto mb-12 max-w-4xl text-center">
-          <p className="text-lg text-muted-foreground leading-relaxed md:text-xl">
+          <Typography.P className="text-lg text-muted-foreground leading-relaxed md:text-xl">
             {heroData.description}
-          </p>
+          </Typography.P>
         </div>
       )}
     </ScrollExpandMedia>

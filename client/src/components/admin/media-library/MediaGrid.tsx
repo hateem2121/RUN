@@ -99,7 +99,7 @@ const MediaGridItem = React.memo(
         {/* Selection checkbox */}
         <div
           className={cn(
-            "absolute top-2 left-2 z-10 transition-opacity",
+            "absolute top-2 left-2 z-elevated transition-opacity",
             selectionMode ? "opacity-100" : "opacity-0 group-hover:opacity-100",
           )}
         >
@@ -121,7 +121,7 @@ const MediaGridItem = React.memo(
         </div>
 
         {/* Status badges */}
-        <div className="absolute top-2 right-2 z-20 flex gap-1">
+        <div className="absolute top-2 right-2 z-elevated flex gap-1">
           {isOptimistic && (
             <Badge variant="secondary" className="status-badge-base status-badge-info">
               Uploading
@@ -139,7 +139,7 @@ const MediaGridItem = React.memo(
 
         {/* Enhanced Media preview with video and 3D support */}
         <div
-          className="group relative flex aspect-square w-full cursor-pointer items-center justify-center bg-gray-100"
+          className="group relative z-elevated flex aspect-square w-full cursor-pointer items-center justify-center bg-gray-100"
           onClick={() => onClick(asset, index)}
           role="button"
           tabIndex={0}
@@ -193,7 +193,7 @@ const MediaGridItem = React.memo(
                 muted
                 preload="metadata"
               />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <div className="absolute inset-0 center-flex bg-black/30">
                 <Play className="h-12 w-12 text-white opacity-80" />
               </div>
             </div>
@@ -202,7 +202,9 @@ const MediaGridItem = React.memo(
               {/* STEP 3 INTEGRATION: Enhanced 3D preview using UnifiedModelViewer */}
               {/* SCROLL FIX: Disable pointer events in selection mode to prevent wheel event capture */}
               <div
-                className={`h-full w-full ${selectionMode ? "pointer-events-none" : "pointer-events-auto"}`}
+                className={`h-full w-full ${
+                  selectionMode ? "pointer-events-none" : "pointer-events-auto"
+                }`}
               >
                 <React.Suspense
                   fallback={
@@ -237,11 +239,11 @@ const MediaGridItem = React.memo(
                 </React.Suspense>
               </div>
               {/* Fallback overlay for loading/error states */}
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="pointer-events-none absolute inset-0 center-flex">
                 <Box className="h-8 w-8 text-purple-400 opacity-30" />
               </div>
               {/* 3D Model badge */}
-              <div className="absolute right-1 bottom-1 rounded bg-purple-500 px-1 py-0.5 font-medium text-[10px] text-white text-xs">
+              <div className="absolute right-1 bottom-1 rounded bg-purple-600 px-1 py-0.5 font-medium text-white text-xs">
                 3D
               </div>
             </div>
@@ -253,7 +255,7 @@ const MediaGridItem = React.memo(
           )}
 
           {/* Premium Hover Overlay */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 backdrop-blur-[0px] transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-[2px]">
+          <div className="pointer-events-none absolute inset-0 center-flex bg-black/0 opacity-0 backdrop-blur-[0px] transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-[2px]">
             <div className="pointer-events-auto flex translate-y-4 transform gap-2 transition-transform duration-300 group-hover:translate-y-0">
               <Button
                 size="sm"
@@ -308,7 +310,7 @@ const MediaGridItem = React.memo(
 
         {/* Loading overlay for optimistic uploads */}
         {isOptimistic && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+          <div className="absolute inset-0 center-flex bg-white/80">
             <div className="h-8 w-8 animate-spin rounded-full border-primary border-b-2"></div>
           </div>
         )}

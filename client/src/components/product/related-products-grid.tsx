@@ -47,7 +47,7 @@ export function RelatedProductsGrid({
           {showViewAll && viewAllUrl && (
             <Link
               href={viewAllUrl}
-              className="font-medium text-black text-sm uppercase tracking-[0.1em] underline hover:no-underline"
+              className="font-medium text-black text-sm uppercase tracking-widest underline hover:no-underline"
             >
               Explore More
             </Link>
@@ -93,7 +93,7 @@ export function RelatedProductsGrid({
       {showViewAll && viewAllUrl && (
         <div className="mt-12 text-center">
           <Link href={viewAllUrl}>
-            <button className="rounded-none bg-black px-8 py-4 font-semibold text-sm text-white uppercase tracking-[0.1em] transition-colors hover:bg-gray-900">
+            <button className="rounded-none bg-black px-8 py-4 font-semibold text-sm text-white uppercase tracking-widest transition-colors hover:bg-gray-900">
               Explore More
             </button>
           </Link>

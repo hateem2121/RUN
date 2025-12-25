@@ -57,7 +57,7 @@ export function EasingSelector({
         {label}
         <div className="group relative">
           <Info className="h-4 w-4 cursor-help text-gray-400" />
-          <div className="invisible absolute top-0 left-6 z-10 whitespace-nowrap rounded bg-black px-2 py-1 text-white text-xs group-hover:visible">
+          <div className="invisible absolute top-0 left-6 z-elevated whitespace-nowrap rounded bg-black px-2 py-1 text-white text-xs group-hover:visible">
             Controls animation speed curve
           </div>
         </div>

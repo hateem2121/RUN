@@ -212,7 +212,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             <CardTitle>3D Model Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative h-64 w-full overflow-hidden rounded-lg bg-gray-100">
+            <div className="relative z-elevated h-64 w-full overflow-hidden rounded-lg bg-gray-100">
               <LazyUnifiedModelViewer
                 asset={{
                   ...model3D,
@@ -229,7 +229,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
                 }}
                 className="h-full w-full"
               />
-              <div className="absolute bottom-2 left-2 z-10 rounded bg-black/60 px-2 py-1 text-white text-xs">
+              <div className="absolute bottom-2 left-2 z-elevated rounded bg-black/60 px-2 py-1 text-white text-xs">
                 {model3D.filename}
               </div>
             </div>

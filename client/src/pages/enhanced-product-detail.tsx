@@ -19,6 +19,7 @@ import { Link, useParams } from "wouter";
 import { ProductBreadcrumbs } from "@/components/product/product-breadcrumbs";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 
 // --- Types & Contexts ---
 
@@ -120,7 +121,9 @@ function ProductSpecs({ specs }: { specs: any[] }) {
 
   return (
     <div className="mt-12">
-      <h3 className="mb-6 font-bold text-xl tracking-tight">Technical Specifications</h3>
+      <Typography.H3 className="mb-6 font-bold text-xl tracking-tight">
+        Technical Specifications
+      </Typography.H3>
 
       {/* 
         CSS Subgrid Implementation: 
@@ -217,9 +220,9 @@ function AddToCartSection({ product }: { product: any }) {
         )}
       </button>
 
-      <p className="mt-2 text-center text-gray-400 text-xs">
+      <Typography.P className="mt-2 text-center text-gray-400 text-xs">
         Free shipping on orders over $500. Global delivery available.
-      </p>
+      </Typography.P>
     </div>
   );
 }
@@ -267,7 +270,7 @@ function ProductDetailContent() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4">
         <AlertCircle className="h-12 w-12 text-red-500" />
-        <h1 className="font-bold text-xl">Product Not Found</h1>
+        <Typography.H1 className="font-bold text-xl">Product Not Found</Typography.H1>
         <Link href="/products" className="text-blue-600 hover:underline">
           Return to Shop
         </Link>
@@ -300,9 +303,9 @@ function ProductDetailContent() {
               </span>
             </div>
 
-            <h1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl">
+            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl">
               {product.name}
-            </h1>
+            </Typography.H1>
 
             <div className="mb-8 flex items-center gap-4 text-sm">
               {product.sku && (
@@ -317,11 +320,11 @@ function ProductDetailContent() {
               </div>
             </div>
 
-            <p className="mb-8 text-pretty text-gray-600 text-lg leading-relaxed">
+            <Typography.P className="mb-8 text-pretty text-gray-600 text-lg leading-relaxed">
               {product.description ||
                 product.shortDescription ||
                 "Engineered for peak performance, this product represents the pinnacle of our material science innovation. Designed for athletes who demand the absolute best."}
-            </p>
+            </Typography.P>
 
             {/* Sizes (Mock) */}
             <div className="mb-8">
@@ -359,10 +362,10 @@ function ProductDetailContent() {
             <AddToCartSection product={product} />
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
+              <button className="center-flex gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
                 <Heart className="h-4 w-4" /> Save
               </button>
-              <button className="flex items-center justify-center gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
+              <button className="center-flex gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
                 <Share2 className="h-4 w-4" /> Share
               </button>
             </div>

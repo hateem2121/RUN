@@ -13,219 +13,217 @@ const API_BASE = process.env.API_BASE || "http://localhost:5000";
  * Enhanced API test with comprehensive validation
  */
 async function testEndpoint(endpoint, expectedStructure = {}) {
-	const startTime = Date.now();
-	try {
-		const response = await fetch(`${API_BASE}${endpoint}`);
-		const responseTime = Date.now() - startTime;
+  const startTime = Date.now();
+  try {
+    const response = await fetch(`${API_BASE}${endpoint}`);
+    const responseTime = Date.now() - startTime;
 
-		if (!response.ok) {
-			return { success: false, error: `HTTP ${response.status}`, responseTime };
-		}
+    if (!response.ok) {
+      return { success: false, error: `HTTP ${response.status}`, responseTime };
+    }
 
-		const data = await response.json();
+    const data = await response.json();
 
-		// Validate expected structure
-		const hasExpectedStructure = Object.keys(expectedStructure).every((key) =>
-			Object.hasOwn(data, key),
-		);
+    // Validate expected structure
+    const hasExpectedStructure = Object.keys(expectedStructure).every((key) =>
+      Object.hasOwn(data, key),
+    );
 
-		return {
-			success: true,
-			data,
-			responseTime,
-			hasExpectedStructure,
-			status: response.status,
-		};
-	} catch (error) {
-		return {
-			success: false,
-			error: error.message,
-			responseTime: Date.now() - startTime,
-		};
-	}
+    return {
+      success: true,
+      data,
+      responseTime,
+      hasExpectedStructure,
+      status: response.status,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message,
+      responseTime: Date.now() - startTime,
+    };
+  }
 }
 
 /**
  * Test 1: End-to-End Data Flow Verification
  */
 async function testEndToEndDataFlow() {
-	const tests = [
-		{
-			name: "Upload → Object Storage",
-			endpoint: "/api/media/test/object-storage-connectivity",
-			expected: { success: true },
-		},
-		{
-			name: "Database → Asset Creation",
-			endpoint: "/api/media?page=1&limit=5",
-			expected: { success: true, data: {} },
-		},
-		{
-			name: "Cache → Response Storage",
-			endpoint: "/api/media/cache/stats",
-			expected: { success: true },
-		},
-		{
-			name: "Frontend → Display Rendering",
-			endpoint: "/api/media?page=1&limit=24",
-			expected: { success: true, data: {} },
-		},
-	];
+  const tests = [
+    {
+      name: "Upload → Object Storage",
+      endpoint: "/api/media/test/object-storage-connectivity",
+      expected: { success: true },
+    },
+    {
+      name: "Database → Asset Creation",
+      endpoint: "/api/media?page=1&limit=5",
+      expected: { success: true, data: {} },
+    },
+    {
+      name: "Cache → Response Storage",
+      endpoint: "/api/media/cache/stats",
+      expected: { success: true },
+    },
+    {
+      name: "Frontend → Display Rendering",
+      endpoint: "/api/media?page=1&limit=24",
+      expected: { success: true, data: {} },
+    },
+  ];
 
-	let passedTests = 0;
+  let passedTests = 0;
 
-	for (const test of tests) {
-		const result = await testEndpoint(test.endpoint, test.expected);
+  for (const test of tests) {
+    const result = await testEndpoint(test.endpoint, test.expected);
 
-		if (result.success && result.hasExpectedStructure) {
-			passedTests++;
-		} else {
-		}
-	}
-	return passedTests === tests.length;
+    if (result.success && result.hasExpectedStructure) {
+      passedTests++;
+    } else {
+    }
+  }
+  return passedTests === tests.length;
 }
 
 /**
  * Test 2: Replit Services Integration
  */
 async function testReplitServicesIntegration() {
-	const services = [
-		{
-			name: "NEON Database Connection",
-			endpoint: "/api/media/health",
-			validation: (data) => data?.database?.connected === true,
-		},
-		{
-			name: "Object Storage Operations",
-			endpoint: "/api/media/test/object-storage-connectivity",
-			validation: (data) => data?.objectStorage?.connected === true,
-		},
-		{
-			name: "Key-Value Store Cache",
-			endpoint: "/api/media/cache/stats",
-			validation: (data) => data?.data?.hitRate !== undefined,
-		},
-		{
-			name: "Environment Variables",
-			endpoint: "/api/media/health",
-			validation: (data) => data?.environment?.status === "healthy",
-		},
-	];
+  const services = [
+    {
+      name: "NEON Database Connection",
+      endpoint: "/api/media/health",
+      validation: (data) => data?.database?.connected === true,
+    },
+    {
+      name: "Object Storage Operations",
+      endpoint: "/api/media/test/object-storage-connectivity",
+      validation: (data) => data?.objectStorage?.connected === true,
+    },
+    {
+      name: "Key-Value Store Cache",
+      endpoint: "/api/media/cache/stats",
+      validation: (data) => data?.data?.hitRate !== undefined,
+    },
+    {
+      name: "Environment Variables",
+      endpoint: "/api/media/health",
+      validation: (data) => data?.environment?.status === "healthy",
+    },
+  ];
 
-	let connectedServices = 0;
+  let connectedServices = 0;
 
-	for (const service of services) {
-		const result = await testEndpoint(service.endpoint);
+  for (const service of services) {
+    const result = await testEndpoint(service.endpoint);
 
-		if (result.success && service.validation(result.data)) {
-			connectedServices++;
-		} else {
-		}
-	}
-	return connectedServices >= services.length * 0.75; // 75% success threshold
+    if (result.success && service.validation(result.data)) {
+      connectedServices++;
+    } else {
+    }
+  }
+  return connectedServices >= services.length * 0.75; // 75% success threshold
 }
 
 /**
  * Test 3: Performance Benchmarks
  */
 async function testPerformanceBenchmarks() {
-	const benchmarks = [
-		{
-			endpoint: "/api/media?page=1&limit=10",
-			target: 1000,
-			name: "Media List (10 items)",
-		},
-		{ endpoint: "/api/media/45", target: 2000, name: "Single Asset Retrieval" },
-		{
-			endpoint: "/api/media/cache/stats",
-			target: 500,
-			name: "Cache Statistics",
-		},
-		{ endpoint: "/api/media/health", target: 300, name: "Health Check" },
-	];
+  const benchmarks = [
+    {
+      endpoint: "/api/media?page=1&limit=10",
+      target: 1000,
+      name: "Media List (10 items)",
+    },
+    { endpoint: "/api/media/45", target: 2000, name: "Single Asset Retrieval" },
+    {
+      endpoint: "/api/media/cache/stats",
+      target: 500,
+      name: "Cache Statistics",
+    },
+    { endpoint: "/api/media/health", target: 300, name: "Health Check" },
+  ];
 
-	let performantEndpoints = 0;
+  let performantEndpoints = 0;
 
-	for (const benchmark of benchmarks) {
-		const result = await testEndpoint(benchmark.endpoint);
+  for (const benchmark of benchmarks) {
+    const result = await testEndpoint(benchmark.endpoint);
 
-		if (result.success) {
-			const status = result.responseTime <= benchmark.target ? "✅" : "⚠️ ";
+    if (result.success) {
+      const status = result.responseTime <= benchmark.target ? "✅" : "⚠️ ";
 
-			if (result.responseTime <= benchmark.target) {
-				performantEndpoints++;
-			}
-		} else {
-		}
-	}
-	return performantEndpoints >= benchmarks.length * 0.75; // 75% performance threshold
+      if (result.responseTime <= benchmark.target) {
+        performantEndpoints++;
+      }
+    } else {
+    }
+  }
+  return performantEndpoints >= benchmarks.length * 0.75; // 75% performance threshold
 }
 
 /**
  * Test 4: Real-time UI Synchronization (Critical Phase 1 Fix Validation)
  */
 async function testRealTimeUISynchronization() {
-	// Test the specific Phase 1 fix: Cache format compatibility
-	const result = await testEndpoint("/api/media?page=1&limit=24");
+  // Test the specific Phase 1 fix: Cache format compatibility
+  const result = await testEndpoint("/api/media?page=1&limit=24");
 
-	if (!result.success) {
-		return false;
-	}
+  if (!result.success) {
+    return false;
+  }
 
-	// Validate Phase 1 fix: Both cache hit/miss formats supported
-	let assets = [];
-	let formatDetected = "unknown";
+  // Validate Phase 1 fix: Both cache hit/miss formats supported
+  let assets = [];
+  let formatDetected = "unknown";
 
-	if (Array.isArray(result.data?.data?.data)) {
-		assets = result.data.data.data;
-		formatDetected = "cache-miss (data.data.data)";
-	} else if (Array.isArray(result.data?.data)) {
-		assets = result.data.data;
-		formatDetected = "cache-hit (data.data)";
-	}
+  if (Array.isArray(result.data?.data?.data)) {
+    assets = result.data.data.data;
+    formatDetected = "cache-miss (data.data.data)";
+  } else if (Array.isArray(result.data?.data)) {
+    assets = result.data.data;
+    formatDetected = "cache-hit (data.data)";
+  }
 
-	if (assets.length > 0) {
-		return true;
-	} else {
-		return false;
-	}
+  if (assets.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
  * Main production validation execution
  */
 async function runProductionValidation() {
-	const validationResults = {
-		endToEndFlow: await testEndToEndDataFlow(),
-		replitIntegration: await testReplitServicesIntegration(),
-		performance: await testPerformanceBenchmarks(),
-		uiSynchronization: await testRealTimeUISynchronization(),
-	};
+  const validationResults = {
+    endToEndFlow: await testEndToEndDataFlow(),
+    replitIntegration: await testReplitServicesIntegration(),
+    performance: await testPerformanceBenchmarks(),
+    uiSynchronization: await testRealTimeUISynchronization(),
+  };
 
-	const passed = Object.values(validationResults).filter(Boolean).length;
-	const total = Object.keys(validationResults).length;
+  const passed = Object.values(validationResults).filter(Boolean).length;
+  const total = Object.keys(validationResults).length;
 
-	Object.entries(validationResults).forEach(([test, result]) => {
-		const status = result ? "✅ PASS" : "❌ FAIL";
-		const displayName = test
-			.replace(/([A-Z])/g, " $1")
-			.replace(/^./, (str) => str.toUpperCase());
-	});
+  Object.entries(validationResults).forEach(([test, result]) => {
+    const status = result ? "✅ PASS" : "❌ FAIL";
+    const displayName = test.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+  });
 
-	if (passed === total) {
-		return true;
-	} else {
-		return false;
-	}
+  if (passed === total) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-	runProductionValidation()
-		.then((success) => process.exit(success ? 0 : 1))
-		.catch((error) => {
-			process.exit(1);
-		});
+  runProductionValidation()
+    .then((success) => process.exit(success ? 0 : 1))
+    .catch((error) => {
+      process.exit(1);
+    });
 }
 
 export { runProductionValidation };

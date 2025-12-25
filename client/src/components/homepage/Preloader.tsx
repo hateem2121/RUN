@@ -112,7 +112,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Center Percentage */}
       <div
-        className="relative z-10 flex w-full flex-col items-center justify-center"
+        className="relative z-elevated flex w-full flex-col items-center justify-center"
         role="status"
         aria-live="polite"
         aria-atomic="true"
@@ -128,7 +128,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         <div className="mb-4 flex items-end justify-between">
           <div
             ref={textRef}
-            className="min-h-[20px] w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
+            className="min-h-5 w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
           >
             [{loadingText}]
           </div>
@@ -138,7 +138,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         </div>
 
         {/* Progress Bar Line */}
-        <div className="h-[2px] w-full overflow-hidden bg-white/20">
+        <div className="h-0.5 w-full overflow-hidden bg-white/20">
           <div
             ref={barRef}
             className="h-full w-full origin-left scale-x-0 bg-[var(--color-brand-purple)]"
@@ -148,7 +148,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Background Grid */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-10"
+        className="pointer-events-none absolute inset-0 z-base opacity-10"
         style={{
           backgroundImage:
             "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",

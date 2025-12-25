@@ -84,11 +84,10 @@ function useDragConstraints() {
   return constraints;
 }
 
-export interface LiquidGlassCardProps
-  extends Omit<
-    React.HTMLAttributes<HTMLDivElement>,
-    "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
-  > {
+export interface LiquidGlassCardProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
+> {
   children?: React.ReactNode;
   draggable?: boolean;
   expandable?: boolean;
@@ -181,7 +180,7 @@ const LiquidGlassCard = ({
           className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"
           style={{ borderRadius }}
         />
-        <div className="relative z-10 h-full">{children}</div>
+        <div className="relative z-elevated h-full">{children}</div>
       </div>
     );
   }
@@ -243,17 +242,17 @@ const LiquidGlassCard = ({
       />
 
       <div
-        className="pointer-events-none absolute inset-[1px] rounded-[calc(var(--radius)-1px)] bg-gradient-to-br from-white/5 to-transparent"
+        className="card-border-overlay rounded-[calc(var(--radius)-1px)]"
         style={{ borderRadius: `calc(${borderRadius} - 1px)` }}
       />
 
-      <div className="relative z-10 h-full">{children}</div>
+      <div className="relative z-elevated h-full">{children}</div>
 
       <div
         className="pointer-events-none absolute inset-0 hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block"
         style={{ borderRadius }}
       >
-        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="shimmer-overlay z-elevated" />
       </div>
     </motion.div>
   );
@@ -319,7 +318,7 @@ export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
       </h2>
       {subtitle && (
         <p
-          className="mt-3 max-w-3xl text-center font-thin text-[15px] text-white/80 sm:mt-4 sm:text-[17px]"
+          className="mt-3 max-w-3xl text-center font-thin text-sm text-white/80 sm:mt-4 sm:text-base"
           data-testid="subtitle-text"
         >
           {subtitle}
@@ -328,5 +327,31 @@ export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
     </LiquidGlassCard>
   );
 });
+
+// Standard GlassCard component to replace global .glass-card CSS class
+export const glassCardVariants = cva(
+  "relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 shadow-lg backdrop-blur-md shadow-glow-lg transition-all duration-300 dark:border-gray-900/70 dark:bg-white/5",
+  {
+    variants: {
+      interactive: {
+        true: "cursor-pointer hover:border-white/20 hover:shadow-xl hover:shadow-glow-xl",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      interactive: false,
+    },
+  },
+);
+
+export interface GlassCardProps
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof glassCardVariants> {}
+
+export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
+  ({ className, interactive, ...props }, ref) => (
+    <div ref={ref} className={cn(glassCardVariants({ interactive }), className)} {...props} />
+  ),
+);
+GlassCard.displayName = "GlassCard";
 
 export { LiquidGlassCard, CardHeader, CardContent };

@@ -63,7 +63,7 @@ export function OptimizedImage({
 
   if (hasError) {
     return (
-      <div className={cn("flex items-center justify-center bg-gray-200", className)}>
+      <div className={cn("center-flex bg-gray-200", className)}>
         <span className="text-gray-400">Failed to load image</span>
       </div>
     );

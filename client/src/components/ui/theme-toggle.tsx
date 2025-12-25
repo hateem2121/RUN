@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="h-10 w-10 rounded-full border border-neutral-200 bg-white/50 backdrop-blur-md dark:border-white/10 dark:bg-black/50" />
+      <div className="h-10 w-10 rounded-full border border-neutral-200 bg-white/50 backdrop-blur-md dark:border-glass dark:bg-black/50" />
     );
   }
 
@@ -22,7 +22,7 @@ export function ThemeToggle() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-white/10 dark:bg-black/50"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-glass dark:bg-black/50"
       aria-label="Toggle theme"
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 text-orange-500 transition-all dark:-rotate-90 dark:scale-0" />

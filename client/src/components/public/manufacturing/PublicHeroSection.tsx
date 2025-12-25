@@ -93,7 +93,7 @@ export function PublicHeroSection({
         >
           {/* Background Media */}
           {heroBackgroundAsset && (
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-base">
               <OptimizedImage
                 mediaId={heroBackgroundAsset.id}
                 alt="Manufacturing Background"

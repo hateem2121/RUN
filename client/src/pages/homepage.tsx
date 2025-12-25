@@ -2,18 +2,17 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef, useState } from "react";
-import Categories from "@/components/homepage-v2/Categories";
-import CustomCursor from "@/components/homepage-v2/CustomCursor";
-import FeaturedProducts from "@/components/homepage-v2/FeaturedProducts";
-import Footer from "@/components/homepage-v2/Footer";
-import Hero from "@/components/homepage-v2/Hero";
-import Preloader from "@/components/homepage-v2/Preloader";
-import Process from "@/components/homepage-v2/Process";
-import Stats from "@/components/homepage-v2/Stats";
-import { useStore } from "@/components/homepage-v2/store";
-import Values from "@/components/homepage-v2/Values";
+import Categories from "@/components/homepage/Categories";
+import CustomCursor from "@/components/homepage/CustomCursor";
+import FeaturedProducts from "@/components/homepage/FeaturedProducts";
+import Hero from "@/components/homepage/Hero";
+import Preloader from "@/components/homepage/Preloader";
+import Process from "@/components/homepage/Process";
+import Stats from "@/components/homepage/Stats";
+import { useStore } from "@/components/homepage/store";
+import Values from "@/components/homepage/Values";
+import Footer from "@/components/layout/Footer";
 import { useLenis } from "@/components/layout/LenisContext";
-import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 
 // Register Plugin Globally
 gsap.registerPlugin(ScrollTrigger);
@@ -83,9 +82,6 @@ export default function Homepage() {
       {/* Preloader */}
       {!isPreloaded && <Preloader onComplete={handlePreloadComplete} />}
 
-      {/* Navigation */}
-      <FloatingDockHeader />
-
       {/* 
         MAIN CONTENT: 
         Needs relative positioning, z-index > 0, and a background color
@@ -97,7 +93,7 @@ export default function Homepage() {
         }`}
       >
         {/* GROUP 1: Skewable Top Section */}
-        <div ref={heroRef} className="origin-top will-change-transform">
+        <div ref={heroRef} className="origin-top">
           <Hero />
         </div>
 
@@ -105,7 +101,7 @@ export default function Homepage() {
         <Stats />
 
         {/* GROUP 2: Skewable Middle Content */}
-        <div ref={contentRef} className="origin-top will-change-transform">
+        <div ref={contentRef} className="origin-top">
           <Categories />
           <FeaturedProducts />
           <Values />

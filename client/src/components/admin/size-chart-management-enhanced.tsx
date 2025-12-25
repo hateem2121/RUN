@@ -796,7 +796,7 @@ export default function SizeChartManagementEnhanced() {
               Size Chart Preview: {previewChart?.name}
             </EnhancedDialogTitle>
           </EnhancedDialogHeader>
-          <div className="mt-4 max-h-[60vh] overflow-y-auto pr-2">
+          <div className="mt-4 max-h-viewport-60 overflow-y-auto pr-2">
             {previewChart && (
               <div className="space-y-4">
                 <div className="flex items-center gap-4">

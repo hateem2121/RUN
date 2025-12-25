@@ -48,7 +48,7 @@ const NewsletterSignup: React.FC = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -20, opacity: 0 }}
-                  className="absolute inset-0 flex items-center justify-center bg-gray-100 font-medium text-green-600 text-sm"
+                  className="absolute inset-0 center-flex bg-gray-100 font-medium text-green-600 text-sm"
                 >
                   ✓ Subscribed
                 </motion.div>

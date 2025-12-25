@@ -30,7 +30,7 @@ export function BentoCardContainer({
         // Responsive auto rows (CSS-first, no FOIL)
         "auto-rows-[minmax(280px,auto)] md:auto-rows-[minmax(320px,auto)]",
         // Add performance optimizations
-        "bento-grid-container will-change-auto",
+        "bento-grid-container",
         className,
       )}
       style={{

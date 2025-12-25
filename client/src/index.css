@@ -5,6 +5,11 @@
 
 /* Import notifications CSS for animation keyframes */
 @import "./styles/notifications.css";
+@import "./styles/safari-compatibility.css"; /* Fallbacks */
+@import "./styles/webgl-pointer-events.css"; /* Interaction layers */
+@import "./styles/performance-optimizations.css"; /* GPU utils */
+@import "./styles/map-animations.css"; /* Map markers */
+@import "./styles/components/glowing-shadow.css"; /* Glowing Shadow Component */
 
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
@@ -60,7 +65,19 @@
   --radius-sm: 0.25rem;
 
   /* Container */
-  --spacing-container: 1400px;
+  /* Container */
+  --spacing-container: 1280px;
+  --width-site: 1440px; /* Standard wide container */
+  --width-reading: 700px; /* Optimized reading width */
+
+  /* Modal Heights */
+  --height-modal: 90vh;
+  --height-modal-lg: 95vh;
+  --height-modal-sm: 80vh;
+
+  /* 3D Perspective */
+  --perspective-standard: 1000px;
+  --perspective-deep: 2000px;
 
   /* ===== Brand Colors ===== */
   /* Primary brand purple - replaces #5227FF (12 occurrences) */
@@ -73,6 +90,8 @@
   --color-brand-lime: oklch(0.9 0.3 100);
   /* Brand blue - replaces #3300FF */
   --color-brand-blue: oklch(0.4 0.35 265);
+  /* Brand teal - replaces #17EBC5 (TechnologyCta) */
+  --color-brand-teal: oklch(0.85 0.18 170);
 
   /* ===== Gradient Colors (Admin Configurable) ===== */
   --color-gradient-start: var(--color-brand-magenta);
@@ -124,6 +143,12 @@
   --shadow-inner-xl-desktop: inset 0 8px 12px rgba(255, 255, 255, 0.3);
   --shadow-inner-2xl-desktop: inset 0 12px 16px rgba(255, 255, 255, 0.35);
 
+  /* Specific Colored Glows */
+  --shadow-glow-orange: 0 0 50px rgba(255, 165, 0, 0.5);
+
+  /* Deep Shadows */
+  --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
   /* ===== Z-Index Semantic Scale (Complete) ===== */
   --z-behind: -1; /* Background decorations */
   --z-base: 0; /* Default document flow */
@@ -133,13 +158,36 @@
   --z-sticky: 200; /* Sticky headers */
   --z-dock: 250; /* Floating dock/navigation */
   --z-modal-backdrop: 300; /* Modal backgrounds */
+  --z-sheet: 400; /* Side sheets */
   --z-modal: 400; /* Modal content */
   --z-modal-nested: 450; /* Nested dialog support */
   --z-popover: 500; /* Popovers, color pickers */
   --z-tooltip: 600; /* Tooltips */
+
+  /* ... (skip to utility section) ... */
+
   --z-toast: 700; /* Toast notifications */
   --z-cursor: 800; /* Custom cursor layer */
   --z-max: 9999; /* Emergency escape hatch (document usage) */
+
+  /* ===== Animations ===== */
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-scroll-banner: scroll-banner 60s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes scroll-banner {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 /* Base Reset & Defaults */
@@ -157,37 +205,6 @@
     line-height: 1.5;
   }
 
-  /* Typography Defaults */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    text-wrap: balance;
-    font-weight: 700;
-    color: var(--color-foreground);
-    margin-bottom: 0.75em;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    line-height: 1.2;
-  }
-  h2 {
-    font-size: 2rem;
-    line-height: 1.25;
-  }
-  h3 {
-    font-size: 1.75rem;
-    line-height: 1.25;
-  }
-
-  p {
-    text-wrap: pretty;
-    margin-bottom: 1rem;
-  }
-
   /* Form Elements Reset */
   input,
   textarea,
@@ -197,18 +214,81 @@
   }
 
   /* Global Focus Accessibility */
-  a:focus-visible {
-    outline: 2px solid var(--color-ring);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
+  /* Global Focus Accessibility - Moved to utility/component level or handled by reset */
+  /* a:focus-visible removed to prevent conflict with Button/Component styles */
 }
 
 /* Utility Layer - Custom Classes */
 @utility container-centered {
   max-width: var(--spacing-container);
   margin-inline: auto;
+  margin-inline: auto;
   padding-inline: 1.5rem;
+}
+
+@utility container-wide {
+  max-width: var(--width-site);
+  margin-inline: auto;
+}
+
+@utility container-ultra {
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+@utility max-w-reading {
+  max-width: var(--width-reading);
+}
+
+@utility max-h-modal {
+  max-height: var(--height-modal);
+}
+
+@utility max-h-modal-lg {
+  max-height: var(--height-modal-lg);
+}
+
+@utility max-h-modal-sm {
+  max-height: var(--height-modal-sm);
+}
+
+@utility max-h-dropdown {
+  max-height: 300px;
+}
+
+@utility size-touch {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@utility w-truncate-xs {
+  max-width: 120px;
+}
+@utility w-truncate-sm {
+  max-width: 150px;
+}
+@utility w-truncate-md {
+  max-width: 200px;
+}
+
+@utility max-w-vw-90 {
+  max-width: 90vw;
+}
+@utility max-w-vw-95 {
+  max-width: 95vw;
+}
+
+@utility max-h-viewport-50 {
+  max-height: 50vh;
+}
+@utility max-h-viewport-60 {
+  max-height: 60vh;
+}
+@utility max-h-viewport-70 {
+  max-height: 70vh;
+}
+@utility max-h-viewport-85 {
+  max-height: 85vh;
 }
 
 @utility glass-panel {
@@ -264,6 +344,9 @@
 @utility z-modal-backdrop {
   z-index: var(--z-modal-backdrop);
 }
+@utility z-sheet {
+  z-index: var(--z-sheet);
+}
 @utility z-modal {
   z-index: var(--z-modal);
 }
@@ -290,6 +373,14 @@
   backdrop-filter: blur(2px);
 }
 
+@utility shimmer-overlay {
+  @apply absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent;
+}
+
+@utility card-border-overlay {
+  @apply pointer-events-none absolute inset-[1px] bg-gradient-to-br from-white/5 to-transparent;
+}
+
 /* ===== Component Layer Classes ===== */
 @layer components {
   /* Admin sortable card - consolidates 45+ repeated patterns */
@@ -303,24 +394,29 @@
   }
 
   /* Glassmorphism card - Standardized */
-  .glass-card,
-  .glass-card-interactive {
-    @apply relative overflow-hidden rounded-xl border bg-white/10 shadow-lg backdrop-blur-md;
-    @apply border-gray-800/60 dark:border-gray-900/70 dark:bg-white/5;
-    box-shadow: var(--shadow-glow-lg);
-    @apply transition-all duration-300;
+  /* .glass-card removed in favor of GlassCard component */
+
+  /* Custom Cursor - Standardized */
+  .cursor-dot {
+    @apply pointer-events-none fixed top-0 left-0 z-cursor hidden rounded-full bg-white mix-blend-difference md:block;
   }
 
-  .glass-card:hover,
-  .glass-card-interactive:hover {
-    @apply shadow-xl;
-    box-shadow: var(--shadow-glow-xl);
-    border-color: rgba(255, 255, 255, 0.2);
+  .cursor-follower {
+    @apply pointer-events-none fixed top-0 left-0 z-cursor flex hidden items-center justify-center overflow-hidden rounded-full border border-white bg-white mix-blend-difference md:block;
+  }
+
+  /* Stacking Card - Consolidates 20+ utilities */
+  .stacking-card {
+    @apply relative -top-1/4 flex min-h-96 w-11/12 max-w-6xl origin-top flex-col overflow-hidden rounded-xl border p-6 backdrop-blur-md md:p-8;
+    @apply border-gray-800/60 bg-white/10 dark:border-gray-900/70 dark:bg-white/5;
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.15),
+      inset 0 2px 4px rgba(255, 255, 255, 0.15);
   }
 }
 
 /* ===== Center-Flex Utility ===== */
-/* Replaces 93+ occurrences of "flex items-center justify-center" */
+/* Replaces 93+ occurrences of "center-flex" */
 @utility center-flex {
   display: flex;
   align-items: center;
@@ -333,4 +429,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Standardized Premium Glass Effect */
+@utility glass-premium {
+  @apply relative overflow-hidden border border-white/20 bg-white/10 backdrop-blur-md shadow-glow-lg;
+  @apply transition-all duration-300;
+  @apply dark:border-gray-900/70 dark:bg-white/5;
+}
+
+@utility shadow-glow-orange {
+  box-shadow: var(--shadow-glow-orange);
+}
+
+@utility shadow-deep {
+  box-shadow: var(--shadow-deep);
+}
+
+@utility border-glass {
+  border-color: white/10;
+}
+
+@utility shadow-glow-primary {
+  box-shadow: 0 15px 30px -10px var(--color-primary);
 }

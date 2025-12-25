@@ -25,7 +25,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         <input
           ref={ref}
           className={cn(
-            "mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-ring",
+            "mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ring",
             error && "border-red-500",
             className,
           )}

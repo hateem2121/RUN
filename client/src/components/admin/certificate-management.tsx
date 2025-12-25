@@ -1039,18 +1039,24 @@ export default function CertificateManagement() {
       return expiryDate >= now && expiryDate <= threeMonthsFromNow;
     }).length;
 
-    const typeDistribution = certificates.reduce((acc, cert) => {
-      const certType = cert.type || "unknown";
-      acc[certType] = (acc[certType] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const typeDistribution = certificates.reduce(
+      (acc, cert) => {
+        const certType = cert.type || "unknown";
+        acc[certType] = (acc[certType] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
-    const issuingBodyDistribution = certificates.reduce((acc, cert) => {
-      if (cert.issuingOrganization) {
-        acc[cert.issuingOrganization] = (acc[cert.issuingOrganization] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+    const issuingBodyDistribution = certificates.reduce(
+      (acc, cert) => {
+        if (cert.issuingOrganization) {
+          acc[cert.issuingOrganization] = (acc[cert.issuingOrganization] || 0) + 1;
+        }
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return {
       total,

@@ -1,5 +1,5 @@
 {
-	"name": "RUN APPAREL Product Page",
-	"description": "A single product display page for RUN APPAREL, showcasing product details, media (images, video, 3D models), and technical specifications with a modern, high-fashion aesthetic.",
-	"requestFramePermissions": []
+  "name": "RUN APPAREL Product Page",
+  "description": "A single product display page for RUN APPAREL, showcasing product details, media (images, video, 3D models), and technical specifications with a modern, high-fashion aesthetic.",
+  "requestFramePermissions": []
 }

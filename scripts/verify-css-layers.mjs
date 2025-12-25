@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const cssPath = path.resolve(__dirname, "../client/src/index.css");
 
 if (!fs.existsSync(cssPath)) {
-	process.exit(1);
+  process.exit(1);
 }
 
 const css = fs.readFileSync(cssPath, "utf-8");
@@ -21,29 +21,29 @@ const utilitiesIndex = css.indexOf("@layer utilities");
 let hasError = false;
 
 if (baseIndex === -1) {
-	hasError = true;
+  hasError = true;
 }
 
 if (componentsIndex === -1) {
-	hasError = true;
+  hasError = true;
 }
 
 if (utilitiesIndex === -1) {
-	hasError = true;
+  hasError = true;
 }
 
 if (!hasError) {
-	if (baseIndex > componentsIndex) {
-		hasError = true;
-	}
+  if (baseIndex > componentsIndex) {
+    hasError = true;
+  }
 
-	if (componentsIndex > utilitiesIndex) {
-		hasError = true;
-	}
+  if (componentsIndex > utilitiesIndex) {
+    hasError = true;
+  }
 }
 
 if (hasError) {
-	process.exit(1);
+  process.exit(1);
 } else {
-	process.exit(0);
+  process.exit(0);
 }

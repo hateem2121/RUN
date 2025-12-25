@@ -9,6 +9,7 @@ import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { SEOMeta } from "@/components/seo-meta";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Typography } from "@/components/ui/typography";
 
 export default function Certifications() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,7 +61,7 @@ export default function Certifications() {
     <div className="space-y-3 text-sm">
       <div>
         <span className="font-medium text-gray-700">Issuing Body:</span>
-        <p className="text-gray-600">{cert.issuingBody}</p>
+        <Typography.P className="text-gray-600">{cert.issuingBody}</Typography.P>
       </div>
       {cert.documentUrl && (
         <div>
@@ -78,7 +79,7 @@ export default function Certifications() {
       {cert.description && (
         <div>
           <span className="font-medium text-gray-700">Details:</span>
-          <p className="mt-1 text-gray-600">{cert.description}</p>
+          <Typography.P className="mt-1 text-gray-600">{cert.description}</Typography.P>
         </div>
       )}
     </div>
@@ -98,13 +99,13 @@ export default function Certifications() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
             Certifications & Standards
-          </h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+          </Typography.H1>
+          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
             Industry-leading quality and compliance certifications for premium sportswear
             manufacturing
-          </p>
+          </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
@@ -146,12 +147,12 @@ export default function Certifications() {
                 className="py-16 text-center"
               >
                 <Shield className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <h3 className="mb-2 font-semibold text-gray-900 text-xl">
+                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
                   {searchTerm ? "No certifications found" : "No certifications available"}
-                </h3>
-                <p className="text-gray-600">
+                </Typography.H3>
+                <Typography.P className="text-gray-600">
                   {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
-                </p>
+                </Typography.P>
               </motion.div>
             }
             renderItem={(cert) => {

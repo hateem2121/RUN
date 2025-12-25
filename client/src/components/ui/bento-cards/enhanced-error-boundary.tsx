@@ -66,7 +66,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative flex h-full min-h-[320px] w-full flex-col items-center justify-center rounded-2xl border-2 border-red-200 bg-red-50 p-6 text-center"
+          className="relative flex h-full min-h-80 w-full flex-col items-center justify-center rounded-2xl border-2 border-red-200 bg-red-50 p-6 text-center"
         >
           <AlertTriangle className="mb-4 h-12 w-12 text-red-500" />
 
@@ -124,7 +124,7 @@ export function SimpleErrorBoundary({
   return (
     <EnhancedBentoCardErrorBoundary
       fallback={
-        <div className="flex h-full min-h-[200px] items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
+        <div className="flex h-full min-h-48 items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
           <div className="text-center">
             <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-gray-500" />
             <p className="text-gray-600 text-sm">{message}</p>

@@ -1,44 +1,44 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"lib": ["ES2020"],
-		"strict": true,
-		"skipLibCheck": true,
-		"skipDefaultLibCheck": true,
-		"maxNodeModuleJsDepth": 0,
-		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"forceConsistentCasingInFileNames": true,
-		"noUncheckedIndexedAccess": true,
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"incremental": true
-	},
-	"exclude": [
-		"node_modules",
-		"**/dist",
-		"**/build",
-		"**/__generated__",
-		"**/documentation",
-		"coverage",
-		"**/.next",
-		"**/.cache",
-		"**/tmp"
-	],
-	"watchOptions": {
-		"excludeDirectories": [
-			"**/node_modules",
-			"**/dist",
-			"**/build",
-			"**/.cache",
-			"**/__generated__",
-			"**/documentation"
-		],
-		"excludeFiles": ["**/*.spec.ts", "**/*.test.ts", "**/*.log", "**/*.map"],
-		"watchDirectory": "dynamicprioritypolling",
-		"fallbackPolling": "dynamicpriority"
-	}
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "strict": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "maxNodeModuleJsDepth": 0,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "incremental": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/build",
+    "**/__generated__",
+    "**/documentation",
+    "coverage",
+    "**/.next",
+    "**/.cache",
+    "**/tmp"
+  ],
+  "watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/.cache",
+      "**/__generated__",
+      "**/documentation"
+    ],
+    "excludeFiles": ["**/*.spec.ts", "**/*.test.ts", "**/*.log", "**/*.map"],
+    "watchDirectory": "dynamicprioritypolling",
+    "fallbackPolling": "dynamicpriority"
+  }
 }

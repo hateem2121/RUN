@@ -97,7 +97,7 @@ export function ManufacturingStatusIndicator({
   if (variant === "metric") {
     return (
       <div className={`text-center ${className}`}>
-        <div className="mb-1 flex items-center justify-center gap-2">
+        <div className="mb-1 center-flex gap-2">
           {showIcon && <TrendingUp className={`h-4 w-4 ${config.color}`} />}
           <motion.span
             className={`font-bold text-2xl ${config.color}`}

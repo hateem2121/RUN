@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ProductAnalytics } from "@/components/products/ProductAnalytics";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Typography } from "@/components/ui/typography";
 
 export default function AnalyticsPage() {
   const { toast } = useToast();
@@ -43,7 +44,9 @@ export default function AnalyticsPage() {
                   Back to Products
                 </Button>
               </Link>
-              <h1 className="font-semibold text-2xl">Product Analytics Dashboard</h1>
+              <Typography.H1 className="font-semibold text-2xl">
+                Product Analytics Dashboard
+              </Typography.H1>
             </div>
 
             <div className="flex gap-2">

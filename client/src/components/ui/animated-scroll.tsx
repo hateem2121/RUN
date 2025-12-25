@@ -177,7 +177,7 @@ export default function AnimatedScroll({
                 {/* Overlay for better text readability */}
                 {page.leftBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
-                <div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-white">
+                <div className="relative z-elevated flex h-full flex-col items-center justify-center p-8 text-white">
                   {page.leftContent && (
                     <>
                       <h2 className="mb-6 text-center font-bold text-2xl uppercase tracking-wide md:text-3xl lg:text-4xl">
@@ -207,7 +207,7 @@ export default function AnimatedScroll({
                 {/* Overlay for better text readability */}
                 {page.rightBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
-                <div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-white">
+                <div className="relative z-elevated flex h-full flex-col items-center justify-center p-8 text-white">
                   {page.rightContent && (
                     <>
                       <h2 className="mb-6 text-center font-bold text-2xl uppercase tracking-wide md:text-3xl lg:text-4xl">

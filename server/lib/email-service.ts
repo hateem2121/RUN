@@ -9,133 +9,129 @@ import nodemailer from "nodemailer";
 import { logger } from "./smart-logger.js";
 
 interface EmailOptions {
-	to: string;
-	subject: string;
-	html: string;
-	text?: string;
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
 }
 
 interface InquiryEmailData {
-	id: number;
-	name: string;
-	email: string;
-	company?: string;
-	phone?: string;
-	country?: string;
-	message: string;
-	preferredPlatform?: string;
-	submittedAt: Date;
+  id: number;
+  name: string;
+  email: string;
+  company?: string;
+  phone?: string;
+  country?: string;
+  message: string;
+  preferredPlatform?: string;
+  submittedAt: Date;
 }
 
 class EmailService {
-	private transporter: Transporter | null = null;
-	private isConfigured: boolean = false;
+  private transporter: Transporter | null = null;
+  private isConfigured: boolean = false;
 
-	constructor() {
-		this.initialize();
-	}
+  constructor() {
+    this.initialize();
+  }
 
-	private initialize(): void {
-		const gmailUser = process.env.GMAIL_USER;
-		const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+  private initialize(): void {
+    const gmailUser = process.env.GMAIL_USER;
+    const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
-		if (!gmailUser || !gmailAppPassword) {
-			logger.warn(
-				"[Email] Gmail credentials not configured - email notifications disabled",
-			);
-			this.isConfigured = false;
-			return;
-		}
+    if (!gmailUser || !gmailAppPassword) {
+      logger.warn("[Email] Gmail credentials not configured - email notifications disabled");
+      this.isConfigured = false;
+      return;
+    }
 
-		try {
-			this.transporter = nodemailer.createTransport({
-				host: "smtp.gmail.com",
-				port: 587,
-				secure: false,
-				auth: {
-					user: gmailUser,
-					pass: gmailAppPassword,
-				},
-			});
+    try {
+      this.transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: gmailUser,
+          pass: gmailAppPassword,
+        },
+      });
 
-			this.isConfigured = true;
-			logger.info("[Email] Email service initialized successfully");
+      this.isConfigured = true;
+      logger.info("[Email] Email service initialized successfully");
 
-			this.transporter.verify((error: Error | null) => {
-				if (error) {
-					logger.error("[Email] SMTP verification failed:", error);
-					this.isConfigured = false;
-				} else {
-					logger.info("[Email] SMTP server ready to send emails");
-				}
-			});
-		} catch (error) {
-			logger.error("[Email] Failed to initialize email service:", error);
-			this.isConfigured = false;
-		}
-	}
+      this.transporter.verify((error: Error | null) => {
+        if (error) {
+          logger.error("[Email] SMTP verification failed:", error);
+          this.isConfigured = false;
+        } else {
+          logger.info("[Email] SMTP server ready to send emails");
+        }
+      });
+    } catch (error) {
+      logger.error("[Email] Failed to initialize email service:", error);
+      this.isConfigured = false;
+    }
+  }
 
-	private async sendEmail(options: EmailOptions): Promise<boolean> {
-		if (!this.isConfigured || !this.transporter) {
-			logger.warn("[Email] Email service not configured - skipping email send");
-			return false;
-		}
+  private async sendEmail(options: EmailOptions): Promise<boolean> {
+    if (!this.isConfigured || !this.transporter) {
+      logger.warn("[Email] Email service not configured - skipping email send");
+      return false;
+    }
 
-		try {
-			const info = await this.transporter.sendMail({
-				from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
-				to: options.to,
-				subject: options.subject,
-				html: options.html,
-				text: options.text || options.html.replace(/<[^>]*>/g, ""),
-			});
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text || options.html.replace(/<[^>]*>/g, ""),
+      });
 
-			logger.info(`[Email] Email sent successfully: ${info.messageId}`);
-			return true;
-		} catch (error) {
-			logger.error("[Email] Failed to send email:", error);
-			return false;
-		}
-	}
+      logger.info(`[Email] Email sent successfully: ${info.messageId}`);
+      return true;
+    } catch (error) {
+      logger.error("[Email] Failed to send email:", error);
+      return false;
+    }
+  }
 
-	async sendAdminNotification(inquiry: InquiryEmailData): Promise<boolean> {
-		const adminEmail = process.env.GMAIL_USER;
-		if (!adminEmail) {
-			logger.warn("[Email] Admin email not configured");
-			return false;
-		}
+  async sendAdminNotification(inquiry: InquiryEmailData): Promise<boolean> {
+    const adminEmail = process.env.GMAIL_USER;
+    if (!adminEmail) {
+      logger.warn("[Email] Admin email not configured");
+      return false;
+    }
 
-		const subject = `New Contact Inquiry from ${inquiry.name}`;
-		const html = this.generateAdminEmailTemplate(inquiry);
+    const subject = `New Contact Inquiry from ${inquiry.name}`;
+    const html = this.generateAdminEmailTemplate(inquiry);
 
-		logger.info(
-			`[Email] Sending admin notification for inquiry #${inquiry.id}`,
-		);
-		return await this.sendEmail({
-			to: adminEmail,
-			subject,
-			html,
-		});
-	}
+    logger.info(`[Email] Sending admin notification for inquiry #${inquiry.id}`);
+    return await this.sendEmail({
+      to: adminEmail,
+      subject,
+      html,
+    });
+  }
 
-	async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<boolean> {
-		const subject = "Thank you for contacting RUN APPAREL";
-		const html = this.generateCustomerEmailTemplate(inquiry);
+  async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<boolean> {
+    const subject = "Thank you for contacting RUN APPAREL";
+    const html = this.generateCustomerEmailTemplate(inquiry);
 
-		logger.info(`[Email] Sending customer confirmation to ${inquiry.email}`);
-		return await this.sendEmail({
-			to: inquiry.email,
-			subject,
-			html,
-		});
-	}
+    logger.info(`[Email] Sending customer confirmation to ${inquiry.email}`);
+    return await this.sendEmail({
+      to: inquiry.email,
+      subject,
+      html,
+    });
+  }
 
-	private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
-		const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
-			? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
-			: `http://localhost:5000/admin/inquiries/${inquiry.id}`;
+  private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
+    const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
+      : `http://localhost:5000/admin/inquiries/${inquiry.id}`;
 
-		return `
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,8 +178,8 @@ class EmailService {
                   </td>
                 </tr>
                 ${
-									inquiry.company
-										? `
+                  inquiry.company
+                    ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Company:</strong>
@@ -193,11 +189,11 @@ class EmailService {
                   </td>
                 </tr>
                 `
-										: ""
-								}
+                    : ""
+                }
                 ${
-									inquiry.phone
-										? `
+                  inquiry.phone
+                    ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Phone:</strong>
@@ -207,11 +203,11 @@ class EmailService {
                   </td>
                 </tr>
                 `
-										: ""
-								}
+                    : ""
+                }
                 ${
-									inquiry.country
-										? `
+                  inquiry.country
+                    ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Country:</strong>
@@ -221,11 +217,11 @@ class EmailService {
                   </td>
                 </tr>
                 `
-										: ""
-								}
+                    : ""
+                }
                 ${
-									inquiry.preferredPlatform
-										? `
+                  inquiry.preferredPlatform
+                    ? `
                 <tr>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
                     <strong style="color: #666666; font-size: 14px;">Preferred Platform:</strong>
@@ -235,8 +231,8 @@ class EmailService {
                   </td>
                 </tr>
                 `
-										: ""
-								}
+                    : ""
+                }
               </table>
 
               <!-- Message -->
@@ -274,10 +270,10 @@ class EmailService {
 </body>
 </html>
     `.trim();
-	}
+  }
 
-	private generateCustomerEmailTemplate(inquiry: InquiryEmailData): string {
-		return `
+  private generateCustomerEmailTemplate(inquiry: InquiryEmailData): string {
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -352,7 +348,7 @@ class EmailService {
 </body>
 </html>
     `.trim();
-	}
+  }
 }
 
 export const emailService = new EmailService();

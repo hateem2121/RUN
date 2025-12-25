@@ -159,7 +159,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
       const canRetry = this.state.retryCount < this.maxRetries;
 
       return (
-        <div className="flex min-h-[400px] items-center justify-center p-6">
+        <div className="flex min-h-96 items-center justify-center p-6">
           <Card className="w-full max-w-2xl">
             <CardHeader>
               <div className="flex items-center gap-3">

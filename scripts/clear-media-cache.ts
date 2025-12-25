@@ -16,26 +16,26 @@
 // import { unifiedCache } from '../server/lib/unified-replit-cache.js';
 
 async function clearMediaCache() {
-	try {
-		// 1. Clear Redis/Memory Cache
-		// await unifiedCache.clearPattern('media:*');
+  try {
+    // 1. Clear Redis/Memory Cache
+    // await unifiedCache.clearPattern('media:*');
 
-		// 2. Clear Database Cache (if any)
-		// await db.delete(mediaAssets).where(eq(mediaAssets.isCached, true));
+    // 2. Clear Database Cache (if any)
+    // await db.delete(mediaAssets).where(eq(mediaAssets.isCached, true));
 
-		// Since unifiedCache doesn't support pattern deletion,
-		// we'll clear specific known patterns
-		const environments = ["development", "production", "test"];
-		// let clearedCount = 0;
+    // Since unifiedCache doesn't support pattern deletion,
+    // we'll clear specific known patterns
+    const environments = ["development", "production", "test"];
+    // let clearedCount = 0;
 
-		for (const env of environments) {
-			// The cache key format is: media:batch:{ids}:{env}
-			// Without key enumeration, we can't delete all variants
-			// Best we can do is document this limitation
-		}
-	} catch (error) {
-		process.exit(1);
-	}
+    for (const env of environments) {
+      // The cache key format is: media:batch:{ids}:{env}
+      // Without key enumeration, we can't delete all variants
+      // Best we can do is document this limitation
+    }
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 clearMediaCache();

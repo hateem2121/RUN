@@ -82,10 +82,7 @@ const SmoothScrollLayout: React.FC<SmoothScrollLayoutProps> = ({ children }) => 
 
   return (
     <LenisContext.Provider value={contextValue}>
-      <div
-        ref={contentRef}
-        className="smooth-scroll-wrapper min-h-dvh w-full will-change-transform"
-      >
+      <div ref={contentRef} className="smooth-scroll-wrapper min-h-dvh w-full">
         {children}
       </div>
     </LenisContext.Provider>

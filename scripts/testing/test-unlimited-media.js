@@ -7,49 +7,49 @@
 import { unlimitedMediaManager } from "./server/lib/unlimited-media-manager.js";
 
 async function testUnlimitedCapacity() {
-	const testAssets = [
-		{
-			name: "Product Image 1.jpg",
-			type: "image",
-			size: 2048576, // 2MB
-			storageKey: "media/test-product-1.jpg",
-			thumbnailUrl: "https://example.com/thumb1.jpg",
-			tags: ["product", "apparel"],
-		},
-		{
-			name: "Demo Video.mp4",
-			type: "video",
-			size: 15728640, // 15MB
-			storageKey: "media/test-video-1.mp4",
-			tags: ["video", "demo"],
-		},
-		{
-			name: "3D Model.glb",
-			type: "3d-model",
-			size: 5242880, // 5MB
-			storageKey: "media/test-model-1.glb",
-			tags: ["3d", "model"],
-		},
-	];
+  const testAssets = [
+    {
+      name: "Product Image 1.jpg",
+      type: "image",
+      size: 2048576, // 2MB
+      storageKey: "media/test-product-1.jpg",
+      thumbnailUrl: "https://example.com/thumb1.jpg",
+      tags: ["product", "apparel"],
+    },
+    {
+      name: "Demo Video.mp4",
+      type: "video",
+      size: 15728640, // 15MB
+      storageKey: "media/test-video-1.mp4",
+      tags: ["video", "demo"],
+    },
+    {
+      name: "3D Model.glb",
+      type: "3d-model",
+      size: 5242880, // 5MB
+      storageKey: "media/test-model-1.glb",
+      tags: ["3d", "model"],
+    },
+  ];
 
-	for (const asset of testAssets) {
-		const result = await unlimitedMediaManager.addMediaAsset(asset);
-	}
-	const { assets, total } = await unlimitedMediaManager.getAllMediaAssets();
+  for (const asset of testAssets) {
+    const result = await unlimitedMediaManager.addMediaAsset(asset);
+  }
+  const { assets, total } = await unlimitedMediaManager.getAllMediaAssets();
 
-	assets.forEach((asset) => {});
-	const stats = await unlimitedMediaManager.getStorageStats();
-	const videoAssets = await unlimitedMediaManager.getAllMediaAssets({
-		type: "video",
-	});
+  assets.forEach((asset) => {});
+  const stats = await unlimitedMediaManager.getStorageStats();
+  const videoAssets = await unlimitedMediaManager.getAllMediaAssets({
+    type: "video",
+  });
 
-	const taggedAssets = await unlimitedMediaManager.getAllMediaAssets({
-		tags: ["product"],
-	});
-	if (assets.length > 0) {
-		const firstAsset = assets[0];
-		const retrieved = await unlimitedMediaManager.getMediaAsset(firstAsset.id);
-	}
+  const taggedAssets = await unlimitedMediaManager.getAllMediaAssets({
+    tags: ["product"],
+  });
+  if (assets.length > 0) {
+    const firstAsset = assets[0];
+    const retrieved = await unlimitedMediaManager.getMediaAsset(firstAsset.id);
+  }
 }
 
 // Run the test

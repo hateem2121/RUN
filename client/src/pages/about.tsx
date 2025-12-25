@@ -25,10 +25,12 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
 import { ClientOnly } from "@/components/ui/ClientOnly";
 import { Card, CardContent } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
 // REMOVED: media-migration utility no longer needed after consolidation
 import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Typography } from "@/components/ui/typography";
 import StackingCards from "@/components/ui/stacking-cards";
 import { Timeline } from "@/components/ui/timeline";
 import { useMediaResolver } from "@/lib/media-resolver";
@@ -129,11 +131,13 @@ export default function About() {
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-blue-600 border-b-2"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading about page...</p>
+          <Typography.P className="text-gray-600 dark:text-gray-400">
+            Loading about page...
+          </Typography.P>
           {batchLoading && (
-            <p className="mt-2 text-gray-500 text-sm dark:text-gray-500">
+            <Typography.P className="mt-2 text-gray-500 text-sm dark:text-gray-500">
               Loading about page data...
-            </p>
+            </Typography.P>
           )}
         </div>
       </div>
@@ -144,20 +148,22 @@ export default function About() {
   const timelineData = sortedTimeline.map((item) => ({
     title: item.year.toString(),
     content: (
-      <div className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
+      <GlassCard className="group p-6 shadow-inner-sm">
         {/* Gradient overlay for depth */}
         <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
-        <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+        <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
         {/* Content */}
         <div className="relative z-default">
-          <h3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
+          <Typography.H3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
             {item.title}
-          </h3>
+          </Typography.H3>
           {item.description && (
-            <p className="mb-4 text-neutral-700 dark:text-neutral-300">{item.description}</p>
+            <Typography.P className="mb-4 text-neutral-700 dark:text-neutral-300">
+              {item.description}
+            </Typography.P>
           )}
           {item.imageId && getAsset(item.imageId) && (
             <div className="mt-4">
@@ -174,10 +180,10 @@ export default function About() {
         {/* Hover shimmer effect - disabled on mobile for performance */}
         {!isMobile && (
           <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="shimmer-overlay" />
           </div>
         )}
-      </div>
+      </GlassCard>
     ),
   }));
 
@@ -220,17 +226,17 @@ export default function About() {
               transition={{ duration: 0.8 }}
               className="mx-auto max-w-4xl"
             >
-              <Card className="group relative overflow-hidden border border-gray-800/60 bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
+              <Card className="group relative overflow-hidden border border-gray-800/60 bg-white/10 shadow-glow-lg shadow-inner-sm backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
                 {/* Gradient overlay for depth */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                 {/* Inner glow */}
-                <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.5rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+                <div className="card-border-overlay rounded-[calc(0.5rem-1px)]" />
 
                 {/* Hover shimmer effect - disabled on mobile for performance */}
                 {!isMobile && (
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    <div className="shimmer-overlay" />
                   </div>
                 )}
 
@@ -252,17 +258,23 @@ export default function About() {
                     <div>
                       <MessageSquare className="mb-4 h-8 w-8 text-primary" />
                       {teamMessage.title && (
-                        <h3 className="mb-4 font-bold text-2xl">{teamMessage.title}</h3>
+                        <Typography.H3 className="mb-4 font-bold text-2xl">
+                          {teamMessage.title}
+                        </Typography.H3>
                       )}
                       {teamMessage.message && (
-                        <p className="mb-6 text-muted-foreground leading-relaxed">
+                        <Typography.P className="mb-6 text-muted-foreground leading-relaxed">
                           {teamMessage.message}
-                        </p>
+                        </Typography.P>
                       )}
                       {teamMessage.signature && (
                         <div className="border-t pt-4">
-                          <p className="font-semibold text-foreground">{teamMessage.signature}</p>
-                          <p className="text-muted-foreground text-sm">Executive Team</p>
+                          <Typography.P className="font-semibold text-foreground">
+                            {teamMessage.signature}
+                          </Typography.P>
+                          <Typography.P className="text-muted-foreground text-sm">
+                            Executive Team
+                          </Typography.P>
                         </div>
                       )}
                     </div>
@@ -290,12 +302,12 @@ export default function About() {
               transition={{ duration: 0.6 }}
               className="mb-16 text-center"
             >
-              <h2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
+              <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                 Key Statistics
-              </h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+              </Typography.H2>
+              <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
                 Our impact and achievements in numbers
-              </p>
+              </Typography.P>
             </motion.div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -305,16 +317,16 @@ export default function About() {
                   iconName === "Globe2"
                     ? Globe2
                     : iconName === "Factory"
-                    ? Factory
-                    : iconName === "Package"
-                    ? Package
-                    : iconName === "Users"
-                    ? Users
-                    : iconName === "Award"
-                    ? Award
-                    : iconName === "TrendingUp"
-                    ? TrendingUp
-                    : Package;
+                      ? Factory
+                      : iconName === "Package"
+                        ? Package
+                        : iconName === "Users"
+                          ? Users
+                          : iconName === "Award"
+                            ? Award
+                            : iconName === "TrendingUp"
+                              ? TrendingUp
+                              : Package;
 
                 return (
                   <motion.div
@@ -330,13 +342,15 @@ export default function About() {
                         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
                           <IconComponent className="h-8 w-8 text-white" />
                         </div>
-                        <h3 className="mb-2 font-bold text-3xl text-white">
+                        <Typography.H3 className="mb-2 font-bold text-3xl text-white">
                           {stat.value}
                           {stat.unit && (
                             <span className="ml-1 text-lg text-white/70">{stat.unit}</span>
                           )}
-                        </h3>
-                        <p className="font-medium text-white/80">{stat.label}</p>
+                        </Typography.H3>
+                        <Typography.P className="font-medium text-white/80">
+                          {stat.label}
+                        </Typography.P>
                       </div>
                     </GlowingShadow>
                   </motion.div>
@@ -358,12 +372,12 @@ export default function About() {
               transition={{ duration: 0.6 }}
               className="mb-16 text-center"
             >
-              <h2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
+              <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                 Global Presence
-              </h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+              </Typography.H2>
+              <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
                 Our manufacturing facilities and client partnerships span across continents
-              </p>
+              </Typography.P>
             </motion.div>
 
             <ClientOnly

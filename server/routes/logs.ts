@@ -6,38 +6,38 @@ import { createRateLimiter } from "../middleware/rate-limiter.js";
 const router = express.Router();
 
 const ClientErrorSchema = z.object({
-	message: z.string(),
-	stack: z.string().optional(),
-	componentStack: z.string().optional(),
-	url: z.string(),
-	userAgent: z.string(),
-	timestamp: z.string(),
-	level: z.enum(["error", "warn", "info"]),
-	context: z.record(z.string(), z.unknown()).optional(),
+  message: z.string(),
+  stack: z.string().optional(),
+  componentStack: z.string().optional(),
+  url: z.string(),
+  userAgent: z.string(),
+  timestamp: z.string(),
+  level: z.enum(["error", "warn", "info"]),
+  context: z.record(z.string(), z.unknown()).optional(),
 });
 
 // Priority 2: Rate limit client error reporting to prevent abuse
 const errorReportLimiter = createRateLimiter({
-	windowMs: 60000, // 1 minute
-	max: 10, // 10 errors per IP per minute
-	keyPrefix: "rl:client-logs",
+  windowMs: 60000, // 1 minute
+  max: 10, // 10 errors per IP per minute
+  keyPrefix: "rl:client-logs",
 });
 
 router.post("/error", errorReportLimiter, async (req, res) => {
-	try {
-		const errorData = ClientErrorSchema.parse(req.body);
+  try {
+    const errorData = ClientErrorSchema.parse(req.body);
 
-		logger.error(`[Client ${errorData.level}] ${errorData.message}`, {
-			type: "client_error",
-			...errorData,
-			correlationId: (req as any).correlationId,
-		});
+    logger.error(`[Client ${errorData.level}] ${errorData.message}`, {
+      type: "client_error",
+      ...errorData,
+      correlationId: (req as any).correlationId,
+    });
 
-		res.status(204).send();
-	} catch (error) {
-		logger.warn("Invalid client error report", { error });
-		res.status(400).json({ error: "Invalid error format" });
-	}
+    res.status(204).send();
+  } catch (error) {
+    logger.warn("Invalid client error report", { error });
+    res.status(400).json({ error: "Invalid error format" });
+  }
 });
 
 export default router;

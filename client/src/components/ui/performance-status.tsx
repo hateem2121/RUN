@@ -49,7 +49,7 @@ export function PerformanceStatus({
     <div className={`performance-status ${className}`}>
       {/* Compact Status Display */}
       <motion.div
-        className="flex items-center space-x-2 rounded-full border border-white/10 bg-black/20 px-3 py-1"
+        className="flex items-center space-x-2 rounded-full border border-glass bg-black/20 px-3 py-1"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
@@ -76,13 +76,13 @@ export function PerformanceStatus({
       {/* Detailed Report Modal */}
       {showReport && showDetailed && (
         <motion.div
-          className="fixed inset-0 z-modal flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-modal center-flex bg-black/80 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => setShowReport(false)}
         >
           <motion.div
-            className="max-h-[80vh] w-full max-w-2xl overflow-auto rounded-lg bg-gray-900 p-6"
+            className="max-h-modal-sm w-full max-w-2xl overflow-auto rounded-lg bg-gray-900 p-6"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             onClick={(e) => e.stopPropagation()}

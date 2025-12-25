@@ -231,7 +231,7 @@ export function AboutHeroTab() {
               </CardTitle>
               <CardDescription>Real-time preview of the hero section</CardDescription>
             </CardHeader>
-            <CardContent className="relative min-h-[400px] flex-1 overflow-hidden rounded-b-lg border bg-background p-0">
+            <CardContent className="relative min-h-96 flex-1 overflow-hidden rounded-b-lg border bg-background p-0">
               <div className="absolute inset-0 overflow-y-auto">
                 <div className="w-[125%] origin-top scale-[0.8] transform md:w-[125%] md:origin-top-left">
                   <HeroSection

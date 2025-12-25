@@ -344,7 +344,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="flex min-h-[300px] items-center justify-center p-4">
+        <div className="flex min-h-72 items-center justify-center p-4">
           {this.renderErrorContent()}
         </div>
       );

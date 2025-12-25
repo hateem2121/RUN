@@ -1,6 +1,7 @@
 import type { AboutSection, MediaAsset } from "@shared/schema";
 import { type MotionValue, motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface StackingCard {
@@ -86,27 +87,26 @@ export const Card: React.FC<CardProps> = ({
   const isMobile = useIsMobile();
 
   return (
-    <div ref={container} className="sticky top-0 flex h-screen items-center justify-center">
+    <div ref={container} className="sticky top-0 h-screen center-flex">
       <motion.div
         style={{
           scale,
           top: `calc(-5vh + ${i * 25}px)`,
           pointerEvents: "auto",
         }}
-        className={`group relative -top-[25%] flex min-h-[450px] w-[85%] max-w-6xl origin-top flex-col overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)] backdrop-blur-md md:p-8 dark:border-gray-900/70 dark:bg-white/5`}
+        className="stacking-card group"
       >
         {/* Gradient overlay with color accent */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"
+          className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10"
           style={{
-            borderRadius: "0.75rem",
             backgroundColor: `${color}15`,
           }}
         />
 
         {/* Inner glow with color tint */}
         <div
-          className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent"
+          className="pointer-events-none absolute inset-px rounded-xl bg-gradient-to-br from-white/5 to-transparent"
           style={{
             background: `linear-gradient(to bottom right, ${color}10, transparent)`,
           }}
@@ -114,45 +114,41 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Hover shimmer effect - disabled on mobile for performance */}
         {!isMobile && (
-          <div
-            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-            style={{ borderRadius: "0.75rem" }}
-          >
-            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <div className="shimmer-overlay" />
           </div>
         )}
 
         {/* Content */}
-        <div className="relative z-10 flex h-full flex-col">
+        <div className="relative z-elevated flex h-full flex-col">
           <h2 className="mb-4 shrink-0 text-center font-bold text-2xl text-white md:text-3xl">
             {title}
           </h2>
           <div className={`flex flex-1 flex-col items-stretch gap-6 md:flex-row md:gap-8`}>
-            <div className={`flex min-h-0 w-full flex-col justify-center md:w-[40%]`}>
+            <div className={`flex min-h-0 w-full flex-col justify-center md:w-2/5`}>
               <p className="mb-6 flex-1 text-sm text-white/90 leading-relaxed md:text-base">
                 {description}
               </p>
               <div className="flex shrink-0 items-center gap-2 text-white/80">
-                <span className="cursor-pointer text-sm underline transition-colors hover:text-white">
-                  Learn more about our capabilities
-                </span>
-                <svg
-                  width="22"
-                  height="12"
-                  viewBox="0 0 22 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <button
+                  type="button"
+                  className="cursor-pointer text-sm underline transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 >
-                  <path
-                    d="M21.5303 6.53033C21.8232 6.23744 21.8232 5.76256 21.5303 5.46967L16.7574 0.696699C16.4645 0.403806 15.9896 0.403806 15.6967 0.696699C15.4038 0.989592 15.4038 1.46447 15.6967 1.75736L19.9393 6L15.6967 10.2426C15.4038 10.5355 15.4038 11.0104 15.6967 11.3033C15.9896 11.5962 16.4645 11.5962 16.7574 11.3033L21.5303 6.53033ZM0 6.75L21 6.75V5.25L0 5.25L0 6.75Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                  Learn more about our capabilities
+                </button>
+                <IconWrapper size="md" asChild>
+                  <svg viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M21.5303 6.53033C21.8232 6.23744 21.8232 5.76256 21.5303 5.46967L16.7574 0.696699C16.4645 0.403806 15.9896 0.403806 15.6967 0.696699C15.4038 0.989592 15.4038 1.46447 15.6967 1.75736L19.9393 6L15.6967 10.2426C15.4038 10.5355 15.4038 11.0104 15.6967 11.3033C15.9896 11.5962 16.4645 11.5962 16.7574 11.3033L21.5303 6.53033ZM0 6.75L21 6.75V5.25L0 5.25L0 6.75Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </IconWrapper>
               </div>
             </div>
 
             <div
-              className={`relative min-h-[280px] w-full overflow-hidden rounded-lg bg-white/10 md:min-h-[320px] md:w-[60%]`}
+              className={`relative min-h-72 w-full overflow-hidden rounded-lg bg-white/10 md:min-h-80 md:w-3/5`}
             >
               {imageUrl && mediaAsset ? (
                 <motion.div
@@ -263,7 +259,7 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
               </span>
             </h2>
             <motion.p
-              className="mx-auto mb-8 max-w-[700px] text-gray-300 text-lg md:text-xl"
+              className="mx-auto mb-8 max-w-3xl text-gray-300 text-lg md:text-xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -277,7 +273,7 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
               capabilities
             </motion.p>
             <motion.p
-              className="flex items-center justify-center gap-2 text-gray-400 text-sm"
+              className="center-flex gap-2 text-gray-400 text-sm"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-20px" }}

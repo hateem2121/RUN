@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Typography } from "@/components/ui/typography";
 
 // MOCK HEADER: Replicates the Z-Index structure of FloatingDockHeader
 // But without any heavy dependencies or data fetching.
@@ -47,8 +48,8 @@ export default function E2EOverlayTest() {
       <MockHeader />
 
       {/* 2. Main Content */}
-      <main className="relative z-0 p-20">
-        <h1 className="mb-4 font-bold text-2xl">Z-Index Interaction Proof</h1>
+      <main className="relative z-base p-20">
+        <Typography.H1 className="mb-4 font-bold text-2xl">Z-Index Interaction Proof</Typography.H1>
 
         {/* Hydration Indicator */}
         <div
@@ -84,7 +85,7 @@ export default function E2EOverlayTest() {
         </AlertDialog>
 
         <div className="mt-8 text-gray-500 text-sm">
-          <p>Test Scenario:</p>
+          <Typography.P>Test Scenario:</Typography.P>
           <ul className="list-disc pl-5">
             <li>Header is z-dock (50) / Logo z-modal (100)</li>
             <li>Dialog Overlay should be &gt; 100</li>

@@ -13,48 +13,48 @@ import { homepageSections } from "../shared/schema.js";
  * - "sustainability" - for Sustainability section
  */
 async function fixSectionNames() {
-	// Get current sections
-	const sections = await db.select().from(homepageSections);
+  // Get current sections
+  const sections = await db.select().from(homepageSections);
 
-	// Define the mapping
-	const nameMapping: Record<string, string> = {
-		"Manufacturing Capabilities": "manufacturing",
-		Sustainability: "sustainability",
-		// We'll need to determine which section should be "products"
-		// For now, let's assume "Get Started" or create a new one
-	};
+  // Define the mapping
+  const nameMapping: Record<string, string> = {
+    "Manufacturing Capabilities": "manufacturing",
+    Sustainability: "sustainability",
+    // We'll need to determine which section should be "products"
+    // For now, let's assume "Get Started" or create a new one
+  };
 
-	// Apply updates
-	for (const [oldName, newName] of Object.entries(nameMapping)) {
-		const section = sections.find((s) => s.name === oldName);
-		if (section) {
-			await db
-				.update(homepageSections)
-				.set({ name: newName })
-				.where(eq(homepageSections.id, section.id));
-		} else {
-		}
-	}
+  // Apply updates
+  for (const [oldName, newName] of Object.entries(nameMapping)) {
+    const section = sections.find((s) => s.name === oldName);
+    if (section) {
+      await db
+        .update(homepageSections)
+        .set({ name: newName })
+        .where(eq(homepageSections.id, section.id));
+    } else {
+    }
+  }
 
-	// Check if we need to create a "products" section
-	const hasProductsSection = sections.some(
-		(s) => s.name === "products" || nameMapping[s.name] === "products",
-	);
-	if (!hasProductsSection) {
-		await db.insert(homepageSections).values({
-			name: "products",
-			sectionType: "featured-products",
-			title: "Featured Products",
-			content: "Discover our premium athletic wear collection",
-			isActive: true,
-			sortOrder: 2,
-			data: {},
-		});
-	}
-	const finalSections = await db.select().from(homepageSections);
-	process.exit(0);
+  // Check if we need to create a "products" section
+  const hasProductsSection = sections.some(
+    (s) => s.name === "products" || nameMapping[s.name] === "products",
+  );
+  if (!hasProductsSection) {
+    await db.insert(homepageSections).values({
+      name: "products",
+      sectionType: "featured-products",
+      title: "Featured Products",
+      content: "Discover our premium athletic wear collection",
+      isActive: true,
+      sortOrder: 2,
+      data: {},
+    });
+  }
+  const finalSections = await db.select().from(homepageSections);
+  process.exit(0);
 }
 
 fixSectionNames().catch((error) => {
-	process.exit(1);
+  process.exit(1);
 });

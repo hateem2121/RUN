@@ -2,27 +2,23 @@ import { appStorageService } from "../app-storage-service.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 async function cleanupOrphanedFiles() {
-	const storage = getStorage();
-	const storageFiles = await appStorageService.listAssets();
-	const mediaAssets = await storage.getMediaAssets();
+  const storage = getStorage();
+  const storageFiles = await appStorageService.listAssets();
+  const mediaAssets = await storage.getMediaAssets();
 
-	// Create set of known storage paths from database
-	const knownPaths = new Set(
-		mediaAssets.map((asset: any) => asset.storagePath),
-	);
+  // Create set of known storage paths from database
+  const knownPaths = new Set(mediaAssets.map((asset: any) => asset.storagePath));
 
-	// Find orphaned files (in storage but not in DB)
-	const orphanedFiles = storageFiles.filter(
-		(path: string) => !knownPaths.has(path),
-	);
+  // Find orphaned files (in storage but not in DB)
+  const orphanedFiles = storageFiles.filter((path: string) => !knownPaths.has(path));
 
-	if (orphanedFiles.length === 0) {
-		return;
-	}
-	orphanedFiles.forEach((path: string, i: number) => {});
+  if (orphanedFiles.length === 0) {
+    return;
+  }
+  orphanedFiles.forEach((path: string, i: number) => {});
 
-	// UNCOMMENT TO ACTUALLY DELETE:
-	/*
+  // UNCOMMENT TO ACTUALLY DELETE:
+  /*
   let deleted = 0;
   let failed = 0;
   
@@ -45,9 +41,9 @@ async function cleanupOrphanedFiles() {
 
 // Run cleanup
 cleanupOrphanedFiles()
-	.then(() => {
-		process.exit(0);
-	})
-	.catch((error) => {
-		process.exit(1);
-	});
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((error) => {
+    process.exit(1);
+  });

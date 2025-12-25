@@ -72,25 +72,22 @@
 
 // Basic component validation wrapper
 export const RoadmapManagementValidator = () => {
-	return (
-		<div data-testid="roadmap-management-validation">
-			<h2>Roadmap Management Component - Phase 5 Extraction</h2>
-			<p>
-				Component successfully extracted with full timeline functionality
-				preserved
-			</p>
-			<ul>
-				<li>✅ 10 test scenarios identified and validated</li>
-				<li>✅ Timeline milestone management implemented</li>
-				<li>✅ CRUD operations with React Query integration</li>
-				<li>✅ Impact tracking with visual badge system</li>
-				<li>✅ Media selection for milestone documentation</li>
-				<li>✅ Skeleton loading states for improved UX</li>
-				<li>✅ Calendar and target icon visualization</li>
-				<li>✅ Timeline-based UI organization</li>
-				<li>✅ Feature flag integration for safe rollback</li>
-				<li>✅ Type-safe interfaces and comprehensive error handling</li>
-			</ul>
-		</div>
-	);
+  return (
+    <div data-testid="roadmap-management-validation">
+      <h2>Roadmap Management Component - Phase 5 Extraction</h2>
+      <p>Component successfully extracted with full timeline functionality preserved</p>
+      <ul>
+        <li>✅ 10 test scenarios identified and validated</li>
+        <li>✅ Timeline milestone management implemented</li>
+        <li>✅ CRUD operations with React Query integration</li>
+        <li>✅ Impact tracking with visual badge system</li>
+        <li>✅ Media selection for milestone documentation</li>
+        <li>✅ Skeleton loading states for improved UX</li>
+        <li>✅ Calendar and target icon visualization</li>
+        <li>✅ Timeline-based UI organization</li>
+        <li>✅ Feature flag integration for safe rollback</li>
+        <li>✅ Type-safe interfaces and comprehensive error handling</li>
+      </ul>
+    </div>
+  );
 };

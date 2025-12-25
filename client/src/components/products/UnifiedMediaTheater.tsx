@@ -374,7 +374,7 @@ export function UnifiedMediaTheater({
     return (
       <div
         className={cn(
-          "flex items-center justify-center rounded-lg bg-gray-50",
+          "center-flex rounded-lg bg-gray-50",
           isMobile ? "aspect-[4/3]" : "aspect-square",
           className,
         )}
@@ -436,7 +436,7 @@ export function UnifiedMediaTheater({
                       className="aspect-square w-full rounded-lg object-cover"
                     />
                     {onZoom && (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
+                      <div className="absolute inset-0 center-flex rounded-lg bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
                         <Eye className="h-6 w-6 text-white" />
                       </div>
                     )}
@@ -579,7 +579,7 @@ export function UnifiedMediaTheater({
                     {/* Enhanced Video Controls Overlay */}
                     <motion.div
                       className={cn(
-                        "pointer-events-none absolute inset-0 flex items-center justify-center",
+                        "pointer-events-none absolute inset-0 center-flex",
                         "transition-opacity duration-200",
                         isPlaying ? "opacity-0" : "opacity-100",
                       )}
@@ -675,7 +675,7 @@ export function UnifiedMediaTheater({
                     {/* NOTE: ModelViewerControls integration requires ref access - consider future enhancement */}
 
                     {/* 3D Model indicator */}
-                    <div className="absolute top-3 right-3 z-10 rounded bg-purple-600 px-2 py-1 text-sm text-white">
+                    <div className="absolute top-3 right-3 z-elevated rounded bg-purple-600 px-2 py-1 text-sm text-white">
                       3D Model
                     </div>
                   </div>
@@ -862,7 +862,7 @@ export function UnifiedMediaTheater({
                       className="h-full w-full object-cover"
                       muted
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <div className="absolute inset-0 center-flex bg-black/30">
                       <Play className="h-4 w-4 text-white" />
                     </div>
                   </div>
@@ -907,7 +907,7 @@ export function UnifiedMediaTheater({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="flex items-center justify-center gap-3">
+          <div className="center-flex gap-3">
             {isMobile && sortedMedia.length > 1 && (
               <span className="flex items-center gap-1">Swipe to navigate</span>
             )}
@@ -922,7 +922,7 @@ export function UnifiedMediaTheater({
             )}
           </div>
           {currentMedia?.type === "image" && onZoom && (
-            <div className="flex items-center justify-center gap-1">
+            <div className="center-flex gap-1">
               <ZoomIn className="h-3 w-3" />
               <span>{isMobile ? "Tap to zoom" : "Click to zoom"}</span>
             </div>

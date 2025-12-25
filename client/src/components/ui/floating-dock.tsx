@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 import { useRef, useState } from "react";
 import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { cn } from "@/lib/utils";
 
 // Maximum stagger delay to prevent sluggish animations on long lists
@@ -108,7 +109,7 @@ const FloatingDockMobile = ({
                     blurIntensity="md"
                     glowIntensity="sm"
                     shadowIntensity="md"
-                    className="min-h-[44px] min-w-[140px]"
+                    className="min-h-11 min-w-[140px]"
                   >
                     <a
                       href={item.href}
@@ -119,20 +120,22 @@ const FloatingDockMobile = ({
                         "transform-gpu transition-transform duration-150 active:scale-95",
                       )}
                     >
-                      <div
-                        className={`${
+                      <IconWrapper
+                        size={
                           (item.iconSize || iconSize) === "small"
-                            ? "h-4 w-4"
+                            ? "sm"
                             : (item.iconSize || iconSize) === "large"
-                            ? "h-6 w-6"
-                            : "h-5 w-5"
-                        } relative z-10 shrink-0`}
+                              ? "lg"
+                              : "md"
+                        }
+                        className="relative z-elevated"
+                        asChild
                       >
                         {item.icon}
-                      </div>
+                      </IconWrapper>
 
                       {/* Permanent title label for mobile navigation */}
-                      <span className="relative z-10 whitespace-nowrap text-foreground text-sm">
+                      <span className="relative z-elevated whitespace-nowrap text-foreground text-sm">
                         {item.title}
                       </span>
                     </a>
@@ -147,7 +150,7 @@ const FloatingDockMobile = ({
         blurIntensity="md"
         glowIntensity="sm"
         shadowIntensity="md"
-        className="h-12 w-12 rounded-full"
+        className="h-10 w-10 rounded-full"
       >
         <button
           onClick={() => setOpen(!open)}
@@ -159,7 +162,13 @@ const FloatingDockMobile = ({
             "transform-gpu transition-transform duration-150 active:scale-95",
           )}
         >
-          <IconLayoutNavbarCollapse className="relative z-10 h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+          <IconWrapper
+            size="md"
+            className="relative z-elevated text-neutral-500 dark:text-neutral-400"
+            asChild
+          >
+            <IconLayoutNavbarCollapse />
+          </IconWrapper>
         </button>
       </LiquidGlassCard>
     </div>
@@ -289,27 +298,27 @@ function IconContainer({
     <a
       href={href}
       aria-label={title}
-      className="group flex min-h-[44px] flex-col items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group flex min-h-11 flex-col items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <motion.div
         ref={ref}
         style={{ width, height }}
-        className="relative flex items-center justify-center overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
+        className="relative center-flex overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
       >
         {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
-        <div className="pointer-events-none absolute inset-[1px] rounded-full bg-gradient-to-br from-white/5 to-transparent" />
+        <div className="card-border-overlay rounded-full" />
 
         {/* Hover shimmer */}
         <div className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-          <div className="absolute inset-0 animate-shimmer rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="shimmer-overlay rounded-full" />
         </div>
 
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="relative z-10 flex items-center justify-center"
+          className="relative z-elevated center-flex"
         >
           {icon}
         </motion.div>
@@ -317,7 +326,7 @@ function IconContainer({
 
       {/* Permanent title label with improved contrast */}
       <div
-        className="max-w-[80px] truncate whitespace-nowrap text-center font-medium text-gray-800 text-xs drop-shadow-sm md:max-w-[100px] dark:text-gray-200"
+        className="max-w-20 truncate whitespace-nowrap text-center font-medium text-gray-800 text-xs drop-shadow-sm md:max-w-24 dark:text-gray-200"
         style={{ textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)" }} // Light mode glow for glass contrast
       >
         {title}

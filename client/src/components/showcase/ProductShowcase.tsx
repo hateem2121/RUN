@@ -77,7 +77,7 @@ const ProductShowcase = () => {
           <input
             type="text"
             placeholder="Search catalog..."
-            className="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-ring md:w-96"
+            className="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-transparent md:w-96"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />

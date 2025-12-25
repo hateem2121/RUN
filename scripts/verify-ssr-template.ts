@@ -9,22 +9,22 @@ const root = path.resolve(__dirname, "..");
 const templatePath = path.resolve(root, "client/index.html");
 
 if (!fs.existsSync(templatePath)) {
-	process.exit(1);
+  process.exit(1);
 }
 
 const template = fs.readFileSync(templatePath, "utf-8");
 const errors: string[] = [];
 
 if (!template.includes("<!--app-head-->")) {
-	errors.push("Missing <!--app-head--> marker");
+  errors.push("Missing <!--app-head--> marker");
 }
 
 if (!template.includes("<!--app-html-->")) {
-	errors.push("Missing <!--app-html--> marker inside #root");
+  errors.push("Missing <!--app-html--> marker inside #root");
 }
 
 if (errors.length > 0) {
-	errors.forEach((_err) => {});
-	process.exit(1);
+  errors.forEach((_err) => {});
+  process.exit(1);
 }
 process.exit(0);

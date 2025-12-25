@@ -220,7 +220,9 @@ function StorageOptimization() {
     onSuccess: (data) => {
       toast({
         title: "Cleanup Complete",
-        description: `Cleaned ${data.cleaned} files successfully${data.failed > 0 ? `, ${data.failed} failed` : ""}`,
+        description: `Cleaned ${data.cleaned} files successfully${
+          data.failed > 0 ? `, ${data.failed} failed` : ""
+        }`,
       });
       setSelectedOrphaned([]);
       if (useBackgroundAnalysis) {
@@ -348,7 +350,7 @@ function StorageOptimization() {
 
   if (currentData.isLoading || !currentData.stats) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
+      <div className="flex min-h-96 items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
           <p className="text-gray-600 text-sm">Loading storage statistics...</p>
@@ -497,7 +499,7 @@ function StorageOptimization() {
               </Button>
             </div>
           ) : analysisLoading ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="center-flex py-8">
               <div className="flex items-center space-x-2">
                 <RefreshCw className="h-4 w-4 animate-spin" />
                 <span>Analyzing storage...</span>

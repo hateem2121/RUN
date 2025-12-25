@@ -28,28 +28,23 @@ const router = Router();
  * Retrieve the About page hero section
  */
 router.get("/", async (_req, res) => {
-	try {
-		const hero = await withTimeout(
-			aboutService.getHero(),
-			10000,
-			"Get about hero",
-		);
+  try {
+    const hero = await withTimeout(aboutService.getHero(), 10000, "Get about hero");
 
-		// Log result
-		if (hero) {
-			logger.info(`[AboutHero] Retrieved hero: ${hero.title}`);
-		} else {
-			logger.info("[AboutHero] No hero found");
-		}
+    // Log result
+    if (hero) {
+      logger.info(`[AboutHero] Retrieved hero: ${hero.title}`);
+    } else {
+      logger.info("[AboutHero] No hero found");
+    }
 
-		return res.json(hero || null);
-	} catch (error) {
-		logger.error("[AboutHero] Error getting hero:", error);
-		return res.status(500).json({
-			error:
-				error instanceof Error ? error.message : "Failed to get about hero",
-		});
-	}
+    return res.json(hero || null);
+  } catch (error) {
+    logger.error("[AboutHero] Error getting hero:", error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to get about hero",
+    });
+  }
 });
 
 /**
@@ -57,48 +52,44 @@ router.get("/", async (_req, res) => {
  * Update the About page hero section
  */
 router.patch("/", requireAdmin, async (req, res) => {
-	try {
-		// Validate request body
-		const validation = insertAboutHeroSchema.partial().safeParse(req.body);
+  try {
+    // Validate request body
+    const validation = insertAboutHeroSchema.partial().safeParse(req.body);
 
-		if (!validation.success) {
-			logger.warn("[AboutHero] Validation failed:", validation.error);
-			return res.status(400).json({
-				error: "Validation failed",
-				details: validation.error.issues,
-			});
-		}
+    if (!validation.success) {
+      logger.warn("[AboutHero] Validation failed:", validation.error);
+      return res.status(400).json({
+        error: "Validation failed",
+        details: validation.error.issues,
+      });
+    }
 
-		// Update hero
-		const updatedHero = await withTimeout(
-			aboutService.updateHero(validation.data),
-			10000,
-			"Update about hero",
-		);
+    // Update hero
+    const updatedHero = await withTimeout(
+      aboutService.updateHero(validation.data),
+      10000,
+      "Update about hero",
+    );
 
-		// Invalidate cache
-		try {
-			await CacheOperations.invalidateAbout();
-			logger.info("[AboutHero] ✅ Cache invalidated after hero update");
-		} catch (cacheError) {
-			// CACHE FAILURE FALLBACK: Log error but do not fail the request
-			// This ensures the DB update persists even if Redis/Cache is temporary down
-			logger.error(
-				"[AboutHero] ⚠️ Cache invalidation failed - stale data may persist:",
-				cacheError,
-			);
-			// Optional: Trigger an alert or background retry mechanism here
-		}
+    // Invalidate cache
+    try {
+      await CacheOperations.invalidateAbout();
+      logger.info("[AboutHero] ✅ Cache invalidated after hero update");
+    } catch (cacheError) {
+      // CACHE FAILURE FALLBACK: Log error but do not fail the request
+      // This ensures the DB update persists even if Redis/Cache is temporary down
+      logger.error("[AboutHero] ⚠️ Cache invalidation failed - stale data may persist:", cacheError);
+      // Optional: Trigger an alert or background retry mechanism here
+    }
 
-		logger.info("[AboutHero] Hero updated successfully");
-		return res.json(updatedHero);
-	} catch (error) {
-		logger.error("[AboutHero] Error updating hero:", error);
-		return res.status(500).json({
-			error:
-				error instanceof Error ? error.message : "Failed to update about hero",
-		});
-	}
+    logger.info("[AboutHero] Hero updated successfully");
+    return res.json(updatedHero);
+  } catch (error) {
+    logger.error("[AboutHero] Error updating hero:", error);
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : "Failed to update about hero",
+    });
+  }
 });
 
 export default router;

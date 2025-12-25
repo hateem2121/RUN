@@ -1,4 +1,6 @@
 import type { AboutTimelineEntry } from "@shared/schema";
+import { glassCardVariants } from "@/components/ui/glass-card";
+import { cn } from "@/lib/utils";
 import { motion, useInView } from "framer-motion";
 import { Calendar, Sparkles } from "lucide-react";
 import { useRef } from "react";
@@ -103,7 +105,10 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                   initial={{ scale: 0, rotate: -180 }}
                   animate={isInView ? { scale: 1, rotate: 0 } : {}}
                   transition={{ delay: 0.5 + index * 0.2, duration: 0.6 }}
-                  className="glass-card-light absolute left-1/2 z-10 flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full shadow-sm-luxury-elevated"
+                  className={cn(
+                    glassCardVariants({ variant: "glass" }),
+                    "absolute left-1/2 z-elevated flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full shadow-sm-luxury-elevated",
+                  )}
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
                     <Calendar className="h-4 w-4 text-white" />
@@ -121,7 +126,12 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                     index % 2 === 0 ? "md:mr-auto md:pr-16" : "md:ml-auto md:pl-16"
                   }`}
                 >
-                  <div className="glass-card-light interactive-light rounded-3xl p-8 shadow-sm-luxury-elevated">
+                  <div
+                    className={cn(
+                      glassCardVariants({ variant: "glass" }),
+                      "rounded-3xl p-8 shadow-sm-luxury-elevated",
+                    )}
+                  >
                     {/* Year Badge */}
                     <motion.div
                       initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
@@ -186,9 +196,11 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                         ease: "easeInOut",
                         delay: index * 0.5,
                       }}
-                      className={`absolute -top-4 ${
-                        index % 2 === 0 ? "-right-4" : "-left-4"
-                      } glass-light h-8 w-8 rounded-full opacity-60`}
+                      }}
+                      className={cn(
+                        glassCardVariants({ variant: "glass" }),
+                        `absolute -top-4 ${index % 2 === 0 ? "-right-4" : "-left-4"} h-8 w-8 rounded-full opacity-60`,
+                      )}
                     />
                   </div>
                 </motion.div>
@@ -205,9 +217,10 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                     ease: "easeInOut",
                     delay: index * 1.2,
                   }}
-                  className={`absolute ${
-                    index % 2 === 0 ? "right-8" : "left-8"
-                  } glass-light top-8 h-20 w-20 rounded-full`}
+                  className={cn(
+                    glassCardVariants({ variant: "glass" }),
+                    `absolute ${index % 2 === 0 ? "right-8" : "left-8"} top-8 h-20 w-20 rounded-full`,
+                  )}
                   style={{ zIndex: -1 }}
                 />
               </motion.div>
@@ -216,9 +229,17 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
         </motion.div>
 
         {/* Decorative Elements */}
-        <div className="glass-light floating-element absolute top-20 left-10 h-32 w-32 rounded-full opacity-40" />
         <div
-          className="glass-light floating-element absolute right-10 bottom-20 h-24 w-24 rounded-full opacity-30"
+          className={cn(
+            glassCardVariants({ variant: "glass" }),
+            "floating-element absolute top-20 left-10 h-32 w-32 rounded-full opacity-40",
+          )}
+        />
+        <div
+          className={cn(
+            glassCardVariants({ variant: "glass" }),
+            "floating-element absolute right-10 bottom-20 h-24 w-24 rounded-full opacity-30",
+          )}
           style={{ animationDelay: "3s" }}
         />
       </div>

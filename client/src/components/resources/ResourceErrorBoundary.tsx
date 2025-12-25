@@ -32,7 +32,7 @@ export class ResourceErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex min-h-[400px] items-center justify-center">
+        <div className="flex min-h-96 items-center justify-center">
           <Card className="w-full max-w-md">
             <CardHeader>
               <div className="flex items-center gap-2">

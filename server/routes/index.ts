@@ -45,9 +45,9 @@ import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";
 import { logger } from "../lib/smart-logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 import {
-	clearAdminCacheHandler,
-	getAdminCacheStatsHandler,
-	requireAdmin,
+  clearAdminCacheHandler,
+  getAdminCacheStatsHandler,
+  requireAdmin,
 } from "../middleware/auth.js";
 import { enforceValidation } from "../middleware/strict-validation.js";
 import adminRouter from "./admin/admin.js";
@@ -82,171 +82,167 @@ import { registerMigrationExecutionRoutes } from "./utilities/migration-executio
 import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-	// Initialize HTTP server
-	const httpServer = createServer(app);
+  // Initialize HTTP server
+  const httpServer = createServer(app);
 
-	// ============================================================================
-	// AUTHENTICATION SETUP (MUST BE FIRST)
-	// Reference: https://developers.google.com/identity/protocols/oauth2
-	// ✓ CHECKPOINT: PHASE-4-ROUTES-INTEGRATED
-	// ============================================================================
-	await setupAuth(app);
-	logger.info("[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)");
+  // ============================================================================
+  // AUTHENTICATION SETUP (MUST BE FIRST)
+  // Reference: https://developers.google.com/identity/protocols/oauth2
+  // ✓ CHECKPOINT: PHASE-4-ROUTES-INTEGRATED
+  // ============================================================================
+  await setupAuth(app);
+  logger.info("[Auth] ✅ Google Auth initialized (OIDC + PostgreSQL sessions)");
 
-	// Auth user endpoint - returns current user with admin status
-	app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
-		try {
-			const userId = req.user.claims.sub;
-			const user = await getStorage().getUser(userId);
+  // Auth user endpoint - returns current user with admin status
+  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await getStorage().getUser(userId);
 
-			if (!user) {
-				return res.status(404).json({ message: "User not found" });
-			}
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-			// Return user with admin status for frontend
-			return res.json({
-				id: user.id,
-				email: user.email,
-				firstName: user.firstName,
-				lastName: user.lastName,
-				profileImageUrl: user.profileImageUrl,
-				isAdmin: user.isAdmin,
-			});
-		} catch (error) {
-			logger.error("[Auth] Error fetching user:", error);
-			return res.status(500).json({ message: "Failed to fetch user" });
-		}
-	});
+      // Return user with admin status for frontend
+      return res.json({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImageUrl: user.profileImageUrl,
+        isAdmin: user.isAdmin,
+      });
+    } catch (error) {
+      logger.error("[Auth] Error fetching user:", error);
+      return res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
 
-	// TEMPORARY: Dev Login Route for Testing
-	// Allows browser subagent to establish admin session without Google OAuth
-	app.get("/api/dev/login", async (req, res) => {
-		if (process.env.NODE_ENV === "production") {
-			return res.status(404).send("Not found");
-		}
+  // TEMPORARY: Dev Login Route for Testing
+  // Allows browser subagent to establish admin session without Google OAuth
+  app.get("/api/dev/login", async (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      return res.status(404).send("Not found");
+    }
 
-		try {
-			const { db } = await import("../db.js");
-			const { users } = await import("../../shared/schema.js");
-			const { eq } = await import("drizzle-orm");
+    try {
+      const { db } = await import("../db.js");
+      const { users } = await import("../../shared/schema.js");
+      const { eq } = await import("drizzle-orm");
 
-			// Find the admin user we promoted
-			const adminUser = await db.query.users.findFirst({
-				where: eq(users.email, "team@wear-run.com"),
-			});
+      // Find the admin user we promoted
+      const adminUser = await db.query.users.findFirst({
+        where: eq(users.email, "team@wear-run.com"),
+      });
 
-			if (!adminUser) {
-				return res.status(404).json({ error: "Admin user not found" });
-			}
+      if (!adminUser) {
+        return res.status(404).json({ error: "Admin user not found" });
+      }
 
-			// Manually establish session
-			const user = {
-				claims: {
-					sub: adminUser.id,
-					email: adminUser.email,
-				},
-			};
+      // Manually establish session
+      const user = {
+        claims: {
+          sub: adminUser.id,
+          email: adminUser.email,
+        },
+      };
 
-			return req.login(user, (err) => {
-				if (err) {
-					return res.status(500).json({ error: "Login failed" });
-				}
-				return res.json({ success: true, message: "Logged in as admin", user });
-			});
-		} catch (error) {
-			return res.status(500).json({ error: String(error) });
-		}
-	});
+      return req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ error: "Login failed" });
+        }
+        return res.json({ success: true, message: "Logged in as admin", user });
+      });
+    } catch (error) {
+      return res.status(500).json({ error: String(error) });
+    }
+  });
 
-	// Admin cache management endpoints (protected by requireAdmin)
-	app.post("/api/admin/cache/clear", requireAdmin, clearAdminCacheHandler);
-	app.get("/api/admin/cache/stats", requireAdmin, getAdminCacheStatsHandler);
-	logger.info(
-		"[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)",
-	);
+  // Admin cache management endpoints (protected by requireAdmin)
+  app.post("/api/admin/cache/clear", requireAdmin, clearAdminCacheHandler);
+  app.get("/api/admin/cache/stats", requireAdmin, getAdminCacheStatsHandler);
+  logger.info("[Auth] ✅ Auth routes registered (/api/login, /api/logout, /api/auth/user)");
 
-	// Enable compression middleware for all routes
-	app.use(
-		compression({
-			level: 6,
-			threshold: 1024,
-			filter: (_req, res) => {
-				if (res.get("Content-Type")?.includes("application/json")) return true;
-				if (res.get("Content-Type")?.includes("text/")) return true;
-				return false;
-			},
-		}),
-	);
+  // Enable compression middleware for all routes
+  app.use(
+    compression({
+      level: 6,
+      threshold: 1024,
+      filter: (_req, res) => {
+        if (res.get("Content-Type")?.includes("application/json")) return true;
+        if (res.get("Content-Type")?.includes("text/")) return true;
+        return false;
+      },
+    }),
+  );
 
-	logger.info("[Routes] Mounting API routes with flat structure (/api/*)");
+  logger.info("[Routes] Mounting API routes with flat structure (/api/*)");
 
-	// ============================================================================
-	// CORE API ROUTES (Flat Structure: /api/resource)
-	// ============================================================================
+  // ============================================================================
+  // CORE API ROUTES (Flat Structure: /api/resource)
+  // ============================================================================
 
-	// Core business entity routes
-	app.use("/api", categoriesRouter);
-	app.use("/api", productsRouter);
-	app.use("/api", fabricsRouter);
-	app.use("/api", accessoriesRouter);
-	app.use("/api", certificatesRouter);
-	app.use("/api", materialsRouter);
-	app.use("/api", sizeChartsRouter);
-	app.use("/api", inquiryRoutes);
+  // Core business entity routes
+  app.use("/api", categoriesRouter);
+  app.use("/api", productsRouter);
+  app.use("/api", fabricsRouter);
+  app.use("/api", accessoriesRouter);
+  app.use("/api", certificatesRouter);
+  app.use("/api", materialsRouter);
+  app.use("/api", sizeChartsRouter);
+  app.use("/api", inquiryRoutes);
 
-	// Media management
-	app.use("/api/media", mediaRoutes);
-	app.use("/api", foldersRouter);
+  // Media management
+  app.use("/api/media", mediaRoutes);
+  app.use("/api", foldersRouter);
 
-	// ============================================================================
-	// ADMIN ROUTES (PROTECTED)
-	// All /api/admin/* routes require admin authentication
-	// ============================================================================
+  // ============================================================================
+  // ADMIN ROUTES (PROTECTED)
+  // All /api/admin/* routes require admin authentication
+  // ============================================================================
 
-	// CRITICAL: Apply requireAdmin middleware to ALL /api/admin/* routes
-	// This blocks non-admins (403) and redirects unauthenticated users (401)
-	app.use("/api/admin", requireAdmin);
-	app.use("/api/admin", adminLimiter.middleware()); // Rate limiting after auth
-	app.use("/api/admin", enforceValidation); // CHUNK 8: Enforce strict validation
-	app.use("/api", adminRouter);
-	app.use("/api", inquiryAdminRouter);
-	app.use(footerConfigRouter);
-	app.use("/api/feature-flags", featureFlagsRouter);
-	logger.info(
-		"[Auth] ✅ Admin routes protected with requireAdmin + strict validation",
-	);
+  // CRITICAL: Apply requireAdmin middleware to ALL /api/admin/* routes
+  // This blocks non-admins (403) and redirects unauthenticated users (401)
+  app.use("/api/admin", requireAdmin);
+  app.use("/api/admin", adminLimiter.middleware()); // Rate limiting after auth
+  app.use("/api/admin", enforceValidation); // CHUNK 8: Enforce strict validation
+  app.use("/api", adminRouter);
+  app.use("/api", inquiryAdminRouter);
+  app.use(footerConfigRouter);
+  app.use("/api/feature-flags", featureFlagsRouter);
+  logger.info("[Auth] ✅ Admin routes protected with requireAdmin + strict validation");
 
-	// Content management routes
-	app.use("/api", pageContentRouter);
-	app.use("/api", contentManagementRouter);
+  // Content management routes
+  app.use("/api", pageContentRouter);
+  app.use("/api", contentManagementRouter);
 
-	// Worker routes (Cloud Tasks targets)
-	app.use("/api", workerRouter);
+  // Worker routes (Cloud Tasks targets)
+  app.use("/api", workerRouter);
 
-	// PHASE 3.3: Modular Resource Routes (/api/*)
-	// Now includes homepage and contact routes (relocated from modules/ on October 15, 2025)
-	app.use("/api", resourceRouter);
-	logger.info(
-		"[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)",
-	);
+  // PHASE 3.3: Modular Resource Routes (/api/*)
+  // Now includes homepage and contact routes (relocated from modules/ on October 15, 2025)
+  app.use("/api", resourceRouter);
+  logger.info(
+    "[Routes] ✅ Modular resource routes mounted at /api/* (includes homepage, contact, about, sustainability, manufacturing, technology)",
+  );
 
-	// ============================================================================
-	// UTILITY & DIAGNOSTIC ROUTES
-	// ============================================================================
+  // ============================================================================
+  // UTILITY & DIAGNOSTIC ROUTES
+  // ============================================================================
 
-	registerTaxonomyRoutes(app);
-	registerMigrationExecutionRoutes(app);
+  registerTaxonomyRoutes(app);
+  registerMigrationExecutionRoutes(app);
 
-	// CHUNK 13: Diagnostic routes with very strict rate limiting (10 req/1min)
-	app.use("/api/kv-direct", diagnosticLimiter.middleware());
-	app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
-	registerKVDiagnosticsRoutes(app);
-	registerMetricsRoutes(app);
-	registerDataCreationRoutes(app);
-	registerDirectPostgresPopulationRoutes(app);
-	registerAPIBasedPopulationRoutes(app);
+  // CHUNK 13: Diagnostic routes with very strict rate limiting (10 req/1min)
+  app.use("/api/kv-direct", diagnosticLimiter.middleware());
+  app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
+  registerKVDiagnosticsRoutes(app);
+  registerMetricsRoutes(app);
+  registerDataCreationRoutes(app);
+  registerDirectPostgresPopulationRoutes(app);
+  registerAPIBasedPopulationRoutes(app);
 
-	logger.info("[Routes] ✅ All routes registered successfully");
+  logger.info("[Routes] ✅ All routes registered successfully");
 
-	return httpServer;
+  return httpServer;
 }

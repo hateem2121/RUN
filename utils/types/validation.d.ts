@@ -16,10 +16,10 @@ import type { MediaAsset } from "../../shared/schema.js";
  * }
  */
 export interface SchemaValidationResult {
-	isValid: boolean;
-	data?: MediaAsset;
-	errors?: string[];
-	warnings?: string[];
+  isValid: boolean;
+  data?: MediaAsset;
+  errors?: string[];
+  warnings?: string[];
 }
 /**
  * Media File Validation Result
@@ -33,20 +33,20 @@ export interface SchemaValidationResult {
  * }
  */
 export interface MediaFileValidationResult {
-	isValid: boolean;
-	errors: string[];
-	warnings: string[];
-	fileSize: number;
-	mimeType: string;
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  fileSize: number;
+  mimeType: string;
 }
 /**
  * Batch Media File Validation Result
  * Used when validating multiple media files in a single operation
  */
 export interface BatchMediaFileValidationResult {
-	validAssets: number;
-	invalidAssets: number;
-	totalProcessed: number;
-	validationReport: MediaFileValidationResult[];
+  validAssets: number;
+  invalidAssets: number;
+  totalProcessed: number;
+  validationReport: MediaFileValidationResult[];
 }
 //# sourceMappingURL=validation.d.ts.map

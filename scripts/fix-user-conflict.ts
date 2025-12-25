@@ -10,21 +10,18 @@ import { users } from "../shared/schema.js";
 const TARGET_EMAIL = "team@wear-run.com";
 
 async function fixUserConflict() {
-	const existingUsers = await db
-		.select()
-		.from(users)
-		.where(eq(users.email, TARGET_EMAIL));
+  const existingUsers = await db.select().from(users).where(eq(users.email, TARGET_EMAIL));
 
-	if (existingUsers.length > 0) {
-		await db.delete(users).where(eq(users.email, TARGET_EMAIL));
-	} else {
-	}
+  if (existingUsers.length > 0) {
+    await db.delete(users).where(eq(users.email, TARGET_EMAIL));
+  } else {
+  }
 }
 
 fixUserConflict()
-	.then(() => {
-		process.exit(0);
-	})
-	.catch((error) => {
-		process.exit(1);
-	});
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((error) => {
+    process.exit(1);
+  });

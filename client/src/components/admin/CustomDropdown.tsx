@@ -87,7 +87,7 @@ export function CustomDropdown({
 
         {/* Dropdown Content */}
         {isOpen && (
-          <div className="fade-in-0 zoom-in-95 absolute top-full right-0 left-0 z-modal-nested mt-1 max-h-[300px] animate-in overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+          <div className="fade-in-0 zoom-in-95 absolute top-full right-0 left-0 z-modal-nested mt-1 max-h-dropdown animate-in overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
             {options.map((option) => (
               <button
                 key={option.value}

@@ -15,106 +15,98 @@ const router = Router();
 
 // GET /api/size-charts - List all size charts
 router.get("/size-charts", async (_req, res) => {
-	try {
-		const sizeCharts = await withTimeout(
-			getStorage().getSizeCharts(),
-			5000,
-			"Get size charts",
-		);
-		res.json(sizeCharts);
-	} catch (error: unknown) {
-		logger.error("Route: Error fetching size charts:", error);
-		res.status(500).json({
-			message: "Failed to fetch size charts",
-			error: error instanceof Error ? error.message : "Unknown error",
-		});
-	}
+  try {
+    const sizeCharts = await withTimeout(getStorage().getSizeCharts(), 5000, "Get size charts");
+    res.json(sizeCharts);
+  } catch (error: unknown) {
+    logger.error("Route: Error fetching size charts:", error);
+    res.status(500).json({
+      message: "Failed to fetch size charts",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 });
 
 // POST /api/size-charts - Create new size chart
 router.post("/size-charts", async (req, res) => {
-	try {
-		const validatedData = insertSizeChartSchema.parse(req.body);
-		const sizeChart = await withTimeout(
-			getStorage().createSizeChart(validatedData),
-			10000,
-			"Create size chart",
-		);
-		res.status(201).json(sizeChart);
-	} catch (error: unknown) {
-		if (error instanceof z.ZodError) {
-			res.status(400).json({
-				message: "Validation failed",
-				errors: error.issues,
-			});
-		} else {
-			logger.error("Route: Error creating size chart:", error);
-			res.status(500).json({
-				message: "Failed to create size chart",
-				error: error instanceof Error ? error.message : "Unknown error",
-			});
-		}
-	}
+  try {
+    const validatedData = insertSizeChartSchema.parse(req.body);
+    const sizeChart = await withTimeout(
+      getStorage().createSizeChart(validatedData),
+      10000,
+      "Create size chart",
+    );
+    res.status(201).json(sizeChart);
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        message: "Validation failed",
+        errors: error.issues,
+      });
+    } else {
+      logger.error("Route: Error creating size chart:", error);
+      res.status(500).json({
+        message: "Failed to create size chart",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
 });
 
 // PUT /api/size-charts/:id - Update size chart
 router.put("/size-charts/:id", async (req, res) => {
-	try {
-		const id = parseInt(req.params.id);
-		const validatedData = insertSizeChartSchema.partial().parse(req.body);
-		const sizeChart = await withTimeout(
-			getStorage().updateSizeChart(id, validatedData),
-			10000,
-			"Update size chart",
-		);
+  try {
+    const id = parseInt(req.params.id);
+    const validatedData = insertSizeChartSchema.partial().parse(req.body);
+    const sizeChart = await withTimeout(
+      getStorage().updateSizeChart(id, validatedData),
+      10000,
+      "Update size chart",
+    );
 
-		if (!sizeChart) {
-			return res.status(404).json({ message: "Size chart not found" });
-		}
+    if (!sizeChart) {
+      return res.status(404).json({ message: "Size chart not found" });
+    }
 
-		return res.json(sizeChart);
-	} catch (error: unknown) {
-		if (error instanceof z.ZodError) {
-			return res.status(400).json({
-				message: "Validation failed",
-				errors: error.issues,
-			});
-		} else {
-			logger.error("Route: Error updating size chart:", error);
-			return res.status(500).json({
-				message: "Failed to update size chart",
-				error: error instanceof Error ? error.message : "Unknown error",
-			});
-		}
-	}
+    return res.json(sizeChart);
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: error.issues,
+      });
+    } else {
+      logger.error("Route: Error updating size chart:", error);
+      return res.status(500).json({
+        message: "Failed to update size chart",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
 });
 
 // DELETE /api/size-charts/:id - Delete size chart
 router.delete("/size-charts/:id", async (req, res) => {
-	try {
-		const id = parseInt(req.params.id);
-		if (isNaN(id)) {
-			return res.status(400).json({ message: "Invalid size chart ID" });
-		}
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid size chart ID" });
+    }
 
-		const success = await withTimeout(
-			getStorage().deleteSizeChart(id),
-			10000,
-			"Delete size chart",
-		);
+    const success = await withTimeout(getStorage().deleteSizeChart(id), 10000, "Delete size chart");
 
-		if (!success) {
-			return res.status(404).json({ message: "Size chart not found" });
-		}
+    if (!success) {
+      return res.status(404).json({ message: "Size chart not found" });
+    }
 
-		return res.status(204).send();
-	} catch (error: unknown) {
-		logger.error("Route: Error deleting size chart:", error);
-		return res.status(500).json({
-			message: "Failed to delete size chart",
-			error: error instanceof Error ? error.message : "Unknown error",
-		});
-	}
+    return res.status(204).send();
+  } catch (error: unknown) {
+    logger.error("Route: Error deleting size chart:", error);
+    return res.status(500).json({
+      message: "Failed to delete size chart",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 });
 
 export default router;

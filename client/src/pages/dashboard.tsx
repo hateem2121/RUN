@@ -13,7 +13,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-6 flex items-center justify-center gap-3"
+            className="mb-6 center-flex gap-3"
           >
             <BarChart3 className="h-8 w-8" />
             <h1 className="font-bold text-4xl md:text-6xl">Performance Dashboard</h1>
@@ -34,7 +34,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex items-center justify-center gap-2"
+            className="center-flex gap-2"
           >
             <Zap className="h-5 w-5 text-yellow-400" />
             <span className="font-medium text-yellow-400">Live Data Integration</span>

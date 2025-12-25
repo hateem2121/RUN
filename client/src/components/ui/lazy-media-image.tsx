@@ -102,7 +102,7 @@ export function LazyMediaImage({
       <div
         ref={containerRef}
         className={cn(
-          "flex items-center justify-center text-gray-400",
+          "center-flex text-gray-400",
           placeholderClassName,
           className,
         )}
@@ -118,7 +118,7 @@ export function LazyMediaImage({
       {/* Loading placeholder */}
       {!isLoaded && (
         <div
-          className={cn("absolute inset-0 flex items-center justify-center", placeholderClassName)}
+          className={cn("absolute inset-0 center-flex", placeholderClassName)}
         >
           {isLoading && (
             <div className="h-8 w-8 animate-spin rounded-full border-blue-500 border-b-2" />

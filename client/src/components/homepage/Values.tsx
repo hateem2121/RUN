@@ -97,7 +97,7 @@ const BentoCard: React.FC<BentoCardProps> = ({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 ${colSpan}min-h-[300px] transition-all duration-500 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 md:min-h-[360px] lg:min-h-[400px]`}
+      className={`group relative overflow-hidden rounded-3xl border border-glass bg-neutral-950 ${colSpan}min-h-72 transition-all duration-500 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 md:min-h-96 lg:min-h-96`}
       role="article"
       onMouseEnter={() => {
         setCursor(CursorVariant.VIEW, "EXPLORE", image);
@@ -113,10 +113,10 @@ const BentoCard: React.FC<BentoCardProps> = ({
     >
       {" "}
       {/* Background Image Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-base">
         {/* Ripple Effect - Desktop Only */}
         {withRipple && !isMobile && (
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-base">
             <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
               <WaterRipple />
             </Canvas>
@@ -138,14 +138,14 @@ const BentoCard: React.FC<BentoCardProps> = ({
           </Canvas>
         </div>
       )}
-      <div className="relative z-10 flex w-full justify-end">
+      <div className="relative z-elevated flex w-full justify-end">
         <IconComponent
           className={`h-12 w-12 stroke-[1] transition-colors duration-300 ${
             withRipple ? "text-blue-400" : "text-gray-400 group-hover:text-blue-400"
           }`}
         />
       </div>
-      <div className="relative z-10">
+      <div className="relative z-elevated">
         <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
         <p className="text-gray-400 transition-colors group-hover:text-gray-200">{subtitle}</p>
       </div>
@@ -159,7 +159,7 @@ const Values: React.FC = () => {
 
   return (
     <section className="w-full bg-background px-4 py-16 md:px-8 md:py-32">
-      <div className="mx-auto max-w-[1600px]">
+      <div className="mx-auto container-ultra">
         <h2 className="mb-16 text-center font-bold text-[12vw] uppercase leading-none md:text-[6vw]">
           Built on <span className="font-serif italic">Precision</span>
         </h2>

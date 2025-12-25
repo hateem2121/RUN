@@ -20,7 +20,7 @@ const Categories = () => {
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
-        <div className="flex animate-marquee whitespace-nowrap will-change-transform">
+        <div className="flex animate-marquee whitespace-nowrap">
           {/* Main Content */}
           <ul className="m-0 flex list-none p-0">
             {categories.map((cat: { id: string; name: string; image: string }, index: number) => {
@@ -95,7 +95,7 @@ const Categories = () => {
 
         {/* Reverse Marquee - Entirely Decorative/Redundant */}
         <div
-          className="mt-[-2vw] flex animate-marquee-reverse whitespace-nowrap will-change-transform"
+          className="mt-[-2vw] flex animate-marquee-reverse whitespace-nowrap"
           aria-hidden="true"
         >
           {[...categories, ...categories].reverse().map((cat, index) => {

@@ -12,7 +12,7 @@ export function LazyLoadWrapper({ component, fallback, props = {} }: LazyLoadWra
   const LazyComponent = lazy(component);
 
   const defaultFallback = (
-    <div className="flex items-center justify-center p-8">
+    <div className="center-flex p-8">
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

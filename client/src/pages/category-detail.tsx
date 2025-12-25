@@ -13,6 +13,7 @@ import {
   transformProducts,
 } from "@/lib/product-transformers";
 import { batchFetchMediaContent } from "@/lib/queryClient";
+import { Typography } from "@/components/ui/typography";
 
 interface ProductCardProps {
   product: TransformedProduct;
@@ -58,9 +59,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start p-4 text-center">
-        <h3 className="mb-2 w-full font-semibold text-lg uppercase tracking-wide">
+        <Typography.H3 className="mb-2 w-full font-semibold text-lg uppercase tracking-wide">
           {product.name}
-        </h3>
+        </Typography.H3>
         <div className="mt-1 w-full space-x-2 text-gray-600 text-sm uppercase tracking-wide">
           <span>{product.fabric}</span>
           <span>|</span>
@@ -74,7 +75,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
           <Link
             href={product.detailUrl}
-            className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-black bg-white px-4 py-3 text-black text-xs uppercase tracking-widest transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-black focus:ring-offset-2"
+            className="flex min-h-11 w-full items-center justify-center gap-2 border-2 border-black bg-white px-4 py-3 text-black text-xs uppercase tracking-widest transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-black focus:ring-offset-2"
             data-testid={`view-details-${product.id}`}
           >
             <span>View Details</span>
@@ -83,7 +84,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <button
             onClick={handleRequestQuote}
             disabled={alreadyInCart}
-            className="flex min-h-[44px] w-full items-center justify-center bg-black px-4 py-3 text-white text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="flex min-h-11 w-full items-center justify-center bg-black px-4 py-3 text-white text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
             data-testid={`request-quote-${product.id}`}
           >
             {alreadyInCart ? "Added" : "Request Quote"}
@@ -206,7 +207,7 @@ export default function CategoryDetail() {
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
           <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-gray-600" />
-          <p className="text-gray-600 text-sm">Loading category...</p>
+          <Typography.P className="text-gray-600 text-sm">Loading category...</Typography.P>
         </div>
       </div>
     );
@@ -218,10 +219,12 @@ export default function CategoryDetail() {
       <div className="container mx-auto max-w-6xl px-4 pt-20 pb-8 sm:pt-24 lg:pt-28">
         <div className="py-16 text-center">
           <AlertCircle className="mx-auto mb-4 h-16 w-16 text-red-500" />
-          <h2 className="mb-4 font-bold text-2xl text-gray-900">Category Not Found</h2>
-          <p className="mb-8 text-gray-600">
+          <Typography.H2 className="mb-4 font-bold text-2xl text-gray-900">
+            Category Not Found
+          </Typography.H2>
+          <Typography.P className="mb-8 text-gray-600">
             The category you're looking for doesn't exist or has been moved.
-          </p>
+          </Typography.P>
           <Link href="/categories">
             <button className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-800">
               Browse All Categories
@@ -269,9 +272,13 @@ export default function CategoryDetail() {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">{category.name}</h1>
+          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+            {category.name}
+          </Typography.H1>
           {category.description && (
-            <p className="max-w-3xl text-gray-600 text-lg">{category.description}</p>
+            <Typography.P className="max-w-3xl text-gray-600 text-lg">
+              {category.description}
+            </Typography.P>
           )}
         </motion.div>
 
@@ -279,7 +286,9 @@ export default function CategoryDetail() {
         <div className="mt-8">
           {transformedProducts.length === 0 ? (
             <div className="px-4 py-20 text-center">
-              <p className="text-gray-600">No products found in this category.</p>
+              <Typography.P className="text-gray-600">
+                No products found in this category.
+              </Typography.P>
             </div>
           ) : (
             <>

@@ -81,7 +81,7 @@ export const AssetPlaceholder = React.memo(function AssetPlaceholder({
 }) {
   return (
     <div
-      className={`flex items-center justify-center rounded-lg border-2 border-gray-300 border-dashed bg-gray-100 ${className}`}
+      className={`center-flex rounded-lg border-2 border-gray-300 border-dashed bg-gray-100 ${className}`}
     >
       <div className="p-4 text-center">
         <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-gray-400" />

@@ -3,20 +3,20 @@ import { db } from "../server/db.js";
 import { homepageSections } from "../shared/schema.js";
 
 async function activateSection() {
-	// Activate the manufacturing section
-	const [updated] = await db
-		.update(homepageSections)
-		.set({ isActive: true })
-		.where(eq(homepageSections.name, "manufacturing"))
-		.returning();
+  // Activate the manufacturing section
+  const [updated] = await db
+    .update(homepageSections)
+    .set({ isActive: true })
+    .where(eq(homepageSections.name, "manufacturing"))
+    .returning();
 
-	if (updated) {
-	} else {
-	}
-	const sections = await db.select().from(homepageSections);
-	process.exit(0);
+  if (updated) {
+  } else {
+  }
+  const sections = await db.select().from(homepageSections);
+  process.exit(0);
 }
 
 activateSection().catch((error) => {
-	process.exit(1);
+  process.exit(1);
 });

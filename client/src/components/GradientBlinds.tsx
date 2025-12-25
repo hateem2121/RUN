@@ -87,7 +87,6 @@
 import { Mesh, Program, Renderer, Triangle } from "ogl";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import "./GradientBlinds.css";
 
 export interface GradientBlindsProps {
   className?: string;
@@ -688,19 +687,27 @@ void main() {
   // Render WebGL container or CSS fallback
   if (!webglSupport?.supported) {
     return (
-      <div className={`gradient-blinds-container gradient-blinds-fallback ${className || ""}`}>
+      <div
+        className={`absolute inset-0 overflow-hidden pointer-events-auto gradient-blinds-fallback ${
+          className || ""
+        }`}
+      >
         {/* CSS Fallback with current admin settings */}
         <div
-          className="gradient-blinds-css-fallback"
-          style={cssCustomProps}
+          className="absolute inset-0 block"
+          style={{
+            ...cssCustomProps,
+            background: `linear-gradient(var(--gb-angle), var(--gb-color1), var(--gb-color2))`,
+            mixBlendMode: `var(--gb-blend-mode)`,
+          }}
           aria-label="Gradient background (static preview)"
         />
 
         {/* User feedback for fallback mode */}
-        <div className="gradient-blinds-fallback-notice" aria-live="polite">
-          <div className="fallback-message">
-            <span className="fallback-icon">ℹ️</span>
-            <span className="fallback-text">
+        <div className="absolute bottom-4 right-4 z-default pointer-events-none" aria-live="polite">
+          <div className="flex items-center gap-2 px-4 py-2 bg-card text-foreground rounded-lg text-xs font-medium transition-opacity duration-300 border border-border shadow-md hover:opacity-100 font-sans">
+            <span className="text-sm opacity-90">ℹ️</span>
+            <span className="whitespace-nowrap font-medium">
               Static preview mode. For interactive effects, use a WebGL-capable browser.
             </span>
           </div>
@@ -712,9 +719,9 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`gradient-blinds-container ${webglInitialized ? "webgl-ready" : "webgl-loading"} ${
-        className || ""
-      }`}
+      className={`absolute inset-0 overflow-hidden pointer-events-auto ${
+        webglInitialized ? "webgl-ready" : "webgl-loading"
+      } ${className || ""}`}
       style={cssCustomProps}
     />
   );

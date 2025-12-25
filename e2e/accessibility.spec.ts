@@ -5,8 +5,9 @@
  * Uses @axe-core/playwright for automated WCAG 2.2 AA compliance testing
  * Target: 0 critical/serious violations on key pages
  */
-import { expect, test } from "@playwright/test";
+
 import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 
 // Configure axe to check WCAG 2.2 AA compliance
 const axeConfig = {

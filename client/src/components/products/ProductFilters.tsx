@@ -277,7 +277,7 @@ export function ProductFilters({
                   {fabric.name}
                   <button
                     onClick={() => handleFabricToggle(fabricId)}
-                    className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
+                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${fabric.name} filter`}
                   >
                     <X className="h-4 w-4" />
@@ -297,7 +297,7 @@ export function ProductFilters({
                   {cert.name}
                   <button
                     onClick={() => handleCertificateToggle(certId)}
-                    className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
+                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${cert.name} filter`}
                   >
                     <X className="h-4 w-4" />
@@ -311,7 +311,7 @@ export function ProductFilters({
                 {tag}
                 <button
                   onClick={() => handleTagToggle(tag)}
-                  className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
+                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                   aria-label={`Remove ${tag} filter`}
                 >
                   <X className="h-4 w-4" />
@@ -324,7 +324,7 @@ export function ProductFilters({
                 MOQ: {selectedFilters.moqRange[0]}-{selectedFilters.moqRange[1]}
                 <button
                   onClick={() => handleMoqChange([0, 10000])}
-                  className="-my-1 -mr-1 ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center hover:text-red-500"
+                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                   aria-label="Remove MOQ filter"
                 >
                   <X className="h-4 w-4" />

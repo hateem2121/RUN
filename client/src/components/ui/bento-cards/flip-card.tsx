@@ -40,7 +40,7 @@ const FlipCard = memo(function FlipCard({
       <AnimatedCardWrapper className="h-full w-full">
         <div className="relative flex h-full w-full items-center justify-center contain-layout">
           <div
-            className="group relative h-[380px] w-full max-w-[280px] will-change-transform perspective-deep"
+            className="group relative h-96 w-full max-w-72 perspective-deep"
             onMouseEnter={() => setIsFlipped(true)}
             onMouseLeave={() => setIsFlipped(false)}
           >
@@ -88,7 +88,7 @@ const FlipCard = memo(function FlipCard({
                               "bg-gradient-to-br from-orange-400 to-orange-600",
                               "animate-[scale_3s_linear_infinite]",
                               "opacity-0",
-                              "shadow-[0_0_50px_rgba(255,165,0,0.5)]",
+                              "shadow-glow-orange",
                               "group-hover:animate-[scale_2s_linear_infinite]",
                             )}
                             style={{
@@ -105,7 +105,7 @@ const FlipCard = memo(function FlipCard({
 
                 <div className="absolute right-0 bottom-0 left-0 p-5">
                   {/* Glassmorphism Background for Text */}
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="rounded-2xl border border-glass bg-white/5 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div className="space-y-1.5">
                         <h3 className="font-semibold text-lg text-white leading-snug tracking-tighter drop-shadow-lg transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px]">
@@ -122,7 +122,7 @@ const FlipCard = memo(function FlipCard({
                             "bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-transparent",
                           )}
                         />
-                        <Repeat2 className="relative z-10 h-4 w-4 text-orange-500 transition-transform duration-300 group-hover/icon:-rotate-12 group-hover/icon:scale-110" />
+                        <Repeat2 className="relative z-elevated h-4 w-4 text-orange-500 transition-transform duration-300 group-hover/icon:-rotate-12 group-hover/icon:scale-110" />
                       </div>
                     </div>
                   </div>
@@ -198,7 +198,7 @@ const FlipCard = memo(function FlipCard({
                           "scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100",
                         )}
                       />
-                      <ArrowRight className="relative z-10 h-4 w-4 text-orange-500 transition-all duration-300 group-hover/start:translate-x-0.5 group-hover/start:scale-110" />
+                      <ArrowRight className="relative z-elevated h-4 w-4 text-orange-500 transition-all duration-300 group-hover/start:translate-x-0.5 group-hover/start:scale-110" />
                     </div>
                   </div>
                 </div>

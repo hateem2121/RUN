@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // Use environment variable for base URL or default to Port 5001
 const BASE_URL = process.env.E2E_BASE_URL || "http://localhost:5001";

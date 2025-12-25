@@ -38,14 +38,14 @@ export function ProductBreadcrumbs({ items, className, showHome = true }: Produc
               {index > 0 && <ChevronRight className="mx-1 h-4 w-4 text-gray-400" />}
 
               {isLast ? (
-                <span className="flex max-w-[200px] items-center truncate font-medium text-gray-900">
+                <span className="flex w-truncate-md items-center truncate font-medium text-gray-900">
                   {Icon && <Icon className="mr-1 h-4 w-4 shrink-0" />}
                   {item.name}
                 </span>
               ) : (
                 <Link
                   href={item.url}
-                  className="flex max-w-[150px] items-center truncate transition-colors hover:text-blue-600"
+                  className="flex w-truncate-sm items-center truncate transition-colors hover:text-blue-600"
                 >
                   {Icon && <Icon className="mr-1 h-4 w-4 shrink-0" />}
                   {item.name}

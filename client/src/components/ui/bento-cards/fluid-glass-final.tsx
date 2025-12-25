@@ -211,7 +211,7 @@ const FluidGlass = memo(function FluidGlass({
   return (
     <div className="relative h-full w-full" style={{ minHeight: "400px" }}>
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="absolute inset-0 center-flex bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="h-12 w-12 animate-spin rounded-full border-purple-600 border-b-2"></div>
         </div>
       )}

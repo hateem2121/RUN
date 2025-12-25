@@ -35,37 +35,34 @@ export const STABILIZATION_CSS = `
  * Standardizes the page state for a visual snapshot.
  */
 export async function stabilizeVisuals(page: Page) {
-	// A. Set consistent viewport (if not already handled by config)
-	await page.setViewportSize({ width: 1280, height: 720 });
+  // A. Set consistent viewport (if not already handled by config)
+  await page.setViewportSize({ width: 1280, height: 720 });
 
-	// B. Enforce prefers-reduced-motion
-	await page.emulateMedia({ reducedMotion: "reduce" });
+  // B. Enforce prefers-reduced-motion
+  await page.emulateMedia({ reducedMotion: "reduce" });
 
-	// C. Inject stabilization styles
-	await page.addStyleTag({ content: STABILIZATION_CSS });
+  // C. Inject stabilization styles
+  await page.addStyleTag({ content: STABILIZATION_CSS });
 
-	// D. Wait for font loading to prevent character shifting
-	try {
-		await page.evaluate(() => document.fonts.ready);
-	} catch (e) {}
+  // D. Wait for font loading to prevent character shifting
+  try {
+    await page.evaluate(() => document.fonts.ready);
+  } catch (e) {}
 
-	// E. Ensure hydration is complete (wait for our custom class)
-	await page.waitForSelector("body.css-loaded", { timeout: 10000 });
+  // E. Ensure hydration is complete (wait for our custom class)
+  await page.waitForSelector("body.css-loaded", { timeout: 10000 });
 }
 
 /**
  * Performs a governed snapshot with standardized settings.
  */
 export async function expectVisualMatch(page: Page, name: string) {
-	await stabilizeVisuals(page);
+  await stabilizeVisuals(page);
 
-	await expect(page).toHaveScreenshot(`${name}.png`, {
-		fullPage: true,
-		animations: "disabled",
-		// Standard masking for all tests
-		mask: [
-			page.locator("canvas"),
-			page.locator('[data-testid="hydration-status"]'),
-		],
-	});
+  await expect(page).toHaveScreenshot(`${name}.png`, {
+    fullPage: true,
+    animations: "disabled",
+    // Standard masking for all tests
+    mask: [page.locator("canvas"), page.locator('[data-testid="hydration-status"]')],
+  });
 }

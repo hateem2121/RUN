@@ -9,6 +9,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductsListSEO } from "@/components/products/ProductsListSEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Typography } from "@/components/ui/typography";
 import {
   Select,
   SelectContent,
@@ -36,7 +37,7 @@ import {
 // Loading Fallback Component
 function ProductsLoader() {
   return (
-    <div className="flex min-h-[400px] items-center justify-center">
+    <div className="flex min-h-96 items-center justify-center">
       <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
     </div>
   );
@@ -240,7 +241,7 @@ export default function ProductsPage() {
           <div className="sticky top-0 z-modal-backdrop border-b bg-white">
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-                <h1 className="font-bold text-2xl">Products</h1>
+                <Typography.H1 className="font-bold text-2xl">Products</Typography.H1>
 
                 <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                   {/* Search */}
@@ -250,13 +251,13 @@ export default function ProductsPage() {
                       placeholder="Search products..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 sm:w-[300px]"
+                      className="w-full pl-10 sm:w-80"
                     />
                   </div>
 
                   {/* Category Filter */}
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full sm:w-[200px]">
+                    <SelectTrigger className="w-full sm:w-48">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -273,7 +274,7 @@ export default function ProductsPage() {
 
                   {/* Sort */}
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full sm:w-[150px]">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -343,7 +344,7 @@ export default function ProductsPage() {
               <ProductsLoader />
             ) : sortedProducts.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-gray-500">No products found</p>
+                <Typography.P className="text-gray-500">No products found</Typography.P>
               </div>
             ) : (
               <>
@@ -365,7 +366,12 @@ export default function ProductsPage() {
                 {/* Infinite scroll observer (Placeholder) */}
                 {hasMore && (
                   <div ref={observerRef} className="flex justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                    <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
+                    <Typography.P className="text-luxury-body text-sm">
+                      {categoriesLoading
+                        ? "Loading categories..."
+                        : `Loading ${allMediaIds.length} media assets...`}
+                    </Typography.P>
                   </div>
                 )}
               </>

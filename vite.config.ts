@@ -10,6 +10,7 @@ import Inspect from "vite-plugin-inspect";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Tigger restart
 export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
   plugins: [
     react({

@@ -78,8 +78,9 @@ const EnhancedDialogOverlay = ({
 EnhancedDialogOverlay.displayName = "EnhancedDialogOverlay";
 
 // Enhanced content with focus management and accessibility
-interface EnhancedDialogContentProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+interface EnhancedDialogContentProps extends React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Content
+> {
   nestingLevel?: number;
   onOpenChange?: (open: boolean) => void;
   isOpen?: boolean;
@@ -170,7 +171,7 @@ const EnhancedDialogContent = ({
       // Enhanced sizing for media library contexts
       if (contentType === "media-library") {
         return {
-          width: preferredSize === "full" ? "max-w-[95vw]" : baseSize,
+          width: preferredSize === "full" ? "max-w-vw-95" : baseSize,
           height: preferredSize === "full" ? "h-[95vh]" : "h-[85vh]",
           padding: nestingLevel > 0 ? "p-4" : "p-6",
           layout: "flex flex-col overflow-hidden",
@@ -180,8 +181,8 @@ const EnhancedDialogContent = ({
       // Enhanced sizing for fullscreen content
       if (contentType === "fullscreen") {
         return {
-          width: "max-w-[95vw]",
-          height: "max-h-[95vh]",
+          width: "max-w-vw-95",
+          height: "max-h-modal-lg",
           padding: "p-4",
           layout: "flex flex-col",
         };
@@ -200,7 +201,7 @@ const EnhancedDialogContent = ({
       case "media-library":
         // Media library needs definite height for EnhancedDialogBody scroll container
         return {
-          width: nestingLevel === 0 ? "max-w-6xl" : "max-w-[90vw]",
+          width: nestingLevel === 0 ? "max-w-6xl" : "max-w-vw-90",
           height: "h-[85vh]",
           padding: "p-4",
           layout: "flex flex-col overflow-hidden", // Prevent content overflow, let EnhancedDialogBody scroll
@@ -209,8 +210,8 @@ const EnhancedDialogContent = ({
       case "fullscreen":
         // Fullscreen contexts utilize most of the viewport
         return {
-          width: "max-w-[95vw]",
-          height: "max-h-[95vh]",
+          width: "max-w-vw-95",
+          height: "max-h-modal-lg",
           padding: "p-4",
           layout: "flex flex-col",
         };
@@ -219,7 +220,7 @@ const EnhancedDialogContent = ({
         // Forms typically need medium to large width but not excessive height
         return {
           width: nestingLevel === 0 ? "max-w-2xl" : "max-w-xl",
-          height: "max-h-[80vh]",
+          height: "max-h-modal-sm",
           padding: nestingLevel > 0 ? "p-4" : "p-6",
           layout: "flex flex-col",
         };
@@ -228,13 +229,13 @@ const EnhancedDialogContent = ({
         // 3. Fallback to enhanced nesting-based sizing
         const fallbackSizes = {
           0: { width: "max-w-lg", height: "auto" }, // Base modal
-          1: { width: "max-w-4xl", height: "max-h-[80vh]" }, // Nested - assume might contain media
+          1: { width: "max-w-4xl", height: "max-h-modal-sm" }, // Nested - assume might contain media
           2: { width: "max-w-2xl", height: "max-h-[75vh]" }, // Second-level nested
         };
 
         const fallback = fallbackSizes[nestingLevel as keyof typeof fallbackSizes] || {
           width: "max-w-xl",
-          height: "max-h-[70vh]",
+          height: "max-h-viewport-70",
         };
         return {
           ...fallback,
@@ -322,7 +323,7 @@ const EnhancedDialogContent = ({
           // Visual depth indicators
           nestingLevel > 0 && "nested-modal-content shadow-2xl ring-2 ring-primary/20",
           // Enhanced shadow-sm for nested modals
-          nestingLevel > 0 && "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]",
+          nestingLevel > 0 && "shadow-deep",
           // Modal depth classes for additional styling
           `modal-depth-${Math.min(nestingLevel, 3)}`,
           // Content type specific styling
@@ -339,7 +340,7 @@ const EnhancedDialogContent = ({
           // Viewport constraint indicator
           position?.isConstrainedByViewport && "modal-viewport-constrained",
           // Performance optimization classes
-          "backface-hidden transform-gpu will-change-transform",
+          "backface-hidden transform-gpu",
           className,
         )}
         {...props}

@@ -135,7 +135,7 @@ export function FallingPattern({
         className="size-full"
       >
         <motion.div
-          className="relative z-0 size-full"
+          className="relative z-base size-full"
           style={{
             backgroundColor,
             backgroundImage: generateBackgroundImage(),
@@ -159,7 +159,7 @@ export function FallingPattern({
         />
       </motion.div>
       <div
-        className="absolute inset-0 z-1 dark:brightness-600"
+        className="absolute inset-0 z-default dark:brightness-600"
         style={{
           backdropFilter: isMobile ? "none" : `blur(${blurIntensity})`,
           backgroundImage: `radial-gradient(circle at 50% 50%, transparent 0, transparent 2px, ${backgroundColor} 2px)`,

@@ -240,10 +240,10 @@ const SortableGoalItem = memo(function SortableGoalItem({
                       progressPercentage >= 100
                         ? "bg-green-100 text-green-700"
                         : progressPercentage >= 75
-                        ? "bg-blue-100 text-blue-700"
-                        : progressPercentage >= 50
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700"
+                          ? "bg-blue-100 text-blue-700"
+                          : progressPercentage >= 50
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
                     }`}
                   >
                     {progressPercentage}%
@@ -568,7 +568,7 @@ export function UnifiedSustainabilityManagement() {
   return (
     <div className="relative space-y-6">
       {/* Global Sticky Header */}
-      <div className="sticky top-0 z-10 -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 shadow-sm-xs backdrop-blur-xs">
+      <div className="sticky top-0 z-elevated -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 shadow-sm-xs backdrop-blur-xs">
         <div>
           <h1 className="flex items-center gap-2 font-bold text-2xl text-gray-900">
             <Leaf className="h-6 w-6 text-green-600" />

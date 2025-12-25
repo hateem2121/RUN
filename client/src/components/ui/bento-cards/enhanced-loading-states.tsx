@@ -61,7 +61,7 @@ export function MediaLoadingState({ className }: { className?: string }) {
   return (
     <div className={cn("relative", className)}>
       <EnhancedLoadingSkeleton type="media" className="h-full w-full" />
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 center-flex">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
       </div>
     </div>

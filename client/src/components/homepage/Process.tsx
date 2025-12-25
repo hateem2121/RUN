@@ -129,9 +129,9 @@ const Process: React.FC = () => {
     <section className="overflow-hidden bg-neutral-950 text-neutral-50">
       <div
         ref={triggerRef}
-        className="relative flex min-h-screen w-full flex-col overflow-x-hidden supports-[min-height:100dvh]:min-h-[100dvh] md:flex-row md:items-center"
+        className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
-        <div className="absolute top-8 left-8 z-20">
+        <div className="absolute top-8 left-8 z-elevated">
           <h3 className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-xs md:text-xl">
             Production Pipeline
           </h3>
@@ -139,7 +139,7 @@ const Process: React.FC = () => {
 
         {/* Decorative Drawing SVG - Desktop Only */}
         <div
-          className="pointer-events-none absolute top-1/2 left-0 z-0 hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
+          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
           aria-hidden="true"
         >
           <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
@@ -155,13 +155,13 @@ const Process: React.FC = () => {
 
         {/* Container */}
         <div
-          className="flex h-auto w-full flex-col pt-24 will-change-transform md:h-full md:flex-row md:pt-0"
+          className="flex h-auto w-full flex-col pt-24 md:h-full md:flex-row md:pt-0"
           ref={sectionRef}
         >
           {PROCESS_STEPS.map((step) => (
             <div
               key={step.id}
-              className="process-card relative z-10 flex min-h-[60vh] w-full shrink-0 items-center justify-center border-white/10 border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
+              className="process-card relative z-elevated flex min-h-screen w-full shrink-0 items-center justify-center border-glass border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
             >
               <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-white/5 bg-neutral-950/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}

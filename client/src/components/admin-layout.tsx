@@ -173,7 +173,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
 export const Logo = () => {
   return (
-    <div className="relative z-10 flex items-center space-x-2 py-1 font-normal text-black text-sm">
+    <div className="relative z-elevated flex items-center space-x-2 py-1 font-normal text-black text-sm">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}
@@ -188,7 +188,7 @@ export const Logo = () => {
 
 export const LogoIcon = () => {
   return (
-    <div className="relative z-10 flex items-center space-x-2 py-1 font-normal text-black text-sm">
+    <div className="relative z-elevated flex items-center space-x-2 py-1 font-normal text-black text-sm">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
     </div>
   );

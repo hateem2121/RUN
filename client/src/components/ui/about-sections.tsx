@@ -96,7 +96,7 @@ export function AboutHeroSection({
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.4 }}
-                className="max-w-[600px] text-muted-foreground md:text-xl"
+                className="max-w-2xl text-muted-foreground md:text-xl"
               >
                 {subheadline}
               </motion.p>
@@ -126,7 +126,7 @@ export function AboutHeroSection({
             initial={{ opacity: 0, x: 100 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex items-center justify-center"
+            className="center-flex"
           >
             <div className="relative h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px] lg:h-[500px] xl:h-[550px]">
               {backgroundImage ? (
@@ -240,7 +240,7 @@ export function ClientsSection({
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
+              className="mx-auto max-w-reading text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
             >
               {description}
             </motion.p>
@@ -257,7 +257,7 @@ export function ClientsSection({
             <motion.div
               key={index}
               variants={itemFadeIn}
-              className="flex items-center justify-center rounded-xl bg-background/50 p-4 transition-colors hover:bg-background/80"
+              className="center-flex rounded-xl bg-background/50 p-4 transition-colors hover:bg-background/80"
             >
               <img
                 src={client.logo}
@@ -309,7 +309,7 @@ export function ServicesSection({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mx-auto max-w-[700px] text-muted-foreground md:text-xl"
+            className="mx-auto max-w-reading text-muted-foreground md:text-xl"
           >
             {description}
           </motion.p>

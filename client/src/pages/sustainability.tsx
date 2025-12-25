@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { fadeInUp, springTransition } from "@/lib/animations";
 import { apiRequest } from "@/lib/queryClient";
+import { Typography, headingVariants } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
 export default function Sustainability() {
   const { scrollY } = useScroll();
@@ -147,7 +149,7 @@ export default function Sustainability() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...springTransition, duration: 1 }}
-            className="mb-6 font-bold font-neue-stance text-4xl text-white md:text-5xl"
+            className={cn(headingVariants({ variant: "h1" }), "mb-6 text-white md:text-5xl")}
           >
             {hero?.headline || "Sustainable Future"}
           </motion.h1>
@@ -185,10 +187,12 @@ export default function Sustainability() {
         <section className="relative bg-white py-20">
           <div className="container mx-auto px-4">
             <motion.div {...fadeInUp} className="mb-16 text-center">
-              <h2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
+              <Typography.H2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
                 {featuresData.title}
-              </h2>
-              <p className="mx-auto max-w-4xl text-lg text-stone-600">{featuresData.description}</p>
+              </Typography.H2>
+              <Typography.P className="mx-auto max-w-4xl text-lg text-stone-600">
+                {featuresData.description}
+              </Typography.P>
             </motion.div>
 
             {featuresData.highlightedFeatures && (
@@ -202,8 +206,12 @@ export default function Sustainability() {
                     transition={{ ...springTransition, delay: index * 0.1 }}
                     className="rounded-xl border border-stone-200 bg-stone-50 p-6 shadow-xs"
                   >
-                    <h3 className="mb-3 font-semibold text-stone-900 text-xl">{feature.title}</h3>
-                    <p className="text-stone-600 leading-relaxed">{feature.description}</p>
+                    <Typography.H3 className="mb-3 font-semibold text-stone-900 text-xl">
+                      {feature.title}
+                    </Typography.H3>
+                    <Typography.P className="text-stone-600 leading-relaxed">
+                      {feature.description}
+                    </Typography.P>
                   </motion.div>
                 ))}
               </div>
@@ -220,10 +228,12 @@ export default function Sustainability() {
       >
         <div className="container mx-auto px-4">
           <motion.div {...fadeInUp} className="mb-16 text-center">
-            <h2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-900">
+            <Typography.H2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-900">
               {metricsTitle}
-            </h2>
-            <p className="mx-auto max-w-3xl text-lg text-stone-600">{metricsDescription}</p>
+            </Typography.H2>
+            <Typography.P className="mx-auto max-w-3xl text-lg text-stone-600">
+              {metricsDescription}
+            </Typography.P>
           </motion.div>
 
           <div
@@ -247,9 +257,9 @@ export default function Sustainability() {
           {/* Show fallback message if no metrics */}
           {activeImpactMetrics.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-stone-600">
+              <Typography.P className="text-stone-600">
                 No impact metrics configured. Add metrics in the admin panel to display here.
-              </p>
+              </Typography.P>
             </div>
           )}
         </div>
@@ -285,13 +295,13 @@ export default function Sustainability() {
         <section className="bg-stone-50 py-20">
           <div className="container mx-auto px-4">
             <motion.div {...fadeInUp} className="mb-16 text-center">
-              <h2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
+              <Typography.H2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
                 {fabricPortfolioData.title}
-              </h2>
+              </Typography.H2>
               {fabricPortfolioData.description && (
-                <p className="mx-auto max-w-4xl text-lg text-stone-600">
+                <Typography.P className="mx-auto max-w-4xl text-lg text-stone-600">
                   {fabricPortfolioData.description}
-                </p>
+                </Typography.P>
               )}
             </motion.div>
 
@@ -309,12 +319,12 @@ export default function Sustainability() {
 
         <div className="container relative z-modal-backdrop mx-auto px-4 text-center">
           <motion.div {...fadeInUp}>
-            <h2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-100">
+            <Typography.H2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-100">
               {callToActionTitle}
-            </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-stone-300">
+            </Typography.H2>
+            <Typography.P className="mx-auto mb-8 max-w-2xl text-lg text-stone-300">
               {callToActionDescription}
-            </p>
+            </Typography.P>
             <Button
               size="lg"
               variant="secondary"

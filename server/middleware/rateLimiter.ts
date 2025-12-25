@@ -3,140 +3,129 @@ import type { NextFunction, Request, Response } from "express";
 import { logger } from "../lib/smart-logger.js";
 
 interface RateLimitConfig {
-	windowMs: number;
-	max: number;
-	message: string;
-	statusCode: number;
+  windowMs: number;
+  max: number;
+  message: string;
+  statusCode: number;
 }
 
 interface RateLimitEntry {
-	count: number;
-	resetTime: number;
+  count: number;
+  resetTime: number;
 }
 
 class RateLimiter {
-	private redis: Redis | null = null;
-	private store: Map<string, RateLimitEntry> = new Map();
-	private config: RateLimitConfig;
-	private cleanupInterval: NodeJS.Timeout | null = null;
+  private redis: Redis | null = null;
+  private store: Map<string, RateLimitEntry> = new Map();
+  private config: RateLimitConfig;
+  private cleanupInterval: NodeJS.Timeout | null = null;
 
-	constructor(config: RateLimitConfig) {
-		this.config = config;
+  constructor(config: RateLimitConfig) {
+    this.config = config;
 
-		// Try to initialize Redis
-		if (
-			process.env.UPSTASH_REDIS_REST_URL &&
-			process.env.UPSTASH_REDIS_REST_TOKEN
-		) {
-			try {
-				this.redis = Redis.fromEnv();
-			} catch (error) {
-				logger.warn(
-					"[RateLimiter] Failed to initialize Redis, falling back to memory",
-				);
-			}
-		} else {
-		}
+    // Try to initialize Redis
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+      try {
+        this.redis = Redis.fromEnv();
+      } catch (error) {
+        logger.warn("[RateLimiter] Failed to initialize Redis, falling back to memory");
+      }
+    } else {
+    }
 
-		// Cleanup interval for memory store
-		if (!this.redis) {
-			this.cleanupInterval = setInterval(() => this.cleanup(), 60000);
-		}
-	}
+    // Cleanup interval for memory store
+    if (!this.redis) {
+      this.cleanupInterval = setInterval(() => this.cleanup(), 60000);
+    }
+  }
 
-	private cleanup() {
-		const now = Date.now();
-		for (const [key, entry] of this.store.entries()) {
-			if (entry.resetTime < now) {
-				this.store.delete(key);
-			}
-		}
-	}
+  private cleanup() {
+    const now = Date.now();
+    for (const [key, entry] of this.store.entries()) {
+      if (entry.resetTime < now) {
+        this.store.delete(key);
+      }
+    }
+  }
 
-	middleware = () => {
-		return async (req: Request, res: Response, next: NextFunction) => {
-			const ip = req.ip || "unknown";
-			const key = `ratelimit:${ip}`;
+  middleware = () => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const ip = req.ip || "unknown";
+      const key = `ratelimit:${ip}`;
 
-			let current = 0;
-			let ttl = 0;
+      let current = 0;
+      let ttl = 0;
 
-			try {
-				if (this.redis) {
-					// Redis Fixed Window
-					const requests = await this.redis.incr(key);
-					if (requests === 1) {
-						await this.redis.expire(
-							key,
-							Math.ceil(this.config.windowMs / 1000),
-						);
-						ttl = Math.ceil(this.config.windowMs / 1000);
-					} else {
-						ttl = await this.redis.ttl(key);
-					}
-					current = requests;
-				} else {
-					// In-Memory Fallback
-					const now = Date.now();
-					let entry = this.store.get(ip);
+      try {
+        if (this.redis) {
+          // Redis Fixed Window
+          const requests = await this.redis.incr(key);
+          if (requests === 1) {
+            await this.redis.expire(key, Math.ceil(this.config.windowMs / 1000));
+            ttl = Math.ceil(this.config.windowMs / 1000);
+          } else {
+            ttl = await this.redis.ttl(key);
+          }
+          current = requests;
+        } else {
+          // In-Memory Fallback
+          const now = Date.now();
+          let entry = this.store.get(ip);
 
-					if (!entry || entry.resetTime < now) {
-						entry = {
-							count: 0,
-							resetTime: now + this.config.windowMs,
-						};
-						this.store.set(ip, entry);
-					}
+          if (!entry || entry.resetTime < now) {
+            entry = {
+              count: 0,
+              resetTime: now + this.config.windowMs,
+            };
+            this.store.set(ip, entry);
+          }
 
-					entry.count++;
-					current = entry.count;
-					ttl = Math.ceil((entry.resetTime - now) / 1000);
-				}
+          entry.count++;
+          current = entry.count;
+          ttl = Math.ceil((entry.resetTime - now) / 1000);
+        }
 
-				// Set Headers
-				const remaining = Math.max(0, this.config.max - current);
+        // Set Headers
+        const remaining = Math.max(0, this.config.max - current);
 
-				res.setHeader("RateLimit-Limit", this.config.max.toString());
-				res.setHeader("RateLimit-Remaining", remaining.toString());
-				res.setHeader("RateLimit-Reset", ttl.toString());
+        res.setHeader("RateLimit-Limit", this.config.max.toString());
+        res.setHeader("RateLimit-Remaining", remaining.toString());
+        res.setHeader("RateLimit-Reset", ttl.toString());
 
-				if (current > this.config.max) {
-					res.setHeader("Retry-After", ttl.toString());
-					res.status(this.config.statusCode).json({
-						success: false,
-						error: {
-							message: this.config.message,
-							retryAfter: ttl,
-							limit: this.config.max,
-							windowMs: this.config.windowMs,
-						},
-					});
-					return;
-				}
+        if (current > this.config.max) {
+          res.setHeader("Retry-After", ttl.toString());
+          res.status(this.config.statusCode).json({
+            success: false,
+            error: {
+              message: this.config.message,
+              retryAfter: ttl,
+              limit: this.config.max,
+              windowMs: this.config.windowMs,
+            },
+          });
+          return;
+        }
 
-				next();
-			} catch (error) {
-				// Fail open if rate limiting fails
-				logger.error(
-					"[RateLimiter] Middleware error, failing open",
-					error as Error,
-				);
-				next();
-			}
-		};
-	};
+        next();
+      } catch (error) {
+        // Fail open if rate limiting fails
+        logger.error("[RateLimiter] Middleware error, failing open", error as Error);
+        next();
+      }
+    };
+  };
 
-	destroy() {
-		if (this.cleanupInterval) {
-			clearInterval(this.cleanupInterval);
-		}
-	}
+  destroy() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+  }
 }
 
 // Requirement: Optimize to 1000 requests per 15 minutes
 export const apiRateLimiter = new RateLimiter({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 1000,
-	message: "Too many API requests, please try again later.",
-	statusCode: 429,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000,
+  message: "Too many API requests, please try again later.",
+  statusCode: 429,
 });

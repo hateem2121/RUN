@@ -7,8 +7,8 @@
  * Usage: node scripts/lint-z-index.mjs
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
-import { join, extname } from "path";
+import { readdirSync, readFileSync, statSync } from "fs";
+import { extname, join } from "path";
 
 const SEMANTIC_Z_INDEX_CLASSES = [
   "z-below",

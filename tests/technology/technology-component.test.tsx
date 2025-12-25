@@ -5,52 +5,48 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Simplified component test without importing full Technology page
 const MockTechnologyComponent = () => {
-	return (
-		<div data-testid="technology-page">
-			<h1>Technology Page</h1>
-			<div data-testid="gradient-container">Gradient Background</div>
-			<div data-testid="3d-model-container">3D Model Container</div>
-		</div>
-	);
+  return (
+    <div data-testid="technology-page">
+      <h1>Technology Page</h1>
+      <div data-testid="gradient-container">Gradient Background</div>
+      <div data-testid="3d-model-container">3D Model Container</div>
+    </div>
+  );
 };
 
 describe("Technology Component Structure", () => {
-	let queryClient: QueryClient;
+  let queryClient: QueryClient;
 
-	beforeEach(() => {
-		queryClient = new QueryClient({
-			defaultOptions: {
-				queries: { retry: false },
-				mutations: { retry: false },
-			},
-		});
-	});
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+  });
 
-	const renderWithProvider = (component: React.ReactElement) => {
-		return render(
-			<QueryClientProvider client={queryClient}>
-				{component}
-			</QueryClientProvider>,
-		);
-	};
+  const renderWithProvider = (component: React.ReactElement) => {
+    return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
+  };
 
-	it("should render technology page structure", () => {
-		renderWithProvider(<MockTechnologyComponent />);
+  it("should render technology page structure", () => {
+    renderWithProvider(<MockTechnologyComponent />);
 
-		expect(screen.getByTestId("technology-page")).toBeInTheDocument();
-		expect(screen.getByTestId("gradient-container")).toBeInTheDocument();
-		expect(screen.getByTestId("3d-model-container")).toBeInTheDocument();
-	});
+    expect(screen.getByTestId("technology-page")).toBeInTheDocument();
+    expect(screen.getByTestId("gradient-container")).toBeInTheDocument();
+    expect(screen.getByTestId("3d-model-container")).toBeInTheDocument();
+  });
 
-	it("should handle component isolation for safe refactoring", () => {
-		const { unmount } = renderWithProvider(<MockTechnologyComponent />);
+  it("should handle component isolation for safe refactoring", () => {
+    const { unmount } = renderWithProvider(<MockTechnologyComponent />);
 
-		// Component should mount and unmount cleanly
-		expect(screen.getByText("Technology Page")).toBeInTheDocument();
+    // Component should mount and unmount cleanly
+    expect(screen.getByText("Technology Page")).toBeInTheDocument();
 
-		unmount();
+    unmount();
 
-		// Should not throw errors during cleanup
-		expect(true).toBe(true);
-	});
+    // Should not throw errors during cleanup
+    expect(true).toBe(true);
+  });
 });

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, BarChart3, Download, X, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { IconWrapper } from "@/components/ui/icon-wrapper";
 
 interface PerformanceMetrics {
   cls: number;
@@ -219,14 +220,18 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
           <div className="p-4">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-blue-600" />
+                <IconWrapper size="md" className="text-blue-600" asChild>
+                  <BarChart3 />
+                </IconWrapper>
                 <h3 className="font-semibold text-gray-800">Performance Monitor</h3>
               </div>
               <button
                 onClick={onClose}
                 className="rounded-full p-1 transition-colors hover:bg-gray-100"
               >
-                <X className="h-4 w-4 text-gray-600" />
+                <IconWrapper size="sm" className="text-gray-600" asChild>
+                  <X />
+                </IconWrapper>
               </button>
             </div>
 
@@ -308,7 +313,9 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
             {alerts.length > 0 && (
               <div className="mb-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                  <IconWrapper size="sm" className="text-yellow-600" asChild>
+                    <AlertTriangle />
+                  </IconWrapper>
                   <span className="font-medium text-gray-700 text-sm">Alerts</span>
                   <button
                     onClick={clearAlerts}
@@ -339,16 +346,20 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
             <div className="flex gap-2">
               <button
                 onClick={exportReport}
-                className="flex items-center gap-1 rounded bg-blue-600 px-3 py-1 text-sm text-white transition-colors hover:bg-blue-700"
+                className="flex items-center gap-1 rounded bg-brand-blue/80 px-3 py-1 text-sm text-white transition-colors hover:bg-brand-blue"
               >
-                <Download className="h-3 w-3" />
+                <IconWrapper size="xs" asChild>
+                  <Download />
+                </IconWrapper>
                 Export
               </button>
               <button
                 onClick={clearAlerts}
                 className="flex items-center gap-1 rounded bg-gray-600 px-3 py-1 text-sm text-white transition-colors hover:bg-gray-700"
               >
-                <Zap className="h-3 w-3" />
+                <IconWrapper size="xs" asChild>
+                  <Zap />
+                </IconWrapper>
                 Clear
               </button>
             </div>

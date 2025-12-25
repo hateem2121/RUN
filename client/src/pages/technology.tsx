@@ -20,7 +20,8 @@ import { Loader2 } from "lucide-react";
 // Removed duplicate import here to reduce CSS bundle duplication
 import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { GlassCard, LiquidGlassCard } from "@/components/ui/glass-card";
+import { Typography } from "@/components/ui/typography";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
@@ -434,13 +435,13 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
       ? `/api/media/${media.id}/content`
       : undefined
     : media.id && media.id < 1000000000000
-    ? `/api/media/${media.id}/content?thumbnail=true`
-    : undefined;
+      ? `/api/media/${media.id}/content?thumbnail=true`
+      : undefined;
 
   return (
     <div
       ref={containerRef}
-      className="hero-3d-model relative overflow-hidden rounded-2xl border border-white/10 bg-transparent"
+      className="hero-3d-model relative overflow-hidden rounded-2xl border border-glass bg-transparent"
     >
       {media.type === "3d_model" ? (
         <div className="relative aspect-[4/3]">
@@ -451,10 +452,12 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/20">
                   <div className="h-8 w-8 rounded-lg border-2 border-blue-400/60"></div>
                 </div>
-                <p className="mb-2 font-medium text-white">Interactive 3D Model</p>
-                <p className="mb-4 text-blue-200 text-sm">
+                <Typography.P className="mb-2 font-medium text-white">
+                  Interactive 3D Model
+                </Typography.P>
+                <Typography.P className="mb-4 text-blue-200 text-sm">
                   {isIntersecting ? "Preparing to load..." : "Scroll to view"}
-                </p>
+                </Typography.P>
                 <button
                   onClick={() => {
                     setUserRequestedLoad(true);
@@ -463,9 +466,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                 >
                   Load 3D Model
                 </button>
-                <p className="mt-2 text-blue-300 text-xs">
+                <Typography.P className="mt-2 text-blue-300 text-xs">
                   Interactive 3D experience • Optimized streaming
-                </p>
+                </Typography.P>
               </div>
             </div>
           )}
@@ -474,8 +477,12 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {isLoading && shouldLoadModel && (
             <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/60">
               <Loader2 className="mb-3 h-8 w-8 animate-spin text-blue-400" />
-              <p className="mb-2 font-medium text-sm text-white">Loading 3D Model...</p>
-              <p className="text-gray-300 text-xs">Loading interactive 3D model...</p>
+              <Typography.P className="mb-2 font-medium text-sm text-white">
+                Loading 3D Model...
+              </Typography.P>
+              <Typography.P className="text-gray-300 text-xs">
+                Loading interactive 3D model...
+              </Typography.P>
             </div>
           )}
 
@@ -484,8 +491,12 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
             <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/70">
               <div className="p-6 text-center">
                 <div className="mb-2 text-lg text-red-400">⚠️</div>
-                <p className="mb-1 font-medium text-white">3D preview unavailable</p>
-                <p className="text-gray-300 text-sm">Showing fallback content</p>
+                <Typography.P className="mb-1 font-medium text-white">
+                  3D preview unavailable
+                </Typography.P>
+                <Typography.P className="text-gray-300 text-sm">
+                  Showing fallback content
+                </Typography.P>
               </div>
             </div>
           )}
@@ -495,7 +506,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {shouldLoadModel && (
             <React.Suspense
               fallback={
-                <div className="flex h-full min-h-[400px] w-full items-center justify-center rounded-xl bg-black/20">
+                <div className="flex h-full min-h-96 w-full items-center justify-center rounded-xl bg-black/20">
                   <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
                 </div>
               }
@@ -523,7 +534,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                   shadowIntensity: 1,
                   exposure: 1,
                 }}
-                className="h-full min-h-[400px] w-full transition-opacity duration-500"
+                className="h-full min-h-96 w-full transition-opacity duration-500"
               />
             </React.Suspense>
           )}
@@ -642,7 +653,9 @@ export default function Technology() {
       <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-black">
         <div className="text-center text-white">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
-          <p className="text-sm opacity-75">Loading technology interface...</p>
+          <Typography.P className="text-sm opacity-75">
+            Loading technology interface...
+          </Typography.P>
         </div>
       </div>
     );
@@ -657,7 +670,7 @@ export default function Technology() {
   return (
     <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
       {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
-      <div className="fixed inset-0 -z-10">
+      <div className="fixed inset-0 -z-elevated">
         {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
         <ClientOnly
           fallback={
@@ -725,19 +738,19 @@ export default function Technology() {
                   <LoadingSkeleton type="text" className="text-center lg:text-left" />
                 ) : (
                   <div className="text-center lg:text-left">
-                    <h1 className="mb-6 font-bold text-3xl text-white leading-tight drop-shadow-lg sm:text-4xl lg:text-5xl">
+                    <Typography.H1 className="mb-6 font-bold text-3xl text-white leading-tight drop-shadow-lg sm:text-4xl lg:text-5xl">
                       {vm.hero?.title || "Technology & Innovation"}
-                    </h1>
-                    <h2 className="mb-6 font-medium text-lg text-white/90 leading-relaxed drop-shadow-sm lg:text-xl">
+                    </Typography.H1>
+                    <Typography.H2 className="mb-6 font-medium text-lg text-white/90 leading-relaxed drop-shadow-sm lg:text-xl">
                       {vm.hero?.subtitle ||
                         "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
-                    </h2>
+                    </Typography.H2>
 
                     {/* Clean interaction hint */}
                     {backgroundMedia?.type === "3d_model" && (
-                      <p className="mb-6 flex justify-center text-sm text-white/70 lg:justify-start">
+                      <Typography.P className="mb-6 flex justify-center text-sm text-white/70 lg:justify-start">
                         Drag to rotate • Scroll to zoom • Touch to explore
-                      </p>
+                      </Typography.P>
                     )}
 
                     {/* CTA Buttons */}
@@ -775,12 +788,12 @@ export default function Technology() {
                   <OptimizedTechnologyHero media={backgroundMedia} />
                 </div>
               ) : (
-                <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-white/10 bg-transparent">
+                <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-glass bg-transparent">
                   <div className="text-center text-white/40">
                     <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
                       <div className="h-8 w-8 rounded border-2 border-white/20 border-dashed"></div>
                     </div>
-                    <p className="text-sm">No media configured</p>
+                    <Typography.P className="text-sm">No media configured</Typography.P>
                   </div>
                 </div>
               )}
@@ -794,9 +807,9 @@ export default function Technology() {
             glowIntensity="sm"
             className="block w-full cursor-default p-8"
           >
-            <h2 className="mb-8 text-center font-bold text-3xl text-white">
+            <Typography.H2 className="mb-8 text-center font-bold text-3xl text-white">
               Technology Innovations
-            </h2>
+            </Typography.H2>
             {batchLoading ? (
               <div className="space-y-8">
                 {[1, 2, 3].map((i) => (
@@ -806,31 +819,28 @@ export default function Technology() {
             ) : vm.innovations.length > 0 ? (
               <div className="space-y-8">
                 {vm.innovations.map((innovation) => (
-                  <div
-                    key={innovation.id}
-                    className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-4 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
-                  >
+                  <GlassCard key={innovation.id} className="group p-4">
                     {/* Gradient overlay */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                     {/* Inner glow */}
-                    <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+                    <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
                     {/* Hover shimmer - disabled on mobile for performance */}
                     {!isMobile && (
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <div className="shimmer-overlay" />
                       </div>
                     )}
 
-                    <div className="relative z-10 mx-auto grid max-w-7xl gap-6 sm:grid-cols-1 lg:grid-cols-2">
+                    <div className="relative z-elevated mx-auto grid max-w-7xl gap-6 sm:grid-cols-1 lg:grid-cols-2">
                       {/* Content */}
                       <div className="space-y-4">
                         <div className="space-y-3">
                           <div className="flex flex-wrap items-center gap-3">
-                            <h3 className="font-bold text-white text-xl leading-tight">
+                            <Typography.H3 className="font-bold text-white text-xl leading-tight">
                               {innovation.name}
-                            </h3>
+                            </Typography.H3>
                             <span className="inline-block rounded-full bg-blue-500/20 px-3 py-1 font-medium text-blue-300 text-sm">
                               {innovation.category}
                             </span>
@@ -842,22 +852,22 @@ export default function Technology() {
                           </div>
 
                           {innovation.shortDescription && (
-                            <p className="font-medium text-sm text-white/90">
+                            <Typography.P className="font-medium text-sm text-white/90">
                               {innovation.shortDescription}
-                            </p>
+                            </Typography.P>
                           )}
 
                           {innovation.description && (
-                            <p className="text-sm text-white/80 leading-relaxed">
+                            <Typography.P className="text-sm text-white/80 leading-relaxed">
                               {innovation.description}
-                            </p>
+                            </Typography.P>
                           )}
 
                           {innovation.benefits && innovation.benefits.length > 0 && (
                             <div className="rounded-lg bg-white/5 p-3">
-                              <h4 className="mb-2 font-semibold text-sm text-white/90">
+                              <Typography.H4 className="mb-2 font-semibold text-sm text-white/90">
                                 Key Benefits
-                              </h4>
+                              </Typography.H4>
                               <ul className="space-y-1">
                                 {innovation.benefits.map((benefit: string, idx: number) => (
                                   <li
@@ -874,9 +884,9 @@ export default function Technology() {
 
                           {(innovation.technicalDetails || innovation.developmentYear) && (
                             <div className="rounded-lg bg-white/5 p-3">
-                              <h4 className="mb-2 font-semibold text-sm text-white/90">
+                              <Typography.H4 className="mb-2 font-semibold text-sm text-white/90">
                                 Technical Specifications
-                              </h4>
+                              </Typography.H4>
                               <div className="space-y-1">
                                 {innovation.developmentYear && (
                                   <div className="flex justify-between text-sm">
@@ -919,9 +929,9 @@ export default function Technology() {
                         {/* Innovation Image */}
                         {innovation.imageId && (
                           <div>
-                            <h4 className="mb-3 font-medium text-white/70 text-xs">
+                            <Typography.H4 className="mb-3 font-medium text-white/70 text-xs">
                               Innovation Media
-                            </h4>
+                            </Typography.H4>
                             <div className="flex justify-center">
                               {hasMediaAsset(innovation.imageId) ? (
                                 <img
@@ -951,9 +961,9 @@ export default function Technology() {
                         {/* Innovation Video */}
                         {innovation.videoId && (
                           <div>
-                            <h4 className="mb-3 font-medium text-white/70 text-xs">
+                            <Typography.H4 className="mb-3 font-medium text-white/70 text-xs">
                               Innovation Demo
-                            </h4>
+                            </Typography.H4>
                             <div className="flex justify-center">
                               {hasMediaAsset(innovation.videoId) ? (
                                 <video
@@ -978,13 +988,15 @@ export default function Technology() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
             ) : (
               <div className="py-12 text-center text-white/70">
-                <p>No technology innovations configured yet.</p>
-                <p className="mt-2 text-sm">Visit the admin panel to add innovations.</p>
+                <Typography.P>No technology innovations configured yet.</Typography.P>
+                <Typography.P className="mt-2 text-sm">
+                  Visit the admin panel to add innovations.
+                </Typography.P>
               </div>
             )}
           </LiquidGlassCard>
@@ -996,9 +1008,9 @@ export default function Technology() {
             glowIntensity="sm"
             className="block w-full cursor-default p-8"
           >
-            <h2 className="mb-8 text-center font-bold text-3xl text-white">
+            <Typography.H2 className="mb-8 text-center font-bold text-3xl text-white">
               Manufacturing Equipment
-            </h2>
+            </Typography.H2>
             {batchLoading ? (
               <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -1008,24 +1020,21 @@ export default function Technology() {
             ) : vm.equipment.length > 0 ? (
               <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {vm.equipment.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group relative flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-4 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
-                  >
+                  <GlassCard key={item.id} className="group flex min-h-96 flex-col p-4">
                     {/* Gradient overlay */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                     {/* Inner glow */}
-                    <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+                    <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
                     {/* Hover shimmer - disabled on mobile for performance */}
                     {!isMobile && (
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <div className="shimmer-overlay" />
                       </div>
                     )}
 
-                    <div className="relative z-10 flex flex-1 flex-col">
+                    <div className="relative z-elevated flex flex-1 flex-col">
                       {/* Equipment Image */}
                       {item.imageId && (
                         <div className="mb-4 flex justify-center">
@@ -1053,9 +1062,9 @@ export default function Technology() {
 
                       <div className="flex-1">
                         <div className="mb-4 space-y-3">
-                          <h3 className="font-bold text-lg text-white leading-tight">
+                          <Typography.H3 className="font-bold text-lg text-white leading-tight">
                             {item.name}
-                          </h3>
+                          </Typography.H3>
                           <div className="flex flex-wrap gap-2">
                             <span className="rounded bg-purple-500/20 px-2 py-1 font-medium text-purple-300 text-xs">
                               Equipment
@@ -1080,9 +1089,9 @@ export default function Technology() {
                           item.category ||
                           item.maintenanceSchedule) && (
                           <div className="mb-3 rounded-lg bg-white/5 p-3">
-                            <h4 className="mb-2 font-semibold text-white/90 text-xs">
+                            <Typography.H4 className="mb-2 font-semibold text-white/90 text-xs">
                               Technical Specifications
-                            </h4>
+                            </Typography.H4>
                             <div className="space-y-1">
                               {[
                                 ["Category", item.category],
@@ -1121,13 +1130,15 @@ export default function Technology() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
             ) : (
               <div className="py-12 text-center text-white/70">
-                <p>No equipment configured yet.</p>
-                <p className="mt-2 text-sm">Visit the admin panel to add equipment.</p>
+                <Typography.P>No equipment configured yet.</Typography.P>
+                <Typography.P className="mt-2 text-sm">
+                  Visit the admin panel to add equipment.
+                </Typography.P>
               </div>
             )}
           </LiquidGlassCard>
@@ -1139,9 +1150,9 @@ export default function Technology() {
             glowIntensity="sm"
             className="block w-full cursor-default p-8"
           >
-            <h2 className="mb-8 text-center font-bold text-3xl text-white">
+            <Typography.H2 className="mb-8 text-center font-bold text-3xl text-white">
               Research & Development
-            </h2>
+            </Typography.H2>
             {batchLoading ? (
               <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
                 {[1, 2, 3].map((i) => (
@@ -1159,29 +1170,31 @@ export default function Technology() {
                   return (
                     <div
                       key={research.id}
-                      className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
+                      className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-glow-lg backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
                     >
                       {/* Gradient overlay */}
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
                       {/* Inner glow */}
-                      <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+                      <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
                       {/* Hover shimmer - disabled on mobile for performance */}
                       {!isMobile && (
                         <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                          <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                          <div className="shimmer-overlay" />
                         </div>
                       )}
 
                       <div
-                        className={`relative z-10 grid gap-8 ${
+                        className={`relative z-elevated grid gap-8 ${
                           hasResearchMedia ? "md:grid-cols-2" : "grid-cols-1"
                         }`}
                       >
                         <div className={hasResearchMedia ? "" : "mx-auto max-w-4xl"}>
                           <div className="mb-4 flex flex-wrap items-center gap-3">
-                            <h3 className="font-bold text-2xl text-white">{research.name}</h3>
+                            <Typography.H3 className="font-bold text-2xl text-white">
+                              {research.name}
+                            </Typography.H3>
                             {research.researchArea && (
                               <span className="rounded-full bg-purple-500/20 px-3 py-1 font-medium text-purple-300 text-sm">
                                 {research.researchArea}
@@ -1193,8 +1206,8 @@ export default function Technology() {
                                   research.status === "Completed"
                                     ? "bg-green-500/20 text-green-300"
                                     : research.status === "Planned"
-                                    ? "bg-gray-500/20 text-gray-300"
-                                    : "bg-blue-500/20 text-blue-300"
+                                      ? "bg-gray-500/20 text-gray-300"
+                                      : "bg-blue-500/20 text-blue-300"
                                 }`}
                               >
                                 {research.status}
@@ -1220,16 +1233,16 @@ export default function Technology() {
                           </div>
 
                           {research.description && (
-                            <p className="mb-6 text-white/80 leading-relaxed">
+                            <Typography.P className="mb-6 text-white/80 leading-relaxed">
                               {research.description}
-                            </p>
+                            </Typography.P>
                           )}
 
                           {research.objectives && research.objectives.length > 0 && (
                             <div className="mb-6">
-                              <h4 className="mb-3 font-semibold text-sm text-white/90">
+                              <Typography.H4 className="mb-3 font-semibold text-sm text-white/90">
                                 Objectives
-                              </h4>
+                              </Typography.H4>
                               <ul className="space-y-2">
                                 {research.objectives.map((obj, idx) => (
                                   <li
@@ -1246,9 +1259,9 @@ export default function Technology() {
 
                           {research.teamMembers && research.teamMembers.length > 0 && (
                             <div className="mb-6">
-                              <h4 className="mb-2 font-semibold text-sm text-white/90">
+                              <Typography.H4 className="mb-2 font-semibold text-sm text-white/90">
                                 Research Team
-                              </h4>
+                              </Typography.H4>
                               <div className="flex flex-wrap gap-2">
                                 {research.teamMembers.map((member, idx) => (
                                   <span
@@ -1263,32 +1276,13 @@ export default function Technology() {
                           )}
                         </div>
 
-                        {/* Research Media - Only render if media exists */}
                         {hasResearchMedia && (
-                          <div className="space-y-4">
-                            {hasMediaAsset(research.imageId ?? null) && (
-                              <div>
-                                <h4 className="mb-2 font-medium text-sm text-white/70">
-                                  Research Image
-                                </h4>
-                                <img
-                                  src={
-                                    research.imageId && research.imageId < 1000000000000
-                                      ? `/api/media/${research.imageId}/content`
-                                      : undefined
-                                  }
-                                  alt={research.name}
-                                  className="h-48 w-full rounded-lg object-cover"
-                                  loading="lazy"
-                                />
-                              </div>
-                            )}
-
+                          <div className="space-y-6">
                             {hasMediaAsset(research.videoId ?? null) && (
                               <div>
-                                <h4 className="mb-2 font-medium text-sm text-white/70">
+                                <Typography.H4 className="mb-2 font-medium text-sm text-white/70">
                                   Research Video
-                                </h4>
+                                </Typography.H4>
                                 <video
                                   src={
                                     research.videoId && research.videoId < 1000000000000
@@ -1319,8 +1313,10 @@ export default function Technology() {
               </div>
             ) : (
               <div className="py-12 text-center text-white/70">
-                <p>No research projects configured yet.</p>
-                <p className="mt-2 text-sm">Visit the admin panel to add research areas.</p>
+                <Typography.P>No research projects configured yet.</Typography.P>
+                <Typography.P className="mt-2 text-sm">
+                  Visit the admin panel to add research areas.
+                </Typography.P>
               </div>
             )}
           </LiquidGlassCard>
@@ -1332,7 +1328,9 @@ export default function Technology() {
             glowIntensity="sm"
             className="block w-full cursor-default p-8"
           >
-            <h2 className="mb-8 text-center font-bold text-3xl text-white">Technology Roadmap</h2>
+            <Typography.H2 className="mb-8 text-center font-bold text-3xl text-white">
+              Technology Roadmap
+            </Typography.H2>
             {batchLoading ? (
               <div className="space-y-8">
                 {[1, 2, 3].map((i) => (
@@ -1361,7 +1359,7 @@ export default function Technology() {
                         </div>
 
                         {/* Content */}
-                        <div className="group relative flex-1 overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
+                        <GlassCard className="group relative flex-1 p-6">
                           {/* Gradient overlay */}
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
@@ -1376,22 +1374,22 @@ export default function Technology() {
                           )}
 
                           <div
-                            className={`relative z-10 grid gap-6 ${
+                            className={`relative z-elevated grid gap-6 ${
                               hasRoadmapMedia ? "md:grid-cols-2" : "grid-cols-1"
                             }`}
                           >
                             <div className={hasRoadmapMedia ? "" : "mx-auto max-w-4xl"}>
-                              <h3 className="mb-3 font-bold text-white text-xl">
+                              <Typography.H3 className="mb-3 font-bold text-white text-xl">
                                 {milestone.name}
-                              </h3>
+                              </Typography.H3>
                               <div className="mb-4 text-blue-300 text-sm">
                                 Target: {milestone.timeline}
                               </div>
 
                               {milestone.description && (
-                                <p className="mb-6 text-white/80 leading-relaxed">
+                                <Typography.P className="mb-6 text-white/80 leading-relaxed">
                                   {milestone.description}
-                                </p>
+                                </Typography.P>
                               )}
                             </div>
 
@@ -1400,9 +1398,9 @@ export default function Technology() {
                               <div className="space-y-4">
                                 {hasMediaAsset(milestone.imageId ?? null) && (
                                   <div>
-                                    <h4 className="mb-2 font-medium text-sm text-white/70">
+                                    <Typography.H4 className="mb-2 font-medium text-sm text-white/70">
                                       Roadmap Image
-                                    </h4>
+                                    </Typography.H4>
                                     <img
                                       src={
                                         milestone.imageId && milestone.imageId < 1000000000000
@@ -1418,9 +1416,9 @@ export default function Technology() {
 
                                 {hasMediaAsset(milestone.videoId ?? null) && (
                                   <div>
-                                    <h4 className="mb-2 font-medium text-sm text-white/70">
+                                    <Typography.H4 className="mb-2 font-medium text-sm text-white/70">
                                       Roadmap Video
-                                    </h4>
+                                    </Typography.H4>
                                     <video
                                       src={
                                         milestone.videoId && milestone.videoId < 1000000000000
@@ -1445,7 +1443,7 @@ export default function Technology() {
                               </div>
                             )}
                           </div>
-                        </div>
+                        </GlassCard>
                       </div>
                     </div>
                   );
@@ -1453,8 +1451,10 @@ export default function Technology() {
               </div>
             ) : (
               <div className="py-12 text-center text-white/70">
-                <p>No roadmap milestones configured yet.</p>
-                <p className="mt-2 text-sm">Visit the admin panel to add roadmap items.</p>
+                <Typography.P>No roadmap milestones configured yet.</Typography.P>
+                <Typography.P className="mt-2 text-sm">
+                  Visit the admin panel to add roadmap items.
+                </Typography.P>
               </div>
             )}
           </LiquidGlassCard>
@@ -1481,8 +1481,10 @@ export default function Technology() {
         {/* Real-time Sync Status */}
         {batchLoading && (
           <div className="text-center">
-            <div className="rounded-xl border border-white/10 bg-black/10 p-4">
-              <p className="text-sm text-white/70">Synchronizing content and effects...</p>
+            <div className="rounded-xl border border-glass bg-black/10 p-4">
+              <Typography.P className="text-sm text-white/70">
+                Synchronizing content and effects...
+              </Typography.P>
             </div>
           </div>
         )}

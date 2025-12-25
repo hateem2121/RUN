@@ -18,17 +18,17 @@ const FeaturedProducts: React.FC = () => {
 
   return (
     <section className="w-full bg-luxury-surface px-4 py-16 text-luxury-interactive md:px-8 md:py-32">
-      <div className="mx-auto max-w-[1600px]">
+      <div className="mx-auto container-ultra">
         {/* Header - Stays Standard */}
         <div className="mb-16 flex items-end justify-between border-black/10 border-b pb-8">
           <h2 className="font-bold text-display-lg uppercase leading-none tracking-tighter">
             Archive <br /> 24/25
           </h2>
           <div className="hidden text-right md:block">
-            <p className="mb-2 font-mono text-gray-500 text-xs tracking-widest">SEASON: CURRENT</p>
-            <p className="font-mono text-gray-500 text-xs tracking-widest">
-              STATUS: PRODUCTION READY
+            <p className="mb-2 font-mono text-gray-500 text-xs tracking-widest">
+              COLLECTION: 24/25
             </p>
+            <p className="font-mono text-gray-500 text-xs tracking-widest">CAPACITY: HIGH VOLUME</p>
           </div>
         </div>
 

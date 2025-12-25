@@ -51,7 +51,7 @@ export function HoverCard3D({ children, className = "", maxRotation = 15 }: Hove
       }}
       style={{
         transformStyle: "preserve-3d",
-        perspective: 1000,
+        perspective: "var(--perspective-standard)",
       }}
     >
       {children}

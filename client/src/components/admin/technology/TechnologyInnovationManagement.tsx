@@ -776,8 +776,8 @@ export function TechnologyInnovationManagement({
                 {createInnovationMutation.isPending || updateInnovationMutation.isPending
                   ? "Saving..."
                   : editingInnovation
-                  ? "Update Innovation"
-                  : "Create Innovation"}
+                    ? "Update Innovation"
+                    : "Create Innovation"}
               </Button>
             </EnhancedDialogFooter>
           </form>

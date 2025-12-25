@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
 
 export default function Services() {
   const services = [
@@ -63,13 +64,13 @@ export default function Services() {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <main className="container mx-auto px-4 py-16">
         <div className="mx-auto max-w-7xl">
-          <h1 className="mb-4 font-bold font-neue-stance text-4xl text-neutral-900 md:text-5xl dark:text-neutral-100">
+          <Typography.H1 className="mb-4 font-bold font-neue-stance text-4xl text-neutral-900 md:text-5xl dark:text-neutral-100">
             Our Services
-          </h1>
-          <p className="mb-12 max-w-3xl text-lg text-neutral-600 dark:text-neutral-400">
+          </Typography.H1>
+          <Typography.P className="mb-12 max-w-3xl text-lg text-neutral-600 dark:text-neutral-400">
             Comprehensive sportswear manufacturing solutions designed to meet your brand's unique
             requirements. From initial concept to final delivery, we're your trusted partner.
-          </p>
+          </Typography.P>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
@@ -78,9 +79,9 @@ export default function Services() {
                   <CardTitle className="font-neue-stance text-xl">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="mb-4 text-neutral-600 dark:text-neutral-400">
+                  <Typography.P className="mb-4 text-neutral-600 dark:text-neutral-400">
                     {service.description}
-                  </p>
+                  </Typography.P>
                   <ul className="space-y-2">
                     {service.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
@@ -97,7 +98,9 @@ export default function Services() {
           </div>
 
           <div className="mt-16 rounded-2xl bg-primary/5 p-8 md:p-12">
-            <h2 className="mb-4 font-bold font-neue-stance text-2xl">Our Manufacturing Process</h2>
+            <Typography.H2 className="mb-4 font-bold font-neue-stance text-2xl">
+              Our Manufacturing Process
+            </Typography.H2>
             <div className="grid gap-6 md:grid-cols-4">
               {[
                 {
@@ -125,8 +128,10 @@ export default function Services() {
                   <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary font-bold text-white text-xl">
                     {item.step}
                   </div>
-                  <h3 className="mb-1 font-semibold">{item.title}</h3>
-                  <p className="text-neutral-600 text-sm dark:text-neutral-400">{item.desc}</p>
+                  <Typography.H3 className="mb-1 font-semibold">{item.title}</Typography.H3>
+                  <Typography.P className="text-neutral-600 text-sm dark:text-neutral-400">
+                    {item.desc}
+                  </Typography.P>
                 </div>
               ))}
             </div>

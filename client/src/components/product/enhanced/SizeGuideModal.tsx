@@ -116,7 +116,7 @@ export function SizeGuideModal({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-modal flex items-center justify-center bg-white/95 p-4 dark:bg-black/80",
+        "fixed inset-0 z-modal center-flex bg-white/95 p-4 dark:bg-black/80",
         className,
       )}
       role="dialog"
@@ -126,7 +126,7 @@ export function SizeGuideModal({
       onKeyDown={handleKeyDown}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden border"
+        className="relative flex max-h-modal w-full max-w-4xl flex-col overflow-hidden border"
         style={{
           backgroundColor: "var(--product-background)",
           borderColor: "var(--product-border)",

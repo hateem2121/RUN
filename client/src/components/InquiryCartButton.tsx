@@ -113,12 +113,12 @@ export function InquiryCartButton() {
       {/* Modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-modal flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-modal center-flex bg-black/50 p-4"
           onClick={() => setIsOpen(false)}
           data-testid="inquiry-cart-modal"
         >
           <div
-            className="flex max-h-[90vh] w-full max-w-2xl flex-col bg-white text-black shadow-xl"
+            className="flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col bg-white text-black shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

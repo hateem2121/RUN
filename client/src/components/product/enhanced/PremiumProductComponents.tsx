@@ -178,7 +178,7 @@ export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryPro
                         onLoad={() => setImageLoaded(true)}
                       />
                       {!imageLoaded && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black">
+                        <div className="absolute inset-0 center-flex bg-black">
                           <div className="h-12 w-12 animate-spin rounded-full border-2 border-gray-600 border-t-2 border-t-white"></div>
                         </div>
                       )}
@@ -257,7 +257,7 @@ export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryPro
     return (
       <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
         <div className="w-full max-w-3xl">
-          <div className="product-gallery-container relative h-[50vh] overflow-hidden rounded-lg bg-black sm:h-[60vh] lg:h-[70vh]">
+          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-[4/3] lg:aspect-video">
             <div className="absolute inset-0 bg-black">{renderMedia()}</div>
           </div>
           <motion.div
@@ -352,7 +352,7 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
       <button
         ref={ref}
         onClick={onClick}
-        className={`relative h-14 min-h-[44px] w-14 min-w-[44px] shrink-0 transform touch-manipulation snap-center overflow-hidden rounded-md transition-all duration-300 ease-in-out sm:h-16 sm:w-16 ${
+        className={`relative h-14 min-h-11 w-14 min-w-11 shrink-0 transform touch-manipulation snap-center overflow-hidden rounded-md transition-all duration-300 ease-in-out sm:h-16 sm:w-16 ${
           isActive
             ? "scale-105 ring-2 ring-black ring-offset-2"
             : "opacity-60 hover:scale-105 hover:opacity-100 active:scale-95"
@@ -607,7 +607,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               clipAmount={10}
               data-testid={`button-tab-${tab.id}`}
             >
-              <span className="max-w-[120px] truncate sm:max-w-none">{tab.label}</span>
+              <span className="max-w-32 truncate sm:max-w-none">{tab.label}</span>
               {activeTab === tab.id && (
                 <motion.span
                   layoutId="active-tab-indicator"

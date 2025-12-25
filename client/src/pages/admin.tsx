@@ -4,6 +4,7 @@ import { ProductsErrorFallback } from "@/components/admin/ProductsErrorFallback"
 import AdminLayout from "@/components/admin-layout";
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { Typography } from "@/components/ui/typography";
 import { AdminProvider } from "@/context/AdminContext";
 
 // Lazy load all admin modules for better performance
@@ -55,7 +56,7 @@ function ModuleLoader() {
     <div className="flex h-[60vh] items-center justify-center">
       <div className="text-center">
         <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-        <p className="text-gray-600 text-sm">Loading module...</p>
+        <Typography.P className="text-gray-600 text-sm">Loading module...</Typography.P>
       </div>
     </div>
   );

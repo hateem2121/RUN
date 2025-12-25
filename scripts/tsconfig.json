@@ -1,27 +1,27 @@
 {
-	"extends": "../tsconfig.base.json",
-	"compilerOptions": {
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
-		"composite": true,
-		"declaration": true,
-		"declarationMap": true,
-		"outDir": "../dist/scripts",
-		"tsBuildInfoFile": "../dist/scripts/.tsbuildinfo",
-		"rootDir": ".",
-		"baseUrl": ".",
-		"paths": {
-			"@shared/*": ["../shared/*"]
-		}
-	},
-	"include": ["**/*.ts"],
-	"exclude": ["node_modules", "../dist", "verify-technology-integrity.ts"],
-	"references": [
-		{
-			"path": "../shared"
-		},
-		{
-			"path": "../server"
-		}
-	]
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "../dist/scripts",
+    "tsBuildInfoFile": "../dist/scripts/.tsbuildinfo",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "../dist", "verify-technology-integrity.ts"],
+  "references": [
+    {
+      "path": "../shared"
+    },
+    {
+      "path": "../server"
+    }
+  ]
 }

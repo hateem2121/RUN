@@ -816,7 +816,7 @@ export default function AccessoryManagementEnhanced() {
               Edit Accessory: {editingAccessory?.name}
             </EnhancedDialogTitle>
           </EnhancedDialogHeader>
-          <div className="mt-4 max-h-[70vh] overflow-y-auto pr-2">
+          <div className="mt-4 max-h-viewport-70 overflow-y-auto pr-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>

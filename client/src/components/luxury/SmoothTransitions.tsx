@@ -1,5 +1,7 @@
 import { type MotionProps, motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { glassCardVariants } from "@/components/ui/glass-card";
+import { cn } from "@/lib/utils";
 
 interface SmoothTransitionProps extends MotionProps {
   children: ReactNode;
@@ -148,12 +150,12 @@ export function GlassEffect({
   interactive = true,
 }: GlassEffectProps) {
   const baseClasses = {
-    light: "glass-light",
-    card: "glass-card-light",
-    elevated: "glass-card-light shadow-sm-luxury-elevated",
+    light: glassCardVariants({ variant: "glass" }),
+    card: glassCardVariants({ variant: "glass" }),
+    elevated: cn(glassCardVariants({ variant: "glass" }), "shadow-sm-luxury-elevated"),
   };
 
-  const interactiveClasses = interactive ? "interactive-light" : "";
+  const interactiveClasses = interactive ? "" : ""; // glassCardVariants handles styling, interactive behaviors can be added via framer properties or additional classes if needed.
 
   return (
     <motion.div
@@ -190,9 +192,12 @@ export function LuxuryButton({
   };
 
   const variantClasses = {
-    primary: "glass-card-light border-luxury-light luxury-text-light font-medium",
-    secondary: "glass-light luxury-text-light font-normal",
-    ghost: "luxury-text-light font-light hover:glass-light",
+    primary: cn(
+      glassCardVariants({ variant: "glass" }),
+      "border-luxury-light luxury-text-light font-medium",
+    ),
+    secondary: cn(glassCardVariants({ variant: "glass" }), "luxury-text-light font-normal"),
+    ghost: "luxury-text-light font-light hover:bg-white/10",
   };
 
   return (
@@ -203,7 +208,7 @@ export function LuxuryButton({
       disabled={disabled}
       className={`
         ${sizeClasses[size]} 
-        ${variantClasses[variant]} interactive-light rounded-full transition-all duration-300 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+        ${variantClasses[variant]} rounded-full transition-all duration-300 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
         ${className}
       `}
     >

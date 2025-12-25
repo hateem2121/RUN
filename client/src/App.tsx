@@ -32,7 +32,7 @@ function RootErrorFallback({ error }: { error: Error }) {
 }
 
 const FloatingDockHeader = lazy(() => import("@/components/navigation/floating-dock-header"));
-const Footer = lazy(() => import("@/components/homepage-v2/Footer"));
+const Footer = lazy(() => import("@/components/layout/Footer"));
 
 import { AccessibilityWrapper } from "@/components/accessibility-wrapper";
 import { InquiryDrawer } from "@/components/inquiry/InquiryDrawer";
@@ -49,6 +49,7 @@ import { performanceTracker } from "@/lib/performance-tracker";
 // import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import LazyLoadingUtils from "./lib/lazy-loading-optimizer";
 import { useHydratedStore } from "./lib/useHydratedStore";
+import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
 import { useQuoteStore } from "./stores/useQuoteStore";
 
 // Lazy load all pages for better performance
@@ -75,6 +76,7 @@ const Analytics = lazy(() => import("@/pages/analytics"));
 
 // Static import for debugging E2E routing fallthrough
 import NotFound from "@/pages/not-found";
+import ProductsPageNew from "@/pages/products-new";
 
 // const NotFound = lazy(() => import("@/pages/not-found"));
 
@@ -181,7 +183,7 @@ function Router() {
       <Route path="/e2e-overlay" component={E2EOverlayTest} />
 
       <Route path="/" component={Homepage} />
-      <Route path="/products" component={ProductShowcase} />
+      <Route path="/products" component={ProductsPageNew} />
       {/* Legacy /products/:slug route removed - now handled by hierarchical URLs */}
       <Route path="/categories" component={Categories} />
       {/* Category redirect - redirects to /products?category=:slug for unified catalog */}
@@ -266,55 +268,6 @@ function Router() {
       <Route path="/admin/footer" component={Admin} />
       <Route component={NotFound} />
     </Switch>
-  );
-}
-
-function QuoteOverlay() {
-  // SSR-safe: Returns undefined until hydrated to prevent mismatch with localStorage state
-  const items = useHydratedStore(useQuoteStore, (state) => state.items);
-  const isDrawerOpen = useHydratedStore(useQuoteStore, (state) => state.isDrawerOpen);
-  const openDrawer = useQuoteStore((state) => state.openDrawer);
-  const closeDrawer = useQuoteStore((state) => state.closeDrawer);
-
-  // Don't render until hydrated to ensure SSR/client parity
-  if (items === undefined) return null;
-
-  const count = items.length;
-
-  if (count === 0 && !isDrawerOpen) return null;
-
-  return (
-    <>
-      {/* Floating Action Button */}
-      <button
-        onClick={openDrawer}
-        className="group fixed right-6 bottom-6 z-dock flex items-center justify-center rounded-full bg-blue-600 p-4 text-white shadow-2xl transition-transform hover:scale-105 hover:bg-blue-700 active:scale-95"
-      >
-        <div className="relative">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-          <span className="absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600 bg-red-500 font-bold text-white text-xs">
-            {count}
-          </span>
-        </div>
-      </button>
-
-      {/* Drawer */}
-      <InquiryDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
-    </>
   );
 }
 

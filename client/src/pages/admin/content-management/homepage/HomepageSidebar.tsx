@@ -115,7 +115,7 @@ export function HomepageSidebar({
                     className="flex flex-1 items-center gap-3 text-left"
                   >
                     <GripVertical className="h-3 w-3 text-muted-foreground/50" />
-                    <span className="max-w-[120px] truncate" title={section.title || section.name}>
+                    <span className="w-truncate-xs truncate" title={section.title || section.name}>
                       {section.title || section.name}
                     </span>
                   </button>

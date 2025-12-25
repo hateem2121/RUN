@@ -5,7 +5,7 @@
  * Run with: npx playwright test e2e/visual-regression-audit.spec.ts
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 // Route definitions from ROUTES_INVENTORY.md
 const PUBLIC_ROUTES = [

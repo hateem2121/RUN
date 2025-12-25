@@ -15,6 +15,7 @@ import { HoverCard3D } from "@/components/ui/hover-card-3d";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useResourceSearch } from "@/hooks/resources/useResourceSearch";
+import { Typography } from "@/components/ui/typography";
 
 const resourceCategories = [
   {
@@ -140,10 +141,12 @@ export default function Resources() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">Resources Hub</h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+            Resources Hub
+          </Typography.H1>
+          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
             Access technical specifications, material properties, and industry standards
-          </p>
+          </Typography.P>
 
           {/* Statistics */}
           <div className="mt-8 flex justify-center gap-8">
@@ -172,10 +175,10 @@ export default function Resources() {
 
           {searchTerm && (
             <div className="mb-6 flex items-center justify-between">
-              <p className="text-gray-600 text-sm">
+              <Typography.P className="text-gray-600 text-sm">
                 Found <span className="font-semibold">{filteredResults.length}</span> results
                 {isSearching && " (searching...)"}
-              </p>
+              </Typography.P>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>
                   <TabsTrigger value="all">All</TabsTrigger>
@@ -205,10 +208,12 @@ export default function Resources() {
                 className="py-16 text-center"
               >
                 <Filter className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <h3 className="mb-2 font-semibold text-gray-900 text-xl">No results found</h3>
-                <p className="text-gray-600">
+                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                  No results found
+                </Typography.H3>
+                <Typography.P className="text-gray-600">
                   Try adjusting your search terms or browse by category below
-                </p>
+                </Typography.P>
               </motion.div>
             }
             renderItem={(result) => (
@@ -279,7 +284,9 @@ export default function Resources() {
                             <CardTitle className="text-xl">{category.title}</CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <p className="mb-4 text-gray-600">{category.description}</p>
+                            <Typography.P className="mb-4 text-gray-600">
+                              {category.description}
+                            </Typography.P>
                             <Button className="w-full transition-transform group-hover:translate-x-1">
                               Browse {category.title}
                               <ArrowRight className="ml-2 h-4 w-4" />
@@ -303,7 +310,9 @@ export default function Resources() {
                           <CardTitle className="text-xl">{category.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="mb-4 text-gray-600">{category.description}</p>
+                          <Typography.P className="mb-4 text-gray-600">
+                            {category.description}
+                          </Typography.P>
                           <Button className="w-full transition-transform group-hover:translate-x-1">
                             Browse {category.title}
                             <ArrowRight className="ml-2 h-4 w-4" />

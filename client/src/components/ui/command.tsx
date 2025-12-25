@@ -69,7 +69,7 @@ const CommandList = ({
 }) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+    className={cn("max-h-dropdown overflow-y-auto overflow-x-hidden", className)}
     {...props}
   />
 );

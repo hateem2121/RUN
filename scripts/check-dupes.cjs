@@ -8,11 +8,11 @@
 const { execSync } = require("child_process");
 
 try {
-	// Use npm ls to find duplicates
-	const output = execSync("npm ls react react-dom --json", {
-		encoding: "utf8",
-	});
-	const tree = JSON.parse(output);
+  // Use npm ls to find duplicates
+  const output = execSync("npm ls react react-dom --json", {
+    encoding: "utf8",
+  });
+  const tree = JSON.parse(output);
 } catch (error) {
-	process.exit(1);
+  process.exit(1);
 }

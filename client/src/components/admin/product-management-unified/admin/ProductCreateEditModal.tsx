@@ -909,7 +909,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                       }`}
                     />
                     <p className="mb-1 font-medium text-gray-700 text-xs">{typedSection.name}</p>
-                    <div className="flex items-center justify-center gap-1 text-xs">
+                    <div className="center-flex gap-1 text-xs">
                       <span
                         className={
                           percentage === 100

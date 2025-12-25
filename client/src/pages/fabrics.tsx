@@ -13,6 +13,7 @@ import { HoverCard3D } from "@/components/ui/hover-card-3d";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 
 // Helper to get the default composition from a fabric
 const getDefaultComposition = (fabric: Fabric) => {
@@ -143,13 +144,13 @@ export default function Fabrics() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 text-center"
           >
-            <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+            <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
               Premium Fabric Collection
-            </h1>
-            <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+            </Typography.H1>
+            <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
               High-performance fabrics engineered for superior comfort, durability, and
               sustainability
-            </p>
+            </Typography.P>
 
             <div className="mt-8 flex justify-center gap-6">
               <div className="text-center">
@@ -227,13 +228,13 @@ export default function Fabrics() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                       >
-                        <h2 className="mb-4 flex items-center gap-2 font-semibold text-gray-800 text-xl">
+                        <Typography.H2 className="mb-4 flex items-center gap-2 font-semibold text-gray-800 text-xl">
                           {(() => {
                             const Icon = getCategoryIcon(category);
                             return <Icon className="h-5 w-5" />;
                           })()}
                           {category}
-                        </h2>
+                        </Typography.H2>
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                           {categoryFabrics.map((fabric) => {
                             const isExpanded = expandedFabrics.has(fabric.id);
@@ -288,9 +289,9 @@ export default function Fabrics() {
                                             {fabric.name}
                                           </CardTitle>
                                           {fabric.weave && (
-                                            <p className="mt-1 text-gray-600 text-sm">
+                                            <Typography.P className="mt-1 text-gray-600 text-sm">
                                               {fabric.weave} Weave
-                                            </p>
+                                            </Typography.P>
                                           )}
                                         </div>
                                         <Button variant="ghost" size="sm" className="ml-2">
@@ -326,9 +327,9 @@ export default function Fabrics() {
                                                 </div>
                                               ))}
                                             {defaultComp.fibers.length > 2 && !isExpanded && (
-                                              <p className="text-gray-500 text-xs">
+                                              <Typography.P className="text-gray-500 text-xs">
                                                 +{defaultComp.fibers.length - 2} more fibers
-                                              </p>
+                                              </Typography.P>
                                             )}
                                           </div>
                                         ) : null;
@@ -348,9 +349,9 @@ export default function Fabrics() {
                                           >
                                             <div className="space-y-3 border-t pt-3">
                                               {fabric.description && (
-                                                <p className="text-gray-700 text-sm">
+                                                <Typography.P className="text-gray-700 text-sm">
                                                   {fabric.description}
-                                                </p>
+                                                </Typography.P>
                                               )}
 
                                               {/* All Fiber Compositions */}
@@ -359,15 +360,15 @@ export default function Fabrics() {
                                                   ?.compositions;
                                                 return compositions && compositions.length > 0 ? (
                                                   <div className="space-y-2">
-                                                    <p className="font-semibold text-gray-700 text-xs">
+                                                    <Typography.P className="font-semibold text-gray-700 text-xs">
                                                       Fiber Compositions:
-                                                    </p>
+                                                    </Typography.P>
                                                     {compositions.map((comp: any, idx: number) => (
                                                       <div
                                                         key={idx}
                                                         className="rounded bg-gray-50 p-2"
                                                       >
-                                                        <p className="mb-1 font-medium text-gray-700 text-xs">
+                                                        <Typography.P className="mb-1 font-medium text-gray-700 text-xs">
                                                           {comp.name}{" "}
                                                           {comp.isDefault && (
                                                             <Badge
@@ -377,7 +378,7 @@ export default function Fabrics() {
                                                               Default
                                                             </Badge>
                                                           )}
-                                                        </p>
+                                                        </Typography.P>
                                                         {comp.fibers?.map(
                                                           (fiber: any, fidx: number) => (
                                                             <div
@@ -453,12 +454,14 @@ export default function Fabrics() {
                   className="py-16 text-center"
                 >
                   <Layers className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                  <h3 className="mb-2 font-semibold text-gray-900 text-xl">No fabrics found</h3>
-                  <p className="text-gray-600">
+                  <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                    No fabrics found
+                  </Typography.H3>
+                  <Typography.P className="text-gray-600">
                     {searchTerm
                       ? "Try adjusting your search terms"
                       : "No fabrics have been added yet"}
-                  </p>
+                  </Typography.P>
                 </motion.div>
               )}
             </AnimatePresence>

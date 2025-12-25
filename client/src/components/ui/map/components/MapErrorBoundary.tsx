@@ -26,7 +26,7 @@ export class MapErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="flex h-[500px] w-full items-center justify-center rounded-2xl bg-muted/20">
+          <div className="flex h-128 w-full items-center justify-center rounded-2xl bg-muted/20">
             <div className="p-8 text-center">
               <div className="mb-4 text-muted-foreground">
                 <svg

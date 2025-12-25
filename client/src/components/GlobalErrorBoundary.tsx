@@ -12,7 +12,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   }, []);
 
   return (
-    <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8 text-center dark:border-red-900/50 dark:bg-red-900/10">
+    <div className="flex min-h-96 w-full flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8 text-center dark:border-red-900/50 dark:bg-red-900/10">
       <div className="mb-4 rounded-full bg-red-100 p-3 text-red-600 dark:bg-red-900/30 dark:text-red-400">
         <svg
           xmlns="http://www.w3.org/2000/svg"

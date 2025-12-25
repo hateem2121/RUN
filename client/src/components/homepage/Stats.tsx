@@ -116,10 +116,10 @@ const Stats: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen w-full flex-col border-white/10 border-t bg-neutral-950 lg:min-h-[150vh] lg:flex-row"
+      className="relative flex min-h-screen w-full flex-col border-glass border-t bg-neutral-950 lg:min-h-screen lg:flex-row"
     >
       {/* Sticky Background Image */}
-      <div className="pointer-events-none absolute inset-0 z-0">
+      <div className="pointer-events-none absolute inset-0 z-base">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1590644365607-1c5a29d250c4?q=80&w=2070&auto=format&fit=crop"
@@ -136,9 +136,9 @@ const Stats: React.FC = () => {
       {/* Left Side */}
       <div
         ref={leftRef}
-        className="relative z-10 flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-4 text-neutral-50 backdrop-blur-xs md:p-12 lg:h-screen lg:w-1/2 lg:border-r lg:border-b-0 lg:bg-transparent lg:p-16 lg:backdrop-blur-none"
+        className="relative z-elevated flex w-full flex-col justify-center border-glass border-b bg-black/20 p-4 text-neutral-50 backdrop-blur-xs md:p-12 lg:h-screen lg:w-1/2 lg:border-r lg:border-b-0 lg:bg-transparent lg:p-16 lg:backdrop-blur-none"
       >
-        <div className="relative z-10 flex flex-col justify-center pt-12 md:pt-0">
+        <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
           <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
             The Evolution of <br />
             <span className="animate-gradient bg-300% bg-gradient-to-r from-blue-500 to-white bg-clip-text text-transparent">
@@ -153,16 +153,19 @@ const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="relative z-10 flex w-full flex-col text-neutral-50 lg:w-1/2">
+      <div
+        ref={rightRef}
+        className="relative z-elevated flex w-full flex-col text-neutral-50 lg:w-1/2"
+      >
         {KEY_STATS.map((stat) => (
           <div
             key={stat.label}
-            className="stat-item flex h-[40vh] flex-col justify-center border-white/10 border-b bg-black/10 p-4 backdrop-blur-xs last:border-b-0 md:h-[50vh] md:p-16"
+            className="stat-item flex h-[40vh] flex-col justify-center border-glass border-b bg-black/10 p-4 backdrop-blur-xs last:border-b-0 md:h-[50vh] md:p-16"
           >
             <h3 className="font-bold text-[20vw] leading-none tracking-tighter md:text-[12vw]">
               <ScrambleNumber value={stat.value} />
             </h3>
-            <div className="my-4 h-[1px] w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
+            <div className="my-4 h-px w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
             <h4 className="mb-2 font-bold text-xl uppercase md:text-2xl">{stat.label}</h4>
             <p className="text-gray-400 text-sm md:text-base">{stat.description}</p>
           </div>

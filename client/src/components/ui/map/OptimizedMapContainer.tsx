@@ -38,7 +38,7 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       transition={{ duration: 0.8, delay: 0.2 }}
       className={`rounded-3xl bg-background p-8 shadow-lg ${className}`}
     >
-      <div className="relative h-[500px] w-full overflow-hidden rounded-2xl">
+      <div className="relative h-128 w-full overflow-hidden rounded-2xl">
         {/* Map Layer Toggle Button */}
         <motion.div
           className="absolute top-4 right-4 z-max"
@@ -96,7 +96,7 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       </div>
 
       {/* Map Legend */}
-      <div className="mt-6 flex items-center justify-center gap-8">
+      <div className="mt-6 center-flex gap-8">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-blue-600"></div>
           <span className="text-muted-foreground text-sm">

@@ -60,7 +60,7 @@ export const RobustSelect = React.memo(function RobustSelect({
             {currentOption ? currentOption.label : value || placeholder}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent className={`max-h-[300px] overflow-y-auto ${contentClassName}`}>
+        <SelectContent className={`max-h-dropdown overflow-y-auto ${contentClassName}`}>
           {options.map((option) => (
             <SelectItem
               key={option.value}

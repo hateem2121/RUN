@@ -944,7 +944,7 @@ export default function UnifiedModelViewer({
     return (
       <div
         className={cn(
-          "flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200",
+          "center-flex bg-gradient-to-br from-gray-100 to-gray-200",
           "aspect-square rounded-lg dark:from-gray-800 dark:to-gray-900",
           className,
         )}
@@ -962,7 +962,7 @@ export default function UnifiedModelViewer({
     return (
       <div
         className={cn(
-          "flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100",
+          "center-flex bg-gradient-to-br from-red-50 to-red-100",
           "aspect-square rounded-lg dark:from-red-900/20 dark:to-red-800/20",
           className,
         )}
@@ -1004,7 +1004,7 @@ export default function UnifiedModelViewer({
       >
         {/* Simplified file info - only for large files */}
         {showFileInfo && fileInfo.isLarge && (
-          <div className="absolute top-2 left-2 z-20">
+          <div className="absolute top-2 left-2 z-elevated">
             <div className="flex items-center gap-1 rounded bg-orange-100 px-2 py-1 text-orange-800 text-xs dark:bg-orange-900/50 dark:text-orange-200">
               <AlertCircle className="h-3 w-3" />
               {fileInfo.sizeInMB}MB
@@ -1016,7 +1016,7 @@ export default function UnifiedModelViewer({
         {showLoadingProgress &&
           loadingState.status === "loading" &&
           loadingState.progress < 100 && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-50/80 dark:bg-gray-900/80">
+            <div className="absolute inset-0 z-elevated center-flex bg-gray-50/80 dark:bg-gray-900/80">
               <div className="space-y-2 text-center">
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
                 <p className="text-gray-600 text-sm dark:text-gray-400">{loadingState.progress}%</p>
@@ -1026,7 +1026,7 @@ export default function UnifiedModelViewer({
 
         {/* Simplified controls - only download for grid cards */}
         {showControls && loadingState.status === "loaded" && (
-          <div className="absolute top-2 right-2 z-30">
+          <div className="absolute top-2 right-2 z-dropdown">
             <Button
               variant="secondary"
               size="sm"
@@ -1041,7 +1041,7 @@ export default function UnifiedModelViewer({
 
         {/* WebGL lost warning */}
         {webglLost && (
-          <div className="absolute inset-4 z-40 flex items-center justify-center">
+          <div className="absolute inset-4 z-sticky center-flex">
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
@@ -1070,7 +1070,7 @@ export default function UnifiedModelViewer({
             "shadow-intensity": isMobile ? 0.5 : finalConfig.shadowIntensity, // Reduce shadow-sm intensity on mobile (50% less GPU work)
             "interaction-policy": finalConfig.interactionPolicy,
             "draco-decoder-path": "https://www.gstatic.com/draco/versioned/decoders/1.5.6/", // Enable Draco compression
-            className: "w-full h-full min-h-[400px]",
+            className: "w-full h-full min-h-96",
             style: {
               width: "100%",
               height: "100%",
@@ -1101,8 +1101,8 @@ export default function UnifiedModelViewer({
             <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 transition-all duration-300 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60" />
 
             {/* "View 3D Model" button */}
-            <div className="relative z-10 space-y-3 text-center">
-              <div className="mt-[53px] mr-[87px] mb-[53px] ml-[87px] rounded-full bg-[#ffffffd1] p-4 pt-[33px] pr-[16px] pb-[33px] pl-[16px] shadow-xl backdrop-blur-xs transition-transform duration-300 group-hover:scale-110 dark:bg-black/90">
+            <div className="relative z-elevated space-y-3 text-center">
+              <div className="mx-20 my-12 rounded-full bg-white/80 p-4 px-4 py-8 shadow-xl backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-black/90">
                 <Play className="h-8 w-8 text-gray-900 dark:text-white" fill="currentColor" />
               </div>
               <p className="font-medium text-lg text-white drop-shadow-lg">View 3D Model</p>
@@ -1113,7 +1113,7 @@ export default function UnifiedModelViewer({
 
         {/* Lazy loading placeholder - shown before viewport intersection */}
         {(!shouldLoadModel || !isVisible) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+          <div className="absolute inset-0 center-flex bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
             <div className="space-y-2 text-center">
               <Box className="mx-auto h-8 w-8 text-gray-400" />
               {!shouldLoadModel ? (

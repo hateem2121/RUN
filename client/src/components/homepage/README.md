@@ -2,7 +2,7 @@
 
 ## Context
 
-The Homepage component (`client/src/pages/homepage.tsx`) and its sub-components (`client/src/components/homepage-v2/*`) require high-fidelity animations, including:
+The Homepage component (`client/src/pages/homepage.tsx`) and its sub-components (`client/src/components/homepage/*`) require high-fidelity animations, including:
 
 - Kinetic Scroll Effects (skew, velocity-based distortion).
 - 3D WebGL Backgrounds (interactive cloth simulation).

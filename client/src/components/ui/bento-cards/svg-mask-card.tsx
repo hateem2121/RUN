@@ -302,7 +302,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
       {link && (
         <a
           href={link}
-          className="absolute inset-0 z-20"
+          className="absolute inset-0 z-elevated"
           aria-label={`View ${title}`}
           onClick={(e) => {
             e.preventDefault();

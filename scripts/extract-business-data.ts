@@ -3,105 +3,103 @@
 import { storage } from "../server/storage.js";
 
 interface BusinessDataRecovery {
-	categories: any[];
-	products: any[];
-	fabrics: any[];
-	fibers: any[];
-	certificates: any[];
-	accessories: any[];
-	recoveredCount: number;
+  categories: any[];
+  products: any[];
+  fabrics: any[];
+  fibers: any[];
+  certificates: any[];
+  accessories: any[];
+  recoveredCount: number;
 }
 
 export class BusinessDataExtractor {
-	async extractAllBusinessData(): Promise<BusinessDataRecovery> {
-		const results: BusinessDataRecovery = {
-			categories: [],
-			products: [],
-			fabrics: [],
-			fibers: [],
-			certificates: [],
-			accessories: [],
-			recoveredCount: 0,
-		};
-		results.categories = await this.extractEntityType("categories");
-		results.products = await this.extractEntityType("products");
-		results.fabrics = await this.extractEntityType("fabrics");
-		results.fibers = await this.extractEntityType("fibers");
-		results.certificates = await this.extractEntityType("certificates");
-		results.accessories = await this.extractEntityType("accessories");
+  async extractAllBusinessData(): Promise<BusinessDataRecovery> {
+    const results: BusinessDataRecovery = {
+      categories: [],
+      products: [],
+      fabrics: [],
+      fibers: [],
+      certificates: [],
+      accessories: [],
+      recoveredCount: 0,
+    };
+    results.categories = await this.extractEntityType("categories");
+    results.products = await this.extractEntityType("products");
+    results.fabrics = await this.extractEntityType("fabrics");
+    results.fibers = await this.extractEntityType("fibers");
+    results.certificates = await this.extractEntityType("certificates");
+    results.accessories = await this.extractEntityType("accessories");
 
-		results.recoveredCount =
-			results.categories.length +
-			results.products.length +
-			results.fabrics.length +
-			results.fibers.length +
-			results.certificates.length +
-			results.accessories.length;
-		return results;
-	}
+    results.recoveredCount =
+      results.categories.length +
+      results.products.length +
+      results.fabrics.length +
+      results.fibers.length +
+      results.certificates.length +
+      results.accessories.length;
+    return results;
+  }
 
-	private async extractEntityType(entityType: string): Promise<any[]> {
-		const items: any[] = [];
+  private async extractEntityType(entityType: string): Promise<any[]> {
+    const items: any[] = [];
 
-		try {
-			// First try to get from storage methods
-			const storageData = await this.getFromStorage(entityType);
-			if (storageData && storageData.length > 0) {
-				items.push(...storageData);
-			}
+    try {
+      // First try to get from storage methods
+      const storageData = await this.getFromStorage(entityType);
+      if (storageData && storageData.length > 0) {
+        items.push(...storageData);
+      }
 
-			// Also try direct database access for individual items
-			const individualItems = await this.getIndividualItems(entityType);
-			if (individualItems.length > 0) {
-				// Merge avoiding duplicates
-				const existingIds = new Set(items.map((item) => item.id));
-				const newItems = individualItems.filter(
-					(item) => !existingIds.has(item.id),
-				);
-				items.push(...newItems);
-			}
-		} catch (error) {}
+      // Also try direct database access for individual items
+      const individualItems = await this.getIndividualItems(entityType);
+      if (individualItems.length > 0) {
+        // Merge avoiding duplicates
+        const existingIds = new Set(items.map((item) => item.id));
+        const newItems = individualItems.filter((item) => !existingIds.has(item.id));
+        items.push(...newItems);
+      }
+    } catch (error) {}
 
-		return items;
-	}
+    return items;
+  }
 
-	private async getFromStorage(entityType: string): Promise<any[]> {
-		const methodName = `get${this.capitalize(entityType)}`;
+  private async getFromStorage(entityType: string): Promise<any[]> {
+    const methodName = `get${this.capitalize(entityType)}`;
 
-		if (typeof storage[methodName] === "function") {
-			return await storage[methodName]();
-		}
+    if (typeof storage[methodName] === "function") {
+      return await storage[methodName]();
+    }
 
-		return [];
-	}
+    return [];
+  }
 
-	private async getIndividualItems(entityType: string): Promise<any[]> {
-		const items: any[] = [];
-		const db = (storage as any).db;
+  private async getIndividualItems(entityType: string): Promise<any[]> {
+    const items: any[] = [];
+    const db = (storage as any).db;
 
-		// Try individual keys like "categories:1", "categories:2", etc.
-		for (let id = 1; id <= 50; id++) {
-			try {
-				const key = `${entityType}:${id}`;
-				const item = await db.get(key);
-				if (item && item !== null) {
-					items.push(item);
-				}
-			} catch (error) {
-				// Continue checking other IDs
-			}
-		}
+    // Try individual keys like "categories:1", "categories:2", etc.
+    for (let id = 1; id <= 50; id++) {
+      try {
+        const key = `${entityType}:${id}`;
+        const item = await db.get(key);
+        if (item && item !== null) {
+          items.push(item);
+        }
+      } catch (error) {
+        // Continue checking other IDs
+      }
+    }
 
-		return items;
-	}
+    return items;
+  }
 
-	private capitalize(str: string): string {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	}
+  private capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
-	async displayBusinessData(data: BusinessDataRecovery) {
-		// Logging removed for lint compliance
-	}
+  async displayBusinessData(data: BusinessDataRecovery) {
+    // Logging removed for lint compliance
+  }
 }
 
 // Export for use
@@ -109,13 +107,13 @@ export const dataExtractor = new BusinessDataExtractor();
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-	dataExtractor
-		.extractAllBusinessData()
-		.then(async (data) => {
-			await dataExtractor.displayBusinessData(data);
-			process.exit(0);
-		})
-		.catch((error) => {
-			process.exit(1);
-		});
+  dataExtractor
+    .extractAllBusinessData()
+    .then(async (data) => {
+      await dataExtractor.displayBusinessData(data);
+      process.exit(0);
+    })
+    .catch((error) => {
+      process.exit(1);
+    });
 }

@@ -6,15 +6,15 @@ import { neon } from "@neondatabase/serverless";
 const sql = neon(process.env.DATABASE_URL);
 
 async function addCertificationIdsColumn() {
-	try {
-		await sql`
+  try {
+    await sql`
       ALTER TABLE homepage_sustainability 
       ADD COLUMN IF NOT EXISTS certification_ids jsonb DEFAULT '[]'::jsonb
     `;
-		process.exit(0);
-	} catch (error) {
-		process.exit(1);
-	}
+    process.exit(0);
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 addCertificationIdsColumn();

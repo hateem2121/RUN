@@ -4,12 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { type RenderToPipeableStreamOptions, renderToPipeableStream } from "react-dom/server";
 // CJS/ESM Interop Fix for react-helmet-async
-import * as HelmetAsyncPkg from "react-helmet-async";
-
-const HelmetProvider =
-  HelmetAsyncPkg.HelmetProvider ||
-  (HelmetAsyncPkg as any).default?.HelmetProvider ||
-  (HelmetAsyncPkg as any).default;
+import { HelmetProvider } from "react-helmet-async";
 
 import { type BaseLocationHook, Router } from "wouter";
 import App from "./App"; // Assumes App handles its own Providers but we might need to wrap it

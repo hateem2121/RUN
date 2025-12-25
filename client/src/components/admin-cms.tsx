@@ -232,7 +232,7 @@ export default function AdminCMS() {
             <Card className="admin-card h-full cursor-pointer">
               <CardContent className="p-6">
                 <div
-                  className={`h-12 w-12 ${module.color.split(" ")[0]} mb-4 flex items-center justify-center rounded-lg`}
+                  className={`h-12 w-12 ${module.color.split(" ")[0]} mb-4 center-flex rounded-lg`}
                 >
                   <i className={`${module.icon} ${module.color.split(" ")[1]} text-xl`}></i>
                 </div>

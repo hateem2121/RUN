@@ -11,19 +11,19 @@ import { join } from "path";
 const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
-	process.exit(1);
+  process.exit(1);
 }
 
 interface TableSchema {
-	tableName: string;
-	columns: string[];
+  tableName: string;
+  columns: string[];
 }
 
 async function introspectDatabaseSchema(): Promise<TableSchema[]> {
-	const sql = neon(DATABASE_URL!);
+  const sql = neon(DATABASE_URL!);
 
-	try {
-		const results = await sql`
+  try {
+    const results = await sql`
       SELECT 
         table_name,
         column_name,
@@ -35,46 +35,44 @@ async function introspectDatabaseSchema(): Promise<TableSchema[]> {
       ORDER BY table_name, ordinal_position
     `;
 
-		// Group columns by table
-		const tablesMap = new Map<string, string[]>();
+    // Group columns by table
+    const tablesMap = new Map<string, string[]>();
 
-		for (const row of results) {
-			const tableName = row.table_name as string;
-			const columnInfo = `${row.column_name} (${row.data_type}${row.is_nullable === "NO" ? " NOT NULL" : ""})`;
+    for (const row of results) {
+      const tableName = row.table_name as string;
+      const columnInfo = `${row.column_name} (${row.data_type}${row.is_nullable === "NO" ? " NOT NULL" : ""})`;
 
-			if (!tablesMap.has(tableName)) {
-				tablesMap.set(tableName, []);
-			}
-			tablesMap.get(tableName)!.push(columnInfo);
-		}
+      if (!tablesMap.has(tableName)) {
+        tablesMap.set(tableName, []);
+      }
+      tablesMap.get(tableName)!.push(columnInfo);
+    }
 
-		// Convert to array format
-		const schema: TableSchema[] = Array.from(tablesMap.entries()).map(
-			([tableName, columns]) => ({
-				tableName,
-				columns,
-			}),
-		);
+    // Convert to array format
+    const schema: TableSchema[] = Array.from(tablesMap.entries()).map(([tableName, columns]) => ({
+      tableName,
+      columns,
+    }));
 
-		return schema;
-	} catch (error) {
-		throw error;
-	}
+    return schema;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function main() {
-	try {
-		const schema = await introspectDatabaseSchema();
+  try {
+    const schema = await introspectDatabaseSchema();
 
-		// Output to JSON file
-		const outputPath = join(process.cwd(), "db-schema.json");
-		writeFileSync(outputPath, JSON.stringify(schema, null, 2), "utf-8");
-		schema.forEach((table) => {});
+    // Output to JSON file
+    const outputPath = join(process.cwd(), "db-schema.json");
+    writeFileSync(outputPath, JSON.stringify(schema, null, 2), "utf-8");
+    schema.forEach((table) => {});
 
-		process.exit(0);
-	} catch (error) {
-		process.exit(1);
-	}
+    process.exit(0);
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 main();

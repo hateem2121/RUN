@@ -15,6 +15,7 @@ import { isModelUrl } from "@/lib/media-type-detector";
 import { batchFetchMediaContent } from "@/lib/queryClient";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
 import { cn } from "@/lib/utils";
+import { Typography, headingVariants } from "@/components/ui/typography";
 
 // Lazy-load FluidGlass (imports three.js)
 const FluidGlass = lazy(() => import("@/components/ui/bento-cards/fluid-glass-final"));
@@ -193,11 +194,11 @@ export default function CategoriesPage() {
       <div className="flex min-h-screen items-center justify-center bg-card">
         <div className="text-center">
           <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
-          <p className="text-luxury-body text-sm">
+          <Typography.P className="text-luxury-body text-sm">
             {categoriesLoading
               ? "Loading categories..."
               : `Loading ${allMediaIds.length} media assets...`}
-          </p>
+          </Typography.P>
         </div>
       </div>
     );
@@ -208,7 +209,10 @@ export default function CategoriesPage() {
       {/* Hero Section */}
       <div className="container mx-auto mt-0 mb-0 px-4 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
         <motion.h1
-          className="text-center font-bold font-neue-stance text-4xl text-luxury-heading md:text-5xl"
+          className={cn(
+            headingVariants({ variant: "h1" }),
+            "text-center font-bold font-neue-stance text-luxury-heading md:text-5xl",
+          )}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -216,7 +220,7 @@ export default function CategoriesPage() {
           Product Categories
         </motion.h1>
         <motion.p
-          className="mx-auto mt-3 max-w-2xl text-center text-lg text-luxury-body"
+          className="mx-auto mt-3 max-w-2xl text-center text-lg text-luxury-body mb-4"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
@@ -252,13 +256,13 @@ export default function CategoriesPage() {
                       className="mb-20 rounded-lg border border-luxury-light bg-white p-8 shadow-sm-luxury-lg"
                     >
                       <div className="mb-6 text-center">
-                        <h2 className="mb-4 font-bold font-neue-stance text-2xl text-luxury-charcoal">
+                        <Typography.H2 className="mb-4 font-bold font-neue-stance text-2xl text-luxury-charcoal">
                           {category.name}
-                        </h2>
+                        </Typography.H2>
                         {category.description && (
-                          <p className="mx-auto mb-4 max-w-2xl text-luxury-body">
+                          <Typography.P className="mx-auto mb-4 max-w-2xl text-luxury-body">
                             {category.description}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
 
@@ -266,11 +270,13 @@ export default function CategoriesPage() {
                         <AlertCircle className="h-4 w-4 text-amber-600" />
                         <AlertDescription className="text-amber-800">
                           <div className="space-y-2">
-                            <p className="font-medium">Featured content not yet configured</p>
-                            <p className="text-sm">
+                            <Typography.P className="font-medium">
+                              Featured content not yet configured
+                            </Typography.P>
+                            <Typography.P className="text-sm">
                               This category is available but needs featured content setup in the
                               admin panel to display interactive cards.
-                            </p>
+                            </Typography.P>
                             <Button
                               variant="outline"
                               size="sm"
@@ -297,15 +303,15 @@ export default function CategoriesPage() {
                       {/* Category Header */}
                       <div className="mb-6 text-center md:mb-10">
                         <div className="mb-3 flex flex-col items-center justify-center gap-3 md:flex-row md:gap-8">
-                          <h2 className="font-bold font-neue-stance text-3xl text-luxury-heading md:text-4xl">
+                          <Typography.H2 className="font-bold font-neue-stance text-3xl text-luxury-heading md:text-4xl">
                             {category.name}
-                          </h2>
+                          </Typography.H2>
                           <CircularNavButton href={`/products?category=${category.slug}`} />
                         </div>
                         {category.description && (
-                          <p className="mx-auto max-w-3xl px-4 text-luxury-body leading-tight md:px-0 md:leading-normal">
+                          <Typography.P className="mx-auto max-w-3xl px-4 text-luxury-body leading-tight md:px-0 md:leading-normal">
                             {category.description}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
 
@@ -365,7 +371,7 @@ export default function CategoriesPage() {
                                 const isModel = isModelUrl(resolvedUrl, mimeType);
 
                                 return (
-                                  <div className="absolute inset-0 z-0">
+                                  <div className="absolute inset-0 z-base">
                                     {isModel ? (
                                       // 3D Model Viewer for GLB/GLTF files
                                       <LazyUnifiedModelViewer
@@ -432,14 +438,14 @@ export default function CategoriesPage() {
                               featuredContent.card4?.description) && (
                               <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-modal p-6">
                                 {featuredContent.card4?.title && (
-                                  <h3 className="mb-2 font-bold font-neue-stance text-white text-xl drop-shadow-lg">
+                                  <Typography.H3 className="mb-2 font-bold font-neue-stance text-white text-xl drop-shadow-lg">
                                     {featuredContent.card4.title}
-                                  </h3>
+                                  </Typography.H3>
                                 )}
                                 {featuredContent.card4?.description && (
-                                  <p className="text-sm text-white/90 drop-shadow-lg">
+                                  <Typography.P className="text-sm text-white/90 drop-shadow-lg">
                                     {featuredContent.card4.description}
-                                  </p>
+                                  </Typography.P>
                                 )}
                               </div>
                             )}
@@ -466,11 +472,11 @@ export default function CategoriesPage() {
               <AlertCircle className="h-5 w-5 text-blue-600" />
               <AlertDescription className="text-blue-800">
                 <div className="space-y-3">
-                  <h3 className="font-semibold">No categories available</h3>
-                  <p className="text-sm">
+                  <Typography.H3 className="font-semibold">No categories available</Typography.H3>
+                  <Typography.P className="text-sm">
                     Categories are currently being set up. Check back soon or contact the admin to
                     configure product categories.
-                  </p>
+                  </Typography.P>
                   <Button
                     variant="outline"
                     size="sm"

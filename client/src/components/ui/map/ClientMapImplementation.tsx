@@ -24,10 +24,10 @@ export default function ClientMapImplementation({ locations, className = "" }: C
 
   return (
     <div className={`rounded-3xl bg-background p-8 shadow-lg ${className}`}>
-      <div className="relative h-[500px] w-full overflow-hidden rounded-2xl">
+      <div className="relative h-128 w-full overflow-hidden rounded-2xl">
         {/* Map Layer Toggle Button */}
         <motion.div
-          className="absolute top-4 right-4 z-10"
+          className="absolute top-4 right-4 z-elevated"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
@@ -74,7 +74,7 @@ export default function ClientMapImplementation({ locations, className = "" }: C
       </div>
 
       {/* Map Legend */}
-      <div className="mt-6 flex items-center justify-center gap-8">
+      <div className="mt-6 center-flex gap-8">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-blue-600"></div>
           <span className="text-muted-foreground text-sm">

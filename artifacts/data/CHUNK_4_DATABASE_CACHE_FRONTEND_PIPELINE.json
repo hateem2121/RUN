@@ -1,461 +1,461 @@
 {
-	"investigation_date": "2025-10-14",
-	"database_configuration": {
-		"provider": "NEON PostgreSQL",
-		"connection": "HTTP-based (no TCP pool exhaustion)",
-		"driver": "@neondatabase/serverless",
-		"serverless_behavior": "Auto-scaling with cold start handling",
-		"connection_pooling": "Not applicable (HTTP-based)",
-		"query_timeout": "10-20 seconds with withTimeout wrapper"
-	},
-	"cache_architecture": {
-		"system": "UnifiedReplitCache (v2.0)",
-		"infrastructure": "2-Tier: L1 (Memory LRU) + L2 (Replit Key-Value Database)",
-		"storage_provider": "@replit/database",
-		"l1_memory_cache": {
-			"implementation": "LRUCache from lru-cache package",
-			"max_entries": 1000,
-			"max_size_mb": 50,
-			"ttl_minutes": 15,
-			"eviction_policy": "Least Recently Used (LRU)",
-			"update_age_on_get": true
-		},
-		"l2_persistent_cache": {
-			"provider": "Replit Key-Value Database",
-			"max_value_size_mb": 5,
-			"retry_attempts": 3,
-			"retry_base_delay_ms": 1000
-		},
-		"optimizations": {
-			"request_coalescing": "Prevents cache stampede - coalesces duplicate in-flight requests",
-			"stale_while_revalidate": "Returns stale data immediately, refreshes in background",
-			"thundering_herd_prevention": "activeRefreshes Map limits ONE background refresh at a time",
-			"memory_pressure_detection": "100MB cache limit with automatic eviction"
-		}
-	},
-	"api_endpoint_caching_analysis": {
-		"/api/homepage-batch": {
-			"cache_system": "UnifiedReplitCache (advanced)",
-			"cache_key": "homepage-batch",
-			"ttl_minutes": 10,
-			"stale_threshold_percentage": 80,
-			"stale_threshold_minutes": 8,
-			"stale_while_revalidate": true,
-			"background_refresh": true,
-			"thundering_herd_protection": true,
-			"http_cache_headers": "NOT SET (relies on UnifiedReplitCache)",
-			"data_loaded": [
-				"hero",
-				"slogans",
-				"processCards",
-				"sections",
-				"sustainability",
-				"featuredProductsSettings",
-				"products",
-				"categories"
-			],
-			"parallel_queries": 8,
-			"frontend_staleTime": "30 seconds",
-			"backend_ttl": "10 minutes",
-			"mismatch": "Frontend refetches every 30s but backend caches for 10min",
-			"efficiency": "HIGH - Returns stale data instantly (<1ms from L1 cache), refreshes asynchronously"
-		},
-		"/api/about-batch": {
-			"cache_system": "NONE",
-			"http_cache_headers": "NOT SET",
-			"data_loaded": [
-				"hero",
-				"timeline",
-				"locations",
-				"sections",
-				"statistics",
-				"teamMessage",
-				"mediaAssets"
-			],
-			"parallel_queries": 6,
-			"media_loading": "Targeted - collects IDs from content, fetches specific assets",
-			"query_strategy": "Promise.all() parallel execution with 20s timeout",
-			"frontend_staleTime": "Default React Query (5 minutes)",
-			"backend_caching": "NONE - direct database queries every time",
-			"inefficiency": "CRITICAL - Every request hits database despite batch pattern",
-			"recommendation": "Add UnifiedReplitCache wrapper like homepage-batch"
-		},
-		"/api/sustainability-hero": {
-			"cache_system": "HTTP Cache Headers only",
-			"http_cache_headers": "Cache-Control: public, max-age=3600, s-maxage=3600",
-			"ttl_minutes": 60,
-			"vary_header": "Accept-Encoding",
-			"backend_caching": "Browser/CDN caching only",
-			"server_side_cache": "NONE",
-			"frontend_staleTime": "Default React Query (5 minutes)",
-			"efficiency": "MEDIUM - Relies on browser cache, misses server-side optimization"
-		},
-		"/api/sustainability-metrics": {
-			"cache_system": "HTTP Cache Headers only",
-			"http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
-			"ttl_minutes": 30,
-			"backend_caching": "Browser/CDN only",
-			"server_side_cache": "NONE"
-		},
-		"/api/manufacturing-hero": {
-			"cache_system": "HTTP Cache Headers only",
-			"http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
-			"ttl_minutes": 30,
-			"backend_caching": "Browser/CDN only",
-			"frontend_staleTime": "30 minutes",
-			"frontend_gcTime": "1 hour",
-			"refetchOnWindowFocus": false,
-			"efficiency": "GOOD - Frontend caching strategy matches backend headers"
-		},
-		"/api/manufacturing-processes": {
-			"http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
-			"ttl_minutes": 30,
-			"backend_caching": "Browser/CDN only"
-		},
-		"/api/technology-hero": {
-			"cache_system": "NONE",
-			"http_cache_headers": "NOT SET",
-			"backend_caching": "NONE",
-			"frontend_caching": "React Query only",
-			"inefficiency": "No server-side caching, hits database every request"
-		}
-	},
-	"cache_ttl_inconsistencies": {
-		"homepage": {
-			"backend_cache_ttl": "10 minutes",
-			"frontend_staleTime": "30 seconds",
-			"mismatch": "Frontend refetches 20x more often than backend cache expires",
-			"impact": "Unnecessary React Query refetches, but backend cache absorbs load",
-			"recommendation": "Increase frontend staleTime to match backend (10 minutes)"
-		},
-		"about": {
-			"backend_cache_ttl": "NONE",
-			"frontend_staleTime": "5 minutes (default)",
-			"mismatch": "Frontend caches but backend doesn't",
-			"impact": "First request slow (cold DB), subsequent requests cached by React Query only",
-			"recommendation": "Add server-side caching to about-batch endpoint"
-		},
-		"sustainability": {
-			"backend_http_cache": "30-60 minutes",
-			"frontend_staleTime": "5 minutes (default)",
-			"mismatch": "Frontend refetches more often than backend allows",
-			"impact": "Browser cache handles it, but inconsistent expectations"
-		},
-		"manufacturing": {
-			"backend_http_cache": "30 minutes",
-			"frontend_staleTime": "30 minutes",
-			"frontend_gcTime": "1 hour",
-			"status": "ALIGNED - frontend and backend TTLs match perfectly"
-		},
-		"technology": {
-			"backend_cache": "NONE",
-			"frontend_staleTime": "Default (5 minutes)",
-			"mismatch": "No backend caching at all",
-			"impact": "Every frontend refetch hits database"
-		}
-	},
-	"cache_invalidation_analysis": {
-		"current_implementation": "NONE - No automatic cache invalidation on admin changes",
-		"admin_updates": {
-			"homepage_content": {
-				"invalidation_endpoint": "CacheOperations.invalidateHomepage()",
-				"trigger": "Manual only (not called automatically on admin update)",
-				"impact": "Admin changes cached for 10 minutes before visible on frontend",
-				"user_experience": "Admin updates content, frontend shows stale data for up to 10min"
-			},
-			"other_pages": {
-				"invalidation": "NOT IMPLEMENTED",
-				"http_cache": "Browser caches for 30-60 minutes without invalidation",
-				"impact": "Admin changes take 30-60 minutes to appear on frontend"
-			}
-		},
-		"force_refresh_options": {
-			"homepage_batch": {
-				"query_param": "?refresh=1",
-				"header": "Cache-Control: no-cache",
-				"implementation": "Calls CacheOperations.invalidateHomepage()",
-				"available_to": "Developers only (not exposed to admin UI)"
-			},
-			"other_endpoints": "NO FORCE REFRESH MECHANISM"
-		},
-		"recommended_invalidation_strategy": {
-			"approach": "Invalidate on admin mutation",
-			"implementation_points": [
-				"After POST/PATCH/DELETE mutations in admin routes",
-				"Call appropriate cache invalidation function",
-				"Broadcast invalidation to all connected clients via WebSocket (if implemented)"
-			],
-			"example_flow": "Admin updates homepage hero → PATCH /api/homepage-hero → Success → await CacheOperations.invalidateHomepage() → Next frontend request gets fresh data"
-		}
-	},
-	"database_query_patterns": {
-		"storage_layer": "IStorage interface with DbStorage and MemStorage implementations",
-		"current_implementation": "DbStorage (NEON PostgreSQL)",
-		"query_execution": {
-			"method": "Direct SQL via Drizzle ORM",
-			"timeout_protection": "withTimeout() wrapper (10-20 seconds)",
-			"error_handling": "Try-catch with detailed logging",
-			"retry_logic": "Not implemented at query level (handled by Replit KV for cache)"
-		},
-		"batch_query_optimization": {
-			"homepage_batch": "Promise.all() - 8 parallel queries",
-			"about_batch": "Promise.all() - 6 parallel queries + media fetch",
-			"manufacturing": "Separate sequential queries (inefficient)",
-			"efficiency": "Homepage and About use parallel loading (GOOD), others don't"
-		},
-		"n+1_query_issues": {
-			"identified": false,
-			"note": "Batch endpoints prevent N+1 by loading all data upfront",
-			"media_loading": "About and Manufacturing batch load media by IDs (prevents N+1)"
-		}
-	},
-	"frontend_to_backend_data_flow": {
-		"step_1_frontend_request": {
-			"trigger": "Component mount or React Query refetch",
-			"library": "@tanstack/react-query v5",
-			"query_key": "e.g., ['/api/homepage-batch']",
-			"staleTime": "Varies by page (30s to 30min)",
-			"cacheTime_gcTime": "Varies (default 5min to 1hr)"
-		},
-		"step_2_http_request": {
-			"method": "GET",
-			"endpoint": "e.g., /api/homepage-batch",
-			"headers": "Cache-Control may be set for force refresh",
-			"frontend_cache_check": "React Query checks staleTime first"
-		},
-		"step_3_backend_routing": {
-			"framework": "Express.js",
-			"middleware": "asyncHandler for error handling",
-			"routing": "Modular route files (homepage-batch-routes.ts, page-content-routes.ts)",
-			"timeout": "withTimeout() wrapper for long-running queries"
-		},
-		"step_4_cache_check": {
-			"homepage_batch": {
-				"l1_check": "UnifiedReplitCache memory cache (<1ms)",
-				"l2_check": "Replit KV Database if L1 miss",
-				"stale_while_revalidate": "Returns stale if >80% TTL, refreshes background",
-				"cold_start": "Fetches from database, stores in L1+L2"
-			},
-			"about_batch": {
-				"cache_check": "SKIPPED - no caching layer",
-				"direct_to_database": true
-			},
-			"other_endpoints": {
-				"http_cache_only": "Relies on browser/CDN caching via headers",
-				"server_side_cache": "NONE"
-			}
-		},
-		"step_5_database_query": {
-			"on_cache_miss": true,
-			"connection": "NEON PostgreSQL via HTTP",
-			"query_builder": "Drizzle ORM",
-			"parallel_execution": "Promise.all() for batch endpoints",
-			"timeout": "10-20 seconds",
-			"error_handling": "Wrapped in asyncHandler, logged"
-		},
-		"step_6_response_transformation": {
-			"homepage_batch": "Wraps results in {result, timestamp} format",
-			"about_batch": "Returns raw data + _meta object",
-			"data_serialization": "JSON.stringify",
-			"cache_storage": "Stores serialized data in L1+L2"
-		},
-		"step_7_http_response": {
-			"status": "200 OK or error status",
-			"headers": "Cache-Control, X-Response-Time, X-Cache-TTL (varies by endpoint)",
-			"body": "JSON data with optional metadata",
-			"response_time_logging": "Performance monitoring with logger"
-		},
-		"step_8_frontend_processing": {
-			"react_query_storage": "Stores in React Query cache with queryKey",
-			"data_unwrapping": "unwrapResult() helper for homepage (handles {result} format)",
-			"state_update": "React re-renders components with new data",
-			"error_handling": "isError flag triggers error UI"
-		}
-	},
-	"neon_serverless_behavior": {
-		"cold_start_handling": {
-			"issue": "NEON serverless may hibernate after inactivity",
-			"first_query_delay": "Potential 1-3 second delay on cold start",
-			"mitigation": "UnifiedReplitCache reduces cold start impact by caching",
-			"background_refresh": "Keeps cache warm even during low traffic"
-		},
-		"connection_model": {
-			"type": "HTTP-based (not TCP)",
-			"advantage": "No connection pool exhaustion",
-			"disadvantage": "Slightly higher latency per query vs TCP",
-			"timeout_protection": "withTimeout() wrapper prevents hanging requests"
-		},
-		"scaling": {
-			"auto_scaling": "NEON scales automatically with load",
-			"concurrent_queries": "No hardcoded limit, scales as needed",
-			"cost_model": "Pay per compute time, scales down when idle"
-		}
-	},
-	"performance_bottlenecks_identified": {
-		"critical": [
-			{
-				"issue": "About page has NO server-side caching",
-				"location": "/api/about-batch",
-				"impact": "Every request hits database (6 parallel queries + media fetch)",
-				"current_response_time": "Unknown (no metrics endpoint)",
-				"recommendation": "Add UnifiedReplitCache wrapper like homepage-batch",
-				"priority": "HIGH"
-			},
-			{
-				"issue": "Technology endpoints have NO caching",
-				"location": "/api/technology-hero, /api/technology-innovations, etc.",
-				"impact": "Every request hits database",
-				"recommendation": "Add HTTP cache headers minimum",
-				"priority": "MEDIUM"
-			},
-			{
-				"issue": "No cache invalidation on admin updates",
-				"location": "All admin mutation endpoints",
-				"impact": "Admin changes take 10-60 minutes to appear (cache TTL)",
-				"recommendation": "Call cache invalidation after successful mutations",
-				"priority": "HIGH"
-			}
-		],
-		"medium": [
-			{
-				"issue": "Frontend/backend TTL mismatch",
-				"example": "Homepage: frontend 30s staleTime, backend 10min TTL",
-				"impact": "Unnecessary React Query refetches (but absorbed by backend cache)",
-				"recommendation": "Align frontend staleTime with backend TTL",
-				"priority": "LOW"
-			},
-			{
-				"issue": "Sustainability loads all 61 media files",
-				"location": "client/src/pages/sustainability.tsx",
-				"impact": "Loads 59 orphaned files unnecessarily",
-				"recommendation": "Implement targeted media loading like Manufacturing",
-				"priority": "MEDIUM"
-			}
-		],
-		"optimizations_working_well": [
-			{
-				"feature": "Homepage stale-while-revalidate",
-				"impact": "Sub-millisecond response times from L1 cache",
-				"status": "EXCELLENT"
-			},
-			{
-				"feature": "Manufacturing page caching strategy",
-				"impact": "30min staleTime + 1hr gcTime + aggressive HTTP cache headers",
-				"status": "WELL OPTIMIZED"
-			},
-			{
-				"feature": "Request coalescing in UnifiedReplitCache",
-				"impact": "Prevents cache stampede during concurrent requests",
-				"status": "EXCELLENT"
-			},
-			{
-				"feature": "2-tier caching (L1 memory + L2 persistent)",
-				"impact": "<1ms hot queries, persistent across restarts",
-				"status": "EXCELLENT"
-			}
-		]
-	},
-	"foreign_key_relationships": {
-		"media_references": {
-			"tables_with_fk": [
-				"homepage_hero (background_image_id → media_assets.id)",
-				"homepage_process_cards (icon_media_id → media_assets.id)",
-				"about_timeline_entries (image_id → media_assets.id)",
-				"products (primary_image_id → media_assets.id)",
-				"fabrics (visual_swatch_id → media_assets.id)"
-			],
-			"referential_integrity": "WEAK - No database-level FK constraints in Drizzle schema",
-			"orphan_prevention": "NOT ENFORCED - allows orphaned media files",
-			"cascade_delete": "NOT IMPLEMENTED",
-			"recommendation": "Add explicit FK constraints in Drizzle schema with onDelete: 'SET NULL'"
-		},
-		"content_references": {
-			"categories_to_products": "NOT ENFORCED",
-			"sections_to_media": "JSON arrays (not FK)",
-			"impact": "Database allows referencing non-existent IDs",
-			"data_integrity_risk": "HIGH - broken references possible"
-		}
-	},
-	"cache_health_monitoring": {
-		"endpoints": {
-			"/api/cache/health": {
-				"provides": "KV connection status, memory health, hit rate, uptime",
-				"implementation": "unifiedCacheManager.healthCheck()",
-				"version": "2.0.0-phase2a"
-			},
-			"/api/performance-monitoring": {
-				"provides": "Homepage batch response time, cache metrics, system health",
-				"target": "< 500ms response time",
-				"status_levels": "EXCELLENT (<500ms), GOOD (<1000ms), NEEDS_ATTENTION (>=1000ms)"
-			}
-		},
-		"metrics_tracked": {
-			"cache_hits": "Incremented on successful cache retrieval",
-			"cache_misses": "Incremented on cache miss (fetch from DB)",
-			"hit_rate": "Calculated as hits / (hits + misses)",
-			"response_times": "Buffered (last 100 requests) for average calculation",
-			"memory_usage": "Estimated from serialized cache entry sizes",
-			"evicted_entries": "Count of LRU evictions due to memory pressure"
-		},
-		"memory_pressure_detection": {
-			"max_cache_size_mb": 100,
-			"check_interval_ms": 60000,
-			"eviction_batch_size": 10,
-			"action": "Automatic eviction of oldest entries when limit exceeded"
-		}
-	},
-	"recommendations": {
-		"immediate_actions": [
-			{
-				"priority": "CRITICAL",
-				"action": "Add server-side caching to about-batch endpoint",
-				"implementation": "Wrap with UnifiedReplitCache like homepage-batch",
-				"benefit": "90% response time reduction, eliminates repeated DB queries"
-			},
-			{
-				"priority": "HIGH",
-				"action": "Implement cache invalidation on admin mutations",
-				"implementation": "Call CacheOperations.invalidate* after successful POST/PATCH/DELETE",
-				"benefit": "Admin changes appear instantly instead of 10-60 minute delay"
-			},
-			{
-				"priority": "HIGH",
-				"action": "Add caching to Technology endpoints",
-				"implementation": "Add HTTP cache headers or UnifiedReplitCache wrapper",
-				"benefit": "Reduce database load for technology page"
-			}
-		],
-		"frontend_backend_alignment": [
-			{
-				"priority": "MEDIUM",
-				"action": "Align frontend staleTime with backend TTLs",
-				"changes": {
-					"homepage": "Increase staleTime from 30s to 10min (match backend)",
-					"about": "Keep 5min if adding backend cache",
-					"manufacturing": "Current 30min is good (matches backend)"
-				},
-				"benefit": "Consistent caching behavior, fewer unnecessary refetches"
-			},
-			{
-				"priority": "MEDIUM",
-				"action": "Standardize cache headers across all endpoints",
-				"recommendation": "Use 30min cache for stable content, 10min for dynamic",
-				"benefit": "Predictable caching behavior"
-			}
-		],
-		"data_integrity": [
-			{
-				"priority": "MEDIUM",
-				"action": "Add foreign key constraints in Drizzle schema",
-				"implementation": "Add .references() with onDelete: 'SET NULL' for media FKs",
-				"benefit": "Prevent broken references, enable cascade deletes"
-			},
-			{
-				"priority": "LOW",
-				"action": "Implement cache versioning",
-				"implementation": "Add version key to cached data, invalidate on schema changes",
-				"benefit": "Prevent stale data after deployment"
-			}
-		]
-	}
+  "investigation_date": "2025-10-14",
+  "database_configuration": {
+    "provider": "NEON PostgreSQL",
+    "connection": "HTTP-based (no TCP pool exhaustion)",
+    "driver": "@neondatabase/serverless",
+    "serverless_behavior": "Auto-scaling with cold start handling",
+    "connection_pooling": "Not applicable (HTTP-based)",
+    "query_timeout": "10-20 seconds with withTimeout wrapper"
+  },
+  "cache_architecture": {
+    "system": "UnifiedReplitCache (v2.0)",
+    "infrastructure": "2-Tier: L1 (Memory LRU) + L2 (Replit Key-Value Database)",
+    "storage_provider": "@replit/database",
+    "l1_memory_cache": {
+      "implementation": "LRUCache from lru-cache package",
+      "max_entries": 1000,
+      "max_size_mb": 50,
+      "ttl_minutes": 15,
+      "eviction_policy": "Least Recently Used (LRU)",
+      "update_age_on_get": true
+    },
+    "l2_persistent_cache": {
+      "provider": "Replit Key-Value Database",
+      "max_value_size_mb": 5,
+      "retry_attempts": 3,
+      "retry_base_delay_ms": 1000
+    },
+    "optimizations": {
+      "request_coalescing": "Prevents cache stampede - coalesces duplicate in-flight requests",
+      "stale_while_revalidate": "Returns stale data immediately, refreshes in background",
+      "thundering_herd_prevention": "activeRefreshes Map limits ONE background refresh at a time",
+      "memory_pressure_detection": "100MB cache limit with automatic eviction"
+    }
+  },
+  "api_endpoint_caching_analysis": {
+    "/api/homepage-batch": {
+      "cache_system": "UnifiedReplitCache (advanced)",
+      "cache_key": "homepage-batch",
+      "ttl_minutes": 10,
+      "stale_threshold_percentage": 80,
+      "stale_threshold_minutes": 8,
+      "stale_while_revalidate": true,
+      "background_refresh": true,
+      "thundering_herd_protection": true,
+      "http_cache_headers": "NOT SET (relies on UnifiedReplitCache)",
+      "data_loaded": [
+        "hero",
+        "slogans",
+        "processCards",
+        "sections",
+        "sustainability",
+        "featuredProductsSettings",
+        "products",
+        "categories"
+      ],
+      "parallel_queries": 8,
+      "frontend_staleTime": "30 seconds",
+      "backend_ttl": "10 minutes",
+      "mismatch": "Frontend refetches every 30s but backend caches for 10min",
+      "efficiency": "HIGH - Returns stale data instantly (<1ms from L1 cache), refreshes asynchronously"
+    },
+    "/api/about-batch": {
+      "cache_system": "NONE",
+      "http_cache_headers": "NOT SET",
+      "data_loaded": [
+        "hero",
+        "timeline",
+        "locations",
+        "sections",
+        "statistics",
+        "teamMessage",
+        "mediaAssets"
+      ],
+      "parallel_queries": 6,
+      "media_loading": "Targeted - collects IDs from content, fetches specific assets",
+      "query_strategy": "Promise.all() parallel execution with 20s timeout",
+      "frontend_staleTime": "Default React Query (5 minutes)",
+      "backend_caching": "NONE - direct database queries every time",
+      "inefficiency": "CRITICAL - Every request hits database despite batch pattern",
+      "recommendation": "Add UnifiedReplitCache wrapper like homepage-batch"
+    },
+    "/api/sustainability-hero": {
+      "cache_system": "HTTP Cache Headers only",
+      "http_cache_headers": "Cache-Control: public, max-age=3600, s-maxage=3600",
+      "ttl_minutes": 60,
+      "vary_header": "Accept-Encoding",
+      "backend_caching": "Browser/CDN caching only",
+      "server_side_cache": "NONE",
+      "frontend_staleTime": "Default React Query (5 minutes)",
+      "efficiency": "MEDIUM - Relies on browser cache, misses server-side optimization"
+    },
+    "/api/sustainability-metrics": {
+      "cache_system": "HTTP Cache Headers only",
+      "http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
+      "ttl_minutes": 30,
+      "backend_caching": "Browser/CDN only",
+      "server_side_cache": "NONE"
+    },
+    "/api/manufacturing-hero": {
+      "cache_system": "HTTP Cache Headers only",
+      "http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
+      "ttl_minutes": 30,
+      "backend_caching": "Browser/CDN only",
+      "frontend_staleTime": "30 minutes",
+      "frontend_gcTime": "1 hour",
+      "refetchOnWindowFocus": false,
+      "efficiency": "GOOD - Frontend caching strategy matches backend headers"
+    },
+    "/api/manufacturing-processes": {
+      "http_cache_headers": "Cache-Control: public, max-age=1800, s-maxage=1800",
+      "ttl_minutes": 30,
+      "backend_caching": "Browser/CDN only"
+    },
+    "/api/technology-hero": {
+      "cache_system": "NONE",
+      "http_cache_headers": "NOT SET",
+      "backend_caching": "NONE",
+      "frontend_caching": "React Query only",
+      "inefficiency": "No server-side caching, hits database every request"
+    }
+  },
+  "cache_ttl_inconsistencies": {
+    "homepage": {
+      "backend_cache_ttl": "10 minutes",
+      "frontend_staleTime": "30 seconds",
+      "mismatch": "Frontend refetches 20x more often than backend cache expires",
+      "impact": "Unnecessary React Query refetches, but backend cache absorbs load",
+      "recommendation": "Increase frontend staleTime to match backend (10 minutes)"
+    },
+    "about": {
+      "backend_cache_ttl": "NONE",
+      "frontend_staleTime": "5 minutes (default)",
+      "mismatch": "Frontend caches but backend doesn't",
+      "impact": "First request slow (cold DB), subsequent requests cached by React Query only",
+      "recommendation": "Add server-side caching to about-batch endpoint"
+    },
+    "sustainability": {
+      "backend_http_cache": "30-60 minutes",
+      "frontend_staleTime": "5 minutes (default)",
+      "mismatch": "Frontend refetches more often than backend allows",
+      "impact": "Browser cache handles it, but inconsistent expectations"
+    },
+    "manufacturing": {
+      "backend_http_cache": "30 minutes",
+      "frontend_staleTime": "30 minutes",
+      "frontend_gcTime": "1 hour",
+      "status": "ALIGNED - frontend and backend TTLs match perfectly"
+    },
+    "technology": {
+      "backend_cache": "NONE",
+      "frontend_staleTime": "Default (5 minutes)",
+      "mismatch": "No backend caching at all",
+      "impact": "Every frontend refetch hits database"
+    }
+  },
+  "cache_invalidation_analysis": {
+    "current_implementation": "NONE - No automatic cache invalidation on admin changes",
+    "admin_updates": {
+      "homepage_content": {
+        "invalidation_endpoint": "CacheOperations.invalidateHomepage()",
+        "trigger": "Manual only (not called automatically on admin update)",
+        "impact": "Admin changes cached for 10 minutes before visible on frontend",
+        "user_experience": "Admin updates content, frontend shows stale data for up to 10min"
+      },
+      "other_pages": {
+        "invalidation": "NOT IMPLEMENTED",
+        "http_cache": "Browser caches for 30-60 minutes without invalidation",
+        "impact": "Admin changes take 30-60 minutes to appear on frontend"
+      }
+    },
+    "force_refresh_options": {
+      "homepage_batch": {
+        "query_param": "?refresh=1",
+        "header": "Cache-Control: no-cache",
+        "implementation": "Calls CacheOperations.invalidateHomepage()",
+        "available_to": "Developers only (not exposed to admin UI)"
+      },
+      "other_endpoints": "NO FORCE REFRESH MECHANISM"
+    },
+    "recommended_invalidation_strategy": {
+      "approach": "Invalidate on admin mutation",
+      "implementation_points": [
+        "After POST/PATCH/DELETE mutations in admin routes",
+        "Call appropriate cache invalidation function",
+        "Broadcast invalidation to all connected clients via WebSocket (if implemented)"
+      ],
+      "example_flow": "Admin updates homepage hero → PATCH /api/homepage-hero → Success → await CacheOperations.invalidateHomepage() → Next frontend request gets fresh data"
+    }
+  },
+  "database_query_patterns": {
+    "storage_layer": "IStorage interface with DbStorage and MemStorage implementations",
+    "current_implementation": "DbStorage (NEON PostgreSQL)",
+    "query_execution": {
+      "method": "Direct SQL via Drizzle ORM",
+      "timeout_protection": "withTimeout() wrapper (10-20 seconds)",
+      "error_handling": "Try-catch with detailed logging",
+      "retry_logic": "Not implemented at query level (handled by Replit KV for cache)"
+    },
+    "batch_query_optimization": {
+      "homepage_batch": "Promise.all() - 8 parallel queries",
+      "about_batch": "Promise.all() - 6 parallel queries + media fetch",
+      "manufacturing": "Separate sequential queries (inefficient)",
+      "efficiency": "Homepage and About use parallel loading (GOOD), others don't"
+    },
+    "n+1_query_issues": {
+      "identified": false,
+      "note": "Batch endpoints prevent N+1 by loading all data upfront",
+      "media_loading": "About and Manufacturing batch load media by IDs (prevents N+1)"
+    }
+  },
+  "frontend_to_backend_data_flow": {
+    "step_1_frontend_request": {
+      "trigger": "Component mount or React Query refetch",
+      "library": "@tanstack/react-query v5",
+      "query_key": "e.g., ['/api/homepage-batch']",
+      "staleTime": "Varies by page (30s to 30min)",
+      "cacheTime_gcTime": "Varies (default 5min to 1hr)"
+    },
+    "step_2_http_request": {
+      "method": "GET",
+      "endpoint": "e.g., /api/homepage-batch",
+      "headers": "Cache-Control may be set for force refresh",
+      "frontend_cache_check": "React Query checks staleTime first"
+    },
+    "step_3_backend_routing": {
+      "framework": "Express.js",
+      "middleware": "asyncHandler for error handling",
+      "routing": "Modular route files (homepage-batch-routes.ts, page-content-routes.ts)",
+      "timeout": "withTimeout() wrapper for long-running queries"
+    },
+    "step_4_cache_check": {
+      "homepage_batch": {
+        "l1_check": "UnifiedReplitCache memory cache (<1ms)",
+        "l2_check": "Replit KV Database if L1 miss",
+        "stale_while_revalidate": "Returns stale if >80% TTL, refreshes background",
+        "cold_start": "Fetches from database, stores in L1+L2"
+      },
+      "about_batch": {
+        "cache_check": "SKIPPED - no caching layer",
+        "direct_to_database": true
+      },
+      "other_endpoints": {
+        "http_cache_only": "Relies on browser/CDN caching via headers",
+        "server_side_cache": "NONE"
+      }
+    },
+    "step_5_database_query": {
+      "on_cache_miss": true,
+      "connection": "NEON PostgreSQL via HTTP",
+      "query_builder": "Drizzle ORM",
+      "parallel_execution": "Promise.all() for batch endpoints",
+      "timeout": "10-20 seconds",
+      "error_handling": "Wrapped in asyncHandler, logged"
+    },
+    "step_6_response_transformation": {
+      "homepage_batch": "Wraps results in {result, timestamp} format",
+      "about_batch": "Returns raw data + _meta object",
+      "data_serialization": "JSON.stringify",
+      "cache_storage": "Stores serialized data in L1+L2"
+    },
+    "step_7_http_response": {
+      "status": "200 OK or error status",
+      "headers": "Cache-Control, X-Response-Time, X-Cache-TTL (varies by endpoint)",
+      "body": "JSON data with optional metadata",
+      "response_time_logging": "Performance monitoring with logger"
+    },
+    "step_8_frontend_processing": {
+      "react_query_storage": "Stores in React Query cache with queryKey",
+      "data_unwrapping": "unwrapResult() helper for homepage (handles {result} format)",
+      "state_update": "React re-renders components with new data",
+      "error_handling": "isError flag triggers error UI"
+    }
+  },
+  "neon_serverless_behavior": {
+    "cold_start_handling": {
+      "issue": "NEON serverless may hibernate after inactivity",
+      "first_query_delay": "Potential 1-3 second delay on cold start",
+      "mitigation": "UnifiedReplitCache reduces cold start impact by caching",
+      "background_refresh": "Keeps cache warm even during low traffic"
+    },
+    "connection_model": {
+      "type": "HTTP-based (not TCP)",
+      "advantage": "No connection pool exhaustion",
+      "disadvantage": "Slightly higher latency per query vs TCP",
+      "timeout_protection": "withTimeout() wrapper prevents hanging requests"
+    },
+    "scaling": {
+      "auto_scaling": "NEON scales automatically with load",
+      "concurrent_queries": "No hardcoded limit, scales as needed",
+      "cost_model": "Pay per compute time, scales down when idle"
+    }
+  },
+  "performance_bottlenecks_identified": {
+    "critical": [
+      {
+        "issue": "About page has NO server-side caching",
+        "location": "/api/about-batch",
+        "impact": "Every request hits database (6 parallel queries + media fetch)",
+        "current_response_time": "Unknown (no metrics endpoint)",
+        "recommendation": "Add UnifiedReplitCache wrapper like homepage-batch",
+        "priority": "HIGH"
+      },
+      {
+        "issue": "Technology endpoints have NO caching",
+        "location": "/api/technology-hero, /api/technology-innovations, etc.",
+        "impact": "Every request hits database",
+        "recommendation": "Add HTTP cache headers minimum",
+        "priority": "MEDIUM"
+      },
+      {
+        "issue": "No cache invalidation on admin updates",
+        "location": "All admin mutation endpoints",
+        "impact": "Admin changes take 10-60 minutes to appear (cache TTL)",
+        "recommendation": "Call cache invalidation after successful mutations",
+        "priority": "HIGH"
+      }
+    ],
+    "medium": [
+      {
+        "issue": "Frontend/backend TTL mismatch",
+        "example": "Homepage: frontend 30s staleTime, backend 10min TTL",
+        "impact": "Unnecessary React Query refetches (but absorbed by backend cache)",
+        "recommendation": "Align frontend staleTime with backend TTL",
+        "priority": "LOW"
+      },
+      {
+        "issue": "Sustainability loads all 61 media files",
+        "location": "client/src/pages/sustainability.tsx",
+        "impact": "Loads 59 orphaned files unnecessarily",
+        "recommendation": "Implement targeted media loading like Manufacturing",
+        "priority": "MEDIUM"
+      }
+    ],
+    "optimizations_working_well": [
+      {
+        "feature": "Homepage stale-while-revalidate",
+        "impact": "Sub-millisecond response times from L1 cache",
+        "status": "EXCELLENT"
+      },
+      {
+        "feature": "Manufacturing page caching strategy",
+        "impact": "30min staleTime + 1hr gcTime + aggressive HTTP cache headers",
+        "status": "WELL OPTIMIZED"
+      },
+      {
+        "feature": "Request coalescing in UnifiedReplitCache",
+        "impact": "Prevents cache stampede during concurrent requests",
+        "status": "EXCELLENT"
+      },
+      {
+        "feature": "2-tier caching (L1 memory + L2 persistent)",
+        "impact": "<1ms hot queries, persistent across restarts",
+        "status": "EXCELLENT"
+      }
+    ]
+  },
+  "foreign_key_relationships": {
+    "media_references": {
+      "tables_with_fk": [
+        "homepage_hero (background_image_id → media_assets.id)",
+        "homepage_process_cards (icon_media_id → media_assets.id)",
+        "about_timeline_entries (image_id → media_assets.id)",
+        "products (primary_image_id → media_assets.id)",
+        "fabrics (visual_swatch_id → media_assets.id)"
+      ],
+      "referential_integrity": "WEAK - No database-level FK constraints in Drizzle schema",
+      "orphan_prevention": "NOT ENFORCED - allows orphaned media files",
+      "cascade_delete": "NOT IMPLEMENTED",
+      "recommendation": "Add explicit FK constraints in Drizzle schema with onDelete: 'SET NULL'"
+    },
+    "content_references": {
+      "categories_to_products": "NOT ENFORCED",
+      "sections_to_media": "JSON arrays (not FK)",
+      "impact": "Database allows referencing non-existent IDs",
+      "data_integrity_risk": "HIGH - broken references possible"
+    }
+  },
+  "cache_health_monitoring": {
+    "endpoints": {
+      "/api/cache/health": {
+        "provides": "KV connection status, memory health, hit rate, uptime",
+        "implementation": "unifiedCacheManager.healthCheck()",
+        "version": "2.0.0-phase2a"
+      },
+      "/api/performance-monitoring": {
+        "provides": "Homepage batch response time, cache metrics, system health",
+        "target": "< 500ms response time",
+        "status_levels": "EXCELLENT (<500ms), GOOD (<1000ms), NEEDS_ATTENTION (>=1000ms)"
+      }
+    },
+    "metrics_tracked": {
+      "cache_hits": "Incremented on successful cache retrieval",
+      "cache_misses": "Incremented on cache miss (fetch from DB)",
+      "hit_rate": "Calculated as hits / (hits + misses)",
+      "response_times": "Buffered (last 100 requests) for average calculation",
+      "memory_usage": "Estimated from serialized cache entry sizes",
+      "evicted_entries": "Count of LRU evictions due to memory pressure"
+    },
+    "memory_pressure_detection": {
+      "max_cache_size_mb": 100,
+      "check_interval_ms": 60000,
+      "eviction_batch_size": 10,
+      "action": "Automatic eviction of oldest entries when limit exceeded"
+    }
+  },
+  "recommendations": {
+    "immediate_actions": [
+      {
+        "priority": "CRITICAL",
+        "action": "Add server-side caching to about-batch endpoint",
+        "implementation": "Wrap with UnifiedReplitCache like homepage-batch",
+        "benefit": "90% response time reduction, eliminates repeated DB queries"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Implement cache invalidation on admin mutations",
+        "implementation": "Call CacheOperations.invalidate* after successful POST/PATCH/DELETE",
+        "benefit": "Admin changes appear instantly instead of 10-60 minute delay"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Add caching to Technology endpoints",
+        "implementation": "Add HTTP cache headers or UnifiedReplitCache wrapper",
+        "benefit": "Reduce database load for technology page"
+      }
+    ],
+    "frontend_backend_alignment": [
+      {
+        "priority": "MEDIUM",
+        "action": "Align frontend staleTime with backend TTLs",
+        "changes": {
+          "homepage": "Increase staleTime from 30s to 10min (match backend)",
+          "about": "Keep 5min if adding backend cache",
+          "manufacturing": "Current 30min is good (matches backend)"
+        },
+        "benefit": "Consistent caching behavior, fewer unnecessary refetches"
+      },
+      {
+        "priority": "MEDIUM",
+        "action": "Standardize cache headers across all endpoints",
+        "recommendation": "Use 30min cache for stable content, 10min for dynamic",
+        "benefit": "Predictable caching behavior"
+      }
+    ],
+    "data_integrity": [
+      {
+        "priority": "MEDIUM",
+        "action": "Add foreign key constraints in Drizzle schema",
+        "implementation": "Add .references() with onDelete: 'SET NULL' for media FKs",
+        "benefit": "Prevent broken references, enable cascade deletes"
+      },
+      {
+        "priority": "LOW",
+        "action": "Implement cache versioning",
+        "implementation": "Add version key to cached data, invalidate on schema changes",
+        "benefit": "Prevent stale data after deployment"
+      }
+    ]
+  }
 }

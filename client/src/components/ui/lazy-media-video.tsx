@@ -129,7 +129,7 @@ export function LazyMediaVideo({
       <div
         ref={containerRef}
         className={cn(
-          "flex items-center justify-center text-gray-400",
+          "center-flex text-gray-400",
           placeholderClassName,
           className,
         )}
@@ -145,7 +145,7 @@ export function LazyMediaVideo({
       {/* Loading placeholder */}
       {!isLoaded && (
         <div
-          className={cn("absolute inset-0 flex items-center justify-center", placeholderClassName)}
+          className={cn("absolute inset-0 center-flex", placeholderClassName)}
         >
           {isLoading && (
             <div className="flex flex-col items-center gap-2">
@@ -190,7 +190,7 @@ export function LazyMediaVideo({
       {showPlayButton && isLoaded && (
         <button
           onClick={handlePlayClick}
-          className="absolute inset-0 flex items-center justify-center bg-black/30 transition-all duration-200 hover:bg-black/50"
+          className="absolute inset-0 center-flex bg-black/30 transition-all duration-200 hover:bg-black/50"
           aria-label="Play video"
         >
           <div className="rounded-full bg-white/90 p-4 transition-all duration-200 hover:bg-white">

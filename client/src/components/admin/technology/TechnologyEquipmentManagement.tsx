@@ -735,8 +735,8 @@ export function TechnologyEquipmentManagement({
                 {createEquipmentMutation.isPending || updateEquipmentMutation.isPending
                   ? "Saving..."
                   : editingEquipment
-                  ? "Update Equipment"
-                  : "Create Equipment"}
+                    ? "Update Equipment"
+                    : "Create Equipment"}
               </Button>
             </EnhancedDialogFooter>
           </form>

@@ -152,9 +152,6 @@ export const DraggableCardBody = ({
   };
 
   // Glassmorphism card styling with dark borders
-  const glassCardStyles = {
-    borderRadius: "20px",
-  };
 
   return (
     <motion.div
@@ -207,40 +204,34 @@ export const DraggableCardBody = ({
         rotateX,
         rotateY,
         opacity,
+        opacity,
         willChange: "transform",
-        ...glassCardStyles,
       }}
       animate={controls}
       whileHover={{ scale: 1.02 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "transform-3d group relative min-h-96 w-80 overflow-hidden p-6",
+        "transform-3d group relative min-h-96 w-80 overflow-hidden rounded-[20px] p-6",
         "bg-white/10 backdrop-blur-md dark:bg-white/5",
         "border border-gray-800/60 dark:border-gray-900/70",
-        "shadow-[0_0_15px_rgba(255,255,255,0.15)] shadow-[inset_0_2px_4px_rgba(255,255,255,0.15)]",
+        "shadow-glow-lg",
         className,
       )}
     >
       {/* Gradient overlay for depth */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"
-        style={{ borderRadius: "20px" }}
-      />
+      <div className="pointer-events-none absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
       {/* Inner glow */}
-      <div className="pointer-events-none absolute inset-[1px] rounded-[19px] bg-gradient-to-br from-white/5 to-transparent" />
+      <div className="card-border-overlay rounded-xl" />
 
       {/* Content */}
-      <div className="relative z-10 h-full">{children}</div>
+      <div className="relative z-elevated h-full">{children}</div>
 
       {/* Hover shimmer effect - disabled on mobile for performance */}
       {!isMobile && (
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          style={{ borderRadius: "20px" }}
-        >
-          <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 rounded-[20px] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <div className="shimmer-overlay z-elevated" />
         </div>
       )}
 
@@ -262,5 +253,5 @@ export const DraggableCardContainer = ({
   className?: string;
   children?: React.ReactNode;
 }) => {
-  return <div className={cn("[perspective:3000px]", className)}>{children}</div>;
+  return <div className={cn("perspective-deep", className)}>{children}</div>;
 };

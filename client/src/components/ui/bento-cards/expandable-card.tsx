@@ -67,7 +67,6 @@ const ExpandableCard = memo(function ExpandableCard({
             "border border-luxury-light",
             "shadow-sm-luxury-lg transition-all duration-300 hover:shadow-sm-luxury-xl",
             "flex flex-col",
-            "will-change-transform",
             "contain-layout",
           )}
           initial={{ opacity: 0, scale: 0.9 }}
@@ -91,7 +90,7 @@ const ExpandableCard = memo(function ExpandableCard({
               transition={{ duration: 0.6 }}
             >
               {isMediaLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+                <div className="absolute inset-0 center-flex bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
                 </div>
               )}
@@ -111,7 +110,7 @@ const ExpandableCard = memo(function ExpandableCard({
 
           {/* Fallback for missing/error media */}
           {(!mediaUrl || hasError) && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-gray-800 dark:to-gray-900">
+            <div className="absolute inset-0 center-flex bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
               <div className="text-center text-gray-500 dark:text-gray-400">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
                   <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,9 +135,9 @@ const ExpandableCard = memo(function ExpandableCard({
 
           {/* Content */}
           <div className="relative flex h-full flex-col justify-end p-8">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="rounded-2xl border border-glass bg-white/5 p-6">
               <motion.h3
-                className="mb-2 font-bold font-neue-stance text-[27px] text-white drop-shadow-lg md:text-4xl"
+                className="mb-2 font-bold font-neue-stance text-3xl text-white drop-shadow-lg md:text-4xl"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -146,7 +145,7 @@ const ExpandableCard = memo(function ExpandableCard({
                 {title}
               </motion.h3>
               <motion.p
-                className="text-[14px] text-white/80 drop-shadow-md"
+                className="text-sm text-white/80 drop-shadow-md"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
@@ -185,7 +184,7 @@ const ExpandableCard = memo(function ExpandableCard({
 
                 {/* Close Button */}
                 <motion.button
-                  className="absolute top-6 right-6 z-10 rounded-full bg-white/10 p-3 transition-colors hover:bg-white/20"
+                  className="absolute top-6 right-6 z-elevated rounded-full bg-white/10 p-3 transition-colors hover:bg-white/20"
                   onClick={() => setIsExpanded(false)}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -204,7 +203,7 @@ const ExpandableCard = memo(function ExpandableCard({
                   transition={{ delay: 0.2 }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl p-8 md:p-12">
+                  <div className="max-h-modal w-full max-w-4xl overflow-y-auto rounded-3xl p-8 md:p-12">
                     <motion.div
                       className="space-y-8"
                       initial={{ y: 20, opacity: 0 }}
@@ -244,7 +243,7 @@ const ExpandableCard = memo(function ExpandableCard({
                             initial={{ y: 30, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.2 + index * 0.1 }}
-                            className="rounded-2xl border border-white/10 bg-white/5 p-6 md:p-8"
+                            className="rounded-2xl border border-glass bg-white/5 p-6 md:p-8"
                           >
                             <h4 className="mb-4 font-semibold text-2xl text-white drop-shadow-md">
                               {section.title}

@@ -308,7 +308,7 @@ export const StaggeredMenu = ({
       <div
         className={`${
           className ? `${className} ` : ""
-        }staggered-menu-wrapper relative z-40 h-full w-full`}
+        }staggered-menu-wrapper relative z-sticky h-full w-full`}
         style={
           accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
@@ -361,15 +361,15 @@ export const StaggeredMenu = ({
             >
               <span
                 ref={hamburgerTopRef}
-                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
+                className="sm-hamburger-line h-0.5 w-full rounded-full bg-current"
               />
               <span
                 ref={hamburgerMiddleRef}
-                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
+                className="sm-hamburger-line h-0.5 w-full rounded-full bg-current"
               />
               <span
                 ref={hamburgerBottomRef}
-                className="sm-hamburger-line h-[2px] w-full rounded-full bg-current [will-change:transform]"
+                className="sm-hamburger-line h-0.5 w-full rounded-full bg-current"
               />
             </span>
           </button>
@@ -378,7 +378,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus:outline-none sm:w-[80vw] md:w-[380px]"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
@@ -399,7 +399,7 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-[2.5rem] text-foreground uppercase leading-[1.1] tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-[3rem]"
+                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-4xl text-foreground uppercase leading-tight tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-5xl"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -419,7 +419,7 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-[2.5rem] text-muted-foreground uppercase leading-[1.1] tracking-tight no-underline transition-all duration-200 ease-out sm:text-[3rem]">
+                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
                     <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                       No items
                     </span>

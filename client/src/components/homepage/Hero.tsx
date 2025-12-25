@@ -141,7 +141,7 @@ const Hero: React.FC = () => {
       className="relative h-screen w-full overflow-hidden bg-luxury-surface"
     >
       {/* 3D Background */}
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
+      <div className="pointer-events-none absolute inset-0 z-behind opacity-10">
         <Canvas
           frameloop="always" // Can be optimized based on intersection observer
           dpr={dpr}
@@ -153,8 +153,8 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="pointer-events-none absolute inset-0 z-elevated flex items-center justify-center">
-        <div className="perspective-[1000px] flex flex-col items-center justify-center px-4 text-center">
+      <div className="pointer-events-none absolute inset-0 z-elevated center-flex">
+        <div className="perspective-standard flex flex-col items-center justify-center px-4 text-center">
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line overflow-hidden py-1">
               <motion.h1
@@ -176,7 +176,7 @@ const Hero: React.FC = () => {
                   delay: 0.2 + i * 0.1,
                 }}
                 style={{ y: i % 2 === 0 ? y1 : y2, opacity }}
-                className="font-bold text-display-xl text-luxury-interactive leading-tight tracking-tighter mix-blend-multiply will-change-transform"
+                className="font-bold text-display-xl text-luxury-interactive leading-tight tracking-tighter mix-blend-multiply"
               >
                 {line}
               </motion.h1>
@@ -198,7 +198,7 @@ const Hero: React.FC = () => {
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 center-flex">
             <div className="h-2 w-2 rounded-full bg-black" />
           </div>
         </div>

@@ -41,13 +41,13 @@ export function GeometricDivider({
   return (
     <div
       ref={containerRef}
-      className={cn("relative flex items-center justify-center px-4 py-16", className)}
+      className={cn("relative center-flex px-4 py-16", className)}
       style={{ willChange: "transform", position: "relative" }}
     >
       {/* Main divider line */}
       <div className="relative h-px w-full max-w-2xl">
         {/* Animated luxury line */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 center-flex">
           <div
             className="h-px transition-all duration-300 ease-out"
             style={{

@@ -11,6 +11,7 @@ import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { SEOMeta } from "@/components/seo-meta";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Typography } from "@/components/ui/typography";
 
 export default function Accessories() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,7 +75,7 @@ export default function Accessories() {
       {accessory.description && (
         <div>
           <span className="font-medium text-gray-700">Details:</span>
-          <p className="mt-1 text-gray-600">{accessory.description}</p>
+          <Typography.P className="mt-1 text-gray-600">{accessory.description}</Typography.P>
         </div>
       )}
     </div>
@@ -94,12 +95,12 @@ export default function Accessories() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
             Accessories & Components
-          </h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+          </Typography.H1>
+          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
             Premium components and customization options for professional sportswear manufacturing
-          </p>
+          </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
@@ -138,12 +139,12 @@ export default function Accessories() {
                 className="py-16 text-center"
               >
                 <Package className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <h3 className="mb-2 font-semibold text-gray-900 text-xl">
+                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
                   {searchTerm ? "No accessories found" : "No accessories available"}
-                </h3>
-                <p className="text-gray-600">
+                </Typography.H3>
+                <Typography.P className="text-gray-600">
                   {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
-                </p>
+                </Typography.P>
               </motion.div>
             }
             renderItem={(accessory) => {

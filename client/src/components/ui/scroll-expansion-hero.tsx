@@ -291,10 +291,10 @@ const ScrollExpandMedia = ({
 
   return (
     <div ref={sectionRef} className="overflow-x-hidden transition-colors duration-700 ease-in-out">
-      <section className="relative flex min-h-[100dvh] flex-col items-center justify-start">
-        <div className="relative flex min-h-[100dvh] w-full flex-col items-center">
+      <section className="relative flex min-h-screen flex-col items-center justify-start">
+        <div className="relative flex min-h-screen w-full flex-col items-center">
           <motion.div
-            className="absolute inset-0 z-0 h-full"
+            className="absolute inset-0 z-base h-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
@@ -308,10 +308,10 @@ const ScrollExpandMedia = ({
             <div className="absolute inset-0 bg-black/10" />
           </motion.div>
 
-          <div className="container relative z-10 mx-auto flex flex-col items-center justify-start">
+          <div className="container relative z-elevated mx-auto flex flex-col items-center justify-start">
             <div className="relative flex h-[100dvh] w-full flex-col items-center justify-center">
               <div
-                className="absolute top-1/2 left-1/2 z-0 rounded-2xl transition-none"
+                className="absolute top-1/2 left-1/2 z-base rounded-2xl transition-none"
                 style={mediaStyle}
               >
                 {mediaType === "video" ? (
@@ -334,7 +334,7 @@ const ScrollExpandMedia = ({
                         allowFullScreen
                       />
                       <div
-                        className="absolute inset-0 z-10"
+                        className="absolute inset-0 z-elevated"
                         style={{ pointerEvents: "none" }}
                       ></div>
 
@@ -356,7 +356,7 @@ const ScrollExpandMedia = ({
                         disableRemotePlayback
                       />
                       <div
-                        className="absolute inset-0 z-10"
+                        className="absolute inset-0 z-elevated"
                         style={{ pointerEvents: "none" }}
                       ></div>
 
@@ -376,7 +376,7 @@ const ScrollExpandMedia = ({
                   </div>
                 )}
 
-                <div className="relative z-10 mt-4 flex flex-col items-center text-center">
+                <div className="relative z-elevated mt-4 flex flex-col items-center text-center">
                   {date && (
                     <p
                       className="text-2xl text-blue-200"
@@ -392,7 +392,7 @@ const ScrollExpandMedia = ({
               </div>
 
               <div
-                className={`relative z-10 flex w-full flex-col items-center justify-center gap-4 text-center transition-none ${
+                className={`relative z-elevated flex w-full flex-col items-center justify-center gap-4 text-center transition-none ${
                   textBlend ? "mix-blend-difference" : "mix-blend-normal"
                 }`}
               >

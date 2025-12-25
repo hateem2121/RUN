@@ -72,7 +72,7 @@ export function useFeaturedProducts() {
     id: p.id.toString(),
     name: p.name,
     category: p.category?.name || "Uncategorized",
-    price: p.minimumOrderQuantity ? `MOQ ${p.minimumOrderQuantity}` : "MOQ N/A",
+    price: p.minimumOrderQuantity ? `MOQ: ${p.minimumOrderQuantity} UNITS` : "MOQ: NEGOTIABLE",
     image:
       p.primaryImage?.url ||
       "https://images.unsplash.com/photo-1556906781-9a412961d289?auto=format&fit=crop&q=80&w=600",

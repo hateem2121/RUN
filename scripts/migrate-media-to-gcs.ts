@@ -21,99 +21,97 @@ const GCS_BUCKET = "run-media";
 const API_BASE = process.env.REPLIT_URL || "http://localhost:5001";
 
 interface MigrationStats {
-	total: number;
-	successful: number;
-	failed: number;
-	skipped: number;
-	errors: Array<{ id: number; filename: string; error: string }>;
+  total: number;
+  successful: number;
+  failed: number;
+  skipped: number;
+  errors: Array<{ id: number; filename: string; error: string }>;
 }
 
-async function migrateAsset(
-	asset: any,
-): Promise<{ success: boolean; error?: string }> {
-	try {
-		// Skip if already migrated
-		if (asset.bucketName === GCS_BUCKET) {
-			return { success: true };
-		}
+async function migrateAsset(asset: any): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Skip if already migrated
+    if (asset.bucketName === GCS_BUCKET) {
+      return { success: true };
+    }
 
-		// Try to download from Replit via API endpoint
-		const downloadUrl = `${API_BASE}/api/media/${asset.id}/content`;
+    // Try to download from Replit via API endpoint
+    const downloadUrl = `${API_BASE}/api/media/${asset.id}/content`;
 
-		const response = await fetch(downloadUrl, {
-			headers: {
-				"User-Agent": "Migration Script",
-			},
-			redirect: "follow",
-		});
+    const response = await fetch(downloadUrl, {
+      headers: {
+        "User-Agent": "Migration Script",
+      },
+      redirect: "follow",
+    });
 
-		if (!response.ok) {
-			throw new Error(`Download failed: HTTP ${response.status}`);
-		}
+    if (!response.ok) {
+      throw new Error(`Download failed: HTTP ${response.status}`);
+    }
 
-		const buffer = Buffer.from(await response.arrayBuffer());
-		await appStorageService.uploadAsset(asset.storagePath, buffer, {
-			contentType: asset.mimeType,
-		});
-		await db
-			.update(mediaAssets)
-			.set({ bucketName: GCS_BUCKET })
-			.where(eq(mediaAssets.id, asset.id));
+    const buffer = Buffer.from(await response.arrayBuffer());
+    await appStorageService.uploadAsset(asset.storagePath, buffer, {
+      contentType: asset.mimeType,
+    });
+    await db
+      .update(mediaAssets)
+      .set({ bucketName: GCS_BUCKET })
+      .where(eq(mediaAssets.id, asset.id));
 
-		return { success: true };
-	} catch (error) {
-		const errorMsg = error instanceof Error ? error.message : String(error);
-		return { success: false, error: errorMsg };
-	}
+    return { success: true };
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    return { success: false, error: errorMsg };
+  }
 }
 
 async function main() {
-	const stats: MigrationStats = {
-		total: 0,
-		successful: 0,
-		failed: 0,
-		skipped: 0,
-		errors: [],
-	};
+  const stats: MigrationStats = {
+    total: 0,
+    successful: 0,
+    failed: 0,
+    skipped: 0,
+    errors: [],
+  };
 
-	try {
-		const assets = await db.select().from(mediaAssets).orderBy(mediaAssets.id);
+  try {
+    const assets = await db.select().from(mediaAssets).orderBy(mediaAssets.id);
 
-		stats.total = assets.length;
+    stats.total = assets.length;
 
-		// Migrate each asset
-		for (const asset of assets) {
-			const result = await migrateAsset(asset);
+    // Migrate each asset
+    for (const asset of assets) {
+      const result = await migrateAsset(asset);
 
-			if (result.success) {
-				if (asset.bucketName === GCS_BUCKET) {
-					stats.skipped++;
-				} else {
-					stats.successful++;
-				}
-			} else {
-				stats.failed++;
-				stats.errors.push({
-					id: asset.id,
-					filename: asset.filename,
-					error: result.error || "Unknown error",
-				});
-			}
+      if (result.success) {
+        if (asset.bucketName === GCS_BUCKET) {
+          stats.skipped++;
+        } else {
+          stats.successful++;
+        }
+      } else {
+        stats.failed++;
+        stats.errors.push({
+          id: asset.id,
+          filename: asset.filename,
+          error: result.error || "Unknown error",
+        });
+      }
 
-			// Progress update
-			const completed = stats.successful + stats.failed + stats.skipped;
-		}
+      // Progress update
+      const completed = stats.successful + stats.failed + stats.skipped;
+    }
 
-		if (stats.errors.length > 0) {
-			stats.errors.forEach((err) => {});
-		}
+    if (stats.errors.length > 0) {
+      stats.errors.forEach((err) => {});
+    }
 
-		if (stats.failed === 0) {
-		} else {
-		}
-	} catch (error) {
-		process.exit(1);
-	}
+    if (stats.failed === 0) {
+    } else {
+    }
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 // Run migration

@@ -89,7 +89,7 @@ export function MediaPreview({
               preload="metadata"
               onError={() => setHasError(true)}
             />
-            <div className="absolute inset-0 flex items-center justify-center rounded bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
+            <div className="absolute inset-0 center-flex rounded bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
               <Video className="h-6 w-6 text-white drop-shadow-lg" />
             </div>
             {showTypeIcon && (
@@ -107,7 +107,7 @@ export function MediaPreview({
             <div className="text-center">
               <Box className="mx-auto mb-1 h-6 w-6 text-orange-600" />
               <p
-                className="max-w-[60px] truncate font-medium text-orange-700 text-xs"
+                className="max-w-16 truncate font-medium text-orange-700 text-xs"
                 title={asset.originalName || ""}
               >
                 {/* Handle potential null for originalName */}
@@ -123,9 +123,9 @@ export function MediaPreview({
         return (
           <div className="relative h-full overflow-hidden rounded">
             {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 center-flex">
                 <Skeleton className="h-full w-full animate-pulse" />
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 center-flex">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-300 border-t-blue-600" />
                 </div>
               </div>

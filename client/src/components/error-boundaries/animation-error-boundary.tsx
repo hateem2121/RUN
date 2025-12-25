@@ -219,7 +219,7 @@ export class AnimationErrorBoundary extends Component<
 
     return (
       <div className="relative rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
-        <div className="mb-4 flex items-center justify-center">
+        <div className="mb-4 center-flex">
           {isRecovering ? (
             <Zap className="mr-2 h-6 w-6 animate-pulse text-blue-500" />
           ) : (

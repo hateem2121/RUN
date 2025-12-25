@@ -227,7 +227,7 @@ export function InteractiveImageGallery({
             ref={mainImageRef}
             image={currentImage!}
             className={cn(
-              "h-auto max-h-[85vh] w-auto max-w-full object-contain transition-all duration-300",
+              "h-auto max-h-viewport-85 w-auto max-w-full object-contain transition-all duration-300",
               imageLoaded ? "opacity-100" : "opacity-0",
               isZoomed && "cursor-move",
             )}
@@ -240,7 +240,7 @@ export function InteractiveImageGallery({
 
           {/* Loading State */}
           {!imageLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 center-flex">
               <div className="h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2 dark:border-blue-400" />
             </div>
           )}
@@ -353,7 +353,7 @@ export function InteractiveImageGallery({
 
       {/* Fullscreen Modal */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-modal flex items-center justify-center bg-black/95">
+        <div className="fixed inset-0 z-modal center-flex bg-black/95">
           <div className="relative max-h-screen max-w-screen-xl p-4">
             <OptimizedGalleryImage
               image={currentImage!}

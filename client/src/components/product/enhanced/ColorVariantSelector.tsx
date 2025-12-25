@@ -149,14 +149,14 @@ export function ColorVariantSelector({
           >
             {/* Selected indicator */}
             {selectedVariant === variant.id && (
-              <div className="absolute inset-1 flex items-center justify-center rounded-full bg-white/20 dark:bg-black/20">
+              <div className="absolute inset-1 center-flex rounded-full bg-white/20 dark:bg-black/20">
                 <div className="h-2 w-2 rounded-full bg-white shadow-sm-xs dark:bg-gray-900" />
               </div>
             )}
 
             {/* Unavailable indicator */}
             {!variant.available && (
-              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-gray-200/80 dark:bg-gray-800/80">
+              <div className="absolute inset-0 center-flex rounded-full bg-gray-200/80 dark:bg-gray-800/80">
                 <div className="h-0.5 w-6 rotate-45 bg-gray-500 dark:bg-gray-400" />
               </div>
             )}

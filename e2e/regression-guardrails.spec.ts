@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Critical Route Regression Guardrails", () => {
   test("Homepage loads without critical errors", async ({ page }) => {

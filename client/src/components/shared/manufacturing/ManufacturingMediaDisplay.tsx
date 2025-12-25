@@ -73,7 +73,7 @@ export function ManufacturingMediaDisplay({
       <div
         className={`
         ${aspectClasses[aspectRatio]} 
-        ${className}bg-gray-100 flex items-center justify-center rounded-lg border-2 border-gray-300 border-dashed`}
+        ${className}bg-gray-100 center-flex rounded-lg border-2 border-gray-300 border-dashed`}
       >
         <div className="text-center text-gray-500">
           <ImageOff className="mx-auto mb-2 h-8 w-8" />
@@ -112,7 +112,7 @@ export function ManufacturingMediaDisplay({
             muted
             playsInline
           />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 center-flex">
             <div className="rounded-full bg-black/50 p-3">
               <Play className="h-6 w-6 text-white" />
             </div>
@@ -140,7 +140,7 @@ export function ManufacturingMediaDisplay({
       {hasError && (
         <div
           className={`
-          ${aspectClasses[aspectRatio]} flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100`}
+          ${aspectClasses[aspectRatio]} center-flex rounded-lg border border-gray-300 bg-gray-100`}
         >
           <div className="text-center text-gray-500">
             <ImageOff className="mx-auto mb-1 h-6 w-6" />

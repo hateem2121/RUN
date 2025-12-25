@@ -16,16 +16,16 @@
  * normalizeSlug("Sports Gear") // "sports-gear"
  */
 export function normalizeSlug(slug: string): string {
-	if (!slug) return "";
+  if (!slug) return "";
 
-	return slug
-		.toLowerCase()
-		.trim()
-		.replace(/\s+/g, "-") // Replace spaces with hyphens
-		.replace(/_/g, "-") // Replace underscores with hyphens
-		.replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
-		.replace(/-+/g, "-") // Replace multiple hyphens with single
-		.replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
+  return slug
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/_/g, "-") // Replace underscores with hyphens
+    .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single
+    .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
 }
 
 /**
@@ -40,9 +40,9 @@ export function normalizeSlug(slug: string): string {
  * generateSlug("T-Shirt (Premium)") // "t-shirt-premium"
  */
 export function generateSlug(name: string): string {
-	if (!name) return "";
+  if (!name) return "";
 
-	return normalizeSlug(name);
+  return normalizeSlug(name);
 }
 
 /**
@@ -58,9 +58,9 @@ export function generateSlug(name: string): string {
  * isValidSlug("outer_wear") // false (underscore)
  */
 export function isValidSlug(slug: string): boolean {
-	if (!slug) return false;
+  if (!slug) return false;
 
-	// Must be lowercase, alphanumeric with hyphens only
-	const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-	return slugPattern.test(slug);
+  // Must be lowercase, alphanumeric with hyphens only
+  const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  return slugPattern.test(slug);
 }

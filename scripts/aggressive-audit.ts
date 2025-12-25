@@ -2,38 +2,36 @@ import { db } from "../server/db.js";
 import { fabrics } from "../shared/schema.js";
 
 async function aggressiveAudit() {
-	try {
-		const allFabrics = await db.select().from(fabrics);
+  try {
+    const allFabrics = await db.select().from(fabrics);
 
-		allFabrics.forEach((fabric) => {
-			const properties = fabric.properties as any;
-			if (!properties || !properties.compositions) return;
+    allFabrics.forEach((fabric) => {
+      const properties = fabric.properties as any;
+      if (!properties || !properties.compositions) return;
 
-			properties.compositions.forEach((comp: any) => {
-				const fibers = comp.fibers;
+      properties.compositions.forEach((comp: any) => {
+        const fibers = comp.fibers;
 
-				// Print ANY multi-fiber composition to see the split
-				if (fibers.length > 1) {
-					const fiberStrings = fibers
-						.map((f: any) => `${f.name}: ${f.percentage}`)
-						.join(", ");
-				}
+        // Print ANY multi-fiber composition to see the split
+        if (fibers.length > 1) {
+          const fiberStrings = fibers.map((f: any) => `${f.name}: ${f.percentage}`).join(", ");
+        }
 
-				fibers.forEach((f: any) => {
-					const p = parseFloat(f.percentage);
+        fibers.forEach((f: any) => {
+          const p = parseFloat(f.percentage);
 
-					if (isNaN(p)) {
-					}
+          if (isNaN(p)) {
+          }
 
-					if (p === 0) {
-					}
-				});
-			});
-		});
-		process.exit(0);
-	} catch (error) {
-		process.exit(1);
-	}
+          if (p === 0) {
+          }
+        });
+      });
+    });
+    process.exit(0);
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 aggressiveAudit();

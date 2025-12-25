@@ -28,6 +28,7 @@ import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 
 export default function CategoryProductsPage() {
   const { slug } = useParams();
@@ -573,8 +574,10 @@ export default function CategoryProductsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="mb-2 font-bold text-2xl">Category Not Found</h2>
-          <p className="mb-4 text-gray-600">The category you're looking for doesn't exist.</p>
+          <Typography.H2 className="mb-2 font-bold text-2xl">Category Not Found</Typography.H2>
+          <Typography.P className="mb-4 text-gray-600">
+            The category you're looking for doesn't exist.
+          </Typography.P>
           <Button onClick={() => navigate("/products")}>Browse All Products</Button>
         </div>
       </div>
@@ -591,11 +594,15 @@ export default function CategoryProductsPage() {
             fallbackUrl={category.bannerUrl}
             alt={category.name}
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+          <div className="absolute inset-0 center-flex bg-black/40">
             <div className="text-center text-white">
-              <h1 className="mb-2 font-bold text-4xl md:text-5xl">{category.name}</h1>
+              <Typography.H1 className="mb-2 font-bold text-4xl md:text-5xl">
+                {category.name}
+              </Typography.H1>
               {category.description && (
-                <p className="mx-auto max-w-2xl text-lg">{category.description}</p>
+                <Typography.P className="mx-auto max-w-2xl text-lg">
+                  {category.description}
+                </Typography.P>
               )}
             </div>
           </div>
@@ -623,7 +630,7 @@ export default function CategoryProductsPage() {
       {subcategories.length > 0 && (
         <div className="border-b bg-white">
           <div className="container mx-auto px-4 py-6">
-            <h2 className="mb-4 font-semibold text-lg">Subcategories</h2>
+            <Typography.H2 className="mb-4 font-semibold text-lg">Subcategories</Typography.H2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {subcategories.map((subcat) => (
                 <Link href={`/categories/${subcat.slug}`} key={subcat.id}>
@@ -640,10 +647,10 @@ export default function CategoryProductsPage() {
                           />
                         )}
                         <div>
-                          <h3 className="font-medium">{subcat.name}</h3>
-                          <p className="text-gray-600 text-sm">
+                          <Typography.H3 className="font-medium">{subcat.name}</Typography.H3>
+                          <Typography.P className="text-gray-600 text-sm">
                             {products.filter((p) => p.categoryId === subcat.id).length} products
-                          </p>
+                          </Typography.P>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600" />
@@ -660,10 +667,10 @@ export default function CategoryProductsPage() {
       <div className="border-b bg-white shadow-sm-xs">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-            <h1 className="font-bold text-2xl">
+            <Typography.H1 className="font-bold text-2xl">
               {!category.bannerUrl && category.name}
               {category.bannerUrl && "Products"}
-            </h1>
+            </Typography.H1>
 
             <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
               {/* Search */}
@@ -673,7 +680,7 @@ export default function CategoryProductsPage() {
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 sm:w-[300px]"
+                  className="w-full pl-10 sm:w-72"
                 />
               </div>
 
@@ -735,7 +742,9 @@ export default function CategoryProductsPage() {
           </div>
         ) : sortedProducts.length === 0 ? (
           <div className="py-12 text-center">
-            <p className="text-gray-500">No products found in this category</p>
+            <Typography.P className="text-gray-500">
+              No products found in this category
+            </Typography.P>
           </div>
         ) : (
           <div className={cn("grid", gridClasses[viewMode])}>
@@ -776,11 +785,13 @@ export default function CategoryProductsPage() {
 
                       {viewMode !== "small" && (
                         <>
-                          <p className="mt-1 text-gray-600 text-sm">SKU: {product.sku}</p>
+                          <Typography.P className="mt-1 text-gray-600 text-sm">
+                            SKU: {product.sku}
+                          </Typography.P>
                           {product.shortDescription && viewMode === "large" && (
-                            <p className="mt-2 line-clamp-2 text-gray-600 text-sm">
+                            <Typography.P className="mt-2 line-clamp-2 text-gray-600 text-sm">
                               {product.shortDescription}
-                            </p>
+                            </Typography.P>
                           )}
                         </>
                       )}

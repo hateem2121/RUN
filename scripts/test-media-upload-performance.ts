@@ -14,119 +14,117 @@ const CONCURRENT_UPLOADS = 3;
 
 // Create a 200MB buffer filled with random data
 function createLargeBuffer(size: number): Buffer {
-	const buffer = Buffer.alloc(size);
-	// Fill with some pattern to avoid all zeros
-	for (let i = 0; i < size; i += 1024) {
-		buffer.writeUInt32BE(Math.random() * 0xffffffff, i);
-	}
-	return buffer;
+  const buffer = Buffer.alloc(size);
+  // Fill with some pattern to avoid all zeros
+  for (let i = 0; i < size; i += 1024) {
+    buffer.writeUInt32BE(Math.random() * 0xffffffff, i);
+  }
+  return buffer;
 }
 
 async function uploadFile(
-	fileNumber: number,
+  fileNumber: number,
 ): Promise<{ success: boolean; time: number; error?: string }> {
-	const startTime = performance.now();
+  const startTime = performance.now();
 
-	try {
-		const form = new FormData();
-		const buffer = createLargeBuffer(FILE_SIZE);
-		const stream = Readable.from(buffer);
+  try {
+    const form = new FormData();
+    const buffer = createLargeBuffer(FILE_SIZE);
+    const stream = Readable.from(buffer);
 
-		form.append("file", stream, {
-			filename: `test-file-${fileNumber}-${Date.now()}.bin`,
-			contentType: "application/octet-stream",
-		});
+    form.append("file", stream, {
+      filename: `test-file-${fileNumber}-${Date.now()}.bin`,
+      contentType: "application/octet-stream",
+    });
 
-		form.append("tags", JSON.stringify(["performance-test"]));
-		form.append(
-			"metadata",
-			JSON.stringify({
-				testNumber: fileNumber,
-				fileSize: FILE_SIZE,
-				timestamp: new Date().toISOString(),
-			}),
-		);
+    form.append("tags", JSON.stringify(["performance-test"]));
+    form.append(
+      "metadata",
+      JSON.stringify({
+        testNumber: fileNumber,
+        fileSize: FILE_SIZE,
+        timestamp: new Date().toISOString(),
+      }),
+    );
 
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
-		const response = await fetch(API_URL, {
-			method: "POST",
-			body: form,
-			signal: controller.signal,
-			headers: form.getHeaders(),
-		});
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: form,
+      signal: controller.signal,
+      headers: form.getHeaders(),
+    });
 
-		clearTimeout(timeoutId);
+    clearTimeout(timeoutId);
 
-		const endTime = performance.now();
-		const elapsedTime = endTime - startTime;
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
 
-		if (!response.ok) {
-			const error = await response.text();
-			throw new Error(`Upload failed: ${response.status} - ${error}`);
-		}
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Upload failed: ${response.status} - ${error}`);
+    }
 
-		const result = await response.json();
+    const result = await response.json();
 
-		return {
-			success: true,
-			time: elapsedTime,
-		};
-	} catch (error: any) {
-		const endTime = performance.now();
-		const elapsedTime = endTime - startTime;
+    return {
+      success: true,
+      time: elapsedTime,
+    };
+  } catch (error: any) {
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
 
-		if (error.name === "AbortError") {
-			return {
-				success: false,
-				time: elapsedTime,
-				error: "TIMEOUT - Exceeded 5 second limit",
-			};
-		}
-		return {
-			success: false,
-			time: elapsedTime,
-			error: error.message,
-		};
-	}
+    if (error.name === "AbortError") {
+      return {
+        success: false,
+        time: elapsedTime,
+        error: "TIMEOUT - Exceeded 5 second limit",
+      };
+    }
+    return {
+      success: false,
+      time: elapsedTime,
+      error: error.message,
+    };
+  }
 }
 
 async function runPerformanceTest() {
-	const startTime = performance.now();
+  const startTime = performance.now();
 
-	// Start all uploads concurrently
-	const uploadPromises = Array.from({ length: CONCURRENT_UPLOADS }, (_, i) =>
-		uploadFile(i + 1),
-	);
+  // Start all uploads concurrently
+  const uploadPromises = Array.from({ length: CONCURRENT_UPLOADS }, (_, i) => uploadFile(i + 1));
 
-	const results = await Promise.all(uploadPromises);
+  const results = await Promise.all(uploadPromises);
 
-	const endTime = performance.now();
-	const totalTime = endTime - startTime;
+  const endTime = performance.now();
+  const totalTime = endTime - startTime;
 
-	let passed = 0;
-	let failed = 0;
+  let passed = 0;
+  let failed = 0;
 
-	results.forEach((result, index) => {
-		if (!result.success) {
-		}
+  results.forEach((result, index) => {
+    if (!result.success) {
+    }
 
-		if (result.success && result.time < TIMEOUT) {
-			passed++;
-		} else {
-			failed++;
-		}
-	});
+    if (result.success && result.time < TIMEOUT) {
+      passed++;
+    } else {
+      failed++;
+    }
+  });
 
-	if (failed > 0) {
-		process.exit(1);
-	} else {
-		process.exit(0);
-	}
+  if (failed > 0) {
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
 }
 
 // Run the test
 runPerformanceTest().catch((error) => {
-	process.exit(1);
+  process.exit(1);
 });

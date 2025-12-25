@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getPropertiesArray } from "@/lib/fiber-utils";
+import { Typography } from "@/components/ui/typography";
 
 export default function Fibers() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -100,12 +101,12 @@ export default function Fibers() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 text-center"
           >
-            <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+            <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
               Fiber Materials Library
-            </h1>
-            <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+            </Typography.H1>
+            <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
               Understanding the building blocks of high-performance sportswear fabrics
-            </p>
+            </Typography.P>
 
             <div className="mt-8 flex justify-center gap-6">
               <div className="text-center">
@@ -166,13 +167,13 @@ export default function Fibers() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                     >
-                      <h2 className="mb-4 flex items-center gap-2 font-semibold text-gray-800 text-xl">
+                      <Typography.H2 className="mb-4 flex items-center gap-2 font-semibold text-gray-800 text-xl">
                         {(() => {
                           const Icon = getTypeIcon(type);
                           return <Icon className="h-5 w-5" />;
                         })()}
                         {type} Fibers
-                      </h2>
+                      </Typography.H2>
                       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {typeFibers.map((fiber) => {
                           const isExpanded = expandedFibers.has(fiber.id);
@@ -257,17 +258,17 @@ export default function Fibers() {
                                       >
                                         <div className="space-y-3 border-t pt-3">
                                           {fiber.description && (
-                                            <p className="text-gray-700 text-sm">
+                                            <Typography.P className="text-gray-700 text-sm">
                                               {fiber.description}
-                                            </p>
+                                            </Typography.P>
                                           )}
 
                                           {fiber.properties &&
                                             getPropertiesArray(fiber.properties).length > 3 && (
                                               <div className="space-y-1">
-                                                <p className="font-semibold text-gray-700 text-xs">
+                                                <Typography.P className="font-semibold text-gray-700 text-xs">
                                                   All Properties:
-                                                </p>
+                                                </Typography.P>
                                                 <div className="flex flex-wrap gap-1">
                                                   {getPropertiesArray(fiber.properties).map(
                                                     (prop, idx) => (
@@ -286,14 +287,14 @@ export default function Fibers() {
 
                                           {fiber.sustainabilityScore && (
                                             <div className="space-y-2">
-                                              <p className="font-semibold text-gray-700 text-xs">
+                                              <Typography.P className="font-semibold text-gray-700 text-xs">
                                                 Sustainability Assessment:
-                                              </p>
+                                              </Typography.P>
                                               {getSustainabilityBadge(fiber.sustainabilityScore)}
                                               {fiber.environmentalImpact && (
-                                                <p className="mt-1 text-gray-600 text-xs">
+                                                <Typography.P className="mt-1 text-gray-600 text-xs">
                                                   {fiber.environmentalImpact}
-                                                </p>
+                                                </Typography.P>
                                               )}
                                             </div>
                                           )}
@@ -317,12 +318,14 @@ export default function Fibers() {
                   className="py-16 text-center"
                 >
                   <Sparkles className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                  <h3 className="mb-2 font-semibold text-gray-900 text-xl">No fibers found</h3>
-                  <p className="text-gray-600">
+                  <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                    No fibers found
+                  </Typography.H3>
+                  <Typography.P className="text-gray-600">
                     {searchTerm
                       ? "Try adjusting your search terms"
                       : "No fibers have been added yet"}
-                  </p>
+                  </Typography.P>
                 </motion.div>
               )}
             </AnimatePresence>

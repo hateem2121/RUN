@@ -5,12 +5,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { GlassCard } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { type Country, countries } from "@/data/countries";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -157,29 +159,29 @@ export default function Contact() {
       <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
           {/* Left Column: Contact Form */}
-          <div className="glass-card col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
+          <GlassCard className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
             {/* Gradient overlay */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
 
             {/* Inner glow */}
-            <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
+            <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
             {/* Hover shimmer - disabled on mobile for performance */}
             {!isMobile && (
               <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="shimmer-overlay" />
               </div>
             )}
 
             <div className="relative z-default">
               {!showSuccess ? (
                 <div>
-                  <h1
+                  <Typography.H1
                     className="mb-8 font-bold text-3xl text-gray-800 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
                     style={{ fontFamily: "'Anton', sans-serif" }}
                   >
                     {contactConfig?.heroTitle || "DROP US A MESSAGE"}
-                  </h1>
+                  </Typography.H1>
 
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -202,9 +204,9 @@ export default function Contact() {
                           className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.firstName && (
-                          <p className="mt-2 text-red-500 text-sm">
+                          <Typography.P className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.firstName.message}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
                       <div>
@@ -221,9 +223,9 @@ export default function Contact() {
                           className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.lastName && (
-                          <p className="mt-2 text-red-500 text-sm">
+                          <Typography.P className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.lastName.message}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
                     </div>
@@ -277,9 +279,9 @@ export default function Contact() {
                           className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                         />
                         {form.formState.errors.email && (
-                          <p className="mt-2 text-red-500 text-sm">
+                          <Typography.P className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.email.message}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
                       <div>
@@ -344,9 +346,9 @@ export default function Contact() {
                           )}
                         </div>
                         {form.formState.errors.country && (
-                          <p className="mt-2 text-red-500 text-sm">
+                          <Typography.P className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.country.message}
-                          </p>
+                          </Typography.P>
                         )}
                       </div>
                     </div>
@@ -439,9 +441,9 @@ export default function Contact() {
                         className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
                       />
                       {form.formState.errors.message && (
-                        <p className="mt-2 text-red-500 text-sm">
+                        <Typography.P className="mt-2 text-red-500 text-sm">
                           {form.formState.errors.message.message}
-                        </p>
+                        </Typography.P>
                       )}
                     </div>
 
@@ -492,10 +494,10 @@ export default function Contact() {
                           ? "Sending..."
                           : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                       </Button>
-                      <p className="mt-4 text-center text-gray-500 text-xs">
+                      <Typography.P className="mt-4 text-center text-gray-500 text-xs">
                         {contactConfig?.formPrivacyText ||
                           "We value your privacy and will never share your information."}
-                      </p>
+                      </Typography.P>
                     </div>
                   </form>
                 </div>
@@ -504,13 +506,13 @@ export default function Contact() {
                   <div className="mb-6 inline-block rounded-full bg-green-100 p-4">
                     <CheckCircle2 className="h-12 w-12 text-green-600" />
                   </div>
-                  <h2 className="mb-3 font-bold text-3xl text-gray-800">
+                  <Typography.H2 className="mb-3 font-bold text-3xl text-gray-800">
                     {contactConfig?.successHeading || "Thank you!"}
-                  </h2>
-                  <p className="mb-8 text-gray-600">
+                  </Typography.H2>
+                  <Typography.P className="mb-8 text-gray-600">
                     {contactConfig?.successMessage ||
                       "We've received your message and will be in touch shortly."}
-                  </p>
+                  </Typography.P>
                   <Button
                     onClick={() => setShowSuccess(false)}
                     className="focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
@@ -521,12 +523,12 @@ export default function Contact() {
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
 
           {/* Right Column: Info Boxes */}
           <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
             {/* Location Box */}
-            <div className="glass-card p-6 lg:p-8">
+            <GlassCard className="p-6 lg:p-8">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
               <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
@@ -534,22 +536,24 @@ export default function Contact() {
                   <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
-              <div className="relative z-10">
+              <div className="relative z-elevated">
                 <MapPin className="mb-4 h-6 w-6 text-gray-800" />
-                <h2 className="mb-4 font-bold text-xl tracking-tight">LOCATION</h2>
-                <p className="mb-6 text-gray-600">
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                  LOCATION
+                </Typography.H2>
+                <Typography.P className="mb-6 text-gray-600">
                   {contactConfig?.locationLine1 || "123 Main Street,"}
                   <br />
                   {contactConfig?.locationLine2 || "Anytown, USA 12345"}
-                </p>
+                </Typography.P>
                 <Button variant="outline" data-testid="button-get-directions" className="w-full">
                   {contactConfig?.locationButtonText || "GET DIRECTIONS"}
                 </Button>
               </div>
-            </div>
+            </GlassCard>
 
             {/* Contact Box */}
-            <div className="glass-card p-6 lg:p-8">
+            <GlassCard className="p-6 lg:p-8">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
               <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
@@ -557,9 +561,11 @@ export default function Contact() {
                   <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
-              <div className="relative z-10">
+              <div className="relative z-elevated">
                 <Mail className="mb-4 h-6 w-6 text-gray-800" />
-                <h2 className="mb-4 font-bold text-xl tracking-tight">CONTACT</h2>
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                  CONTACT
+                </Typography.H2>
                 <ul className="space-y-2 text-gray-600">
                   <li>
                     <a
@@ -581,10 +587,10 @@ export default function Contact() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </GlassCard>
 
             {/* Trading Hours Box */}
-            <div className="glass-card p-6 lg:p-8">
+            <GlassCard className="p-6 lg:p-8">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
               <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
@@ -592,35 +598,37 @@ export default function Contact() {
                   <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
-              <div className="relative z-10">
+              <div className="relative z-elevated">
                 <Clock className="mb-4 h-6 w-6 text-gray-800" />
-                <h2 className="mb-4 font-bold text-xl tracking-tight">TRADING HOURS</h2>
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                  TRADING HOURS
+                </Typography.H2>
                 <div className="space-y-1 text-gray-600">
                   {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
                     contactConfig.tradingHours.map((hours, index) => (
-                      <p key={index}>
+                      <Typography.P key={index}>
                         <strong>{hours.label}:</strong> <span>{hours.value}</span>
-                      </p>
+                      </Typography.P>
                     ))
                   ) : (
                     <>
-                      <p>
+                      <Typography.P>
                         <strong>Monday - Friday:</strong> <span>9:00 AM to 5:00 PM</span>
-                      </p>
-                      <p>
+                      </Typography.P>
+                      <Typography.P>
                         <strong>Saturdays:</strong> <span>10:00 AM to 2:00 PM</span>
-                      </p>
-                      <p>
+                      </Typography.P>
+                      <Typography.P>
                         <strong>Sundays:</strong> <span className="font-semibold">Closed</span>
-                      </p>
+                      </Typography.P>
                     </>
                   )}
                 </div>
               </div>
-            </div>
+            </GlassCard>
 
             {/* Social Links Box */}
-            <div className="glass-card p-6 lg:p-8">
+            <GlassCard className="p-6 lg:p-8">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
               <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
               {!isMobile && (
@@ -628,9 +636,11 @@ export default function Contact() {
                   <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               )}
-              <div className="relative z-10">
+              <div className="relative z-elevated">
                 <Share2 className="mb-4 h-6 w-6 text-gray-800" />
-                <h2 className="mb-4 font-bold text-xl tracking-tight">FOLLOW US</h2>
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                  FOLLOW US
+                </Typography.H2>
                 <ul className="space-y-2 text-gray-600">
                   {contactConfig?.socialLinks &&
                   Object.keys(contactConfig.socialLinks).length > 0 ? (
@@ -673,7 +683,7 @@ export default function Contact() {
                   )}
                 </ul>
               </div>
-            </div>
+            </GlassCard>
           </div>
         </div>
       </div>

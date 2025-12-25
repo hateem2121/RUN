@@ -3,91 +3,86 @@ import { db } from "../server/db.js";
 import { fabrics } from "../shared/schema.js";
 
 async function analyzeMissingContent() {
-	try {
-		// Fetch the last 8 fabrics
-		const recentFabrics = await db
-			.select()
-			.from(fabrics)
-			.orderBy(desc(fabrics.id))
-			.limit(8);
-		const orderedFabrics = recentFabrics.reverse();
+  try {
+    // Fetch the last 8 fabrics
+    const recentFabrics = await db.select().from(fabrics).orderBy(desc(fabrics.id)).limit(8);
+    const orderedFabrics = recentFabrics.reverse();
 
-		const fieldsToCheck = [
-			// Classification
-			"weave",
-			"finish",
-			"keyApplications",
-			"weaveTypes",
-			"finishTreatments",
+    const fieldsToCheck = [
+      // Classification
+      "weave",
+      "finish",
+      "keyApplications",
+      "weaveTypes",
+      "finishTreatments",
 
-			// Performance
-			"stretchDirection",
-			"breathability",
-			"enhancedMoistureManagement",
-			"wickingRate",
-			"dryingTime",
-			"performanceFeatures",
-			"airPermeability",
-			"waterColumn",
+      // Performance
+      "stretchDirection",
+      "breathability",
+      "enhancedMoistureManagement",
+      "wickingRate",
+      "dryingTime",
+      "performanceFeatures",
+      "airPermeability",
+      "waterColumn",
 
-			// Durability
-			"yarnCountConstruction",
-			"colorfastness",
-			"tensileStrength",
-			"tearStrength",
-			"abrasionResistance",
-			"pillingGrade",
-			"shrinkageTolerancePercentage",
+      // Durability
+      "yarnCountConstruction",
+      "colorfastness",
+      "tensileStrength",
+      "tearStrength",
+      "abrasionResistance",
+      "pillingGrade",
+      "shrinkageTolerancePercentage",
 
-			// Sustainability
-			"certificationIds",
-			"certificationTags",
-			"endOfLifeOptions",
-			"recyclabilityNotes",
-			"useCases",
+      // Sustainability
+      "certificationIds",
+      "certificationTags",
+      "endOfLifeOptions",
+      "recyclabilityNotes",
+      "useCases",
 
-			// Media
-			"visualSwatchId", // This is on the root object, not properties
-		];
+      // Media
+      "visualSwatchId", // This is on the root object, not properties
+    ];
 
-		const missingReport: Record<string, string[]> = {};
+    const missingReport: Record<string, string[]> = {};
 
-		orderedFabrics.forEach((f) => {
-			const props = (f.properties as any) || {};
-			const missing: string[] = [];
+    orderedFabrics.forEach((f) => {
+      const props = (f.properties as any) || {};
+      const missing: string[] = [];
 
-			// Check root fields
-			if (!f.visualSwatchId)
-				missing.push("visualSwatchId (Visual Swatch Image)");
+      // Check root fields
+      if (!f.visualSwatchId) missing.push("visualSwatchId (Visual Swatch Image)");
 
-			// Check property fields
-			fieldsToCheck.forEach((field) => {
-				if (field === "visualSwatchId") return; // Already checked
+      // Check property fields
+      fieldsToCheck.forEach((field) => {
+        if (field === "visualSwatchId") return; // Already checked
 
-				const value = props[field];
+        const value = props[field];
 
-				// Check for empty/null/undefined
-				if (value === undefined || value === null || value === "") {
-					missing.push(field);
-				}
-				// Check for empty arrays
-				else if (Array.isArray(value) && value.length === 0) {
-					missing.push(field);
-				}
-			});
+        // Check for empty/null/undefined
+        if (value === undefined || value === null || value === "") {
+          missing.push(field);
+        }
+        // Check for empty arrays
+        else if (Array.isArray(value) && value.length === 0) {
+          missing.push(field);
+        }
+      });
 
-			if (missing.length > 0) {
-				missingReport[f.name] = missing;
-			}
-		});
-		Object.entries(missingReport).forEach(([name, fields]) => {
-			fields.forEach((field) => {});
-		});
+      if (missing.length > 0) {
+        missingReport[f.name] = missing;
+      }
+    });
+    Object.entries(missingReport).forEach(([name, fields]) => {
+      fields.forEach((field) => {});
+    });
 
-		process.exit(0);
-	} catch (error) {
-		process.exit(1);
-	}
+    process.exit(0);
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
 analyzeMissingContent();

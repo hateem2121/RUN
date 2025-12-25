@@ -72,22 +72,22 @@
 
 // Basic component validation wrapper
 export const ResearchManagementValidator = () => {
-	return (
-		<div data-testid="research-management-validation">
-			<h2>Research Management Component - Phase 4 Extraction</h2>
-			<p>Component successfully extracted with full functionality preserved</p>
-			<ul>
-				<li>✅ 14 test scenarios identified and validated</li>
-				<li>✅ Complex form state management implemented</li>
-				<li>✅ CRUD operations with React Query integration</li>
-				<li>✅ Drag-and-drop reordering capability</li>
-				<li>✅ Media selection for images and videos</li>
-				<li>✅ Project progress tracking with status indicators</li>
-				<li>✅ Publications, partners, and outcomes management</li>
-				<li>✅ Icon-based research categorization (6 icons)</li>
-				<li>✅ Feature flag integration for safe rollback</li>
-				<li>✅ Type-safe interfaces and error handling</li>
-			</ul>
-		</div>
-	);
+  return (
+    <div data-testid="research-management-validation">
+      <h2>Research Management Component - Phase 4 Extraction</h2>
+      <p>Component successfully extracted with full functionality preserved</p>
+      <ul>
+        <li>✅ 14 test scenarios identified and validated</li>
+        <li>✅ Complex form state management implemented</li>
+        <li>✅ CRUD operations with React Query integration</li>
+        <li>✅ Drag-and-drop reordering capability</li>
+        <li>✅ Media selection for images and videos</li>
+        <li>✅ Project progress tracking with status indicators</li>
+        <li>✅ Publications, partners, and outcomes management</li>
+        <li>✅ Icon-based research categorization (6 icons)</li>
+        <li>✅ Feature flag integration for safe rollback</li>
+        <li>✅ Type-safe interfaces and error handling</li>
+      </ul>
+    </div>
+  );
 };
