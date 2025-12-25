@@ -11,8 +11,8 @@ async function testHierarchicalUrls() {
     const slugResponse = await fetch(
       `${baseUrl}/api/products/slug/relaxed-fit-performance-t-shirt`,
     );
-    const slugData = await slugResponse.json();
-  } catch (error) {}
+    const _slugData = await slugResponse.json();
+  } catch (_error) {}
   try {
     const byPathResponse = await fetch(
       `${baseUrl}/api/products/by-path?path=relaxed-fit-performance-t-shirt`,
@@ -22,7 +22,7 @@ async function testHierarchicalUrls() {
     if (byPathData.product) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
   try {
     const frontendResponse = await fetch(
       `${baseUrl}/category/casual-wear/relaxed-fit-performance-t-shirt`,
@@ -30,15 +30,15 @@ async function testHierarchicalUrls() {
     if (frontendResponse.ok) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
   const startTime = Date.now();
   try {
-    const productsResponse = await fetch(`${baseUrl}/api/products`);
+    const _productsResponse = await fetch(`${baseUrl}/api/products`);
     const elapsed = Date.now() - startTime;
     if (elapsed < 1000) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 testHierarchicalUrls().catch(console.error);

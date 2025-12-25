@@ -86,7 +86,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
       </CardContent>
 
       <CardFooter className="flex-col items-start p-4 text-center">
-        <h3 className="mb-2 w-full font-semibold text-lg uppercase tracking-wide text-foreground">
+        <h3 className="mb-2 w-full font-semibold text-foreground text-lg uppercase tracking-wide">
           {product.name}
         </h3>
         <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">

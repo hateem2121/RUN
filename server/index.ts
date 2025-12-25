@@ -1,7 +1,7 @@
+import { createServer } from "node:http"; // HMR FIX: Import createServer explicitly
+import path from "node:path";
 import compression from "compression";
 import express, { type NextFunction, type Request, type Response } from "express";
-import { createServer } from "http"; // HMR FIX: Import createServer explicitly
-import path from "path";
 // PHASE 4: Production Readiness Imports
 import { startOtel } from "./lib/otel.js";
 
@@ -191,7 +191,7 @@ app.use((req, res, next) => {
       }
 
       if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
+        logLine = `${logLine.slice(0, 79)}…`;
       }
 
       logger.info(logLine); // Replaced 'log' with 'logger.info'
@@ -216,9 +216,9 @@ app.use((req, res, next) => {
     try {
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
-      const { readFileSync } = await import("fs");
-      const { join } = await import("path");
-      const { fileURLToPath } = await import("url");
+      const { readFileSync } = await import("node:fs");
+      const { join } = await import("node:path");
+      const { fileURLToPath } = await import("node:url");
       const __dirname = fileURLToPath(new URL(".", import.meta.url));
       const specPath = join(__dirname, "openapi-spec.json");
       const spec = JSON.parse(readFileSync(specPath, "utf-8"));
@@ -246,7 +246,7 @@ app.use((req, res, next) => {
       dryRun: false,
     });
     lifecycleScheduler.start();
-  } catch (error) {}
+  } catch (_error) {}
 
   // PERFORMANCE FIX: Start database keep-alive to prevent Neon auto-suspend
   dbKeepAlive.start();
@@ -258,11 +258,11 @@ app.use((req, res, next) => {
       optimize: async () => logger.info("[DB] Using PostgreSQL built-in optimization"),
     };
     await DatabasePerformanceOptimizer.optimize();
-  } catch (error) {}
+  } catch (_error) {}
 
   // PHASE 3.2: Initialize enhanced error handling
   try {
-  } catch (error) {}
+  } catch (_error) {}
 
   // COLD START RESILIENCE: Wake up database before cache warming
   try {
@@ -271,7 +271,7 @@ app.use((req, res, next) => {
 
     if (!wakeupResult.success) {
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // PHASE 1 OPTIMIZATION: Non-blocking cache warming with progressive retries
   const { unifiedCache } = await import("./lib/unified-cache.js");
@@ -284,7 +284,7 @@ app.use((req, res, next) => {
       backoffMs: 500,
       operationName: "Cache warming (NEON cold start recovery)",
     });
-  } catch (error) {}
+  } catch (_error) {}
 
   // CHUNK 8: Startup database health check
   try {
@@ -292,7 +292,7 @@ app.use((req, res, next) => {
     if (healthCheck.healthy) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // Serve static files in production BEFORE SSR handler
   if (config.app.environment === "production" || process.env.NODE_ENV === "production") {

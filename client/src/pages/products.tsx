@@ -9,7 +9,6 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductsListSEO } from "@/components/products/ProductsListSEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Typography } from "@/components/ui/typography";
 import {
   Select,
   SelectContent,
@@ -17,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Typography } from "@/components/ui/typography";
 import { useAnalyticsTracker } from "@/hooks/useAnalyticsTracker";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import { MediaQueryKeys } from "@/lib/media-query-keys";

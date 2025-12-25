@@ -8,8 +8,6 @@ import { getConfig } from "../config/production.js";
 
 const config = getConfig();
 
-// Security Headers Middleware
-import crypto from "crypto";
 import helmet from "helmet";
 
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
@@ -67,8 +65,8 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 // Request Validation Middleware
 export function requestValidation(req: Request, res: Response, next: NextFunction) {
   // Validate request size
-  const contentLength = parseInt(req.get("Content-Length") || "0");
-  const maxSize = parseInt(config.app.maxRequestSize.replace("mb", "")) * 1024 * 1024;
+  const contentLength = parseInt(req.get("Content-Length") || "0", 10);
+  const maxSize = parseInt(config.app.maxRequestSize.replace("mb", ""), 10) * 1024 * 1024;
 
   if (contentLength > maxSize) {
     return res.status(413).json({
@@ -183,7 +181,7 @@ export function requestTimeout(req: Request, res: Response, next: NextFunction) 
     if (!res.headersSent) {
       res.status(408).json({
         error: "Request timeout",
-        timeout: config.app.requestTimeout + "ms",
+        timeout: `${config.app.requestTimeout}ms`,
       });
     }
   }, config.app.requestTimeout);

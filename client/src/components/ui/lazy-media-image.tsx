@@ -101,11 +101,7 @@ export function LazyMediaImage({
     return (
       <div
         ref={containerRef}
-        className={cn(
-          "center-flex text-gray-400",
-          placeholderClassName,
-          className,
-        )}
+        className={cn("center-flex text-gray-400", placeholderClassName, className)}
         style={style}
       >
         <span className="text-sm">No image</span>
@@ -117,9 +113,7 @@ export function LazyMediaImage({
     <div ref={containerRef} className={cn("relative overflow-hidden", className)} style={style}>
       {/* Loading placeholder */}
       {!isLoaded && (
-        <div
-          className={cn("absolute inset-0 center-flex", placeholderClassName)}
-        >
+        <div className={cn("center-flex absolute inset-0", placeholderClassName)}>
           {isLoading && (
             <div className="h-8 w-8 animate-spin rounded-full border-blue-500 border-b-2" />
           )}

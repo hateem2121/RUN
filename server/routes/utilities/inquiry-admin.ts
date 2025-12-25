@@ -23,8 +23,8 @@ const updateStatusSchema = z.object({
 router.get(
   "/admin/inquiries",
   asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 20;
     const status = req.query.status as string | undefined;
     const source = req.query.source as string | undefined;
     const search = req.query.search as string | undefined;
@@ -80,9 +80,9 @@ router.get(
 router.get(
   "/admin/inquiries/:id",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!);
+    const id = parseInt(req.params.id!, 10);
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
       return res.status(400).json({ error: "Invalid inquiry ID" });
     }
 
@@ -113,9 +113,9 @@ router.get(
 router.patch(
   "/admin/inquiries/:id/status",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!);
+    const id = parseInt(req.params.id!, 10);
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
       return res.status(400).json({ error: "Invalid inquiry ID" });
     }
 
@@ -149,9 +149,9 @@ router.patch(
 router.delete(
   "/admin/inquiries/:id",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!);
+    const id = parseInt(req.params.id!, 10);
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
       return res.status(400).json({ error: "Invalid inquiry ID" });
     }
 

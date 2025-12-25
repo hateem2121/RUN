@@ -47,10 +47,10 @@ async function verifySsrCss(port = 5001) {
     } else {
       process.exit(0);
     }
-  } catch (err) {
+  } catch (_err) {
     process.exit(1);
   }
 }
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 5001;
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5001;
 verifySsrCss(port);

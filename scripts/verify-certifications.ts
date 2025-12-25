@@ -12,7 +12,7 @@ async function checkCertifications() {
     });
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

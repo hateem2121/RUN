@@ -1,5 +1,5 @@
-import { execSync } from "child_process";
-import fs from "fs";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
 
 interface OrphanFile {
   path: string;
@@ -70,7 +70,7 @@ async function verifyOrphansIndividually() {
             }
           });
         }
-      } catch (error) {
+      } catch (_error) {
         // Ignore grep errors (no matches)
       }
     }
@@ -99,7 +99,7 @@ async function verifyOrphansIndividually() {
               }
             });
           }
-        } catch (error) {
+        } catch (_error) {
           // Ignore
         }
       }
@@ -152,7 +152,7 @@ async function verifyOrphansIndividually() {
   );
 
   if (falsePositives.length > 0) {
-    falsePositives.forEach((fp) => {});
+    falsePositives.forEach((_fp) => {});
   }
 
   return results;
@@ -163,6 +163,6 @@ verifyOrphansIndividually()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

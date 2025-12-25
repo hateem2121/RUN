@@ -376,7 +376,7 @@ async function runHealthCheck(): Promise<MemoryHealthReport> {
 /**
  * Format memory size
  */
-function formatBytes(bytes: number): string {
+function _formatBytes(bytes: number): string {
   const mb = bytes / 1024 / 1024;
   if (mb > 1) return `${mb.toFixed(1)}MB`;
   const kb = bytes / 1024;
@@ -391,8 +391,8 @@ async function generateReport(): Promise<void> {
     const report = await runHealthCheck();
 
     // Overall Score
-    const scoreEmoji = report.healthScore >= 90 ? "✅" : report.healthScore >= 75 ? "⚠️" : "❌";
-    const lagStatus =
+    const _scoreEmoji = report.healthScore >= 90 ? "✅" : report.healthScore >= 75 ? "⚠️" : "❌";
+    const _lagStatus =
       report.eventLoop.lag < 10
         ? "✅ EXCELLENT"
         : report.eventLoop.lag < 20
@@ -407,25 +407,25 @@ async function generateReport(): Promise<void> {
     const highRisk = report.dataStructures.filter((s) => s.riskLevel === "high");
 
     if (highRisk.length > 0) {
-      highRisk.forEach((s) => {});
+      highRisk.forEach((_s) => {});
     }
 
     if (mediumRisk.length > 0) {
-      mediumRisk.forEach((s) => {});
+      mediumRisk.forEach((_s) => {});
     }
-    lowRisk.slice(0, 3).forEach((s) => {});
+    lowRisk.slice(0, 3).forEach((_s) => {});
     if (lowRisk.length > 3) {
     }
 
     // Leak Risks Section
     if (report.leakRisks.length > 0) {
-      report.leakRisks.forEach((risk, i) => {});
+      report.leakRisks.forEach((_risk, _i) => {});
     } else {
     }
 
     // Recommendations Section
     if (report.recommendations.length > 0) {
-      report.recommendations.forEach((rec, i) => {});
+      report.recommendations.forEach((_rec, _i) => {});
     } else {
     }
 
@@ -437,7 +437,7 @@ async function generateReport(): Promise<void> {
     } else {
       process.exit(0);
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

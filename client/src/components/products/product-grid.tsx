@@ -24,7 +24,7 @@ export const ProductGrid = ({ products, onQuickViewClick }: ProductGridProps) =>
 
   return (
     <section className="bg-background px-6 py-16 text-foreground lg:py-24">
-      <div className="mx-auto container-wide">
+      <div className="container-wide mx-auto">
         {products.length === 0 ? (
           <div className="px-4 py-20 text-center">
             <p className="text-muted-foreground">No products found in this category.</p>
@@ -44,7 +44,7 @@ export const ProductGrid = ({ products, onQuickViewClick }: ProductGridProps) =>
               <div className="mt-12 flex justify-center">
                 <button
                   onClick={handleLoadMore}
-                  className="min-h-11 bg-primary px-8 py-4 text-sm text-primary-foreground uppercase tracking-widest transition-colors hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  className="min-h-11 bg-primary px-8 py-4 text-primary-foreground text-sm uppercase tracking-widest transition-colors hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   data-testid="load-more-button"
                   aria-label="Load more products"
                 >

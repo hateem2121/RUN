@@ -16,13 +16,13 @@ const SizeChartDisplay: React.FC<{ product: Product }> = ({ product }) => {
 
   return (
     <div>
-      <div className="flex items-center space-x-2 mb-8 pb-3 border-b border-gray-200">
+      <div className="mb-8 flex items-center space-x-2 border-gray-200 border-b pb-3">
         {sizes.map((size) => (
           <ClippedElement
             as="button"
             key={size}
             onClick={() => setSelectedSize(size)}
-            className={`px-5 py-2 text-sm font-bold uppercase tracking-widest transition-all duration-300 ease-in-out ${
+            className={`px-5 py-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 ease-in-out ${
               selectedSize === size
                 ? "bg-black text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -36,11 +36,11 @@ const SizeChartDisplay: React.FC<{ product: Product }> = ({ product }) => {
       </div>
 
       {measurements && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-6 text-sm">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-6 text-sm sm:grid-cols-4">
           {measurementKeys.map((key) => (
             <div key={key}>
-              <span className="text-gray-500 uppercase text-xs tracking-wider">{key}</span>
-              <p className="font-bold text-lg mt-1">{measurements[key]}</p>
+              <span className="text-gray-500 text-xs uppercase tracking-wider">{key}</span>
+              <p className="mt-1 font-bold text-lg">{measurements[key]}</p>
             </div>
           ))}
         </div>

@@ -78,9 +78,8 @@ const EnhancedDialogOverlay = ({
 EnhancedDialogOverlay.displayName = "EnhancedDialogOverlay";
 
 // Enhanced content with focus management and accessibility
-interface EnhancedDialogContentProps extends React.ComponentPropsWithoutRef<
-  typeof DialogPrimitive.Content
-> {
+interface EnhancedDialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   nestingLevel?: number;
   onOpenChange?: (open: boolean) => void;
   isOpen?: boolean;

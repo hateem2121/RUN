@@ -9,9 +9,9 @@ import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { SEOMeta } from "@/components/seo-meta";
+import { Typography } from "@/components/ui/typography";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
-import { Typography } from "@/components/ui/typography";
 
 export default function Accessories() {
   const [searchTerm, setSearchTerm] = useState("");

@@ -81,7 +81,7 @@ export class QueryPerformanceMonitor {
     if (!this.cache) {
       try {
         this.cache = UnifiedCache.getInstance();
-      } catch (error) {
+      } catch (_error) {
         // Cache not available yet (circular dependency during initialization)
         return null;
       }

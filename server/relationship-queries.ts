@@ -40,7 +40,7 @@ export async function getProductWithRelatedDataSQL(productId: number) {
     .leftJoin(mediaAssets, eq(products.primaryImageId, mediaAssets.id))
     .where(eq(products.id, productId));
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return result[0];
 }
@@ -50,11 +50,11 @@ export async function getProductWithRelatedDataSQL(productId: number) {
  */
 export async function getProductWithRelatedDataKeyValue(productId: number) {
   const startTime = performance.now();
-  let queryCount = 0;
+  let _queryCount = 0;
 
   // Query 1: Get product
   const product = await storage.getProduct(productId);
-  queryCount++;
+  _queryCount++;
 
   if (!product) {
     return null;
@@ -64,21 +64,21 @@ export async function getProductWithRelatedDataKeyValue(productId: number) {
   let category = null;
   if (product.categoryId) {
     category = await storage.getCategory(product.categoryId);
-    queryCount++;
+    _queryCount++;
   }
 
   // Query 3: Get fabric (if exists)
   let fabric = null;
   if (product.fabricId) {
     fabric = await storage.getFabric(product.fabricId);
-    queryCount++;
+    _queryCount++;
   }
 
   // Query 4: Get primary image (if exists)
   let primaryImage = null;
   if (product.primaryImageId) {
     primaryImage = await storage.getMediaAsset(product.primaryImageId);
-    queryCount++;
+    _queryCount++;
   }
 
   // Query 5-N: Get certificates (multiple queries)
@@ -86,7 +86,7 @@ export async function getProductWithRelatedDataKeyValue(productId: number) {
   if (product.certificateIds && product.certificateIds.length > 0) {
     certificates = await Promise.all(
       product.certificateIds.map(async (certId) => {
-        queryCount++;
+        _queryCount++;
         return await storage.getCertificate(certId);
       }),
     );
@@ -97,13 +97,13 @@ export async function getProductWithRelatedDataKeyValue(productId: number) {
   if (product.imageIds && product.imageIds.length > 0) {
     images = await Promise.all(
       product.imageIds.map(async (imageId) => {
-        queryCount++;
+        _queryCount++;
         return await storage.getMediaAsset(imageId);
       }),
     );
   }
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return { product, category, fabric, primaryImage, certificates, images };
 }
@@ -141,7 +141,7 @@ export async function findEcoFriendlyProductsSQL(categorySlug: string, minSustai
     )
     .orderBy(desc(products.isFeatured), products.name);
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return results;
 }
@@ -154,11 +154,11 @@ export async function findEcoFriendlyProductsKeyValue(
   minSustainability: number,
 ) {
   const startTime = performance.now();
-  let queryCount = 0;
+  let _queryCount = 0;
 
   // Query 1: Get all categories to find the one with matching slug
   const allCategories = await storage.getCategories();
-  queryCount++;
+  _queryCount++;
 
   const category = allCategories.find((cat) => cat.slug === categorySlug);
   if (!category) {
@@ -167,17 +167,17 @@ export async function findEcoFriendlyProductsKeyValue(
 
   // Query 2: Get all products to filter by category
   const allProducts = await storage.getProducts();
-  queryCount++;
+  _queryCount++;
 
   const categoryProducts = allProducts.filter((p) => p.categoryId === category.id && p.isActive);
 
   // Query 3: Get all fabrics
   const allFabrics = await storage.getFabrics();
-  queryCount++;
+  _queryCount++;
 
   // Query 4: Get all fibers
   const allFibers = await storage.getFibers();
-  queryCount++;
+  _queryCount++;
 
   // Manual filtering and relationship building
   const ecoFriendlyProducts = [];
@@ -207,7 +207,7 @@ export async function findEcoFriendlyProductsKeyValue(
     }
   }
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return ecoFriendlyProducts;
 }
@@ -292,7 +292,7 @@ export async function getAllProductsWithRelationshipsSQL() {
     .where(eq(products.isActive, true))
     .orderBy(desc(products.isFeatured), products.name);
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return results;
 }
@@ -302,23 +302,23 @@ export async function getAllProductsWithRelationshipsSQL() {
  */
 export async function getAllProductsWithRelationshipsKeyValue() {
   const startTime = performance.now();
-  let queryCount = 0;
+  let _queryCount = 0;
 
   // Query 1: Get all products
   const allProducts = await storage.getProducts();
-  queryCount++;
+  _queryCount++;
 
   // Query 2: Get all categories
   const allCategories = await storage.getCategories();
-  queryCount++;
+  _queryCount++;
 
   // Query 3: Get all fabrics
   const allFabrics = await storage.getFabrics();
-  queryCount++;
+  _queryCount++;
 
   // Query 4: Get all media assets
   const allMediaAssets = await storage.getMediaAssets();
-  queryCount++;
+  _queryCount++;
 
   // Manual relationship building
   const results = allProducts
@@ -367,7 +367,7 @@ export async function getAllProductsWithRelationshipsKeyValue() {
       return a.product.name.localeCompare(b.product.name);
     });
 
-  const duration = performance.now() - startTime;
+  const _duration = performance.now() - startTime;
 
   return results;
 }
@@ -387,5 +387,5 @@ export async function runPerformanceComparison() {
 
     await getAllProductsWithRelationshipsSQL();
     await getAllProductsWithRelationshipsKeyValue();
-  } catch (error) {}
+  } catch (_error) {}
 }

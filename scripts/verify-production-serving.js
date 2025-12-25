@@ -1,8 +1,8 @@
-import { spawn } from "child_process";
-import fs from "fs";
-import http from "http";
-import path from "path";
-import { fileURLToPath } from "url";
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +24,7 @@ try {
     cssAsset = files.find((f) => f.endsWith(".css"));
     jsAsset = files.find((f) => f.endsWith(".js"));
   }
-} catch (e) {}
+} catch (_e) {}
 
 if (!cssAsset) {
   process.exit(1);
@@ -51,7 +51,7 @@ server.stdout.on("data", (data) => {
   }
 });
 
-server.stderr.on("data", (data) => {});
+server.stderr.on("data", (_data) => {});
 
 // Helper to fetch
 function checkUrl(path, expectedStatus = 200, expectedContentType = null) {
@@ -100,9 +100,9 @@ async function runTests() {
     await checkUrl(`/assets/${jsAsset}`, 200, "text/javascript"); // Or application/javascript
     try {
       await checkUrl("/assets/missing.pyp", 404);
-    } catch (e) {}
+    } catch (_e) {}
     process.exitCode = 0;
-  } catch (err) {
+  } catch (_err) {
     process.exitCode = 1;
   } finally {
     server.kill();

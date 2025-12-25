@@ -27,7 +27,7 @@ async function testUploadPath() {
 
     // Cleanup
     await appStorageService.deleteAsset(testPath);
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 testUploadPath();

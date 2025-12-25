@@ -1,5 +1,5 @@
-import { spawn } from "child_process";
-import { createServer } from "net";
+import { spawn } from "node:child_process";
+import { createServer } from "node:net";
 
 const PORT = 5003;
 const BASE_URL = `http://localhost:${PORT}`;
@@ -77,7 +77,7 @@ async function run() {
     // Force kill if needed
     try {
       if (!server.killed) process.kill(server.pid!);
-    } catch (e) {}
+    } catch (_e) {}
     process.exit(serverExitCode || 0);
   }
 }

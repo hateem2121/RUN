@@ -13,7 +13,7 @@ async function main() {
     if (recentCards.length > 0) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
   process.exit(0);
 }
 

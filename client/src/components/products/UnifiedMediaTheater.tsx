@@ -436,7 +436,7 @@ export function UnifiedMediaTheater({
                       className="aspect-square w-full rounded-lg object-cover"
                     />
                     {onZoom && (
-                      <div className="absolute inset-0 center-flex rounded-lg bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
+                      <div className="center-flex absolute inset-0 rounded-lg bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
                         <Eye className="h-6 w-6 text-white" />
                       </div>
                     )}
@@ -579,7 +579,7 @@ export function UnifiedMediaTheater({
                     {/* Enhanced Video Controls Overlay */}
                     <motion.div
                       className={cn(
-                        "pointer-events-none absolute inset-0 center-flex",
+                        "center-flex pointer-events-none absolute inset-0",
                         "transition-opacity duration-200",
                         isPlaying ? "opacity-0" : "opacity-100",
                       )}
@@ -862,7 +862,7 @@ export function UnifiedMediaTheater({
                       className="h-full w-full object-cover"
                       muted
                     />
-                    <div className="absolute inset-0 center-flex bg-black/30">
+                    <div className="center-flex absolute inset-0 bg-black/30">
                       <Play className="h-4 w-4 text-white" />
                     </div>
                   </div>

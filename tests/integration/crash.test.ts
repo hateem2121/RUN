@@ -25,7 +25,7 @@ describe("Process Crash Integrity (Integration Tier)", () => {
         method: "POST",
         headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
       });
-    } catch (e) {
+    } catch (_e) {
       // Expected connection reset
     }
 
@@ -43,7 +43,7 @@ describe("Process Crash Integrity (Integration Tier)", () => {
         method: "POST",
         headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
       });
-    } catch (e) {
+    } catch (_e) {
       // Expected
     }
 

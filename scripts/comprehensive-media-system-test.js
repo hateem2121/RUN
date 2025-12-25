@@ -80,7 +80,7 @@ async function testDataFlowIntegrity() {
   // Step 3: Test cache performance
   const cacheStatsResult = await fetchAPI("/api/media/cache/stats");
   if (cacheStatsResult.success) {
-    const cacheData = cacheStatsResult.data?.data || cacheStatsResult.data;
+    const _cacheData = cacheStatsResult.data?.data || cacheStatsResult.data;
   }
 
   return true;
@@ -120,7 +120,7 @@ async function testPerformanceBenchmarks() {
   for (const test of performanceTests) {
     const result = await fetchAPI(test.endpoint);
     if (result.success) {
-      const status = result.responseTime < 1000 ? "✅" : "⚠️ ";
+      const _status = result.responseTime < 1000 ? "✅" : "⚠️ ";
     } else {
     }
   }
@@ -134,7 +134,7 @@ async function testPerformanceBenchmarks() {
 async function testErrorHandling() {
   // Test invalid asset ID
   const invalidAssetResult = await fetchAPI("/api/media/999999");
-  if (invalidAssetResult.error && invalidAssetResult.error.includes("404")) {
+  if (invalidAssetResult.error?.includes("404")) {
   } else {
   }
 
@@ -161,8 +161,8 @@ async function runComprehensiveTests() {
   const passed = Object.values(testResults).filter(Boolean).length;
   const total = Object.keys(testResults).length;
 
-  Object.entries(testResults).forEach(([test, result]) => {
-    const status = result ? "✅ PASS" : "❌ FAIL";
+  Object.entries(testResults).forEach(([_test, result]) => {
+    const _status = result ? "✅ PASS" : "❌ FAIL";
   });
 
   if (passed === total) {
@@ -176,7 +176,7 @@ async function runComprehensiveTests() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runComprehensiveTests()
     .then((success) => process.exit(success ? 0 : 1))
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

@@ -29,10 +29,10 @@ async function listGCSAssets() {
     // Identify orphaned files
     const orphanedFiles = allFiles.filter((file) => !knownPaths.has(file));
     if (orphanedFiles.length > 0) {
-      orphanedFiles.forEach((file) => {});
+      orphanedFiles.forEach((_file) => {});
     } else {
     }
-  } catch (error) {
+  } catch (_error) {
   } finally {
     process.exit(0);
   }

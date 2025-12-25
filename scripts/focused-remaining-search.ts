@@ -54,7 +54,7 @@ async function findRemainingContent() {
           if (item.category) {
           }
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
 
     if (count > 0) {
@@ -82,7 +82,7 @@ async function findRemainingContent() {
           patternCount++;
           allContent.push({ type: pattern, item });
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
     if (patternCount > 0) {
     }

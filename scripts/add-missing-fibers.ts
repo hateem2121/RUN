@@ -17,10 +17,10 @@ async function addMissingFibers() {
     ];
 
     const inserted = await db.insert(fibers).values(newFibers).returning();
-    inserted.forEach((f) => {});
+    inserted.forEach((_f) => {});
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -1,6 +1,6 @@
+import os from "node:os";
 import { sql } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import os from "os";
 import { db } from "../../db.js";
 import { logger } from "../../lib/smart-logger.js";
 

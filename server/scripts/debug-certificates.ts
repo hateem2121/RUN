@@ -27,11 +27,11 @@ async function main() {
     .where(inArray(certificates.id, certIds));
   for (const cert of certs) {
     // Simulate the logic in MiscRepository
-    const finalUrl = cert.imageUrlInCert || cert.mediaUrl || null;
+    const _finalUrl = cert.imageUrlInCert || cert.mediaUrl || null;
   }
   process.exit(0);
 }
 
-main().catch((err) => {
+main().catch((_err) => {
   process.exit(1);
 });

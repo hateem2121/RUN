@@ -13,9 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard3D } from "@/components/ui/hover-card-3d";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Typography } from "@/components/ui/typography";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useResourceSearch } from "@/hooks/resources/useResourceSearch";
-import { Typography } from "@/components/ui/typography";
 
 const resourceCategories = [
   {

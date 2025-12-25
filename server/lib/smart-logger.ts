@@ -3,7 +3,7 @@
  * Phase 3 (Observability): JSON-based structured logging with correlation IDs
  */
 
-import { AsyncLocalStorage } from "async_hooks";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { isDevelopment, logging } from "../config/environment.js";
 
 // AsyncLocalStorage for request-scoped correlation IDs
@@ -218,7 +218,7 @@ class SmartLogger {
           // Serialize all objects (including Date, Map, Error, etc.) - rely on try/catch for failures
           entry.metadata = this.safeStringify(metadata);
         }
-      } catch (err) {
+      } catch (_err) {
         entry.metadata = { serializationError: "Failed to serialize metadata" };
       }
     }
@@ -250,7 +250,7 @@ class SmartLogger {
     error?: Error,
   ): void {
     if (this.useStructuredLogging) {
-      const formatted = this.formatStructured(level, message, metadata, error);
+      const _formatted = this.formatStructured(level, message, metadata, error);
       switch (level) {
         case "ERROR":
           break;
@@ -272,11 +272,11 @@ class SmartLogger {
       let metaStr = "";
       try {
         metaStr = sanitizedMetadata ? ` ${JSON.stringify(sanitizedMetadata)}` : "";
-      } catch (err) {
+      } catch (_err) {
         metaStr = " [metadata: circular reference]";
       }
 
-      const logMessage = `${prefix}${corrStr} ${sanitizedMessage}${metaStr}`;
+      const _logMessage = `${prefix}${corrStr} ${sanitizedMessage}${metaStr}`;
 
       switch (level) {
         case "ERROR":
@@ -352,7 +352,7 @@ class SmartLogger {
   /**
    * Production-safe debug logging (legacy support)
    */
-  devLog(message: string, ...args: unknown[]): void {
+  devLog(_message: string, ..._args: unknown[]): void {
     if (this.isDevelopment) {
     }
   }
@@ -385,9 +385,9 @@ export function serializeError(error: unknown): Record<string, any> {
 }
 
 // Production-safe debug helpers
-export const debugLog = (message: string, ...args: unknown[]) => {
+export const debugLog = (_message: string, ..._args: unknown[]) => {
   if (logging.enableDebug) {
   }
 };
 
-export const productionLog = (message: string, ...args: unknown[]) => {};
+export const productionLog = (_message: string, ..._args: unknown[]) => {};

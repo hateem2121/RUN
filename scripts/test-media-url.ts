@@ -31,13 +31,13 @@ async function main() {
       const response = await fetch(signedUrl);
 
       if (!response.ok) {
-        const text = await response.text();
+        const _text = await response.text();
       } else {
       }
-    } catch (err) {}
+    } catch (_err) {}
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

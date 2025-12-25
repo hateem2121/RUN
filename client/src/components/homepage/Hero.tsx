@@ -153,7 +153,7 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="pointer-events-none absolute inset-0 z-elevated center-flex">
+      <div className="center-flex pointer-events-none absolute inset-0 z-elevated">
         <div className="perspective-standard flex flex-col items-center justify-center px-4 text-center">
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line overflow-hidden py-1">
@@ -198,7 +198,7 @@ const Hero: React.FC = () => {
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>
-          <div className="absolute inset-0 center-flex">
+          <div className="center-flex absolute inset-0">
             <div className="h-2 w-2 rounded-full bg-black" />
           </div>
         </div>

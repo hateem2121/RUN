@@ -533,7 +533,7 @@ async function fixFabrics() {
         .where(eq(fabrics.id, fabric.id));
     }
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

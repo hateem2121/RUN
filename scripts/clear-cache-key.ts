@@ -37,6 +37,6 @@ try {
   await db.delete(cacheKey);
 
   process.exit(0);
-} catch (error) {
+} catch (_error) {
   process.exit(1);
 }

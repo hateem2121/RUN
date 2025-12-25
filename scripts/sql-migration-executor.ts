@@ -89,7 +89,7 @@ export class SQLMigrationExecutor {
           const fiber = JSON.parse(result.value);
 
           // Generate INSERT statement for display (actual execution would be through execute_sql_tool)
-          const insertSQL = `
+          const _insertSQL = `
             INSERT INTO fibers (id, name, type, description, sustainability_score, environmental_impact, properties, is_active, created_at)
             VALUES (${fiber.id}, '${this.escapeSQLString(fiber.name)}', '${fiber.type || "Natural"}', '${this.escapeSQLString(fiber.description)}', ${fiber.sustainabilityScore || 3}, ${fiber.environmentalImpactNotes ? `'${this.escapeSQLString(fiber.environmentalImpactNotes)}'` : "NULL"}, '${JSON.stringify(fiber.properties || {}).replace(/'/g, "''")}', ${fiber.isActive !== false}, '${fiber.createdAt || new Date().toISOString()}')
             ON CONFLICT (id) DO UPDATE SET
@@ -118,7 +118,7 @@ export class SQLMigrationExecutor {
       try {
         const result = await kvDb.get(`certificates:${i}`);
         if (result?.ok && result?.value) {
-          const cert = JSON.parse(result.value);
+          const _cert = JSON.parse(result.value);
 
           migrated++;
         }
@@ -156,7 +156,7 @@ export class SQLMigrationExecutor {
       try {
         const result = await kvDb.get(`fabrics:${i}`);
         if (result?.ok && result?.value) {
-          const fabric = JSON.parse(result.value);
+          const _fabric = JSON.parse(result.value);
 
           migrated++;
         }
@@ -174,7 +174,7 @@ export class SQLMigrationExecutor {
       try {
         const result = await kvDb.get(`accessories:${i}`);
         if (result?.ok && result?.value) {
-          const accessory = JSON.parse(result.value);
+          const _accessory = JSON.parse(result.value);
 
           migrated++;
         }
@@ -192,7 +192,7 @@ export class SQLMigrationExecutor {
       try {
         const result = await kvDb.get(`products:${i}`);
         if (result?.ok && result?.value) {
-          const product = JSON.parse(result.value);
+          const _product = JSON.parse(result.value);
 
           migrated++;
         }
@@ -223,8 +223,8 @@ export class SQLMigrationExecutor {
   }
 
   private logMigrationSummary(result: MigrationResult) {
-    const totalMigrated = Object.values(result.migrated).reduce((a, b) => a + b, 0);
-    const totalPreserved = Object.values(result.preserved).reduce((a, b) => a + b, 0);
+    const _totalMigrated = Object.values(result.migrated).reduce((a, b) => a + b, 0);
+    const _totalPreserved = Object.values(result.preserved).reduce((a, b) => a + b, 0);
 
     if (result.errors.length > 0) {
     }
@@ -247,7 +247,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       }
     })
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

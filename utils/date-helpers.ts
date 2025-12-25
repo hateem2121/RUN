@@ -14,11 +14,11 @@ export const parseApiDate = (dateString: string | null | undefined): Date | null
   try {
     const date = new Date(dateString);
     // Check if the date is valid
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       return null;
     }
     return date;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };
@@ -33,7 +33,7 @@ export const formatApiDate = (date: Date | null | undefined): string | null => {
 
   try {
     return date.toISOString();
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };
@@ -56,7 +56,7 @@ export const getCurrentISOString = (): string => {
  * Check if a value is a valid Date object
  */
 export const isValidDate = (date: any): date is Date => {
-  return date instanceof Date && !isNaN(date.getTime());
+  return date instanceof Date && !Number.isNaN(date.getTime());
 };
 
 /**

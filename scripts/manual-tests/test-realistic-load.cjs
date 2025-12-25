@@ -1,5 +1,5 @@
 // Realistic Load Test - Gradual Ramp-up
-const http = require("http");
+const http = require("node:http");
 
 const BASE_URL = "http://localhost:5000";
 const TOTAL_REQUESTS = 350;
@@ -46,8 +46,8 @@ async function runTest() {
   }
 
   const successful = allResults.filter((r) => r.success).length;
-  const failed = TOTAL_REQUESTS - successful;
-  const avgDuration =
+  const _failed = TOTAL_REQUESTS - successful;
+  const _avgDuration =
     allResults.filter((r) => r.duration).reduce((sum, r) => sum + r.duration, 0) /
     allResults.filter((r) => r.duration).length;
 
@@ -60,6 +60,6 @@ async function runTest() {
 
 runTest()
   .then((code) => process.exit(code))
-  .catch((e) => {
+  .catch((_e) => {
     process.exit(1);
   });

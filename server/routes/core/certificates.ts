@@ -79,7 +79,7 @@ router.post("/certificates", async (req, res) => {
 // PUT /api/certificates/:id - Update certificate
 router.put("/certificates/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validation = insertCertificateSchema.partial().parse(req.body);
 
     // Transform string dates to Date objects if present
@@ -128,8 +128,8 @@ router.put("/certificates/:id", async (req, res) => {
 // DELETE /api/certificates/:id - Delete certificate
 router.delete("/certificates/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid certificate ID" });
     }
 

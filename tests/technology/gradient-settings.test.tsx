@@ -64,7 +64,7 @@ const MockTechnologyGradientSettings = ({ gradientData, setGradientData, isLoadi
       <input
         type="range"
         value={gradientData.angle}
-        onChange={(e) => setGradientData({ ...gradientData, angle: parseInt(e.target.value) })}
+        onChange={(e) => setGradientData({ ...gradientData, angle: parseInt(e.target.value, 10) })}
       />
     </div>
   );

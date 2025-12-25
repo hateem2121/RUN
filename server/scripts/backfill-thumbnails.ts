@@ -42,7 +42,7 @@ class ThumbnailBackfillService {
         await Promise.allSettled(batch.map((asset) => this.processAsset(asset)));
 
         // Progress report
-        const remaining =
+        const _remaining =
           this.totalCount - this.processedCount - this.errorCount - this.skippedCount;
 
         // Delay between batches to be system-friendly
@@ -50,7 +50,7 @@ class ThumbnailBackfillService {
           await new Promise((resolve) => setTimeout(resolve, DELAY_BETWEEN_BATCHES));
         }
       }
-    } catch (error) {
+    } catch (_error) {
       process.exit(1);
     }
   }
@@ -80,7 +80,7 @@ class ThumbnailBackfillService {
       // Update database with thumbnail filename
       await storage.updateAssetThumbnail(asset.id, imageResult.thumbnailFilename);
       this.processedCount++;
-    } catch (error) {
+    } catch (_error) {
       this.errorCount++;
     }
   }

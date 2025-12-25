@@ -84,7 +84,7 @@ export class SmartDataMigration {
       "Create relationship junction tables",
     ];
 
-    migrationSteps.forEach((step, index) => {});
+    migrationSteps.forEach((_step, _index) => {});
 
     return {
       currentState: currentData,
@@ -115,12 +115,12 @@ export const smartMigrator = new SmartDataMigration();
 if (import.meta.url === `file://${process.argv[1]}`) {
   smartMigrator
     .analyzeAndPrepare()
-    .then(async (results) => {
+    .then(async (_results) => {
       // Show future demonstration
       await smartMigrator.demonstrateFutureMigration();
       process.exit(0);
     })
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

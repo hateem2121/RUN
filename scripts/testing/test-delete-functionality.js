@@ -5,7 +5,7 @@ async function testDeleteFunctionality() {
     const productsResponse = await fetch("http://localhost:5000/api/admin/products/initial-data");
     const data = await productsResponse.json();
     const products = data.products?.data || [];
-    products.forEach((p, i) => {});
+    products.forEach((_p, _i) => {});
 
     if (products.length === 0) {
       return;
@@ -22,7 +22,7 @@ async function testDeleteFunctionality() {
     if (deleteCheckResponse.ok || deleteCheckResponse.status === 405) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 // Run the test

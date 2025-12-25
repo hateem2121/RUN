@@ -32,34 +32,34 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose, productNam
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm sm:p-6"
       onClick={handleClose}
       aria-modal="true"
       role="dialog"
     >
       <ClippedElement
-        className="bg-white w-full max-w-lg p-6 sm:p-8 md:p-12 relative"
+        className="relative w-full max-w-lg bg-white p-6 sm:p-8 md:p-12"
         clipAmount={30}
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors z-10"
+          className="absolute top-4 right-4 z-10 text-gray-400 transition-colors hover:text-black"
           aria-label="Close"
         >
-          <XIcon className="w-6 h-6" />
+          <XIcon className="h-6 w-6" />
         </button>
 
         {formState !== "success" ? (
           <>
-            <h2 className="text-3xl font-black-display mb-2">Inquiry For:</h2>
-            <p className="text-gray-600 mb-8">{productName}</p>
+            <h2 className="mb-2 font-black-display text-3xl">Inquiry For:</h2>
+            <p className="mb-8 text-gray-600">{productName}</p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
                   htmlFor="companyName"
-                  className="block text-xs font-semibold uppercase tracking-widest mb-2"
+                  className="mb-2 block font-semibold text-xs uppercase tracking-widest"
                 >
                   Company Name
                 </label>
@@ -74,7 +74,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose, productNam
               <div>
                 <label
                   htmlFor="contactEmail"
-                  className="block text-xs font-semibold uppercase tracking-widest mb-2"
+                  className="mb-2 block font-semibold text-xs uppercase tracking-widest"
                 >
                   Contact Email
                 </label>
@@ -89,7 +89,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose, productNam
               <div>
                 <label
                   htmlFor="moq"
-                  className="block text-xs font-semibold uppercase tracking-widest mb-2"
+                  className="mb-2 block font-semibold text-xs uppercase tracking-widest"
                 >
                   Estimated Order Quantity (MOQ)
                 </label>
@@ -106,7 +106,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose, productNam
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-xs font-semibold uppercase tracking-widest mb-2"
+                  className="mb-2 block font-semibold text-xs uppercase tracking-widest"
                 >
                   Message
                 </label>
@@ -122,23 +122,23 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ isOpen, onClose, productNam
                 as="button"
                 type="submit"
                 disabled={formState === "submitting"}
-                className="w-full mt-4 bg-black text-white py-4 text-sm font-bold tracking-[0.2em] hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+                className="mt-4 w-full bg-black py-4 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-gray-800 disabled:bg-gray-400"
               >
                 {formState === "submitting" ? "SENDING..." : "SUBMIT INQUIRY"}
               </ClippedElement>
             </form>
           </>
         ) : (
-          <div className="text-center py-12 animate-fade-in">
-            <h2 className="text-3xl font-black-display mb-4">INQUIRY SENT</h2>
-            <p className="text-gray-700 max-w-sm mx-auto mb-8">
+          <div className="animate-fade-in py-12 text-center">
+            <h2 className="mb-4 font-black-display text-3xl">INQUIRY SENT</h2>
+            <p className="mx-auto mb-8 max-w-sm text-gray-700">
               Thank you for your interest in RUN APPAREL. Our partnership team will review your
               request and be in touch within 24-48 hours.
             </p>
             <ClippedElement
               as="button"
               onClick={handleClose}
-              className="bg-black text-white px-10 py-3 text-sm font-bold tracking-[0.2em] hover:bg-gray-800 transition-colors"
+              className="bg-black px-10 py-3 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-gray-800"
             >
               CLOSE
             </ClippedElement>

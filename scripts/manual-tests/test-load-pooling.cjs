@@ -1,7 +1,7 @@
 // NEON Connection Pooling Load Test
 // Tests 300+ concurrent requests to verify connection pooling handles high load
 
-const http = require("http");
+const http = require("node:http");
 
 const BASE_URL = "http://localhost:5000";
 const CONCURRENT_USERS = 350; // Test 350 concurrent users (exceeds 300 target)
@@ -73,8 +73,8 @@ function makeRequest(id) {
 // Run load test
 async function runLoadTest() {
   try {
-    const baseline = await getPoolMetrics();
-  } catch (e) {}
+    const _baseline = await getPoolMetrics();
+  } catch (_e) {}
   const startTime = Date.now();
 
   // Launch all requests concurrently
@@ -85,19 +85,19 @@ async function runLoadTest() {
 
   // Wait for all to complete
   const results = await Promise.all(promises);
-  const totalDuration = Date.now() - startTime;
+  const _totalDuration = Date.now() - startTime;
 
   // Analyze results
   const successful = results.filter((r) => r.success).length;
   const failed = results.filter((r) => !r.success).length;
   const errors = results.filter((r) => r.error).map((r) => r.error);
-  const avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
-  const maxDuration = Math.max(...results.map((r) => r.duration));
-  const minDuration = Math.min(...results.map((r) => r.duration));
+  const _avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
+  const _maxDuration = Math.max(...results.map((r) => r.duration));
+  const _minDuration = Math.min(...results.map((r) => r.duration));
   let postMetrics;
   try {
     postMetrics = await getPoolMetrics();
-  } catch (e) {}
+  } catch (_e) {}
 
   if (postMetrics) {
   }
@@ -108,11 +108,11 @@ async function runLoadTest() {
   );
 
   if (connectionErrors.length > 0) {
-    connectionErrors.forEach((err, i) => {});
+    connectionErrors.forEach((_err, _i) => {});
   } else if (failed > 0) {
     const uniqueErrors = [...new Set(errors.filter(Boolean))];
-    uniqueErrors.forEach((err, i) => {
-      const count = errors.filter((e) => e === err).length;
+    uniqueErrors.forEach((err, _i) => {
+      const _count = errors.filter((e) => e === err).length;
     });
   }
   if (successful >= CONCURRENT_USERS * 0.95) {
@@ -129,6 +129,6 @@ runLoadTest()
   .then((exitCode) => {
     process.exit(exitCode);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

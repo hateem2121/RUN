@@ -110,7 +110,7 @@
                     new KeyboardEvent('keydown', { key: 'Tab' });
                     keyboardWorks = true;
                     log('✅ Keyboard event support confirmed');
-                } catch (e) {
+                } catch (_e) {
                     log('❌ Keyboard event support failed', true);
                 }
                 
@@ -127,7 +127,7 @@
                     
                     if (apiWorking) {
                         const data = await response.json();
-                        const hasData = Array.isArray(data) && data.length >= 0;
+                        const _hasData = Array.isArray(data) && data.length >= 0;
                         log(`✅ API working, found ${data.length} process cards`);
                         results.tests.push({ name: 'API Integration', passed: true });
                     } else {

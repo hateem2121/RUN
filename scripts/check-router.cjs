@@ -5,8 +5,8 @@
  * Scans codebase for forbidden imports from @tanstack/react-router.
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const FORBIDDEN_IMPORTS = [
   "@tanstack/react-router",
@@ -51,7 +51,7 @@ const rootDir = path.resolve(__dirname, "../client/src");
 const errors = scanDirectory(rootDir);
 
 if (errors.length > 0) {
-  errors.forEach((err) => {});
+  errors.forEach((_err) => {});
   process.exit(1);
 } else {
   process.exit(0);

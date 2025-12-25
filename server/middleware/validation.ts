@@ -62,7 +62,7 @@ export const validateQuery =
       // Fix: req.query might be a getter-only property in some environments
       try {
         req.query = parsed as any;
-      } catch (e) {
+      } catch (_e) {
         Object.defineProperty(req, "query", {
           value: parsed,
           writable: true,

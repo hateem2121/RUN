@@ -1,5 +1,5 @@
+import fs from "node:fs";
 import { sql } from "drizzle-orm";
-import fs from "fs";
 import { db } from "../server/db.js";
 
 async function main() {
@@ -16,7 +16,7 @@ async function main() {
     for (const statement of statements) {
       await db.execute(sql.raw(statement));
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 

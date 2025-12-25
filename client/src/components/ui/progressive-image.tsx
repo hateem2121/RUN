@@ -234,7 +234,7 @@ export function ProgressiveImage({
 
       {/* Error state */}
       {imageState === "error" && (
-        <div className="absolute inset-0 center-flex bg-gray-100">
+        <div className="center-flex absolute inset-0 bg-gray-100">
           <div className="p-4 text-center">
             <svg
               className="mx-auto mb-2 h-12 w-12 text-gray-400"

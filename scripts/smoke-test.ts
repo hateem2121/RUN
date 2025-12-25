@@ -9,7 +9,7 @@
  * 3. Database Connectivity (via Health check details)
  */
 
-import http from "http";
+import http from "node:http";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:5001";
 
@@ -37,8 +37,8 @@ async function run() {
 
   // 1. Check Health
   try {
-    const health = await checkUrl("/health");
-  } catch (err: any) {
+    const _health = await checkUrl("/health");
+  } catch (_err: any) {
     hasError = true;
   }
 
@@ -50,7 +50,7 @@ async function run() {
     if (!metrics.timestamp || !metrics.health) {
       throw new Error("❌ Metrics response missing required fields (timestamp/health)");
     }
-  } catch (err: any) {
+  } catch (_err: any) {
     hasError = true;
   }
 

@@ -373,7 +373,7 @@ export class DirectPostgreSQLMigration {
               product.sizeChartId || null,
               product.primaryImageId || null,
               product.threeDModelId || null,
-              parseInt(product.minimumOrderQuantity) || 1,
+              parseInt(product.minimumOrderQuantity, 10) || 1,
               product.leadTime || null,
               product.sampleAvailable !== false,
               JSON.stringify(product.customizationOptions || []),
@@ -458,8 +458,8 @@ export class DirectPostgreSQLMigration {
   private async validateHybridSetup() {}
 
   private logMigrationSummary(result: MigrationResult) {
-    const totalMigrated = Object.values(result.migrated).reduce((a, b) => a + b, 0);
-    const totalPreserved = Object.values(result.preserved).reduce((a, b) => a + b, 0);
+    const _totalMigrated = Object.values(result.migrated).reduce((a, b) => a + b, 0);
+    const _totalPreserved = Object.values(result.preserved).reduce((a, b) => a + b, 0);
 
     if (result.errors.length > 0) {
     }
@@ -482,7 +482,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
       }
     })
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

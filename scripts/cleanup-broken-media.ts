@@ -53,7 +53,7 @@ async function cleanupBrokenMedia() {
       .set({ primaryImageId: null })
       .where(inArray(products.primaryImageId, idsToDelete));
     await db.delete(mediaAssets).where(inArray(mediaAssets.id, idsToDelete));
-  } catch (error) {
+  } catch (_error) {
   } finally {
     process.exit(0);
   }

@@ -58,7 +58,7 @@ const App: React.FC = () => {
           </motion.div>
           <motion.div
             variants={itemVariants}
-            className="w-full lg:w-2/5 lg:sticky lg:top-0 lg:h-screen"
+            className="w-full lg:sticky lg:top-0 lg:h-screen lg:w-2/5"
           >
             <ProductInfo
               product={mockProduct}

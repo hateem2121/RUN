@@ -40,7 +40,7 @@ async function comprehensiveDatabaseRepair() {
         repairs.push(`Categories: Created ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // Check if we need sample certificates
   try {
@@ -78,7 +78,7 @@ async function comprehensiveDatabaseRepair() {
         repairs.push(`Certificates: Created ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // Check if we need sample size charts
   try {
@@ -122,7 +122,7 @@ async function comprehensiveDatabaseRepair() {
         repairs.push(`Size Charts: Created ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // Check accessories
   try {
@@ -163,8 +163,8 @@ async function comprehensiveDatabaseRepair() {
         repairs.push(`Accessories: Created ${created.name}`);
       }
     }
-  } catch (error) {}
-  repairs.forEach((repair) => {});
+  } catch (_error) {}
+  repairs.forEach((_repair) => {});
 
   if (repairs.length === 0) {
   } else {
@@ -179,8 +179,8 @@ async function comprehensiveDatabaseRepair() {
 
   for (const entity of entities) {
     try {
-      const data = await (storage as any)[entity.method]();
-    } catch (error) {}
+      const _data = await (storage as any)[entity.method]();
+    } catch (_error) {}
   }
 }
 

@@ -38,8 +38,8 @@ router.get("/products", async (req, res) => {
     const { category, active, featured, tag, search, page, limit } = req.query;
 
     // Parse pagination parameters
-    const pageNum = parseInt(page as string) || 1;
-    const pageSize = Math.min(parseInt(limit as string) || 20, 100); // Max 100 items per page
+    const pageNum = parseInt(page as string, 10) || 1;
+    const pageSize = Math.min(parseInt(limit as string, 10) || 20, 100); // Max 100 items per page
     const offset = (pageNum - 1) * pageSize;
 
     let products;
@@ -64,7 +64,7 @@ router.get("/products", async (req, res) => {
         operationName: "Count products by tag",
       });
     } else if (category && typeof category === "string") {
-      const categoryId = parseInt(category);
+      const categoryId = parseInt(category, 10);
       products = await retryDbOperation(
         () => getStorage().getProductsByCategory(categoryId, pageSize, offset),
         { operationName: "Get products by category" },

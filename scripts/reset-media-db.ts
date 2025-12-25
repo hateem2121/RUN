@@ -12,7 +12,7 @@ async function resetMediaDB() {
     } else {
       process.exit(1);
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   } finally {
     process.exit(0);

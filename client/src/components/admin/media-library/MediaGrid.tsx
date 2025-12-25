@@ -105,6 +105,9 @@ const MediaGridItem = React.memo(
         >
           {/* Selection checkbox outside the button to prevent nested button issues */}
           <div
+            role="checkbox"
+            aria-checked={isSelected}
+            tabIndex={0}
             className={cn(
               "flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 transition-all",
               isSelected
@@ -114,6 +117,13 @@ const MediaGridItem = React.memo(
             onClick={(e) => {
               e.stopPropagation();
               onSelect?.(asset.id, asset);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelect?.(asset.id, asset);
+              }
             }}
           >
             {isSelected && <Check className="h-4 w-4 text-white" />}
@@ -141,6 +151,7 @@ const MediaGridItem = React.memo(
         <div
           className="group relative z-elevated flex aspect-square w-full cursor-pointer items-center justify-center bg-gray-100"
           onClick={() => onClick(asset, index)}
+          // biome-ignore lint/a11y/useSemanticElements: Complex layout requires div
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
@@ -193,7 +204,7 @@ const MediaGridItem = React.memo(
                 muted
                 preload="metadata"
               />
-              <div className="absolute inset-0 center-flex bg-black/30">
+              <div className="center-flex absolute inset-0 bg-black/30">
                 <Play className="h-12 w-12 text-white opacity-80" />
               </div>
             </div>
@@ -239,7 +250,7 @@ const MediaGridItem = React.memo(
                 </React.Suspense>
               </div>
               {/* Fallback overlay for loading/error states */}
-              <div className="pointer-events-none absolute inset-0 center-flex">
+              <div className="center-flex pointer-events-none absolute inset-0">
                 <Box className="h-8 w-8 text-purple-400 opacity-30" />
               </div>
               {/* 3D Model badge */}
@@ -255,7 +266,7 @@ const MediaGridItem = React.memo(
           )}
 
           {/* Premium Hover Overlay */}
-          <div className="pointer-events-none absolute inset-0 center-flex bg-black/0 opacity-0 backdrop-blur-[0px] transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-[2px]">
+          <div className="center-flex pointer-events-none absolute inset-0 bg-black/0 opacity-0 backdrop-blur-[0px] transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-[2px]">
             <div className="pointer-events-auto flex translate-y-4 transform gap-2 transition-transform duration-300 group-hover:translate-y-0">
               <Button
                 size="sm"
@@ -310,7 +321,7 @@ const MediaGridItem = React.memo(
 
         {/* Loading overlay for optimistic uploads */}
         {isOptimistic && (
-          <div className="absolute inset-0 center-flex bg-white/80">
+          <div className="center-flex absolute inset-0 bg-white/80">
             <div className="h-8 w-8 animate-spin rounded-full border-primary border-b-2"></div>
           </div>
         )}

@@ -1,5 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { logger } from "../../server/lib/smart-logger";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock the Logger
 vi.mock("../../server/lib/smart-logger", () => ({

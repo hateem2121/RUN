@@ -12,7 +12,7 @@ async function main() {
     }
 
     let missingCount = 0;
-    let successCount = 0;
+    let _successCount = 0;
     let mismatchCount = 0;
 
     for (const asset of assets) {
@@ -93,7 +93,7 @@ async function main() {
           !asset.imageVariants?.original ||
           (await appStorageService.assetExists(asset.imageVariants.original)))
       ) {
-        successCount++;
+        _successCount++;
       }
     }
 
@@ -103,7 +103,7 @@ async function main() {
     }
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

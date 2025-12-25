@@ -422,15 +422,21 @@ function MediaLibraryMainContent({
           <div
             className="fixed inset-0 z-modal-nested cursor-default bg-black/50 lg:hidden"
             onClick={() => updateState("showFiltersPanel", false)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                updateState("showFiltersPanel", false);
+              }
+            }}
             role="presentation"
-            aria-label="Close filters panel"
           >
             <div
               role="dialog"
               aria-modal="true"
               aria-labelledby="filters-panel-title"
+              tabIndex={-1}
               className="fixed inset-y-0 left-0 w-80 max-w-md bg-card shadow-xl sm:max-w-lg"
               onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
             >
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (

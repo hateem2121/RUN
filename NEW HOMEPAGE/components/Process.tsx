@@ -42,7 +42,7 @@ const Process: React.FC = () => {
               trigger: triggerEl,
               pin: true,
               scrub: 1,
-              end: () => "+=" + totalWidth,
+              end: () => `+=${totalWidth}`,
               invalidateOnRefresh: true,
               anticipatePin: 1,
             },
@@ -108,20 +108,20 @@ const Process: React.FC = () => {
     <section className="overflow-hidden bg-[#050505] text-[#FAFAFA]">
       <div
         ref={triggerRef}
-        className="min-h-screen w-full flex flex-col md:flex-row md:items-center overflow-x-hidden relative"
+        className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
         <div className="absolute top-8 left-8 z-20">
-          <h3 className="text-sm md:text-xl uppercase tracking-widest border border-white/20 px-4 py-2 rounded-full backdrop-blur-sm bg-black/20">
+          <h3 className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl">
             Production Pipeline
           </h3>
         </div>
 
         {/* Decorative Drawing SVG - Desktop Only */}
         <div
-          className="hidden md:block absolute top-1/2 left-0 w-full h-[300px] -translate-y-1/2 pointer-events-none z-0 opacity-30"
+          className="pointer-events-none absolute top-1/2 left-0 z-0 hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
           aria-hidden="true"
         >
-          <svg className="w-full h-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
+          <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
             <path
               ref={pathRef}
               d="M0,100 C250,200 500,0 1000,100"
@@ -134,42 +134,42 @@ const Process: React.FC = () => {
 
         {/* Container */}
         <div
-          className="flex flex-col md:flex-row h-auto md:h-full w-full pt-24 md:pt-0 will-change-transform"
+          className="flex h-auto w-full flex-col pt-24 will-change-transform md:h-full md:flex-row md:pt-0"
           ref={sectionRef}
         >
           {PROCESS_STEPS.map((step, index) => (
             <div
               key={index}
-              className="process-card w-full md:w-screen md:h-full flex-shrink-0 flex items-center justify-center p-4 md:p-12 border-b md:border-b-0 md:border-r border-white/10 relative z-10 min-h-[60vh] md:min-h-0"
+              className="process-card relative z-10 flex min-h-[60vh] w-full flex-shrink-0 items-center justify-center border-white/10 border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
             >
-              <div className="content-container max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 bg-[#050505]/80 backdrop-blur-md p-6 md:p-12 rounded-xl border border-white/5 overflow-hidden">
+              <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-white/5 bg-[#050505]/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}
-                <div className="relative aspect-square md:aspect-auto md:h-full overflow-hidden rounded-lg group">
+                <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
                     src={step.image}
                     alt={step.title}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    className="h-full w-full object-cover grayscale transition-transform duration-700 ease-out group-hover:scale-110 group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all duration-500" />
+                  <div className="absolute inset-0 bg-black/20 transition-all duration-500 group-hover:bg-transparent" />
 
                   {/* Big Number Overlay */}
-                  <span className="absolute top-0 left-0 p-4 text-[15vw] md:text-[8vw] leading-none font-bold text-white mix-blend-overlay opacity-50">
+                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-white leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
                     {step.id}
                   </span>
                 </div>
 
                 {/* Content Side */}
-                <div className="flex flex-col justify-center relative">
-                  <h2 className="text-[10vw] md:text-[4vw] leading-[0.9] uppercase font-bold mb-4 md:mb-8">
+                <div className="relative flex flex-col justify-center">
+                  <h2 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
                     {step.title}
                   </h2>
-                  <p className="text-base md:text-xl font-light text-gray-400 mb-8 max-w-md leading-relaxed">
+                  <p className="mb-8 max-w-md font-light text-base text-gray-400 leading-relaxed md:text-xl">
                     {step.description}
                   </p>
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border border-white flex items-center justify-center group cursor-pointer hover:bg-white hover:text-black transition-all duration-300">
-                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                  <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white transition-all duration-300 hover:bg-white hover:text-black md:h-16 md:w-16">
+                    <ArrowRight className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6" />
                   </div>
                 </div>
               </div>

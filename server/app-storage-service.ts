@@ -188,7 +188,7 @@ export class AppStorageService {
       const file = bucket.file(key);
       const [exists] = await file.exists();
       return exists;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -281,7 +281,7 @@ export class AppStorageService {
             key,
             ttl: `${ttlSeconds}s`,
             urlLength: url.length,
-            urlPreview: url.substring(0, 150) + "...",
+            urlPreview: `${url.substring(0, 150)}...`,
           });
           return url;
         } catch (error) {

@@ -194,7 +194,7 @@ export function LuxuryButton({
   const variantClasses = {
     primary: cn(
       glassCardVariants({ variant: "glass" }),
-      "border-luxury-light luxury-text-light font-medium",
+      "luxury-text-light border-luxury-light font-medium",
     ),
     secondary: cn(glassCardVariants({ variant: "glass" }), "luxury-text-light font-normal"),
     ghost: "luxury-text-light font-light hover:bg-white/10",

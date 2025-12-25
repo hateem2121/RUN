@@ -490,7 +490,7 @@ export class ProductRepository {
         (async () => {
           const start = performance.now();
           if (!product.categoryId) {
-            batchTimings["category_with_parent"] = 0;
+            batchTimings.category_with_parent = 0;
             return { category: null, subcategory: null };
           }
 
@@ -502,7 +502,7 @@ export class ProductRepository {
             },
           });
 
-          batchTimings["category_with_parent"] = Math.round(performance.now() - start);
+          batchTimings.category_with_parent = Math.round(performance.now() - start);
           return {
             category: category || null,
             subcategory: category?.parentCategory || null,
@@ -523,7 +523,7 @@ export class ProductRepository {
             mediaIds.length > 0
               ? await db.select().from(mediaAssets).where(inArray(mediaAssets.id, mediaIds))
               : [];
-          batchTimings["media"] = Math.round(performance.now() - start);
+          batchTimings.media = Math.round(performance.now() - start);
           return result;
         })(),
 
@@ -542,7 +542,7 @@ export class ProductRepository {
                     ),
                   )
               : [];
-          batchTimings["certificates"] = Math.round(performance.now() - start);
+          batchTimings.certificates = Math.round(performance.now() - start);
           return result;
         })(),
 
@@ -561,7 +561,7 @@ export class ProductRepository {
                     ),
                   )
               : [];
-          batchTimings["accessories"] = Math.round(performance.now() - start);
+          batchTimings.accessories = Math.round(performance.now() - start);
           return result;
         })(),
 
@@ -569,7 +569,7 @@ export class ProductRepository {
         (async () => {
           const start = performance.now();
           const result = await miscRepo.getFibers();
-          batchTimings["fibers_cached"] = Math.round(performance.now() - start);
+          batchTimings.fibers_cached = Math.round(performance.now() - start);
           return result;
         })(),
 
@@ -591,20 +591,20 @@ export class ProductRepository {
                 .orderBy(desc(products.createdAt))
                 .limit(12)
             : [];
-          batchTimings["categoryProducts"] = Math.round(performance.now() - start);
+          batchTimings.categoryProducts = Math.round(performance.now() - start);
           // Note: relatedProducts timing removed (derived from categoryProducts post-query)
           return result;
         })(),
       ]);
       queryTimings["2_parallel_batch"] = Math.round(performance.now() - batchQueryStart);
-      queryTimings["total_db_time"] = Math.round(performance.now() - queryStart);
+      queryTimings.total_db_time = Math.round(performance.now() - queryStart);
 
       // CHUNK 2 INSTRUMENTATION: Log detailed query timings
       logger.info(
         `[ProductRepo] [CHUNK 2] Query timings for ${urlPath}: ${JSON.stringify(queryTimings)}`,
       );
       logger.info(
-        `[ProductRepo] [CHUNK 2] Query breakdown: main=${queryTimings["1_main_product"]}ms, batch=${queryTimings["2_parallel_batch"]}ms, total=${queryTimings["total_db_time"]}ms`,
+        `[ProductRepo] [CHUNK 2] Query breakdown: main=${queryTimings["1_main_product"]}ms, batch=${queryTimings["2_parallel_batch"]}ms, total=${queryTimings.total_db_time}ms`,
       );
       logger.info(`[ProductRepo] [CHUNK 2] Batch breakdown: ${JSON.stringify(batchTimings)}`);
 
@@ -732,14 +732,14 @@ export class ProductRepository {
       .where(eq(products.id, productId))
       .limit(1);
 
-    if (!sourceProduct.length || !sourceProduct[0]!.categoryId) return [];
+    if (!sourceProduct.length || !sourceProduct[0]?.categoryId) return [];
 
     return await db
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
       .where(
         and(
-          eq(products.categoryId, sourceProduct[0]!.categoryId),
+          eq(products.categoryId, sourceProduct[0]?.categoryId),
           ne(products.id, productId),
           eq(products.isActive, true),
           isNull(products.deletedAt),

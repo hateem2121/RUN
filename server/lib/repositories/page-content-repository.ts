@@ -159,7 +159,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(homepageHero)
         .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(homepageHero.id, existing[0]!.id))
+        .where(eq(homepageHero.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -582,7 +582,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(logoAnimationSettings)
         .set(settings)
-        .where(eq(logoAnimationSettings.id, existing[0]!.id))
+        .where(eq(logoAnimationSettings.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -654,7 +654,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(homepageFeaturedProductsSettings)
         .set({ ...settings, updatedAt: sql`NOW()` })
-        .where(eq(homepageFeaturedProductsSettings.id, existing[0]!.id))
+        .where(eq(homepageFeaturedProductsSettings.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -716,7 +716,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(aboutHero)
         .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(aboutHero.id, existing[0]!.id))
+        .where(eq(aboutHero.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -1035,7 +1035,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(aboutTeamMessages)
         .set(message)
-        .where(eq(aboutTeamMessages.id, existing[0]!.id))
+        .where(eq(aboutTeamMessages.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -1078,7 +1078,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(sustainabilityHero)
         .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(sustainabilityHero.id, existing[0]!.id))
+        .where(eq(sustainabilityHero.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -1396,7 +1396,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(unifiedSustainability)
         .set({ ...data, updatedAt: sql`NOW()` })
-        .where(eq(unifiedSustainability.id, existing[0]!.id))
+        .where(eq(unifiedSustainability.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -1455,7 +1455,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(manufacturingHero)
         .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(manufacturingHero.id, existing[0]!.id))
+        .where(eq(manufacturingHero.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -1860,7 +1860,7 @@ export class PageContentRepository {
       const [updated] = await db
         .update(technologyHero)
         .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(technologyHero.id, existing[0]!.id))
+        .where(eq(technologyHero.id, existing[0]?.id))
         .returning();
       result = updated!;
     }

@@ -3,19 +3,19 @@ const checkZIndex = () => {
   // Check Dialog overlay
   const dialogOverlay = document.querySelector("[data-radix-dialog-overlay]");
   if (dialogOverlay) {
-    const overlayZIndex = window.getComputedStyle(dialogOverlay).zIndex;
+    const _overlayZIndex = window.getComputedStyle(dialogOverlay).zIndex;
   }
 
   // Check Dialog content
   const dialogContent = document.querySelector("[data-radix-dialog-content]");
   if (dialogContent) {
-    const contentZIndex = window.getComputedStyle(dialogContent).zIndex;
+    const _contentZIndex = window.getComputedStyle(dialogContent).zIndex;
   }
 
   // Check Select content when open
   const selectContent = document.querySelector("[data-radix-select-content]");
   if (selectContent) {
-    const selectZIndex = window.getComputedStyle(selectContent).zIndex;
+    const _selectZIndex = window.getComputedStyle(selectContent).zIndex;
   }
 };
 
@@ -23,12 +23,12 @@ const checkZIndex = () => {
 const checkOverflow = () => {
   const dialogContent = document.querySelector("[data-radix-dialog-content]");
   if (dialogContent) {
-    const overflow = window.getComputedStyle(dialogContent).overflow;
+    const _overflow = window.getComputedStyle(dialogContent).overflow;
 
     // Check inner div
     const innerDiv = dialogContent.querySelector("div");
     if (innerDiv) {
-      const innerOverflow = window.getComputedStyle(innerDiv).overflow;
+      const _innerOverflow = window.getComputedStyle(innerDiv).overflow;
     }
   }
 };
@@ -37,7 +37,7 @@ const checkOverflow = () => {
 const checkPortals = () => {
   const portals = document.querySelectorAll("[data-radix-portal]");
 
-  portals.forEach((portal, index) => {});
+  portals.forEach((_portal, _index) => {});
 };
 
 // Run tests

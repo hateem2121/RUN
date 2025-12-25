@@ -75,12 +75,12 @@ async function analyzeMissingContent() {
         missingReport[f.name] = missing;
       }
     });
-    Object.entries(missingReport).forEach(([name, fields]) => {
-      fields.forEach((field) => {});
+    Object.entries(missingReport).forEach(([_name, fields]) => {
+      fields.forEach((_field) => {});
     });
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -1,9 +1,9 @@
 import type { AboutTimelineEntry } from "@shared/schema";
-import { glassCardVariants } from "@/components/ui/glass-card";
-import { cn } from "@/lib/utils";
 import { motion, useInView } from "framer-motion";
 import { Calendar, Sparkles } from "lucide-react";
 import { useRef } from "react";
+import { glassCardVariants } from "@/components/ui/glass-card";
+import { cn } from "@/lib/utils";
 
 interface Timeline3DProps {
   entries: AboutTimelineEntry[];

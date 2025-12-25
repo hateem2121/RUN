@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // Forensic Audit Test Suite
 // Purpose: Detect visual regressions, console errors, and style inconsistencies
@@ -127,7 +127,9 @@ test.describe("Forensic UI Audit", () => {
 
           // HOTSPOT CHECK: Computed Style Drift (Tailwind v4 check)
           // Verify if variable resolution is working (e.g. check a known token)
-          const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+          const _bodyBg = await page.evaluate(
+            () => getComputedStyle(document.body).backgroundColor,
+          );
           // console.log(\`[Style Check] Body BG: \${bodyBg}\`);
 
           // Visual Snapshot

@@ -208,11 +208,11 @@ export const CacheWarmupRegistry = {
               await appStorageService.generateSignedUrl(pathToServe, 300);
               warmedCount++;
             }
-          } catch (error) {}
+          } catch (_error) {}
         }
 
         return { warmed: warmedCount, total: mediaIds.length };
-      } catch (error) {
+      } catch (_error) {
         return { warmed: 0, total: mediaIds.length };
       }
     },
@@ -371,7 +371,7 @@ export const CacheWarmupRegistry = {
               warmedCount++;
             }
           }
-        } catch (error) {}
+        } catch (_error) {}
       }
 
       return { warmedCount, total: productIdsToWarm.length };

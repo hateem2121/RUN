@@ -70,7 +70,7 @@ async function analyzeStorageUsage() {
         hasDBRecord: !!dbRecord,
         dbId: dbRecord?.id,
       });
-    } catch (error) {}
+    } catch (_error) {}
   }
 
   const totalSize = fileUsages.reduce((sum, f) => sum + f.size, 0);
@@ -83,7 +83,7 @@ async function analyzeStorageUsage() {
     }
     categoryStats[file.category]!.count++;
     categoryStats[file.category]!.totalSize += file.size;
-    categoryStats[file.category]!.files.push(file);
+    categoryStats[file.category]?.files.push(file);
   }
 
   // Group by file type
@@ -110,40 +110,40 @@ async function analyzeStorageUsage() {
     (a, b) => b[1].totalSize - a[1].totalSize,
   );
 
-  for (const [category, stats] of sortedCategories) {
-    const percentage = ((stats.totalSize / totalSize) * 100).toFixed(2);
+  for (const [_category, stats] of sortedCategories) {
+    const _percentage = ((stats.totalSize / totalSize) * 100).toFixed(2);
   }
 
   for (const type of typesArray) {
-    const ext = type.extension.padEnd(9);
-    const count = type.count.toString().padStart(5);
-    const size = formatBytes(type.totalSize).padStart(11);
-    const pct = type.percentage.toFixed(2).padStart(6);
+    const _ext = type.extension.padEnd(9);
+    const _count = type.count.toString().padStart(5);
+    const _size = formatBytes(type.totalSize).padStart(11);
+    const _pct = type.percentage.toFixed(2).padStart(6);
   }
   const sortedBySize = [...fileUsages].sort((a, b) => b.size - a.size).slice(0, 10);
 
   for (let i = 0; i < sortedBySize.length; i++) {
     const file = sortedBySize[i];
     if (!file) continue;
-    const dbInfo = file.hasDBRecord ? `DB ID: ${file.dbId}` : "No DB record";
+    const _dbInfo = file.hasDBRecord ? `DB ID: ${file.dbId}` : "No DB record";
   }
 
   const trackedFiles = fileUsages.filter((f) => f.hasDBRecord);
   const untrackedFiles = fileUsages.filter((f) => !f.hasDBRecord);
-  const trackedSize = trackedFiles.reduce((sum, f) => sum + f.size, 0);
-  const untrackedSize = untrackedFiles.reduce((sum, f) => sum + f.size, 0);
+  const _trackedSize = trackedFiles.reduce((sum, f) => sum + f.size, 0);
+  const _untrackedSize = untrackedFiles.reduce((sum, f) => sum + f.size, 0);
 
   if (untrackedFiles.length > 0) {
-    for (const file of untrackedFiles) {
+    for (const _file of untrackedFiles) {
     }
   }
 
-  const mainFileSize = categoryStats["main"]?.totalSize || 0;
-  const thumbnailSize = categoryStats["thumbnail"]?.totalSize || 0;
-  const healthProbeSize = categoryStats["health-probe"]?.totalSize || 0;
-  const otherSize = categoryStats["other"]?.totalSize || 0;
+  const mainFileSize = categoryStats.main?.totalSize || 0;
+  const thumbnailSize = categoryStats.thumbnail?.totalSize || 0;
+  const _healthProbeSize = categoryStats["health-probe"]?.totalSize || 0;
+  const _otherSize = categoryStats.other?.totalSize || 0;
 
-  const thumbnailOverhead = (thumbnailSize / mainFileSize) * 100;
+  const _thumbnailOverhead = (thumbnailSize / mainFileSize) * 100;
 }
 
 function formatBytes(bytes: number): string {
@@ -151,7 +151,7 @@ function formatBytes(bytes: number): string {
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / k ** i) * 100) / 100 + " " + sizes[i];
+  return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`;
 }
 
 // Run analysis
@@ -159,6 +159,6 @@ analyzeStorageUsage()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

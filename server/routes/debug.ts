@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { sql } from "drizzle-orm";
 import { Router } from "express";
 import { db } from "../db.js";
@@ -40,7 +40,7 @@ router.use((req, res, next) => {
     if (tokenBuf.length === expectedBuf.length) {
       isValid = crypto.timingSafeEqual(tokenBuf, expectedBuf);
     }
-  } catch (e) {
+  } catch (_e) {
     isValid = false;
   }
 

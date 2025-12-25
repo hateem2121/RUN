@@ -98,6 +98,7 @@ export function InquiryCartButton() {
     <>
       {/* Floating Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="fixed right-4 bottom-4 z-dock rounded-full bg-black p-4 text-white shadow-lg transition-all hover:bg-gray-800 sm:right-6 sm:bottom-6 md:right-8 md:bottom-8"
         data-testid="inquiry-cart-button"
@@ -112,14 +113,26 @@ export function InquiryCartButton() {
 
       {/* Modal */}
       {isOpen && (
+        // biome-ignore lint/a11y/useSemanticElements: Backdrop cannot be a button due to invalid HTML nesting
         <div
-          className="fixed inset-0 z-modal center-flex bg-black/50 p-4"
+          className="center-flex fixed inset-0 z-modal bg-black/50 p-4"
           onClick={() => setIsOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+              setIsOpen(false);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
           data-testid="inquiry-cart-modal"
         >
           <div
+            role="dialog"
+            aria-modal="true"
             className="flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col bg-white text-black shadow-xl"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b p-6">
@@ -127,6 +140,7 @@ export function InquiryCartButton() {
                 {showForm ? "Submit Inquiry" : "Inquiry Cart"}
               </h2>
               <button
+                type="button"
                 onClick={() => setIsOpen(false)}
                 className="text-2xl hover:text-gray-600"
                 data-testid="close-inquiry-modal"
@@ -159,6 +173,7 @@ export function InquiryCartButton() {
                           <p className="text-gray-500 text-sm">MOQ: {item.product.moq} units</p>
                         </div>
                         <button
+                          type="button"
                           onClick={() => removeItem(item.product.id)}
                           className="text-gray-400 hover:text-red-600"
                           data-testid={`remove-item-${item.product.id}`}

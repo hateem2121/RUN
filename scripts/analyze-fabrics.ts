@@ -10,10 +10,10 @@ async function analyzeFabrics() {
     // Reverse to match insertion order for easier comparison
     const orderedFabrics = recentFabrics.reverse();
 
-    orderedFabrics.forEach((f) => {});
+    orderedFabrics.forEach((_f) => {});
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, LiquidGlassCard } from "@/components/ui/glass-card";
-import { cn } from "@/lib/utils";
+import { LiquidGlassCard } from "@/components/ui/glass-card";
 
 export default function ThemePreview() {
   return (
     <div className="min-h-screen bg-black p-8 font-sans text-white">
       <div className="mx-auto max-w-6xl space-y-12">
-        <header className="border-b border-glass pb-8">
+        <header className="border-glass border-b pb-8">
           <h1 className="font-bold text-4xl tracking-tight">Design System</h1>
-          <p className="mt-2 text-xl text-white/60">
+          <p className="mt-2 text-white/60 text-xl">
             Tailwind v4 Native Architecture (5/5 Quality Score)
           </p>
         </header>
@@ -21,32 +20,23 @@ export default function ThemePreview() {
           </p>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <LiquidGlassCard
-              glowIntensity="sm"
-              className="flex h-40 items-center justify-center p-6"
-            >
+            <LiquidGlassCard glowIntensity="sm" className="center-flex h-40 p-6">
               <div className="text-center">
-                <div className="font-mono text-xs text-orange-400">glowIntensity="sm"</div>
+                <div className="font-mono text-orange-400 text-xs">glowIntensity="sm"</div>
                 <div className="mt-2 text-sm text-white/60">Subtle ambient light</div>
               </div>
             </LiquidGlassCard>
 
-            <LiquidGlassCard
-              glowIntensity="md"
-              className="flex h-40 items-center justify-center p-6"
-            >
+            <LiquidGlassCard glowIntensity="md" className="center-flex h-40 p-6">
               <div className="text-center">
-                <div className="font-mono text-xs text-orange-400">glowIntensity="md"</div>
+                <div className="font-mono text-orange-400 text-xs">glowIntensity="md"</div>
                 <div className="mt-2 text-sm text-white/60">Standard card elevation</div>
               </div>
             </LiquidGlassCard>
 
-            <LiquidGlassCard
-              glowIntensity="xl"
-              className="flex h-40 items-center justify-center p-6"
-            >
+            <LiquidGlassCard glowIntensity="xl" className="center-flex h-40 p-6">
               <div className="text-center">
-                <div className="font-mono text-xs text-orange-400">glowIntensity="xl"</div>
+                <div className="font-mono text-orange-400 text-xs">glowIntensity="xl"</div>
                 <div className="mt-2 text-sm text-white/60">High impact / Hero</div>
               </div>
             </LiquidGlassCard>
@@ -76,7 +66,7 @@ export default function ThemePreview() {
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <div className="h-px w-8 bg-blue-500/50" />
-                  <span className="text-xs uppercase tracking-wider text-blue-400">
+                  <span className="text-blue-400 text-xs uppercase tracking-wider">
                     New Glass Variant
                   </span>
                 </div>
@@ -103,19 +93,19 @@ export default function ThemePreview() {
           <p className="text-white/60">Semantic layering system. No magic numbers.</p>
 
           <div className="relative h-64 w-full overflow-hidden rounded-xl border border-glass bg-black/50">
-            <div className="absolute inset-0 center-flex">
+            <div className="center-flex absolute inset-0">
               {/* Visualizing layers */}
-              <div className="z-base absolute top-10 left-10 h-32 w-32 rounded-lg bg-zinc-800 p-2 shadow-lg">
-                <span className="font-mono text-xs text-white">z-base (0)</span>
+              <div className="absolute top-10 left-10 z-base h-32 w-32 rounded-lg bg-zinc-800 p-2 shadow-lg">
+                <span className="font-mono text-white text-xs">z-base (0)</span>
               </div>
-              <div className="z-dock absolute top-16 left-20 h-32 w-32 rounded-lg bg-zinc-700 p-2 shadow-xl border border-glass">
-                <span className="font-mono text-xs text-white">z-dock (10)</span>
+              <div className="absolute top-16 left-20 z-dock h-32 w-32 rounded-lg border border-glass bg-zinc-700 p-2 shadow-xl">
+                <span className="font-mono text-white text-xs">z-dock (10)</span>
               </div>
-              <div className="z-sticky absolute top-24 left-32 h-32 w-32 rounded-lg bg-zinc-600 p-2 shadow-2xl border border-white/20">
-                <span className="font-mono text-xs text-white">z-sticky (20)</span>
+              <div className="absolute top-24 left-32 z-sticky h-32 w-32 rounded-lg border border-white/20 bg-zinc-600 p-2 shadow-2xl">
+                <span className="font-mono text-white text-xs">z-sticky (20)</span>
               </div>
-              <div className="z-modal absolute top-32 left-44 h-32 w-32 rounded-lg bg-purple-900/80 p-2 shadow-2xl border border-purple-500/50 backdrop-blur-md">
-                <span className="font-mono text-xs text-white">z-modal (50)</span>
+              <div className="absolute top-32 left-44 z-modal h-32 w-32 rounded-lg border border-purple-500/50 bg-purple-900/80 p-2 shadow-2xl backdrop-blur-md">
+                <span className="font-mono text-white text-xs">z-modal (50)</span>
               </div>
             </div>
           </div>

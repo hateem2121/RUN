@@ -88,6 +88,6 @@ async function seedHomepageSections() {
   process.exit(0);
 }
 
-seedHomepageSections().catch((err) => {
+seedHomepageSections().catch((_err) => {
   process.exit(1);
 });

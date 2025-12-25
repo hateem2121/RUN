@@ -22,7 +22,7 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
         setDisplayValue((prev) =>
           prev
             .split("")
-            .map((letter, index) => {
+            .map((_letter, index) => {
               if (index < iterations) return value[index];
               return chars[Math.floor(Math.random() * chars.length)];
             })
@@ -52,7 +52,7 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   }, [value]);
 
   return (
-    <span className="inline-block relative">
+    <span className="relative inline-block">
       <span className="sr-only">{value}</span>
       <span aria-hidden="true" ref={elementRef}>
         {displayValue}
@@ -123,16 +123,16 @@ const Stats: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen md:min-h-[150vh] flex flex-col md:flex-row bg-[#050505] border-t border-white/10"
+      className="relative flex min-h-screen w-full flex-col border-white/10 border-t bg-[#050505] md:min-h-[150vh] md:flex-row"
     >
       {/* Sticky Background Image */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 z-0">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1590644365607-1c5a29d250c4?q=80&w=2070&auto=format&fit=crop"
             alt="Factory Background"
             decoding="async"
-            className="w-full h-full object-cover opacity-30 grayscale filter contrast-125"
+            className="h-full w-full object-cover opacity-30 contrast-125 grayscale filter"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
         </div>
@@ -141,16 +141,16 @@ const Stats: React.FC = () => {
       {/* Left Side */}
       <div
         ref={leftRef}
-        className="w-full md:w-1/2 md:h-screen flex flex-col justify-center p-6 md:p-16 border-b md:border-b-0 md:border-r border-white/10 relative z-10 text-[#FAFAFA] bg-black/20 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none"
+        className="relative z-10 flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-6 text-[#FAFAFA] backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
       >
-        <div className="flex flex-col justify-center relative z-10 pt-12 md:pt-0">
-          <h2 className="text-[10vw] md:text-[4vw] uppercase font-bold leading-tight mb-4 md:mb-8">
+        <div className="relative z-10 flex flex-col justify-center pt-12 md:pt-0">
+          <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
             The Evolution of <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-white bg-300% animate-gradient">
+            <span className="animate-gradient bg-300% bg-gradient-to-r from-blue-500 to-white bg-clip-text text-transparent">
               Athletic Craftsmanship
             </span>
           </h2>
-          <p className="text-sm md:text-xl font-light max-w-md text-gray-300 leading-relaxed">
+          <p className="max-w-md font-light text-gray-300 text-sm leading-relaxed md:text-xl">
             Blending century-old artisanal techniques with cutting-edge robotic precision. We don't
             just manufacture; we engineer performance.
           </p>
@@ -158,18 +158,18 @@ const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="w-full md:w-1/2 flex flex-col relative z-10 text-[#FAFAFA]">
+      <div ref={rightRef} className="relative z-10 flex w-full flex-col text-[#FAFAFA] md:w-1/2">
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
-            className="stat-item h-[40vh] md:h-[50vh] flex flex-col justify-center p-6 md:p-16 border-b border-white/10 last:border-b-0 backdrop-blur-sm bg-black/10"
+            className="stat-item flex h-[40vh] flex-col justify-center border-white/10 border-b bg-black/10 p-6 backdrop-blur-sm last:border-b-0 md:h-[50vh] md:p-16"
           >
-            <h3 className="text-[20vw] md:text-[12vw] leading-none font-bold tracking-tighter">
+            <h3 className="font-bold text-[20vw] leading-none tracking-tighter md:text-[12vw]">
               <ScrambleNumber value={stat.value} />
             </h3>
-            <div className="h-[1px] w-full bg-white/30 my-4 transform origin-left scale-x-100 transition-transform duration-700" />
-            <h4 className="text-xl md:text-2xl uppercase font-bold mb-2">{stat.label}</h4>
-            <p className="text-sm md:text-base text-gray-400">{stat.description}</p>
+            <div className="my-4 h-[1px] w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
+            <h4 className="mb-2 font-bold text-xl uppercase md:text-2xl">{stat.label}</h4>
+            <p className="text-gray-400 text-sm md:text-base">{stat.description}</p>
           </div>
         ))}
       </div>

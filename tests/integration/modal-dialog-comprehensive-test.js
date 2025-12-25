@@ -30,7 +30,7 @@ const testResults = {
 
 // Utility Functions
 function logTest(category, testName, result, details = "") {
-  const status = result ? "✅ PASSED" : "❌ FAILED";
+  const _status = result ? "✅ PASSED" : "❌ FAILED";
 
   if (result) {
     testResults[category].passed++;
@@ -48,7 +48,7 @@ function getComputedZIndex(element) {
   return window.getComputedStyle(element).zIndex;
 }
 
-function isElementVisible(element) {
+function _isElementVisible(element) {
   const rect = element.getBoundingClientRect();
   return (
     rect.width > 0 &&
@@ -76,7 +76,7 @@ async function testHookExportVerification() {
     }
 
     // Check if window has the expected hook functions exposed (development check)
-    const hasModalPositioningExposed =
+    const _hasModalPositioningExposed =
       typeof window.useModalPositioning !== "undefined" ||
       typeof window.__MODAL_POSITIONING_LOADED__ !== "undefined";
 
@@ -105,8 +105,8 @@ async function testCrossDeviceModals() {
       await wait(200); // Allow resize to settle
 
       // Test modal viewport constraint detection
-      const isNarrowViewport = viewport.width <= 768;
-      const viewportClasses = document.documentElement.classList;
+      const _isNarrowViewport = viewport.width <= 768;
+      const _viewportClasses = document.documentElement.classList;
 
       logTest(
         "crossDeviceTesting",
@@ -121,7 +121,7 @@ async function testCrossDeviceModals() {
         modalElements.length === 0 ||
         Array.from(modalElements).every((el) => {
           const zIndex = getComputedZIndex(el);
-          return zIndex && parseInt(zIndex) > 40;
+          return zIndex && parseInt(zIndex, 10) > 40;
         });
 
       logTest("crossDeviceTesting", `${viewport.name} modal stacking`, hasProperStacking);
@@ -195,9 +195,9 @@ async function testFocusManagement() {
   );
 
   // Test Escape key handling setup
-  let escapeHandled = false;
+  let _escapeHandled = false;
   const escapeHandler = (e) => {
-    if (e.key === "Escape") escapeHandled = true;
+    if (e.key === "Escape") _escapeHandled = true;
   };
 
   document.addEventListener("keydown", escapeHandler);
@@ -231,9 +231,9 @@ async function testZIndexVerification() {
   );
 
   // Verify z-index hierarchy (backdrop < modal < nested)
-  const backdropZ = parseInt(zModalBackdrop) || 40;
-  const modalZ = parseInt(zModal) || 50;
-  const nestedZ = parseInt(zModalNested) || 55;
+  const backdropZ = parseInt(zModalBackdrop, 10) || 40;
+  const modalZ = parseInt(zModal, 10) || 50;
+  const nestedZ = parseInt(zModalNested, 10) || 55;
 
   const hierarchyCorrect = backdropZ < modalZ && modalZ < nestedZ;
   logTest(
@@ -312,7 +312,7 @@ async function testApiIntegrationWithModals() {
 
 // Main Test Execution
 async function runComprehensiveTests() {
-  const startTime = Date.now();
+  const _startTime = Date.now();
 
   try {
     // Execute all test suites
@@ -340,14 +340,14 @@ async function runComprehensiveTests() {
     testResults.overallScore = Math.round((passedTests / totalTests) * 100);
 
     // Results Summary
-    Object.entries(testResults).forEach(([category, results]) => {
+    Object.entries(testResults).forEach(([_category, results]) => {
       if (typeof results === "object" && results.passed !== undefined) {
         const total = results.passed + results.failed;
-        const percentage = total > 0 ? Math.round((results.passed / total) * 100) : 0;
+        const _percentage = total > 0 ? Math.round((results.passed / total) * 100) : 0;
 
         // Show failed tests
         if (results.failed > 0) {
-          results.details.filter((d) => !d.result).forEach((detail) => {});
+          results.details.filter((d) => !d.result).forEach((_detail) => {});
         }
       }
     });

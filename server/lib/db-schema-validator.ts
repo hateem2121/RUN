@@ -338,7 +338,7 @@ function getDrizzleColumnType(colDef: any): string {
   }
 
   // Fallback: try to infer from constructor name
-  if (colDef.constructor && colDef.constructor.name) {
+  if (colDef.constructor?.name) {
     const typeName = colDef.constructor.name.toLowerCase();
     if (typeName.includes("serial")) return "serial";
     if (typeName.includes("varchar")) return "varchar";

@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import type { TransformedProduct } from "@/lib/product-transformers";
 
 interface GearSectionProps {
@@ -19,14 +20,14 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
 
   return (
     <section className="bg-background px-6 py-16 text-foreground md:py-20 lg:py-32">
-      <div className="mx-auto grid container-wide grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+      <div className="container-wide mx-auto grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
         <div className="relative aspect-[1/1] w-full sm:aspect-[4/5]">
           <img
             src="https://picsum.photos/seed/gear-main/800/1000"
             alt="RUN GEAR Collection"
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 center-flex bg-black/30">
+          <div className="center-flex absolute inset-0 bg-black/30">
             <h2 className="text-center font-condensed text-7xl text-white leading-none md:text-9xl">
               RUN
               <br />
@@ -63,7 +64,7 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
                   <p className="mt-1 text-muted-foreground text-sm">{currentProduct.fabric}</p>
                   <button
                     onClick={() => onProductClick(currentProduct)}
-                    className="mt-4 border-foreground border-b pb-1 text-sm uppercase tracking-widest hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+                    className="mt-4 border-foreground border-b pb-1 text-sm uppercase tracking-widest transition-colors hover:border-muted-foreground hover:text-muted-foreground"
                   >
                     View Details
                   </button>
@@ -71,13 +72,15 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
               </div>
             )}
             <div className="mt-8 flex items-center gap-3 sm:gap-4">
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={handlePrev}
-                className="flex min-h-11 min-w-11 items-center justify-center border border-input p-3 transition-colors hover:bg-muted sm:p-4"
+                className="h-11 w-11"
                 aria-label="Previous gear item"
               >
                 <ArrowLeft className="h-5 w-5" />
-              </button>
+              </Button>
               <div className="flex items-center gap-2 sm:gap-3">
                 {gearProducts.map((_, idx) => (
                   <button
@@ -92,13 +95,15 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
                   />
                 ))}
               </div>
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={handleNext}
-                className="flex min-h-11 min-w-11 items-center justify-center border border-input p-3 transition-colors hover:bg-muted sm:p-4"
+                className="h-11 w-11"
                 aria-label="Next gear item"
               >
                 <ArrowRight className="h-5 w-5" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

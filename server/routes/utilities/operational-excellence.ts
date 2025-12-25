@@ -159,8 +159,8 @@ export async function getMetricsHistory(_req: Request, res: Response) {
 export async function getWorkflows(req: Request, res: Response) {
   try {
     // Parse and validate pagination params (prevent negative values)
-    const parsedLimit = parseInt(req.query.limit as string) || 20;
-    const parsedOffset = parseInt(req.query.offset as string) || 0;
+    const parsedLimit = parseInt(req.query.limit as string, 10) || 20;
+    const parsedOffset = parseInt(req.query.offset as string, 10) || 0;
     const limit = Math.min(Math.max(0, parsedLimit), 100);
     const offset = Math.max(0, parsedOffset);
 

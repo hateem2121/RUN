@@ -79,8 +79,8 @@ router.get("/folders/tree", async (_req, res) => {
 // GET /api/folders/:id - Get specific folder
 router.get("/folders/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid folder ID" });
     }
 
@@ -129,8 +129,8 @@ router.post("/folders", async (req, res) => {
 // PUT /api/folders/:id - Update folder
 router.put("/folders/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid folder ID" });
     }
 
@@ -165,8 +165,8 @@ router.put("/folders/:id", async (req, res) => {
 // DELETE /api/folders/:id - Delete folder
 router.delete("/folders/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid folder ID" });
     }
 
@@ -201,8 +201,8 @@ router.delete("/folders/:id", async (req, res) => {
 // GET /api/folders/:id/children - Get folder children
 router.get("/folders/:id/children", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid folder ID" });
     }
 
@@ -224,8 +224,8 @@ router.get("/folders/:id/children", async (req, res) => {
 // GET /api/folders/:id/media - Get media assets in folder
 router.get("/folders/:id/media", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid folder ID" });
     }
 
@@ -247,10 +247,10 @@ router.get("/folders/:id/media", async (req, res) => {
 // POST /api/folders/:id/move-media - Move media asset to folder
 router.post("/folders/:id/move-media", async (req, res) => {
   try {
-    const folderId = parseInt(req.params.id);
+    const folderId = parseInt(req.params.id, 10);
     const { mediaAssetId } = req.body;
 
-    if (isNaN(folderId) || !mediaAssetId) {
+    if (Number.isNaN(folderId) || !mediaAssetId) {
       return res.status(400).json({
         message: "Invalid folder ID or media asset ID",
       });

@@ -15,9 +15,9 @@
  * Usage: tsx scripts/cache-performance-analysis.ts
  */
 
+import fs from "node:fs/promises";
+import path from "node:path";
 import { sql } from "drizzle-orm";
-import fs from "fs/promises";
-import path from "path";
 import { db, getPoolMetrics } from "../server/db.js";
 
 // Lazy imports to avoid circular dependencies
@@ -145,10 +145,6 @@ class CachePerformanceAnalyzer {
   private cache: any;
   private report: Partial<AnalysisReport> = {};
 
-  constructor() {
-    // Cache will be initialized in runFullAnalysis
-  }
-
   async runFullAnalysis(): Promise<AnalysisReport> {
     // Initialize services first
     await initializeServices();
@@ -250,7 +246,7 @@ class CachePerformanceAnalyzer {
           estimated_savings_percent: Math.round(estimatedSavings * 100) / 100,
         },
       };
-    } catch (error) {
+    } catch (_error) {
       this.report.neon_postgresql = {
         cache_hit_ratio: 0,
         top_20_slowest_queries: [],
@@ -752,7 +748,7 @@ ${
 async function main() {
   try {
     const analyzer = new CachePerformanceAnalyzer();
-    const report = await analyzer.runFullAnalysis();
+    const _report = await analyzer.runFullAnalysis();
     await analyzer.saveReport();
 
     process.exit(0);

@@ -32,7 +32,7 @@ export class MigrationUtilities {
   /**
    * Validate data before insertion
    */
-  private validateData<T>(data: T[], entityName: string): T[] {
+  private validateData<T>(data: T[], _entityName: string): T[] {
     const validData = data.filter((item) => {
       if (!item || typeof item !== "object") {
         return false;

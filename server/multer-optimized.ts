@@ -136,7 +136,7 @@ export function validateMagicNumbers(req: Request, res: Response, next: NextFunc
     }
 
     next();
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({
       message: "File validation failed",
     });
@@ -173,7 +173,7 @@ export const uploadOptimized = multer({
   },
   fileFilter: (_req, file, cb) => {
     // Extract file extension for logging and validation
-    const extension = file.originalname.toLowerCase().split(".").pop() || "";
+    const _extension = file.originalname.toLowerCase().split(".").pop() || "";
 
     // SECURITY-HARDENED file type validation - Enhanced chunked upload support
     const allowedMimes = [

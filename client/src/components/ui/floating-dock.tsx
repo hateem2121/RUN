@@ -303,7 +303,7 @@ function IconContainer({
       <motion.div
         ref={ref}
         style={{ width, height }}
-        className="relative center-flex overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
+        className="center-flex relative overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
       >
         {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-white/10 via-transparent to-black/10" />
@@ -318,7 +318,7 @@ function IconContainer({
 
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="relative z-elevated center-flex"
+          className="center-flex relative z-elevated"
         >
           {icon}
         </motion.div>

@@ -1,9 +1,9 @@
+import fs from "node:fs";
+import type { Server as HttpServer } from "node:http"; // HMR FIX: Import HttpServer type
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { dehydrate } from "@tanstack/react-query";
 import type { NextFunction, Request, Response } from "express";
-import fs from "fs";
-import type { Server as HttpServer } from "http"; // HMR FIX: Import HttpServer type
-import path from "path";
-import { pathToFileURL } from "url";
 import { createServer as createViteServer, type ViteDevServer } from "vite";
 import { logging } from "../config/environment.js";
 import { getStorage } from "./storage-singleton.js";
@@ -118,14 +118,14 @@ async function createSsrHandler(app: any, server?: HttpServer) {
           const nonce = res.locals.cspNonce;
           // Nonce all script tags
           template = template.replace(/<script\b([^>]*)>/g, (match, attributes) => {
-            if (attributes && attributes.includes("nonce=")) return match;
+            if (attributes?.includes("nonce=")) return match;
             return `<script nonce="${nonce}"${attributes}>`;
           });
           // Nonce preload links
           template = template.replace(
             /<link\b([^>]*\brel=["'](?:modulepreload|preload)["'][^>]*)>/g,
             (match, attributes) => {
-              if (attributes && attributes.includes("nonce=")) return match;
+              if (attributes?.includes("nonce=")) return match;
               return `<link nonce="${nonce}"${attributes}>`;
             },
           );
@@ -167,7 +167,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
       try {
         const categories = await getStorage().getCategories();
         queryClient.setQueryData(["/api/categories"], categories);
-      } catch (err) {}
+      } catch (_err) {}
 
       try {
         if (url === "/contact" || url.startsWith("/contact?")) {
@@ -176,7 +176,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
             queryClient.setQueryData(["/api/contact-info"], contactConfig);
           }
         }
-      } catch (err) {}
+      } catch (_err) {}
 
       // Template Marker Strategy
       // We no longer split by strings/regex. We use exact placeholder replacements.
@@ -248,7 +248,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
 
               // Defensive replacer for JSON.stringify to handle undefined/complex types
               const safeJsonStringify = (obj: any) => {
-                return JSON.stringify(obj, (key, value) => {
+                return JSON.stringify(obj, (_key, value) => {
                   if (typeof value === "undefined") return null;
                   return value;
                 }).replace(/</g, "\\u003c");
@@ -288,7 +288,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
               .catch(() => {});
 
             if (!res.headersSent) {
-              res.status(500).send("<h1>Server Error</h1><pre>" + error?.message + "</pre>");
+              res.status(500).send(`<h1>Server Error</h1><pre>${error?.message}</pre>`);
             } else {
               res.end();
             }

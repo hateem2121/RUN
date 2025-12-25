@@ -28,17 +28,12 @@ async function testGCSCredentials() {
       throw new Error(`Bucket "${bucketName}" does not exist or is not accessible`);
     }
     const testFile = bucket.file("test/dummy-path.jpg");
-
-    try {
-      const [url] = await testFile.getSignedUrl({
-        version: "v4",
-        action: "read",
-        expires: Date.now() + 3600 * 1000, // 1 hour
-      });
-    } catch (signError) {
-      throw signError;
-    }
-  } catch (error) {
+    const [_url] = await testFile.getSignedUrl({
+      version: "v4",
+      action: "read",
+      expires: Date.now() + 3600 * 1000, // 1 hour
+    });
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -1,5 +1,4 @@
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { FEATURED_PRODUCTS } from "../constants";
@@ -51,21 +50,21 @@ const FeaturedProducts: React.FC = () => {
   };
 
   return (
-    <section ref={containerRef} className="w-full py-32 px-4 md:px-8 bg-[#FAFAFA]">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex justify-between items-end mb-16 border-b border-black/10 pb-8">
-          <h2 className="text-[12vw] md:text-[5vw] leading-[0.9] uppercase font-bold">
+    <section ref={containerRef} className="w-full bg-[#FAFAFA] px-4 py-32 md:px-8">
+      <div className="mx-auto max-w-[1600px]">
+        <div className="mb-16 flex items-end justify-between border-black/10 border-b pb-8">
+          <h2 className="font-bold text-[12vw] uppercase leading-[0.9] md:text-[5vw]">
             Archive <br /> 24/25
           </h2>
-          <div className="hidden md:block text-right">
-            <p className="font-mono text-xs tracking-widest text-gray-500 mb-2">SEASON: CURRENT</p>
-            <p className="font-mono text-xs tracking-widest text-gray-500">
+          <div className="hidden text-right md:block">
+            <p className="mb-2 font-mono text-gray-500 text-xs tracking-widest">SEASON: CURRENT</p>
+            <p className="font-mono text-gray-500 text-xs tracking-widest">
               STATUS: PRODUCTION READY
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
           {FEATURED_PRODUCTS.map((product, index) => (
             <div
               key={product.id}
@@ -73,28 +72,28 @@ const FeaturedProducts: React.FC = () => {
               onMouseEnter={() => !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")}
               onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-8">
+              <div className="relative mb-8 aspect-[3/4] overflow-hidden bg-gray-200">
                 <img
                   src={product.image}
                   alt={product.name}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 grayscale group-hover:grayscale-0"
+                  className="h-full w-full object-cover grayscale transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:grayscale-0"
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+                <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />
               </div>
 
-              <div className="flex justify-between items-start border-t border-black/10 pt-6">
+              <div className="flex items-start justify-between border-black/10 border-t pt-6">
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-xl md:text-2xl font-bold uppercase leading-tight">
+                  <h3 className="font-bold text-xl uppercase leading-tight md:text-2xl">
                     {product.name}
                   </h3>
-                  <p className="font-mono text-xs md:text-sm text-gray-500 tracking-widest">
+                  <p className="font-mono text-gray-500 text-xs tracking-widest md:text-sm">
                     {product.category}
                   </p>
                 </div>
-                <span className="font-mono text-xs border border-black/20 px-3 py-1 rounded-full whitespace-nowrap ml-4">
+                <span className="ml-4 whitespace-nowrap rounded-full border border-black/20 px-3 py-1 font-mono text-xs">
                   {product.price}
                 </span>
               </div>
@@ -105,7 +104,7 @@ const FeaturedProducts: React.FC = () => {
         <div className="mt-24 text-center">
           <button
             onClick={handleCatalogueClick}
-            className="uppercase tracking-widest text-sm font-bold border-b border-black pb-1 hover:text-[#3300FF] hover:border-[#3300FF] transition-colors"
+            className="border-black border-b pb-1 font-bold text-sm uppercase tracking-widest transition-colors hover:border-[#3300FF] hover:text-[#3300FF]"
             onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
             onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
           >

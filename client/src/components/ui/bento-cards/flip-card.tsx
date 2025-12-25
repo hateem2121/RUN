@@ -40,7 +40,7 @@ const FlipCard = memo(function FlipCard({
       <AnimatedCardWrapper className="h-full w-full">
         <div className="relative flex h-full w-full items-center justify-center contain-layout">
           <div
-            className="group relative h-96 w-full max-w-72 perspective-deep"
+            className="group perspective-deep relative h-96 w-full max-w-72"
             onMouseEnter={() => setIsFlipped(true)}
             onMouseLeave={() => setIsFlipped(false)}
           >
@@ -154,7 +154,7 @@ const FlipCard = memo(function FlipCard({
                     </p>
                   </div>
 
-                  <div className="max-h-[140px] flex-1 space-y-2 overflow-y-auto pr-1">
+                  <div className="max-h-36 flex-1 space-y-2 overflow-y-auto pr-1">
                     {cardFeatures.map((feature, index) => (
                       <div
                         key={feature}

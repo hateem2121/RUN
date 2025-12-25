@@ -48,7 +48,7 @@ const NewsletterSignup: React.FC = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -20, opacity: 0 }}
-                  className="absolute inset-0 center-flex bg-gray-100 font-medium text-green-600 text-sm"
+                  className="center-flex absolute inset-0 bg-gray-100 font-medium text-green-600 text-sm"
                 >
                   ✓ Subscribed
                 </motion.div>
@@ -72,7 +72,7 @@ const NewsletterSignup: React.FC = () => {
                     type="submit"
                     disabled={isPending}
                     variant="ghost"
-                    className="h-auto rounded-none px-6 py-4 font-bold text-xs text-foreground uppercase tracking-widest hover:bg-transparent hover:text-blue-600"
+                    className="h-auto rounded-none px-6 py-4 font-bold text-foreground text-xs uppercase tracking-widest hover:bg-transparent hover:text-blue-600"
                   >
                     {isPending ? "..." : "Join"}
                   </Button>

@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getPropertiesArray } from "@/lib/fiber-utils";
 import { Typography } from "@/components/ui/typography";
+import { getPropertiesArray } from "@/lib/fiber-utils";
 
 export default function Fibers() {
   const [searchTerm, setSearchTerm] = useState("");

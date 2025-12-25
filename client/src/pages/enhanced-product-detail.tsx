@@ -18,8 +18,8 @@ import {
 import { Link, useParams } from "wouter";
 import { ProductBreadcrumbs } from "@/components/product/product-breadcrumbs";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
 // --- Types & Contexts ---
 

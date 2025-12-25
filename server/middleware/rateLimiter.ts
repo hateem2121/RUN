@@ -27,7 +27,7 @@ class RateLimiter {
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
       try {
         this.redis = Redis.fromEnv();
-      } catch (error) {
+      } catch (_error) {
         logger.warn("[RateLimiter] Failed to initialize Redis, falling back to memory");
       }
     } else {

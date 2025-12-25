@@ -688,7 +688,7 @@ void main() {
   if (!webglSupport?.supported) {
     return (
       <div
-        className={`absolute inset-0 overflow-hidden pointer-events-auto gradient-blinds-fallback ${
+        className={`gradient-blinds-fallback pointer-events-auto absolute inset-0 overflow-hidden ${
           className || ""
         }`}
       >
@@ -704,8 +704,8 @@ void main() {
         />
 
         {/* User feedback for fallback mode */}
-        <div className="absolute bottom-4 right-4 z-default pointer-events-none" aria-live="polite">
-          <div className="flex items-center gap-2 px-4 py-2 bg-card text-foreground rounded-lg text-xs font-medium transition-opacity duration-300 border border-border shadow-md hover:opacity-100 font-sans">
+        <div className="pointer-events-none absolute right-4 bottom-4 z-default" aria-live="polite">
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 font-medium font-sans text-foreground text-xs shadow-md transition-opacity duration-300 hover:opacity-100">
             <span className="text-sm opacity-90">ℹ️</span>
             <span className="whitespace-nowrap font-medium">
               Static preview mode. For interactive effects, use a WebGL-capable browser.
@@ -719,7 +719,7 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`absolute inset-0 overflow-hidden pointer-events-auto ${
+      className={`pointer-events-auto absolute inset-0 overflow-hidden ${
         webglInitialized ? "webgl-ready" : "webgl-loading"
       } ${className || ""}`}
       style={cssCustomProps}

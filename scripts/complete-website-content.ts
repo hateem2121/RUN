@@ -70,7 +70,7 @@ async function completeWebsiteContent() {
         createdItems.push(`Footer Link: ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
 
   // Complete Homepage Content
   try {
@@ -168,8 +168,8 @@ async function completeWebsiteContent() {
         createdItems.push(`Homepage Section: ${created.title}`);
       }
     }
-  } catch (error) {}
-  createdItems.forEach((item) => {});
+  } catch (_error) {}
+  createdItems.forEach((_item) => {});
 }
 
 // Run the completion

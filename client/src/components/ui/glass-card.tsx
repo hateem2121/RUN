@@ -1,4 +1,3 @@
-import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import * as React from "react";
@@ -6,34 +5,50 @@ import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-const blurIntensityMap = {
-  none: "backdrop-blur-none",
-  sm: "backdrop-blur-[2px] md:backdrop-blur-xs",
-  md: "backdrop-blur-xs md:backdrop-blur-md",
-  lg: "backdrop-blur-md md:backdrop-blur-lg",
-  xl: "backdrop-blur-lg md:backdrop-blur-xl",
-  "2xl": "backdrop-blur-xl md:backdrop-blur-2xl",
-};
-
-const glowIntensityMap = {
-  none: "",
-  xs: "shadow-glow-xs md:shadow-glow-xs-desktop",
-  sm: "shadow-glow-sm md:shadow-glow-sm-desktop",
-  md: "shadow-glow-md md:shadow-glow-md-desktop",
-  lg: "shadow-glow-lg md:shadow-glow-lg-desktop",
-  xl: "shadow-glow-xl md:shadow-glow-xl-desktop",
-  "2xl": "shadow-glow-2xl md:shadow-glow-2xl-desktop",
-};
-
-const shadowIntensityMap = {
-  none: "",
-  xs: "shadow-inner-xs md:shadow-inner-xs-desktop",
-  sm: "shadow-inner-sm md:shadow-inner-sm-desktop",
-  md: "shadow-inner-md md:shadow-inner-md-desktop",
-  lg: "shadow-inner-lg md:shadow-inner-lg-desktop",
-  xl: "shadow-inner-xl md:shadow-inner-xl-desktop",
-  "2xl": "shadow-inner-2xl md:shadow-inner-2xl-desktop",
-};
+// Standard GlassCard component to replace global .glass-card CSS class
+export const glassCardVariants = cva(
+  "relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 transition-all duration-300 dark:border-gray-900/70 dark:bg-white/5",
+  {
+    variants: {
+      interactive: {
+        true: "cursor-pointer hover:border-white/20",
+        false: "",
+      },
+      blur: {
+        none: "backdrop-blur-none",
+        sm: "backdrop-blur-[2px] md:backdrop-blur-xs",
+        md: "backdrop-blur-xs md:backdrop-blur-md",
+        lg: "backdrop-blur-md md:backdrop-blur-lg",
+        xl: "backdrop-blur-lg md:backdrop-blur-xl",
+        "2xl": "backdrop-blur-xl md:backdrop-blur-2xl",
+      },
+      glow: {
+        none: "",
+        xs: "shadow-glow-xs md:shadow-glow-xs-desktop",
+        sm: "shadow-glow-sm md:shadow-glow-sm-desktop",
+        md: "shadow-glow-md md:shadow-glow-md-desktop",
+        lg: "shadow-glow-lg md:shadow-glow-lg-desktop",
+        xl: "shadow-glow-xl md:shadow-glow-xl-desktop",
+        "2xl": "shadow-glow-2xl md:shadow-glow-2xl-desktop",
+      },
+      shadow: {
+        none: "",
+        xs: "shadow-inner-xs md:shadow-inner-xs-desktop",
+        sm: "shadow-inner-sm md:shadow-inner-sm-desktop",
+        md: "shadow-inner-md md:shadow-inner-md-desktop",
+        lg: "shadow-inner-lg md:shadow-inner-lg-desktop",
+        xl: "shadow-inner-xl md:shadow-inner-xl-desktop",
+        "2xl": "shadow-inner-2xl md:shadow-inner-2xl-desktop",
+      },
+    },
+    defaultVariants: {
+      interactive: false,
+      blur: "md",
+      glow: "lg",
+      shadow: "none",
+    },
+  },
+);
 
 function useIsTouchDevice() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -84,10 +99,11 @@ function useDragConstraints() {
   return constraints;
 }
 
-export interface LiquidGlassCardProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
-> {
+export interface LiquidGlassCardProps
+  extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
+  > {
   children?: React.ReactNode;
   draggable?: boolean;
   expandable?: boolean;
@@ -160,11 +176,13 @@ const LiquidGlassCard = ({
       <div
         ref={ref}
         className={cn(
-          "group relative inline-block cursor-pointer overflow-hidden border border-gray-800/60 dark:border-gray-900/70",
-          "bg-white/10 dark:bg-white/5",
-          blurIntensityMap[blurIntensity],
-          glowIntensityMap[glowIntensity],
-          shadowIntensityMap[shadowIntensity],
+          glassCardVariants({
+            blur: blurIntensity,
+            glow: glowIntensity,
+            shadow: shadowIntensity,
+            interactive: true,
+          }),
+          "inline-block", // Maintain inline-block for LiquidGlassCard
           className,
         )}
         style={{
@@ -184,11 +202,6 @@ const LiquidGlassCard = ({
       </div>
     );
   }
-
-  // Use mapped responsive classes
-  const blurClass = blurIntensityMap[blurIntensity];
-  const glowClass = glowIntensityMap[glowIntensity];
-  const shadowClass = shadowIntensityMap[shadowIntensity];
 
   return (
     <motion.div
@@ -221,11 +234,13 @@ const LiquidGlassCard = ({
       }}
       onClick={handleClick}
       className={cn(
-        "group relative inline-block cursor-pointer overflow-hidden border border-gray-800/60 dark:border-gray-900/70",
-        "bg-white/10 dark:bg-white/5",
-        blurClass,
-        glowClass,
-        shadowClass,
+        glassCardVariants({
+          blur: blurIntensity,
+          glow: glowIntensity,
+          shadow: shadowIntensity,
+          interactive: true,
+        }),
+        "inline-block",
         expandable && "transition-all duration-300",
         shouldEnableDrag && "cursor-move active:cursor-grabbing",
         "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/30",
@@ -328,30 +343,37 @@ export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
   );
 });
 
-// Standard GlassCard component to replace global .glass-card CSS class
-export const glassCardVariants = cva(
-  "relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 shadow-lg backdrop-blur-md shadow-glow-lg transition-all duration-300 dark:border-gray-900/70 dark:bg-white/5",
-  {
-    variants: {
-      interactive: {
-        true: "cursor-pointer hover:border-white/20 hover:shadow-xl hover:shadow-glow-xl",
-        false: "",
-      },
-    },
-    defaultVariants: {
-      interactive: false,
-    },
-  },
-);
-
 export interface GlassCardProps
-  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof glassCardVariants> {}
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof glassCardVariants> {}
 
 export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ className, interactive, ...props }, ref) => (
-    <div ref={ref} className={cn(glassCardVariants({ interactive }), className)} {...props} />
+  ({ className, interactive, blur, glow, shadow, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(glassCardVariants({ interactive, blur, glow, shadow }), className)}
+      {...props}
+    />
   ),
 );
 GlassCard.displayName = "GlassCard";
+
+export const GlassCardDecorations = React.memo(
+  ({ showShimmer = true }: { showShimmer?: boolean }) => (
+    <>
+      {/* Gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+      {/* Inner glow */}
+      <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
+      {/* Hover shimmer */}
+      {showShimmer && (
+        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <div className="shimmer-overlay" />
+        </div>
+      )}
+    </>
+  ),
+);
+GlassCardDecorations.displayName = "GlassCardDecorations";
 
 export { LiquidGlassCard, CardHeader, CardContent };

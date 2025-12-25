@@ -9,12 +9,11 @@ async function regenerateVariants() {
     // Get all media assets that are images
     const allAssets = await db.select().from(mediaAssets);
     const imageAssets = allAssets.filter(
-      (asset) =>
-        asset.mimeType && asset.mimeType.startsWith("image/") && !asset.mimeType.includes("svg"),
+      (asset) => asset.mimeType?.startsWith("image/") && !asset.mimeType.includes("svg"),
     );
 
-    let regeneratedCount = 0;
-    let errorCount = 0;
+    let _regeneratedCount = 0;
+    let _errorCount = 0;
 
     // Process in batches
     for (let i = 0; i < imageAssets.length; i += BATCH_SIZE) {
@@ -35,14 +34,14 @@ async function regenerateVariants() {
             // For now, we'll just log.
             // await generateResponsiveVariants(asset.filename, buffer);
 
-            regeneratedCount++;
-          } catch (error) {
-            errorCount++;
+            _regeneratedCount++;
+          } catch (_error) {
+            _errorCount++;
           }
         }),
       );
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -231,7 +231,7 @@ test.describe("Visual Regression Audit - Admin Routes (Desktop Only)", () => {
 
 test.describe("Visual Regression Audit - Special Cases", () => {
   test("404 Page", async ({ page }) => {
-    const logs = captureConsoleLogs(page);
+    const _logs = captureConsoleLogs(page);
 
     await page.setViewportSize(BREAKPOINTS.desktop);
     await page.goto("/nonexistent-page-for-404-test", { waitUntil: "domcontentloaded" });

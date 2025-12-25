@@ -1,5 +1,5 @@
-import type React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,8 @@ const techCardVariants = cva(
 );
 
 export interface TechnologyCtaProps
-  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof techCardVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof techCardVariants> {
   headline: string;
   content: string;
   buttonLabel: string;

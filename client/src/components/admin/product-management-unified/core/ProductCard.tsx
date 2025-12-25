@@ -386,7 +386,7 @@ export const ProductCard = memo(function ProductCard({
 
           {/* Hover Actions */}
           {isHovered && (
-            <div className="absolute inset-0 center-flex bg-black/20">
+            <div className="center-flex absolute inset-0 bg-black/20">
               <div className="flex gap-2">
                 <Button
                   data-testid={`view-product-grid-${product.id}`}

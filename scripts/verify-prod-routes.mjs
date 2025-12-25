@@ -1,4 +1,4 @@
-import http from "http";
+import http from "node:http";
 
 const HOST = "localhost";
 const PORT = 5002;
@@ -53,7 +53,7 @@ function checkRoute(route) {
       });
     });
 
-    req.on("error", (err) => {
+    req.on("error", (_err) => {
       resolve(false);
     });
 

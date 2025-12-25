@@ -1,10 +1,10 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import ReactScan from "@react-scan/vite-plugin-react-scan";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
 
@@ -12,6 +12,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Tigger restart
 export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
+  css: {
+    lightningcss: {
+      drafts: {
+        customProperties: true,
+      },
+    },
+    transformer: "lightningcss",
+  },
   plugins: [
     react({
       babel: {

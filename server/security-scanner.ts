@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 
 /**
  * Basic file security scanner for malicious content detection
@@ -149,7 +149,7 @@ export class FileSecurityScanner {
         threats,
         confidence: Math.max(0, confidence),
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         isSafe: false,
         threats: ["Security scan failed - file rejected for safety"],

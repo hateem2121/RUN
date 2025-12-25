@@ -7,7 +7,7 @@ async function fixDatabaseCorruption() {
     // If categories are empty but database shows records, there's likely corruption
     if (categories.length === 0) {
     }
-    const testCategory = await storage.createCategory({
+    const _testCategory = await storage.createCategory({
       name: "Test Performance Category",
       slug: "test-performance-category",
       description: "Test category for database functionality",
@@ -22,7 +22,7 @@ async function fixDatabaseCorruption() {
     if (categoriesAfterTest.length > 0) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 // Run the fix

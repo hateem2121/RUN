@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export const headingVariants = cva("font-bold text-foreground text-balance mb-[0.75em]", {
+export const headingVariants = cva("mb-[0.75em] text-balance font-bold text-foreground", {
   variants: {
     variant: {
       h1: "text-4xl leading-[1.2] lg:text-5xl", // Matches index.css (2.5rem = text-4xl base)
@@ -19,7 +19,8 @@ export const headingVariants = cva("font-bold text-foreground text-balance mb-[0
 });
 
 interface HeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement>, VariantProps<typeof headingVariants> {
+  extends React.HTMLAttributes<HTMLHeadingElement>,
+    VariantProps<typeof headingVariants> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
@@ -37,7 +38,7 @@ const P = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagr
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("text-pretty mb-4", className)} // Matches index.css p { text-wrap: pretty; margin-bottom: 1rem; }
+      className={cn("mb-4 text-pretty", className)} // Matches index.css p { text-wrap: pretty; margin-bottom: 1rem; }
       {...props}
     />
   ),

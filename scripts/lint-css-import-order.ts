@@ -9,8 +9,8 @@
  * Exit code 0 = pass, 1 = fail
  */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const INDEX_CSS_PATH = path.resolve(process.cwd(), "client/src/index.css");
 

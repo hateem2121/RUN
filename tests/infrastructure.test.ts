@@ -36,8 +36,8 @@ vi.mock("../server/db.ts", () => ({
 
 // Mock Rate Limiter
 vi.mock("../server/lib/rate-limiter.js", () => ({
-  adminLimiter: { middleware: () => (req, res, next) => next() },
-  diagnosticLimiter: { middleware: () => (req, res, next) => next() },
+  adminLimiter: { middleware: () => (_req, _res, next) => next() },
+  diagnosticLimiter: { middleware: () => (_req, _res, next) => next() },
 }));
 
 // Mock dependencies
@@ -66,7 +66,7 @@ vi.mock("../server/lib/email-service.js", () => ({
 // Mock Google Auth setup to avoid DB connection
 vi.mock("../server/googleAuth.js", () => ({
   setupAuth: vi.fn().mockResolvedValue(true),
-  isAuthenticated: (req, res, next) => next(),
+  isAuthenticated: (_req, _res, next) => next(),
 }));
 
 // Mock Storage to avoid DB connection

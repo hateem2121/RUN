@@ -27,7 +27,7 @@ export const StatsSection = () => {
 
   return (
     <section className="bg-primary py-16 text-primary-foreground md:py-20 lg:py-32">
-      <div className="mx-auto container-wide px-6">
+      <div className="container-wide mx-auto px-6">
         <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:gap-12">
           {stats.map((stat) => (
             <div key={stat.label} className="border-primary-foreground/20 border-t pt-6 md:pt-8">

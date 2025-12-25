@@ -33,7 +33,7 @@ async function checkSingleFibers() {
       });
     });
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

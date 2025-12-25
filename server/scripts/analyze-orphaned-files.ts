@@ -1,9 +1,9 @@
 #!/usr/bin/env tsx
 
-import * as fs from "fs";
-import * as path from "path";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 interface OrphanedFile {
   path: string;
@@ -144,10 +144,10 @@ class OrphanedFilesAnalyzer {
             if (!this.allImports.has(normalizedPath)) {
               this.allImports.set(normalizedPath, []);
             }
-            this.allImports.get(normalizedPath)!.push(imp);
+            this.allImports.get(normalizedPath)?.push(imp);
           }
         }
-      } catch (error) {}
+      } catch (_error) {}
     }
   }
 
@@ -428,13 +428,13 @@ class OrphanedFilesAnalyzer {
     }
 
     if (results.true_orphans.length > 0) {
-      results.true_orphans.slice(0, 15).forEach((orphan) => {});
+      results.true_orphans.slice(0, 15).forEach((_orphan) => {});
       if (results.true_orphans.length > 15) {
       }
     }
 
     if (results.needs_review.length > 0) {
-      results.needs_review.slice(0, 10).forEach((review) => {});
+      results.needs_review.slice(0, 10).forEach((_review) => {});
       if (results.needs_review.length > 10) {
       }
     }
@@ -443,6 +443,6 @@ class OrphanedFilesAnalyzer {
 
 // Run the analyzer
 const analyzer = new OrphanedFilesAnalyzer();
-analyzer.analyze().catch((error) => {
+analyzer.analyze().catch((_error) => {
   process.exit(1);
 });

@@ -7,9 +7,9 @@ import { ResourceGrid } from "@/components/resources/ResourceGrid";
 import { ResourceSearch } from "@/components/resources/ResourceSearch";
 import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { SEOMeta } from "@/components/seo-meta";
+import { Typography } from "@/components/ui/typography";
 import { useResourceBatch } from "@/hooks/resources/useResourceBatch";
 import { useDebounce } from "@/hooks/use-debounce";
-import { Typography } from "@/components/ui/typography";
 
 export default function Certifications() {
   const [searchTerm, setSearchTerm] = useState("");

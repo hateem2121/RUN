@@ -1,10 +1,10 @@
 // Alert Management System - Phase 3 Observability
 // Configurable thresholds and alerting for slow queries, errors, and timeouts
 
-import { existsSync, mkdirSync } from "fs";
-import { join } from "path";
-import { PerformanceObserver } from "perf_hooks";
-import { writeHeapSnapshot } from "v8";
+import { existsSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { PerformanceObserver } from "node:perf_hooks";
+import { writeHeapSnapshot } from "node:v8";
 import { appStorageService } from "../app-storage-service.js";
 import { errorAggregator } from "./error-aggregator.js";
 import { httpMetricsTracker } from "./http-metrics-tracker.js";
@@ -478,7 +478,7 @@ class AlertManager {
           };
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Silently ignore if database metrics tracker doesn't exist
       // This is expected in development or if DB monitoring isn't set up
     }

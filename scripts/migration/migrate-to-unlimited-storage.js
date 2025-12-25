@@ -27,8 +27,8 @@ async function migrateToUnlimitedStorage() {
     }
 
     // Step 2: Migrate each asset
-    let migrated = 0;
-    let errors = 0;
+    let _migrated = 0;
+    let _errors = 0;
 
     for (const key of mediaAssetKeys) {
       try {
@@ -64,16 +64,14 @@ async function migrateToUnlimitedStorage() {
         // Insert into PostgreSQL with conflict resolution
         await insertAssetWithConflictResolution(migratedAsset);
 
-        migrated++;
-      } catch (error) {
-        errors++;
+        _migrated++;
+      } catch (_error) {
+        _errors++;
       }
     }
     const { rows } = await postgresClient.query("SELECT COUNT(*) as count FROM media_assets");
-    const postgresCount = parseInt(rows[0].count);
+    const _postgresCount = parseInt(rows[0].count, 10);
     await testUnlimitedCapacity();
-  } catch (error) {
-    throw error;
   } finally {
     await postgresClient.end();
   }
@@ -200,7 +198,7 @@ async function testUnlimitedCapacity() {
         testAsset.storage_url,
       ],
     );
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 // Run migration
@@ -208,6 +206,6 @@ migrateToUnlimitedStorage()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

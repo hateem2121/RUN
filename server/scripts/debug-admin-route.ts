@@ -7,11 +7,11 @@ async function verifyAdminRoute() {
     const contentType = response.headers.get("content-type");
 
     if (contentType?.includes("application/json")) {
-      const data = await response.json();
+      const _data = await response.json();
     } else {
-      const text = await response.text();
+      const _text = await response.text();
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 verifyAdminRoute();

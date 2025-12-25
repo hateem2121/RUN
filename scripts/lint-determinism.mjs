@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,7 +76,7 @@ function walk(dir) {
   list.forEach((file) => {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
-    if (stat && stat.isDirectory()) {
+    if (stat?.isDirectory()) {
       files = files.concat(walk(fullPath));
     } else {
       if (file.endsWith(".tsx") || file.endsWith(".jsx")) {
@@ -93,7 +93,7 @@ files.forEach((f) => {
   const errors = scanFile(f);
   if (errors.length > 0) {
     foundIssues = true;
-    errors.forEach((e) => {});
+    errors.forEach((_e) => {});
   }
 });
 

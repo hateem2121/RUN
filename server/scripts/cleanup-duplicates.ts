@@ -1,5 +1,5 @@
 // import { getStorage } from "../lib/storage-singleton.js";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { appStorageService } from "../app-storage-service.js";
 
 async function cleanupDuplicates() {
@@ -14,8 +14,8 @@ async function cleanupDuplicates() {
       if (!fileHashes.has(hash)) {
         fileHashes.set(hash, []);
       }
-      fileHashes.get(hash)!.push(path);
-    } catch (error) {}
+      fileHashes.get(hash)?.push(path);
+    } catch (_error) {}
   }
 
   // Find duplicates (hashes with multiple files)
@@ -26,16 +26,16 @@ async function cleanupDuplicates() {
   }
 
   // Calculate space savings
-  let totalDuplicateSize = 0;
-  let filesToDelete = 0;
-  for (const [hash, paths] of duplicateGroups) {
+  let _totalDuplicateSize = 0;
+  let _filesToDelete = 0;
+  for (const [_hash, paths] of duplicateGroups) {
     const buffer = await appStorageService.downloadAsset(paths[0]!);
     const size = buffer.length;
     const duplicateSize = size * (paths.length - 1);
-    totalDuplicateSize += duplicateSize;
-    filesToDelete += paths.length - 1;
-    paths.forEach((p: string, i: number) => {
-      const keep = i === 0 ? " [KEEP]" : " [DELETE]";
+    _totalDuplicateSize += duplicateSize;
+    _filesToDelete += paths.length - 1;
+    paths.forEach((_p: string, i: number) => {
+      const _keep = i === 0 ? " [KEEP]" : " [DELETE]";
     });
   }
 
@@ -70,6 +70,6 @@ cleanupDuplicates()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

@@ -30,8 +30,8 @@ const inquirySchema = z.object({
 // GET /api/products
 // Supports cursor-based pagination
 router.get("/products", (req, res) => {
-  const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
-  const cursor = parseInt(req.query.cursor as string) || 0;
+  const limit = Math.min(parseInt(req.query.limit as string, 10) || 20, 50);
+  const cursor = parseInt(req.query.cursor as string, 10) || 0;
   const category = req.query.category as string;
 
   let filteredProducts = products;
@@ -61,7 +61,7 @@ router.get("/products", (req, res) => {
 
 // GET /api/products/:id
 router.get("/products/:id", (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id, 10);
   const product = products.find((p) => p.id === id);
 
   if (!product) {

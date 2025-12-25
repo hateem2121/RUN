@@ -153,7 +153,7 @@ async function cleanupTempUploads(
         const timestampStr = uploadId.substring(0, 13); // First 13 chars are millisecond timestamp
         const uploadTimestamp = parseInt(timestampStr, 10);
 
-        if (!isNaN(uploadTimestamp) && uploadTimestamp < cutoffTime) {
+        if (!Number.isNaN(uploadTimestamp) && uploadTimestamp < cutoffTime) {
           filesToDelete.push(filePath);
 
           // Respect batch size and max deletions limit

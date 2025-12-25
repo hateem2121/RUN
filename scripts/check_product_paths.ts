@@ -16,12 +16,12 @@ async function checkPaths() {
 
     result.rows.forEach((p: any) => {
       const cat = catMap.get(p.category_id);
-      const catSlug = cat ? cat.slug : "unknown";
-      const dbUrlPath = p.url_path || "NULL";
+      const _catSlug = cat ? cat.slug : "unknown";
+      const _dbUrlPath = p.url_path || "NULL";
     });
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

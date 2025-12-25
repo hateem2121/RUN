@@ -107,11 +107,9 @@ async function seedAccessories() {
     for (const accessory of accessoriesData) {
       const result = await db.insert(accessories).values(accessory).returning();
 
-      if (result && result[0]) {
+      if (result?.[0]) {
       }
     }
-  } catch (error) {
-    throw error;
   } finally {
     process.exit(0);
   }
@@ -119,6 +117,6 @@ async function seedAccessories() {
 
 try {
   await seedAccessories();
-} catch (error) {
+} catch (_error) {
   process.exit(1);
 }

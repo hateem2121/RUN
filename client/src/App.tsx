@@ -22,6 +22,7 @@ function RootErrorFallback({ error }: { error: Error }) {
         {error.message}
       </pre>
       <button
+        type="button"
         onClick={() => window.location.reload()}
         className="rounded bg-black px-4 py-2 text-white transition-colors hover:bg-neutral-800"
       >
@@ -35,9 +36,9 @@ const FloatingDockHeader = lazy(() => import("@/components/navigation/floating-d
 const Footer = lazy(() => import("@/components/layout/Footer"));
 
 import { AccessibilityWrapper } from "@/components/accessibility-wrapper";
-import { InquiryDrawer } from "@/components/inquiry/InquiryDrawer";
 import SmoothScrollLayout from "@/components/layout/SmoothScrollLayout";
 import { MobileOptimizations } from "@/components/mobile-optimizations";
+import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
 import { ResourceErrorBoundary } from "@/components/resources/ResourceErrorBoundary";
 import CustomCursor from "@/components/ui/CustomCursor";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
@@ -48,14 +49,11 @@ import { BundleUtils } from "@/lib/bundle-optimizer";
 import { performanceTracker } from "@/lib/performance-tracker";
 // import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import LazyLoadingUtils from "./lib/lazy-loading-optimizer";
-import { useHydratedStore } from "./lib/useHydratedStore";
-import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
-import { useQuoteStore } from "./stores/useQuoteStore";
 
 // Lazy load all pages for better performance
 const Homepage = lazy(() => import("@/pages/homepage"));
 const Admin = lazy(() => import("@/pages/admin"));
-const ProductShowcase = lazy(() => import("@/components/showcase/ProductShowcase"));
+const _ProductShowcase = lazy(() => import("@/components/showcase/ProductShowcase"));
 
 const EnhancedProductDetail = lazy(() => import("@/pages/enhanced-product-detail"));
 const Categories = lazy(() => import("@/pages/categories"));

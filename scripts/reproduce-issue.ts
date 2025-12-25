@@ -5,7 +5,7 @@ import { homepageProcessCards } from "../shared/schema.js";
 async function reproduce() {
   // 1. Create a card directly in DB to verify persistence works
   const newCard = {
-    title: "Test Card " + Date.now(),
+    title: `Test Card ${Date.now()}`,
     description: "This is a test card created by the reproduction script.",
     step: 1,
     icon: "settings",

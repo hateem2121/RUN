@@ -1,5 +1,3 @@
-import React from "react";
-
 export enum CursorVariant {
   DEFAULT = "DEFAULT",
   TEXT = "TEXT",

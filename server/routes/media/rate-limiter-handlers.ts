@@ -20,7 +20,7 @@ export async function getRateLimiterStats(_req: Request, res: Response) {
     };
 
     return res.json(createSuccessResponse(stats));
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json(createErrorResponse("Failed to get rate limiter stats"));
   }
 }
@@ -57,7 +57,7 @@ export async function getRateLimiterHealth(_req: Request, res: Response) {
         timestamp: Date.now(),
       }),
     );
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json(createErrorResponse("Failed to get rate limiter health"));
   }
 }

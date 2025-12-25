@@ -77,7 +77,7 @@ test.describe("Forensic UI Audit", () => {
           // Hybrid wait strategy: Network idle + time buffer for hydration
           try {
             await page.waitForLoadState("networkidle", { timeout: 10000 });
-          } catch (e) {
+          } catch (_e) {
             // Ignore timeout, proceed with snapshot (sometimes streams stick open)
           }
           await page.waitForTimeout(1500); // Allow LayoutEffects to settle
@@ -109,7 +109,7 @@ test.describe("Forensic UI Audit", () => {
           // Hybrid wait
           try {
             await page.waitForLoadState("networkidle", { timeout: 10000 });
-          } catch (e) {}
+          } catch (_e) {}
           await page.waitForTimeout(1500);
 
           await expect(page).toHaveScreenshot(

@@ -7,10 +7,10 @@ async function checkCertifications() {
     const recentFabrics = await db.select().from(fabrics).orderBy(desc(fabrics.id)).limit(8);
     const orderedFabrics = recentFabrics.reverse();
 
-    orderedFabrics.forEach((f) => {});
+    orderedFabrics.forEach((_f) => {});
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

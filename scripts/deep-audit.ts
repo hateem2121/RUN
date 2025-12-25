@@ -11,7 +11,7 @@ async function deepAudit() {
 
       properties.compositions.forEach((comp: any) => {
         const fibers = comp.fibers;
-        const fiberStrings = fibers.map((f: any) => `${f.name}: ${f.percentage}%`).join(", ");
+        const _fiberStrings = fibers.map((f: any) => `${f.name}: ${f.percentage}%`).join(", ");
 
         // Check for suspicious patterns
         const hasZero = fibers.some((f: any) => parseFloat(f.percentage) === 0);
@@ -28,7 +28,7 @@ async function deepAudit() {
       });
     });
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

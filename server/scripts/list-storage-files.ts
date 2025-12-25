@@ -27,26 +27,26 @@ async function listAllStorageFiles(): Promise<void> {
 
     allFiles.forEach((file) => {
       if (file.startsWith("media/assets/")) {
-        byPrefix["media/assets/"]!.push(file);
+        byPrefix["media/assets/"]?.push(file);
       } else if (file.startsWith("media/thumbnails/")) {
-        byPrefix["media/thumbnails/"]!.push(file);
+        byPrefix["media/thumbnails/"]?.push(file);
       } else if (file.startsWith("media/")) {
-        byPrefix["media/"]!.push(file);
+        byPrefix["media/"]?.push(file);
       } else if (file.startsWith("public/")) {
-        byPrefix["public/"]!.push(file);
+        byPrefix["public/"]?.push(file);
       } else if (file.startsWith("private/")) {
-        byPrefix["private/"]!.push(file);
+        byPrefix["private/"]?.push(file);
       } else {
-        byPrefix["other"]!.push(file);
+        byPrefix.other?.push(file);
       }
     });
-    Object.entries(byPrefix).forEach(([prefix, files]) => {
+    Object.entries(byPrefix).forEach(([_prefix, files]) => {
       if (files.length > 0) {
       }
     });
-    allFiles.forEach((file, index) => {});
-    if (byPrefix["media/assets/"]!.length > 0) {
-      byPrefix["media/assets/"]!.forEach((file) => {});
+    allFiles.forEach((_file, _index) => {});
+    if (byPrefix["media/assets/"]?.length > 0) {
+      byPrefix["media/assets/"]?.forEach((_file) => {});
     } else {
     }
     // Check for files that might be the "missing" ones from Task 5B-3
@@ -74,8 +74,8 @@ async function listAllStorageFiles(): Promise<void> {
     if (potentialMatches.length === 0) {
     }
 
-    if (byPrefix["media/assets/"]!.length === 2) {
-    } else if (byPrefix["media/assets/"]!.length > 2) {
+    if (byPrefix["media/assets/"]?.length === 2) {
+    } else if (byPrefix["media/assets/"]?.length > 2) {
     }
   } catch (error) {
     logger.error("[Storage Inventory] Error listing files:", error);
@@ -88,6 +88,6 @@ listAllStorageFiles()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

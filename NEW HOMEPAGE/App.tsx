@@ -119,27 +119,27 @@ const App: React.FC = () => {
 
       {/* Navigation Layer */}
       <nav
-        className="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-50 mix-blend-difference text-white pointer-events-none"
+        className="pointer-events-none fixed top-0 left-0 z-50 flex w-full items-center justify-between p-6 text-white mix-blend-difference md:p-8"
         aria-label="Main Navigation"
       >
-        <div className="font-bold text-lg md:text-xl tracking-tighter uppercase pointer-events-auto">
+        <div className="pointer-events-auto font-bold text-lg uppercase tracking-tighter md:text-xl">
           Run Apparel
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8 pointer-events-auto items-center">
+        <div className="pointer-events-auto hidden items-center gap-8 md:flex">
           <Magnetic>
-            <button className="uppercase text-sm tracking-widest hover:text-[#3300FF] transition-all duration-300 px-2 py-4">
+            <button className="px-2 py-4 text-sm uppercase tracking-widest transition-all duration-300 hover:text-[#3300FF]">
               Work
             </button>
           </Magnetic>
           <Magnetic>
-            <button className="uppercase text-sm tracking-widest hover:text-[#3300FF] transition-all duration-300 px-2 py-4">
+            <button className="px-2 py-4 text-sm uppercase tracking-widest transition-all duration-300 hover:text-[#3300FF]">
               Expertise
             </button>
           </Magnetic>
           <Magnetic>
-            <button className="uppercase text-sm tracking-widest hover:text-[#3300FF] transition-all duration-300 px-2 py-4">
+            <button className="px-2 py-4 text-sm uppercase tracking-widest transition-all duration-300 hover:text-[#3300FF]">
               Sustainability
             </button>
           </Magnetic>
@@ -147,7 +147,7 @@ const App: React.FC = () => {
 
         <div className="pointer-events-auto">
           <Magnetic strength={0.5}>
-            <button className="hidden md:block uppercase text-sm tracking-widest border border-current px-6 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+            <button className="hidden rounded-full border border-current px-6 py-2 text-sm uppercase tracking-widest transition-all duration-300 hover:bg-white hover:text-black md:block">
               Let's Talk
             </button>
           </Magnetic>
@@ -155,7 +155,7 @@ const App: React.FC = () => {
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden pointer-events-auto z-50"
+          className="pointer-events-auto z-50 md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
           aria-expanded={isMenuOpen}
@@ -166,14 +166,14 @@ const App: React.FC = () => {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#050505] z-40 flex flex-col items-center justify-center transition-all duration-500 ease-in-out md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-[#050505] transition-all duration-500 ease-in-out md:hidden ${isMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
         aria-hidden={!isMenuOpen}
       >
         <div className="flex flex-col gap-8 text-center">
           {["Work", "Expertise", "Sustainability", "Careers"].map((item, index) => (
             <button
               key={item}
-              className={`text-4xl font-bold text-white uppercase tracking-tighter transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
+              className={`font-bold text-4xl text-white uppercase tracking-tighter transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
               style={{ transitionDelay: `${index * 100}ms` }}
               onClick={() => setIsMenuOpen(false)}
             >
@@ -181,7 +181,7 @@ const App: React.FC = () => {
             </button>
           ))}
           <button
-            className={`mt-8 px-8 py-4 border border-white text-white uppercase tracking-widest rounded-full transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
+            className={`mt-8 rounded-full border border-white px-8 py-4 text-white uppercase tracking-widest transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
             style={{ transitionDelay: "500ms" }}
             onClick={() => setIsMenuOpen(false)}
           >
@@ -192,7 +192,7 @@ const App: React.FC = () => {
 
       <main className="w-full bg-[#FAFAFA]">
         {/* GROUP 1: Skewable Top Section */}
-        <div ref={heroRef} className="will-change-transform origin-top">
+        <div ref={heroRef} className="origin-top will-change-transform">
           <Hero />
         </div>
 
@@ -200,7 +200,7 @@ const App: React.FC = () => {
         <Stats />
 
         {/* GROUP 2: Skewable Middle Content */}
-        <div ref={contentRef} className="will-change-transform origin-top">
+        <div ref={contentRef} className="origin-top will-change-transform">
           <Categories />
           <FeaturedProducts />
           <Values />
@@ -210,7 +210,7 @@ const App: React.FC = () => {
         <Process />
 
         {/* GROUP 3: Skewable Footer */}
-        <div ref={footerRef} className="will-change-transform origin-top">
+        <div ref={footerRef} className="origin-top will-change-transform">
           <Footer />
         </div>
       </main>

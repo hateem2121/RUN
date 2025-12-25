@@ -7,8 +7,8 @@
  * Usage: node scripts/lint-z-index.mjs
  */
 
-import { readdirSync, readFileSync, statSync } from "fs";
-import { extname, join } from "path";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { extname, join } from "node:path";
 
 const SEMANTIC_Z_INDEX_CLASSES = [
   "z-below",
@@ -22,7 +22,7 @@ const SEMANTIC_Z_INDEX_CLASSES = [
 ];
 
 // Allow Tailwind's low z-index utilities (z-0 to z-40)
-const ALLOWED_NUMERIC_Z = /z-(?:[0-4]?\d)(?!\d)/;
+const _ALLOWED_NUMERIC_Z = /z-(?:[0-4]?\d)(?!\d)/;
 
 // Flag high numeric z-index that bypasses semantic system
 // Allow low values (z-[1] to z-[40]) for local stacking contexts
@@ -81,7 +81,7 @@ function lintFile(filePath) {
 }
 
 function main() {
-  const srcDir = process.cwd() + "/client/src";
+  const srcDir = `${process.cwd()}/client/src`;
 
   console.log("🔍 Z-Index Lint: Scanning for high z-index values...\n");
 

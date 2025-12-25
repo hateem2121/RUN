@@ -7,9 +7,7 @@ async function checkAccessories() {
   try {
     const allAccessories = await db.select().from(accessories);
 
-    allAccessories.forEach((acc, index) => {});
-  } catch (error) {
-    throw error;
+    allAccessories.forEach((_acc, _index) => {});
   } finally {
     process.exit(0);
   }
@@ -17,6 +15,6 @@ async function checkAccessories() {
 
 try {
   await checkAccessories();
-} catch (error) {
+} catch (_error) {
   process.exit(1);
 }

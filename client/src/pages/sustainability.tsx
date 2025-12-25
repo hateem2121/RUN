@@ -14,10 +14,10 @@ import {
 } from "@/components/sustainability/sections";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { Button } from "@/components/ui/button";
+import { headingVariants, Typography } from "@/components/ui/typography";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { fadeInUp, springTransition } from "@/lib/animations";
 import { apiRequest } from "@/lib/queryClient";
-import { Typography, headingVariants } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
 export default function Sustainability() {

@@ -1,8 +1,10 @@
+import { cva } from "class-variance-authority";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import Magnetic from "@/components/ui/Magnetic";
+import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,6 +16,30 @@ gsap.registerPlugin(ScrollTrigger);
  * - Parallax "RUN APPAREL" logotype
  * - GSAP submit animation
  */
+const footerLinkVariants = cva(
+  "origin-left text-muted-foreground transition-all duration-300 hover:scale-105 hover:text-primary",
+  {
+    variants: {
+      size: { default: "text-lg", sm: "text-sm", base: "text-base" },
+      display: { block: "block", inline: "inline-block" },
+    },
+    defaultVariants: { size: "default", display: "block" },
+  },
+);
+
+const footerInputVariants = cva(
+  "w-full bg-transparent border-b py-4 pl-4 text-xl outline-none transition-all duration-300 ease-out rounded-none font-mono disabled:opacity-50 focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground",
+  {
+    variants: {
+      hasError: {
+        true: "border-destructive text-destructive placeholder:text-destructive/50",
+        false: "border-border text-foreground placeholder:text-muted-foreground",
+      },
+    },
+    defaultVariants: { hasError: false },
+  },
+);
+
 const Footer: React.FC = () => {
   const { setCursor, resetCursor } = useCursorStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -134,12 +160,6 @@ const Footer: React.FC = () => {
   };
 
   // Dynamic input styles based on error state
-  const getInputClasses = (hasError: boolean) =>
-    `w-full bg-transparent border-b ${
-      hasError
-        ? "border-destructive text-destructive placeholder:text-destructive/50"
-        : "border-border text-foreground placeholder:text-muted-foreground"
-    } py-4 text-xl outline-none focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 pl-4 focus-visible:text-foreground transition-all duration-300 ease-out rounded-none font-mono disabled:opacity-50`;
 
   return (
     <footer
@@ -186,7 +206,7 @@ const Footer: React.FC = () => {
                 autoComplete="organization"
                 required
                 disabled={isSubmitting || isSent}
-                className={getInputClasses(false)}
+                className={footerInputVariants({ hasError: false })}
                 placeholder="ENTER CORPORATION"
               />
             </div>
@@ -216,7 +236,7 @@ const Footer: React.FC = () => {
                 autoComplete="email"
                 required
                 disabled={isSubmitting || isSent}
-                className={getInputClasses(!!errors.email)}
+                className={footerInputVariants({ hasError: !!errors.email })}
                 placeholder="NAME@DOMAIN.COM"
                 onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
               />
@@ -245,7 +265,7 @@ const Footer: React.FC = () => {
                 name="specs"
                 rows={3}
                 disabled={isSubmitting || isSent}
-                className={`${getInputClasses(!!errors.specs)} resize-none`}
+                className={cn(footerInputVariants({ hasError: !!errors.specs }), "resize-none")}
                 placeholder="FABRIC / QUANTITY / TIMELINE"
                 onChange={() => setErrors((prev) => ({ ...prev, specs: undefined }))}
               />
@@ -257,11 +277,12 @@ const Footer: React.FC = () => {
                 type="submit"
                 disabled={isSubmitting || isSent}
                 aria-busy={isSubmitting}
-                className={`mt-8 px-12 py-4 border transition-all duration-300 uppercase tracking-widest text-sm relative overflow-hidden font-bold ${
+                className={cn(
+                  "mt-8 px-12 py-4 border transition-all duration-300 uppercase tracking-widest text-sm relative overflow-hidden font-bold",
                   isSent
                     ? "border-brand-lime cursor-default text-brand-lime"
-                    : "border-white/30 hover:border-foreground hover:bg-foreground hover:text-background"
-                }`}
+                    : "border-white/30 hover:border-foreground hover:bg-foreground hover:text-background",
+                )}
                 onMouseEnter={() => !isSent && setCursor("button")}
                 onMouseLeave={() => resetCursor()}
               >
@@ -288,16 +309,10 @@ const Footer: React.FC = () => {
             <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
               [ DIRECT LINE ]
             </h4>
-            <a
-              href="mailto:hello@runapparel.com"
-              className="block origin-left text-lg text-muted-foreground transition-all duration-300 hover:scale-105 hover:text-primary"
-            >
+            <a href="mailto:hello@runapparel.com" className={footerLinkVariants()}>
               hello@runapparel.com
             </a>
-            <a
-              href="tel:+41441234567"
-              className="block origin-left text-lg text-muted-foreground transition-all duration-300 hover:scale-105 hover:text-primary"
-            >
+            <a href="tel:+41441234567" className={footerLinkVariants()}>
               +41 44 123 45 67
             </a>
           </div>
@@ -311,10 +326,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {["Instagram", "LinkedIn", "Behance"].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
-                    className="inline-block origin-left text-muted-foreground transition-all duration-300 hover:scale-105 hover:text-primary"
-                  >
+                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
                     {item}
                   </a>
                 </li>
@@ -328,10 +340,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               {["Privacy Policy", "Terms of Service"].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
-                    className="inline-block origin-left transition-all duration-300 hover:scale-105 hover:text-primary"
-                  >
+                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
                     {item}
                   </a>
                 </li>

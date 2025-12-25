@@ -16,13 +16,13 @@ const TabbedDetails: React.FC<{ product: Product }> = ({ product }) => {
         return (
           <div className="animate-fade-in">
             <SectionHeader
-              icon={<SpecsIcon className="w-5 h-5 text-gray-500" />}
+              icon={<SpecsIcon className="h-5 w-5 text-gray-500" />}
               title="Product Specs"
             />
-            <ul className="space-y-2 text-gray-600 pl-1">
+            <ul className="space-y-2 pl-1 text-gray-600">
               {product.productSpecs.map((spec, i) => (
                 <li key={i} className="flex items-start">
-                  <span className="mr-2 mt-1">-</span>
+                  <span className="mt-1 mr-2">-</span>
                   {spec}
                 </li>
               ))}
@@ -32,20 +32,20 @@ const TabbedDetails: React.FC<{ product: Product }> = ({ product }) => {
       case "info":
         return (
           <div className="animate-fade-in">
-            <SectionHeader icon={<InfoIcon className="w-5 h-5 text-gray-500" />} title="Key Info" />
-            <ul className="space-y-2 text-gray-600 pl-1">
+            <SectionHeader icon={<InfoIcon className="h-5 w-5 text-gray-500" />} title="Key Info" />
+            <ul className="space-y-2 pl-1 text-gray-600">
               <li className="flex items-start">
-                <span className="mr-2 mt-1">-</span>MOQ:{" "}
+                <span className="mt-1 mr-2">-</span>MOQ:{" "}
                 {product.minOrderQty > 0 ? `${product.minOrderQty} units` : "N/A"}
               </li>
               <li className="flex items-start">
-                <span className="mr-2 mt-1">-</span>Lead Time: {product.leadTime}
+                <span className="mt-1 mr-2">-</span>Lead Time: {product.leadTime}
               </li>
               <li className="flex items-start">
-                <span className="mr-2 mt-1">-</span>Fit: {product.customFit}
+                <span className="mt-1 mr-2">-</span>Fit: {product.customFit}
               </li>
               <li className="flex items-start">
-                <span className="mr-2 mt-1">-</span>Weight: {product.customWeight}
+                <span className="mt-1 mr-2">-</span>Weight: {product.customWeight}
               </li>
             </ul>
           </div>
@@ -54,14 +54,14 @@ const TabbedDetails: React.FC<{ product: Product }> = ({ product }) => {
         return (
           <div className="animate-fade-in">
             <SectionHeader
-              icon={<ShieldCheckIcon className="w-5 h-5 text-gray-500" />}
+              icon={<ShieldCheckIcon className="h-5 w-5 text-gray-500" />}
               title="Certifications"
             />
             <div className="flex flex-col space-y-3">
               {product.certifications.map((cert, i) => (
                 <div key={i} className="flex items-center bg-gray-50 p-3">
-                  <ShieldCheckIcon className="w-5 h-5 text-green-600 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700 font-medium">{cert}</span>
+                  <ShieldCheckIcon className="mr-3 h-5 w-5 flex-shrink-0 text-green-600" />
+                  <span className="font-medium text-gray-700">{cert}</span>
                 </div>
               ))}
             </div>
@@ -80,32 +80,32 @@ const TabbedDetails: React.FC<{ product: Product }> = ({ product }) => {
 
   return (
     <div>
-      <div className="flex items-center border-b border-gray-200 mb-8">
+      <div className="mb-8 flex items-center border-gray-200 border-b">
         {tabConfig.map((tab) => (
           <ClippedElement
             as="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id as Tab)}
-            className={`px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors duration-300 relative -mb-px ${
+            className={`relative -mb-px px-6 py-3 font-bold text-sm uppercase tracking-widest transition-colors duration-300 ${
               activeTab === tab.id ? "text-black" : "text-gray-400 hover:text-black"
             }`}
             clipAmount={10}
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
+              <span className="absolute right-0 bottom-0 left-0 h-0.5 bg-black" />
             )}
           </ClippedElement>
         ))}
       </div>
       <div className="min-h-[200px]">{renderTabContent()}</div>
       <div className="mt-12">
-        <h3 className="font-bold mb-4 uppercase tracking-wider">Tags</h3>
+        <h3 className="mb-4 font-bold uppercase tracking-wider">Tags</h3>
         <div className="flex flex-wrap gap-2">
           {product.productTags.map((tag) => (
             <span
               key={tag}
-              className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full"
+              className="rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-800 text-xs"
             >
               {tag}
             </span>

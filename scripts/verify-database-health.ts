@@ -33,7 +33,7 @@ async function checkDatabaseConnection(): Promise<boolean> {
   try {
     await db.execute(sql`SELECT 1`);
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -101,7 +101,7 @@ async function checkRequiredIndexes(): Promise<void> {
 
   const indexSet = new Set(existingIndexes.rows.map((idx) => idx.indexname));
 
-  let missingCount = 0;
+  let _missingCount = 0;
   let criticalMissing = 0;
 
   // Special handling for LEGACY_OR_COVERING: Either old or new index must exist
@@ -115,15 +115,15 @@ async function checkRequiredIndexes(): Promise<void> {
     // Special handling for LEGACY_OR_COVERING
     if (importance === "LEGACY_OR_COVERING") {
       if (index === "products_url_path_active_idx") {
-        const status = hasLegacyUrlIndex ? "✅" : hasCoveringUrlIndex ? "ℹ️" : "❌";
-        const label = hasLegacyUrlIndex
+        const _status = hasLegacyUrlIndex ? "✅" : hasCoveringUrlIndex ? "ℹ️" : "❌";
+        const _label = hasLegacyUrlIndex
           ? "LEGACY (OK)"
           : hasCoveringUrlIndex
             ? "REPLACED BY COVERING"
             : "MISSING";
       } else if (index === "products_url_path_covering_idx") {
-        const status = hasCoveringUrlIndex ? "✅" : hasLegacyUrlIndex ? "ℹ️" : "❌";
-        const label = hasCoveringUrlIndex
+        const _status = hasCoveringUrlIndex ? "✅" : hasLegacyUrlIndex ? "ℹ️" : "❌";
+        const _label = hasCoveringUrlIndex
           ? "COVERING (OPTIMAL)"
           : hasLegacyUrlIndex
             ? "USE LEGACY"
@@ -138,11 +138,11 @@ async function checkRequiredIndexes(): Promise<void> {
     }
 
     // Regular index handling
-    const status = exists ? "✅" : importance === "CRITICAL" ? "❌" : "⚠️";
-    const label = importance === "CRITICAL" ? "REQUIRED" : "OPTIONAL";
+    const _status = exists ? "✅" : importance === "CRITICAL" ? "❌" : "⚠️";
+    const _label = importance === "CRITICAL" ? "REQUIRED" : "OPTIONAL";
 
     if (!exists) {
-      missingCount++;
+      _missingCount++;
       if (importance === "CRITICAL") {
         criticalMissing++;
       }
@@ -167,7 +167,7 @@ async function checkPgTrgmExtension(): Promise<void> {
     if (installed) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 async function analyzeTableStats(): Promise<void> {
@@ -185,12 +185,12 @@ async function analyzeTableStats(): Promise<void> {
     `);
 
     for (const row of stats.rows) {
-      const tableName = (row.table_name || "unknown").padEnd(26);
+      const _tableName = (row.table_name || "unknown").padEnd(26);
       const _rowCount = String(row.row_count || 0).padStart(8);
       const _totalSize = (row.total_size || "N/A").padStart(10);
       const _indexSize = (row.index_size || "N/A").padStart(10);
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 async function checkSlowQueries(): Promise<void> {
@@ -231,7 +231,7 @@ async function checkSlowQueries(): Promise<void> {
       const _avgTime = (row.mean_exec_time?.toFixed(2) || "N/A").padStart(8);
       const _totalTime = (row.total_exec_time?.toFixed(2) || "N/A").padStart(10);
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 async function verifyNEONPooler(): Promise<void> {
@@ -273,7 +273,7 @@ async function testQueryPerformance(): Promise<void> {
       await db.execute(test.query);
       const duration = performance.now() - startTime;
       const _status = duration < test.threshold ? "✅" : "⚠️";
-    } catch (error) {}
+    } catch (_error) {}
   }
 }
 

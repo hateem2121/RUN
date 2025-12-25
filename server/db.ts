@@ -226,7 +226,7 @@ export async function checkDatabaseConnection(): Promise<boolean> {
     await trackedSql`SELECT 1`;
     poolMetrics.lastHealthCheckAt = new Date();
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

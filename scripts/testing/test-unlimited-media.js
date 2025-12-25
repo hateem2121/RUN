@@ -33,22 +33,22 @@ async function testUnlimitedCapacity() {
   ];
 
   for (const asset of testAssets) {
-    const result = await unlimitedMediaManager.addMediaAsset(asset);
+    const _result = await unlimitedMediaManager.addMediaAsset(asset);
   }
   const { assets, total } = await unlimitedMediaManager.getAllMediaAssets();
 
-  assets.forEach((asset) => {});
-  const stats = await unlimitedMediaManager.getStorageStats();
-  const videoAssets = await unlimitedMediaManager.getAllMediaAssets({
+  assets.forEach((_asset) => {});
+  const _stats = await unlimitedMediaManager.getStorageStats();
+  const _videoAssets = await unlimitedMediaManager.getAllMediaAssets({
     type: "video",
   });
 
-  const taggedAssets = await unlimitedMediaManager.getAllMediaAssets({
+  const _taggedAssets = await unlimitedMediaManager.getAllMediaAssets({
     tags: ["product"],
   });
   if (assets.length > 0) {
     const firstAsset = assets[0];
-    const retrieved = await unlimitedMediaManager.getMediaAsset(firstAsset.id);
+    const _retrieved = await unlimitedMediaManager.getMediaAsset(firstAsset.id);
   }
 }
 

@@ -12,7 +12,7 @@ async function fixProductPaths() {
       LEFT JOIN categories c ON p.category_id = c.id
     `);
 
-    let updatedCount = 0;
+    let _updatedCount = 0;
     const errors: any[] = [];
 
     // 2. Iterate and update
@@ -30,14 +30,14 @@ async function fixProductPaths() {
           SET "url_path" = ${expectedPath}
           WHERE id = ${product.id} AND ("url_path" IS NULL OR "url_path" != ${expectedPath})
         `);
-        updatedCount++;
+        _updatedCount++;
       } catch (err) {
         errors.push({ id: product.id, error: err });
       }
     }
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

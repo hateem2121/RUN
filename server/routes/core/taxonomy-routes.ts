@@ -38,7 +38,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.get("/api/categories/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const category = await withTimeout(getStorage().getCategory(id), 5000, "Get category by ID");
       if (!category) {
         return res.status(404).json({ error: "Category not found" });
@@ -85,7 +85,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.patch("/api/categories/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const category = await withTimeout(
         getStorage().updateCategory(id, req.body),
         10000,
@@ -115,7 +115,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.delete("/api/categories/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const success = await withTimeout(getStorage().deleteCategory(id), 10000, "Delete category");
       if (!success) {
         return res.status(404).json({ error: "Category not found" });
@@ -228,7 +228,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.patch("/api/fibers/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const fiber = await withTimeout(
         getStorage().updateFiber(id, req.body),
         10000,
@@ -257,7 +257,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.delete("/api/fibers/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const success = await withTimeout(getStorage().deleteFiber(id), 10000, "Delete fiber");
       if (!success) {
         return res.status(404).json({ error: "Fiber not found" });
@@ -334,7 +334,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.patch("/api/fabrics/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
 
       // Transform sustainabilityScore to number if present
       const fabricData = {
@@ -373,7 +373,7 @@ export function registerTaxonomyRoutes(app: Express): void {
 
   app.delete("/api/fabrics/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const success = await withTimeout(getStorage().deleteFabric(id), 10000, "Delete fabric");
       if (!success) {
         return res.status(404).json({ error: "Fabric not found" });

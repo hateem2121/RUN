@@ -90,7 +90,7 @@ const ExpandableCard = memo(function ExpandableCard({
               transition={{ duration: 0.6 }}
             >
               {isMediaLoading && (
-                <div className="absolute inset-0 center-flex bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
+                <div className="center-flex absolute inset-0 bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
                 </div>
               )}
@@ -110,7 +110,7 @@ const ExpandableCard = memo(function ExpandableCard({
 
           {/* Fallback for missing/error media */}
           {(!mediaUrl || hasError) && (
-            <div className="absolute inset-0 center-flex bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
+            <div className="center-flex absolute inset-0 bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
               <div className="text-center text-gray-500 dark:text-gray-400">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
                   <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">

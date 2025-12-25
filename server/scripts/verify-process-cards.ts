@@ -11,13 +11,13 @@ async function main() {
       .orderBy(desc(homepageProcessCards.id)); // Re-added orderBy based on original logic and snippet's partial line
 
     // 2. Count active cards
-    const activeCards = allCards.filter((c) => c.isActive);
-    allCards.slice(0, 5).forEach((card: any) => {});
+    const _activeCards = allCards.filter((c) => c.isActive);
+    allCards.slice(0, 5).forEach((_card: any) => {});
 
     if (allCards.length === 0) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
   process.exit(0);
 }
 

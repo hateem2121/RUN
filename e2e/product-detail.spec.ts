@@ -13,7 +13,7 @@ test.describe("🛒 Product Detail Verification", () => {
     expect(products.length).toBeGreaterThan(0);
 
     const targetProduct = products[0];
-    const slug = targetProduct.slug;
+    const _slug = targetProduct.slug;
 
     // Use urlPath from API if available, otherwise construct based on convention
     // Note: The recent fix ensured urlPath is populated for at least one product

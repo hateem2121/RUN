@@ -47,7 +47,7 @@ export async function stabilizeVisuals(page: Page) {
   // D. Wait for font loading to prevent character shifting
   try {
     await page.evaluate(() => document.fonts.ready);
-  } catch (e) {}
+  } catch (_e) {}
 
   // E. Ensure hydration is complete (wait for our custom class)
   await page.waitForSelector("body.css-loaded", { timeout: 10000 });

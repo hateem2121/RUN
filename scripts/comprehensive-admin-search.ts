@@ -127,7 +127,7 @@ async function comprehensiveAdminSearch() {
       try {
         const result = await db.get(`${contentType}:${i}`);
         if (result?.ok && result?.value) {
-          const item = JSON.parse(result.value);
+          const _item = JSON.parse(result.value);
           typeCount++;
           searchResults.totalFound++;
 
@@ -135,7 +135,7 @@ async function comprehensiveAdminSearch() {
           // Show relevant details based on content type
           // Details logging removed for lint compliance
         }
-      } catch (e) {
+      } catch (_e) {
         // Continue searching
       }
     }
@@ -150,7 +150,7 @@ async function comprehensiveAdminSearch() {
           searchResults.totalFound += batchData.length;
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Continue
     }
 
@@ -169,12 +169,12 @@ async function comprehensiveAdminSearch() {
       try {
         const result = await db.get(`${prefix}:${i}`);
         if (result?.ok && result?.value) {
-          const item = JSON.parse(result.value);
+          const _item = JSON.parse(result.value);
           prefixCount++;
           searchResults.totalFound++;
           // Details logging removed for lint compliance
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
 
     if (prefixCount > 0) {
@@ -182,7 +182,7 @@ async function comprehensiveAdminSearch() {
   }
 
   if (Object.keys(searchResults.contentSections).length > 0) {
-    for (const [type, count] of Object.entries(searchResults.contentSections)) {
+    for (const [_type, _count] of Object.entries(searchResults.contentSections)) {
     }
   }
 

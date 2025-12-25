@@ -24,7 +24,7 @@ async function run() {
         timestamp: Date.now(),
       },
     });
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

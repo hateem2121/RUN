@@ -96,7 +96,7 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       </div>
 
       {/* Map Legend */}
-      <div className="mt-6 center-flex gap-8">
+      <div className="center-flex mt-6 gap-8">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-blue-600"></div>
           <span className="text-muted-foreground text-sm">

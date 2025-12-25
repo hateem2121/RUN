@@ -111,8 +111,8 @@ const CustomCursor: React.FC = () => {
 
   return (
     <>
-      <div ref={cursorRef} className="cursor-dot h-2 w-2" />
-      <div ref={followerRef} className="cursor-follower h-4 w-4">
+      <div ref={cursorRef} className="h-2 w-2 cursor-dot" />
+      <div ref={followerRef} className="h-4 w-4 cursor-follower">
         {cursorVariant === "view" && cursorImage && (
           <img
             src={cursorImage}

@@ -30,7 +30,7 @@ test.describe("Phase 5: Forensic UI Proof", () => {
     await page.goto(`${BASE_URL}/e2e-overlay`);
 
     // 0. Setup Console Listeners for Debugging
-    page.on("console", (msg) => {});
+    page.on("console", (_msg) => {});
     // Check if we are stuck on Loading
     const isLoading = await page.getByText("Loading...").isVisible();
     if (isLoading)
@@ -40,7 +40,7 @@ test.describe("Phase 5: Forensic UI Proof", () => {
     try {
       await expect(page.getByTestId("hydration-status")).toHaveText("HYDRATED", { timeout: 30000 });
     } catch (e) {
-      const html = await page.content();
+      const _html = await page.content();
       throw e;
     }
     await page.getByTestId("open-dialog-btn").click();
@@ -55,7 +55,7 @@ test.describe("Phase 5: Forensic UI Proof", () => {
     // The Overlay/Backdrop should prevent clicking it.
 
     // Check computed style of the Dialog Content to ensure it has high z-index
-    const zIndex = await dialog.evaluate((el) => {
+    const _zIndex = await dialog.evaluate((el) => {
       return window.getComputedStyle(el).zIndex;
     });
 

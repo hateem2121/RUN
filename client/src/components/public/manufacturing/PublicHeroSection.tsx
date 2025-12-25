@@ -67,7 +67,7 @@ export function PublicHeroSection({
 
   if (!hero) {
     return (
-      <section className="flex min-h-screen items-center justify-center bg-manufacturing-primary/10">
+      <section className="center-flex min-h-screen bg-manufacturing-primary/10">
         <div className="text-center">
           <Factory className="mx-auto mb-4 h-16 w-16 text-manufacturing-primary" />
           <h1 className="mb-2 font-bold text-4xl text-gray-900">Manufacturing Excellence</h1>
@@ -82,7 +82,7 @@ export function PublicHeroSection({
       <LazyMotion features={domAnimation}>
         <m.section
           ref={heroRef}
-          className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--gradient-manufacturing-hero)]"
+          className="center-flex relative min-h-screen overflow-hidden bg-[var(--gradient-manufacturing-hero)]"
           initial="hidden"
           animate="visible"
           variants={containerVariants}

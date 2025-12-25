@@ -34,14 +34,14 @@ interface CardProps {
 // Color mapping for different section types
 const getSectionColor = (sectionType: string): string => {
   const colors: Record<string, string> = {
-    manufacturing: "#5196fd",
-    quality: "#8f89ff",
-    global: "#13006c",
-    innovation: "#ed649e",
-    sustainability: "#fd521a",
-    custom: "#2563eb",
+    manufacturing: "var(--color-chart-blue)",
+    quality: "var(--color-chart-purple)",
+    global: "var(--color-primary)",
+    innovation: "var(--color-brand-magenta)",
+    sustainability: "var(--color-brand-lime)",
+    custom: "var(--color-info)",
   };
-  return colors[sectionType] || "#6366f1";
+  return colors[sectionType] || "var(--color-primary)";
 };
 
 // Hook to detect mobile devices
@@ -87,7 +87,7 @@ export const Card: React.FC<CardProps> = ({
   const isMobile = useIsMobile();
 
   return (
-    <div ref={container} className="sticky top-0 h-screen center-flex">
+    <div ref={container} className="center-flex sticky top-0 h-screen">
       <motion.div
         style={{
           scale,
@@ -100,7 +100,7 @@ export const Card: React.FC<CardProps> = ({
         <div
           className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10"
           style={{
-            backgroundColor: `${color}15`,
+            backgroundColor: `color-mix(in srgb, ${color}, transparent 95%)`,
           }}
         />
 
@@ -108,7 +108,7 @@ export const Card: React.FC<CardProps> = ({
         <div
           className="pointer-events-none absolute inset-px rounded-xl bg-gradient-to-br from-white/5 to-transparent"
           style={{
-            background: `linear-gradient(to bottom right, ${color}10, transparent)`,
+            background: `linear-gradient(to bottom right, color-mix(in srgb, ${color}, transparent 95%), transparent)`,
           }}
         />
 
@@ -132,7 +132,7 @@ export const Card: React.FC<CardProps> = ({
               <div className="flex shrink-0 items-center gap-2 text-white/80">
                 <button
                   type="button"
-                  className="cursor-pointer text-sm underline transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                  className="cursor-pointer rounded-sm text-sm underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Learn more about our capabilities
                 </button>

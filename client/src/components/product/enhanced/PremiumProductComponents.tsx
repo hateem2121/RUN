@@ -178,7 +178,7 @@ export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryPro
                         onLoad={() => setImageLoaded(true)}
                       />
                       {!imageLoaded && (
-                        <div className="absolute inset-0 center-flex bg-black">
+                        <div className="center-flex absolute inset-0 bg-black">
                           <div className="h-12 w-12 animate-spin rounded-full border-2 border-gray-600 border-t-2 border-t-white"></div>
                         </div>
                       )}

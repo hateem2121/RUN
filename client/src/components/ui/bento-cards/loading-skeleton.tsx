@@ -22,7 +22,7 @@ const LoadingSkeleton = memo(function LoadingSkeleton({
   if (type === "media") {
     return (
       <div className={cn(baseClasses, "h-full w-full rounded-xl")}>
-        <div className="absolute inset-0 center-flex">
+        <div className="center-flex absolute inset-0">
           <div className="h-16 w-16 animate-spin rounded-full border-4 border-luxury-gray-300 border-t-luxury-gold" />
         </div>
       </div>

@@ -30,13 +30,14 @@ export function CertificateSelection({ selectedIds, onChange }: CertificateSelec
         </p>
       ) : (
         activeCertificates.map((cert) => (
-          <div
+          <button
+            type="button"
             key={cert.id}
-            className="flex cursor-pointer items-center space-x-2 rounded p-2 hover:bg-accent"
+            className="flex w-full cursor-pointer items-center space-x-2 rounded p-2 text-left hover:bg-accent focus:bg-accent focus:outline-none"
             onClick={() => toggleCertificate(cert.id)}
           >
             <div
-              className={`h-4 w-4 rounded border ${selectedIds.includes(cert.id) ? "border-primary bg-primary" : "border-input"}`}
+              className={`flex h-4 w-4 items-center justify-center rounded border ${selectedIds.includes(cert.id) ? "border-primary bg-primary" : "border-input"}`}
             >
               {selectedIds.includes(cert.id) && (
                 <Check className="h-3 w-3 text-primary-foreground" />
@@ -46,7 +47,7 @@ export function CertificateSelection({ selectedIds, onChange }: CertificateSelec
               <div className="font-medium text-sm">{cert.name}</div>
               <div className="text-muted-foreground text-xs">{cert.issuingBody}</div>
             </div>
-          </div>
+          </button>
         ))
       )}
     </div>

@@ -16,7 +16,7 @@ import { db } from "../server/db.js";
 import { mediaAssets } from "../shared/schema.js";
 
 // Configuration
-const REPLIT_BUCKET = "replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6";
+const _REPLIT_BUCKET = "replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6";
 const GCS_BUCKET = "run-media";
 const API_BASE = process.env.REPLIT_URL || "http://localhost:5001";
 
@@ -99,17 +99,17 @@ async function main() {
       }
 
       // Progress update
-      const completed = stats.successful + stats.failed + stats.skipped;
+      const _completed = stats.successful + stats.failed + stats.skipped;
     }
 
     if (stats.errors.length > 0) {
-      stats.errors.forEach((err) => {});
+      stats.errors.forEach((_err) => {});
     }
 
     if (stats.failed === 0) {
     } else {
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

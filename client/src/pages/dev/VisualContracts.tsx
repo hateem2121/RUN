@@ -1,7 +1,6 @@
 import { IconHome, IconLayout, IconTerminal } from "@tabler/icons-react";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import { Typography, headingVariants } from "@/components/ui/typography";
-import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 
 export default function VisualContracts() {
   const navItems = [
@@ -38,10 +37,12 @@ export default function VisualContracts() {
           <div className="absolute inset-0 bg-linear-to-br from-blue-50 to-indigo-50 opacity-50" />
 
           <div className="absolute top-4 left-4 z-default rounded-lg border bg-white p-4 shadow-md">
-            <Typography.P className="font-mono text-blue-600 text-xs">z-elevated (Content)</Typography.P>
+            <Typography.P className="font-mono text-blue-600 text-xs">
+              z-elevated (Content)
+            </Typography.P>
           </div>
 
-          <div className="absolute inset-0 z-dock center-flex">
+          <div className="center-flex absolute inset-0 z-dock">
             <div className="rounded-full bg-black/80 px-8 py-3 text-white shadow-xl backdrop-blur-xs">
               <Typography.P className="font-mono text-xs">
                 z-dock (40) + backdrop-blur-xs
@@ -77,7 +78,7 @@ export default function VisualContracts() {
               alt="Backdrop blur test background"
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 center-flex gap-4">
+            <div className="center-flex absolute inset-0 gap-4">
               <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-white/30 bg-white/20 backdrop-blur-xs">
                 <span className="font-bold text-[10px] text-white">blur-xs</span>
               </div>

@@ -37,11 +37,11 @@ export async function processImage(
       let height = 0;
 
       if (widthMatch?.[1] && heightMatch?.[1]) {
-        width = parseInt(widthMatch[1]);
-        height = parseInt(heightMatch[1]);
+        width = parseInt(widthMatch[1], 10);
+        height = parseInt(heightMatch[1], 10);
       } else if (viewBoxMatch?.[1] && viewBoxMatch?.[2]) {
-        width = parseInt(viewBoxMatch[1]);
-        height = parseInt(viewBoxMatch[2]);
+        width = parseInt(viewBoxMatch[1], 10);
+        height = parseInt(viewBoxMatch[2], 10);
       } else {
         // Default SVG dimensions if not specified
         width = 300;
@@ -87,7 +87,7 @@ export async function processImage(
       height: metadata.height,
       thumbnailFilename,
     };
-  } catch (error) {
+  } catch (_error) {
     // If processing fails, return basic metadata without thumbnail
     try {
       const metadata = await sharp(fileBuffer).metadata();

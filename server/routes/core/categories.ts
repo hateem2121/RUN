@@ -38,8 +38,8 @@ router.get("/categories", async (req, res) => {
 
     // If pagination params provided, use pagination
     if (page || limit) {
-      const pageNum = parseInt(page as string) || 1;
-      const pageSize = Math.min(parseInt(limit as string) || 50, 100);
+      const pageNum = parseInt(page as string, 10) || 1;
+      const pageSize = Math.min(parseInt(limit as string, 10) || 50, 100);
       const offset = (pageNum - 1) * pageSize;
 
       const categories = await withTimeout(
@@ -353,7 +353,7 @@ router.post("/categories", async (req, res) => {
 // PUT /api/categories/:id - Update category
 router.put("/categories/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = await withTimeout(
@@ -441,7 +441,7 @@ router.put("/categories/:id", async (req, res) => {
 // PATCH /api/categories/:id - Update category (same as PUT)
 router.patch("/categories/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = await withTimeout(
@@ -529,7 +529,7 @@ router.patch("/categories/:id", async (req, res) => {
 // DELETE /api/categories/:id - Delete category
 router.delete("/categories/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const deleted = await withTimeout(
       retryDbOperation(() => getStorage().deleteCategory(id), {
         operationName: `Delete category ${id}`,
@@ -552,7 +552,7 @@ router.delete("/categories/:id", async (req, res) => {
     }
 
     return res.status(204).send();
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json({
       success: false,
       error: { message: "Failed to delete category" },
@@ -583,8 +583,8 @@ router.get("/categories/deleted", async (_req, res) => {
 // POST /api/categories/:id/restore - Restore soft-deleted category
 router.post("/categories/:id/restore", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({
         success: false,
         error: { message: "Invalid category ID" },
@@ -629,8 +629,8 @@ router.post("/categories/:id/restore", async (req, res) => {
 // DELETE /api/categories/:id/hard-delete - Permanently delete category
 router.delete("/categories/:id/hard-delete", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({
         success: false,
         error: { message: "Invalid category ID" },

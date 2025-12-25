@@ -4,6 +4,9 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
+const CATEGORY_TEXT_CLASSES =
+  "font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]";
+
 const Categories = () => {
   const categories = useCategories(); // Dynamic Data Hook
   const setCursor = useStore((state) => state.setCursor);
@@ -43,8 +46,8 @@ const Categories = () => {
                   }}
                 >
                   <h2
-                    className="font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]"
-                    style={{ WebkitTextStroke: "1px #050505" }}
+                    className={CATEGORY_TEXT_CLASSES}
+                    style={{ WebkitTextStroke: "1px var(--color-foreground)" }}
                   >
                     {cat.name}{" "}
                     <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
@@ -81,8 +84,8 @@ const Categories = () => {
                   }}
                 >
                   <h2
-                    className="font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]"
-                    style={{ WebkitTextStroke: "1px #050505" }}
+                    className={CATEGORY_TEXT_CLASSES}
+                    style={{ WebkitTextStroke: "1px var(--color-foreground)" }}
                   >
                     {cat.name}{" "}
                     <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
@@ -119,12 +122,9 @@ const Categories = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2
-                  className="font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]"
-                  style={{ WebkitTextStroke: "1px #050505" }}
-                >
+                <h2 className={CATEGORY_TEXT_CLASSES} style={{ WebkitTextStroke: "1px #050505" }}>
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-brand-lime text-[2vw]">●</span>
+                  <span className="inline-block align-top text-[2vw] text-brand-lime">●</span>
                 </h2>
               </div>
             );

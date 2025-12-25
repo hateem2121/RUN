@@ -52,49 +52,49 @@ export class LivePerformanceDemo {
     const productId = products[0]?.id;
     const startPG = Date.now();
     const pgProduct = await nativeDB.getProductWithRelationships(productId);
-    const pgTime = Date.now() - startPG;
+    const _pgTime = Date.now() - startPG;
 
     if (pgProduct) {
     } else {
     }
     const startKV = Date.now();
-    let queryCount = 0;
+    let _queryCount = 0;
 
     // Query 1: Get product
     const kvProduct = await storage.getProduct(productId!);
-    queryCount++;
+    _queryCount++;
 
-    let category = null,
-      fabric = null,
-      primaryImage = null;
+    let _category = null,
+      _fabric = null,
+      _primaryImage = null;
 
     if (kvProduct) {
       // Query 2: Get category
       if (kvProduct.categoryId) {
-        category = await storage.getCategory(kvProduct.categoryId);
-        queryCount++;
+        _category = await storage.getCategory(kvProduct.categoryId);
+        _queryCount++;
       }
 
       // Query 3: Get fabric
       if (kvProduct.fabricId) {
-        fabric = await storage.getFabric(kvProduct.fabricId);
-        queryCount++;
+        _fabric = await storage.getFabric(kvProduct.fabricId);
+        _queryCount++;
       }
 
       // Query 4: Get primary image
       if (kvProduct.primaryImageId) {
-        primaryImage = await storage.getMediaAsset(kvProduct.primaryImageId);
-        queryCount++;
+        _primaryImage = await storage.getMediaAsset(kvProduct.primaryImageId);
+        _queryCount++;
       }
     }
 
-    const kvTime = Date.now() - startKV;
+    const _kvTime = Date.now() - startKV;
   }
 
   private async demoComplexFiltering() {
     const startPG = Date.now();
     const ecoProducts = await nativeDB.getEcoFriendlyProducts("sportswear", 4);
-    const pgTime = Date.now() - startPG;
+    const _pgTime = Date.now() - startPG;
     if (ecoProducts.length > 0) {
     }
     const startKV = Date.now();
@@ -106,15 +106,15 @@ export class LivePerformanceDemo {
 
     // Manual filtering
     const sportswearCategory = allCategories.find((c: any) => c.slug === "sportswear");
-    let filteredProducts = [];
+    let _filteredProducts = [];
 
     if (sportswearCategory) {
-      filteredProducts = allProducts.filter(
+      _filteredProducts = allProducts.filter(
         (p: any) => p.categoryId === sportswearCategory.id && p.isActive,
       );
     }
 
-    const kvTime = Date.now() - startKV;
+    const _kvTime = Date.now() - startKV;
   }
 
   private async demoDataIntegrity() {
@@ -138,8 +138,8 @@ export class LivePerformanceDemo {
 
   private async demoBulkOperations() {
     const startPG = Date.now();
-    const pgProducts = await nativeDB.getAllProductsWithRelationships();
-    const pgTime = Date.now() - startPG;
+    const _pgProducts = await nativeDB.getAllProductsWithRelationships();
+    const _pgTime = Date.now() - startPG;
     const startKV = Date.now();
 
     const allProducts = await storage.getProducts();
@@ -148,19 +148,19 @@ export class LivePerformanceDemo {
     const allMedia = await storage.getMediaAssets();
 
     // Manual relationship building (simplified)
-    const kvProducts = allProducts.map((product: any) => ({
+    const _kvProducts = allProducts.map((product: any) => ({
       ...product,
       category: allCategories.find((c: any) => c.id === product.categoryId),
       fabric: allFabrics.find((f: any) => f.id === product.fabricId),
       primaryImage: allMedia.find((m: any) => m.id === product.primaryImageId),
     }));
 
-    const kvTime = Date.now() - startKV;
+    const _kvTime = Date.now() - startKV;
   }
 
   private async showKeyValueLimitations() {
-    const products = await storage.getProducts();
-    const categories = await storage.getCategories();
+    const _products = await storage.getProducts();
+    const _categories = await storage.getCategories();
   }
 
   // Summary of benefits
@@ -178,7 +178,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       liveDemo.showBenefitsSummary();
       process.exit(0);
     })
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

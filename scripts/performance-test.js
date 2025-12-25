@@ -10,7 +10,7 @@ async function testManufacturingPerformance() {
       process.exit(1);
     }
 
-    const payloadSize = JSON.stringify(data).length;
+    const _payloadSize = JSON.stringify(data).length;
 
     // Performance assertions
     if (duration > 1000) {
@@ -21,7 +21,7 @@ async function testManufacturingPerformance() {
       process.exit(1);
     }
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

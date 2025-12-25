@@ -86,7 +86,7 @@ const SelectContent = ({
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
         className={cn(
-          "max-h-[384px] overflow-y-auto p-1",
+          "max-h-96 overflow-y-auto p-1",
           position === "popper" && "w-full min-w-(--radix-select-trigger-width)",
         )}
       >

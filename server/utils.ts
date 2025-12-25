@@ -50,7 +50,7 @@ export function safeParseId(
 
   const id = parseInt(param, 10);
 
-  if (isNaN(id)) {
+  if (Number.isNaN(id)) {
     const error = `Failed to parse ${context} ID: '${param}' resulted in NaN`;
     logger.error(`[SafeIdParser]${debugInfo} CRITICAL: ${error}`);
     return { isValid: false, error, originalValue: param, context };
@@ -195,8 +195,8 @@ export function validateFilename(filename: string): string {
 }
 
 export function validateMediaId(id: unknown): number {
-  const numId = parseInt(String(id));
-  if (isNaN(numId) || numId <= 0) {
+  const numId = parseInt(String(id), 10);
+  if (Number.isNaN(numId) || numId <= 0) {
     throw new Error("Invalid media ID: must be a positive integer");
   }
   return numId;

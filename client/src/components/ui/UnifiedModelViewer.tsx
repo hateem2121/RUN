@@ -1016,7 +1016,7 @@ export default function UnifiedModelViewer({
         {showLoadingProgress &&
           loadingState.status === "loading" &&
           loadingState.progress < 100 && (
-            <div className="absolute inset-0 z-elevated center-flex bg-gray-50/80 dark:bg-gray-900/80">
+            <div className="center-flex absolute inset-0 z-elevated bg-gray-50/80 dark:bg-gray-900/80">
               <div className="space-y-2 text-center">
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
                 <p className="text-gray-600 text-sm dark:text-gray-400">{loadingState.progress}%</p>
@@ -1041,7 +1041,7 @@ export default function UnifiedModelViewer({
 
         {/* WebGL lost warning */}
         {webglLost && (
-          <div className="absolute inset-4 z-sticky center-flex">
+          <div className="center-flex absolute inset-4 z-sticky">
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
@@ -1113,7 +1113,7 @@ export default function UnifiedModelViewer({
 
         {/* Lazy loading placeholder - shown before viewport intersection */}
         {(!shouldLoadModel || !isVisible) && (
-          <div className="absolute inset-0 center-flex bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+          <div className="center-flex absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
             <div className="space-y-2 text-center">
               <Box className="mx-auto h-8 w-8 text-gray-400" />
               {!shouldLoadModel ? (

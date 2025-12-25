@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,7 +42,7 @@ function scanDir(dirRelative) {
   for (const entry of entries) {
     if (entry.isFile()) {
       const fullPath = path.join(entry.parentPath || entry.path, entry.name);
-      const relPath = path.relative(root, fullPath);
+      const _relPath = path.relative(root, fullPath);
       const stats = fs.statSync(fullPath);
 
       // Check for fonts specifically to be strict

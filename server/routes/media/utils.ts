@@ -421,7 +421,7 @@ export async function processUploadedFile(
 
   try {
     // Extract extension for logging
-    const extension = file.originalname.toLowerCase().split(".").pop() || "";
+    const _extension = file.originalname.toLowerCase().split(".").pop() || "";
 
     // Correct MIME type
     const correctedMime = correctMimeType(file.mimetype, file.originalname);

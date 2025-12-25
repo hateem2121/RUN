@@ -9,6 +9,7 @@
 @import "./styles/webgl-pointer-events.css"; /* Interaction layers */
 @import "./styles/performance-optimizations.css"; /* GPU utils */
 @import "./styles/map-animations.css"; /* Map markers */
+@import "./styles/unified-media-theater.css"; /* 3D Model Viewer overrides */
 @import "./styles/components/glowing-shadow.css"; /* Glowing Shadow Component */
 
 @plugin "tailwindcss-animate";
@@ -447,7 +448,7 @@
 }
 
 @utility border-glass {
-  border-color: white/10;
+  border-color: white / 10;
 }
 
 @utility shadow-glow-primary {

@@ -13,8 +13,8 @@
  * 2. Run: tsx scripts/real-cache-analysis.ts
  */
 
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
@@ -102,7 +102,7 @@ async function fetchMetrics(endpoint: string): Promise<any> {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
     return await response.json();
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -116,7 +116,7 @@ async function collectRealMetrics(): Promise<RealCacheMetrics> {
   ]);
 
   if (!metricsData) {
-    throw new Error("Failed to fetch primary metrics. Is the server running at " + BASE_URL + "?");
+    throw new Error(`Failed to fetch primary metrics. Is the server running at ${BASE_URL}?`);
   }
 
   // Extract unified cache metrics
@@ -567,7 +567,7 @@ async function main() {
     await fs.writeFile(mdPath, markdown);
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

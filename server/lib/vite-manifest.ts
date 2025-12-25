@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 /**
  * Strict Types for Vite Manifest (Client Build)
@@ -92,7 +92,7 @@ export class ViteAssetManager {
       // Sometimes imports are direct chunk filenames in the output.
 
       // If passing a chunk OBJECT directly creates recursion issues, we assume key driven
-      const chunk = this.manifest![chunkName];
+      const chunk = this.manifest?.[chunkName];
       if (!chunk) return;
 
       // Avoid cycles
@@ -112,8 +112,8 @@ export class ViteAssetManager {
         chunk.imports.forEach((importKey) => {
           collectRecursive(importKey); // Recurse
           // Add the chunk itself to preloads if it's a JS file
-          const importChunk = this.manifest![importKey];
-          if (importChunk && importChunk.file && !assets.preload.includes(importChunk.file)) {
+          const importChunk = this.manifest?.[importKey];
+          if (importChunk?.file && !assets.preload.includes(importChunk.file)) {
             assets.preload.push(importChunk.file);
           }
         });
@@ -150,7 +150,7 @@ export class ViteAssetManager {
     const { css, preload } = this.getCriticalAssets();
 
     // Split CSS into critical (above-fold) and deferred
-    const criticalPatterns = [/index/, /base/, /reset/];
+    const _criticalPatterns = [/index/, /base/, /reset/];
     const deferredPatterns = [/admin/, /dashboard/, /chart/, /animation/];
 
     const criticalCss: string[] = [];

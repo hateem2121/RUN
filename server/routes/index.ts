@@ -36,9 +36,9 @@
  * API STRUCTURE: Flat routes at /api/* (e.g., /api/products, /api/homepage-hero, /api/health/db)
  */
 
+import { createServer, type Server } from "node:http";
 import compression from "compression";
 import type { Express } from "express";
-import { createServer, type Server } from "http";
 // Import authentication modules
 import { isAuthenticated, setupAuth } from "../googleAuth.js";
 import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";

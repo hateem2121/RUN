@@ -22,7 +22,7 @@ const db = new Database();
   /* 2️⃣ BACKUP & MIGRATION */
   const backupData = {};
   let migrationCount = 0;
-  let updateCount = 0;
+  let _updateCount = 0;
 
   for (let id = 1; id <= actualCounter; id++) {
     const key = `mediaAssets:${id}`;
@@ -48,14 +48,14 @@ const db = new Database();
     const clone = { ...value };
 
     // Main file URL
-    if (value.url && value.url.includes("object-storage.replit.app")) {
+    if (value.url?.includes("object-storage.replit.app")) {
       const filename = value.url.split("/").pop();
       clone.url = `/api/media/proxy/${filename}`;
       needsUpdate = true;
     }
 
     // Thumbnail URL
-    if (value.thumbnailUrl && value.thumbnailUrl.includes("object-storage.replit.app")) {
+    if (value.thumbnailUrl?.includes("object-storage.replit.app")) {
       const filename = value.thumbnailUrl.split("/").pop();
       clone.thumbnailUrl = `/api/media/proxy/${filename}`;
       needsUpdate = true;
@@ -71,7 +71,7 @@ const db = new Database();
             : clone;
 
       await db.set(key, updatedAsset);
-      updateCount++;
+      _updateCount++;
     }
 
     migrationCount++;

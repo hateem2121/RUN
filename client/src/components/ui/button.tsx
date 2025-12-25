@@ -20,13 +20,16 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         glass:
-          "glass-premium hover:bg-white/20 active:bg-white/30 text-white hover:shadow-xl focus-visible:ring-white/50",
+          "glass-premium text-white hover:bg-white/20 hover:shadow-xl focus-visible:ring-white/50 active:bg-white/30",
+        "glowing-hover":
+          "relative overflow-hidden rounded-full border-2 border-primary bg-gradient-to-r from-muted to-muted/80 px-6 font-medium text-foreground transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0_0_var(--color-primary)] dark:border-primary dark:from-primary/10 dark:to-primary/20 dark:text-primary-foreground",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        pill: "h-12 px-6", // Added for the larger pill shape of the original button
       },
     },
     defaultVariants: {
@@ -37,7 +40,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 

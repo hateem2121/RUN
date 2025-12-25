@@ -761,7 +761,7 @@ async function fixAllFabrics() {
       })
       .where(eq(fabrics.name, "Velocity™ Diamond Ripstop"));
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

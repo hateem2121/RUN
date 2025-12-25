@@ -86,9 +86,9 @@ async function seedNavigation() {
     // Clear existing items to avoid duplicates if re-run
     await db.delete(navigationItems);
 
-    const inserted = await db.insert(navigationItems).values(items).returning();
+    const _inserted = await db.insert(navigationItems).values(items).returning();
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

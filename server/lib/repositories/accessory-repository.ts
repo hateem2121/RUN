@@ -197,7 +197,7 @@ export class AccessoryRepository {
     const [created] = await db.insert(accessories).values(accessory).returning();
 
     // Invalidate all paginated caches
-    this.invalidateAccessoryCacheSelectively("create", created!.id).catch((error) =>
+    this.invalidateAccessoryCacheSelectively("create", created?.id).catch((error) =>
       logger.debug("Cache invalidation failed (non-critical):", error),
     );
 

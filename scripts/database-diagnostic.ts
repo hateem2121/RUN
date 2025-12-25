@@ -21,7 +21,7 @@ async function performDatabaseDiagnostic() {
   ];
 
   let totalIssues = 0;
-  let workingEndpoints = 0;
+  let _workingEndpoints = 0;
 
   for (const entity of entities) {
     try {
@@ -29,16 +29,16 @@ async function performDatabaseDiagnostic() {
 
       if (Array.isArray(data)) {
         if (data.length > 0) {
-          workingEndpoints++;
+          _workingEndpoints++;
         } else {
           totalIssues++;
         }
       } else if (data && typeof data === "object") {
-        workingEndpoints++;
+        _workingEndpoints++;
       } else {
         totalIssues++;
       }
-    } catch (error) {
+    } catch (_error) {
       totalIssues++;
     }
   }

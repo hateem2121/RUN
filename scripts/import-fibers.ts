@@ -1,6 +1,3 @@
-// @ts-nocheck
-import { readFileSync } from "fs";
-import { join } from "path";
 import { storage } from "../server/storage.js";
 import type { InsertFiber } from "../shared/schema-types.js";
 
@@ -237,8 +234,8 @@ async function importFibers() {
     // Check if fibers already exist to avoid duplicates
     const existingFibers = await storage.getFibers();
 
-    let importedCount = 0;
-    let skippedCount = 0;
+    let _importedCount = 0;
+    let _skippedCount = 0;
 
     for (const fiber of fiberData) {
       // Check if fiber already exists by name
@@ -247,15 +244,15 @@ async function importFibers() {
       );
 
       if (existingFiber) {
-        skippedCount++;
+        _skippedCount++;
         continue;
       }
 
       // Create new fiber
-      const newFiber = await storage.createFiber(fiber as InsertFiber);
-      importedCount++;
+      const _newFiber = await storage.createFiber(fiber as InsertFiber);
+      _importedCount++;
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 // Run the import

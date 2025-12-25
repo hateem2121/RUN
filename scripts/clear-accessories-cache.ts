@@ -13,8 +13,6 @@ async function clearAccessoriesCache() {
     // Clear all accessories-related cache keys
     await cache.clearPattern("accessories:");
     await cache.clearPattern("accessory:");
-  } catch (error) {
-    throw error;
   } finally {
     process.exit(0);
   }
@@ -22,6 +20,6 @@ async function clearAccessoriesCache() {
 
 try {
   await clearAccessoriesCache();
-} catch (error) {
+} catch (_error) {
   process.exit(1);
 }

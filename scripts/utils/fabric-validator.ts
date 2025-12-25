@@ -140,14 +140,14 @@ export class FabricValidator {
     const gsmMatch = weight.match(/(\d+)(?:-(\d+))?\s*GSM/i);
     if (!gsmMatch) return false;
 
-    const minWeight = parseInt(gsmMatch[1]!);
-    const maxWeight = gsmMatch[2] ? parseInt(gsmMatch[2]) : minWeight;
+    const minWeight = parseInt(gsmMatch[1]!, 10);
+    const maxWeight = gsmMatch[2] ? parseInt(gsmMatch[2], 10) : minWeight;
 
     return minWeight >= 50 && maxWeight <= 500 && minWeight <= maxWeight;
   }
 
   private validateSustainabilityScore(score: string): boolean {
-    const numScore = parseInt(score);
+    const numScore = parseInt(score, 10);
     return numScore >= 1 && numScore <= 5;
   }
 
@@ -156,8 +156,8 @@ export class FabricValidator {
     const stretchMatch = stretch.match(/(\d+)(?:-(\d+))?%/);
     if (!stretchMatch) return false;
 
-    const minStretch = parseInt(stretchMatch[1]!);
-    const maxStretch = stretchMatch[2] ? parseInt(stretchMatch[2]) : minStretch;
+    const minStretch = parseInt(stretchMatch[1]!, 10);
+    const maxStretch = stretchMatch[2] ? parseInt(stretchMatch[2], 10) : minStretch;
 
     return minStretch >= 0 && maxStretch <= 100 && minStretch <= maxStretch;
   }
@@ -167,8 +167,8 @@ export class FabricValidator {
     const airMatch = airPerm.match(/(\d+)(?:-(\d+))?\s*L\/m²\/s/i);
     if (!airMatch) return false;
 
-    const minAir = parseInt(airMatch[1]!);
-    const maxAir = airMatch[2] ? parseInt(airMatch[2]) : minAir;
+    const minAir = parseInt(airMatch[1]!, 10);
+    const maxAir = airMatch[2] ? parseInt(airMatch[2], 10) : minAir;
 
     return minAir >= 0 && maxAir <= 1000 && minAir <= maxAir;
   }
@@ -178,8 +178,8 @@ export class FabricValidator {
     const waterMatch = water.match(/(\d+)(?:-(\d+))?\s*mm/i);
     if (!waterMatch) return false;
 
-    const minWater = parseInt(waterMatch[1]!);
-    const maxWater = waterMatch[2] ? parseInt(waterMatch[2]) : minWater;
+    const minWater = parseInt(waterMatch[1]!, 10);
+    const maxWater = waterMatch[2] ? parseInt(waterMatch[2], 10) : minWater;
 
     return minWater >= 0 && maxWater <= 30000 && minWater <= maxWater;
   }
@@ -189,8 +189,8 @@ export class FabricValidator {
     const moistureMatch = moisture.match(/(\d+)(?:-(\d+))?\/5/);
     if (!moistureMatch) return false;
 
-    const minMoisture = parseInt(moistureMatch[1]!);
-    const maxMoisture = moistureMatch[2] ? parseInt(moistureMatch[2]) : minMoisture;
+    const minMoisture = parseInt(moistureMatch[1]!, 10);
+    const maxMoisture = moistureMatch[2] ? parseInt(moistureMatch[2], 10) : minMoisture;
 
     return minMoisture >= 1 && maxMoisture <= 5 && minMoisture <= maxMoisture;
   }
@@ -200,8 +200,8 @@ export class FabricValidator {
     const wickingMatch = wicking.match(/(\d+)(?:-(\d+))?\s*mm\/hr/i);
     if (!wickingMatch) return false;
 
-    const minWicking = parseInt(wickingMatch[1]!);
-    const maxWicking = wickingMatch[2] ? parseInt(wickingMatch[2]) : minWicking;
+    const minWicking = parseInt(wickingMatch[1]!, 10);
+    const maxWicking = wickingMatch[2] ? parseInt(wickingMatch[2], 10) : minWicking;
 
     return minWicking >= 0 && maxWicking <= 500 && minWicking <= maxWicking;
   }
@@ -211,8 +211,8 @@ export class FabricValidator {
     const dryingMatch = drying.match(/(\d+)(?:-(\d+))?\s*minutes?/i);
     if (!dryingMatch) return false;
 
-    const minDrying = parseInt(dryingMatch[1]!);
-    const maxDrying = dryingMatch[2] ? parseInt(dryingMatch[2]) : minDrying;
+    const minDrying = parseInt(dryingMatch[1]!, 10);
+    const maxDrying = dryingMatch[2] ? parseInt(dryingMatch[2], 10) : minDrying;
 
     return minDrying >= 0 && maxDrying <= 300 && minDrying <= maxDrying;
   }
@@ -222,8 +222,8 @@ export class FabricValidator {
     const abrasionMatch = abrasion.match(/(\d+)(?:-(\d+))?\/5/);
     if (!abrasionMatch) return false;
 
-    const minAbrasion = parseInt(abrasionMatch[1]!);
-    const maxAbrasion = abrasionMatch[2] ? parseInt(abrasionMatch[2]) : minAbrasion;
+    const minAbrasion = parseInt(abrasionMatch[1]!, 10);
+    const maxAbrasion = abrasionMatch[2] ? parseInt(abrasionMatch[2], 10) : minAbrasion;
 
     return minAbrasion >= 1 && maxAbrasion <= 5 && minAbrasion <= maxAbrasion;
   }
@@ -233,8 +233,8 @@ export class FabricValidator {
     const pillingMatch = pilling.match(/(\d+)(?:-(\d+))?/);
     if (!pillingMatch) return false;
 
-    const minPilling = parseInt(pillingMatch[1]!);
-    const maxPilling = pillingMatch[2] ? parseInt(pillingMatch[2]) : minPilling;
+    const minPilling = parseInt(pillingMatch[1]!, 10);
+    const maxPilling = pillingMatch[2] ? parseInt(pillingMatch[2], 10) : minPilling;
 
     return minPilling >= 1 && maxPilling <= 5 && minPilling <= maxPilling;
   }
@@ -244,8 +244,8 @@ export class FabricValidator {
     const shrinkageMatch = shrinkage.match(/(\d+)(?:-(\d+))?%/);
     if (!shrinkageMatch) return false;
 
-    const minShrinkage = parseInt(shrinkageMatch[1]!);
-    const maxShrinkage = shrinkageMatch[2] ? parseInt(shrinkageMatch[2]) : minShrinkage;
+    const minShrinkage = parseInt(shrinkageMatch[1]!, 10);
+    const maxShrinkage = shrinkageMatch[2] ? parseInt(shrinkageMatch[2], 10) : minShrinkage;
 
     return minShrinkage >= 0 && maxShrinkage <= 20 && minShrinkage <= maxShrinkage;
   }
@@ -255,8 +255,8 @@ export class FabricValidator {
     const tempMatch = temp.match(/(\d+)(?:-(\d+))?°C/);
     if (!tempMatch) return false;
 
-    const minTemp = parseInt(tempMatch[1]!);
-    const maxTemp = tempMatch[2] ? parseInt(tempMatch[2]) : minTemp;
+    const minTemp = parseInt(tempMatch[1]!, 10);
+    const maxTemp = tempMatch[2] ? parseInt(tempMatch[2], 10) : minTemp;
 
     return minTemp >= 0 && maxTemp <= 100 && minTemp <= maxTemp;
   }
@@ -286,8 +286,8 @@ export class FabricValidator {
       // Validate percentage totals
       let totalPercentage = 0;
       for (const fiber of composition.fibers) {
-        const percentage = parseInt(fiber.percentage.replace("%", ""));
-        if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+        const percentage = parseInt(fiber.percentage.replace("%", ""), 10);
+        if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) {
           errors.push(
             `Invalid fiber percentage in composition "${composition.name}": ${fiber.percentage}`,
           );

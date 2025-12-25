@@ -197,8 +197,8 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
   app.get("/api/feature-flags", (req: Request, res: Response) => {
     try {
       // Parse and validate pagination params (prevent negative values)
-      const parsedLimit = parseInt(req.query.limit as string) || 20;
-      const parsedOffset = parseInt(req.query.offset as string) || 0;
+      const parsedLimit = parseInt(req.query.limit as string, 10) || 20;
+      const parsedOffset = parseInt(req.query.offset as string, 10) || 0;
       const limit = Math.min(Math.max(0, parsedLimit), 100);
       const offset = Math.max(0, parsedOffset);
 
@@ -209,7 +209,7 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
         ...result.metadata,
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({
         success: false,
         error: "Failed to retrieve feature flags",
@@ -231,7 +231,7 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
       });
 
       logger.error("[API] Emergency rollback activated via API endpoint");
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({
         success: false,
         error: "Failed to execute emergency rollback",
@@ -261,7 +261,7 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
         flags: result.flags,
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch (_error) {
       return res.status(500).json({
         success: false,
         error: "Failed to update feature flag",

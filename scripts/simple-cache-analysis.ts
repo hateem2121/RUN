@@ -8,8 +8,8 @@
  * Usage: tsx scripts/simple-cache-analysis.ts
  */
 
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 interface CacheAnalysisReport {
   timestamp: string;
@@ -474,7 +474,7 @@ async function main() {
     await fs.writeFile(mdPath, markdown);
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

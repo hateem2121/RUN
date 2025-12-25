@@ -682,7 +682,7 @@ async function seedFabrics() {
         marketSegment: fabric.marketSegment,
         seasonality: fabric.seasonality,
         fabricType: fabric.fabricType,
-        sustainabilityScore: parseInt(fabric.properties.sustainabilityScore),
+        sustainabilityScore: parseInt(fabric.properties.sustainabilityScore, 10),
         isActive: fabric.isActive,
         properties: {
           ...fabric.properties,
@@ -692,9 +692,9 @@ async function seedFabrics() {
     });
 
     const inserted = await db.insert(fabrics).values(fabricsToInsert).returning();
-    inserted.forEach((f) => {});
+    inserted.forEach((_f) => {});
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

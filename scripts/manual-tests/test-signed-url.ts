@@ -1,7 +1,7 @@
 // @ts-nocheck
 import "dotenv/config";
+import path from "node:path";
 import { Storage } from "@google-cloud/storage";
-import path from "path";
 
 // Initialize storage
 const keyFilePath = path.resolve(process.cwd(), "gcs-service-account-key.json");
@@ -30,10 +30,10 @@ async function testSignedUrl() {
     });
 
     if (!response.ok) {
-      const text = await response.text();
+      const _text = await response.text();
     } else {
     }
-    const headResponse = await fetch(url, {
+    const _headResponse = await fetch(url, {
       method: "HEAD",
       headers: {
         Origin: "http://localhost:5001",
@@ -46,9 +46,9 @@ async function testSignedUrl() {
       },
     });
     if (!rangeResponse.ok) {
-      const text = await rangeResponse.text();
+      const _text = await rangeResponse.text();
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 testSignedUrl();

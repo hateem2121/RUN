@@ -183,7 +183,7 @@ export const validateApiResponse = (response) => {
  * Development-only schema monitoring
  * Logs schema drift warnings without breaking functionality
  */
-export const monitorSchemaDrift = (apiData, context = "unknown") => {
+export const monitorSchemaDrift = (apiData, _context = "unknown") => {
   if (process.env.NODE_ENV !== "development") {
     return; // Only run in development
   }

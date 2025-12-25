@@ -4,9 +4,9 @@ import { certificates } from "../shared/schema.js";
 async function listCertificates() {
   try {
     const allCerts = await db.select().from(certificates);
-    allCerts.forEach((cert) => {});
+    allCerts.forEach((_cert) => {});
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -39,7 +39,7 @@ CRITICAL_SELECTORS.forEach((selector) => {
 });
 
 if (missingSelectors.length > 0) {
-  missingSelectors.forEach((s) => {});
+  missingSelectors.forEach((_s) => {});
   process.exit(1);
 } else {
   process.exit(0);

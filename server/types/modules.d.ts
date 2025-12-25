@@ -36,11 +36,7 @@ declare module "../lib/cleanup-scheduler.js" {
 // Media Performance Monitor Module
 // Types imported from standalone declaration file
 declare module "../lib/media-performance-monitor.js" {
-  import type {
-    PerformanceMetrics,
-    DetailedStats,
-    MediaPerformanceMonitor,
-  } from "../lib/media-performance-monitor";
+  import type { MediaPerformanceMonitor } from "../lib/media-performance-monitor";
 
   export const mediaPerformanceMonitor: MediaPerformanceMonitor;
   export default mediaPerformanceMonitor;

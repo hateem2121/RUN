@@ -6,7 +6,7 @@
  * and verify the infrastructure can handle concurrent uploads efficiently
  */
 
-import { performance } from "perf_hooks";
+import { performance } from "node:perf_hooks";
 
 const API_URL = "http://localhost:5000/api/v2/media/upload";
 const TIMEOUT = 5000; // 5 seconds
@@ -67,7 +67,7 @@ async function uploadFile(
       throw new Error(`Upload failed: ${response.status} - ${error}`);
     }
 
-    const result = await response.json();
+    const _result = await response.json();
 
     return {
       success: true,
@@ -101,17 +101,17 @@ async function runPerformanceTest() {
   const results = await Promise.all(uploadPromises);
 
   const endTime = performance.now();
-  const totalTime = endTime - startTime;
+  const _totalTime = endTime - startTime;
 
-  let passed = 0;
+  let _passed = 0;
   let failed = 0;
 
-  results.forEach((result, index) => {
+  results.forEach((result, _index) => {
     if (!result.success) {
     }
 
     if (result.success && result.time < TIMEOUT) {
-      passed++;
+      _passed++;
     } else {
       failed++;
     }
@@ -125,6 +125,6 @@ async function runPerformanceTest() {
 }
 
 // Run the test
-runPerformanceTest().catch((error) => {
+runPerformanceTest().catch((_error) => {
   process.exit(1);
 });

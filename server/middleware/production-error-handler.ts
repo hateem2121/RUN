@@ -103,10 +103,10 @@ function logError(error: unknown, details: ErrorDetails) {
 
   // DEBUG: Write to file
   try {
-    const fs = require("fs");
+    const fs = require("node:fs");
     const logEntry = `[${new Date().toISOString()}] ${details.type.toUpperCase()} (${details.id}): ${error instanceof Error ? error.message : "Unknown error"}\nStack: ${error instanceof Error ? error.stack : "No stack"}\n\n`;
     fs.appendFileSync("error.log", logEntry);
-  } catch (e) {
+  } catch (_e) {
     // ignore
   }
 
@@ -194,9 +194,6 @@ function generateErrorResponse(error: unknown, details: ErrorDetails): Record<st
           message: "Too many requests",
           status: 429,
         };
-      case "database":
-      case "external_service":
-      case "internal":
       default:
         return {
           ...baseResponse,

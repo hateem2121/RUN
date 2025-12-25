@@ -5,14 +5,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { GlassCard } from "@/components/ui/glass-card";
+import { GlassCard, GlassCardDecorations } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Typography } from "@/components/ui/typography";
 import { type Country, countries } from "@/data/countries";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
-import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -160,18 +160,8 @@ export default function Contact() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
           {/* Left Column: Contact Form */}
           <GlassCard className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
-            {/* Gradient overlay */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-
-            {/* Inner glow */}
+            <GlassCardDecorations showShimmer={!isMobile} />
             <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
-
-            {/* Hover shimmer - disabled on mobile for performance */}
-            {!isMobile && (
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <div className="shimmer-overlay" />
-              </div>
-            )}
 
             <div className="relative z-default">
               {!showSuccess ? (
@@ -191,17 +181,14 @@ export default function Contact() {
                     {/* Name Fields */}
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
-                        <Label
-                          htmlFor="firstName"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="firstName" className={LABEL_CLASSES}>
                           First Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="firstName"
                           data-testid="input-first-name"
                           {...form.register("firstName")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                         {form.formState.errors.firstName && (
                           <Typography.P className="mt-2 text-red-500 text-sm">
@@ -210,17 +197,14 @@ export default function Contact() {
                         )}
                       </div>
                       <div>
-                        <Label
-                          htmlFor="lastName"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="lastName" className={LABEL_CLASSES}>
                           Last Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="lastName"
                           data-testid="input-last-name"
                           {...form.register("lastName")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                         {form.formState.errors.lastName && (
                           <Typography.P className="mt-2 text-red-500 text-sm">
@@ -233,31 +217,25 @@ export default function Contact() {
                     {/* Work Information */}
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
-                        <Label
-                          htmlFor="jobTitle"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="jobTitle" className={LABEL_CLASSES}>
                           Job Title
                         </Label>
                         <Input
                           id="jobTitle"
                           data-testid="input-job-title"
                           {...form.register("jobTitle")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                       </div>
                       <div>
-                        <Label
-                          htmlFor="companyName"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="companyName" className={LABEL_CLASSES}>
                           Company Name
                         </Label>
                         <Input
                           id="companyName"
                           data-testid="input-company-name"
                           {...form.register("companyName")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                       </div>
                     </div>
@@ -265,10 +243,7 @@ export default function Contact() {
                     {/* Email and Country */}
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
-                        <Label
-                          htmlFor="email"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="email" className={LABEL_CLASSES}>
                           Email Address <span className="text-red-500">*</span>
                         </Label>
                         <Input
@@ -276,7 +251,7 @@ export default function Contact() {
                           type="email"
                           data-testid="input-email"
                           {...form.register("email")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                         {form.formState.errors.email && (
                           <Typography.P className="mt-2 text-red-500 text-sm">
@@ -285,7 +260,7 @@ export default function Contact() {
                         )}
                       </div>
                       <div>
-                        <Label className="mb-2 block font-medium text-gray-700 text-sm">
+                        <Label className={LABEL_CLASSES}>
                           Country <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
@@ -356,9 +331,7 @@ export default function Contact() {
                     {/* Platform and Contact Number */}
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div>
-                        <Label className="mb-2 block font-medium text-gray-700 text-sm">
-                          Preferred Platform
-                        </Label>
+                        <Label className={LABEL_CLASSES}>Preferred Platform</Label>
                         <div className="relative">
                           <button
                             type="button"
@@ -387,10 +360,7 @@ export default function Contact() {
                         </div>
                       </div>
                       <div>
-                        <Label
-                          htmlFor="contactNumber"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="contactNumber" className={LABEL_CLASSES}>
                           Contact Number / Handle
                         </Label>
                         <div className="flex items-center overflow-hidden rounded-lg border border-gray-300 shadow-sm-xs transition-colors focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600">
@@ -410,27 +380,21 @@ export default function Contact() {
                     {/* Other Platform */}
                     {showOtherPlatform && (
                       <div>
-                        <Label
-                          htmlFor="otherPlatform"
-                          className="mb-2 block font-medium text-gray-700 text-sm"
-                        >
+                        <Label htmlFor="otherPlatform" className={LABEL_CLASSES}>
                           Please specify platform
                         </Label>
                         <Input
                           id="otherPlatform"
                           data-testid="input-other-platform"
                           {...form.register("otherPlatform")}
-                          className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                          className={INPUT_CLASSES}
                         />
                       </div>
                     )}
 
                     {/* Message */}
                     <div>
-                      <Label
-                        htmlFor="message"
-                        className="mb-2 block font-medium text-gray-700 text-sm"
-                      >
+                      <Label htmlFor="message" className={LABEL_CLASSES}>
                         Message <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
@@ -438,7 +402,7 @@ export default function Contact() {
                         data-testid="textarea-message"
                         rows={5}
                         {...form.register("message")}
-                        className="block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
+                        className={INPUT_CLASSES}
                       />
                       {form.formState.errors.message && (
                         <Typography.P className="mt-2 text-red-500 text-sm">
@@ -449,9 +413,7 @@ export default function Contact() {
 
                     {/* Contact Preference */}
                     <div>
-                      <Label className="mb-2 block font-medium text-gray-700 text-sm">
-                        How should we contact you?
-                      </Label>
+                      <Label className={LABEL_CLASSES}>How should we contact you?</Label>
                       <RadioGroup
                         defaultValue="email"
                         onValueChange={(value) =>
@@ -488,7 +450,7 @@ export default function Contact() {
                         data-testid="button-submit"
                         disabled={mutation.isPending}
                         size="lg"
-                        className="h-12 w-full bg-primary text-primary-foreground font-semibold shadow-md hover:shadow-lg"
+                        className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
                       >
                         {mutation.isPending
                           ? "Sending..."
@@ -528,165 +490,145 @@ export default function Contact() {
           {/* Right Column: Info Boxes */}
           <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
             {/* Location Box */}
-            <GlassCard className="p-6 lg:p-8">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
-              {!isMobile && (
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                </div>
-              )}
-              <div className="relative z-elevated">
-                <MapPin className="mb-4 h-6 w-6 text-gray-800" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  LOCATION
-                </Typography.H2>
-                <Typography.P className="mb-6 text-gray-600">
-                  {contactConfig?.locationLine1 || "123 Main Street,"}
-                  <br />
-                  {contactConfig?.locationLine2 || "Anytown, USA 12345"}
-                </Typography.P>
-                <Button variant="outline" data-testid="button-get-directions" className="w-full">
-                  {contactConfig?.locationButtonText || "GET DIRECTIONS"}
-                </Button>
-              </div>
-            </GlassCard>
+            <ContactInfoCard isMobile={isMobile}>
+              <MapPin className="mb-4 h-6 w-6 text-gray-800" />
+              <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                LOCATION
+              </Typography.H2>
+              <Typography.P className="mb-6 text-gray-600">
+                {contactConfig?.locationLine1 || "123 Main Street,"}
+                <br />
+                {contactConfig?.locationLine2 || "Anytown, USA 12345"}
+              </Typography.P>
+              <Button variant="outline" data-testid="button-get-directions" className="w-full">
+                {contactConfig?.locationButtonText || "GET DIRECTIONS"}
+              </Button>
+            </ContactInfoCard>
 
             {/* Contact Box */}
-            <GlassCard className="p-6 lg:p-8">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
-              {!isMobile && (
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                </div>
-              )}
-              <div className="relative z-elevated">
-                <Mail className="mb-4 h-6 w-6 text-gray-800" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  CONTACT
-                </Typography.H2>
-                <ul className="space-y-2 text-gray-600">
-                  <li>
-                    <a
-                      href={`mailto:${contactConfig?.email || "info@example.com"}`}
-                      className="hover:underline"
-                      data-testid="link-email"
-                    >
-                      {contactConfig?.email || "info@example.com"}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={`tel:${contactConfig?.phone || "+1234567890"}`}
-                      className="hover:underline"
-                      data-testid="link-phone"
-                    >
-                      {contactConfig?.phone || "(123) 456-7890"}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </GlassCard>
+            <ContactInfoCard isMobile={isMobile}>
+              <Mail className="mb-4 h-6 w-6 text-gray-800" />
+              <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                CONTACT
+              </Typography.H2>
+              <ul className="space-y-2 text-gray-600">
+                <li>
+                  <a
+                    href={`mailto:${contactConfig?.email || "info@example.com"}`}
+                    className="hover:underline"
+                    data-testid="link-email"
+                  >
+                    {contactConfig?.email || "info@example.com"}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`tel:${contactConfig?.phone || "+1234567890"}`}
+                    className="hover:underline"
+                    data-testid="link-phone"
+                  >
+                    {contactConfig?.phone || "(123) 456-7890"}
+                  </a>
+                </li>
+              </ul>
+            </ContactInfoCard>
 
             {/* Trading Hours Box */}
-            <GlassCard className="p-6 lg:p-8">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
-              {!isMobile && (
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                </div>
-              )}
-              <div className="relative z-elevated">
-                <Clock className="mb-4 h-6 w-6 text-gray-800" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  TRADING HOURS
-                </Typography.H2>
-                <div className="space-y-1 text-gray-600">
-                  {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
-                    contactConfig.tradingHours.map((hours, index) => (
-                      <Typography.P key={index}>
-                        <strong>{hours.label}:</strong> <span>{hours.value}</span>
-                      </Typography.P>
-                    ))
-                  ) : (
-                    <>
-                      <Typography.P>
-                        <strong>Monday - Friday:</strong> <span>9:00 AM to 5:00 PM</span>
-                      </Typography.P>
-                      <Typography.P>
-                        <strong>Saturdays:</strong> <span>10:00 AM to 2:00 PM</span>
-                      </Typography.P>
-                      <Typography.P>
-                        <strong>Sundays:</strong> <span className="font-semibold">Closed</span>
-                      </Typography.P>
-                    </>
-                  )}
-                </div>
+            <ContactInfoCard isMobile={isMobile}>
+              <Clock className="mb-4 h-6 w-6 text-gray-800" />
+              <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                TRADING HOURS
+              </Typography.H2>
+              <div className="space-y-1 text-gray-600">
+                {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
+                  contactConfig.tradingHours.map((hours, index) => (
+                    <Typography.P key={index}>
+                      <strong>{hours.label}:</strong> <span>{hours.value}</span>
+                    </Typography.P>
+                  ))
+                ) : (
+                  <>
+                    <Typography.P>
+                      <strong>Monday - Friday:</strong> <span>9:00 AM to 5:00 PM</span>
+                    </Typography.P>
+                    <Typography.P>
+                      <strong>Saturdays:</strong> <span>10:00 AM to 2:00 PM</span>
+                    </Typography.P>
+                    <Typography.P>
+                      <strong>Sundays:</strong> <span className="font-semibold">Closed</span>
+                    </Typography.P>
+                  </>
+                )}
               </div>
-            </GlassCard>
+            </ContactInfoCard>
 
             {/* Social Links Box */}
-            <GlassCard className="p-6 lg:p-8">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-              <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
-              {!isMobile && (
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                </div>
-              )}
-              <div className="relative z-elevated">
-                <Share2 className="mb-4 h-6 w-6 text-gray-800" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  FOLLOW US
-                </Typography.H2>
-                <ul className="space-y-2 text-gray-600">
-                  {contactConfig?.socialLinks &&
-                  Object.keys(contactConfig.socialLinks).length > 0 ? (
-                    Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
-                      <li key={platform}>
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="capitalize hover:underline"
-                          data-testid={`link-social-${platform.toLowerCase()}`}
-                        >
-                          {platform}
-                        </a>
-                      </li>
-                    ))
-                  ) : (
-                    <>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-facebook">
-                          Facebook
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-instagram">
-                          Instagram
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-twitter">
-                          Twitter
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-linkedin">
-                          LinkedIn
-                        </a>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </div>
-            </GlassCard>
+            <ContactInfoCard isMobile={isMobile}>
+              <Share2 className="mb-4 h-6 w-6 text-gray-800" />
+              <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
+                FOLLOW US
+              </Typography.H2>
+              <ul className="space-y-2 text-gray-600">
+                {contactConfig?.socialLinks && Object.keys(contactConfig.socialLinks).length > 0 ? (
+                  Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
+                    <li key={platform}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="capitalize hover:underline"
+                        data-testid={`link-social-${platform.toLowerCase()}`}
+                      >
+                        {platform}
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li>
+                      <a href="#" className="hover:underline" data-testid="link-social-facebook">
+                        Facebook
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:underline" data-testid="link-social-instagram">
+                        Instagram
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:underline" data-testid="link-social-twitter">
+                        Twitter
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:underline" data-testid="link-social-linkedin">
+                        LinkedIn
+                      </a>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </ContactInfoCard>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+const INPUT_CLASSES =
+  "block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600";
+const LABEL_CLASSES = "mb-2 block font-medium text-gray-700 text-sm";
+
+const ContactInfoCard = ({
+  children,
+  isMobile,
+}: {
+  children: React.ReactNode;
+  isMobile: boolean;
+}) => (
+  <GlassCard className="p-6 lg:p-8">
+    <GlassCardDecorations showShimmer={!isMobile} />
+    <div className="relative z-elevated">{children}</div>
+  </GlassCard>
+);

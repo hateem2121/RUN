@@ -89,7 +89,7 @@ export function MediaPreview({
               preload="metadata"
               onError={() => setHasError(true)}
             />
-            <div className="absolute inset-0 center-flex rounded bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
+            <div className="center-flex absolute inset-0 rounded bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
               <Video className="h-6 w-6 text-white drop-shadow-lg" />
             </div>
             {showTypeIcon && (
@@ -123,9 +123,9 @@ export function MediaPreview({
         return (
           <div className="relative h-full overflow-hidden rounded">
             {!imageLoaded && (
-              <div className="absolute inset-0 center-flex">
+              <div className="center-flex absolute inset-0">
                 <Skeleton className="h-full w-full animate-pulse" />
-                <div className="absolute inset-0 center-flex">
+                <div className="center-flex absolute inset-0">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-300 border-t-blue-600" />
                 </div>
               </div>

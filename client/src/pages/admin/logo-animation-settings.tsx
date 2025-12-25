@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
-export function LogoAnimationSettings() {
+export function LogoAnimationSettingsPage() {
   const { toast } = useToast();
   const [settings, setSettings] = useState<Partial<LogoAnimationSettings>>({
     showFrequency: false,

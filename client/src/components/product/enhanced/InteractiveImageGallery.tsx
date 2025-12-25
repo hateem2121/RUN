@@ -240,7 +240,7 @@ export function InteractiveImageGallery({
 
           {/* Loading State */}
           {!imageLoaded && (
-            <div className="absolute inset-0 center-flex">
+            <div className="center-flex absolute inset-0">
               <div className="h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2 dark:border-blue-400" />
             </div>
           )}
@@ -353,7 +353,7 @@ export function InteractiveImageGallery({
 
       {/* Fullscreen Modal */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-modal center-flex bg-black/95">
+        <div className="center-flex fixed inset-0 z-modal bg-black/95">
           <div className="relative max-h-screen max-w-screen-xl p-4">
             <OptimizedGalleryImage
               image={currentImage!}

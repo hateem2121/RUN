@@ -18,12 +18,12 @@ async function main() {
     if (asset.type === "image" && asset.imageVariants?.thumbnail) {
       const thumbnailPath = asset.imageVariants.thumbnail;
 
-      const exists = await appStorageService.assetExists(thumbnailPath);
+      const _exists = await appStorageService.assetExists(thumbnailPath);
     } else {
     }
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

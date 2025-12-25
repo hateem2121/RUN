@@ -1,6 +1,6 @@
-import { type ChildProcess, spawn } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
+import { type ChildProcess, spawn } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +36,7 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
         if (serverProcess.exitCode === null) {
           try {
             process.kill(serverProcess.pid!, "SIGKILL");
-          } catch (e) {
+          } catch (_e) {
             /* ignore if already gone */
           }
         }
@@ -52,11 +52,11 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
 
     let baseUrl = "";
 
-    let stdoutData = "";
-    let stderrData = "";
+    let _stdoutData = "";
+    let _stderrData = "";
 
     serverProcess.stdout?.on("data", (data) => {
-      stdoutData += data.toString();
+      _stdoutData += data.toString();
       process.stderr.write(data); // Debug: Pipe server stdout to test runner stderr
       const str = data.toString();
       // console.log("[Server]", str); // Optional debug
@@ -72,7 +72,7 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     });
 
     serverProcess.stderr?.on("data", (data) => {
-      stderrData += data.toString();
+      _stderrData += data.toString();
     });
 
     serverProcess.stderr?.pipe(process.stderr);

@@ -40,7 +40,7 @@ async function populateData() {
       WHERE name = 'Finishing & Packaging';
     `);
     process.exit(0);
-  } catch (e) {
+  } catch (_e) {
     process.exit(1);
   }
 }

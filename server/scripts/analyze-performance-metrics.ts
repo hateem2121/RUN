@@ -42,7 +42,7 @@ async function analyzePerformanceMetrics() {
     failures: 0,
     totalDuration: 0,
   };
-  const circuitBreaker = objStorage.circuitBreaker || {
+  const _circuitBreaker = objStorage.circuitBreaker || {
     currentState: "UNKNOWN",
   };
 
@@ -52,11 +52,11 @@ async function analyzePerformanceMetrics() {
   const totalFailures = uploads.failures + downloads.failures + deletes.failures;
   const totalDuration = uploads.totalDuration + downloads.totalDuration + deletes.totalDuration;
 
-  const formatOp = (name: string, data: any) => {
-    const successRate =
+  const formatOp = (_name: string, data: any) => {
+    const _successRate =
       data.count > 0 ? (((data.count - data.failures) / data.count) * 100).toFixed(2) : "N/A";
-    const retryRate = data.count > 0 ? ((data.retries / data.count) * 100).toFixed(2) : "0";
-    const failureRate = data.count > 0 ? ((data.failures / data.count) * 100).toFixed(2) : "0";
+    const _retryRate = data.count > 0 ? ((data.retries / data.count) * 100).toFixed(2) : "0";
+    const _failureRate = data.count > 0 ? ((data.failures / data.count) * 100).toFixed(2) : "0";
   };
 
   formatOp("UPLOADS", uploads);
@@ -74,8 +74,8 @@ async function analyzePerformanceMetrics() {
   ].filter((op) => op.count > 0);
 
   if (opDurations.length > 0) {
-    const slowest = opDurations.reduce((a, b) => (a.avg > b.avg ? a : b));
-    const fastest = opDurations.reduce((a, b) => (a.avg < b.avg ? a : b));
+    const _slowest = opDurations.reduce((a, b) => (a.avg > b.avg ? a : b));
+    const _fastest = opDurations.reduce((a, b) => (a.avg < b.avg ? a : b));
   }
 
   const benchmarks = {
@@ -85,7 +85,7 @@ async function analyzePerformanceMetrics() {
     slow: 1000, // <1000ms is slow
   };
 
-  const assessPerformance = (avgMs: number): string => {
+  const _assessPerformance = (avgMs: number): string => {
     if (avgMs < benchmarks.excellent) return "🟢 EXCELLENT";
     if (avgMs < benchmarks.good) return "🟢 GOOD";
     if (avgMs < benchmarks.acceptable) return "🟡 ACCEPTABLE";
@@ -104,15 +104,15 @@ async function analyzePerformanceMetrics() {
   // Retry breakdown by operation
   if (totalRetries > 0) {
     if (uploads.retries > 0) {
-      const uploadRetryRate =
+      const _uploadRetryRate =
         uploads.count > 0 ? ((uploads.retries / uploads.count) * 100).toFixed(2) : "0";
     }
     if (downloads.retries > 0) {
-      const downloadRetryRate =
+      const _downloadRetryRate =
         downloads.count > 0 ? ((downloads.retries / downloads.count) * 100).toFixed(2) : "0";
     }
     if (deletes.retries > 0) {
-      const deleteRetryRate =
+      const _deleteRetryRate =
         deletes.count > 0 ? ((deletes.retries / deletes.count) * 100).toFixed(2) : "0";
     }
   }
@@ -128,15 +128,15 @@ async function analyzePerformanceMetrics() {
   // Failure breakdown by operation
   if (totalFailures > 0) {
     if (uploads.failures > 0) {
-      const uploadFailureRate =
+      const _uploadFailureRate =
         uploads.count > 0 ? ((uploads.failures / uploads.count) * 100).toFixed(2) : "0";
     }
     if (downloads.failures > 0) {
-      const downloadFailureRate =
+      const _downloadFailureRate =
         downloads.count > 0 ? ((downloads.failures / downloads.count) * 100).toFixed(2) : "0";
     }
     if (deletes.failures > 0) {
-      const deleteFailureRate =
+      const _deleteFailureRate =
         deletes.count > 0 ? ((deletes.failures / deletes.count) * 100).toFixed(2) : "0";
     }
   }
@@ -185,7 +185,7 @@ async function analyzePerformanceMetrics() {
   }
 
   if (bottlenecks.length > 0) {
-    bottlenecks.forEach((bottleneck, i) => {});
+    bottlenecks.forEach((_bottleneck, _i) => {});
   } else {
   }
 
@@ -215,11 +215,11 @@ async function analyzePerformanceMetrics() {
   }
 
   if (opportunities.length > 0) {
-    opportunities.forEach((opp, i) => {});
+    opportunities.forEach((_opp, _i) => {});
   } else {
   }
 
-  const overallHealth = () => {
+  const _overallHealth = () => {
     const avgFailureRate = parseFloat(failureRate);
     const avgRetryRate = parseFloat(retryRate);
     const avgPerf = parseFloat(avgDuration);
@@ -241,6 +241,6 @@ analyzePerformanceMetrics()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

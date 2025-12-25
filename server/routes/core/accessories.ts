@@ -21,8 +21,8 @@ router.get("/accessories", async (req, res) => {
     res.set("Pragma", "no-cache");
     res.set("Expires", "0");
 
-    const limit = parseInt(req.query.limit as string) || 100;
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = parseInt(req.query.limit as string, 10) || 100;
+    const offset = parseInt(req.query.offset as string, 10) || 0;
     const category = req.query.category as string | undefined;
     const search = req.query.search as string | undefined;
     const withCount = req.query.withCount === "true";
@@ -92,7 +92,7 @@ router.post("/accessories", async (req, res) => {
 // PUT /api/accessories/:id - Update accessory
 router.put("/accessories/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertAccessorySchema.partial().parse(req.body);
 
     // Convert price to string if it's a number (database expects string for decimal)
@@ -131,8 +131,8 @@ router.put("/accessories/:id", async (req, res) => {
 // DELETE /api/accessories/:id - Delete accessory
 router.delete("/accessories/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid accessory ID" });
     }
 

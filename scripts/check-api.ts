@@ -10,8 +10,8 @@ async function checkApi() {
 
     const data = await response.json();
 
-    data.forEach((acc: any, index: number) => {});
-  } catch (error) {}
+    data.forEach((_acc: any, _index: number) => {});
+  } catch (_error) {}
 }
 
 await checkApi();

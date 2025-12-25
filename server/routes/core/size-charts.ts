@@ -56,7 +56,7 @@ router.post("/size-charts", async (req, res) => {
 // PUT /api/size-charts/:id - Update size chart
 router.put("/size-charts/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertSizeChartSchema.partial().parse(req.body);
     const sizeChart = await withTimeout(
       getStorage().updateSizeChart(id, validatedData),
@@ -88,8 +88,8 @@ router.put("/size-charts/:id", async (req, res) => {
 // DELETE /api/size-charts/:id - Delete size chart
 router.delete("/size-charts/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
       return res.status(400).json({ message: "Invalid size chart ID" });
     }
 

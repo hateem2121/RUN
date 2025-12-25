@@ -12,8 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard3D } from "@/components/ui/hover-card-3d";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
 // Helper to get the default composition from a fabric
 const getDefaultComposition = (fabric: Fabric) => {

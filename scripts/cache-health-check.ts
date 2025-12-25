@@ -134,11 +134,11 @@ async function generateHealthReport(): Promise<void> {
     const analysis = await analyzeCacheHealth();
 
     // Overall Score
-    const scoreEmoji =
+    const _scoreEmoji =
       analysis.health.score >= 90 ? "✅" : analysis.health.score >= 75 ? "⚠️" : "❌";
 
     // Hit Rate Analysis
-    const hitRateStatus =
+    const _hitRateStatus =
       analysis.metrics.hitRate >= 95
         ? "✅ EXCELLENT"
         : analysis.metrics.hitRate >= 85
@@ -149,22 +149,22 @@ async function generateHealthReport(): Promise<void> {
 
     if (analysis.metrics.hitRate >= 95) {
     } else {
-      const gap = 95 - analysis.metrics.hitRate;
+      const _gap = 95 - analysis.metrics.hitRate;
     }
 
     // Memory Analysis
     const memoryMB = analysis.metrics.estimatedMemoryUsage / (1024 * 1024);
-    const memoryStatus = memoryMB < 50 ? "✅ HEALTHY" : memoryMB < 80 ? "⚠️ MODERATE" : "❌ HIGH";
+    const _memoryStatus = memoryMB < 50 ? "✅ HEALTHY" : memoryMB < 80 ? "⚠️ MODERATE" : "❌ HIGH";
 
     // Issues Section
     if (analysis.health.issues.length > 0) {
-      analysis.health.issues.forEach((issue, i) => {});
+      analysis.health.issues.forEach((_issue, _i) => {});
     } else {
     }
 
     // Recommendations Section
     if (analysis.health.recommendations.length > 0) {
-      analysis.health.recommendations.forEach((rec, i) => {});
+      analysis.health.recommendations.forEach((_rec, _i) => {});
     } else {
     }
 
@@ -180,7 +180,7 @@ async function generateHealthReport(): Promise<void> {
     } else {
       process.exit(0);
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

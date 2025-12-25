@@ -75,7 +75,7 @@ async function checkDatabase(): Promise<HealthCheckResult> {
       responseTime,
       details: {
         connectionPool: "active",
-        queryTimeout: config.database.queryTimeout + "ms",
+        queryTimeout: `${config.database.queryTimeout}ms`,
       },
       timestamp: new Date().toISOString(),
     };
@@ -109,7 +109,7 @@ async function checkCache(): Promise<HealthCheckResult> {
       responseTime,
       details: {
         type: "memory_cache",
-        ttl: config.cache.defaultTTL + "ms",
+        ttl: `${config.cache.defaultTTL}ms`,
       },
       timestamp: new Date().toISOString(),
     };

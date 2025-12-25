@@ -76,7 +76,7 @@
 
     @apply relative flex h-full w-full items-center justify-center rounded-3xl text-white cursor-pointer;
     width: var(--card-width);
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
     margin: auto;
     z-index: var(--z-default);
   }

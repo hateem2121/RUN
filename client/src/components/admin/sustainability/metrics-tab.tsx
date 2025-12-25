@@ -575,7 +575,7 @@ export function MetricsTabContent({
       {/* However, standard shadcn sheet overlay might conflicts. Let's stick to Dialog for Preview, 
           but ensure z-index works, or just render it. */}
       {showMetricPreview && (
-        <div className="fixed inset-0 z-toast center-flex bg-black/50 p-4">
+        <div className="center-flex fixed inset-0 z-toast bg-black/50 p-4">
           <div className="fade-in zoom-in-95 relative w-full max-w-md animate-in bg-transparent duration-200">
             <div className="absolute -top-12 right-0">
               <Button

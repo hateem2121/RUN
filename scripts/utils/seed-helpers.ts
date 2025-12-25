@@ -132,7 +132,7 @@ export function generateDescription(minWords: number = 10, maxWords: number = 30
     if (word) selectedWords.push(word);
   }
 
-  return selectedWords.join(" ") + ".";
+  return `${selectedWords.join(" ")}.`;
 }
 
 /**
@@ -227,7 +227,7 @@ export class SeedProgressTracker {
     const summary = this.getSummary();
 
     if (summary.failed > 0) {
-      summary.results.filter((r) => !r.success).forEach((r) => {});
+      summary.results.filter((r) => !r.success).forEach((_r) => {});
     }
   }
 }

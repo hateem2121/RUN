@@ -11,11 +11,11 @@ async function investigate() {
 
   // 2. Check Sections
   const sections = await db.select().from(homepageSections).orderBy(homepageSections.sortOrder);
-  sections.forEach((s) => {});
+  sections.forEach((_s) => {});
 
   // 3. Check Process Cards
   const cards = await db.select().from(homepageProcessCards);
-  cards.forEach((c) => {});
+  cards.forEach((_c) => {});
   process.exit(0);
 }
 

@@ -1,6 +1,6 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import { glob } from "glob";
-import path from "path";
 
 // Patterns forbidden in component bodies (likely SSR unsafe if not in useEffect)
 const FORBIDDEN_PATTERNS = [

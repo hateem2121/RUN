@@ -212,7 +212,12 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 placeholder="Add specification (e.g., Machine washable, UV protection)"
                 value={newSpecification}
                 onChange={(e) => setNewSpecification(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSpecification())}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSpecification();
+                  }
+                }}
               />
               <Button type="button" onClick={addSpecification} size="sm">
                 <Plus className="h-4 w-4" />
@@ -255,7 +260,12 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 value={newTechSpecValue}
                 onChange={(e) => setNewTechSpecValue(e.target.value)}
                 className="col-span-2"
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTechnicalSpec())}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addTechnicalSpec();
+                  }
+                }}
               />
               <Button type="button" onClick={addTechnicalSpec} size="sm">
                 <Plus className="h-4 w-4" />
@@ -302,7 +312,12 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                   placeholder="Add care instruction"
                   value={newCareInstruction}
                   onChange={(e) => setNewCareInstruction(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCareInstruction())}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addCareInstruction();
+                    }
+                  }}
                 />
                 <Button type="button" onClick={addCareInstruction} size="sm">
                   <Plus className="h-4 w-4" />
@@ -345,7 +360,12 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                   placeholder="Add tag"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addTag();
+                    }
+                  }}
                 />
                 <Button type="button" onClick={addTag} size="sm">
                   <Plus className="h-4 w-4" />
@@ -387,9 +407,12 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 placeholder="Add customization option"
                 value={newCustomizationOption}
                 onChange={(e) => setNewCustomizationOption(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && (e.preventDefault(), addCustomizationOption())
-                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addCustomizationOption();
+                  }
+                }}
               />
               <Button type="button" onClick={addCustomizationOption} size="sm">
                 <Plus className="h-4 w-4" />

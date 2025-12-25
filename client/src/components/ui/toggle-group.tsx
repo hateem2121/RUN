@@ -22,11 +22,7 @@ const ToggleGroup = ({
   VariantProps<typeof toggleVariants> & {
     ref?: React.Ref<React.ElementRef<typeof ToggleGroupPrimitive.Root>>;
   }) => (
-  <ToggleGroupPrimitive.Root
-    ref={ref}
-    className={cn("center-flex gap-1", className)}
-    {...props}
-  >
+  <ToggleGroupPrimitive.Root ref={ref} className={cn("center-flex gap-1", className)} {...props}>
     <ToggleGroupContext.Provider value={{ variant, size }}>{children}</ToggleGroupContext.Provider>
   </ToggleGroupPrimitive.Root>
 );

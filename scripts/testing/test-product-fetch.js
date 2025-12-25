@@ -8,7 +8,7 @@ async function test() {
 
     if (result && typeof result === "object" && "ok" in result) {
     }
-  } catch (err) {}
+  } catch (_err) {}
 }
 
 test();

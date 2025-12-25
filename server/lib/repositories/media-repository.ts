@@ -224,7 +224,7 @@ export class MediaRepository {
   async createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset> {
     const [created] = await db.insert(mediaAssets).values(mediaAsset).returning();
 
-    this.invalidateMediaCacheSelectively("create", created!.id).catch((error) =>
+    this.invalidateMediaCacheSelectively("create", created?.id).catch((error) =>
       logger.debug("Smart cache invalidation failed (non-critical):", error),
     );
 
@@ -506,7 +506,7 @@ export class MediaRepository {
     });
 
     if (updatedCount > 0) {
-      this.invalidateMediaCacheSelectively("update", updates[0]!.id).catch((error) =>
+      this.invalidateMediaCacheSelectively("update", updates[0]?.id).catch((error) =>
         logger.debug("Batch cache invalidation failed (non-critical):", error),
       );
     }
@@ -517,7 +517,7 @@ export class MediaRepository {
   async getMediaAssetsByIds(ids: string[]): Promise<MediaAsset[]> {
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssetsByIds");
 
-    const numericIds = ids.map((id) => parseInt(id, 10)).filter((id) => !isNaN(id));
+    const numericIds = ids.map((id) => parseInt(id, 10)).filter((id) => !Number.isNaN(id));
 
     if (numericIds.length === 0) {
       perfTracker.setCacheHit(false).complete();
@@ -711,7 +711,7 @@ export class MediaRepository {
       Promise.allSettled([
         this.getMediaAssets().catch((err) => logger.debug("Cache preload failed:", err)),
       ]);
-    } catch (error) {
+    } catch (_error) {
       // Silent failure for preloading
     }
   }

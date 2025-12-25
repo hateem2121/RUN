@@ -204,7 +204,6 @@ export const DraggableCardBody = ({
         rotateX,
         rotateY,
         opacity,
-        opacity,
         willChange: "transform",
       }}
       animate={controls}

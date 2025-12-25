@@ -13,10 +13,10 @@ async function activateSection() {
   if (updated) {
   } else {
   }
-  const sections = await db.select().from(homepageSections);
+  const _sections = await db.select().from(homepageSections);
   process.exit(0);
 }
 
-activateSection().catch((error) => {
+activateSection().catch((_error) => {
   process.exit(1);
 });

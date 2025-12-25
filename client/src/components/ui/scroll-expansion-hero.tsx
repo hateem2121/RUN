@@ -445,7 +445,7 @@ const ScrollExpandMedia = ({
                   titleLines.map((line, index) => (
                     <motion.h2
                       key={index}
-                      className="py-1 px-0 font-semibold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
+                      className="px-0 py-1 font-semibold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
                       style={{
                         transform: getLineTransform(index),
                         willChange: "transform",

@@ -384,7 +384,7 @@ export class MiscRepository {
         scoreParsed = sustainabilityScore;
       } else if (typeof sustainabilityScore === "string") {
         const parsed = parseInt(sustainabilityScore, 10);
-        if (!isNaN(parsed)) {
+        if (!Number.isNaN(parsed)) {
           scoreParsed = parsed;
         }
       }
@@ -881,7 +881,7 @@ export class MiscRepository {
       const [updated] = await db
         .update(navigationGlassmorphismSettings)
         .set(settings)
-        .where(eq(navigationGlassmorphismSettings.id, existing[0]!.id))
+        .where(eq(navigationGlassmorphismSettings.id, existing[0]?.id))
         .returning();
       result = updated!;
     }
@@ -987,7 +987,7 @@ export class MiscRepository {
       const [updated] = await db
         .update(footerConfiguration)
         .set({ ...safeConfig, updatedAt: sql`NOW()` })
-        .where(eq(footerConfiguration.id, existing[0]!.id))
+        .where(eq(footerConfiguration.id, existing[0]?.id))
         .returning();
       result = updated!;
     }

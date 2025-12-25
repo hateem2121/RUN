@@ -23,7 +23,7 @@ describe("Slow Query Logging (Integration Tier)", () => {
         if (line.trim()) {
           try {
             logs.push(JSON.parse(line));
-          } catch (e) {
+          } catch (_e) {
             logs.push({ msg: line });
           }
         }
@@ -47,9 +47,7 @@ describe("Slow Query Logging (Integration Tier)", () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const slowLog = logs.find(
-      (l) =>
-        (l.msg && l.msg.includes("[Slow Query]")) ||
-        (l.message && l.message.includes("[Slow Query]")),
+      (l) => l.msg?.includes("[Slow Query]") || l.message?.includes("[Slow Query]"),
     );
 
     expect(slowLog).toBeDefined();

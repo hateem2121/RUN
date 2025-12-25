@@ -41,7 +41,7 @@ async function searchSpecificContent() {
           if (item.description) {
           }
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
 
     // Also check batch data
@@ -53,7 +53,7 @@ async function searchSpecificContent() {
           foundContent.about.push(...batch);
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   const manufacturingKeywords = [
@@ -84,7 +84,7 @@ async function searchSpecificContent() {
           if (item.description) {
           }
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
   }
 
@@ -118,7 +118,7 @@ async function searchSpecificContent() {
           if (item.content) {
           }
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
   }
 
@@ -152,11 +152,11 @@ async function searchSpecificContent() {
           if (item.category) {
           }
         }
-      } catch (e) {}
+      } catch (_e) {}
     }
   }
 
-  const total =
+  const _total =
     foundContent.about.length +
     foundContent.manufacturing.length +
     foundContent.contact.length +

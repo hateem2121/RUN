@@ -19,17 +19,17 @@ async function testSystemSynchronization() {
   try {
     const dbStart = Date.now();
     const mediaResponse = await fetch(`${baseUrl}/api/media`);
-    const dbTime = Date.now() - dbStart;
+    const _dbTime = Date.now() - dbStart;
 
     if (mediaResponse.ok) {
-      const data = await mediaResponse.json();
+      const _data = await mediaResponse.json();
       results.database = true;
     } else {
     }
     const storageResponse = await fetch(`${baseUrl}/api/data-integrity/check`);
 
     if (storageResponse.ok) {
-      const integrityData = await storageResponse.json();
+      const _integrityData = await storageResponse.json();
       results.objectStorage = true;
     } else {
     }
@@ -52,7 +52,7 @@ async function testSystemSynchronization() {
           successCount++;
         } else {
         }
-      } catch (error) {}
+      } catch (_error) {}
     }
 
     results.apis = successCount === endpoints.length;
@@ -67,7 +67,7 @@ async function testSystemSynchronization() {
           routeSuccessCount++;
         } else {
         }
-      } catch (error) {}
+      } catch (_error) {}
     }
 
     results.routing = routeSuccessCount === routes.length;
@@ -83,13 +83,13 @@ async function testSystemSynchronization() {
         results.endpoints = true;
       } else {
       }
-    } catch (error) {}
-    Object.entries(results).forEach(([component, status]) => {});
+    } catch (_error) {}
+    Object.entries(results).forEach(([_component, _status]) => {});
 
     const overallSync = Object.values(results).every((status) => status);
 
     return overallSync;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

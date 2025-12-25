@@ -21,7 +21,7 @@ import {
 } from "../shared/schema.js";
 
 // ANSI Colors
-const colors = {
+const _colors = {
   reset: "\x1b[0m",
   red: "\x1b[31m",
   green: "\x1b[32m",
@@ -32,17 +32,17 @@ const colors = {
 
 async function main() {
   let totalErrors = 0;
-  let totalWarnings = 0;
+  let _totalWarnings = 0;
 
   // Helper for logging
-  const logPass = (msg: string) => {};
-  const logFail = (msg: string) => {
+  const logPass = (_msg: string) => {};
+  const logFail = (_msg: string) => {
     totalErrors++;
   };
-  const logWarn = (msg: string) => {
-    totalWarnings++;
+  const logWarn = (_msg: string) => {
+    _totalWarnings++;
   };
-  const section = (name: string) => {};
+  const section = (_name: string) => {};
 
   try {
     // =========================================================================
@@ -227,7 +227,7 @@ async function main() {
     } else {
       process.exit(0);
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -156,7 +156,7 @@ export const enhancedUploadService = {
     }
 
     // Verify chunk integrity with SHA-256
-    const crypto = await withTimeout(import("crypto"), 5000, "Import crypto module");
+    const crypto = await withTimeout(import("node:crypto"), 5000, "Import crypto module");
     const hash = crypto.createHash("sha256");
     hash.update(chunkData);
     const computedHash = hash.digest("base64");
@@ -370,7 +370,7 @@ export const enhancedUploadService = {
             const firstBraceEnd = jsonText.indexOf("}") + 1;
             if (firstBraceEnd > 0) {
               const partialJson = jsonText.substring(0, Math.min(1000, firstBraceEnd));
-              JSON.parse(partialJson + "}"); // Just for validation
+              JSON.parse(`${partialJson}}`); // Just for validation
               isJSONFormat = true;
             }
           }

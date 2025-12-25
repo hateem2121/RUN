@@ -145,9 +145,9 @@
     // Test keyboard event setup
     let keyboardSetup = false;
     try {
-      const testEvent = new KeyboardEvent("keydown", { key: "Tab" });
+      const _testEvent = new KeyboardEvent("keydown", { key: "Tab" });
       keyboardSetup = true;
-    } catch (e) {
+    } catch (_e) {
       keyboardSetup = false;
     }
 
@@ -193,9 +193,9 @@
     );
 
     // Verify hierarchy
-    const backdrop = parseInt(rootStyle.getPropertyValue("--z-modal-backdrop")) || 40;
-    const modal = parseInt(rootStyle.getPropertyValue("--z-modal")) || 50;
-    const nested = parseInt(rootStyle.getPropertyValue("--z-modal-nested")) || 55;
+    const backdrop = parseInt(rootStyle.getPropertyValue("--z-modal-backdrop"), 10) || 40;
+    const modal = parseInt(rootStyle.getPropertyValue("--z-modal"), 10) || 50;
+    const nested = parseInt(rootStyle.getPropertyValue("--z-modal-nested"), 10) || 55;
 
     const hierarchyCorrect = backdrop < modal && modal < nested;
     logResult(
@@ -255,7 +255,7 @@
 
   // Execute all tests
   async function runAllTests() {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     try {
       testHookExports();
@@ -271,13 +271,13 @@
       const total = allResults.length;
       const score = Math.round((passed / total) * 100);
 
-      Object.entries(results).forEach(([category, categoryResults]) => {
+      Object.entries(results).forEach(([_category, categoryResults]) => {
         const categoryPassed = categoryResults.filter((r) => r.passed).length;
         const categoryTotal = categoryResults.length;
-        const categoryScore = Math.round((categoryPassed / categoryTotal) * 100);
+        const _categoryScore = Math.round((categoryPassed / categoryTotal) * 100);
 
         // Show failed tests
-        categoryResults.filter((r) => !r.passed).forEach((fail) => {});
+        categoryResults.filter((r) => !r.passed).forEach((_fail) => {});
       });
 
       // Assessment

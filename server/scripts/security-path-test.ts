@@ -96,7 +96,7 @@ async function securityPathTest() {
     },
   ];
 
-  let passCount = 0;
+  let _passCount = 0;
   let failCount = 0;
 
   for (const testCase of testCases) {
@@ -115,7 +115,7 @@ async function securityPathTest() {
         if (testCase.expectedPath && actualPath !== testCase.expectedPath) {
           failCount++;
         } else {
-          passCount++;
+          _passCount++;
 
           // Cleanup
           await appStorageService.deleteAsset(actualPath).catch(() => {});
@@ -127,10 +127,10 @@ async function securityPathTest() {
         await appStorageService.deleteAsset(actualPath).catch(() => {});
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
+      const _errorMsg = error instanceof Error ? error.message : String(error);
 
       if (!testCase.shouldPass) {
-        passCount++;
+        _passCount++;
       } else {
         failCount++;
       }
@@ -146,6 +146,6 @@ securityPathTest()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

@@ -4,7 +4,7 @@ import { categories, navigationItems, products } from "../shared/schema.js";
 async function checkData() {
   try {
     const productsCount = await db.select().from(products);
-    const categoriesCount = await db.select().from(categories);
+    const _categoriesCount = await db.select().from(categories);
     const navItemsCount = await db.select().from(navigationItems);
 
     if (productsCount.length > 0) {
@@ -13,7 +13,7 @@ async function checkData() {
     }
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

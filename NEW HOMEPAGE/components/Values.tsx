@@ -90,7 +90,7 @@ const BentoCard: React.FC<BentoCardProps> = ({
   image,
 }) => (
   <div
-    className={`${colSpan} min-h-[400px] relative bg-[#0a0a0a] border border-white/10 p-8 flex flex-col justify-between group overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 will-change-transform`}
+    className={`${colSpan} group relative flex min-h-[400px] flex-col justify-between overflow-hidden border border-white/10 bg-[#0a0a0a] p-8 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl`}
     onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
     onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
   >
@@ -100,30 +100,30 @@ const BentoCard: React.FC<BentoCardProps> = ({
         src={image}
         alt={title}
         decoding="async"
-        className="w-full h-full object-cover opacity-50 transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 grayscale group-hover:grayscale-0"
+        className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
     </div>
 
     {/* Ripple Layer - Only rendered on desktop for performance */}
     {withRipple && !isMobile && (
-      <div className="absolute inset-0 z-[1] opacity-60 mix-blend-soft-light pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 z-[1] opacity-60 mix-blend-soft-light">
         <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
           <WaterRipple />
         </Canvas>
       </div>
     )}
 
-    <div className="w-full flex justify-end relative z-10">
+    <div className="relative z-10 flex w-full justify-end">
       <Icon
-        className={`w-12 h-12 stroke-[1] transition-colors duration-300 ${
+        className={`h-12 w-12 stroke-[1] transition-colors duration-300 ${
           withRipple ? "text-blue-400" : "text-gray-400 group-hover:text-blue-400"
         }`}
       />
     </div>
     <div className="relative z-10">
-      <h3 className="text-2xl font-bold uppercase mb-2 text-white">{title}</h3>
-      <p className="text-gray-400 group-hover:text-gray-200 transition-colors">{subtitle}</p>
+      <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
+      <p className="text-gray-400 transition-colors group-hover:text-gray-200">{subtitle}</p>
     </div>
   </div>
 );
@@ -140,13 +140,13 @@ const Values: React.FC = () => {
   }, []);
 
   return (
-    <section className="w-full py-32 px-4 md:px-8 bg-[#FAFAFA]">
-      <div className="max-w-[1600px] mx-auto">
-        <h2 className="text-[12vw] md:text-[6vw] uppercase font-bold leading-none mb-16 text-center">
-          Built on <span className="italic font-serif">Precision</span>
+    <section className="w-full bg-[#FAFAFA] px-4 py-32 md:px-8">
+      <div className="mx-auto max-w-[1600px]">
+        <h2 className="mb-16 text-center font-bold text-[12vw] uppercase leading-none md:text-[6vw]">
+          Built on <span className="font-serif italic">Precision</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <BentoCard
             title="Heritage Innovation"
             subtitle="135 Years of textile engineering mastery."
@@ -185,12 +185,12 @@ const Values: React.FC = () => {
         </div>
 
         {/* Scrolling Ticker */}
-        <div className="w-full border-y border-black mt-24 py-6 overflow-hidden" aria-hidden="true">
-          <div className="flex whitespace-nowrap animate-marquee">
+        <div className="mt-24 w-full overflow-hidden border-black border-y py-6" aria-hidden="true">
+          <div className="flex animate-marquee whitespace-nowrap">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
               .map((text, i) => (
-                <span key={i} className="text-xl font-mono mx-4">
+                <span key={i} className="mx-4 font-mono text-xl">
                   {text}
                 </span>
               ))}

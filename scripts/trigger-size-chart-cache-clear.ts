@@ -40,9 +40,9 @@ async function triggerSizeChartCacheClear() {
     );
 
     if (newCharts.length > 0) {
-      newCharts.forEach((c: any) => {});
+      newCharts.forEach((_c: any) => {});
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 await triggerSizeChartCacheClear();

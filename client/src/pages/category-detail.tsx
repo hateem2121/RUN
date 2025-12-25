@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "wouter";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Typography } from "@/components/ui/typography";
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import {
   type TransformContext,
@@ -13,7 +14,6 @@ import {
   transformProducts,
 } from "@/lib/product-transformers";
 import { batchFetchMediaContent } from "@/lib/queryClient";
-import { Typography } from "@/components/ui/typography";
 
 interface ProductCardProps {
   product: TransformedProduct;

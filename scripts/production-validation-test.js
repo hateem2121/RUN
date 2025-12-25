@@ -150,7 +150,7 @@ async function testPerformanceBenchmarks() {
     const result = await testEndpoint(benchmark.endpoint);
 
     if (result.success) {
-      const status = result.responseTime <= benchmark.target ? "✅" : "⚠️ ";
+      const _status = result.responseTime <= benchmark.target ? "✅" : "⚠️ ";
 
       if (result.responseTime <= benchmark.target) {
         performantEndpoints++;
@@ -174,14 +174,14 @@ async function testRealTimeUISynchronization() {
 
   // Validate Phase 1 fix: Both cache hit/miss formats supported
   let assets = [];
-  let formatDetected = "unknown";
+  let _formatDetected = "unknown";
 
   if (Array.isArray(result.data?.data?.data)) {
     assets = result.data.data.data;
-    formatDetected = "cache-miss (data.data.data)";
+    _formatDetected = "cache-miss (data.data.data)";
   } else if (Array.isArray(result.data?.data)) {
     assets = result.data.data;
-    formatDetected = "cache-hit (data.data)";
+    _formatDetected = "cache-hit (data.data)";
   }
 
   if (assets.length > 0) {
@@ -206,8 +206,8 @@ async function runProductionValidation() {
   const total = Object.keys(validationResults).length;
 
   Object.entries(validationResults).forEach(([test, result]) => {
-    const status = result ? "✅ PASS" : "❌ FAIL";
-    const displayName = test.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+    const _status = result ? "✅ PASS" : "❌ FAIL";
+    const _displayName = test.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
   });
 
   if (passed === total) {
@@ -221,7 +221,7 @@ async function runProductionValidation() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runProductionValidation()
     .then((success) => process.exit(success ? 0 : 1))
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

@@ -159,7 +159,7 @@ const Values: React.FC = () => {
 
   return (
     <section className="w-full bg-background px-4 py-16 md:px-8 md:py-32">
-      <div className="mx-auto container-ultra">
+      <div className="container-ultra mx-auto">
         <h2 className="mb-16 text-center font-bold text-[12vw] uppercase leading-none md:text-[6vw]">
           Built on <span className="font-serif italic">Precision</span>
         </h2>

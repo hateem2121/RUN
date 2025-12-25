@@ -20,7 +20,7 @@ import { Loader2 } from "lucide-react";
 // Removed duplicate import here to reduce CSS bundle duplication
 import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
-import { GlassCard, LiquidGlassCard } from "@/components/ui/glass-card";
+import { GlassCard, GlassCardDecorations, LiquidGlassCard } from "@/components/ui/glass-card";
 import { Typography } from "@/components/ui/typography";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
@@ -820,18 +820,7 @@ export default function Technology() {
               <div className="space-y-8">
                 {vm.innovations.map((innovation) => (
                   <GlassCard key={innovation.id} className="group p-4">
-                    {/* Gradient overlay */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-
-                    {/* Inner glow */}
-                    <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
-
-                    {/* Hover shimmer - disabled on mobile for performance */}
-                    {!isMobile && (
-                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                        <div className="shimmer-overlay" />
-                      </div>
-                    )}
+                    <GlassCardDecorations showShimmer={!isMobile} />
 
                     <div className="relative z-elevated mx-auto grid max-w-7xl gap-6 sm:grid-cols-1 lg:grid-cols-2">
                       {/* Content */}
@@ -1021,18 +1010,7 @@ export default function Technology() {
               <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {vm.equipment.map((item) => (
                   <GlassCard key={item.id} className="group flex min-h-96 flex-col p-4">
-                    {/* Gradient overlay */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-
-                    {/* Inner glow */}
-                    <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
-
-                    {/* Hover shimmer - disabled on mobile for performance */}
-                    {!isMobile && (
-                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                        <div className="shimmer-overlay" />
-                      </div>
-                    )}
+                    <GlassCardDecorations showShimmer={!isMobile} />
 
                     <div className="relative z-elevated flex flex-1 flex-col">
                       {/* Equipment Image */}
@@ -1168,22 +1146,8 @@ export default function Technology() {
                     hasMediaAsset(research.videoId ?? null);
 
                   return (
-                    <div
-                      key={research.id}
-                      className="group relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 p-6 shadow-glow-lg backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5"
-                    >
-                      {/* Gradient overlay */}
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-
-                      {/* Inner glow */}
-                      <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
-
-                      {/* Hover shimmer - disabled on mobile for performance */}
-                      {!isMobile && (
-                        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                          <div className="shimmer-overlay" />
-                        </div>
-                      )}
+                    <GlassCard key={research.id} className="group p-6">
+                      <GlassCardDecorations showShimmer={!isMobile} />
 
                       <div
                         className={`relative z-elevated grid gap-8 ${
@@ -1307,7 +1271,7 @@ export default function Technology() {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </GlassCard>
                   );
                 })}
               </div>
@@ -1360,18 +1324,7 @@ export default function Technology() {
 
                         {/* Content */}
                         <GlassCard className="group relative flex-1 p-6">
-                          {/* Gradient overlay */}
-                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
-
-                          {/* Inner glow */}
-                          <div className="pointer-events-none absolute inset-[1px] rounded-[calc(0.75rem-1px)] bg-gradient-to-br from-white/5 to-transparent" />
-
-                          {/* Hover shimmer - disabled on mobile for performance */}
-                          {!isMobile && (
-                            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                              <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                            </div>
-                          )}
+                          <GlassCardDecorations showShimmer={!isMobile} />
 
                           <div
                             className={`relative z-elevated grid gap-6 ${

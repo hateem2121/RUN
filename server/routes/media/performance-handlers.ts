@@ -23,7 +23,7 @@ export async function getCacheHealth(_req: Request, res: Response) {
       }),
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const _errorMessage = error instanceof Error ? error.message : "Unknown error";
     return res.status(500).json(createErrorResponse("Failed to get cache health"));
   }
 }
@@ -45,7 +45,7 @@ export async function getSystemPerformance(_req: Request, res: Response) {
       }),
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const _errorMessage = error instanceof Error ? error.message : "Unknown error";
     return res.status(500).json(createErrorResponse("Failed to get system performance"));
   }
 }
@@ -69,7 +69,7 @@ export async function getEndpointPerformance(req: Request, res: Response) {
 
     return res.json(createSuccessResponse(metrics));
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const _errorMessage = error instanceof Error ? error.message : "Unknown error";
     return res.status(500).json(createErrorResponse("Failed to get endpoint performance"));
   }
 }

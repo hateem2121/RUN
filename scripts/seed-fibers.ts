@@ -245,9 +245,9 @@ const fibersData = [
 async function seedFibers() {
   try {
     const inserted = await db.insert(fibers).values(fibersData).returning();
-    inserted.forEach((fiber) => {});
+    inserted.forEach((_fiber) => {});
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

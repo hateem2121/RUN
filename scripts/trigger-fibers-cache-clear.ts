@@ -6,7 +6,7 @@ async function triggerFibersCacheClear() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: "CACHE_CLEAR_TRIGGER_" + Date.now(),
+        name: `CACHE_CLEAR_TRIGGER_${Date.now()}`,
         type: "System",
         description: "Temporary fiber to trigger cache invalidation",
         sustainabilityScore: 1,
@@ -28,7 +28,7 @@ async function triggerFibersCacheClear() {
       throw new Error(`Failed to delete dummy fiber: ${deleteResponse.statusText}`);
     }
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

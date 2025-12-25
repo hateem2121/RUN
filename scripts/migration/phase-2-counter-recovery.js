@@ -17,15 +17,15 @@ async function fixCounterCorruption() {
         const recordKey = `${table}:${i}`;
         const record = await db.get(recordKey);
 
-        if (record && record.ok && record.value && record.value !== "null") {
+        if (record?.ok && record.value && record.value !== "null") {
           try {
             const parsed = JSON.parse(record.value);
-            if (parsed && parsed.id && typeof parsed === "object") {
+            if (parsed?.id && typeof parsed === "object") {
               existingRecords.push({ id: i, data: parsed });
             }
-          } catch (parseError) {}
+          } catch (_parseError) {}
         }
-      } catch (error) {
+      } catch (_error) {
         // Silent fail for non-existent records
       }
     }
@@ -53,7 +53,7 @@ async function fixCounterCorruption() {
 
     // Step 4: Display recovered data summary
     if (existingRecords.length > 0) {
-      existingRecords.forEach((record) => {});
+      existingRecords.forEach((_record) => {});
     }
   }
 }

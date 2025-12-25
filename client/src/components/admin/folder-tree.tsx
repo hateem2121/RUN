@@ -16,6 +16,7 @@ import {
   EnhancedDialogTitle,
 } from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 type FolderType = typeof folders.$inferSelect;
@@ -153,9 +154,18 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
       <div key={folder.id}>
         <ContextMenu>
           <ContextMenuTrigger>
+            {/* biome-ignore lint/a11y/useSemanticElements: ContextMenuTrigger wrapper requires div */}
             <div
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onFolderSelect(folder.id);
+                }
+              }}
               className={cn(
-                "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent",
+                "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isSelected && "bg-accent",
                 isDragOver && "bg-primary/10 ring-2 ring-primary",
               )}
@@ -167,6 +177,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
             >
               {hasChildren && (
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFolder(folder.id);
@@ -263,9 +274,18 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
         </div>
 
         {/* All Media */}
+        {/* biome-ignore lint/a11y/useSemanticElements: Layout consistency */}
         <div
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onFolderSelect(null);
+            }
+          }}
           className={cn(
-            "mb-2 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent",
+            "mb-2 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             selectedFolderId === null && "bg-accent",
           )}
           onClick={() => onFolderSelect(null)}
@@ -289,7 +309,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
           </EnhancedDialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="font-medium text-sm">Folder Name</label>
+              <Label className="font-medium text-sm">Folder Name</Label>
               <Input
                 value={folderName}
                 onChange={(e) => setFolderName(e.target.value)}
@@ -297,7 +317,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
               />
             </div>
             <div>
-              <label className="font-medium text-sm">Description (optional)</label>
+              <Label className="font-medium text-sm">Description (optional)</Label>
               <Input
                 value={folderDescription}
                 onChange={(e) => setFolderDescription(e.target.value)}
@@ -333,7 +353,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
           </EnhancedDialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="font-medium text-sm">Folder Name</label>
+              <Label className="font-medium text-sm">Folder Name</Label>
               <Input
                 value={folderName}
                 onChange={(e) => setFolderName(e.target.value)}
@@ -341,7 +361,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
               />
             </div>
             <div>
-              <label className="font-medium text-sm">Description (optional)</label>
+              <Label className="font-medium text-sm">Description (optional)</Label>
               <Input
                 value={folderDescription}
                 onChange={(e) => setFolderDescription(e.target.value)}

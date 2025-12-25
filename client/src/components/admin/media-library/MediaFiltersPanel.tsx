@@ -21,6 +21,7 @@ export default function MediaFiltersPanel() {
       <div className="flex items-center justify-between border-b p-4">
         <h2 className="font-semibold">Filters</h2>
         <button
+          type="button"
           className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
           onMouseDown={(e) => {
             e.preventDefault();
@@ -93,7 +94,7 @@ export default function MediaFiltersPanel() {
         {/* Sort order */}
         <div className="space-y-2">
           <Label id="filters-sort-order">Sort order</Label>
-          <div className="flex gap-2" role="group" aria-labelledby="filters-sort-order">
+          <fieldset className="flex gap-2" aria-labelledby="filters-sort-order">
             <Button
               variant={state.sortOrder === "asc" ? "default" : "outline"}
               size="sm"
@@ -112,7 +113,7 @@ export default function MediaFiltersPanel() {
               <ArrowDown className="mr-2 h-4 w-4" />
               Descending
             </Button>
-          </div>
+          </fieldset>
         </div>
       </div>
 

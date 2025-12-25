@@ -1,5 +1,5 @@
 // NEON Connection Pooling Load Test - Database Heavy
-const http = require("http");
+const http = require("node:http");
 
 const BASE_URL = "http://localhost:5000";
 const CONCURRENT_USERS = 300;
@@ -34,10 +34,10 @@ async function runTest() {
   const startTime = Date.now();
   const promises = Array.from({ length: CONCURRENT_USERS }, (_, i) => makeRequest(i + 1));
   const results = await Promise.all(promises);
-  const duration = Date.now() - startTime;
+  const _duration = Date.now() - startTime;
 
   const successful = results.filter((r) => r.success).length;
-  const failed = CONCURRENT_USERS - successful;
+  const _failed = CONCURRENT_USERS - successful;
 
   if (successful >= CONCURRENT_USERS * 0.95) {
     return 0;
@@ -48,6 +48,6 @@ async function runTest() {
 
 runTest()
   .then((code) => process.exit(code))
-  .catch((e) => {
+  .catch((_e) => {
     process.exit(1);
   });

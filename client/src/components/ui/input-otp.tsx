@@ -58,7 +58,7 @@ const InputOTPSlot = ({
     >
       {char}
       {hasFakeCaret && (
-        <div className="pointer-events-none absolute inset-0 center-flex">
+        <div className="center-flex pointer-events-none absolute inset-0">
           <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
         </div>
       )}

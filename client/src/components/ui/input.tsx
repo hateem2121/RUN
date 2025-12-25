@@ -1,5 +1,5 @@
-import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,8 @@ const inputVariants = cva(
       variant: {
         default: "",
         ghost: "border-none bg-transparent shadow-none",
+        filled:
+          "border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-black focus:ring-offset-0",
       },
     },
     defaultVariants: {
@@ -19,7 +21,8 @@ const inputVariants = cva(
 );
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {}
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {}
 
 const Input = React.memo(({ className, type, variant, ref, ...props }: InputProps) => {
   return (

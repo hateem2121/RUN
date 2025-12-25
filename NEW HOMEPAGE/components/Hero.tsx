@@ -251,7 +251,7 @@ const Hero: React.FC = () => {
   }, [isInView]);
 
   return (
-    <section ref={containerRef} className="relative w-full h-screen bg-[#FAFAFA] overflow-hidden">
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#FAFAFA]">
       {/* 3D Background - Frameloop conditional for performance */}
       <div className="absolute inset-0 z-0 opacity-20" style={{ pointerEvents: "none" }}>
         <Canvas
@@ -265,14 +265,14 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
         <div
           ref={textContainerRef}
-          className="flex flex-col items-center justify-center perspective-[1000px] px-4 text-center"
+          className="perspective-[1000px] flex flex-col items-center justify-center px-4 text-center"
         >
           {HERO_TEXT.map((line, i) => (
-            <div key={i} className="hero-line overflow-visible py-2 -my-2 will-change-transform">
-              <h1 className="text-[14vw] md:text-[10vw] leading-[0.9] md:leading-[0.85] font-bold text-[#050505] tracking-tighter mix-blend-multiply will-change-transform">
+            <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
+              <h1 className="font-bold text-[#050505] text-[14vw] leading-[0.9] tracking-tighter mix-blend-multiply will-change-transform md:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>
@@ -281,20 +281,20 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 right-8 z-20 pointer-events-auto hidden md:block">
-        <div className="relative w-24 h-24 animate-[spin_10s_linear_infinite]">
-          <svg viewBox="0 0 100 100" className="w-full h-full fill-black">
+      <div className="pointer-events-auto absolute right-8 bottom-8 z-20 hidden md:block">
+        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
+          <svg viewBox="0 0 100 100" className="h-full w-full fill-black">
             <path
               id="curve"
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
               fill="transparent"
             />
-            <text className="text-[14px] uppercase font-bold tracking-widest">
+            <text className="font-bold text-[14px] uppercase tracking-widest">
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-2 h-2 bg-black rounded-full" />
+            <div className="h-2 w-2 rounded-full bg-black" />
           </div>
         </div>
       </div>

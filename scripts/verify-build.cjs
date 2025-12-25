@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const distServer = path.join(__dirname, "../dist/server/entry-server.js");
 const distPublicAssets = path.join(__dirname, "../dist/public/assets");

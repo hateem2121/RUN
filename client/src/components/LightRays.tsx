@@ -1,9 +1,7 @@
 import { Mesh, Program, Renderer, Triangle } from "ogl";
 import { useEffect, useRef, useState } from "react";
-import "./LightRays.css";
 
 export type RaysOrigin =
-  | "top-center"
   | "top-left"
   | "top-right"
   | "right"
@@ -427,7 +425,12 @@ void main() {
     return undefined;
   }, [followMouse]);
 
-  return <div ref={containerRef} className={`light-rays-container ${className}`.trim()} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`pointer-events-none relative z-default h-full w-full overflow-hidden ${className}`.trim()}
+    />
+  );
 };
 
 export default LightRays;

@@ -4,23 +4,23 @@ import { storage } from "../server/storage.js";
 const db = (storage as any).db;
 
 async function showUserBusinessData() {
-  let categoryCount = 0;
+  let _categoryCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`categories:${i}`);
       if (result?.ok && result?.value) {
-        const cat = JSON.parse(result.value);
-        categoryCount++;
+        const _cat = JSON.parse(result.value);
+        _categoryCount++;
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
-  let productCount = 0;
+  let _productCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`products:${i}`);
       if (result?.ok && result?.value) {
         const prod = JSON.parse(result.value);
-        productCount++;
+        _productCount++;
         if (prod.sku) {
         }
         if (prod.description) {
@@ -28,63 +28,63 @@ async function showUserBusinessData() {
         if (prod.categoryId) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
-  let fabricCount = 0;
+  let _fabricCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`fabrics:${i}`);
       if (result?.ok && result?.value) {
         const fab = JSON.parse(result.value);
-        fabricCount++;
+        _fabricCount++;
         if (fab.fabricType) {
         }
         if (fab.description) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
-  let fiberCount = 0;
+  let _fiberCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`fibers:${i}`);
       if (result?.ok && result?.value) {
         const fiber = JSON.parse(result.value);
-        fiberCount++;
+        _fiberCount++;
         if (fiber.type) {
         }
         if (fiber.sustainabilityScore) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
-  let certCount = 0;
+  let _certCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`certificates:${i}`);
       if (result?.ok && result?.value) {
         const cert = JSON.parse(result.value);
-        certCount++;
+        _certCount++;
         if (cert.type) {
         }
         if (cert.issuingBody) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
-  let accessoryCount = 0;
+  let _accessoryCount = 0;
   for (let i = 1; i <= 50; i++) {
     try {
       const result = await db.get(`accessories:${i}`);
       if (result?.ok && result?.value) {
         const acc = JSON.parse(result.value);
-        accessoryCount++;
+        _accessoryCount++;
         if (acc.type) {
         }
         if (acc.description) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 }
 

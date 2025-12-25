@@ -181,7 +181,7 @@ export function validateConfig(config: ProductionConfig): boolean {
     if (config.monitoring.alertThresholds.responseTime <= 0) return false;
 
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

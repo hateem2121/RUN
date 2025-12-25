@@ -58,7 +58,7 @@ export class BusinessDataExtractor {
         const newItems = individualItems.filter((item) => !existingIds.has(item.id));
         items.push(...newItems);
       }
-    } catch (error) {}
+    } catch (_error) {}
 
     return items;
   }
@@ -85,7 +85,7 @@ export class BusinessDataExtractor {
         if (item && item !== null) {
           items.push(item);
         }
-      } catch (error) {
+      } catch (_error) {
         // Continue checking other IDs
       }
     }
@@ -97,7 +97,7 @@ export class BusinessDataExtractor {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  async displayBusinessData(data: BusinessDataRecovery) {
+  async displayBusinessData(_data: BusinessDataRecovery) {
     // Logging removed for lint compliance
   }
 }
@@ -113,7 +113,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       await dataExtractor.displayBusinessData(data);
       process.exit(0);
     })
-    .catch((error) => {
+    .catch((_error) => {
       process.exit(1);
     });
 }

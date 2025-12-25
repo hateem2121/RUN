@@ -75,7 +75,7 @@ export class HttpMetricsTracker {
           duration,
           timestamp: Date.now(),
           userAgent: req.headers["user-agent"],
-          contentLength: parseInt(res.getHeader("content-length") as string) || undefined,
+          contentLength: parseInt(res.getHeader("content-length") as string, 10) || undefined,
         };
 
         this.recordMetric(metric);
@@ -269,7 +269,7 @@ export class HttpMetricsTracker {
       else if (code >= 300 && code < 400) categories["3xx"] = (categories["3xx"] || 0) + 1;
       else if (code >= 400 && code < 500) categories["4xx"] = (categories["4xx"] || 0) + 1;
       else if (code >= 500 && code < 600) categories["5xx"] = (categories["5xx"] || 0) + 1;
-      else categories["other"] = (categories["other"] || 0) + 1;
+      else categories.other = (categories.other || 0) + 1;
     });
 
     return categories;

@@ -112,9 +112,9 @@ class IntegrationTestSuite {
         passed: true,
         duration: performance.now() - startTime,
         details: {
-          batchResponse: batch.duration.toFixed(0) + "ms",
+          batchResponse: `${batch.duration.toFixed(0)}ms`,
           endpoints: endpointResults.map((r) => `${r.endpoint}: ${r.duration.toFixed(0)}ms`),
-          avgEndpointDuration: avgDuration.toFixed(0) + "ms",
+          avgEndpointDuration: `${avgDuration.toFixed(0)}ms`,
         },
       };
     } catch (error) {
@@ -175,11 +175,11 @@ class IntegrationTestSuite {
         duration: performance.now() - startTime,
         details: {
           productsCount: products.data.data.length,
-          productsResponseTime: products.duration.toFixed(0) + "ms",
+          productsResponseTime: `${products.duration.toFixed(0)}ms`,
           categoriesCount: categories.data.length,
-          categoriesResponseTime: categories.duration.toFixed(0) + "ms",
+          categoriesResponseTime: `${categories.duration.toFixed(0)}ms`,
           productDetailResponseTime: productDetailDuration
-            ? productDetailDuration.toFixed(0) + "ms"
+            ? `${productDetailDuration.toFixed(0)}ms`
             : "N/A",
         },
       };
@@ -228,9 +228,9 @@ class IntegrationTestSuite {
         duration: performance.now() - startTime,
         details: {
           mediaCount: media.data.data.length,
-          mediaListResponseTime: media.duration.toFixed(0) + "ms",
+          mediaListResponseTime: `${media.duration.toFixed(0)}ms`,
           contentRetrievalTest: contentTestPassed ? "Passed" : "Failed",
-          contentResponseTime: contentDuration ? contentDuration.toFixed(0) + "ms" : "N/A",
+          contentResponseTime: contentDuration ? `${contentDuration.toFixed(0)}ms` : "N/A",
         },
       };
     } catch (error) {
@@ -274,12 +274,12 @@ class IntegrationTestSuite {
         passed: true,
         duration: performance.now() - startTime,
         details: {
-          hitRate: cacheMetrics.hitRate.toFixed(1) + "%",
+          hitRate: `${cacheMetrics.hitRate.toFixed(1)}%`,
           healthScore: healthScore,
           status: cacheStatus,
           totalHits: cacheMetrics.totalHits,
           totalMisses: cacheMetrics.totalMisses,
-          avgResponseTime: cacheMetrics.avgResponseTime.toFixed(0) + "ms",
+          avgResponseTime: `${cacheMetrics.avgResponseTime.toFixed(0)}ms`,
         },
       };
     } catch (error) {
@@ -324,7 +324,7 @@ class IntegrationTestSuite {
         duration: performance.now() - startTime,
         details: {
           healthy: healthy,
-          avgResponseTime: legacy.avgResponseTime.toFixed(0) + "ms",
+          avgResponseTime: `${legacy.avgResponseTime.toFixed(0)}ms`,
           totalQueries: legacy.totalQueries,
           slowQueries: legacy.slowQueries,
         },
@@ -379,9 +379,9 @@ class IntegrationTestSuite {
           overallHealth: health.overall,
           status: health.status,
           cacheHealth: health.cache.score,
-          databaseAvgResponseTime: health.database.avgResponseTime.toFixed(0) + "ms",
-          httpAvgLatency: health.http.avgLatency.toFixed(0) + "ms",
-          memoryUsage: health.system.memoryUsage + "%",
+          databaseAvgResponseTime: `${health.database.avgResponseTime.toFixed(0)}ms`,
+          httpAvgLatency: `${health.http.avgLatency.toFixed(0)}ms`,
+          memoryUsage: `${health.system.memoryUsage}%`,
         },
       };
     } catch (error) {
@@ -398,7 +398,7 @@ class IntegrationTestSuite {
    * Run all tests
    */
   async runAll(): Promise<void> {
-    logger.info("\n" + "=".repeat(70));
+    logger.info(`\n${"=".repeat(70)}`);
     logger.info("🧪 PHASE 2C: INTEGRATION TEST SUITE");
     logger.info("=".repeat(70));
     logger.info("Testing critical flows for regressions...\n");
@@ -478,7 +478,7 @@ class IntegrationTestSuite {
         : `⚠️  ${failed} TEST(S) FAILED - Review required`;
 
     logger.info(verdict);
-    logger.info("=".repeat(70) + "\n");
+    logger.info(`${"=".repeat(70)}\n`);
   }
 }
 
@@ -488,7 +488,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   await suite.runAll();
 
   // Exit with appropriate code
-  const hasFailures = suite["results"].some((r) => !r.passed);
+  const hasFailures = suite.results.some((r) => !r.passed);
   process.exit(hasFailures ? 1 : 0);
 }
 

@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { getComponentForPath, routeManifest } from "../../shared/route-manifest";
 
@@ -7,7 +7,7 @@ describe("Route Manifest", () => {
   const PROJECT_ROOT = path.resolve(__dirname, "../../client");
 
   it("should map to existing files on disk", () => {
-    Object.entries(routeManifest).forEach(([route, componentPath]) => {
+    Object.entries(routeManifest).forEach(([_route, componentPath]) => {
       const fullPath = path.join(PROJECT_ROOT, componentPath);
       const exists = fs.existsSync(fullPath);
       expect(exists).toBe(true);

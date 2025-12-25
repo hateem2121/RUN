@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 import { mediaAssets } from "../../shared/schema.js";
 import { appStorageService } from "../app-storage-service.js";
 import { db } from "../db.js";
@@ -35,7 +35,7 @@ async function detectDuplicates() {
   const hashGroups = new Map<string, FileInfo[]>();
 
   let processed = 0;
-  let failed = 0;
+  let _failed = 0;
 
   for (const file of files) {
     try {
@@ -45,7 +45,7 @@ async function detectDuplicates() {
       const fileBuffer = await appStorageService.downloadAsset(file.key);
 
       if (!Buffer.isBuffer(fileBuffer)) {
-        failed++;
+        _failed++;
         continue;
       }
 
@@ -69,9 +69,9 @@ async function detectDuplicates() {
       if (!hashGroups.has(hash)) {
         hashGroups.set(hash, []);
       }
-      hashGroups.get(hash)!.push(fileInfo);
-    } catch (error) {
-      failed++;
+      hashGroups.get(hash)?.push(fileInfo);
+    } catch (_error) {
+      _failed++;
     }
   }
   const duplicateGroups: DuplicateGroup[] = [];
@@ -100,7 +100,7 @@ async function detectDuplicates() {
       const group = duplicateGroups[i];
 
       for (const file of group.files) {
-        const dbInfo = file.dbRecord
+        const _dbInfo = file.dbRecord
           ? `DB ID: ${file.dbRecord.id}, Type: ${file.dbRecord.file_type}`
           : "No DB record";
       }
@@ -109,7 +109,7 @@ async function detectDuplicates() {
   }
 
   const thumbnails = Array.from(fileInfoMap.values()).filter((f) => f.path.includes("thumb-"));
-  const mainFiles = Array.from(fileInfoMap.values()).filter(
+  const _mainFiles = Array.from(fileInfoMap.values()).filter(
     (f) => !f.path.includes("thumb-") && !f.path.includes("health-probe"),
   );
 
@@ -124,23 +124,23 @@ async function detectDuplicates() {
 
   if (orphanedThumbnails.length > 0) {
     for (const thumb of orphanedThumbnails) {
-      const expectedMain = thumb.path.replace("thumb-", "");
+      const _expectedMain = thumb.path.replace("thumb-", "");
     }
   } else {
   }
 
   const totalStorage = Array.from(fileInfoMap.values()).reduce((sum, f) => sum + f.size, 0);
   const uniqueStorage = totalStorage - totalWastedSpace;
-  const efficiency =
+  const _efficiency =
     totalWastedSpace === 0 ? 100 : ((uniqueStorage / totalStorage) * 100).toFixed(2);
 }
 
-function formatBytes(bytes: number): string {
+function _formatBytes(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / k ** i) * 100) / 100 + " " + sizes[i];
+  return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`;
 }
 
 // Run detection
@@ -148,6 +148,6 @@ detectDuplicates()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

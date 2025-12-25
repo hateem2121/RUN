@@ -11,7 +11,7 @@ async function showDataSample() {
         if (cat.description) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
   for (let i = 1; i <= 5; i++) {
     try {
@@ -22,7 +22,7 @@ async function showDataSample() {
         if (prod.description) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
   for (let i = 1; i <= 5; i++) {
     try {
@@ -31,7 +31,7 @@ async function showDataSample() {
         if (fab.fabricType) {
         }
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 }
 

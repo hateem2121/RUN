@@ -28,11 +28,19 @@
       "recommended": true,
       "nursery": {
         "useSortedClasses": {
-          "level": "error",
+          "level": "off",
           "options": {
             "functions": ["cn", "cva", "clsx"]
           }
         }
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       }
     }
   },

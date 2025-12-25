@@ -11,11 +11,11 @@ import FlipCard from "@/components/ui/bento-cards/flip-card";
 // Direct imports for immediate rendering
 import SvgMaskCard from "@/components/ui/bento-cards/svg-mask-card";
 import { Button } from "@/components/ui/button";
+import { headingVariants, Typography } from "@/components/ui/typography";
 import { isModelUrl } from "@/lib/media-type-detector";
 import { batchFetchMediaContent } from "@/lib/queryClient";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
 import { cn } from "@/lib/utils";
-import { Typography, headingVariants } from "@/components/ui/typography";
 
 // Lazy-load FluidGlass (imports three.js)
 const FluidGlass = lazy(() => import("@/components/ui/bento-cards/fluid-glass-final"));
@@ -220,7 +220,7 @@ export default function CategoriesPage() {
           Product Categories
         </motion.h1>
         <motion.p
-          className="mx-auto mt-3 max-w-2xl text-center text-lg text-luxury-body mb-4"
+          className="mx-auto mt-3 mb-4 max-w-2xl text-center text-lg text-luxury-body"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}

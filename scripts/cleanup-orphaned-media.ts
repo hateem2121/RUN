@@ -6,7 +6,7 @@ async function main() {
   const args = process.argv.slice(2);
   const force = args.includes("--force");
   const limitArg = args.find((arg) => arg.startsWith("--limit="));
-  const limit = limitArg ? parseInt(limitArg.split("=")[1] ?? "") : undefined;
+  const limit = limitArg ? parseInt(limitArg.split("=")[1] ?? "", 10) : undefined;
   if (limit)
     try {
       const allAssets = await db
@@ -47,29 +47,29 @@ async function main() {
         const filesToDelete = limit ? orphans.slice(0, limit) : orphans;
 
         if (force) {
-          let deletedCount = 0;
-          let errorCount = 0;
+          let _deletedCount = 0;
+          let _errorCount = 0;
 
           for (const file of filesToDelete) {
             try {
               const success = await appStorageService.deleteAsset(file);
               if (success) {
-                deletedCount++;
+                _deletedCount++;
               } else {
-                errorCount++;
+                _errorCount++;
               }
-            } catch (err) {
-              errorCount++;
+            } catch (_err) {
+              _errorCount++;
             }
           }
         } else {
-          filesToDelete.forEach((f) => {});
+          filesToDelete.forEach((_f) => {});
         }
       } else {
       }
 
       process.exit(0);
-    } catch (error) {
+    } catch (_error) {
       process.exit(1);
     }
 }

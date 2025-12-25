@@ -51,10 +51,10 @@ async function fixSectionNames() {
       data: {},
     });
   }
-  const finalSections = await db.select().from(homepageSections);
+  const _finalSections = await db.select().from(homepageSections);
   process.exit(0);
 }
 
-fixSectionNames().catch((error) => {
+fixSectionNames().catch((_error) => {
   process.exit(1);
 });

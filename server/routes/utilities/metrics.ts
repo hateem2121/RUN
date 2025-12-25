@@ -1,8 +1,8 @@
 // Unified Metrics Endpoint
 // Aggregates metrics from cache, database, and performance monitoring systems
 
+import os from "node:os";
 import type { Express } from "express";
-import os from "os";
 import { z } from "zod";
 import { getPoolMetrics } from "../../db.js";
 import { type AlertThresholds, alertManager } from "../../lib/alert-manager.js";

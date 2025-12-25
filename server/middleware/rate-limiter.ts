@@ -149,7 +149,7 @@ export class GenericRateLimiter {
 
   middleware = (req: Request, res: Response, next: NextFunction): void => {
     // Check if we should skip rate limiting for this request
-    if (this.skipFn && this.skipFn(req)) {
+    if (this.skipFn?.(req)) {
       return next();
     }
 

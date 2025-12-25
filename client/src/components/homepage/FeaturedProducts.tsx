@@ -18,7 +18,7 @@ const FeaturedProducts: React.FC = () => {
 
   return (
     <section className="w-full bg-luxury-surface px-4 py-16 text-luxury-interactive md:px-8 md:py-32">
-      <div className="mx-auto container-ultra">
+      <div className="container-ultra mx-auto">
         {/* Header - Stays Standard */}
         <div className="mb-16 flex items-end justify-between border-black/10 border-b pb-8">
           <h2 className="font-bold text-display-lg uppercase leading-none tracking-tighter">

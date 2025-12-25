@@ -62,7 +62,7 @@ export class FabricParser {
       const nameMatch = section.match(/^\d+\.\s+([A-Za-z\s]+?)(?=\n|$)/);
       if (!nameMatch) return null;
 
-      const name = nameMatch[1]!.trim();
+      const name = nameMatch[1]?.trim();
 
       // Parse each field
       const weight = this.extractField(section, "Weight \\(GSM\\):", "([0-9]+-[0-9]+\\s+GSM)");
@@ -151,15 +151,15 @@ export class FabricParser {
         detailedInstructions: detailedInstructions || "",
         stretchDirection,
       };
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
 
   private extractField(section: string, fieldName: string, pattern: string): string {
-    const regex = new RegExp(fieldName + "\\s*" + pattern, "i");
+    const regex = new RegExp(`${fieldName}\\s*${pattern}`, "i");
     const match = section.match(regex);
-    return match ? match[1]!.trim() : "";
+    return match ? match[1]?.trim() : "";
   }
 
   private extractListField(section: string, fieldName: string, pattern: string): string[] {
@@ -194,7 +194,7 @@ export class FabricParser {
 
   private extractSustainabilityScore(section: string): string {
     const scoreMatch = section.match(/Sustainability Score:\s*⭐*\s*\((\d+)\/5\s*stars?\)/i);
-    return scoreMatch && scoreMatch[1] ? scoreMatch[1] : "";
+    return scoreMatch?.[1] ? scoreMatch[1] : "";
   }
 
   private parseCompositions(section: string): Array<{
@@ -289,7 +289,7 @@ export class FabricParser {
       const match = part.match(/(\d+)%\s*([^%]+)/);
       if (match) {
         const percentage = match[1]!;
-        let fiberName = match[2]!.trim();
+        let fiberName = match[2]?.trim();
 
         // Clean up fiber name
         fiberName = fiberName.replace(/\s*\([^)]*\)/g, ""); // Remove parentheses
@@ -298,13 +298,13 @@ export class FabricParser {
 
         fibers.push({
           fiberName,
-          percentage: percentage + "%",
+          percentage: `${percentage}%`,
         });
       } else if (part.includes("100%")) {
         // Handle "100% Cotton" format
         const singleMatch = part.match(/100%\s*([^%]+)/);
         if (singleMatch) {
-          let fiberName = singleMatch[1]!.trim();
+          let fiberName = singleMatch[1]?.trim();
           fiberName = fiberName.replace(/\s*\([^)]*\)/g, "");
           fiberName = fiberName.replace(/\s*(Organic|Conventional|Recycled|rPET)\s*/g, "");
           fiberName = this.normalizeFiberName(fiberName);

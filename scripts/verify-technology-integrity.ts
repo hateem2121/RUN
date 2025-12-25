@@ -1,9 +1,9 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { TECHNOLOGY_DEFAULTS, TECHNOLOGY_THEME } from "../client/src/lib/technology-constants.js";
 
 // ANSI colors for console output
-const colors = {
+const _colors = {
   reset: "\x1b[0m",
   red: "\x1b[31m",
   green: "\x1b[32m",
@@ -13,18 +13,18 @@ const colors = {
 };
 
 let errorCount = 0;
-let warningCount = 0;
+let _warningCount = 0;
 
-function assert(condition: boolean, message: string) {
+function assert(condition: boolean, _message: string) {
   if (condition) {
   } else {
     errorCount++;
   }
 }
 
-function warn(condition: boolean, message: string) {
+function warn(condition: boolean, _message: string) {
   if (!condition) {
-    warningCount++;
+    _warningCount++;
   }
 }
 
@@ -122,7 +122,7 @@ try {
       inlineStyleMatches?.length || 0
     } usage(s) of inline 'style={{...}}'. Check for raw values.`,
   );
-} catch (err) {
+} catch (_err) {
   errorCount++;
 }
 

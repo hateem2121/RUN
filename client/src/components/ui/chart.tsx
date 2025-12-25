@@ -267,11 +267,7 @@ const ChartLegendContent = ({
   return (
     <div
       ref={ref}
-      className={cn(
-        "center-flex gap-4",
-        verticalAlign === "top" ? "pb-3" : "pt-3",
-        className,
-      )}
+      className={cn("center-flex gap-4", verticalAlign === "top" ? "pb-3" : "pt-3", className)}
     >
       {payload.map((item) => {
         const key = `${nameKey || item.dataKey || "value"}`;

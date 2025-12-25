@@ -9,7 +9,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ category, productName }) => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="text-xs font-semibold uppercase tracking-widest text-gray-500"
+      className="font-semibold text-gray-500 text-xs uppercase tracking-widest"
     >
       <ol className="flex items-center space-x-2">
         <li>
@@ -28,7 +28,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ category, productName }) => {
         <li>
           <span className="mx-2">/</span>
         </li>
-        <li aria-current="page" className="text-gray-800 truncate">
+        <li aria-current="page" className="truncate text-gray-800">
           {productName}
         </li>
       </ol>

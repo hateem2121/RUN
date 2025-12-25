@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 
 try {
   // Use npm list to find all occurrences of react
@@ -60,7 +60,7 @@ try {
   if (versions.size === 0) {
   } else {
   }
-} catch (error) {
+} catch (_error) {
   // If npm list fails (e.g. missing peer deps), we might warn but not fail?
   // Directive says "Fail CI".
   process.exit(1);

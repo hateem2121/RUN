@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { appStorageService } from "../server/app-storage-service.ts";
 import { logger } from "../server/lib/smart-logger.ts";
 
@@ -379,7 +379,7 @@ async function fixGLTFFiles() {
     logger.info(`\n=== Processing ${asset.colorway} Leather Jacket (Asset ${asset.id}) ===`);
 
     // Step 1: Download and analyze current file
-    const currentData = await analyzeCurrentGLTF(asset);
+    const _currentData = await analyzeCurrentGLTF(asset);
 
     // Step 2: Create valid GLTF 2.0 file
     logger.info(`🔧 Creating valid GLTF 2.0 file for ${asset.colorway} colorway...`);

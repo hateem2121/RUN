@@ -35,10 +35,10 @@ async function main() {
     }
 
     // Verify the fallback path actually exists
-    const fallbackExists = await appStorageService.assetExists(pathToServe!);
+    const _fallbackExists = await appStorageService.assetExists(pathToServe!);
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

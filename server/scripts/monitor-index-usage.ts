@@ -189,7 +189,7 @@ export class IndexUsageMonitor {
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / k ** i) * 100) / 100 + " " + sizes[i];
+    return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`;
   }
 
   /**
@@ -200,15 +200,15 @@ export class IndexUsageMonitor {
 
     // Unused Indexes
     if (summary.unusedIndexes.length > 0) {
-      for (const idx of summary.unusedIndexes) {
+      for (const _idx of summary.unusedIndexes) {
       }
     } else {
     }
 
-    for (const idx of summary.mostUsedIndexes) {
+    for (const _idx of summary.mostUsedIndexes) {
     }
 
-    for (const idx of summary.leastUsedIndexes) {
+    for (const _idx of summary.leastUsedIndexes) {
     }
   }
 }

@@ -122,8 +122,8 @@ async function populateSampleData() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(chart),
       });
-      const result = await response.json();
-    } catch (error) {}
+      const _result = await response.json();
+    } catch (_error) {}
   }
   for (const accessory of accessories) {
     try {
@@ -132,8 +132,8 @@ async function populateSampleData() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(accessory),
       });
-      const result = await response.json();
-    } catch (error) {}
+      const _result = await response.json();
+    } catch (_error) {}
   }
 }
 

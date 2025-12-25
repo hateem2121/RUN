@@ -6,7 +6,7 @@ async function triggerFabricsCacheClear() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: "CACHE_CLEAR_TRIGGER_" + Date.now(),
+        name: `CACHE_CLEAR_TRIGGER_${Date.now()}`,
         description: "Temporary fabric to trigger cache invalidation",
         weight: "0 GSM",
         isActive: false,
@@ -28,7 +28,7 @@ async function triggerFabricsCacheClear() {
       throw new Error(`Failed to delete dummy fabric: ${deleteResponse.statusText}`);
     }
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

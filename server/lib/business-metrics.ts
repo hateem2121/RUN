@@ -59,5 +59,5 @@ export function trackBusinessEvent(
         bizPaymentFailureTotal.inc(safeLabels);
         break;
     }
-  } catch (error) {}
+  } catch (_error) {}
 }

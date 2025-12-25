@@ -3,7 +3,7 @@
  * Phase 3 (Observability): Request tracing for distributed logging
  */
 
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { correlationContext } from "../lib/smart-logger.js";
 

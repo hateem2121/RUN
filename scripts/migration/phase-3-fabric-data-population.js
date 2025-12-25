@@ -224,7 +224,7 @@ async function populateFabricData() {
       await db.set("fabrics:counter", newId);
 
       newId++;
-    } catch (error) {}
+    } catch (_error) {}
   }
 }
 

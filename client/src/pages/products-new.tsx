@@ -27,7 +27,7 @@ import type { TransformedProduct } from "@/lib/product-transformers";
 // ─────────────────────────────────────────────────────────────────────────
 
 const Breadcrumbs = ({ activeCategoryName }: { activeCategoryName: string }) => (
-  <nav aria-label="Breadcrumb" className="mx-auto container-wide px-6 pt-4 md:pt-6 lg:pt-8">
+  <nav aria-label="Breadcrumb" className="container-wide mx-auto px-6 pt-4 md:pt-6 lg:pt-8">
     <ol className="flex items-center space-x-2 text-muted-foreground text-xs uppercase tracking-widest sm:text-sm">
       <li>
         <Link href="/" className="hover:text-foreground">
@@ -119,7 +119,7 @@ export default function ProductsPageNew() {
 
       {/* Hero Section with Category Tabs */}
       <section className="mt-12 mb-12 bg-background px-6 pt-0 pb-0 text-foreground md:mt-20 md:mb-20 lg:mt-[100px] lg:mb-[100px] lg:pt-20">
-        <div className="mx-auto container-wide text-center">
+        <div className="container-wide mx-auto text-center">
           <Typography.P className="mt-[0px] mb-[0px] pt-[35px] pb-[35px] text-muted-foreground text-sm uppercase tracking-widest">
             RUN — For a Better Tomorrow
           </Typography.P>
@@ -150,7 +150,7 @@ export default function ProductsPageNew() {
 
       {/* Filters and Search */}
       <section className="bg-background px-6 py-6">
-        <div className="mx-auto container-wide">
+        <div className="container-wide mx-auto">
           <div className="mb-4 flex flex-col items-start gap-4 lg:flex-row lg:items-center">
             {/* Search Input */}
             <div className="relative w-full max-w-md flex-1">

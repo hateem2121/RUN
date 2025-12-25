@@ -4,9 +4,9 @@ import { fibers } from "../shared/schema.js";
 async function listFibers() {
   try {
     const allFibers = await db.select().from(fibers);
-    allFibers.forEach((f) => {});
+    allFibers.forEach((_f) => {});
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

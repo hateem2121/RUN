@@ -649,7 +649,7 @@ class PerformanceRegressionSuite {
       const result = await test.fn();
       this.results.push(result);
 
-      const status = result.passed ? "✅ PASS" : "❌ FAIL";
+      const _status = result.passed ? "✅ PASS" : "❌ FAIL";
 
       if (result.error) {
       }
@@ -658,12 +658,12 @@ class PerformanceRegressionSuite {
       }
     }
 
-    const passed = this.results.filter((r) => r.passed).length;
+    const _passed = this.results.filter((r) => r.passed).length;
     const failed = this.results.filter((r) => !r.passed).length;
-    const totalDuration = this.results.reduce((sum, r) => sum + r.duration, 0);
+    const _totalDuration = this.results.reduce((sum, r) => sum + r.duration, 0);
 
     if (failed > 0) {
-      this.results.filter((r) => !r.passed).forEach((r) => {});
+      this.results.filter((r) => !r.passed).forEach((_r) => {});
     }
   }
 }
@@ -675,7 +675,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   suite
     .runAllTests()
     .then(() => {
-      const passedAll = suite["results"].every((r) => r.passed);
+      const passedAll = suite.results.every((r) => r.passed);
       logger.info(`[PerformanceTests] All tests completed. Status: ${passedAll ? "PASS" : "FAIL"}`);
       process.exit(passedAll ? 0 : 1);
     })

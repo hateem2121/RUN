@@ -6,6 +6,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 import { ClippedElement } from "./PremiumProductComponents";
 
@@ -74,7 +76,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-modal center-flex bg-black/70 p-4 sm:p-6"
+          className="center-flex fixed inset-0 z-modal bg-black/70 p-4 sm:p-6"
           onClick={handleClose}
           aria-modal="true"
           role="dialog"
@@ -132,12 +134,12 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                         >
                           Company Name
                         </label>
-                        <input
+                        <Input
                           type="text"
                           id="companyName"
                           name="companyName"
                           required
-                          className="block w-full border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-colors focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-black"
+                          variant="filled"
                           data-testid="input-company-name"
                         />
                       </div>
@@ -149,12 +151,12 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                         >
                           Contact Email
                         </label>
-                        <input
+                        <Input
                           type="email"
                           id="contactEmail"
                           name="contactEmail"
                           required
-                          className="block w-full border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-colors focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-black"
+                          variant="filled"
                           data-testid="input-contact-email"
                         />
                       </div>
@@ -166,14 +168,14 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                         >
                           Estimated Order Quantity (MOQ)
                         </label>
-                        <input
+                        <Input
                           type="number"
                           id="moq"
                           name="moq"
                           min="100"
                           placeholder="100"
                           required
-                          className="block w-full border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-colors focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-black"
+                          variant="filled"
                           data-testid="input-moq"
                         />
                       </div>
@@ -185,12 +187,12 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                         >
                           Message
                         </label>
-                        <textarea
+                        <Textarea
                           id="message"
                           name="message"
                           rows={4}
                           placeholder="Describe your customization needs (e.g., branding, material changes, etc.)"
-                          className="block w-full resize-none border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-colors focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-black"
+                          variant="filled"
                           data-testid="input-message"
                         />
                       </div>

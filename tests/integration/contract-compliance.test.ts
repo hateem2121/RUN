@@ -1,6 +1,6 @@
 import request from "supertest";
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { app, serverReady } from "../../server/index.js";
+import { app } from "../../server/index.js";
 
 // Mock the storage layer to avoid DB dependency
 vi.mock("../../server/lib/storage-singleton.js", () => ({

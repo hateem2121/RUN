@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./product-badges";
@@ -29,7 +30,7 @@ export const QuickViewModal = ({ product, onClose }: QuickViewModalProps) => {
   return (
     <div
       ref={modalRef}
-      className="fixed inset-0 z-modal center-flex bg-black/50 p-4 backdrop-blur-xs"
+      className="center-flex fixed inset-0 z-modal bg-black/50 p-4 backdrop-blur-xs"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -121,28 +122,33 @@ export const QuickViewModal = ({ product, onClose }: QuickViewModalProps) => {
           )}
 
           <div className="space-y-3">
-            <button
+            <Button
               onClick={() => {
                 addItem(product);
               }}
               disabled={alreadyInCart}
-              className="flex min-h-11 w-full items-center justify-center bg-primary px-6 py-3 text-sm text-primary-foreground uppercase tracking-widest transition-colors hover:bg-primary/90 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+              size="lg"
+              className="w-full uppercase tracking-widest"
               data-testid="modal-request-quote"
             >
               {alreadyInCart ? "Added to Inquiry" : "Request a Quote"}
-            </button>
-            <button
-              className="flex min-h-11 w-full items-center justify-center border border-input bg-background px-6 py-3 text-foreground text-sm uppercase tracking-widest transition-colors hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full uppercase tracking-widest"
               data-testid="download-tech-sheet"
             >
               Download Tech Sheet
-            </button>
-            <button
-              className="flex min-h-11 w-full items-center justify-center border border-input bg-background px-6 py-3 text-foreground text-sm uppercase tracking-widest transition-colors hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full uppercase tracking-widest"
               data-testid="request-sample"
             >
               Request Sample
-            </button>
+            </Button>
           </div>
         </div>
       </div>

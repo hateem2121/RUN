@@ -163,7 +163,7 @@ class CacheHitRateValidator {
     const durationSec = durationMs / 1000;
     const requestsPerSec = totalRequests / durationSec;
 
-    logger.info("\n" + "=".repeat(70));
+    logger.info(`\n${"=".repeat(70)}`);
     logger.info("📊 CACHE HIT RATE VALIDATION RESULTS");
     logger.info("=".repeat(70));
     logger.info(`Total Requests:     ${totalRequests.toLocaleString()}`);
@@ -207,7 +207,7 @@ class CacheHitRateValidator {
       logger.info(`   Performance degradation: -${(baseline - hitRate).toFixed(1)}%`);
     }
 
-    logger.info("=".repeat(70) + "\n");
+    logger.info(`${"=".repeat(70)}\n`);
   }
 
   /**

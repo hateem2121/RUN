@@ -74,7 +74,7 @@ export class QueryPlanValidator {
     return {
       planningTime: explainData["Planning Time"] || 0,
       executionTime: explainData["Execution Time"] || 0,
-      plan: explainData["Plan"] || {},
+      plan: explainData.Plan || {},
     };
   }
 
@@ -108,8 +108,8 @@ export class QueryPlanValidator {
         }
       }
 
-      if (node["Plans"]) {
-        for (const childPlan of node["Plans"]) {
+      if (node.Plans) {
+        for (const childPlan of node.Plans) {
           traversePlan(childPlan);
         }
       }
@@ -137,8 +137,8 @@ export class QueryPlanValidator {
         totalRows += node["Actual Rows"];
       }
 
-      if (node["Plans"]) {
-        for (const childPlan of node["Plans"]) {
+      if (node.Plans) {
+        for (const childPlan of node.Plans) {
           traversePlan(childPlan);
         }
       }
@@ -479,7 +479,7 @@ export class QueryPlanValidator {
       const metrics = await query.fn();
 
       if (metrics.status === "success") {
-        const comparison = this.generateComparison(metrics);
+        const _comparison = this.generateComparison(metrics);
 
         if (metrics.sequentialScans > 0) {
         }

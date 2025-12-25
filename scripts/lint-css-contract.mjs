@@ -47,7 +47,7 @@ function main() {
 
   cssFiles.forEach((filePath) => {
     const content = fs.readFileSync(filePath, "utf-8");
-    const relativeName = path.relative(CLIENT_DIR, filePath);
+    const _relativeName = path.relative(CLIENT_DIR, filePath);
 
     // Collect defined utilities
     let match;
@@ -127,7 +127,7 @@ function main() {
     while ((match = CONFIG.usagePattern.exec(content)) !== null) {
       const zValue = match[1];
       // Check if it's an arbitrary value (starts with [) or a raw number
-      if (zValue.startsWith("[") || !isNaN(parseInt(zValue))) {
+      if (zValue.startsWith("[") || !Number.isNaN(parseInt(zValue, 10))) {
         if (zValue.startsWith("[")) {
           console.error(`❌ Arbitrary Z-Index detected in ${relativePath}: z-${zValue}`);
           hasErrors = true;

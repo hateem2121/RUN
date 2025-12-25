@@ -12,7 +12,7 @@
 
 import express from "express";
 import request from "supertest";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { assetHealthMonitor } from "../lib/asset-health-monitor.js";
 import { mediaPerformanceMonitor } from "../lib/media-performance-monitor.js";
 import { getStorage } from "../lib/storage-singleton.js";
@@ -27,7 +27,7 @@ import mediaRoutes from "../routes/media-consolidated.js";
 app.use("/api/media", mediaRoutes);
 
 describe("Media System Integration Tests", () => {
-  let testAssetId: number;
+  let _testAssetId: number;
 
   beforeAll(async () => {});
 

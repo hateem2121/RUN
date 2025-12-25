@@ -14,13 +14,13 @@ async function aggressiveAudit() {
 
         // Print ANY multi-fiber composition to see the split
         if (fibers.length > 1) {
-          const fiberStrings = fibers.map((f: any) => `${f.name}: ${f.percentage}`).join(", ");
+          const _fiberStrings = fibers.map((f: any) => `${f.name}: ${f.percentage}`).join(", ");
         }
 
         fibers.forEach((f: any) => {
           const p = parseFloat(f.percentage);
 
-          if (isNaN(p)) {
+          if (Number.isNaN(p)) {
           }
 
           if (p === 0) {
@@ -29,7 +29,7 @@ async function aggressiveAudit() {
       });
     });
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -42,7 +42,7 @@ export class MigrationService {
       for (const asset of mediaAssets) {
         try {
           // Skip if already migrated (has App Storage URL)
-          if (asset.url && asset.url.includes("storage.googleapis.com")) {
+          if (asset.url?.includes("storage.googleapis.com")) {
             logger.info(`⏭️ Skipping already migrated asset: ${asset.filename}`);
             continue;
           }
@@ -350,8 +350,8 @@ export class MigrationService {
       const categories = await this.storage.getCategories();
       const products = await this.storage.getProducts();
 
-      const migratedMedia = mediaAssets.filter(
-        (asset) => asset.url && asset.url.includes("storage.googleapis.com"),
+      const migratedMedia = mediaAssets.filter((asset) =>
+        asset.url?.includes("storage.googleapis.com"),
       ).length;
 
       const totalStructured = categories.length + products.length;

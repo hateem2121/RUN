@@ -11,7 +11,7 @@ async function checkUsers() {
     })
     .from(users)
     .orderBy(users.createdAt);
-  allUsers.forEach((u) => {});
+  allUsers.forEach((_u) => {});
 
   if (allUsers.length === 0) {
   } else {
@@ -24,6 +24,6 @@ async function checkUsers() {
 
 checkUsers()
   .then(() => process.exit(0))
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

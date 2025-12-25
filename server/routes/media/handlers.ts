@@ -90,7 +90,7 @@ export async function getMediaAssets(req: Request, res: Response) {
     const filters = {
       type: type as string | undefined,
       search: search as string | undefined,
-      folderId: folderId ? parseInt(folderId as string) : undefined,
+      folderId: folderId ? parseInt(folderId as string, 10) : undefined,
     };
 
     // Fetch assets and total count in single batched transaction (reduces NEON active time)
@@ -122,7 +122,7 @@ export async function getMediaAssetById(req: Request, res: Response) {
     }
 
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset) {
       return res.status(404).json(createErrorResponse("Media asset not found"));
@@ -148,7 +148,7 @@ export async function getMediaCount(req: Request, res: Response) {
     }
 
     if (folderId) {
-      filters.folderId = parseInt(folderId as string);
+      filters.folderId = parseInt(folderId as string, 10);
     }
 
     // Use database-level COUNT with filtering - no need to load all records
@@ -178,7 +178,7 @@ export async function searchMediaAssets(req: Request, res: Response) {
     }
 
     if (folderId) {
-      filters.folderId = parseInt(folderId as string);
+      filters.folderId = parseInt(folderId as string, 10);
     }
 
     // Use database-level filtering with Drizzle's ilike() operator
@@ -201,7 +201,7 @@ export async function updateMediaAsset(req: Request, res: Response) {
     const { id } = req.params;
     const storage = getStorage();
 
-    const updated = await storage.updateMediaAsset(parseInt(id!), req.body);
+    const updated = await storage.updateMediaAsset(parseInt(id!, 10), req.body);
 
     if (!updated) {
       return res.status(404).json(createErrorResponse("Media asset not found"));
@@ -217,7 +217,7 @@ export async function updateMediaAsset(req: Request, res: Response) {
 export async function deleteMediaAsset(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const assetId = parseInt(id!);
+    const assetId = parseInt(id!, 10);
     const storage = getStorage();
 
     // Get asset metadata before deletion (needed for physical file cleanup)
@@ -357,7 +357,7 @@ export async function uploadChunk(req: Request, res: Response) {
     await appStorageService.uploadAsset(chunkKey, file.buffer, {
       isPublic: CHUNK_STORAGE_IS_PUBLIC,
     });
-    session.receivedChunks.set(parseInt(chunkNumber), true);
+    session.receivedChunks.set(parseInt(chunkNumber, 10), true);
 
     const progress = Math.round((session.receivedChunks.size / session.totalChunks) * 100);
     const isComplete = session.receivedChunks.size === session.totalChunks;
@@ -365,7 +365,7 @@ export async function uploadChunk(req: Request, res: Response) {
     return res.status(201).json(
       createSuccessResponse({
         uploadId,
-        chunkNumber: parseInt(chunkNumber),
+        chunkNumber: parseInt(chunkNumber, 10),
         progress,
         status: isComplete ? "ready_for_finalization" : "uploading",
         receivedChunks: session.receivedChunks.size,
@@ -411,7 +411,7 @@ export async function finalizeUpload(req: Request, res: Response) {
         .sort((a, b) => a.index - b.index)
         .map((chunk) => chunk.buffer);
 
-      const assemblyTime = Date.now() - assemblyStartTime;
+      const _assemblyTime = Date.now() - assemblyStartTime;
       const assembledFile = Buffer.concat(chunks);
 
       // Track final storage key for compensating delete if DB insert fails
@@ -595,7 +595,7 @@ export async function getMediaContent(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset || !asset.storagePath) {
       return res.status(404).send("Media not found");
@@ -640,12 +640,12 @@ export async function getMediaContent(req: Request, res: Response) {
   } catch (error) {
     logger.error(`Error serving media ${req.params.id}:`, serializeError(error));
     try {
-      const fs = await import("fs");
+      const fs = await import("node:fs");
       fs.appendFileSync(
         "debug_media_error.log",
         `[${new Date().toISOString()}] Error serving media ${req.params.id}: ${JSON.stringify(serializeError(error), null, 2)}\n`,
       );
-    } catch (err) {}
+    } catch (_err) {}
     return res.status(500).send("Failed to serve media");
   }
 }
@@ -654,7 +654,7 @@ export async function getThumbnail(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset) {
       return res.status(404).send("Media not found");
@@ -774,11 +774,13 @@ export async function batchDeleteAssets(req: Request, res: Response) {
 
     // COMPENSATING TRANSACTION PATTERN FOR BATCH DELETES:
     // 1. Get all asset metadata before deletion (need storagePaths for cleanup)
-    const assetsToDelete = await Promise.all(ids.map((id) => storage.getMediaAsset(parseInt(id))));
+    const assetsToDelete = await Promise.all(
+      ids.map((id) => storage.getMediaAsset(parseInt(id, 10))),
+    );
 
     // 2. Perform soft deletes in database
     const results = await Promise.allSettled(
-      ids.map((id) => storage.deleteMediaAsset(parseInt(id))),
+      ids.map((id) => storage.deleteMediaAsset(parseInt(id, 10))),
     );
 
     const successCount = results.filter((r) => r.status === "fulfilled" && r.value === true).length;
@@ -881,7 +883,7 @@ export async function batchGetContent(req: Request, res: Response) {
       return res.status(400).json(createErrorResponse("No IDs provided"));
     }
 
-    const idList = (ids as string).split(",").map((id) => parseInt(id.trim()));
+    const idList = (ids as string).split(",").map((id) => parseInt(id.trim(), 10));
 
     // PERFORMANCE FIX: Add caching for batch requests with 45-minute TTL
     // CACHE BUSTING: Include environment in key to separate dev/prod caches
@@ -1098,7 +1100,7 @@ export async function clearMediaCache(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset?.storagePath) {
       return res.status(404).json(createErrorResponse("Asset not found"));
@@ -1182,7 +1184,7 @@ export async function getPerformanceMetrics(_req: Request, res: Response) {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({
       success: false,
       error: "Performance stats unavailable",
@@ -1288,7 +1290,7 @@ export async function uploadChunkRaw(req: Request, res: Response) {
     const chunkSize = parseInt(String(chunkSizeHeader), 10);
     const totalChunks = parseInt(String(totalChunksHeader), 10);
 
-    if (isNaN(chunkNumber) || isNaN(chunkSize) || isNaN(totalChunks)) {
+    if (Number.isNaN(chunkNumber) || Number.isNaN(chunkSize) || Number.isNaN(totalChunks)) {
       return res.status(400).json(createErrorResponse("Invalid numeric headers"));
     }
 
@@ -1495,7 +1497,7 @@ export async function getMediaProxy(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset || !asset.storagePath) {
       return res.status(404).send("Media not found");
@@ -1523,7 +1525,7 @@ export async function getThumbnailProxy(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const storage = getStorage();
-    const asset = await storage.getMediaAsset(parseInt(id!));
+    const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
     if (!asset) {
       return res.status(404).send("Media not found");

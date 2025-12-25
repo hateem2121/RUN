@@ -59,7 +59,7 @@ test.describe("Resilience & Error Handling", () => {
   });
 
   test("should display 404 page for non-existent routes", async ({ page }) => {
-    const randomRoute = "/this-page-definitely-does-not-exist-" + Date.now();
+    const randomRoute = `/this-page-definitely-does-not-exist-${Date.now()}`;
     await page.goto(randomRoute);
 
     // Verify 404 text

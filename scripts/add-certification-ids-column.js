@@ -12,7 +12,7 @@ async function addCertificationIdsColumn() {
       ADD COLUMN IF NOT EXISTS certification_ids jsonb DEFAULT '[]'::jsonb
     `;
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

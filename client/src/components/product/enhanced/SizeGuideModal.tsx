@@ -116,7 +116,7 @@ export function SizeGuideModal({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-modal center-flex bg-white/95 p-4 dark:bg-black/80",
+        "center-flex fixed inset-0 z-modal bg-white/95 p-4 dark:bg-black/80",
         className,
       )}
       role="dialog"

@@ -24,15 +24,15 @@ async function testPathValidation() {
     ["public//media/test.png", false, "Multiple consecutive slashes"],
   ];
 
-  let passCount = 0;
+  let _passCount = 0;
   let failCount = 0;
 
-  for (const [path, shouldPass, description] of testCases) {
+  for (const [path, shouldPass, _description] of testCases) {
     try {
       await appStorageService.uploadAsset(path, testBuffer);
 
       if (shouldPass) {
-        passCount++;
+        _passCount++;
 
         // Cleanup
         await appStorageService.deleteAsset(path).catch(() => {});
@@ -43,10 +43,10 @@ async function testPathValidation() {
         await appStorageService.deleteAsset(path).catch(() => {});
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
+      const _errorMsg = error instanceof Error ? error.message : String(error);
 
       if (!shouldPass) {
-        passCount++;
+        _passCount++;
       } else {
         failCount++;
       }
@@ -62,6 +62,6 @@ testPathValidation()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

@@ -9,7 +9,7 @@ interface FeaturedProductsProps {
 
 export const FeaturedProducts = ({ title, products, onQuickViewClick }: FeaturedProductsProps) => (
   <section className="bg-background px-6 py-16 text-foreground lg:py-24">
-    <div className="mx-auto container-wide">
+    <div className="container-wide mx-auto">
       <h2 className="mb-12 text-center font-condensed text-5xl sm:text-6xl md:text-8xl lg:text-9xl">
         {title}
       </h2>

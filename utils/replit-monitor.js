@@ -33,7 +33,7 @@ export const logTypeError = (error, context, severity = "medium") => {
   };
   // Store in Replit Database for persistence (if available)
   if (env.hasDatabase) {
-    storeErrorInDatabase(errorData).catch((dbError) => {});
+    storeErrorInDatabase(errorData).catch((_dbError) => {});
   }
   // In development, show more detailed information
   if (env.isDevelopment) {
@@ -55,7 +55,7 @@ export const logSchemaError = (data, validationErrors, context, severity = "high
     severity,
   };
   if (env.hasDatabase) {
-    storeErrorInDatabase(errorData).catch((dbError) => {});
+    storeErrorInDatabase(errorData).catch((_dbError) => {});
   }
 };
 /**
@@ -76,8 +76,8 @@ const storeErrorInDatabase = async (errorData) => {
           await db.delete(key);
         }
       }
-    } catch (error) {}
-  } catch (error) {}
+    } catch (_error) {}
+  } catch (_error) {}
 };
 /**
  * Performance monitoring for media operations
@@ -94,7 +94,7 @@ export const trackPerformance = async (operation, context, asyncFunction) => {
     throw error;
   } finally {
     const duration = Date.now() - startTime;
-    const metric = {
+    const _metric = {
       operation,
       duration,
       context,
@@ -111,7 +111,7 @@ export const trackPerformance = async (operation, context, asyncFunction) => {
  * Create error boundary wrapper for media components
  */
 export const createErrorBoundary = (componentName) => {
-  return (error, errorInfo) => {
+  return (error, _errorInfo) => {
     logTypeError(error, `ErrorBoundary: ${componentName}`, "critical");
   };
 };
@@ -190,11 +190,11 @@ export const generateStatusReport = async () => {
       if (Array.isArray(errorKeys)) {
         const oneHourAgo = Date.now() - 60 * 60 * 1000;
         recentErrors = errorKeys.filter((key) => {
-          const timestamp = parseInt(key.split("_")[1]);
+          const timestamp = parseInt(key.split("_")[1], 10);
           return timestamp > oneHourAgo;
         }).length;
       }
-    } catch (error) {}
+    } catch (_error) {}
   }
   return {
     environment,

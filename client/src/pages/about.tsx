@@ -30,9 +30,9 @@ import { GlowingShadow } from "@/components/ui/glowing-shadow";
 // REMOVED: media-migration utility no longer needed after consolidation
 import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { Typography } from "@/components/ui/typography";
 import StackingCards from "@/components/ui/stacking-cards";
 import { Timeline } from "@/components/ui/timeline";
+import { Typography } from "@/components/ui/typography";
 import { useMediaResolver } from "@/lib/media-resolver";
 
 // Hook to detect mobile devices

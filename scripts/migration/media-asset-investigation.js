@@ -52,7 +52,7 @@ async function investigateMediaAssets() {
     suspectedMissingIds.forEach((id) => {
       if (assetMap.has(id)) {
         existingAssets.push(id);
-        const asset = assetMap.get(id);
+        const _asset = assetMap.get(id);
       } else {
         actuallyMissingAssets.push(id);
       }
@@ -60,17 +60,17 @@ async function investigateMediaAssets() {
 
     // Hero background
     if (hero?.backgroundMediaId) {
-      const exists = assetMap.has(hero.backgroundMediaId);
+      const _exists = assetMap.has(hero.backgroundMediaId);
     }
-    processCards?.forEach((card, index) => {
+    processCards?.forEach((card, _index) => {
       if (card.iconMediaId) {
-        const exists = assetMap.has(card.iconMediaId);
+        const _exists = assetMap.has(card.iconMediaId);
       }
       if (card.mediaId) {
-        const exists = assetMap.has(card.mediaId);
+        const _exists = assetMap.has(card.mediaId);
       }
     });
-    products?.forEach((product, index) => {
+    products?.forEach((product, _index) => {
       let hasIssues = false;
 
       // Check primary image
@@ -108,7 +108,7 @@ async function investigateMediaAssets() {
       if (!hasIssues && (product.imageIds?.length || product.videos?.length)) {
       }
     });
-    const assetIds = allAssets.map((a) => a.id).sort((a, b) => a - b);
+    const _assetIds = allAssets.map((a) => a.id).sort((a, b) => a - b);
 
     for (let id = 180; id <= 350; id++) {
       if (!assetMap.has(id) && suspectedMissingIds.includes(id)) {
@@ -118,7 +118,7 @@ async function investigateMediaAssets() {
     if (actuallyMissingAssets.length > 0) {
     } else {
     }
-  } catch (error) {}
+  } catch (_error) {}
 }
 
 // Run investigation
@@ -126,6 +126,6 @@ investigateMediaAssets()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

@@ -2,7 +2,7 @@
 // Comprehensive Database Architecture Assessment
 import { storage } from "../server/storage.js";
 
-const kvDb = (storage as any).db;
+const _kvDb = (storage as any).db;
 
 interface ArchitectureAssessment {
   postgresql: {
@@ -90,7 +90,7 @@ export class ArchitectureAssessment {
       "Set up monitoring dashboards for proactive maintenance",
     ];
     assessment.overall.longTermViability = "✅ EXCELLENT - Designed for 5+ year scalability";
-    assessment.overall.recommendations.forEach((rec, i) => {});
+    assessment.overall.recommendations.forEach((_rec, _i) => {});
 
     return assessment;
   }
@@ -101,6 +101,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const assessor = new ArchitectureAssessment();
   assessor
     .conductComprehensiveAssessment()
-    .then((result) => {})
-    .catch((error) => {});
+    .then((_result) => {})
+    .catch((_error) => {});
 }

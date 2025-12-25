@@ -112,7 +112,7 @@ export function ManufacturingMediaDisplay({
             muted
             playsInline
           />
-          <div className="pointer-events-none absolute inset-0 center-flex">
+          <div className="center-flex pointer-events-none absolute inset-0">
             <div className="rounded-full bg-black/50 p-3">
               <Play className="h-6 w-6 text-white" />
             </div>

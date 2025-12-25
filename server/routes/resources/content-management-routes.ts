@@ -205,7 +205,7 @@ router.get("/navigation-items", async (req, res) => {
 // Get specific navigation item
 router.get("/navigation-items/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const navigationItem = await withTimeout(
       getStorage().getNavigationItem(id),
       5000,
@@ -215,7 +215,7 @@ router.get("/navigation-items/:id", async (req, res) => {
       return res.status(404).json({ message: "Navigation item not found" });
     }
     return res.json(navigationItem);
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json({ message: "Failed to fetch navigation item" });
   }
 });
@@ -350,7 +350,7 @@ router.patch("/navigation-items/reorder", async (req, res) => {
 // Update navigation item
 router.patch("/navigation-items/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertNavigationItemSchema.partial().parse(req.body);
 
     // Apply defensive defaults for boolean fields when explicitly provided
@@ -397,7 +397,7 @@ router.patch("/navigation-items/:id", async (req, res) => {
 // Delete navigation item
 router.delete("/navigation-items/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const success = await withTimeout(
       getStorage().deleteNavigationItem(id),
       5000,
@@ -417,7 +417,7 @@ router.delete("/navigation-items/:id", async (req, res) => {
     }
 
     return res.status(204).send();
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json({ message: "Failed to delete navigation item" });
   }
 });

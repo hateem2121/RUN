@@ -76,7 +76,7 @@ export function PerformanceStatus({
       {/* Detailed Report Modal */}
       {showReport && showDetailed && (
         <motion.div
-          className="fixed inset-0 z-modal center-flex bg-black/80 p-4"
+          className="center-flex fixed inset-0 z-modal bg-black/80 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => setShowReport(false)}

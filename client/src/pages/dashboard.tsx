@@ -13,7 +13,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-6 center-flex gap-3"
+            className="center-flex mb-6 gap-3"
           >
             <BarChart3 className="h-8 w-8" />
             <h1 className="font-bold text-4xl md:text-6xl">Performance Dashboard</h1>

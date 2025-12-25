@@ -132,7 +132,7 @@ async function fixFieldMapping() {
       await db.update(fabrics).set(updateData).where(eq(fabrics.name, data.name));
     }
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

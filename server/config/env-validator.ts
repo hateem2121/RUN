@@ -32,7 +32,7 @@ export function validateEnv() {
     logger.info("[Config] ✅ Environment variables validated successfully");
   } catch (error) {
     if (error instanceof z.ZodError) {
-      error.issues.forEach((issue) => {});
+      error.issues.forEach((_issue) => {});
       process.exit(1);
     }
   }

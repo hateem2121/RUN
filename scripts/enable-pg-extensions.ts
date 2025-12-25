@@ -108,9 +108,9 @@ async function checkExtensions() {
       const isInstalled = installedExtensions.some((ext) => ext.name === extName);
       const isAvailable = availableExtensions.some((ext) => ext.name === extName);
 
-      const priorityEmoji =
+      const _priorityEmoji =
         config.priority === "HIGH" ? "🔴" : config.priority === "MEDIUM" ? "🟡" : "🔵";
-      const statusEmoji = isInstalled ? "✅" : isAvailable ? "⚠️ " : "❌";
+      const _statusEmoji = isInstalled ? "✅" : isAvailable ? "⚠️ " : "❌";
 
       if (config.note) {
       }
@@ -138,16 +138,16 @@ async function checkExtensions() {
 
     if (missingHighPriority.length > 0 || missingMediumPriority.length > 0) {
       if (missingHighPriority.length > 0) {
-        missingHighPriority.forEach((cmd) => {});
+        missingHighPriority.forEach((_cmd) => {});
       } else {
       }
       if (missingMediumPriority.length > 0) {
-        missingMediumPriority.forEach((cmd) => {});
+        missingMediumPriority.forEach((_cmd) => {});
       } else {
       }
     } else {
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }
@@ -157,6 +157,6 @@ checkExtensions()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

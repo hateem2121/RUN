@@ -290,7 +290,7 @@ async function seedDatabase() {
         .set({ primaryImageId: insertedMedia[2].id })
         .where(eq(products.id, insertedProducts[2].id));
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }
@@ -300,6 +300,6 @@ seedDatabase()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

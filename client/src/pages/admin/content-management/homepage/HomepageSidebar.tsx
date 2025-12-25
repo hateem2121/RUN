@@ -74,6 +74,7 @@ export function HomepageSidebar({
                 )}
               >
                 <button
+                  type="button"
                   onClick={() => onTabChange(item.key)}
                   className="flex flex-1 items-center gap-3 text-left"
                 >
@@ -85,7 +86,12 @@ export function HomepageSidebar({
 
                 {/* Show toggle only if it maps to a DB section that controls visibility */}
                 {dbSection && (
-                  <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+                  /* biome-ignore lint/a11y/noStaticElementInteractions: Layout wrapper to stop propagation */
+                  <div
+                    className="flex items-center"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
                     <Switch
                       checked={dbSection.isActive ?? true} // Default to true if undefined
                       onCheckedChange={(val) => onToggleVisibility(dbSection.id, val)}
@@ -111,6 +117,7 @@ export function HomepageSidebar({
                   )}
                 >
                   <button
+                    type="button"
                     onClick={() => onTabChange(`section-${section.id}`)}
                     className="flex flex-1 items-center gap-3 text-left"
                   >
@@ -119,8 +126,12 @@ export function HomepageSidebar({
                       {section.title || section.name}
                     </span>
                   </button>
-
-                  <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: Layout wrapper to stop propagation */}
+                  <div
+                    className="flex items-center"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
                     <Switch
                       checked={section.isActive ?? true}
                       onCheckedChange={(val) => onToggleVisibility(section.id, val)}

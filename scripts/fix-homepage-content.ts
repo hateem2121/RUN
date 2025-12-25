@@ -97,8 +97,8 @@ async function fixHomepageContent() {
       const updated = await storage.updateHomepageSection(section.name, section);
       createdItems.push(`Homepage Section: ${updated.title}`);
     }
-  } catch (error) {}
-  createdItems.forEach((item) => {});
+  } catch (_error) {}
+  createdItems.forEach((_item) => {});
 }
 
 // Run the fix

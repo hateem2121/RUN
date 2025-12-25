@@ -18,7 +18,7 @@ async function migrateMedia() {
     // Get all media assets
     const allMedia = (await storage.getAllByType("mediaAssets")) as MediaAsset[];
 
-    let migrationCount = 0;
+    let _migrationCount = 0;
     let errorCount = 0;
     const errors: string[] = [];
 
@@ -105,7 +105,7 @@ async function migrateMedia() {
             await storage.update("mediaAssets", asset.id, migratedAsset);
           }
 
-          migrationCount++;
+          _migrationCount++;
         }
       } catch (error) {
         errors.push(`Asset ${asset.id}: ${error instanceof Error ? error.message : String(error)}`);
@@ -114,7 +114,7 @@ async function migrateMedia() {
     }
 
     if (errors.length > 0) {
-      errors.forEach((err) => {});
+      errors.forEach((_err) => {});
     }
 
     if (isDryRun) {
@@ -125,7 +125,7 @@ async function migrateMedia() {
     }
 
     process.exit(errorCount > 0 ? 1 : 0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

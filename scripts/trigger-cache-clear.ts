@@ -26,8 +26,8 @@ async function triggerCacheInvalidation() {
       throw new Error(`Failed to delete dummy: ${deleteRes.status}`);
     }
     const listRes = await fetch("http://localhost:5001/api/accessories");
-    const list = await listRes.json();
-  } catch (error) {}
+    const _list = await listRes.json();
+  } catch (_error) {}
 }
 
 await triggerCacheInvalidation();

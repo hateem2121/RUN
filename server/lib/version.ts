@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 
 let cachedVersion: string | null = null;
 
@@ -7,7 +7,7 @@ export const getAppVersion = (): string => {
 
   try {
     cachedVersion = execSync("git rev-parse --short HEAD").toString().trim();
-  } catch (error) {
+  } catch (_error) {
     cachedVersion = process.env.GIT_SHA || "dev";
   }
 

@@ -7,28 +7,28 @@ async function analyzeCircuitBreaker() {
 
   // Calculate success rate
   const totalOperations = circuitStatus.totalFailures + circuitStatus.totalSuccesses;
-  const successRate =
+  const _successRate =
     totalOperations > 0
       ? ((circuitStatus.totalSuccesses / totalOperations) * 100).toFixed(2)
       : "N/A";
 
-  let stateHealth = "Unknown";
-  let recommendation = "";
+  let _stateHealth = "Unknown";
+  let _recommendation = "";
 
   if (circuitStatus.state === "CLOSED") {
     if (circuitStatus.failureCount === 0) {
-      stateHealth = "✅ HEALTHY - All operations successful";
-      recommendation = "No action needed. Circuit breaker is working optimally.";
+      _stateHealth = "✅ HEALTHY - All operations successful";
+      _recommendation = "No action needed. Circuit breaker is working optimally.";
     } else {
-      stateHealth = `⚠️ WARNING - ${circuitStatus.failureCount}/5 failures accumulated`;
-      recommendation = `Monitor closely. ${5 - circuitStatus.failureCount} more failure(s) will open circuit.`;
+      _stateHealth = `⚠️ WARNING - ${circuitStatus.failureCount}/5 failures accumulated`;
+      _recommendation = `Monitor closely. ${5 - circuitStatus.failureCount} more failure(s) will open circuit.`;
     }
   } else if (circuitStatus.state === "HALF_OPEN") {
-    stateHealth = `🔄 RECOVERING - Testing service (${circuitStatus.successCount}/2 successes)`;
-    recommendation = `System is recovering. ${2 - circuitStatus.successCount} more success(es) needed to close circuit.`;
+    _stateHealth = `🔄 RECOVERING - Testing service (${circuitStatus.successCount}/2 successes)`;
+    _recommendation = `System is recovering. ${2 - circuitStatus.successCount} more success(es) needed to close circuit.`;
   } else if (circuitStatus.state === "OPEN") {
-    stateHealth = "🚨 CRITICAL - Circuit breaker OPEN (service unavailable)";
-    recommendation = `Service is down. Circuit will attempt recovery in 30s. Investigate root cause immediately.`;
+    _stateHealth = "🚨 CRITICAL - Circuit breaker OPEN (service unavailable)";
+    _recommendation = `Service is down. Circuit will attempt recovery in 30s. Investigate root cause immediately.`;
   }
 
   // Retry analysis
@@ -42,9 +42,9 @@ async function analyzeCircuitBreaker() {
   } else {
   }
 
-  const failureThreshold = 5;
-  const successThreshold = 2;
-  const timeoutDuration = 30000;
+  const _failureThreshold = 5;
+  const _successThreshold = 2;
+  const _timeoutDuration = 30000;
 
   // Analyze if thresholds are optimal
   const totalFailures = circuitStatus.totalFailures;
@@ -61,6 +61,6 @@ analyzeCircuitBreaker()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

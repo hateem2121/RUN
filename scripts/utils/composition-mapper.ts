@@ -5,7 +5,6 @@
  */
 
 import type { ReplitStorage } from "../../server/replit-storage.js";
-import { Fiber } from "../../shared/schema-types.js";
 
 interface CompositionMappingResult {
   success: boolean;
@@ -153,7 +152,7 @@ export class CompositionMapper {
     };
 
     // Find matching variations
-    for (const [key, values] of Object.entries(variationMap)) {
+    for (const [_key, values] of Object.entries(variationMap)) {
       if (values.some((v) => v === name)) {
         variations.push(...values);
       }
@@ -171,7 +170,7 @@ export class CompositionMapper {
       try {
         const createdFiber = await this.storage.createFiber(fiberData);
         this.fiberMap.set(fiberName.toLowerCase(), createdFiber.id);
-      } catch (error) {}
+      } catch (_error) {}
     }
   }
 
@@ -254,13 +253,13 @@ export class CompositionMapper {
     };
 
     // Find matching properties or use defaults
-    let fiberProps = fiberProperties[normalizedName] || fiberProperties["polyester"]; // Default fallback
+    let fiberProps = fiberProperties[normalizedName] || fiberProperties.polyester; // Default fallback
 
     // Check for variations
     if (normalizedName.includes("recycled")) {
       fiberProps = fiberProperties["recycled polyester"];
     } else if (normalizedName.includes("elastane")) {
-      fiberProps = fiberProperties["spandex"];
+      fiberProps = fiberProperties.spandex;
     }
 
     return {

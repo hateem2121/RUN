@@ -10,7 +10,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 // Configure axe to check WCAG 2.2 AA compliance
-const axeConfig = {
+const _axeConfig = {
   runOnly: {
     type: "tag" as const,
     values: ["wcag2a", "wcag2aa", "wcag22aa"],

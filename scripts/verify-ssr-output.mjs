@@ -1,6 +1,4 @@
-import fs from "fs";
-import http from "http";
-import path from "path";
+import http from "node:http";
 
 const HOST = "localhost";
 const PORT = 5002;
@@ -62,7 +60,7 @@ function checkServer() {
 
       const errors = verifyHTML(data);
       if (errors.length > 0) {
-        errors.forEach((e) => {});
+        errors.forEach((_e) => {});
 
         process.exit(1);
       }
@@ -70,7 +68,7 @@ function checkServer() {
     });
   });
 
-  req.on("error", (err) => {
+  req.on("error", (_err) => {
     process.exit(1);
   });
 

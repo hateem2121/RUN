@@ -23,12 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Typography } from "@/components/ui/typography";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-import { Typography } from "@/components/ui/typography";
 
 export default function CategoryProductsPage() {
   const { slug } = useParams();
@@ -594,7 +594,7 @@ export default function CategoryProductsPage() {
             fallbackUrl={category.bannerUrl}
             alt={category.name}
           />
-          <div className="absolute inset-0 center-flex bg-black/40">
+          <div className="center-flex absolute inset-0 bg-black/40">
             <div className="text-center text-white">
               <Typography.H1 className="mb-2 font-bold text-4xl md:text-5xl">
                 {category.name}

@@ -1,8 +1,7 @@
 import { sql } from "drizzle-orm";
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { db } from "../server/db.js";
-import { env } from "../server/env.js";
 import { app, serverReady } from "../server/index.js";
 
 describe("System-Wide Error Handling Integration Tests", () => {
@@ -89,7 +88,7 @@ describe("System-Wide Error Handling Integration Tests", () => {
       // Here we just check if normal DB operations work or fail gracefully.
       try {
         await db.execute(sql`SELECT 1`);
-      } catch (e) {}
+      } catch (_e) {}
     });
   });
 });

@@ -37,7 +37,7 @@ styleFiles.forEach((file) => {
 });
 
 if (missingImports.length > 0) {
-  missingImports.forEach((file) => {});
+  missingImports.forEach((_file) => {});
   process.exit(1);
 } else {
   process.exit(0);

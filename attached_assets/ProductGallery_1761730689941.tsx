@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { type Hotspot, type Media, MediaType } from "../types";
 import { XIcon } from "./Icons";
 
@@ -63,7 +63,7 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
           await Promise.all(promises);
           // A small delay to prevent jarring flashes on fast connections
           setTimeout(() => setIsLoading(false), 300);
-        } catch (error) {
+        } catch (_error) {
           // Still show the gallery even if some assets fail to load
           setIsLoading(false);
         }
@@ -104,10 +104,10 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
       const item = media[activeIndex];
       switch (item.type) {
         case MediaType.Image:
-          return <img src={item.src} alt="Product" className="w-full h-full object-cover" />;
+          return <img src={item.src} alt="Product" className="h-full w-full object-cover" />;
         case MediaType.Video:
           return (
-            <video controls autoPlay loop muted className="w-full h-full object-cover">
+            <video controls autoPlay loop muted className="h-full w-full object-cover">
               <source src={item.src} type="video/mp4" />
             </video>
           );
@@ -122,7 +122,7 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
               camera-controls
               shadow-intensity="1"
               environment-image="neutral"
-              className="w-full h-full"
+              className="h-full w-full"
             >
               {hotspots?.map((hotspot) => (
                 <button
@@ -142,8 +142,8 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
     };
 
     return (
-      <div className="w-full lg:w-full p-4 md:p-8">
-        <div className="relative aspect-w-1 aspect-h-1 h-[65vh] sm:h-[75vh] lg:h-[85vh] subtle-noise-bg">
+      <div className="w-full p-4 md:p-8 lg:w-full">
+        <div className="subtle-noise-bg relative aspect-h-1 aspect-w-1 h-[65vh] sm:h-[75vh] lg:h-[85vh]">
           <AnimatePresence>
             {isLoading && (
               <motion.div
@@ -151,9 +151,9 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="absolute inset-0 flex items-center justify-center bg-white z-30"
+                className="absolute inset-0 z-30 flex items-center justify-center bg-white"
               >
-                <div className="w-12 h-12 border-2 border-t-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                <div className="h-12 w-12 animate-spin rounded-full border-2 border-gray-300 border-t-2 border-t-black"></div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -168,20 +168,20 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
           </motion.div>
 
           {!isLoading && activeAnnotation && (
-            <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg z-20 max-w-xs transition-all duration-300 ease-in-out transform animate-fade-in">
-              <p className="text-sm text-gray-800">{activeAnnotation.text}</p>
+            <div className="absolute top-4 right-4 z-20 max-w-xs transform animate-fade-in rounded-lg bg-white p-4 shadow-lg transition-all duration-300 ease-in-out">
+              <p className="text-gray-800 text-sm">{activeAnnotation.text}</p>
               <button
                 onClick={() => setActiveAnnotation(null)}
                 className="absolute top-1 right-1 text-gray-500 hover:text-gray-800"
               >
-                <XIcon className="w-4 h-4" />
+                <XIcon className="h-4 w-4" />
               </button>
             </div>
           )}
         </div>
 
         <motion.div
-          className="mt-4 flex items-center space-x-2 p-2 overflow-x-auto thumbnail-scrollbar"
+          className="thumbnail-scrollbar mt-4 flex items-center space-x-2 overflow-x-auto p-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
@@ -191,16 +191,16 @@ const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
               ref={(el) => (thumbnailRefs.current[index] = el)}
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`w-16 h-16 flex-shrink-0 transition-all duration-300 ease-in-out transform ${
+              className={`h-16 w-16 flex-shrink-0 transform transition-all duration-300 ease-in-out ${
                 activeIndex === index
                   ? "ring-2 ring-black ring-offset-2"
-                  : "opacity-60 hover:opacity-100 hover:scale-105"
+                  : "opacity-60 hover:scale-105 hover:opacity-100"
               }`}
             >
               <img
                 src={item.thumbnail}
                 alt={`Thumbnail ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </button>
           ))}

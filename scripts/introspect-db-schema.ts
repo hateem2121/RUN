@@ -4,9 +4,9 @@
  * Outputs: db-schema.json
  */
 
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { neon } from "@neondatabase/serverless";
-import { writeFileSync } from "fs";
-import { join } from "path";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -21,9 +21,7 @@ interface TableSchema {
 
 async function introspectDatabaseSchema(): Promise<TableSchema[]> {
   const sql = neon(DATABASE_URL!);
-
-  try {
-    const results = await sql`
+  const results = await sql`
       SELECT 
         table_name,
         column_name,
@@ -35,29 +33,26 @@ async function introspectDatabaseSchema(): Promise<TableSchema[]> {
       ORDER BY table_name, ordinal_position
     `;
 
-    // Group columns by table
-    const tablesMap = new Map<string, string[]>();
+  // Group columns by table
+  const tablesMap = new Map<string, string[]>();
 
-    for (const row of results) {
-      const tableName = row.table_name as string;
-      const columnInfo = `${row.column_name} (${row.data_type}${row.is_nullable === "NO" ? " NOT NULL" : ""})`;
+  for (const row of results) {
+    const tableName = row.table_name as string;
+    const columnInfo = `${row.column_name} (${row.data_type}${row.is_nullable === "NO" ? " NOT NULL" : ""})`;
 
-      if (!tablesMap.has(tableName)) {
-        tablesMap.set(tableName, []);
-      }
-      tablesMap.get(tableName)!.push(columnInfo);
+    if (!tablesMap.has(tableName)) {
+      tablesMap.set(tableName, []);
     }
-
-    // Convert to array format
-    const schema: TableSchema[] = Array.from(tablesMap.entries()).map(([tableName, columns]) => ({
-      tableName,
-      columns,
-    }));
-
-    return schema;
-  } catch (error) {
-    throw error;
+    tablesMap.get(tableName)?.push(columnInfo);
   }
+
+  // Convert to array format
+  const schema: TableSchema[] = Array.from(tablesMap.entries()).map(([tableName, columns]) => ({
+    tableName,
+    columns,
+  }));
+
+  return schema;
 }
 
 async function main() {
@@ -67,10 +62,10 @@ async function main() {
     // Output to JSON file
     const outputPath = join(process.cwd(), "db-schema.json");
     writeFileSync(outputPath, JSON.stringify(schema, null, 2), "utf-8");
-    schema.forEach((table) => {});
+    schema.forEach((_table) => {});
 
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

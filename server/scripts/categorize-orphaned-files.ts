@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 
 // import path from 'path';
 
@@ -200,11 +200,11 @@ async function categorizeOrphanedFiles() {
   fs.writeFileSync("server/docs/orphaned-files-categorized.json", JSON.stringify(result, null, 2));
 
   // Calculate total size of safe-to-remove files
-  const highConfidenceSize = result.true_orphans_high_confidence.reduce(
+  const _highConfidenceSize = result.true_orphans_high_confidence.reduce(
     (sum, f) => sum + (f.size || 0),
     0,
   );
-  const mediumConfidenceSize = result.true_orphans_medium_confidence.reduce(
+  const _mediumConfidenceSize = result.true_orphans_medium_confidence.reduce(
     (sum, f) => sum + (f.size || 0),
     0,
   );
@@ -217,6 +217,6 @@ categorizeOrphanedFiles()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

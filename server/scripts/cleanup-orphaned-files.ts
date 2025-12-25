@@ -15,7 +15,7 @@ async function cleanupOrphanedFiles() {
   if (orphanedFiles.length === 0) {
     return;
   }
-  orphanedFiles.forEach((path: string, i: number) => {});
+  orphanedFiles.forEach((_path: string, _i: number) => {});
 
   // UNCOMMENT TO ACTUALLY DELETE:
   /*
@@ -44,6 +44,6 @@ cleanupOrphanedFiles()
   .then(() => {
     process.exit(0);
   })
-  .catch((error) => {
+  .catch((_error) => {
     process.exit(1);
   });

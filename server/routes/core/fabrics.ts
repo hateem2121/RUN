@@ -74,7 +74,7 @@ router.post("/fabrics", async (req, res) => {
 // PUT /api/fabrics/:id - Update fabric
 router.put("/fabrics/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, validatedData as any), {
@@ -117,7 +117,7 @@ router.put("/fabrics/:id", async (req, res) => {
 // PATCH /api/fabrics/:id - Partial update fabric
 router.patch("/fabrics/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const partialData = insertFabricSchema.partial().parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, partialData as any), {
@@ -160,7 +160,7 @@ router.patch("/fabrics/:id", async (req, res) => {
 // DELETE /api/fabrics/:id - Delete fabric
 router.delete("/fabrics/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const success = await withTimeout(
       retryDbOperation(() => getStorage().deleteFabric(id), {
         operationName: `Delete fabric ${id}`,

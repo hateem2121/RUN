@@ -19,7 +19,7 @@ async function fixStorageMismatch() {
 
     let checkedCount = 0;
     let deletedCount = 0;
-    let existingCount = 0;
+    let _existingCount = 0;
 
     for (const asset of mediaAssets) {
       checkedCount++;
@@ -32,12 +32,12 @@ async function fixStorageMismatch() {
         const result = await objectStorageClient.downloadAsBytes(storageKey);
 
         if (result.ok) {
-          existingCount++;
+          _existingCount++;
         } else {
           await storage.deleteMediaAsset(asset.id);
           deletedCount++;
         }
-      } catch (error) {
+      } catch (_error) {
         await storage.deleteMediaAsset(asset.id);
         deletedCount++;
       }
@@ -50,7 +50,7 @@ async function fixStorageMismatch() {
     if (deletedCount > 0) {
     } else {
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

@@ -28,12 +28,12 @@ async function clearMediaCache() {
     const environments = ["development", "production", "test"];
     // let clearedCount = 0;
 
-    for (const env of environments) {
+    for (const _env of environments) {
       // The cache key format is: media:batch:{ids}:{env}
       // Without key enumeration, we can't delete all variants
       // Best we can do is document this limitation
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

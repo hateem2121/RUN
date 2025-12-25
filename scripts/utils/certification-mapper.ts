@@ -5,7 +5,6 @@
  */
 
 import type { ReplitStorage } from "../../server/replit-storage.js";
-import { Certificate } from "../../shared/schema-types.js";
 
 interface CertificationMappingResult {
   success: boolean;
@@ -163,7 +162,7 @@ export class CertificationMapper {
     };
 
     // Find matching variations
-    for (const [key, values] of Object.entries(variationMap)) {
+    for (const [_key, values] of Object.entries(variationMap)) {
       if (values.some((v) => v === name || name.includes(v))) {
         variations.push(...values);
       }
@@ -198,7 +197,7 @@ export class CertificationMapper {
       try {
         const createdCert = await this.storage.createCertificate(certData);
         this.certificationMap.set(certName.toLowerCase(), createdCert.id);
-      } catch (error) {}
+      } catch (_error) {}
     }
   }
 

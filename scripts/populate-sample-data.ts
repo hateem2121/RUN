@@ -99,7 +99,7 @@ async function populateAllSampleData() {
         createdItems.push(`Products: ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
   try {
     const fabrics = await storage.getFabrics();
     if (fabrics.length === 0) {
@@ -176,7 +176,7 @@ async function populateAllSampleData() {
         createdItems.push(`Fabrics: ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
   try {
     const navItems = await storage.getNavigationItems();
     if (navItems.length === 0) {
@@ -230,7 +230,7 @@ async function populateAllSampleData() {
         createdItems.push(`Navigation: ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
   try {
     const footerSections = await storage.getFooterSections();
     if (footerSections.length === 0) {
@@ -384,7 +384,7 @@ async function populateAllSampleData() {
         createdItems.push(`Footer Link: ${created.name}`);
       }
     }
-  } catch (error) {}
+  } catch (_error) {}
   try {
     // Homepage Hero
     const hero = await storage.getHomepageHero();
@@ -506,8 +506,8 @@ async function populateAllSampleData() {
         createdItems.push(`Homepage Section: ${created.title}`);
       }
     }
-  } catch (error) {}
-  createdItems.forEach((item) => {});
+  } catch (_error) {}
+  createdItems.forEach((_item) => {});
   const entities = [
     { name: "Products", method: "getProducts" },
     { name: "Fabrics", method: "getFabrics" },
@@ -521,14 +521,14 @@ async function populateAllSampleData() {
 
   for (const entity of entities) {
     try {
-      const data = await (storage as any)[entity.method]();
-    } catch (error) {}
+      const _data = await (storage as any)[entity.method]();
+    } catch (_error) {}
   }
 
   // Test hero and sustainability (single objects)
   try {
-    const hero = await storage.getHomepageHero();
-  } catch (error) {}
+    const _hero = await storage.getHomepageHero();
+  } catch (_error) {}
 }
 
 // Run the population
