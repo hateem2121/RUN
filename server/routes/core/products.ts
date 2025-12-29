@@ -8,9 +8,11 @@ import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { insertProductSchema } from "../../../shared/schema.js";
 import { retryDbOperation } from "../../lib/db-retry.js";
+import { jsonResponse, registry } from "../../lib/openapi-generator.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
 import {
   checkRateLimit,
   shouldBypassCache,
@@ -23,6 +25,36 @@ import {
 // const unifiedCache = UnifiedCache.getInstance();
 
 const router = Router();
+
+// OpenAPI Registration
+registry.registerPath({
+  method: "get",
+  path: "/products",
+  summary: "List all products",
+  description: "Retrieve products with pagination, filtering, and search.",
+  tags: ["Products"],
+  parameters: [
+    { name: "category", in: "query", schema: { type: "integer" } },
+    { name: "search", in: "query", schema: { type: "string" } },
+    { name: "page", in: "query", schema: { type: "integer", default: 1 } },
+    { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
+  ],
+  responses: {
+    200: jsonResponse(z.array(z.any()), "List of products with pagination metadata"),
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/products/{id}",
+  summary: "Get product by ID",
+  tags: ["Products"],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  responses: {
+    200: jsonResponse(z.any(), "The product object"),
+    404: { description: "Product not found" },
+  },
+});
 
 // GET /api/products - List products with pagination and filtering
 // CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
@@ -241,7 +273,7 @@ router.get("/products/:id", async (req, res) => {
 });
 
 // POST /api/products - Create new product
-router.post("/products", async (req, res) => {
+router.post("/products", authService.requireAdmin, async (req, res) => {
   try {
     // Rate limiting check
     if (!checkRateLimit()) {
@@ -331,13 +363,13 @@ const updateProductHandler = async (req: Request, res: Response) => {
 };
 
 // PUT /api/products/:id - Update product
-router.put("/products/:id", updateProductHandler);
+router.put("/products/:id", authService.requireAdmin, updateProductHandler);
 
 // PATCH /api/products/:id - Update product (partial update)
-router.patch("/products/:id", updateProductHandler);
+router.patch("/products/:id", authService.requireAdmin, updateProductHandler);
 
 // DELETE /api/products/:id - Delete product
-router.delete("/products/:id", async (req, res) => {
+router.delete("/products/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "product");
     if (id === null) return; // Error response already sent

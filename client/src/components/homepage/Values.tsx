@@ -51,8 +51,9 @@ const WaterRipple = () => {
   );
 
   useFrame((state) => {
-    if (mesh.current) {
-      (mesh.current.material as ShaderMaterial).uniforms.uTime.value = state.clock.getElapsedTime();
+    const material = mesh.current?.material as ShaderMaterial;
+    if (material?.uniforms?.uTime) {
+      material.uniforms.uTime.value = state.clock.getElapsedTime();
     }
   });
 
@@ -90,54 +91,60 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
   isMobile,
   setCursor,
   image,
-}) => (
-  <Card
-    className={cn(
-      colSpan,
-      "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
-    )}
-    variant="glass-premium"
-    onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
-    onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
-  >
-    {/* Background Image Layer */}
-    <div className="absolute inset-0 z-0">
-      <img
-        src={image}
-        alt={title}
-        decoding="async"
-        className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
-      />
-      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
-    </div>
+}) => {
+  const IconComponent = Icon as any;
 
-    {/* Ripple Layer - Only rendered on desktop for performance */}
-    {withRipple && !isMobile && (
-      <div className="pointer-events-none absolute inset-0 z-base opacity-60 mix-blend-soft-light">
-        <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
-          <WaterRipple />
-        </Canvas>
-      </div>
-    )}
-
-    <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
-      <div className="flex w-full justify-end">
-        <Icon
-          className={cn(
-            "h-12 w-12 stroke-1 transition-colors duration-300",
-            withRipple ? "text-blue-400" : "text-muted-foreground/70 group-hover:text-blue-400",
-          )}
+  return (
+    <Card
+      className={cn(
+        colSpan,
+        "group min-h-value-card relative flex flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
+      )}
+      variant="glass-premium"
+      onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
+      onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
+    >
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={image}
+          alt={title}
+          decoding="async"
+          className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
         />
+        <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
       </div>
-      <div>
-        <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
-        <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
-          {subtitle}
-        </p>
-      </div>
-    </CardContent>
-  </Card>
-);
+
+      {/* Ripple Layer - Only rendered on desktop for performance */}
+      {withRipple && !isMobile && (
+        <div className="z-base pointer-events-none absolute inset-0 opacity-60 mix-blend-soft-light">
+          <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
+            <WaterRipple />
+          </Canvas>
+        </div>
+      )}
+
+      <CardContent className="z-elevated relative flex h-full flex-col justify-between p-8">
+        <div className="flex w-full justify-end">
+          {IconComponent && (
+            <IconComponent
+              className={cn(
+                "h-12 w-12 stroke-1 transition-colors duration-300",
+                withRipple ? "text-blue-400" : "text-muted-foreground/70 group-hover:text-blue-400",
+              )}
+            />
+          )}
+        </div>
+        <div>
+          <h3 className="mb-2 text-2xl font-bold text-white uppercase">{title}</h3>
+          <p className="text-muted-foreground/70 group-hover:text-foreground/80 transition-colors">
+            {subtitle}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Values: React.FC = () => {
   const setCursor = useStore((state) => state.setCursor);
@@ -151,9 +158,9 @@ const Values: React.FC = () => {
   }, []);
 
   return (
-    <section className="w-full bg-background-alt px-4 py-32 md:px-8">
-      <div className="mx-auto max-w-container-2xl">
-        <h2 className="mb-16 text-center font-bold text-display-xl uppercase leading-none">
+    <section className="bg-background-alt w-full px-4 py-32 md:px-8">
+      <div className="max-w-container-2xl mx-auto">
+        <h2 className="text-display-xl mb-16 text-center leading-none font-bold uppercase">
           Built on <span className="font-serif italic">Precision</span>
         </h2>
 
@@ -196,8 +203,8 @@ const Values: React.FC = () => {
         </div>
 
         {/* Scrolling Ticker */}
-        <div className="mt-24 w-full overflow-hidden border-black border-y py-6" aria-hidden="true">
-          <div className="flex animate-marquee whitespace-nowrap">
+        <div className="mt-24 w-full overflow-hidden border-y border-black py-6" aria-hidden="true">
+          <div className="animate-marquee flex whitespace-nowrap">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
               .map((text, i) => (

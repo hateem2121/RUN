@@ -70,32 +70,32 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-lg border bg-white p-4 dark:bg-background ${isDragging ? "shadow-lg" : ""}`}
+      className={`dark:bg-background rounded-lg border bg-white p-4 ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-start gap-4">
         <button className="mt-1 cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-muted-foreground/70" />
+          <GripVertical className="text-muted-foreground/70 h-5 w-5" />
         </button>
 
         <div className="flex-1">
           <div className="mb-2 flex items-center gap-2">
-            <h3 className="font-semibold text-lg">{section.title || "Untitled Section"}</h3>
-            <span className="rounded bg-muted px-2 py-1 text-muted-foreground text-sm dark:bg-muted/80">
+            <h3 className="text-lg font-semibold">{section.title || "Untitled Section"}</h3>
+            <span className="bg-muted text-muted-foreground dark:bg-muted/80 rounded px-2 py-1 text-sm">
               {getSectionTypeLabel(section.sectionType)}
             </span>
             {section.isActive === false && (
-              <span className="rounded bg-red-100 px-2 py-1 text-red-600 text-sm dark:bg-red-900/20">
+              <span className="rounded bg-red-100 px-2 py-1 text-sm text-red-600 dark:bg-red-900/20">
                 Hidden
               </span>
             )}
           </div>
           {section.content && (
-            <p className="line-clamp-2 text-muted-foreground text-sm dark:text-muted-foreground/70">
+            <p className="text-muted-foreground dark:text-muted-foreground/70 line-clamp-2 text-sm">
               {section.content}
             </p>
           )}
           {section.mediaIds && section.mediaIds.length > 0 && (
-            <p className="mt-1 text-muted-foreground text-sm">
+            <p className="text-muted-foreground mt-1 text-sm">
               {section.mediaIds.length} media item
               {section.mediaIds.length > 1 ? "s" : ""} attached
             </p>
@@ -280,8 +280,9 @@ export function AboutSectionsTab() {
           const allMedia = [...media, ...validFetched];
 
           // Reconcile: preserve order from mediaIds, remove missing IDs
+          // Reconcile: preserve order from mediaIds, remove missing IDs
           const validIds = allMedia.map((m) => m.id);
-          const reconciled = section.mediaIds?.filter((id) => validIds.includes(id));
+          const reconciled = section.mediaIds?.filter((id) => validIds.includes(id)) || [];
           const orderedMedia = reconciled.map((id) => allMedia.find((m) => m.id === id)!);
 
           setSelectedMedia(orderedMedia);
@@ -367,7 +368,7 @@ export function AboutSectionsTab() {
         </CardHeader>
         <CardContent>
           {sortedSections.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground">
+            <div className="text-muted-foreground py-12 text-center">
               No sections yet. Add your first content section!
             </div>
           ) : (

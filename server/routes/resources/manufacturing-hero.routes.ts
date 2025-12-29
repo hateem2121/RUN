@@ -10,7 +10,7 @@ import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { requireAdmin } from "../../middleware/auth.js";
+import { authService } from "../../services/auth-service.js";
 import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
 
 const router = Router();
@@ -52,7 +52,7 @@ router.get(
 // PATCH /api/manufacturing-hero
 router.patch(
   "/manufacturing-hero",
-  requireAdmin,
+  authService.requireAdmin,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const transformedData = transformNullToUndefined(req.body);

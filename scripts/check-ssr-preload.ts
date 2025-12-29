@@ -47,8 +47,8 @@ async function checkSsrCssPreload(): Promise<CheckResult> {
 
   // Check 3: Preloads appear before stylesheets (by checking positions in HTML)
   if (preloads.length > 0 && stylesheets.length > 0) {
-    const firstPreloadPos = html.indexOf(preloads[0]);
-    const firstStylesheetPos = html.indexOf(stylesheets[0]);
+    const firstPreloadPos = html.indexOf(preloads[0] || "");
+    const firstStylesheetPos = html.indexOf(stylesheets[0] || "");
 
     if (firstPreloadPos > firstStylesheetPos) {
       issues.push("❌ CSS preload appears AFTER stylesheet (should be before for priority)");

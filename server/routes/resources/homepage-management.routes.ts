@@ -45,6 +45,7 @@ import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = express.Router();
 
@@ -108,6 +109,7 @@ router.get(
 // Update homepage hero
 router.patch(
   "/homepage-hero",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     logger.info("[STEP 5: BACKEND] PATCH /api/homepage-hero - Received request");
@@ -196,6 +198,7 @@ router.get(
 // Create homepage slogan
 router.post(
   "/homepage-slogans",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const validation = insertHomepageSloganSchema.safeParse(req.body);
     if (!validation.success) {
@@ -210,6 +213,7 @@ router.post(
 // Update homepage slogan
 router.patch(
   "/homepage-slogans/:id",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id!, 10);
     const validation = insertHomepageSloganSchema.partial().safeParse(req.body);
@@ -228,6 +232,7 @@ router.patch(
 // Delete homepage slogan
 router.delete(
   "/homepage-slogans/:id",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id!, 10);
     const deleted = await getStorage().deleteHomepageSlogan(id);
@@ -242,6 +247,7 @@ router.delete(
 // Reorder homepage slogans
 router.patch(
   "/homepage-slogans/reorder",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const { slogans } = req.body;
     if (!Array.isArray(slogans)) {
@@ -305,6 +311,7 @@ router.get(
 // Create process card
 router.post(
   "/homepage-process-cards",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const validation = insertHomepageProcessCardSchema.safeParse(req.body);
     if (!validation.success) {
@@ -319,6 +326,7 @@ router.post(
 // Update process card
 router.patch(
   "/homepage-process-cards/:id",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id!, 10);
     const validation = insertHomepageProcessCardSchema.partial().safeParse(req.body);
@@ -337,6 +345,7 @@ router.patch(
 // Delete process card
 router.delete(
   "/homepage-process-cards/:id",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id!, 10);
     const deleted = await getStorage().deleteHomepageProcessCard(id);
@@ -351,6 +360,7 @@ router.delete(
 // Reorder process cards
 router.patch(
   "/homepage-process-cards/reorder",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const { cards } = req.body;
     if (!Array.isArray(cards)) {
@@ -415,6 +425,7 @@ router.get(
 // Update homepage section
 router.patch(
   "/homepage-sections/:id",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id!, 10);
     const validation = insertHomepageSectionSchema.partial().safeParse(req.body);
@@ -469,6 +480,7 @@ router.get(
 // Update featured products settings
 router.patch(
   "/homepage-featured-products-settings",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const validation = insertHomepageFeaturedProductsSettingsSchema.safeParse(req.body);
     if (!validation.success) {

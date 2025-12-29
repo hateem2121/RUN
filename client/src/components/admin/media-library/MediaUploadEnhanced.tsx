@@ -323,7 +323,7 @@ const UploadItem = React.memo(
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
           );
         default:
-          return <Icon className="h-4 w-4 text-muted-foreground" />;
+          return <Icon className="text-muted-foreground h-4 w-4" />;
       }
     };
 
@@ -336,13 +336,13 @@ const UploadItem = React.memo(
     };
 
     return (
-      <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
+      <div className="bg-muted/50 flex items-center justify-between rounded-lg p-3">
         <div className="flex flex-1 items-center gap-3">
           <div className="shrink-0">{getStatusIcon()}</div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="truncate font-medium text-sm">{item.file.name}</p>
+              <p className="truncate text-sm font-medium">{item.file.name}</p>
               <Badge variant="outline" className="text-xs">
                 {formatFileSize(item.file.size)}
               </Badge>
@@ -351,7 +351,7 @@ const UploadItem = React.memo(
             {item.status === "uploading" && (
               <div className="mt-1">
                 <Progress value={item.progress} className="h-1" />
-                <div className="mt-1 flex justify-between text-muted-foreground text-xs">
+                <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                   <span>{item.progress.toFixed(1)}% uploaded</span>
                   <div className="flex gap-2">
                     {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
@@ -365,7 +365,7 @@ const UploadItem = React.memo(
 
             {item.status === "error" && item.errorMessage && (
               <div className="mt-1">
-                <p className="text-red-500 text-xs">{item.errorMessage}</p>
+                <p className="text-xs text-red-500">{item.errorMessage}</p>
                 {item.retryCount && item.retryCount > 0 && (
                   <p className="text-muted-foreground text-xs">
                     Retry attempts: {item.retryCount}/3
@@ -375,7 +375,7 @@ const UploadItem = React.memo(
             )}
 
             {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
-              <p className="mt-1 text-muted-foreground text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Queued • Position: {queueManager.getQueuePosition(item.id)}
               </p>
             )}
@@ -492,6 +492,133 @@ export default function MediaUploadEnhanced() {
       },
     );
   }, []);
+
+  // CRITICAL FIX: Worker-based upload function to bypass DevTools completely
+  const uploadLargeFile = async (
+    item: UploadQueueItem,
+    controller: AbortController,
+    setUploadQueue: React.Dispatch<React.SetStateAction<UploadQueueItem[]>>,
+  ) => {
+    const { file } = item;
+
+    try {
+      // Validate file before upload
+      const validation = validateFile(file);
+
+      // Track upload metrics
+      uploadMetrics.attempts++;
+      if (file.name.toLowerCase().includes(".gltf")) {
+        uploadMetrics.gltfUploads++;
+      }
+      if (!file.type || file.type === "") {
+        uploadMetrics.mimeTypeIssues++;
+      }
+
+      // Get the upload worker
+      const worker = getUploadWorker();
+
+      // Promise to handle worker communication
+      const uploadPromise = new Promise<void>((resolve, reject) => {
+        // Handle worker messages
+        const messageHandler = (event: MessageEvent<WorkerResponse>) => {
+          const { type, fileId, percent, uploadId, totalChunks, serverResponse, message } =
+            event.data;
+
+          // Only handle messages for this specific file
+          if (fileId !== item.id) return;
+
+          switch (type) {
+            case "init":
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id ? { ...qItem, status: "uploading" } : qItem,
+                ),
+              );
+              break;
+
+            case "progress":
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id
+                    ? { ...qItem, progress: percent || 0, status: "uploading" }
+                    : qItem,
+                ),
+              );
+              break;
+
+            case "chunkComplete":
+              // Optional: log chunk completion
+              break;
+
+            case "completed":
+              // Invalidate cache after successful upload with forced refetch
+              (async () => {
+                await invalidateMediaQueries(getQueryClient());
+              })().catch((_error) => {});
+
+              // Update UI to completed
+              setUploadQueue((prev) =>
+                prev.map((qItem) =>
+                  qItem.id === item.id ? { ...qItem, progress: 100, status: "completed" } : qItem,
+                ),
+              );
+
+              // Cleanup listener and resolve
+              worker.removeEventListener("message", messageHandler);
+              resolve();
+              break;
+
+            case "error":
+              worker.removeEventListener("message", messageHandler);
+              reject(new Error(message || "Worker upload failed"));
+              break;
+          }
+        };
+
+        // Listen for worker messages
+        worker.addEventListener("message", messageHandler);
+
+        // Handle controller abort
+        controller.signal.addEventListener("abort", () => {
+          worker.postMessage({
+            type: "cancel",
+            fileId: item.id,
+          } as UploadMessage);
+
+          worker.removeEventListener("message", messageHandler);
+          reject(new Error("Upload cancelled"));
+        });
+
+        // Start the upload in worker
+        worker.postMessage({
+          type: "start",
+          fileId: item.id,
+          name: file.name,
+          size: file.size,
+          mimeType: validation.mimeType,
+          file: file,
+        } as UploadMessage);
+      });
+
+      // Wait for upload completion
+      await uploadPromise;
+    } catch (_error) {
+      // Simple user-friendly error message
+      const errorMessage = `${file.name} upload failed. Would you like to try again?`;
+
+      // Update metrics
+      uploadMetrics.failures++;
+
+      // Update UI with error message
+      setUploadQueue((prev) =>
+        prev.map((qItem) =>
+          qItem.id === item.id ? { ...qItem, status: "error", errorMessage } : qItem,
+        ),
+      );
+
+      // DON'T re-throw error - allow other uploads to continue
+    }
+  };
 
   // Process upload queue
   const processUploadQueue = useCallback(async () => {
@@ -675,133 +802,6 @@ export default function MediaUploadEnhanced() {
     createOptimisticEntries,
     uploadLargeFile,
   ]);
-
-  // CRITICAL FIX: Worker-based upload function to bypass DevTools completely
-  const uploadLargeFile = async (
-    item: UploadQueueItem,
-    controller: AbortController,
-    setUploadQueue: React.Dispatch<React.SetStateAction<UploadQueueItem[]>>,
-  ) => {
-    const { file } = item;
-
-    try {
-      // Validate file before upload
-      const validation = validateFile(file);
-
-      // Track upload metrics
-      uploadMetrics.attempts++;
-      if (file.name.toLowerCase().includes(".gltf")) {
-        uploadMetrics.gltfUploads++;
-      }
-      if (!file.type || file.type === "") {
-        uploadMetrics.mimeTypeIssues++;
-      }
-
-      // Get the upload worker
-      const worker = getUploadWorker();
-
-      // Promise to handle worker communication
-      const uploadPromise = new Promise<void>((resolve, reject) => {
-        // Handle worker messages
-        const messageHandler = (event: MessageEvent<WorkerResponse>) => {
-          const { type, fileId, percent, uploadId, totalChunks, serverResponse, message } =
-            event.data;
-
-          // Only handle messages for this specific file
-          if (fileId !== item.id) return;
-
-          switch (type) {
-            case "init":
-              setUploadQueue((prev) =>
-                prev.map((qItem) =>
-                  qItem.id === item.id ? { ...qItem, status: "uploading" } : qItem,
-                ),
-              );
-              break;
-
-            case "progress":
-              setUploadQueue((prev) =>
-                prev.map((qItem) =>
-                  qItem.id === item.id
-                    ? { ...qItem, progress: percent || 0, status: "uploading" }
-                    : qItem,
-                ),
-              );
-              break;
-
-            case "chunkComplete":
-              // Optional: log chunk completion
-              break;
-
-            case "completed":
-              // Invalidate cache after successful upload with forced refetch
-              (async () => {
-                await invalidateMediaQueries(getQueryClient());
-              })().catch((_error) => {});
-
-              // Update UI to completed
-              setUploadQueue((prev) =>
-                prev.map((qItem) =>
-                  qItem.id === item.id ? { ...qItem, progress: 100, status: "completed" } : qItem,
-                ),
-              );
-
-              // Cleanup listener and resolve
-              worker.removeEventListener("message", messageHandler);
-              resolve();
-              break;
-
-            case "error":
-              worker.removeEventListener("message", messageHandler);
-              reject(new Error(message || "Worker upload failed"));
-              break;
-          }
-        };
-
-        // Listen for worker messages
-        worker.addEventListener("message", messageHandler);
-
-        // Handle controller abort
-        controller.signal.addEventListener("abort", () => {
-          worker.postMessage({
-            type: "cancel",
-            fileId: item.id,
-          } as UploadMessage);
-
-          worker.removeEventListener("message", messageHandler);
-          reject(new Error("Upload cancelled"));
-        });
-
-        // Start the upload in worker
-        worker.postMessage({
-          type: "start",
-          fileId: item.id,
-          name: file.name,
-          size: file.size,
-          mimeType: validation.mimeType,
-          file: file,
-        } as UploadMessage);
-      });
-
-      // Wait for upload completion
-      await uploadPromise;
-    } catch (_error) {
-      // Simple user-friendly error message
-      const errorMessage = `${file.name} upload failed. Would you like to try again?`;
-
-      // Update metrics
-      uploadMetrics.failures++;
-
-      // Update UI with error message
-      setUploadQueue((prev) =>
-        prev.map((qItem) =>
-          qItem.id === item.id ? { ...qItem, status: "error", errorMessage } : qItem,
-        ),
-      );
-
-      // DON'T re-throw error - allow other uploads to continue
-    }
-  };
 
   // Auto-process queue when new items are added
   useEffect(() => {
@@ -990,12 +990,12 @@ export default function MediaUploadEnhanced() {
         />
 
         <div className="flex flex-col items-center gap-2">
-          <Upload className="h-8 w-8 text-muted-foreground" />
+          <Upload className="text-muted-foreground h-8 w-8" />
           <div>
-            <p className="font-medium text-sm">
+            <p className="text-sm font-medium">
               {isDragging ? "Drop files here" : "Drag and drop files here"}
             </p>
-            <p className="mt-1 text-muted-foreground text-xs">or click to select files</p>
+            <p className="text-muted-foreground mt-1 text-xs">or click to select files</p>
           </div>
 
           <Button variant="outline" size="sm" disabled={hasActiveUploads}>
@@ -1048,8 +1048,8 @@ export default function MediaUploadEnhanced() {
       {/* Overall progress */}
       {hasActiveUploads && (
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
-            <div className="h-4 w-4 animate-spin rounded-full border-primary border-b-2"></div>
+          <div className="text-muted-foreground inline-flex items-center gap-2 text-sm">
+            <div className="border-primary h-4 w-4 animate-spin rounded-full border-b-2"></div>
             Processing uploads...
           </div>
         </div>

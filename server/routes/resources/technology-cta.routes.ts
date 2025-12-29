@@ -15,6 +15,7 @@ import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -40,7 +41,7 @@ router.get("/", async (_req, res) => {
  * PATCH /api/v1/technology-cta
  * Update technology CTA section
  */
-router.patch("/", async (req, res) => {
+router.patch("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertTechnologyCtaSchema.partial().safeParse(req.body);
 

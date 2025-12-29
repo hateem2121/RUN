@@ -27,9 +27,23 @@ export function RelatedProducts({
   });
 
   // Fetch categories to build hierarchical URLs
+  // Fetch categories to build hierarchical URLs
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
+
+  // Helper function to calculate relevance score (moved here for useMemo)
+  const getRelevanceScore = (product: Product) => {
+    let score = 0;
+    if (categoryId && product.categoryId === categoryId) score += 10;
+    if (fabricId && product.fabricId === fabricId) score += 5;
+    if (tags.length > 0 && product.tags) {
+      const sharedTags = tags.filter((tag) => product.tags?.includes(tag));
+      score += sharedTags.length * 2;
+    }
+    if (product.isFeatured) score += 1;
+    return score;
+  };
 
   // PHASE 1A INTEGRATION: Extract media IDs from related products and batch fetch them
   const relatedProductMediaIds = useMemo(() => {
@@ -81,19 +95,6 @@ export function RelatedProducts({
 
     fetchBatchedMedia();
   }, [relatedProductMediaIds]);
-
-  // Helper function to calculate relevance score (moved here for useMemo)
-  const getRelevanceScore = (product: Product) => {
-    let score = 0;
-    if (categoryId && product.categoryId === categoryId) score += 10;
-    if (fabricId && product.fabricId === fabricId) score += 5;
-    if (tags.length > 0 && product.tags) {
-      const sharedTags = tags.filter((tag) => product.tags?.includes(tag));
-      score += sharedTags.length * 2;
-    }
-    if (product.isFeatured) score += 1;
-    return score;
-  };
 
   // Get product URL (hierarchical) - only return valid URLs
   const getProductUrl = (product: Product): string | null => {
@@ -156,7 +157,7 @@ export function RelatedProducts({
 
   return (
     <div className="mt-16">
-      <h2 className="mb-6 font-bold text-2xl">Related Products</h2>
+      <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {relatedProducts.map((product) => {
           const primaryMedia = getPrimaryMedia(product);
@@ -169,9 +170,9 @@ export function RelatedProducts({
 
           return (
             <Link href={productUrl} key={product.id}>
-              <Card className="group h-full cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg">
+              <Card className="group transition-shadow-sm h-full cursor-pointer overflow-hidden hover:shadow-lg">
                 {/* Media Preview */}
-                <div className="relative aspect-4/5 overflow-hidden bg-muted">
+                <div className="bg-muted relative aspect-4/5 overflow-hidden">
                   {primaryMedia ? (
                     <LazyMediaEnhanced
                       mediaId={primaryMedia.id}
@@ -180,7 +181,7 @@ export function RelatedProducts({
                       priority={false}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
+                    <div className="text-muted-foreground/70 flex h-full w-full items-center justify-center">
                       <LayoutGrid className="h-12 w-12" />
                     </div>
                   )}
@@ -198,14 +199,14 @@ export function RelatedProducts({
 
                 {/* Product Info */}
                 <div className="p-4">
-                  <h3 className="mb-1 font-semibold text-lg transition-colors group-hover:text-blue-600">
+                  <h3 className="mb-1 text-lg font-semibold transition-colors group-hover:text-blue-600">
                     {product.name || "Unnamed Product"}
                   </h3>
                   {product.sku && (
-                    <p className="mb-2 text-muted-foreground text-sm">SKU: {product.sku}</p>
+                    <p className="text-muted-foreground mb-2 text-sm">SKU: {product.sku}</p>
                   )}
                   {product.description && (
-                    <p className="line-clamp-2 text-foreground/80 text-sm">{product.description}</p>
+                    <p className="text-foreground/80 line-clamp-2 text-sm">{product.description}</p>
                   )}
                 </div>
               </Card>

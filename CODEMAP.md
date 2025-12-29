@@ -42,13 +42,14 @@ graph TD
     %% External Services
     subgraph External [External Services]
         Sentry[Sentry (Observability)]
-        Redis[Upstash Redis (Rate Limiting)]
+        Redis[Upstash Redis (L2 Cache / Rate Limiting)]
     end
 
-    %% Connections
+    %% connections
     ApiLib <-->|JSON/REST| ServerEntry
     Schema <--> DB
-    Middleware -.-> Redis
+    Services <--> UCache[UnifiedCache L1/L2]
+    UCache -.-> Redis
     ServerEntry -.-> Sentry
     Client -.-> Sentry
 ```
@@ -57,7 +58,9 @@ graph TD
 
 ## 2. Directory Map (The "Why")
 
-### `client/` (The Frontend)
+The project uses **NPM Workspaces** to manage dependencies across packages.
+
+### `client/` (`@run-remix/client`)
 
 | Directory                 | Purpose                                                        | Key Patterns                                        |
 | ------------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
@@ -67,18 +70,20 @@ graph TD
 | `src/pages`               | **Route Pages**. Top-level page components.                    | `useEffect` for page title, data fetching.          |
 | `src/lib`                 | **Core Utilities**. Helper functions and constants.            | `design-tokens.ts` (CSS vars), `utils.ts` (merger). |
 
-### `server/` (The Backend)
+### `server/` (`@run-remix/server`)
 
-| Directory    | Purpose                                                      | Key Patterns                      |
-| ------------ | ------------------------------------------------------------ | --------------------------------- |
-| `routes`     | **API Endpoints**. Definitions of REST limits.               | `router.get()`, `router.post()`.  |
-| `services`   | **Business Logic**. Complex operations isolated from routes. | `ProductService`, `MediaService`. |
-| `middleware` | **Request Processing**. Auth, logging, rate limiting.        | `rateLimiter.ts`, `security.ts`.  |
-| `db`         | **Database Config**. Drizzle setup.                          | `index.ts`, `migrate.ts`.         |
+| Directory    | Purpose                                                      | Key Patterns                       |
+| ------------ | ------------------------------------------------------------ | ---------------------------------- |
+| `routes`     | **API Endpoints**. Definitions of REST limits.               | `router.get()`, `router.post()`.   |
+| `services`   | **Business Logic**. Complex operations isolated from routes. | `AuthService`, `MediaService`.     |
+| `middleware` | **Request Processing**. Auth, logging, rate limiting.        | `correlation-id.ts`, `nonce.ts`.   |
+| `db`         | **Database Config**. Drizzle setup.                          | `index.ts`, `migrate.ts`.          |
+| `lib`        | **System Core**. Caching, resilience, logging.               | `unified-cache.ts`, `db-retry.ts`. |
 
-### `shared/` (The Bridge)
+### `shared/` (`@run-remix/shared`)
 
 - **`schema.ts`**: The **Single Source of Truth** for data shapes. Defines database tables (Drizzle) AND validation types (Zod). Shared by Client and Server.
+- **`package.json`**: Configured as specific ESM package (`type: "module"`) to resolve imports correctly.
 
 ---
 

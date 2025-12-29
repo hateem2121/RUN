@@ -19,7 +19,7 @@ async function triggerFabricsCacheClear() {
     }
 
     const createdFabric = await createResponse.json();
-    const fabricId = createdFabric.id;
+    const fabricId = (createdFabric as any).id;
     const deleteResponse = await fetch(`http://localhost:5001/api/fabrics/${fabricId}`, {
       method: "DELETE",
     });

@@ -126,7 +126,7 @@ export class FabricParser {
       const stretchDirection = this.extractStretchDirection(stretchPercentage);
 
       return {
-        name,
+        name: name || "",
         description: description || "",
         fabricType: fabricType || "",
         weight: weight || "",
@@ -159,7 +159,7 @@ export class FabricParser {
   private extractField(section: string, fieldName: string, pattern: string): string {
     const regex = new RegExp(`${fieldName}\\s*${pattern}`, "i");
     const match = section.match(regex);
-    return match ? match[1]?.trim() : "";
+    return match ? match[1]?.trim() || "" : "";
   }
 
   private extractListField(section: string, fieldName: string, pattern: string): string[] {
@@ -292,7 +292,7 @@ export class FabricParser {
         let fiberName = match[2]?.trim();
 
         // Clean up fiber name
-        fiberName = fiberName.replace(/\s*\([^)]*\)/g, ""); // Remove parentheses
+        fiberName = (fiberName || "").replace(/\s*\([^)]*\)/g, ""); // Remove parentheses
         fiberName = fiberName.replace(/\s*(Organic|Conventional|Recycled|rPET)\s*/g, ""); // Remove modifiers
         fiberName = this.normalizeFiberName(fiberName);
 
@@ -305,7 +305,7 @@ export class FabricParser {
         const singleMatch = part.match(/100%\s*([^%]+)/);
         if (singleMatch) {
           let fiberName = singleMatch[1]?.trim();
-          fiberName = fiberName.replace(/\s*\([^)]*\)/g, "");
+          fiberName = (fiberName || "").replace(/\s*\([^)]*\)/g, "");
           fiberName = fiberName.replace(/\s*(Organic|Conventional|Recycled|rPET)\s*/g, "");
           fiberName = this.normalizeFiberName(fiberName);
 

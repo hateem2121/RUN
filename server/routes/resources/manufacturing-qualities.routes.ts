@@ -19,7 +19,7 @@ import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { requireAdmin } from "../../middleware/auth.js";
+import { authService } from "../../services/auth-service.js";
 import {
   validateManufacturingQuality,
   validateManufacturingQualityPartial,
@@ -74,7 +74,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", requireAdmin, async (req, res) => {
+router.post("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = validateManufacturingQuality(req.body);
 
@@ -106,7 +106,7 @@ router.post("/", requireAdmin, async (req, res) => {
   }
 });
 
-router.patch("/:id", requireAdmin, async (req, res) => {
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
     const validation = validateManufacturingQualityPartial(req.body);
@@ -143,7 +143,7 @@ router.patch("/:id", requireAdmin, async (req, res) => {
   }
 });
 
-router.delete("/:id", requireAdmin, async (req, res) => {
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
 
@@ -174,7 +174,7 @@ router.delete("/:id", requireAdmin, async (req, res) => {
   }
 });
 
-router.patch("/reorder", requireAdmin, async (req, res) => {
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const validation = validateReorderQualities(req.body);
 

@@ -10,6 +10,8 @@ import { insertSizeChartSchema } from "../../../shared/schema.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
+import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -28,7 +30,7 @@ router.get("/size-charts", async (_req, res) => {
 });
 
 // POST /api/size-charts - Create new size chart
-router.post("/size-charts", async (req, res) => {
+router.post("/size-charts", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertSizeChartSchema.parse(req.body);
     const sizeChart = await withTimeout(
@@ -54,9 +56,10 @@ router.post("/size-charts", async (req, res) => {
 });
 
 // PUT /api/size-charts/:id - Update size chart
-router.put("/size-charts/:id", async (req, res) => {
+router.put("/size-charts/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "size chart");
+    if (id === null) return;
     const validatedData = insertSizeChartSchema.partial().parse(req.body);
     const sizeChart = await withTimeout(
       getStorage().updateSizeChart(id, validatedData),
@@ -86,12 +89,10 @@ router.put("/size-charts/:id", async (req, res) => {
 });
 
 // DELETE /api/size-charts/:id - Delete size chart
-router.delete("/size-charts/:id", async (req, res) => {
+router.delete("/size-charts/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid size chart ID" });
-    }
+    const id = validateIdParam(req, res, "id", "size chart");
+    if (id === null) return;
 
     const success = await withTimeout(getStorage().deleteSizeChart(id), 10000, "Delete size chart");
 

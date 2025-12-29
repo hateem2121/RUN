@@ -10,6 +10,8 @@ import { insertAccessorySchema } from "../../../shared/schema.js";
 import { accessoryRepository } from "../../lib/repositories/accessory-repository.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
+import { authService } from "../../services/auth-service.js";
+import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -57,7 +59,7 @@ router.get("/accessories", async (req, res) => {
 });
 
 // POST /api/accessories - Create new accessory
-router.post("/accessories", async (req, res) => {
+router.post("/accessories", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertAccessorySchema.parse(req.body);
 
@@ -90,9 +92,10 @@ router.post("/accessories", async (req, res) => {
 });
 
 // PUT /api/accessories/:id - Update accessory
-router.put("/accessories/:id", async (req, res) => {
+router.put("/accessories/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "accessory");
+    if (id === null) return;
     const validatedData = insertAccessorySchema.partial().parse(req.body);
 
     // Convert price to string if it's a number (database expects string for decimal)
@@ -129,12 +132,10 @@ router.put("/accessories/:id", async (req, res) => {
 });
 
 // DELETE /api/accessories/:id - Delete accessory
-router.delete("/accessories/:id", async (req, res) => {
+router.delete("/accessories/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid accessory ID" });
-    }
+    const id = validateIdParam(req, res, "id", "accessory");
+    if (id === null) return;
 
     const success = await withTimeout(
       accessoryRepository.deleteAccessory(id),

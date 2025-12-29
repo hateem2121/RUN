@@ -878,12 +878,16 @@ export class MiscRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(navigationGlassmorphismSettings)
-        .set(settings)
-        .where(eq(navigationGlassmorphismSettings.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(navigationGlassmorphismSettings)
+          .set(settings)
+          .where(eq(navigationGlassmorphismSettings.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as NavigationGlassmorphismSettings;
+      }
     }
 
     try {
@@ -984,12 +988,16 @@ export class MiscRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(footerConfiguration)
-        .set({ ...safeConfig, updatedAt: sql`NOW()` })
-        .where(eq(footerConfiguration.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(footerConfiguration)
+          .set({ ...config, updatedAt: sql`NOW()` })
+          .where(eq(footerConfiguration.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as FooterConfiguration;
+      }
     }
 
     try {

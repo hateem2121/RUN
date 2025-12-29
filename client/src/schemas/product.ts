@@ -42,32 +42,32 @@ export const CategorySchema = z.object({
   slug: z.string(),
   description: z.string().nullable().optional(),
   parentId: z.number().nullable().optional(),
-  isActive: z.boolean().optional().default(true),
-  sortOrder: z.number().optional().default(0),
+  isActive: z.boolean().nullable().optional().default(true),
+  sortOrder: z.number().nullable().optional().default(0),
 });
 
 export const FabricSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().optional().default(true),
+  isActive: z.boolean().nullable().optional().default(true),
 });
 
 export const CertificateSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().optional().default(true),
+  isActive: z.boolean().nullable().optional().default(true),
 });
 
 export const SizeChartSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().optional().default(true),
+  isActive: z.boolean().nullable().optional().default(true),
 });
 
 export const AccessorySchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().optional().default(true),
+  isActive: z.boolean().nullable().optional().default(true),
 });
 
 // -- Product Schema --
@@ -107,3 +107,6 @@ export type ProductSummary = z.infer<typeof ProductSummarySchema>;
 export type Category = z.infer<typeof CategorySchema>;
 export type Fabric = z.infer<typeof FabricSchema>;
 export type MediaAsset = z.infer<typeof MediaAssetSchema>;
+export type Certificate = z.infer<typeof CertificateSchema>;
+export type SizeChart = z.infer<typeof SizeChartSchema>;
+export type Accessory = z.infer<typeof AccessorySchema>;

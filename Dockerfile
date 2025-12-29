@@ -4,10 +4,17 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install dependencies
+# Install dependencies with workspace optimization
 ARG NODE_ENV=production
 ENV NODE_ENV=production
-COPY package*.json ./
-RUN npm ci
+
+# P3: Docker Layer Caching Strategy
+COPY package.json package-lock.json ./
+COPY client/package.json client/
+COPY server/package.json server/
+COPY shared/package.json shared/
+
+RUN npm ci --include=dev
 
 # Copy source code
 COPY . .

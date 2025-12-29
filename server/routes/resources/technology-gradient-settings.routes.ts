@@ -19,6 +19,7 @@ import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -75,7 +76,7 @@ router.get("/", async (_req, res) => {
  * PATCH /api/v1/technology-gradient-settings
  * Update technology gradient settings
  */
-router.patch("/", async (req, res) => {
+router.patch("/", authService.requireAdmin, async (req, res) => {
   try {
     let storageData: any = {};
 

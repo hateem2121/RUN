@@ -10,10 +10,12 @@ import { type Category, insertCategorySchema } from "../../../shared/schema.js";
 import { db } from "../../db.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db-retry.js";
+import { jsonResponse, registry } from "../../lib/openapi-generator.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { normalizeSlug } from "../../lib/slug-utils.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
 import {
   checkRateLimit,
   shouldBypassCache,
@@ -22,6 +24,33 @@ import {
 } from "../../utils.js";
 
 const router = Router();
+
+// OpenAPI Registration
+registry.registerPath({
+  method: "get",
+  path: "/categories",
+  summary: "List all categories",
+  tags: ["Categories"],
+  parameters: [
+    { name: "page", in: "query", schema: { type: "integer" } },
+    { name: "limit", in: "query", schema: { type: "integer" } },
+  ],
+  responses: {
+    200: jsonResponse(z.array(z.any()), "List of categories"),
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/categories/{id}",
+  summary: "Get category by ID",
+  tags: ["Categories"],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  responses: {
+    200: jsonResponse(z.any(), "The category object"),
+    404: { description: "Category not found" },
+  },
+});
 
 // GET /api/categories - List all categories with optional pagination
 // CHUNK 5: Added pagination support for large category lists
@@ -90,7 +119,7 @@ router.get("/categories", async (req, res) => {
 });
 
 // Bulk reorder categories endpoint for drag-and-drop (MUST be before :id route)
-router.patch("/categories/reorder", async (req, res) => {
+router.patch("/categories/reorder", authService.requireAdmin, async (req, res) => {
   try {
     // Validate request body structure
     const reorderSchema = z.object({
@@ -254,7 +283,7 @@ router.get("/categories/:id", async (req, res) => {
 });
 
 // POST /api/categories - Create new category
-router.post("/categories", async (req, res) => {
+router.post("/categories", authService.requireAdmin, async (req, res) => {
   try {
     // Rate limiting check
     if (!checkRateLimit()) {
@@ -351,9 +380,10 @@ router.post("/categories", async (req, res) => {
 });
 
 // PUT /api/categories/:id - Update category
-router.put("/categories/:id", async (req, res) => {
+router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = await withTimeout(
@@ -439,9 +469,10 @@ router.put("/categories/:id", async (req, res) => {
 });
 
 // PATCH /api/categories/:id - Update category (same as PUT)
-router.patch("/categories/:id", async (req, res) => {
+router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = await withTimeout(
@@ -527,9 +558,10 @@ router.patch("/categories/:id", async (req, res) => {
 });
 
 // DELETE /api/categories/:id - Delete category
-router.delete("/categories/:id", async (req, res) => {
+router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
     const deleted = await withTimeout(
       retryDbOperation(() => getStorage().deleteCategory(id), {
         operationName: `Delete category ${id}`,
@@ -581,15 +613,10 @@ router.get("/categories/deleted", async (_req, res) => {
 });
 
 // POST /api/categories/:id/restore - Restore soft-deleted category
-router.post("/categories/:id/restore", async (req, res) => {
+router.post("/categories/:id/restore", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({
-        success: false,
-        error: { message: "Invalid category ID" },
-      });
-    }
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
     const restored = await withTimeout(
       retryDbOperation(() => getStorage().restoreCategory(id), {
         operationName: `Restore category ${id}`,
@@ -627,15 +654,10 @@ router.post("/categories/:id/restore", async (req, res) => {
 });
 
 // DELETE /api/categories/:id/hard-delete - Permanently delete category
-router.delete("/categories/:id/hard-delete", async (req, res) => {
+router.delete("/categories/:id/hard-delete", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({
-        success: false,
-        error: { message: "Invalid category ID" },
-      });
-    }
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
     const hardDeleted = await withTimeout(
       retryDbOperation(() => getStorage().permanentlyDeleteCategory(id), {
         operationName: `Hard delete category ${id}`,

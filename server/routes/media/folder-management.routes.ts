@@ -10,6 +10,8 @@ import { type Folder, insertFolderSchema } from "../../../shared/schema.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
+import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -79,10 +81,8 @@ router.get("/folders/tree", async (_req, res) => {
 // GET /api/folders/:id - Get specific folder
 router.get("/folders/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid folder ID" });
-    }
+    const id = validateIdParam(req, res, "id", "folder");
+    if (id === null) return;
 
     const folder = await withTimeout(getStorage().getFolder(id), 5000, "Get folder by ID");
 
@@ -101,7 +101,7 @@ router.get("/folders/:id", async (req, res) => {
 });
 
 // POST /api/folders - Create new folder
-router.post("/folders", async (req, res) => {
+router.post("/folders", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFolderSchema.parse(req.body);
     const folder = await withTimeout(
@@ -127,12 +127,10 @@ router.post("/folders", async (req, res) => {
 });
 
 // PUT /api/folders/:id - Update folder
-router.put("/folders/:id", async (req, res) => {
+router.put("/folders/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid folder ID" });
-    }
+    const id = validateIdParam(req, res, "id", "folder");
+    if (id === null) return;
 
     const validatedData = insertFolderSchema.partial().parse(req.body);
     const folder = await withTimeout(
@@ -163,12 +161,10 @@ router.put("/folders/:id", async (req, res) => {
 });
 
 // DELETE /api/folders/:id - Delete folder
-router.delete("/folders/:id", async (req, res) => {
+router.delete("/folders/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid folder ID" });
-    }
+    const id = validateIdParam(req, res, "id", "folder");
+    if (id === null) return;
 
     // Check if folder has children
     const children = await withTimeout(
@@ -201,10 +197,8 @@ router.delete("/folders/:id", async (req, res) => {
 // GET /api/folders/:id/children - Get folder children
 router.get("/folders/:id/children", async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid folder ID" });
-    }
+    const id = validateIdParam(req, res, "id", "folder");
+    if (id === null) return;
 
     const children = await withTimeout(
       getStorage().getFolderChildren(id),
@@ -224,10 +218,8 @@ router.get("/folders/:id/children", async (req, res) => {
 // GET /api/folders/:id/media - Get media assets in folder
 router.get("/folders/:id/media", async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid folder ID" });
-    }
+    const id = validateIdParam(req, res, "id", "folder");
+    if (id === null) return;
 
     const assets = await withTimeout(
       getStorage().getMediaAssetsByFolder(id),
@@ -245,14 +237,15 @@ router.get("/folders/:id/media", async (req, res) => {
 });
 
 // POST /api/folders/:id/move-media - Move media asset to folder
-router.post("/folders/:id/move-media", async (req, res) => {
+router.post("/folders/:id/move-media", authService.requireAdmin, async (req, res) => {
   try {
-    const folderId = parseInt(req.params.id, 10);
+    const folderId = validateIdParam(req, res, "id", "folder");
+    if (folderId === null) return;
     const { mediaAssetId } = req.body;
 
-    if (Number.isNaN(folderId) || !mediaAssetId) {
+    if (!mediaAssetId) {
       return res.status(400).json({
-        message: "Invalid folder ID or media asset ID",
+        message: "Missing media asset ID",
       });
     }
 

@@ -1,12 +1,14 @@
 import { LRUCache } from "lru-cache";
 import { logger } from "./smart-logger.js";
+import { isRedisEnabled, redis } from "./upstash-client.js";
 
 /**
- * UNIFIED CACHE - IN-MEMORY ONLY
+ * UNIFIED CACHE - HYBRID L1/L2
  *
- * Replaces the hybrid DB + Memory cache with a pure in-memory LRU cache.
+ * L1: In-Memory LRU Cache (Fastest, per-instance)
+ * L2: Redis Cache (Shared, cross-instance, persistence)
  *
- * Future Upgrade: Can be replaced with Redis (Memorystore) if needed.
+ * Pattern: Cache-Aside with Write-Through to L2
  */
 export interface SWRConfig {
   ttl: number;
@@ -33,7 +35,7 @@ export class UnifiedCache {
     sets: 0,
     deletes: 0,
     l1Hits: 0,
-    l2Hits: 0, // Will always be 0 now
+    l2Hits: 0,
   };
 
   private constructor() {
@@ -42,14 +44,18 @@ export class UnifiedCache {
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
       maxSize: 100 * 1024 * 1024, // Max 100MB (approx)
-      sizeCalculation: (value, key) => {
+      sizeCalculation: (value: any, key: string) => {
         // Rough size estimation
         return JSON.stringify(value).length + key.length;
       },
       ttl: 1000 * 60 * 60, // 1 hour default TTL
     });
 
-    logger.info("[Cache] ✅ Unified In-Memory Cache initialized");
+    if (isRedisEnabled) {
+      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)");
+    } else {
+      logger.info("[Cache] ⚠️ Unified In-Memory Cache initialized (L2 Redis disabled)");
+    }
   }
 
   public static getInstance(): UnifiedCache {
@@ -71,14 +77,29 @@ export class UnifiedCache {
       return memoryValue;
     }
 
-    // L2 not present, so it's a miss
+    // 2. Check L2 Redis Cache (if enabled)
+    if (isRedisEnabled) {
+      try {
+        const redisValue = await redis.get<T>(key);
+        if (redisValue !== null) {
+          this.stats.hits++;
+          this.stats.l2Hits++;
+
+          // Backfill L1 Memory Cache
+          this.memoryCache.set(key, redisValue);
+
+          return redisValue;
+        }
+      } catch (error) {
+        logger.error(`[Cache] L2 Get failed for ${key}:`, error);
+      }
+    }
+
+    // 3. Cache miss
     this.stats.misses++;
     return null;
   }
 
-  /**
-   * Set value in cache
-   */
   /**
    * Set value in cache
    */
@@ -87,8 +108,16 @@ export class UnifiedCache {
       // Set in L1 Memory Cache
       this.memoryCache.set(key, value, { ttl: ttlSeconds * 1000 });
 
+      // Set in L2 Redis Cache (if enabled)
+      if (isRedisEnabled) {
+        // Use fire-and-forget for performance (don't await L2 set)
+        redis.set(key, value, { ex: ttlSeconds }).catch((err: any) => {
+          logger.error(`[Cache] L2 Set failed for ${key}:`, err);
+        });
+      }
+
       this.stats.sets++;
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`[Cache] Set failed for ${key}:`, error);
     }
   }
@@ -105,6 +134,13 @@ export class UnifiedCache {
    */
   async delete(key: string, _namespace?: string): Promise<void> {
     this.memoryCache.delete(key);
+
+    if (isRedisEnabled) {
+      redis.del(key).catch((err: any) => {
+        logger.error(`[Cache] L2 Delete failed for ${key}:`, err);
+      });
+    }
+
     this.stats.deletes++;
   }
 
@@ -113,22 +149,26 @@ export class UnifiedCache {
    */
   async clear(): Promise<void> {
     this.memoryCache.clear();
-    logger.info("[Cache] Cache cleared completely");
+
+    if (isRedisEnabled) {
+      try {
+        await redis.flushdb();
+      } catch (error) {
+        logger.error("[Cache] L2 Clear failed:", error);
+      }
+    }
+
+    logger.info("[Cache] Cache cleared completely (L1 and L2)");
   }
 
   /**
-   * Clear keys matching a pattern (simple prefix match for in-memory)
+   * Clear keys matching a pattern
    */
   async clearPattern(pattern: string): Promise<void> {
-    // Convert regex-like string to actual regex if needed, or just substring
-    // For simplicity, we'll iterate keys and check
-    // Note: LRUCache doesn't have a direct iterator for keys in all versions,
-    // but we can use standard iteration if available or just clear all if critical.
-    // For safety and performance in this migration, we'll implement a simple prefix/includes check
-
     const isRegex = pattern.startsWith("^") || pattern.includes("*");
     const regex = isRegex ? new RegExp(pattern.replace("*", ".*")) : null;
 
+    // 1. Clear L1 Memory Cache
     for (const key of this.memoryCache.keys()) {
       if (regex) {
         if (regex.test(key)) {
@@ -140,10 +180,34 @@ export class UnifiedCache {
         }
       }
     }
+
+    // 2. Clear L2 Redis Cache (if enabled)
+    if (isRedisEnabled) {
+      try {
+        // Use SCAN to find keys matching pattern in L2
+        // For simplicity and matching current logic, we'll use wildcards
+        const redisPattern = isRegex ? pattern.replace("^", "").replace(".*", "*") : `*${pattern}*`;
+        let cursor = "0";
+
+        do {
+          const [nextCursor, keys] = await redis.scan(cursor, {
+            match: redisPattern,
+            count: 100,
+          });
+          cursor = nextCursor;
+
+          if (keys.length > 0) {
+            await redis.del(...keys);
+          }
+        } while (cursor !== "0");
+      } catch (error: any) {
+        logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
+      }
+    }
   }
 
   /**
-   * Warm the cache (No-op for now as we don't have a persistent store to load from)
+   * Warm the cache
    */
   async warm(tasks?: any[]): Promise<void> {
     if (tasks && tasks.length > 0) {
@@ -152,12 +216,12 @@ export class UnifiedCache {
         try {
           const data = await task.loader();
           await this.set(task.key, data, task.options?.ttl, task.options?.category);
-        } catch (err) {
+        } catch (err: any) {
           logger.warn(`[Cache] Warmup failed for ${task.key}`, err);
         }
       }
     } else {
-      logger.info("[Cache] Cache warming skipped (No persistent L2 cache)");
+      logger.info("[Cache] Cache warming skipped");
     }
   }
 
@@ -182,12 +246,12 @@ export class UnifiedCache {
       hitRate: Math.round(hitRate * 100) / 100,
       totalOperations,
       calculatedSize: this.memoryCache.calculatedSize || 0,
+      redisEnabled: isRedisEnabled,
     };
   }
 
   /**
    * Get cache health status
-   * FORENSIC INVESTIGATION: Monitor cache effectiveness
    */
   async getHealthStatus() {
     const stats = this.getStats();
@@ -211,6 +275,20 @@ export class UnifiedCache {
       issues.push(`High item count: ${stats.itemCount}/5000 (${Math.round(itemUsagePercent)}%)`);
     }
 
+    // Redis Health
+    if (isRedisEnabled) {
+      try {
+        const start = performance.now();
+        await redis.ping();
+        const latency = performance.now() - start;
+        if (latency > 500) {
+          issues.push(`High Redis latency: ${Math.round(latency)}ms`);
+        }
+      } catch (err) {
+        issues.push("Redis connection failed");
+      }
+    }
+
     const isHealthy = issues.length === 0;
 
     return {
@@ -224,7 +302,6 @@ export class UnifiedCache {
 
   /**
    * SWR (Stale-While-Revalidate) Get
-   * Simplified implementation for in-memory cache
    */
   async getSWR<T>(
     key: string,
@@ -242,7 +319,7 @@ export class UnifiedCache {
     if (cached) {
       return {
         data: cached,
-        source: "memory",
+        source: "memory", // Simplified reporting, could be L1 or L2
         timings: {
           totalTime: performance.now() - start,
           cacheTime: performance.now() - start,
@@ -274,6 +351,7 @@ export class UnifiedCache {
   ): Promise<void> {
     await this.set(key, value, config.ttl || 3600);
   }
+
   /**
    * Get metrics (alias for getStats for compatibility)
    */

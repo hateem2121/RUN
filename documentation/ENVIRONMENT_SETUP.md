@@ -9,11 +9,13 @@ The application uses NEON PostgreSQL with HTTP-based serverless connections for 
 #### Required DATABASE_URL Format
 
 **✅ Correct (with pooler):**
+
 ```
 postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech:5432/dbname
 ```
 
 **❌ Incorrect (without pooler):**
+
 ```
 postgresql://user:password@ep-xxx.region.aws.neon.tech:5432/dbname
 ```
@@ -46,19 +48,22 @@ postgresql://user:password@ep-xxx.region.aws.neon.tech:5432/dbname
 The application automatically validates your DATABASE_URL on startup. You'll see one of these messages:
 
 **✅ Success:**
+
 ```
 [Database] ✅ DATABASE_URL validation passed
 ```
 
 **⚠️ Warning (missing pooler):**
+
 ```
-[Database] ⚠️ NEON pooling not detected - DATABASE_URL should include "-pooler" suffix 
-for optimal serverless performance. Without pooling, the database may experience 
+[Database] ⚠️ NEON pooling not detected - DATABASE_URL should include "-pooler" suffix
+for optimal serverless performance. Without pooling, the database may experience
 connection exhaustion in high-traffic scenarios.
 Example: postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/dbname
 ```
 
 **❌ Error (invalid URL):**
+
 ```
 ❌ Invalid DATABASE_URL protocol: "mysql"
 DATABASE_URL must start with "postgresql://" or "postgres://"
@@ -93,12 +98,39 @@ If you're currently using a direct connection:
 The application uses a 2-tier caching strategy:
 
 ### L1: Memory Cache (LRU)
-- **Provider**: `lru-cache`
-- **Size**: 50MB max, 1000 entries
-- **TTL**: 15 minutes
-- **Purpose**: Sub-millisecond response for hot data
+
+All server instances maintain a local LRU cache for high-frequency objects.
+
+### L2: Upstash Redis
+
+Global cache layer for cross-instance data consistency and shared state.
+
+**Required Environment Variables:**
+
+- `UPSTASH_REDIS_REST_URL`: The REST URL of your Upstash Redis database.
+- `UPSTASH_REDIS_REST_TOKEN`: The REST Token of your Upstash Redis database.
+
+**Cross-Instance Sync**:
+When `UnifiedCache` performs a write or delete, it notifies other instances via a simplified Redis pub/sub mechanism (using hash timestamps) to ensure L1 consistency.
+
+---
+
+## Auth Configuration
+
+The application uses Google OAuth 2.0 with a centralized `AuthService`.
+
+**Required Environment Variables:**
+
+- `GOOGLE_CLIENT_ID`: Google Cloud Console OAuth Client ID
+- `GOOGLE_CLIENT_SECRET`: Google Cloud Console OAuth Client Secret
+- `SESSION_SECRET`: Random string for signing sessions
+- `INITIAL_ADMIN_EMAIL`: The email that will be automatically granted admin privileges on first login.
+
+**Session Management**:
+Sessions are stored in PostgreSQL using `connect-pg-simple`. Ensure the `sessions` table exists or the application will attempt to create it on startup.
 
 ### L2: Persistent Cache (Replit KV)
+
 - **Provider**: `@replit/database`
 - **TTL**: Configurable per resource type
   - Batch/Navigation data: 15 minutes (900s)
@@ -109,6 +141,7 @@ The application uses a 2-tier caching strategy:
 ### Stale-While-Revalidate
 
 Technology and homepage batch endpoints use stale-while-revalidate:
+
 - **Stale Threshold**: 80% of TTL (e.g., 12 minutes for 15-minute cache)
 - **Behavior**: Serve stale data immediately + refresh in background
 - **Benefit**: Zero loading states for users, always instant responses
@@ -116,6 +149,7 @@ Technology and homepage batch endpoints use stale-while-revalidate:
 ### Cache Invalidation
 
 Cache is automatically invalidated on data updates:
+
 ```typescript
 // Invalidates all technology:* cache keys
 await CacheOperations.invalidateTechnology();
@@ -135,7 +169,7 @@ await CacheOperations.invalidateMedia(mediaId);
 DATABASE_URL=postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech:5432/dbname
 
 # Server (auto-configured by Replit)
-PORT=5000
+PORT=5001
 NODE_ENV=production
 ```
 
@@ -154,14 +188,16 @@ RATE_LIMIT_DIAGNOSTIC=10   # Diagnostic requests per minute
 ### Verification
 
 Check environment configuration on startup:
+
 ```bash
 npm run dev
 ```
 
 Look for validation messages in logs:
+
 - ✅ Database URL validation
 - ✅ Cache initialization
-- ✅ Server startup on port 5000
+- ✅ Server startup on port 5001
 
 ---
 
@@ -174,6 +210,7 @@ Look for validation messages in logs:
 **Solution**: Verify DATABASE_URL includes `-pooler` suffix
 
 **Diagnosis**:
+
 ```bash
 # Check your DATABASE_URL
 echo $DATABASE_URL | grep -o "pooler"
@@ -196,6 +233,7 @@ If no output, you're missing the pooler suffix.
 **Solution**: Expected behavior - cache warmup happening
 
 **After warmup**:
+
 - Fresh cache: <50ms
 - Stale cache (with revalidate): <10ms
 - Cache miss: 200-2000ms (NEON query time)
@@ -207,6 +245,7 @@ If no output, you're missing the pooler suffix.
 ### Cache Hit Rates
 
 Monitor HTTP response headers:
+
 ```
 X-Cache-Hit: true       # Fresh cache hit
 X-Cache-Hit: stale      # Stale-while-revalidate hit
@@ -216,12 +255,12 @@ X-Response-Time: 5.2    # Response time in milliseconds
 
 ### Expected Performance
 
-| Scenario | Response Time | X-Cache-Hit |
-|----------|---------------|-------------|
-| Hot data (L1 cache) | <1ms | true |
-| Warm data (L2 cache) | 5-20ms | true |
-| Stale data (revalidating) | <10ms | stale |
-| Cold data (database query) | 200-2000ms | false |
+| Scenario                   | Response Time | X-Cache-Hit |
+| -------------------------- | ------------- | ----------- |
+| Hot data (L1 cache)        | <1ms          | true        |
+| Warm data (L2 cache)       | 5-20ms        | true        |
+| Stale data (revalidating)  | <10ms         | stale       |
+| Cold data (database query) | 200-2000ms    | false       |
 
 ### Health Checks
 
@@ -250,5 +289,5 @@ curl -H "Cache-Control: no-cache" http://localhost:5000/api/technology-batch
 
 ---
 
-*Last updated: October 19, 2025*
-*Related files: `server/db.ts`, `server/lib/unified-replit-cache.ts`, `server/routes/resources/page-content-routes.ts`*
+_Last updated: October 19, 2025_
+_Related files: `server/db.ts`, `server/lib/unified-replit-cache.ts`, `server/routes/resources/page-content-routes.ts`_

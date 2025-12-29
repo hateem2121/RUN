@@ -14,8 +14,8 @@ import { insertAboutTeamMessageSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
-import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -41,7 +41,7 @@ router.get("/", async (_req, res) => {
  * PATCH /api/v1/about-team-message
  * Update the team message
  */
-router.patch("/", requireAdmin, async (req, res) => {
+router.patch("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertAboutTeamMessageSchema.partial().safeParse(req.body);
 

@@ -206,7 +206,7 @@ export async function seedEnhancedMediaAssets(): Promise<SeedResult> {
         storagePath: `public/media/heroes/${heroSections[i]}.jpg`,
         bucketName: "run-media",
         type: "image",
-        altText: `${heroSections[i]?.charAt(0).toUpperCase() + heroSections[i]?.slice(1)} hero image`,
+        altText: `${(heroSections[i] || "").charAt(0).toUpperCase() + (heroSections[i] || "").slice(1)} hero image`,
         folderId: cmsFolder?.id ?? null,
         isActive: true,
         metadata: { section: heroSections[i], purpose: "hero-banner" },

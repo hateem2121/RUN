@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [Architecture Evolution] - 2025-12-29 - Secure & Resilient Core
+
+### 🏗️ Infrastructure & Security
+
+- **Centralized Auth**: Migrated all authentication and authorization logic to `AuthService`. Removed legacy `auth.ts` middleware.
+- **Unified Caching (L1/L2)**: Implemented hybrid caching with LRU (L1) and Upstash Redis (L2) with cross-instance synchronization.
+- **OpenAPI 3.0 Documentation**: Integrated Swagger UI at `/api/docs` with auto-generated documentation for core API endpoints.
+- **Contract Testing**: Added shared Zod-based contract tests to ensure schema consistency between client and server.
+- **Integration Testing**: Established integrated test suite for Auth flow and core API logic.
+
+### 🛠️ DX & Type Safety
+
+- **Typed Express Sessions**: Implemented `SessionUser` interface for robust `req.user` typing.
+- **Improved Validation**: Standardized ID validation with `validateIdParam` helper across all core routes.
+- **Registry Pattern**: Introduced OpenAPI registry for decentralized route documentation.
+
 ## [System Audit] - 2025-12-23 - Critical Fixes & Standardization
 
 ### 🛠️ System Health Updates

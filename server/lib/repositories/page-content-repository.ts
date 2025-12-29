@@ -156,12 +156,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(homepageHero)
-        .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(homepageHero.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(homepageHero)
+          .set({ ...hero, updatedAt: sql`NOW()` })
+          .where(eq(homepageHero.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as HomepageHero;
+      }
     }
 
     try {
@@ -579,12 +583,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(logoAnimationSettings)
-        .set(settings)
-        .where(eq(logoAnimationSettings.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(logoAnimationSettings)
+          .set(settings)
+          .where(eq(logoAnimationSettings.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as LogoAnimationSettings;
+      }
     }
 
     try {
@@ -651,12 +659,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(homepageFeaturedProductsSettings)
-        .set({ ...settings, updatedAt: sql`NOW()` })
-        .where(eq(homepageFeaturedProductsSettings.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(homepageFeaturedProductsSettings)
+          .set({ ...settings, updatedAt: sql`NOW()` })
+          .where(eq(homepageFeaturedProductsSettings.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as unknown as Record<string, unknown>; // Cast to match return type
+      }
     }
 
     try {
@@ -713,12 +725,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(aboutHero)
-        .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(aboutHero.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(aboutHero)
+          .set({ ...hero, updatedAt: sql`NOW()` })
+          .where(eq(aboutHero.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as AboutHero;
+      }
     }
 
     try {
@@ -1032,12 +1048,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(aboutTeamMessages)
-        .set(message)
-        .where(eq(aboutTeamMessages.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(aboutTeamMessages)
+          .set(message)
+          .where(eq(aboutTeamMessages.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as AboutTeamMessage; // Should not happen given existing.length check, but TS safety
+      }
     }
 
     try {
@@ -1075,12 +1095,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(sustainabilityHero)
-        .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(sustainabilityHero.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(sustainabilityHero)
+          .set({ ...hero, updatedAt: sql`NOW()` })
+          .where(eq(sustainabilityHero.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as SustainabilityHero;
+      }
     }
 
     try {
@@ -1393,12 +1417,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(unifiedSustainability)
-        .set({ ...data, updatedAt: sql`NOW()` })
-        .where(eq(unifiedSustainability.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(unifiedSustainability)
+          .set({ ...data, updatedAt: sql`NOW()` })
+          .where(eq(unifiedSustainability.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as UnifiedSustainability;
+      }
     }
 
     try {
@@ -1452,12 +1480,16 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(manufacturingHero)
-        .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(manufacturingHero.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(manufacturingHero)
+          .set({ ...hero, updatedAt: sql`NOW()` })
+          .where(eq(manufacturingHero.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        result = existing[0] as ManufacturingHero;
+      }
     }
 
     try {
@@ -1857,12 +1889,22 @@ export class PageContentRepository {
         .returning();
       result = created!;
     } else {
-      const [updated] = await db
-        .update(technologyHero)
-        .set({ ...hero, updatedAt: sql`NOW()` })
-        .where(eq(technologyHero.id, existing[0]?.id))
-        .returning();
-      result = updated!;
+      if (existing.length > 0 && existing[0]?.id) {
+        const [updated] = await db
+          .update(technologyHero)
+          .set({
+            ...hero,
+            updatedAt: new Date(),
+          })
+          .where(eq(technologyHero.id, existing[0].id))
+          .returning();
+        result = updated!;
+      } else {
+        // Fallback or error handling if existing record is found but ID is missing
+        // For now, we'll assume this case is unlikely or handled by the initial check
+        // and return the existing record if no update occurred due to missing ID.
+        result = existing[0] as TechnologyHero;
+      }
     }
 
     try {
@@ -1871,7 +1913,7 @@ export class PageContentRepository {
       logger.debug("[Cache] Failed to emit invalidation event:", error);
     }
 
-    return result;
+    return result!; // Ensure we return non-undefined (which matches Promise<TechnologyHero>)
   }
 
   async getTechnologyInnovations(): Promise<TechnologyInnovation[]> {

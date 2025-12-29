@@ -93,7 +93,14 @@ if (config.app.environment === "production") {
 }
 
 // PHASE 3: Correlation ID Middleware for request tracing (all requests)
+// PHASE 3: Correlation ID Middleware for request tracing (all requests)
 app.use(correlationIdMiddleware);
+
+// P0: Canonical Middleware (SEO & Security)
+import { apiVersioningMiddleware, canonicalMiddleware } from "./middleware/canonical.js";
+
+app.use(canonicalMiddleware);
+app.use(apiVersioningMiddleware); // Handles /api/v1 -> /api rewrite
 
 // PHASE 3: HTTP Metrics Tracking (all requests)
 app.use(httpMetricsTracker.middleware());
@@ -248,6 +255,14 @@ app.use((req, res, next) => {
     lifecycleScheduler.start();
   } catch (_error) {}
 
+  // P2: Start Admin Notifier (Real-time Cache Invalidation)
+  try {
+    const { adminNotifier } = await import("./lib/admin-notifier.js");
+    adminNotifier.start();
+  } catch (e) {
+    logger.error("[AdminNotifier] Failed to start:", e);
+  }
+
   // PERFORMANCE FIX: Start database keep-alive to prevent Neon auto-suspend
   dbKeepAlive.start();
 
@@ -341,4 +356,24 @@ app.use((req, res, next) => {
   httpServer.timeout = 120000;
   httpServer.keepAliveTimeout = 65000;
   httpServer.headersTimeout = 66000;
+
+  // GRACEFUL SHUTDOWN: Ensure port is released on restart
+  const gracefulShutdown = (signal: string) => {
+    logger.info(`[${signal}] Received kill signal, shutting down gracefully...`);
+
+    httpServer.close(() => {
+      logger.info(`[${signal}] HTTP server closed`);
+      // Optional: Close DB connections here if needed
+      process.exit(0);
+    });
+
+    // Force exit if it takes too long
+    setTimeout(() => {
+      logger.error(`[${signal}] Could not close connections in time, forcefully shutting down`);
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+  process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 })();

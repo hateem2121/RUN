@@ -1,22 +1,25 @@
 import fs from "node:fs";
 import type { Server as HttpServer } from "node:http"; // HMR FIX: Import HttpServer type
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dehydrate } from "@tanstack/react-query";
 import type { NextFunction, Request, Response } from "express";
-import { createServer as createViteServer, type ViteDevServer } from "vite";
+// import { createServer as createViteServer, type ViteDevServer } from "vite";
 import { logging } from "../config/environment.js";
 import { getStorage } from "./storage-singleton.js";
 import { ViteAssetManager } from "./vite-manifest.js";
 
 const isProduction = process.env.NODE_ENV === "production";
-const root = process.cwd();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Resolve root based on file location: server/lib/ssr-handler.ts -> ../.. -> Monorepo Root
+const root = path.resolve(__dirname, "../..");
 
 // HMR FIX: Update signature to accept optional http server
 async function createSsrHandler(app: any, server?: HttpServer) {
-  let vite: ViteDevServer | undefined;
+  let vite: any; // ViteDevServer | undefined
 
   if (!isProduction) {
+    const { createServer: createViteServer } = await import("vite");
     vite = await createViteServer({
       server: {
         middlewareMode: true,
@@ -32,7 +35,7 @@ async function createSsrHandler(app: any, server?: HttpServer) {
           : {}),
       },
       appType: "custom",
-      configFile: path.resolve(root, "vite.config.ts"),
+      configFile: path.resolve(root, "client/vite.config.ts"),
     });
     app.use(vite.middlewares);
   }
@@ -288,7 +291,22 @@ async function createSsrHandler(app: any, server?: HttpServer) {
               .catch(() => {});
 
             if (!res.headersSent) {
-              res.status(500).send(`<h1>Server Error</h1><pre>${error?.message}</pre>`);
+              console.error("[SSR-FATAL] Shell Error - Switching to SPA Fallback");
+              // P2: SPA FALLBACK
+              // If SSR fails completely, serve the raw template (SPA mode)
+              // If we have a template and it's not an error that prevented template loading
+              if (template) {
+                res.status(200).set("Content-Type", "text/html").send(template);
+              } else {
+                // Fallback if template is undefined (should ideally be loaded by now)
+                // Use sync read since we are in a sync callback
+                const fs = require("fs"); // Assuming fs is available or will be imported
+                const fallbackTemplate = fs.readFileSync(
+                  path.resolve(root, "dist/public/index.html"),
+                  "utf-8",
+                );
+                res.status(200).set("Content-Type", "text/html").send(fallbackTemplate);
+              }
             } else {
               res.end();
             }
@@ -303,12 +321,11 @@ async function createSsrHandler(app: any, server?: HttpServer) {
               })
               .catch(() => {});
 
+            // If headers sent, we can't switch to SPA, just close stream
             if (!res.headersSent) {
-              res.status(500).send(`
-                <h1>Server Error (Render)</h1>
-                <p>${error?.message || "Unknown error during SSR"}</p>
-                <pre>${error?.stack || ""}</pre>
-              `);
+              // Try to fallback if possible, though React might have started writing
+              console.error("[SSR-FATAL] Render Error - Switching to SPA Fallback");
+              res.status(200).set("Content-Type", "text/html").send(template);
             }
           },
         },
@@ -316,7 +333,23 @@ async function createSsrHandler(app: any, server?: HttpServer) {
       );
     } catch (e) {
       vite?.ssrFixStacktrace(e as Error);
-      next(e);
+      console.error("[SSR-FATAL] Sync Error - Switching to SPA Fallback", e);
+      if (!res.headersSent) {
+        // Safe fallback for sync errors
+        const fs = require("fs");
+        try {
+          const fallbackTemplate = fs.readFileSync(
+            path.resolve(root, "dist/public/index.html"),
+            "utf-8",
+          );
+          res.status(200).set("Content-Type", "text/html").send(fallbackTemplate);
+        } catch (readErr) {
+          // Absolute worst case
+          res.status(500).send("Internal Server Error: Failed to load application.");
+        }
+      } else {
+        next(e);
+      }
     }
   };
 }

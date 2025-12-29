@@ -11,6 +11,7 @@ import { retryDbOperation } from "../../lib/db-retry.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 
 const router = Router();
@@ -35,7 +36,7 @@ router.get("/fibers", async (_req, res) => {
   }
 });
 
-router.post("/fibers", async (req, res) => {
+router.post("/fibers", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFiberSchema.parse(req.body);
     const fiber = await withTimeout(
@@ -54,7 +55,7 @@ router.post("/fibers", async (req, res) => {
   }
 });
 
-router.put("/fibers/:id", async (req, res) => {
+router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fiber");
     if (id === null) return; // Error response already sent
@@ -79,7 +80,7 @@ router.put("/fibers/:id", async (req, res) => {
   }
 });
 
-router.delete("/fibers/:id", async (req, res) => {
+router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fiber");
     if (id === null) return; // Error response already sent

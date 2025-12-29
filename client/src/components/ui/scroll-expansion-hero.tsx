@@ -45,6 +45,7 @@ const throttle = <F extends (...args: any[]) => any>(
       lastCall = now;
       return func.apply(this, args);
     }
+    return undefined;
   };
 };
 
@@ -294,7 +295,7 @@ const ScrollExpandMedia = ({
       <section className="relative flex min-h-screen flex-col items-center justify-start">
         <div className="relative flex min-h-screen w-full flex-col items-center">
           <motion.div
-            className="absolute inset-0 z-base h-full"
+            className="z-base absolute inset-0 h-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
@@ -308,10 +309,10 @@ const ScrollExpandMedia = ({
             <div className="absolute inset-0 bg-black/10" />
           </motion.div>
 
-          <div className="container relative z-elevated mx-auto flex flex-col items-center justify-start">
+          <div className="z-elevated relative container mx-auto flex flex-col items-center justify-start">
             <div className="relative flex h-[100dvh] w-full flex-col items-center justify-center">
               <div
-                className="absolute top-1/2 left-1/2 z-base rounded-2xl transition-none"
+                className="z-base absolute top-1/2 left-1/2 rounded-2xl transition-none"
                 style={mediaStyle}
               >
                 {mediaType === "video" ? (
@@ -334,7 +335,7 @@ const ScrollExpandMedia = ({
                         allowFullScreen
                       />
                       <div
-                        className="absolute inset-0 z-elevated"
+                        className="z-elevated absolute inset-0"
                         style={{ pointerEvents: "none" }}
                       ></div>
 
@@ -356,7 +357,7 @@ const ScrollExpandMedia = ({
                         disableRemotePlayback
                       />
                       <div
-                        className="absolute inset-0 z-elevated"
+                        className="z-elevated absolute inset-0"
                         style={{ pointerEvents: "none" }}
                       ></div>
 
@@ -376,7 +377,7 @@ const ScrollExpandMedia = ({
                   </div>
                 )}
 
-                <div className="relative z-elevated mt-4 flex flex-col items-center text-center">
+                <div className="z-elevated relative mt-4 flex flex-col items-center text-center">
                   {date && (
                     <p
                       className="text-2xl text-blue-200"
@@ -392,7 +393,7 @@ const ScrollExpandMedia = ({
               </div>
 
               <div
-                className={`relative z-elevated flex w-full flex-col items-center justify-center gap-4 text-center transition-none ${
+                className={`z-elevated relative flex w-full flex-col items-center justify-center gap-4 text-center transition-none ${
                   textBlend ? "mix-blend-difference" : "mix-blend-normal"
                 }`}
               >
@@ -400,7 +401,7 @@ const ScrollExpandMedia = ({
                 {headline ? (
                   <div className="space-y-4">
                     <motion.h1
-                      className="font-bold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
+                      className="text-4xl font-bold text-white transition-none md:text-5xl lg:text-6xl"
                       style={{
                         transform: `translate3d(-${textTranslateX * 0.5}vw, 0, 0)`,
                         willChange: "transform",
@@ -410,7 +411,7 @@ const ScrollExpandMedia = ({
                     </motion.h1>
                     {subheadline && (
                       <motion.p
-                        className="mx-auto max-w-3xl text-lg text-white/90 leading-relaxed md:text-xl lg:text-2xl"
+                        className="mx-auto max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl lg:text-2xl"
                         style={{
                           transform: `translate3d(${textTranslateX * 0.3}vw, 0, 0)`,
                           willChange: "transform",
@@ -430,7 +431,7 @@ const ScrollExpandMedia = ({
                       >
                         {statistics.map((stat, index) => (
                           <div key={index} className="rounded-lg bg-white/10 p-4">
-                            <div className="font-bold text-2xl text-white md:text-3xl">
+                            <div className="text-2xl font-bold text-white md:text-3xl">
                               {stat.value}
                               {stat.unit && <span className="ml-1 text-sm">{stat.unit}</span>}
                             </div>
@@ -445,7 +446,7 @@ const ScrollExpandMedia = ({
                   titleLines.map((line, index) => (
                     <motion.h2
                       key={index}
-                      className="px-0 py-1 font-semibold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
+                      className="px-0 py-1 text-4xl font-semibold text-white transition-none md:text-5xl lg:text-6xl"
                       style={{
                         transform: getLineTransform(index),
                         willChange: "transform",

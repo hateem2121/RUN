@@ -105,21 +105,21 @@ function SortableProcessItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
           >
             <GripVertical className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-foreground">{process.title || process.name}</h4>
-            <div className="mt-1 flex items-center gap-4 text-muted-foreground text-sm">
+            <h4 className="text-foreground font-medium">{process.title || process.name}</h4>
+            <div className="text-muted-foreground mt-1 flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">
-                <span className="font-medium text-foreground/80">Step {process.step}</span>
+                <span className="text-foreground/80 font-medium">Step {process.step}</span>
               </span>
               <span>{process.duration}</span>
               <span>{process.efficiency}% Efficiency</span>
             </div>
             {process.description && (
-              <p className="mt-2 text-muted-foreground text-sm">{process.description}</p>
+              <p className="text-muted-foreground mt-2 text-sm">{process.description}</p>
             )}
           </div>
         </div>
@@ -182,7 +182,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
     deleteMutation: deleteProcessMutation,
     reorderMutation: reorderProcessesMutation,
   } = useManufacturingMutations({
-    entity: "processes",
+    entity: "processes" as any,
     entityType: "Process",
     entityTypePlural: "processes",
     queryKey: "/api/manufacturing-processes",
@@ -330,7 +330,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
         {processesLoading ? (
           <div className="py-8 text-center">Loading processes...</div>
         ) : processes.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
+          <div className="text-muted-foreground py-8 text-center">
             No manufacturing processes found. Create your first process to get started.
           </div>
         ) : (
@@ -556,7 +556,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                         {finalSelectedProcessMedia.map((media) => (
                           <div
                             key={media.id}
-                            className="relative flex items-center gap-2 rounded border bg-muted/50 p-2"
+                            className="bg-muted/50 relative flex items-center gap-2 rounded border p-2"
                             data-testid={`process-media-item-${media.id}`}
                           >
                             <img
@@ -565,7 +565,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                               className="h-12 w-12 rounded object-cover"
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate font-medium text-sm">{media.filename}</p>
+                              <p className="truncate text-sm font-medium">{media.filename}</p>
                               <p className="text-muted-foreground text-xs">{media.type}</p>
                             </div>
                             <Button
@@ -603,7 +603,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                           mediaAssets={[...mediaAssets, ...finalSelectedProcessMedia]} // Ensure we have context of both existing and picked media
                         />
                       </LivePreviewGrid>
-                      <div className="mt-4 flex items-center gap-2 text-muted-foreground text-xs">
+                      <div className="text-muted-foreground mt-4 flex items-center gap-2 text-xs">
                         <LayoutTemplate className="h-4 w-4" />
                         Drawing from {finalSelectedProcessMedia.length} connected media assets
                       </div>

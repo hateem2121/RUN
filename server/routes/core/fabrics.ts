@@ -11,6 +11,8 @@ import { retryDbOperation } from "../../lib/db-retry.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
+import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -38,7 +40,7 @@ router.get("/fabrics", async (_req, res) => {
 });
 
 // POST /api/fabrics - Create new fabric
-router.post("/fabrics", async (req, res) => {
+router.post("/fabrics", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
@@ -72,9 +74,10 @@ router.post("/fabrics", async (req, res) => {
 });
 
 // PUT /api/fabrics/:id - Update fabric
-router.put("/fabrics/:id", async (req, res) => {
+router.put("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "fabric");
+    if (id === null) return;
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, validatedData as any), {
@@ -115,9 +118,10 @@ router.put("/fabrics/:id", async (req, res) => {
 });
 
 // PATCH /api/fabrics/:id - Partial update fabric
-router.patch("/fabrics/:id", async (req, res) => {
+router.patch("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "fabric");
+    if (id === null) return;
     const partialData = insertFabricSchema.partial().parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, partialData as any), {
@@ -158,9 +162,10 @@ router.patch("/fabrics/:id", async (req, res) => {
 });
 
 // DELETE /api/fabrics/:id - Delete fabric
-router.delete("/fabrics/:id", async (req, res) => {
+router.delete("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "fabric");
+    if (id === null) return;
     const success = await withTimeout(
       retryDbOperation(() => getStorage().deleteFabric(id), {
         operationName: `Delete fabric ${id}`,

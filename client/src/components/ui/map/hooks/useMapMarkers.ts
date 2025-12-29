@@ -17,7 +17,7 @@ export interface MapLocation {
 
 interface MarkerConfig {
   location: MapLocation;
-  icon: DivIcon;
+  icon: DivIcon | undefined;
   loading: boolean;
 }
 

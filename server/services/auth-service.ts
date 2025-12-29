@@ -1,0 +1,216 @@
+import type { User } from "@run-remix/shared";
+import connectPg from "connect-pg-simple";
+import type { Express, RequestHandler } from "express";
+import session from "express-session";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { adminCacheManager } from "../lib/admin-cache.js";
+import { logger } from "../lib/smart-logger.js";
+import { getStorage } from "../lib/storage-singleton.js";
+
+export interface SessionUser extends User {
+  claims: {
+    email: string | null;
+    sub: string;
+  };
+}
+
+export const AuthErrors = {
+  SESSION_EXPIRED: {
+    code: "SESSION_EXPIRED",
+    message: "Your session has expired. Please log in again.",
+    status: 401,
+  },
+  ADMIN_REQUIRED: {
+    code: "ADMIN_REQUIRED",
+    message: "Admin privileges are required to access this resource.",
+    status: 403,
+  },
+  AUTH_SERVER_ERROR: {
+    code: "AUTH_SERVER_ERROR",
+    message: "Authentication server is temporarily unavailable. Please try again.",
+    status: 503,
+  },
+  USER_NOT_FOUND: {
+    code: "USER_NOT_FOUND",
+    message: "User account not found. Please contact support.",
+    status: 404,
+  },
+  INVALID_SESSION: {
+    code: "INVALID_SESSION",
+    message: "Invalid session. Please log in again.",
+    status: 401,
+  },
+} as const;
+
+export class AuthService {
+  private static instance: AuthService;
+
+  private constructor() {}
+
+  public static getInstance(): AuthService {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+    }
+    return AuthService.instance;
+  }
+
+  /**
+   * Internal session setup
+   */
+  private getSessionMiddleware() {
+    const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+    const pgStore = connectPg(session);
+
+    const sessionStore = new pgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: false,
+      ttl: sessionTtl,
+      tableName: "sessions",
+    });
+
+    return session({
+      secret: process.env.SESSION_SECRET || "default-secret-change-me-in-prod",
+      store: sessionStore,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: sessionTtl,
+      },
+    });
+  }
+
+  /**
+   * Configure Passport and Session
+   */
+  public setup(app: Express) {
+    app.set("trust proxy", 1);
+    app.use(this.getSessionMiddleware());
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      logger.warn("[AuthService] Google Auth credentials missing.");
+      return;
+    }
+
+    passport.use(
+      new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          callbackURL: "/api/auth/google/callback",
+          proxy: true,
+        },
+        async (
+          _accessToken: string,
+          _refreshToken: string,
+          profile: any, // profile type from passport-google-oauth20 is complex
+          done: (err: any, user?: SessionUser) => void,
+        ) => {
+          try {
+            const user = await this.upsertUser(profile);
+            const sessionUser: SessionUser = {
+              ...user,
+              claims: { email: user.email, sub: user.id },
+            };
+            done(null, sessionUser);
+          } catch (error) {
+            logger.error("[AuthService] Login failed:", error);
+            done(error, undefined);
+          }
+        },
+      ),
+    );
+
+    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) => cb(null, user));
+    passport.deserializeUser((user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
+      cb(null, user),
+    );
+
+    logger.info("[AuthService] ✅ Authentication configured");
+  }
+
+  /**
+   * Upsert user in database
+   */
+  private async upsertUser(profile: any): Promise<User> {
+    const email = profile.emails?.[0]?.value;
+    if (!email) throw new Error("No email provided by Google");
+
+    const user = await getStorage().upsertUser({
+      id: profile.id,
+      email: email,
+      firstName: profile.name?.givenName || "",
+      lastName: profile.name?.familyName || "",
+      profileImageUrl: profile.photos?.[0]?.value,
+    });
+
+    // Bootstrapping: Auto-promote initial admin
+    if (process.env.INITIAL_ADMIN_EMAIL === email && !user.isAdmin) {
+      logger.info(`[AuthService] Promoting initial admin: ${email}`);
+      // Note: This logic depends on the storage implementation support
+      // For now we log it as per the original googleAuth.ts pattern
+    }
+
+    return user;
+  }
+
+  /**
+   * Middleware: Require authenticated user
+   */
+  public isAuthenticated: RequestHandler = (req, res, next) => {
+    if (req.isAuthenticated()) return next();
+    res.status(401).json({ message: "Unauthorized" });
+  };
+
+  /**
+   * Middleware: Require admin role
+   */
+  public requireAdmin: RequestHandler = async (req, res, next) => {
+    const user = req.user as SessionUser | undefined;
+
+    if (!req.isAuthenticated() || !user?.claims?.sub) {
+      return res.status(AuthErrors.SESSION_EXPIRED.status).json({
+        error: AuthErrors.SESSION_EXPIRED,
+        redirectTo: "/api/login",
+      });
+    }
+
+    const userId = user.claims.sub;
+    const cachedAdminStatus = adminCacheManager.get(userId);
+
+    if (cachedAdminStatus !== null) {
+      if (cachedAdminStatus) return next();
+      return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
+        error: AuthErrors.ADMIN_REQUIRED,
+      });
+    }
+
+    try {
+      const dbUser = await getStorage().getUser(userId);
+      if (!dbUser) {
+        return res.status(AuthErrors.USER_NOT_FOUND.status).json({
+          error: AuthErrors.USER_NOT_FOUND,
+        });
+      }
+
+      const isAdmin = dbUser.isAdmin ?? false;
+      adminCacheManager.set(userId, isAdmin);
+
+      if (isAdmin) return next();
+      return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
+        error: AuthErrors.ADMIN_REQUIRED,
+      });
+    } catch (error) {
+      logger.error("[AuthService] Error checking admin status:", error);
+      return res.status(AuthErrors.AUTH_SERVER_ERROR.status).json({
+        error: AuthErrors.AUTH_SERVER_ERROR,
+      });
+    }
+  };
+}
+
+export const authService = AuthService.getInstance();

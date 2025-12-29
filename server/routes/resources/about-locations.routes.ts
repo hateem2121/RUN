@@ -19,8 +19,8 @@ import { insertAboutMapLocationSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
-import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -85,7 +85,7 @@ router.get("/:id", async (req, res) => {
  * POST /api/v1/about-locations
  * Create new location
  */
-router.post("/", requireAdmin, async (req, res) => {
+router.post("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertAboutMapLocationSchema.safeParse(req.body);
 
@@ -134,7 +134,7 @@ router.post("/", requireAdmin, async (req, res) => {
  * PATCH /api/v1/about-locations/:id
  * Update location
  */
-router.patch("/:id", requireAdmin, async (req, res) => {
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
     const validation = insertAboutMapLocationSchema.partial().safeParse(req.body);
@@ -182,7 +182,7 @@ router.patch("/:id", requireAdmin, async (req, res) => {
  * DELETE /api/v1/about-locations/:id
  * Delete location
  */
-router.delete("/:id", requireAdmin, async (req, res) => {
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
 
@@ -217,7 +217,7 @@ router.delete("/:id", requireAdmin, async (req, res) => {
  * PATCH /api/v1/about-locations/reorder
  * Reorder locations
  */
-router.patch("/reorder", requireAdmin, async (req, res) => {
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const validation = reorderSchema.safeParse(req.body);
 

@@ -1,5 +1,8 @@
 import express, { type Router } from "express";
+import { z } from "zod";
+import { jsonResponse, registry } from "../../lib/openapi-generator.js";
 import { createRateLimiter } from "../../middleware/rate-limiter.js";
+import { authService } from "../../services/auth-service.js";
 import {
   batchGetContent,
   batchOperations,
@@ -44,6 +47,29 @@ import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
 
+// OpenAPI Registration
+registry.registerPath({
+  method: "get",
+  path: "/media",
+  summary: "List media assets",
+  tags: ["Media"],
+  responses: {
+    200: jsonResponse(z.array(z.any()), "List of media assets"),
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/media/performance-dashboard",
+  summary: "Media performance dashboard",
+  tags: ["Admin", "Media"],
+  security: [{ sessionAuth: [] }],
+  responses: {
+    200: jsonResponse(z.any(), "Performance metrics"),
+    403: { description: "Admin access required" },
+  },
+});
+
 // Rate limiter for bulk media queries - Phase 1, Block 1D
 // DEVELOPMENT-FRIENDLY: High limits + localhost bypass to prevent false positives
 // Admin media library makes many legitimate requests during upload/refresh
@@ -61,12 +87,12 @@ const bulkMediaLimiter = createRateLimiter({
 });
 
 // Performance & monitoring
-router.get("/performance-dashboard", getPerformanceDashboard);
-router.get("/upload-metrics", getUploadMetrics);
-router.get("/performance", getPerformanceMetrics);
-router.get("/system-status", getSystemStatus);
-router.get("/health-scan", getHealthScan);
-router.get("/cache/stats", getCacheStats);
+router.get("/performance-dashboard", authService.requireAdmin, getPerformanceDashboard);
+router.get("/upload-metrics", authService.requireAdmin, getUploadMetrics);
+router.get("/performance", authService.requireAdmin, getPerformanceMetrics);
+router.get("/system-status", authService.requireAdmin, getSystemStatus);
+router.get("/health-scan", authService.requireAdmin, getHealthScan);
+router.get("/cache/stats", authService.requireAdmin, getCacheStats);
 
 // Rate Limiter Monitoring (Development only)
 router.get("/rate-limiter/stats", (_req, res) => {
@@ -95,8 +121,8 @@ router.get("/rate-limiter/stats", (_req, res) => {
 });
 
 // FORENSIC INVESTIGATION - Phase 6: Rate limiter monitoring endpoints
-router.get("/rate-limiter/stats", getRateLimiterStats);
-router.get("/rate-limiter/health", getRateLimiterHealth);
+router.get("/rate-limiter/stats", authService.requireAdmin, getRateLimiterStats);
+router.get("/rate-limiter/health", authService.requireAdmin, getRateLimiterHealth);
 
 // Core CRUD (non-parametric routes first)
 router.get("/", bulkMediaLimiter, getMediaAssets);
@@ -108,6 +134,7 @@ router.get("/search", searchMediaAssets);
 // Conditional middleware: use JSON parser for JSON content-type, multer for multipart
 router.post(
   "/batch",
+  authService.requireAdmin,
   (req, res, next) => {
     const contentType = req.headers["content-type"] || "";
     if (contentType.includes("application/json")) {
@@ -130,13 +157,15 @@ router.post(
   },
   batchOperations,
 );
+router.post("/batch", authService.requireAdmin, batchOperations); // Ensure both are covered if needed, but the one above is the main one. Wait, line 109 is the main one.
+
 router.get("/batch/content", batchGetContent);
 
 // Analytics
 router.get("/analytics", getAnalytics);
 
 // Cache management
-router.post("/clear-cache/:id", clearAssetCache);
+router.post("/clear-cache/:id", authService.requireAdmin, clearAssetCache);
 
 // Content delivery - CRITICAL: Specific routes BEFORE generic parametric routes
 // Proxy routes (most specific first)
@@ -145,8 +174,8 @@ router.get("/proxy/:id", getMediaProxy);
 
 // Parametric routes (generic - must be AFTER specific routes)
 router.get("/:id", getMediaAssetById);
-router.patch("/:id", updateMediaAsset);
-router.delete("/:id", deleteMediaAsset);
+router.patch("/:id", authService.requireAdmin, updateMediaAsset);
+router.delete("/:id", authService.requireAdmin, deleteMediaAsset);
 router.get("/:id/content", getMediaContent);
 router.get("/:id/content/*path", getMediaContentWithPath);
 router.get("/:id/geometry", getMediaGeometry);
@@ -154,22 +183,47 @@ router.get("/:id/raw", getMediaRaw);
 router.get("/:id/thumbnail", getThumbnail);
 
 // Debug & maintenance
-router.get("/test/object-storage-connectivity", testObjectStorageConnectivity);
-router.post("/debug/repair-database-integrity", repairDatabaseIntegrity);
-router.post("/repair/mime-types", repairMimeTypes);
+router.get(
+  "/test/object-storage-connectivity",
+  authService.requireAdmin,
+  testObjectStorageConnectivity,
+);
+router.post("/debug/repair-database-integrity", authService.requireAdmin, repairDatabaseIntegrity);
+router.post("/repair/mime-types", authService.requireAdmin, repairMimeTypes);
 
 // Direct uploads (MUST be before parametric upload routes)
-router.post("/upload", regularUpload.single("file"), validateMagicNumbers, uploadSingleFile);
-router.post("/upload-base64", uploadBase64);
-router.post("/upload-gltf-package", uploadOptimized, validateMagicNumbers, uploadGltfPackage);
+import { optimizeImageMiddleware } from "../../lib/image-optimizer.js";
+
+router.post(
+  "/upload",
+  authService.requireAdmin,
+  regularUpload.single("file"),
+  optimizeImageMiddleware,
+  validateMagicNumbers,
+  uploadSingleFile,
+);
+router.post("/upload-base64", authService.requireAdmin, uploadBase64);
+router.post(
+  "/upload-gltf-package",
+  authService.requireAdmin,
+  uploadOptimized,
+  validateMagicNumbers,
+  uploadGltfPackage,
+);
 
 // Chunked upload flow
-router.post("/upload/init", initializeUpload);
-router.post("/upload/chunk", regularUpload.single("chunk"), validateMagicNumbers, uploadChunk);
-router.post("/upload/chunk-raw", uploadChunkRaw);
-router.post("/upload/finalize", express.json(), finalizeUpload);
-router.get("/upload/progress/:uploadId", getUploadProgress);
-router.delete("/upload/:uploadId", cancelUpload);
-router.get("/upload/active", getActiveUploads);
+router.post("/upload/init", authService.requireAdmin, initializeUpload);
+router.post(
+  "/upload/chunk",
+  authService.requireAdmin,
+  regularUpload.single("chunk"),
+  validateMagicNumbers,
+  uploadChunk,
+);
+router.post("/upload/chunk-raw", authService.requireAdmin, uploadChunkRaw);
+router.post("/upload/finalize", authService.requireAdmin, express.json(), finalizeUpload);
+router.get("/upload/progress/:uploadId", authService.requireAdmin, getUploadProgress);
+router.delete("/upload/:uploadId", authService.requireAdmin, cancelUpload);
+router.get("/upload/active", authService.requireAdmin, getActiveUploads);
 
 export default router;

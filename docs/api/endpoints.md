@@ -4,7 +4,10 @@
 
 This document provides a comprehensive reference for RUN APPAREL's B2B API endpoints, including recent optimizations to reduce over-fetching and improve performance.
 
+**🚀 Interactive Documentation**: All API endpoints are now available via Swagger UI at `/api/docs`. This is the recommended way to explore and test the API.
+
 **Recent Updates (November 2025)**:
+
 - Product listings optimized from 25 fields → 7 fields (72% improvement)
 - Media listings optimized from 25 fields → 8 fields (68% improvement)
 - Product detail context endpoint remains unchanged (full data required)
@@ -60,24 +63,47 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 #### Field Changes
 
 **BEFORE (25 fields)**:
+
 ```typescript
 {
-  id, name, slug, sku, description, primaryImageId, primaryVideoId,
-  imageIds, videos, minimumOrderQuantity, leadTime, careInstructions,
-  technicalSpecs, customFit, fiberComposition, specifications, isActive,
-  isFeatured, categoryId, fabricId, certificateIds, sizeChartId,
-  accessoryIds, tags, createdAt
+  (id,
+    name,
+    slug,
+    sku,
+    description,
+    primaryImageId,
+    primaryVideoId,
+    imageIds,
+    videos,
+    minimumOrderQuantity,
+    leadTime,
+    careInstructions,
+    technicalSpecs,
+    customFit,
+    fiberComposition,
+    specifications,
+    isActive,
+    isFeatured,
+    categoryId,
+    fabricId,
+    certificateIds,
+    sizeChartId,
+    accessoryIds,
+    tags,
+    createdAt);
 }
 ```
 
 **AFTER (7 fields)**:
+
 ```typescript
 {
-  id, name, slug, description, primaryImageId, categoryId, isFeatured
+  (id, name, slug, description, primaryImageId, categoryId, isFeatured);
 }
 ```
 
 **Fields Removed** (18 fields):
+
 - `sku` - Only needed in detail pages
 - `primaryVideoId` - Not shown in product cards
 - `imageIds` - Gallery only visible in detail pages
@@ -101,6 +127,7 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 Product cards in catalog listings only display: image, name, description preview, and featured badge. Additional product details are loaded when users navigate to the detail page.
 
 **Performance Impact**:
+
 - Payload size reduced by ~72%
 - Network transfer time decreased
 - Frontend parsing time reduced
@@ -114,12 +141,13 @@ Product cards in catalog listings only display: image, name, description preview
 **Status**: ⚠️ **Use /api/products/by-path instead** for better SEO and context aggregation
 
 **Response Format**:
+
 ```json
 {
   "id": 1,
   "name": "Performance Tee",
   "sku": "PT-001",
-  "description": "Full description...",
+  "description": "Full description..."
   /* ... all ~35 product fields ... */
 }
 ```
@@ -135,9 +163,11 @@ Product cards in catalog listings only display: image, name, description preview
 **Status**: ✅ **UNCHANGED** - Still returns full product context
 
 **Query Parameters**:
+
 - `path` (required): URL path of the product (e.g., `/men/t-shirts/performance-tee`)
 
 **Response Format**:
+
 ```json
 {
   "product": {
@@ -165,12 +195,14 @@ Product cards in catalog listings only display: image, name, description preview
 ```
 
 **Why This Endpoint Is Unchanged**:
+
 - Powers product detail pages which require ALL product data
 - Context aggregation (fabric, certificates, size chart) is essential
 - Single request for complete page rendering (better UX)
 - All fetched data is actively used in the detail page UI
 
 **Performance Characteristics**:
+
 - Executes 7 parallel database queries
 - Aggregates complete product context in one response
 - Optimized with LEFT JOINs to minimize query count
@@ -216,24 +248,47 @@ Product cards in catalog listings only display: image, name, description preview
 #### Field Changes
 
 **BEFORE (25 fields)**:
+
 ```typescript
 {
-  id, filename, originalName, fileSize, size, mimeType, type, url,
-  thumbnailUrl, thumbnailFilename, imageVariants, storagePath,
-  bucketName, folderId, tags, altText, caption, metadata,
-  downloadCount, lastAccessedAt, uploadedAt, isActive, createdAt,
-  updatedAt, deletedAt
+  (id,
+    filename,
+    originalName,
+    fileSize,
+    size,
+    mimeType,
+    type,
+    url,
+    thumbnailUrl,
+    thumbnailFilename,
+    imageVariants,
+    storagePath,
+    bucketName,
+    folderId,
+    tags,
+    altText,
+    caption,
+    metadata,
+    downloadCount,
+    lastAccessedAt,
+    uploadedAt,
+    isActive,
+    createdAt,
+    updatedAt,
+    deletedAt);
 }
 ```
 
 **AFTER (8 fields)**:
+
 ```typescript
 {
-  id, filename, type, mimeType, url, thumbnailUrl, fileSize, createdAt
+  (id, filename, type, mimeType, url, thumbnailUrl, fileSize, createdAt);
 }
 ```
 
 **Fields Removed** (17 fields):
+
 - `originalName` - Not displayed in grid view
 - `size` - Duplicate of `fileSize`
 - `thumbnailFilename` - `thumbnailUrl` is sufficient
@@ -256,6 +311,7 @@ Product cards in catalog listings only display: image, name, description preview
 Media grid displays: thumbnail, filename, file type icon, size, and upload date. Additional metadata (tags, alt text, captions) is only needed when editing individual assets.
 
 **Performance Impact**:
+
 - Payload size reduced by ~68%
 - Faster grid rendering with less data parsing
 - Reduced memory footprint for large media libraries
@@ -269,19 +325,23 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
 #### Impact Assessment
 
 **GET /api/products**:
+
 - ⚠️ **BREAKING CHANGE** if you rely on removed fields
 - ✅ **NO IMPACT** if you only use: `id`, `name`, `slug`, `description`, `primaryImageId`, `categoryId`, `isFeatured`
 
 **GET /api/media**:
+
 - ⚠️ **BREAKING CHANGE** if you rely on removed fields
 - ✅ **NO IMPACT** if you only use: `id`, `filename`, `type`, `mimeType`, `url`, `thumbnailUrl`, `fileSize`, `createdAt`
 
 **GET /api/products/by-path**:
+
 - ✅ **NO CHANGES** - Fully backward compatible
 
 #### Migration Steps
 
 **Step 1: Audit Your Code**
+
 ```bash
 # Search for usage of removed fields
 grep -r "product\.sku" .
@@ -292,9 +352,10 @@ grep -r "asset\.metadata" .
 **Step 2: Update Data Access**
 
 If you need removed fields from `/api/products`:
+
 ```typescript
 // BEFORE (listing endpoint)
-const products = await fetch('/api/products');
+const products = await fetch("/api/products");
 const sku = products[0].sku; // ❌ No longer available
 
 // AFTER (use detail endpoint)
@@ -303,9 +364,10 @@ const sku = product.product.sku; // ✅ Available in detail endpoint
 ```
 
 If you need removed fields from `/api/media`:
+
 ```typescript
 // BEFORE (listing endpoint)
-const media = await fetch('/api/media');
+const media = await fetch("/api/media");
 const metadata = media[0].metadata; // ❌ No longer available
 
 // AFTER (fetch individual asset)
@@ -316,6 +378,7 @@ const metadata = asset.metadata; // ✅ Available in detail endpoint
 **Step 3: Test Your Integration**
 
 Verification checklist:
+
 - [ ] Product listings render correctly
 - [ ] Product cards display all required information
 - [ ] Media grid displays correctly
@@ -325,6 +388,7 @@ Verification checklist:
 **Step 4: Update Documentation**
 
 Update your integration documentation to reflect:
+
 - Use `/api/products` for lightweight product listings
 - Use `/api/products/by-path` for complete product details
 - Use `/api/media` for media grid/gallery views
@@ -337,6 +401,7 @@ Update your integration documentation to reflect:
 
 **Verification**:
 The internal React frontend was already using only the 7 fields now returned by `/api/products`:
+
 - Product cards in `client/src/pages/products-new.tsx`
 - Category listings in `client/src/pages/category-products.tsx`
 - Search results display
@@ -344,6 +409,7 @@ The internal React frontend was already using only the 7 fields now returned by 
 The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was already using only the 8 fields now returned by `/api/media`.
 
 **Testing Performed**:
+
 - ✅ Product listing pages render correctly
 - ✅ Category pages display all products
 - ✅ Product cards show: image, name, description, featured badge
@@ -358,6 +424,7 @@ The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was 
 **Current Status**: No API versioning implemented
 
 **Future Considerations**:
+
 - Current optimizations are **forward-compatible** (remove fields only)
 - Frontend already used subset of fields, so no breaking changes internally
 - External consumers may experience breaking changes (see Migration Steps above)
@@ -370,14 +437,17 @@ The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was 
 ### Performance Benchmarks
 
 **Before Optimization**:
+
 - `/api/products?limit=50`: Avg 185ms, p95 250ms
 - `/api/media?limit=50`: Avg 142ms, p95 195ms
 
 **After Optimization**:
+
 - `/api/products?limit=50`: Avg 98ms, p95 145ms (47% faster)
 - `/api/media?limit=50`: Avg 76ms, p95 118ms (46% faster)
 
 **Metrics**:
+
 - Network payload reduced by 72% for products, 68% for media
 - Database query time unchanged (column selection optimization)
 - JSON serialization time reduced by ~40%
@@ -388,9 +458,11 @@ The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was 
 ### Support & Questions
 
 For detailed analysis of field usage patterns and over-fetching identification, see:
+
 - [API Fetched vs. Used Analysis](../api-fetched-vs-used-analysis.md)
 
 For questions or issues with the API:
+
 - Review field usage matrices in the analysis document
 - Check the Migration Guide above
 - Verify that required fields are present in the optimized response

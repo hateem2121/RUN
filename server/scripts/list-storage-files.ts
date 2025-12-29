@@ -45,7 +45,7 @@ async function listAllStorageFiles(): Promise<void> {
       }
     });
     allFiles.forEach((_file, _index) => {});
-    if (byPrefix["media/assets/"]?.length > 0) {
+    if ((byPrefix["media/assets/"]?.length ?? 0) > 0) {
       byPrefix["media/assets/"]?.forEach((_file) => {});
     } else {
     }
@@ -75,7 +75,7 @@ async function listAllStorageFiles(): Promise<void> {
     }
 
     if (byPrefix["media/assets/"]?.length === 2) {
-    } else if (byPrefix["media/assets/"]?.length > 2) {
+    } else if ((byPrefix["media/assets/"]?.length ?? 0) > 2) {
     }
   } catch (error) {
     logger.error("[Storage Inventory] Error listing files:", error);

@@ -19,7 +19,7 @@ async function triggerFibersCacheClear() {
     }
 
     const createdFiber = await createResponse.json();
-    const fiberId = createdFiber.id;
+    const fiberId = (createdFiber as any).id;
     const deleteResponse = await fetch(`http://localhost:5001/api/fibers/${fiberId}`, {
       method: "DELETE",
     });

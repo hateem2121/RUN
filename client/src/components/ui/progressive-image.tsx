@@ -67,29 +67,46 @@ export function ProgressiveImage({
     return sizes.map((size) => `${baseUrl}?size=${size}${ext} ${size}w`).join(", ");
   };
 
-  // Load image progressively
-  useEffect(() => {
-    if (!src) return;
+  const loadMainImage = () => {
+    const img = new Image();
 
-    if (priority) {
-      // Load immediately for priority images
-      loadFullImage();
-    } else {
-      // Set up intersection observer for lazy loading
-      setupIntersectionObserver();
+    // Set srcset if available
+    if (srcSet || src.includes("/api/media/")) {
+      img.srcset = getOptimizedSrcSet();
     }
 
-    return () => {
-      if (observerRef.current && imgRef.current) {
-        observerRef.current.unobserve(imgRef.current);
-      }
+    img.src = src;
+
+    img.onload = () => {
+      setCurrentSrc(src);
+      setImageState("loaded");
+      onLoad?.();
     };
-  }, [
-    src,
-    priority, // Load immediately for priority images
-    loadFullImage, // Set up intersection observer for lazy loading
-    setupIntersectionObserver,
-  ]);
+
+    img.onerror = () => {
+      setImageState("error");
+      onError?.(new Error(`Failed to load image: ${src}`));
+    };
+  };
+
+  const loadFullImage = () => {
+    // First load thumbnail if available
+    if (thumbnailSrc && thumbnailSrc !== currentSrc) {
+      const thumbnailImg = new Image();
+      thumbnailImg.src = thumbnailSrc;
+      thumbnailImg.onload = () => {
+        setCurrentSrc(thumbnailSrc);
+        // Continue loading full image
+        loadMainImage();
+      };
+      thumbnailImg.onerror = () => {
+        // Skip thumbnail, load main image directly
+        loadMainImage();
+      };
+    } else {
+      loadMainImage();
+    }
+  };
 
   const setupIntersectionObserver = () => {
     if (!imgRef.current || typeof IntersectionObserver === "undefined") {
@@ -117,46 +134,29 @@ export function ProgressiveImage({
     observerRef.current.observe(imgRef.current);
   };
 
-  const loadFullImage = () => {
-    // First load thumbnail if available
-    if (thumbnailSrc && thumbnailSrc !== currentSrc) {
-      const thumbnailImg = new Image();
-      thumbnailImg.src = thumbnailSrc;
-      thumbnailImg.onload = () => {
-        setCurrentSrc(thumbnailSrc);
-        // Continue loading full image
-        loadMainImage();
-      };
-      thumbnailImg.onerror = () => {
-        // Skip thumbnail, load main image directly
-        loadMainImage();
-      };
+  // Load image progressively
+  useEffect(() => {
+    if (!src) return;
+
+    if (priority) {
+      // Load immediately for priority images
+      loadFullImage();
     } else {
-      loadMainImage();
-    }
-  };
-
-  const loadMainImage = () => {
-    const img = new Image();
-
-    // Set srcset if available
-    if (srcSet || src.includes("/api/media/")) {
-      img.srcset = getOptimizedSrcSet();
+      // Set up intersection observer for lazy loading
+      setupIntersectionObserver();
     }
 
-    img.src = src;
-
-    img.onload = () => {
-      setCurrentSrc(src);
-      setImageState("loaded");
-      onLoad?.();
+    return () => {
+      if (observerRef.current && imgRef.current) {
+        observerRef.current.unobserve(imgRef.current);
+      }
     };
-
-    img.onerror = () => {
-      setImageState("error");
-      onError?.(new Error(`Failed to load image: ${src}`));
-    };
-  };
+  }, [
+    src,
+    priority, // Load immediately for priority images
+    loadFullImage, // Set up intersection observer for lazy loading
+    setupIntersectionObserver,
+  ]);
 
   // Render blurhash placeholder if available
   const renderBlurhash = () => {
@@ -165,7 +165,7 @@ export function ProgressiveImage({
     // This would use a blurhash library in production
     return (
       <div
-        className="absolute inset-0 animate-pulse bg-linear-to-br from-surface-muted to-surface-emphasis"
+        className="from-surface-muted to-surface-emphasis absolute inset-0 animate-pulse bg-linear-to-br"
         aria-hidden="true"
       />
     );
@@ -178,9 +178,9 @@ export function ProgressiveImage({
     }
 
     return (
-      <div className="absolute inset-0 animate-pulse bg-surface-muted">
+      <div className="bg-surface-muted absolute inset-0 animate-pulse">
         <svg
-          className="absolute inset-0 h-full w-full text-surface-emphasis"
+          className="text-surface-emphasis absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -193,7 +193,7 @@ export function ProgressiveImage({
 
   return (
     <div
-      className={cn("relative overflow-hidden bg-surface-subtle", className)}
+      className={cn("bg-surface-subtle relative overflow-hidden", className)}
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       {/* Placeholder / Loading state */}
@@ -234,10 +234,10 @@ export function ProgressiveImage({
 
       {/* Error state */}
       {imageState === "error" && (
-        <div className="center-flex absolute inset-0 bg-surface-subtle">
+        <div className="center-flex bg-surface-subtle absolute inset-0">
           <div className="p-4 text-center">
             <svg
-              className="mx-auto mb-2 h-12 w-12 text-text-subtle"
+              className="text-text-subtle mx-auto mb-2 h-12 w-12"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -249,7 +249,7 @@ export function ProgressiveImage({
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-sm text-text-muted">Failed to load image</p>
+            <p className="text-text-muted text-sm">Failed to load image</p>
           </div>
         </div>
       )}

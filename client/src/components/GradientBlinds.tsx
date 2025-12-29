@@ -201,8 +201,8 @@ const toRGB = (color: string): [number, number, number] => {
     if (parts && parts.length >= 3) {
       return [
         parseInt(parts[0], 10) / 255,
-        parseInt(parts[1], 10) / 255,
-        parseInt(parts[2], 10) / 255,
+        parseInt(parts[1] || "0", 10) / 255,
+        parseInt(parts[2] || "0", 10) / 255,
       ];
     }
     return [0, 0, 0]; // Fallback
@@ -736,10 +736,10 @@ void main() {
         />
 
         {/* User feedback for fallback mode */}
-        <div className="pointer-events-none absolute right-4 bottom-4 z-default" aria-live="polite">
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 font-medium font-sans text-foreground text-xs shadow-md transition-opacity duration-300 hover:opacity-100">
+        <div className="z-default pointer-events-none absolute right-4 bottom-4" aria-live="polite">
+          <div className="border-border bg-card text-foreground flex items-center gap-2 rounded-lg border px-4 py-2 font-sans text-xs font-medium shadow-md transition-opacity duration-300 hover:opacity-100">
             <span className="text-sm opacity-90">ℹ️</span>
-            <span className="whitespace-nowrap font-medium">
+            <span className="font-medium whitespace-nowrap">
               Static preview mode. For interactive effects, use a WebGL-capable browser.
             </span>
           </div>

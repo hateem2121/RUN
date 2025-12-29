@@ -19,8 +19,8 @@ import { insertAboutSectionSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
-import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -85,7 +85,7 @@ router.get("/:id", async (req, res) => {
  * POST /api/v1/about-sections
  * Create new section
  */
-router.post("/", requireAdmin, async (req, res) => {
+router.post("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertAboutSectionSchema.safeParse(req.body);
 
@@ -128,7 +128,7 @@ router.post("/", requireAdmin, async (req, res) => {
  * PATCH /api/v1/about-sections/:id
  * Update section
  */
-router.patch("/:id", requireAdmin, async (req, res) => {
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
     const validation = insertAboutSectionSchema.partial().safeParse(req.body);
@@ -172,7 +172,7 @@ router.patch("/:id", requireAdmin, async (req, res) => {
  * DELETE /api/v1/about-sections/:id
  * Delete section
  */
-router.delete("/:id", requireAdmin, async (req, res) => {
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
 
@@ -207,7 +207,7 @@ router.delete("/:id", requireAdmin, async (req, res) => {
  * PATCH /api/v1/about-sections/reorder
  * Reorder sections
  */
-router.patch("/reorder", requireAdmin, async (req, res) => {
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const validation = reorderSchema.safeParse(req.body);
 

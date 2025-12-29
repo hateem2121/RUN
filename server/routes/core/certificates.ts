@@ -11,6 +11,8 @@ import { CacheOperations } from "../../lib/cache-strategies.js";
 import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
+import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -33,7 +35,7 @@ router.get("/certificates", async (_req, res) => {
 });
 
 // POST /api/certificates - Create new certificate
-router.post("/certificates", async (req, res) => {
+router.post("/certificates", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertCertificateSchema.parse(req.body);
 
@@ -77,9 +79,10 @@ router.post("/certificates", async (req, res) => {
 });
 
 // PUT /api/certificates/:id - Update certificate
-router.put("/certificates/:id", async (req, res) => {
+router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = validateIdParam(req, res, "id", "certificate");
+    if (id === null) return;
     const validation = insertCertificateSchema.partial().parse(req.body);
 
     // Transform string dates to Date objects if present
@@ -126,13 +129,10 @@ router.put("/certificates/:id", async (req, res) => {
 });
 
 // DELETE /api/certificates/:id - Delete certificate
-router.delete("/certificates/:id", async (req, res) => {
+router.delete("/certificates/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ message: "Invalid certificate ID" });
-    }
-
+    const id = validateIdParam(req, res, "id", "certificate");
+    if (id === null) return;
     const success = await withTimeout(
       getStorage().deleteCertificate(id),
       10000,

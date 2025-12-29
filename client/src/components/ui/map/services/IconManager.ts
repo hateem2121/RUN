@@ -5,8 +5,11 @@ import { type AnimationType, animationCache } from "./AnimationCache";
 // Lazy load leaflet only on client to prevent SSR crash
 let DivIcon: typeof DivIconType | null = null;
 let createRoot: typeof import("react-dom/client").createRoot | null = null;
-let LottieIcon: React.ComponentType<{ animationData: unknown; size: number; type: string }> | null =
-  null;
+let LottieIcon: React.ComponentType<{
+  animationData: unknown;
+  size: number;
+  type: string;
+}> | null = null;
 
 const loadClientDependencies = async () => {
   if (typeof window !== "undefined" && !DivIcon) {
@@ -15,7 +18,7 @@ const loadClientDependencies = async () => {
     const reactDom = await import("react-dom/client");
     createRoot = reactDom.createRoot;
     const lottieModule = await import("../components/LottieIcon");
-    LottieIcon = lottieModule.LottieIcon;
+    LottieIcon = lottieModule.LottieIcon as any;
   }
 };
 
@@ -132,7 +135,7 @@ class IconManagerService {
     return extendedIcon;
   }
 
-  async getIcon(config: IconConfig): Promise<DivIconType | null> {
+  async getIcon(config: IconConfig): Promise<DivIconType | undefined> {
     await this.ensureInitialized();
 
     const key = this.createIconKey(config);
@@ -150,17 +153,17 @@ class IconManagerService {
         this.iconCache.set(key, icon);
         return icon;
       }
-      return this.createFallbackIcon(config);
+      return this.createFallbackIcon(config) || undefined;
     } catch (_error) {
-      return this.createFallbackIcon(config);
+      return this.createFallbackIcon(config) || undefined;
     }
   }
 
-  getFallbackIcon(config: IconConfig): DivIconType | null {
-    return this.createFallbackIcon(config);
+  getFallbackIcon(config: IconConfig): DivIconType | undefined {
+    return this.createFallbackIcon(config) || undefined;
   }
 
-  preloadIcons(configs: IconConfig[]): Promise<DivIcon[]> {
+  preloadIcons(configs: IconConfig[]): Promise<(DivIconType | undefined)[]> {
     return Promise.all(configs.map((config) => this.getIcon(config)));
   }
 

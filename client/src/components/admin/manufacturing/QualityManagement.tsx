@@ -114,7 +114,7 @@ function SortableQualityItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -124,15 +124,15 @@ function SortableQualityItem({
                 <IconComponent className="h-5 w-5 text-green-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">
+                <h4 className="text-foreground font-medium">
                   {quality.title || "Untitled Quality Standard"}
                 </h4>
                 {quality.description && (
-                  <p className="mt-1 text-muted-foreground text-sm">{quality.description}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">{quality.description}</p>
                 )}
                 {checkpoints.length > 0 && (
                   <div className="mt-2">
-                    <p className="font-medium text-muted-foreground text-xs">Checkpoints:</p>
+                    <p className="text-muted-foreground text-xs font-medium">Checkpoints:</p>
                     <div className="text-muted-foreground text-xs">
                       {checkpoints.slice(0, 3).map((checkpoint, index) => (
                         <span key={index} className="mr-4 inline-block">
@@ -149,10 +149,10 @@ function SortableQualityItem({
                 )}
                 {standards.length > 0 && (
                   <div className="mt-2">
-                    <p className="font-medium text-muted-foreground text-xs">Standards:</p>
-                    <div className="flex flex-wrap gap-1 text-muted-foreground text-xs">
+                    <p className="text-muted-foreground text-xs font-medium">Standards:</p>
+                    <div className="text-muted-foreground flex flex-wrap gap-1 text-xs">
                       {standards.map((standard, idx) => (
-                        <span key={idx} className="rounded-md bg-muted px-2 py-1">
+                        <span key={idx} className="bg-muted rounded-md px-2 py-1">
                           {standard}
                         </span>
                       ))}
@@ -223,7 +223,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
     deleteMutation: deleteQualityMutation,
     reorderMutation: reorderQualityMutation,
   } = useManufacturingMutations({
-    entity: "qualities",
+    entity: "qualities" as any,
     entityType: "Quality Standard",
     entityTypePlural: "qualities",
     queryKey: ["/api/manufacturing-qualities"],
@@ -398,7 +398,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
         {qualityLoading ? (
           <div className="py-8 text-center">Loading quality standards...</div>
         ) : qualityStandards.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
+          <div className="text-muted-foreground py-8 text-center">
             No quality standards found. Create your first quality standard to get started.
           </div>
         ) : (
@@ -663,7 +663,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                   {showPreview && (
                     <div className="flex-1 border-l pl-6">
                       <div className="sticky top-0 space-y-4">
-                        <div className="mb-4 flex items-center gap-2 text-muted-foreground text-sm">
+                        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm">
                           <LayoutTemplate className="h-4 w-4" />
                           <span>Live Preview</span>
                         </div>
@@ -674,7 +674,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                             mediaAssets={mediaAssets}
                           />
                         </LivePreviewGrid>
-                        <div className="rounded-lg bg-muted/50 p-4 text-muted-foreground text-xs">
+                        <div className="bg-muted/50 text-muted-foreground rounded-lg p-4 text-xs">
                           <p>
                             This preview shows how the quality standard card will appear on the
                             public site. The layout size may adjust based on content volume.

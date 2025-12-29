@@ -39,7 +39,7 @@ export default function MediaTestRunner() {
   return (
     <div className="container mx-auto max-w-7xl p-6">
       <div className="mb-6">
-        <h1 className="mb-2 font-bold text-3xl">Media Cache Test Runner</h1>
+        <h1 className="mb-2 text-3xl font-bold">Media Cache Test Runner</h1>
         <p className="text-muted-foreground">
           Automated testing for upload/delete cache synchronization and DB/API/UI consistency
         </p>
@@ -93,25 +93,25 @@ export default function MediaTestRunner() {
               <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div>
                   <p className="text-muted-foreground text-sm">Total Tests</p>
-                  <p className="font-bold text-2xl" data-testid="text-total-tests">
+                  <p className="text-2xl font-bold" data-testid="text-total-tests">
                     {results.summary.totalTests}
                   </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-sm">Passed</p>
-                  <p className="font-bold text-2xl text-green-500" data-testid="text-passed-tests">
+                  <p className="text-2xl font-bold text-green-500" data-testid="text-passed-tests">
                     {results.summary.passedTests}
                   </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-sm">Failed</p>
-                  <p className="font-bold text-2xl text-red-500" data-testid="text-failed-tests">
+                  <p className="text-2xl font-bold text-red-500" data-testid="text-failed-tests">
                     {results.summary.failedTests}
                   </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-sm">Duration</p>
-                  <p className="font-bold text-2xl" data-testid="text-duration">
+                  <p className="text-2xl font-bold" data-testid="text-duration">
                     {results.totalDuration}ms
                   </p>
                 </div>
@@ -176,12 +176,12 @@ export default function MediaTestRunner() {
                           </Badge>
                         </CardTitle>
                         {result.error && (
-                          <p className="mt-1 text-red-500 text-sm">{result.error}</p>
+                          <p className="mt-1 text-sm text-red-500">{result.error}</p>
                         )}
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
-                          {result.steps.map((step, stepIdx) => (
+                          {result.steps.map((step: any, stepIdx: number) => (
                             <div key={stepIdx} className="flex items-start gap-2 text-sm">
                               {step.success ? (
                                 <CheckCircle2 className="mt-0.5 h-4 w-4 text-green-500" />
@@ -191,13 +191,13 @@ export default function MediaTestRunner() {
                               <div className="flex-1">
                                 <p className="font-medium">
                                   {stepIdx + 1}. {step.step}
-                                  <span className="ml-2 text-muted-foreground">
+                                  <span className="text-muted-foreground ml-2">
                                     ({step.duration}ms)
                                   </span>
                                 </p>
                                 {step.error && <p className="mt-1 text-red-500">{step.error}</p>}
                                 {step.data && (
-                                  <pre className="mt-1 overflow-auto rounded bg-muted p-2 text-xs">
+                                  <pre className="bg-muted mt-1 overflow-auto rounded p-2 text-xs">
                                     {JSON.stringify(step.data, null, 2)}
                                   </pre>
                                 )}
@@ -207,8 +207,8 @@ export default function MediaTestRunner() {
                         </div>
 
                         {result.cacheMetrics && (
-                          <div className="mt-4 rounded bg-muted p-3">
-                            <p className="mb-2 font-semibold text-sm">Cache Metrics:</p>
+                          <div className="bg-muted mt-4 rounded p-3">
+                            <p className="mb-2 text-sm font-semibold">Cache Metrics:</p>
                             <div className="grid grid-cols-3 gap-2 text-xs">
                               <div>
                                 <p className="text-muted-foreground">Invalidation</p>

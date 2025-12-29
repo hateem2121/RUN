@@ -24,6 +24,7 @@ import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -118,7 +119,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertTechnologyInnovationSchema.safeParse(req.body);
 
@@ -153,7 +154,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
     const validation = insertTechnologyInnovationSchema.partial().safeParse(req.body);
@@ -193,7 +194,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
   try {
     const { id } = idParamSchema.parse(req.params);
 
@@ -224,7 +225,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.patch("/reorder", async (req, res) => {
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const validation = reorderSchema.safeParse(req.body);
 

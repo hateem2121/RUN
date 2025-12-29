@@ -18,7 +18,7 @@ async function triggerCacheInvalidation() {
     }
 
     const dummy = await createRes.json();
-    const deleteRes = await fetch(`http://localhost:5001/api/accessories/${dummy.id}`, {
+    const deleteRes = await fetch(`http://localhost:5001/api/accessories/${(dummy as any).id}`, {
       method: "DELETE",
     });
 

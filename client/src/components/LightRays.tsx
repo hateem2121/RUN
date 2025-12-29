@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 export type RaysOrigin =
   | "top-left"
+  | "top-center"
   | "top-right"
   | "right"
   | "left"
@@ -428,7 +429,7 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`pointer-events-none relative z-default h-full w-full overflow-hidden ${className}`.trim()}
+      className={`z-default pointer-events-none relative h-full w-full overflow-hidden ${className}`.trim()}
     />
   );
 };

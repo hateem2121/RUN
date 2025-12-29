@@ -1,5 +1,5 @@
 import { storage } from "../server/storage.js";
-import type { InsertFiber } from "../shared/schema-types.js";
+import type { InsertFiber } from "../shared/schema.js";
 
 const fiberData = [
   {

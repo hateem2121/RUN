@@ -21,7 +21,7 @@ async function triggerSizeChartCacheClear() {
     }
 
     const dummy = await createRes.json();
-    const deleteRes = await fetch(`http://localhost:5001/api/size-charts/${dummy.id}`, {
+    const deleteRes = await fetch(`http://localhost:5001/api/size-charts/${(dummy as any).id}`, {
       method: "DELETE",
     });
 
@@ -32,7 +32,7 @@ async function triggerSizeChartCacheClear() {
     const list = await listRes.json();
 
     // List the new charts to confirm
-    const newCharts = list.filter(
+    const newCharts = (list as any).filter(
       (c: any) =>
         c.name.includes("Sculpt & Stride") ||
         c.name.includes("Heavyweight Fleece") ||

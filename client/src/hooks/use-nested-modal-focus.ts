@@ -88,7 +88,7 @@ export function useNestedModalFocus({
       if (!shouldTrapFocus || !contentRef.current) return;
 
       const focusableElements = getFocusableElements();
-      const currentFocusIndex = focusableElements.indexOf(document.activeElement);
+      const currentFocusIndex = focusableElements.indexOf(document.activeElement as HTMLElement);
 
       switch (event.key) {
         case "Escape":

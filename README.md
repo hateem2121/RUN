@@ -61,6 +61,9 @@ Use this map to orient yourself before diving into specific files.
 | **Runtime**       | Node.js                  | 22+     |
 | **E2E Testing**   | Playwright               | Latest  |
 | **Observability** | Sentry                   | Latest  |
+| **Caching**       | LRU + Upstash Redis (L2) | Latest  |
+| **Documentation** | OpenAPI / Swagger        | 3.0     |
+| **Testing**       | Vitest + Supertest       | Latest  |
 
 ---
 
@@ -90,73 +93,62 @@ cp .env.example .env
 npm run db:push
 
 # Start development server
+# Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5001`
+The app will be available at `http://localhost:5173` (Client) and `http://localhost:5001` (Server).
 
 ### Environment Variables
 
-Create a `.env` file with the following:
+Create a `server/.env` file (for the backend) and a `.env` file (for the frontend, if needed).
+
+**Server (`server/.env`):**
 
 ```bash
 # Server Configuration
 PORT=5001
 NODE_ENV=development
 
-# Database (Required)
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
-
-# Authentication
-SESSION_SECRET=your-secret-key-here
-
-# Sentry Observability (Optional)
-SENTRY_DSN=https://...@o0.ingest.sentry.io/0
-SENTRY_ENVIRONMENT=production
-SENTRY_AUTH_TOKEN=sntry_token_...
-SENTRY_ORG=your-org
-SENTRY_PROJECT=your-project
-
-# Rate Limiting - Redis (Optional, falls back to in-memory)
-UPSTASH_REDIS_REST_URL=https://...
-UPSTASH_REDIS_REST_TOKEN=...
-
-# GCP Storage (Required for media uploads)
-GCS_BUCKET_NAME=your-bucket
-GCS_PROJECT_ID=your-project-id
-GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json
+# ... (Rest of variables)
 ```
 
 ---
 
 ## Project Structure
 
-```
+The project is structured as a **Monorepo** using NPM Workspaces:
+
+````
 RUN-Remix/
-├── client/                    # Frontend application
+├── client/ (@run-remix/client) # Frontend application (React 19, Vite)
 │   ├── src/
-│   │   ├── components/        # React components
-│   │   │   ├── ui/            # shadcn/ui components (94 files)
-│   │   │   ├── admin/         # Admin panel components
-│   │   │   ├── homepage/      # Landing page sections
-│   │   │   └── products/      # Product display components
-│   │   ├── pages/             # Route pages (46 files)
-│   │   ├── lib/               # Utilities & hooks
-│   │   │   ├── utils.ts       # cn() utility
-│   │   │   └── design-tokens.ts # Type-safe token exports
-│   │   ├── hooks/             # Custom React hooks
-│   │   └── index.css          # Global styles (931 lines)
-│   └── index.html             # SSR template
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   ├── admin/
+│   │   │   ├── homepage/
+│   │   │   └── products/
+│   │   ├── pages/
+│   │   ├── lib/
+│   │   ├── hooks/
+│   │   └── index.css
+│   └── index.html
 │
-├── server/                    # Backend application
-│   ├── routes/                # API routes
-│   ├── middleware/            # Express middleware
-│   ├── services/              # Business logic
-│   └── db/                    # Database config
+├── server/ (@run-remix/server) # Backend application (Express 5)
+│   ├── routes/
+│   ├── middleware/
+│   ├── services/
+│   ├── db/
+│   └── .env                    # Server-specific env vars
 │
-├── shared/                    # Shared types & schemas
-│   └── schema.ts              # Drizzle schema + Zod types
+├── shared/ (@run-remix/shared) # Shared code (No deps)
+│   ├── schema.ts               # Drizzle Schema + Zod
+│   └── package.json            # "type": "module"
 │
+├── scripts/                    # Build & verification scripts
+├── docs/                       # Documentation
+└── tests/                      # Test suites
+```│
 ├── scripts/                   # Build & verification scripts
 │   ├── verify-ssr-template.ts
 │   ├── verify-build.cjs
@@ -170,7 +162,7 @@ RUN-Remix/
 └── tests/                     # Test suites
     ├── e2e/                   # Playwright E2E tests
     └── integration/           # Integration tests
-```
+````
 
 ---
 
@@ -210,8 +202,8 @@ npm run test             # Unit tests (vitest)
 npm run test:integration # Integration tests
 npm run test:e2e         # Playwright E2E (regression)
 npm run test:a11y        # Accessibility tests
-npm run test:e2e:prod    # E2E against production
 npm run test:lighthouse  # Lighthouse CI
+npm run test:e2e:prod    # E2E against production
 npm run test:performance # Performance benchmarks
 ```
 
@@ -406,6 +398,23 @@ npx tsx scripts/verify-ssr-template.ts  # Template verification
 - **Development**: `http://localhost:5001/api`
 - **Production**: `https://api.runapparel.com/api`
 
+### API Documentation (`/api/docs`)
+
+The platform includes auto-generated OpenAPI 3.0 documentation.
+
+1. Start the server: `npm run dev`
+2. Visit: `http://localhost:5001/api/docs`
+
+This provides an interactive Swagger UI to test all endpoints.
+
+### Authentication Flow
+
+All routes are secured via centralized `AuthService`.
+
+- **Admin Routes**: Require `authService.requireAdmin` middleware.
+- **Session**: Managed via PostgreSQL-backed sessions (`connect-pg-simple`).
+- **Authorization**: Role-based access control (RBAC) with caching.
+
 ### Key Endpoints
 
 | Endpoint            | Method   | Description        |
@@ -552,3 +561,22 @@ Proprietary - All rights reserved.
 _Last updated: December 2025_  
 _CSS Architecture Score: 10/10_  
 _Performance Score: 92/100_
+
+## Troubleshooting
+
+### Process Management / Port Conflicts
+
+If you encounter "Address already in use" errors or find multiple node processes running:
+
+1. **Automatic Fix**: The `npm run dev` script now attempts to kill port 5001 automatically.
+2. **Manual Cleanup**:
+
+   ```bash
+   # Kill all node processes
+   pkill -f node
+
+   # Or kill specific port
+   npx kill-port 5001
+   ```
+
+3. **Zombie Processes**: If the server restarts infinitely, ensure your `tsx watch` ignore patterns are correct (should ignore `dist`, `.cache`).

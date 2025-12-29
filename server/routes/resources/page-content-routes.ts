@@ -17,8 +17,8 @@ import { withTimeout } from "../../lib/request-timeout.js";
 import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/unified-cache.js";
-import { requireAdmin } from "../../middleware/auth.js";
 import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -134,7 +134,7 @@ router.get("/sustainability-hero", async (_req, res) => {
   }
 });
 
-router.patch("/sustainability-hero", requireAdmin, async (req, res) => {
+router.patch("/sustainability-hero", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertSustainabilityHeroSchema.partial().safeParse(req.body);
     if (!validation.success) {
@@ -258,7 +258,7 @@ router.get("/technology-hero", async (_req, res) => {
   }
 });
 
-router.patch("/technology-hero", requireAdmin, async (req, res) => {
+router.patch("/technology-hero", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertTechnologyHeroSchema.partial().safeParse(req.body);
     if (!validation.success) {

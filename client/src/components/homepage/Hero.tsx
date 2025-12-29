@@ -77,9 +77,10 @@ const OptimizedClothMaterial = () => {
   );
 
   useFrame((state) => {
-    if (materialRef.current) {
+    if (materialRef.current?.uniforms?.uTime) {
       materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
-      // Smoothly interpolate scroll value for kinetic effect
+    }
+    if (materialRef.current?.uniforms?.uScroll) {
       materialRef.current.uniforms.uScroll.value = MathUtils.lerp(
         materialRef.current.uniforms.uScroll.value,
         window.scrollY,
@@ -156,8 +157,11 @@ const Hero: React.FC = () => {
   // Performance: Detect if Hero is in view to pause WebGL
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
+      (entries) => {
+        const entry = entries[0];
+        if (entry) {
+          setIsInView(entry.isIntersecting);
+        }
       },
       { threshold: 0 },
     );
@@ -254,13 +258,13 @@ const Hero: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden bg-background-alt"
+      className="bg-background-alt relative h-screen w-full overflow-hidden"
     >
       {/* 3D Background - Frameloop conditional for performance */}
       <div className="absolute inset-0 z-0 opacity-20" style={{ pointerEvents: "none" }}>
         <Canvas
           frameloop={isInView ? "always" : "never"}
-          dpr={dpr}
+          dpr={dpr as [number, number]}
           gl={{ powerPreference: "high-performance", antialias: false }}
         >
           <PerspectiveCamera makeDefault position={[0, 0, 5]} />
@@ -269,14 +273,14 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="pointer-events-none absolute inset-0 z-elevated flex items-center justify-center">
+      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center">
         <div
           ref={textContainerRef}
-          className="perspective-[1000px] flex flex-col items-center justify-center px-4 text-center"
+          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px]"
         >
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="font-bold text-[14vw] text-surface-dark leading-[0.9] tracking-tighter mix-blend-multiply will-change-transform md:text-[10vw] md:leading-[0.85]">
+              <h1 className="text-surface-dark text-[14vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply will-change-transform md:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>
@@ -285,7 +289,7 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="pointer-events-auto absolute right-8 bottom-8 z-sticky hidden md:block">
+      <div className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block">
         <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black">
             <path
@@ -293,7 +297,7 @@ const Hero: React.FC = () => {
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
               fill="transparent"
             />
-            <text className="font-bold text-[14px] uppercase tracking-widest">
+            <text className="text-[14px] font-bold tracking-widest uppercase">
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>

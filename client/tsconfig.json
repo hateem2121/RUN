@@ -19,7 +19,7 @@
       "@assets/*": ["../attached_assets/*"]
     }
   },
-  "include": ["src/**/*", "../utils/**/*"],
+  "include": ["src/**/*", "../utils/**/*", "vite.config.ts"],
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts", "../server/**/*"],
   "references": [
     {

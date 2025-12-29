@@ -10,15 +10,15 @@
  * NO ad-hoc cache keys allowed - prevents phantom/stale records and sync bugs.
  */
 
-import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
 import type {
   Folder,
   InsertFolder,
   InsertMediaAsset,
   MediaAsset,
   MediaAssetSummary,
-} from "../../../shared/schema.js";
-import { folders, mediaAssets } from "../../../shared/schema.js";
+} from "@run-remix/shared";
+import { folders, mediaAssets } from "@run-remix/shared";
+import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
 import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../cache-events.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
@@ -224,7 +224,7 @@ export class MediaRepository {
   async createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset> {
     const [created] = await db.insert(mediaAssets).values(mediaAsset).returning();
 
-    this.invalidateMediaCacheSelectively("create", created?.id).catch((error) =>
+    this.invalidateMediaCacheSelectively("create", created!.id).catch((error) =>
       logger.debug("Smart cache invalidation failed (non-critical):", error),
     );
 
@@ -506,7 +506,7 @@ export class MediaRepository {
     });
 
     if (updatedCount > 0) {
-      this.invalidateMediaCacheSelectively("update", updates[0]?.id).catch((error) =>
+      this.invalidateMediaCacheSelectively("update", updates[0]!.id).catch((error) =>
         logger.debug("Batch cache invalidation failed (non-critical):", error),
       );
     }
