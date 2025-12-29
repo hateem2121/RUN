@@ -14,6 +14,17 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        // Status variants (using semantic tokens from @theme)
+        "status-active":
+          "border-transparent bg-status-success-muted text-status-success dark:bg-status-success/20",
+        "status-inactive":
+          "border-transparent bg-status-inactive-muted text-status-inactive dark:bg-muted dark:text-muted-foreground",
+        "status-warning":
+          "border-transparent bg-status-warning-muted text-status-warning dark:bg-status-warning/20",
+        "status-info":
+          "border-transparent bg-status-info-muted text-status-info dark:bg-status-info/20",
+        "status-purple":
+          "border-transparent bg-status-purple-muted text-status-purple dark:bg-status-purple/20",
       },
     },
     defaultVariants: {

@@ -77,12 +77,12 @@ const CertificationsSection = memo(function CertificationsSection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
         <div className="flex items-center gap-3">
           <Award className="h-5 w-5 text-amber-600" />
           <div className="text-left">
-            <h3 className="font-semibold text-gray-900">Certifications & Relationships</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="font-semibold text-foreground">Certifications & Relationships</h3>
+            <p className="text-muted-foreground text-sm">
               {(formData.certificateIds || []).length} certificates,{" "}
               {(formData.accessoryIds || []).length} accessories
             </p>
@@ -92,12 +92,12 @@ const CertificationsSection = memo(function CertificationsSection({
           {completionRate > 0 ? (
             <CheckCircle className="h-5 w-5 text-green-600" />
           ) : (
-            <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+            <div className="h-5 w-5 rounded-full border-2 border-border/50" />
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -105,17 +105,17 @@ const CertificationsSection = memo(function CertificationsSection({
       <CollapsibleContent className="mt-4 space-y-6 px-4 pb-4">
         {/* Certifications */}
         <div>
-          <Label className="mb-4 block font-medium text-gray-700 text-sm">
+          <Label className="mb-4 block font-medium text-foreground/80 text-sm">
             Product Certifications
           </Label>
 
           {certificates.length === 0 ? (
-            <div className="py-6 text-center text-gray-500">
+            <div className="py-6 text-center text-muted-foreground">
               <p>No certifications available</p>
               <p className="mt-2 text-sm">Add certifications via the Certificates module</p>
             </div>
           ) : certificationTypes.length === 0 ? (
-            <div className="py-6 text-center text-gray-500">
+            <div className="py-6 text-center text-muted-foreground">
               <p>Loading certifications...</p>
             </div>
           ) : (
@@ -125,7 +125,7 @@ const CertificationsSection = memo(function CertificationsSection({
 
               return (
                 <div key={type} className="mb-6">
-                  <h4 className="mb-3 flex items-center gap-2 font-medium text-gray-900 text-sm">
+                  <h4 className="mb-3 flex items-center gap-2 font-medium text-foreground text-sm">
                     <Award className="h-4 w-4" />
                     {type ? type.charAt(0).toUpperCase() + type.slice(1) : "Other"} Certifications
                   </h4>
@@ -138,7 +138,7 @@ const CertificationsSection = memo(function CertificationsSection({
                           className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
                             isSelected
                               ? "border-amber-500 bg-amber-50"
-                              : "border-gray-200 hover:bg-gray-50"
+                              : "border-border hover:bg-background"
                           }`}
                         >
                           <input
@@ -148,9 +148,9 @@ const CertificationsSection = memo(function CertificationsSection({
                             className="mt-1 text-amber-600 focus:ring-amber-500"
                           />
                           <div className="flex-1">
-                            <div className="font-medium text-gray-900">{certificate.name}</div>
+                            <div className="font-medium text-foreground">{certificate.name}</div>
                             {certificate.description && (
-                              <div className="mt-1 text-gray-600 text-sm">
+                              <div className="mt-1 text-muted-foreground text-sm">
                                 {certificate.description}
                               </div>
                             )}
@@ -197,7 +197,7 @@ const CertificationsSection = memo(function CertificationsSection({
 
         {/* Accessories */}
         <div>
-          <Label className="mb-3 block font-medium text-gray-700 text-sm">
+          <Label className="mb-3 block font-medium text-foreground/80 text-sm">
             Compatible Accessories
           </Label>
           {accessories.length > 0 ? (
@@ -208,7 +208,9 @@ const CertificationsSection = memo(function CertificationsSection({
                   <label
                     key={accessory.id}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
-                      isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:bg-gray-50"
+                      isSelected
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-border hover:bg-background"
                     }`}
                   >
                     <input
@@ -218,9 +220,9 @@ const CertificationsSection = memo(function CertificationsSection({
                       className="text-blue-600 focus:ring-ring"
                     />
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{accessory.name}</div>
+                      <div className="font-medium text-foreground">{accessory.name}</div>
                       {accessory.description && (
-                        <div className="text-gray-600 text-sm">{accessory.description}</div>
+                        <div className="text-muted-foreground text-sm">{accessory.description}</div>
                       )}
                     </div>
                     {isSelected && (
@@ -233,7 +235,7 @@ const CertificationsSection = memo(function CertificationsSection({
               })}
             </div>
           ) : (
-            <div className="py-6 text-center text-gray-500">
+            <div className="py-6 text-center text-muted-foreground">
               <p>No accessories available</p>
               <p className="mt-2 text-sm">
                 Add accessories via the Accessories module to assign them to products
@@ -244,7 +246,9 @@ const CertificationsSection = memo(function CertificationsSection({
 
         {/* Related Products */}
         <div>
-          <Label className="mb-3 block font-medium text-gray-700 text-sm">Related Products</Label>
+          <Label className="mb-3 block font-medium text-foreground/80 text-sm">
+            Related Products
+          </Label>
           {products.length > 0 ? (
             <div className="max-h-64 space-y-2 overflow-y-auto">
               {products.map((relatedProduct) => {
@@ -255,7 +259,7 @@ const CertificationsSection = memo(function CertificationsSection({
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
                       isSelected
                         ? "border-green-500 bg-green-50"
-                        : "border-gray-200 hover:bg-gray-50"
+                        : "border-border hover:bg-background"
                     }`}
                   >
                     <input
@@ -265,8 +269,8 @@ const CertificationsSection = memo(function CertificationsSection({
                       className="text-green-600 focus:ring-green-500"
                     />
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{relatedProduct.name}</div>
-                      <div className="text-gray-600 text-sm">SKU: {relatedProduct.sku}</div>
+                      <div className="font-medium text-foreground">{relatedProduct.name}</div>
+                      <div className="text-muted-foreground text-sm">SKU: {relatedProduct.sku}</div>
                     </div>
                     {isSelected && (
                       <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -278,7 +282,7 @@ const CertificationsSection = memo(function CertificationsSection({
               })}
             </div>
           ) : (
-            <div className="py-6 text-center text-gray-500">
+            <div className="py-6 text-center text-muted-foreground">
               <p>No other products available</p>
             </div>
           )}

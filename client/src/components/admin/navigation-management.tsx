@@ -5,13 +5,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-  EnhancedDialogTrigger,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
@@ -153,27 +153,29 @@ export default function NavigationManagement() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="font-bold text-2xl">Navigation Management</h1>
-          <p className="text-gray-600">Manage your floating dock navigation items and appearance</p>
+          <p className="text-muted-foreground">
+            Manage your floating dock navigation items and appearance
+          </p>
         </div>
-        <EnhancedDialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <EnhancedDialogTrigger asChild>
+        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+          <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               Add Navigation Item
             </Button>
-          </EnhancedDialogTrigger>
-          <EnhancedDialogContent contentType="form">
-            <EnhancedDialogHeader>
-              <EnhancedDialogTitle>Create Navigation Item</EnhancedDialogTitle>
-            </EnhancedDialogHeader>
-            <EnhancedDialogBody>
+          </DialogTrigger>
+          <DialogContent contentType="form">
+            <DialogHeader>
+              <DialogTitle>Create Navigation Item</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
               <NavigationForm
                 onSubmit={(data) => createMutation.mutate(data)}
                 onCancel={() => setShowCreateDialog(false)}
               />
-            </EnhancedDialogBody>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+            </DialogBody>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="space-y-4">
@@ -200,9 +202,9 @@ export default function NavigationManagement() {
 
         {itemsWithMedia.length === 0 && (
           <Card className="p-8 text-center">
-            <Navigation className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-            <h3 className="mb-2 font-medium text-gray-900 text-lg">No navigation items</h3>
-            <p className="mb-4 text-gray-500">
+            <Navigation className="mx-auto mb-4 h-12 w-12 text-muted-foreground/70" />
+            <h3 className="mb-2 font-medium text-foreground text-lg">No navigation items</h3>
+            <p className="mb-4 text-muted-foreground">
               Get started by creating your first navigation item.
             </p>
             <Button onClick={() => setShowCreateDialog(true)}>
@@ -213,12 +215,12 @@ export default function NavigationManagement() {
         )}
       </div>
 
-      <EnhancedDialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Edit Navigation Item</EnhancedDialogTitle>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Edit Navigation Item</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             {editingItem && (
               <NavigationForm
                 item={editingItem}
@@ -229,9 +231,9 @@ export default function NavigationManagement() {
                 }}
               />
             )}
-          </EnhancedDialogBody>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

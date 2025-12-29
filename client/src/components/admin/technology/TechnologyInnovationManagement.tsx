@@ -36,14 +36,14 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -96,27 +96,29 @@ function SortableInnovationItem({ innovation, onEdit, onDelete }: SortableInnova
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-gray-900">{innovation.name}</h4>
+            <h4 className="font-medium text-foreground">{innovation.name}</h4>
             <span className="mt-1 inline-block rounded-full bg-purple-100 px-2 py-0.5 text-purple-700 text-xs">
               {innovation.category}
             </span>
             {innovation.description && (
-              <p className="mt-2 text-gray-600 text-sm">{innovation.description}</p>
+              <p className="mt-2 text-muted-foreground text-sm">{innovation.description}</p>
             )}
             {innovation.benefits && innovation.benefits.length > 0 && (
               <div className="mt-2">
-                <p className="font-medium text-gray-500 text-xs">Benefits:</p>
-                <ul className="list-inside list-disc text-gray-600 text-xs">
+                <p className="font-medium text-muted-foreground text-xs">Benefits:</p>
+                <ul className="list-inside list-disc text-muted-foreground text-xs">
                   {innovation.benefits.slice(0, 2).map((benefit, index) => (
                     <li key={index}>{benefit}</li>
                   ))}
                   {innovation.benefits.length > 2 && (
-                    <li className="text-gray-500">+{innovation.benefits.length - 2} more</li>
+                    <li className="text-muted-foreground">
+                      +{innovation.benefits.length - 2} more
+                    </li>
                   )}
                 </ul>
               </div>
@@ -126,7 +128,7 @@ function SortableInnovationItem({ innovation, onEdit, onDelete }: SortableInnova
         <div className="ml-4 flex items-start gap-2">
           <span
             className={`rounded-full px-2 py-1 text-xs ${
-              innovation.isActive ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-700"
+              innovation.isActive ? "bg-purple-100 text-purple-700" : "bg-muted text-foreground/80"
             }`}
           >
             {innovation.isActive ? "Active" : "Inactive"}
@@ -431,7 +433,7 @@ export function TechnologyInnovationManagement({
           {innovationsLoading || isLoading ? (
             <div>Loading...</div>
           ) : innovations.length === 0 ? (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-muted-foreground">
               No innovations added yet. Click "Add Innovation" to showcase your first technology
               innovation.
             </div>
@@ -460,20 +462,20 @@ export function TechnologyInnovationManagement({
       </Card>
 
       {/* Innovation Dialog */}
-      <EnhancedDialog open={showInnovationDialog} onOpenChange={setShowInnovationDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
+      <Dialog open={showInnovationDialog} onOpenChange={setShowInnovationDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>
               {editingInnovation ? "Edit Innovation" : "Add New Innovation"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               {editingInnovation
                 ? "Update the technology innovation details"
                 : "Create a new technology innovation"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleInnovationSubmit} className="contents">
-            <EnhancedDialogBody className="space-y-4">
+            <DialogBody className="space-y-4">
               <div>
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -614,7 +616,7 @@ export function TechnologyInnovationManagement({
                     {Object.entries(innovationForm.technicalDetails).map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex items-center justify-between rounded bg-gray-50 p-2"
+                        className="flex items-center justify-between rounded bg-background p-2"
                       >
                         <span className="text-sm">
                           <strong>{key}:</strong> {String(value)}
@@ -729,7 +731,7 @@ export function TechnologyInnovationManagement({
                     Select Image
                   </Button>
                   {innovationForm.imageId && (
-                    <div className="mt-2 text-gray-600 text-sm">
+                    <div className="mt-2 text-muted-foreground text-sm">
                       Selected image ID: {innovationForm.imageId}
                       <Button
                         type="button"
@@ -760,8 +762,8 @@ export function TechnologyInnovationManagement({
                 />
                 <Label>Active (visible on public site)</Label>
               </div>
-            </EnhancedDialogBody>
-            <EnhancedDialogFooter>
+            </DialogBody>
+            <DialogFooter>
               <Button
                 type="button"
                 variant="outline"
@@ -779,10 +781,10 @@ export function TechnologyInnovationManagement({
                     ? "Update Innovation"
                     : "Create Innovation"}
               </Button>
-            </EnhancedDialogFooter>
+            </DialogFooter>
           </form>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Innovation Image Picker Dialog - STANDARDIZED */}
       <StandardMediaSelectionDialog

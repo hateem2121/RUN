@@ -6,12 +6,12 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -358,15 +358,13 @@ export default function CategoryForm({
 
   return (
     <>
-      <EnhancedDialog open={open} onOpenChange={onClose}>
-        <EnhancedDialogContent className="pointer-events-auto z-modal" contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {mode === "create" ? "Create Category" : "Edit Category"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="pointer-events-auto z-modal" contentType="form">
+          <DialogHeader>
+            <DialogTitle>{mode === "create" ? "Create Category" : "Edit Category"}</DialogTitle>
+          </DialogHeader>
 
-          <EnhancedDialogBody>
+          <DialogBody>
             <form onSubmit={handleSubmit} className="space-y-6">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-3">
@@ -563,7 +561,7 @@ export default function CategoryForm({
                                   <Label className="font-semibold text-blue-700 text-sm">
                                     🎭 Custom SVG Masking Media
                                   </Label>
-                                  <p className="mb-3 text-gray-600 text-xs">
+                                  <p className="mb-3 text-muted-foreground text-xs">
                                     Select an SVG file for the mask shape and a video/image for the
                                     content
                                   </p>
@@ -941,9 +939,9 @@ export default function CategoryForm({
                 </Button>
               </div>
             </form>
-          </EnhancedDialogBody>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
 
       <StandardMediaSelectionDialog
         isOpen={isMediaPickerOpen}

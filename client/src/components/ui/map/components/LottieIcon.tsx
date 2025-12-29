@@ -41,8 +41,9 @@ export function LottieIcon({ animationData, size, type }: LottieIconProps) {
     };
   }, [animationData]);
 
-  const fallbackColor = type === "client" ? "#3b82f6" : "#10b981";
-  const fallbackShadow = type === "client" ? "rgba(59, 130, 246, 0.6)" : "rgba(16, 185, 129, 0.6)";
+  // Use HSL values matching --color-status-info and --color-status-success tokens
+  const fallbackColor = type === "client" ? "hsl(217 91% 60%)" : "hsl(142 76% 40%)";
+  const fallbackShadow = type === "client" ? "hsl(217 91% 60% / 0.6)" : "hsl(142 76% 40% / 0.6)";
 
   return (
     <div

@@ -38,7 +38,7 @@ import {
 function ProductsLoader() {
   return (
     <div className="flex min-h-96 items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
     </div>
   );
 }
@@ -226,7 +226,7 @@ export default function ProductsPage() {
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-production-header">
+    <div className="min-h-screen bg-muted/30 pt-production-header">
       <GlobalErrorBoundary>
         <Suspense fallback={<ProductsLoader />}>
           {/* SEO Component */}
@@ -238,7 +238,7 @@ export default function ProductsPage() {
           />
 
           {/* Header */}
-          <div className="sticky top-0 z-modal-backdrop border-b bg-white">
+          <div className="sticky top-0 z-modal-backdrop border-border border-b bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/60">
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
                 <Typography.H1 className="font-bold text-2xl">Products</Typography.H1>
@@ -246,7 +246,7 @@ export default function ProductsPage() {
                 <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                   {/* Search */}
                   <div className="relative flex-1 sm:flex-none">
-                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       placeholder="Search products..."
                       value={searchTerm}
@@ -285,7 +285,7 @@ export default function ProductsPage() {
                   </Select>
 
                   {/* View Mode */}
-                  <div className="flex gap-1 rounded-md bg-gray-100 p-1">
+                  <div className="flex gap-1 rounded-md bg-muted p-1">
                     <Button
                       size="sm"
                       variant={viewMode === "small" ? "default" : "ghost"}
@@ -327,7 +327,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Results count */}
-              <div className="mt-2 text-gray-600 text-sm">
+              <div className="mt-2 text-muted-foreground text-sm">
                 Showing {sortedProducts.length} products
                 {searchTerm && ` for "${searchTerm}"`}
                 {selectedCategory &&
@@ -344,7 +344,7 @@ export default function ProductsPage() {
               <ProductsLoader />
             ) : sortedProducts.length === 0 ? (
               <div className="py-12 text-center">
-                <Typography.P className="text-gray-500">No products found</Typography.P>
+                <Typography.P className="text-muted-foreground">No products found</Typography.P>
               </div>
             ) : (
               <>
@@ -368,9 +368,7 @@ export default function ProductsPage() {
                   <div ref={observerRef} className="flex justify-center py-8">
                     <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
                     <Typography.P className="text-luxury-body text-sm">
-                      {categoriesLoading
-                        ? "Loading categories..."
-                        : `Loading ${allMediaIds.length} media assets...`}
+                      "Loading more products..."
                     </Typography.P>
                   </div>
                 )}

@@ -179,7 +179,7 @@ export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryPro
                       />
                       {!imageLoaded && (
                         <div className="center-flex absolute inset-0 bg-black">
-                          <div className="h-12 w-12 animate-spin rounded-full border-2 border-gray-600 border-t-2 border-t-white"></div>
+                          <div className="h-12 w-12 animate-spin rounded-full border-2 border-border border-t-2 border-t-white"></div>
                         </div>
                       )}
                     </>
@@ -257,7 +257,7 @@ export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryPro
     return (
       <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
         <div className="w-full max-w-3xl">
-          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-[4/3] lg:aspect-video">
+          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
             <div className="absolute inset-0 bg-black">{renderMedia()}</div>
           </div>
           <motion.div
@@ -313,19 +313,19 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
         case MediaType.Video:
           return {
             icon: <Play className="h-6 w-6 text-white" fill="white" />,
-            bgColor: "bg-gradient-to-br from-purple-500 to-pink-500",
+            bgColor: "bg-linear-to-br from-purple-500 to-pink-500",
             label: "Video",
           };
         case MediaType.Model3D:
           return {
             icon: <Boxes className="h-6 w-6 text-white" />,
-            bgColor: "bg-gradient-to-br from-blue-500 to-cyan-500",
+            bgColor: "bg-linear-to-br from-blue-500 to-cyan-500",
             label: "3D Model",
           };
         default:
           return {
             icon: <Box className="h-6 w-6 text-white" />,
-            bgColor: "bg-gradient-to-br from-gray-400 to-gray-600",
+            bgColor: "bg-linear-to-br from-muted-foreground to-muted-foreground",
             label: "Media",
           };
       }
@@ -382,7 +382,7 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
               onError={() => setThumbnailError(true)}
               data-testid={`img-thumbnail-${index}`}
             />
-            {!imageLoaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
+            {!imageLoaded && <div className="absolute inset-0 animate-pulse bg-muted/20" />}
           </>
         )}
         {/* Media type badge overlay - always show for videos and 3D models when thumbnail loads successfully */}
@@ -422,10 +422,10 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Package className="h-5 w-5 text-gray-500" />
+              <Package className="h-5 w-5 text-muted-foreground" />
               <h3 className="font-bold uppercase tracking-wider">Product Specs</h3>
             </div>
-            <ul className="space-y-2 pl-1 text-gray-600 text-sm">
+            <ul className="space-y-2 pl-1 text-muted-foreground text-sm">
               {product.specifications && product.specifications.length > 0 ? (
                 product.specifications.map((spec, i) => (
                   <li key={i} className="flex items-start" data-testid={`spec-item-${i}`}>
@@ -435,7 +435,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
                 ))
               ) : (
                 <li className="py-6 text-center">
-                  <p className="text-gray-400 text-sm italic">
+                  <p className="text-muted-foreground/70 text-sm italic">
                     Product specifications are not currently available for this item.
                   </p>
                 </li>
@@ -447,7 +447,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <FileText className="h-5 w-5 text-gray-500" />
+              <FileText className="h-5 w-5 text-muted-foreground" />
               <h3 className="font-bold uppercase tracking-wider">Technical Specifications</h3>
             </div>
             {product.technicalSpecs && Object.keys(product.technicalSpecs).length > 0 ? (
@@ -455,10 +455,10 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
                 {Object.entries(product.technicalSpecs).map(([key, value], i) => (
                   <div key={i} className="flex items-start" data-testid={`tech-spec-${i}`}>
                     <div className="flex-1">
-                      <div className="mb-1 text-gray-500 text-xs uppercase tracking-wider">
+                      <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
                         {key.replace(/([A-Z])/g, " $1").trim()}
                       </div>
-                      <div className="font-medium text-gray-700 text-sm">
+                      <div className="font-medium text-foreground/80 text-sm">
                         {typeof value === "object" ? JSON.stringify(value) : String(value)}
                       </div>
                     </div>
@@ -467,7 +467,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               </div>
             ) : (
               <div className="py-6 text-center">
-                <p className="text-gray-400 text-sm italic">
+                <p className="text-muted-foreground/70 text-sm italic">
                   Technical specifications are not currently available for this item.
                 </p>
               </div>
@@ -478,11 +478,11 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Heart className="h-5 w-5 text-gray-500" />
+              <Heart className="h-5 w-5 text-muted-foreground" />
               <h3 className="font-bold uppercase tracking-wider">Care Instructions</h3>
             </div>
             <ul
-              className="space-y-2 pl-1 text-gray-600 text-sm"
+              className="space-y-2 pl-1 text-muted-foreground text-sm"
               data-testid="care-instructions-list"
             >
               {product.careInstructions && product.careInstructions.length > 0 ? (
@@ -494,7 +494,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
                 ))
               ) : (
                 <li className="list-none py-6 text-center">
-                  <p className="text-gray-400 text-sm italic">
+                  <p className="text-muted-foreground/70 text-sm italic">
                     Care instructions are not currently available for this item.
                   </p>
                 </li>
@@ -506,10 +506,10 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Info className="h-5 w-5 text-gray-500" />
+              <Info className="h-5 w-5 text-muted-foreground" />
               <h3 className="font-bold uppercase tracking-wider">Key Info</h3>
             </div>
-            <ul className="space-y-2 pl-1 text-gray-600 text-sm">
+            <ul className="space-y-2 pl-1 text-muted-foreground text-sm">
               <li className="flex items-start">
                 <span className="mt-1 mr-2">-</span>
                 <span className="flex-1">
@@ -548,20 +548,22 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Shield className="h-5 w-5 text-gray-500" />
+              <Shield className="h-5 w-5 text-muted-foreground" />
               <h3 className="font-bold uppercase tracking-wider">Certifications</h3>
             </div>
             <div className="flex flex-col space-y-3">
               {certificates && certificates.length > 0 ? (
                 certificates.map((cert, i) => (
-                  <div key={i} className="flex items-center rounded bg-gray-50 p-3">
+                  <div key={i} className="flex items-center rounded bg-background p-3">
                     <Shield className="mr-3 h-5 w-5 shrink-0 text-green-600" />
-                    <span className="font-medium text-gray-700 text-sm">{cert.name || cert}</span>
+                    <span className="font-medium text-foreground/80 text-sm">
+                      {cert.name || cert}
+                    </span>
                   </div>
                 ))
               ) : (
                 <div className="py-6 text-center">
-                  <p className="text-gray-400 text-sm italic">
+                  <p className="text-muted-foreground/70 text-sm italic">
                     Certifications information is not currently available for this item.
                   </p>
                 </div>
@@ -584,7 +586,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
 
   return (
     <div>
-      <div className="spacing-subsection relative border-gray-200 border-b">
+      <div className="spacing-subsection relative border-border border-b">
         <div
           className="scrollbar-hide flex snap-x snap-mandatory items-center space-x-2 overflow-x-auto pb-px sm:space-x-3 md:space-x-4"
           style={{
@@ -599,10 +601,10 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               key={tab.id}
               as="button"
               onClick={() => setActiveTab(tab.id as Tab)}
-              className={`relative -mb-px min-h-[48px] whitespace-nowrap px-4 py-3 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-6 md:tracking-[0.12em] ${
+              className={`relative -mb-px min-h-tab whitespace-nowrap px-4 py-3 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-6 md:tracking-[0.12em] ${
                 activeTab === tab.id
                   ? "text-black"
-                  : "text-gray-400 hover:scale-105 hover:text-black"
+                  : "text-muted-foreground/70 hover:scale-105 hover:text-black"
               }`}
               clipAmount={10}
               data-testid={`button-tab-${tab.id}`}
@@ -638,7 +640,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
             {product.tags.map((tag: string) => (
               <span
                 key={tag}
-                className="rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-800 text-xs"
+                className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground text-xs"
               >
                 {tag}
               </span>
@@ -660,14 +662,18 @@ interface SizeChartDisplayProps {
 
 export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart }) => {
   if (!sizeChart || !sizeChart.measurements) {
-    return <p className="text-gray-600">Size information is not available for this product.</p>;
+    return (
+      <p className="text-muted-foreground">Size information is not available for this product.</p>
+    );
   }
 
   const sizes = Object.keys(sizeChart.measurements);
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
 
   if (sizes.length === 0) {
-    return <p className="text-gray-600">Size information is not available for this product.</p>;
+    return (
+      <p className="text-muted-foreground">Size information is not available for this product.</p>
+    );
   }
 
   const measurements = sizeChart.measurements[selectedSize];
@@ -675,16 +681,16 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-center gap-2 border-gray-200 border-b pb-3">
+      <div className="mb-8 flex flex-wrap items-center gap-2 border-border border-b pb-3">
         {sizes.map((size) => (
           <ClippedElement
             key={size}
             as="button"
             onClick={() => setSelectedSize(size)}
-            className={`min-h-[48px] px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
+            className={`min-h-tab px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
               selectedSize === size
                 ? "scale-105 bg-black text-white"
-                : "bg-gray-100 text-gray-600 hover:scale-105 hover:bg-gray-200"
+                : "bg-muted text-muted-foreground hover:scale-105 hover:bg-muted/20"
             }`}
             clipAmount={8}
             aria-pressed={selectedSize === size}
@@ -706,7 +712,9 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
           >
             {measurementKeys.map((key) => (
               <div key={key}>
-                <span className="text-gray-500 text-xs uppercase tracking-wider">{key}</span>
+                <span className="text-muted-foreground text-xs uppercase tracking-wider">
+                  {key}
+                </span>
                 <p className="mt-1 font-bold text-base sm:text-lg">{measurements[key] || "N/A"}</p>
               </div>
             ))}
@@ -732,7 +740,9 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
   if (!fabric) {
     return (
       <div className="py-8 text-center">
-        <p className="text-gray-600">Material information is not available for this product.</p>
+        <p className="text-muted-foreground">
+          Material information is not available for this product.
+        </p>
       </div>
     );
   }
@@ -755,7 +765,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       {/* Desktop: Always show description */}
       {hasDescription && (
         <p
-          className="mb-8 hidden whitespace-pre-line text-gray-700 leading-relaxed md:block"
+          className="mb-8 hidden whitespace-pre-line text-foreground/80 leading-relaxed md:block"
           data-testid="text-fabric-description"
         >
           {fabric.description}
@@ -766,19 +776,23 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
         {fabric.weight && (
           <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-weight">
-            <div className="mb-1 text-gray-500 text-xs uppercase tracking-wider">Weight</div>
+            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+              Weight
+            </div>
             <div className="font-semibold">{fabric.weight} GSM</div>
           </div>
         )}
         {fabric.fabricType && (
           <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-type">
-            <div className="mb-1 text-gray-500 text-xs uppercase tracking-wider">Fabric Type</div>
+            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+              Fabric Type
+            </div>
             <div className="font-semibold">{fabric.fabricType}</div>
           </div>
         )}
         {fabric.sport && (
           <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-sport">
-            <div className="mb-1 text-gray-500 text-xs uppercase tracking-wider">
+            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
               Sport Category
             </div>
             <div className="font-semibold">{fabric.sport}</div>
@@ -789,7 +803,9 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
             className="border-black border-l-4 pl-4 sm:pl-6"
             data-testid="info-fabric-seasonality"
           >
-            <div className="mb-1 text-gray-500 text-xs uppercase tracking-wider">Seasonality</div>
+            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+              Seasonality
+            </div>
             <div className="font-semibold">{fabric.seasonality}</div>
           </div>
         )}
@@ -799,7 +815,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       {hasCollapsibleContent && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-6 flex w-full items-center justify-center gap-2 border-gray-200 border-t border-b py-3 font-bold text-black text-sm uppercase tracking-wider transition-colors hover:bg-gray-50 md:hidden"
+          className="mt-6 flex w-full items-center justify-center gap-2 border-border border-t border-b py-3 font-bold text-black text-sm uppercase tracking-wider transition-colors hover:bg-background md:hidden"
           data-testid="button-toggle-materials"
         >
           <span>{isExpanded ? "Show Less" : "Show More"}</span>
@@ -822,7 +838,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
               {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
                 <li key={index} className="flex items-start text-sm">
                   <span className="mr-2 text-black">•</span>
-                  <span className="text-gray-700">{feature}</span>
+                  <span className="text-foreground/80">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -830,7 +846,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
         )}
 
         {hasFiberComposition && (
-          <div className="mt-10 border-gray-200 border-t pt-8">
+          <div className="mt-10 border-border border-t pt-8">
             <h4 className="mb-6 font-bold text-sm uppercase tracking-wider">Fiber Composition</h4>
             <FiberCompositionDisplay fabric={fabric} fibers={fibers} />
           </div>
@@ -850,7 +866,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
             <div className="pt-6">
               {hasDescription && (
                 <p
-                  className="mb-8 whitespace-pre-line text-gray-700 leading-relaxed"
+                  className="mb-8 whitespace-pre-line text-foreground/80 leading-relaxed"
                   data-testid="text-fabric-description"
                 >
                   {fabric.description}
@@ -866,7 +882,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
                     {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
                       <li key={index} className="flex items-start text-sm">
                         <span className="mr-2 text-black">•</span>
-                        <span className="text-gray-700">{feature}</span>
+                        <span className="text-foreground/80">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -874,7 +890,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
               )}
 
               {hasFiberComposition && (
-                <div className="mt-10 border-gray-200 border-t pt-8">
+                <div className="mt-10 border-border border-t pt-8">
                   <h4 className="mb-6 font-bold text-sm uppercase tracking-wider">
                     Fiber Composition
                   </h4>
@@ -906,7 +922,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
 
   if (compositions.length === 0) {
     return (
-      <p className="text-gray-600 text-sm">
+      <p className="text-muted-foreground text-sm">
         Fiber composition information is not available for this fabric.
       </p>
     );
@@ -942,23 +958,23 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
     } else if (type.includes("recycled")) {
       return <Shield className="h-6 w-6 text-emerald-600" />;
     }
-    return <FileText className="h-6 w-6 text-gray-600" />;
+    return <FileText className="h-6 w-6 text-muted-foreground" />;
   };
 
   return (
     <div>
       {/* Composition Toggle Buttons */}
       {compositions.length > 1 && (
-        <div className="mb-8 flex flex-wrap items-center gap-2 border-gray-200 border-b pb-3">
+        <div className="mb-8 flex flex-wrap items-center gap-2 border-border border-b pb-3">
           {compositions.map((comp: any) => (
             <ClippedElement
               key={comp.name}
               as="button"
               onClick={() => setSelectedComposition(comp.name)}
-              className={`min-h-[48px] px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
+              className={`min-h-tab px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
                 selectedComposition === comp.name
                   ? "scale-105 bg-black text-white"
-                  : "bg-gray-100 text-gray-600 hover:scale-105 hover:bg-gray-200"
+                  : "bg-muted text-muted-foreground hover:scale-105 hover:bg-muted/20"
               }`}
               clipAmount={8}
               aria-pressed={selectedComposition === comp.name}
@@ -986,7 +1002,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
               return (
                 <div
                   key={index}
-                  className="rounded-lg border border-gray-200 p-4 transition-shadow-sm duration-200 hover:shadow-md"
+                  className="rounded-lg border border-border p-4 transition-shadow-sm duration-200 hover:shadow-md"
                   data-testid={`fiber-card-${index}`}
                 >
                   <div className="mb-3 flex items-center justify-between">
@@ -999,12 +1015,12 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
                   </div>
                   <div className="flex items-baseline justify-between">
                     <span className="font-black text-3xl text-black">{fiber.percentage}%</span>
-                    <span className="text-gray-500 text-xs uppercase tracking-wider">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">
                       {fiberDetails.type}
                     </span>
                   </div>
                   {/* Visual percentage bar */}
-                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted/20">
                     <motion.div
                       className="h-full rounded-full bg-black"
                       initial={{ width: 0 }}
@@ -1021,7 +1037,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
 
       {/* Fallback: Minimalist Table for Simple Display */}
       {compositionFibers.length === 0 && (
-        <div className="py-8 text-center text-gray-500">
+        <div className="py-8 text-center text-muted-foreground">
           <p>No fiber composition data available for this selection.</p>
         </div>
       )}
@@ -1068,7 +1084,7 @@ export const EthicalManufacturing: React.FC = () => {
           <h2 className="mb-4 font-black-display text-3xl md:text-4xl">
             ETHICAL MANUFACTURING & INNOVATION
           </h2>
-          <p className="mx-auto max-w-3xl text-gray-600">
+          <p className="mx-auto max-w-3xl text-muted-foreground">
             We merge a 135-year legacy with modern technology and an unwavering commitment to
             transparency and ethical production.
           </p>
@@ -1085,7 +1101,7 @@ export const EthicalManufacturing: React.FC = () => {
             >
               <div className="mb-4 flex justify-center">{item.icon}</div>
               <h3 className="mb-3 font-bold uppercase tracking-wider">{item.title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+              <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
             </motion.div>
           ))}
         </div>

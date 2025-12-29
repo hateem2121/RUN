@@ -11,7 +11,7 @@ const textareaVariants = cva(
         default: "",
         ghost: "resize-none border-none bg-transparent shadow-none",
         filled:
-          "resize-none border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-black focus:ring-offset-0",
+          "resize-none border-border bg-surface-subtle text-foreground placeholder:text-text-subtle focus:bg-background focus:ring-ring focus:ring-offset-0",
       },
     },
     defaultVariants: {

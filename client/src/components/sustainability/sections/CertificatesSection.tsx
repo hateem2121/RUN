@@ -45,7 +45,7 @@ export function CertificatesSection({
                     className="h-full w-full object-contain p-2"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200">
+                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-stone-100 to-stone-200">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-300">
                       <svg
                         className="h-6 w-6 text-stone-700"

@@ -32,20 +32,21 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { LivePreviewGrid } from "@/components/admin/manufacturing/LivePreviewGrid";
-import { DeleteConfirmationDialog, StatusBadge } from "@/components/admin/shared";
+import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { QualityCard } from "@/components/shared/manufacturing/QualityCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -113,7 +114,7 @@ function SortableQualityItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -123,33 +124,35 @@ function SortableQualityItem({
                 <IconComponent className="h-5 w-5 text-green-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-gray-900">
+                <h4 className="font-medium text-foreground">
                   {quality.title || "Untitled Quality Standard"}
                 </h4>
                 {quality.description && (
-                  <p className="mt-1 text-gray-600 text-sm">{quality.description}</p>
+                  <p className="mt-1 text-muted-foreground text-sm">{quality.description}</p>
                 )}
                 {checkpoints.length > 0 && (
                   <div className="mt-2">
-                    <p className="font-medium text-gray-500 text-xs">Checkpoints:</p>
-                    <div className="text-gray-600 text-xs">
+                    <p className="font-medium text-muted-foreground text-xs">Checkpoints:</p>
+                    <div className="text-muted-foreground text-xs">
                       {checkpoints.slice(0, 3).map((checkpoint, index) => (
                         <span key={index} className="mr-4 inline-block">
                           • {checkpoint}
                         </span>
                       ))}
                       {checkpoints.length > 3 && (
-                        <span className="text-gray-500">+{checkpoints.length - 3} more</span>
+                        <span className="text-muted-foreground">
+                          +{checkpoints.length - 3} more
+                        </span>
                       )}
                     </div>
                   </div>
                 )}
                 {standards.length > 0 && (
                   <div className="mt-2">
-                    <p className="font-medium text-gray-500 text-xs">Standards:</p>
-                    <div className="flex flex-wrap gap-1 text-gray-600 text-xs">
+                    <p className="font-medium text-muted-foreground text-xs">Standards:</p>
+                    <div className="flex flex-wrap gap-1 text-muted-foreground text-xs">
                       {standards.map((standard, idx) => (
-                        <span key={idx} className="rounded-md bg-gray-100 px-2 py-1">
+                        <span key={idx} className="rounded-md bg-muted px-2 py-1">
                           {standard}
                         </span>
                       ))}
@@ -161,7 +164,9 @@ function SortableQualityItem({
           </div>
         </div>
         <div className="ml-4 flex items-start gap-2">
-          <StatusBadge isActive={quality.isActive ?? true} activeColor="green" />
+          <Badge variant={(quality.isActive ?? true) ? "status-active" : "status-inactive"}>
+            {(quality.isActive ?? true) ? "Active" : "Inactive"}
+          </Badge>
           <Button size="sm" variant="ghost" onClick={() => onEdit(quality)}>
             <Edit className="h-4 w-4" />
           </Button>
@@ -393,7 +398,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
         {qualityLoading ? (
           <div className="py-8 text-center">Loading quality standards...</div>
         ) : qualityStandards.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-8 text-center text-muted-foreground">
             No quality standards found. Create your first quality standard to get started.
           </div>
         ) : (
@@ -421,20 +426,20 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
         )}
 
         {/* Quality Standards Dialog */}
-        <EnhancedDialog open={showQualityDialog} onOpenChange={setShowQualityDialog}>
-          <EnhancedDialogContent
+        <Dialog open={showQualityDialog} onOpenChange={setShowQualityDialog}>
+          <DialogContent
             contentType="form"
             className={showPreview ? "w-full max-w-6xl" : "w-full max-w-xl"}
           >
-            <EnhancedDialogHeader>
+            <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <EnhancedDialogTitle>
+                  <DialogTitle>
                     {editingQuality ? "Edit Quality Standard" : "Add New Quality Standard"}
-                  </EnhancedDialogTitle>
-                  <EnhancedDialogDescription>
+                  </DialogTitle>
+                  <DialogDescription>
                     Configure quality assurance requirements and standards
-                  </EnhancedDialogDescription>
+                  </DialogDescription>
                 </div>
                 <Button
                   variant="outline"
@@ -455,10 +460,10 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                   )}
                 </Button>
               </div>
-            </EnhancedDialogHeader>
+            </DialogHeader>
 
             <form onSubmit={handleQualitySubmit} className="flex min-h-0 flex-1 flex-col">
-              <EnhancedDialogBody className="space-y-4 px-1">
+              <DialogBody className="space-y-4 px-1">
                 <div className={showPreview ? "flex gap-6" : ""}>
                   <div className={showPreview ? "flex-1 space-y-4" : "space-y-4"}>
                     <div className="grid grid-cols-2 gap-4">
@@ -679,9 +684,9 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                     </div>
                   )}
                 </div>
-              </EnhancedDialogBody>
+              </DialogBody>
 
-              <EnhancedDialogFooter>
+              <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setShowQualityDialog(false)}>
                   Cancel
                 </Button>
@@ -691,10 +696,10 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                 >
                   {editingQuality ? "Update Quality Standard" : "Create Quality Standard"}
                 </Button>
-              </EnhancedDialogFooter>
+              </DialogFooter>
             </form>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+          </DialogContent>
+        </Dialog>
 
         {/* Quality Image Picker */}
         <StandardMediaSelectionDialog

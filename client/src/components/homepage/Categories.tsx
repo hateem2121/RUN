@@ -1,17 +1,13 @@
+import type React from "react";
 import { useState } from "react";
-import { useCategories } from "@/hooks/use-homepage-data";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { CATEGORIES } from "./constants";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
-const CATEGORY_TEXT_CLASSES =
-  "font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]";
-
-const Categories = () => {
-  const categories = useCategories(); // Dynamic Data Hook
+const Categories: React.FC = () => {
   const setCursor = useStore((state) => state.setCursor);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
     <section
@@ -19,50 +15,40 @@ const Categories = () => {
       className="relative w-full overflow-hidden bg-white py-32"
       aria-label="Product Categories"
     >
-      <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_#3300FF_0%,_transparent_50%)] opacity-5" />
+      <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
-        <div className="flex animate-marquee whitespace-nowrap">
+        <div className="flex animate-marquee whitespace-nowrap will-change-transform">
           {/* Main Content */}
-          <ul className="m-0 flex list-none p-0">
-            {categories.map((cat: { id: string; name: string; image: string }, index: number) => {
-              const isHovered = hoveredIndex === index;
-              const isAnyHovered = hoveredIndex !== null;
-              const isBlurred = isAnyHovered && !isHovered;
+          {CATEGORIES.map((cat, index) => {
+            const isHovered = hoveredIndex === index;
+            const isAnyHovered = hoveredIndex !== null;
+            const isBlurred = isAnyHovered && !isHovered;
 
-              return (
-                <li
-                  key={`${cat.id}-${index}`}
-                  className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${
-                    isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"
-                  }`}
-                  onMouseEnter={() => {
-                    setHoveredIndex(index);
-                    if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
-                  }}
-                  onMouseLeave={() => {
-                    setCursor(CursorVariant.DEFAULT);
-                  }}
-                >
-                  <h2
-                    className={CATEGORY_TEXT_CLASSES}
-                    style={{ WebkitTextStroke: "1px var(--color-foreground)" }}
-                  >
-                    {cat.name}{" "}
-                    <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
-                  </h2>
-                </li>
-              );
-            })}
-          </ul>
+            return (
+              <div
+                key={`${cat.id}-${index}`}
+                role="listitem"
+                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
+                onMouseEnter={() => {
+                  setHoveredIndex(index);
+                  if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
+                }}
+                onMouseLeave={() => {
+                  setCursor(CursorVariant.DEFAULT);
+                }}
+              >
+                <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                  {cat.name}{" "}
+                  <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
+                </h2>
+              </div>
+            );
+          })}
           {/* Duplicate Content for Marquee - Hidden from SR */}
-          <ul
-            aria-hidden="true"
-            className="m-0 flex list-none p-0"
-            aria-label="Product categories ticker"
-          >
-            {categories.map((cat: { id: string; name: string; image: string }, index: number) => {
+          <div aria-hidden="true" className="flex">
+            {CATEGORIES.map((cat, index) => {
               // Offset index for logic
               const virtualIndex = index + 50;
               const isHovered = hoveredIndex === virtualIndex;
@@ -70,11 +56,9 @@ const Categories = () => {
               const isBlurred = isAnyHovered && !isHovered;
 
               return (
-                <li
+                <div
                   key={`${cat.id}-dup-${index}`}
-                  className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${
-                    isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"
-                  }`}
+                  className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
                   onMouseEnter={() => {
                     setHoveredIndex(virtualIndex);
                     if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
@@ -83,25 +67,22 @@ const Categories = () => {
                     setCursor(CursorVariant.DEFAULT);
                   }}
                 >
-                  <h2
-                    className={CATEGORY_TEXT_CLASSES}
-                    style={{ WebkitTextStroke: "1px var(--color-foreground)" }}
-                  >
+                  <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                     {cat.name}{" "}
                     <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
                   </h2>
-                </li>
+                </div>
               );
             })}
-          </ul>
+          </div>
         </div>
 
         {/* Reverse Marquee - Entirely Decorative/Redundant */}
         <div
-          className="mt-[-2vw] flex animate-marquee-reverse whitespace-nowrap"
+          className="mt-[-2vw] flex animate-marquee-reverse whitespace-nowrap will-change-transform"
           aria-hidden="true"
         >
-          {[...categories, ...categories].reverse().map((cat, index) => {
+          {[...CATEGORIES, ...CATEGORIES].reverse().map((cat, index) => {
             // Offset index to avoid conflict with top row state
             const uniqueIndex = index + 100;
             const isHovered = hoveredIndex === uniqueIndex;
@@ -111,9 +92,7 @@ const Categories = () => {
             return (
               <div
                 key={`${cat.id}-rev-${index}`}
-                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${
-                  isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"
-                }`}
+                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
                 onMouseEnter={() => {
                   setHoveredIndex(uniqueIndex);
                   if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
@@ -122,15 +101,44 @@ const Categories = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2 className={CATEGORY_TEXT_CLASSES} style={{ WebkitTextStroke: "1px #050505" }}>
+                <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-[2vw] text-brand-lime">●</span>
+                  <span className="inline-block align-top text-[2vw] text-success">●</span>
                 </h2>
               </div>
             );
           })}
         </div>
       </div>
+
+      <style>{`
+        .stroke-text {
+          -webkit-text-stroke: 1px var(--color-surface-dark);
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
+        .animate-marquee-reverse {
+          animation: marquee-reverse 30s linear infinite;
+        }
+        /* Pause on hover for easier reading */
+        .flex:hover .animate-marquee, .flex:hover .animate-marquee-reverse {
+            animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee, .animate-marquee-reverse {
+            animation-play-state: paused;
+          }
+        }
+      `}</style>
     </section>
   );
 };

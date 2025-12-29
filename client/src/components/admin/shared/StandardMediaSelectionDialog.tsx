@@ -7,7 +7,7 @@
  * all admin components. All admin pages should follow this exact pattern.
  *
  * KEY BENEFITS:
- * - Consistent sizing using EnhancedDialogContent contentType='media-library'
+ * - Consistent sizing using DialogContent contentType='media-library'
  * - Real asset data integration (no mock data)
  * - Proper responsive behavior
  * - Standard UX patterns
@@ -18,12 +18,12 @@ import type { MediaAsset } from "@shared/schema";
 import { lazy, Suspense } from "react";
 import { MediaLibraryEnhancedProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // CRITICAL FIX: Lazy-load MediaSelectionWrapperUnified to break circular dependency chain
 // This prevents: StandardMediaSelectionDialog → MediaSelectionWrapperUnified → MediaLibraryContainerEnhanced
@@ -64,8 +64,8 @@ interface StandardMediaSelectionDialogProps {
  * STANDARD PATTERN: All admin components should follow this exact structure
  *
  * REQUIRED ELEMENTS:
- * 1. EnhancedDialog with open/onOpenChange props
- * 2. EnhancedDialogContent with contentType='media-library'
+ * 1. Dialog with open/onOpenChange props
+ * 2. DialogContent with contentType='media-library'
  * 3. MediaLibraryEnhancedProvider wrapper
  * 4. MediaSelectionWrapperUnified with className="h-full"
  * 5. Proper event handlers
@@ -86,25 +86,25 @@ export function StandardMediaSelectionDialog({
   };
 
   return (
-    <EnhancedDialog open={isOpen} onOpenChange={onClose}>
-      <EnhancedDialogContent
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent
         contentType="media-library"
-        preferredSize="5xl" // Optimal size for media selection across all devices - EnhancedDialogContent handles all sizing
+        preferredSize="5xl" // Optimal size for media selection across all devices - DialogContent handles all sizing
         className="flex flex-col" // Explicit flex layout for proper slot distribution
       >
-        <EnhancedDialogHeader className="shrink-0 border-border border-b pb-4">
-          <EnhancedDialogTitle>{title}</EnhancedDialogTitle>
-        </EnhancedDialogHeader>
+        <DialogHeader className="shrink-0 border-border border-b pb-4">
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
 
         {/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
-        <EnhancedDialogBody className="p-0">
+        <DialogBody className="p-0">
           <MediaLibraryEnhancedProvider>
             <Suspense
               fallback={
-                <div className="flex h-[600px] items-center justify-center">
+                <div className="flex h-modal-md items-center justify-center">
                   <div className="text-center">
-                    <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-                    <p className="text-gray-600 text-sm">Loading media library...</p>
+                    <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+                    <p className="text-muted-foreground text-sm">Loading media library...</p>
                   </div>
                 </div>
               }
@@ -120,9 +120,9 @@ export function StandardMediaSelectionDialog({
               />
             </Suspense>
           </MediaLibraryEnhancedProvider>
-        </EnhancedDialogBody>
-      </EnhancedDialogContent>
-    </EnhancedDialog>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -154,7 +154,7 @@ export function StandardMediaSelectionDialog({
  *
  * MIGRATION GUIDE:
  * - Replace all custom media picker implementations with this pattern
- * - Remove hardcoded sizing (max-w-6xl, h-[85vh], etc.)
+ * - Remove hardcoded sizing (max-w-6xl, h-modal-lg, etc.)
  * - Replace MediaLibraryEnhancedProvider + MediaSelectionWrapperUnified boilerplate
  * - Use contentType='media-library' for automatic optimal sizing
  */

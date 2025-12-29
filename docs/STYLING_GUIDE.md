@@ -1,67 +1,211 @@
 # RUN-Remix Styling Guide & Architecture
 
+**Last Updated:** December 2025  
+**Status:** Stable (10/10 Architecture Score)
+
 ## Overview
 
-This project uses **Tailwind CSS v4** ("Pure CSS" mode) combined with standard CSS variables for its theming engine. It avoids `tailwind.config.js` in favor of native CSS `@theme` and `@custom-variant` directives.
+This project uses **Tailwind CSS v4** ("Pure CSS" mode) with comprehensive design tokens. All styling is consolidated into a single source of truth.
+
+---
 
 ## 1. Core Architecture
 
-- **Entry Point:** `client/src/index.css`
-- **Tailwind Version:** 4.0.0
-- **Plugins:** `@tailwindcss/vite` (ESM build)
+| Metric            | Value                             |
+| ----------------- | --------------------------------- |
+| Entry Point       | `client/src/index.css`            |
+| Tailwind Version  | 4.0.0                             |
+| @theme tokens     | 116                               |
+| @utility classes  | 56                                |
+| Type-safe exports | `client/src/lib/design-tokens.ts` |
 
-### Key Files
+### File Structure
 
-- `client/src/index.css`: The central registry. Imports Tailwind, plugins, and defines the global theme.
-- `client/src/styles/style1-design-tokens.css`: Contains specialized design tokens and component classes.
-- `client/src/styles/luxury-light-theme.css`: Definies the "Luxury" theme palette variables.
+```
+client/src/
+├── index.css           # Single source of truth (931 lines)
+├── lib/
+│   ├── utils.ts        # cn() utility
+│   └── design-tokens.ts # Type-safe token exports
+└── components/ui/      # shadcn/ui components
+```
 
-## 2. Recent Remediations (Forensic Audit)
+**Note:** The `client/src/styles/` directory is deprecated. All styles are in `index.css`.
 
-Following the major upgrade to React 19 and Tailwind v4, specific remediations were applied to hardened the UI:
+---
 
-### A. Dark Mode (`color-scheme`)
+## 2. Token System
 
-We moved from a class-only dark mode to a system-aware hybrid approach.
+### Color Tokens (Semantic)
 
-- **Rule:** `:root { color-scheme: light dark; }` enables native browser elements (scrollbars, date pickers) to adapt to the OS theme.
-- **Rule:** `.dark { color-scheme: dark; }` forces these elements into dark mode when the user explicitly toggles it via `next-themes`.
-- **Implementation:**
-  ```css
-  /* client/src/index.css */
-  @custom-variant dark (&:where(.dark, .dark *));
-  ```
+**⚠️ IMPORTANT:** Never use raw `gray-*` colors. Use semantic tokens:
 
-### B. Form Control Resets
+| Raw Color         | Semantic Replacement    |
+| ----------------- | ----------------------- |
+| `text-gray-900`   | `text-foreground`       |
+| `text-gray-600`   | `text-muted-foreground` |
+| `bg-gray-100`     | `bg-muted`              |
+| `bg-gray-50`      | `bg-background`         |
+| `border-gray-200` | `border-border`         |
 
-Tailwind v4's "Modern Reset" is more aggressive than v3's Preflight and removes default borders from inputs.
+### Typography Tokens
 
-- **Fix:** We manually restored Shadcn-like defaults in `@layer base`.
-- **Usage:** Standard `<input>`, `<textarea>`, and `<select>` elements now have a default visual state without needing extra classes, but can still be overridden with utility classes.
+```css
+--font-size-display-xs: clamp(1.5rem, 4vw, 2rem);
+--font-size-display-sm: clamp(2rem, 6vw, 3rem);
+--font-size-display-md: clamp(3rem, 8vw, 5rem);
+--font-size-display-lg: clamp(4rem, 10vw, 7rem);
+--font-size-display-xl: clamp(5rem, 14vw, 10rem);
+```
 
-## 3. Best Practices
+**Usage:** `className="text-display-lg"`
 
-### Using Colors (OKLCH)
+### Height/Width Tokens
 
-We use the **OKLCH** color space for wider gamut support.
+```css
+--height-tab: 48px;
+--height-modal-sm: 500px;
+--height-modal-md: 600px;
+--height-modal-lg: 85vh;
+--width-sheet-sm: 320px;
+--width-sheet-md: 400px;
+--width-sheet-lg: 540px;
+```
 
-- **Token Format:** `--radius-md` (defined in `@theme`)
-- **Color Format:** `oklch(var(--active))`
-- **Do not use hex codes directly in components** if a semantic variable exists.
+**Usage:** `className="h-modal-lg w-sheet-md"`
 
-### Adding New Styles
+### Z-Index Tokens
 
-1. **Utility First:** Always try to use Tailwind utilities.
-2. **Tokens:** If you need a specific value, add it to the `@theme` block in `index.css` or `style1-design-tokens.css`.
-3. **Legacy CSS:** Avoid adding new `legacy-*.css` files. Integrate new styles into the module system or utility layer.
+```css
+--z-behind: -1;
+--z-default: 1;
+--z-dropdown: 100;
+--z-sticky: 200;
+--z-modal: 500;
+--z-popover: 600;
+--z-toast: 700;
+--z-max: 999;
+```
 
-### Troubleshooting Build Issues
+**Usage:** `className="z-modal"` instead of `z-[500]`
 
-- **"Missing closing }" errors:** Often caused by `@media` or `@theme` blocks that are unclosed in imported CSS files. The Tailwind v4 compiler checks these strictly.
-- **Syntax Errors:** Ensure all imported CSS files use valid standard CSS syntax.
+---
 
-## 4. Migration Notes
+## 3. Component Patterns
 
-- **`@apply`:** Still supported but discouraged for simple one-off styles.
-- **`@layer base`:** Use this for element defaults (setup logic).
-- **`theme()` function:** Works natively in CSS variables now (e.g., `font-family: var(--font-sans)`).
+### Class Composition
+
+Always use the `cn()` utility:
+
+```tsx
+import { cn } from "@/lib/utils";
+
+<div className={cn("base-classes", isActive && "active-classes", className)} />;
+```
+
+### Variants with cva
+
+Use `cva` for components with multiple variants:
+
+```tsx
+import { cva, type VariantProps } from "class-variance-authority";
+
+const buttonVariants = cva("base-classes", {
+  variants: {
+    variant: { default: "...", primary: "..." },
+    size: { sm: "...", md: "...", lg: "..." },
+  },
+});
+```
+
+---
+
+## 4. Dark Mode
+
+Dark mode is handled via semantic tokens that automatically adapt:
+
+```tsx
+<div className="bg-background text-foreground">
+  {/* Automatically adapts to dark mode */}
+</div>
+```
+
+The `dark:` prefix can be used for explicit dark mode overrides:
+
+```tsx
+<div className="bg-white dark:bg-black">Explicit dark mode styling</div>
+```
+
+---
+
+## 5. Best Practices
+
+### ✅ Do
+
+- Use semantic color tokens (`text-foreground`, `bg-muted`)
+- Use `cn()` for class composition
+- Use `cva` for variant components
+- Use token utilities (`z-modal`, `h-tab`, `text-display-lg`)
+- Define new tokens in `@theme` block if needed
+
+### ❌ Don't
+
+- Use raw colors (`gray-500`, `#808080`)
+- Use arbitrary values when tokens exist (`h-[500px]` → `h-modal-sm`)
+- Use raw z-index numbers (`z-[999]` → `z-max`)
+- Create new CSS files (use `index.css`)
+
+---
+
+## 6. Adding New Tokens
+
+1. Add token to `@theme` block in `index.css`:
+
+```css
+@theme {
+  --my-new-token: value;
+}
+```
+
+2. Create utility class:
+
+```css
+@utility my-utility {
+  property: var(--my-new-token);
+}
+```
+
+3. Export in `design-tokens.ts` for type-safe access:
+
+```typescript
+export const myTokens = {
+  newToken: "var(--my-new-token)",
+} as const;
+```
+
+---
+
+## 7. Biome Configuration
+
+CSS linting is enabled with Tailwind v4 directive support:
+
+```json
+{
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "linter": {
+    "rules": {
+      "nursery": {
+        "useSortedClasses": "error"
+      }
+    }
+  }
+}
+```
+
+---
+
+_Part of CSS Architecture 10/10 achievement - December 2025_

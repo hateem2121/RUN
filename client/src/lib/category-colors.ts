@@ -30,8 +30,8 @@ export const categoryColorSchemes: Record<string, CategoryColorScheme> = {
     text: "#1A1A1A",
     border: "#4A90E2", // Subtle blue hint for category
     hover: "#1A1A1A",
-    badge: "bg-gray-100 text-gray-800",
-    gradient: "from-gray-50 to-gray-100",
+    badge: "bg-muted text-foreground",
+    gradient: "from-muted/50 to-muted",
     tailwindClass: "gray",
   },
   athletic: {
@@ -43,8 +43,8 @@ export const categoryColorSchemes: Record<string, CategoryColorScheme> = {
     text: "#1A1A1A",
     border: "#50C878", // Subtle green hint
     hover: "#1A1A1A",
-    badge: "bg-gray-100 text-gray-800",
-    gradient: "from-gray-50 to-gray-100",
+    badge: "bg-muted text-foreground",
+    gradient: "from-muted/50 to-muted",
     tailwindClass: "gray",
   },
   running: {
@@ -56,8 +56,8 @@ export const categoryColorSchemes: Record<string, CategoryColorScheme> = {
     text: "#1A1A1A",
     border: "#DC143C", // Subtle red hint
     hover: "#1A1A1A",
-    badge: "bg-gray-100 text-gray-800",
-    gradient: "from-gray-50 to-gray-100",
+    badge: "bg-muted text-foreground",
+    gradient: "from-muted/50 to-muted",
     tailwindClass: "gray",
   },
 
@@ -140,8 +140,8 @@ export const categoryColorSchemes: Record<string, CategoryColorScheme> = {
     text: "#111827",
     border: "#374151",
     hover: "#1f2937",
-    badge: "bg-gray-100 text-gray-800",
-    gradient: "from-gray-500 to-gray-600",
+    badge: "bg-muted text-foreground",
+    gradient: "from-muted to-muted/80",
     tailwindClass: "gray",
   },
   luxury: {
@@ -168,8 +168,8 @@ export const categoryColorSchemes: Record<string, CategoryColorScheme> = {
     text: "#374151",
     border: "#6b7280",
     hover: "#4b5563",
-    badge: "bg-gray-100 text-gray-600",
-    gradient: "from-gray-500 to-gray-600",
+    badge: "bg-muted text-muted-foreground",
+    gradient: "from-muted to-muted/80",
     tailwindClass: "gray",
   },
 };
@@ -211,10 +211,10 @@ export function getCategoryColorScheme(
 
 const categoryClassMap = {
   gray: {
-    border: "border-gray-500",
-    bg: "bg-gray-50",
-    text: "text-gray-700",
-    hover: "hover:bg-gray-100",
+    border: "border-border",
+    bg: "bg-muted/50",
+    text: "text-foreground/80",
+    hover: "hover:bg-muted",
   },
   emerald: {
     border: "border-emerald-500",

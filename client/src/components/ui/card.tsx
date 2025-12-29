@@ -1,14 +1,46 @@
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Card = React.memo(({ className, ref, ...props }: React.ComponentProps<"div">) => (
+const cardVariants = cva("rounded-xl transition-all duration-300", {
+  variants: {
+    variant: {
+      default: "border border-border bg-card text-card-foreground shadow-card",
+      // Premium glass effect with glow (migrated from glass-card)
+      "glass-premium":
+        "relative overflow-hidden border border-white/10 bg-(--glass-premium) text-white shadow-glass shadow-glow-lg backdrop-blur-md md:shadow-glow-lg-desktop dark:border-white/5",
+      // Subtle glass for lighter use cases
+      "glass-subtle": "border border-white/5 bg-white/5 text-white shadow-none backdrop-blur-sm",
+      // Elevated with stronger shadow
+      elevated: "border border-border bg-card text-card-foreground shadow-popup",
+      // Outline only (no fill)
+      outline: "border border-border bg-transparent text-card-foreground",
+    },
+    size: {
+      default: "",
+      sm: "p-3",
+      md: "p-4",
+      lg: "p-6",
+    },
+    interactive: {
+      true: "cursor-pointer transition-all duration-300 hover:border-primary/20 hover:shadow-popup",
+      false: "",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+    interactive: false,
+  },
+});
+
+interface CardProps extends React.ComponentProps<"div">, VariantProps<typeof cardVariants> {}
+
+const Card = React.memo(({ className, variant, size, interactive, ref, ...props }: CardProps) => (
   <div
     ref={ref}
-    className={cn(
-      "rounded-lg border border-border bg-card text-card-foreground shadow-xs",
-      className,
-    )}
+    className={cn(cardVariants({ variant, size, interactive }), className)}
     {...props}
   />
 ));
@@ -43,4 +75,4 @@ const CardFooter = React.memo(({ className, ref, ...props }: React.ComponentProp
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, cardVariants };

@@ -36,7 +36,7 @@ export function LazyMediaVideo({
   controls = true,
   onLoad,
   onError,
-  placeholderClassName = "bg-gray-100 dark:bg-gray-800",
+  placeholderClassName = "bg-surface-subtle dark:bg-muted",
   posterImage,
 }: LazyMediaVideoProps) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -128,7 +128,7 @@ export function LazyMediaVideo({
     return (
       <div
         ref={containerRef}
-        className={cn("center-flex text-gray-400", placeholderClassName, className)}
+        className={cn("center-flex text-text-subtle", placeholderClassName, className)}
         style={style}
       >
         <span className="text-sm">No video</span>

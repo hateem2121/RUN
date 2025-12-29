@@ -63,7 +63,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
       <h3 className="mb-2 font-semibold text-green-800">✅ Batch Loading Results</h3>
 
       <div className="mb-4 rounded border bg-white p-3">
-        <div className="text-gray-600 text-sm">
+        <div className="text-muted-foreground text-sm">
           <strong>Performance Impact:</strong>
         </div>
         <div className="font-semibold text-green-700 text-lg">
@@ -78,7 +78,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
 
           return (
             <div key={assetId} className="rounded border bg-white p-2">
-              <div className="mb-1 text-gray-500 text-xs">
+              <div className="mb-1 text-muted-foreground text-xs">
                 Asset {assetId} {result.isInline && "📦 INLINED"}
               </div>
               <img
@@ -87,7 +87,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
                 className="h-20 w-full rounded object-cover"
                 data-testid={`batched-image-${assetId}`}
               />
-              <div className="mt-1 text-gray-400 text-xs">
+              <div className="mt-1 text-muted-foreground/70 text-xs">
                 {result.isInline ? "No HTTP request!" : `${result.loadTime.toFixed(1)}ms`}
               </div>
             </div>
@@ -95,7 +95,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
         })}
       </div>
 
-      <div className="mt-3 text-gray-500 text-xs">
+      <div className="mt-3 text-muted-foreground text-xs">
         🎯 This demo proves Phase 1A eliminates N+1 cascade for small assets
       </div>
     </div>

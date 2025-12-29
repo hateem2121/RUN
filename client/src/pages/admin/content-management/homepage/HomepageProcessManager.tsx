@@ -28,11 +28,7 @@ import { useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogTrigger,
-} from "@/components/ui/enhanced-dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -386,17 +382,14 @@ export function HomepageProcessManager({
               {(processCards as any[]).length} cards
             </span>
 
-            <EnhancedDialog
-              open={isProcessCardDialogOpen}
-              onOpenChange={setIsProcessCardDialogOpen}
-            >
-              <EnhancedDialogTrigger asChild>
+            <Dialog open={isProcessCardDialogOpen} onOpenChange={setIsProcessCardDialogOpen}>
+              <DialogTrigger asChild>
                 <Button onClick={resetForm}>
                   <Plus className="mr-2 h-4 w-4" />
                   Add Process Card
                 </Button>
-              </EnhancedDialogTrigger>
-              <EnhancedDialogContent className="max-w-2xl" nestingLevel={0}>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl" nestingLevel={0}>
                 <div className="space-y-4 py-4">
                   <h2 className="font-bold text-lg">
                     {editingProcessCardId ? "Edit Process Card" : "New Process Card"}
@@ -497,8 +490,8 @@ export function HomepageProcessManager({
                     </div>
                   </div>
                 </div>
-              </EnhancedDialogContent>
-            </EnhancedDialog>
+              </DialogContent>
+            </Dialog>
 
             {/* Media Picker Dialog - Rendered at top level of component or here */}
             <StandardMediaSelectionDialog

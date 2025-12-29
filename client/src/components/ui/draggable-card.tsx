@@ -211,15 +211,15 @@ export const DraggableCardBody = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "transform-3d group relative min-h-96 w-80 overflow-hidden rounded-[20px] p-6",
+        "group transform-3d relative min-h-96 w-80 overflow-hidden rounded-[20px] p-6",
         "bg-white/10 backdrop-blur-md dark:bg-white/5",
-        "border border-gray-800/60 dark:border-gray-900/70",
+        "border border-border/60 dark:border-border/70",
         "shadow-glow-lg",
         className,
       )}
     >
       {/* Gradient overlay for depth */}
-      <div className="pointer-events-none absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+      <div className="pointer-events-none absolute inset-0 rounded-[20px] bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
       {/* Inner glow */}
       <div className="card-border-overlay rounded-xl" />

@@ -63,8 +63,8 @@ export function OptimizedImage({
 
   if (hasError) {
     return (
-      <div className={cn("center-flex bg-gray-200", className)}>
-        <span className="text-gray-400">Failed to load image</span>
+      <div className={cn("center-flex bg-muted/20", className)}>
+        <span className="text-muted-foreground/70">Failed to load image</span>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export function OptimizedImage({
   return (
     <>
       {/* Placeholder while loading */}
-      {!isLoaded && <div className={cn("absolute inset-0 animate-pulse bg-gray-100", className)} />}
+      {!isLoaded && <div className={cn("absolute inset-0 animate-pulse bg-muted", className)} />}
 
       {/* Actual image */}
       <img

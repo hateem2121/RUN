@@ -18,12 +18,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -373,14 +373,16 @@ export default function CategoryManagementSimplified() {
                 {deletedCategories.map((category: any) => (
                   <div
                     key={category.id}
-                    className="flex items-center justify-between rounded-lg border border-red-200 bg-white p-4 dark:border-red-900 dark:bg-gray-900"
+                    className="flex items-center justify-between rounded-lg border border-red-200 bg-white p-4 dark:border-red-900 dark:bg-foreground"
                     data-testid={`deleted-category-${category.id}`}
                   >
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                      <h3 className="font-medium text-foreground dark:text-foreground">
                         {category.name}
                       </h3>
-                      <p className="text-gray-600 text-sm dark:text-gray-400">{category.slug}</p>
+                      <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                        {category.slug}
+                      </p>
                       {category.deletedAt && (
                         <p className="mt-1 text-red-600 text-xs dark:text-red-400">
                           Deleted: {new Date(category.deletedAt).toLocaleDateString()}
@@ -428,18 +430,15 @@ export default function CategoryManagementSimplified() {
         mode={uiState.editingCategory ? "edit" : "create"}
       />
 
-      <EnhancedDialog
-        open={uiState.showDeleteDialog}
-        onOpenChange={(open) => !open && closeDialogs()}
-      >
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Delete Category</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={uiState.showDeleteDialog} onOpenChange={(open) => !open && closeDialogs()}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Delete Category</DialogTitle>
+            <DialogDescription>
               Are you sure you want to delete "{uiState.deletingCategory?.name}
               "? This category will be moved to the deleted items and can be restored later.
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex justify-end space-x-4 pt-4">
             <Button type="button" variant="outline" onClick={closeDialogs}>
               Cancel
@@ -455,21 +454,18 @@ export default function CategoryManagementSimplified() {
               Delete
             </Button>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
-      <EnhancedDialog
-        open={uiState.showRestoreDialog}
-        onOpenChange={(open) => !open && closeDialogs()}
-      >
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Restore Category</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={uiState.showRestoreDialog} onOpenChange={(open) => !open && closeDialogs()}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Restore Category</DialogTitle>
+            <DialogDescription>
               Are you sure you want to restore "{uiState.restoringCategory?.name}"? This will make
               the category active again.
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex justify-end space-x-4 pt-4">
             <Button type="button" variant="outline" onClick={closeDialogs}>
               Cancel
@@ -486,19 +482,16 @@ export default function CategoryManagementSimplified() {
               Restore
             </Button>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
-      <EnhancedDialog
-        open={uiState.showHardDeleteDialog}
-        onOpenChange={(open) => !open && closeDialogs()}
-      >
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="text-red-600 dark:text-red-400">
+      <Dialog open={uiState.showHardDeleteDialog} onOpenChange={(open) => !open && closeDialogs()}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle className="text-red-600 dark:text-red-400">
               Permanently Delete Category
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               <div className="space-y-2">
                 <p className="font-semibold text-red-600 dark:text-red-400">
                   ⚠️ WARNING: This action is irreversible!
@@ -512,8 +505,8 @@ export default function CategoryManagementSimplified() {
                   undone.
                 </p>
               </div>
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex justify-end space-x-4 pt-4">
             <Button type="button" variant="outline" onClick={closeDialogs}>
               Cancel
@@ -530,8 +523,8 @@ export default function CategoryManagementSimplified() {
               Delete Permanently
             </Button>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -44,14 +44,14 @@ interface CategoryDisplayProps {
 
 // Helper functions
 const getProductCountColor = (count: number) => {
-  if (count === 0) return "bg-gray-100 text-gray-600";
+  if (count === 0) return "bg-muted text-muted-foreground";
   if (count <= 10) return "bg-blue-100 text-blue-700";
   if (count <= 50) return "bg-green-100 text-green-700";
   return "bg-purple-100 text-purple-700";
 };
 
 const CategoryImage = memo(({ category }: { category: Category }) => (
-  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
     {category.primaryImageId ? (
       <img
         src={`/api/media/${category.primaryImageId}`}
@@ -62,11 +62,11 @@ const CategoryImage = memo(({ category }: { category: Category }) => (
           target.style.display = "none";
           const parent = target.parentElement!;
           parent.innerHTML =
-            '<div class="w-full h-full center-flex text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
+            '<div class="w-full h-full center-flex text-muted-foreground/70"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
         }}
       />
     ) : (
-      <div className="flex h-full w-full items-center justify-center text-gray-400">
+      <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
         <Image className="h-5 w-5" />
       </div>
     )}
@@ -136,7 +136,7 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
     <tr
       ref={setNodeRef}
       style={style}
-      className={`group transition-colors hover:bg-gray-50 ${isSelected ? "bg-blue-50" : ""}
+      className={`group transition-colors hover:bg-background ${isSelected ? "bg-blue-50" : ""}
         ${isDragging ? "border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""}
       `}
     >
@@ -144,7 +144,7 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
         <div className="flex items-center gap-2">
           {enableDragDrop && (
             <button
-              className="cursor-grab text-gray-400 transition-colors hover:text-gray-600 active:cursor-grabbing"
+              className="cursor-grab text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
               {...attributes}
               {...listeners}
               title="Drag to reorder"
@@ -164,12 +164,12 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
       </td>
       <td className="px-4 py-3">
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{category.name}</span>
-          <span className="text-gray-500 text-sm">{category.slug}</span>
+          <span className="font-medium text-foreground">{category.name}</span>
+          <span className="text-muted-foreground text-sm">{category.slug}</span>
         </div>
       </td>
       <td className="px-4 py-3">
-        <span className="text-gray-600 text-sm">{parentName || "No parent"}</span>
+        <span className="text-muted-foreground text-sm">{parentName || "No parent"}</span>
       </td>
       <td className="px-4 py-3">
         <Badge className={getProductCountColor(productCount)}>{productCount}</Badge>
@@ -235,7 +235,7 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
               />
               {enableDragDrop && (
                 <button
-                  className="cursor-grab p-1 text-gray-400 transition-colors hover:text-gray-600 active:cursor-grabbing"
+                  className="cursor-grab p-1 text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
                   {...attributes}
                   {...listeners}
                   title="Drag to reorder"
@@ -255,14 +255,14 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
           <div className="flex items-center space-x-3">
             <CategoryImage category={category} />
             <div className="min-w-0 flex-1">
-              <h3 className="truncate font-medium text-gray-900">{category.name}</h3>
-              <p className="truncate text-gray-500 text-sm">{category.slug}</p>
+              <h3 className="truncate font-medium text-foreground">{category.name}</h3>
+              <p className="truncate text-muted-foreground text-sm">{category.slug}</p>
             </div>
           </div>
 
           <div className="space-y-2">
             {category.description && (
-              <p className="line-clamp-2 text-gray-600 text-sm">{category.description}</p>
+              <p className="line-clamp-2 text-muted-foreground text-sm">{category.description}</p>
             )}
 
             <div className="flex items-center justify-between">
@@ -314,7 +314,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center rounded-lg p-2 transition-colors hover:bg-gray-50 ${
+      className={`group flex items-center rounded-lg p-2 transition-colors hover:bg-background ${
         isSelected ? "bg-blue-50" : ""
       }
         ${
@@ -343,7 +343,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
       <div className="mr-3 flex items-center gap-2" style={{ paddingLeft: `${indent}px` }}>
         {enableDragDrop && (
           <button
-            className="cursor-grab p-1 text-gray-400 transition-colors hover:text-gray-600 active:cursor-grabbing"
+            className="cursor-grab p-1 text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
             {...attributes}
             {...listeners}
             title="Drag to reorder"
@@ -363,13 +363,13 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
         <CategoryImage category={category} />
         <div className="ml-3 min-w-0 flex-1">
           <div className="flex items-center space-x-2">
-            <span className="truncate font-medium text-gray-900">{category.name}</span>
+            <span className="truncate font-medium text-foreground">{category.name}</span>
             <Badge className={getProductCountColor(productCount)}>{productCount}</Badge>
             <Badge variant={category.isActive ? "default" : "secondary"} className="text-xs">
               {category.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
-          <p className="truncate text-gray-500 text-sm">{category.slug}</p>
+          <p className="truncate text-muted-foreground text-sm">{category.slug}</p>
         </div>
       </div>
 

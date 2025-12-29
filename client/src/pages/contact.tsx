@@ -148,14 +148,14 @@ export default function Contact() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="h-12 w-12 animate-spin rounded-full border-gray-900 border-b-2"></div>
+      <div className="flex min-h-screen items-center justify-center bg-muted/30">
+        <div className="h-12 w-12 animate-spin rounded-full border-foreground border-b-2"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-32 pb-24 text-gray-900">
+    <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
       <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
           {/* Left Column: Contact Form */}
@@ -167,7 +167,7 @@ export default function Contact() {
               {!showSuccess ? (
                 <div>
                   <Typography.H1
-                    className="mb-8 font-bold text-3xl text-gray-800 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
+                    className="mb-8 font-bold text-3xl text-foreground/90 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
                     style={{ fontFamily: "'Anton', sans-serif" }}
                   >
                     {contactConfig?.heroTitle || "DROP US A MESSAGE"}
@@ -268,7 +268,7 @@ export default function Contact() {
                             type="button"
                             data-testid="button-country-dropdown"
                             onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs transition-colors hover:border-gray-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                            className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
                           >
                             <span className="flex items-center">
                               {selectedCountry && (
@@ -284,7 +284,7 @@ export default function Contact() {
                             </span>
                           </button>
                           {showCountryDropdown && (
-                            <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 text-base shadow-xl sm:text-sm">
+                            <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
                               <div className="p-2">
                                 <Input
                                   type="text"
@@ -304,7 +304,7 @@ export default function Contact() {
                                       setShowCountryDropdown(false);
                                       setCountrySearch("");
                                     }}
-                                    className="cursor-pointer select-none py-2 pr-9 pl-3 text-gray-900 hover:bg-indigo-600 hover:text-white"
+                                    className="cursor-pointer select-none py-2 pr-9 pl-3 text-foreground hover:bg-primary hover:text-primary-foreground"
                                   >
                                     <div className="flex items-center">
                                       <img
@@ -337,12 +337,12 @@ export default function Contact() {
                             type="button"
                             data-testid="button-platform-dropdown"
                             onClick={() => setShowPlatformDropdown(!showPlatformDropdown)}
-                            className="relative w-full cursor-default rounded-lg border border-gray-300 bg-white p-3 text-left shadow-sm-xs transition-colors hover:border-gray-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                            className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
                           >
                             <span className="block truncate">{selectedPlatform}</span>
                           </button>
                           {showPlatformDropdown && (
-                            <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 text-base shadow-xl sm:text-sm">
+                            <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
                               {platforms.map((platform) => (
                                 <li
                                   key={platform}
@@ -350,7 +350,7 @@ export default function Contact() {
                                     form.setValue("platform", platform);
                                     setShowPlatformDropdown(false);
                                   }}
-                                  className="cursor-pointer select-none px-3 py-2 text-gray-900 hover:bg-indigo-600 hover:text-white"
+                                  className="cursor-pointer select-none px-3 py-2 text-foreground hover:bg-primary hover:text-primary-foreground"
                                 >
                                   {platform}
                                 </li>
@@ -363,8 +363,8 @@ export default function Contact() {
                         <Label htmlFor="contactNumber" className={LABEL_CLASSES}>
                           Contact Number / Handle
                         </Label>
-                        <div className="flex items-center overflow-hidden rounded-lg border border-gray-300 shadow-sm-xs transition-colors focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600">
-                          <span className="inline-flex items-center border-gray-300 border-r bg-gray-50 px-3 text-gray-700 sm:text-sm">
+                        <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary">
+                          <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm">
                             {selectedCountry ? `+${selectedCountry.phone}` : "--"}
                           </span>
                           <Input
@@ -456,7 +456,7 @@ export default function Contact() {
                           ? "Sending..."
                           : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                       </Button>
-                      <Typography.P className="mt-4 text-center text-gray-500 text-xs">
+                      <Typography.P className="mt-4 text-center text-muted-foreground text-xs">
                         {contactConfig?.formPrivacyText ||
                           "We value your privacy and will never share your information."}
                       </Typography.P>
@@ -468,10 +468,10 @@ export default function Contact() {
                   <div className="mb-6 inline-block rounded-full bg-green-100 p-4">
                     <CheckCircle2 className="h-12 w-12 text-green-600" />
                   </div>
-                  <Typography.H2 className="mb-3 font-bold text-3xl text-gray-800">
+                  <Typography.H2 className="mb-3 font-bold text-3xl text-foreground/90">
                     {contactConfig?.successHeading || "Thank you!"}
                   </Typography.H2>
-                  <Typography.P className="mb-8 text-gray-600">
+                  <Typography.P className="mb-8 text-muted-foreground">
                     {contactConfig?.successMessage ||
                       "We've received your message and will be in touch shortly."}
                   </Typography.P>
@@ -491,11 +491,11 @@ export default function Contact() {
           <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
             {/* Location Box */}
             <ContactInfoCard isMobile={isMobile}>
-              <MapPin className="mb-4 h-6 w-6 text-gray-800" />
+              <MapPin className="mb-4 h-6 w-6 text-foreground/90" />
               <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                 LOCATION
               </Typography.H2>
-              <Typography.P className="mb-6 text-gray-600">
+              <Typography.P className="mb-6 text-muted-foreground">
                 {contactConfig?.locationLine1 || "123 Main Street,"}
                 <br />
                 {contactConfig?.locationLine2 || "Anytown, USA 12345"}
@@ -507,11 +507,11 @@ export default function Contact() {
 
             {/* Contact Box */}
             <ContactInfoCard isMobile={isMobile}>
-              <Mail className="mb-4 h-6 w-6 text-gray-800" />
+              <Mail className="mb-4 h-6 w-6 text-foreground/90" />
               <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                 CONTACT
               </Typography.H2>
-              <ul className="space-y-2 text-gray-600">
+              <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <a
                     href={`mailto:${contactConfig?.email || "info@example.com"}`}
@@ -535,11 +535,11 @@ export default function Contact() {
 
             {/* Trading Hours Box */}
             <ContactInfoCard isMobile={isMobile}>
-              <Clock className="mb-4 h-6 w-6 text-gray-800" />
+              <Clock className="mb-4 h-6 w-6 text-foreground/90" />
               <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                 TRADING HOURS
               </Typography.H2>
-              <div className="space-y-1 text-gray-600">
+              <div className="space-y-1 text-muted-foreground">
                 {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
                   contactConfig.tradingHours.map((hours, index) => (
                     <Typography.P key={index}>
@@ -564,11 +564,11 @@ export default function Contact() {
 
             {/* Social Links Box */}
             <ContactInfoCard isMobile={isMobile}>
-              <Share2 className="mb-4 h-6 w-6 text-gray-800" />
+              <Share2 className="mb-4 h-6 w-6 text-foreground/90" />
               <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                 FOLLOW US
               </Typography.H2>
-              <ul className="space-y-2 text-gray-600">
+              <ul className="space-y-2 text-muted-foreground">
                 {contactConfig?.socialLinks && Object.keys(contactConfig.socialLinks).length > 0 ? (
                   Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
                     <li key={platform}>
@@ -617,8 +617,8 @@ export default function Contact() {
 }
 
 const INPUT_CLASSES =
-  "block w-full rounded-lg border-gray-300 p-3 shadow-sm-xs transition-colors focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600";
-const LABEL_CLASSES = "mb-2 block font-medium text-gray-700 text-sm";
+  "block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary";
+const LABEL_CLASSES = "mb-2 block font-medium text-foreground/80 text-sm";
 
 const ContactInfoCard = ({
   children,

@@ -60,12 +60,12 @@ export default function Certifications() {
   const getCertificateDetails = (cert: Certificate) => (
     <div className="space-y-3 text-sm">
       <div>
-        <span className="font-medium text-gray-700">Issuing Body:</span>
-        <Typography.P className="text-gray-600">{cert.issuingBody}</Typography.P>
+        <span className="font-medium text-foreground/80">Issuing Body:</span>
+        <Typography.P className="text-muted-foreground">{cert.issuingBody}</Typography.P>
       </div>
       {cert.documentUrl && (
         <div>
-          <span className="font-medium text-gray-700">Documentation:</span>
+          <span className="font-medium text-foreground/80">Documentation:</span>
           <a
             href={cert.documentUrl}
             target="_blank"
@@ -78,15 +78,15 @@ export default function Certifications() {
       )}
       {cert.description && (
         <div>
-          <span className="font-medium text-gray-700">Details:</span>
-          <Typography.P className="mt-1 text-gray-600">{cert.description}</Typography.P>
+          <span className="font-medium text-foreground/80">Details:</span>
+          <Typography.P className="mt-1 text-muted-foreground">{cert.description}</Typography.P>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <SEOMeta
         title="Certifications - Quality & Compliance Standards | RUN APPAREL"
         description="Explore our comprehensive certifications including OEKO-TEX, GOTS, and ISO standards ensuring quality and sustainability in sportswear manufacturing."
@@ -99,10 +99,10 @@ export default function Certifications() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             Certifications & Standards
           </Typography.H1>
-          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
+          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Industry-leading quality and compliance certifications for premium sportswear
             manufacturing
           </Typography.P>
@@ -110,7 +110,7 @@ export default function Certifications() {
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
               <div className="font-bold text-3xl text-green-600">{certificates.length}</div>
-              <div className="text-gray-600 text-sm">Active Certifications</div>
+              <div className="text-muted-foreground text-sm">Active Certifications</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-3xl text-blue-600">
@@ -119,7 +119,7 @@ export default function Certifications() {
                     .length
                 }
               </div>
-              <div className="text-gray-600 text-sm">Sustainability</div>
+              <div className="text-muted-foreground text-sm">Sustainability</div>
             </div>
           </div>
         </motion.div>
@@ -146,11 +146,11 @@ export default function Certifications() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Shield className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                <Shield className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   {searchTerm ? "No certifications found" : "No certifications available"}
                 </Typography.H3>
-                <Typography.P className="text-gray-600">
+                <Typography.P className="text-muted-foreground">
                   {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
                 </Typography.P>
               </motion.div>

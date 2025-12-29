@@ -5,13 +5,15 @@
  * Replaces hardcoded magic numbers and colors.
  */
 
+import { colors } from "@/lib/design-tokens";
+
 export const TECHNOLOGY_THEME = {
   colors: {
-    gradientStart: "#FF9FFC",
-    gradientEnd: "#5227FF",
+    gradientStart: colors.brandPurpleLight,
+    gradientEnd: colors.brandPurple,
     // Standard theme colors if needed later
-    primary: "#5227FF",
-    accent: "#FF9FFC",
+    primary: colors.brandPurple,
+    accent: colors.brandPurpleLight,
   },
   gradient: {
     defaultAngle: 135, // Was 0 in some places, 135 in others. Standardizing defaults.

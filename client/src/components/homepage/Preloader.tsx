@@ -98,7 +98,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-max flex cursor-wait flex-col justify-between overflow-hidden bg-neutral-950 text-neutral-50"
+      className="fixed inset-0 z-max flex cursor-wait flex-col justify-between overflow-hidden bg-surface-dark text-foreground"
     >
       {/* Top Bar */}
       <div className="flex w-full items-start justify-between p-8 md:p-12">
@@ -111,16 +111,10 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       </div>
 
       {/* Center Percentage */}
-      <div
-        className="relative z-elevated flex w-full flex-col items-center justify-center"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
+      <div className="relative z-10 flex w-full flex-col items-center justify-center">
         <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter mix-blend-difference">
           {progress}
         </h1>
-        <span className="sr-only">Percent Loaded</span>
       </div>
 
       {/* Bottom Section */}
@@ -128,7 +122,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         <div className="mb-4 flex items-end justify-between">
           <div
             ref={textRef}
-            className="min-h-5 w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
+            className="min-h-[20px] w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
           >
             [{loadingText}]
           </div>
@@ -138,17 +132,14 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         </div>
 
         {/* Progress Bar Line */}
-        <div className="h-0.5 w-full overflow-hidden bg-white/20">
-          <div
-            ref={barRef}
-            className="h-full w-full origin-left scale-x-0 bg-[var(--color-brand-purple)]"
-          />
+        <div className="h-[2px] w-full overflow-hidden bg-white/20">
+          <div ref={barRef} className="h-full w-full origin-left scale-x-0 bg-primary" />
         </div>
       </div>
 
       {/* Background Grid */}
       <div
-        className="pointer-events-none absolute inset-0 z-base opacity-10"
+        className="pointer-events-none absolute inset-0 z-0 opacity-10"
         style={{
           backgroundImage:
             "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",

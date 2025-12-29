@@ -30,8 +30,8 @@ export function PublicProcessSection({ mediaAssets, processes }: PublicProcessSe
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 font-bold text-4xl text-gray-900">Manufacturing Processes</h2>
-            <p className="mx-auto max-w-3xl text-gray-600 text-xl">
+            <h2 className="mb-4 font-bold text-4xl text-foreground">Manufacturing Processes</h2>
+            <p className="mx-auto max-w-3xl text-muted-foreground text-xl">
               Advanced manufacturing techniques delivering precision and quality at every stage
             </p>
           </motion.div>

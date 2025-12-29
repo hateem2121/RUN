@@ -39,7 +39,7 @@ export function AboutManagement() {
     <div className="flex h-full flex-col">
       <div className="border-b px-6 py-4">
         <h1 className="font-bold text-2xl">About Us Management</h1>
-        <p className="mt-1 text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-muted-foreground dark:text-muted-foreground">
           Manage all content for your About Us page
         </p>
       </div>

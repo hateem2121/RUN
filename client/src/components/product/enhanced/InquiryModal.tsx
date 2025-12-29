@@ -92,7 +92,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
             <ClippedElement className="bg-white p-6 sm:p-8 md:p-12" clipAmount={30}>
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 z-default text-gray-400 transition-colors hover:text-black"
+                className="absolute top-4 right-4 z-default text-muted-foreground/70 transition-colors hover:text-black"
                 aria-label="Close"
                 data-testid="button-close-modal"
               >
@@ -113,7 +113,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                     >
                       Inquiry For:
                     </h2>
-                    <p className="mb-8 text-gray-600" data-testid="text-product-name">
+                    <p className="mb-8 text-muted-foreground" data-testid="text-product-name">
                       {productName}
                     </p>
 
@@ -201,7 +201,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                         as="button"
                         type="submit"
                         disabled={formState === "submitting"}
-                        className="mt-4 w-full bg-black py-4 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-gray-800 disabled:bg-gray-400"
+                        className="mt-4 w-full bg-black py-4 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-muted/80 disabled:bg-muted/40"
                         data-testid="button-submit-inquiry"
                       >
                         {formState === "submitting" ? "SENDING..." : "SUBMIT INQUIRY"}
@@ -223,7 +223,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                       INQUIRY SENT
                     </h2>
                     <p
-                      className="mx-auto mb-8 max-w-sm text-gray-700"
+                      className="mx-auto mb-8 max-w-sm text-foreground/80"
                       data-testid="text-success-message"
                     >
                       Thank you for your interest. Our partnership team will review your request and
@@ -232,7 +232,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
                     <ClippedElement
                       as="button"
                       onClick={handleClose}
-                      className="bg-black px-10 py-3 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-gray-800"
+                      className="bg-black px-10 py-3 font-bold text-sm text-white tracking-[0.2em] transition-colors hover:bg-muted/80"
                       data-testid="button-close-success"
                     >
                       CLOSE

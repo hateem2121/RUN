@@ -2,6 +2,7 @@ import type { MediaAsset } from "@shared/schema";
 import { AnimatePresence, motion } from "framer-motion";
 import { ImageOff, Play } from "lucide-react";
 import React, { useState } from "react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface ManufacturingMediaDisplayProps {
   mediaAssets: MediaAsset[];
@@ -56,7 +57,7 @@ export function ManufacturingMediaDisplay({
   const aspectClasses = {
     square: "aspect-square",
     video: "aspect-video",
-    banner: "aspect-[21/9]",
+    banner: "aspect-21/9",
     auto: "",
   };
 
@@ -71,14 +72,14 @@ export function ManufacturingMediaDisplay({
   if (!primaryMedia) {
     const PlaceholderContent = placeholder || (
       <div
-        className={`
-        ${aspectClasses[aspectRatio]} 
-        ${className}bg-gray-100 center-flex rounded-lg border-2 border-gray-300 border-dashed`}
+        className={`${aspectClasses[aspectRatio]} ${className} center-flex overflow-hidden rounded-lg border border-border/50 border-dashed bg-surface-subtle/30`}
       >
-        <div className="text-center text-gray-500">
-          <ImageOff className="mx-auto mb-2 h-8 w-8" />
-          <p className="text-sm">No media available</p>
-        </div>
+        <EmptyState
+          title="No Media"
+          description="Content not configured"
+          icon={ImageOff}
+          className="min-h-[auto] border-none bg-transparent p-4"
+        />
       </div>
     );
 
@@ -95,9 +96,9 @@ export function ManufacturingMediaDisplay({
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`absolute inset-0 flex animate-pulse items-center justify-center rounded-lg bg-gray-200`}
+            className={`absolute inset-0 flex animate-pulse items-center justify-center rounded-lg bg-muted/20`}
           >
-            <div className="h-8 w-8 animate-pulse rounded bg-gray-300" />
+            <div className="h-8 w-8 animate-pulse rounded bg-muted/30" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -139,10 +140,9 @@ export function ManufacturingMediaDisplay({
       {/* Error state */}
       {hasError && (
         <div
-          className={`
-          ${aspectClasses[aspectRatio]} center-flex rounded-lg border border-gray-300 bg-gray-100`}
+          className={` ${aspectClasses[aspectRatio]} center-flex rounded-lg border border-border/50 bg-muted`}
         >
-          <div className="text-center text-gray-500">
+          <div className="text-center text-muted-foreground">
             <ImageOff className="mx-auto mb-1 h-6 w-6" />
             <p className="text-xs">Failed to load</p>
           </div>
@@ -151,7 +151,7 @@ export function ManufacturingMediaDisplay({
 
       {/* Gradient overlay for hero/background variants */}
       {(variant === "hero" || variant === "background") && (
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-blue-900/20 to-blue-900/60" />
+        <div className="absolute inset-0 rounded-lg bg-linear-to-b from-blue-900/20 to-blue-900/60" />
       )}
     </div>
   );

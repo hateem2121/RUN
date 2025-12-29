@@ -122,7 +122,7 @@ export function PerformanceAnalysis() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Core Web Vitals */}
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-600 text-sm">Core Web Vitals</h4>
+              <h4 className="font-medium text-muted-foreground text-sm">Core Web Vitals</h4>
 
               <div className="flex items-center justify-between">
                 <span className="text-sm">First Contentful Paint</span>
@@ -147,7 +147,7 @@ export function PerformanceAnalysis() {
 
             {/* Bundle Performance */}
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-600 text-sm">Bundle Performance</h4>
+              <h4 className="font-medium text-muted-foreground text-sm">Bundle Performance</h4>
 
               <div className="flex items-center justify-between">
                 <span className="text-sm">Bundle Score</span>
@@ -185,7 +185,7 @@ export function PerformanceAnalysis() {
 
             {/* Performance Tips */}
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-600 text-sm">Optimization Status</h4>
+              <h4 className="font-medium text-muted-foreground text-sm">Optimization Status</h4>
 
               <div className="space-y-1 text-xs">
                 <div className="flex items-center gap-2">

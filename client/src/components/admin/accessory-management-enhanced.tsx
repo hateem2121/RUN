@@ -21,12 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,7 +48,7 @@ const getCategoryColor = (category: string) => {
     hardware: "bg-blue-100 text-blue-700 border-blue-200",
     finishing: "bg-green-100 text-green-700 border-green-200",
     trim: "bg-orange-100 text-orange-700 border-orange-200",
-    packaging: "bg-gray-100 text-gray-700 border-gray-200",
+    packaging: "bg-muted text-foreground/80 border-border",
   };
   return colors[category] || "bg-neutral-100 text-neutral-700 border-neutral-200";
 };
@@ -480,7 +475,7 @@ export default function AccessoryManagementEnhanced() {
         {/* Accessory Form */}
         <div className="xl:col-span-2">
           <Card className="border-2">
-            <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-pink-50">
+            <CardHeader className="border-b bg-linear-to-r from-purple-50 to-pink-50">
               <CardTitle className="flex items-center gap-2 font-neue-stance">
                 <Settings className="h-5 w-5 text-purple-600" />
                 {editingAccessory ? "Edit Accessory" : "Create New Accessory"}
@@ -691,7 +686,7 @@ export default function AccessoryManagementEnhanced() {
         {/* Accessories List */}
         <div>
           <Card className="border-2">
-            <CardHeader className="border-b bg-gradient-to-r from-orange-50 to-red-50">
+            <CardHeader className="border-b bg-linear-to-r from-orange-50 to-red-50">
               <CardTitle className="flex items-center gap-2 font-neue-stance">
                 <Package className="h-5 w-5 text-orange-600" />
                 Accessories ({activeAccessories?.length || 0})
@@ -712,14 +707,14 @@ export default function AccessoryManagementEnhanced() {
       </div>
 
       {/* Preview Dialog */}
-      <EnhancedDialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
-        <EnhancedDialogContent contentType="default">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="flex items-center gap-2">
+      <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
+        <DialogContent contentType="default">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
               Accessory Details: {previewAccessory?.name}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+            </DialogTitle>
+          </DialogHeader>
           <div className="mt-4">
             {previewAccessory && (
               <div className="space-y-4">
@@ -804,18 +799,18 @@ export default function AccessoryManagementEnhanced() {
               </div>
             )}
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
-      <EnhancedDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="flex items-center gap-2">
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <Edit className="h-5 w-5" />
               Edit Accessory: {editingAccessory?.name}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+            </DialogTitle>
+          </DialogHeader>
           <div className="mt-4 max-h-viewport-70 overflow-y-auto pr-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -995,8 +990,8 @@ export default function AccessoryManagementEnhanced() {
               </div>
             </form>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       <StandardMediaSelectionDialog
         isOpen={isMediaPickerOpen}

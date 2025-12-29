@@ -228,7 +228,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 {formData.specifications.map((spec, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                    className="flex items-center justify-between rounded-lg bg-background p-3"
                   >
                     <span className="text-sm">{spec}</span>
                     <Button
@@ -236,7 +236,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => removeSpecification(index)}
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
+                      className="h-8 w-8 p-0 text-muted-foreground/70 hover:text-red-500"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -276,7 +276,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 {Object.entries(formData.technicalSpecs).map(([key, value]) => (
                   <div
                     key={key}
-                    className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                    className="flex items-center justify-between rounded-lg bg-background p-3"
                   >
                     <div className="text-sm">
                       <span className="font-medium">{key}:</span> {value}
@@ -286,7 +286,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => removeTechnicalSpec(key)}
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
+                      className="h-8 w-8 p-0 text-muted-foreground/70 hover:text-red-500"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -328,7 +328,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                   {formData.careInstructions.map((instruction, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded bg-gray-50 p-2 text-sm"
+                      className="flex items-center justify-between rounded bg-background p-2 text-sm"
                     >
                       <span>{instruction}</span>
                       <Button
@@ -423,7 +423,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                 {formData.customizationOptions.map((option, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                    className="flex items-center justify-between rounded-lg bg-background p-3"
                   >
                     <span className="text-sm">{option}</span>
                     <Button
@@ -431,7 +431,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => removeCustomizationOption(index)}
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
+                      className="h-8 w-8 p-0 text-muted-foreground/70 hover:text-red-500"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -455,7 +455,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
           <CardContent>
             <div className="space-y-3">
               <div className="relative">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                 <Input
                   placeholder="Search certifications..."
                   value={certificateSearch}
@@ -479,7 +479,9 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                   </div>
                 ))}
                 {filteredCertificates.length === 0 && (
-                  <p className="py-4 text-center text-gray-500 text-sm">No certifications found</p>
+                  <p className="py-4 text-center text-muted-foreground text-sm">
+                    No certifications found
+                  </p>
                 )}
               </div>
             </div>
@@ -496,7 +498,7 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
           <CardContent>
             <div className="space-y-3">
               <div className="relative">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                 <Input
                   placeholder="Search accessories..."
                   value={accessorySearch}
@@ -518,7 +520,9 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
                   </div>
                 ))}
                 {filteredAccessories.length === 0 && (
-                  <p className="py-4 text-center text-gray-500 text-sm">No accessories found</p>
+                  <p className="py-4 text-center text-muted-foreground text-sm">
+                    No accessories found
+                  </p>
                 )}
               </div>
             </div>
@@ -542,11 +546,13 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
               maxLength={60}
             />
             <div className="mt-1 flex items-center justify-between">
-              <div className="flex items-center gap-1 text-gray-500 text-xs">
+              <div className="flex items-center gap-1 text-muted-foreground text-xs">
                 <Info className="h-3 w-3" />
                 <span>Recommended: 50-60 characters</span>
               </div>
-              <span className="text-gray-500 text-xs">{(formData.metaTitle || "").length}/60</span>
+              <span className="text-muted-foreground text-xs">
+                {(formData.metaTitle || "").length}/60
+              </span>
             </div>
           </div>
 
@@ -567,11 +573,11 @@ export const AdvancedOptionsTab: React.FC<AdvancedOptionsTabProps> = ({
               className="resize-none"
             />
             <div className="mt-1 flex items-center justify-between">
-              <div className="flex items-center gap-1 text-gray-500 text-xs">
+              <div className="flex items-center gap-1 text-muted-foreground text-xs">
                 <Info className="h-3 w-3" />
                 <span>Recommended: 150-160 characters</span>
               </div>
-              <span className="text-gray-500 text-xs">
+              <span className="text-muted-foreground text-xs">
                 {(formData.metaDescription || "").length}/160
               </span>
             </div>

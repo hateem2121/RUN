@@ -10,7 +10,6 @@ const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   const magnetRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Wait for ref to be populated
     if (!magnetRef.current) return;
 
     const magnet = magnetRef.current;

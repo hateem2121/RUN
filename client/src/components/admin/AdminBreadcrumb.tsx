@@ -41,20 +41,20 @@ export const AdminBreadcrumb = React.memo(function AdminBreadcrumb() {
   }
 
   return (
-    <nav className="mb-4 flex items-center space-x-1 text-gray-600 text-sm">
-      <Link href="/admin" className="flex items-center transition-colors hover:text-gray-900">
+    <nav className="mb-4 flex items-center space-x-1 text-muted-foreground text-sm">
+      <Link href="/admin" className="flex items-center transition-colors hover:text-foreground">
         <Home className="h-4 w-4" />
       </Link>
 
       {breadcrumbs.slice(1).map((crumb, index) => (
         <div key={index} className="flex items-center space-x-1">
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground/70" />
           {crumb.href ? (
-            <Link href={crumb.href} className="transition-colors hover:text-gray-900">
+            <Link href={crumb.href} className="transition-colors hover:text-foreground">
               {crumb.label}
             </Link>
           ) : (
-            <span className="font-medium text-gray-900">{crumb.label}</span>
+            <span className="font-medium text-foreground">{crumb.label}</span>
           )}
         </div>
       ))}

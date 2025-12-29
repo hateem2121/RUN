@@ -1,13 +1,46 @@
-import { motion } from "framer-motion";
-import type * as React from "react";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import { useFeaturedProducts } from "@/hooks/use-homepage-data";
+import gsap from "gsap";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { FEATURED_PRODUCTS } from "./constants";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
 const FeaturedProducts: React.FC = () => {
-  const products = useFeaturedProducts();
+  const containerRef = useRef<HTMLDivElement>(null);
   const setCursor = useStore((state) => state.setCursor);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Explicitly use .current
+    const scope = containerRef.current;
+
+    const ctx = gsap.context(() => {
+      const cards = scope.querySelectorAll(".product-card");
+
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { y: 100, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: scope,
+              start: "top 70%",
+            },
+          },
+        );
+      }
+    }, scope);
+
+    return () => ctx.revert();
+  }, []);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const handleCatalogueClick = () => {
     const catalogueSection = document.getElementById("catalogue");
@@ -17,88 +50,68 @@ const FeaturedProducts: React.FC = () => {
   };
 
   return (
-    <section className="w-full bg-luxury-surface px-4 py-16 text-luxury-interactive md:px-8 md:py-32">
-      <div className="container-ultra mx-auto">
-        {/* Header - Stays Standard */}
+    <section ref={containerRef} className="w-full bg-background-alt px-4 py-32 md:px-8">
+      <div className="mx-auto max-w-container-2xl">
         <div className="mb-16 flex items-end justify-between border-black/10 border-b pb-8">
-          <h2 className="font-bold text-display-lg uppercase leading-none tracking-tighter">
+          <h2 className="font-bold text-[12vw] uppercase leading-[0.9] md:text-[5vw]">
             Archive <br /> 24/25
           </h2>
           <div className="hidden text-right md:block">
-            <p className="mb-2 font-mono text-gray-500 text-xs tracking-widest">
-              COLLECTION: 24/25
+            <p className="mb-2 font-mono text-muted-foreground text-xs tracking-widest">
+              SEASON: CURRENT
             </p>
-            <p className="font-mono text-gray-500 text-xs tracking-widest">CAPACITY: HIGH VOLUME</p>
+            <p className="font-mono text-muted-foreground text-xs tracking-widest">
+              STATUS: PRODUCTION READY
+            </p>
           </div>
         </div>
 
-        {/* 
-          MODERNIZATION PHASE 2: 
-          1. Container Query Wrapper (@container)
-          2. CSS Subgrid (grid-rows-subgrid)
-          3. Framer Motion Layout (layout prop)
-        */}
-        <div className="@container w-full">
-          <motion.div layout className="grid @md:grid-cols-2 @xl:grid-cols-3 grid-cols-1 gap-8">
-            {products.map((product, index) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                key={product.id}
-                className={`group relative flex flex-col gap-4 ${index === 1 ? "@xl:mt-24" : ""}
-                `}
-                onMouseEnter={() => setCursor(CursorVariant.VIEW, "VIEW SPECS")}
-                onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
-              >
-                {/* Image Container */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                  <OptimizedImage
-                    src={product.image}
-                    alt={product.name}
-                    aspectRatio="aspect-3/4"
-                    className="h-full w-full"
-                    imageClassName="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 grayscale group-hover:grayscale-0"
-                  />
-                </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+          {FEATURED_PRODUCTS.map((product, index) => (
+            <div
+              key={product.id}
+              className={`product-card group relative ${index === 1 ? "md:mt-24" : ""}`}
+              onMouseEnter={() => !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")}
+              onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
+            >
+              <div className="relative mb-8 aspect-3/4 overflow-hidden bg-muted/20">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover grayscale transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:grayscale-0"
+                />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />
+              </div>
 
-                {/* 
-                  SUBGRID IMPLEMENTATION: 
-                  Inner grid aligns with parent rows if we used row-span strategies, 
-                  but here we use a strict subgrid simulation for alignment.
-                */}
-                <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-black/10 border-t pt-4">
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-balance font-bold text-xl uppercase leading-tight">
-                      {product.name}
-                    </h3>
-                    <p className="font-mono text-gray-500 text-xs tracking-widest">
-                      {product.category}
-                    </p>
-                  </div>
-
-                  <span className="whitespace-nowrap rounded-full border border-black/20 px-3 py-1 font-mono text-xs">
-                    {product.price}
-                  </span>
+              <div className="flex items-start justify-between border-black/10 border-t pt-6">
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-bold text-xl uppercase leading-tight md:text-2xl">
+                    {product.name}
+                  </h3>
+                  <p className="font-mono text-muted-foreground text-xs tracking-widest md:text-sm">
+                    {product.category}
+                  </p>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                <span className="ml-4 whitespace-nowrap rounded-full border border-black/20 px-3 py-1 font-mono text-xs">
+                  {product.price}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="mt-24 text-center">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={handleCatalogueClick}
-            className="border-black border-b pb-1 font-bold text-sm uppercase tracking-widest transition-colors hover:border-blue-600 hover:text-blue-600"
-            onMouseEnter={() => setCursor(CursorVariant.BUTTON)}
+            className="border-black border-b pb-1 font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-accent hover:text-brand-accent"
+            onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
             onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
           >
             View Full Catalogue
-          </motion.button>
+          </button>
         </div>
       </div>
     </section>

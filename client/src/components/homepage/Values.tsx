@@ -1,9 +1,10 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
 import type React from "react";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Color, type Mesh, type ShaderMaterial } from "three";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
@@ -51,10 +52,7 @@ const WaterRipple = () => {
 
   useFrame((state) => {
     if (mesh.current) {
-      const material = mesh.current.material as ShaderMaterial;
-      if (material?.uniforms?.uTime) {
-        material.uniforms.uTime.value = state.clock.getElapsedTime();
-      }
+      (mesh.current.material as ShaderMaterial).uniforms.uTime.value = state.clock.getElapsedTime();
     }
   });
 
@@ -72,18 +70,18 @@ const WaterRipple = () => {
   );
 };
 
-interface BentoCardProps {
+interface ValuesCardProps {
   title: string;
   subtitle: string;
   icon: React.ElementType;
   colSpan?: string;
   withRipple?: boolean;
   isMobile: boolean;
-  setCursor: (variant: CursorVariant, text?: string, image?: string) => void;
+  setCursor: (variant: CursorVariant) => void;
   image: string;
 }
 
-const BentoCard: React.FC<BentoCardProps> = ({
+const ValuesCard: React.FC<ValuesCardProps> = ({
   title,
   subtitle,
   icon: Icon,
@@ -92,89 +90,84 @@ const BentoCard: React.FC<BentoCardProps> = ({
   isMobile,
   setCursor,
   image,
-}) => {
-  const IconComponent = Icon as any;
-
-  return (
-    <div
-      className={`group relative overflow-hidden rounded-3xl border border-glass bg-neutral-950 ${colSpan}min-h-72 transition-all duration-500 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 md:min-h-96 lg:min-h-96`}
-      role="article"
-      onMouseEnter={() => {
-        setCursor(CursorVariant.VIEW, "EXPLORE", image);
-      }}
-      onMouseLeave={() => {
-        setCursor(CursorVariant.DEFAULT);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-        }
-      }}
-    >
-      {" "}
-      {/* Background Image Layer */}
-      <div className="absolute inset-0 z-base">
-        {/* Ripple Effect - Desktop Only */}
-        {withRipple && !isMobile && (
-          <div className="absolute inset-0 z-base">
-            <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
-              <WaterRipple />
-            </Canvas>
-          </div>
-        )}
-        <img
-          src={image}
-          alt={title}
-          decoding="async"
-          className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-      </div>
-      {/* Ripple Layer - Only rendered on desktop for performance */}
-      {withRipple && !isMobile && (
-        <div className="pointer-events-none absolute inset-0 z-default opacity-60 mix-blend-soft-light">
-          <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
-            <WaterRipple />
-          </Canvas>
-        </div>
-      )}
-      <div className="relative z-elevated flex w-full justify-end">
-        <IconComponent
-          className={`h-12 w-12 stroke-[1] transition-colors duration-300 ${
-            withRipple ? "text-blue-400" : "text-gray-400 group-hover:text-blue-400"
-          }`}
-        />
-      </div>
-      <div className="relative z-elevated">
-        <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
-        <p className="text-gray-400 transition-colors group-hover:text-gray-200">{subtitle}</p>
-      </div>
+}) => (
+  <Card
+    className={cn(
+      colSpan,
+      "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
+    )}
+    variant="glass-premium"
+    onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
+    onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
+  >
+    {/* Background Image Layer */}
+    <div className="absolute inset-0 z-0">
+      <img
+        src={image}
+        alt={title}
+        decoding="async"
+        className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
+      />
+      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
     </div>
-  );
-};
+
+    {/* Ripple Layer - Only rendered on desktop for performance */}
+    {withRipple && !isMobile && (
+      <div className="pointer-events-none absolute inset-0 z-base opacity-60 mix-blend-soft-light">
+        <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
+          <WaterRipple />
+        </Canvas>
+      </div>
+    )}
+
+    <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
+      <div className="flex w-full justify-end">
+        <Icon
+          className={cn(
+            "h-12 w-12 stroke-1 transition-colors duration-300",
+            withRipple ? "text-blue-400" : "text-muted-foreground/70 group-hover:text-blue-400",
+          )}
+        />
+      </div>
+      <div>
+        <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
+        <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
+          {subtitle}
+        </p>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 const Values: React.FC = () => {
   const setCursor = useStore((state) => state.setCursor);
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
-    <section className="w-full bg-background px-4 py-16 md:px-8 md:py-32">
-      <div className="container-ultra mx-auto">
-        <h2 className="mb-16 text-center font-bold text-[12vw] uppercase leading-none md:text-[6vw]">
+    <section className="w-full bg-background-alt px-4 py-32 md:px-8">
+      <div className="mx-auto max-w-container-2xl">
+        <h2 className="mb-16 text-center font-bold text-display-xl uppercase leading-none">
           Built on <span className="font-serif italic">Precision</span>
         </h2>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <BentoCard
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <ValuesCard
             title="Heritage Innovation"
             subtitle="135 Years of textile engineering mastery."
             icon={ShieldCheck}
-            colSpan="sm:col-span-2 lg:col-span-2"
+            colSpan="md:col-span-2"
             isMobile={isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1598967990158-b12e3e9d8995?q=80&w=2070&auto=format&fit=crop"
           />
-          <BentoCard
+          <ValuesCard
             title="Eco-Forward"
             subtitle="40% Water reduction in dyeing processes."
             icon={Leaf}
@@ -183,7 +176,7 @@ const Values: React.FC = () => {
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1976&auto=format&fit=crop"
           />
-          <BentoCard
+          <ValuesCard
             title="Global Reach"
             subtitle="Distribution centers in 12 countries."
             icon={Globe}
@@ -191,11 +184,11 @@ const Values: React.FC = () => {
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
           />
-          <BentoCard
+          <ValuesCard
             title="Rapid Prototyping"
             subtitle="Concept to sample in 72 hours."
             icon={Zap}
-            colSpan="sm:col-span-2 lg:col-span-2"
+            colSpan="md:col-span-2"
             isMobile={isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"

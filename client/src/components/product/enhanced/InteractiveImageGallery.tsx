@@ -205,8 +205,8 @@ export function InteractiveImageGallery({
 
   if (images.length === 0) {
     return (
-      <div className="flex h-96 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-        <p className="text-gray-500 dark:text-gray-400">No images available</p>
+      <div className="flex h-96 items-center justify-center rounded-lg bg-muted dark:bg-muted/80">
+        <p className="text-muted-foreground dark:text-muted-foreground/70">No images available</p>
       </div>
     );
   }
@@ -216,13 +216,13 @@ export function InteractiveImageGallery({
       {/* Main Gallery */}
       <div
         ref={galleryRef}
-        className={cn("relative overflow-hidden rounded-lg bg-white dark:bg-gray-900", className)}
+        className={cn("relative overflow-hidden rounded-lg bg-white dark:bg-foreground", className)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         tabIndex={-1}
       >
         {/* Main Image Container */}
-        <div className="relative flex min-h-[300px] items-center justify-center bg-gray-100 dark:bg-gray-800">
+        <div className="relative flex min-h-[300px] items-center justify-center bg-muted dark:bg-muted/80">
           <OptimizedGalleryImage
             ref={mainImageRef}
             image={currentImage!}
@@ -252,28 +252,28 @@ export function InteractiveImageGallery({
                 onClick={previousImage}
                 className={cn(
                   "absolute top-1/2 left-4 -translate-y-1/2 transform",
-                  "rounded-full bg-white/90 p-2 dark:bg-gray-800/90",
-                  "transition-all duration-200 hover:bg-white dark:hover:bg-gray-800",
+                  "rounded-full bg-white/90 p-2 dark:bg-muted/80/90",
+                  "transition-all duration-200 hover:bg-white dark:hover:bg-muted/80",
                   "focus:outline-hidden focus:ring-2 focus:ring-ring",
                   "opacity-0 group-hover:opacity-100",
                 )}
                 aria-label="Previous image"
               >
-                <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                <ChevronLeft className="h-5 w-5 text-foreground/80 dark:text-muted-foreground/50" />
               </button>
 
               <button
                 onClick={nextImage}
                 className={cn(
                   "absolute top-1/2 right-4 -translate-y-1/2 transform",
-                  "rounded-full bg-white/90 p-2 dark:bg-gray-800/90",
-                  "transition-all duration-200 hover:bg-white dark:hover:bg-gray-800",
+                  "rounded-full bg-white/90 p-2 dark:bg-muted/80/90",
+                  "transition-all duration-200 hover:bg-white dark:hover:bg-muted/80",
                   "focus:outline-hidden focus:ring-2 focus:ring-ring",
                   "opacity-0 group-hover:opacity-100",
                 )}
                 aria-label="Next image"
               >
-                <ChevronRight className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                <ChevronRight className="h-5 w-5 text-foreground/80 dark:text-muted-foreground/50" />
               </button>
             </>
           )}
@@ -292,7 +292,7 @@ export function InteractiveImageGallery({
                   variant="secondary"
                   onClick={zoomIn}
                   disabled={zoomLevel >= 3}
-                  className="bg-white/90 dark:bg-gray-800/90"
+                  className="bg-white/90 dark:bg-muted/80/90"
                 >
                   <ZoomIn className="h-4 w-4" />
                 </Button>
@@ -301,7 +301,7 @@ export function InteractiveImageGallery({
                   variant="secondary"
                   onClick={zoomOut}
                   disabled={zoomLevel <= 1}
-                  className="bg-white/90 dark:bg-gray-800/90"
+                  className="bg-white/90 dark:bg-muted/80/90"
                 >
                   <ZoomOut className="h-4 w-4" />
                 </Button>
@@ -312,7 +312,7 @@ export function InteractiveImageGallery({
                 size="sm"
                 variant="secondary"
                 onClick={toggleFullscreen}
-                className="bg-white/90 dark:bg-gray-800/90"
+                className="bg-white/90 dark:bg-muted/80/90"
               >
                 <Maximize2 className="h-4 w-4" />
               </Button>
@@ -329,7 +329,7 @@ export function InteractiveImageGallery({
 
         {/* Thumbnails */}
         {showThumbnails && images.length > 1 && (
-          <div className="border-gray-200 border-t p-4 dark:border-gray-700">
+          <div className="border-border border-t p-4 dark:border-border">
             <div className="flex space-x-2 overflow-x-auto">
               {images.map((image, index) => (
                 <button
@@ -339,7 +339,7 @@ export function InteractiveImageGallery({
                     "h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-200",
                     index === currentIndex
                       ? "border-blue-500 ring-2 ring-ring/20"
-                      : "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600",
+                      : "border-border hover:border-border/50 dark:border-border dark:hover:border-border",
                   )}
                   aria-label={`View image ${index + 1}: ${image.alt}`}
                 >

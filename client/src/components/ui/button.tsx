@@ -20,9 +20,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         glass:
-          "glass-premium text-white hover:bg-white/20 hover:shadow-xl focus-visible:ring-white/50 active:bg-white/30",
+          "border border-white/10 bg-[image:var(--glass-premium)] text-white backdrop-blur-md hover:bg-white/20 hover:shadow-xl focus-visible:ring-white/50 active:bg-white/30",
         "glowing-hover":
-          "relative overflow-hidden rounded-full border-2 border-primary bg-gradient-to-r from-muted to-muted/80 px-6 font-medium text-foreground transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0_0_var(--color-primary)] dark:border-primary dark:from-primary/10 dark:to-primary/20 dark:text-primary-foreground",
+          "relative overflow-hidden rounded-full border-2 border-primary bg-linear-to-r from-muted to-muted/80 px-6 font-medium text-foreground transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard dark:border-primary dark:from-primary/10 dark:to-primary/20 dark:text-primary-foreground",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -39,21 +39,10 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-}
+export type ButtonProps = React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & { asChild?: boolean };
 
-const Button = ({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ref,
-  ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & { asChild?: boolean }) => {
+const Button = ({ className, variant, size, asChild = false, ref, ...props }: ButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
 };

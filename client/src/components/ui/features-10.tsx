@@ -19,7 +19,7 @@ export function Features() {
 
             <div className="relative mb-6 border-t border-dashed sm:mb-0">
               <div className="absolute inset-0 [background:radial-gradient(125%_125%_at_50%_0%,transparent_40%,hsl(var(--muted)),white_125%)]"></div>
-              <div className="aspect-[76/59] p-1 px-6">
+              <div className="aspect-76/59 p-1 px-6">
                 <DualModeImage
                   darkSrc="https://tailark.com/_next/image?url=%2Fpayments.png&w=3840&q=75"
                   lightSrc="https://tailark.com/_next/image?url=%2Fpayments-light.png&w=3840&q=75"
@@ -43,7 +43,7 @@ export function Features() {
             <CardContent>
               <div className="relative mb-6 sm:mb-0">
                 <div className="absolute -inset-6 [background:radial-gradient(50%_50%_at_75%_50%,transparent,hsl(var(--background))_100%)]"></div>
-                <div className="aspect-[76/59] border">
+                <div className="aspect-76/59 border">
                   <DualModeImage
                     darkSrc="https://tailark.com/_next/image?url=%2Forigin-cal-dark.png&w=3840&q=75"
                     lightSrc="https://tailark.com/_next/image?url=%2Forigin-cal.png&w=3840&q=75"
@@ -171,8 +171,8 @@ interface CircularUIProps {
 
 const CircularUI = ({ label, circles, className }: CircularUIProps) => (
   <div className={className}>
-    <div className="size-fit rounded-2xl bg-gradient-to-b from-border to-transparent p-px">
-      <div className="relative flex aspect-square w-fit items-center -space-x-4 rounded-xl bg-gradient-to-b from-background to-muted/25 p-4">
+    <div className="size-fit rounded-2xl bg-linear-to-b from-border to-transparent p-px">
+      <div className="relative flex aspect-square w-fit items-center -space-x-4 rounded-xl bg-linear-to-b from-background to-muted/25 p-4">
         {circles.map((circle, i) => (
           <div
             key={i}
@@ -182,7 +182,7 @@ const CircularUI = ({ label, circles, className }: CircularUIProps) => (
                 circle.pattern === "border",
               "border-primary bg-[repeating-linear-gradient(-45deg,hsl(var(--primary)),hsl(var(--primary))_1px,transparent_1px,transparent_4px)] bg-background":
                 circle.pattern === "primary",
-              "z-default border-blue-500 bg-[repeating-linear-gradient(-45deg,theme(colors.blue.500),theme(colors.blue.500)_1px,transparent_1px,transparent_4px)] bg-background":
+              "z-default border-blue-500 bg-[repeating-linear-gradient(-45deg,var(--color-blue-500),var(--color-blue-500)_1px,transparent_1px,transparent_4px)] bg-background":
                 circle.pattern === "blue",
             })}
           ></div>

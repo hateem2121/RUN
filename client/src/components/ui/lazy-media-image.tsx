@@ -28,7 +28,7 @@ export function LazyMediaImage({
   priority = false,
   onLoad,
   onError,
-  placeholderClassName = "bg-gray-200 dark:bg-gray-800 animate-pulse",
+  placeholderClassName = "bg-surface-muted dark:bg-muted animate-pulse",
 }: LazyMediaImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority); // Load immediately if priority
@@ -101,7 +101,7 @@ export function LazyMediaImage({
     return (
       <div
         ref={containerRef}
-        className={cn("center-flex text-gray-400", placeholderClassName, className)}
+        className={cn("center-flex text-text-subtle", placeholderClassName, className)}
         style={style}
       >
         <span className="text-sm">No image</span>

@@ -89,7 +89,7 @@ export function RelationshipIndicators({
       icon: LinkIcon,
       count: counts.relatedProducts,
       label: "Related",
-      color: "bg-gray-100 text-gray-700",
+      color: "bg-muted text-foreground/80",
       show: counts.relatedProducts > 0,
     },
   ];
@@ -97,7 +97,7 @@ export function RelationshipIndicators({
   const visibleIndicators = indicators.filter((indicator) => indicator.show);
 
   if (visibleIndicators.length === 0) {
-    return <div className="text-gray-400 text-xs italic">No relationships</div>;
+    return <div className="text-muted-foreground/70 text-xs italic">No relationships</div>;
   }
 
   if (compact) {

@@ -111,7 +111,7 @@ export function ProductFilters({
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-full overflow-y-auto sm:w-[400px] md:w-[540px]">
+        <SheetContent className="w-full overflow-y-auto sm:w-sheet-md md:w-sheet-lg">
           <SheetHeader>
             <SheetTitle className="flex items-center justify-between">
               Product Filters
@@ -252,7 +252,7 @@ export function ProductFilters({
                   step={100}
                   className="mb-2"
                 />
-                <div className="flex justify-between text-gray-600 text-sm">
+                <div className="flex justify-between text-muted-foreground text-sm">
                   <span>{selectedFilters.moqRange[0]} units</span>
                   <span>{selectedFilters.moqRange[1]} units</span>
                 </div>

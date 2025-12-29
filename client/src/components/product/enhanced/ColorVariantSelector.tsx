@@ -95,10 +95,12 @@ export function ColorVariantSelector({
     <div className={cn("space-y-4", className)}>
       {showLabels && (
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900 text-sm dark:text-gray-100">
+          <h3 className="font-semibold text-foreground text-sm dark:text-foreground">
             Available Colors
           </h3>
-          <span className="text-gray-600 text-sm dark:text-gray-400">{selectedVariantName}</span>
+          <span className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+            {selectedVariantName}
+          </span>
         </div>
       )}
 
@@ -127,8 +129,8 @@ export function ColorVariantSelector({
 
               // Selected state
               selectedVariant === variant.id
-                ? "border-gray-900 ring-2 ring-gray-900 ring-offset-2 dark:border-gray-100 dark:ring-gray-100"
-                : "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+                ? "border-foreground ring-2 ring-foreground ring-offset-2 dark:border-border dark:ring-foreground"
+                : "border-border/50 hover:border-border/70 dark:border-border dark:hover:border-border",
 
               // Disabled state
               disabled || !variant.available
@@ -150,14 +152,14 @@ export function ColorVariantSelector({
             {/* Selected indicator */}
             {selectedVariant === variant.id && (
               <div className="center-flex absolute inset-1 rounded-full bg-white/20 dark:bg-black/20">
-                <div className="h-2 w-2 rounded-full bg-white shadow-sm-xs dark:bg-gray-900" />
+                <div className="h-2 w-2 rounded-full bg-white shadow-sm-xs dark:bg-foreground" />
               </div>
             )}
 
             {/* Unavailable indicator */}
             {!variant.available && (
-              <div className="center-flex absolute inset-0 rounded-full bg-gray-200/80 dark:bg-gray-800/80">
-                <div className="h-0.5 w-6 rotate-45 bg-gray-500 dark:bg-gray-400" />
+              <div className="center-flex absolute inset-0 rounded-full bg-muted/20/80 dark:bg-muted/80/80">
+                <div className="h-0.5 w-6 rotate-45 bg-muted/50 dark:bg-muted/40" />
               </div>
             )}
 

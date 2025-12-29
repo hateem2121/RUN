@@ -25,7 +25,7 @@ export async function seedTechnologyHero(): Promise<SeedResult> {
     const heroImages = await db
       .select()
       .from(mediaAssets)
-      .where(eq(mediaAssets.filename, "hero-technology.jpg"));
+      .where(eq(mediaAssets.filename, "placeholder-jacket.svg"));
     const heroImageId = heroImages[0]?.id || null;
 
     const heroData = {

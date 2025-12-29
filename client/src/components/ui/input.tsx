@@ -11,7 +11,7 @@ const inputVariants = cva(
         default: "",
         ghost: "border-none bg-transparent shadow-none",
         filled:
-          "border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-black focus:ring-offset-0",
+          "border-border bg-surface-subtle text-foreground placeholder:text-text-subtle focus:bg-background focus:ring-ring focus:ring-offset-0",
       },
     },
     defaultVariants: {

@@ -62,7 +62,7 @@ export function AboutHeroSection({
 }: AboutHeroSectionProps) {
   return (
     <section className="w-full overflow-hidden py-12 md:py-24 lg:py-32 xl:py-48">
-      <div className="container rounded-3xl border border-muted bg-gradient-to-br from-background to-muted/30 px-4 md:px-6">
+      <div className="container rounded-3xl border border-muted bg-linear-to-br from-background to-muted/30 px-4 md:px-6">
         <div className="grid gap-3 lg:grid-cols-[1fr_400px] lg:gap-3 xl:grid-cols-[1fr_600px]">
           <motion.div
             initial="hidden"
@@ -88,7 +88,7 @@ export function AboutHeroSection({
                 className="font-bold text-4xl tracking-tighter sm:text-5xl xl:text-6xl/none"
               >
                 {headline.split(" ").slice(0, -1).join(" ")}{" "}
-                <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary to-purple-500 bg-clip-text text-transparent">
                   {headline.split(" ").slice(-1)[0]}
                 </span>
               </motion.h1>
@@ -128,7 +128,7 @@ export function AboutHeroSection({
             transition={{ duration: 0.8 }}
             className="center-flex"
           >
-            <div className="relative h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px] lg:h-[500px] xl:h-[550px]">
+            <div className="relative h-[350px] w-full overflow-hidden rounded-3xl md:h-[450px] lg:h-modal-sm xl:h-[550px]">
               {backgroundImage ? (
                 <img
                   src={backgroundImage}
@@ -136,7 +136,7 @@ export function AboutHeroSection({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-purple-500/20">
+                <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/20 to-purple-500/20">
                   <Factory className="h-24 w-24 text-primary/40" />
                 </div>
               )}

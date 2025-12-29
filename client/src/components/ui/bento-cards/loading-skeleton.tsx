@@ -13,7 +13,7 @@ const LoadingSkeleton = memo(function LoadingSkeleton({
   animated = true,
 }: LoadingSkeletonProps) {
   const baseClasses = cn(
-    "bg-gradient-to-r from-luxury-gray-200 via-luxury-gray-100 to-luxury-gray-200",
+    "bg-linear-to-r from-luxury-gray-200 via-luxury-gray-100 to-luxury-gray-200",
     "bg-[length:200%_100%]",
     animated && "animate-pulse",
     className,

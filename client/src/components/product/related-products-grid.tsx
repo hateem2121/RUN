@@ -63,7 +63,7 @@ export function RelatedProductsGrid({
           return (
             <Link key={product.id} href={productUrl}>
               <div className="group cursor-pointer">
-                <div className="relative mb-4 aspect-square overflow-hidden bg-gray-50">
+                <div className="relative mb-4 aspect-square overflow-hidden bg-background">
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -74,7 +74,7 @@ export function RelatedProductsGrid({
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <Package className="h-16 w-16 text-gray-300" />
+                      <Package className="h-16 w-16 text-muted-foreground/50" />
                     </div>
                   )}
                 </div>
@@ -82,7 +82,9 @@ export function RelatedProductsGrid({
                   <h3 className="line-clamp-2 font-medium text-base text-black group-hover:underline">
                     {product.name}
                   </h3>
-                  {product.sku && <p className="font-mono text-gray-400 text-xs">{product.sku}</p>}
+                  {product.sku && (
+                    <p className="font-mono text-muted-foreground/70 text-xs">{product.sku}</p>
+                  )}
                 </div>
               </div>
             </Link>
@@ -93,7 +95,7 @@ export function RelatedProductsGrid({
       {showViewAll && viewAllUrl && (
         <div className="mt-12 text-center">
           <Link href={viewAllUrl}>
-            <button className="rounded-none bg-black px-8 py-4 font-semibold text-sm text-white uppercase tracking-widest transition-colors hover:bg-gray-900">
+            <button className="rounded-none bg-black px-8 py-4 font-semibold text-sm text-white uppercase tracking-widest transition-colors hover:bg-foreground">
               Explore More
             </button>
           </Link>

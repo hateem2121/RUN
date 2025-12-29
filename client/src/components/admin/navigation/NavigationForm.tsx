@@ -227,7 +227,7 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
               <SelectItem value="large">Large (64×64px)</SelectItem>
             </SelectContent>
           </Select>
-          <p className="mt-1 text-gray-500 text-xs">
+          <p className="mt-1 text-muted-foreground text-xs">
             Controls the maximum size of navigation icons in the floating dock
           </p>
         </div>
@@ -270,14 +270,14 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
                       <div className="flex items-center gap-2">
                         <IconComponent className="h-4 w-4" />
                         <span>{icon.label}</span>
-                        <span className="ml-auto text-gray-500 text-xs">{icon.value}</span>
+                        <span className="ml-auto text-muted-foreground text-xs">{icon.value}</span>
                       </div>
                     </SelectItem>
                   );
                 })}
               </SelectContent>
             </Select>
-            <p className="mt-1 text-gray-500 text-xs">
+            <p className="mt-1 text-muted-foreground text-xs">
               Select from available Tabler Icons for navigation
             </p>
           </div>
@@ -298,8 +298,8 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
                 {formData.mediaIconId ? "Change Icon" : "Browse Media Library"}
               </Button>
               {formData.mediaIconId && (
-                <div className="flex items-center space-x-2 rounded-md bg-gray-50 p-2 dark:bg-neutral-800">
-                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-200">
+                <div className="flex items-center space-x-2 rounded-md bg-background p-2 dark:bg-neutral-800">
+                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-muted/20">
                     <img
                       src={
                         imageAssets.find((a) => a.id === formData.mediaIconId)?.url ||
@@ -315,7 +315,7 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
                     />
                   </div>
                   <span
-                    className="text-gray-600 text-sm dark:text-gray-300"
+                    className="text-muted-foreground text-sm dark:text-muted-foreground/50"
                     data-testid="text-media-icon-preview"
                   >
                     {imageAssets.find((a) => a.id === formData.mediaIconId)?.originalName}

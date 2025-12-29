@@ -90,8 +90,8 @@ const ExpandableCard = memo(function ExpandableCard({
               transition={{ duration: 0.6 }}
             >
               {isMediaLoading && (
-                <div className="center-flex absolute inset-0 bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+                <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-emphasis border-t-blue-500"></div>
                 </div>
               )}
               <img
@@ -110,9 +110,9 @@ const ExpandableCard = memo(function ExpandableCard({
 
           {/* Fallback for missing/error media */}
           {(!mediaUrl || hasError) && (
-            <div className="center-flex absolute inset-0 bg-gradient-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
-              <div className="text-center text-gray-500 dark:text-gray-400">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
+            <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
+              <div className="text-center text-text-muted dark:text-muted-foreground">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-muted dark:bg-muted">
                   <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -130,8 +130,8 @@ const ExpandableCard = memo(function ExpandableCard({
           )}
 
           {/* Liquid Glass Effects */}
-          <div className="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          <div className="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
+          <div className="absolute right-0 bottom-0 left-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
 
           {/* Content */}
           <div className="relative flex h-full flex-col justify-end p-8">

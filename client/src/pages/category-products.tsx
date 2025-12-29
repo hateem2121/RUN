@@ -360,7 +360,7 @@ export default function CategoryProductsPage() {
 
     if (totalItems === 0) {
       return (
-        <div className="flex h-full w-full items-center justify-center text-gray-400">
+        <div className="flex h-full w-full items-center justify-center text-muted-foreground/50">
           <LayoutGrid className="h-12 w-12" />
         </div>
       );
@@ -395,7 +395,7 @@ export default function CategoryProductsPage() {
             <div className="absolute top-2 right-2 rounded bg-black/70 p-1 text-white">
               <Play className="h-3 w-3" />
             </div>
-            <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+            <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-muted text-muted-foreground/50">
               <Play className="h-12 w-12" />
             </div>
           </div>
@@ -404,11 +404,11 @@ export default function CategoryProductsPage() {
             <>
               {/* Enhanced Loading State */}
               {!loadedImages.has(images[imageIndex].id) && (
-                <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-gray-200">
-                  <div className="text-center text-gray-400">
+                <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
+                  <div className="text-center text-muted-foreground/50">
                     {loadingImages.has(images[imageIndex].id) ? (
                       <>
-                        <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-gray-400 border-b-2"></div>
+                        <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-muted-foreground border-b-2"></div>
                         <div className="text-xs">Loading...</div>
                       </>
                     ) : (
@@ -449,7 +449,7 @@ export default function CategoryProductsPage() {
               />
 
               {/* Fallback for errors */}
-              <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+              <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-muted text-muted-foreground/50">
                 <LayoutGrid className="h-12 w-12" />
               </div>
             </>
@@ -575,7 +575,7 @@ export default function CategoryProductsPage() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <Typography.H2 className="mb-2 font-bold text-2xl">Category Not Found</Typography.H2>
-          <Typography.P className="mb-4 text-gray-600">
+          <Typography.P className="mb-4 text-muted-foreground">
             The category you're looking for doesn't exist.
           </Typography.P>
           <Button onClick={() => navigate("/products")}>Browse All Products</Button>
@@ -585,7 +585,7 @@ export default function CategoryProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/30">
       {/* Hero Section */}
       {category.bannerUrl && (
         <div className="relative h-64 overflow-hidden md:h-80">
@@ -621,7 +621,7 @@ export default function CategoryProductsPage() {
               Products
             </Button>
             <span>/</span>
-            <span className="text-gray-600">{category.name}</span>
+            <span className="text-muted-foreground">{category.name}</span>
           </nav>
         </div>
       </div>
@@ -648,12 +648,12 @@ export default function CategoryProductsPage() {
                         )}
                         <div>
                           <Typography.H3 className="font-medium">{subcat.name}</Typography.H3>
-                          <Typography.P className="text-gray-600 text-sm">
+                          <Typography.P className="text-muted-foreground text-sm">
                             {products.filter((p) => p.categoryId === subcat.id).length} products
                           </Typography.P>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600" />
+                      <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-muted-foreground" />
                     </div>
                   </Card>
                 </Link>
@@ -675,7 +675,7 @@ export default function CategoryProductsPage() {
             <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
               {/* Search */}
               <div className="relative flex-1 sm:flex-none">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                 <Input
                   placeholder="Search products..."
                   value={searchTerm}
@@ -697,7 +697,7 @@ export default function CategoryProductsPage() {
               </Select>
 
               {/* View Mode */}
-              <div className="flex gap-1 rounded-md bg-gray-100 p-1">
+              <div className="flex gap-1 rounded-md bg-muted p-1">
                 <Button
                   size="sm"
                   variant={viewMode === "small" ? "default" : "ghost"}
@@ -727,7 +727,7 @@ export default function CategoryProductsPage() {
           </div>
 
           {/* Results count */}
-          <div className="mt-2 text-gray-600 text-sm">
+          <div className="mt-2 text-muted-foreground text-sm">
             Showing {sortedProducts.length} products
             {searchTerm && ` for "${searchTerm}"`}
           </div>
@@ -737,12 +737,12 @@ export default function CategoryProductsPage() {
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-8">
         {isLoading ? (
-          <div className="flex min-h-[400px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <div className="flex min-h-value-card items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/50" />
           </div>
         ) : sortedProducts.length === 0 ? (
           <div className="py-12 text-center">
-            <Typography.P className="text-gray-500">
+            <Typography.P className="text-muted-foreground">
               No products found in this category
             </Typography.P>
           </div>
@@ -755,8 +755,8 @@ export default function CategoryProductsPage() {
                     {/* Interactive Image Carousel */}
                     <div
                       className={cn(
-                        "relative overflow-hidden bg-gray-100",
-                        viewMode === "small" ? "aspect-[3/4]" : "aspect-[4/5]",
+                        "relative overflow-hidden bg-muted",
+                        viewMode === "small" ? "aspect-3/4" : "aspect-4/5",
                       )}
                     >
                       <ProductImageCarousel product={product} viewMode={viewMode} />
@@ -776,7 +776,7 @@ export default function CategoryProductsPage() {
                     <div className={cn("p-3", viewMode === "small" ? "p-2" : "p-3")}>
                       <h3
                         className={cn(
-                          "line-clamp-2 font-semibold text-gray-900",
+                          "line-clamp-2 font-semibold text-foreground",
                           viewMode === "small" ? "text-sm" : "text-base",
                         )}
                       >
@@ -785,11 +785,11 @@ export default function CategoryProductsPage() {
 
                       {viewMode !== "small" && (
                         <>
-                          <Typography.P className="mt-1 text-gray-600 text-sm">
+                          <Typography.P className="mt-1 text-muted-foreground text-sm">
                             SKU: {product.sku}
                           </Typography.P>
                           {product.shortDescription && viewMode === "large" && (
-                            <Typography.P className="mt-2 line-clamp-2 text-gray-600 text-sm">
+                            <Typography.P className="mt-2 line-clamp-2 text-muted-foreground text-sm">
                               {product.shortDescription}
                             </Typography.P>
                           )}

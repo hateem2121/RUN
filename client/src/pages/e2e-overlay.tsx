@@ -84,7 +84,7 @@ export default function E2EOverlayTest() {
           </AlertDialogContent>
         </AlertDialog>
 
-        <div className="mt-8 text-gray-500 text-sm">
+        <div className="mt-8 text-muted-foreground text-sm">
           <Typography.P>Test Scenario:</Typography.P>
           <ul className="list-disc pl-5">
             <li>Header is z-dock (50) / Logo z-modal (100)</li>

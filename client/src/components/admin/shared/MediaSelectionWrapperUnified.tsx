@@ -46,7 +46,7 @@ const getAssetTypeColor = (type: string) => {
     case "model":
       return "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200";
+      return "bg-muted text-foreground border-border hover:bg-muted/20";
   }
 };
 
@@ -245,7 +245,7 @@ export function MediaSelectionWrapperUnified({
       {/* Fixed/Floating selection confirmation bar */}
       {hasSelection && (
         <div
-          className="z-elevated flex shrink-0 flex-col gap-4 border-blue-300/50 border-t bg-gradient-to-br from-blue-50/95 via-indigo-50/95 to-cyan-50/95 px-6 py-4 pb-[calc(theme(spacing.4)+env(safe-area-inset-bottom))] shadow-sm-blue-200/20 shadow-xl transition-all duration-300 ease-out supports-[backdrop-filter]:bg-white/90"
+          className="z-elevated flex shrink-0 flex-col gap-4 border-blue-300/50 border-t bg-linear-to-br from-blue-50/95 via-indigo-50/95 to-cyan-50/95 px-6 py-4 pb-[calc(theme(spacing.4)+env(safe-area-inset-bottom))] shadow-sm-blue-200/20 shadow-xl transition-all duration-300 ease-out supports-[backdrop-filter]:bg-white/90"
           data-testid="bar-selection-confirmation"
         >
           {/* Selected assets display for multiple mode */}
@@ -253,8 +253,8 @@ export function MediaSelectionWrapperUnified({
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
-                <h4 className="font-semibold text-gray-700 text-sm">Selected Assets</h4>
-                <div className="h-px flex-1 bg-gradient-to-r from-blue-200 to-transparent"></div>
+                <h4 className="font-semibold text-foreground/80 text-sm">Selected Assets</h4>
+                <div className="h-px flex-1 bg-linear-to-r from-blue-200 to-transparent"></div>
               </div>
               <div className="custom-scrollbar flex max-h-28 flex-wrap gap-3 overflow-y-auto">
                 {selectedAssetsForDisplay.map((asset: MediaAsset) => (
@@ -262,8 +262,7 @@ export function MediaSelectionWrapperUnified({
                     key={asset.id}
                     className={`group relative flex min-w-0 max-w-56 items-center gap-3 rounded-xl border-2 px-4 py-2.5 transition-all duration-200 hover:scale-[1.02] hover:shadow-md ${getAssetTypeColor(
                       asset.type,
-                    )}
-                  `}
+                    )} `}
                     data-testid={`badge-selected-asset-${asset.id}`}
                   >
                     <div className="shrink-0 rounded-lg bg-white/70 p-1.5">
@@ -311,11 +310,11 @@ export function MediaSelectionWrapperUnified({
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="h-4 w-4 animate-pulse rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                      <div className="absolute inset-0 h-4 w-4 animate-ping rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 opacity-20"></div>
+                      <div className="h-4 w-4 animate-pulse rounded-full bg-linear-to-r from-blue-500 to-indigo-500"></div>
+                      <div className="absolute inset-0 h-4 w-4 animate-ping rounded-full bg-linear-to-r from-blue-500 to-indigo-500 opacity-20"></div>
                     </div>
                     <div>
-                      <div className="font-semibold text-base text-gray-800">
+                      <div className="font-semibold text-base text-foreground">
                         {selectionMode === "single" ? (
                           <div className="flex items-center gap-2">
                             <span>Ready to select:</span>
@@ -334,7 +333,7 @@ export function MediaSelectionWrapperUnified({
                           </div>
                         )}
                       </div>
-                      <div className="mt-0.5 text-gray-500 text-xs">
+                      <div className="mt-0.5 text-muted-foreground text-xs">
                         {selectionMode === "multiple" && `Maximum: ${maxSelection} assets`}
                         {selectionMode === "single" && "Single selection mode"}
                       </div>
@@ -343,13 +342,13 @@ export function MediaSelectionWrapperUnified({
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="h-4 w-4 rounded-full bg-gray-300 opacity-60"></div>
+                  <div className="h-4 w-4 rounded-full bg-muted/30 opacity-60"></div>
                   <div>
-                    <span className="font-medium text-gray-600 text-sm">
+                    <span className="font-medium text-muted-foreground text-sm">
                       Choose {selectionMode === "single" ? "a media asset" : "media assets"} from
                       above
                     </span>
-                    <div className="mt-0.5 text-gray-400 text-xs">
+                    <div className="mt-0.5 text-muted-foreground/70 text-xs">
                       {selectionMode === "multiple"
                         ? `Up to ${maxSelection} assets`
                         : "Single selection"}
@@ -365,7 +364,7 @@ export function MediaSelectionWrapperUnified({
                   variant="ghost"
                   size="sm"
                   onClick={handleClearSelection}
-                  className="border border-gray-200 font-medium text-gray-500 transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                  className="border border-border font-medium text-muted-foreground transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                 >
                   Clear All
                 </Button>
@@ -374,7 +373,7 @@ export function MediaSelectionWrapperUnified({
                 variant="outline"
                 size="sm"
                 onClick={onCancel}
-                className="border-gray-300 font-medium text-gray-700 transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:text-gray-800"
+                className="border-border/50 font-medium text-foreground/80 transition-all duration-200 hover:border-border/70 hover:bg-background hover:text-foreground"
               >
                 Cancel
               </Button>
@@ -384,10 +383,9 @@ export function MediaSelectionWrapperUnified({
                 onClick={handleConfirmSelection}
                 className={`font-semibold shadow-lg transition-all duration-200 hover:shadow-xl ${
                   hasSelection
-                    ? "transform bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:scale-105 hover:from-blue-700 hover:to-indigo-700 active:scale-95"
-                    : "cursor-not-allowed bg-gray-100 text-gray-400"
-                }
-              `}
+                    ? "transform bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:scale-105 hover:from-blue-700 hover:to-indigo-700 active:scale-95"
+                    : "cursor-not-allowed bg-muted text-muted-foreground/70"
+                } `}
               >
                 {hasSelection ? (
                   <>

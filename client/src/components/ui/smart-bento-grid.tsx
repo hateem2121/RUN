@@ -90,13 +90,13 @@ export function SmartBentoGrid({ children, className }: SmartBentoGridProps) {
   );
 }
 
-interface BentoCardProps {
+interface BentoGridItemProps {
   children: React.ReactNode;
   gridSpan: GridSpan;
   className?: string;
 }
 
-export function BentoCard({ children, gridSpan, className }: BentoCardProps) {
+export function BentoGridItem({ children, gridSpan, className }: BentoGridItemProps) {
   return <div className={cn(gridSpan.className, className)}>{children}</div>;
 }
 

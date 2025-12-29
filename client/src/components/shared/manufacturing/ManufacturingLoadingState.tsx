@@ -32,8 +32,8 @@ export function ManufacturingLoadingState({
               <Factory className="h-6 w-6 text-blue-600" />
             </motion.div>
             <div className="space-y-2">
-              <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
-              <div className="h-3 w-48 animate-pulse rounded bg-gray-100" />
+              <div className="h-4 w-32 animate-pulse rounded bg-muted/20" />
+              <div className="h-3 w-48 animate-pulse rounded bg-muted" />
             </div>
           </div>
         </CardHeader>
@@ -51,7 +51,7 @@ export function ManufacturingLoadingState({
         >
           <Loader2 className="h-8 w-8 text-blue-600" />
         </motion.div>
-        <p className="text-gray-600 text-sm">{message}</p>
+        <p className="text-muted-foreground text-sm">{message}</p>
       </div>
     );
   }
@@ -67,10 +67,10 @@ export function ManufacturingLoadingState({
             transition={{ delay: i * 0.1 }}
             className="space-y-4"
           >
-            <div className="h-32 animate-pulse rounded-lg bg-gray-200" />
+            <div className="h-32 animate-pulse rounded-lg bg-muted/20" />
             <div className="space-y-2">
-              <div className="h-4 animate-pulse rounded bg-gray-200" />
-              <div className="h-3 w-3/4 animate-pulse rounded bg-gray-100" />
+              <div className="h-4 animate-pulse rounded bg-muted/20" />
+              <div className="h-3 w-3/4 animate-pulse rounded bg-muted" />
             </div>
           </motion.div>
         ))}
@@ -91,22 +91,22 @@ export function ManufacturingLoadingState({
           <Card>
             <CardHeader className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 animate-pulse rounded bg-gray-200" />
+                <div className="h-10 w-10 animate-pulse rounded bg-muted/20" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-1/3 animate-pulse rounded bg-gray-200" />
-                  <div className="h-3 w-1/2 animate-pulse rounded bg-gray-100" />
+                  <div className="h-4 w-1/3 animate-pulse rounded bg-muted/20" />
+                  <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="h-3 animate-pulse rounded bg-gray-100" />
-                <div className="h-3 w-5/6 animate-pulse rounded bg-gray-100" />
-                <div className="h-3 w-4/6 animate-pulse rounded bg-gray-100" />
+                <div className="h-3 animate-pulse rounded bg-muted" />
+                <div className="h-3 w-5/6 animate-pulse rounded bg-muted" />
+                <div className="h-3 w-4/6 animate-pulse rounded bg-muted" />
               </div>
               <div className="flex gap-2">
-                <div className="h-6 w-20 animate-pulse rounded bg-gray-200 px-3 py-1" />
-                <div className="h-6 w-16 animate-pulse rounded bg-gray-200 px-3 py-1" />
+                <div className="h-6 w-20 animate-pulse rounded bg-muted/20 px-3 py-1" />
+                <div className="h-6 w-16 animate-pulse rounded bg-muted/20 px-3 py-1" />
               </div>
             </CardContent>
           </Card>
@@ -128,7 +128,7 @@ export function ManufacturingInlineLoader({ className = "" }: { className?: stri
       >
         <Loader2 className="h-4 w-4 text-blue-600" />
       </motion.div>
-      <span className="text-gray-600 text-sm">Loading...</span>
+      <span className="text-muted-foreground text-sm">Loading...</span>
     </div>
   );
 }

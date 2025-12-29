@@ -228,7 +228,7 @@ export function ProductBulkOperations({
             <button
               data-testid="select-all-products-button"
               onClick={handleSelectAll}
-              className="flex items-center space-x-2 text-gray-600 text-sm hover:text-gray-900"
+              className="flex items-center space-x-2 text-muted-foreground text-sm hover:text-foreground"
             >
               {allSelected ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
               <span>

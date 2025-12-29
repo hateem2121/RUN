@@ -147,10 +147,10 @@ export function WebPOptimizationDemo() {
   return (
     <div className="space-y-6 p-6">
       <div className="space-y-2 text-center">
-        <h2 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text font-bold text-3xl text-transparent">
+        <h2 className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text font-bold text-3xl text-transparent">
           Phase 3: WebP Optimization Results
         </h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Real-time performance improvements from automatic WebP conversion
         </p>
       </div>
@@ -170,7 +170,7 @@ export function WebPOptimizationDemo() {
                 <div className="font-bold text-2xl text-blue-600">
                   {optimizationStats.totalImages}
                 </div>
-                <div className="text-gray-600 text-sm">Total Large Images</div>
+                <div className="text-muted-foreground text-sm">Total Large Images</div>
               </CardContent>
             </Card>
 
@@ -179,7 +179,7 @@ export function WebPOptimizationDemo() {
                 <div className="font-bold text-2xl text-green-600">
                   {optimizationStats.optimizedImages}
                 </div>
-                <div className="text-gray-600 text-sm">WebP Optimized</div>
+                <div className="text-muted-foreground text-sm">WebP Optimized</div>
               </CardContent>
             </Card>
 
@@ -188,7 +188,7 @@ export function WebPOptimizationDemo() {
                 <div className="font-bold text-2xl text-purple-600">
                   {optimizationStats.averageSavings}%
                 </div>
-                <div className="text-gray-600 text-sm">Average Savings</div>
+                <div className="text-muted-foreground text-sm">Average Savings</div>
               </CardContent>
             </Card>
 
@@ -199,7 +199,7 @@ export function WebPOptimizationDemo() {
                     optimizationStats.totalOriginalSize - optimizationStats.totalOptimizedSize,
                   )}
                 </div>
-                <div className="text-gray-600 text-sm">Total Saved</div>
+                <div className="text-muted-foreground text-sm">Total Saved</div>
               </CardContent>
             </Card>
           </div>
@@ -263,12 +263,12 @@ export function WebPOptimizationDemo() {
                     </div>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="text-gray-600">Original</div>
+                        <div className="text-muted-foreground">Original</div>
                         <div className="font-medium">{formatBytes(asset.size || 0)}</div>
                       </div>
                       {asset.metadata?.compressionSavings ? (
                         <div>
-                          <div className="text-gray-600">WebP Total</div>
+                          <div className="text-muted-foreground">WebP Total</div>
                           <div className="font-medium text-green-600">
                             {formatBytes(asset.metadata.compressionSavings.optimizedSize)}
                             <span className="ml-2 text-xs">
@@ -280,7 +280,7 @@ export function WebPOptimizationDemo() {
                         </div>
                       ) : (
                         <div>
-                          <div className="text-gray-600">Status</div>
+                          <div className="text-muted-foreground">Status</div>
                           <div className="text-orange-600">Pending optimization</div>
                         </div>
                       )}
@@ -301,7 +301,7 @@ export function WebPOptimizationDemo() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {largeImages.slice(0, 6).map((asset: MediaAsset) => (
                   <div key={asset.id} className="rounded-lg border p-3">
-                    <div className="mb-2 aspect-video overflow-hidden rounded bg-gray-100">
+                    <div className="mb-2 aspect-video overflow-hidden rounded bg-muted">
                       <ProgressiveImage
                         asset={asset}
                         className="h-full w-full object-cover"
@@ -313,7 +313,7 @@ export function WebPOptimizationDemo() {
                     <div className="space-y-2">
                       <div className="truncate font-medium text-sm">{asset.filename}</div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-600 text-xs">
+                        <span className="text-muted-foreground text-xs">
                           {formatBytes(asset.size || 0)}
                         </span>
                         <Button
@@ -327,7 +327,7 @@ export function WebPOptimizationDemo() {
                       </div>
                       {selectedImage?.id === asset.id &&
                         (loadTimes.original > 0 || loadTimes.webp > 0) && (
-                          <div className="space-y-1 rounded bg-gray-50 p-2 text-xs">
+                          <div className="space-y-1 rounded bg-background p-2 text-xs">
                             {loadTimes.original > 0 && (
                               <div>Original: {loadTimes.original.toFixed(0)}ms</div>
                             )}

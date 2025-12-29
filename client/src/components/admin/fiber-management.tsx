@@ -27,20 +27,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -108,7 +108,7 @@ const SustainabilityRatingInput = ({
             className={`p-1 rounded transition-colors ${
               (value || 0) >= score
                 ? "text-yellow-500 hover:text-yellow-600"
-                : "text-gray-300 hover:text-gray-400"
+                : "text-muted-foreground/50 hover:text-muted-foreground/70"
             }`}
           >
             <Star className="h-6 w-6 fill-current" />
@@ -124,7 +124,7 @@ const SustainabilityRatingInput = ({
           variant="ghost"
           size="sm"
           onClick={() => onChange(undefined)}
-          className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+          className="h-6 w-6 p-0 text-muted-foreground/70 hover:text-muted-foreground"
         >
           <X className="h-3 w-3" />
         </Button>
@@ -272,7 +272,7 @@ const FiberList = ({
                     Active
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                  <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
                     Inactive
                   </Badge>
                 )}
@@ -346,7 +346,7 @@ const FiberList = ({
                       ) : (
                         <Badge
                           variant="secondary"
-                          className="ml-2 text-xs bg-gray-100 text-gray-600"
+                          className="ml-2 text-xs bg-muted text-muted-foreground"
                         >
                           Inactive
                         </Badge>
@@ -475,7 +475,7 @@ const FiberList = ({
                       Active
                     </Badge>
                   ) : (
-                    <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
                       Inactive
                     </Badge>
                   )}
@@ -1131,7 +1131,7 @@ export default function FiberManagement() {
             }
           }}
         >
-          <SelectTrigger className={formData.type ? "" : "text-gray-400"}>
+          <SelectTrigger className={formData.type ? "" : "text-muted-foreground/70"}>
             <SelectValue placeholder="Select fiber type" />
           </SelectTrigger>
           <SelectContent>
@@ -1202,7 +1202,7 @@ export default function FiberManagement() {
             {propertyList.map((property, index) => (
               <div
                 key={property}
-                className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md"
+                className="flex items-center justify-between bg-background dark:bg-muted/80 px-3 py-2 rounded-md"
               >
                 <span className="text-sm">{property}</span>
                 <Button
@@ -1333,7 +1333,7 @@ export default function FiberManagement() {
                         className={`h-4 w-4 fill-current ${
                           sustainabilityStats.averageScore >= star
                             ? "text-yellow-500"
-                            : "text-gray-300"
+                            : "text-muted-foreground/50"
                         }`}
                       />
                     ))}
@@ -1426,7 +1426,7 @@ export default function FiberManagement() {
                               className={`h-3 w-3 fill-current ${
                                 (fiber.sustainabilityScore || 0) >= star
                                   ? "text-yellow-500"
-                                  : "text-gray-300"
+                                  : "text-muted-foreground/50"
                               }`}
                             />
                           ))}
@@ -1454,7 +1454,7 @@ export default function FiberManagement() {
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex-1 min-w-64">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground/70 h-4 w-4" />
               <Input
                 placeholder="Search fibers by name, type, or description..."
                 value={searchTerm}
@@ -1556,7 +1556,7 @@ export default function FiberManagement() {
           </DropdownMenu>
 
           {/* View Mode Selector */}
-          <div className="flex items-center border rounded-lg p-1 bg-gray-50">
+          <div className="flex items-center border rounded-lg p-1 bg-background">
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
@@ -1623,7 +1623,7 @@ export default function FiberManagement() {
 
         {(searchTerm || filterType !== "all" || filterStatus !== "all") && (
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Active filters:</span>
+            <span className="text-sm text-muted-foreground">Active filters:</span>
             {searchTerm && (
               <Badge variant="secondary" className="flex items-center gap-1">
                 Search: "{searchTerm}"
@@ -1693,10 +1693,10 @@ export default function FiberManagement() {
       </div>
 
       {/* Detailed Fiber Profile Dialog */}
-      <EnhancedDialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <EnhancedDialogContent contentType="default">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="flex items-center gap-3">
+      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+        <DialogContent contentType="default">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
               <div className="text-2xl">🧬</div>
               {detailFiber?.name}
               <div className="flex gap-2">
@@ -1713,15 +1713,15 @@ export default function FiberManagement() {
                     Active
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                  <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
                     Inactive
                   </Badge>
                 )}
               </div>
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+            </DialogTitle>
+          </DialogHeader>
 
-          <EnhancedDialogBody>
+          <DialogBody>
             {detailFiber && (
               <div className="space-y-6">
                 {/* Basic Information */}
@@ -1735,22 +1735,26 @@ export default function FiberManagement() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Fiber Name</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Fiber Name
+                        </Label>
                         <p className="text-base font-medium">{detailFiber.name}</p>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Type</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">Type</Label>
                         <p className="text-base">
                           {detailFiber.type.charAt(0).toUpperCase() + detailFiber.type.slice(1)}
                         </p>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Status</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">Status</Label>
                         <p className="text-base">{detailFiber.isActive ? "Active" : "Inactive"}</p>
                       </div>
                       {detailFiber.createdAt && (
                         <div>
-                          <Label className="text-sm font-medium text-gray-600">Created</Label>
+                          <Label className="text-sm font-medium text-muted-foreground">
+                            Created
+                          </Label>
                           <p className="text-base">
                             {new Date(detailFiber.createdAt).toLocaleDateString("en-US", {
                               year: "numeric",
@@ -1775,7 +1779,7 @@ export default function FiberManagement() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">
+                        <Label className="text-sm font-medium text-muted-foreground">
                           Properties Count
                         </Label>
                         <p className="text-2xl font-bold text-blue-600">
@@ -1783,17 +1787,23 @@ export default function FiberManagement() {
                         </p>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Used in Fabrics</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Used in Fabrics
+                        </Label>
                         <p className="text-2xl font-bold text-green-600">0</p>
-                        <p className="text-xs text-gray-500">No fabric usage tracking yet</p>
+                        <p className="text-xs text-muted-foreground">
+                          No fabric usage tracking yet
+                        </p>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Usage Score</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Usage Score
+                        </Label>
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div className="flex-1 bg-muted/20 rounded-full h-2">
                             <div className="bg-blue-500 h-2 rounded-full w-0"></div>
                           </div>
-                          <span className="text-sm text-gray-600">0%</span>
+                          <span className="text-sm text-muted-foreground">0%</span>
                         </div>
                       </div>
                     </CardContent>
@@ -1807,7 +1817,9 @@ export default function FiberManagement() {
                       <CardTitle className="text-lg">Description</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-700 leading-relaxed">{detailFiber.description}</p>
+                      <p className="text-foreground/80 leading-relaxed">
+                        {detailFiber.description}
+                      </p>
                     </CardContent>
                   </Card>
                 )}
@@ -1822,8 +1834,8 @@ export default function FiberManagement() {
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {getPropertiesArray(detailFiber.properties).map((prop: string) => (
-                            <div key={prop} className="p-3 bg-gray-50 rounded-lg border">
-                              <div className="font-medium text-gray-900 text-sm">{prop}</div>
+                            <div key={prop} className="p-3 bg-background rounded-lg border">
+                              <div className="font-medium text-foreground text-sm">{prop}</div>
                             </div>
                           ))}
                         </div>
@@ -1854,7 +1866,7 @@ export default function FiberManagement() {
                                   className={`h-5 w-5 fill-current ${
                                     (detailFiber.sustainabilityScore || 0) >= score
                                       ? "text-yellow-500"
-                                      : "text-gray-300"
+                                      : "text-muted-foreground/50"
                                   }`}
                                 />
                               ))}
@@ -1882,7 +1894,7 @@ export default function FiberManagement() {
                             Environmental Impact Notes
                           </Label>
                           <div className="mt-2 p-3 bg-white dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700">
-                            <p className="text-sm text-gray-700 dark:text-green-100 leading-relaxed whitespace-pre-wrap">
+                            <p className="text-sm text-foreground/80 dark:text-green-100 leading-relaxed whitespace-pre-wrap">
                               {detailFiber.environmentalImpact}
                             </p>
                           </div>
@@ -1945,21 +1957,21 @@ export default function FiberManagement() {
                 </Card>
               </div>
             )}
-          </EnhancedDialogBody>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Fiber Modal */}
-      <EnhancedDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="font-neue-stance">Add New Fiber</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle className="font-neue-stance">Add New Fiber</DialogTitle>
+            <DialogDescription>
               Create a new fiber type for material traceability within fabrics
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>{renderFiberForm(handleSubmit)}</EnhancedDialogBody>
-          <EnhancedDialogFooter>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>{renderFiberForm(handleSubmit)}</DialogBody>
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
@@ -1979,21 +1991,19 @@ export default function FiberManagement() {
             >
               {createFiberMutation.isPending ? "Creating..." : "Create Fiber"}
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Fiber Modal */}
-      <EnhancedDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="font-neue-stance">Edit Fiber</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
-              Update fiber information and properties
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>{renderFiberForm(handleEditSubmit)}</EnhancedDialogBody>
-          <EnhancedDialogFooter>
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle className="font-neue-stance">Edit Fiber</DialogTitle>
+            <DialogDescription>Update fiber information and properties</DialogDescription>
+          </DialogHeader>
+          <DialogBody>{renderFiberForm(handleEditSubmit)}</DialogBody>
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
@@ -2014,9 +2024,9 @@ export default function FiberManagement() {
             >
               {updateFiberMutation.isPending ? "Updating..." : "Update Fiber"}
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Keyboard Shortcuts Help */}
       <div className="fixed bottom-4 right-4 z-modal">
@@ -2024,16 +2034,16 @@ export default function FiberManagement() {
         <div className="bg-black/75 text-white text-xs px-3 py-2 rounded-lg">
           <div className="space-y-1">
             <div>
-              <kbd className="bg-gray-700 px-1 rounded">Ctrl+A</kbd> Select All
+              <kbd className="bg-muted/70 px-1 rounded">Ctrl+A</kbd> Select All
             </div>
             <div>
-              <kbd className="bg-gray-700 px-1 rounded">Ctrl+N</kbd> New Fiber
+              <kbd className="bg-muted/70 px-1 rounded">Ctrl+N</kbd> New Fiber
             </div>
             <div>
-              <kbd className="bg-gray-700 px-1 rounded">Del</kbd> Delete Selected
+              <kbd className="bg-muted/70 px-1 rounded">Del</kbd> Delete Selected
             </div>
             <div>
-              <kbd className="bg-gray-700 px-1 rounded">1/2/3</kbd> Switch Views
+              <kbd className="bg-muted/70 px-1 rounded">1/2/3</kbd> Switch Views
             </div>
           </div>
         </div>

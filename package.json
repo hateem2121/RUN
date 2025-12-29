@@ -259,7 +259,9 @@
     "*.{ts,tsx}": [
       "biome check --write",
       "vitest run --bail 1 --passWithNoTests",
-      "npm run lint:css-contract"
+      "npm run lint:css-contract",
+      "npm run lint:z-index",
+      "npm run lint:colors"
     ],
     "*.{js,json,md}": [
       "biome check --write"

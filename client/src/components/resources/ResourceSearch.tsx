@@ -17,7 +17,7 @@ export function ResourceSearch({
 }: ResourceSearchProps) {
   return (
     <div className={`relative ${className}`}>
-      <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+      <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-muted-foreground/70" />
       <Input
         placeholder={placeholder}
         value={value}

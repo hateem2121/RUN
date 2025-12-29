@@ -103,8 +103,8 @@ export function ProductGrid({
               {/* Media Preview */}
               <div
                 className={cn(
-                  "relative overflow-hidden bg-gray-100",
-                  viewMode === "small" ? "aspect-[3/4]" : "aspect-[4/5]",
+                  "relative overflow-hidden bg-muted",
+                  viewMode === "small" ? "aspect-3/4" : "aspect-4/5",
                 )}
               >
                 {primaryMedia ? (
@@ -115,7 +115,7 @@ export function ProductGrid({
                     priority={false}
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-gray-400">
+                  <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
                     <LayoutGrid className="h-12 w-12" />
                   </div>
                 )}
@@ -176,10 +176,12 @@ export function ProductGrid({
                 {viewMode !== "small" && (
                   <>
                     {product.sku && (
-                      <p className="mb-2 text-gray-600 text-sm">SKU: {product.sku}</p>
+                      <p className="mb-2 text-muted-foreground text-sm">SKU: {product.sku}</p>
                     )}
                     {product.description && viewMode === "large" && (
-                      <p className="line-clamp-2 text-gray-700 text-sm">{product.description}</p>
+                      <p className="line-clamp-2 text-foreground/80 text-sm">
+                        {product.description}
+                      </p>
                     )}
                   </>
                 )}

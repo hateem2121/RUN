@@ -26,7 +26,9 @@ interface ExampleProps extends React.HTMLAttributes<HTMLDivElement> {
   ref?: React.Ref<HTMLDivElement>;
 }
 
-const Example = ({ ref, ...props }: ExampleProps) => <div ref={ref} {...props} />;
+const Example = ({ ref, ...props }: ExampleProps) => (
+  <div ref={ref} {...props} />
+);
 // Display name is still recommended for devtools
 Example.displayName = "Example";
 ```
@@ -44,15 +46,14 @@ We use a semantic Z-index scale defined in our Tailwind v4 theme to ensure corre
 - `z-10`
 
 **✅ DO USE:**
-| Token | Value | Use Case |
-| :--- | :--- | :--- |
-| `z-toast` | `95` | Toasts, critical notifications (Highest) |
-| `z-tooltip` | `70` | Tooltips |
-| `z-popover` | `60` | Dropdowns, menus, hover cards |
-| `z-modal` | `50` | Dialog content, Sheet content |
-| `z-modal-backdrop` | `40` | Dimmed overlays behind modals |
-| `z-dock` | `35` | Floating docks or persistent bars |
-| `z-sticky` | `30` | Sticky headers |
+| `z-max` | `999` | Critical overlays locally scoped |
+| `z-toast` | `700` | Toasts, critical notifications (Highest) |
+| `z-popover` | `600` | Dropdowns, menus, hover cards |
+| `z-modal` | `500` | Dialog content, Sheet content |
+| `z-overlay` | `400` | Dimmed overlays behind modals |
+| `z-fixed` | `300` | Fixed positioning elements |
+| `z-sticky` | `200` | Sticky headers |
+| `z-dropdown` | `100` | Dropdown content |
 
 ### 3. Tailwind v4 Syntax
 

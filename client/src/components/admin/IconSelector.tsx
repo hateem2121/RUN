@@ -5,13 +5,13 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogClose,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
@@ -120,14 +120,14 @@ export const IconSelector = React.memo(function IconSelector({
           {getCurrentIconDisplay()}
         </Button>
 
-        <EnhancedDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <EnhancedDialogContent contentType="form" preferredSize="2xl">
-            <EnhancedDialogHeader>
-              <EnhancedDialogTitle>Select Icon</EnhancedDialogTitle>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent contentType="form" preferredSize="2xl">
+            <DialogHeader>
+              <DialogTitle>Select Icon</DialogTitle>
               <p className="mt-1 text-muted-foreground text-sm">
                 Choose from predefined icons or upload a custom image to represent your content
               </p>
-            </EnhancedDialogHeader>
+            </DialogHeader>
 
             <div className="flex-1 overflow-hidden">
               <Tabs
@@ -141,7 +141,7 @@ export const IconSelector = React.memo(function IconSelector({
                 </TabsList>
 
                 <TabsContent value="predefined" className="mt-4 flex-1 overflow-hidden">
-                  <div className="grid max-h-[50vh] grid-cols-2 gap-3 overflow-y-auto md:grid-cols-3">
+                  <div className="grid max-h-loading-content grid-cols-2 gap-3 overflow-y-auto md:grid-cols-3">
                     {predefinedIcons.map((icon) => (
                       <Card
                         key={icon.value}
@@ -176,15 +176,15 @@ export const IconSelector = React.memo(function IconSelector({
               </Tabs>
             </div>
 
-            <EnhancedDialogFooter>
-              <EnhancedDialogClose asChild>
+            <DialogFooter>
+              <DialogClose asChild>
                 <Button variant="outline" data-testid="button-cancel">
                   Cancel
                 </Button>
-              </EnhancedDialogClose>
-            </EnhancedDialogFooter>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {allowCustom && (
           <StandardMediaSelectionDialog

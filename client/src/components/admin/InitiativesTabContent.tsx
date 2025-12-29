@@ -7,14 +7,14 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -339,7 +339,7 @@ export function InitiativesTabContent({
                 )}
               </>
             ) : (
-              <div className="py-8 text-center text-gray-500">
+              <div className="py-8 text-center text-muted-foreground">
                 No initiatives yet. Create your first sustainability initiative.
               </div>
             )}
@@ -348,19 +348,19 @@ export function InitiativesTabContent({
       </TabsContent>
 
       {/* Initiative Dialog - Simplified for space, includes all form fields */}
-      <EnhancedDialog open={showInitiativeDialog} onOpenChange={setShowInitiativeDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
+      <Dialog open={showInitiativeDialog} onOpenChange={setShowInitiativeDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>
               {editingInitiative ? "Edit Initiative" : "Add New Initiative"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               {editingInitiative
                 ? "Update the sustainability initiative details"
                 : "Create a new sustainability initiative"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="title">Title</Label>
@@ -452,7 +452,7 @@ export function InitiativesTabContent({
               <div>
                 <Label>Icon</Label>
                 <div className="mt-2 flex items-center gap-3">
-                  <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
+                  <div className="flex items-center gap-2 rounded-lg border bg-background p-3">
                     <IconDisplay iconName={initiativeForm.iconName} showBackground={true} />
                     <span className="font-medium text-sm">{initiativeForm.iconName}</span>
                   </div>
@@ -477,7 +477,9 @@ export function InitiativesTabContent({
                   {initiativeForm.imageId ? "Change Image" : "Select Image"}
                 </Button>
                 {initiativeForm.imageId && (
-                  <p className="mt-1 text-gray-600 text-sm">Image ID: {initiativeForm.imageId}</p>
+                  <p className="mt-1 text-muted-foreground text-sm">
+                    Image ID: {initiativeForm.imageId}
+                  </p>
                 )}
               </div>
               <div className="flex items-center space-x-2">
@@ -494,8 +496,8 @@ export function InitiativesTabContent({
                 <Label htmlFor="initiative-active">Active</Label>
               </div>
             </div>
-          </EnhancedDialogBody>
-          <EnhancedDialogFooter>
+          </DialogBody>
+          <DialogFooter>
             <div className="flex w-full justify-between">
               <Button variant="secondary" onClick={() => setShowInitiativePreview(true)}>
                 <Eye className="mr-2 h-4 w-4" />
@@ -515,20 +517,20 @@ export function InitiativesTabContent({
                 </Button>
               </div>
             </div>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Initiative Preview Modal */}
-      <EnhancedDialog open={showInitiativePreview} onOpenChange={setShowInitiativePreview}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Initiative Preview</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showInitiativePreview} onOpenChange={setShowInitiativePreview}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Initiative Preview</DialogTitle>
+            <DialogDescription>
               This is how your initiative will appear on the sustainability page
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <div className="rounded-lg border-2 border-gray-200 border-dashed bg-gray-50 p-6">
+            </DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg border-2 border-border border-dashed bg-background p-6">
             <div className="rounded-xl bg-white p-6 shadow-lg">
               <div className="flex items-start gap-4">
                 <div className="shrink-0">
@@ -538,14 +540,14 @@ export function InitiativesTabContent({
                 </div>
                 <div className="flex-1">
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-500 text-sm">
+                    <span className="rounded bg-muted px-2 py-1 font-medium text-muted-foreground text-sm">
                       {initiativeForm.category || "Category"}
                     </span>
                   </div>
-                  <h3 className="mb-2 font-semibold text-gray-900 text-lg">
+                  <h3 className="mb-2 font-semibold text-foreground text-lg">
                     {initiativeForm.title || "Initiative Title"}
                   </h3>
-                  <p className="mb-3 text-gray-700 text-sm">
+                  <p className="mb-3 text-foreground/80 text-sm">
                     {initiativeForm.description || "Description of the initiative..."}
                   </p>
                   <div className="rounded-lg border border-green-200 bg-green-50 p-3">
@@ -557,13 +559,13 @@ export function InitiativesTabContent({
               </div>
             </div>
           </div>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setShowInitiativePreview(false)}>
               Close Preview
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Initiative Icon Picker */}
       <IconPicker

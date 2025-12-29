@@ -33,7 +33,7 @@ export function CertificationsTabContent({
         <CardContent className="space-y-4">
           <div>
             <Label className="font-medium text-base">Select Certificates to Showcase</Label>
-            <p className="mb-4 text-gray-600 text-sm">
+            <p className="mb-4 text-muted-foreground text-sm">
               Choose which certificates will be displayed on the public sustainability page
             </p>
 
@@ -45,7 +45,7 @@ export function CertificationsTabContent({
                     className={`flex cursor-pointer items-center space-x-3 rounded-lg border p-3 transition-colors ${
                       (localForm.data?.certificationIds || []).includes(certificate.id!)
                         ? "border-green-200 bg-green-50"
-                        : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                        : "border-border bg-background hover:bg-muted"
                     }`}
                     onClick={() => {
                       const currentIds = localForm.data?.certificationIds || [];
@@ -64,7 +64,7 @@ export function CertificationsTabContent({
                       className={`flex h-4 w-4 items-center justify-center rounded border-2 ${
                         (localForm.data?.certificationIds || []).includes(certificate.id!)
                           ? "border-green-600 bg-green-600"
-                          : "border-gray-300"
+                          : "border-border/50"
                       }`}
                     >
                       {(localForm.data?.certificationIds || []).includes(certificate.id!) && (
@@ -78,16 +78,16 @@ export function CertificationsTabContent({
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="truncate font-medium text-gray-900 text-sm">
+                      <div className="truncate font-medium text-foreground text-sm">
                         {certificate.name}
                       </div>
-                      <div className="truncate text-gray-500 text-xs">
+                      <div className="truncate text-muted-foreground text-xs">
                         {certificate.issueDate
                           ? new Date(certificate.issueDate).getFullYear()
                           : "N/A"}
                       </div>
                       {certificate.expiryDate && (
-                        <div className="truncate text-gray-400 text-xs">
+                        <div className="truncate text-muted-foreground/70 text-xs">
                           Valid until: {new Date(certificate.expiryDate).getFullYear()}
                         </div>
                       )}
@@ -96,7 +96,7 @@ export function CertificationsTabContent({
                 ))}
               </div>
             ) : (
-              <div className="rounded-lg border py-8 text-center text-gray-500">
+              <div className="rounded-lg border py-8 text-center text-muted-foreground">
                 No certificates available. Add certificates in the Certificates management section
                 first.
               </div>

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { analyzeContent, BentoCard, calculateGridSpan } from "@/components/ui/smart-bento-grid";
+import { analyzeContent, BentoGridItem, calculateGridSpan } from "@/components/ui/smart-bento-grid";
 import { cn } from "@/lib/utils";
 import { CardDecorator } from "./CardDecorator";
 import { ManufacturingStatusIndicator } from "./ManufacturingStatusIndicator";
@@ -50,11 +50,11 @@ export function ProcessCard({ process, index, mediaAssets }: ProcessCardProps) {
     : null;
 
   return (
-    <BentoCard gridSpan={gridSpan}>
+    <BentoGridItem gridSpan={gridSpan}>
       <Card
         className={cn(
           "group manufacturing-card-hover manufacturing-focus-glow relative h-full rounded-none",
-          "border-2 border-gray-200",
+          "border-2 border-border",
         )}
       >
         <CardDecorator />
@@ -118,6 +118,6 @@ export function ProcessCard({ process, index, mediaAssets }: ProcessCardProps) {
           </div>
         </CardContent>
       </Card>
-    </BentoCard>
+    </BentoGridItem>
   );
 }

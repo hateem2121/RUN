@@ -94,7 +94,7 @@ export function LogoAnimationSettingsPage() {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <RefreshCw className="h-8 w-8 animate-spin text-gray-400" />
+        <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground/50" />
       </div>
     );
   }
@@ -104,7 +104,7 @@ export function LogoAnimationSettingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-3xl">Logo Animation Settings</h1>
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-muted-foreground">
             Configure SVG logo animations for the homepage landing
           </p>
         </div>
@@ -140,7 +140,9 @@ export function LogoAnimationSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Logo Animation</Label>
-                  <p className="text-gray-500 text-sm">Show animated logo on homepage loading</p>
+                  <p className="text-muted-foreground text-sm">
+                    Show animated logo on homepage loading
+                  </p>
                 </div>
                 <Switch
                   checked={settings.isActive ?? true}
@@ -156,13 +158,13 @@ export function LogoAnimationSettingsPage() {
                     setSettings({ ...settings, showFrequency: checked })
                   }
                 />
-                <p className="text-gray-500 text-sm">Show frequency indicator</p>
+                <p className="text-muted-foreground text-sm">Show frequency indicator</p>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Skip Button</Label>
-                  <p className="text-gray-500 text-sm">Allow users to skip the animation</p>
+                  <p className="text-muted-foreground text-sm">Allow users to skip the animation</p>
                 </div>
                 <Switch
                   checked={settings.skipButtonEnabled ?? false}
@@ -194,7 +196,7 @@ export function LogoAnimationSettingsPage() {
                     {parseFloat(settings.animationDurationMultiplier ?? "1.0").toFixed(1)}x
                   </span>
                 </div>
-                <p className="text-gray-500 text-sm">
+                <p className="text-muted-foreground text-sm">
                   Overall animation speed (0.5x = slower, 2x = faster)
                 </p>
               </div>
@@ -225,7 +227,7 @@ export function LogoAnimationSettingsPage() {
                   />
                   <span className="w-16 text-right text-sm">{settings.duration ?? 2000}ms</span>
                 </div>
-                <p className="text-gray-500 text-sm">Total animation duration</p>
+                <p className="text-muted-foreground text-sm">Total animation duration</p>
               </div>
 
               <div className="space-y-2">
@@ -250,7 +252,9 @@ export function LogoAnimationSettingsPage() {
                     {parseFloat(settings.drawStagger ?? "100").toFixed(0)}ms
                   </span>
                 </div>
-                <p className="text-gray-500 text-sm">Delay between drawing each path element</p>
+                <p className="text-muted-foreground text-sm">
+                  Delay between drawing each path element
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -270,7 +274,7 @@ export function LogoAnimationSettingsPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-gray-500 text-sm">Animation easing curve</p>
+                <p className="text-muted-foreground text-sm">Animation easing curve</p>
               </div>
             </CardContent>
           </Card>
@@ -286,7 +290,7 @@ export function LogoAnimationSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Motion Elements</Label>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Show floating animated elements after logo draw
                   </p>
                 </div>
@@ -314,10 +318,10 @@ export function LogoAnimationSettingsPage() {
                     })
                   }
                   placeholder="e.g., circle, square, triangle"
-                  className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   disabled={!settings.motionEnabled}
                 />
-                <p className="text-gray-500 text-sm">Elements to animate (string array)</p>
+                <p className="text-muted-foreground text-sm">Elements to animate (string array)</p>
               </div>
 
               <div className="space-y-2">
@@ -343,7 +347,7 @@ export function LogoAnimationSettingsPage() {
                     {parseFloat(settings.motionSpeed ?? "3000").toFixed(0)}ms
                   </span>
                 </div>
-                <p className="text-gray-500 text-sm">Duration of motion path animations</p>
+                <p className="text-muted-foreground text-sm">Duration of motion path animations</p>
               </div>
             </CardContent>
           </Card>
@@ -364,15 +368,17 @@ export function LogoAnimationSettingsPage() {
                   value={settings.customCssClass || ""}
                   onChange={(e) => setSettings({ ...settings, customCssClass: e.target.value })}
                   placeholder="e.g., logo-animation-custom"
-                  className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
-                <p className="text-gray-500 text-sm">Additional CSS class for custom styling</p>
+                <p className="text-muted-foreground text-sm">
+                  Additional CSS class for custom styling
+                </p>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Debug Mode</Label>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Show animation phase indicators and timing info
                   </p>
                 </div>

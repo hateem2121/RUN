@@ -98,7 +98,7 @@ export const Card: React.FC<CardProps> = ({
       >
         {/* Gradient overlay with color accent */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10"
+          className="pointer-events-none absolute inset-0 rounded-xl bg-linear-to-br from-white/10 via-transparent to-black/10"
           style={{
             backgroundColor: `color-mix(in srgb, ${color}, transparent 95%)`,
           }}
@@ -106,7 +106,7 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Inner glow with color tint */}
         <div
-          className="pointer-events-none absolute inset-px rounded-xl bg-gradient-to-br from-white/5 to-transparent"
+          className="pointer-events-none absolute inset-px rounded-xl bg-linear-to-br from-white/5 to-transparent"
           style={{
             background: `linear-gradient(to bottom right, color-mix(in srgb, ${color}, transparent 95%), transparent)`,
           }}
@@ -254,12 +254,12 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
             <h2 className="mb-6 font-bold text-4xl text-white tracking-tight md:text-5xl lg:text-6xl">
               Our Manufacturing
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Capabilities
               </span>
             </h2>
             <motion.p
-              className="mx-auto mb-8 max-w-3xl text-gray-300 text-lg md:text-xl"
+              className="mx-auto mb-8 max-w-3xl text-lg text-muted-foreground md:text-xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -273,7 +273,7 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
               capabilities
             </motion.p>
             <motion.p
-              className="center-flex gap-2 text-gray-400 text-sm"
+              className="center-flex gap-2 text-sm text-text-subtle"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-20px" }}

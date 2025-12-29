@@ -191,11 +191,13 @@ function NotificationItem({ notification }: NotificationItemProps) {
           {/* Content */}
           <div className="min-w-0 flex-1">
             {notification.title && (
-              <h4 className="mb-1 font-semibold text-gray-900 text-sm dark:text-gray-100">
+              <h4 className="mb-1 font-semibold text-foreground text-sm dark:text-foreground">
                 {notification.title}
               </h4>
             )}
-            <p className="text-gray-700 text-sm dark:text-gray-300">{notification.message}</p>
+            <p className="text-foreground/80 text-sm dark:text-muted-foreground/50">
+              {notification.message}
+            </p>
 
             {/* Action Button */}
             {notification.action && (
@@ -204,7 +206,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
                   onClick={handleAction}
                   className={cn(
                     "rounded-md px-3 py-1.5 font-medium text-sm",
-                    "hover:bg-white/50 dark:hover:bg-gray-800/50",
+                    "hover:bg-white/50 dark:hover:bg-muted/80/50",
                     "focus:outline-hidden focus:ring-2 focus:ring-offset-1",
                     "transition-colors duration-200",
                     colorMap[notification.type],
@@ -222,9 +224,9 @@ function NotificationItem({ notification }: NotificationItemProps) {
               onClick={handleClose}
               className={cn(
                 "inline-flex rounded-md p-1.5",
-                "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
-                "hover:bg-gray-100 dark:hover:bg-gray-800",
-                "focus:outline-hidden focus:ring-2 focus:ring-gray-500 focus:ring-offset-1",
+                "text-muted-foreground/70 hover:text-muted-foreground dark:hover:text-muted-foreground/50",
+                "hover:bg-muted dark:hover:bg-muted/80",
+                "focus:outline-hidden focus:ring-2 focus:ring-muted-foreground focus:ring-offset-1",
                 "transition-colors duration-200",
               )}
               aria-label="Dismiss notification"
@@ -236,7 +238,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
 
         {/* Progress Bar for timed notifications */}
         {!notification.persistent && notification.duration && notification.duration > 0 && (
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted/20 dark:bg-muted/70">
             <div
               className={cn("notification-progress h-full rounded-full", {
                 "bg-green-500": notification.type === "success",

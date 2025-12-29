@@ -215,7 +215,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          className="fixed top-4 right-4 z-dock w-80 rounded-lg border border-gray-200 bg-white/95 shadow-xl"
+          className="fixed top-4 right-4 z-dock w-80 rounded-lg border border-border bg-background/95 shadow-xl"
         >
           <div className="p-4">
             <div className="mb-4 flex items-center justify-between">
@@ -223,27 +223,27 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
                 <IconWrapper size="md" className="text-blue-600" asChild>
                   <BarChart3 />
                 </IconWrapper>
-                <h3 className="font-semibold text-gray-800">Performance Monitor</h3>
+                <h3 className="font-semibold text-foreground">Performance Monitor</h3>
               </div>
               <button
                 onClick={onClose}
-                className="rounded-full p-1 transition-colors hover:bg-gray-100"
+                className="rounded-full p-1 transition-colors hover:bg-surface-subtle"
               >
-                <IconWrapper size="sm" className="text-gray-600" asChild>
+                <IconWrapper size="sm" className="text-text-disabled" asChild>
                   <X />
                 </IconWrapper>
               </button>
             </div>
 
             {/* Performance Score */}
-            <div className="mb-4 rounded-lg bg-gray-50 p-3">
+            <div className="mb-4 rounded-lg bg-surface-subtle p-3">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-gray-600 text-sm">Overall Score</span>
+                <span className="font-medium text-sm text-text-disabled">Overall Score</span>
                 <span className={`font-bold text-lg ${getScoreColor(metrics.score)}`}>
                   {Math.round(metrics.score)}
                 </span>
               </div>
-              <div className="mt-2 h-2 w-full rounded-full bg-gray-200">
+              <div className="mt-2 h-2 w-full rounded-full bg-surface-muted">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
                     metrics.score >= 90
@@ -260,7 +260,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
             {/* Core Web Vitals */}
             <div className="mb-4 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">CLS</span>
+                <span className="text-sm text-text-disabled">CLS</span>
                 <span
                   className={`font-medium text-sm ${
                     getMetricStatus(metrics.cls, 0.1, 0.25) === "critical"
@@ -274,7 +274,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">LCP</span>
+                <span className="text-sm text-text-disabled">LCP</span>
                 <span
                   className={`font-medium text-sm ${
                     getMetricStatus(metrics.lcp, 2500, 4000) === "critical"
@@ -288,7 +288,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">FID</span>
+                <span className="text-sm text-text-disabled">FID</span>
                 <span
                   className={`font-medium text-sm ${
                     getMetricStatus(metrics.fid, 100, 300) === "critical"
@@ -302,8 +302,8 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Memory</span>
-                <span className="font-medium text-gray-800 text-sm">
+                <span className="text-sm text-text-disabled">Memory</span>
+                <span className="font-medium text-foreground text-sm">
                   {metrics.memory.toFixed(1)}MB
                 </span>
               </div>
@@ -316,7 +316,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
                   <IconWrapper size="sm" className="text-yellow-600" asChild>
                     <AlertTriangle />
                   </IconWrapper>
-                  <span className="font-medium text-gray-700 text-sm">Alerts</span>
+                  <span className="font-medium text-sm text-text-muted">Alerts</span>
                   <button
                     onClick={clearAlerts}
                     className="text-blue-600 text-xs hover:text-blue-800"
@@ -355,7 +355,7 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
               </button>
               <button
                 onClick={clearAlerts}
-                className="flex items-center gap-1 rounded bg-gray-600 px-3 py-1 text-sm text-white transition-colors hover:bg-gray-700"
+                className="flex items-center gap-1 rounded bg-secondary px-3 py-1 text-secondary-foreground text-sm transition-colors hover:bg-secondary/80"
               >
                 <IconWrapper size="xs" asChild>
                   <Zap />

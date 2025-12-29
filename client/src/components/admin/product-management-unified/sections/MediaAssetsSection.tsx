@@ -46,7 +46,7 @@ function SimpleMediaGrid({
   // Defensive programming: Validate mediaAssets
   if (!Array.isArray(mediaAssets)) {
     return (
-      <div className="py-4 text-center text-gray-500">
+      <div className="py-4 text-center text-muted-foreground">
         <p>Unable to display media assets</p>
         <p className="text-sm">Invalid data format</p>
       </div>
@@ -55,7 +55,7 @@ function SimpleMediaGrid({
 
   if (mediaAssets.length === 0) {
     return (
-      <div className="py-4 text-center text-gray-500">
+      <div className="py-4 text-center text-muted-foreground">
         <p>No media assets to display</p>
       </div>
     );
@@ -79,7 +79,7 @@ function SimpleMediaGrid({
         .filter((asset) => asset?.id)
         .map((asset) => (
           <div key={asset.id} className="group relative">
-            <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
+            <div className="aspect-square overflow-hidden rounded-lg bg-muted">
               {asset.type === "image" ? (
                 <img
                   src={asset.url || ""}
@@ -100,8 +100,8 @@ function SimpleMediaGrid({
                   {...(showVideoControls && { controls: true })}
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gray-200">
-                  <Box className="h-8 w-8 text-gray-400" />
+                <div className="flex h-full w-full items-center justify-center bg-muted/20">
+                  <Box className="h-8 w-8 text-muted-foreground/70" />
                 </div>
               )}
             </div>
@@ -134,7 +134,7 @@ function SimpleMediaGrid({
             <div className="absolute right-0 bottom-0 left-0 bg-black/70 p-2 text-white text-xs opacity-0 transition-opacity group-hover:opacity-100">
               <div className="truncate">{asset.filename || "Unknown file"}</div>
               {asset.size && (
-                <div className="text-gray-300">{Math.round(asset.size / 1024)} KB</div>
+                <div className="text-muted-foreground/50">{Math.round(asset.size / 1024)} KB</div>
               )}
             </div>
           </div>
@@ -303,19 +303,19 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
   return (
     <>
       <Collapsible open={isOpen} onOpenChange={onToggle}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+        <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
           <div className="flex items-center gap-3">
             <Camera className="h-5 w-5 text-green-600" />
             <div className="text-left">
-              <h3 className="font-semibold text-gray-900">Media Assets</h3>
-              <p className="text-gray-600 text-sm">Images, videos, and 3D models</p>
+              <h3 className="font-semibold text-foreground">Media Assets</h3>
+              <p className="text-muted-foreground text-sm">Images, videos, and 3D models</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {isOpen ? (
-              <ChevronDown className="h-4 w-4 text-gray-500" />
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <ChevronRight className="h-4 w-4 text-gray-500" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </CollapsibleTrigger>
@@ -324,9 +324,9 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
           {/* Product Images with Star System */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <Label className="font-medium text-gray-700 text-sm">Product Images</Label>
+              <Label className="font-medium text-foreground/80 text-sm">Product Images</Label>
               <div className="flex items-center gap-2">
-                <span className="text-gray-500 text-xs">⭐ Click stars to set primary</span>
+                <span className="text-muted-foreground text-xs">⭐ Click stars to set primary</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -356,9 +356,9 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
                 />
               </AdminProductsErrorBoundary>
             ) : (
-              <div className="rounded-lg border-2 border-gray-300 border-dashed p-8 text-center">
-                <ImageIcon className="mx-auto mb-2 h-12 w-12 text-gray-400" />
-                <p className="text-gray-600">No images selected</p>
+              <div className="rounded-lg border-2 border-border/50 border-dashed p-8 text-center">
+                <ImageIcon className="mx-auto mb-2 h-12 w-12 text-muted-foreground/70" />
+                <p className="text-muted-foreground">No images selected</p>
               </div>
             )}
             {formErrors.imageIds && (
@@ -372,9 +372,9 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
           {/* Product Videos with Star System */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <Label className="font-medium text-gray-700 text-sm">Product Videos</Label>
+              <Label className="font-medium text-foreground/80 text-sm">Product Videos</Label>
               <div className="flex items-center gap-2">
-                <span className="text-gray-500 text-xs">⭐ Click stars to set primary</span>
+                <span className="text-muted-foreground text-xs">⭐ Click stars to set primary</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -406,9 +406,9 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
                 />
               </AdminProductsErrorBoundary>
             ) : (
-              <div className="rounded-lg border-2 border-gray-300 border-dashed p-8 text-center">
-                <Video className="mx-auto mb-2 h-12 w-12 text-gray-400" />
-                <p className="text-gray-600">No videos selected</p>
+              <div className="rounded-lg border-2 border-border/50 border-dashed p-8 text-center">
+                <Video className="mx-auto mb-2 h-12 w-12 text-muted-foreground/70" />
+                <p className="text-muted-foreground">No videos selected</p>
               </div>
             )}
             {formErrors.videos && <p className="mt-1 text-red-600 text-sm">{formErrors.videos}</p>}
@@ -420,7 +420,7 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
           {/* 3D Model */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <Label className="font-medium text-gray-700 text-sm">3D Model</Label>
+              <Label className="font-medium text-foreground/80 text-sm">3D Model</Label>
               <Button
                 type="button"
                 variant="outline"
@@ -437,7 +437,7 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
                   const asset = getMediaAsset(formData.modelFileId);
                   return asset ? (
                     <>
-                      <div className="relative h-64 w-64 overflow-hidden rounded-lg border bg-gray-100">
+                      <div className="relative h-64 w-64 overflow-hidden rounded-lg border bg-muted">
                         <LazyUnifiedModelViewer
                           asset={asset}
                           className="h-full w-full"
@@ -455,16 +455,16 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
                       </button>
                     </>
                   ) : (
-                    <div className="flex h-64 w-64 items-center justify-center rounded-lg border bg-gray-200">
-                      <span className="text-gray-500 text-sm">Asset not found</span>
+                    <div className="flex h-64 w-64 items-center justify-center rounded-lg border bg-muted/20">
+                      <span className="text-muted-foreground text-sm">Asset not found</span>
                     </div>
                   );
                 })()}
               </div>
             ) : (
-              <div className="flex h-64 w-64 flex-col items-center justify-center rounded-lg border-2 border-gray-300 border-dashed">
-                <Box className="mb-2 h-12 w-12 text-gray-400" />
-                <span className="text-gray-500 text-sm">No 3D model selected</span>
+              <div className="flex h-64 w-64 flex-col items-center justify-center rounded-lg border-2 border-border/50 border-dashed">
+                <Box className="mb-2 h-12 w-12 text-muted-foreground/70" />
+                <span className="text-muted-foreground text-sm">No 3D model selected</span>
               </div>
             )}
             {formErrors.modelFileId && (

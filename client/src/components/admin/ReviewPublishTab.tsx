@@ -126,11 +126,11 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
   return (
     <div className="space-y-8 p-6">
       {/* Enhanced Header - Phase 3 Polish */}
-      <div className="rounded-xl border border-emerald-100 bg-gradient-to-r from-emerald-50 to-green-50 p-6">
+      <div className="rounded-xl border border-emerald-100 bg-linear-to-r from-emerald-50 to-green-50 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-semibold text-2xl text-gray-900">Review & Publish</h2>
-            <p className="mt-1 text-gray-600">Final validation and publication controls</p>
+            <h2 className="font-semibold text-2xl text-foreground">Review & Publish</h2>
+            <p className="mt-1 text-muted-foreground">Final validation and publication controls</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="bg-emerald-100 text-emerald-800">
@@ -167,17 +167,17 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
           <div className="mb-6 grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="font-bold text-2xl text-red-600">{errorCount}</div>
-              <div className="text-gray-600 text-sm">Errors</div>
+              <div className="text-muted-foreground text-sm">Errors</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-2xl text-yellow-600">{warningCount}</div>
-              <div className="text-gray-600 text-sm">Warnings</div>
+              <div className="text-muted-foreground text-sm">Warnings</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-2xl text-green-600">
                 {validationItems.filter((item) => item.level === "success").length}
               </div>
-              <div className="text-gray-600 text-sm">Completed</div>
+              <div className="text-muted-foreground text-sm">Completed</div>
             </div>
           </div>
 
@@ -210,8 +210,8 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
       </Card>
 
       {/* Enhanced Product Summary - Phase 3 Polish */}
-      <Card className="border-gray-200 shadow-sm-xs">
-        <CardHeader className="border-b bg-gradient-to-r from-white to-gray-50">
+      <Card className="border-border shadow-sm-xs">
+        <CardHeader className="border-b bg-linear-to-r from-white to-background">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Package className="h-5 w-5" />
             Product Summary
@@ -221,7 +221,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
           {/* Basic Information */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h4 className="mb-3 font-medium text-gray-900">Basic Information</h4>
+              <h4 className="mb-3 font-medium text-foreground">Basic Information</h4>
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-medium">Name:</span> {formData.name || "Not set"}
@@ -240,7 +240,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
             </div>
 
             <div>
-              <h4 className="mb-3 font-medium text-gray-900">Classification</h4>
+              <h4 className="mb-3 font-medium text-foreground">Classification</h4>
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-medium">Category:</span>{" "}
@@ -261,14 +261,16 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
           {/* Description */}
           {formData.description && (
             <div>
-              <h4 className="mb-2 font-medium text-gray-900">Description</h4>
-              <p className="rounded bg-gray-50 p-3 text-gray-700 text-sm">{formData.description}</p>
+              <h4 className="mb-2 font-medium text-foreground">Description</h4>
+              <p className="rounded bg-background p-3 text-foreground/80 text-sm">
+                {formData.description}
+              </p>
             </div>
           )}
 
           {/* Status */}
           <div>
-            <h4 className="mb-3 font-medium text-gray-900">Status</h4>
+            <h4 className="mb-3 font-medium text-foreground">Status</h4>
             <div className="flex gap-4">
               <Badge variant={formData.isActive ? "default" : "secondary"}>
                 {formData.isActive ? "Active" : "Inactive"}
@@ -282,8 +284,8 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
       </Card>
 
       {/* Enhanced Media Summary - Phase 3 Polish */}
-      <Card className="border-gray-200 shadow-sm-xs">
-        <CardHeader className="border-b bg-gradient-to-r from-slate-50 to-gray-50">
+      <Card className="border-border shadow-sm-xs">
+        <CardHeader className="border-b bg-linear-to-r from-slate-50 to-background">
           <CardTitle className="flex items-center gap-2 text-lg">
             <ImageIcon className="h-5 w-5" />
             Media Assets
@@ -293,16 +295,16 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-6 text-center transition-shadow-sm hover:shadow-md">
               <ImageIcon className="mx-auto mb-3 h-10 w-10 text-blue-500" />
-              <div className="mb-1 font-bold text-3xl text-gray-900">
+              <div className="mb-1 font-bold text-3xl text-foreground">
                 {formData.imageIds?.length || 0}
               </div>
-              <div className="mb-2 font-medium text-gray-700 text-sm">Images</div>
+              <div className="mb-2 font-medium text-foreground/80 text-sm">Images</div>
               {formData.primaryImageId ? (
                 <Badge className="bg-blue-100 text-blue-800 text-xs">
                   ⭐ Primary: {formData.primaryImageId}
                 </Badge>
               ) : (
-                <Badge variant="outline" className="text-gray-500 text-xs">
+                <Badge variant="outline" className="text-muted-foreground text-xs">
                   No primary set
                 </Badge>
               )}
@@ -310,16 +312,16 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
 
             <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-6 text-center transition-shadow-sm hover:shadow-md">
               <Video className="mx-auto mb-3 h-10 w-10 text-purple-500" />
-              <div className="mb-1 font-bold text-3xl text-gray-900">
+              <div className="mb-1 font-bold text-3xl text-foreground">
                 {formData.videos?.length || 0}
               </div>
-              <div className="mb-2 font-medium text-gray-700 text-sm">Videos</div>
+              <div className="mb-2 font-medium text-foreground/80 text-sm">Videos</div>
               {formData.primaryVideoId ? (
                 <Badge className="bg-purple-100 text-purple-800 text-xs">
                   ⭐ Primary: {formData.primaryVideoId}
                 </Badge>
               ) : (
-                <Badge variant="outline" className="text-gray-500 text-xs">
+                <Badge variant="outline" className="text-muted-foreground text-xs">
                   No primary set
                 </Badge>
               )}
@@ -327,16 +329,16 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
 
             <div className="rounded-lg border-2 border-orange-200 bg-orange-50 p-6 text-center transition-shadow-sm hover:shadow-md">
               <Box className="mx-auto mb-3 h-10 w-10 text-orange-500" />
-              <div className="mb-1 font-bold text-3xl text-gray-900">
+              <div className="mb-1 font-bold text-3xl text-foreground">
                 {formData.modelFileId ? 1 : 0}
               </div>
-              <div className="mb-2 font-medium text-gray-700 text-sm">3D Models</div>
+              <div className="mb-2 font-medium text-foreground/80 text-sm">3D Models</div>
               {formData.modelFileId ? (
                 <Badge className="bg-orange-100 text-orange-800 text-xs">
                   Model: {formData.modelFileId}
                 </Badge>
               ) : (
-                <Badge variant="outline" className="text-gray-500 text-xs">
+                <Badge variant="outline" className="text-muted-foreground text-xs">
                   No model added
                 </Badge>
               )}
@@ -383,7 +385,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
                   <h5 className="mb-2 font-medium text-sm">Features</h5>
                   <div className="space-y-1">
                     {(formData as any).features.map((feature: string, index: number) => (
-                      <div key={index} className="text-gray-700 text-sm">
+                      <div key={index} className="text-foreground/80 text-sm">
                         • {feature}
                       </div>
                     ))}
@@ -397,7 +399,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
                   <div className="space-y-1">
                     {Object.entries(formData.specifications || {}).map(
                       ([key, value]: [string, unknown]) => (
-                        <div key={key} className="text-gray-700 text-sm">
+                        <div key={key} className="text-foreground/80 text-sm">
                           <span className="font-medium">{key}:</span> {String(value)}
                         </div>
                       ),
@@ -419,13 +421,13 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
               {formData.metaTitle && (
                 <div>
                   <h5 className="mb-1 font-medium text-sm">Meta Title</h5>
-                  <p className="text-gray-700 text-sm">{formData.metaTitle}</p>
+                  <p className="text-foreground/80 text-sm">{formData.metaTitle}</p>
                 </div>
               )}
               {formData.metaDescription && (
                 <div>
                   <h5 className="mb-1 font-medium text-sm">Meta Description</h5>
-                  <p className="text-gray-700 text-sm">{formData.metaDescription}</p>
+                  <p className="text-foreground/80 text-sm">{formData.metaDescription}</p>
                 </div>
               )}
             </CardContent>
@@ -435,7 +437,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
 
       {/* Enhanced Publication Actions - Phase 3 Polish */}
       <Card className="border-emerald-200 shadow-sm-xs">
-        <CardHeader className="border-emerald-200 border-b bg-gradient-to-r from-emerald-50 to-green-50">
+        <CardHeader className="border-emerald-200 border-b bg-linear-to-r from-emerald-50 to-green-50">
           <CardTitle className="flex items-center gap-2 text-emerald-900 text-lg">
             <ExternalLink className="h-5 w-5" />
             Publication
@@ -444,13 +446,13 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
         <CardContent className="p-6">
           <div className="space-y-6">
             {/* Enhanced Publication Actions */}
-            <div className="rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-6">
+            <div className="rounded-xl border-2 border-emerald-200 bg-linear-to-r from-emerald-50 to-green-50 p-6">
               <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex-1">
-                  <h4 className="mb-2 font-semibold text-gray-900 text-lg">
+                  <h4 className="mb-2 font-semibold text-foreground text-lg">
                     {isEditing ? "Update Product" : "Publish Product"}
                   </h4>
-                  <p className="mb-3 text-gray-600 text-sm">
+                  <p className="mb-3 text-muted-foreground text-sm">
                     {isEditing
                       ? "Save your changes to update the existing product in the catalog"
                       : canPublish
@@ -481,7 +483,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
                     "h-12 min-w-44 font-semibold text-base shadow-lg transition-all duration-200",
                     canPublish
                       ? "bg-green-600 hover:scale-105 hover:bg-green-700 hover:shadow-xl"
-                      : "cursor-not-allowed bg-gray-400",
+                      : "cursor-not-allowed bg-muted/40",
                   )}
                 >
                   {isLoading ? (
@@ -501,7 +503,7 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
               {/* Final Checklist - Phase 3 Polish */}
               {canPublish && (
                 <div className="mt-6 border-emerald-200 border-t pt-4">
-                  <p className="mb-3 font-medium text-gray-600 text-xs">
+                  <p className="mb-3 font-medium text-muted-foreground text-xs">
                     Pre-Publication Checklist:
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-xs">

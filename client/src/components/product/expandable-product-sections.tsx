@@ -49,10 +49,10 @@ function ExpandableSection({
             <div className={cn("rounded-lg p-2", `bg-${accent}-100 text-${accent}-700`)}>
               {icon}
             </div>
-            <h3 className="font-semibold text-gray-900 text-lg">{title}</h3>
+            <h3 className="font-semibold text-foreground text-lg">{title}</h3>
           </div>
           <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }}>
-            <ChevronRight className="h-5 w-5 text-gray-500" />
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </motion.div>
         </div>
       </div>
@@ -65,7 +65,7 @@ function ExpandableSection({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <CardContent className="bg-gray-50/30 p-4 pt-0">{children}</CardContent>
+            <CardContent className="bg-background/30 p-4 pt-0">{children}</CardContent>
           </motion.div>
         )}
       </AnimatePresence>
@@ -90,7 +90,7 @@ function MaterialSwatch({
     <div
       className={cn(
         "relative cursor-pointer rounded-lg border-2 p-3 transition-all duration-200",
-        isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300",
+        isSelected ? "border-blue-500 bg-blue-50" : "border-border hover:border-border/50",
         "group",
       )}
       onClick={onClick}
@@ -106,7 +106,7 @@ function MaterialSwatch({
           }}
         />
         <div>
-          <p className="font-medium text-gray-900 text-sm">{name}</p>
+          <p className="font-medium text-foreground text-sm">{name}</p>
           {isSelected && <CheckCircle className="absolute top-1 right-1 h-4 w-4 text-blue-500" />}
         </div>
       </div>
@@ -130,15 +130,15 @@ function ColorSwatch({
       className={cn(
         "group relative cursor-pointer transition-all duration-200",
         "rounded-lg border-2 p-1",
-        isSelected ? "border-blue-500" : "border-transparent hover:border-gray-300",
+        isSelected ? "border-blue-500" : "border-transparent hover:border-border/50",
       )}
       onClick={onClick}
     >
       <div
-        className="h-12 w-12 rounded-md border border-gray-200 shadow-sm-xs"
+        className="h-12 w-12 rounded-md border border-border shadow-sm-xs"
         style={{ backgroundColor: color }}
       />
-      <p className="mt-1 text-center font-medium text-gray-700 text-xs">{name}</p>
+      <p className="mt-1 text-center font-medium text-foreground/80 text-xs">{name}</p>
       {isSelected && (
         <CheckCircle className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-white text-blue-500" />
       )}
@@ -198,11 +198,13 @@ export function ExpandableProductSections({
       >
         <div className="space-y-4">
           {product.shortDescription && (
-            <p className="font-medium text-gray-700 leading-relaxed">{product.shortDescription}</p>
+            <p className="font-medium text-foreground/80 leading-relaxed">
+              {product.shortDescription}
+            </p>
           )}
           {product.description && (
             <div className="prose max-w-none">
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
           )}
 
@@ -210,14 +212,14 @@ export function ExpandableProductSections({
           {product.specifications && product.specifications.length > 0 && (
             <div className="rounded-lg border bg-white p-4">
               <h4 className="mb-3 flex items-center gap-2 font-semibold">
-                <Package2 className="h-5 w-5 text-gray-600" />
+                <Package2 className="h-5 w-5 text-muted-foreground" />
                 Key Features
               </h4>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {product.specifications.slice(0, 6).map((spec: string, index: number) => (
                   <div key={index} className="flex items-start gap-2">
                     <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
-                    <span className="text-gray-700 text-sm">{spec}</span>
+                    <span className="text-foreground/80 text-sm">{spec}</span>
                   </div>
                 ))}
               </div>
@@ -236,7 +238,7 @@ export function ExpandableProductSections({
           {/* Material Swatches */}
           <div>
             <h4 className="mb-3 flex items-center gap-2 font-semibold">
-              <Layers className="h-5 w-5 text-gray-600" />
+              <Layers className="h-5 w-5 text-muted-foreground" />
               Available Materials
             </h4>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -277,8 +279,8 @@ export function ExpandableProductSections({
             </div>
 
             {selectedColor && (
-              <div className="mt-4 rounded-lg bg-gray-100 p-3">
-                <p className="font-medium text-gray-900">Selected Color: {selectedColor}</p>
+              <div className="mt-4 rounded-lg bg-muted p-3">
+                <p className="font-medium text-foreground">Selected Color: {selectedColor}</p>
               </div>
             )}
           </div>
@@ -287,9 +289,9 @@ export function ExpandableProductSections({
           {context.fabric && (
             <div className="rounded-lg border bg-white p-4">
               <h4 className="mb-2 font-semibold">Primary Fabric Details</h4>
-              <p className="text-gray-700">{context.fabric.description}</p>
+              <p className="text-foreground/80">{context.fabric.description}</p>
               {product.selectedFiberComposition && (
-                <p className="mt-2 text-gray-600 text-sm">
+                <p className="mt-2 text-muted-foreground text-sm">
                   Composition: {product.selectedFiberComposition}
                 </p>
               )}
@@ -311,7 +313,7 @@ export function ExpandableProductSections({
               <dl className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2">
                 {Object.entries(product.technicalSpecs).map(([key, value]) => (
                   <div key={key} className="flex items-center justify-between py-1">
-                    <dt className="text-gray-600 text-sm">{key}:</dt>
+                    <dt className="text-muted-foreground text-sm">{key}:</dt>
                     <dd className="font-medium text-sm">{String(value)}</dd>
                   </div>
                 ))}
@@ -327,7 +329,7 @@ export function ExpandableProductSections({
                 {product.specifications.map((spec: string, index: number) => (
                   <div key={index} className="flex items-start gap-2 py-1">
                     <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
-                    <span className="text-gray-700 text-sm">{spec}</span>
+                    <span className="text-foreground/80 text-sm">{spec}</span>
                   </div>
                 ))}
               </div>
@@ -376,7 +378,7 @@ export function ExpandableProductSections({
               {product.careInstructions.map((instruction: string, index: number) => (
                 <div key={index} className="flex items-start gap-2">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-                  <span className="text-gray-700 text-sm">{instruction}</span>
+                  <span className="text-foreground/80 text-sm">{instruction}</span>
                 </div>
               ))}
             </div>

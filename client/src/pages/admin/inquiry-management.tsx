@@ -70,7 +70,7 @@ const statusColors: Record<string, string> = {
   new: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
   read: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
   responded: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-  archived: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+  archived: "bg-muted text-foreground/80 dark:bg-muted dark:text-foreground/70",
 };
 
 export default function InquiryManagement() {
@@ -217,8 +217,8 @@ export default function InquiryManagement() {
     <div className="min-h-screen bg-neutral-50 p-6 dark:bg-neutral-900">
       <div className="mx-auto max-w-7xl space-y-6">
         <div>
-          <h1 className="font-bold text-3xl text-gray-900 dark:text-white">Inquiry Management</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <h1 className="font-bold text-3xl text-foreground dark:text-white">Inquiry Management</h1>
+          <p className="mt-2 text-muted-foreground dark:text-muted-foreground">
             Manage contact form submissions and inquiries
           </p>
         </div>
@@ -300,13 +300,16 @@ export default function InquiryManagement() {
           <CardContent>
             {isLoading ? (
               <div className="py-8 text-center">
-                <div className="mx-auto h-8 w-8 animate-spin rounded-full border-gray-900 border-b-2 dark:border-white"></div>
-                <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
+                <div className="mx-auto h-8 w-8 animate-spin rounded-full border-foreground border-b-2 dark:border-white"></div>
+                <p className="mt-2 text-muted-foreground text-sm dark:text-muted-foreground">
                   Loading inquiries...
                 </p>
               </div>
             ) : inquiries.length === 0 ? (
-              <div className="py-8 text-center text-gray-500" data-testid="text-empty-state">
+              <div
+                className="py-8 text-center text-muted-foreground"
+                data-testid="text-empty-state"
+              >
                 No inquiries found
               </div>
             ) : (
@@ -378,7 +381,7 @@ export default function InquiryManagement() {
 
                 {/* Pagination */}
                 <div className="mt-4 flex items-center justify-between">
-                  <p className="text-gray-600 text-sm dark:text-gray-400">
+                  <p className="text-muted-foreground text-sm dark:text-muted-foreground">
                     Page {page} of {totalPages}
                   </p>
                   <div className="flex gap-2">
@@ -462,7 +465,7 @@ export default function InquiryManagement() {
                 <div>
                   <Label>Message</Label>
                   <p
-                    className="mt-2 whitespace-pre-wrap rounded-md bg-gray-50 p-3 dark:bg-gray-800"
+                    className="mt-2 whitespace-pre-wrap rounded-md bg-muted p-3 dark:bg-muted"
                     data-testid="text-detail-message"
                   >
                     {selectedInquiry.message}

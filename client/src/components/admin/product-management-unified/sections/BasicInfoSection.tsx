@@ -34,19 +34,19 @@ const BasicInfoSection = memo(function BasicInfoSection({
 }: BasicInfoSectionProps) {
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
         <div className="flex items-center gap-3">
           <Package className="h-5 w-5 text-blue-600" />
           <div className="text-left">
-            <h3 className="font-semibold text-gray-900">Basic Information</h3>
-            <p className="text-gray-600 text-sm">Product name, description, and details</p>
+            <h3 className="font-semibold text-foreground">Basic Information</h3>
+            <p className="text-muted-foreground text-sm">Product name, description, and details</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -55,7 +55,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Product Name */}
           <div>
-            <Label htmlFor="name" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="name" className="font-medium text-foreground/80 text-sm">
               Product Name *
             </Label>
             <Input
@@ -70,7 +70,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
 
           {/* SKU */}
           <div>
-            <Label htmlFor="sku" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="sku" className="font-medium text-foreground/80 text-sm">
               SKU *
             </Label>
             <Input
@@ -86,7 +86,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
 
         {/* Description */}
         <div>
-          <Label htmlFor="description" className="font-medium text-gray-700 text-sm">
+          <Label htmlFor="description" className="font-medium text-foreground/80 text-sm">
             Description *
           </Label>
           <Textarea
@@ -100,14 +100,14 @@ const BasicInfoSection = memo(function BasicInfoSection({
           {formErrors.description && (
             <p className="mt-1 text-red-600 text-sm">{formErrors.description}</p>
           )}
-          <p className="mt-1 text-gray-500 text-sm">
+          <p className="mt-1 text-muted-foreground text-sm">
             {formData.description.length}/1000 characters
           </p>
         </div>
 
         {/* Short Description */}
         <div>
-          <Label htmlFor="shortDescription" className="font-medium text-gray-700 text-sm">
+          <Label htmlFor="shortDescription" className="font-medium text-foreground/80 text-sm">
             Short Description
           </Label>
           <Textarea
@@ -118,7 +118,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
             placeholder="Brief product summary for listings"
             rows={2}
           />
-          <p className="mt-1 text-gray-500 text-sm">
+          <p className="mt-1 text-muted-foreground text-sm">
             {formData.shortDescription.length}/200 characters
           </p>
         </div>
@@ -126,7 +126,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
         {/* Slug and Sort Order */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <Label htmlFor="slug" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="slug" className="font-medium text-foreground/80 text-sm">
               URL Slug
             </Label>
             <div className="mt-1 flex gap-2">
@@ -139,7 +139,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
               <button
                 type="button"
                 onClick={generateSlug}
-                className="rounded-md bg-gray-100 px-3 py-2 text-gray-700 text-sm transition-colors hover:bg-gray-200"
+                className="rounded-md bg-muted px-3 py-2 text-foreground/80 text-sm transition-colors hover:bg-muted/20"
               >
                 Generate
               </button>
@@ -147,7 +147,7 @@ const BasicInfoSection = memo(function BasicInfoSection({
           </div>
 
           <div>
-            <Label htmlFor="sortOrder" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="sortOrder" className="font-medium text-foreground/80 text-sm">
               Sort Order
             </Label>
             <Input
@@ -168,9 +168,9 @@ const BasicInfoSection = memo(function BasicInfoSection({
               type="checkbox"
               checked={formData.isActive}
               onChange={(e) => onInputChange("isActive", e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-ring"
+              className="rounded border-border/50 text-blue-600 focus:ring-ring"
             />
-            <span className="font-medium text-gray-700 text-sm">Active</span>
+            <span className="font-medium text-foreground/80 text-sm">Active</span>
           </label>
 
           <label className="flex items-center gap-2">
@@ -178,9 +178,9 @@ const BasicInfoSection = memo(function BasicInfoSection({
               type="checkbox"
               checked={formData.isFeatured}
               onChange={(e) => onInputChange("isFeatured", e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-ring"
+              className="rounded border-border/50 text-blue-600 focus:ring-ring"
             />
-            <span className="font-medium text-gray-700 text-sm">Featured</span>
+            <span className="font-medium text-foreground/80 text-sm">Featured</span>
           </label>
         </div>
       </CollapsibleContent>

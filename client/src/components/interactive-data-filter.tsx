@@ -61,7 +61,7 @@ export function InteractiveDataFilter({
     <div className="relative">
       <div className="flex items-center gap-2">
         <div className="relative max-w-md flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
           <Input
             placeholder="Search..."
             value={localSearch}
@@ -152,7 +152,7 @@ export function InteractiveDataFilter({
                         step={1}
                         className="mt-2"
                       />
-                      <div className="mt-2 flex justify-between text-gray-500 text-xs">
+                      <div className="mt-2 flex justify-between text-muted-foreground text-xs">
                         <span>1</span>
                         <span>2</span>
                         <span>3</span>

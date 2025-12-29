@@ -9,7 +9,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useRef, useState } from "react";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { Card } from "@/components/ui/card";
 import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { cn } from "@/lib/utils";
 
@@ -105,12 +105,7 @@ const FloatingDockMobile = ({
                   }}
                   role="menuitem"
                 >
-                  <LiquidGlassCard
-                    blurIntensity="md"
-                    glowIntensity="sm"
-                    shadowIntensity="md"
-                    className="min-h-11 min-w-[140px]"
-                  >
+                  <Card variant="glass-premium" className="min-h-11 min-w-dock-item p-0">
                     <a
                       href={item.href}
                       aria-label={item.title}
@@ -139,18 +134,16 @@ const FloatingDockMobile = ({
                         {item.title}
                       </span>
                     </a>
-                  </LiquidGlassCard>
+                  </Card>
                 </motion.div>
               );
             })}
           </motion.div>
         )}
       </AnimatePresence>
-      <LiquidGlassCard
-        blurIntensity="md"
-        glowIntensity="sm"
-        shadowIntensity="md"
-        className="h-10 w-10 rounded-full"
+      <Card
+        variant="glass-premium"
+        className="flex h-10 w-10 items-center justify-center rounded-full p-0"
       >
         <button
           onClick={() => setOpen(!open)}
@@ -170,7 +163,7 @@ const FloatingDockMobile = ({
             <IconLayoutNavbarCollapse />
           </IconWrapper>
         </button>
-      </LiquidGlassCard>
+      </Card>
     </div>
   );
 };
@@ -193,10 +186,8 @@ const FloatingDockDesktop = ({
   const mouseX = useMotionValue(Infinity);
 
   return (
-    <LiquidGlassCard
-      blurIntensity="lg"
-      glowIntensity="md"
-      shadowIntensity="lg"
+    <Card
+      variant="glass-premium"
       className={cn("z-dock mx-auto hidden items-center gap-3 px-16 py-6 md:flex", className)}
     >
       <motion.div
@@ -215,7 +206,7 @@ const FloatingDockDesktop = ({
           />
         ))}
       </motion.div>
-    </LiquidGlassCard>
+    </Card>
   );
 };
 
@@ -303,10 +294,10 @@ function IconContainer({
       <motion.div
         ref={ref}
         style={{ width, height }}
-        className="center-flex relative overflow-hidden rounded-full border border-gray-800/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-gray-900/70 dark:bg-white/5"
+        className="center-flex relative overflow-hidden rounded-full border border-border/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-border/70 dark:bg-white/5"
       >
         {/* Gradient overlay */}
-        <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 rounded-full bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
         <div className="card-border-overlay rounded-full" />
@@ -326,7 +317,7 @@ function IconContainer({
 
       {/* Permanent title label with improved contrast */}
       <div
-        className="max-w-20 truncate whitespace-nowrap text-center font-medium text-gray-800 text-xs drop-shadow-sm md:max-w-24 dark:text-gray-200"
+        className="max-w-20 truncate whitespace-nowrap text-center font-medium text-foreground text-xs drop-shadow-sm md:max-w-24"
         style={{ textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)" }} // Light mode glow for glass contrast
       >
         {title}

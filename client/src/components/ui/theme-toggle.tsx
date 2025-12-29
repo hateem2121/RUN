@@ -25,8 +25,8 @@ export function ThemeToggle() {
       className="relative flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 bg-white/50 shadow-sm backdrop-blur-md transition-all hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-glass dark:bg-black/50"
       aria-label="Toggle theme"
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 text-orange-500 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 text-blue-400 transition-all dark:rotate-0 dark:scale-100" />
+      <Sun className="size-icon-sm rotate-0 scale-100 text-orange-500 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute size-icon-sm rotate-90 scale-0 text-blue-400 transition-all dark:rotate-0 dark:scale-100" />
     </motion.button>
   );
 }

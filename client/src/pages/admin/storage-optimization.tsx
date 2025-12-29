@@ -352,9 +352,9 @@ function StorageOptimization() {
     return (
       <div className="flex min-h-96 items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-          <p className="text-gray-600 text-sm">Loading storage statistics...</p>
-          <p className="mt-2 text-gray-500 text-xs">This may take a moment...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-muted border-t-primary" />
+          <p className="text-muted-foreground text-sm">Loading storage statistics...</p>
+          <p className="mt-2 text-muted-foreground/70 text-xs">This may take a moment...</p>
         </div>
       </div>
     );

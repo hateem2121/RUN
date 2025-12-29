@@ -1,0 +1,138 @@
+client/src/components/admin/about-sections-tab.tsx(285,32): error TS18048: 'reconciled' is possibly 'undefined'.
+client/src/components/admin/about-sections-tab.tsx(288,23): error TS2345: Argument of type '(prev: { sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }) => { mediaIds: number[] | undefined; sectionType: string; title: string; content: string; isActive: boolean; }' is not assignable to parameter of type 'SetStateAction<{ sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }>'.
+  Type '(prev: { sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }) => { mediaIds: number[] | undefined; sectionType: string; title: string; content: string; isActive: boolean; }' is not assignable to type '(prevState: { sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }) => { sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }'.
+    Call signature return types '{ mediaIds: number[] | undefined; sectionType: string; title: string; content: string; isActive: boolean; }' and '{ sectionType: string; title: string; content: string; mediaIds: number[]; isActive: boolean; }' are incompatible.
+      The types of 'mediaIds' are incompatible between these types.
+        Type 'number[] | undefined' is not assignable to type 'number[]'.
+          Type 'undefined' is not assignable to type 'number[]'.
+client/src/components/admin/category-management-simplified.tsx(32,47): error TS2307: Cannot find module '@/hooks/admin/categories/useCategoryOperationsConsolidated' or its corresponding type declarations.
+client/src/components/admin/manufacturing/CapabilityManagement.tsx(199,5): error TS2322: Type '"capabilities"' is not assignable to type 'ManufacturingEntity'.
+client/src/components/admin/manufacturing/ProcessManagement.tsx(185,5): error TS2820: Type '"processes"' is not assignable to type 'ManufacturingEntity'. Did you mean '"process"'?
+client/src/components/admin/manufacturing/QualityManagement.tsx(226,5): error TS2322: Type '"qualities"' is not assignable to type 'ManufacturingEntity'.
+client/src/components/admin/media-library/MediaUploadEnhanced.tsx(676,5): error TS2448: Block-scoped variable 'uploadLargeFile' used before its declaration.
+client/src/components/admin/media-library/MediaUploadEnhanced.tsx(676,5): error TS2454: Variable 'uploadLargeFile' is used before being assigned.
+client/src/components/admin/product-management-unified/sections/SpecificationsSection.tsx(336,17): error TS2322: Type '{ ref: RefObject<HTMLInputElement | null>; placeholder: string; onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'ref' does not exist on type 'IntrinsicAttributes & InputProps'.
+client/src/components/admin/product-management-unified/sections/SpecificationsSection.tsx(355,17): error TS2322: Type '{ ref: RefObject<HTMLInputElement | null>; placeholder: string; onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'ref' does not exist on type 'IntrinsicAttributes & InputProps'.
+client/src/components/cross-page-dashboard.tsx(527,32): error TS7030: Not all code paths return a value.
+client/src/components/cross-page-dashboard.tsx(595,20): error TS2304: Cannot find name 'CartesianGrid'.
+client/src/components/GradientBlinds.tsx(204,18): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+client/src/components/GradientBlinds.tsx(205,18): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+client/src/components/homepage/Hero.tsx(81,7): error TS18048: 'materialRef.current.uniforms.uTime' is possibly 'undefined'.
+client/src/components/homepage/Hero.tsx(83,7): error TS18048: 'materialRef.current.uniforms.uScroll' is possibly 'undefined'.
+client/src/components/homepage/Hero.tsx(84,9): error TS18048: 'materialRef.current.uniforms.uScroll' is possibly 'undefined'.
+client/src/components/homepage/Hero.tsx(160,21): error TS18048: 'entry' is possibly 'undefined'.
+client/src/components/homepage/Hero.tsx(263,11): error TS2322: Type 'number[]' is not assignable to type 'Dpr | undefined'.
+  Type 'number[]' is not assignable to type '[min: number, max: number]'.
+    Target requires 2 element(s) but source may have fewer.
+client/src/components/homepage/Values.tsx(53,7): error TS2532: Object is possibly 'undefined'.
+client/src/components/homepage/Values.tsx(119,9): error TS2322: Type 'string' is not assignable to type 'never'.
+client/src/components/inquiry/InquiryDrawer.tsx(44,24): error TS2339: Property 'items' does not exist on type '{}'.
+client/src/components/inquiry/InquiryDrawer.tsx(45,34): error TS2339: Property 'removeFromQuote' does not exist on type '{}'.
+client/src/components/inquiry/InquiryDrawer.tsx(46,33): error TS2339: Property 'updateQuantity' does not exist on type '{}'.
+client/src/components/inquiry/InquiryDrawer.tsx(47,29): error TS2339: Property 'clearQuote' does not exist on type '{}'.
+client/src/components/inquiry/InquiryDrawer.tsx(59,27): error TS7006: Parameter 'i' implicitly has an 'any' type.
+client/src/components/inquiry/InquiryDrawer.tsx(91,27): error TS2322: Type '{ children: Element; trapped: true; restoreFocus: true; }' is not assignable to type 'IntrinsicAttributes & FocusScopeProps & RefAttributes<HTMLDivElement>'.
+  Property 'restoreFocus' does not exist on type 'IntrinsicAttributes & FocusScopeProps & RefAttributes<HTMLDivElement>'.
+client/src/components/inquiry/InquiryDrawer.tsx(170,33): error TS7006: Parameter 'item' implicitly has an 'any' type.
+client/src/components/inquiry/InquiryDrawer.tsx(257,33): error TS2322: Type '{ className: string; error: boolean; onChange: (...event: any[]) => void; onBlur: Noop; value: string; disabled?: boolean | undefined; name: "contact.name"; ref: RefCallBack; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'error' does not exist on type 'IntrinsicAttributes & InputProps'. Did you mean 'onError'?
+client/src/components/inquiry/InquiryDrawer.tsx(277,33): error TS2322: Type '{ className: string; error: boolean; onChange: (...event: any[]) => void; onBlur: Noop; value: string; disabled?: boolean | undefined; name: "contact.company"; ref: RefCallBack; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'error' does not exist on type 'IntrinsicAttributes & InputProps'. Did you mean 'onError'?
+client/src/components/inquiry/InquiryDrawer.tsx(299,33): error TS2322: Type '{ className: string; error: boolean; onChange: (...event: any[]) => void; onBlur: Noop; value: string; disabled?: boolean | undefined; name: "contact.email"; ref: RefCallBack; }' is not assignable to type 'IntrinsicAttributes & InputProps'.
+  Property 'error' does not exist on type 'IntrinsicAttributes & InputProps'. Did you mean 'onError'?
+client/src/components/LightRays.tsx(289,49): error TS2345: Argument of type 'string' is not assignable to parameter of type 'RaysOrigin'.
+client/src/components/LightRays.tsx(395,45): error TS2345: Argument of type 'string' is not assignable to parameter of type 'RaysOrigin'.
+client/src/components/luxury/SmoothTransitions.tsx(153,32): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/SmoothTransitions.tsx(154,31): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/SmoothTransitions.tsx(155,38): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/SmoothTransitions.tsx(196,27): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/SmoothTransitions.tsx(199,39): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(113,36): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(137,38): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(206,40): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(226,36): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(238,28): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/luxury/Timeline3D.tsx(244,28): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/navigation/QuoteOverlay.tsx(15,17): error TS18047: 'items' is possibly 'null'.
+client/src/components/navigation/QuoteOverlay.tsx(15,23): error TS2339: Property 'length' does not exist on type '{}'.
+client/src/components/navigation/QuoteOverlay.tsx(50,22): error TS2322: Type 'unknown' is not assignable to type 'boolean'.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,47): error TS2448: Block-scoped variable 'nextImage' used before its declaration.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,47): error TS2454: Variable 'nextImage' is used before being assigned.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,58): error TS2448: Block-scoped variable 'previousImage' used before its declaration.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,58): error TS2454: Variable 'previousImage' is used before being assigned.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,73): error TS2448: Block-scoped variable 'zoomIn' used before its declaration.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,73): error TS2454: Variable 'zoomIn' is used before being assigned.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,81): error TS2448: Block-scoped variable 'zoomOut' used before its declaration.
+client/src/components/product/enhanced/InteractiveImageGallery.tsx(142,81): error TS2454: Variable 'zoomOut' is used before being assigned.
+client/src/components/product/enhanced/ProductNotifications.tsx(76,41): error TS2448: Block-scoped variable 'removeNotification' used before its declaration.
+client/src/components/product/enhanced/ProductNotifications.tsx(76,41): error TS2454: Variable 'removeNotification' is used before being assigned.
+client/src/components/products/RelatedProducts.tsx(57,35): error TS2448: Block-scoped variable 'getRelevanceScore' used before its declaration.
+client/src/components/products/RelatedProducts.tsx(57,35): error TS2454: Variable 'getRelevanceScore' is used before being assigned.
+client/src/components/showcase/ProductShowcase.tsx(153,27): error TS2349: This expression is not callable.
+  Type '{}' has no call signatures.
+client/src/components/ui/empty-state.tsx(32,15): error TS2322: Type 'string' is not assignable to type 'never'.
+client/src/components/ui/floating-dock.tsx(108,25): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/floating-dock.tsx(144,13): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/floating-dock.tsx(187,7): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/glass-card.tsx(72,53): error TS2339: Property 'blur' does not exist on type 'VariantProps<(props?: (ConfigVariants<{ variant: { default: string; "glass-premium": string; "glass-subtle": string; elevated: string; outline: string; }; size: { default: string; sm: string; md: string; lg: string; }; interactive: { ...; }; }> & ClassProp) | undefined) => string>'.
+client/src/components/ui/glass-card.tsx(74,53): error TS2339: Property 'glow' does not exist on type 'VariantProps<(props?: (ConfigVariants<{ variant: { default: string; "glass-premium": string; "glass-subtle": string; elevated: string; outline: string; }; size: { default: string; sm: string; md: string; lg: string; }; interactive: { ...; }; }> & ClassProp) | undefined) => string>'.
+client/src/components/ui/glass-card.tsx(75,55): error TS2339: Property 'shadow' does not exist on type 'VariantProps<(props?: (ConfigVariants<{ variant: { default: string; "glass-premium": string; "glass-subtle": string; elevated: string; outline: string; }; size: { default: string; sm: string; md: string; lg: string; }; interactive: { ...; }; }> & ClassProp) | undefined) => string>'.
+client/src/components/ui/glass-card.tsx(146,13): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/glass-card.tsx(209,11): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/glass-card.tsx(336,30): error TS2339: Property 'blur' does not exist on type 'GlassCardProps'.
+client/src/components/ui/glass-card.tsx(336,36): error TS2339: Property 'glow' does not exist on type 'GlassCardProps'.
+client/src/components/ui/glass-card.tsx(336,42): error TS2339: Property 'shadow' does not exist on type 'GlassCardProps'.
+client/src/components/ui/glass-card.tsx(340,24): error TS2322: Type '"glass"' is not assignable to type '"default" | "glass-premium" | "glass-subtle" | "elevated" | "outline" | null | undefined'.
+client/src/components/ui/input.tsx(27,55): error TS2339: Property 'ref' does not exist on type 'InputProps'.
+client/src/components/ui/map/hooks/useMapMarkers.ts(91,26): error TS2345: Argument of type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }[]' is not assignable to parameter of type 'SetStateAction<MarkerConfig[]>'.
+  Type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }[]' is not assignable to type 'MarkerConfig[]'.
+    Type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }' is not assignable to type 'MarkerConfig'.
+      Types of property 'icon' are incompatible.
+        Type 'DivIcon | null' is not assignable to type 'DivIcon'.
+          Type 'null' is not assignable to type 'DivIcon'.
+client/src/components/ui/map/hooks/useMapMarkers.ts(103,26): error TS2345: Argument of type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }[]' is not assignable to parameter of type 'SetStateAction<MarkerConfig[]>'.
+  Type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }[]' is not assignable to type 'MarkerConfig[]'.
+    Type '{ location: MapLocation; icon: DivIcon | null; loading: boolean; }' is not assignable to type 'MarkerConfig'.
+      Types of property 'icon' are incompatible.
+        Type 'DivIcon | null' is not assignable to type 'DivIcon'.
+          Type 'null' is not assignable to type 'DivIcon'.
+client/src/components/ui/map/services/IconManager.ts(18,5): error TS2322: Type '({ animationData, size, type }: LottieIconProps) => Element' is not assignable to type 'ComponentType<{ animationData: unknown; size: number; type: string; }> | null'.
+  Type '({ animationData, size, type }: LottieIconProps) => Element' is not assignable to type 'FunctionComponent<{ animationData: unknown; size: number; type: string; }>'.
+    Types of parameters '__0' and 'props' are incompatible.
+      Type '{ animationData: unknown; size: number; type: string; }' is not assignable to type 'LottieIconProps'.
+        Types of property 'type' are incompatible.
+          Type 'string' is not assignable to type '"client" | "facility"'.
+client/src/components/ui/map/services/IconManager.ts(163,48): error TS2749: 'DivIcon' refers to a value, but is being used as a type here. Did you mean 'typeof DivIcon'?
+client/src/components/ui/progressive-image.tsx(90,5): error TS2448: Block-scoped variable 'loadFullImage' used before its declaration.
+client/src/components/ui/progressive-image.tsx(90,5): error TS2454: Variable 'loadFullImage' is used before being assigned.
+client/src/components/ui/progressive-image.tsx(91,5): error TS2448: Block-scoped variable 'setupIntersectionObserver' used before its declaration.
+client/src/components/ui/progressive-image.tsx(91,5): error TS2454: Variable 'setupIntersectionObserver' is used before being assigned.
+client/src/components/ui/scroll-expansion-hero.tsx(42,56): error TS7030: Not all code paths return a value.
+client/src/components/ui/textarea.tsx(27,41): error TS2339: Property 'ref' does not exist on type 'TextareaProps'.
+client/src/hooks/use-nested-modal-focus.ts(91,59): error TS2345: Argument of type 'Element | null' is not assignable to parameter of type 'HTMLElement'.
+  Type 'null' is not assignable to type 'HTMLElement'.
+client/src/pages/admin/media-test-runner.tsx(184,46): error TS7006: Parameter 'step' implicitly has an 'any' type.
+client/src/pages/admin/media-test-runner.tsx(184,52): error TS7006: Parameter 'stepIdx' implicitly has an 'any' type.
+client/src/pages/products.tsx(83,53): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'unknown[]'.
+client/src/pages/products.tsx(89,48): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'unknown[]'.
+client/src/pages/products.tsx(95,58): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'unknown[]'.
+client/src/pages/products.tsx(101,54): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'unknown[]'.
+client/src/pages/products.tsx(107,55): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'unknown[]'.
+client/src/pages/products.tsx(114,3): error TS2578: Unused '@ts-expect-error' directive.
+client/src/pages/products.tsx(208,11): error TS2578: Unused '@ts-expect-error' directive.
+client/src/pages/products.tsx(319,21): error TS2322: Type '{ id: number; name: string; isActive: boolean; }[]' is not assignable to type '{ id: number; status: string | null; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; deletedAt: Date | null; type: string | null; ... 10 more ...; showOnSustainabilityPage: boolean | null; }[]'.
+  Type '{ id: number; name: string; isActive: boolean; }' is missing the following properties from type '{ id: number; status: string | null; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; deletedAt: Date | null; type: string | null; ... 10 more ...; showOnSustainabilityPage: boolean | null; }': status, createdAt, updatedAt, deletedAt, and 12 more.
+client/src/pages/products.tsx(320,21): error TS2322: Type '{ id: number; name: string; isActive: boolean; }[]' is not assignable to type '{ id: number; region: string | null; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; deletedAt: Date | null; type: string | null; ... 7 more ...; fitNotes: string | null; }[]'.
+  Type '{ id: number; name: string; isActive: boolean; }' is missing the following properties from type '{ id: number; region: string | null; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; deletedAt: Date | null; type: string | null; ... 7 more ...; fitNotes: string | null; }': region, createdAt, updatedAt, deletedAt, and 9 more.
+client/src/pages/products.tsx(321,21): error TS2322: Type '{ id: number; name: string; isActive: boolean; }[]' is not assignable to type '{ size: string | null; material: string | null; color: string | null; id: number; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; ... 7 more ...; specifications: Record<...> | null; }[]'.
+  Type '{ id: number; name: string; isActive: boolean; }' is missing the following properties from type '{ size: string | null; material: string | null; color: string | null; id: number; name: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; ... 7 more ...; specifications: Record<...> | null; }': size, material, color, createdAt, and 9 more.
+client/src/pages/products.tsx(360,21): error TS2322: Type '{ id: number; url: string; type: string; thumbnailUrl?: string | null | undefined; mimeType?: string | undefined; altText?: string | null | undefined; }[]' is not assignable to type '{ size: number | null; caption: string | null; metadata: Record<string, any>; id: number; url: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; ... 15 more ...; uploadedAt: Date | null; }[]'.
+  Type '{ id: number; url: string; type: string; thumbnailUrl?: string | null | undefined; mimeType?: string | undefined; altText?: string | null | undefined; }' is missing the following properties from type '{ size: number | null; caption: string | null; metadata: Record<string, any>; id: number; url: string; isActive: boolean | null; createdAt: Date | null; updatedAt: Date | null; ... 15 more ...; uploadedAt: Date | null; }': size, caption, metadata, isActive, and 14 more.
+client/src/pages/products.tsx(362,21): error TS2322: Type '{ id: number; name: string; slug: string; isActive: boolean; sortOrder: number; description?: string | null | undefined; parentId?: number | null | undefined; }[]' is not assignable to type '{ id: number; name: string; parentId: number | null; level: number | null; isActive: boolean | null; sortOrder: number | null; createdAt: Date | null; updatedAt: Date | null; ... 13 more ...; bannerUrl: string | null; }[]'.
+  Type '{ id: number; name: string; slug: string; isActive: boolean; sortOrder: number; description?: string | null | undefined; parentId?: number | null | undefined; }' is missing the following properties from type '{ id: number; name: string; parentId: number | null; level: number | null; isActive: boolean | null; sortOrder: number | null; createdAt: Date | null; updatedAt: Date | null; ... 13 more ...; bannerUrl: string | null; }': level, createdAt, updatedAt, deletedAt, and 11 more.
+client/src/pages/products.tsx(371,24): error TS2304: Cannot find name 'categoriesLoading'.
+client/src/pages/products.tsx(373,38): error TS2304: Cannot find name 'allMediaIds'.

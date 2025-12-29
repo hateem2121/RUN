@@ -1,0 +1,130 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import Categories from "../components/homepage/Categories";
+import CustomCursor from "../components/homepage/CustomCursor";
+import FeaturedProducts from "../components/homepage/FeaturedProducts";
+import Hero from "../components/homepage/Hero";
+import Preloader from "../components/homepage/Preloader";
+import Process from "../components/homepage/Process";
+import Stats from "../components/homepage/Stats";
+import Values from "../components/homepage/Values";
+import Footer from "../components/layout/Footer";
+
+// Register Plugin Globally
+gsap.registerPlugin(ScrollTrigger);
+
+const HomePage: React.FC = () => {
+  const [preloaderFinished, setPreloaderFinished] = useState(false);
+
+  // Stable refs for skewable sections to avoid ref callback churn
+  const heroRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+
+  // Proxy object to hold animation values - avoids quickTo strictness warnings
+  const skewProxy = useRef({ val: 0 });
+
+  // Store Lenis instance to control it later
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // Initialize Lenis Smooth Scroll with Skew Effect
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.5,
+      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      touchMultiplier: 2.5,
+    });
+
+    lenisRef.current = lenis;
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Kinetic Scroll Skew Effect via Proxy Pattern
+    lenis.on("scroll", ({ velocity }: { velocity: number }) => {
+      // Clamp velocity
+      const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
+
+      // Tween the proxy value - this handles the smoothing/easing
+      gsap.to(skewProxy.current, {
+        val: targetSkew,
+        duration: 0.5,
+        ease: "power3.out",
+        overwrite: true,
+      });
+    });
+
+    // Single Ticker Loop to apply values to DOM
+    const handleTicker = () => {
+      const val = skewProxy.current.val;
+
+      // Apply to explicit refs
+      const targets = [heroRef.current, contentRef.current, footerRef.current];
+
+      targets.forEach((el) => {
+        if (el) {
+          gsap.set(el, {
+            skewY: val,
+            rotateY: val * 0.2, // Subtle 3D rotation
+            force3D: true, // Force GPU layer
+            transformOrigin: "center center",
+          });
+        }
+      });
+    };
+
+    gsap.ticker.add(handleTicker);
+
+    // Sync Lenis RAF
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(handleTicker);
+    };
+  }, []);
+
+  return (
+    <>
+      {!preloaderFinished && <Preloader onComplete={() => setPreloaderFinished(true)} />}
+      <CustomCursor />
+
+      <main className="w-full bg-background-alt">
+        {/* GROUP 1: Skewable Top Section */}
+        <div ref={heroRef} className="origin-top will-change-transform">
+          <Hero />
+        </div>
+
+        {/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
+        <Stats />
+
+        {/* GROUP 2: Skewable Middle Content */}
+        <div ref={contentRef} className="origin-top will-change-transform">
+          <Categories />
+          <FeaturedProducts />
+          <Values />
+        </div>
+
+        {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
+        <Process />
+
+        {/* GROUP 3: Skewable Footer */}
+        <div ref={footerRef} className="origin-top will-change-transform">
+          <Footer />
+        </div>
+      </main>
+    </>
+  );
+};
+
+export default HomePage;

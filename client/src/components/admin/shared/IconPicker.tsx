@@ -11,12 +11,12 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
 export interface IconOption {
@@ -59,14 +59,14 @@ export function IconPicker({
   };
 
   return (
-    <EnhancedDialog open={isOpen} onOpenChange={onClose}>
-      <EnhancedDialogContent contentType="form" aria-describedby="icon-picker-description">
-        <EnhancedDialogHeader>
-          <EnhancedDialogTitle>{title}</EnhancedDialogTitle>
-          <EnhancedDialogDescription id="icon-picker-description">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent contentType="form" aria-describedby="icon-picker-description">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription id="icon-picker-description">
             Choose an icon that best represents your content
-          </EnhancedDialogDescription>
-        </EnhancedDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-4">
           <Label className="font-medium text-base">Available Icons</Label>
@@ -82,17 +82,17 @@ export function IconPicker({
                   className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all hover:scale-105 ${
                     isSelected
                       ? "border-green-500 bg-green-50 shadow-md"
-                      : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                      : "border-border bg-background hover:bg-muted"
                   }`}
                 >
                   <div className={`rounded-lg p-2 ${isSelected ? "bg-green-100" : "bg-white"}`}>
                     <IconComponent
-                      className={`h-6 w-6 ${isSelected ? "text-green-600" : "text-gray-600"}`}
+                      className={`h-6 w-6 ${isSelected ? "text-green-600" : "text-muted-foreground"}`}
                     />
                   </div>
                   <span
                     className={`text-center font-medium text-xs leading-tight ${
-                      isSelected ? "text-green-700" : "text-gray-700"
+                      isSelected ? "text-green-700" : "text-foreground/80"
                     }`}
                   >
                     {icon.label}
@@ -104,8 +104,8 @@ export function IconPicker({
 
           {/* Preview */}
           <div className="border-t pt-4">
-            <Label className="text-gray-600 text-sm">Preview</Label>
-            <div className="mt-2 flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+            <Label className="text-muted-foreground text-sm">Preview</Label>
+            <div className="mt-2 flex items-center gap-3 rounded-lg bg-background p-3">
               {(() => {
                 const PreviewIcon =
                   SUSTAINABILITY_ICONS.find((i) => i.name === selectedIcon)?.component || Leaf;
@@ -115,8 +115,10 @@ export function IconPicker({
                       <PreviewIcon className="h-5 w-5 text-green-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">Sample Content</div>
-                      <div className="text-gray-600 text-sm">This is how your icon will appear</div>
+                      <div className="font-medium text-foreground">Sample Content</div>
+                      <div className="text-muted-foreground text-sm">
+                        This is how your icon will appear
+                      </div>
                     </div>
                   </>
                 );
@@ -133,8 +135,8 @@ export function IconPicker({
             Select Icon
           </Button>
         </div>
-      </EnhancedDialogContent>
-    </EnhancedDialog>
+      </DialogContent>
+    </Dialog>
   );
 }
 

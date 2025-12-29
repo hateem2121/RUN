@@ -173,7 +173,7 @@ export default function Sustainability() {
               asChild
             >
               <Link href={hero?.ctaLink || "/contact"} className="relative z-modal-backdrop">
-                <span className="absolute inset-0 -top-2 -bottom-2 -translate-x-full -skew-x-12 transform bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"></span>
+                <span className="absolute inset-0 -top-2 -bottom-2 -translate-x-full -skew-x-12 transform bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"></span>
                 {hero?.ctaText || "Learn More"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

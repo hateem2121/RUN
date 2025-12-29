@@ -2,7 +2,7 @@ import type { AboutTimelineEntry } from "@shared/schema";
 import { motion, useInView } from "framer-motion";
 import { Calendar, Sparkles } from "lucide-react";
 import { useRef } from "react";
-import { glassCardVariants } from "@/components/ui/glass-card";
+import { cardVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface Timeline3DProps {
@@ -86,7 +86,7 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
           {/* Central Timeline Line */}
           <motion.div
             variants={timelineVariants}
-            className="absolute left-1/2 w-1 -translate-x-1/2 transform rounded-full bg-gradient-to-b from-blue-200 via-blue-400 to-blue-600 shadow-sm-luxury-light"
+            className="absolute left-1/2 w-1 -translate-x-1/2 transform rounded-full bg-linear-to-b from-blue-200 via-blue-400 to-blue-600 shadow-sm-luxury-light"
             style={{ height: `${entries.length * 300}px`, top: "50px" }}
           />
 
@@ -106,7 +106,7 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                   animate={isInView ? { scale: 1, rotate: 0 } : {}}
                   transition={{ delay: 0.5 + index * 0.2, duration: 0.6 }}
                   className={cn(
-                    glassCardVariants({ variant: "glass" }),
+                    cardVariants({ variant: "glass-premium" }),
                     "absolute left-1/2 z-elevated flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full shadow-sm-luxury-elevated",
                   )}
                 >
@@ -128,7 +128,7 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                 >
                   <div
                     className={cn(
-                      glassCardVariants({ variant: "glass" }),
+                      cardVariants({ variant: "glass-premium" }),
                       "rounded-3xl p-8 shadow-sm-luxury-elevated",
                     )}
                   >
@@ -180,7 +180,7 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                           alt={entry.title}
                           className="h-48 w-full object-cover brightness-105 filter"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                       </motion.div>
                     )}
 
@@ -196,9 +196,8 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                         ease: "easeInOut",
                         delay: index * 0.5,
                       }}
-                      }}
                       className={cn(
-                        glassCardVariants({ variant: "glass" }),
+                        cardVariants({ variant: "glass-subtle" }),
                         `absolute -top-4 ${index % 2 === 0 ? "-right-4" : "-left-4"} h-8 w-8 rounded-full opacity-60`,
                       )}
                     />
@@ -218,10 +217,9 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                     delay: index * 1.2,
                   }}
                   className={cn(
-                    glassCardVariants({ variant: "glass" }),
-                    `absolute ${index % 2 === 0 ? "right-8" : "left-8"} top-8 h-20 w-20 rounded-full`,
+                    cardVariants({ variant: "glass-subtle" }),
+                    `absolute z-behind ${index % 2 === 0 ? "right-8" : "left-8"} top-8 h-20 w-20 rounded-full`,
                   )}
-                  style={{ zIndex: -1 }}
                 />
               </motion.div>
             ))}
@@ -231,13 +229,13 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
         {/* Decorative Elements */}
         <div
           className={cn(
-            glassCardVariants({ variant: "glass" }),
+            cardVariants({ variant: "glass-subtle" }),
             "floating-element absolute top-20 left-10 h-32 w-32 rounded-full opacity-40",
           )}
         />
         <div
           className={cn(
-            glassCardVariants({ variant: "glass" }),
+            cardVariants({ variant: "glass-subtle" }),
             "floating-element absolute right-10 bottom-20 h-24 w-24 rounded-full opacity-30",
           )}
           style={{ animationDelay: "3s" }}

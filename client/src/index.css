@@ -1,456 +1,201 @@
-/* CSS Cascade Layer Hierarchy - enables removing !important via layer priority */
-@layer reset, base, components, utilities, stable, overrides;
-
 @import "tailwindcss";
+@import "./styles/theme.css";
 
-/* Import notifications CSS for animation keyframes */
-@import "./styles/notifications.css";
-@import "./styles/safari-compatibility.css"; /* Fallbacks */
-@import "./styles/webgl-pointer-events.css"; /* Interaction layers */
-@import "./styles/performance-optimizations.css"; /* GPU utils */
-@import "./styles/map-animations.css"; /* Map markers */
-@import "./styles/unified-media-theater.css"; /* 3D Model Viewer overrides */
-@import "./styles/components/glowing-shadow.css"; /* Glowing Shadow Component */
+@import "./styles/overrides.css";
 
-@plugin "tailwindcss-animate";
-@plugin "@tailwindcss/typography";
-@plugin "@tailwindcss/container-queries";
+/* =========================
+    Performance Utilities
+   ========================= */
 
-@theme {
-  /* Fonts */
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-
-  /* Industrial B2B Color Palette */
-  /* Primary: Trustworthy Deep Blue (Slate-ish) */
-  --color-primary: oklch(0.5 0.15 250); /* Deep Industrial Blue */
-  --color-primary-foreground: oklch(1 0 0); /* White */
-
-  /* Secondary: Neutral Gray for heavy data */
-  --color-secondary: oklch(0.96 0.01 250); /* Very light blue-gray */
-  --color-secondary-foreground: oklch(0.2 0.05 250); /* Dark blue-gray text */
-
-  /* Accent: Highlighting interactive elements */
-  --color-accent: oklch(0.94 0.02 250);
-  --color-accent-foreground: oklch(0.2 0.05 250);
-
-  /* Backgrounds */
-  --color-background: oklch(1 0 0); /* Clean White */
-  --color-foreground: oklch(0.15 0.02 250); /* Deep Charcoal */
-
-  /* UI Elements */
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.15 0.02 250);
-
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.15 0.02 250);
-
-  --color-muted: oklch(0.96 0.01 250);
-  --color-muted-foreground: oklch(0.5 0.03 250);
-
-  --color-border: oklch(0.9 0.02 250);
-  --color-input: oklch(0.9 0.02 250);
-  --color-ring: oklch(0.5 0.15 250); /* Matches Primary */
-
-  /* Semantic State Colors */
-  --color-destructive: oklch(0.6 0.2 25); /* Vivid Red */
-  --color-destructive-foreground: oklch(1 0 0);
-
-  --color-success: oklch(0.6 0.18 145); /* Industrial Green */
-  --color-warning: oklch(0.8 0.15 85); /* Cautionary Orange */
-  --color-info: oklch(0.6 0.15 250); /* Informational Blue */
-
-  /* Radius */
-  --radius-lg: 0.5rem;
-  --radius-md: 0.375rem;
-  --radius-sm: 0.25rem;
-
-  /* Container */
-  /* Container */
-  --spacing-container: 1280px;
-  --width-site: 1440px; /* Standard wide container */
-  --width-reading: 700px; /* Optimized reading width */
-
-  /* Modal Heights */
-  --height-modal: 90vh;
-  --height-modal-lg: 95vh;
-  --height-modal-sm: 80vh;
-
-  /* 3D Perspective */
-  --perspective-standard: 1000px;
-  --perspective-deep: 2000px;
-
-  /* ===== Brand Colors ===== */
-  /* Primary brand purple - replaces #5227FF (12 occurrences) */
-  --color-brand-purple: oklch(0.45 0.3 280);
-  /* Secondary brand magenta - replaces #FF9FFC (4 occurrences) */
-  --color-brand-magenta: oklch(0.75 0.2 330);
-  /* Brand lavender - replaces #B19EEF */
-  --color-brand-lavender: oklch(0.72 0.12 290);
-  /* Brand lime accent - replaces #CCFF00 */
-  --color-brand-lime: oklch(0.9 0.3 100);
-  /* Brand blue - replaces #3300FF */
-  --color-brand-blue: oklch(0.4 0.35 265);
-  /* Brand teal - replaces #17EBC5 (TechnologyCta) */
-  --color-brand-teal: oklch(0.85 0.18 170);
-
-  /* ===== Gradient Colors (Admin Configurable) ===== */
-  --color-gradient-start: var(--color-brand-magenta);
-  --color-gradient-end: var(--color-brand-purple);
-
-  /* ===== Neutral Palette ===== */
-  /* Light backgrounds - replaces #f5f5f5, #fafafa, #f3f4f6 */
-  --color-neutral-50: oklch(0.985 0 0);
-  --color-neutral-100: oklch(0.97 0 0);
-  --color-neutral-200: oklch(0.93 0 0);
-  /* Dark backgrounds - replaces #1e1e1e, #1e1e22, #050505 */
-  --color-neutral-800: oklch(0.25 0 0);
-  --color-neutral-900: oklch(0.15 0 0);
-  --color-neutral-950: oklch(0.08 0 0);
-
-  /* ===== Chart/Data Visualization Colors ===== */
-  --color-chart-blue: oklch(0.6 0.18 250);
-  --color-chart-green: oklch(0.65 0.2 145);
-  --color-chart-amber: oklch(0.75 0.18 85);
-  --color-chart-red: oklch(0.6 0.22 25);
-  --color-chart-purple: oklch(0.6 0.2 290);
-
-  /* ===== Shadows (Glass/Glow System) ===== */
-  --shadow-glow-xs: 0 0 5px rgba(255, 255, 255, 0.08);
-  --shadow-glow-sm: 0 0 8px rgba(255, 255, 255, 0.1);
-  --shadow-glow-md: 0 0 12px rgba(255, 255, 255, 0.12);
-  --shadow-glow-lg: 0 0 15px rgba(255, 255, 255, 0.15);
-  --shadow-glow-xl: 0 0 20px rgba(255, 255, 255, 0.18);
-  --shadow-glow-2xl: 0 0 25px rgba(255, 255, 255, 0.2);
-
-  --shadow-glow-xs-desktop: 0 0 10px rgba(255, 255, 255, 0.1);
-  --shadow-glow-sm-desktop: 0 0 15px rgba(255, 255, 255, 0.15);
-  --shadow-glow-md-desktop: 0 0 20px rgba(255, 255, 255, 0.2);
-  --shadow-glow-lg-desktop: 0 0 30px rgba(255, 255, 255, 0.25);
-  --shadow-glow-xl-desktop: 0 0 40px rgba(255, 255, 255, 0.3);
-  --shadow-glow-2xl-desktop: 0 0 50px rgba(255, 255, 255, 0.35);
-
-  --shadow-inner-xs: inset 0 1px 1px rgba(255, 255, 255, 0.08);
-  --shadow-inner-sm: inset 0 1px 2px rgba(255, 255, 255, 0.1);
-  --shadow-inner-md: inset 0 2px 3px rgba(255, 255, 255, 0.12);
-  --shadow-inner-lg: inset 0 3px 4px rgba(255, 255, 255, 0.15);
-  --shadow-inner-xl: inset 0 4px 6px rgba(255, 255, 255, 0.18);
-  --shadow-inner-2xl: inset 0 6px 8px rgba(255, 255, 255, 0.2);
-
-  --shadow-inner-xs-desktop: inset 0 1px 2px rgba(255, 255, 255, 0.1);
-  --shadow-inner-sm-desktop: inset 0 2px 4px rgba(255, 255, 255, 0.15);
-  --shadow-inner-md-desktop: inset 0 4px 6px rgba(255, 255, 255, 0.2);
-  --shadow-inner-lg-desktop: inset 0 6px 8px rgba(255, 255, 255, 0.25);
-  --shadow-inner-xl-desktop: inset 0 8px 12px rgba(255, 255, 255, 0.3);
-  --shadow-inner-2xl-desktop: inset 0 12px 16px rgba(255, 255, 255, 0.35);
-
-  /* Specific Colored Glows */
-  --shadow-glow-orange: 0 0 50px rgba(255, 165, 0, 0.5);
-
-  /* Deep Shadows */
-  --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-
-  /* ===== Z-Index Semantic Scale (Complete) ===== */
-  --z-behind: -1; /* Background decorations */
-  --z-base: 0; /* Default document flow */
-  --z-default: 1; /* General content layer */
-  --z-elevated: 10; /* Slightly raised content */
-  --z-dropdown: 100; /* Dropdown menus */
-  --z-sticky: 200; /* Sticky headers */
-  --z-dock: 250; /* Floating dock/navigation */
-  --z-modal-backdrop: 300; /* Modal backgrounds */
-  --z-sheet: 400; /* Side sheets */
-  --z-modal: 400; /* Modal content */
-  --z-modal-nested: 450; /* Nested dialog support */
-  --z-popover: 500; /* Popovers, color pickers */
-  --z-tooltip: 600; /* Tooltips */
-
-  /* ... (skip to utility section) ... */
-
-  --z-toast: 700; /* Toast notifications */
-  --z-cursor: 800; /* Custom cursor layer */
-  --z-max: 9999; /* Emergency escape hatch (document usage) */
-
-  /* ===== Animations ===== */
-  --animate-shimmer: shimmer 2s linear infinite;
-  --animate-scroll-banner: scroll-banner 60s linear infinite;
-
-  @keyframes shimmer {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: -200% 0;
-    }
-  }
-
-  @keyframes scroll-banner {
-    to {
-      transform: translateX(-50%);
-    }
-  }
+@utility z-dock {
+  z-index: var(--z-index-dock, 300);
 }
 
-/* Base Reset & Defaults */
-@layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    line-height: 1.5;
-  }
-
-  /* Form Elements Reset */
-  input,
-  textarea,
-  select,
-  button {
-    font-family: inherit;
-  }
-
-  /* Global Focus Accessibility */
-  /* Global Focus Accessibility - Moved to utility/component level or handled by reset */
-  /* a:focus-visible removed to prevent conflict with Button/Component styles */
+@utility z-elevated {
+  z-index: var(--z-index-elevated, 10);
 }
 
-/* Utility Layer - Custom Classes */
-@utility container-centered {
-  max-width: var(--spacing-container);
-  margin-inline: auto;
-  margin-inline: auto;
-  padding-inline: 1.5rem;
-}
-
-@utility container-wide {
-  max-width: var(--width-site);
-  margin-inline: auto;
-}
-
-@utility container-ultra {
-  max-width: 1600px;
-  margin-inline: auto;
-}
-
-@utility max-w-reading {
-  max-width: var(--width-reading);
-}
-
-@utility max-h-modal {
-  max-height: var(--height-modal);
-}
-
-@utility max-h-modal-lg {
-  max-height: var(--height-modal-lg);
-}
-
-@utility max-h-modal-sm {
-  max-height: var(--height-modal-sm);
-}
-
-@utility max-h-dropdown {
-  max-height: 300px;
-}
-
-@utility size-touch {
-  min-width: 44px;
-  min-height: 44px;
-}
-
-@utility w-truncate-xs {
-  max-width: 120px;
-}
-@utility w-truncate-sm {
-  max-width: 150px;
-}
-@utility w-truncate-md {
-  max-width: 200px;
-}
-
-@utility max-w-vw-90 {
-  max-width: 90vw;
-}
-@utility max-w-vw-95 {
-  max-width: 95vw;
-}
-
-@utility max-h-viewport-50 {
-  max-height: 50vh;
-}
-@utility max-h-viewport-60 {
-  max-height: 60vh;
-}
-@utility max-h-viewport-70 {
-  max-height: 70vh;
-}
-@utility max-h-viewport-85 {
-  max-height: 85vh;
-}
-
-@utility glass-panel {
-  background: color-mix(in oklch, var(--color-background), transparent 20%);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border);
-}
-
-/* 3D Transform Utilities - Replaces runtime injection in certificate-display.tsx */
-@utility perspective-1000 {
-  perspective: 1000px;
-}
-
-@utility preserve-3d {
-  transform-style: preserve-3d;
-}
-
-@utility perspective-deep {
-  perspective: 2000px;
-}
-
-@utility backface-hidden {
+@utility transform-gpu {
+  will-change: transform;
+  transform: translateZ(0);
   backface-visibility: hidden;
 }
 
-@utility rotate-y-180 {
-  transform: rotateY(180deg);
+@utility animation-container {
+  contain: layout style paint;
+  will-change: transform;
 }
 
-/* ===== Z-Index Utility Classes ===== */
-/* Map semantic z-index tokens to utility classes */
-@utility z-behind {
-  z-index: var(--z-behind);
-}
-@utility z-base {
-  z-index: var(--z-base);
-}
-@utility z-default {
-  z-index: var(--z-default);
-}
-@utility z-elevated {
-  z-index: var(--z-elevated);
-}
-@utility z-dropdown {
-  z-index: var(--z-dropdown);
-}
-@utility z-sticky {
-  z-index: var(--z-sticky);
-}
-@utility z-dock {
-  z-index: var(--z-dock);
-}
-@utility z-modal-backdrop {
-  z-index: var(--z-modal-backdrop);
-}
-@utility z-sheet {
-  z-index: var(--z-sheet);
-}
-@utility z-modal {
-  z-index: var(--z-modal);
-}
-@utility z-modal-nested {
-  z-index: var(--z-modal-nested);
-}
-@utility z-popover {
-  z-index: var(--z-popover);
-}
-@utility z-tooltip {
-  z-index: var(--z-tooltip);
-}
-@utility z-toast {
-  z-index: var(--z-toast);
-}
-@utility z-cursor {
-  z-index: var(--z-cursor);
-}
-@utility z-max {
-  z-index: var(--z-max);
+@utility notification-progress {
+  animation: notification-shrink linear;
+  transform-origin: left;
 }
 
-@utility backdrop-blur-xs {
-  backdrop-filter: blur(2px);
+/* Houdini Properties */
+@property --hue {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --rotate {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bg-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bg-x {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --glow-translate-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bg-size {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --glow-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --glow-blur-sm {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --glow-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 2;
+}
+@property --glow-radius {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 2;
+}
+@property --white-shadow {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
 }
 
-@utility shimmer-overlay {
-  @apply absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent;
+/* Semantic Text Utilities (from typography.css) */
+@utility text-micro {
+  @apply font-mono font-bold tracking-widest uppercase;
+  font-size: var(--font-size-xxs, 10px);
 }
 
-@utility card-border-overlay {
-  @apply pointer-events-none absolute inset-[1px] bg-gradient-to-br from-white/5 to-transparent;
+@utility text-subtle {
+  color: var(--color-text-subtle);
 }
 
-/* ===== Component Layer Classes ===== */
-@layer components {
-  /* Admin sortable card - consolidates 45+ repeated patterns */
-  .admin-sortable-card {
-    @apply mb-2 rounded-lg border border-border bg-card p-4 shadow-sm;
-    @apply transition-shadow duration-200;
+@utility text-disabled {
+  color: var(--color-text-disabled);
+}
+
+/* Utilities (from utilities.css) */
+@utility h-tab {
+  height: var(--height-tab);
+}
+@utility h-modal-sm {
+  height: var(--height-modal-sm);
+}
+@utility h-modal-md {
+  height: var(--height-modal-md);
+}
+@utility h-modal-lg {
+  height: var(--height-modal-lg);
+}
+@utility h-modal-full {
+  height: var(--height-modal-full);
+}
+@utility h-thumbnail {
+  height: var(--height-thumbnail);
+}
+@utility h-thumbnail-lg {
+  height: var(--height-thumbnail-lg);
+}
+@utility min-h-section {
+  min-height: var(--min-height-section);
+}
+@utility min-h-hero {
+  min-height: var(--min-height-hero);
+}
+@utility min-h-textarea {
+  min-height: var(--min-height-textarea);
+}
+@utility min-h-card {
+  min-height: var(--min-height-card);
+}
+@utility h-icon-sm {
+  height: var(--height-icon-sm);
+}
+@utility h-loading-center {
+  height: var(--height-loading-center);
+}
+@utility h-loading-content {
+  height: var(--height-loading-content);
+}
+@utility min-h-value-card {
+  min-height: var(--min-height-value-card);
+}
+@utility min-h-process-card {
+  min-height: var(--min-height-process-card);
+}
+
+@utility w-sidebar-collapsed {
+  width: var(--width-sidebar-collapsed);
+}
+@utility w-sidebar-expanded {
+  width: var(--width-sidebar-expanded);
+}
+@utility w-sheet-sm {
+  width: var(--width-sheet-sm);
+}
+@utility w-sheet-md {
+  width: var(--width-sheet-md);
+}
+@utility w-sheet-lg {
+  width: var(--width-sheet-lg);
+}
+@utility max-w-toast {
+  max-width: var(--max-width-toast);
+}
+@utility w-icon-sm {
+  width: var(--width-icon-sm);
+}
+@utility min-w-thumbnail {
+  min-width: var(--min-width-thumbnail);
+}
+@utility min-w-label {
+  min-width: var(--min-width-label);
+}
+
+/* 
+  Root Variables 
+  Defines the actual values for the theme, supporting dark mode by default.
+*/
+/* Root Variables moved to styles/theme.css */
+
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  .admin-sortable-card:hover {
-    @apply shadow-md;
+  body {
+    @apply bg-background text-foreground pb-24;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-
-  /* Glassmorphism card - Standardized */
-  /* .glass-card removed in favor of GlassCard component */
-
-  /* Custom Cursor - Standardized */
-  .cursor-dot {
-    @apply pointer-events-none fixed top-0 left-0 z-cursor hidden rounded-full bg-white mix-blend-difference md:block;
-  }
-
-  .cursor-follower {
-    @apply pointer-events-none fixed top-0 left-0 z-cursor flex hidden items-center justify-center overflow-hidden rounded-full border border-white bg-white mix-blend-difference md:block;
-  }
-
-  /* Stacking Card - Consolidates 20+ utilities */
-  .stacking-card {
-    @apply relative -top-1/4 flex min-h-96 w-11/12 max-w-6xl origin-top flex-col overflow-hidden rounded-xl border p-6 backdrop-blur-md md:p-8;
-    @apply border-gray-800/60 bg-white/10 dark:border-gray-900/70 dark:bg-white/5;
-    box-shadow:
-      0 0 15px rgba(255, 255, 255, 0.15),
-      inset 0 2px 4px rgba(255, 255, 255, 0.15);
-  }
-}
-
-/* ===== Center-Flex Utility ===== */
-/* Replaces 93+ occurrences of "center-flex" */
-@utility center-flex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@utility center-absolute {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Standardized Premium Glass Effect */
-@utility glass-premium {
-  @apply relative overflow-hidden border border-white/20 bg-white/10 backdrop-blur-md shadow-glow-lg;
-  @apply transition-all duration-300;
-  @apply dark:border-gray-900/70 dark:bg-white/5;
-}
-
-@utility shadow-glow-orange {
-  box-shadow: var(--shadow-glow-orange);
-}
-
-@utility shadow-deep {
-  box-shadow: var(--shadow-deep);
-}
-
-@utility border-glass {
-  border-color: white / 10;
-}
-
-@utility shadow-glow-primary {
-  box-shadow: 0 15px 30px -10px var(--color-primary);
 }

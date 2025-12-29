@@ -29,7 +29,7 @@ import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
  * ❌ Duplicate sortable component implementations
  * ❌ MediaSelectionWrapperUnified patterns (replaced with StandardMediaSelectionDialog)
  * ❌ Massive state management duplication across components
- * ❌ Legacy EnhancedDialog patterns with hardcoded sizing
+ * ❌ Legacy Dialog patterns with hardcoded sizing
  * ❌ Schema mismatches and TypeScript errors
  *
  * FEATURE FLAGS:
@@ -60,8 +60,8 @@ export function TechnologyManagement() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       <div className="mb-8">
-        <h1 className="mb-2 font-bold text-3xl text-gray-900">Technology Management</h1>
-        <p className="text-gray-600">
+        <h1 className="mb-2 font-bold text-3xl text-foreground">Technology Management</h1>
+        <p className="text-muted-foreground">
           Manage your technology showcase, research, equipment, and innovation content
         </p>
         <div className="mt-4 inline-block rounded-lg bg-green-50 px-3 py-2 text-green-600 text-sm">

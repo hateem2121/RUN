@@ -17,7 +17,7 @@ export function LazyLoadWrapper({ component, fallback, props = {} }: LazyLoadWra
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       >
-        <Loader2 className="h-8 w-8 text-gray-400" />
+        <Loader2 className="h-8 w-8 text-muted-foreground/70" />
       </motion.div>
     </div>
   );

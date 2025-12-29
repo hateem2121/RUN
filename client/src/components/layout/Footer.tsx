@@ -17,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
  * - GSAP submit animation
  */
 const footerLinkVariants = cva(
-  "origin-left text-muted-foreground transition-all duration-300 hover:scale-105 hover:text-primary",
+  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105",
   {
     variants: {
       size: { default: "text-lg", sm: "text-sm", base: "text-base" },
@@ -28,7 +28,7 @@ const footerLinkVariants = cva(
 );
 
 const footerInputVariants = cva(
-  "w-full bg-transparent border-b py-4 pl-4 text-xl outline-none transition-all duration-300 ease-out rounded-none font-mono disabled:opacity-50 focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground",
+  "focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground w-full rounded-none border-b bg-transparent py-4 pl-4 font-mono text-xl transition-all duration-300 ease-out outline-none disabled:opacity-50",
   {
     variants: {
       hasError: {
@@ -164,14 +164,14 @@ const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="relative w-full overflow-hidden bg-background px-4 pt-32 pb-0 text-foreground md:px-8"
+      className="bg-background text-foreground relative w-full overflow-hidden px-4 pt-32 pb-0 md:px-8"
     >
       {/* Blueprint Grid Background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-10" />
 
       <div className="container-centered z-elevated relative mb-20 grid grid-cols-1 gap-12 md:mb-32 md:grid-cols-4 md:gap-24">
         <div className="md:col-span-2">
-          <h2 className="mb-8 font-bold text-6xl uppercase leading-none tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl">
+          <h2 className="mb-8 text-6xl leading-none font-bold tracking-tighter uppercase sm:text-7xl md:text-8xl lg:text-9xl">
             Start Your <br />
             Order
           </h2>
@@ -179,23 +179,23 @@ const Footer: React.FC = () => {
           {/* Success Message - ARIA Live Region */}
           <div
             aria-live="polite"
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              showSuccess ? "max-h-24 opacity-100 mb-8" : "max-h-0 opacity-0 mb-0"
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              showSuccess ? "mb-8 max-h-24 opacity-100" : "mb-0 max-h-0 opacity-0"
             }`}
           >
-            <div className="border border-brand-lime/30 bg-brand-lime/5 p-4 flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-brand-lime animate-pulse shadow-glow-primary" />
-              <p className="font-mono text-sm tracking-widest text-brand-lime">
+            <div className="border-brand-lime/30 bg-brand-lime/5 flex items-center gap-3 border p-4">
+              <div className="bg-brand-lime shadow-glow-primary h-2 w-2 animate-pulse rounded-full" />
+              <p className="text-brand-lime font-mono text-sm tracking-widest">
                 SUBMISSION CONFIRMED! // PROTOCOL INITIATED.
               </p>
             </div>
           </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-8 mt-12 max-w-lg">
+          <form ref={formRef} onSubmit={handleSubmit} className="mt-12 max-w-lg space-y-8">
             <div className="group">
               <label
                 htmlFor="company"
-                className="mb-2 block pl-4 font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors group-focus-within:text-primary"
+                className="text-muted-foreground group-focus-within:text-primary mb-2 block pl-4 font-mono text-xs tracking-widest uppercase transition-colors"
               >
                 01 // Company Name
               </label>
@@ -211,20 +211,17 @@ const Footer: React.FC = () => {
               />
             </div>
             <div className="group">
-              <div className="flex justify-between items-end mb-2">
+              <div className="mb-2 flex items-end justify-between">
                 <label
                   htmlFor="email"
-                  className={`block pl-4 font-mono text-xs uppercase tracking-widest transition-colors group-focus-within:text-primary ${
+                  className={`group-focus-within:text-primary block pl-4 font-mono text-xs tracking-widest uppercase transition-colors ${
                     errors.email ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
                   02 // Email Protocol
                 </label>
                 {errors.email && (
-                  <span
-                    role="alert"
-                    className="text-destructive text-[10px] tracking-widest font-mono font-bold animate-pulse"
-                  >
+                  <span role="alert" className="text-destructive text-micro animate-pulse">
                     [{errors.email}]
                   </span>
                 )}
@@ -242,20 +239,17 @@ const Footer: React.FC = () => {
               />
             </div>
             <div className="group">
-              <div className="flex justify-between items-end mb-2">
+              <div className="mb-2 flex items-end justify-between">
                 <label
                   htmlFor="specs"
-                  className={`block pl-4 font-mono text-xs uppercase tracking-widest transition-colors group-focus-within:text-primary ${
+                  className={`group-focus-within:text-primary block pl-4 font-mono text-xs tracking-widest uppercase transition-colors ${
                     errors.specs ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
                   03 // Project Specifications
                 </label>
                 {errors.specs && (
-                  <span
-                    role="alert"
-                    className="text-destructive text-[10px] tracking-widest font-mono font-bold animate-pulse"
-                  >
+                  <span role="alert" className="text-destructive text-micro animate-pulse">
                     [{errors.specs}]
                   </span>
                 )}
@@ -278,10 +272,10 @@ const Footer: React.FC = () => {
                 disabled={isSubmitting || isSent}
                 aria-busy={isSubmitting}
                 className={cn(
-                  "mt-8 px-12 py-4 border transition-all duration-300 uppercase tracking-widest text-sm relative overflow-hidden font-bold",
+                  "relative mt-8 overflow-hidden border px-12 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300",
                   isSent
-                    ? "border-brand-lime cursor-default text-brand-lime"
-                    : "border-white/30 hover:border-foreground hover:bg-foreground hover:text-background",
+                    ? "border-brand-lime text-brand-lime cursor-default"
+                    : "hover:border-foreground hover:bg-foreground hover:text-background border-white/30",
                 )}
                 onMouseEnter={() => !isSent && setCursor("button")}
                 onMouseLeave={() => resetCursor()}
@@ -292,12 +286,12 @@ const Footer: React.FC = () => {
           </form>
         </div>
 
-        <div className="md:col-span-1 flex flex-col justify-between border-l border-glass pl-8">
+        <div className="border-glass flex flex-col justify-between border-l pl-8 md:col-span-1">
           <div>
-            <h4 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ HQ COORDINATES ]
             </h4>
-            <p className="text-lg leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground text-lg leading-relaxed">
               142 Industrial Ave,
               <br />
               Zurich, Switzerland
@@ -306,7 +300,7 @@ const Footer: React.FC = () => {
             </p>
           </div>
           <div className="mt-12">
-            <h4 className="uppercase tracking-widest text-gray-500 mb-4 text-xs font-mono">
+            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ DIRECT LINE ]
             </h4>
             <a href="mailto:hello@runapparel.com" className={footerLinkVariants()}>
@@ -318,9 +312,9 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="md:col-span-1 flex flex-col justify-between border-l border-glass pl-8">
+        <div className="border-glass flex flex-col justify-between border-l pl-8 md:col-span-1">
           <div>
-            <h4 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ NETWORK ]
             </h4>
             <ul className="space-y-2">
@@ -334,10 +328,10 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           <div className="mt-12">
-            <h4 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ PROTOCOLS ]
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="text-muted-foreground space-y-2 text-sm">
               {["Privacy Policy", "Terms of Service"].map((item) => (
                 <li key={item}>
                   <a href="#" className={footerLinkVariants({ display: "inline" })}>
@@ -351,10 +345,10 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Massive Parallax Logotype */}
-      <div className="w-full text-center relative z-elevated translate-y-[20%]">
+      <div className="z-elevated relative w-full translate-y-[20%] text-center">
         <h1
           ref={textRef}
-          className="select-none text-[18vw] font-bold leading-none tracking-tighter text-foreground mix-blend-overlay opacity-30"
+          className="text-foreground text-[22vw] leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none sm:text-[18vw] dark:opacity-20"
         >
           RUN APPAREL
         </h1>

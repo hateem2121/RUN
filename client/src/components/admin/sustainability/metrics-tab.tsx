@@ -352,7 +352,7 @@ export function MetricsTabContent({
               )}
             </>
           ) : (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-muted-foreground">
               No metrics yet. Create your first sustainability metric.
             </div>
           )}
@@ -504,7 +504,7 @@ export function MetricsTabContent({
             <div>
               <Label>Icon Selection</Label>
               <div className="mt-2 flex items-center gap-3">
-                <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
+                <div className="flex items-center gap-2 rounded-lg border bg-background p-3">
                   <IconDisplay iconName={metricForm.icon} showBackground={true} />
                   <span className="font-medium text-sm">{metricForm.icon || "Leaf"}</span>
                 </div>

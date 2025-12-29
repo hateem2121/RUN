@@ -53,9 +53,9 @@ export function ManufacturingStatusIndicator({
       icon: CheckCircle2,
     },
     inactive: {
-      color: "text-gray-500",
-      bgColor: "bg-gray-100",
-      progressColor: "from-gray-400 to-gray-500",
+      color: "text-muted-foreground",
+      bgColor: "bg-muted",
+      progressColor: "from-muted-foreground to-background0",
       icon: Clock,
     },
     pending: {
@@ -85,8 +85,7 @@ export function ManufacturingStatusIndicator({
   if (variant === "badge") {
     return (
       <span
-        className={`inline-flex items-center gap-1 rounded px-2 py-1 font-medium text-xs ${config.color} ${config.bgColor} ${className}
-      `}
+        className={`inline-flex items-center gap-1 rounded px-2 py-1 font-medium text-xs ${config.color} ${config.bgColor} ${className} `}
       >
         {showIcon && <IconComponent className="h-3 w-3" />}
         {label}
@@ -123,7 +122,7 @@ export function ManufacturingStatusIndicator({
             )}
           </motion.span>
         </div>
-        {label && <p className="text-gray-600 text-sm">{label}</p>}
+        {label && <p className="text-muted-foreground text-sm">{label}</p>}
       </div>
     );
   }
@@ -132,15 +131,15 @@ export function ManufacturingStatusIndicator({
     return (
       <div className={`space-y-2 ${className}`}>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">{label}</span>
+          <span className="text-muted-foreground">{label}</span>
           <span className={`font-bold ${config.color}`}>
             {Math.round(displayValue)}
             {unit}
           </span>
         </div>
-        <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
+        <div className="relative h-2 overflow-hidden rounded-full bg-muted/20">
           <motion.div
-            className={`absolute inset-y-0 left-0 bg-gradient-to-r ${config.progressColor}`}
+            className={`absolute inset-y-0 left-0 bg-linear-to-r ${config.progressColor}`}
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
             transition={{
@@ -158,7 +157,7 @@ export function ManufacturingStatusIndicator({
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex justify-between text-sm">
-        <span className="text-gray-600">{label}</span>
+        <span className="text-muted-foreground">{label}</span>
         <motion.span
           className={`font-medium ${config.color}`}
           initial={{ opacity: 0 }}

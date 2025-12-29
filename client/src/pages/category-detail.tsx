@@ -38,7 +38,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       data-testid={`product-card-${product.id}`}
     >
       <CardContent className="p-0">
-        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-gray-100">
+        <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-muted">
           {product.imageId ? (
             <OptimizedImage
               mediaId={isHovered && product.hoverImageId ? product.hoverImageId : product.imageId}
@@ -62,12 +62,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <Typography.H3 className="mb-2 w-full font-semibold text-lg uppercase tracking-wide">
           {product.name}
         </Typography.H3>
-        <div className="mt-1 w-full space-x-2 text-gray-600 text-sm uppercase tracking-wide">
+        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
           <span>{product.fabric}</span>
           <span>|</span>
           <span>{product.weight.value} GSM</span>
         </div>
-        <div className="mt-1 w-full space-x-2 text-gray-600 text-sm uppercase tracking-wide">
+        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
           <span>MOQ: {product.moq}</span>
           <span>|</span>
           <span>LEAD: {product.leadTime}</span>
@@ -75,7 +75,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
           <Link
             href={product.detailUrl}
-            className="flex min-h-11 w-full items-center justify-center gap-2 border-2 border-black bg-white px-4 py-3 text-black text-xs uppercase tracking-widest transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-black focus:ring-offset-2"
+            className="flex min-h-11 w-full items-center justify-center gap-2 border-2 border-black bg-white px-4 py-3 text-black text-xs uppercase tracking-widest transition-colors hover:bg-muted focus:ring-2 focus:ring-black focus:ring-offset-2"
             data-testid={`view-details-${product.id}`}
           >
             <span>View Details</span>
@@ -84,7 +84,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <button
             onClick={handleRequestQuote}
             disabled={alreadyInCart}
-            className="flex min-h-11 w-full items-center justify-center bg-black px-4 py-3 text-white text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="flex min-h-11 w-full items-center justify-center bg-black px-4 py-3 text-white text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
             data-testid={`request-quote-${product.id}`}
           >
             {alreadyInCart ? "Added" : "Request Quote"}
@@ -206,8 +206,8 @@ export default function CategoryDetail() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
-          <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-gray-600" />
-          <Typography.P className="text-gray-600 text-sm">Loading category...</Typography.P>
+          <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-muted-foreground" />
+          <Typography.P className="text-muted-foreground text-sm">Loading category...</Typography.P>
         </div>
       </div>
     );
@@ -219,14 +219,14 @@ export default function CategoryDetail() {
       <div className="container mx-auto max-w-6xl px-4 pt-20 pb-8 sm:pt-24 lg:pt-28">
         <div className="py-16 text-center">
           <AlertCircle className="mx-auto mb-4 h-16 w-16 text-red-500" />
-          <Typography.H2 className="mb-4 font-bold text-2xl text-gray-900">
+          <Typography.H2 className="mb-4 font-bold text-2xl text-foreground">
             Category Not Found
           </Typography.H2>
-          <Typography.P className="mb-8 text-gray-600">
+          <Typography.P className="mb-8 text-muted-foreground">
             The category you're looking for doesn't exist or has been moved.
           </Typography.P>
           <Link href="/categories">
-            <button className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-800">
+            <button className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-foreground/80">
               Browse All Categories
             </button>
           </Link>
@@ -249,10 +249,10 @@ export default function CategoryDetail() {
       <div className="container mx-auto max-w-7xl px-4 pt-20 pb-12 sm:px-6 sm:pt-24 md:px-8 lg:px-10 lg:pt-28 lg:pb-16">
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="mb-8" data-testid="category-breadcrumbs">
-          <ol className="flex items-center space-x-2 text-gray-600 text-sm">
+          <ol className="flex items-center space-x-2 text-muted-foreground text-sm">
             {breadcrumbs.map((crumb, index) => (
               <li key={index} className="flex items-center">
-                {index > 0 && <ChevronRight className="mx-2 h-4 w-4 text-gray-400" />}
+                {index > 0 && <ChevronRight className="mx-2 h-4 w-4 text-muted-foreground/50" />}
                 {index === breadcrumbs.length - 1 ? (
                   <span className="font-semibold text-black">{crumb.name}</span>
                 ) : (
@@ -272,11 +272,11 @@ export default function CategoryDetail() {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             {category.name}
           </Typography.H1>
           {category.description && (
-            <Typography.P className="max-w-3xl text-gray-600 text-lg">
+            <Typography.P className="max-w-3xl text-lg text-muted-foreground">
               {category.description}
             </Typography.P>
           )}
@@ -286,13 +286,13 @@ export default function CategoryDetail() {
         <div className="mt-8">
           {transformedProducts.length === 0 ? (
             <div className="px-4 py-20 text-center">
-              <Typography.P className="text-gray-600">
+              <Typography.P className="text-muted-foreground">
                 No products found in this category.
               </Typography.P>
             </div>
           ) : (
             <>
-              <div className="mb-6 text-gray-600 text-sm">
+              <div className="mb-6 text-muted-foreground text-sm">
                 Showing {transformedProducts.length} product
                 {transformedProducts.length !== 1 ? "s" : ""}
               </div>

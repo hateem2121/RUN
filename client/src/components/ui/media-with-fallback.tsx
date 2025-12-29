@@ -27,16 +27,16 @@ function MediaPlaceholder({ type, className, error }: MediaPlaceholderProps) {
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center rounded-lg bg-gray-100 p-8",
+        "flex flex-col items-center justify-center rounded-lg bg-surface-subtle p-8",
         className,
       )}
     >
       {type === "image" ? (
-        <ImageIcon className="mb-2 h-12 w-12 text-gray-400" />
+        <ImageIcon className="mb-2 h-12 w-12 text-text-subtle" />
       ) : (
-        <VideoIcon className="mb-2 h-12 w-12 text-gray-400" />
+        <VideoIcon className="mb-2 h-12 w-12 text-text-subtle" />
       )}
-      <p className="text-center text-gray-500 text-sm">
+      <p className="text-center text-sm text-text-muted">
         {error ? "Media failed to load" : "Loading..."}
       </p>
       {error && (

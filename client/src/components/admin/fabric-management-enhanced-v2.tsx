@@ -33,13 +33,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -1218,7 +1218,7 @@ export default function FabricManagementEnhancedV2() {
       )}
 
       {/* Create/Edit Modal with Structured Sections */}
-      <EnhancedDialog
+      <Dialog
         open={isCreateModalOpen || isEditModalOpen}
         onOpenChange={(open) => {
           if (!open) {
@@ -1229,14 +1229,12 @@ export default function FabricManagementEnhancedV2() {
           }
         }}
       >
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingFabric ? "Edit Fabric" : "Create New Fabric"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingFabric ? "Edit Fabric" : "Create New Fabric"}</DialogTitle>
+          </DialogHeader>
 
-          <EnhancedDialogBody>
+          <DialogBody>
             <div className="space-y-6">
               {/* Basic Information */}
               <Card>
@@ -1380,7 +1378,7 @@ export default function FabricManagementEnhancedV2() {
                   {formData.compositions.map((composition, compositionIndex) => (
                     <div
                       key={compositionIndex}
-                      className={`rounded-lg border p-4 ${composition.isDefault ? "border-blue-200 bg-blue-50" : "bg-gray-50"}`}
+                      className={`rounded-lg border p-4 ${composition.isDefault ? "border-blue-200 bg-blue-50" : "bg-background"}`}
                     >
                       <div className="mb-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -1500,7 +1498,7 @@ export default function FabricManagementEnhancedV2() {
                                         <SelectItem
                                           key={fiber.id}
                                           value={fiber.id.toString()}
-                                          className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                          className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                         >
                                           {fiber.name}
                                         </SelectItem>
@@ -1509,7 +1507,7 @@ export default function FabricManagementEnhancedV2() {
                                       <SelectItem
                                         value="no-fibers"
                                         disabled
-                                        className="h-12 px-4 text-gray-400 text-sm"
+                                        className="h-12 px-4 text-muted-foreground/70 text-sm"
                                       >
                                         No fibers available
                                       </SelectItem>
@@ -1675,25 +1673,25 @@ export default function FabricManagementEnhancedV2() {
                             <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                               <SelectItem
                                 value="Knit"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Knit
                               </SelectItem>
                               <SelectItem
                                 value="Woven"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Woven
                               </SelectItem>
                               <SelectItem
                                 value="Non-woven"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Non-woven
                               </SelectItem>
                               <SelectItem
                                 value="Composite"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Composite
                               </SelectItem>
@@ -1755,43 +1753,43 @@ export default function FabricManagementEnhancedV2() {
                             <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                               <SelectItem
                                 value="Activewear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Activewear
                               </SelectItem>
                               <SelectItem
                                 value="Outerwear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Outerwear
                               </SelectItem>
                               <SelectItem
                                 value="Base Layer"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Base Layer
                               </SelectItem>
                               <SelectItem
                                 value="Swimwear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Swimwear
                               </SelectItem>
                               <SelectItem
                                 value="Athleisure"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Athleisure
                               </SelectItem>
                               <SelectItem
                                 value="Performance"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Performance
                               </SelectItem>
                               <SelectItem
                                 value="Casual"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Casual
                               </SelectItem>
@@ -1957,31 +1955,31 @@ export default function FabricManagementEnhancedV2() {
                                 <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                                   <SelectItem
                                     value="Poor"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     Poor
                                   </SelectItem>
                                   <SelectItem
                                     value="Fair"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     Fair
                                   </SelectItem>
                                   <SelectItem
                                     value="Good"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     Good
                                   </SelectItem>
                                   <SelectItem
                                     value="Excellent"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     Excellent
                                   </SelectItem>
                                   <SelectItem
                                     value="Outstanding"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     Outstanding
                                   </SelectItem>
@@ -2090,43 +2088,43 @@ export default function FabricManagementEnhancedV2() {
                             <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                               <SelectItem
                                 value="Antimicrobial"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Antimicrobial
                               </SelectItem>
                               <SelectItem
                                 value="UV Protection"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 UV Protection
                               </SelectItem>
                               <SelectItem
                                 value="Quick-dry"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Quick-dry
                               </SelectItem>
                               <SelectItem
                                 value="Moisture Wicking"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Moisture Wicking
                               </SelectItem>
                               <SelectItem
                                 value="Breathable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Breathable
                               </SelectItem>
                               <SelectItem
                                 value="Temperature Regulation"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Temperature Regulation
                               </SelectItem>
                               <SelectItem
                                 value="Odor Control"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Odor Control
                               </SelectItem>
@@ -2432,31 +2430,31 @@ export default function FabricManagementEnhancedV2() {
                             <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                               <SelectItem
                                 value="1"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 ⭐ 1 - Low Impact
                               </SelectItem>
                               <SelectItem
                                 value="2"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 ⭐⭐ 2 - Fair Impact
                               </SelectItem>
                               <SelectItem
                                 value="3"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 ⭐⭐⭐ 3 - Good Impact
                               </SelectItem>
                               <SelectItem
                                 value="4"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 ⭐⭐⭐⭐ 4 - Very Good Impact
                               </SelectItem>
                               <SelectItem
                                 value="5"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 ⭐⭐⭐⭐⭐ 5 - Excellent Impact
                               </SelectItem>
@@ -2526,7 +2524,7 @@ export default function FabricManagementEnhancedV2() {
                                   <SelectItem
                                     key={cert.id}
                                     value={cert.id.toString()}
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                   >
                                     {cert.name}
                                   </SelectItem>
@@ -2579,37 +2577,37 @@ export default function FabricManagementEnhancedV2() {
                             <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                               <SelectItem
                                 value="Recyclable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Recyclable
                               </SelectItem>
                               <SelectItem
                                 value="Biodegradable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Biodegradable
                               </SelectItem>
                               <SelectItem
                                 value="Compostable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Compostable
                               </SelectItem>
                               <SelectItem
                                 value="Reusable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Reusable
                               </SelectItem>
                               <SelectItem
                                 value="Upcyclable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Upcyclable
                               </SelectItem>
                               <SelectItem
                                 value="Energy Recovery"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                               >
                                 Energy Recovery
                               </SelectItem>
@@ -2739,97 +2737,97 @@ export default function FabricManagementEnhancedV2() {
                               <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
                                 <SelectItem
                                   value="30°C Machine Wash"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   30°C Machine Wash
                                 </SelectItem>
                                 <SelectItem
                                   value="40°C Machine Wash"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   40°C Machine Wash
                                 </SelectItem>
                                 <SelectItem
                                   value="Hand Wash Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Hand Wash Only
                                 </SelectItem>
                                 <SelectItem
                                   value="Tumble Dry Low"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Tumble Dry Low
                                 </SelectItem>
                                 <SelectItem
                                   value="Iron Low Heat"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Iron Low Heat
                                 </SelectItem>
                                 <SelectItem
                                   value="Dry Clean Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Dry Clean Only
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Bleach"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Do Not Bleach
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Tumble Dry"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Do Not Tumble Dry
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Iron"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Do Not Iron
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Dry Clean"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Do Not Dry Clean
                                 </SelectItem>
                                 <SelectItem
                                   value="No Fabric Softener"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   No Fabric Softener
                                 </SelectItem>
                                 <SelectItem
                                   value="No Direct Heat"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   No Direct Heat
                                 </SelectItem>
                                 <SelectItem
                                   value="Wash Separately"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Wash Separately
                                 </SelectItem>
                                 <SelectItem
                                   value="Inside Out Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Inside Out Only
                                 </SelectItem>
                                 <SelectItem
                                   value="No Soaking"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   No Soaking
                                 </SelectItem>
                                 <SelectItem
                                   value="Air Dry Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-gray-50"
+                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
                                 >
                                   Air Dry Only
                                 </SelectItem>
@@ -2968,9 +2966,9 @@ export default function FabricManagementEnhancedV2() {
                 </Card>
               </Collapsible>
             </div>
-          </EnhancedDialogBody>
+          </DialogBody>
 
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button
               variant="outline"
               data-testid={getButtonTestId("cancel", "fabric-dialog")}
@@ -2994,23 +2992,23 @@ export default function FabricManagementEnhancedV2() {
                   ? "Update Fabric"
                   : "Create Fabric"}
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <EnhancedDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Delete Fabric</EnhancedDialogTitle>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Delete Fabric</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             <p className="text-neutral-600 text-sm">
               Are you sure you want to delete "{fabricToDelete?.name}"? This action cannot be
               undone.
             </p>
-          </EnhancedDialogBody>
-          <EnhancedDialogFooter>
+          </DialogBody>
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
@@ -3026,9 +3024,9 @@ export default function FabricManagementEnhancedV2() {
             >
               Delete
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <StandardMediaSelectionDialog
         isOpen={isMediaPickerOpen}

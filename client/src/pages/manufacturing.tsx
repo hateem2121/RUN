@@ -28,8 +28,16 @@ export default function Manufacturing() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useTransform(mouseY, [0, window.innerHeight], [5, -5]);
-  const rotateY = useTransform(mouseX, [0, window.innerWidth], [-5, 5]);
+  const rotateX = useTransform(
+    mouseY,
+    [0, typeof window !== "undefined" ? window.innerHeight : 1000],
+    [5, -5],
+  );
+  const rotateY = useTransform(
+    mouseX,
+    [0, typeof window !== "undefined" ? window.innerWidth : 1000],
+    [-5, 5],
+  );
 
   // Standardized data fetching using optimized hooks
   const {

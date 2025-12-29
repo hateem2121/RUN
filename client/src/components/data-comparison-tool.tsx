@@ -30,9 +30,12 @@ export function DataComparisonTool({ data, title = "Data Overview" }: DataCompar
       <CardContent>
         <div className="space-y-4">
           {data.map((item, index) => (
-            <div key={index} className="flex items-center justify-between rounded bg-gray-50 p-2">
+            <div
+              key={index}
+              className="flex items-center justify-between rounded bg-background p-2"
+            >
               <span className="font-medium">{item.label}</span>
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 {item.value} {item.unit}
               </span>
             </div>

@@ -10,19 +10,9 @@ import type {
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 // Removed dependency on manufacturing-stacking-cards - using simple card layout instead
-import {
-  ArrowUp,
-  Award,
-  Factory,
-  Globe2,
-  MessageSquare,
-  Package,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Award, Factory, Globe2, MessageSquare, Package, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { Button } from "@/components/ui/button";
 import { ClientOnly } from "@/components/ui/ClientOnly";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -131,11 +121,9 @@ export default function About() {
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-blue-600 border-b-2"></div>
-          <Typography.P className="text-gray-600 dark:text-gray-400">
-            Loading about page...
-          </Typography.P>
+          <Typography.P className="text-muted-foreground">Loading about page...</Typography.P>
           {batchLoading && (
-            <Typography.P className="mt-2 text-gray-500 text-sm dark:text-gray-500">
+            <Typography.P className="mt-2 text-muted-foreground/70 text-sm">
               Loading about page data...
             </Typography.P>
           )}
@@ -150,7 +138,7 @@ export default function About() {
     content: (
       <GlassCard className="group p-6 shadow-inner-sm">
         {/* Gradient overlay for depth */}
-        <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 rounded-xl bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
         {/* Inner glow */}
         <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
@@ -226,9 +214,9 @@ export default function About() {
               transition={{ duration: 0.8 }}
               className="mx-auto max-w-4xl"
             >
-              <Card className="group relative overflow-hidden border border-gray-800/60 bg-white/10 shadow-glow-lg shadow-inner-sm backdrop-blur-md dark:border-gray-900/70 dark:bg-white/5">
+              <Card className="group relative overflow-hidden border border-border/60 bg-background/10 shadow-glow-lg shadow-inner-sm backdrop-blur-md dark:border-border/70 dark:bg-background/5">
                 {/* Gradient overlay for depth */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
                 {/* Inner glow */}
                 <div className="card-border-overlay rounded-[calc(0.5rem-1px)]" />
@@ -382,7 +370,7 @@ export default function About() {
 
             <ClientOnly
               fallback={
-                <div className="flex h-[500px] w-full animate-pulse items-center justify-center rounded-2xl bg-muted">
+                <div className="flex h-modal-sm w-full animate-pulse items-center justify-center rounded-2xl bg-muted">
                   Loading map...
                 </div>
               }
@@ -392,17 +380,6 @@ export default function About() {
           </div>
         </section>
       )}
-
-      {/* Back to Top Button */}
-      <div className="fixed right-8 bottom-8 z-modal">
-        <Button
-          size="icon"
-          className="h-12 w-12 rounded-full shadow-lg transition-shadow-sm hover:shadow-xl"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <ArrowUp className="h-4 w-4" />
-        </Button>
-      </div>
     </div>
   );
 }

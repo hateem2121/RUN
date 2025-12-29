@@ -198,32 +198,40 @@ export function MediaCleanupPanel() {
           <CardContent className="space-y-4">
             {/* Summary Stats */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <div className="rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800">
+              <div className="rounded-lg bg-background p-3 text-center dark:bg-muted/80">
                 <div className="font-bold text-2xl text-blue-600 dark:text-blue-400">
                   {lastReport.totalFilesScanned}
                 </div>
-                <div className="text-gray-600 text-sm dark:text-gray-400">Files Scanned</div>
+                <div className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  Files Scanned
+                </div>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800">
+              <div className="rounded-lg bg-background p-3 text-center dark:bg-muted/80">
                 <div className="font-bold text-2xl text-orange-600 dark:text-orange-400">
                   {lastReport.orphanedFiles.length}
                 </div>
-                <div className="text-gray-600 text-sm dark:text-gray-400">Orphaned Files</div>
+                <div className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  Orphaned Files
+                </div>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800">
+              <div className="rounded-lg bg-background p-3 text-center dark:bg-muted/80">
                 <div className="font-bold text-2xl text-red-600 dark:text-red-400">
                   {lastReport.brokenReferences.length}
                 </div>
-                <div className="text-gray-600 text-sm dark:text-gray-400">Broken References</div>
+                <div className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  Broken References
+                </div>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800">
+              <div className="rounded-lg bg-background p-3 text-center dark:bg-muted/80">
                 <div className="font-bold text-2xl text-green-600 dark:text-green-400">
                   {formatFileSize(lastReport.spaceSaved)}
                 </div>
-                <div className="text-gray-600 text-sm dark:text-gray-400">Space Saved</div>
+                <div className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  Space Saved
+                </div>
               </div>
             </div>
 
@@ -242,14 +250,14 @@ export function MediaCleanupPanel() {
                           {lastReport.orphanedFiles.length}
                         </Badge>
                       </div>
-                      <div className="max-h-32 space-y-1 overflow-y-auto text-gray-600 text-sm dark:text-gray-400">
+                      <div className="max-h-32 space-y-1 overflow-y-auto text-muted-foreground text-sm dark:text-muted-foreground/70">
                         {lastReport.orphanedFiles.slice(0, 5).map((file, index) => (
                           <div key={index} className="truncate">
                             • {file}
                           </div>
                         ))}
                         {lastReport.orphanedFiles.length > 5 && (
-                          <div className="text-gray-500 text-xs">
+                          <div className="text-muted-foreground text-xs">
                             ... and {lastReport.orphanedFiles.length - 5} more
                           </div>
                         )}
@@ -267,12 +275,12 @@ export function MediaCleanupPanel() {
                           {lastReport.brokenReferences.length}
                         </Badge>
                       </div>
-                      <div className="max-h-32 space-y-1 overflow-y-auto text-gray-600 text-sm dark:text-gray-400">
+                      <div className="max-h-32 space-y-1 overflow-y-auto text-muted-foreground text-sm dark:text-muted-foreground/70">
                         {lastReport.brokenReferences.slice(0, 5).map((id, index) => (
                           <div key={index}>• Asset ID: {id}</div>
                         ))}
                         {lastReport.brokenReferences.length > 5 && (
-                          <div className="text-gray-500 text-xs">
+                          <div className="text-muted-foreground text-xs">
                             ... and {lastReport.brokenReferences.length - 5} more
                           </div>
                         )}

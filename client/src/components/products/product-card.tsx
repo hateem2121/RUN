@@ -36,7 +36,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
       data-testid={`product-card-${product.id}`}
     >
       <CardContent className="p-0">
-        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-muted/50">
+        <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-muted/50">
           {activeMediaId ? (
             <OptimizedImage
               mediaId={activeMediaId}

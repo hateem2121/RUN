@@ -9,12 +9,12 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
@@ -300,13 +300,13 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
       </div>
 
       {/* Create Folder Dialog */}
-      <EnhancedDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <EnhancedDialogContent>
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
               {selectedFolder ? `Create Subfolder in "${selectedFolder.name}"` : "Create Folder"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+            </DialogTitle>
+          </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label className="font-medium text-sm">Folder Name</Label>
@@ -325,7 +325,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
               />
             </div>
           </div>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
               Cancel
             </Button>
@@ -341,16 +341,16 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
             >
               Create
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Folder Dialog */}
-      <EnhancedDialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <EnhancedDialogContent>
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Edit Folder</EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Folder</DialogTitle>
+          </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label className="font-medium text-sm">Folder Name</Label>
@@ -369,7 +369,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
               />
             </div>
           </div>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
               Cancel
             </Button>
@@ -389,21 +389,21 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
             >
               Update
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Folder Dialog */}
-      <EnhancedDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <EnhancedDialogContent>
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Delete Folder</EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Folder</DialogTitle>
+          </DialogHeader>
           <p>
             Are you sure you want to delete the folder "{selectedFolder?.name}"? This folder must be
             empty before it can be deleted.
           </p>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
@@ -418,9 +418,9 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
             >
               Delete
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

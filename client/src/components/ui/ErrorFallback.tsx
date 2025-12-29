@@ -5,7 +5,7 @@ import { Button } from "./button";
 
 export const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   return (
-    <div className="fade-in zoom-in flex h-[50vh] w-full animate-in flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-8 text-center duration-300">
+    <div className="fade-in zoom-in flex h-loading-content w-full animate-in flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-8 text-center duration-300">
       <div className="rounded-full bg-destructive/10 p-3">
         <AlertTriangle className="h-10 w-10 text-destructive" />
       </div>

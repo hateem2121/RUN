@@ -177,7 +177,7 @@ export function ProductAdvancedFilters({
     <div className="mb-6 rounded-lg border bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Filter className="h-5 w-5 text-gray-500" />
+          <Filter className="h-5 w-5 text-muted-foreground" />
           <h3 className="font-medium text-lg">Advanced Filters</h3>
           {hasActiveFilters && (
             <Badge variant="secondary">
@@ -198,7 +198,7 @@ export function ProductAdvancedFilters({
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
           <Input
             placeholder="Search products..."
             value={searchQuery}
@@ -315,7 +315,7 @@ export function ProductAdvancedFilters({
       </div>
 
       {/* Results Summary */}
-      <div className="flex items-center justify-between text-gray-600 text-sm">
+      <div className="flex items-center justify-between text-muted-foreground text-sm">
         <span>
           Showing {filteredAndSortedProducts.length} of {products.length} products
         </span>

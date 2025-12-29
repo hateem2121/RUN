@@ -331,10 +331,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
   if (productsLoading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="flex h-loading-center items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-          <p className="text-gray-600 text-sm">Loading products...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+          <p className="text-muted-foreground text-sm">Loading products...</p>
         </div>
       </div>
     );
@@ -348,7 +348,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           <Package className="h-8 w-8 text-blue-600" />
           <div>
             <h1 className="font-bold text-3xl">Product Management</h1>
-            <p className="text-gray-600">{displayProducts.length} products</p>
+            <p className="text-muted-foreground">{displayProducts.length} products</p>
           </div>
         </div>
         <Button
@@ -382,7 +382,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {/* Search and Filters */}
       <div className="flex flex-col gap-4 rounded-lg border bg-white p-4 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
           <Input
             data-testid="search-products-input"
             placeholder="Search products..."
@@ -441,7 +441,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
             {showAdvancedFilters ? "Basic" : "Advanced"}
           </Button>
 
-          <div className="flex rounded-md bg-gray-100 p-1">
+          <div className="flex rounded-md bg-muted p-1">
             <Button
               data-testid="view-mode-grid-button"
               variant={viewMode === "grid" ? "default" : "ghost"}
@@ -473,7 +473,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-search-filter-button"
                 onClick={() => setSearchQuery("")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-gray-300"
+                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
               >
                 ×
               </button>
@@ -485,7 +485,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-category-filter-button"
                 onClick={() => setCategoryFilter("all")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-gray-300"
+                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
               >
                 ×
               </button>
@@ -497,7 +497,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-status-filter-button"
                 onClick={() => setStatusFilter("all")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-gray-300"
+                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
               >
                 ×
               </button>
@@ -508,10 +508,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
       {/* Products Grid/List */}
       {displayProducts.length === 0 ? (
-        <div className="rounded-lg bg-gray-50 py-12 text-center">
-          <Package className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-          <h3 className="mb-2 font-medium text-gray-900 text-lg">No products found</h3>
-          <p className="mb-4 text-gray-600">
+        <div className="rounded-lg bg-background py-12 text-center">
+          <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+          <h3 className="mb-2 font-medium text-foreground text-lg">No products found</h3>
+          <p className="mb-4 text-muted-foreground">
             {products.length === 0
               ? "Get started by creating your first product."
               : "Try adjusting your search or filters."}
@@ -543,7 +543,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {/* Pagination Controls */}
       {pagination && pagination.totalPages > 1 && (
         <div className="mt-8 flex items-center justify-between rounded-lg border bg-white p-4">
-          <div className="text-gray-600 text-sm">
+          <div className="text-muted-foreground text-sm">
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
             {Math.min(currentPage * pageSize, pagination.total)} of {pagination.total} products
           </div>

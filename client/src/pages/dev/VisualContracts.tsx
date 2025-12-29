@@ -25,7 +25,9 @@ export default function VisualContracts() {
     <div className="min-h-screen space-y-12 bg-[#FAFAFA] p-8">
       <header className="border-black/10 border-b pb-4">
         <Typography.H1 className="font-bold text-4xl">Visual Contracts Audit</Typography.H1>
-        <Typography.P className="text-gray-500">Tailwind v4 Regression Safeguard Page</Typography.P>
+        <Typography.P className="text-muted-foreground">
+          Tailwind v4 Regression Safeguard Page
+        </Typography.P>
       </header>
 
       {/* Z-INDEX & OVERLAYS */}
@@ -33,7 +35,7 @@ export default function VisualContracts() {
         <Typography.H2 className="font-bold text-2xl">
           1. Stacking Contexts (Z-Index Map)
         </Typography.H2>
-        <div className="relative h-64 overflow-hidden rounded-xl border border-gray-300 border-dashed bg-white p-4">
+        <div className="relative h-64 overflow-hidden rounded-xl border border-border border-dashed bg-white p-4">
           <div className="absolute inset-0 bg-linear-to-br from-blue-50 to-indigo-50 opacity-50" />
 
           <div className="absolute top-4 left-4 z-default rounded-lg border bg-white p-4 shadow-md">
@@ -80,10 +82,10 @@ export default function VisualContracts() {
             />
             <div className="center-flex absolute inset-0 gap-4">
               <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-white/30 bg-white/20 backdrop-blur-xs">
-                <span className="font-bold text-[10px] text-white">blur-xs</span>
+                <span className="font-bold text-micro text-white">blur-xs</span>
               </div>
               <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-white/30 bg-white/20 backdrop-blur-md">
-                <span className="font-bold text-[10px] text-white">blur-md</span>
+                <span className="font-bold text-micro text-white">blur-md</span>
               </div>
             </div>
           </div>
@@ -104,13 +106,13 @@ export default function VisualContracts() {
           <Typography.H3 className="animate-gradient bg-300% bg-linear-to-r from-blue-500 to-white bg-clip-text font-bold text-6xl text-transparent uppercase tracking-tighter">
             Athletic Performance
           </Typography.H3>
-          <Typography.P className="mt-4 max-w-lg text-gray-400">
+          <Typography.P className="mt-4 max-w-lg text-muted-foreground/50">
             Verify font rendering (Anton) and gradient animation stability on black backgrounds.
           </Typography.P>
         </div>
       </section>
 
-      <footer className="py-12 text-center font-mono text-gray-400 text-xs">
+      <footer className="py-12 text-center font-mono text-muted-foreground/50 text-xs">
         Audit Completed via Antigravity Agent - 2025
       </footer>
     </div>

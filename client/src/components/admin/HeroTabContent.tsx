@@ -67,7 +67,7 @@ export function HeroTabContent({
             <div className="mt-2">
               {localForm.data?.backgroundMediaId ? (
                 <div className="flex items-center gap-3">
-                  <div className="text-gray-600 text-sm">
+                  <div className="text-muted-foreground text-sm">
                     Media ID: {localForm.data?.backgroundMediaId}
                   </div>
                   <Button variant="outline" size="sm" onClick={onOpenMediaPicker}>

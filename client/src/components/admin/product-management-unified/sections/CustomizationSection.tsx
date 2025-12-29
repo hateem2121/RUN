@@ -83,12 +83,12 @@ const CustomizationSection = memo(function CustomizationSection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
         <div className="flex items-center gap-3">
           <Palette className="h-5 w-5 text-indigo-600" />
           <div className="text-left">
-            <h3 className="font-semibold text-gray-900">Customization & SEO</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="font-semibold text-foreground">Customization & SEO</h3>
+            <p className="text-muted-foreground text-sm">
               {(formData.customizationOptions || []).length} customization options, SEO optimization
             </p>
           </div>
@@ -99,12 +99,12 @@ const CustomizationSection = memo(function CustomizationSection({
           ) : completionRate > 0 ? (
             <AlertCircle className="h-5 w-5 text-amber-600" />
           ) : (
-            <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+            <div className="h-5 w-5 rounded-full border-2 border-border/50" />
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -113,7 +113,7 @@ const CustomizationSection = memo(function CustomizationSection({
         {/* Customization Options */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <Label className="font-medium text-gray-700 text-sm">Customization Options</Label>
+            <Label className="font-medium text-foreground/80 text-sm">Customization Options</Label>
             <Button type="button" variant="outline" size="sm" onClick={addCustomizationOption}>
               <Plus className="mr-2 h-4 w-4" />
               Add Custom Option
@@ -122,7 +122,7 @@ const CustomizationSection = memo(function CustomizationSection({
 
           {/* Preset Options */}
           <div className="mb-4">
-            <h4 className="mb-2 font-medium text-gray-600 text-sm">Quick Add Options</h4>
+            <h4 className="mb-2 font-medium text-muted-foreground text-sm">Quick Add Options</h4>
             <div className="flex flex-wrap gap-2">
               {presetOptions.map((option) => (
                 <button
@@ -132,8 +132,8 @@ const CustomizationSection = memo(function CustomizationSection({
                   disabled={(formData.customizationOptions || []).includes(option)}
                   className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                     (formData.customizationOptions || []).includes(option)
-                      ? "border-gray-200 bg-gray-100 text-gray-400"
-                      : "border-gray-300 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50"
+                      ? "border-border bg-muted text-muted-foreground/70"
+                      : "border-border/50 bg-white text-foreground/80 hover:border-indigo-300 hover:bg-indigo-50"
                   }`}
                 >
                   {option}
@@ -163,8 +163,8 @@ const CustomizationSection = memo(function CustomizationSection({
               </div>
             ))}
             {(formData.customizationOptions || []).length === 0 && (
-              <div className="py-6 text-center text-gray-500">
-                <Palette className="mx-auto mb-2 h-12 w-12 text-gray-400" />
+              <div className="py-6 text-center text-muted-foreground">
+                <Palette className="mx-auto mb-2 h-12 w-12 text-muted-foreground/70" />
                 <p>No customization options added yet</p>
                 <p className="text-sm">
                   Add options to showcase your B2B customization capabilities.
@@ -178,13 +178,13 @@ const CustomizationSection = memo(function CustomizationSection({
         <div className="border-t pt-6">
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-5 w-5 text-indigo-600" />
-            <h3 className="font-semibold text-gray-900">SEO Optimization</h3>
+            <h3 className="font-semibold text-foreground">SEO Optimization</h3>
           </div>
 
           {/* Meta Title */}
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between">
-              <Label htmlFor="metaTitle" className="font-medium text-gray-700 text-sm">
+              <Label htmlFor="metaTitle" className="font-medium text-foreground/80 text-sm">
                 Meta Title
               </Label>
               <Button type="button" variant="outline" size="sm" onClick={generateMetaTitle}>
@@ -202,7 +202,7 @@ const CustomizationSection = memo(function CustomizationSection({
             {formErrors.metaTitle && (
               <p className="mt-1 text-red-600 text-sm">{formErrors.metaTitle}</p>
             )}
-            <p className="mt-1 text-gray-500 text-sm">
+            <p className="mt-1 text-muted-foreground text-sm">
               {formData.metaTitle.length}/60 characters
               {formData.metaTitle.length > 60 && (
                 <span className="ml-2 text-red-600">Too long for optimal SEO</span>
@@ -213,7 +213,7 @@ const CustomizationSection = memo(function CustomizationSection({
           {/* Meta Description */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <Label htmlFor="metaDescription" className="font-medium text-gray-700 text-sm">
+              <Label htmlFor="metaDescription" className="font-medium text-foreground/80 text-sm">
                 Meta Description
               </Label>
               <Button type="button" variant="outline" size="sm" onClick={generateMetaDescription}>
@@ -232,7 +232,7 @@ const CustomizationSection = memo(function CustomizationSection({
             {formErrors.metaDescription && (
               <p className="mt-1 text-red-600 text-sm">{formErrors.metaDescription}</p>
             )}
-            <p className="mt-1 text-gray-500 text-sm">
+            <p className="mt-1 text-muted-foreground text-sm">
               {formData.metaDescription.length}/160 characters
               {formData.metaDescription.length > 160 && (
                 <span className="ml-2 text-red-600">Too long for optimal SEO</span>

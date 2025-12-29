@@ -2,48 +2,121 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export const headingVariants = cva("mb-[0.75em] text-balance font-bold text-foreground", {
+// --- Headings ---
+
+export const headingVariants = cva("text-balance font-bold transition-colors", {
   variants: {
     variant: {
-      h1: "text-4xl leading-[1.2] lg:text-5xl", // Matches index.css (2.5rem = text-4xl base)
-      h2: "text-3xl leading-[1.25] lg:text-4xl", // Matches index.css (2rem = text-3xl base)
-      h3: "text-2xl leading-[1.25] lg:text-3xl", // Matches index.css (1.75rem = text-2xl base)
-      h4: "text-xl leading-snug",
-      h5: "text-lg leading-snug",
-      h6: "text-base leading-snug",
+      h1: "mb-6 text-4xl leading-[1.2] lg:text-5xl",
+      h2: "mb-4 text-3xl leading-[1.25] lg:text-4xl",
+      h3: "mb-3 text-2xl leading-[1.25] lg:text-3xl",
+      h4: "mb-2 text-xl leading-snug",
+      h5: "mb-2 text-lg leading-snug",
+      h6: "mb-2 text-base leading-snug",
+      "hero-heading":
+        "mb-8 font-extrabold text-5xl leading-none tracking-tight drop-shadow-lg lg:text-7xl",
+      // Display variants using new Phase 1 tokens (responsive clamp-based sizing)
+      "display-xs": "font-extrabold text-display-xs tracking-tighter",
+      "display-sm": "font-extrabold text-display-sm tracking-tighter",
+      "display-md": "font-extrabold text-display-md tracking-tighter",
+      "display-lg": "font-black text-display-lg tracking-tighter",
+      "display-xl": "font-black text-display-xl tracking-tighter",
+    },
+    color: {
+      default: "text-foreground",
+      primary: "text-primary",
+      muted: "text-muted-foreground",
+      white: "text-white",
+      gradient: "bg-linear-to-r from-primary to-brand-purple-light bg-clip-text text-transparent",
     },
   },
   defaultVariants: {
     variant: "h1",
+    color: "default",
   },
 });
 
+type HeadingElement = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
 interface HeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement>,
+  extends Omit<React.HTMLAttributes<HTMLHeadingElement>, "color">,
     VariantProps<typeof headingVariants> {
-  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  as?: HeadingElement;
 }
 
 const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, variant, as, ...props }, ref) => {
-    const Component = as || variant || "h1";
+  ({ className, variant, color, as, ...props }, ref) => {
+    // Default to strict 'h1' if not provided or if variant is special like 'hero-heading'
+    const Component =
+      as ||
+      (variant && variant in ["h1", "h2", "h3", "h4", "h5", "h6"]
+        ? (variant as HeadingElement)
+        : "h1");
+
     return (
-      <Component ref={ref} className={cn(headingVariants({ variant }), className)} {...props} />
+      <Component
+        ref={ref}
+        className={cn(className, headingVariants({ variant, color }))}
+        {...props}
+      />
     );
   },
 );
 Heading.displayName = "Heading";
 
-const P = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
-  ({ className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn("mb-4 text-pretty", className)} // Matches index.css p { text-wrap: pretty; margin-bottom: 1rem; }
-      {...props}
-    />
-  ),
+// --- Text / Paragraphs ---
+
+export const textVariants = cva("text-pretty transition-colors", {
+  variants: {
+    variant: {
+      p: "mb-4 text-base leading-relaxed",
+      lead: "text-muted-foreground text-xl",
+      large: "font-semibold text-lg",
+      small: "font-medium text-sm leading-none",
+      muted: "text-muted-foreground text-sm",
+      tiny: "font-medium text-xs leading-[1.2]",
+      "subtle-caption": "font-semibold text-muted-foreground text-xs uppercase tracking-wider",
+    },
+    color: {
+      default: "text-foreground",
+      muted: "text-muted-foreground",
+      primary: "text-primary",
+      destructive: "text-destructive",
+      success: "text-success",
+      warning: "text-warning",
+      white: "text-white opacity-90",
+    },
+  },
+  defaultVariants: {
+    variant: "p",
+    color: "default",
+  },
+});
+
+type TextElement = "p" | "span" | "div" | "label";
+
+interface TextProps
+  extends Omit<React.HTMLAttributes<HTMLElement>, "color">,
+    VariantProps<typeof textVariants> {
+  as?: TextElement;
+}
+
+const Text = React.forwardRef<HTMLElement, TextProps>(
+  ({ className, variant, color, as = "p", ...props }, ref) => {
+    const Component = as;
+    return (
+      <Component
+        // @ts-expect-error - Polymorphic refs are tricky, this cast is safe enough for our controlled set of elements
+        ref={ref}
+        className={cn(className, textVariants({ variant, color }))}
+        {...props}
+      />
+    );
+  },
 );
-P.displayName = "P";
+Text.displayName = "Text";
+
+// --- Exports ---
 
 const Typography = {
   H1: (props: Omit<HeadingProps, "variant" | "as">) => <Heading variant="h1" as="h1" {...props} />,
@@ -52,7 +125,15 @@ const Typography = {
   H4: (props: Omit<HeadingProps, "variant" | "as">) => <Heading variant="h4" as="h4" {...props} />,
   H5: (props: Omit<HeadingProps, "variant" | "as">) => <Heading variant="h5" as="h5" {...props} />,
   H6: (props: Omit<HeadingProps, "variant" | "as">) => <Heading variant="h6" as="h6" {...props} />,
-  P,
+  Hero: (props: HeadingProps) => <Heading variant="hero-heading" as="h1" {...props} />,
+  P: (props: TextProps) => <Text variant="p" as="p" {...props} />,
+  Lead: (props: TextProps) => <Text variant="lead" as="p" {...props} />,
+  Large: (props: TextProps) => <Text variant="large" as="div" {...props} />,
+  Small: (props: TextProps) => <Text variant="small" as="p" {...props} />, // 'small' usually expects p or span
+  Muted: (props: TextProps) => <Text variant="muted" as="p" {...props} />,
+  Caption: (props: TextProps) => <Text variant="subtle-caption" as="span" {...props} />,
+  Text,
+  Heading,
 };
 
-export { Typography };
+export { Typography, Heading, Text };

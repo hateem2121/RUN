@@ -92,7 +92,7 @@ export function ConveyorBelt() {
       if (!ctx || !canvas) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "#3b82f6";
+      ctx.strokeStyle = "hsl(217 91% 60%)"; // matches --color-status-info
       ctx.lineWidth = 2;
 
       // Draw moving belt segments

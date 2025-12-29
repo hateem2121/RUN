@@ -2,7 +2,7 @@ import type { ManufacturingCapability, MediaAsset } from "@shared/schema";
 import { Settings } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { analyzeContent, BentoCard, calculateGridSpan } from "@/components/ui/smart-bento-grid";
+import { analyzeContent, BentoGridItem, calculateGridSpan } from "@/components/ui/smart-bento-grid";
 import { cn } from "@/lib/utils";
 import { CardDecorator } from "./CardDecorator";
 import { ManufacturingStatusIndicator } from "./ManufacturingStatusIndicator";
@@ -24,11 +24,11 @@ export function CapabilityCard({ capability, index, mediaAssets }: CapabilityCar
     : null;
 
   return (
-    <BentoCard gridSpan={gridSpan}>
+    <BentoGridItem gridSpan={gridSpan}>
       <Card
         className={cn(
           "group manufacturing-card-hover manufacturing-focus-glow relative h-full rounded-none",
-          "border-2 border-gray-200",
+          "border-2 border-border",
         )}
       >
         <CardDecorator />
@@ -86,7 +86,7 @@ export function CapabilityCard({ capability, index, mediaAssets }: CapabilityCar
             {capability.equipment && (
               <div className="rounded bg-blue-50 p-2 text-xs">
                 <p className="font-medium text-blue-700">Equipment</p>
-                <p className="mt-1 line-clamp-2 text-gray-700">{capability.equipment}</p>
+                <p className="mt-1 line-clamp-2 text-foreground/80">{capability.equipment}</p>
               </div>
             )}
 
@@ -95,12 +95,14 @@ export function CapabilityCard({ capability, index, mediaAssets }: CapabilityCar
               Array.isArray(capability.specifications) &&
               capability.specifications.length > 0 && (
                 <div className="space-y-1">
-                  <p className="font-medium text-gray-500 text-xs uppercase">Specifications</p>
+                  <p className="font-medium text-muted-foreground text-xs uppercase">
+                    Specifications
+                  </p>
                   <div className="space-y-1">
                     {capability.specifications
                       .slice(0, gridSpan.colSpan >= 2 ? 6 : 3)
                       .map((spec: any, i: number) => (
-                        <div key={i} className="flex justify-between text-gray-600 text-xs">
+                        <div key={i} className="flex justify-between text-muted-foreground text-xs">
                           <span className="truncate">
                             {typeof spec === "object" ? spec.label : spec}
                           </span>
@@ -120,6 +122,6 @@ export function CapabilityCard({ capability, index, mediaAssets }: CapabilityCar
           </div>
         </CardContent>
       </Card>
-    </BentoCard>
+    </BentoGridItem>
   );
 }

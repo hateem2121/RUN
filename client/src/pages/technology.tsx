@@ -15,9 +15,8 @@ import type {
   TechnologyResearch,
   TechnologyRoadmap,
 } from "@shared/schema";
-import { Loader2 } from "lucide-react";
-// NOTE: webgl-pointer-events.css is imported globally in index.css via @layer components
-// Removed duplicate import here to reduce CSS bundle duplication
+import { Box, Loader2 } from "lucide-react";
+// webgl-pointer-events functionality is now handled by global index.css utilities
 import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { GlassCard, GlassCardDecorations, LiquidGlassCard } from "@/components/ui/glass-card";
@@ -444,43 +443,41 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
       className="hero-3d-model relative overflow-hidden rounded-2xl border border-glass bg-transparent"
     >
       {media.type === "3d_model" ? (
-        <div className="relative aspect-[4/3]">
+        <div className="relative aspect-4/3">
           {/* PHASE E: Enhanced progressive enhancement with intersection awareness */}
           {!shouldLoadModel && (
-            <div className="absolute inset-0 z-modal flex flex-col items-center justify-center bg-gradient-to-br from-slate-900/90 to-blue-900/90">
-              <div className="p-6 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/20">
-                  <div className="h-8 w-8 rounded-lg border-2 border-blue-400/60"></div>
-                </div>
-                <Typography.P className="mb-2 font-medium text-white">
-                  Interactive 3D Model
-                </Typography.P>
-                <Typography.P className="mb-4 text-blue-200 text-sm">
-                  {isIntersecting ? "Preparing to load..." : "Scroll to view"}
-                </Typography.P>
-                <button
-                  onClick={() => {
-                    setUserRequestedLoad(true);
-                  }}
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors duration-200 hover:bg-blue-700"
-                >
-                  Load 3D Model
-                </button>
-                <Typography.P className="mt-2 text-blue-300 text-xs">
-                  Interactive 3D experience • Optimized streaming
-                </Typography.P>
+            <div className="absolute inset-0 z-modal flex flex-col items-center justify-center bg-muted/90 backdrop-blur-sm">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+                <div className="h-8 w-8 rounded-lg border-2 border-primary/60"></div>
               </div>
+              <Typography.P className="mb-2 font-medium text-white">
+                Interactive 3D Model
+              </Typography.P>
+              <Typography.P className="mb-4 text-primary-foreground/80 text-sm">
+                {isIntersecting ? "Preparing to load..." : "Scroll to view"}
+              </Typography.P>
+              <button
+                onClick={() => {
+                  setUserRequestedLoad(true);
+                }}
+                className="rounded-lg bg-primary px-4 py-2 text-primary-foreground text-sm transition-colors duration-200 hover:bg-primary/90"
+              >
+                Load 3D Model
+              </button>
+              <Typography.P className="mt-2 text-primary-foreground/70 text-xs">
+                Interactive 3D experience • Optimized streaming
+              </Typography.P>
             </div>
           )}
 
           {/* Loading Overlay - only shows when model is actually loading */}
           {isLoading && shouldLoadModel && (
             <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/60">
-              <Loader2 className="mb-3 h-8 w-8 animate-spin text-blue-400" />
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
               <Typography.P className="mb-2 font-medium text-sm text-white">
                 Loading 3D Model...
               </Typography.P>
-              <Typography.P className="text-gray-300 text-xs">
+              <Typography.P className="text-muted-foreground/70 text-xs">
                 Loading interactive 3D model...
               </Typography.P>
             </div>
@@ -494,7 +491,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                 <Typography.P className="mb-1 font-medium text-white">
                   3D preview unavailable
                 </Typography.P>
-                <Typography.P className="text-gray-300 text-sm">
+                <Typography.P className="text-muted-foreground/70 text-sm">
                   Showing fallback content
                 </Typography.P>
               </div>
@@ -507,7 +504,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
             <React.Suspense
               fallback={
                 <div className="flex h-full min-h-96 w-full items-center justify-center rounded-xl bg-black/20">
-                  <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               }
             >
@@ -554,7 +551,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           />
         </div>
       ) : (
-        <div className="relative aspect-[4/3]">
+        <div className="relative aspect-4/3">
           <img
             src={
               media.url ||
@@ -684,7 +681,7 @@ export default function Technology() {
             />
           }
         >
-          <ErrorBoundary fallback={<div className="fixed inset-0 bg-blue-900" />}>
+          <ErrorBoundary fallback={<div className="fixed inset-0 bg-background" />}>
             <React.Suspense
               fallback={
                 <div
@@ -759,7 +756,7 @@ export default function Technology() {
                         {vm.hero?.primaryCtaText && (
                           <a
                             href={vm.hero?.primaryCtaLink || "#"}
-                            className="rounded-lg bg-blue-600 px-8 py-3 text-center font-semibold text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            className="rounded-lg bg-primary px-8 py-3 text-center font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
                           >
                             {vm.hero.primaryCtaText}
                           </a>
@@ -775,7 +772,8 @@ export default function Technology() {
                       </div>
                     )}
 
-                    <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 lg:mx-0"></div>
+                    {/* Decorative Divider */}
+                    <div className="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-primary to-accent lg:mx-0"></div>
                   </div>
                 )}
               </LiquidGlassCard>
@@ -788,12 +786,14 @@ export default function Technology() {
                   <OptimizedTechnologyHero media={backgroundMedia} />
                 </div>
               ) : (
-                <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-glass bg-transparent">
+                <div className="flex aspect-4/3 items-center justify-center rounded-2xl border border-glass bg-white/5 backdrop-blur-sm">
                   <div className="text-center text-white/40">
-                    <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
-                      <div className="h-8 w-8 rounded border-2 border-white/20 border-dashed"></div>
+                    <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 transition-transform duration-500 hover:scale-110">
+                      <Box className="h-8 w-8 text-white/30" />
                     </div>
-                    <Typography.P className="text-sm">No media configured</Typography.P>
+                    <Typography.P className="font-medium text-white/50">
+                      Visual Preview Unavailable
+                    </Typography.P>
                   </div>
                 </div>
               )}
@@ -830,11 +830,11 @@ export default function Technology() {
                             <Typography.H3 className="font-bold text-white text-xl leading-tight">
                               {innovation.name}
                             </Typography.H3>
-                            <span className="inline-block rounded-full bg-blue-500/20 px-3 py-1 font-medium text-blue-300 text-sm">
+                            <span className="inline-block rounded-full bg-primary/20 px-3 py-1 font-medium text-primary text-sm">
                               {innovation.category}
                             </span>
                             {innovation.status && innovation.status !== "Active" && (
-                              <span className="inline-block rounded-full bg-yellow-500/20 px-3 py-1 font-medium text-sm text-yellow-300">
+                              <span className="inline-block rounded-full bg-warning/20 px-3 py-1 font-medium text-sm text-warning">
                                 {innovation.status}
                               </span>
                             )}
@@ -1044,16 +1044,16 @@ export default function Technology() {
                             {item.name}
                           </Typography.H3>
                           <div className="flex flex-wrap gap-2">
-                            <span className="rounded bg-purple-500/20 px-2 py-1 font-medium text-purple-300 text-xs">
+                            <span className="rounded bg-primary/20 px-2 py-1 font-medium text-primary text-xs">
                               Equipment
                             </span>
                             {item.brand && (
-                              <span className="rounded bg-blue-500/20 px-2 py-1 font-medium text-blue-300 text-xs">
+                              <span className="rounded bg-secondary/80 px-2 py-1 font-medium text-secondary-foreground text-xs">
                                 {item.brand}
                               </span>
                             )}
                             {item.model && (
-                              <span className="rounded bg-green-500/20 px-2 py-1 font-medium text-green-300 text-xs">
+                              <span className="rounded bg-secondary/80 px-2 py-1 font-medium text-secondary-foreground text-xs">
                                 {item.model}
                               </span>
                             )}
@@ -1099,7 +1099,7 @@ export default function Technology() {
                             {item.certifications.map((cert, idx) => (
                               <span
                                 key={idx}
-                                className="rounded border border-yellow-500/30 bg-yellow-500/20 px-2 py-0.5 text-[10px] text-yellow-200"
+                                className="rounded border border-warning/30 bg-warning/20 px-2 py-0.5 text-micro text-warning"
                               >
                                 {cert}
                               </span>
@@ -1160,7 +1160,7 @@ export default function Technology() {
                               {research.name}
                             </Typography.H3>
                             {research.researchArea && (
-                              <span className="rounded-full bg-purple-500/20 px-3 py-1 font-medium text-purple-300 text-sm">
+                              <span className="rounded-full bg-primary/20 px-3 py-1 font-medium text-primary text-sm">
                                 {research.researchArea}
                               </span>
                             )}
@@ -1168,10 +1168,10 @@ export default function Technology() {
                               <span
                                 className={`rounded-full px-3 py-1 font-medium text-sm ${
                                   research.status === "Completed"
-                                    ? "bg-green-500/20 text-green-300"
+                                    ? "bg-success/20 text-success"
                                     : research.status === "Planned"
-                                      ? "bg-gray-500/20 text-gray-300"
-                                      : "bg-blue-500/20 text-blue-300"
+                                      ? "bg-muted/50 text-muted-foreground"
+                                      : "bg-primary/20 text-primary"
                                 }`}
                               >
                                 {research.status}
@@ -1313,12 +1313,12 @@ export default function Technology() {
                     <div key={milestone.id} className="relative">
                       {/* Timeline connector */}
                       {index < vm.roadmap.length - 1 && (
-                        <div className="absolute top-16 left-6 h-full w-0.5 bg-gradient-to-b from-blue-500 to-purple-500 opacity-50"></div>
+                        <div className="absolute top-16 left-6 h-full w-0.5 bg-linear-to-b from-primary to-accent opacity-50"></div>
                       )}
 
                       <div className="flex gap-6">
                         {/* Timeline dot */}
-                        <div className="relative z-modal-backdrop flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-500 font-bold text-sm text-white">
+                        <div className="relative z-modal-backdrop flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-primary to-accent font-bold text-sm text-white">
                           {index + 1}
                         </div>
 
@@ -1335,7 +1335,7 @@ export default function Technology() {
                               <Typography.H3 className="mb-3 font-bold text-white text-xl">
                                 {milestone.name}
                               </Typography.H3>
-                              <div className="mb-4 text-blue-300 text-sm">
+                              <div className="mb-4 text-primary-foreground/80 text-sm">
                                 Target: {milestone.timeline}
                               </div>
 

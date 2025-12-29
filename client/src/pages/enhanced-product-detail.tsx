@@ -78,7 +78,7 @@ function Gallery({ media, name }: { media: any[]; name: string }) {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="scrollbar-hide flex aspect-[3/4] w-full snap-x snap-mandatory overflow-x-auto rounded-lg bg-gray-100 lg:aspect-square"
+        className="scrollbar-hide flex aspect-3/4 w-full snap-x snap-mandatory overflow-x-auto rounded-lg bg-muted lg:aspect-square"
       >
         {media.map((item, idx) => (
           <div key={idx} className="relative w-full shrink-0 snap-center">
@@ -135,12 +135,12 @@ function ProductSpecs({ specs }: { specs: any[] }) {
         {specs.map((spec, i) => (
           <div
             key={i}
-            className="row-span-2 grid grid-rows-subgrid gap-1 rounded-lg border border-gray-100 bg-gray-50 p-4"
+            className="row-span-2 grid grid-rows-subgrid gap-1 rounded-lg border border-border bg-muted/50 p-4"
           >
-            <span className="font-mono text-gray-500 text-xs uppercase tracking-widest">
+            <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
               {spec.name || "Feature"}
             </span>
-            <span className="text-balance font-medium text-gray-900">{spec.value}</span>
+            <span className="text-balance font-medium text-foreground">{spec.value}</span>
           </div>
         ))}
       </div>
@@ -149,8 +149,8 @@ function ProductSpecs({ specs }: { specs: any[] }) {
       <dl className="grid grid-cols-[1fr_1fr] gap-x-4 gap-y-4 text-sm md:hidden">
         {specs.map((spec, i) => (
           <div key={i} className="contents">
-            <dt className="font-medium text-gray-500">{spec.name}</dt>
-            <dd className="text-gray-900">{spec.value}</dd>
+            <dt className="font-medium text-muted-foreground">{spec.name}</dt>
+            <dd className="text-foreground">{spec.value}</dd>
           </div>
         ))}
       </dl>
@@ -187,7 +187,7 @@ function AddToCartSection({ product }: { product: any }) {
   };
 
   return (
-    <div className="mt-8 flex flex-col gap-4 border-gray-100 border-t pt-8">
+    <div className="mt-8 flex flex-col gap-4 border-border border-t pt-8">
       <div className="mb-4 flex items-center justify-between">
         <span className="font-bold text-2xl tracking-tight">$249.00</span>
         {optimisticState.status === "added" && (
@@ -220,7 +220,7 @@ function AddToCartSection({ product }: { product: any }) {
         )}
       </button>
 
-      <Typography.P className="mt-2 text-center text-gray-400 text-xs">
+      <Typography.P className="mt-2 text-center text-muted-foreground/50 text-xs">
         Free shipping on orders over $500. Global delivery available.
       </Typography.P>
     </div>
@@ -309,18 +309,18 @@ function ProductDetailContent() {
 
             <div className="mb-8 flex items-center gap-4 text-sm">
               {product.sku && (
-                <span className="rounded bg-gray-100 px-2 py-1 font-mono text-gray-500 text-xs">
+                <span className="rounded bg-muted px-2 py-1 font-mono text-muted-foreground text-xs">
                   {product.sku}
                 </span>
               )}
               <div className="flex items-center gap-1 text-yellow-500">
                 <span className="font-bold text-black">4.9</span>
                 <span>★★★★★</span>
-                <span className="ml-1 text-gray-400 text-xs">(128 Reviews)</span>
+                <span className="ml-1 text-muted-foreground/50 text-xs">(128 Reviews)</span>
               </div>
             </div>
 
-            <Typography.P className="mb-8 text-pretty text-gray-600 text-lg leading-relaxed">
+            <Typography.P className="mb-8 text-pretty text-lg text-muted-foreground leading-relaxed">
               {product.description ||
                 product.shortDescription ||
                 "Engineered for peak performance, this product represents the pinnacle of our material science innovation. Designed for athletes who demand the absolute best."}
@@ -330,7 +330,7 @@ function ProductDetailContent() {
             <div className="mb-8">
               <div className="mb-3 flex items-center justify-between">
                 <label className="font-bold text-sm uppercase tracking-wider">Select Size</label>
-                <button className="flex items-center gap-1 text-gray-500 text-xs transition-colors hover:text-black">
+                <button className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground">
                   <Ruler className="h-3 w-3" /> Size Guide
                 </button>
               </div>
@@ -338,7 +338,7 @@ function ProductDetailContent() {
                 {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                   <button
                     key={size}
-                    className="flex h-12 items-center justify-center rounded border border-gray-200 transition-colors hover:border-black focus:outline-hidden focus:ring-2 focus:ring-black"
+                    className="flex h-12 items-center justify-center rounded border border-border transition-colors hover:border-foreground focus:outline-hidden focus:ring-2 focus:ring-foreground"
                   >
                     {size}
                   </button>
@@ -362,10 +362,10 @@ function ProductDetailContent() {
             <AddToCartSection product={product} />
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <button className="center-flex gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
+              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
                 <Heart className="h-4 w-4" /> Save
               </button>
-              <button className="center-flex gap-2 rounded border border-gray-200 py-3 font-bold text-sm transition-colors hover:bg-gray-50">
+              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
                 <Share2 className="h-4 w-4" /> Share
               </button>
             </div>

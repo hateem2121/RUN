@@ -5,9 +5,6 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 import { PROCESS_STEPS } from "./constants";
 
-// Register Plugin Local Scope as well to be safe
-gsap.registerPlugin(ScrollTrigger);
-
 const Process: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -34,91 +31,73 @@ const Process: React.FC = () => {
         gsap.set(pathEl, { strokeDasharray: length, strokeDashoffset: length });
       }
 
-      // Define animations for different breakpoints
-      const setupDesktopAnimation = () => {
-        // Calculate exact scroll distance needed for 1:1 mapping
-        // Making it slightly larger (e.g. * 1) per section ensures smoother feeling
-        const totalScroll = window.innerWidth * (sections.length - 1);
+      ScrollTrigger.matchMedia({
+        // Desktop: Horizontal Scroll
+        "(min-width: 768px)": () => {
+          // Calculate exact scroll distance needed for 1:1 mapping
+          const totalWidth = triggerEl.offsetWidth * (sections.length - 1);
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: triggerEl,
-            pin: true,
-            scrub: 1,
-            // "top top" works well if header doesn't obscure.
-            // If header overlays, "top top" is fine because we want it pinned at viewport top.
-            start: "top top",
-            end: () => `+=${totalScroll}`,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-          },
-        });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: triggerEl,
+              pin: true,
+              scrub: 1,
+              end: () => `+=${totalWidth}`,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
+            },
+          });
 
-        // Horizontal Scroll - Animate the Wrapper
-        if (sectionRef.current) {
+          // Horizontal Scroll
           tl.to(
-            sectionRef.current,
+            sections,
             {
               xPercent: -100 * (sections.length - 1),
               ease: "none",
             },
             0,
           );
-        }
 
-        // SVG Line Drawing syncs with scroll
-        if (pathEl) {
-          tl.to(
-            pathEl,
-            {
-              strokeDashoffset: 0,
-              ease: "none",
-            },
-            0,
-          );
-        }
-      };
-
-      const setupMobileAnimation = () => {
-        if (sectionRef.current) {
-          gsap.set(sectionRef.current, { xPercent: 0 });
-        }
-        gsap.set(sections, { xPercent: 0 });
-
-        // Simple reveal for mobile cards
-        sections.forEach((section) => {
-          const content = section.querySelector(".content-container");
-          if (content) {
-            gsap.fromTo(
-              content,
-              { y: 50, opacity: 0 },
+          // SVG Line Drawing syncs with scroll
+          if (pathEl) {
+            tl.to(
+              pathEl,
               {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: section,
-                  start: "top 85%",
-                  toggleActions: "play none none reverse",
-                },
+                strokeDashoffset: 0,
+                ease: "none",
               },
+              0,
             );
           }
-        });
-      };
-
-      ScrollTrigger.matchMedia({
-        // Desktop: Horizontal Scroll
-        "(min-width: 768px)": setupDesktopAnimation,
+        },
 
         // Mobile: Vertical Stack (Reset transforms)
-        "(max-width: 767px)": setupMobileAnimation,
+        "(max-width: 767px)": () => {
+          gsap.set(sections, { xPercent: 0 });
+
+          // Simple reveal for mobile cards
+          sections.forEach((section) => {
+            const content = section.querySelector(".content-container");
+            if (content) {
+              gsap.fromTo(
+                content,
+                { y: 50, opacity: 0 },
+                {
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.8,
+                  ease: "power2.out",
+                  scrollTrigger: {
+                    trigger: section,
+                    start: "top 85%",
+                  },
+                },
+              );
+            }
+          });
+        },
       });
     }, triggerEl); // Pass element directly, not ref object
-
-    // Force refresh to ensure start/end positions are calculated correctly after render
-    ScrollTrigger.refresh();
 
     return () => {
       ctx.revert();
@@ -126,13 +105,13 @@ const Process: React.FC = () => {
   }, []);
 
   return (
-    <section className="overflow-hidden bg-neutral-950 text-neutral-50">
+    <section className="overflow-hidden bg-surface-dark text-foreground">
       <div
         ref={triggerRef}
         className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
         <div className="absolute top-8 left-8 z-elevated">
-          <h3 className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-xs md:text-xl">
+          <h3 className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl">
             Production Pipeline
           </h3>
         </div>
@@ -147,7 +126,8 @@ const Process: React.FC = () => {
               ref={pathRef}
               d="M0,100 C250,200 500,0 1000,100"
               fill="none"
-              stroke="var(--color-brand-purple)"
+              stroke="currentColor"
+              className="text-primary"
               strokeWidth="5"
             />
           </svg>
@@ -155,15 +135,15 @@ const Process: React.FC = () => {
 
         {/* Container */}
         <div
-          className="flex h-auto w-full flex-col pt-24 md:h-full md:flex-row md:pt-0"
+          className="flex h-auto w-full flex-col pt-24 will-change-transform md:h-full md:flex-row md:pt-0"
           ref={sectionRef}
         >
-          {PROCESS_STEPS.map((step) => (
+          {PROCESS_STEPS.map((step, index) => (
             <div
-              key={step.id}
-              className="process-card relative z-elevated flex min-h-screen w-full shrink-0 items-center justify-center border-glass border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
+              key={index}
+              className="process-card relative z-default flex min-h-loading-center w-full flex-shrink-0 items-center justify-center border-white/10 border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
             >
-              <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-white/5 bg-neutral-950/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
+              <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-white/5 bg-surface-dark/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}
                 <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
@@ -186,7 +166,7 @@ const Process: React.FC = () => {
                   <h2 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
                     {step.title}
                   </h2>
-                  <p className="mb-8 max-w-md font-light text-base text-gray-400 leading-relaxed md:text-xl">
+                  <p className="mb-8 max-w-md font-light text-base text-muted-foreground/70 leading-relaxed md:text-xl">
                     {step.description}
                   </p>
                   <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white transition-all duration-300 hover:bg-white hover:text-black md:h-16 md:w-16">

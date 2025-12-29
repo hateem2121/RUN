@@ -9,10 +9,21 @@ import type {
 } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowRight, Cpu, Factory, Leaf, Shield, Target, TrendingUp, Zap } from "lucide-react";
+import { ArrowRight, Cpu, Factory, Leaf, Shield, Target, Zap } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+  XAxis,
+} from "recharts";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Progress } from "@/components/ui/progress";
 
 export function CrossPageDashboard() {
@@ -84,13 +95,13 @@ export function CrossPageDashboard() {
                 <div className="rounded-lg bg-green-100 p-2">
                   <Leaf className="h-6 w-6 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900">Sustainability Impact</h3>
+                <h3 className="font-semibold text-foreground">Sustainability Impact</h3>
               </div>
 
               <div className="space-y-3">
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Goal Progress</span>
+                    <span className="text-muted-foreground">Goal Progress</span>
                     <span className="font-medium">{sustainabilityProgress.toFixed(0)}%</span>
                   </div>
                   <Progress value={sustainabilityProgress} className="h-2" />
@@ -98,7 +109,7 @@ export function CrossPageDashboard() {
 
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Sustainable Fabrics</span>
+                    <span className="text-muted-foreground">Sustainable Fabrics</span>
                     <span className="font-medium">
                       {sustainableFabrics.length}/{fabrics.length}
                     </span>
@@ -139,13 +150,13 @@ export function CrossPageDashboard() {
                 <div className="rounded-lg bg-blue-100 p-2">
                   <Factory className="h-6 w-6 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900">Manufacturing Excellence</h3>
+                <h3 className="font-semibold text-foreground">Manufacturing Excellence</h3>
               </div>
 
               <div className="space-y-3">
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Process Efficiency</span>
+                    <span className="text-muted-foreground">Process Efficiency</span>
                     <span className="font-medium">{avgManufacturingEfficiency.toFixed(0)}%</span>
                   </div>
                   <Progress value={avgManufacturingEfficiency} className="h-2" />
@@ -153,7 +164,7 @@ export function CrossPageDashboard() {
 
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Quality Controls</span>
+                    <span className="text-muted-foreground">Quality Controls</span>
                     <span className="font-medium">
                       {manufacturingQuality.filter((q) => q.isActive).length} Active
                     </span>
@@ -195,13 +206,13 @@ export function CrossPageDashboard() {
                 <div className="rounded-lg bg-purple-100 p-2">
                   <Cpu className="h-6 w-6 text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900">Technology Innovation</h3>
+                <h3 className="font-semibold text-foreground">Technology Innovation</h3>
               </div>
 
               <div className="space-y-3">
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Active Innovations</span>
+                    <span className="text-muted-foreground">Active Innovations</span>
                     <span className="font-medium">
                       {activeInnovations}/{technologyInnovations.length}
                     </span>
@@ -218,7 +229,7 @@ export function CrossPageDashboard() {
 
                 <div>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-gray-600">Research Progress</span>
+                    <span className="text-muted-foreground">Research Progress</span>
                     <span className="font-medium">
                       {technologyResearch.length > 0
                         ? Math.round(
@@ -267,13 +278,13 @@ export function CrossPageDashboard() {
         <CardContent>
           <div className="space-y-6">
             {/* Sustainability × Manufacturing */}
-            <div className="rounded-lg bg-gradient-to-r from-green-50 to-blue-50 p-4">
+            <div className="rounded-lg bg-linear-to-r from-green-50 to-blue-50 p-4">
               <div className="mb-3 flex items-center gap-3">
                 <Leaf className="h-5 w-5 text-green-600" />
                 <Shield className="h-5 w-5 text-blue-600" />
-                <h4 className="font-medium text-gray-900">Sustainability × Manufacturing</h4>
+                <h4 className="font-medium text-foreground">Sustainability × Manufacturing</h4>
               </div>
-              <p className="mb-3 text-gray-600 text-sm">
+              <p className="mb-3 text-muted-foreground text-sm">
                 Sustainable fabrics processed with {avgManufacturingEfficiency.toFixed(0)}%
                 efficient manufacturing reduce overall environmental impact
               </p>
@@ -282,25 +293,27 @@ export function CrossPageDashboard() {
                   <div className="font-bold text-2xl text-green-600">
                     {Math.round((sustainableFabrics.length * avgManufacturingEfficiency) / 100)}
                   </div>
-                  <div className="text-gray-600 text-xs">Optimized Sustainable Products</div>
+                  <div className="text-muted-foreground text-xs">
+                    Optimized Sustainable Products
+                  </div>
                 </div>
                 <div className="rounded bg-white p-3 text-center">
                   <div className="font-bold text-2xl text-blue-600">
                     {((avgManufacturingEfficiency * sustainabilityProgress) / 100).toFixed(0)}%
                   </div>
-                  <div className="text-gray-600 text-xs">Combined Efficiency Score</div>
+                  <div className="text-muted-foreground text-xs">Combined Efficiency Score</div>
                 </div>
               </div>
             </div>
 
             {/* Technology × Sustainability */}
-            <div className="rounded-lg bg-gradient-to-r from-purple-50 to-green-50 p-4">
+            <div className="rounded-lg bg-linear-to-r from-purple-50 to-green-50 p-4">
               <div className="mb-3 flex items-center gap-3">
                 <Cpu className="h-5 w-5 text-purple-600" />
                 <Target className="h-5 w-5 text-green-600" />
-                <h4 className="font-medium text-gray-900">Technology × Sustainability</h4>
+                <h4 className="font-medium text-foreground">Technology × Sustainability</h4>
               </div>
-              <p className="mb-3 text-gray-600 text-sm">
+              <p className="mb-3 text-muted-foreground text-sm">
                 {activeInnovations} active innovations directly support{" "}
                 {sustainabilityGoals.filter((g) => g.isActive).length} sustainability goals
               </p>
@@ -309,7 +322,7 @@ export function CrossPageDashboard() {
                   <div className="font-bold text-2xl text-purple-600">
                     {technologyInnovations.filter((i) => i.category === "Materials").length}
                   </div>
-                  <div className="text-gray-600 text-xs">Material Innovations</div>
+                  <div className="text-muted-foreground text-xs">Material Innovations</div>
                 </div>
                 <div className="rounded bg-white p-3 text-center">
                   <div className="font-bold text-2xl text-green-600">
@@ -318,19 +331,19 @@ export function CrossPageDashboard() {
                         .length
                     }
                   </div>
-                  <div className="text-gray-600 text-xs">Sustainability Research</div>
+                  <div className="text-muted-foreground text-xs">Sustainability Research</div>
                 </div>
               </div>
             </div>
 
             {/* Manufacturing × Technology */}
-            <div className="rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-4">
+            <div className="rounded-lg bg-linear-to-r from-blue-50 to-purple-50 p-4">
               <div className="mb-3 flex items-center gap-3">
                 <Factory className="h-5 w-5 text-blue-600" />
                 <Zap className="h-5 w-5 text-purple-600" />
-                <h4 className="font-medium text-gray-900">Manufacturing × Technology</h4>
+                <h4 className="font-medium text-foreground">Manufacturing × Technology</h4>
               </div>
-              <p className="mb-3 text-gray-600 text-sm">
+              <p className="mb-3 text-muted-foreground text-sm">
                 Advanced technology enables {Math.floor(manufacturingProcesses.length * 0.7)}{" "}
                 high-efficiency manufacturing processes
               </p>
@@ -343,7 +356,7 @@ export function CrossPageDashboard() {
                       ).length
                     }
                   </div>
-                  <div className="text-gray-600 text-xs">Quality-Enhanced Processes</div>
+                  <div className="text-muted-foreground text-xs">Quality-Enhanced Processes</div>
                 </div>
                 <div className="rounded bg-white p-3 text-center">
                   <div className="font-bold text-2xl text-purple-600">
@@ -353,7 +366,7 @@ export function CrossPageDashboard() {
                       ).length
                     }
                   </div>
-                  <div className="text-gray-600 text-xs">Production Innovations</div>
+                  <div className="text-muted-foreground text-xs">Production Innovations</div>
                 </div>
               </div>
             </div>
@@ -368,40 +381,141 @@ export function CrossPageDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div className="rounded-lg bg-gradient-to-br from-green-50 to-green-100 p-4 text-center">
-              <TrendingUp className="mx-auto mb-2 h-8 w-8 text-green-600" />
-              <div className="font-bold text-2xl text-green-700">
-                {(
-                  (sustainabilityProgress +
-                    avgManufacturingEfficiency +
-                    (activeInnovations / technologyInnovations.length) * 100) /
-                  3
-                ).toFixed(0)}
-                %
-              </div>
-              <div className="text-gray-600 text-sm">Overall Performance</div>
+            {/* Overall Performance Radial Chart */}
+            <div className="col-span-1 md:col-span-1">
+              <ChartContainer
+                config={{
+                  score: {
+                    label: "Performance Score",
+                    color: "hsl(var(--chart-1))",
+                  },
+                }}
+                className="mx-auto aspect-square max-h-[250px]"
+              >
+                <RadialBarChart
+                  data={[
+                    {
+                      category: "score",
+                      value:
+                        (sustainabilityProgress +
+                          avgManufacturingEfficiency +
+                          (activeInnovations / (technologyInnovations.length || 1)) * 100) /
+                        3,
+                      fill: "var(--color-score)",
+                    },
+                  ]}
+                  startAngle={90}
+                  endAngle={-270}
+                  innerRadius={80}
+                  outerRadius={110}
+                >
+                  <PolarGrid
+                    gridType="circle"
+                    radialLines={false}
+                    stroke="none"
+                    className="first:fill-muted last:fill-background"
+                    polarRadius={[86, 74]}
+                  />
+                  <RadialBar dataKey="value" background cornerRadius={10} />
+                  <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+                    <Label
+                      content={({ viewBox }) => {
+                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          return (
+                            <text
+                              x={viewBox.cx}
+                              y={viewBox.cy}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                            >
+                              <tspan
+                                x={viewBox.cx}
+                                y={viewBox.cy}
+                                className="fill-foreground font-bold text-4xl"
+                              >
+                                {(
+                                  (sustainabilityProgress +
+                                    avgManufacturingEfficiency +
+                                    (activeInnovations / (technologyInnovations.length || 1)) *
+                                      100) /
+                                  3
+                                ).toFixed(0)}
+                                %
+                              </tspan>
+                              <tspan
+                                x={viewBox.cx}
+                                y={(viewBox.cy || 0) + 24}
+                                className="fill-muted-foreground"
+                              >
+                                Overall
+                              </tspan>
+                            </text>
+                          );
+                        }
+                      }}
+                    />
+                  </PolarRadiusAxis>
+                </RadialBarChart>
+              </ChartContainer>
             </div>
 
-            <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 p-4 text-center">
-              <Factory className="mx-auto mb-2 h-8 w-8 text-blue-600" />
-              <div className="font-bold text-2xl text-blue-700">
-                {Math.floor(manufacturingProcesses.length * 0.6)}
+            {/* High-Efficiency Processes Bar Chart */}
+            <div className="col-span-1 md:col-span-1">
+              <ChartContainer
+                config={{
+                  processes: {
+                    label: "Processes",
+                    color: "hsl(var(--chart-2))",
+                  },
+                }}
+                className="aspect-square max-h-[250px] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  margin={{ top: 20, bottom: 20 }}
+                  data={[
+                    {
+                      category: "High Eff.",
+                      count: Math.floor(manufacturingProcesses.length * 0.6),
+                      fill: "var(--color-processes)",
+                    },
+                    {
+                      category: "Standard",
+                      count: Math.ceil(manufacturingProcesses.length * 0.4),
+                      fill: "hsl(var(--muted))",
+                    },
+                  ]}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="category"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value}
+                  />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Bar dataKey="count" radius={8} barSize={32} />
+                </BarChart>
+              </ChartContainer>
+              <div className="mt-2 text-center text-muted-foreground text-sm">
+                Process Efficiency Distribution
               </div>
-              <div className="text-gray-600 text-sm">High-Efficiency Processes</div>
             </div>
 
-            <div className="rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 p-4 text-center">
+            {/* Remaining Cards (Kept as is for balance, just styled to match) */}
+            <div className="flex flex-col items-center justify-center rounded-lg bg-linear-to-br from-purple-50 to-purple-100 p-4 text-center">
               <Cpu className="mx-auto mb-2 h-8 w-8 text-purple-600" />
               <div className="font-bold text-2xl text-purple-700">
                 {technologyInnovations.length + technologyResearch.length}
               </div>
-              <div className="text-gray-600 text-sm">Total Innovations</div>
+              <div className="text-muted-foreground text-sm">Total Innovations</div>
             </div>
 
-            <div className="rounded-lg bg-gradient-to-br from-green-50 to-blue-100 p-4 text-center">
+            <div className="flex flex-col items-center justify-center rounded-lg bg-linear-to-br from-green-50 to-blue-100 p-4 text-center">
               <Leaf className="mx-auto mb-2 h-8 w-8 text-green-600" />
               <div className="font-bold text-2xl text-green-700">{sustainableFabrics.length}</div>
-              <div className="text-gray-600 text-sm">Eco-Certified Products</div>
+              <div className="text-muted-foreground text-sm">Eco-Certified Products</div>
             </div>
           </div>
         </CardContent>

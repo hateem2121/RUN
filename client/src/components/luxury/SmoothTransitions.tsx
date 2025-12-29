@@ -150,9 +150,9 @@ export function GlassEffect({
   interactive = true,
 }: GlassEffectProps) {
   const baseClasses = {
-    light: glassCardVariants({ variant: "glass" }),
-    card: glassCardVariants({ variant: "glass" }),
-    elevated: cn(glassCardVariants({ variant: "glass" }), "shadow-sm-luxury-elevated"),
+    light: glassCardVariants({ variant: "glass-subtle" }),
+    card: glassCardVariants({ variant: "glass-premium" }),
+    elevated: cn(glassCardVariants({ variant: "glass-premium" }), "shadow-sm-luxury-elevated"),
   };
 
   const interactiveClasses = interactive ? "" : ""; // glassCardVariants handles styling, interactive behaviors can be added via framer properties or additional classes if needed.
@@ -193,10 +193,10 @@ export function LuxuryButton({
 
   const variantClasses = {
     primary: cn(
-      glassCardVariants({ variant: "glass" }),
+      glassCardVariants({ variant: "glass-premium" }),
       "luxury-text-light border-luxury-light font-medium",
     ),
-    secondary: cn(glassCardVariants({ variant: "glass" }), "luxury-text-light font-normal"),
+    secondary: cn(glassCardVariants({ variant: "glass-subtle" }), "luxury-text-light font-normal"),
     ghost: "luxury-text-light font-light hover:bg-white/10",
   };
 
@@ -206,11 +206,7 @@ export function LuxuryButton({
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        ${sizeClasses[size]} 
-        ${variantClasses[variant]} rounded-full transition-all duration-300 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-        ${className}
-      `}
+      className={` ${sizeClasses[size]} ${variantClasses[variant]} rounded-full transition-all duration-300 ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${className} `}
     >
       {children}
     </motion.button>

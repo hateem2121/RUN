@@ -15,7 +15,7 @@ export function MediaSkeleton({
     switch (type) {
       case "video":
         return (
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-emphasis">
             <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
@@ -23,7 +23,7 @@ export function MediaSkeleton({
         );
       case "3d-model":
         return (
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-emphasis">
             <svg
               className="h-6 w-6 text-white"
               fill="none"
@@ -41,7 +41,7 @@ export function MediaSkeleton({
         );
       default:
         return (
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-emphasis">
             <svg
               className="h-6 w-6 text-white"
               fill="none"
@@ -63,7 +63,7 @@ export function MediaSkeleton({
   return (
     <div
       className={cn(
-        "flex animate-pulse items-center justify-center bg-gray-200 dark:bg-gray-700",
+        "flex animate-pulse items-center justify-center bg-surface-muted dark:bg-muted",
         "contain-layout", // CSS containment for performance
         className,
       )}

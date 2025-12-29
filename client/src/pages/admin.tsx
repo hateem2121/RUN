@@ -53,10 +53,10 @@ const InquiryManagement = lazy(() => import("@/pages/admin/inquiry-management"))
 // Loading component for lazy loaded modules
 function ModuleLoader() {
   return (
-    <div className="flex h-[60vh] items-center justify-center">
+    <div className="flex h-loading-center items-center justify-center">
       <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-        <Typography.P className="text-gray-600 text-sm">Loading module...</Typography.P>
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-muted border-t-primary" />
+        <Typography.P className="text-muted-foreground text-sm">Loading module...</Typography.P>
       </div>
     </div>
   );

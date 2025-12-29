@@ -87,33 +87,33 @@ export function PerformanceMonitor() {
   return (
     <Card className="fixed right-4 bottom-4 z-modal max-w-xs bg-white/95 p-4 shadow-lg">
       <div className="space-y-2 text-sm">
-        <div className="border-b pb-1 font-semibold text-gray-700">Performance Monitor</div>
+        <div className="border-b pb-1 font-semibold text-foreground/80">Performance Monitor</div>
 
         <div className="flex justify-between">
-          <span className="text-gray-600">Score:</span>
+          <span className="text-muted-foreground">Score:</span>
           <span className={`font-bold ${scoreColor}`}>{score}/100</span>
         </div>
 
         <div className="flex justify-between">
-          <span className="text-gray-600">Load Time:</span>
+          <span className="text-muted-foreground">Load Time:</span>
           <span>{metrics.loadTime}ms</span>
         </div>
 
         <div className="flex justify-between">
-          <span className="text-gray-600">API Calls:</span>
+          <span className="text-muted-foreground">API Calls:</span>
           <span className={metrics.apiCalls > 10 ? "text-orange-600" : ""}>{metrics.apiCalls}</span>
         </div>
 
         {metrics.memoryUsage > 0 && (
           <div className="flex justify-between">
-            <span className="text-gray-600">Memory:</span>
+            <span className="text-muted-foreground">Memory:</span>
             <span className={metrics.memoryUsage > 100 ? "text-orange-600" : ""}>
               {metrics.memoryUsage} MB
             </span>
           </div>
         )}
 
-        <div className="mt-2 border-t pt-2 text-gray-500 text-xs">
+        <div className="mt-2 border-t pt-2 text-muted-foreground text-xs">
           Optimizations Active:
           <ul className="mt-1 space-y-0.5">
             <li>✓ React.memo on cards</li>

@@ -170,24 +170,55 @@ const detectWebGLSupport = (): { supported: boolean; error?: string } => {
 // These utilities handle color format conversion and gradient preparation
 // for both WebGL (RGB arrays) and CSS (hex strings) rendering modes.
 
+import { getCssVar } from "@/lib/design-tokens";
+
 const MAX_COLORS = 8; // WebGL shader supports up to 8 gradient stops
 
 /**
- * Converts hex color string to normalized RGB array for WebGL shaders
- * @param hex - Color in #RRGGBB or #RGB format
+ * Converts hex color string or CSS variable to normalized RGB array for WebGL shaders
+ * @param color - Color in #RRGGBB, #RGB, or var(--name) format
  * @returns [r, g, b] array with values 0.0-1.0
  */
-const hexToRGB = (hex: string): [number, number, number] => {
-  const c = hex.replace("#", "").padEnd(6, "0");
+const toRGB = (color: string): [number, number, number] => {
+  let c = color;
+
+  // Resolve CSS variable if needed
+  if (c.startsWith("var(")) {
+    const varName = c.match(/var\(([^)]+)\)/)?.[1];
+    if (varName) {
+      const resolved = getCssVar(varName);
+      if (resolved) c = resolved;
+    }
+  }
+
+  // Handle standard hex
+  if (c.startsWith("#")) {
+    c = c.replace("#", "").padEnd(6, "0");
+  }
+  // Handle rgb/rgba strings (basic support)
+  else if (c.startsWith("rgb")) {
+    const parts = c.match(/\d+/g);
+    if (parts && parts.length >= 3) {
+      return [
+        parseInt(parts[0], 10) / 255,
+        parseInt(parts[1], 10) / 255,
+        parseInt(parts[2], 10) / 255,
+      ];
+    }
+    return [0, 0, 0]; // Fallback
+  }
+
   const r = parseInt(c.slice(0, 2), 16) / 255;
   const g = parseInt(c.slice(2, 4), 16) / 255;
   const b = parseInt(c.slice(4, 6), 16) / 255;
-  return [r, g, b];
+
+  // Return valid numbers or black fallback
+  return [Number.isNaN(r) ? 0 : r, Number.isNaN(g) ? 0 : g, Number.isNaN(b) ? 0 : b];
 };
 
 /**
  * Prepares gradient color stops for WebGL shader uniforms
- * @param stops - Array of hex color strings from admin settings (guaranteed to exist)
+ * @param stops - Array of color strings from settings
  * @returns Object with RGB arrays and color count for shader
  */
 const prepStops = (stops: string[]) => {
@@ -202,7 +233,7 @@ const prepStops = (stops: string[]) => {
 
   // Convert to RGB arrays for WebGL
   const arr: [number, number, number][] = [];
-  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[i]!));
+  for (let i = 0; i < MAX_COLORS; i++) arr.push(toRGB(base[i] || "#000000"));
 
   const count = Math.max(2, Math.min(MAX_COLORS, stops.length));
   return { arr, count };
@@ -229,6 +260,7 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
   onWebGLError,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const programRef = useRef<Program | null>(null);
   const meshRef = useRef<Mesh<Triangle> | null>(null);
@@ -263,7 +295,7 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
         ? [gradientColors[0], gradientColors[1]]
         : gradientColors.length === 1
           ? [gradientColors[0], gradientColors[0]]
-          : ["var(--color-brand-magenta)", "var(--color-brand-purple)"]; // Last resort defaults
+          : ["var(--color-primary)", "var(--color-brand-purple-light)"]; // Last resort defaults
 
     return {
       "--gb-color1": colors[0],
@@ -290,7 +322,10 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
     if (!container) return undefined;
 
     try {
+      if (!container) return undefined;
+
       const renderer = new Renderer({
+        canvas: canvasRef.current!, // P1 FIX: Use React-managed canvas
         dpr: dpr ?? (typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1),
         alpha: true,
         antialias: true,
@@ -301,11 +336,6 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
 
       // Set clear color to transparent so gradient shows through
       gl.clearColor(0, 0, 0, 0);
-
-      const canvas = gl.canvas as HTMLCanvasElement;
-
-      canvas.className = "gradient-blinds-canvas";
-      container.appendChild(canvas);
 
       const vertex = `
 attribute vec2 position;
@@ -519,7 +549,8 @@ void main() {
       ro.observe(container);
 
       const onPointerMove = (e: PointerEvent) => {
-        const rect = canvas.getBoundingClientRect();
+        if (!canvasRef.current) return;
+        const rect = canvasRef.current.getBoundingClientRect();
         const scale = (renderer as unknown as { dpr?: number }).dpr || 1;
         const x = (e.clientX - rect.left) * scale;
         const y = (rect.height - (e.clientY - rect.top)) * scale;
@@ -528,7 +559,8 @@ void main() {
           uniforms.iMouse.value = [x, y];
         }
       };
-      canvas.addEventListener("pointermove", onPointerMove);
+      // Attach listener to container or canvas consistently
+      canvasRef.current!.addEventListener("pointermove", onPointerMove);
 
       const loop = (t: number) => {
         rafRef.current = requestAnimationFrame(loop);
@@ -566,11 +598,11 @@ void main() {
 
       return () => {
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        canvas.removeEventListener("pointermove", onPointerMove);
-        ro.disconnect();
-        if (canvas.parentElement === container) {
-          container.removeChild(canvas);
+        if (canvasRef.current) {
+          canvasRef.current.removeEventListener("pointermove", onPointerMove);
         }
+        ro.disconnect();
+        // Canvas removal handled by React now
 
         // Advanced cleanup pattern from specification
         callIfFn(programRef.current, "remove");
@@ -698,7 +730,7 @@ void main() {
           style={{
             ...cssCustomProps,
             background: `linear-gradient(var(--gb-angle), var(--gb-color1), var(--gb-color2))`,
-            mixBlendMode: `var(--gb-blend-mode)`,
+            mixBlendMode: `var(--gb-blend-mode)` as any,
           }}
           aria-label="Gradient background (static preview)"
         />
@@ -723,7 +755,9 @@ void main() {
         webglInitialized ? "webgl-ready" : "webgl-loading"
       } ${className || ""}`}
       style={cssCustomProps}
-    />
+    >
+      <canvas ref={canvasRef} className="gradient-blinds-canvas" />
+    </div>
   );
 };
 

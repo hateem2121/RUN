@@ -32,7 +32,7 @@ export function ProductNavigation({
             <Button variant="ghost" className="group">
               <ChevronLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
               <div className="text-left">
-                <div className="text-gray-500 text-xs">Previous</div>
+                <div className="text-muted-foreground text-xs">Previous</div>
                 <div className="max-w-40 truncate font-medium text-sm">{previousProduct.name}</div>
               </div>
             </Button>
@@ -45,7 +45,7 @@ export function ProductNavigation({
           <Link href={(nextProduct as any).canonicalUrl || `/products/${nextProduct.slug}`}>
             <Button variant="ghost" className="group">
               <div className="text-right">
-                <div className="text-gray-500 text-xs">Next</div>
+                <div className="text-muted-foreground text-xs">Next</div>
                 <div className="max-w-40 truncate font-medium text-sm">{nextProduct.name}</div>
               </div>
               <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

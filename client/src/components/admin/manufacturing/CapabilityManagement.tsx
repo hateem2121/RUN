@@ -19,20 +19,21 @@ import { useQuery } from "@tanstack/react-query";
 import { Edit, Eye, EyeOff, GripVertical, Image, LayoutTemplate, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { LivePreviewGrid } from "@/components/admin/manufacturing/LivePreviewGrid";
-import { DeleteConfirmationDialog, StatusBadge } from "@/components/admin/shared";
+import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { CapabilityCard } from "@/components/shared/manufacturing/CapabilityCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -96,19 +97,19 @@ function SortableCapabilityItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-gray-900">{capability.title || capability.name}</h4>
+            <h4 className="font-medium text-foreground">{capability.title || capability.name}</h4>
             {capability.description && (
-              <p className="mt-2 text-gray-600 text-sm">{capability.description}</p>
+              <p className="mt-2 text-muted-foreground text-sm">{capability.description}</p>
             )}
             {specs.length > 0 && (
               <div className="mt-2">
-                <p className="font-medium text-gray-500 text-xs">Specifications:</p>
-                <div className="text-gray-600 text-xs">
+                <p className="font-medium text-muted-foreground text-xs">Specifications:</p>
+                <div className="text-muted-foreground text-xs">
                   {specs
                     .slice(0, 2)
                     .map((spec: { label: string; value: string }, index: number) => (
@@ -117,15 +118,15 @@ function SortableCapabilityItem({
                       </span>
                     ))}
                   {specs.length > 2 && (
-                    <span className="text-gray-500">+{specs.length - 2} more</span>
+                    <span className="text-muted-foreground">+{specs.length - 2} more</span>
                   )}
                 </div>
               </div>
             )}
             {capability.equipment && capability.equipment.length > 0 && (
               <div className="mt-2">
-                <p className="font-medium text-gray-500 text-xs">Equipment:</p>
-                <div className="text-gray-600 text-xs">
+                <p className="font-medium text-muted-foreground text-xs">Equipment:</p>
+                <div className="text-muted-foreground text-xs">
                   {capability.equipment.slice(0, 3).join(", ")}
                   {capability.equipment.length > 3 && ` +${capability.equipment.length - 3} more`}
                 </div>
@@ -134,7 +135,9 @@ function SortableCapabilityItem({
           </div>
         </div>
         <div className="ml-4 flex items-start gap-2">
-          <StatusBadge isActive={capability.isActive ?? true} activeColor="blue" />
+          <Badge variant={(capability.isActive ?? true) ? "status-info" : "status-inactive"}>
+            {(capability.isActive ?? true) ? "Active" : "Inactive"}
+          </Badge>
           <Button size="sm" variant="ghost" onClick={() => onEdit(capability)}>
             <Edit className="h-4 w-4" />
           </Button>
@@ -369,7 +372,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
         {capabilitiesLoading ? (
           <div className="py-8 text-center">Loading capabilities...</div>
         ) : capabilities.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-8 text-center text-muted-foreground">
             No manufacturing capabilities found. Create your first capability to get started.
           </div>
         ) : (
@@ -397,20 +400,20 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
         )}
 
         {/* Capability Dialog */}
-        <EnhancedDialog open={showCapabilityDialog} onOpenChange={setShowCapabilityDialog}>
-          <EnhancedDialogContent
+        <Dialog open={showCapabilityDialog} onOpenChange={setShowCapabilityDialog}>
+          <DialogContent
             contentType="form"
             className={showPreview ? "w-full max-w-6xl" : "w-full max-w-xl"}
           >
-            <EnhancedDialogHeader>
+            <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <EnhancedDialogTitle>
+                  <DialogTitle>
                     {editingCapability ? "Edit Capability" : "Add New Capability"}
-                  </EnhancedDialogTitle>
-                  <EnhancedDialogDescription>
+                  </DialogTitle>
+                  <DialogDescription>
                     Configure manufacturing capability details and specifications
-                  </EnhancedDialogDescription>
+                  </DialogDescription>
                 </div>
                 <Button
                   variant="outline"
@@ -431,10 +434,10 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                   )}
                 </Button>
               </div>
-            </EnhancedDialogHeader>
+            </DialogHeader>
 
             <form onSubmit={handleCapabilitySubmit} className="flex min-h-0 flex-1 flex-col">
-              <EnhancedDialogBody className="space-y-4 px-1">
+              <DialogBody className="space-y-4 px-1">
                 <div className={showPreview ? "flex gap-6" : ""}>
                   <div className={showPreview ? "flex-1 space-y-4" : "space-y-4"}>
                     <div className="grid grid-cols-2 gap-4">
@@ -686,9 +689,9 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                     </div>
                   )}
                 </div>
-              </EnhancedDialogBody>
+              </DialogBody>
 
-              <EnhancedDialogFooter>
+              <DialogFooter>
                 <Button
                   type="button"
                   variant="outline"
@@ -704,10 +707,10 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                 >
                   {editingCapability ? "Update Capability" : "Create Capability"}
                 </Button>
-              </EnhancedDialogFooter>
+              </DialogFooter>
             </form>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+          </DialogContent>
+        </Dialog>
 
         {/* Capability Image Picker */}
         <StandardMediaSelectionDialog

@@ -41,10 +41,10 @@ export function ResourceCard({
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              {icon && <div className="mt-1 text-gray-600">{icon}</div>}
+              {icon && <div className="mt-1 text-muted-foreground">{icon}</div>}
               <div className="space-y-1">
                 <CardTitle className="text-lg">{title}</CardTitle>
-                {subtitle && <p className="text-gray-600 text-sm">{subtitle}</p>}
+                {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
               </div>
             </div>
             {expandedContent && (
@@ -59,7 +59,7 @@ export function ResourceCard({
           </div>
         </CardHeader>
         <CardContent>
-          {description && <p className="mb-3 text-gray-600 text-sm">{description}</p>}
+          {description && <p className="mb-3 text-muted-foreground text-sm">{description}</p>}
 
           {(badges.length > 0 || tags) && (
             <div className="mb-3 flex flex-wrap gap-2">

@@ -78,7 +78,7 @@ export const NavigationIcon = memo(function NavigationIcon({
     } else {
       // For admin display - stays within container bounds
       return (
-        <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-gray-200">
+        <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-muted/20">
           <img
             src={
               urls?.small ||

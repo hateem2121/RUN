@@ -12,7 +12,8 @@ export function EnhancedLoadingSkeleton({
   className,
   animated = true,
 }: EnhancedLoadingSkeletonProps) {
-  const baseClasses = "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg";
+  const baseClasses =
+    "bg-linear-to-r from-surface-muted via-surface-emphasis to-surface-muted rounded-lg";
   const animatedClasses = animated ? "animate-pulse" : "";
 
   const skeletonVariants = {
@@ -62,7 +63,7 @@ export function MediaLoadingState({ className }: { className?: string }) {
     <div className={cn("relative", className)}>
       <EnhancedLoadingSkeleton type="media" className="h-full w-full" />
       <div className="center-flex absolute inset-0">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-text-subtle border-t-transparent" />
       </div>
     </div>
   );

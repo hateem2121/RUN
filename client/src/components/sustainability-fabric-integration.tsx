@@ -98,14 +98,14 @@ export function SustainabilityFabricIntegration() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="border-green-200 bg-gradient-to-br from-white to-green-50">
+          <Card className="border-green-200 bg-linear-to-br from-white to-green-50">
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <Leaf className="h-8 w-8 text-green-600" />
                 <span className="font-bold text-2xl text-green-600">{totalFabrics}</span>
               </div>
-              <h3 className="font-medium text-gray-900">Total Fabrics</h3>
-              <p className="mt-1 text-gray-600 text-sm">In our portfolio</p>
+              <h3 className="font-medium text-foreground">Total Fabrics</h3>
+              <p className="mt-1 text-muted-foreground text-sm">In our portfolio</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -115,7 +115,7 @@ export function SustainabilityFabricIntegration() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="border-green-200 bg-gradient-to-br from-white to-green-50">
+          <Card className="border-green-200 bg-linear-to-br from-white to-green-50">
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <Award className="h-8 w-8 text-green-600" />
@@ -123,8 +123,8 @@ export function SustainabilityFabricIntegration() {
                   {sustainableFabrics.length}
                 </span>
               </div>
-              <h3 className="font-medium text-gray-900">Eco-Certified</h3>
-              <p className="mt-1 text-gray-600 text-sm">4+ sustainability score</p>
+              <h3 className="font-medium text-foreground">Eco-Certified</h3>
+              <p className="mt-1 text-muted-foreground text-sm">4+ sustainability score</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -134,14 +134,14 @@ export function SustainabilityFabricIntegration() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="border-green-200 bg-gradient-to-br from-white to-green-50">
+          <Card className="border-green-200 bg-linear-to-br from-white to-green-50">
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <TrendingUp className="h-8 w-8 text-green-600" />
                 <span className="font-bold text-2xl text-green-600">{avgScore.toFixed(1)}/5</span>
               </div>
-              <h3 className="font-medium text-gray-900">Average Score</h3>
-              <p className="mt-1 text-gray-600 text-sm">Sustainability rating</p>
+              <h3 className="font-medium text-foreground">Average Score</h3>
+              <p className="mt-1 text-muted-foreground text-sm">Sustainability rating</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -151,7 +151,7 @@ export function SustainabilityFabricIntegration() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="border-green-200 bg-gradient-to-br from-white to-green-50">
+          <Card className="border-green-200 bg-linear-to-br from-white to-green-50">
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <BarChart3 className="h-8 w-8 text-green-600" />
@@ -162,8 +162,8 @@ export function SustainabilityFabricIntegration() {
                   %
                 </span>
               </div>
-              <h3 className="font-medium text-gray-900">Sustainable</h3>
-              <p className="mt-1 text-gray-600 text-sm">Of total fabrics</p>
+              <h3 className="font-medium text-foreground">Sustainable</h3>
+              <p className="mt-1 text-muted-foreground text-sm">Of total fabrics</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -195,8 +195,8 @@ export function SustainabilityFabricIntegration() {
                         {index + 1}
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">{fabric.name}</h4>
-                        <p className="text-gray-600 text-sm">
+                        <h4 className="font-medium text-foreground">{fabric.name}</h4>
+                        <p className="text-muted-foreground text-sm">
                           {fabric.weight} GSM • {fabric.weaveTypes}
                         </p>
                       </div>
@@ -210,7 +210,7 @@ export function SustainabilityFabricIntegration() {
                               className={`h-4 w-4 ${
                                 i < parseScore(String(fabric.sustainabilityScore || ""))
                                   ? "fill-green-600 text-green-600"
-                                  : "text-gray-300"
+                                  : "text-muted-foreground/50"
                               }`}
                             />
                           ))}

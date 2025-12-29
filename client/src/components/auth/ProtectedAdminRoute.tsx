@@ -22,10 +22,10 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   // Show loading state while checking auth
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted">
         <div className="text-center">
           <div className="inline-block h-12 w-12 animate-spin rounded-full border-primary border-b-2"></div>
-          <p className="mt-4 text-gray-600">Checking access...</p>
+          <p className="mt-4 text-muted-foreground">Checking access...</p>
         </div>
       </div>
     );
@@ -35,9 +35,9 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   if (!isAuthenticated) {
     login(window.location.pathname);
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted">
         <div className="text-center">
-          <p className="text-gray-600">Redirecting to login...</p>
+          <p className="text-muted-foreground">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   // Authenticated but not admin - show access denied
   if (!isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 to-red-100">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-red-50 to-red-100">
         <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-xl">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <svg
@@ -61,11 +61,11 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
               <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
             </svg>
           </div>
-          <h1 className="mb-2 font-bold text-2xl text-gray-900">Access Denied</h1>
-          <p className="mb-6 text-gray-600">
+          <h1 className="mb-2 font-bold text-2xl text-foreground">Access Denied</h1>
+          <p className="mb-6 text-muted-foreground">
             You don't have permission to access the admin console.
           </p>
-          <p className="mb-6 text-gray-500 text-sm">
+          <p className="mb-6 text-muted-foreground text-sm">
             Logged in as: <span className="font-medium">{user?.email}</span>
           </p>
           <button

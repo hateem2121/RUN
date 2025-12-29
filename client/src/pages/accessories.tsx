@@ -61,10 +61,10 @@ export default function Accessories() {
     <div className="space-y-3 text-sm">
       {accessory.specifications && accessory.specifications.length > 0 && (
         <div>
-          <span className="font-medium text-gray-700">Specifications:</span>
+          <span className="font-medium text-foreground/80">Specifications:</span>
           <ul className="mt-2 space-y-1">
             {accessory.specifications.map((spec: string, index: number) => (
-              <li key={index} className="relative pl-4 text-gray-600">
+              <li key={index} className="relative pl-4 text-muted-foreground">
                 <span className="absolute left-0">•</span>
                 {spec}
               </li>
@@ -74,15 +74,17 @@ export default function Accessories() {
       )}
       {accessory.description && (
         <div>
-          <span className="font-medium text-gray-700">Details:</span>
-          <Typography.P className="mt-1 text-gray-600">{accessory.description}</Typography.P>
+          <span className="font-medium text-foreground/80">Details:</span>
+          <Typography.P className="mt-1 text-muted-foreground">
+            {accessory.description}
+          </Typography.P>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <SEOMeta
         title="Accessories - Components & Customization | RUN APPAREL"
         description="Browse our comprehensive range of sportswear accessories including zippers, buttons, labels, and customization options for professional manufacturing."
@@ -95,23 +97,23 @@ export default function Accessories() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             Accessories & Components
           </Typography.H1>
-          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
+          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Premium components and customization options for professional sportswear manufacturing
           </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
               <div className="font-bold text-3xl text-blue-600">{accessories.length}</div>
-              <div className="text-gray-600 text-sm">Total Accessories</div>
+              <div className="text-muted-foreground text-sm">Total Accessories</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-3xl text-purple-600">
                 {new Set(accessories.map((a) => a.category).filter(Boolean)).size}
               </div>
-              <div className="text-gray-600 text-sm">Categories</div>
+              <div className="text-muted-foreground text-sm">Categories</div>
             </div>
           </div>
         </motion.div>
@@ -138,11 +140,11 @@ export default function Accessories() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Package className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   {searchTerm ? "No accessories found" : "No accessories available"}
                 </Typography.H3>
-                <Typography.P className="text-gray-600">
+                <Typography.P className="text-muted-foreground">
                   {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
                 </Typography.P>
               </motion.div>

@@ -83,7 +83,7 @@ const SortableMetricItem = memo(function SortableMetricItem({
           <div
             {...attributes}
             {...listeners}
-            className="cursor-move text-gray-400 hover:text-gray-600"
+            className="cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -92,14 +92,12 @@ const SortableMetricItem = memo(function SortableMetricItem({
               <IconComponent className="h-5 w-5 text-green-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">{metric.name}</h4>
-              <div className="flex items-center gap-2 text-gray-600 text-sm">
+              <h4 className="font-medium text-foreground">{metric.name}</h4>
+              <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <span className="font-semibold">
                   {metric.value} {metric.unit}
                 </span>
-                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
-                  {metric.category}
-                </span>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{metric.category}</span>
               </div>
             </div>
           </div>
@@ -155,7 +153,7 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -165,9 +163,9 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
                 <IconComponent className="h-5 w-5 text-green-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-gray-900">{initiative.title}</h4>
+                <h4 className="font-medium text-foreground">{initiative.title}</h4>
                 {initiative.description && (
-                  <p className="mt-2 text-gray-600 text-sm">{initiative.description}</p>
+                  <p className="mt-2 text-muted-foreground text-sm">{initiative.description}</p>
                 )}
               </div>
             </div>
@@ -216,7 +214,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -226,13 +224,13 @@ const SortableGoalItem = memo(function SortableGoalItem({
                 <Target className="h-5 w-5 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-gray-900">{goal.title}</h4>
+                <h4 className="font-medium text-foreground">{goal.title}</h4>
                 <div className="mt-2 flex items-center gap-4">
-                  <div className="text-gray-600 text-sm">
+                  <div className="text-muted-foreground text-sm">
                     <span className="font-semibold">{goal.currentValue}</span> /{" "}
                     <span>{goal.targetValue}</span> {goal.unit}
                   </div>
-                  <div className="rounded-full bg-gray-100 px-2 py-0.5 text-xs">
+                  <div className="rounded-full bg-muted px-2 py-0.5 text-xs">
                     Target: {goal.targetYear || "TBD"}
                   </div>
                   <div
@@ -558,8 +556,8 @@ export function UnifiedSustainabilityManagement() {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-          <p className="text-gray-600">Loading sustainability data...</p>
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+          <p className="text-muted-foreground">Loading sustainability data...</p>
         </div>
       </div>
     );
@@ -570,11 +568,11 @@ export function UnifiedSustainabilityManagement() {
       {/* Global Sticky Header */}
       <div className="sticky top-0 z-elevated -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 shadow-sm-xs backdrop-blur-xs">
         <div>
-          <h1 className="flex items-center gap-2 font-bold text-2xl text-gray-900">
+          <h1 className="flex items-center gap-2 font-bold text-2xl text-foreground">
             <Leaf className="h-6 w-6 text-green-600" />
             Unified Sustainability Management
           </h1>
-          <p className="mt-1 text-gray-600 text-sm">
+          <p className="mt-1 text-muted-foreground text-sm">
             Manage all sustainability content from a single, unified interface
           </p>
         </div>
@@ -596,7 +594,7 @@ export function UnifiedSustainabilityManagement() {
           <Button
             onClick={handleSave}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="min-w-[140px] gap-2 bg-green-600 hover:bg-green-700"
+            className="min-w-sidebar gap-2 bg-green-600 hover:bg-green-700"
           >
             {updateMutation.isPending ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />

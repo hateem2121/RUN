@@ -42,7 +42,7 @@ class FluidGlassErrorBoundary extends Component<{ children: ReactNode }, { hasEr
     if (this.state.hasError) {
       // Render nothing or a fallback background
       return (
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+        <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
       );
     }
 
@@ -361,7 +361,7 @@ export default function CategoriesPage() {
 
                         {/* Card 4 - Fluid Glass Lens with 3D Model or Image Background */}
                         <div className={cn("bento-card", getResponsiveSpanClasses("card4"))}>
-                          <div className="relative h-auto max-h-[600px] min-h-[300px] overflow-hidden rounded-lg bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+                          <div className="relative h-auto max-h-modal-md min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
                             {/* Media Background - 3D Model or Image */}
                             {getMediaUrl(featuredContent.card4?.mediaUrl) &&
                               (() => {
@@ -425,7 +425,7 @@ export default function CategoriesPage() {
                             <FluidGlassErrorBoundary>
                               <Suspense
                                 fallback={
-                                  <div className="absolute inset-0 bg-gradient-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+                                  <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
                                 }
                               >
                                 <div className="pointer-events-none absolute inset-0 z-modal-backdrop">

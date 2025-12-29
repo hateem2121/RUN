@@ -374,12 +374,12 @@ export function UnifiedMediaTheater({
     return (
       <div
         className={cn(
-          "center-flex rounded-lg bg-gray-50",
-          isMobile ? "aspect-[4/3]" : "aspect-square",
+          "center-flex rounded-lg bg-background",
+          isMobile ? "aspect-4/3" : "aspect-square",
           className,
         )}
       >
-        <div className="text-center text-gray-400">
+        <div className="text-center text-muted-foreground/70">
           <Layers className="mx-auto mb-2 h-16 w-16" />
           <p>No media available</p>
         </div>
@@ -444,7 +444,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-gray-500">No images available</div>
+              <div className="py-8 text-center text-muted-foreground">No images available</div>
             )}
           </TabsContent>
 
@@ -452,7 +452,7 @@ export function UnifiedMediaTheater({
             {model3DAssets.length > 0 ? (
               <div className="space-y-4">
                 {model3DAssets.map((asset) => (
-                  <div key={asset.id} className="relative aspect-square rounded-lg bg-gray-100">
+                  <div key={asset.id} className="relative aspect-square rounded-lg bg-muted">
                     {/* STEP 3 INTEGRATION: Replace manual model-viewer with UnifiedModelViewer */}
                     <LazyUnifiedModelViewer
                       asset={{
@@ -488,7 +488,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-gray-500">No 3D models available</div>
+              <div className="py-8 text-center text-muted-foreground">No 3D models available</div>
             )}
           </TabsContent>
 
@@ -508,7 +508,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-gray-500">No videos available</div>
+              <div className="py-8 text-center text-muted-foreground">No videos available</div>
             )}
           </TabsContent>
         </Tabs>
@@ -538,8 +538,8 @@ export function UnifiedMediaTheater({
       >
         <div
           className={cn(
-            "relative bg-gray-100",
-            !isFullscreen && (isMobile ? "aspect-[4/3]" : "aspect-square"),
+            "relative bg-muted",
+            !isFullscreen && (isMobile ? "aspect-4/3" : "aspect-square"),
             isFullscreen && "h-full w-full",
           )}
         >
@@ -722,42 +722,29 @@ export function UnifiedMediaTheater({
                 className={cn(
                   "absolute top-1/2 left-4 -translate-y-1/2 border p-3 transition-opacity",
                   "opacity-0 group-hover:opacity-100",
+                  "border-[var(--product-border)] bg-[var(--product-background)]",
                 )}
-                style={{
-                  backgroundColor: "var(--product-background)",
-                  borderColor: "var(--product-border)",
-                }}
                 aria-label="Previous media"
               >
-                <ChevronLeft className="h-5 w-5" style={{ color: "var(--product-text)" }} />
+                <ChevronLeft className="h-5 w-5 text-[var(--product-text)]" />
               </button>
               <button
                 onClick={handleNext}
                 className={cn(
                   "absolute top-1/2 right-4 -translate-y-1/2 border p-3 transition-opacity",
                   "opacity-0 group-hover:opacity-100",
+                  "border-[var(--product-border)] bg-[var(--product-background)]",
                 )}
-                style={{
-                  backgroundColor: "var(--product-background)",
-                  borderColor: "var(--product-border)",
-                }}
                 aria-label="Next media"
               >
-                <ChevronRight className="h-5 w-5" style={{ color: "var(--product-text)" }} />
+                <ChevronRight className="h-5 w-5 text-[var(--product-text)]" />
               </button>
             </>
           )}
 
           {/* Media Counter */}
           {sortedMedia.length > 1 && (
-            <div
-              className="absolute bottom-4 left-4 border px-3 py-1 font-mono text-xs"
-              style={{
-                backgroundColor: "var(--product-background)",
-                borderColor: "var(--product-border)",
-                color: "var(--product-text)",
-              }}
-            >
+            <div className="absolute bottom-4 left-4 border border-[var(--product-border)] bg-[var(--product-background)] px-3 py-1 font-mono text-[var(--product-text)] text-xs">
               {selectedIndex + 1} / {sortedMedia.length}
             </div>
           )}
@@ -771,17 +758,14 @@ export function UnifiedMediaTheater({
                 className={cn(
                   "border p-2 transition-opacity",
                   isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+                  "border-[var(--product-border)] bg-[var(--product-background)]",
                 )}
-                style={{
-                  backgroundColor: "var(--product-background)",
-                  borderColor: "var(--product-border)",
-                }}
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
                 {isFullscreen ? (
-                  <X className="h-4 w-4" style={{ color: "var(--product-text)" }} />
+                  <X className="h-4 w-4 text-[var(--product-text)]" />
                 ) : (
-                  <Maximize2 className="h-4 w-4" style={{ color: "var(--product-text)" }} />
+                  <Maximize2 className="h-4 w-4 text-[var(--product-text)]" />
                 )}
               </button>
             )}
@@ -792,11 +776,10 @@ export function UnifiedMediaTheater({
               typeof navigator.share === "function" && (
                 <button
                   onClick={handleShare}
-                  className="border p-2 opacity-0 transition-opacity group-hover:opacity-100"
-                  style={{
-                    backgroundColor: "var(--product-background)",
-                    borderColor: "var(--product-border)",
-                  }}
+                  className={cn(
+                    "border p-2 opacity-0 transition-opacity group-hover:opacity-100",
+                    "border-[var(--product-border)] bg-[var(--product-background)]",
+                  )}
                   aria-label="Share"
                 >
                   <Share2 className="h-4 w-4" style={{ color: "var(--product-text)" }} />
@@ -847,7 +830,7 @@ export function UnifiedMediaTheater({
                 }}
                 className={cn(
                   "relative shrink-0 overflow-hidden border transition-all",
-                  "h-20 w-20 min-w-[80px] md:h-24 md:w-24",
+                  "h-20 w-20 min-w-thumbnail md:h-24 md:w-24",
                 )}
                 style={{
                   borderColor:
@@ -856,7 +839,7 @@ export function UnifiedMediaTheater({
                 }}
               >
                 {item.type === "video" ? (
-                  <div className="relative h-full w-full bg-gray-100">
+                  <div className="relative h-full w-full bg-muted">
                     <video
                       src={item.url || `/api/media/${item.id}/content`}
                       className="h-full w-full object-cover"
@@ -867,7 +850,7 @@ export function UnifiedMediaTheater({
                     </div>
                   </div>
                 ) : item.type === "3d_model" ? (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-100 to-purple-200">
+                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-100 to-purple-200">
                     <Layers className="h-6 w-6 text-purple-600" />
                   </div>
                 ) : (

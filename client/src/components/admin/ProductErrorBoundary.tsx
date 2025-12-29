@@ -53,7 +53,7 @@ export class ProductErrorBoundary extends Component<Props, State> {
             Try Again
           </Button>
           {process.env.NODE_ENV === "development" && this.state.errorInfo && (
-            <details className="mt-4 rounded bg-gray-100 p-4 text-xs">
+            <details className="mt-4 rounded bg-muted p-4 text-xs">
               <summary className="cursor-pointer font-medium">Error Details</summary>
               <pre className="mt-2 overflow-auto">{this.state.errorInfo.componentStack}</pre>
             </details>

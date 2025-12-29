@@ -9,13 +9,13 @@ Arbitrary values (magic numbers) are discouraged. Always use tokens from the des
 **❌ Forbidden:**
 
 ```tsx
-<div className="w-[350px] min-h-[400px] text-[hsl(165,82%,51%)]" />
+<div className="min-h-[400px] w-[350px] text-[hsl(165,82%,51%)]" />
 ```
 
 **✅ Allowed:**
 
 ```tsx
-<div className="w-96 min-h-96 text-brand-teal" />
+<div className="w-sheet-md h-modal-sm text-brand-purple" />
 ```
 
 **Why?**

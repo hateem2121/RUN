@@ -1,4 +1,4 @@
-import type { Partner, ProcessStep, StatItem } from "./types";
+import type { CategoryItem, Partner, ProcessStep, ProductItem, StatItem } from "./types";
 
 export const HERO_TEXT = ["YOUR STRATEGIC", "B2B MANUFACTURING", "PARTNER"];
 
@@ -17,6 +17,39 @@ export const KEY_STATS: StatItem[] = [
     value: "100K",
     label: "Monthly Capacity",
     description: "Units produced with precision engineering.",
+  },
+];
+
+export const CATEGORIES: CategoryItem[] = [
+  {
+    id: "1",
+    name: "Team Wear",
+    image:
+      "https://images.unsplash.com/photo-1529139574466-a302d27f6054?auto=format&fit=crop&q=80&w=600",
+  },
+  {
+    id: "2",
+    name: "Active Wear",
+    image:
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=600",
+  },
+  {
+    id: "3",
+    name: "Casual Wear",
+    image:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
+  },
+  {
+    id: "4",
+    name: "Outer Wear",
+    image:
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=600",
+  },
+  {
+    id: "5",
+    name: "Tech Accessories",
+    image:
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600",
   },
 ];
 
@@ -56,4 +89,31 @@ export const PARTNERS: Partner[] = [
   { name: "Urban Tech", tag: "Streetwear" },
   { name: "EcoMove", tag: "Sustainability" },
   { name: "Nordic Fit", tag: "Outerwear" },
+];
+
+export const FEATURED_PRODUCTS: ProductItem[] = [
+  {
+    id: "P01",
+    name: "Aero-Tech Shell",
+    category: "Performance Outerwear",
+    price: "MOQ 500",
+    image:
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: "P02",
+    name: "Carbon Knit Runner",
+    category: "Footwear / Proto",
+    price: "MOQ 1000",
+    image:
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: "P03",
+    name: "Hydro-Dri Base Layer",
+    category: "Active Wear",
+    price: "MOQ 2000",
+    image:
+      "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?q=80&w=1000&auto=format&fit=crop",
+  },
 ];

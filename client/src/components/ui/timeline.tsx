@@ -106,15 +106,15 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
           }}
           className={cn(
             "absolute top-0 left-8 w-0.5 overflow-hidden md:left-8",
-            "bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-[0%] from-transparent via-neutral-200 to-[99%] to-transparent dark:via-neutral-700",
-            "[mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]",
+            "bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-0% from-transparent via-neutral-200 to-99% to-transparent dark:via-neutral-700",
+            "mask-[linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]",
           )}
         >
           <div
             ref={progressLineRef}
             className={cn(
               "absolute inset-x-0 top-0 w-0.5 origin-top rounded-full transition-all duration-300 ease-out",
-              "bg-gradient-to-t from-[0%] from-purple-500 via-[10%] via-blue-500 to-transparent",
+              "bg-linear-to-t from-0% from-purple-500 via-10% via-blue-500 to-transparent",
             )}
             style={{
               height: `${height}px`,

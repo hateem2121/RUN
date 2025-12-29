@@ -6,7 +6,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useHydratedStore } from "../../lib/useHydratedStore";
 import { useQuoteStore } from "../../stores/useQuoteStore";
-import { FormInput } from "../ui/form-input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 // Form Validation Schema
 const inquiryFormSchema = z.object({
@@ -33,11 +35,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   const [success, setSuccess] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<InquiryFormData>({
+  const methods = useForm<InquiryFormData>({
     resolver: zodResolver(inquiryFormSchema),
   });
 
@@ -208,41 +206,94 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {items.length > 0 && (
                 <div className="border-slate-100 border-t bg-slate-50/50 p-6">
                   <h3 className="mb-4 font-bold text-lg text-slate-900">Contact Details</h3>
-                  <form
-                    id="inquiry-form"
-                    onSubmit={handleSubmit((data) => mutation.mutate(data))}
-                    className="space-y-4"
-                  >
-                    <FormInput
-                      label="Full Name"
-                      error={errors.contact?.name?.message}
-                      {...register("contact.name")}
-                    />
-
-                    <FormInput
-                      label="Company Name"
-                      error={errors.contact?.company?.message}
-                      {...register("contact.company")}
-                    />
-
-                    <FormInput
-                      label="Work Email"
-                      error={errors.contact?.email?.message}
-                      {...register("contact.email")}
-                    />
-
-                    <div>
-                      <label className="mb-1 block font-medium text-slate-700 text-sm">
-                        Project Description (Optional)
-                      </label>
-                      <textarea
-                        {...register("contact.projectDescription")}
-                        rows={3}
-                        className="w-full resize-none rounded-md border border-slate-300 px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        placeholder="Tell us about your project requirements..."
+                  <Form {...methods}>
+                    <form
+                      id="inquiry-form"
+                      onSubmit={methods.handleSubmit((data) => mutation.mutate(data))}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={methods.control}
+                        name="contact.name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+                              Full Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                className="bg-white"
+                                error={!!methods.formState.errors.contact?.name}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                  </form>
+
+                      <FormField
+                        control={methods.control}
+                        name="contact.company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+                              Company Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                className="bg-white"
+                                error={!!methods.formState.errors.contact?.company}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={methods.control}
+                        name="contact.email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+                              Work Email
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                className="bg-white"
+                                error={!!methods.formState.errors.contact?.email}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={methods.control}
+                        name="contact.projectDescription"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+                              Project Description (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                rows={3}
+                                className="resize-none bg-white"
+                                placeholder="Tell us about your project requirements..."
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </form>
+                  </Form>
                 </div>
               )}
             </div>

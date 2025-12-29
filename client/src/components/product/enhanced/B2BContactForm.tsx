@@ -195,8 +195,8 @@ export function B2BContactForm({
     <div className={cn("space-y-8", className)}>
       {/* Header */}
       <div className="space-y-4 text-center">
-        <h2 className="font-bold text-2xl text-gray-900 dark:text-gray-100">Ready to Order?</h2>
-        <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-400">
+        <h2 className="font-bold text-2xl text-foreground dark:text-foreground">Ready to Order?</h2>
+        <p className="mx-auto max-w-2xl text-muted-foreground dark:text-muted-foreground/70">
           Connect with our B2B team for wholesale pricing, customization options, and bulk orders.
           {productName && ` Get detailed information about ${productName}.`}
         </p>
@@ -205,22 +205,28 @@ export function B2BContactForm({
       <div className="grid gap-8 md:grid-cols-2">
         {/* Contact Information */}
         <div className="space-y-6">
-          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">Get in Touch</h3>
+          <h3 className="font-semibold text-foreground text-lg dark:text-foreground">
+            Get in Touch
+          </h3>
 
           <div className="space-y-4">
-            <div className="flex items-center space-x-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+            <div className="flex items-center space-x-3 rounded-lg bg-background p-4 dark:bg-muted/80">
               <Phone className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100">Phone</h4>
-                <p className="text-gray-600 text-sm dark:text-gray-400">+1 (555) 123-4567</p>
+                <h4 className="font-medium text-foreground dark:text-foreground">Phone</h4>
+                <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  +1 (555) 123-4567
+                </p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+            <div className="flex items-center space-x-3 rounded-lg bg-background p-4 dark:bg-muted/80">
               <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100">Email</h4>
-                <p className="text-gray-600 text-sm dark:text-gray-400">wholesale@runapparel.com</p>
+                <h4 className="font-medium text-foreground dark:text-foreground">Email</h4>
+                <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                  wholesale@runapparel.com
+                </p>
               </div>
             </div>
           </div>
@@ -240,19 +246,19 @@ export function B2BContactForm({
         </div>
 
         {/* Contact Form */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        <div className="rounded-lg border border-border bg-white p-6 dark:border-border dark:bg-muted/80">
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             {/* Company & Contact Name */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label
                   htmlFor="companyName"
-                  className="font-medium text-gray-700 text-sm dark:text-gray-300"
+                  className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50"
                 >
                   Company Name *
                 </label>
                 <div className="relative">
-                  <Building className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <Building className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                   <Input
                     id="companyName"
                     {...form.register("companyName")}
@@ -271,12 +277,12 @@ export function B2BContactForm({
               <div className="space-y-2">
                 <label
                   htmlFor="contactName"
-                  className="font-medium text-gray-700 text-sm dark:text-gray-300"
+                  className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50"
                 >
                   Contact Name *
                 </label>
                 <div className="relative">
-                  <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                   <Input
                     id="contactName"
                     {...form.register("contactName")}
@@ -298,12 +304,12 @@ export function B2BContactForm({
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="font-medium text-gray-700 text-sm dark:text-gray-300"
+                  className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50"
                 >
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                   <Input
                     id="email"
                     type="email"
@@ -323,12 +329,12 @@ export function B2BContactForm({
               <div className="space-y-2">
                 <label
                   htmlFor="phone"
-                  className="font-medium text-gray-700 text-sm dark:text-gray-300"
+                  className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50"
                 >
                   Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
                   <Input
                     id="phone"
                     type="tel"
@@ -343,7 +349,7 @@ export function B2BContactForm({
 
             {/* Inquiry Type */}
             <div className="space-y-2">
-              <label className="font-medium text-gray-700 text-sm dark:text-gray-300">
+              <label className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50">
                 Inquiry Type *
               </label>
               <Select
@@ -359,7 +365,7 @@ export function B2BContactForm({
                     <SelectItem key={option.value} value={option.value}>
                       <div>
                         <div className="font-medium">{option.label}</div>
-                        <div className="text-gray-500 text-xs">{option.description}</div>
+                        <div className="text-muted-foreground text-xs">{option.description}</div>
                       </div>
                     </SelectItem>
                   ))}
@@ -375,7 +381,7 @@ export function B2BContactForm({
             {/* Volume & Timeline */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className="font-medium text-gray-700 text-sm dark:text-gray-300">
+                <label className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50">
                   Expected Volume
                 </label>
                 <Select
@@ -396,7 +402,7 @@ export function B2BContactForm({
               </div>
 
               <div className="space-y-2">
-                <label className="font-medium text-gray-700 text-sm dark:text-gray-300">
+                <label className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50">
                   Timeline
                 </label>
                 <Select
@@ -421,12 +427,12 @@ export function B2BContactForm({
             <div className="space-y-2">
               <label
                 htmlFor="message"
-                className="font-medium text-gray-700 text-sm dark:text-gray-300"
+                className="font-medium text-foreground/80 text-sm dark:text-muted-foreground/50"
               >
                 Message *
               </label>
               <div className="relative">
-                <MessageSquare className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                <MessageSquare className="absolute top-3 left-3 h-4 w-4 text-muted-foreground/70" />
                 <Textarea
                   id="message"
                   {...form.register("message")}

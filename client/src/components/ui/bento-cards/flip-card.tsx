@@ -47,16 +47,16 @@ const FlipCard = memo(function FlipCard({
             <div
               className={cn(
                 "relative h-full w-full",
-                "[transform-style:preserve-3d]",
+                "transform-3d",
                 "flip-card-transform",
-                isFlipped ? "[transform:rotateY(180deg)]" : "[transform:rotateY(0deg)]",
+                isFlipped ? "rotate-y-180" : "rotate-y-0",
               )}
             >
               {/* Front Face */}
               <div
                 className={cn(
                   "absolute inset-0 h-full w-full",
-                  "[backface-visibility:hidden] [transform:rotateY(0deg)]",
+                  "backface-hidden rotate-y-0",
                   "overflow-hidden rounded-2xl",
                   "bg-white",
                   "border border-luxury-light",
@@ -65,7 +65,7 @@ const FlipCard = memo(function FlipCard({
                   "group-hover:shadow-sm-luxury-lg",
                 )}
               >
-                <div className="relative h-full overflow-hidden bg-gradient-to-b from-luxury-gray-50 to-white">
+                <div className="relative h-full overflow-hidden bg-linear-to-b from-luxury-gray-50 to-white">
                   {/* Media Background */}
                   {mediaUrl && !hasError ? (
                     <div className="absolute inset-0">
@@ -78,18 +78,18 @@ const FlipCard = memo(function FlipCard({
                     </div>
                   ) : (
                     <div className="absolute inset-0 flex items-start justify-center pt-24">
-                      <div className="relative flex h-[100px] w-[200px] items-center justify-center">
+                      <div className="relative flex h-widget-track w-widget-track items-center justify-center">
                         {[...Array(10)].map((_, i) => (
                           <div
                             key={i}
                             className={cn(
-                              "absolute h-[50px] w-[50px]",
-                              "rounded-[140px]",
-                              "bg-gradient-to-br from-orange-400 to-orange-600",
-                              "animate-[scale_3s_linear_infinite]",
+                              "absolute h-particle w-particle",
+                              "rounded-full",
+                              "bg-linear-to-br from-orange-400 to-orange-600",
+                              "animate-particle-scale",
                               "opacity-0",
                               "shadow-glow-orange",
-                              "group-hover:animate-[scale_2s_linear_infinite]",
+                              "group-hover:animate-particle-scale-fast",
                             )}
                             style={{
                               animationDelay: `${i * 0.3}s`,
@@ -111,7 +111,7 @@ const FlipCard = memo(function FlipCard({
                         <h3 className="font-semibold text-lg text-white leading-snug tracking-tighter drop-shadow-lg transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px]">
                           {cardTitle}
                         </h3>
-                        <p className="line-clamp-2 text-sm text-white/80 tracking-tight drop-shadow-md transition-all duration-500 ease-out-expo [transition-delay:50ms] group-hover:translate-y-[-4px]">
+                        <p className="line-clamp-2 text-sm text-white/80 tracking-tight drop-shadow-md transition-all delay-50 duration-500 ease-out-expo group-hover:translate-y-[-4px]">
                           {cardSubtitle}
                         </p>
                       </div>
@@ -119,7 +119,7 @@ const FlipCard = memo(function FlipCard({
                         <div
                           className={cn(
                             "absolute inset-[-8px] rounded-lg transition-opacity duration-300",
-                            "bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-transparent",
+                            "bg-linear-to-br from-orange-500/20 via-orange-500/10 to-transparent",
                           )}
                         />
                         <Repeat2 className="relative z-elevated h-4 w-4 text-orange-500 transition-transform duration-300 group-hover/icon:-rotate-12 group-hover/icon:scale-110" />
@@ -133,9 +133,9 @@ const FlipCard = memo(function FlipCard({
               <div
                 className={cn(
                   "absolute inset-0 h-full w-full",
-                  "[backface-visibility:hidden] [transform:rotateY(180deg)]",
+                  "backface-hidden rotate-y-180",
                   "rounded-2xl p-4",
-                  "bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black",
+                  "bg-linear-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black",
                   "border border-zinc-200 dark:border-zinc-800",
                   "shadow-sm-xs dark:shadow-lg",
                   "flex flex-col",
@@ -166,7 +166,7 @@ const FlipCard = memo(function FlipCard({
                         }}
                       >
                         <ArrowRight className="h-3 w-3 shrink-0 text-orange-500" />
-                        <span className="break-words text-xs leading-tight">{feature}</span>
+                        <span className="wrap-break-word text-xs leading-tight">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -179,7 +179,7 @@ const FlipCard = memo(function FlipCard({
                       "flex items-center justify-between",
                       "rounded-lg p-3",
                       "transition-all duration-300",
-                      "bg-gradient-to-r from-zinc-100 via-zinc-100 to-zinc-100",
+                      "bg-linear-to-r from-zinc-100 via-zinc-100 to-zinc-100",
                       "dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800",
                       "hover:from-0% hover:from-orange-500/10 hover:via-100% hover:via-orange-500/5 hover:to-100% hover:to-transparent",
                       "dark:hover:from-0% dark:hover:from-orange-500/20 dark:hover:via-100% dark:hover:via-orange-500/10 dark:hover:to-100% dark:hover:to-transparent",
@@ -194,7 +194,7 @@ const FlipCard = memo(function FlipCard({
                       <div
                         className={cn(
                           "absolute inset-[-4px] rounded-lg transition-all duration-300",
-                          "bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-transparent",
+                          "bg-linear-to-br from-orange-500/20 via-orange-500/10 to-transparent",
                           "scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100",
                         )}
                       />

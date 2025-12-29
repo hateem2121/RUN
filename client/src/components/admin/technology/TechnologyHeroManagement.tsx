@@ -127,7 +127,7 @@ export function TechnologyHeroManagement({
         {loading ? (
           <div className="space-y-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-10 animate-pulse rounded bg-gray-100" />
+              <div key={i} className="h-10 animate-pulse rounded bg-muted" />
             ))}
           </div>
         ) : (
@@ -255,7 +255,7 @@ export function TechnologyHeroManagement({
               {selectedBackgroundMedia && (
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">{selectedBackgroundMedia.type}</Badge>
-                  <span className="text-gray-600 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     Selected: {selectedBackgroundMedia.originalName}
                   </span>
                   <Button

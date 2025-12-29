@@ -137,12 +137,12 @@ const SpecificationsSection = memo(function SpecificationsSection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
         <div className="flex items-center gap-3">
           <Settings className="h-5 w-5 text-blue-600" />
           <div className="text-left">
-            <h3 className="font-semibold text-gray-900">Technical Specifications</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="font-semibold text-foreground">Technical Specifications</h3>
+            <p className="text-muted-foreground text-sm">
               {completedFields.length} of {recommendedFields.length} recommended fields completed
             </p>
           </div>
@@ -153,12 +153,12 @@ const SpecificationsSection = memo(function SpecificationsSection({
           ) : completionRate > 0 ? (
             <AlertCircle className="h-5 w-5 text-amber-600" />
           ) : (
-            <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+            <div className="h-5 w-5 rounded-full border-2 border-border/50" />
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -166,12 +166,12 @@ const SpecificationsSection = memo(function SpecificationsSection({
       <CollapsibleContent className="mt-4 space-y-6 px-4 pb-4">
         {/* Custom Weight & Fit - Priority Section */}
         <div>
-          <Label className="mb-3 block font-medium text-gray-700 text-sm">
+          <Label className="mb-3 block font-medium text-foreground/80 text-sm">
             Weight & Fit Specifications
           </Label>
           <div className="grid grid-cols-1 gap-4 rounded-lg border border-blue-200 bg-blue-50 p-4 md:grid-cols-2">
             <div>
-              <Label htmlFor="customWeight" className="font-medium text-gray-700 text-sm">
+              <Label htmlFor="customWeight" className="font-medium text-foreground/80 text-sm">
                 Custom Weight
               </Label>
               <Input
@@ -187,7 +187,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
             </div>
 
             <div>
-              <Label htmlFor="customFit" className="font-medium text-gray-700 text-sm">
+              <Label htmlFor="customFit" className="font-medium text-foreground/80 text-sm">
                 Custom Fit
               </Label>
               <Input
@@ -202,7 +202,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
               )}
             </div>
           </div>
-          <p className="mt-2 text-gray-600 text-xs">
+          <p className="mt-2 text-muted-foreground text-xs">
             These values will be displayed prominently in the product specifications section
           </p>
         </div>
@@ -210,7 +210,10 @@ const SpecificationsSection = memo(function SpecificationsSection({
         {/* B2B Details */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <Label htmlFor="minimumOrderQuantity" className="font-medium text-gray-700 text-sm">
+            <Label
+              htmlFor="minimumOrderQuantity"
+              className="font-medium text-foreground/80 text-sm"
+            >
               Minimum Order Quantity
             </Label>
             <Input
@@ -226,7 +229,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
           </div>
 
           <div>
-            <Label htmlFor="leadTime" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="leadTime" className="font-medium text-foreground/80 text-sm">
               Lead Time
             </Label>
             <Input
@@ -245,7 +248,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
         {/* Product Specifications */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <Label className="font-medium text-gray-700 text-sm">Product Specifications</Label>
+            <Label className="font-medium text-foreground/80 text-sm">Product Specifications</Label>
             <Button type="button" variant="outline" size="sm" onClick={addSpecification}>
               <Plus className="mr-2 h-4 w-4" />
               Add Specification
@@ -273,7 +276,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
               </div>
             ))}
             {getSpecificationsArray().length === 0 && (
-              <div className="py-4 text-center text-gray-500 text-sm">
+              <div className="py-4 text-center text-muted-foreground text-sm">
                 No specifications added yet
               </div>
             )}
@@ -283,7 +286,9 @@ const SpecificationsSection = memo(function SpecificationsSection({
         {/* Technical Specifications */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <Label className="font-medium text-gray-700 text-sm">Technical Specifications</Label>
+            <Label className="font-medium text-foreground/80 text-sm">
+              Technical Specifications
+            </Label>
             <Button
               type="button"
               variant="outline"
@@ -308,7 +313,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
           <div className="space-y-2">
             {Object.entries(formData.technicalSpecs || {}).map(([key, value]) => (
               <div key={key} className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                <Input value={key} readOnly className="bg-gray-50" />
+                <Input value={key} readOnly className="bg-background" />
                 <div className="flex gap-2">
                   <Input
                     value={value}
@@ -367,7 +372,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
               />
             </div>
             {Object.keys(formData.technicalSpecs || {}).length === 0 && (
-              <div className="py-4 text-center text-gray-500 text-sm">
+              <div className="py-4 text-center text-muted-foreground text-sm">
                 No technical specifications added yet. Enter name and value above, then press Enter
                 or click Add.
               </div>
@@ -378,7 +383,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
         {/* Care Instructions */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <Label className="font-medium text-gray-700 text-sm">Care Instructions</Label>
+            <Label className="font-medium text-foreground/80 text-sm">Care Instructions</Label>
             <Button type="button" variant="outline" size="sm" onClick={addCareInstruction}>
               <Plus className="mr-2 h-4 w-4" />
               Add Instruction
@@ -404,7 +409,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
               </div>
             ))}
             {(formData.careInstructions || []).length === 0 && (
-              <div className="py-4 text-center text-gray-500 text-sm">
+              <div className="py-4 text-center text-muted-foreground text-sm">
                 No care instructions added yet
               </div>
             )}
@@ -413,7 +418,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
 
         {/* Tags */}
         <div>
-          <Label className="mb-3 block font-medium text-gray-700 text-sm">Product Tags</Label>
+          <Label className="mb-3 block font-medium text-foreground/80 text-sm">Product Tags</Label>
           <div className="mb-3 flex flex-wrap gap-2">
             {(formData.tags || []).map((tag, index) => (
               <Badge key={index} variant="secondary" className="flex items-center gap-1">
@@ -435,7 +440,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
               }
             }}
           />
-          <p className="mt-1 text-gray-500 text-sm">
+          <p className="mt-1 text-muted-foreground text-sm">
             Press Enter to add tags. Use tags for categorization and search optimization.
           </p>
         </div>

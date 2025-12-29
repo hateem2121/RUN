@@ -105,15 +105,15 @@ function VideoMaskCard({ title, description, mediaUrl, link }: VideoMaskCardProp
           />
         ) : (
           // Fallback to solid color background when no media provided
-          <div className="h-full w-full bg-gradient-to-br from-orange-400 to-red-500" />
+          <div className="h-full w-full bg-linear-to-br from-orange-400 to-red-500" />
         )}
 
         {/* Simple error state */}
-        {hasError && <div className="h-full w-full bg-gradient-to-br from-orange-400 to-red-500" />}
+        {hasError && <div className="h-full w-full bg-linear-to-br from-orange-400 to-red-500" />}
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
 
       {/* Content */}
       <div className="relative flex h-full flex-col justify-between p-8">
@@ -159,7 +159,7 @@ function VideoMaskCard({ title, description, mediaUrl, link }: VideoMaskCardProp
             {title}
           </motion.h3>
           <motion.p
-            className="max-w-md text-gray-200 text-lg"
+            className="max-w-md text-lg text-muted-foreground"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}

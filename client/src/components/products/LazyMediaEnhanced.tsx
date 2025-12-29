@@ -110,25 +110,25 @@ LazyMediaEnhancedProps) {
 
           {/* Loading state */}
           {isLoading && (
-            <div className="center-flex absolute inset-0 bg-gray-100">
+            <div className="center-flex absolute inset-0 bg-muted">
               <Skeleton className="h-full w-full" />
             </div>
           )}
 
           {/* Error state */}
           {hasError && (
-            <div className="center-flex absolute inset-0 border border-gray-200 bg-gray-50">
+            <div className="center-flex absolute inset-0 border border-border bg-background">
               <div className="p-4 text-center">
-                <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-gray-400" />
-                <p className="text-gray-500 text-xs">CDN Loading Failed</p>
-                <p className="mt-1 text-gray-400 text-xs">Media ID: {mediaId}</p>
+                <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-muted-foreground/70" />
+                <p className="text-muted-foreground text-xs">CDN Loading Failed</p>
+                <p className="mt-1 text-muted-foreground/70 text-xs">Media ID: {mediaId}</p>
               </div>
             </div>
           )}
         </>
       ) : (
         /* Placeholder when not in view */
-        <div className="flex h-full w-full items-center justify-center bg-gray-100">
+        <div className="flex h-full w-full items-center justify-center bg-muted">
           <Skeleton className="h-full w-full" />
         </div>
       )}

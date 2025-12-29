@@ -7,14 +7,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -419,7 +419,7 @@ export function TechnologyResearchManagement({
         {loading ? (
           <div>Loading...</div>
         ) : research.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-8 text-center text-muted-foreground">
             No research items added yet. Click "Add Research Item" to showcase your R&D efforts.
           </div>
         ) : (
@@ -446,18 +446,18 @@ export function TechnologyResearchManagement({
       </CardContent>
 
       {/* Research Form Dialog */}
-      <EnhancedDialog open={showResearchDialog} onOpenChange={setShowResearchDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
+      <Dialog open={showResearchDialog} onOpenChange={setShowResearchDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>
               {editingResearch ? "Edit Research Item" : "Add New Research Item"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               {editingResearch ? "Update the research item details" : "Create a new research item"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleResearchSubmit} className="flex min-h-0 flex-1 flex-col">
-            <EnhancedDialogBody className="space-y-4">
+            <DialogBody className="space-y-4">
               <div>
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -599,7 +599,7 @@ export function TechnologyResearchManagement({
                     {researchForm.objectives.map((objective, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between rounded bg-gray-50 p-2"
+                        className="flex items-center justify-between rounded bg-background p-2"
                       >
                         <span className="text-sm">{objective}</span>
                         <Button
@@ -661,7 +661,7 @@ export function TechnologyResearchManagement({
                 <Label>Current Projects</Label>
                 <div className="mb-3 space-y-2">
                   {researchForm.currentProjects.map((project, index) => (
-                    <div key={index} className="rounded-md bg-gray-50 p-3">
+                    <div key={index} className="rounded-md bg-background p-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="font-medium">{project.name}</p>
@@ -674,7 +674,7 @@ export function TechnologyResearchManagement({
                                     ? "bg-blue-100 text-blue-700"
                                     : project.status === "Testing"
                                       ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-gray-100 text-gray-700"
+                                      : "bg-muted text-foreground/80"
                               }`}
                             >
                               {project.status}
@@ -682,7 +682,7 @@ export function TechnologyResearchManagement({
                           </div>
                           <div className="mt-2">
                             <Progress value={project.progress} className="h-1.5" />
-                            <span className="text-gray-500 text-xs">
+                            <span className="text-muted-foreground text-xs">
                               {project.progress}% complete
                             </span>
                           </div>
@@ -745,7 +745,7 @@ export function TechnologyResearchManagement({
                   {researchForm.publications.map((publication, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded bg-gray-50 p-2"
+                      className="flex items-center justify-between rounded bg-background p-2"
                     >
                       <span className="text-sm">{publication}</span>
                       <Button
@@ -776,7 +776,7 @@ export function TechnologyResearchManagement({
                   {researchForm.partners.map((partner, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded bg-gray-50 p-2"
+                      className="flex items-center justify-between rounded bg-background p-2"
                     >
                       <span className="text-sm">{partner}</span>
                       <Button
@@ -807,7 +807,7 @@ export function TechnologyResearchManagement({
                   {researchForm.outcomes.map((outcome, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded bg-gray-50 p-2"
+                      className="flex items-center justify-between rounded bg-background p-2"
                     >
                       <span className="text-sm">{outcome}</span>
                       <Button
@@ -861,15 +861,15 @@ export function TechnologyResearchManagement({
                 />
                 <Label htmlFor="isActive">Active</Label>
               </div>
-            </EnhancedDialogBody>
-            <EnhancedDialogFooter>
+            </DialogBody>
+            <DialogFooter>
               <Button type="submit">
                 {editingResearch ? "Update Research" : "Create Research"}
               </Button>
-            </EnhancedDialogFooter>
+            </DialogFooter>
           </form>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

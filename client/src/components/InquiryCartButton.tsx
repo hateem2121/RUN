@@ -100,7 +100,7 @@ export function InquiryCartButton() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed right-4 bottom-4 z-dock rounded-full bg-black p-4 text-white shadow-lg transition-all hover:bg-gray-800 sm:right-6 sm:bottom-6 md:right-8 md:bottom-8"
+        className="fixed right-4 bottom-4 z-dock rounded-full bg-black p-4 text-white shadow-lg transition-all hover:bg-muted/80 sm:right-6 sm:bottom-6 md:right-8 md:bottom-8"
         data-testid="inquiry-cart-button"
       >
         <ShoppingCart className="h-6 w-6" />
@@ -142,7 +142,7 @@ export function InquiryCartButton() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-2xl hover:text-gray-600"
+                className="text-2xl hover:text-muted-foreground"
                 data-testid="close-inquiry-modal"
               >
                 ×
@@ -153,7 +153,9 @@ export function InquiryCartButton() {
             <div className="flex-1 overflow-y-auto p-6">
               {!showForm ? (
                 items.length === 0 ? (
-                  <p className="py-8 text-center text-gray-500">Your inquiry cart is empty</p>
+                  <p className="py-8 text-center text-muted-foreground">
+                    Your inquiry cart is empty
+                  </p>
                 ) : (
                   <div className="space-y-4">
                     {items.map((item) => (
@@ -169,13 +171,15 @@ export function InquiryCartButton() {
                         />
                         <div className="flex-1">
                           <h3 className="font-semibold">{item.product.name}</h3>
-                          <p className="text-gray-500 text-sm">SKU: {item.product.sku}</p>
-                          <p className="text-gray-500 text-sm">MOQ: {item.product.moq} units</p>
+                          <p className="text-muted-foreground text-sm">SKU: {item.product.sku}</p>
+                          <p className="text-muted-foreground text-sm">
+                            MOQ: {item.product.moq} units
+                          </p>
                         </div>
                         <button
                           type="button"
                           onClick={() => removeItem(item.product.id)}
-                          className="text-gray-400 hover:text-red-600"
+                          className="text-muted-foreground/70 hover:text-red-600"
                           data-testid={`remove-item-${item.product.id}`}
                         >
                           <X className="h-5 w-5" />
@@ -274,7 +278,7 @@ export function InquiryCartButton() {
                       <Button
                         type="submit"
                         disabled={submitInquiry.isPending}
-                        className="flex-1 bg-black text-white hover:bg-gray-800"
+                        className="flex-1 bg-black text-white hover:bg-muted/80"
                         data-testid="submit-inquiry"
                       >
                         {submitInquiry.isPending ? (
@@ -297,7 +301,7 @@ export function InquiryCartButton() {
               <div className="border-t p-6">
                 <Button
                   onClick={() => setShowForm(true)}
-                  className="w-full bg-black text-white hover:bg-gray-800"
+                  className="w-full bg-black text-white hover:bg-muted/80"
                   data-testid="proceed-to-inquiry"
                 >
                   Continue to Inquiry Form ({itemCount} item

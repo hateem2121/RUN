@@ -203,7 +203,7 @@ export function ContactPageSettings() {
   if (isLoading) {
     return (
       <div className="center-flex py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -296,7 +296,7 @@ export function ContactPageSettings() {
                           {form.formState.errors.heroTitle.message}
                         </p>
                       )}
-                      <p className="mt-1 text-gray-500 text-sm">
+                      <p className="mt-1 text-muted-foreground text-sm">
                         Large heading displayed at the top of the contact page
                       </p>
                     </div>
@@ -508,7 +508,7 @@ export function ContactPageSettings() {
                 <CardContent className="pt-6">
                   <div>
                     <Label>Available Communication Platforms</Label>
-                    <p className="mb-3 text-gray-500 text-sm">
+                    <p className="mb-3 text-muted-foreground text-sm">
                       Comma-separated list of platform options for the contact form dropdown
                     </p>
                     <Input

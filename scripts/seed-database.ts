@@ -13,6 +13,7 @@ import {
   accessories,
   categories,
   certificates,
+  fabricCompositions,
   fabrics,
   fibers,
   mediaAssets,
@@ -22,6 +23,7 @@ import {
 
 async function seedDatabase() {
   try {
+    await db.delete(fabricCompositions);
     await db.delete(products);
     await db.delete(categories);
     await db.delete(mediaAssets);
@@ -242,31 +244,37 @@ async function seedDatabase() {
     const insertedProducts = await db.insert(products).values(productData).returning();
     const mediaData = [
       {
-        filename: "pro-running-shirt-navy.jpg",
-        originalFilename: "pro-running-shirt-navy.jpg",
-        mimeType: "image/jpeg",
-        fileSize: 245760,
-        url: "/assets/products/pro-running-shirt-navy.jpg",
+        filename: "placeholder-tank-top-front.svg",
+        originalFilename: "pro-running-shirt-navy.svg",
+        mimeType: "image/svg+xml",
+        fileSize: 551,
+        url: "/placeholder-tank-top-front.svg",
+        storagePath: "placeholder-tank-top-front.svg",
+        bucketName: "default",
         type: "image" as const,
         altText: "Pro Performance Running Shirt in Navy Blue",
         isActive: true,
       },
       {
-        filename: "athletic-shorts-black.jpg",
-        originalFilename: "athletic-shorts-black.jpg",
-        mimeType: "image/jpeg",
-        fileSize: 198432,
-        url: "/assets/products/athletic-shorts-black.jpg",
+        filename: "placeholder-running-shorts.svg",
+        originalFilename: "athletic-shorts-black.svg",
+        mimeType: "image/svg+xml",
+        fileSize: 546,
+        url: "/placeholder-running-shorts.svg",
+        storagePath: "placeholder-running-shorts.svg",
+        bucketName: "default",
         type: "image" as const,
         altText: "Athletic Training Shorts in Black",
         isActive: true,
       },
       {
-        filename: "cotton-polo-white.jpg",
-        originalFilename: "cotton-polo-white.jpg",
-        mimeType: "image/jpeg",
-        fileSize: 267890,
-        url: "/assets/products/cotton-polo-white.jpg",
+        filename: "placeholder-jacket.svg",
+        originalFilename: "cotton-polo-white.svg",
+        mimeType: "image/svg+xml",
+        fileSize: 546,
+        url: "/placeholder-jacket.svg",
+        storagePath: "placeholder-jacket.svg",
+        bucketName: "default",
         type: "image" as const,
         altText: "Comfort Cotton Polo in White",
         isActive: true,
@@ -290,7 +298,8 @@ async function seedDatabase() {
         .set({ primaryImageId: insertedMedia[2].id })
         .where(eq(products.id, insertedProducts[2].id));
     }
-  } catch (_error) {
+  } catch (error) {
+    console.error("Seeding failed:", error);
     process.exit(1);
   }
 }

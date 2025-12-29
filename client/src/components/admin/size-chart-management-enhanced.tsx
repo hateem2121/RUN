@@ -7,12 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -540,7 +535,7 @@ export default function SizeChartManagementEnhanced() {
         {/* Size Chart Form */}
         <div className="xl:col-span-2">
           <Card className="border-2">
-            <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-purple-50">
+            <CardHeader className="border-b bg-linear-to-r from-blue-50 to-purple-50">
               <CardTitle className="flex items-center gap-2 font-neue-stance">
                 <Ruler className="h-5 w-5 text-blue-600" />
                 {editingChart ? "Edit Size Chart" : "Create New Size Chart"}
@@ -768,7 +763,7 @@ export default function SizeChartManagementEnhanced() {
         {/* Size Charts List */}
         <div>
           <Card className="border-2">
-            <CardHeader className="border-b bg-gradient-to-r from-green-50 to-blue-50">
+            <CardHeader className="border-b bg-linear-to-r from-green-50 to-blue-50">
               <CardTitle className="flex items-center gap-2 font-neue-stance">
                 <Flag className="h-5 w-5 text-green-600" />
                 Size Charts ({sizeCharts?.length || 0})
@@ -788,14 +783,14 @@ export default function SizeChartManagementEnhanced() {
       </div>
 
       {/* Preview Dialog */}
-      <EnhancedDialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
-        <EnhancedDialogContent contentType="default">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle className="flex items-center gap-2">
+      <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
+        <DialogContent contentType="default">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5" />
               Size Chart Preview: {previewChart?.name}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+            </DialogTitle>
+          </DialogHeader>
           <div className="mt-4 max-h-viewport-60 overflow-y-auto pr-2">
             {previewChart && (
               <div className="space-y-4">
@@ -829,8 +824,8 @@ export default function SizeChartManagementEnhanced() {
               </div>
             )}
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

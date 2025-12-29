@@ -20,10 +20,12 @@ export const colors = {
   // Brand Accent (Purple)
   brandPurple: "var(--color-brand-purple)",
   brandPurpleLight: "var(--color-brand-purple-light)",
+  surfaceDark: "var(--color-surface-dark)",
 
   // Accent Colors
   accent: "var(--color-accent)",
   accentForeground: "var(--color-accent-foreground)",
+  brandAccent: "var(--color-brand-accent)",
 
   // Semantic Colors
   destructive: "var(--color-destructive)",
@@ -33,6 +35,8 @@ export const colors = {
 
   // Neutrals
   background: "var(--color-background)",
+  backgroundAlt: "var(--color-background-alt)",
+  surfaceBlack: "var(--color-surface-black)",
   foreground: "var(--color-foreground)",
   card: "var(--color-card)",
   cardForeground: "var(--color-card-foreground)",
@@ -86,6 +90,39 @@ export const spacing = {
 } as const;
 
 /**
+ * Height tokens from @theme
+ */
+export const heights = {
+  modalSm: "var(--height-modal-sm)",
+  modalMd: "var(--height-modal-md)",
+  modalLg: "var(--height-modal-lg)",
+  modalFull: "var(--height-modal-full)",
+  thumbnail: "var(--height-thumbnail)",
+  thumbnailLg: "var(--height-thumbnail-lg)",
+  tab: "var(--height-tab)",
+  iconSm: "var(--height-icon-sm)",
+  loadingCenter: "var(--height-loading-center)",
+  loadingContent: "var(--height-loading-content)",
+  minValueCard: "var(--min-height-value-card)",
+  minProcessCard: "var(--min-height-process-card)",
+} as const;
+
+/**
+ * Width tokens from @theme
+ */
+export const widths = {
+  sheetSm: "var(--width-sheet-sm)",
+  sheetMd: "var(--width-sheet-md)",
+  sheetLg: "var(--width-sheet-lg)",
+  sidebarCollapsed: "var(--width-sidebar-collapsed)",
+  sidebarExpanded: "var(--width-sidebar-expanded)",
+  maxToast: "var(--max-width-toast)",
+  iconSm: "var(--width-icon-sm)",
+  minThumbnail: "var(--min-width-thumbnail)",
+  minLabel: "var(--min-width-label)",
+} as const;
+
+/**
  * Radius tokens from @theme
  */
 export const radius = {
@@ -95,6 +132,30 @@ export const radius = {
   lg: "var(--radius-lg)",
   xl: "var(--radius-xl)",
   full: "9999px",
+  button: "var(--radius-button)",
+  card: "var(--radius-card)",
+  modal: "var(--radius-modal)",
+  pill: "var(--radius-pill)",
+} as const;
+
+/**
+ * Display font size tokens for hero/heading typography
+ */
+export const fontSizes = {
+  displayXs: "var(--font-size-display-xs)",
+  displaySm: "var(--font-size-display-sm)",
+  displayMd: "var(--font-size-display-md)",
+  displayLg: "var(--font-size-display-lg)",
+  displayXl: "var(--font-size-display-xl)",
+} as const;
+
+/**
+ * Shadow tokens for consistent elevation
+ */
+export const shadows = {
+  card: "var(--shadow-card)",
+  popup: "var(--shadow-popup)",
+  glass: "var(--shadow-glass)",
 } as const;
 
 /**
@@ -105,12 +166,27 @@ export const fonts = {
   mono: "var(--font-mono)",
 } as const;
 
+/**
+ * Breakpoint tokens
+ * Matches Tailwind standard breakpoints
+ */
+export const breakpoints = {
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  "2xl": 1536,
+} as const;
+
 // Type exports for strict type checking
 export type ColorToken = keyof typeof colors;
 export type ZIndexToken = keyof typeof zIndex;
 export type SpacingToken = keyof typeof spacing;
+export type HeightToken = keyof typeof heights;
+export type WidthToken = keyof typeof widths;
 export type RadiusToken = keyof typeof radius;
 export type FontToken = keyof typeof fonts;
+export type FontSizeToken = keyof typeof fontSizes;
+export type ShadowToken = keyof typeof shadows;
 
 /**
  * Helper to get CSS variable value at runtime
@@ -137,9 +213,25 @@ export const HARDCODED_COLORS_TO_MIGRATE = [
     replacement: "brandPurpleLight",
     files: ["GradientBlinds.tsx", "TechnologyGradientSettings.tsx"],
   },
-  { hex: "#3300FF", replacement: "brandPurple", files: ["homepage-v2/*.tsx", "CustomCursor.tsx"] },
-  { hex: "#CCFF00", replacement: "--color-success (new)", files: ["Footer.tsx", "Categories.tsx"] },
-  { hex: "#050505", replacement: "--color-surface-dark (new)", files: ["homepage-v2/*.tsx"] },
+  {
+    hex: "#3300FF",
+    replacement: "brandPurple",
+    files: ["homepage-v2/*.tsx", "CustomCursor.tsx"],
+  },
+  {
+    hex: "#CCFF00",
+    replacement: "--color-success (new)",
+    files: ["Footer.tsx", "Categories.tsx"],
+  },
+  {
+    hex: "#050505",
+    replacement: "--color-surface-dark (new)",
+    files: ["homepage-v2/*.tsx"],
+  },
   { hex: "#FAFAFA", replacement: "background", files: ["homepage-v2/*.tsx"] },
-  { hex: "#10b981", replacement: "success", files: ["circular-progress-stat-optimized.tsx"] },
+  {
+    hex: "#10b981",
+    replacement: "success",
+    files: ["circular-progress-stat-optimized.tsx"],
+  },
 ] as const;

@@ -142,7 +142,7 @@ export function TechnologyGradientSettings({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">Colors</h3>
-                <span className="rounded bg-gray-100 px-2 py-1 text-gray-600 text-xs">
+                <span className="rounded bg-muted px-2 py-1 text-muted-foreground text-xs">
                   Exactly 2 colors
                 </span>
               </div>
@@ -226,7 +226,7 @@ export function TechnologyGradientSettings({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label>Gradient Angle</Label>
-                <span className="text-gray-500 text-sm">{gradientData.angle}°</span>
+                <span className="text-muted-foreground text-sm">{gradientData.angle}°</span>
               </div>
               <input
                 type="range"
@@ -240,9 +240,9 @@ export function TechnologyGradientSettings({
                     angle: parseInt(e.target.value, 10),
                   })
                 }
-                className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
               />
-              <div className="flex justify-between text-gray-400 text-xs">
+              <div className="flex justify-between text-muted-foreground/70 text-xs">
                 <span>0° (Horizontal)</span>
                 <span>45° (Diagonal)</span>
                 <span>90° (Vertical)</span>
@@ -254,7 +254,7 @@ export function TechnologyGradientSettings({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Background Texture</Label>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {Math.round(gradientData.noise * 100)}%
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export function TechnologyGradientSettings({
                       noise: parseFloat(e.target.value),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
 
@@ -284,7 +284,7 @@ export function TechnologyGradientSettings({
                     }
                   />
                 </div>
-                <p className="text-gray-500 text-xs">
+                <p className="text-muted-foreground text-xs">
                   {gradientData.paused ? "Animation paused" : "Animation active"}
                 </p>
               </div>
@@ -295,7 +295,7 @@ export function TechnologyGradientSettings({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Blind Count</Label>
-                  <span className="text-gray-500 text-sm">{gradientData.blindCount}</span>
+                  <span className="text-muted-foreground text-sm">{gradientData.blindCount}</span>
                 </div>
                 <input
                   type="range"
@@ -309,14 +309,16 @@ export function TechnologyGradientSettings({
                       blindCount: parseInt(e.target.value, 10),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Blind Width</Label>
-                  <span className="text-gray-500 text-sm">{gradientData.blindMinWidth}px</span>
+                  <span className="text-muted-foreground text-sm">
+                    {gradientData.blindMinWidth}px
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -330,7 +332,7 @@ export function TechnologyGradientSettings({
                       blindMinWidth: parseInt(e.target.value, 10),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
             </div>
@@ -358,7 +360,7 @@ export function TechnologyGradientSettings({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Spotlight Size</Label>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {gradientData.spotlightRadius.toFixed(1)}
                   </span>
                 </div>
@@ -374,7 +376,7 @@ export function TechnologyGradientSettings({
                       spotlightRadius: parseFloat(e.target.value),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
             </div>
@@ -384,7 +386,7 @@ export function TechnologyGradientSettings({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Mouse Response</Label>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {Math.round(gradientData.mouseDampening * 200)}%
                   </span>
                 </div>
@@ -400,14 +402,14 @@ export function TechnologyGradientSettings({
                       mouseDampening: parseFloat(e.target.value),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>Motion Amount</Label>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {Math.round(gradientData.distortAmount * 333)}%
                   </span>
                 </div>
@@ -423,7 +425,7 @@ export function TechnologyGradientSettings({
                       distortAmount: parseFloat(e.target.value),
                     })
                   }
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                 />
               </div>
             </div>
@@ -435,7 +437,7 @@ export function TechnologyGradientSettings({
               type="button"
               variant="ghost"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex h-auto items-center gap-2 p-0 text-gray-600 hover:text-gray-900"
+              className="flex h-auto items-center gap-2 p-0 text-muted-foreground hover:text-foreground"
             >
               {showAdvanced ? (
                 <ChevronUp className="h-4 w-4" />
@@ -443,12 +445,12 @@ export function TechnologyGradientSettings({
                 <ChevronDown className="h-4 w-4" />
               )}
               <span className="font-medium">Advanced Settings</span>
-              <span className="rounded bg-gray-100 px-2 py-0.5 text-xs">Optional fine-tuning</span>
+              <span className="rounded bg-muted px-2 py-0.5 text-xs">Optional fine-tuning</span>
             </Button>
 
             {showAdvanced && (
-              <div className="mt-6 space-y-6 border-gray-100 border-l-2 pl-6">
-                <div className="mb-4 text-gray-600 text-sm">
+              <div className="mt-6 space-y-6 border-border border-l-2 pl-6">
+                <div className="mb-4 text-muted-foreground text-sm">
                   These controls provide fine-tuning for advanced users. The essential controls
                   above are sufficient for most use cases.
                 </div>
@@ -457,7 +459,7 @@ export function TechnologyGradientSettings({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label>Edge Sharpness</Label>
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-muted-foreground text-sm">
                         {gradientData.spotlightSoftness.toFixed(1)}
                       </span>
                     </div>
@@ -473,9 +475,9 @@ export function TechnologyGradientSettings({
                           spotlightSoftness: parseFloat(e.target.value),
                         })
                       }
-                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                     />
-                    <div className="flex justify-between text-gray-400 text-xs">
+                    <div className="flex justify-between text-muted-foreground/70 text-xs">
                       <span>Soft</span>
                       <span>Sharp</span>
                     </div>
@@ -484,7 +486,7 @@ export function TechnologyGradientSettings({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label>Spot Intensity</Label>
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-muted-foreground text-sm">
                         {Math.round(gradientData.spotlightOpacity * 100)}%
                       </span>
                     </div>
@@ -500,7 +502,7 @@ export function TechnologyGradientSettings({
                           spotlightOpacity: parseFloat(e.target.value),
                         })
                       }
-                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
+                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
                     />
                   </div>
                 </div>
@@ -509,8 +511,8 @@ export function TechnologyGradientSettings({
           </div>
 
           {/* ADMIN CONTROLS SECTION - Separate admin-only area */}
-          <div className="-mx-6 -mb-6 border-t bg-gray-50 px-6 pt-6 pb-6">
-            <h3 className="mb-4 flex items-center gap-2 font-semibold text-gray-700 text-sm">
+          <div className="-mx-6 -mb-6 border-t bg-background px-6 pt-6 pb-6">
+            <h3 className="mb-4 flex items-center gap-2 font-semibold text-foreground/80 text-sm">
               <span>Admin Controls</span>
               <span className="rounded bg-red-100 px-2 py-0.5 text-red-700 text-xs">
                 Admin Only
@@ -520,7 +522,7 @@ export function TechnologyGradientSettings({
             <div className="flex items-center justify-between">
               <div>
                 <Label>Force Settings Override</Label>
-                <p className="mt-1 text-gray-500 text-xs">
+                <p className="mt-1 text-muted-foreground text-xs">
                   When enabled, these settings override any client-side display preferences
                 </p>
               </div>
@@ -538,7 +540,7 @@ export function TechnologyGradientSettings({
 
           {/* Save Section */}
           <div className="space-y-4 border-t pt-6">
-            <div className="text-gray-600 text-sm">
+            <div className="text-muted-foreground text-sm">
               Changes will be applied to the public technology page in real-time
             </div>
             <Button type="submit" disabled={updateGradientMutation.isPending || isLoading}>

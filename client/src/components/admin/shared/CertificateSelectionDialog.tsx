@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -114,14 +114,10 @@ export function CertificateSelectionDialog({
   };
 
   return (
-    <EnhancedDialog open={isOpen} onOpenChange={handleCancel}>
-      <EnhancedDialogContent
-        contentType="media-library"
-        preferredSize="4xl"
-        className="flex flex-col"
-      >
-        <EnhancedDialogHeader className="shrink-0 border-border border-b pb-4">
-          <EnhancedDialogTitle>{title}</EnhancedDialogTitle>
+    <Dialog open={isOpen} onOpenChange={handleCancel}>
+      <DialogContent contentType="media-library" preferredSize="4xl" className="flex flex-col">
+        <DialogHeader className="shrink-0 border-border border-b pb-4">
+          <DialogTitle>{title}</DialogTitle>
           <div className="mt-4">
             <div className="relative">
               <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -134,9 +130,9 @@ export function CertificateSelectionDialog({
               />
             </div>
           </div>
-        </EnhancedDialogHeader>
+        </DialogHeader>
 
-        <EnhancedDialogBody className="min-h-0 flex-1 overflow-hidden">
+        <DialogBody className="min-h-0 flex-1 overflow-hidden">
           <ScrollArea className="h-full">
             {isLoading ? (
               <div className="flex h-64 items-center justify-center">
@@ -228,9 +224,9 @@ export function CertificateSelectionDialog({
               </div>
             )}
           </ScrollArea>
-        </EnhancedDialogBody>
+        </DialogBody>
 
-        <EnhancedDialogFooter className="shrink-0 border-border border-t pt-4">
+        <DialogFooter className="shrink-0 border-border border-t pt-4">
           <div className="flex w-full items-center justify-between">
             <div className="text-muted-foreground text-sm">
               {selectedIds.length > 0 && (
@@ -258,9 +254,9 @@ export function CertificateSelectionDialog({
               </Button>
             </div>
           </div>
-        </EnhancedDialogFooter>
-      </EnhancedDialogContent>
-    </EnhancedDialog>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

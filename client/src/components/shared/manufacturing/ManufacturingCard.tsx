@@ -81,15 +81,12 @@ export function ManufacturingCard({
   const cardContent = (
     <Card
       ref={cardRef}
-      className={`
-        ${variant === "public" ? "border-blue-200 bg-gradient-to-br from-white to-blue-50" : ""}
-        ${className}
-      `}
+      className={` ${variant === "public" ? "border-blue-200 bg-linear-to-br from-white to-blue-50" : ""} ${className} `}
     >
       {(title || subtitle || headerContent) && (
         <CardHeader>
-          {title && <CardTitle className="text-gray-900">{title}</CardTitle>}
-          {subtitle && <p className="text-gray-600 text-sm">{subtitle}</p>}
+          {title && <CardTitle className="text-foreground">{title}</CardTitle>}
+          {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
           {headerContent}
         </CardHeader>
       )}

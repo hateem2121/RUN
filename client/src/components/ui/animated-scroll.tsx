@@ -171,7 +171,7 @@ export default function AnimatedScroll({
                 className="relative h-full w-full bg-center bg-cover bg-no-repeat"
                 style={{
                   backgroundImage: page.leftBgImage ? `url(${page.leftBgImage})` : undefined,
-                  backgroundColor: !page.leftBgImage ? "#1a1a1a" : undefined,
+                  backgroundColor: !page.leftBgImage ? "hsl(240 10% 10%)" : undefined, // surface-dark
                 }}
               >
                 {/* Overlay for better text readability */}
@@ -201,7 +201,7 @@ export default function AnimatedScroll({
                 className="relative h-full w-full bg-center bg-cover bg-no-repeat"
                 style={{
                   backgroundImage: page.rightBgImage ? `url(${page.rightBgImage})` : undefined,
-                  backgroundColor: !page.rightBgImage ? "#2a2a2a" : undefined,
+                  backgroundColor: !page.rightBgImage ? "hsl(240 10% 16%)" : undefined, // surface-dark variant
                 }}
               >
                 {/* Overlay for better text readability */}

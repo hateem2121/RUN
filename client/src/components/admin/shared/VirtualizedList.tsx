@@ -35,7 +35,7 @@ export function VirtualizedList<T>({
   // Don't render if no items
   if (!items.length) {
     return (
-      <div className={`flex h-32 items-center justify-center text-gray-500 ${className}`}>
+      <div className={`flex h-32 items-center justify-center text-muted-foreground ${className}`}>
         No items to display
       </div>
     );

@@ -1,5 +1,6 @@
 // import React from 'react';
 import { Marker, Popup } from "react-leaflet";
+import "./map-styles.css";
 import { type MapLocation, useMapMarkers } from "./hooks/useMapMarkers";
 
 interface MapMarkersProps {
@@ -25,7 +26,7 @@ export function MapMarkers({ locations }: MapMarkersProps) {
           <Popup>
             <div className="p-2">
               <h3 className="font-semibold text-blue-600">Client: {location.name}</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-sm text-text-disabled">
                 {location.city}, {location.country}
               </p>
               {location.details && <p className="mt-1 text-sm">{location.details}</p>}
@@ -44,7 +45,7 @@ export function MapMarkers({ locations }: MapMarkersProps) {
           <Popup>
             <div className="p-2">
               <h3 className="font-semibold text-green-600">Facility: {location.name}</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-sm text-text-disabled">
                 {location.city}, {location.country}
               </p>
               {location.details && <p className="mt-1 text-sm">{location.details}</p>}

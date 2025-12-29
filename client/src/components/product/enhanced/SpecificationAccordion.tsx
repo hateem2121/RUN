@@ -100,7 +100,7 @@ export function SpecificationAccordion({
       role="region"
       aria-label="Product specifications"
     >
-      <h2 className="mb-6 font-bold text-2xl text-gray-900 dark:text-gray-100">
+      <h2 className="mb-6 font-bold text-2xl text-foreground dark:text-foreground">
         Technical Specifications
       </h2>
 
@@ -111,7 +111,7 @@ export function SpecificationAccordion({
           <div
             key={section.id}
             className={cn(
-              "rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              "rounded-lg border border-border bg-white dark:border-border dark:bg-muted/80",
               "transition-all duration-200 ease-out",
               isExpanded ? "shadow-md" : "shadow-sm-xs hover:shadow-md",
             )}
@@ -124,7 +124,7 @@ export function SpecificationAccordion({
                 "flex w-full items-center justify-between px-6 py-4 text-left",
                 "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-inset",
                 "transition-colors duration-200",
-                "hover:bg-gray-50 dark:hover:bg-gray-750",
+                "hover:bg-background dark:hover:bg-muted",
               )}
               aria-expanded={isExpanded}
               aria-controls={`section-content-${section.id}`}
@@ -135,14 +135,14 @@ export function SpecificationAccordion({
             >
               <div className="flex items-center space-x-3">
                 <div className="shrink-0 text-blue-600 dark:text-blue-400">{section.icon}</div>
-                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                <span className="font-semibold text-foreground dark:text-foreground">
                   {section.title}
                 </span>
               </div>
 
               <ChevronDown
                 className={cn(
-                  "h-5 w-5 text-gray-500 transition-transform duration-200 dark:text-gray-400",
+                  "h-5 w-5 text-muted-foreground transition-transform duration-200 dark:text-muted-foreground/70",
                   isExpanded ? "rotate-180 transform" : "",
                 )}
                 aria-hidden="true"
@@ -158,14 +158,14 @@ export function SpecificationAccordion({
               )}
               aria-hidden={!isExpanded}
             >
-              <div className="border-gray-100 border-t px-6 pb-4 dark:border-gray-700">
+              <div className="border-border border-t px-6 pb-4 dark:border-border">
                 <div className="space-y-3 pt-4">
                   {section.items.map((item, index) => (
                     <div key={index} className="flex items-start justify-between py-2">
-                      <span className="min-w-[140px] font-medium text-gray-600 text-sm dark:text-gray-400">
+                      <span className="min-w-label font-medium text-muted-foreground text-sm dark:text-muted-foreground/70">
                         {item.label}
                       </span>
-                      <span className="ml-4 flex-1 text-right text-gray-900 text-sm dark:text-gray-100">
+                      <span className="ml-4 flex-1 text-right text-foreground text-sm dark:text-foreground">
                         {item.value}
                       </span>
                     </div>

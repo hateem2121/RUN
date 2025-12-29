@@ -70,8 +70,10 @@ export function PublicHeroSection({
       <section className="center-flex min-h-screen bg-manufacturing-primary/10">
         <div className="text-center">
           <Factory className="mx-auto mb-4 h-16 w-16 text-manufacturing-primary" />
-          <h1 className="mb-2 font-bold text-4xl text-gray-900">Manufacturing Excellence</h1>
-          <p className="text-gray-600 text-xl">Precision crafted solutions for your business</p>
+          <h1 className="mb-2 font-bold text-4xl text-foreground">Manufacturing Excellence</h1>
+          <p className="text-muted-foreground text-xl">
+            Precision crafted solutions for your business
+          </p>
         </div>
       </section>
     );

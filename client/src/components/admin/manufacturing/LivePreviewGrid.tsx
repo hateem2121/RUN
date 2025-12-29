@@ -10,7 +10,7 @@ export function LivePreviewGrid({ children, className }: LivePreviewGridProps) {
   return (
     <div
       className={cn(
-        "@container h-full w-full rounded-lg border border-gray-200 border-dashed bg-slate-50/50 p-4",
+        "@container h-full w-full rounded-lg border border-border border-dashed bg-slate-50/50 p-4",
         className,
       )}
     >

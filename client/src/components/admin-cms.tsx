@@ -198,7 +198,7 @@ export default function AdminCMS() {
       name: "Footer Management",
       description: "Configure footer sections, links, and contact information",
       icon: "fas fa-columns",
-      color: "bg-gray-100 text-gray-600",
+      color: "bg-muted text-muted-foreground",
       count: 3, // Footer config, sections, links
     },
     {

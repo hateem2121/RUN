@@ -36,7 +36,7 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
   alt,
   className,
   imageClassName,
-  aspectRatio = "aspect-[3/4]",
+  aspectRatio = "aspect-3/4",
   objectFit = "cover",
   fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
   onLoad,
@@ -60,7 +60,7 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-gray-200 dark:bg-neutral-800",
+        "relative overflow-hidden bg-surface-muted dark:bg-muted",
         ratioClass,
         className,
       )}
@@ -108,7 +108,7 @@ const LegacyImage: React.FC<OptimizedImageProps> = ({
   alt,
   onLoad,
   onError,
-  aspectRatio = "aspect-[3/4]",
+  aspectRatio = "aspect-3/4",
   objectFit = "cover",
   ...props
 }) => {

@@ -71,7 +71,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -81,16 +81,16 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
                 <IconComponent className="h-5 w-5 text-purple-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-gray-900">{research.title}</h4>
+                <h4 className="font-medium text-foreground">{research.title}</h4>
                 {research.description && (
-                  <p className="mt-1 text-gray-600 text-sm">{research.description}</p>
+                  <p className="mt-1 text-muted-foreground text-sm">{research.description}</p>
                 )}
                 {research.currentProjects && research.currentProjects.length > 0 && (
                   <div className="mt-2">
-                    <p className="font-medium text-gray-500 text-xs">Current Projects:</p>
+                    <p className="font-medium text-muted-foreground text-xs">Current Projects:</p>
                     {research.currentProjects.slice(0, 2).map((project, index) => (
                       <div key={index} className="mt-1 flex items-center justify-between text-xs">
-                        <span className="text-gray-600">{project.name}</span>
+                        <span className="text-muted-foreground">{project.name}</span>
                         <div className="flex items-center gap-2">
                           <span
                             className={`rounded px-1.5 py-0.5 text-xs ${
@@ -100,7 +100,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
                                   ? "bg-blue-100 text-blue-700"
                                   : project.status === "Testing"
                                     ? "bg-yellow-100 text-yellow-700"
-                                    : "bg-gray-100 text-gray-700"
+                                    : "bg-muted text-foreground/80"
                             }`}
                           >
                             {project.status}
@@ -108,18 +108,18 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
                           <div className="w-12">
                             <Progress value={project.progress} className="h-1" />
                           </div>
-                          <span className="text-gray-500">{project.progress}%</span>
+                          <span className="text-muted-foreground">{project.progress}%</span>
                         </div>
                       </div>
                     ))}
                     {research.currentProjects.length > 2 && (
-                      <p className="mt-1 text-gray-500 text-xs">
+                      <p className="mt-1 text-muted-foreground text-xs">
                         +{research.currentProjects.length - 2} more projects
                       </p>
                     )}
                   </div>
                 )}
-                <div className="mt-2 flex flex-wrap gap-4 text-gray-500 text-xs">
+                <div className="mt-2 flex flex-wrap gap-4 text-muted-foreground text-xs">
                   {research.publications && research.publications.length > 0 && (
                     <span>
                       📚 {research.publications.length} publication

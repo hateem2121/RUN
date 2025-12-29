@@ -128,7 +128,7 @@ export default function Resources() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <SEOMeta
         title="Resources - Technical Specifications & Materials | RUN APPAREL"
         description="Explore our comprehensive resource library including certifications, accessories, size charts, fabrics, and fiber specifications for sportswear manufacturing."
@@ -141,10 +141,10 @@ export default function Resources() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             Resources Hub
           </Typography.H1>
-          <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
+          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Access technical specifications, material properties, and industry standards
           </Typography.P>
 
@@ -153,13 +153,13 @@ export default function Resources() {
             <div className="text-center">
               <AnimatedCounter
                 value={totalResources}
-                className="font-bold text-3xl text-gray-900"
+                className="font-bold text-3xl text-foreground"
               />
-              <div className="text-gray-600 text-sm">Total Resources</div>
+              <div className="text-muted-foreground text-sm">Total Resources</div>
             </div>
             <div className="text-center">
               <AnimatedCounter value={5} className="font-bold text-3xl text-purple-600" />
-              <div className="text-gray-600 text-sm">Categories</div>
+              <div className="text-muted-foreground text-sm">Categories</div>
             </div>
           </div>
         </motion.div>
@@ -175,7 +175,7 @@ export default function Resources() {
 
           {searchTerm && (
             <div className="mb-6 flex items-center justify-between">
-              <Typography.P className="text-gray-600 text-sm">
+              <Typography.P className="text-muted-foreground text-sm">
                 Found <span className="font-semibold">{filteredResults.length}</span> results
                 {isSearching && " (searching...)"}
               </Typography.P>
@@ -207,11 +207,11 @@ export default function Resources() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Filter className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                <Filter className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   No results found
                 </Typography.H3>
-                <Typography.P className="text-gray-600">
+                <Typography.P className="text-muted-foreground">
                   Try adjusting your search terms or browse by category below
                 </Typography.P>
               </motion.div>
@@ -275,7 +275,7 @@ export default function Resources() {
                           <CardHeader>
                             <div className="mb-2 flex items-center justify-between">
                               <div
-                                className={`rounded-lg bg-gradient-to-br p-3 ${category.color} text-white`}
+                                className={`rounded-lg bg-linear-to-br p-3 ${category.color} text-white`}
                               >
                                 <Icon className="h-6 w-6" />
                               </div>
@@ -284,7 +284,7 @@ export default function Resources() {
                             <CardTitle className="text-xl">{category.title}</CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <Typography.P className="mb-4 text-gray-600">
+                            <Typography.P className="mb-4 text-muted-foreground">
                               {category.description}
                             </Typography.P>
                             <Button className="w-full transition-transform group-hover:translate-x-1">
@@ -301,7 +301,7 @@ export default function Resources() {
                         <CardHeader>
                           <div className="mb-2 flex items-center justify-between">
                             <div
-                              className={`rounded-lg bg-gradient-to-br p-3 ${category.color} text-white`}
+                              className={`rounded-lg bg-linear-to-br p-3 ${category.color} text-white`}
                             >
                               <Icon className="h-6 w-6" />
                             </div>
@@ -310,7 +310,7 @@ export default function Resources() {
                           <CardTitle className="text-xl">{category.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <Typography.P className="mb-4 text-gray-600">
+                          <Typography.P className="mb-4 text-muted-foreground">
                             {category.description}
                           </Typography.P>
                           <Button className="w-full transition-transform group-hover:translate-x-1">

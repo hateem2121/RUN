@@ -193,7 +193,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
 
               {/* Recovery Actions */}
               <div className="space-y-3">
-                <h4 className="font-medium text-gray-900">Recovery Options</h4>
+                <h4 className="font-medium text-foreground">Recovery Options</h4>
 
                 <div className="flex flex-wrap gap-3">
                   {canRetry && (
@@ -233,14 +233,14 @@ export class AdminErrorBoundary extends Component<Props, State> {
               {/* Error History (for debugging) */}
               {this.state.errorHistory.length > 1 && (
                 <details className="text-sm">
-                  <summary className="cursor-pointer text-gray-600 hover:text-gray-900">
+                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
                     Recent Error History ({this.state.errorHistory.length} errors)
                   </summary>
                   <div className="mt-2 max-h-32 space-y-2 overflow-y-auto">
                     {this.state.errorHistory.slice(-3).map((entry, index) => (
-                      <div key={index} className="rounded bg-gray-50 p-2 text-xs">
-                        <div className="font-mono text-gray-700">{entry.error.message}</div>
-                        <div className="mt-1 text-gray-500">
+                      <div key={index} className="rounded bg-background p-2 text-xs">
+                        <div className="font-mono text-foreground/80">{entry.error.message}</div>
+                        <div className="mt-1 text-muted-foreground">
                           {entry.timestamp.toLocaleTimeString()}
                         </div>
                       </div>
@@ -262,11 +262,11 @@ export class AdminErrorBoundary extends Component<Props, State> {
               {/* Debug Information (development only) */}
               {process.env.NODE_ENV === "development" && (
                 <details className="text-xs">
-                  <summary className="flex cursor-pointer items-center gap-1 text-gray-500 hover:text-gray-700">
+                  <summary className="flex cursor-pointer items-center gap-1 text-muted-foreground hover:text-foreground/80">
                     <Bug className="h-3 w-3" />
                     Debug Information
                   </summary>
-                  <div className="mt-2 max-h-40 overflow-auto rounded bg-gray-900 p-3 text-gray-100">
+                  <div className="mt-2 max-h-40 overflow-auto rounded bg-foreground p-3 text-background">
                     <pre>{this.state.error.stack}</pre>
                   </div>
                 </details>

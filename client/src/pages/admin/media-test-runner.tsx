@@ -156,7 +156,7 @@ export default function MediaTestRunner() {
               <CardTitle>Detailed Test Results</CardTitle>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[500px]">
+              <ScrollArea className="h-modal-sm">
                 <div className="space-y-4">
                   {results.results.map((result, idx) => (
                     <Card

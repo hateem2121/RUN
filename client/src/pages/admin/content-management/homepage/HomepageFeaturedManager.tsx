@@ -164,7 +164,7 @@ export function HomepageFeaturedManager() {
                   {products?.map((product) => (
                     <div
                       key={product.id}
-                      className="flex items-center space-x-2 rounded border p-2 hover:bg-gray-50"
+                      className="flex items-center space-x-2 rounded border p-2 hover:bg-muted"
                     >
                       <Switch
                         checked={formState.selectedProductIds.includes(product.id)}
@@ -173,7 +173,9 @@ export function HomepageFeaturedManager() {
                       />
                       <div className="truncate text-sm">
                         <span className="font-medium">{product.name}</span>
-                        <span className="block text-gray-400 text-xs">{product.sku}</span>
+                        <span className="block text-muted-foreground/50 text-xs">
+                          {product.sku}
+                        </span>
                       </div>
                     </div>
                   ))}

@@ -56,7 +56,7 @@ export function EasingSelector({
       <Label htmlFor="easing-selector" className="flex items-center gap-2 font-medium text-sm">
         {label}
         <div className="group relative">
-          <Info className="h-4 w-4 cursor-help text-gray-400" />
+          <Info className="h-4 w-4 cursor-help text-muted-foreground/70" />
           <div className="invisible absolute top-0 left-6 z-elevated whitespace-nowrap rounded bg-black px-2 py-1 text-white text-xs group-hover:visible">
             Controls animation speed curve
           </div>
@@ -71,16 +71,16 @@ export function EasingSelector({
           <SelectValue placeholder="Select easing type" />
         </SelectTrigger>
 
-        <SelectContent className="max-h-60 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+        <SelectContent className="max-h-60 overflow-y-auto rounded-md border border-border bg-white shadow-lg">
           {easingOptions.map((option) => (
             <SelectItem
               key={option.value}
               value={option.value}
-              className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-50"
+              className="cursor-pointer px-3 py-2 text-sm hover:bg-background"
             >
               <div className="flex flex-col">
                 <span className="font-medium">{option.label}</span>
-                <span className="text-gray-500 text-xs">{option.description}</span>
+                <span className="text-muted-foreground text-xs">{option.description}</span>
               </div>
             </SelectItem>
           ))}
@@ -88,16 +88,16 @@ export function EasingSelector({
       </Select>
 
       {selectedOption && (
-        <div className="flex items-center gap-2 text-gray-600 text-xs">
+        <div className="flex items-center gap-2 text-muted-foreground text-xs">
           <span>Current: {selectedOption.label}</span>
-          <span className="text-gray-400">•</span>
+          <span className="text-muted-foreground/70">•</span>
           <span>{selectedOption.description}</span>
         </div>
       )}
 
       {/* Visual easing curve preview */}
-      <div className="mt-2 rounded border bg-gray-50 p-2">
-        <div className="mb-1 text-gray-600 text-xs">Animation Preview:</div>
+      <div className="mt-2 rounded border bg-background p-2">
+        <div className="mb-1 text-muted-foreground text-xs">Animation Preview:</div>
         <div className="relative h-6 overflow-hidden rounded border bg-white">
           <div
             className="h-full w-2 bg-blue-500 transition-all duration-1000"

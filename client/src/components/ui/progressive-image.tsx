@@ -165,7 +165,7 @@ export function ProgressiveImage({
     // This would use a blurhash library in production
     return (
       <div
-        className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-200 to-gray-300"
+        className="absolute inset-0 animate-pulse bg-linear-to-br from-surface-muted to-surface-emphasis"
         aria-hidden="true"
       />
     );
@@ -178,9 +178,9 @@ export function ProgressiveImage({
     }
 
     return (
-      <div className="absolute inset-0 animate-pulse bg-gray-200">
+      <div className="absolute inset-0 animate-pulse bg-surface-muted">
         <svg
-          className="absolute inset-0 h-full w-full text-gray-300"
+          className="absolute inset-0 h-full w-full text-surface-emphasis"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -193,7 +193,7 @@ export function ProgressiveImage({
 
   return (
     <div
-      className={cn("relative overflow-hidden bg-gray-100", className)}
+      className={cn("relative overflow-hidden bg-surface-subtle", className)}
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       {/* Placeholder / Loading state */}
@@ -234,10 +234,10 @@ export function ProgressiveImage({
 
       {/* Error state */}
       {imageState === "error" && (
-        <div className="center-flex absolute inset-0 bg-gray-100">
+        <div className="center-flex absolute inset-0 bg-surface-subtle">
           <div className="p-4 text-center">
             <svg
-              className="mx-auto mb-2 h-12 w-12 text-gray-400"
+              className="mx-auto mb-2 h-12 w-12 text-text-subtle"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -249,7 +249,7 @@ export function ProgressiveImage({
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-gray-500 text-sm">Failed to load image</p>
+            <p className="text-sm text-text-muted">Failed to load image</p>
           </div>
         </div>
       )}

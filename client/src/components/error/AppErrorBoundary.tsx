@@ -31,9 +31,7 @@ export const AppErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) =
         </div>
 
         <div className="border-border border-t pt-8">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-            Build: {version}
-          </p>
+          <p className="text-micro text-muted-foreground">Build: {version}</p>
         </div>
       </div>
     </div>

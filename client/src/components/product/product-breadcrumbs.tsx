@@ -26,7 +26,10 @@ export function ProductBreadcrumbs({ items, className, showHome = true }: Produc
   return (
     <nav
       aria-label="Breadcrumb"
-      className={cn("luxury-text-secondary flex items-center text-gray-600 text-sm", className)}
+      className={cn(
+        "luxury-text-secondary flex items-center text-muted-foreground text-sm",
+        className,
+      )}
     >
       <ol className="flex flex-wrap items-center gap-1">
         {allItems.map((item, index) => {
@@ -35,10 +38,10 @@ export function ProductBreadcrumbs({ items, className, showHome = true }: Produc
 
           return (
             <li key={`${item.url}-${index}`} className="flex items-center">
-              {index > 0 && <ChevronRight className="mx-1 h-4 w-4 text-gray-400" />}
+              {index > 0 && <ChevronRight className="mx-1 h-4 w-4 text-muted-foreground/70" />}
 
               {isLast ? (
-                <span className="flex w-truncate-md items-center truncate font-medium text-gray-900">
+                <span className="flex w-truncate-md items-center truncate font-medium text-foreground">
                   {Icon && <Icon className="mr-1 h-4 w-4 shrink-0" />}
                   {item.name}
                 </span>

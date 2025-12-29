@@ -153,7 +153,7 @@ export const ProductCard = memo(function ProductCard({
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
               {/* Media Preview */}
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {show3DPreview && model3D ? (
                   <UnifiedModelViewer
                     asset={model3D}
@@ -174,7 +174,7 @@ export const ProductCard = memo(function ProductCard({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Package className="h-8 w-8 text-gray-400" />
+                  <Package className="h-8 w-8 text-muted-foreground/70" />
                 )}
                 {/* 3D Model Toggle for List View */}
                 {model3D && (
@@ -202,8 +202,8 @@ export const ProductCard = memo(function ProductCard({
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="truncate font-semibold text-gray-900">{product.name}</h3>
-                    <p className="text-gray-600 text-sm">SKU: {product.sku}</p>
+                    <h3 className="truncate font-semibold text-foreground">{product.name}</h3>
+                    <p className="text-muted-foreground text-sm">SKU: {product.sku}</p>
                     {category && (
                       <Badge variant="outline" className="mt-1 text-xs">
                         {category.name}
@@ -217,7 +217,7 @@ export const ProductCard = memo(function ProductCard({
                       className={
                         product.isActive
                           ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-600"
+                          : "bg-muted text-muted-foreground"
                       }
                     >
                       {product.isActive ? "Active" : "Inactive"}
@@ -309,7 +309,7 @@ export const ProductCard = memo(function ProductCard({
         onClick={onSelect}
       >
         {/* Media Display */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+        <div className="relative aspect-4/3 overflow-hidden bg-muted">
           {show3DPreview && model3D ? (
             <UnifiedModelViewer
               asset={model3D}
@@ -340,7 +340,7 @@ export const ProductCard = memo(function ProductCard({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Package className="h-12 w-12 text-gray-400" />
+              <Package className="h-12 w-12 text-muted-foreground/70" />
             </div>
           )}
 
@@ -377,7 +377,7 @@ export const ProductCard = memo(function ProductCard({
             <Badge
               variant={product.isActive ? "default" : "secondary"}
               className={`text-xs ${
-                product.isActive ? "bg-green-500/90 text-white" : "bg-gray-500/90 text-white"
+                product.isActive ? "bg-green-500/90 text-white" : "bg-muted/50/90 text-white"
               }`}
             >
               {product.isActive ? "Active" : "Inactive"}
@@ -435,8 +435,8 @@ export const ProductCard = memo(function ProductCard({
         <CardHeader className="px-4 pt-3 pb-1.5">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <h3 className="truncate font-semibold text-gray-900 text-sm">{product.name}</h3>
-              <p className="text-gray-600 text-xs">SKU: {product.sku}</p>
+              <h3 className="truncate font-semibold text-foreground text-sm">{product.name}</h3>
+              <p className="text-muted-foreground text-xs">SKU: {product.sku}</p>
             </div>
           </div>
         </CardHeader>
@@ -461,7 +461,7 @@ export const ProductCard = memo(function ProductCard({
 
             {/* Description */}
             {product.description && (
-              <p className="line-clamp-2 text-gray-600 text-xs">{product.description}</p>
+              <p className="line-clamp-2 text-muted-foreground text-xs">{product.description}</p>
             )}
 
             {/* Relationship Summary */}

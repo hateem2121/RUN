@@ -215,7 +215,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     return {
       type: "Unknown Error",
       icon: FileX,
-      color: "text-gray-600",
+      color: "text-text-disabled",
       suggestion: "An unexpected error occurred while loading the model.",
     };
   }

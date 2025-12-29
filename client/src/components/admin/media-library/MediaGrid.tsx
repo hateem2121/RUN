@@ -93,7 +93,7 @@ const MediaGridItem = React.memo(
           isOptimistic && "pointer-events-none opacity-60",
           isSelected
             ? "border-blue-500 ring-2 ring-blue-200/50"
-            : "border-gray-200 hover:border-gray-300",
+            : "border-border hover:border-border/50",
         )}
       >
         {/* Selection checkbox */}
@@ -112,7 +112,7 @@ const MediaGridItem = React.memo(
               "flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 transition-all",
               isSelected
                 ? "border-blue-500 bg-blue-500"
-                : "border-gray-300 bg-white hover:border-blue-400",
+                : "border-border/50 bg-white hover:border-blue-400",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -149,7 +149,7 @@ const MediaGridItem = React.memo(
 
         {/* Enhanced Media preview with video and 3D support */}
         <div
-          className="group relative z-elevated flex aspect-square w-full cursor-pointer items-center justify-center bg-gray-100"
+          className="group relative z-elevated flex aspect-square w-full cursor-pointer items-center justify-center bg-muted"
           onClick={() => onClick(asset, index)}
           // biome-ignore lint/a11y/useSemanticElements: Complex layout requires div
           role="button"
@@ -209,7 +209,7 @@ const MediaGridItem = React.memo(
               </div>
             </div>
           ) : is3DModel ? (
-            <div className="relative h-full w-full bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+            <div className="relative h-full w-full bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
               {/* STEP 3 INTEGRATION: Enhanced 3D preview using UnifiedModelViewer */}
               {/* SCROLL FIX: Disable pointer events in selection mode to prevent wheel event capture */}
               <div
@@ -219,8 +219,8 @@ const MediaGridItem = React.memo(
               >
                 <React.Suspense
                   fallback={
-                    <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                      <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                    <div className="flex h-full w-full items-center justify-center bg-muted">
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/70" />
                     </div>
                   }
                 >

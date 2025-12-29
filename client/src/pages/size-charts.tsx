@@ -74,7 +74,7 @@ export default function SizeCharts() {
   const getSizeChartDetails = (chart: SizeChart) => (
     <div className="space-y-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="font-medium text-gray-700 text-sm">Measurement Unit:</span>
+        <span className="font-medium text-foreground/80 text-sm">Measurement Unit:</span>
         <div className="flex gap-2">
           <Button
             size="sm"
@@ -122,15 +122,15 @@ export default function SizeCharts() {
 
       {chart.fitNotes && (
         <div className="mt-4">
-          <span className="font-medium text-gray-700">Fit Notes:</span>
-          <p className="mt-1 text-gray-600 text-sm">{chart.fitNotes}</p>
+          <span className="font-medium text-foreground/80">Fit Notes:</span>
+          <p className="mt-1 text-muted-foreground text-sm">{chart.fitNotes}</p>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <SEOMeta
         title="Size Charts - International Sizing Standards | RUN APPAREL"
         description="Access comprehensive international size charts for sportswear including US, EU, UK, and Asian sizing standards with detailed measurements."
@@ -143,23 +143,23 @@ export default function SizeCharts() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+          <h1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             International Size Charts
           </h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-lg">
+          <p className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Comprehensive sizing standards for global sportswear manufacturing
           </p>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
               <div className="font-bold text-3xl text-purple-600">{sizeCharts.length}</div>
-              <div className="text-gray-600 text-sm">Size Standards</div>
+              <div className="text-muted-foreground text-sm">Size Standards</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-3xl text-indigo-600">
                 {Object.keys(groupedCharts).length}
               </div>
-              <div className="text-gray-600 text-sm">Regions</div>
+              <div className="text-muted-foreground text-sm">Regions</div>
             </div>
           </div>
         </motion.div>
@@ -182,11 +182,11 @@ export default function SizeCharts() {
             animate={{ opacity: 1 }}
             className="py-16 text-center"
           >
-            <Ruler className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-            <h3 className="mb-2 font-semibold text-gray-900 text-xl">
+            <Ruler className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+            <h3 className="mb-2 font-semibold text-foreground text-xl">
               {searchTerm ? "No size charts found" : "No size charts available"}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
             </p>
           </motion.div>
@@ -194,8 +194,8 @@ export default function SizeCharts() {
           <div className="space-y-8">
             {Object.entries(groupedCharts).map(([region, charts]) => (
               <div key={region}>
-                <h2 className="mb-4 flex items-center gap-2 font-semibold text-2xl text-gray-900">
-                  <Globe className="h-6 w-6 text-gray-600" />
+                <h2 className="mb-4 flex items-center gap-2 font-semibold text-2xl text-foreground">
+                  <Globe className="h-6 w-6 text-muted-foreground" />
                   {region} Standards
                 </h2>
                 <ResourceGrid

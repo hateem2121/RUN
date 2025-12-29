@@ -60,12 +60,12 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border border-border bg-white p-4 transition-colors hover:bg-background">
         <div className="flex items-center gap-3">
           <Tag className="h-5 w-5 text-purple-600" />
           <div className="text-left">
-            <h3 className="font-semibold text-gray-900">Category & Fabric</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="font-semibold text-foreground">Category & Fabric</h3>
+            <p className="text-muted-foreground text-sm">
               {completedFields.length} of {recommendedFields.length} recommended fields completed
             </p>
           </div>
@@ -76,12 +76,12 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
           ) : completionRate > 0 ? (
             <AlertCircle className="h-5 w-5 text-amber-600" />
           ) : (
-            <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
+            <div className="h-5 w-5 rounded-full border-2 border-border/50" />
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -90,7 +90,7 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Category Selection */}
           <div>
-            <Label htmlFor="categoryId" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="categoryId" className="font-medium text-foreground/80 text-sm">
               Category
             </Label>
             <Select
@@ -117,7 +117,7 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
 
           {/* Fabric Selection */}
           <div>
-            <Label htmlFor="fabricId" className="font-medium text-gray-700 text-sm">
+            <Label htmlFor="fabricId" className="font-medium text-foreground/80 text-sm">
               Fabric
             </Label>
             <Select
@@ -145,7 +145,7 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
 
         {/* Size Chart Selection */}
         <div>
-          <Label htmlFor="sizeChartId" className="font-medium text-gray-700 text-sm">
+          <Label htmlFor="sizeChartId" className="font-medium text-foreground/80 text-sm">
             Size Chart
           </Label>
           <Select
@@ -172,7 +172,7 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
             </SelectContent>
           </Select>
           {sizeCharts.length === 0 && (
-            <p className="mt-1 text-gray-500 text-xs">
+            <p className="mt-1 text-muted-foreground text-xs">
               Add size charts via the Size Charts module to assign them to products
             </p>
           )}
@@ -180,13 +180,13 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
 
         {/* Fiber Composition Display */}
         {selectedFabric?.compositions && selectedFabric.compositions.length > 0 && (
-          <div className="rounded-lg bg-gray-50 p-4">
-            <h4 className="mb-3 font-medium text-gray-900">Available Fiber Compositions</h4>
+          <div className="rounded-lg bg-background p-4">
+            <h4 className="mb-3 font-medium text-foreground">Available Fiber Compositions</h4>
             <div className="space-y-2">
               {selectedFabric.compositions.map((composition: FabricComposition, index: number) => (
                 <label
                   key={index}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-white"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-white"
                 >
                   <input
                     type="radio"
@@ -197,8 +197,8 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
                     className="text-purple-600 focus:ring-purple-500"
                   />
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900">{composition.name}</div>
-                    <div className="text-gray-600 text-sm">
+                    <div className="font-medium text-foreground">{composition.name}</div>
+                    <div className="text-muted-foreground text-sm">
                       {composition.fibers
                         ?.map((fiber: FiberCompositionItem) => {
                           const fiberData = fibers.find((f) => f.id === fiber.fiberId);

@@ -34,7 +34,9 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
         >
           <h2 className="mb-4 text-center font-black-display text-3xl md:text-4xl">{title}</h2>
           {description && (
-            <p className="mx-auto mb-16 max-w-2xl text-center text-gray-600">{description}</p>
+            <p className="mx-auto mb-16 max-w-2xl text-center text-muted-foreground">
+              {description}
+            </p>
           )}
         </motion.div>
 
@@ -46,14 +48,14 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
             return (
               <Link key={product.id} href={productUrl}>
                 <motion.div
-                  className="group cursor-pointer border border-transparent p-4 text-center transition-all duration-300 ease-in-out hover:border-gray-200"
+                  className="group cursor-pointer border border-transparent p-4 text-center transition-all duration-300 ease-in-out hover:border-border"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   data-testid={`card-recommendation-${product.id}`}
                 >
-                  <div className="aspect-h-4 aspect-w-3 overflow-hidden bg-gray-100">
+                  <div className="aspect-h-4 aspect-w-3 overflow-hidden bg-muted">
                     {product.primaryImageId ? (
                       <img
                         src={`/api/media/${product.primaryImageId}`}
@@ -62,21 +64,21 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
                         data-testid={`img-recommendation-${product.id}`}
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                        <span className="text-gray-400 text-sm">No Image</span>
+                      <div className="flex h-full w-full items-center justify-center bg-muted">
+                        <span className="text-muted-foreground/70 text-sm">No Image</span>
                       </div>
                     )}
                   </div>
                   <div className="mt-4">
                     <h3
-                      className="font-semibold text-gray-900 text-sm"
+                      className="font-semibold text-foreground text-sm"
                       data-testid={`text-recommendation-name-${product.id}`}
                     >
                       {product.name}
                     </h3>
                     {product.sku && (
                       <p
-                        className="mt-1 text-gray-500 text-sm"
+                        className="mt-1 text-muted-foreground text-sm"
                         data-testid={`text-recommendation-sku-${product.id}`}
                       >
                         {product.sku}
@@ -99,7 +101,7 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
           <Link href="/products">
             <ClippedElement
               as="button"
-              className="transform bg-black px-16 py-4 font-bold text-sm text-white tracking-[0.2em] transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-gray-800"
+              className="transform bg-black px-16 py-4 font-bold text-sm text-white tracking-[0.2em] transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-muted/80"
             >
               EXPLORE FULL CATALOG
             </ClippedElement>

@@ -62,12 +62,12 @@ const SortableValueItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-start gap-4 rounded-lg border bg-gray-50 p-4 dark:bg-gray-900/50"
+      className="flex items-start gap-4 rounded-lg border bg-muted/50 p-4 dark:bg-muted/30"
     >
       <div
         {...attributes}
         {...listeners}
-        className="mt-2 cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing"
+        className="mt-2 cursor-grab text-muted-foreground/50 hover:text-muted-foreground active:cursor-grabbing"
       >
         <GripVertical className="h-5 w-5" />
       </div>

@@ -21,7 +21,7 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
   return (
     <section className="bg-background px-6 py-16 text-foreground md:py-20 lg:py-32">
       <div className="container-wide mx-auto grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
-        <div className="relative aspect-[1/1] w-full sm:aspect-[4/5]">
+        <div className="relative aspect-square w-full sm:aspect-4/5">
           <img
             src="https://picsum.photos/seed/gear-main/800/1000"
             alt="RUN GEAR Collection"

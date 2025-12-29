@@ -1,0 +1,75 @@
+@layer components {
+  /* Map Popup Enhancements */
+  .leaflet-popup-content-wrapper {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-deep);
+    color: var(--color-foreground);
+  }
+
+  .leaflet-popup-tip {
+    background-color: var(--color-card);
+  }
+
+  /* =========================
+     Model Viewer (Unified Media Theater)
+     Migrated from unified-media-theater.css
+     ========================= */
+
+  model-viewer {
+    @apply pointer-events-auto touch-pan-y; /* From webgl-pointer-events.css and global reset */
+  }
+
+  model-viewer .progress-bar {
+    @apply absolute top-1/2 left-1/2 block h-1 w-1/3 overflow-hidden rounded-sm bg-black/10;
+    transform: translate(-50%, -50%);
+  }
+
+  model-viewer .update-bar {
+    @apply bg-primary h-full w-0 transition-all duration-300;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  model-viewer[loading="eager"] .update-bar,
+  model-viewer[loading="interaction"] .update-bar {
+    @apply w-full;
+  }
+
+  model-viewer .ar-button {
+    @apply bg-primary text-primary-foreground cursor-pointer rounded-lg border-none px-4 py-2 text-sm font-medium transition-colors;
+  }
+
+  model-viewer .ar-button:hover {
+    background-color: color-mix(in oklch, var(--color-primary), black 10%);
+  }
+
+  model-viewer .hotspot {
+    @apply bg-primary block h-5 w-5 cursor-pointer rounded-full border-2 border-white shadow-sm transition-transform outline-none;
+  }
+
+  model-viewer .hotspot:focus-visible {
+    @apply outline-accent scale-125 outline-2 outline-offset-2;
+  }
+
+  model-viewer .hotspot:hover {
+    @apply scale-125;
+  }
+}
+
+@layer utilities {
+  /* WebGL Pointer Events */
+  .webgl-background {
+    pointer-events: none;
+  }
+
+  .webgl-background a,
+  .webgl-background button,
+  .webgl-background input,
+  .webgl-background select,
+  .webgl-background textarea,
+  .webgl-background [role="button"],
+  .webgl-background [tabindex]:not([tabindex="-1"]) {
+    pointer-events: auto;
+  }
+}

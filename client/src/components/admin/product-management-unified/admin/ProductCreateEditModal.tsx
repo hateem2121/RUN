@@ -50,13 +50,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Phase 5.1: Lazy load section components for code splitting - Fixed for default exports
 const BasicInfoSection = lazy(() => import("../sections/BasicInfoSection"));
@@ -862,24 +862,24 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
   // Section completion validation
 
   return (
-    <EnhancedDialog open={isOpen} onOpenChange={onClose}>
-      <EnhancedDialogContent contentType="form" aria-describedby="product-form-description">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent contentType="form" aria-describedby="product-form-description">
         <VisuallyHidden.Root>
-          <EnhancedDialogTitle>Product Management Form</EnhancedDialogTitle>
+          <DialogTitle>Product Management Form</DialogTitle>
         </VisuallyHidden.Root>
-        <EnhancedDialogHeader>
-          <EnhancedDialogTitle className="flex items-center gap-2" id="product-form-title">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2" id="product-form-title">
             <Package className="h-5 w-5" />
             {isEditing ? "Edit Product" : "Create New Product"}
-          </EnhancedDialogTitle>
-          <EnhancedDialogDescription id="product-form-description">
+          </DialogTitle>
+          <DialogDescription id="product-form-description">
             {isEditing
               ? "Update product information and media assets"
               : "Add a new product to your catalog with category, fabric, and media selections"}
-          </EnhancedDialogDescription>
-        </EnhancedDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        <EnhancedDialogBody>
+        <DialogBody>
           <div className="mb-4">
             {/* Detailed Section Progress */}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
@@ -896,7 +896,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                         ? "border-green-200 bg-green-50"
                         : percentage > 0
                           ? "border-yellow-200 bg-yellow-50"
-                          : "border-gray-200 bg-gray-50"
+                          : "border-border bg-background"
                     }`}
                   >
                     <IconComponent
@@ -905,10 +905,12 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                           ? "text-green-600"
                           : percentage > 0
                             ? "text-yellow-600"
-                            : "text-gray-400"
+                            : "text-muted-foreground/70"
                       }`}
                     />
-                    <p className="mb-1 font-medium text-gray-700 text-xs">{typedSection.name}</p>
+                    <p className="mb-1 font-medium text-foreground/80 text-xs">
+                      {typedSection.name}
+                    </p>
                     <div className="center-flex gap-1 text-xs">
                       <span
                         className={
@@ -916,7 +918,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                             ? "font-semibold text-green-600"
                             : percentage > 0
                               ? "text-yellow-600"
-                              : "text-gray-500"
+                              : "text-muted-foreground"
                         }
                       >
                         {typedSection.completed}/{typedSection.total}
@@ -991,7 +993,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             {/* Phase 5.1: Lazy-loaded sections with Suspense boundaries */}
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <BasicInfoSection
@@ -1018,7 +1020,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <CategoryFabricSection
@@ -1043,7 +1045,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <MediaAssetsSection
@@ -1064,7 +1066,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <SpecificationsSection
@@ -1087,7 +1089,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <CertificationsSection
@@ -1112,7 +1114,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-gray-50 p-4">Loading...</div>
+                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
               }
             >
               <CustomizationSection
@@ -1207,9 +1209,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             mediaPickerTarget={`product-${mediaPickerMode || "media"}`}
             selectionMode="single"
           />
-        </EnhancedDialogBody>
-      </EnhancedDialogContent>
-    </EnhancedDialog>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
   );
 }
 

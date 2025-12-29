@@ -88,7 +88,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
       {primaryImage && (
         <Card>
           <CardContent className="p-4">
-            <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
+            <div className="aspect-square overflow-hidden rounded-lg bg-muted">
               <img
                 src={
                   primaryImage.id && primaryImage.id < 1000000000000
@@ -114,14 +114,14 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
         <CardContent className="space-y-4">
           <div>
             <h3 className="font-semibold text-lg">{product.name}</h3>
-            <p className="text-gray-600">SKU: {product.sku}</p>
+            <p className="text-muted-foreground">SKU: {product.sku}</p>
           </div>
 
           <div className="flex items-center gap-2">
             <Badge
               variant={product.isActive ? "default" : "secondary"}
               className={
-                product.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
+                product.isActive ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"
               }
             >
               {product.isActive ? "Active" : "Inactive"}
@@ -134,14 +134,14 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
           {product.description && (
             <div>
               <h4 className="mb-2 font-medium">Description</h4>
-              <p className="text-gray-700 text-sm">{product.description}</p>
+              <p className="text-foreground/80 text-sm">{product.description}</p>
             </div>
           )}
 
           {product.shortDescription && (
             <div>
               <h4 className="mb-2 font-medium">Short Description</h4>
-              <p className="text-gray-700 text-sm">{product.shortDescription}</p>
+              <p className="text-foreground/80 text-sm">{product.shortDescription}</p>
             </div>
           )}
         </CardContent>
@@ -158,7 +158,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
               <Tag className="h-4 w-4 text-green-600" />
               <div>
                 <span className="font-medium">Category:</span>
-                <span className="ml-2 text-gray-700">{category.name}</span>
+                <span className="ml-2 text-foreground/80">{category.name}</span>
               </div>
             </div>
           )}
@@ -168,7 +168,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
               <Layers className="h-4 w-4 text-purple-600" />
               <div>
                 <span className="font-medium">Fabric:</span>
-                <span className="ml-2 text-gray-700">{fabric.name}</span>
+                <span className="ml-2 text-foreground/80">{fabric.name}</span>
               </div>
             </div>
           )}
@@ -198,7 +198,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
               <span>{product.certificateIds?.length || 0} Certificates</span>
             </div>
             <div className="flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-gray-600" />
+              <LinkIcon className="h-4 w-4 text-muted-foreground" />
               <span>{product.relatedProductIds?.length || 0} Related</span>
             </div>
           </div>
@@ -212,7 +212,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             <CardTitle>3D Model Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative z-elevated h-64 w-full overflow-hidden rounded-lg bg-gray-100">
+            <div className="relative z-elevated h-64 w-full overflow-hidden rounded-lg bg-muted">
               <LazyUnifiedModelViewer
                 asset={{
                   ...model3D,
@@ -250,7 +250,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
                   <span className="font-medium capitalize">
                     {key.replace(/([A-Z])/g, " $1").trim()}:
                   </span>
-                  <span className="text-gray-700">{value}</span>
+                  <span className="text-foreground/80">{value}</span>
                 </div>
               ))}
             </div>
@@ -288,13 +288,13 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             {product.minimumOrderQuantity && (
               <div className="text-sm">
                 <span className="font-medium">Minimum Order Quantity:</span>
-                <span className="ml-2 text-gray-700">{product.minimumOrderQuantity}</span>
+                <span className="ml-2 text-foreground/80">{product.minimumOrderQuantity}</span>
               </div>
             )}
             {product.leadTime && (
               <div className="text-sm">
                 <span className="font-medium">Lead Time:</span>
-                <span className="ml-2 text-gray-700">{product.leadTime}</span>
+                <span className="ml-2 text-foreground/80">{product.leadTime}</span>
               </div>
             )}
             {product.customizationOptions && product.customizationOptions.length > 0 && (

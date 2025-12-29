@@ -171,7 +171,7 @@ export function RelatedProducts({
             <Link href={productUrl} key={product.id}>
               <Card className="group h-full cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg">
                 {/* Media Preview */}
-                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                <div className="relative aspect-4/5 overflow-hidden bg-muted">
                   {primaryMedia ? (
                     <LazyMediaEnhanced
                       mediaId={primaryMedia.id}
@@ -180,7 +180,7 @@ export function RelatedProducts({
                       priority={false}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-gray-400">
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
                       <LayoutGrid className="h-12 w-12" />
                     </div>
                   )}
@@ -201,9 +201,11 @@ export function RelatedProducts({
                   <h3 className="mb-1 font-semibold text-lg transition-colors group-hover:text-blue-600">
                     {product.name || "Unnamed Product"}
                   </h3>
-                  {product.sku && <p className="mb-2 text-gray-600 text-sm">SKU: {product.sku}</p>}
+                  {product.sku && (
+                    <p className="mb-2 text-muted-foreground text-sm">SKU: {product.sku}</p>
+                  )}
                   {product.description && (
-                    <p className="line-clamp-2 text-gray-700 text-sm">{product.description}</p>
+                    <p className="line-clamp-2 text-foreground/80 text-sm">{product.description}</p>
                   )}
                 </div>
               </Card>

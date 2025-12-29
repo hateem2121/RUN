@@ -1,3 +1,6 @@
+// Limit Node.js internal thread pool to avoid system overload
+process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ReactScan from "@react-scan/vite-plugin-react-scan";
@@ -12,14 +15,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Tigger restart
 export default defineConfig(({ command: _command, mode, isSsrBuild }) => ({
-  css: {
-    lightningcss: {
-      drafts: {
-        customProperties: true,
-      },
-    },
-    transformer: "lightningcss",
-  },
   plugins: [
     react({
       babel: {

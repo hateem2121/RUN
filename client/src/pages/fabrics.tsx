@@ -130,7 +130,7 @@ export default function Fabrics() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <SEOMeta
         title="Fabrics - Premium Sportswear Materials | RUN APPAREL"
         description="Explore our extensive collection of high-performance fabrics for sportswear manufacturing."
@@ -144,10 +144,10 @@ export default function Fabrics() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 text-center"
           >
-            <Typography.H1 className="mb-4 font-bold text-4xl text-gray-900 md:text-5xl">
+            <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
               Premium Fabric Collection
             </Typography.H1>
-            <Typography.P className="mx-auto max-w-3xl text-gray-600 text-lg">
+            <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
               High-performance fabrics engineered for superior comfort, durability, and
               sustainability
             </Typography.P>
@@ -159,7 +159,7 @@ export default function Fabrics() {
                   className="font-bold text-3xl text-blue-600"
                   duration={1.5}
                 />
-                <div className="text-gray-600 text-sm">Total Fabrics</div>
+                <div className="text-muted-foreground text-sm">Total Fabrics</div>
               </div>
               <div className="text-center">
                 <AnimatedCounter
@@ -170,7 +170,7 @@ export default function Fabrics() {
                   className="font-bold text-3xl text-green-600"
                   duration={1.5}
                 />
-                <div className="text-gray-600 text-sm">Sustainable Options</div>
+                <div className="text-muted-foreground text-sm">Sustainable Options</div>
               </div>
             </div>
           </motion.div>
@@ -178,7 +178,7 @@ export default function Fabrics() {
           {/* Search Bar */}
           <div className="mx-auto max-w-2xl">
             <div className="relative">
-              <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+              <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-muted-foreground" />
               <Input
                 placeholder="Search fabrics..."
                 value={searchTerm}
@@ -197,14 +197,14 @@ export default function Fabrics() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card key={i} className="h-64 animate-pulse">
-                  <div className="h-32 bg-gray-200"></div>
+                  <div className="h-32 bg-muted"></div>
                   <CardHeader>
-                    <div className="h-6 w-3/4 rounded bg-gray-200"></div>
+                    <div className="h-6 w-3/4 rounded bg-muted"></div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      <div className="h-4 rounded bg-gray-200"></div>
-                      <div className="h-4 w-5/6 rounded bg-gray-200"></div>
+                      <div className="h-4 rounded bg-muted"></div>
+                      <div className="h-4 w-5/6 rounded bg-muted"></div>
                     </div>
                   </CardContent>
                 </Card>
@@ -228,7 +228,7 @@ export default function Fabrics() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                       >
-                        <Typography.H2 className="mb-4 flex items-center gap-2 font-semibold text-gray-800 text-xl">
+                        <Typography.H2 className="mb-4 flex items-center gap-2 font-semibold text-foreground/90 text-xl">
                           {(() => {
                             const Icon = getCategoryIcon(category);
                             return <Icon className="h-5 w-5" />;
@@ -262,7 +262,7 @@ export default function Fabrics() {
                                         backgroundColor: "#f3f4f6",
                                       }}
                                     >
-                                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/50"></div>
+                                      <div className="absolute inset-0 bg-linear-to-b from-transparent to-white/50"></div>
                                       <div className="absolute right-2 bottom-2">
                                         <Badge variant="secondary" className="text-xs">
                                           {fabric.weight} GSM
@@ -289,7 +289,7 @@ export default function Fabrics() {
                                             {fabric.name}
                                           </CardTitle>
                                           {fabric.weave && (
-                                            <Typography.P className="mt-1 text-gray-600 text-sm">
+                                            <Typography.P className="mt-1 text-muted-foreground text-sm">
                                               {fabric.weave} Weave
                                             </Typography.P>
                                           )}
@@ -314,7 +314,7 @@ export default function Fabrics() {
                                               .slice(0, 2)
                                               .map((fiber: any, idx: number) => (
                                                 <div key={idx} className="flex items-center gap-2">
-                                                  <span className="text-gray-600 text-xs">
+                                                  <span className="text-muted-foreground text-xs">
                                                     {getFiberName(fiber.fiberId)}
                                                   </span>
                                                   <Progress
@@ -327,7 +327,7 @@ export default function Fabrics() {
                                                 </div>
                                               ))}
                                             {defaultComp.fibers.length > 2 && !isExpanded && (
-                                              <Typography.P className="text-gray-500 text-xs">
+                                              <Typography.P className="text-muted-foreground/70 text-xs">
                                                 +{defaultComp.fibers.length - 2} more fibers
                                               </Typography.P>
                                             )}
@@ -349,7 +349,7 @@ export default function Fabrics() {
                                           >
                                             <div className="space-y-3 border-t pt-3">
                                               {fabric.description && (
-                                                <Typography.P className="text-gray-700 text-sm">
+                                                <Typography.P className="text-foreground/80 text-sm">
                                                   {fabric.description}
                                                 </Typography.P>
                                               )}
@@ -360,15 +360,15 @@ export default function Fabrics() {
                                                   ?.compositions;
                                                 return compositions && compositions.length > 0 ? (
                                                   <div className="space-y-2">
-                                                    <Typography.P className="font-semibold text-gray-700 text-xs">
+                                                    <Typography.P className="font-semibold text-foreground/80 text-xs">
                                                       Fiber Compositions:
                                                     </Typography.P>
                                                     {compositions.map((comp: any, idx: number) => (
                                                       <div
                                                         key={idx}
-                                                        className="rounded bg-gray-50 p-2"
+                                                        className="rounded bg-muted/50 p-2"
                                                       >
-                                                        <Typography.P className="mb-1 font-medium text-gray-700 text-xs">
+                                                        <Typography.P className="mb-1 font-medium text-foreground/80 text-xs">
                                                           {comp.name}{" "}
                                                           {comp.isDefault && (
                                                             <Badge
@@ -385,7 +385,7 @@ export default function Fabrics() {
                                                               key={fidx}
                                                               className="flex items-center gap-2 text-xs"
                                                             >
-                                                              <span className="text-gray-600">
+                                                              <span className="text-muted-foreground">
                                                                 {getFiberName(fiber.fiberId)}
                                                               </span>
                                                               <Progress
@@ -408,7 +408,9 @@ export default function Fabrics() {
                                               <div className="grid grid-cols-2 gap-2 text-xs">
                                                 {fabric.stretch && (
                                                   <div>
-                                                    <span className="text-gray-600">Stretch:</span>
+                                                    <span className="text-muted-foreground">
+                                                      Stretch:
+                                                    </span>
                                                     <span className="ml-1 font-medium">
                                                       {fabric.stretch}
                                                     </span>
@@ -453,11 +455,11 @@ export default function Fabrics() {
                   animate={{ opacity: 1 }}
                   className="py-16 text-center"
                 >
-                  <Layers className="mx-auto mb-4 h-16 w-16 text-gray-300" />
-                  <Typography.H3 className="mb-2 font-semibold text-gray-900 text-xl">
+                  <Layers className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                  <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                     No fabrics found
                   </Typography.H3>
-                  <Typography.P className="text-gray-600">
+                  <Typography.P className="text-muted-foreground">
                     {searchTerm
                       ? "Try adjusting your search terms"
                       : "No fabrics have been added yet"}
@@ -471,7 +473,7 @@ export default function Fabrics() {
           {hasMore && (
             <div ref={loadMoreRef} className="flex justify-center py-8">
               {isLoadingMore && (
-                <div className="flex items-center gap-2 text-gray-600">
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   <span>Loading more fabrics...</span>
                 </div>

@@ -27,20 +27,21 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { DeleteConfirmationDialog, StatusBadge } from "@/components/admin/shared";
+import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { ProcessCard } from "@/components/shared/manufacturing";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody, // Added missing import
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody, // Added missing import
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -104,26 +105,28 @@ function SortableProcessItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-gray-400 hover:text-gray-600"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-gray-900">{process.title || process.name}</h4>
-            <div className="mt-1 flex items-center gap-4 text-gray-500 text-sm">
+            <h4 className="font-medium text-foreground">{process.title || process.name}</h4>
+            <div className="mt-1 flex items-center gap-4 text-muted-foreground text-sm">
               <span className="flex items-center gap-1">
-                <span className="font-medium text-gray-700">Step {process.step}</span>
+                <span className="font-medium text-foreground/80">Step {process.step}</span>
               </span>
               <span>{process.duration}</span>
               <span>{process.efficiency}% Efficiency</span>
             </div>
             {process.description && (
-              <p className="mt-2 text-gray-600 text-sm">{process.description}</p>
+              <p className="mt-2 text-muted-foreground text-sm">{process.description}</p>
             )}
           </div>
         </div>
         <div className="ml-4 flex items-start gap-2">
-          <StatusBadge isActive={process.isActive ?? true} activeColor="blue" />
+          <Badge variant={(process.isActive ?? true) ? "status-info" : "status-inactive"}>
+            {(process.isActive ?? true) ? "Active" : "Inactive"}
+          </Badge>
           <Button size="sm" variant="ghost" onClick={() => onEdit(process)}>
             <Edit className="h-4 w-4" />
           </Button>
@@ -327,7 +330,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
         {processesLoading ? (
           <div className="py-8 text-center">Loading processes...</div>
         ) : processes.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-8 text-center text-muted-foreground">
             No manufacturing processes found. Create your first process to get started.
           </div>
         ) : (
@@ -355,20 +358,18 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
         )}
 
         {/* Process Dialog */}
-        <EnhancedDialog open={showProcessDialog} onOpenChange={setShowProcessDialog}>
-          <EnhancedDialogContent
+        <Dialog open={showProcessDialog} onOpenChange={setShowProcessDialog}>
+          <DialogContent
             contentType="form"
             className={showPreview ? "w-full max-w-6xl" : "max-w-lg"}
           >
-            <EnhancedDialogHeader>
+            <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <EnhancedDialogTitle>
-                    {editingProcess ? "Edit Process" : "Add New Process"}
-                  </EnhancedDialogTitle>
-                  <EnhancedDialogDescription>
+                  <DialogTitle>{editingProcess ? "Edit Process" : "Add New Process"}</DialogTitle>
+                  <DialogDescription>
                     Configure manufacturing process step and details
-                  </EnhancedDialogDescription>
+                  </DialogDescription>
                 </div>
                 <Button
                   variant="outline"
@@ -380,10 +381,10 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                   {showPreview ? "Hide Preview" : "Show Preview"}
                 </Button>
               </div>
-            </EnhancedDialogHeader>
+            </DialogHeader>
 
             <form onSubmit={handleProcessSubmit} className="flex min-h-0 flex-1 flex-col">
-              <EnhancedDialogBody className="space-y-4 px-1">
+              <DialogBody className="space-y-4 px-1">
                 <div className={showPreview ? "grid grid-cols-1 gap-8 lg:grid-cols-2" : ""}>
                   {/* Left Column: Form */}
                   <div className="space-y-4">
@@ -475,7 +476,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                               })
                             }
                           />
-                          <span className="text-gray-500 text-sm">%</span>
+                          <span className="text-muted-foreground text-sm">%</span>
                         </div>
                       </div>
                       <div>
@@ -609,9 +610,9 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                     </div>
                   )}
                 </div>
-              </EnhancedDialogBody>
+              </DialogBody>
 
-              <EnhancedDialogFooter>
+              <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setShowProcessDialog(false)}>
                   Cancel
                 </Button>
@@ -621,10 +622,10 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
                 >
                   {editingProcess ? "Update Process" : "Create Process"}
                 </Button>
-              </EnhancedDialogFooter>
+              </DialogFooter>
             </form>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+          </DialogContent>
+        </Dialog>
 
         {/* Process Media Picker */}
         <StandardMediaSelectionDialog

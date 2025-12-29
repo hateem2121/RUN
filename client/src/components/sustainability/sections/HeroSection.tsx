@@ -44,7 +44,7 @@ export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
           className="h-full w-full object-cover"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-stone-900/50 to-stone-800/30" />
+      <div className="absolute inset-0 bg-linear-to-b from-stone-900/50 to-stone-800/30" />
     </div>
   );
 }
@@ -65,7 +65,7 @@ export function HeroSection({
         {heroMedia && <OptimizedSustainabilityHero media={heroMedia} />}
       </motion.div>
 
-      <div className="center-flex absolute inset-0 z-default bg-gradient-to-b from-black/30 via-black/10 to-transparent">
+      <div className="center-flex absolute inset-0 z-default bg-linear-to-b from-black/30 via-black/10 to-transparent">
         <BackgroundRippleEffect />
         <div className="container mx-auto px-4 text-center">
           <motion.div

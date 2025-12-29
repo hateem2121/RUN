@@ -501,7 +501,7 @@ function MediaLibraryMainContent({
             className={cn(
               "min-h-0 flex-1",
               // STANDALONE MODE: This container becomes the scroll owner
-              // DIALOG MODE: No overflow to let EnhancedDialogBody handle scrolling
+              // DIALOG MODE: No overflow to let DialogBody handle scrolling
               isStandalone && "overflow-y-auto",
             )}
           >

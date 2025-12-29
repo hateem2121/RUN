@@ -32,16 +32,16 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
           <path d="M12 17h.01" />
         </svg>
       </div>
-      <h2 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+      <h2 className="mb-2 font-semibold text-foreground text-lg dark:text-white">
         Something went wrong
       </h2>
-      <p className="mb-6 max-w-md text-gray-600 text-sm dark:text-gray-400">
+      <p className="mb-6 max-w-md text-muted-foreground text-sm dark:text-muted-foreground/70">
         {error.message || "An unexpected error occurred while loading this component."}
       </p>
       <button
         type="button"
         onClick={resetErrorBoundary}
-        className="rounded-md bg-white px-4 py-2 font-medium text-gray-900 text-sm shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700"
+        className="rounded-md bg-white px-4 py-2 font-medium text-foreground text-sm shadow-sm ring-1 ring-border ring-inset hover:bg-background dark:bg-muted/80 dark:text-white dark:ring-border dark:hover:bg-muted/70"
       >
         Try Again
       </button>

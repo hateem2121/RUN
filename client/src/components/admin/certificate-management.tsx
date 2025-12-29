@@ -31,19 +31,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -1075,12 +1075,12 @@ export default function CertificateManagement() {
   }, [certificates]);
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen overflow-hidden bg-linear-to-br from-blue-50 via-white to-purple-50">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text font-bold font-neue-stance text-3xl text-transparent">
+            <h1 className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text font-bold font-neue-stance text-3xl text-transparent">
               Certificate Management
             </h1>
             <p className="mt-2 text-neutral-600">
@@ -1090,7 +1090,7 @@ export default function CertificateManagement() {
           <div className="flex items-center space-x-3">
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Certificate
@@ -1265,23 +1265,20 @@ export default function CertificateManagement() {
                         <Clock className="mr-1 h-4 w-4" />
                         Deactivate
                       </Button>
-                      <EnhancedDialog
-                        open={showBulkDeleteDialog}
-                        onOpenChange={setShowBulkDeleteDialog}
-                      >
-                        <EnhancedDialogContent contentType="form">
-                          <EnhancedDialogHeader>
-                            <EnhancedDialogTitle>Delete Certificates</EnhancedDialogTitle>
-                          </EnhancedDialogHeader>
-                          <EnhancedDialogBody>
+                      <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+                        <DialogContent contentType="form">
+                          <DialogHeader>
+                            <DialogTitle>Delete Certificates</DialogTitle>
+                          </DialogHeader>
+                          <DialogBody>
                             <p className="text-neutral-600 text-sm">
                               Are you sure you want to delete {selectedCertificates.length}{" "}
                               certificate
                               {selectedCertificates.length === 1 ? "" : "s"}? This action cannot be
                               undone.
                             </p>
-                          </EnhancedDialogBody>
-                          <EnhancedDialogFooter>
+                          </DialogBody>
+                          <DialogFooter>
                             <Button
                               type="button"
                               variant="outline"
@@ -1298,9 +1295,9 @@ export default function CertificateManagement() {
                             >
                               Delete
                             </Button>
-                          </EnhancedDialogFooter>
-                        </EnhancedDialogContent>
-                      </EnhancedDialog>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                       <Button
                         size="sm"
                         variant="destructive"
@@ -1343,14 +1340,12 @@ export default function CertificateManagement() {
         </Tabs>
 
         {/* Create Certificate Dialog */}
-        <EnhancedDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <EnhancedDialogContent contentType="form">
-            <EnhancedDialogHeader>
-              <EnhancedDialogTitle className="font-neue-stance">
-                Create New Certificate
-              </EnhancedDialogTitle>
-            </EnhancedDialogHeader>
-            <EnhancedDialogBody>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent contentType="form">
+            <DialogHeader>
+              <DialogTitle className="font-neue-stance">Create New Certificate</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="name">Certificate Name</Label>
@@ -1482,8 +1477,8 @@ export default function CertificateManagement() {
                   <Label htmlFor="isActive">Active</Label>
                 </div>
               </form>
-            </EnhancedDialogBody>
-            <EnhancedDialogFooter>
+            </DialogBody>
+            <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                 Cancel
               </Button>
@@ -1496,19 +1491,17 @@ export default function CertificateManagement() {
               >
                 {createCertificateMutation.isPending ? "Creating..." : "Create Certificate"}
               </Button>
-            </EnhancedDialogFooter>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Edit Certificate Dialog */}
-        <EnhancedDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <EnhancedDialogContent contentType="form">
-            <EnhancedDialogHeader>
-              <EnhancedDialogTitle className="font-neue-stance">
-                Edit Certificate
-              </EnhancedDialogTitle>
-            </EnhancedDialogHeader>
-            <EnhancedDialogBody>
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent contentType="form">
+            <DialogHeader>
+              <DialogTitle className="font-neue-stance">Edit Certificate</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
               <form onSubmit={handleEditSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="edit-name">Certificate Name</Label>
@@ -1640,8 +1633,8 @@ export default function CertificateManagement() {
                   <Label htmlFor="edit-isActive">Active</Label>
                 </div>
               </form>
-            </EnhancedDialogBody>
-            <EnhancedDialogFooter>
+            </DialogBody>
+            <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel
               </Button>
@@ -1654,9 +1647,9 @@ export default function CertificateManagement() {
               >
                 {updateCertificateMutation.isPending ? "Updating..." : "Update Certificate"}
               </Button>
-            </EnhancedDialogFooter>
-          </EnhancedDialogContent>
-        </EnhancedDialog>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Media Picker Modal - STANDARDIZED */}
         <StandardMediaSelectionDialog

@@ -69,10 +69,10 @@ export function MediaPreview({
   const renderMedia = () => {
     if (hasError) {
       return (
-        <div className="flex h-full items-center justify-center rounded border-2 border-gray-300 border-dashed bg-gray-100">
+        <div className="flex h-full items-center justify-center rounded border-2 border-surface-emphasis border-dashed bg-surface-subtle">
           <div className="text-center">
             {getTypeIcon(asset.type)}
-            <p className="mt-1 text-gray-500 text-xs">Failed to load</p>
+            <p className="mt-1 text-text-muted text-xs">Failed to load</p>
           </div>
         </div>
       );
@@ -89,7 +89,7 @@ export function MediaPreview({
               preload="metadata"
               onError={() => setHasError(true)}
             />
-            <div className="center-flex absolute inset-0 rounded bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
+            <div className="center-flex absolute inset-0 rounded bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100">
               <Video className="h-6 w-6 text-white drop-shadow-lg" />
             </div>
             {showTypeIcon && (
@@ -103,7 +103,7 @@ export function MediaPreview({
 
       case "3d_model":
         return (
-          <div className="flex h-full items-center justify-center rounded border border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100">
+          <div className="flex h-full items-center justify-center rounded border border-orange-200 bg-linear-to-br from-orange-50 to-orange-100">
             <div className="text-center">
               <Box className="mx-auto mb-1 h-6 w-6 text-orange-600" />
               <p
@@ -156,8 +156,8 @@ export function MediaPreview({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xs transition-all duration-300",
-        "hover:border-gray-300 hover:shadow-md",
+        "group relative overflow-hidden rounded-lg border border-border bg-background shadow-xs transition-all duration-300",
+        "hover:border-border hover:shadow-md",
         sizeClasses[size],
         className,
       )}

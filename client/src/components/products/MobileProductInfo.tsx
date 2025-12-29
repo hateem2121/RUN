@@ -56,7 +56,7 @@ export function MobileProductInfo({
           <Card>
             <CardContent className="pt-6">
               <h3 className="mb-2 font-semibold text-sm">Technical Specifications</h3>
-              <ul className="space-y-1 text-gray-600 text-xs">
+              <ul className="space-y-1 text-muted-foreground text-xs">
                 <li>• Weight: 180g (size M)</li>
                 <li>• Fabric: 90% Polyester, 10% Elastane</li>
                 <li>• Care: Machine wash cold, tumble dry low</li>
@@ -70,10 +70,10 @@ export function MobileProductInfo({
           <Card>
             <CardContent className="pt-6">
               <h3 className="mb-2 font-semibold text-sm">Premium Materials</h3>
-              <p className="mb-4 text-gray-600 text-xs">
+              <p className="mb-4 text-muted-foreground text-xs">
                 Our performance fabric is engineered with recycled polyester and features:
               </p>
-              <ul className="space-y-1 text-gray-600 text-xs">
+              <ul className="space-y-1 text-muted-foreground text-xs">
                 <li>• 4-way stretch for unrestricted movement</li>
                 <li>• Quick-dry technology</li>
                 <li>• Breathable mesh panels</li>
@@ -91,7 +91,7 @@ export function MobileProductInfo({
                 {product.customizationOptions?.map((option: string, index: number) => (
                   <div key={index} className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-blue-600" />
-                    <span className="text-gray-600 text-xs">{option}</span>
+                    <span className="text-muted-foreground text-xs">{option}</span>
                   </div>
                 ))}
               </div>

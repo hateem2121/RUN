@@ -87,7 +87,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
 
             <button
               onClick={() => (window.location.href = "/")}
-              className="flex items-center gap-2 rounded-lg bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
+              className="flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-secondary-foreground transition-colors hover:bg-secondary/80"
             >
               <Home className="h-4 w-4" />
               Go Home
@@ -124,10 +124,10 @@ export function SimpleErrorBoundary({
   return (
     <EnhancedBentoCardErrorBoundary
       fallback={
-        <div className="flex h-full min-h-48 items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
+        <div className="flex h-full min-h-48 items-center justify-center rounded-lg border border-surface-emphasis bg-surface-subtle">
           <div className="text-center">
-            <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-            <p className="text-gray-600 text-sm">{message}</p>
+            <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-text-muted" />
+            <p className="text-sm text-text-disabled">{message}</p>
           </div>
         </div>
       }

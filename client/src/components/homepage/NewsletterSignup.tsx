@@ -35,7 +35,7 @@ const NewsletterSignup: React.FC = () => {
     <section className="w-full border-black/5 border-t bg-luxury-surface py-24">
       <div className="mx-auto max-w-md px-6 text-center">
         <h3 className="mb-2 font-bold text-2xl uppercase tracking-tight">Stay in the Loop</h3>
-        <p className="mx-auto mb-8 max-w-xs text-balance text-gray-500 text-sm">
+        <p className="mx-auto mb-8 max-w-xs text-balance text-muted-foreground text-sm">
           Receive early access to new drops and exclusive archival content.
         </p>
 
@@ -48,7 +48,7 @@ const NewsletterSignup: React.FC = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -20, opacity: 0 }}
-                  className="center-flex absolute inset-0 bg-gray-100 font-medium text-green-600 text-sm"
+                  className="center-flex absolute inset-0 bg-muted font-medium text-green-600 text-sm"
                 >
                   ✓ Subscribed
                 </motion.div>

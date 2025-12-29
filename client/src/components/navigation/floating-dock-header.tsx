@@ -14,7 +14,7 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
               RUN APPAREL
             </h1>
             <span className="hidden h-1 w-1 rounded-full bg-luxury-charcoal/20 sm:inline" />
-            <p className="whitespace-nowrap font-neue-stance font-semibold text-[10px] text-zinc-600 sm:text-sm">
+            <p className="whitespace-nowrap font-neue-stance font-semibold text-micro text-zinc-600 sm:text-sm">
               (PVT) LTD
             </p>
           </div>

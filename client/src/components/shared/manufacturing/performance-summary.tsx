@@ -57,7 +57,7 @@ export function PerformanceSummary() {
       case "warning":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-muted text-foreground border-border";
     }
   };
 
@@ -68,7 +68,7 @@ export function PerformanceSummary() {
       case "met":
         return <CheckCircle2 className="h-3 w-3 text-blue-600" />;
       default:
-        return <CheckCircle2 className="h-3 w-3 text-gray-600" />;
+        return <CheckCircle2 className="h-3 w-3 text-muted-foreground" />;
     }
   };
 
@@ -99,12 +99,12 @@ export function PerformanceSummary() {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Current:</span>
+                  <span className="text-muted-foreground">Current:</span>
                   <span className="font-semibold text-green-600">{metric.value}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Target:</span>
-                  <span className="text-gray-800">{metric.target}</span>
+                  <span className="text-muted-foreground">Target:</span>
+                  <span className="text-foreground">{metric.target}</span>
                 </div>
                 <div className="mt-2 text-blue-600 text-xs">{metric.improvement}</div>
               </div>
@@ -119,8 +119,8 @@ export function PerformanceSummary() {
           </h4>
           <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
             <div className="space-y-2">
-              <div className="font-medium text-gray-700">Cache Optimizations:</div>
-              <ul className="ml-4 space-y-1 text-gray-600">
+              <div className="font-medium text-foreground/80">Cache Optimizations:</div>
+              <ul className="ml-4 space-y-1 text-muted-foreground">
                 <li>• Extended React Query cache (30 minutes)</li>
                 <li>• Server-side cache headers</li>
                 <li>• Aggressive cache preloading</li>
@@ -128,8 +128,8 @@ export function PerformanceSummary() {
               </ul>
             </div>
             <div className="space-y-2">
-              <div className="font-medium text-gray-700">Media Enhancements:</div>
-              <ul className="ml-4 space-y-1 text-gray-600">
+              <div className="font-medium text-foreground/80">Media Enhancements:</div>
+              <ul className="ml-4 space-y-1 text-muted-foreground">
                 <li>• Lazy loading with intersection observer</li>
                 <li>• WebP format with JPEG fallbacks</li>
                 <li>• Progressive image loading</li>

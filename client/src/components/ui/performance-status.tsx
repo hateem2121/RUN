@@ -82,7 +82,7 @@ export function PerformanceStatus({
           onClick={() => setShowReport(false)}
         >
           <motion.div
-            className="max-h-modal-sm w-full max-w-2xl overflow-auto rounded-lg bg-gray-900 p-6"
+            className="max-h-modal-sm w-full max-w-2xl overflow-auto rounded-lg bg-muted p-6"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             onClick={(e) => e.stopPropagation()}

@@ -30,8 +30,8 @@ export function PublicQualitySection({ mediaAssets, qualities }: PublicQualitySe
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 font-bold text-4xl text-gray-900">Quality Assurance</h2>
-            <p className="mx-auto max-w-3xl text-gray-600 text-xl">
+            <h2 className="mb-4 font-bold text-4xl text-foreground">Quality Assurance</h2>
+            <p className="mx-auto max-w-3xl text-muted-foreground text-xl">
               Rigorous testing and quality control at every stage
             </p>
           </motion.div>

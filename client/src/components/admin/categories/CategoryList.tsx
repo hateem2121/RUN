@@ -259,7 +259,7 @@ export default function CategoryList(props: CategoryListProps) {
         {activeCategory && (
           <div className="rounded-lg border-2 border-blue-300 bg-white p-2 opacity-90 shadow-lg">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-gray-100">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
                 {(activeCategory as any).imageUrl ? (
                   <img
                     src={(activeCategory as any).imageUrl}
@@ -270,7 +270,7 @@ export default function CategoryList(props: CategoryListProps) {
                   <span className="text-xs">📁</span>
                 )}
               </div>
-              <span className="font-medium text-gray-900">{activeCategory.name}</span>
+              <span className="font-medium text-foreground">{activeCategory.name}</span>
             </div>
           </div>
         )}

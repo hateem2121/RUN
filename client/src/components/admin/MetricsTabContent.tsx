@@ -6,14 +6,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -355,7 +355,7 @@ export function MetricsTabContent({
                 )}
               </>
             ) : (
-              <div className="py-8 text-center text-gray-500">
+              <div className="py-8 text-center text-muted-foreground">
                 No metrics yet. Create your first sustainability metric.
               </div>
             )}
@@ -364,19 +364,17 @@ export function MetricsTabContent({
       </TabsContent>
 
       {/* Metric Dialog */}
-      <EnhancedDialog open={showMetricDialog} onOpenChange={setShowMetricDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingMetric ? "Edit Metric" : "Add New Metric"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showMetricDialog} onOpenChange={setShowMetricDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingMetric ? "Edit Metric" : "Add New Metric"}</DialogTitle>
+            <DialogDescription>
               {editingMetric
                 ? "Update the sustainability metric details"
                 : "Create a new sustainability metric"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="category">Category</Label>
@@ -512,7 +510,7 @@ export function MetricsTabContent({
               <div>
                 <Label>Icon Selection</Label>
                 <div className="mt-2 flex items-center gap-3">
-                  <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
+                  <div className="flex items-center gap-2 rounded-lg border bg-background p-3">
                     <IconDisplay iconName={metricForm.icon} showBackground={true} />
                     <span className="font-medium text-sm">{metricForm.icon || "Leaf"}</span>
                   </div>
@@ -557,8 +555,8 @@ export function MetricsTabContent({
                 </div>
               </div>
             </div>
-          </EnhancedDialogBody>
-          <EnhancedDialogFooter>
+          </DialogBody>
+          <DialogFooter>
             <div className="flex w-full justify-between">
               <Button
                 variant="secondary"
@@ -580,20 +578,20 @@ export function MetricsTabContent({
                 </Button>
               </div>
             </div>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Metric Preview Modal */}
-      <EnhancedDialog open={showMetricPreview} onOpenChange={setShowMetricPreview}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Metric Preview</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showMetricPreview} onOpenChange={setShowMetricPreview}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Metric Preview</DialogTitle>
+            <DialogDescription>
               This is how your metric will appear on the sustainability page
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <div className="rounded-lg border-2 border-gray-200 border-dashed bg-gray-50 p-6">
+            </DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg border-2 border-border border-dashed bg-background p-6">
             <div className="rounded-xl bg-white p-6 shadow-lg">
               <div className="flex items-start gap-4">
                 <div className="shrink-0">
@@ -603,20 +601,22 @@ export function MetricsTabContent({
                 </div>
                 <div className="flex-1">
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-500 text-sm">
+                    <span className="rounded bg-muted px-2 py-1 font-medium text-muted-foreground text-sm">
                       {metricForm.category || "Category"}
                     </span>
                   </div>
-                  <h3 className="mb-1 font-semibold text-gray-900 text-lg">
+                  <h3 className="mb-1 font-semibold text-foreground text-lg">
                     {metricForm.metric || "Metric Name"}
                   </h3>
                   <div className="mb-3 flex items-baseline gap-2">
                     <span className="font-bold text-3xl text-green-600">
                       {metricForm.value || "0"}
                     </span>
-                    <span className="text-gray-600 text-lg">{metricForm.unit || "unit"}</span>
+                    <span className="text-lg text-muted-foreground">
+                      {metricForm.unit || "unit"}
+                    </span>
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
+                  <p className="text-foreground/80 text-sm leading-relaxed">
                     {metricForm.description ||
                       "Add a description to explain this metric and its impact on sustainability goals."}
                   </p>
@@ -624,13 +624,13 @@ export function MetricsTabContent({
               </div>
             </div>
           </div>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setShowMetricPreview(false)}>
               Close Preview
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Metric Icon Picker */}
       <IconPicker

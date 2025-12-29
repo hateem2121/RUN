@@ -31,21 +31,21 @@ export const ProductsErrorFallback = React.memo(function ProductsErrorFallback({
   };
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center p-6">
+    <div className="flex min-h-loading-center items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
-          <CardTitle className="text-gray-900 text-xl">Products Page Error</CardTitle>
+          <CardTitle className="text-foreground text-xl">Products Page Error</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-center">
-          <p className="text-gray-600 text-sm">
+          <p className="text-muted-foreground text-sm">
             The products management page encountered an error and couldn't load properly.
           </p>
 
           {error && (
-            <details className="rounded border bg-gray-50 p-3 text-gray-500 text-xs">
+            <details className="rounded border bg-background p-3 text-muted-foreground text-xs">
               <summary className="cursor-pointer font-medium">Technical Details</summary>
               <pre className="mt-2 overflow-auto text-left">{error.message}</pre>
             </details>

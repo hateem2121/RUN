@@ -162,7 +162,7 @@ export function AboutTeamMessageTab() {
               rows={8}
               className="resize-none"
             />
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Write a compelling message that showcases your company's values and commitment
             </p>
           </div>
@@ -204,15 +204,15 @@ export function AboutTeamMessageTab() {
                   </Button>
                 </div>
               ) : (
-                <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-                  <Upload className="h-6 w-6 text-gray-400" />
+                <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-muted dark:bg-muted/80">
+                  <Upload className="h-6 w-6 text-muted-foreground/70" />
                 </div>
               )}
               <Button onClick={() => setIsPickerOpen(true)} variant="outline">
                 Select Image
               </Button>
             </div>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Add a photo of your team, CEO, or company leadership
             </p>
           </div>
@@ -225,7 +225,7 @@ export function AboutTeamMessageTab() {
           <CardDescription>See how your message will appear on the About page</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-900">
+          <div className="rounded-lg bg-background p-6 dark:bg-foreground">
             <div className="mx-auto max-w-3xl">
               {formData.title && <h3 className="mb-4 font-bold text-2xl">{formData.title}</h3>}
 
@@ -244,15 +244,17 @@ export function AboutTeamMessageTab() {
 
                 <div className="flex-1">
                   {formData.message ? (
-                    <p className="mb-4 whitespace-pre-wrap text-gray-600 dark:text-gray-400">
+                    <p className="mb-4 whitespace-pre-wrap text-muted-foreground dark:text-muted-foreground/70">
                       {formData.message}
                     </p>
                   ) : (
-                    <p className="mb-4 text-gray-400 italic">Your message will appear here...</p>
+                    <p className="mb-4 text-muted-foreground/70 italic">
+                      Your message will appear here...
+                    </p>
                   )}
 
                   {formData.signature && (
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="font-semibold text-foreground dark:text-foreground">
                       — {formData.signature}
                     </p>
                   )}

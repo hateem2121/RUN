@@ -74,7 +74,7 @@ export function ManufacturingProcessFlow() {
                 {/* Connecting Line */}
                 {index < activeProcesses.length - 1 && (
                   <div className="absolute top-1/2 left-1/2 h-1 w-full -translate-y-1/2">
-                    <div className="process-line h-full origin-left bg-gradient-to-r from-blue-400 to-blue-600" />
+                    <div className="process-line h-full origin-left bg-linear-to-r from-blue-400 to-blue-600" />
                     {/* Flow Particle */}
                     <div
                       className={`particle-${index} absolute top-1/2 left-0 h-3 w-3 -translate-y-1/2 rounded-full bg-blue-400`}
@@ -90,16 +90,18 @@ export function ManufacturingProcessFlow() {
                   transition={{ delay: index * 0.2 }}
                   className="relative z-default flex flex-col items-center"
                 >
-                  <div className="process-dot flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 font-bold text-white shadow-lg">
+                  <div className="process-dot flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-blue-600 font-bold text-white shadow-lg">
                     {index + 1}
                   </div>
                   <div className="mt-3 text-center">
-                    <h4 className="font-medium text-gray-900 text-sm">{process.title}</h4>
+                    <h4 className="font-medium text-foreground text-sm">{process.title}</h4>
                     {process.efficiency && (
-                      <p className="mt-1 text-gray-600 text-xs">{process.efficiency}% Efficiency</p>
+                      <p className="mt-1 text-muted-foreground text-xs">
+                        {process.efficiency}% Efficiency
+                      </p>
                     )}
                     {process.duration && (
-                      <p className="text-gray-500 text-xs">{process.duration}</p>
+                      <p className="text-muted-foreground text-xs">{process.duration}</p>
                     )}
                   </div>
                 </motion.div>
@@ -115,25 +117,25 @@ export function ManufacturingProcessFlow() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + index * 0.1 }}
-                className="rounded-lg border border-blue-200 bg-gradient-to-br from-gray-50 to-blue-50 p-3"
+                className="rounded-lg border border-blue-200 bg-linear-to-br from-background to-blue-50 p-3"
               >
                 <div className="mb-2 flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-100 font-bold text-blue-600 text-sm">
                     {index + 1}
                   </div>
-                  <h5 className="font-medium text-gray-900 text-sm">{process.category}</h5>
+                  <h5 className="font-medium text-foreground text-sm">{process.category}</h5>
                 </div>
-                <p className="text-gray-600 text-xs">{process.description}</p>
+                <p className="text-muted-foreground text-xs">{process.description}</p>
               </motion.div>
             ))}
           </div>
 
           {/* Overall Metrics */}
-          <div className="mt-6 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
+          <div className="mt-6 rounded-lg bg-linear-to-r from-blue-50 to-indigo-50 p-4">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="font-bold text-2xl text-blue-600">{activeProcesses.length}</div>
-                <div className="text-gray-600 text-xs">Active Processes</div>
+                <div className="text-muted-foreground text-xs">Active Processes</div>
               </div>
               <div>
                 <div className="font-bold text-2xl text-blue-600">
@@ -147,7 +149,7 @@ export function ManufacturingProcessFlow() {
                     : 0}
                   %
                 </div>
-                <div className="text-gray-600 text-xs">Average Efficiency</div>
+                <div className="text-muted-foreground text-xs">Average Efficiency</div>
               </div>
               <div>
                 <div className="font-bold text-2xl text-blue-600">
@@ -157,7 +159,7 @@ export function ManufacturingProcessFlow() {
                     ).length
                   }
                 </div>
-                <div className="text-gray-600 text-xs">High-Performance</div>
+                <div className="text-muted-foreground text-xs">High-Performance</div>
               </div>
             </div>
           </div>

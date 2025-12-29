@@ -15,8 +15,8 @@ function ModuleLoader() {
   return (
     <div className="flex h-32 items-center justify-center">
       <div className="text-center">
-        <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-        <p className="text-gray-600 text-sm">Loading...</p>
+        <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+        <p className="text-muted-foreground text-sm">Loading...</p>
       </div>
     </div>
   );
@@ -52,7 +52,7 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Performance Monitor - Development Only */}
       {process.env.NODE_ENV === "development" && <PerformanceMonitor />}
 
@@ -93,7 +93,7 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
 
             {/* Details Panel */}
             {showDetailsPanel && selectedProduct && (
-              <div className="w-1/3 border-gray-200 border-l pl-6">
+              <div className="w-1/3 border-border border-l pl-6">
                 <Suspense fallback={<ModuleLoader />}>
                   <ProductDetailsPanel
                     product={selectedProduct}

@@ -6,14 +6,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -387,7 +387,7 @@ export function GoalsTabContent({
                 )}
               </>
             ) : (
-              <div className="py-8 text-center text-gray-500">
+              <div className="py-8 text-center text-muted-foreground">
                 No goals yet. Create your first sustainability goal.
               </div>
             )}
@@ -396,17 +396,17 @@ export function GoalsTabContent({
       </TabsContent>
 
       {/* Goal Dialog */}
-      <EnhancedDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>{editingGoal ? "Edit Goal" : "Add New Goal"}</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingGoal ? "Edit Goal" : "Add New Goal"}</DialogTitle>
+            <DialogDescription>
               {editingGoal
                 ? "Update the sustainability goal details"
                 : "Create a new sustainability goal"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <EnhancedDialogBody>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="goal-title">Title</Label>
@@ -559,8 +559,8 @@ export function GoalsTabContent({
                 <Label htmlFor="goal-active">Active</Label>
               </div>
             </div>
-          </EnhancedDialogBody>
-          <EnhancedDialogFooter>
+          </DialogBody>
+          <DialogFooter>
             <div className="flex w-full justify-between">
               <Button variant="secondary" onClick={() => setShowGoalPreview(true)}>
                 <Eye className="mr-2 h-4 w-4" />
@@ -578,45 +578,45 @@ export function GoalsTabContent({
                 </Button>
               </div>
             </div>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Goal Preview Modal */}
-      <EnhancedDialog open={showGoalPreview} onOpenChange={setShowGoalPreview}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Goal Preview</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showGoalPreview} onOpenChange={setShowGoalPreview}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>Goal Preview</DialogTitle>
+            <DialogDescription>
               This is how your goal will appear on the sustainability page
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
-          <div className="rounded-lg border-2 border-gray-200 border-dashed bg-gray-50 p-6">
+            </DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg border-2 border-border border-dashed bg-background p-6">
             <div className="rounded-xl bg-white p-6 shadow-lg">
               <div className="mb-3 flex items-center gap-2">
-                <span className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-500 text-sm">
+                <span className="rounded bg-muted px-2 py-1 font-medium text-muted-foreground text-sm">
                   {goalForm.category || "Category"}
                 </span>
                 <span className="rounded bg-blue-50 px-2 py-1 font-medium text-blue-600 text-sm">
                   Target: {goalForm.targetYear || "2030"}
                 </span>
               </div>
-              <h3 className="mb-3 font-semibold text-gray-900 text-lg">
+              <h3 className="mb-3 font-semibold text-foreground text-lg">
                 {goalForm.title || "Goal Title"}
               </h3>
-              <p className="mb-4 text-gray-700 text-sm">
+              <p className="mb-4 text-foreground/80 text-sm">
                 {goalForm.description || "Goal description..."}
               </p>
-              <div className="rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-4">
+              <div className="rounded-lg bg-linear-to-r from-blue-50 to-purple-50 p-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="font-medium text-gray-600">Current:</span>
-                    <span className="ml-2 text-gray-800">
+                    <span className="font-medium text-muted-foreground">Current:</span>
+                    <span className="ml-2 text-foreground">
                       {goalForm.currentValue || "0"} {goalForm.unit || "units"}
                     </span>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-600">Target:</span>
+                    <span className="font-medium text-muted-foreground">Target:</span>
                     <span className="ml-2 font-medium text-purple-600">
                       {goalForm.targetValue || "100"} {goalForm.unit || "units"}
                     </span>
@@ -625,13 +625,13 @@ export function GoalsTabContent({
               </div>
             </div>
           </div>
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setShowGoalPreview(false)}>
               Close Preview
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

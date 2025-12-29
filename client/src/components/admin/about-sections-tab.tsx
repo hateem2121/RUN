@@ -24,13 +24,13 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -70,17 +70,17 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-lg border bg-white p-4 dark:bg-gray-950 ${isDragging ? "shadow-lg" : ""}`}
+      className={`rounded-lg border bg-white p-4 dark:bg-background ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-start gap-4">
         <button className="mt-1 cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-gray-400" />
+          <GripVertical className="h-5 w-5 text-muted-foreground/70" />
         </button>
 
         <div className="flex-1">
           <div className="mb-2 flex items-center gap-2">
             <h3 className="font-semibold text-lg">{section.title || "Untitled Section"}</h3>
-            <span className="rounded bg-gray-100 px-2 py-1 text-gray-500 text-sm dark:bg-gray-800">
+            <span className="rounded bg-muted px-2 py-1 text-muted-foreground text-sm dark:bg-muted/80">
               {getSectionTypeLabel(section.sectionType)}
             </span>
             {section.isActive === false && (
@@ -90,12 +90,12 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
             )}
           </div>
           {section.content && (
-            <p className="line-clamp-2 text-gray-600 text-sm dark:text-gray-400">
+            <p className="line-clamp-2 text-muted-foreground text-sm dark:text-muted-foreground/70">
               {section.content}
             </p>
           )}
           {section.mediaIds && section.mediaIds.length > 0 && (
-            <p className="mt-1 text-gray-500 text-sm">
+            <p className="mt-1 text-muted-foreground text-sm">
               {section.mediaIds.length} media item
               {section.mediaIds.length > 1 ? "s" : ""} attached
             </p>
@@ -367,7 +367,7 @@ export function AboutSectionsTab() {
         </CardHeader>
         <CardContent>
           {sortedSections.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">
+            <div className="py-12 text-center text-muted-foreground">
               No sections yet. Add your first content section!
             </div>
           ) : (
@@ -396,15 +396,13 @@ export function AboutSectionsTab() {
         </CardContent>
       </Card>
 
-      <EnhancedDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingSection ? "Edit Section" : "Add Section"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingSection ? "Edit Section" : "Add Section"}</DialogTitle>
+          </DialogHeader>
 
-          <EnhancedDialogBody>
+          <DialogBody>
             <div className="space-y-4">
               <CustomDropdown
                 value={formData.sectionType}
@@ -498,16 +496,16 @@ export function AboutSectionsTab() {
                 <Label htmlFor="active">Active (show on About page)</Label>
               </div>
             </div>
-          </EnhancedDialogBody>
+          </DialogBody>
 
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={handleCloseDialog}>
               Cancel
             </Button>
             <Button onClick={handleSubmit}>{editingSection ? "Update" : "Create"}</Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <StandardMediaSelectionDialog
         isOpen={isMediaPickerOpen}

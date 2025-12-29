@@ -31,7 +31,7 @@ export const StatusBadge = React.memo(function StatusBadge({
     <span
       className={cn(
         "rounded-full px-2 py-1 font-medium text-xs",
-        isActive ? colorClasses[activeColor] : "bg-gray-100 text-gray-700",
+        isActive ? colorClasses[activeColor] : "bg-muted text-foreground/80",
         className,
       )}
       role="status"

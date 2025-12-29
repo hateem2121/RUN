@@ -17,14 +17,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -225,11 +225,11 @@ export function TechnologyRoadmapManagement({
         {loading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-20 animate-pulse rounded bg-gray-100" />
+              <div key={i} className="h-20 animate-pulse rounded bg-muted" />
             ))}
           </div>
         ) : roadmap.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-8 text-center text-muted-foreground">
             No roadmap milestones added yet. Click "Add Roadmap Milestone" to showcase your
             technology development plans.
           </div>
@@ -245,18 +245,18 @@ export function TechnologyRoadmapManagement({
                     <div className="flex-1">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{item.title}</h4>
+                          <h4 className="font-medium text-foreground">{item.title}</h4>
                           <div className="mt-1 flex items-center gap-2">
                             <Badge variant="outline" className="text-xs">
                               {item.timeline}
                             </Badge>
                           </div>
                           {item.description && (
-                            <p className="mt-2 text-gray-600 text-sm">{item.description}</p>
+                            <p className="mt-2 text-muted-foreground text-sm">{item.description}</p>
                           )}
                           {item.impact && item.impact.length > 0 && (
                             <div className="mt-2">
-                              <p className="mb-1 font-medium text-gray-500 text-xs">
+                              <p className="mb-1 font-medium text-muted-foreground text-xs">
                                 Expected Impact:
                               </p>
                               <div className="flex flex-wrap gap-1">
@@ -270,7 +270,7 @@ export function TechnologyRoadmapManagement({
                                   </span>
                                 ))}
                                 {item.impact.length > 3 && (
-                                  <span className="text-gray-500 text-xs">
+                                  <span className="text-muted-foreground text-xs">
                                     +{item.impact.length - 3} more
                                   </span>
                                 )}
@@ -319,20 +319,20 @@ export function TechnologyRoadmapManagement({
       </CardContent>
 
       {/* Roadmap Form Dialog */}
-      <EnhancedDialog open={showRoadmapDialog} onOpenChange={setShowRoadmapDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
+      <Dialog open={showRoadmapDialog} onOpenChange={setShowRoadmapDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>
               {editingRoadmap ? "Edit Roadmap Milestone" : "Add New Roadmap Milestone"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               {editingRoadmap
                 ? "Update the roadmap milestone details"
                 : "Create a new roadmap milestone"}
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleRoadmapSubmit} className="flex min-h-0 flex-1 flex-col">
-            <EnhancedDialogBody className="space-y-4">
+            <DialogBody className="space-y-4">
               <div>
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -383,7 +383,7 @@ export function TechnologyRoadmapManagement({
                       Select Image
                     </Button>
                     {roadmapForm.imageId && (
-                      <div className="mt-2 flex items-center justify-between rounded bg-gray-50 p-2 text-gray-600 text-sm">
+                      <div className="mt-2 flex items-center justify-between rounded bg-background p-2 text-muted-foreground text-sm">
                         <span>Image ID: {roadmapForm.imageId}</span>
                         <Button
                           type="button"
@@ -410,7 +410,7 @@ export function TechnologyRoadmapManagement({
                       Select Video
                     </Button>
                     {roadmapForm.videoId && (
-                      <div className="mt-2 flex items-center justify-between rounded bg-gray-50 p-2 text-gray-600 text-sm">
+                      <div className="mt-2 flex items-center justify-between rounded bg-background p-2 text-muted-foreground text-sm">
                         <span>Video ID: {roadmapForm.videoId}</span>
                         <Button
                           type="button"
@@ -433,7 +433,7 @@ export function TechnologyRoadmapManagement({
                   {roadmapForm.impact.map((impact, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded bg-gray-50 p-2"
+                      className="flex items-center justify-between rounded bg-background p-2"
                     >
                       <span className="flex items-center text-sm">
                         <Target className="mr-2 h-3 w-3 text-green-600" />
@@ -471,15 +471,15 @@ export function TechnologyRoadmapManagement({
                 />
                 <Label htmlFor="isActive">Active</Label>
               </div>
-            </EnhancedDialogBody>
-            <EnhancedDialogFooter>
+            </DialogBody>
+            <DialogFooter>
               <Button type="submit">
                 {editingRoadmap ? "Update Milestone" : "Create Milestone"}
               </Button>
-            </EnhancedDialogFooter>
+            </DialogFooter>
           </form>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Media Selection Dialogs */}
       <StandardMediaSelectionDialog

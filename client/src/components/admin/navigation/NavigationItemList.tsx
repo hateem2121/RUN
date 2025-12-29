@@ -58,14 +58,14 @@ const SortableNavigationItem = memo(function SortableNavigationItem({
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           <div
-            className="cursor-grab p-1 text-gray-500 hover:text-gray-700 active:cursor-grabbing"
+            className="cursor-grab p-1 text-muted-foreground hover:text-foreground/80 active:cursor-grabbing"
             {...attributes}
             {...listeners}
           >
             <GripVertical className="h-4 w-4" />
           </div>
 
-          <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+          <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
             <NavigationIcon
               iconType={item.iconType as "media" | "fallback"}
               mediaIcon={item.mediaIcon}
@@ -84,8 +84,8 @@ const SortableNavigationItem = memo(function SortableNavigationItem({
               </Badge>
             </div>
             {/* Fallback for legacy url field or missing href */}
-            <p className="text-gray-500 text-sm">{item.href || item.url || "#"}</p>
-            <p className="text-gray-400 text-xs">Order: {item.sortOrder}</p>
+            <p className="text-muted-foreground text-sm">{item.href || item.url || "#"}</p>
+            <p className="text-muted-foreground/70 text-xs">Order: {item.sortOrder}</p>
           </div>
 
           <div className="flex gap-2">

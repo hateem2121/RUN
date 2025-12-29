@@ -8,7 +8,6 @@ export enum CursorVariant {
 export interface NavItem {
   label: string;
   href: string;
-  external?: boolean; // Added to support existing footer structure if needed
 }
 
 export interface StatItem {

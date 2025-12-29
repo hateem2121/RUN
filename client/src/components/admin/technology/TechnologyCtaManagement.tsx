@@ -130,7 +130,7 @@ export function TechnologyCtaManagement({
         {loading ? (
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 animate-pulse rounded bg-gray-100" />
+              <div key={i} className="h-10 animate-pulse rounded bg-muted" />
             ))}
           </div>
         ) : (
@@ -207,7 +207,7 @@ export function TechnologyCtaManagement({
                   {ctaForm.benefits.map((benefit, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                      className="flex items-center justify-between rounded-lg bg-background p-3"
                     >
                       <span className="text-sm">{benefit}</span>
                       <Button

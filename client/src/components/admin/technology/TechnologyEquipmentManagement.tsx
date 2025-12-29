@@ -36,14 +36,14 @@ import { StandardMediaSelectionDialog } from "@/components/admin/shared/Standard
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogBody,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -89,20 +89,20 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
       <div className="flex items-start justify-between">
         <div className="flex flex-1 items-start space-x-3">
           <div {...attributes} {...listeners} className="mt-1 cursor-grab active:cursor-grabbing">
-            <GripVertical className="h-4 w-4 text-gray-400" />
+            <GripVertical className="h-4 w-4 text-muted-foreground/70" />
           </div>
 
           <div className="flex-1">
             <div className="mb-2 flex items-center space-x-2">
               <h3 className="font-semibold text-lg">{equipment.name}</h3>
               {!equipment.isActive && (
-                <span className="rounded bg-gray-100 px-2 py-1 text-gray-600 text-xs">
+                <span className="rounded bg-muted px-2 py-1 text-muted-foreground text-xs">
                   Inactive
                 </span>
               )}
             </div>
 
-            <div className="mb-3 grid grid-cols-2 gap-4 text-gray-600 text-sm">
+            <div className="mb-3 grid grid-cols-2 gap-4 text-muted-foreground text-sm">
               {equipment.manufacturer && (
                 <div>
                   <span className="font-medium">Manufacturer:</span> {equipment.manufacturer}
@@ -117,14 +117,14 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
 
             {equipment.description && (
               <div className="mb-3">
-                <div className="mb-1 font-medium text-gray-700 text-sm">Description:</div>
-                <div className="text-gray-600 text-sm">{equipment.description}</div>
+                <div className="mb-1 font-medium text-foreground/80 text-sm">Description:</div>
+                <div className="text-muted-foreground text-sm">{equipment.description}</div>
               </div>
             )}
 
             {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
               <div className="mb-3">
-                <div className="mb-1 font-medium text-gray-700 text-sm">Specifications:</div>
+                <div className="mb-1 font-medium text-foreground/80 text-sm">Specifications:</div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {Object.entries(equipment.specifications).map(([key, value]) => (
                     <div key={key}>
@@ -412,7 +412,7 @@ export function TechnologyEquipmentManagement({
           {equipmentLoading || isLoading ? (
             <div>Loading...</div>
           ) : equipment.length === 0 ? (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-muted-foreground">
               No equipment added yet. Click "Add Equipment" to showcase your technology equipment.
             </div>
           ) : (
@@ -440,18 +440,16 @@ export function TechnologyEquipmentManagement({
       </Card>
 
       {/* Equipment Dialog */}
-      <EnhancedDialog open={showEquipmentDialog} onOpenChange={setShowEquipmentDialog}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingEquipment ? "Edit Equipment" : "Add Equipment"}
-            </EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={showEquipmentDialog} onOpenChange={setShowEquipmentDialog}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingEquipment ? "Edit Equipment" : "Add Equipment"}</DialogTitle>
+            <DialogDescription>
               Showcase your advanced manufacturing technology and equipment capabilities.
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleEquipmentSubmit} className="flex min-h-0 flex-1 flex-col">
-            <EnhancedDialogBody className="space-y-6">
+            <DialogBody className="space-y-6">
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <Label htmlFor="equipment-name">Name *</Label>
@@ -664,7 +662,7 @@ export function TechnologyEquipmentManagement({
                     {Object.entries(equipmentForm.specifications).map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex items-center justify-between rounded bg-gray-50 p-2"
+                        className="flex items-center justify-between rounded bg-background p-2"
                       >
                         <span className="text-sm">
                           <strong>{key}:</strong> {String(value)}
@@ -697,7 +695,7 @@ export function TechnologyEquipmentManagement({
                   </Button>
                 </div>
                 {equipmentForm.imageId && (
-                  <div className="mt-2 text-gray-600 text-sm">
+                  <div className="mt-2 text-muted-foreground text-sm">
                     Selected image ID: {equipmentForm.imageId}
                     <Button
                       type="button"
@@ -722,9 +720,9 @@ export function TechnologyEquipmentManagement({
                 />
                 <Label>Active (visible on public site)</Label>
               </div>
-            </EnhancedDialogBody>
+            </DialogBody>
 
-            <EnhancedDialogFooter>
+            <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setShowEquipmentDialog(false)}>
                 Cancel
               </Button>
@@ -738,10 +736,10 @@ export function TechnologyEquipmentManagement({
                     ? "Update Equipment"
                     : "Create Equipment"}
               </Button>
-            </EnhancedDialogFooter>
+            </DialogFooter>
           </form>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Image Selection Dialog */}
       <StandardMediaSelectionDialog

@@ -26,18 +26,6 @@ type ModelViewerEvent = {
   [key: string]: unknown;
 };
 
-type PerformanceWithMemory = Performance & {
-  memory?: {
-    usedJSHeapSize?: number;
-    totalJSHeapSize?: number;
-    jsHeapSizeLimit?: number;
-  };
-};
-
-type WindowWithGC = typeof window & {
-  gc?: () => void;
-};
-
 // Enhanced loading state for comprehensive tracking
 interface LoadingState {
   status: "idle" | "initializing" | "loading" | "loaded" | "error";
@@ -96,9 +84,7 @@ export default function UnifiedModelViewer({
   const [webglLost, setWebglLost] = useState(false);
   const [shouldLoadModel, setShouldLoadModel] = useState(finalConfig.loading !== "lazy");
   const [retryTimeouts, setRetryTimeouts] = useState<number[]>([]);
-  const [memoryMonitorActive, setMemoryMonitorActive] = useState(false);
-  const [, setPerformanceMetrics] = useState<any>({});
-  const [, setLastWebGLMemoryCheck] = useState<number>(0);
+  const [_performanceMetrics, _setPerformanceMetrics] = useState<any>({});
   const [isVisible, setIsVisible] = useState(finalConfig.loading !== "lazy");
 
   const [userActivated, setUserActivated] = useState(
@@ -113,8 +99,6 @@ export default function UnifiedModelViewer({
   const modelViewerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const memoryCleanupTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const webglContextRef = useRef<WebGLRenderingContext | null>(null);
 
   // Error boundary integration (moved after state declarations)
   const handleErrorBoundaryError = useCallback(
@@ -309,165 +293,36 @@ export default function UnifiedModelViewer({
     retryTimeouts,
   ]); // Remove unstable dependencies
 
-  // MEMORY LEAK FIX: Enhanced WebGL context recovery with aggressive cleanup
+  // Simple WebGL context recovery
   const handleWebGLRecovery = useCallback(() => {
     if (modelViewerRef.current) {
       try {
-        // Force immediate memory cleanup before recovery
-        forceWebGLMemoryCleanup();
-
         const currentSrc = modelViewerRef.current.src;
         modelViewerRef.current.src = "";
-
-        // Clear WebGL context reference
-        webglContextRef.current = null;
 
         setTimeout(() => {
           if (modelViewerRef.current) {
             modelViewerRef.current.src = currentSrc;
             setWebglLost(false);
-            // Restart memory monitoring after recovery
-            startMemoryMonitoring();
           }
         }, 200);
       } catch (error) {
         handleError(error as Error, "WebGL Recovery");
       }
     }
-  }, [
-    handleError, // Force immediate memory cleanup before recovery
-    forceWebGLMemoryCleanup, // Restart memory monitoring after recovery
-    startMemoryMonitoring,
-  ]);
-
-  // MEMORY LEAK FIX: WebGL memory monitoring and cleanup
-  const checkWebGLMemoryUsage = useCallback((): number => {
-    if (!modelViewerRef.current || !webglContextRef.current) return 0;
-
-    try {
-      const gl = webglContextRef.current;
-      gl.getExtension("WEBGL_debug_renderer_info");
-
-      // Estimate memory usage based on WebGL state
-      let estimatedMemory = 0;
-
-      // Check texture memory
-      const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-      const maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-      estimatedMemory += (maxTextureSize * maxTextureSize * 4 * maxTextureUnits) / (1024 * 1024); // MB
-
-      // Check buffer memory
-      const maxVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      estimatedMemory += maxVertexAttribs * 1; // Rough estimate
-
-      return Math.round(estimatedMemory * 100) / 100; // Round to 2 decimals
-    } catch (_error) {
-      return 0;
-    }
-  }, []);
-
-  // MEMORY LEAK FIX: Force WebGL context cleanup
-  const forceWebGLMemoryCleanup = useCallback(() => {
-    if (modelViewerRef.current) {
-      try {
-        // Get the Shadow DOM canvas
-        const canvas = modelViewerRef.current.shadowRoot?.querySelector("canvas");
-        if (canvas) {
-          const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-          if (gl) {
-            // Force garbage collection of WebGL resources
-            gl.flush();
-            gl.finish();
-
-            // Clear all WebGL state
-            gl.clearColor(0, 0, 0, 0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-          }
-        }
-      } catch (_error) {}
-    }
-  }, []);
-
-  // MEMORY LEAK FIX: Start memory monitoring
-  const startMemoryMonitoring = useCallback(() => {
-    if (memoryMonitorActive) return;
-
-    setMemoryMonitorActive(true);
-
-    // Monitor memory every 30 seconds
-    memoryCleanupTimerRef.current = setInterval(() => {
-      const currentTime = Date.now();
-      const webglMemory = checkWebGLMemoryUsage();
-
-      // Check JavaScript heap if available
-      let jsHeapUsed = 0;
-      if ("memory" in performance) {
-        jsHeapUsed = (performance as PerformanceWithMemory).memory?.usedJSHeapSize || 0;
-      }
-
-      // Update performance metrics
-      setPerformanceMetrics((prev: any) => ({
-        ...prev,
-        webglMemoryUsage: webglMemory,
-        memoryUsage: jsHeapUsed,
-        lastMemoryCheck: currentTime,
-        memoryGrowthRate: prev.memoryUsage ? jsHeapUsed - prev.memoryUsage : 0,
-      }));
-
-      // Memory pressure detection and cleanup
-      const MEMORY_PRESSURE_THRESHOLD = 150; // MB
-      const JS_HEAP_THRESHOLD = 100 * 1024 * 1024; // 100MB
-
-      if (webglMemory > MEMORY_PRESSURE_THRESHOLD || jsHeapUsed > JS_HEAP_THRESHOLD) {
-        forceWebGLMemoryCleanup();
-
-        // Force garbage collection if available
-        const windowWithGC = window as WindowWithGC;
-        if (windowWithGC.gc) {
-          windowWithGC.gc();
-        }
-      }
-
-      setLastWebGLMemoryCheck(currentTime);
-    }, 30000); // Every 30 seconds
-  }, [memoryMonitorActive, checkWebGLMemoryUsage, forceWebGLMemoryCleanup]); // Remove function dependencies that cause re-renders
-
-  // MEMORY LEAK FIX: Stop memory monitoring and cleanup GLTF blobs
-  const stopMemoryMonitoring = useCallback(() => {
-    if (memoryCleanupTimerRef.current) {
-      clearInterval(memoryCleanupTimerRef.current);
-      memoryCleanupTimerRef.current = null;
-    }
-
-    // SAFE cleanup of cached GLTF blob URLs to prevent memory leaks
-    if (cachedModelBlob?.startsWith("blob:")) {
-      URL.revokeObjectURL(cachedModelBlob);
-      setCachedModelBlob(null);
-    }
-    if (optimizedModelUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(optimizedModelUrl);
-      setOptimizedModelUrl(null);
-    }
-
-    setMemoryMonitorActive(false);
-  }, [cachedModelBlob, optimizedModelUrl]);
+  }, [handleError]);
 
   // REMOVED: Data URI compatibility layer that was interfering with @google/model-viewer
   // @google/model-viewer handles embedded textures natively with proper CSP headers
 
   // Model viewer event handlers
+  // Model viewer event handlers
   const setupModelViewerEvents = useCallback(() => {
     const modelViewer = modelViewerRef.current;
     if (!modelViewer) return;
 
-    // Use memoized progress handler
-
-    // Model loaded successfully with comprehensive performance metrics
+    // Model loaded successfully
     const handleModelLoaded = () => {
-      const endTime = Date.now();
-      const loadTime = endTime - loadingState.startTime;
-      const renderStartTime = performance.now();
-
       // Update loading state immediately
       setLoadingState((prev) => ({
         ...prev,
@@ -475,52 +330,8 @@ export default function UnifiedModelViewer({
         progress: 100,
       }));
 
-      // Measure render time with requestAnimationFrame
-      requestAnimationFrame(() => {
-        const renderTime = performance.now() - renderStartTime;
-
-        // Measure memory usage if available (Chrome/Edge only)
-        let memoryUsage: number | undefined;
-        let totalMemoryUsage: number | undefined;
-
-        if ("memory" in performance) {
-          const memInfo = (performance as PerformanceWithMemory).memory;
-          memoryUsage = memInfo?.usedJSHeapSize || 0;
-          totalMemoryUsage = memInfo?.totalJSHeapSize || 0;
-        }
-
-        // Update comprehensive metrics
-        setPerformanceMetrics((prev: any) => ({
-          ...prev,
-          loadTime,
-          renderTime,
-          memoryUsage,
-          webglContext: true,
-          initialRenderTime: renderTime,
-          totalMemoryUsage,
-        }));
-
-        // CRITICAL FIX: Call callbacks inside requestAnimationFrame to avoid ReferenceError
-        onLoad?.(asset);
-        onInteraction?.("model-loaded", {
-          loadTime,
-          renderTime,
-          memoryUsage,
-          asset,
-        });
-
-        // MEMORY LEAK FIX: Start memory monitoring after model loads
-        startMemoryMonitoring();
-
-        // Store WebGL context reference for memory management
-        const canvas = getCanvas();
-        if (canvas) {
-          const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-          if (gl) {
-            webglContextRef.current = gl;
-          }
-        }
-      });
+      onLoad?.(asset);
+      onInteraction?.("model-loaded", { asset });
     };
 
     // Loading error
@@ -579,23 +390,14 @@ export default function UnifiedModelViewer({
       // Shadow DOM might not be ready, retry after model-viewer initializes
       retryCanvas = setTimeout(() => {
         canvas = attachCanvasListeners();
-        if (!canvas) {
-        }
       }, 500);
     }
 
-    // MEMORY LEAK FIX: Enhanced cleanup function with aggressive memory management
+    // Cleanup function
     return () => {
-      // Clear retry timeout
       if (retryCanvas) {
         clearTimeout(retryCanvas);
       }
-
-      // Stop memory monitoring
-      stopMemoryMonitoring();
-
-      // Force immediate WebGL cleanup before removing listeners
-      forceWebGLMemoryCleanup();
 
       modelViewer.removeEventListener("progress", handleProgress);
       modelViewer.removeEventListener("load", handleModelLoaded);
@@ -606,23 +408,9 @@ export default function UnifiedModelViewer({
       if (currentCanvas) {
         currentCanvas.removeEventListener("webglcontextlost", handleContextLost);
         currentCanvas.removeEventListener("webglcontextrestored", handleContextRestored);
-
-        // MEMORY LEAK FIX: Clear WebGL context reference
-        webglContextRef.current = null;
       }
     };
-  }, [
-    asset.id,
-    asset, // Force immediate WebGL cleanup before removing listeners
-    forceWebGLMemoryCleanup,
-    handleError,
-    handleProgress,
-    loadingState.startTime,
-    onInteraction, // CRITICAL FIX: Call callbacks inside requestAnimationFrame to avoid ReferenceError
-    onLoad, // MEMORY LEAK FIX: Start memory monitoring after model loads
-    startMemoryMonitoring, // Stop memory monitoring
-    stopMemoryMonitoring,
-  ]); // Only depend on asset.id, not the full asset or callbacks
+  }, [asset.id, asset, handleError, handleProgress, onInteraction, onLoad]);
 
   // Enhanced GLTF initialization with intelligent caching
   useEffect(() => {
@@ -837,10 +625,10 @@ export default function UnifiedModelViewer({
     asset,
   ]);
 
-  // MEMORY LEAK FIX: Enhanced cleanup on unmount with aggressive memory management
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      // Clear all retry timeouts - access current state directly
+      // Clear all retry timeouts
       setRetryTimeouts((current) => {
         for (const timeout of current) {
           clearTimeout(timeout);
@@ -848,30 +636,13 @@ export default function UnifiedModelViewer({
         return [];
       });
 
-      // Stop memory monitoring - access current state directly
-      setMemoryMonitorActive(false);
-
-      // Force WebGL context cleanup
-      if (webglContextRef.current) {
-        try {
-          const gl = webglContextRef.current;
-          const extension = gl.getExtension("WEBGL_lose_context");
-          if (extension) {
-            extension.loseContext();
-          }
-        } catch (_error) {}
-      }
-
-      // Clear all refs
-      webglContextRef.current = null;
-
       // Disconnect intersection observer
       if (observerRef.current) {
         observerRef.current.disconnect();
         observerRef.current = null;
       }
 
-      // Clean up cached GLTF blob URLs on unmount - access via state setters
+      // Clean up cached GLTF blob URLs on unmount
       setCachedModelBlob((current) => {
         if (current?.startsWith("blob:")) {
           URL.revokeObjectURL(current);
@@ -885,7 +656,7 @@ export default function UnifiedModelViewer({
         return null;
       });
     };
-  }, []); // Cleanup effect should have no dependencies
+  }, []);
 
   // Handle user activation for click-to-load
   const handleActivateModel = useCallback(() => {
@@ -944,39 +715,61 @@ export default function UnifiedModelViewer({
     return (
       <div
         className={cn(
-          "center-flex bg-gradient-to-br from-gray-100 to-gray-200",
-          "aspect-square rounded-lg dark:from-gray-800 dark:to-gray-900",
+          "center-flex bg-linear-to-br from-surface-subtle to-surface-muted",
+          "aspect-square rounded-lg dark:from-muted dark:to-background",
           className,
         )}
       >
         <div className="space-y-3 text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
-          <p className="text-gray-600 text-sm dark:text-gray-400">Initializing 3D viewer...</p>
+          <p className="text-sm text-text-disabled dark:text-muted-foreground">
+            Initializing 3D viewer...
+          </p>
         </div>
       </div>
     );
   }
 
-  // Render error state
+  // Render error/fallback state (Polished UI instead of raw error)
   if (loadingState.status === "error") {
     return (
       <div
         className={cn(
-          "center-flex bg-gradient-to-br from-red-50 to-red-100",
-          "aspect-square rounded-lg dark:from-red-900/20 dark:to-red-800/20",
+          "group relative flex aspect-square items-center justify-center overflow-hidden rounded-lg",
+          "bg-surface-subtle dark:bg-muted",
           className,
         )}
       >
-        <div className="space-y-4 p-6 text-center">
-          <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
-          <Alert variant="destructive">
-            <AlertDescription>
-              {loadingState.errorMessage || "Failed to load 3D model"}
-            </AlertDescription>
-          </Alert>
-          <Button variant="outline" size="sm" onClick={handleRetry} className="mt-2">
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Retry ({loadingState.retryCount}/3)
+        {/* Placeholder Image */}
+        <img
+          src={asset.thumbnailUrl || "/placeholder-jacket.svg"}
+          alt="Product Preview"
+          className="absolute inset-0 h-full w-full object-cover opacity-50 transition-transform duration-700 group-hover:scale-105"
+        />
+
+        {/* Overlay Content */}
+        <div className="z-10 text-center">
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+            <Box className="h-8 w-8 text-foreground/80 dark:text-white" />
+          </div>
+          <p className="font-medium text-foreground dark:text-white">Product Preview</p>
+          <p className="text-muted-foreground text-xs">3D Model Unavailable</p>
+
+          {/* Debug info in development only */}
+          {MODEL_VIEWER_ENVIRONMENT.isDevelopment && (
+            <p className="mt-2 max-w-widget-track truncate px-2 text-red-400 text-xxs">
+              {loadingState.errorMessage}
+            </p>
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRetry}
+            className="mt-3 text-xs hover:bg-white/20"
+          >
+            <RefreshCw className="mr-2 h-3 w-3" />
+            Retry Load
           </Button>
         </div>
       </div>
@@ -996,8 +789,8 @@ export default function UnifiedModelViewer({
       <div
         ref={containerRef}
         className={cn(
-          "relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-50 to-gray-100",
-          "dark:from-gray-800 dark:to-gray-900",
+          "relative overflow-hidden rounded-lg bg-linear-to-br from-background to-surface-subtle",
+          "dark:from-muted dark:to-background",
           className,
         )}
         data-testid="unified-model-viewer"
@@ -1016,10 +809,12 @@ export default function UnifiedModelViewer({
         {showLoadingProgress &&
           loadingState.status === "loading" &&
           loadingState.progress < 100 && (
-            <div className="center-flex absolute inset-0 z-elevated bg-gray-50/80 dark:bg-gray-900/80">
+            <div className="center-flex absolute inset-0 z-elevated bg-background/80 dark:bg-background/80">
               <div className="space-y-2 text-center">
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-                <p className="text-gray-600 text-sm dark:text-gray-400">{loadingState.progress}%</p>
+                <p className="text-sm text-text-disabled dark:text-muted-foreground">
+                  {loadingState.progress}%
+                </p>
               </div>
             </div>
           )}
@@ -1075,7 +870,7 @@ export default function UnifiedModelViewer({
               width: "100%",
               height: "100%",
               minHeight: "400px",
-              backgroundColor: finalConfig.backgroundColorHex || "#000000",
+              backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)", // matches --background
             },
             "data-testid": "model-viewer-element",
           })}
@@ -1098,12 +893,12 @@ export default function UnifiedModelViewer({
             )}
 
             {/* Gradient overlay for better button visibility */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 transition-all duration-300 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60" />
+            <div className="absolute inset-0 bg-linear-to-br from-black/40 via-black/30 to-black/50 transition-all duration-300 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60" />
 
             {/* "View 3D Model" button */}
             <div className="relative z-elevated space-y-3 text-center">
               <div className="mx-20 my-12 rounded-full bg-white/80 p-4 px-4 py-8 shadow-xl backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-black/90">
-                <Play className="h-8 w-8 text-gray-900 dark:text-white" fill="currentColor" />
+                <Play className="h-8 w-8 text-foreground dark:text-white" fill="currentColor" />
               </div>
               <p className="font-medium text-lg text-white drop-shadow-lg">View 3D Model</p>
               <p className="text-white/80 text-xs">Click to load interactive 3D viewer</p>
@@ -1113,13 +908,13 @@ export default function UnifiedModelViewer({
 
         {/* Lazy loading placeholder - shown before viewport intersection */}
         {(!shouldLoadModel || !isVisible) && (
-          <div className="center-flex absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+          <div className="center-flex absolute inset-0 bg-linear-to-br from-surface-subtle to-surface-muted dark:from-muted dark:to-background">
             <div className="space-y-2 text-center">
-              <Box className="mx-auto h-8 w-8 text-gray-400" />
+              <Box className="mx-auto h-8 w-8 text-text-subtle" />
               {!shouldLoadModel ? (
-                <p className="text-gray-500 text-xs">Scroll to load</p>
+                <p className="text-text-muted text-xs">Scroll to load</p>
               ) : (
-                <p className="text-gray-500 text-xs">Model hidden</p>
+                <p className="text-text-muted text-xs">Model hidden</p>
               )}
             </div>
           </div>

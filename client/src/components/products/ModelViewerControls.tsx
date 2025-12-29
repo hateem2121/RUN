@@ -190,7 +190,7 @@ export function ModelViewerControls({
       </Button>
 
       {/* Instructions */}
-      <div className="space-y-1 text-gray-500 text-xs">
+      <div className="space-y-1 text-muted-foreground text-xs">
         <p>• Drag to rotate • Scroll to zoom</p>
         <p>• Double-click to reset</p>
       </div>

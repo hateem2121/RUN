@@ -196,11 +196,11 @@ const SvgMaskCard = memo(function SvgMaskCard({
   if (isLoadingMask) {
     return (
       <section
-        className="relative w-full bg-gray-100"
+        className="relative w-full bg-surface-subtle"
         style={{ minHeight: "300px", height: "auto", maxHeight: "600px" }}
       >
         <div className="flex h-full w-full items-center justify-center">
-          <div className="text-center text-gray-500">
+          <div className="text-center text-text-muted">
             <div className="text-sm">Loading mask...</div>
             <div className="mt-1 text-xs">
               {maskSvgUrl ? "Processing custom SVG" : "Using default mask"}
@@ -237,8 +237,8 @@ const SvgMaskCard = memo(function SvgMaskCard({
     >
       {/* Error state */}
       {(hasError || contentLoadError) && (
-        <div className="flex h-full w-full items-center justify-center bg-gray-100">
-          <div className="text-center text-gray-500">
+        <div className="flex h-full w-full items-center justify-center bg-surface-subtle">
+          <div className="text-center text-text-muted">
             <div className="font-medium text-sm">
               {hasError ? "Media configuration error" : "Content not found"}
             </div>
@@ -289,8 +289,8 @@ const SvgMaskCard = memo(function SvgMaskCard({
 
       {/* Fallback content when no media is available */}
       {!hasError && !contentLoadError && !actualContentMediaUrl && (
-        <div className="flex h-full w-full items-center justify-center bg-gray-100">
-          <div className="text-center text-gray-500">
+        <div className="flex h-full w-full items-center justify-center bg-surface-subtle">
+          <div className="text-center text-text-muted">
             <div className="font-medium text-sm">No media content</div>
             <div className="text-xs">{title}</div>
             <div className="mt-1 text-xs">🎭 Mask: {maskSvgUrl ? "Custom SVG" : "Default"}</div>

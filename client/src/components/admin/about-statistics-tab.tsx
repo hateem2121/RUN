@@ -35,12 +35,12 @@ import { IconSelector } from "@/components/admin/IconSelector";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -83,11 +83,11 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-lg border bg-white p-4 dark:bg-gray-950 ${isDragging ? "shadow-lg" : ""}`}
+      className={`rounded-lg border bg-white p-4 dark:bg-background ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-center gap-4">
         <button className="cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-gray-400" />
+          <GripVertical className="h-5 w-5 text-muted-foreground/70" />
         </button>
 
         <div className="flex flex-1 items-center gap-3">
@@ -326,7 +326,7 @@ export function AboutStatisticsTab() {
         </CardHeader>
         <CardContent>
           {sortedStatistics.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">
+            <div className="py-12 text-center text-muted-foreground">
               No statistics yet. Add your first key metric!
             </div>
           ) : (
@@ -362,13 +362,11 @@ export function AboutStatisticsTab() {
         </CardContent>
       </Card>
 
-      <EnhancedDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingStatistic ? "Edit Statistic" : "Add Statistic"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingStatistic ? "Edit Statistic" : "Add Statistic"}</DialogTitle>
+          </DialogHeader>
 
           <div className="space-y-4">
             <div className="space-y-2">
@@ -422,16 +420,16 @@ export function AboutStatisticsTab() {
             </div>
           </div>
 
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={handleCloseDialog}>
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={!formData.label || !formData.value}>
               {editingStatistic ? "Update" : "Create"}
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

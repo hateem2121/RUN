@@ -6,12 +6,12 @@ import { CustomDropdown } from "@/components/admin/CustomDropdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogFooter,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -223,7 +223,7 @@ export function AboutLocationsTab() {
 
             <TabsContent value="facility" className="mt-4">
               {facilityLocations.length === 0 ? (
-                <div className="py-12 text-center text-gray-500">
+                <div className="py-12 text-center text-muted-foreground">
                   No manufacturing facilities added yet.
                 </div>
               ) : (
@@ -231,19 +231,19 @@ export function AboutLocationsTab() {
                   {facilityLocations.map((location) => (
                     <div
                       key={location.id}
-                      className="rounded-lg border bg-white p-4 dark:bg-gray-950"
+                      className="rounded-lg border bg-white p-4 dark:bg-background"
                     >
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-gray-600 text-sm dark:text-gray-400">
+                          <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-gray-500 text-sm">{location.details}</p>
+                            <p className="mt-1 text-muted-foreground text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-gray-400 text-xs">
+                          <p className="mt-2 text-muted-foreground/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>
@@ -268,7 +268,7 @@ export function AboutLocationsTab() {
 
             <TabsContent value="client" className="mt-4">
               {clientLocations.length === 0 ? (
-                <div className="py-12 text-center text-gray-500">
+                <div className="py-12 text-center text-muted-foreground">
                   No client locations added yet.
                 </div>
               ) : (
@@ -276,19 +276,19 @@ export function AboutLocationsTab() {
                   {clientLocations.map((location) => (
                     <div
                       key={location.id}
-                      className="rounded-lg border bg-white p-4 dark:bg-gray-950"
+                      className="rounded-lg border bg-white p-4 dark:bg-background"
                     >
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-gray-600 text-sm dark:text-gray-400">
+                          <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-gray-500 text-sm">{location.details}</p>
+                            <p className="mt-1 text-muted-foreground text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-gray-400 text-xs">
+                          <p className="mt-2 text-muted-foreground/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>
@@ -314,13 +314,11 @@ export function AboutLocationsTab() {
         </CardContent>
       </Card>
 
-      <EnhancedDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <EnhancedDialogContent contentType="form">
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>
-              {editingLocation ? "Edit Location" : "Add Location"}
-            </EnhancedDialogTitle>
-          </EnhancedDialogHeader>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent contentType="form">
+          <DialogHeader>
+            <DialogTitle>{editingLocation ? "Edit Location" : "Add Location"}</DialogTitle>
+          </DialogHeader>
 
           <div className="space-y-4">
             <CustomDropdown
@@ -421,16 +419,16 @@ export function AboutLocationsTab() {
             </div>
           </div>
 
-          <EnhancedDialogFooter>
+          <DialogFooter>
             <Button variant="outline" onClick={handleCloseDialog}>
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={!formData.name || !formData.country}>
               {editingLocation ? "Update" : "Add"}
             </Button>
-          </EnhancedDialogFooter>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

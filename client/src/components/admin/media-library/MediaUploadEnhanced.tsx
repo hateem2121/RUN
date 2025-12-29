@@ -323,7 +323,7 @@ const UploadItem = React.memo(
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
           );
         default:
-          return <Icon className="h-4 w-4 text-gray-500" />;
+          return <Icon className="h-4 w-4 text-muted-foreground" />;
       }
     };
 

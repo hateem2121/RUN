@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 // import type { MediaAsset } from "@shared/schema";
 import {
-  EnhancedDialog,
-  EnhancedDialogContent,
-  EnhancedDialogDescription,
-  EnhancedDialogHeader,
-  EnhancedDialogTitle,
-} from "@/components/ui/enhanced-dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -462,12 +462,12 @@ export default function MediaViewerModal() {
   return (
     <>
       {/* Lightbox Modal */}
-      <EnhancedDialog open={lightboxOpen} onOpenChange={(open) => !open && handleClose()}>
-        <EnhancedDialogContent className="z-modal flex flex-col" contentType="media-library">
-          <EnhancedDialogHeader className="shrink-0 border-b pb-4">
-            <EnhancedDialogTitle>Media Viewer</EnhancedDialogTitle>
-            <EnhancedDialogDescription>View and manage your media assets</EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+      <Dialog open={lightboxOpen} onOpenChange={(open) => !open && handleClose()}>
+        <DialogContent className="z-modal flex flex-col" contentType="media-library">
+          <DialogHeader className="shrink-0 border-b pb-4">
+            <DialogTitle>Media Viewer</DialogTitle>
+            <DialogDescription>View and manage your media assets</DialogDescription>
+          </DialogHeader>
 
           <div className="flex min-h-0 flex-1 overflow-hidden pt-4">
             {/* Media display */}
@@ -560,18 +560,16 @@ export default function MediaViewerModal() {
               </div>
             </div>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Modal (placeholder) */}
-      <EnhancedDialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <EnhancedDialogContent>
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Edit Asset</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
-              Edit asset properties and metadata
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Asset</DialogTitle>
+            <DialogDescription>Edit asset properties and metadata</DialogDescription>
+          </DialogHeader>
 
           <div className="space-y-4">
             <div className="space-y-2">
@@ -616,18 +614,18 @@ export default function MediaViewerModal() {
               Save Changes
             </Button>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Modal (placeholder) */}
-      <EnhancedDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <EnhancedDialogContent>
-          <EnhancedDialogHeader>
-            <EnhancedDialogTitle>Delete Asset</EnhancedDialogTitle>
-            <EnhancedDialogDescription>
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Asset</DialogTitle>
+            <DialogDescription>
               Are you sure you want to delete this asset? This action cannot be undone.
-            </EnhancedDialogDescription>
-          </EnhancedDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
@@ -643,8 +641,8 @@ export default function MediaViewerModal() {
               {deleteMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </div>
-        </EnhancedDialogContent>
-      </EnhancedDialog>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

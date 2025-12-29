@@ -1,54 +1,17 @@
-import { cva, type VariantProps } from "class-variance-authority";
+/**
+ * @deprecated Use @/components/ui/card with variant="glass-premium" instead.
+ * This component remains for backward compatibility but should not be used in new code.
+ */
+import type { VariantProps } from "class-variance-authority";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import * as React from "react";
 import { useEffect, useState } from "react";
 
+import { cardVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-// Standard GlassCard component to replace global .glass-card CSS class
-export const glassCardVariants = cva(
-  "relative overflow-hidden rounded-xl border border-gray-800/60 bg-white/10 transition-all duration-300 dark:border-gray-900/70 dark:bg-white/5",
-  {
-    variants: {
-      interactive: {
-        true: "cursor-pointer hover:border-white/20",
-        false: "",
-      },
-      blur: {
-        none: "backdrop-blur-none",
-        sm: "backdrop-blur-[2px] md:backdrop-blur-xs",
-        md: "backdrop-blur-xs md:backdrop-blur-md",
-        lg: "backdrop-blur-md md:backdrop-blur-lg",
-        xl: "backdrop-blur-lg md:backdrop-blur-xl",
-        "2xl": "backdrop-blur-xl md:backdrop-blur-2xl",
-      },
-      glow: {
-        none: "",
-        xs: "shadow-glow-xs md:shadow-glow-xs-desktop",
-        sm: "shadow-glow-sm md:shadow-glow-sm-desktop",
-        md: "shadow-glow-md md:shadow-glow-md-desktop",
-        lg: "shadow-glow-lg md:shadow-glow-lg-desktop",
-        xl: "shadow-glow-xl md:shadow-glow-xl-desktop",
-        "2xl": "shadow-glow-2xl md:shadow-glow-2xl-desktop",
-      },
-      shadow: {
-        none: "",
-        xs: "shadow-inner-xs md:shadow-inner-xs-desktop",
-        sm: "shadow-inner-sm md:shadow-inner-sm-desktop",
-        md: "shadow-inner-md md:shadow-inner-md-desktop",
-        lg: "shadow-inner-lg md:shadow-inner-lg-desktop",
-        xl: "shadow-inner-xl md:shadow-inner-xl-desktop",
-        "2xl": "shadow-inner-2xl md:shadow-inner-2xl-desktop",
-      },
-    },
-    defaultVariants: {
-      interactive: false,
-      blur: "md",
-      glow: "lg",
-      shadow: "none",
-    },
-  },
-);
+// Re-export cardVariants for compatibility if needed, distinct alias
+export const glassCardVariants = cardVariants;
 
 function useIsTouchDevice() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -111,10 +74,11 @@ export interface LiquidGlassCardProps
   height?: string;
   expandedWidth?: string;
   expandedHeight?: string;
-  blurIntensity?: keyof typeof blurIntensityMap;
+  // Deprecated props - keeping for temporary compat if needed, but effectively unused by new system
+  blurIntensity?: string;
   borderRadius?: string;
-  glowIntensity?: keyof typeof glowIntensityMap;
-  shadowIntensity?: keyof typeof shadowIntensityMap;
+  glowIntensity?: string;
+  shadowIntensity?: string;
   ref?: React.Ref<HTMLDivElement>;
 }
 
@@ -176,10 +140,9 @@ const LiquidGlassCard = ({
       <div
         ref={ref}
         className={cn(
-          glassCardVariants({
-            blur: blurIntensity,
-            glow: glowIntensity,
-            shadow: shadowIntensity,
+          // Update LiquidGlassCard rendering
+          cardVariants({
+            variant: "glass-premium",
             interactive: true,
           }),
           "inline-block", // Maintain inline-block for LiquidGlassCard
@@ -195,7 +158,7 @@ const LiquidGlassCard = ({
       >
         {/* Static gradient background matching main render */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"
+          className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
           style={{ borderRadius }}
         />
         <div className="relative z-elevated h-full">{children}</div>
@@ -234,10 +197,8 @@ const LiquidGlassCard = ({
       }}
       onClick={handleClick}
       className={cn(
-        glassCardVariants({
-          blur: blurIntensity,
-          glow: glowIntensity,
-          shadow: shadowIntensity,
+        cardVariants({
+          variant: "glass-premium",
           interactive: true,
         }),
         "inline-block",
@@ -252,7 +213,7 @@ const LiquidGlassCard = ({
       {...restProps}
     >
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"
+        className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
         style={{ borderRadius }}
       />
 
@@ -318,13 +279,7 @@ export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
   className,
 }: LiquidGlassTitleProps) {
   return (
-    <LiquidGlassCard
-      blurIntensity="xl"
-      glowIntensity="lg"
-      shadowIntensity="md"
-      borderRadius="24px"
-      className={cn("px-4 py-4 sm:px-8 sm:py-6", className)}
-    >
+    <LiquidGlassCard borderRadius="24px" className={cn("px-4 py-4 sm:px-8 sm:py-6", className)}>
       <h2
         className="text-center font-bold font-neue-stance text-3xl text-white sm:text-4xl md:text-5xl"
         data-testid="title-text"
@@ -348,10 +303,10 @@ export interface GlassCardProps
     VariantProps<typeof glassCardVariants> {}
 
 export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ className, interactive, blur, glow, shadow, ...props }, ref) => (
+  ({ className, interactive, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(glassCardVariants({ interactive, blur, glow, shadow }), className)}
+      className={cn(cardVariants({ variant: "glass-premium", interactive }), className)}
       {...props}
     />
   ),
@@ -362,7 +317,7 @@ export const GlassCardDecorations = React.memo(
   ({ showShimmer = true }: { showShimmer?: boolean }) => (
     <>
       {/* Gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
       {/* Inner glow */}
       <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
       {/* Hover shimmer */}

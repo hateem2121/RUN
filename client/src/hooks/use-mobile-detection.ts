@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from "react";
+import { breakpoints } from "@/lib/design-tokens";
 
 const getInitialMobileState = () => {
   if (typeof window === "undefined") return { isMobile: false, isTablet: false };
@@ -8,8 +9,9 @@ const getInitialMobileState = () => {
   const tabletRegex = /iPad|Android(?!.*Mobile)|Tablet/i;
   const width = window.innerWidth;
 
-  const isMobileDevice = mobileRegex.test(userAgent) || width < 768;
-  const isTabletDevice = tabletRegex.test(userAgent) || (width >= 768 && width < 1024);
+  const isMobileDevice = mobileRegex.test(userAgent) || width < breakpoints.md;
+  const isTabletDevice =
+    tabletRegex.test(userAgent) || (width >= breakpoints.md && width < breakpoints.lg);
 
   return {
     isMobile: isMobileDevice && !isTabletDevice,
@@ -23,8 +25,10 @@ export const useMobileDetection = () => {
   const [isTablet, setIsTablet] = useState(initial.isTablet);
 
   useLayoutEffect(() => {
-    const mobileQuery = window.matchMedia("(max-width: 767px)");
-    const tabletQuery = window.matchMedia("(min-width: 768px) and (max-width: 1023px)");
+    const mobileQuery = window.matchMedia(`(max-width: ${breakpoints.md - 1}px)`);
+    const tabletQuery = window.matchMedia(
+      `(min-width: ${breakpoints.md}px) and (max-width: ${breakpoints.lg - 1}px)`,
+    );
 
     const checkDevice = () => {
       const userAgent = navigator.userAgent;
