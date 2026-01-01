@@ -4,7 +4,7 @@
  * Single source of truth for common utilities across the application
  */
 
-import { logger } from "./lib/smart-logger.js";
+import { logger } from "./lib/monitoring/logger.js";
 // import { z } from "zod";
 
 // ============================================================================

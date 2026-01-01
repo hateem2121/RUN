@@ -27,6 +27,8 @@ vi.mock("../server/config/environment.js", () => ({
     redis: { url: "redis://mock" },
   }),
   validateEnvironment: vi.fn(),
+  isDevelopment: false,
+  logging: { level: "info" },
 }));
 
 // Mock DB

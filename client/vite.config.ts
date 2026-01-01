@@ -3,10 +3,10 @@ process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { reactRouter } from "@react-router/dev/vite";
 import ReactScan from "@react-scan/vite-plugin-react-scan";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
@@ -18,13 +18,8 @@ export default defineConfig(
   ({ command: _command, mode, isSsrBuild }) =>
     ({
       plugins: [
-        react({
-          babel: {
-            plugins: [["babel-plugin-react-compiler", { target: "19" }]],
-          },
-        }),
+        reactRouter(),
         tailwindcss(),
-        // TanStackRouterVite(), // DISABLE: Using Wouter, this plugin causes alias resolution conflicts
         // FORENSIC: Bundle analysis to identify large chunks
         visualizer({
           filename: "../dist/stats.html", // Relative to client root
@@ -45,6 +40,7 @@ export default defineConfig(
           disable: mode !== "production", // Only upload in production
         }),
       ],
+
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "src"),
@@ -54,18 +50,22 @@ export default defineConfig(
       },
       root: __dirname, // Current folder is client
       build: {
-        sourcemap: true, // Enable source maps for local debugging
+        sourcemap: mode === "development", // Enable source maps only for development
         outDir: isSsrBuild
           ? path.resolve(__dirname, "../dist/server")
           : path.resolve(__dirname, "../dist/public"),
         emptyOutDir: !isSsrBuild, // Only empty for client build
         rollupOptions: {
-          input: isSsrBuild ? "src/entry-server.tsx" : undefined,
           output: {
             manualChunks: isSsrBuild
               ? undefined
               : {
-                  "vendor-react": ["react", "react-dom", "wouter", "@tanstack/react-query"],
+                  "vendor-react": [
+                    "react",
+                    "react-dom",
+
+                    "@tanstack/react-query",
+                  ],
                   "vendor-ui": [
                     "@radix-ui/react-dialog",
                     "@radix-ui/react-dropdown-menu",
@@ -90,13 +90,7 @@ export default defineConfig(
       },
       server: {
         // FORENSIC: Dev server optimizations for faster module loading
-        warmup: {
-          clientFiles: [
-            "./src/App.tsx",
-            "./src/pages/admin.tsx",
-            "./src/components/admin/media-library/*.tsx",
-          ],
-        },
+
         // Increase module graph size limit for admin pages
         hmr: {
           overlay: true,

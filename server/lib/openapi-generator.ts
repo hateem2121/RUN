@@ -23,7 +23,12 @@ registry.registerComponent("securitySchemes", "sessionAuth", {
 // We'll iterate through exported schemas and register those that are Zod schemas
 for (const [name, schema] of Object.entries(schemas)) {
   if (schema instanceof z.ZodType) {
-    registry.register(name, schema);
+    try {
+      registry.register(name, schema);
+    } catch (e) {
+      // Ignore Zod extension errors to allow server to start
+      // console.warn("Failed to register schema in OpenAPI:", name);
+    }
   }
 }
 

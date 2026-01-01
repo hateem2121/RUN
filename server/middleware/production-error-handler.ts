@@ -1,10 +1,10 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
 import type { Request, Response } from "express";
 import { getConfig } from "../config/production.js";
-import { errorAggregator } from "../lib/error-aggregator.js";
+import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 
 const config = getConfig();
 

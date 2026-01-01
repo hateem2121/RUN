@@ -4,14 +4,14 @@
  */
 
 import type { Request, Response } from "express";
-import { appStorageService } from "../../app-storage-service.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { CacheInvalidationError, MediaNotFoundError } from "../../lib/errors/media-errors.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger, serializeError } from "../../lib/smart-logger.js";
+import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import { backendUploadManager, uploadMetrics } from "./middleware.js";

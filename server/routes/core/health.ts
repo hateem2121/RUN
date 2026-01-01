@@ -2,7 +2,7 @@ import os from "node:os";
 import { sql } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { db } from "../../db.js";
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
 
 const router = Router();
 

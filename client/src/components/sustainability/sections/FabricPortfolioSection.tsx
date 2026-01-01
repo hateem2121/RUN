@@ -8,7 +8,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
     queryKey: ["/api/fabrics"],
   });
 
-  const { data: fabricPortfolioData } = useQuery<SustainabilityFabricPortfolio>({
+  const { data: fabricPortfolioData } = useQuery<any>({
     queryKey: ["/api/sustainability-fabric-portfolio"],
   });
 
@@ -18,8 +18,8 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
 
     if (selectedIds && selectedIds.length > 0) {
       return selectedIds
-        .map((id) => activeFabrics.find((fabric) => fabric.id === id))
-        .filter((fabric): fabric is Fabric => fabric !== undefined)
+        .map((id: any) => activeFabrics.find((fabric: any) => fabric.id === id))
+        .filter((fabric: any): fabric is Fabric => fabric !== undefined)
         .slice(0, 6);
     }
 
@@ -36,7 +36,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {sustainableFabrics.map((fabric, index) => {
+      {sustainableFabrics.map((fabric: any, index: number) => {
         const fabricImage = mediaAssets.find((asset) => asset.id === fabric.visualSwatchId);
         return (
           <motion.div
@@ -45,7 +45,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg transition-shadow-sm duration-300 hover:shadow-xl"
+            className="transition-shadow-sm overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg duration-300 hover:shadow-xl"
           >
             {fabricImage && (
               <div className="h-48 overflow-hidden">
@@ -62,10 +62,10 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
               </div>
             )}
             <div className="p-6">
-              <h3 className="mb-3 font-semibold text-stone-900 text-xl">{fabric.name}</h3>
+              <h3 className="mb-3 text-xl font-semibold text-stone-900">{fabric.name}</h3>
 
               {fabric.description && (
-                <p className="mb-4 text-stone-600 leading-relaxed">{fabric.description}</p>
+                <p className="mb-4 leading-relaxed text-stone-600">{fabric.description}</p>
               )}
 
               <div className="space-y-2">
@@ -85,12 +85,12 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
 
                 {fabric.keyApplications && fabric.keyApplications.length > 0 && (
                   <div className="mt-3">
-                    <p className="mb-2 text-stone-500 text-xs">Applications:</p>
+                    <p className="mb-2 text-xs text-stone-500">Applications:</p>
                     <div className="flex flex-wrap gap-1">
-                      {fabric.keyApplications.slice(0, 3).map((app, appIndex) => (
+                      {fabric.keyApplications.slice(0, 3).map((app: any, appIndex: number) => (
                         <span
                           key={appIndex}
-                          className="rounded-full bg-stone-100 px-2 py-1 text-stone-700 text-xs"
+                          className="rounded-full bg-stone-100 px-2 py-1 text-xs text-stone-700"
                         >
                           {app}
                         </span>

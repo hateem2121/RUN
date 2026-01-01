@@ -7,7 +7,8 @@
 import type { Request, Response } from "express";
 import { z } from "zod";
 // PHASE 2B: Removed pagination imports - eliminated after pagination cleanup
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { authService } from "../../services/auth-service.js";
 
 // Feature flags implementation - stubbed for now
 const featureFlags = {
@@ -218,29 +219,36 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
   });
 
   // Emergency rollback endpoint
-  app.post("/api/feature-flags/emergency-rollback", (_req: Request, res: Response) => {
-    try {
-      featureFlags.emergencyRollback();
+  // prettier-ignore
+  app.post(
+    "/api/feature-flags/emergency-rollback",
+    authService.requireAdmin,
+    (_req: Request, res: Response) => {
+      // security
+      try {
+        featureFlags.emergencyRollback();
 
-      const result = featureFlags.getAllFlags();
-      res.json({
-        success: true,
-        message: "Emergency rollback activated - all experimental features disabled",
-        flags: result.flags,
-        timestamp: new Date().toISOString(),
-      });
+        const result = featureFlags.getAllFlags();
+        res.json({
+          success: true,
+          message: "Emergency rollback activated - all experimental features disabled",
+          flags: result.flags,
+          timestamp: new Date().toISOString(),
+        });
 
-      logger.error("[API] Emergency rollback activated via API endpoint");
-    } catch (_error) {
-      res.status(500).json({
-        success: false,
-        error: "Failed to execute emergency rollback",
-      });
-    }
-  });
+        logger.error("[API] Emergency rollback activated via API endpoint");
+      } catch (_error) {
+        res.status(500).json({
+          success: false,
+          error: "Failed to execute emergency rollback",
+        });
+      }
+    },
+  );
 
   // Runtime flag override (for testing)
-  app.post("/api/feature-flags/:flag", (req: Request, res: Response) => {
+  // prettier-ignore
+  app.post("/api/feature-flags/:flag", authService.requireAdmin, (req: Request, res: Response) => {
     try {
       const { flag } = req.params;
       const { enabled } = req.body;

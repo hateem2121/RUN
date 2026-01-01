@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import sharp from "sharp";
-import { logger } from "./smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 /**
  * Image Optimization Middleware

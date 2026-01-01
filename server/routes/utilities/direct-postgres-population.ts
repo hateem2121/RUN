@@ -4,11 +4,13 @@
 import type { Express } from "express";
 import { accessories, categories, certificates, fabrics, fibers } from "../../../shared/schema.js";
 import { db } from "../../db.js";
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { authService } from "../../services/auth-service.js";
 
 export function registerDirectPostgresPopulationRoutes(app: Express): void {
   // Populate PostgreSQL directly with all business data
-  app.post("/api/direct-postgres/populate-all", async (_req, res) => {
+  // prettier-ignore
+  app.post("/api/direct-postgres/populate-all", authService.requireAdmin, async (_req, res) => {
     try {
       logger.debug("[Direct PostgreSQL] 🚀 Populating all 47 business items directly...");
 

@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { sql } from "drizzle-orm";
 import { Router } from "express";
 import { db } from "../db.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 const router = Router();
 
@@ -74,7 +74,9 @@ router.use((req, res, next) => {
  * Triggers an uncaught exception or unhandled rejection to verify "Crash-Only" behavior.
  * Query param ?type=reject triggers unhandled rejection. Default is uncaught exception.
  */
+// prettier-ignore
 router.post("/crash", (req, res) => {
+  // security (dev only)
   const type = req.query.type;
 
   logger.warn("[Debug] Triggering intentional process crash...", { type });
@@ -103,7 +105,9 @@ router.post("/crash", (req, res) => {
  * POST /api/debug/slow-query
  * Executes a deterministic slow query (pg_sleep) to verify observability logs.
  */
+// prettier-ignore
 router.post("/slow-query", async (req, res) => {
+  // security (dev only)
   const duration = req.query.duration ? parseFloat(req.query.duration as string) : 1.2;
   logger.info(`[Debug] Triggering slow query of ${duration}s...`);
 

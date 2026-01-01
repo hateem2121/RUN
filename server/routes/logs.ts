@@ -1,6 +1,6 @@
 import express from "express";
 import { z } from "zod";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { createRateLimiter } from "../middleware/rate-limiter.js";
 
 const router = express.Router();
@@ -23,7 +23,9 @@ const errorReportLimiter = createRateLimiter({
   keyPrefix: "rl:client-logs",
 });
 
+// prettier-ignore
 router.post("/error", errorReportLimiter, async (req, res) => {
+  // security (public)
   try {
     const errorData = ClientErrorSchema.parse(req.body);
 

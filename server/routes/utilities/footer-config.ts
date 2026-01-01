@@ -13,9 +13,9 @@ import {
   mediaAssets,
 } from "../../../shared/schema.js";
 import { db } from "../../db.js";
-import { CacheKeys } from "../../lib/cache-strategies.js";
-import { logger } from "../../lib/smart-logger.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
+import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 
 const router = express.Router();
@@ -165,9 +165,11 @@ router.get(
   }),
 );
 
+// prettier-ignore
 router.patch(
   "/api/admin/footer",
   asyncHandler(async (req, res) => {
+    // security
     // 1. Validate payload
     const validatedData = updateSchema.parse(req.body);
 

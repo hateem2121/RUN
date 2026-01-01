@@ -2,7 +2,7 @@ import type { Category, Fabric, MediaAsset, Product } from "@shared/schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Filter, Grid, List, Package, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "wouter";
+import { useSearchParams } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,7 +116,7 @@ function ProductDisplay({
         >
           Previous
         </Button>
-        <span className="px-3 font-medium text-sm">
+        <span className="px-3 text-sm font-medium">
           Page {currentPage} of {totalPages}
         </span>
         <Button
@@ -150,39 +150,26 @@ function ProductDisplay({
 
 export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }: ProductGridProps) {
   // Phase 3: Advanced Features - Enhanced State Management
-  const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [categoryFilter, setCategoryFilter] = useState<string>(
+    searchParams.get("category") || "all",
+  );
+  const [statusFilter, setStatusFilter] = useState<string>(searchParams.get("status") || "all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">(
+    (searchParams.get("view") as "grid" | "list") || "grid",
+  );
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(
+    searchParams.get("advanced") === "true",
+  );
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
-
-  // URL Synchronization
-  const [location, setLocation] = useLocation();
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Initialize state from URL on mount
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.has("search")) setSearchQuery(params.get("search") || "");
-    if (params.has("category")) setCategoryFilter(params.get("category") || "all");
-    if (params.has("status")) setStatusFilter(params.get("status") || "all");
-    if (params.has("view")) setViewMode((params.get("view") as "grid" | "list") || "grid");
-    if (params.has("page")) setCurrentPage(Number(params.get("page")));
-    if (params.has("limit")) setPageSize(Number(params.get("limit")));
-    if (params.has("advanced")) setShowAdvancedFilters(params.get("advanced") === "true");
-
-    setIsInitialized(true);
-  }, []);
+  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
+  const [pageSize, setPageSize] = useState(Number(searchParams.get("limit")) || 20);
 
   // Sync state to URL
   useEffect(() => {
-    if (!isInitialized) return;
-
     const params = new URLSearchParams();
 
     if (searchQuery) params.set("search", searchQuery);
@@ -193,12 +180,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
     if (pageSize !== 20) params.set("limit", pageSize.toString());
     if (showAdvancedFilters) params.set("advanced", "true");
 
-    const newSearch = params.toString();
-    const currentSearch = window.location.search.substring(1);
-
-    if (newSearch !== currentSearch) {
-      setLocation(location + (newSearch ? `?${newSearch}` : ""));
-    }
+    setSearchParams(params, { replace: true });
   }, [
     searchQuery,
     categoryFilter,
@@ -207,9 +189,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
     currentPage,
     pageSize,
     showAdvancedFilters,
-    isInitialized,
-    location,
-    setLocation,
+    setSearchParams,
   ]);
 
   // Phase 2: Real-time Sync - Enhanced data fetching with pagination
@@ -331,9 +311,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
   if (productsLoading) {
     return (
-      <div className="flex h-loading-center items-center justify-center">
+      <div className="h-loading-center flex items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+          <div className="border-border mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-t-blue-600" />
           <p className="text-muted-foreground text-sm">Loading products...</p>
         </div>
       </div>
@@ -347,7 +327,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
         <div className="flex items-center gap-3">
           <Package className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="font-bold text-3xl">Product Management</h1>
+            <h1 className="text-3xl font-bold">Product Management</h1>
             <p className="text-muted-foreground">{displayProducts.length} products</p>
           </div>
         </div>
@@ -382,7 +362,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {/* Search and Filters */}
       <div className="flex flex-col gap-4 rounded-lg border bg-white p-4 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground/70" />
+          <Search className="text-muted-foreground/70 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
           <Input
             data-testid="search-products-input"
             placeholder="Search products..."
@@ -441,7 +421,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
             {showAdvancedFilters ? "Basic" : "Advanced"}
           </Button>
 
-          <div className="flex rounded-md bg-muted p-1">
+          <div className="bg-muted flex rounded-md p-1">
             <Button
               data-testid="view-mode-grid-button"
               variant={viewMode === "grid" ? "default" : "ghost"}
@@ -473,7 +453,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-search-filter-button"
                 onClick={() => setSearchQuery("")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
+                className="hover:bg-muted/30 ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs"
               >
                 ×
               </button>
@@ -485,7 +465,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-category-filter-button"
                 onClick={() => setCategoryFilter("all")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
+                className="hover:bg-muted/30 ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs"
               >
                 ×
               </button>
@@ -497,7 +477,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               <button
                 data-testid="clear-status-filter-button"
                 onClick={() => setStatusFilter("all")}
-                className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-muted/30"
+                className="hover:bg-muted/30 ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs"
               >
                 ×
               </button>
@@ -508,10 +488,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
       {/* Products Grid/List */}
       {displayProducts.length === 0 ? (
-        <div className="rounded-lg bg-background py-12 text-center">
-          <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
-          <h3 className="mb-2 font-medium text-foreground text-lg">No products found</h3>
-          <p className="mb-4 text-muted-foreground">
+        <div className="bg-background rounded-lg py-12 text-center">
+          <Package className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
+          <h3 className="text-foreground mb-2 text-lg font-medium">No products found</h3>
+          <p className="text-muted-foreground mb-4">
             {products.length === 0
               ? "Get started by creating your first product."
               : "Try adjusting your search or filters."}

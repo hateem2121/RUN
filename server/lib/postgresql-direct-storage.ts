@@ -25,24 +25,23 @@ import {
   storageChangeLogs,
   users,
 } from "../../shared/schema.js";
-import { appStorageService } from "../app-storage-service.js";
 import { db } from "../db.js";
 import type { IStorage } from "../storage.js";
-import { MediaRepository } from "./repositories/media-repository.js";
-import { MiscRepository } from "./repositories/misc-repository.js";
-import { PageContentRepository } from "./repositories/page-content-repository.js";
+import { UnifiedCache, unifiedCache } from "./cache/unified-cache.js";
+import { MediaRepository } from "./db/repositories/media-repository.js";
+import { MiscRepository } from "./db/repositories/misc-repository.js";
+import { PageContentRepository } from "./db/repositories/page-content-repository.js";
 import {
   type ProductDetail,
   ProductRepository,
   type ProductSummary,
-} from "./repositories/product-repository.js";
-import { logger } from "./smart-logger.js";
-import { UnifiedCache } from "./unified-cache.js";
+} from "./db/repositories/product-repository.js";
+import { logger } from "./monitoring/logger.js";
+import { appStorageService } from "./storage/app-service.js";
 
 // PHASE 3: Migrated from FastMemoryCache to UnifiedCache for unified cache consolidation
 // ULTRA-PERFORMANCE: Using shared UnifiedCache singleton with async operations
 // const TTL = UnifiedCache.TTL_PRESETS;
-const unifiedCache = UnifiedCache.getInstance();
 
 import type {
   AboutHero,
@@ -631,7 +630,7 @@ export class DirectPostgreSQLStorage implements IStorage {
   async getProductsSummary(
     limit: number = 100,
     offset: number = 0,
-    options?: import("./cache-strategies.js").RepositoryCacheOptions,
+    options?: import("./cache/cache-strategies.js").RepositoryCacheOptions,
   ): Promise<{ products: Partial<Product>[]; totalCount: number }> {
     return await this.productRepository.getProductsSummary(limit, offset, options);
   }
@@ -944,6 +943,17 @@ export class DirectPostgreSQLStorage implements IStorage {
     section: Partial<InsertHomepageSection>,
   ): Promise<HomepageSection | undefined> {
     return await this.pageContentRepository.updateHomepageSectionById(id, section);
+  }
+
+  // Sustainability Section Methods
+  async getHomepageSustainability(): Promise<any | undefined> {
+    // @ts-expect-error
+    return await this.pageContentRepository.getHomepageSustainability();
+  }
+
+  async updateHomepageSustainability(data: any): Promise<any> {
+    // @ts-expect-error
+    return await this.pageContentRepository.updateHomepageSustainability(data);
   }
 
   async getLogoAnimationSettings(): Promise<LogoAnimationSettings | undefined> {

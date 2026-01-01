@@ -9,11 +9,11 @@ import { CloudTasksClient } from "@google-cloud/tasks";
 import express, { type Request } from "express";
 import { z } from "zod";
 import type { ContactPageConfiguration } from "../../../shared/schema.js";
-import { CacheKeys } from "../../lib/cache-strategies.js";
+import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { emailService } from "../../lib/email-service.js";
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 
 // Initialize Google Cloud Clients
 const tasksClient = new CloudTasksClient();
@@ -67,7 +67,9 @@ const contactFormSchema = z.object({
 });
 
 // Contact form submission endpoint
+// prettier-ignore
 router.post("/contact", async (req, res) => {
+  // security (public)
   const validatedData = contactFormSchema.parse(req.body);
 
   // Server-side honeypot validation - reject if filled (bot detection)

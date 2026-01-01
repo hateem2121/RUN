@@ -3,8 +3,8 @@
  * Lists all files in object storage to locate missing assets
  */
 
-import { appStorageService } from "../app-storage-service.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
+import { appStorageService } from "../lib/storage/app-service.js";
 
 async function listAllStorageFiles(): Promise<void> {
   logger.info("[Storage Inventory] Starting object storage enumeration...");

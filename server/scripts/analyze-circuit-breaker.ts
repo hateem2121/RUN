@@ -1,4 +1,5 @@
-import { appStorageService } from "../app-storage-service.js";
+import { logger } from "../lib/monitoring/logger.js";
+import { appStorageService } from "../lib/storage/app-service.js";
 
 async function analyzeCircuitBreaker() {
   // Get circuit breaker status

@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { Link } from "wouter";
+import { Link } from "react-router";
 
 interface CircularNavButtonProps {
   href: string;
@@ -13,7 +13,7 @@ export function CircularNavButton({
   const textChars = text.split("");
 
   return (
-    <Link href={href}>
+    <Link to={href}>
       <button className="circular-nav-button">
         {/* Rotating Text */}
         <div className="circular-nav-button__text">

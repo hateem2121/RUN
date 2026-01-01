@@ -6,7 +6,7 @@
 
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
-import { logger } from "./smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 interface EmailOptions {
   to: string;

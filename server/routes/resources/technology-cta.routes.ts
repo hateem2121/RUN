@@ -11,9 +11,9 @@
 
 import { Router } from "express";
 import { insertTechnologyCtaSchema } from "../../../shared/schema.js";
-import { CacheOperations } from "../../lib/cache-strategies.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 

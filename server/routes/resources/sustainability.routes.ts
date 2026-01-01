@@ -11,11 +11,11 @@
 
 import { type Request, Router } from "express";
 import { z } from "zod";
-import { CacheKeys } from "../../lib/cache-strategies.js";
+import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();

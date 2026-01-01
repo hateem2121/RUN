@@ -1,5 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import { httpRequestDurationMicroseconds, httpRequestsTotal } from "../lib/prometheus.js";
+import {
+  httpRequestDurationMicroseconds,
+  httpRequestsTotal,
+} from "../lib/monitoring/prometheus.js";
 
 export function prometheusMiddleware(req: Request, res: Response, next: NextFunction) {
   const start = Date.now();

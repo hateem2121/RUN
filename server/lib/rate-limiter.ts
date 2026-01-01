@@ -11,7 +11,7 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
-import { logger } from "./smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 interface RateLimitEntry {
   count: number;

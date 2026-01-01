@@ -2,11 +2,13 @@
 // Creates all 47 business items using working API endpoints
 
 import type { Express } from "express";
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
 
+import { authService } from "../../services/auth-service.js";
 export function registerAPIBasedPopulationRoutes(app: Express): void {
   // Populate all data using existing API endpoints
-  app.post("/api/api-based/populate-all", async (_req, res) => {
+  // prettier-ignore
+  app.post("/api/api-based/populate-all", authService.requireAdmin, async (_req, res) => {
     try {
       logger.debug("[API Population] 🚀 Creating all 47 business items via APIs...");
 

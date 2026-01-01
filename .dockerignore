@@ -6,3 +6,16 @@ dist
 coverage
 .replit
 replit.nix
+tests/
+test/
+**/*.test.ts
+**/*.spec.ts
+**/*.md
+docs/
+documentation/
+e2e/
+.github/
+.husky/
+.vscode/
+biome.json
+tsconfig.tsbuildinfo

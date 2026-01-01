@@ -9,10 +9,10 @@
  */
 
 import { type Request, Router } from "express";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { appStorageService } from "./app-storage-service.js";
+import { appStorageService } from "./lib/storage/app-service.js";
 import { generateOrganizedStoragePath } from "./routes/media/utils.js";
 
 export interface ImageVariants {

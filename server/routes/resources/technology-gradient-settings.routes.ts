@@ -14,11 +14,11 @@ import {
   insertTechnologyGradientSettingsSchema,
   technologyGradientFrontendSchema,
 } from "../../../shared/schema.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -94,8 +94,8 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
       storageData = {
         gradientType: "linear", // Default to linear as mostly used
         colors: data.gradientColors, // Map gradientColors -> colors (jsonb)
-        direction: data.angle.toString(), // Map angle -> direction
-        opacity: data.spotlightOpacity.toString(), // Map opacity -> opacity (decimal)
+        direction: (data.angle ?? 0).toString(), // Map angle -> direction
+        opacity: (data.spotlightOpacity ?? 1).toString(), // Map opacity -> opacity (decimal)
         settings: data, // Store the FULL configuration in JSONB for component rehydration
         isActive: data.isActive,
       };

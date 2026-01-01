@@ -3,7 +3,7 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { createContext, useContext, useState } from "react";
-import { useConcurrentLocation } from "@/hooks/useConcurrentLocation";
+import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 
 interface Links {
@@ -87,7 +87,7 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "fixed top-0 bottom-0 left-0 z-sticky hidden w-80 shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800",
+        "z-sticky fixed top-0 bottom-0 left-0 hidden w-80 shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800",
         className,
       )}
       style={{ transform: "none", willChange: "auto" }}
@@ -108,7 +108,7 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
   return (
     <div
       className={cn(
-        "fixed top-0 right-0 left-0 z-modal flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
+        "z-modal fixed top-0 right-0 left-0 flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
       )}
       {...props}
     >
@@ -129,12 +129,12 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
               ease: "easeInOut",
             }}
             className={cn(
-              "fixed inset-0 z-modal flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
+              "z-modal fixed inset-0 flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
               className,
             )}
           >
             <div
-              className="absolute top-10 right-10 z-modal text-neutral-800 dark:text-neutral-200"
+              className="z-modal absolute top-10 right-10 text-neutral-800 dark:text-neutral-200"
               onClick={() => setOpen(!open)}
             >
               <IconX />
@@ -149,22 +149,16 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
 
 export const SidebarLink = ({ link, className, ...props }: { link: Links; className?: string }) => {
   const { open, animate } = useSidebar();
-  const [location, setLocation] = useConcurrentLocation();
+  const { pathname } = useLocation();
+  const location = pathname;
 
   // Enhanced active state detection - check for exact match or admin sub-routes
   const isActive =
     location === link.href || (link.href.startsWith("/admin/") && location.startsWith(link.href));
 
-  const handleClick = (e: any) => {
-    e.preventDefault();
-    // Use concurrent setLocation for proper client-side navigation
-    setLocation(link.href);
-  };
-
   return (
-    <a
-      href={link.href}
-      onClick={handleClick}
+    <Link
+      to={link.href}
       className={cn(
         "group/sidebar flex items-center justify-start gap-2 py-2 transition-all duration-200",
         isActive
@@ -189,7 +183,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
         className={cn(
-          "!p-0 !m-0 inline-block whitespace-pre text-sm transition duration-150",
+          "!m-0 inline-block !p-0 text-sm whitespace-pre transition duration-150",
           isActive
             ? "font-medium text-neutral-900 dark:text-white"
             : "text-neutral-700 dark:text-neutral-200",
@@ -198,6 +192,6 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
       >
         {link.label}
       </motion.span>
-    </a>
+    </Link>
   );
 };

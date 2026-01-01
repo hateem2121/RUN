@@ -1,0 +1,262 @@
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
+import { accessories, sizeCharts } from "./catalog";
+import { categories } from "./categories";
+import { pgTable } from "./common";
+import { fabrics } from "./materials";
+import { mediaAssets } from "./media";
+
+// Products table
+export const products = pgTable(
+  "products",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    description: text("description"),
+    shortDescription: text("short_description"),
+
+    // Category relationship - HARDENED CASCADE RULE
+    categoryId: integer("category_id")
+      .references(() => categories.id, {
+        onDelete: "restrict", // PROTECT: Don't allow category deletion if products exist
+      })
+      .notNull(), // REQUIRED: All products must have a category
+    // REMOVED 2025-11-14: categoryPath column (never populated - client-side path computation used)
+
+    // Primary media
+    primaryImageId: integer("primary_image_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
+    primaryVideoId: integer("primary_video_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
+    modelFileId: integer("model_file_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
+
+    // Business fields
+    sku: varchar("sku", { length: 100 }).notNull(), // REQUIRED for inventory tracking
+
+    // B2B specific
+    minimumOrderQuantity: integer("minimum_order_quantity").default(1),
+    leadTime: varchar("lead_time", { length: 100 }),
+
+    // Product specifications - Note: specifications is array format, technicalSpecs is key-value object format
+    specifications: jsonb("specifications").$type<string[]>(),
+    technicalSpecs: jsonb("technical_specs").$type<Record<string, any>>(),
+    fiberComposition: jsonb("fiber_composition").$type<Record<string, any>>(), // Fiber/material breakdown
+    tags: jsonb("tags").$type<string[]>(),
+    careInstructions: jsonb("care_instructions").$type<string[]>(),
+
+    // Additional media properties
+    imageIds: jsonb("image_ids").$type<number[]>(), // Array of media asset IDs for product gallery
+    videos: jsonb("videos").$type<Record<string, any>[]>(), // Array of video objects
+    urlPath: varchar("url_path", { length: 500 }), // SEO-friendly URL path
+
+    // Custom product properties
+    customWeight: varchar("custom_weight", { length: 100 }),
+    customFit: varchar("custom_fit", { length: 100 }),
+    customizationOptions: jsonb("customization_options").$type<string[]>(), // Product customization options for B2B clients
+
+    // Relationships to other entities
+    fabricId: integer("fabric_id").references(() => fabrics.id, {
+      onDelete: "set null",
+    }),
+    sizeChartId: integer("size_chart_id").references(() => sizeCharts.id, {
+      onDelete: "set null",
+    }),
+    certificateIds: jsonb("certificate_ids").$type<number[]>(),
+    accessoryIds: jsonb("accessory_ids").$type<number[]>(),
+    // TODO: Candidate for deprecation - Currently used in PRODUCT_DETAIL_COLUMNS
+    // Plan: Refactor to derive related products from categoryProducts context (see getProductByPath)
+    // Once refactored, mark with @deprecated and set removal timeline
+    // Related: server/lib/repositories/product-repository.ts line 680 (categoryProducts derivation)
+    relatedProductIds: jsonb("related_product_ids").$type<number[]>(),
+
+    // SEO
+    metaTitle: varchar("meta_title", { length: 255 }),
+    metaDescription: text("meta_description"),
+    metadata: jsonb("metadata").$type<Record<string, any>>(), // Additional product metadata
+
+    // Status
+    isActive: boolean("is_active").default(true),
+    isFeatured: boolean("is_featured").default(false),
+
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    updatedAt: timestamp("updated_at", {
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+
+    // Soft delete support
+    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+  },
+  (table) => [
+    // PERFORMANCE INDEXES for product queries - CRITICAL for 50ms query times
+    index("products_category_id_idx").on(table.categoryId),
+    index("products_is_active_idx").on(table.isActive),
+    index("products_is_featured_idx").on(table.isFeatured),
+    index("products_active_created_idx").on(table.isActive, table.createdAt.desc()),
+    index("products_featured_active_idx").on(table.isFeatured, table.isActive),
+    index("products_category_active_idx").on(table.categoryId, table.isActive),
+    // PERFORMANCE FIX: Index for SKU lookups (inventory tracking)
+    index("products_sku_idx").on(table.sku),
+    // PERFORMANCE FIX: Index for fabric relationship queries
+    index("products_fabric_id_idx").on(table.fabricId),
+    // CRITICAL PERFORMANCE: Composite index for urlPath lookups (getProductByPath query)
+    index("products_url_path_active_idx").on(table.urlPath, table.isActive, table.deletedAt),
+    // PHASE 2D: Hot query index for homepage/products listing (deleted_at IS NULL, is_active = true, ORDER BY created_at DESC)
+    index("products_hot_query_idx").on(table.deletedAt, table.isActive, table.createdAt.desc()),
+    // AUDIT FIX: Foreign key indexes for media relationships (prevents slow JOINs)
+    index("products_primary_image_id_idx").on(table.primaryImageId),
+    index("products_primary_video_id_idx").on(table.primaryVideoId),
+    index("products_model_file_id_idx").on(table.modelFileId),
+    // NOTE: GIN trigram indexes for ILIKE search optimization created via migration:
+    // - products_name_trgm_idx (migrations/optimizations/004_add_trigram_indexes.sql)
+    // - products_description_trgm_idx (migrations/optimizations/004_add_trigram_indexes.sql)
+    // NOTE: GIN indexes for JSONB array containment queries created via migration:
+    // - products_tags_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+    // - products_certificate_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+    // - products_accessory_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+    // - products_image_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+  ],
+);
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+export const selectProductSchema = createSelectSchema(products);
+
+// Optimized Product types for efficient queries (matches backend column selections)
+export type ProductSummary = Pick<
+  Product,
+  | "id"
+  | "name"
+  | "slug"
+  | "sku"
+  | "description"
+  | "primaryImageId"
+  | "primaryVideoId"
+  | "imageIds"
+  | "videos"
+  | "minimumOrderQuantity"
+  | "leadTime"
+  | "careInstructions"
+  | "technicalSpecs"
+  | "customFit"
+  | "fiberComposition"
+  | "specifications"
+  | "isActive"
+  | "isFeatured"
+  | "categoryId"
+  | "fabricId"
+  | "certificateIds"
+  | "sizeChartId"
+  | "accessoryIds"
+  | "tags"
+  | "urlPath"
+  | "createdAt"
+>;
+
+export type ProductDetail = Pick<
+  Product,
+  | "id"
+  | "name"
+  | "sku"
+  | "slug"
+  | "description"
+  | "shortDescription"
+  | "isActive"
+  | "isFeatured"
+  | "categoryId"
+  | "fabricId"
+  | "sizeChartId"
+  | "primaryImageId"
+  | "primaryVideoId"
+  | "imageIds"
+  | "videos"
+  | "modelFileId"
+  | "specifications"
+  | "technicalSpecs"
+  | "careInstructions"
+  | "tags"
+  | "customWeight"
+  | "customFit"
+  | "minimumOrderQuantity"
+  | "leadTime"
+  | "certificateIds"
+  | "accessoryIds"
+  | "relatedProductIds"
+  | "customizationOptions"
+  | "metaTitle"
+  | "metaDescription"
+  | "urlPath"
+  | "createdAt"
+  | "updatedAt"
+>;
+
+// Zod Schema
+export const insertProductSchema = z.object({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  shortDescription: z.string().optional(),
+  categoryId: z.number().min(1, "Category ID is required"),
+  categoryPath: z.string().optional(),
+
+  // Media associations
+  primaryImageId: z.number().optional().nullable(),
+  primaryVideoId: z.number().optional().nullable(),
+  modelFileId: z.number().optional().nullable(),
+  imageIds: z.array(z.number()).optional(),
+  videos: z.array(z.record(z.string(), z.any())).optional(),
+
+  // Business fields
+  sku: z.string().min(1, "SKU is required"),
+
+  // B2B specific
+  minimumOrderQuantity: z.number().min(1).optional(),
+  leadTime: z.string().optional(),
+
+  // Product specifications
+  specifications: z.array(z.string()).optional(),
+  technicalSpecs: z.record(z.string(), z.any()).optional(),
+  fiberComposition: z.record(z.string(), z.any()).optional(),
+  tags: z.array(z.string()).optional(),
+  careInstructions: z.array(z.string()).optional(),
+
+  // Additional properties
+  urlPath: z.string().optional(),
+  customWeight: z.string().optional(),
+  customFit: z.string().optional(),
+  customizationOptions: z.array(z.string()).optional(),
+
+  // Relationships to other entities
+  fabricId: z.number().optional().nullable(),
+  sizeChartId: z.number().optional().nullable(),
+  certificateIds: z.array(z.number()).optional(),
+  accessoryIds: z.array(z.number()).optional(),
+  // TODO: Candidate for deprecation - See Drizzle schema comment above
+  relatedProductIds: z.array(z.number()).optional(),
+
+  // SEO
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+
+  // Status
+  isActive: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
+});

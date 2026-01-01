@@ -7,9 +7,9 @@
 import { Router } from "express";
 import { z } from "zod";
 import { insertAccessorySchema } from "../../../shared/schema.js";
-import { accessoryRepository } from "../../lib/repositories/accessory-repository.js";
+import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 

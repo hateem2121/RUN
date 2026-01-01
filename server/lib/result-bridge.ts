@@ -1,6 +1,6 @@
 import { err, fromPromise, ok, type Result } from "neverthrow";
 import { AppError, InternalError } from "../errors/AppError.js";
-import { logger } from "./smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 /**
  * Wraps a Promise-based database operation into a ResultAsync.

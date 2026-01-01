@@ -5,7 +5,7 @@
 
 import { randomUUID } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
-import { correlationContext } from "../lib/smart-logger.js";
+import { correlationContext } from "../lib/monitoring/logger.js";
 
 /**
  * Generate unique correlation ID for each request

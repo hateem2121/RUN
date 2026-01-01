@@ -1,4 +1,4 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 // Production Security Middleware
 // PHASE 4: Production Readiness - Security Hardening
 
@@ -27,23 +27,15 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: [
-            "'self'",
+            "'strict-dynamic'", // Modern browsers ignore whitelist if nonce/strict-dynamic is present
             `'nonce-${nonce}'`,
-            "'strict-dynamic'",
-            "'unsafe-inline'", // Fallback for older browsers
-            "'unsafe-eval'", // Required for some 3D libraries
-            "'wasm-unsafe-eval'",
-            "https:", // Fallback for older browsers
-            // Specific domains kept for documentation/fallback
-            "https://modelviewer.dev",
-            "https://cdn.jsdelivr.net",
-            "https://replit.com",
-            "https://*.google.com",
-            "https://*.gstatic.com",
+            "'unsafe-eval'", // Required for various libs (e.g. some 3D engines)
+            "https:", // Fallback for specific allowlisted domains if strict-dynamic not supported
+            "'unsafe-inline'", // BACKWARD COMPAT: Kept for hydration scripts that might slip through, but nonce takes precedence
           ],
           styleSrc: [
             "'self'",
-            "'unsafe-inline'",
+            "'unsafe-inline'", // Critical for CSS-in-JS and style attributes
             "https://fonts.googleapis.com",
             "https://cdnjs.cloudflare.com",
           ],
@@ -57,6 +49,15 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
       crossOriginEmbedderPolicy: false, // Often causes issues with 3rd party assets
       crossOriginResourcePolicy: { policy: "cross-origin" },
     })(req, res, next);
+
+    // P1 FIX: CSP Reporting (Report-Only)
+    // Helps catch violations before they break production
+    if (config.monitoring?.sentry?.reportUri) {
+      res.setHeader(
+        "Content-Security-Policy-Report-Only",
+        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; report-uri ${config.monitoring.sentry.reportUri}`,
+      );
+    }
   } else {
     next();
   }

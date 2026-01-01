@@ -1,4 +1,4 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 // Note: We might need to export the httpServer from index.ts or have a way to close it.
 // For now, we will assume strict exit is better than zombie state.
 

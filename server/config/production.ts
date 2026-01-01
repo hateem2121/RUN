@@ -41,6 +41,9 @@ export interface ProductionConfig {
       cacheHitRate: number;
     };
     logLevel: "error" | "warn" | "info" | "debug";
+    sentry?: {
+      reportUri?: string;
+    };
   };
 
   // Application Configuration
@@ -90,6 +93,9 @@ export const productionConfig: ProductionConfig = {
       cacheHitRate: 85, // 85% cache hit rate threshold
     },
     logLevel: "warn", // Only warn and error in production
+    sentry: {
+      reportUri: process.env.SENTRY_REPORT_URI,
+    },
   },
 
   app: {

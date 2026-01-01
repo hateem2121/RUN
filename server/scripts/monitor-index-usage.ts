@@ -11,7 +11,7 @@
 
 import { sql } from "drizzle-orm";
 import { db } from "../db.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 interface IndexUsageStats {
   schemaname: string;

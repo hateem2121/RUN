@@ -132,6 +132,7 @@ router.get("/search", searchMediaAssets);
 // Batch operations (specific routes before parametric)
 // Note: batchOperations handles both file uploads and JSON delete operations
 // Conditional middleware: use JSON parser for JSON content-type, multer for multipart
+// prettier-ignore
 router.post(
   "/batch",
   authService.requireAdmin,
@@ -148,7 +149,6 @@ router.post(
     }
   },
   (req, res, next) => {
-    // Apply magic number validation only for multipart uploads
     const contentType = req.headers["content-type"] || "";
     if (contentType.includes("multipart/form-data")) {
       return validateMagicNumbers(req, res, next);
@@ -188,12 +188,14 @@ router.get(
   authService.requireAdmin,
   testObjectStorageConnectivity,
 );
+// prettier-ignore
 router.post("/debug/repair-database-integrity", authService.requireAdmin, repairDatabaseIntegrity);
 router.post("/repair/mime-types", authService.requireAdmin, repairMimeTypes);
 
 // Direct uploads (MUST be before parametric upload routes)
 import { optimizeImageMiddleware } from "../../lib/image-optimizer.js";
 
+// prettier-ignore
 router.post(
   "/upload",
   authService.requireAdmin,
@@ -203,6 +205,7 @@ router.post(
   uploadSingleFile,
 );
 router.post("/upload-base64", authService.requireAdmin, uploadBase64);
+// prettier-ignore
 router.post(
   "/upload-gltf-package",
   authService.requireAdmin,
@@ -213,6 +216,7 @@ router.post(
 
 // Chunked upload flow
 router.post("/upload/init", authService.requireAdmin, initializeUpload);
+// prettier-ignore
 router.post(
   "/upload/chunk",
   authService.requireAdmin,
@@ -221,6 +225,7 @@ router.post(
   uploadChunk,
 );
 router.post("/upload/chunk-raw", authService.requireAdmin, uploadChunkRaw);
+// prettier-ignore
 router.post("/upload/finalize", authService.requireAdmin, express.json(), finalizeUpload);
 router.get("/upload/progress/:uploadId", authService.requireAdmin, getUploadProgress);
 router.delete("/upload/:uploadId", authService.requireAdmin, cancelUpload);

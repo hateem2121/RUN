@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 /**
  * Environment Variable Validation Schema

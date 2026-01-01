@@ -10,6 +10,7 @@ import type {
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, Cpu, Factory, Leaf, Shield, Target, Zap } from "lucide-react";
+import { Link } from "react-router";
 import {
   Bar,
   BarChart,
@@ -21,7 +22,6 @@ import {
   RadialBarChart,
   XAxis,
 } from "recharts";
-import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -134,7 +134,7 @@ export function CrossPageDashboard() {
               </div>
 
               <Button variant="outline" size="sm" asChild>
-                <Link href="/sustainability">
+                <Link to="/sustainability">
                   View Details <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -190,7 +190,7 @@ export function CrossPageDashboard() {
               </div>
 
               <Button variant="outline" size="sm" asChild>
-                <Link href="/manufacturing">
+                <Link to="/manufacturing">
                   View Details <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -262,7 +262,7 @@ export function CrossPageDashboard() {
               </div>
 
               <Button variant="outline" size="sm" asChild>
-                <Link href="/technology">
+                <Link to="/technology">
                   View Details <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>

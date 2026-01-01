@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import type { ErrorEnvelope } from "../../shared/contracts/envelopes.js";
 import { AppError, InternalError, ValidationError } from "../errors/AppError.js";
-import { correlationContext, logger } from "../lib/smart-logger.js";
+import { correlationContext, logger } from "../lib/monitoring/logger.js";
 import { mapDrizzleError } from "../utils/drizzle-error-mapper.js";
 
 export const globalErrorHandler = (

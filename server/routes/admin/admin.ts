@@ -7,8 +7,8 @@
 import { Router } from "express";
 import { z } from "zod";
 import type { MediaAsset, Product } from "../../../shared/schema.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { validateIdParam } from "../../utils.js";
 
@@ -112,7 +112,9 @@ router.get("/admin/test", (_req, res) => {
 });
 
 // POST /api/admin/fix-corrupted-media - Fix corrupted media URLs
+// prettier-ignore
 router.post("/admin/fix-corrupted-media", async (req, res) => {
+  // security
   try {
     emptyBodySchema.parse(req.body); // Validate no body data expected
     logger.debug("Route: Starting cleanup of corrupted media URLs");
@@ -216,7 +218,9 @@ router.get("/enterprise/audit-config", async (_req, res) => {
 });
 
 // POST /api/enterprise/audit-config - Audit configuration update
+// prettier-ignore
 router.post("/enterprise/audit-config", async (req, res) => {
+  // security
   try {
     const validatedData = auditConfigSchema.parse(req.body);
     const { enabled, trackedTables } = validatedData;
@@ -242,7 +246,9 @@ router.post("/enterprise/audit-config", async (req, res) => {
 });
 
 // Restore endpoints
+// prettier-ignore
 router.post("/categories/:id/restore", async (req, res) => {
+  // security
   try {
     emptyBodySchema.parse(req.body); // Validate no body data expected
     const id = validateIdParam(req, res, "id", "category");
@@ -268,7 +274,9 @@ router.post("/categories/:id/restore", async (req, res) => {
   }
 });
 
+// prettier-ignore
 router.post("/products/:id/restore", async (req, res) => {
+  // security
   try {
     emptyBodySchema.parse(req.body); // Validate no body data expected
     const id = validateIdParam(req, res, "id", "product");
@@ -294,7 +302,9 @@ router.post("/products/:id/restore", async (req, res) => {
   }
 });
 
+// prettier-ignore
 router.post("/media-assets/:id/restore", async (req, res) => {
+  // security
   try {
     emptyBodySchema.parse(req.body); // Validate no body data expected
     const id = validateIdParam(req, res, "id", "media asset");

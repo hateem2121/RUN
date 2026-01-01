@@ -10,13 +10,13 @@ import {
   insertSustainabilityHeroSchema,
   insertTechnologyHeroSchema,
 } from "../../../shared/schema.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { extractMediaIds } from "../../lib/media-utils.js";
+import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
 

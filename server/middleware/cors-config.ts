@@ -10,7 +10,7 @@
 import type { CorsOptions } from "cors";
 import cors from "cors";
 import { getConfig } from "../config/production.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 /**
  * Create CORS middleware with environment-based configuration
@@ -20,7 +20,13 @@ import { logger } from "../lib/smart-logger.js";
  */
 export function createCorsMiddleware() {
   const config = getConfig();
+  // P1 SECURITY: Allowlist must be explicit in production
+  const allowedOriginsEnv = process.env.STRICT_ALLOWED_ORIGINS;
+  const explicitOrigins = allowedOriginsEnv ? allowedOriginsEnv.split(",") : [];
+
   const { origins, credentials } = config.security.cors;
+  // Merge config origins with env origins
+  const effectiveOrigins = [...origins, ...explicitOrigins];
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
@@ -36,7 +42,7 @@ export function createCorsMiddleware() {
       }
 
       // Production/Staging: Strict origin validation
-      const isAllowed = origins.some((allowedOrigin) => {
+      const isAllowed = effectiveOrigins.some((allowedOrigin) => {
         // Handle wildcard patterns (e.g., "https://*.repl.co")
         if (allowedOrigin.includes("*")) {
           const pattern = allowedOrigin.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
@@ -48,26 +54,31 @@ export function createCorsMiddleware() {
       });
 
       if (isAllowed) {
-        logger.debug(`[CORS] Origin allowed: ${origin}`);
+        // logger.debug(`[CORS] Origin allowed: ${origin}`); // Reduce noise
         callback(null, true);
       } else {
         logger.warn(`[CORS] ⚠️ Origin blocked: ${origin}`, {
-          allowedOrigins: origins,
-          environment: config.app.environment,
+          allowedOrigins: effectiveOrigins,
         });
         callback(new Error(`CORS policy: Origin ${origin} not allowed`));
       }
     },
     credentials, // Allow credentials (cookies, auth headers)
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "X-Correlation-ID"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "X-Correlation-ID",
+      "Sentry-Trace",
+      "Baggage",
+    ],
     exposedHeaders: ["X-Correlation-ID"],
     maxAge: 86400, // 24 hours - preflight cache
   };
 
-  logger.info(`[CORS] Middleware initialized for ${config.app.environment} environment`, {
-    allowedOrigins: origins,
-    credentials,
+  logger.info(`[CORS] Middleware initialized for ${config.app.environment}`, {
+    effectiveOrigins,
   });
 
   return cors(corsOptions);

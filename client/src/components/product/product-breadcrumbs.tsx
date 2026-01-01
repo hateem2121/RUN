@@ -4,7 +4,7 @@
  */
 
 import { ChevronRight, Home } from "lucide-react";
-import { Link } from "wouter";
+import { Link } from "react-router";
 import { cn } from "@/lib/utils";
 
 interface BreadcrumbItem {
@@ -27,7 +27,7 @@ export function ProductBreadcrumbs({ items, className, showHome = true }: Produc
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "luxury-text-secondary flex items-center text-muted-foreground text-sm",
+        "luxury-text-secondary text-muted-foreground flex items-center text-sm",
         className,
       )}
     >
@@ -38,17 +38,17 @@ export function ProductBreadcrumbs({ items, className, showHome = true }: Produc
 
           return (
             <li key={`${item.url}-${index}`} className="flex items-center">
-              {index > 0 && <ChevronRight className="mx-1 h-4 w-4 text-muted-foreground/70" />}
+              {index > 0 && <ChevronRight className="text-muted-foreground/70 mx-1 h-4 w-4" />}
 
               {isLast ? (
-                <span className="flex w-truncate-md items-center truncate font-medium text-foreground">
+                <span className="w-truncate-md text-foreground flex items-center truncate font-medium">
                   {Icon && <Icon className="mr-1 h-4 w-4 shrink-0" />}
                   {item.name}
                 </span>
               ) : (
                 <Link
-                  href={item.url}
-                  className="flex w-truncate-sm items-center truncate transition-colors hover:text-blue-600"
+                  to={item.url}
+                  className="w-truncate-sm flex items-center truncate transition-colors hover:text-blue-600"
                 >
                   {Icon && <Icon className="mr-1 h-4 w-4 shrink-0" />}
                   {item.name}

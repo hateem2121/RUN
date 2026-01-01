@@ -1,5 +1,5 @@
 import { AppError, BadRequestError, ConflictError, InternalError } from "../errors/AppError.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 interface PostgresError extends Error {
   code?: string;

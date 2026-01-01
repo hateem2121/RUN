@@ -1,4 +1,4 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 /**
  * QUERY TIMEOUT PROTECTION
  * Phase 4.2: Safe query execution with timeout protection
@@ -9,7 +9,7 @@ import { logger } from "../lib/smart-logger.js";
  * - Development/normal queries: 5s (fast failure for debugging)
  */
 
-import { performanceMonitor } from "./query-performance-monitor.js";
+import { performanceMonitor } from "./db/query-performance.js";
 
 /**
  * COLD START RESILIENCE: Global warmup timeout override

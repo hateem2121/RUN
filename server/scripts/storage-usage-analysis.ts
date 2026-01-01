@@ -1,6 +1,7 @@
 import { mediaAssets } from "../../shared/schema.js";
-import { appStorageService } from "../app-storage-service.js";
 import { db } from "../db.js";
+import { logger } from "../lib/monitoring/logger.js";
+import { appStorageService } from "../lib/storage/app-service.js";
 
 interface FileUsage {
   path: string;

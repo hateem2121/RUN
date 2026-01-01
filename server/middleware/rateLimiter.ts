@@ -1,6 +1,6 @@
 import { Redis } from "@upstash/redis";
 import type { NextFunction, Request, Response } from "express";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 interface RateLimitConfig {
   windowMs: number;
@@ -107,10 +107,33 @@ class RateLimiter {
         }
 
         next();
-      } catch (error) {
-        // Fail open if rate limiting fails
-        logger.error("[RateLimiter] Middleware error, failing open", error as Error);
         next();
+      } catch (error) {
+        // Fallback to in-memory if Redis fails during the request
+        logger.error(
+          "[RateLimiter] Error in rate limiter, falling back to memory strict",
+          error as Error,
+        );
+
+        // Critical System Protection: Do NOT fail open if Redis dies, switch to local map
+        try {
+          const now = Date.now();
+          let entry = this.store.get(ip);
+          if (!entry || entry.resetTime < now) {
+            entry = { count: 0, resetTime: now + this.config.windowMs };
+            this.store.set(ip, entry);
+          }
+          entry.count++;
+          if (entry.count > this.config.max) {
+            res.status(429).json({ error: "Too many requests (fallback)" });
+            return;
+          }
+          next();
+        } catch (innerError) {
+          // If even memory fails, allow request but log critical error
+          logger.error("[RateLimiter] Critical failure in fallback", innerError);
+          next();
+        }
       }
     };
   };

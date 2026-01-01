@@ -1,6 +1,6 @@
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import React from "react";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -13,10 +13,10 @@ export const ProductsErrorFallback = React.memo(function ProductsErrorFallback({
   error,
   resetError,
 }: ProductsErrorFallbackProps) {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
 
   const handleGoBack = () => {
-    setLocation("/admin");
+    navigate("/admin");
   };
 
   const handleReload = () => {
@@ -25,13 +25,13 @@ export const ProductsErrorFallback = React.memo(function ProductsErrorFallback({
       resetError();
     } else {
       const currentLocation = window.location.pathname;
-      setLocation("/temp");
-      setTimeout(() => setLocation(currentLocation), 0);
+      navigate("/temp");
+      setTimeout(() => navigate(currentLocation), 0);
     }
   };
 
   return (
-    <div className="flex min-h-loading-center items-center justify-center p-6">
+    <div className="min-h-loading-center flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
@@ -45,7 +45,7 @@ export const ProductsErrorFallback = React.memo(function ProductsErrorFallback({
           </p>
 
           {error && (
-            <details className="rounded border bg-background p-3 text-muted-foreground text-xs">
+            <details className="bg-background text-muted-foreground rounded border p-3 text-xs">
               <summary className="cursor-pointer font-medium">Technical Details</summary>
               <pre className="mt-2 overflow-auto text-left">{error.message}</pre>
             </details>

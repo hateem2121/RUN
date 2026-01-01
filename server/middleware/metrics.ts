@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { collectDefaultMetrics, register } from "prom-client";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 // Init default metrics
 try {

@@ -16,12 +16,10 @@ describe("Route Manifest", () => {
 
   it("should resolve fuzzy routes correctly", () => {
     // Exact match
-    expect(getComponentForPath("/")).toBe("src/pages/homepage.tsx");
+    expect(getComponentForPath("/")).toBe("app/routes/_index.tsx");
 
     // Fuzzy match for categories
-    expect(getComponentForPath("/categories/running")).toBe(
-      "src/pages/enhanced-product-detail.tsx",
-    );
+    expect(getComponentForPath("/categories/running")).toBe("app/routes/categories.$slug.tsx");
 
     // Unknown route
     expect(getComponentForPath("/unknown-route")).toBeUndefined();

@@ -7,8 +7,8 @@ import { apiRateLimiter } from "../../lib/api-rate-limiter.js";
 import { businessIntelligence } from "../../lib/business-intelligence.js";
 // import { getConfig } from '../../config/production.js';
 import { memoryOptimizer } from "../../lib/memory-optimizer.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { workflowAutomation } from "../../lib/workflow-automation.js";
 
 // const config = getConfig();

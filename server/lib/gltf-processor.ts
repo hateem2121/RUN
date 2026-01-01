@@ -6,7 +6,7 @@
 import { type Document, NodeIO } from "@gltf-transform/core";
 import { KHRONOS_EXTENSIONS } from "@gltf-transform/extensions";
 import { dedup, draco, prune } from "@gltf-transform/functions";
-import { logger, serializeError } from "./smart-logger.js";
+import { logger, serializeError } from "./monitoring/logger.js";
 
 export interface GLTFProcessingResult {
   success: boolean;
@@ -43,14 +43,14 @@ export class GLTFProcessor {
    * PHASE 1.1 FIX: Helper method to detect GLB format
    */
   private isGLBFormat(buffer: Buffer): boolean {
-    // GLB files start with 'glTF' magic bytes (0x676C5446)
-    return (
-      buffer.length >= 4 &&
-      buffer[0] === 0x67 &&
-      buffer[1] === 0x6c &&
-      buffer[2] === 0x54 &&
-      buffer[3] === 0x46
-    );
+    return isGLBBuffer(buffer);
+  }
+
+  /**
+   * PHASE 1.1 NEW: Detect GLB format from buffer (static utility)
+   */
+  private isGLBBuffer(buffer: Buffer): boolean {
+    return isGLBBuffer(buffer);
   }
 
   /**
@@ -312,15 +312,8 @@ export class GLTFProcessor {
       }
 
       // Phase 4: Optimize and clean up with Draco compression
-      await document.transform(
-        prune(), // Remove unused elements
-        dedup(), // Remove duplicates
-        draco({
-          quantizePosition: 14,
-          quantizeNormal: 10,
-          quantizeTexcoord: 12,
-        }), // Draco compression for smaller files
-      );
+      // Phase 4: Optimize and clean up with Draco compression
+      await this.compressDocument(document);
 
       // Export processed GLTF - always as binary for better embedding
       const processedArray = await this.io.writeBinary(document);
@@ -430,9 +423,25 @@ export class GLTFProcessor {
   }
 
   /**
+   * PHASE 2.2: Compression step using Draco
+   */
+  private async compressDocument(document: Document): Promise<void> {
+    await document.transform(
+      prune(), // Remove unused elements
+      dedup(), // Remove duplicates
+      draco({
+        quantizePosition: 14,
+        quantizeNormal: 10,
+        quantizeTexcoord: 12,
+      }), // Draco compression for smaller files
+    );
+  }
+
+  /**
    * PHASE 1.1 ENHANCED: Auto-convert external textures to embedded (with strict validation)
    */
   async processForUpload(buffer: Buffer, baseUrl?: string): Promise<GLTFProcessingResult> {
+    const originalSize = buffer.length;
     const validation = await this.validateGLTF(buffer);
 
     if (!validation.isValid) {
@@ -447,20 +456,8 @@ export class GLTFProcessor {
       };
     }
 
-    // If already has embedded textures and no external refs, return as-is
-    if (validation.hasEmbeddedTextures && !validation.hasExternalReferences) {
-      logger.debug("[GLTF] File already has embedded textures, no processing needed");
-      return {
-        success: true,
-        processedBuffer: buffer,
-        originalSize: buffer.length,
-        processedSize: buffer.length,
-        texturesEmbedded: validation.textureCount,
-        externalReferencesRemoved: 0,
-      };
-    }
-
-    // Process to embed external textures
+    // Force processing (embedding + compression) regardless of whether textures are already embedded.
+    // This ensures Draco/Meshopt compression is applied to all assets.
     return await this.embedTextures(buffer, baseUrl);
   }
 

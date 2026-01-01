@@ -14,7 +14,7 @@
 import { createServer, type Server } from "node:http";
 import compression from "compression";
 import type { Express } from "express";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 // Critical static imports for type safety and base middleware
@@ -77,6 +77,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // DYNAMIC MODULE LOADING (Parallelized)
   // ============================================================================
+  let dynamicImportsResult: any[] = [];
+
+  const importWithLog = async (path: string) => {
+    try {
+      console.log(`[Routes] Importing ${path}...`);
+      const mod = await import(path);
+      console.log(`[Routes] Imported ${path}`);
+      return mod;
+    } catch (e) {
+      console.error(`[Routes] Failed to import ${path}:`, e);
+      throw e;
+    }
+  };
+
+  try {
+    dynamicImportsResult = await Promise.all([
+      importWithLog("./core/categories.js"),
+      importWithLog("./core/products.js"),
+      importWithLog("./core/fabrics.js"),
+      importWithLog("./core/accessories.js"),
+      importWithLog("./core/certificates.js"),
+      importWithLog("./core/materials.js"),
+      importWithLog("./core/size-charts.js"),
+
+      importWithLog("./feature-flags.js"),
+      importWithLog("./inquiries.js"),
+      importWithLog("./media/folder-management.routes.js"),
+      importWithLog("./media/index.js"),
+      importWithLog("./resources/content-management-routes.js"),
+      importWithLog("./resources/index.js"),
+      importWithLog("./resources/page-content-routes.js"),
+      importWithLog("./auth.js"),
+      importWithLog("./admin/admin.js"),
+      importWithLog("./worker.js"),
+      importWithLog("./utilities/inquiry-admin.js"),
+      importWithLog("./utilities/footer-config.js"),
+      importWithLog("./utilities/api-based-population.js"),
+      importWithLog("./utilities/data-creation.js"),
+      importWithLog("./utilities/direct-postgres-population.js"),
+      importWithLog("./utilities/kv-diagnostics.js"),
+      importWithLog("./utilities/metrics.js"),
+      importWithLog("./utilities/migration-execution.js"),
+      importWithLog("./docs.js"),
+    ]);
+  } catch (error) {
+    logger.error("[Start] Failed to import routes:", error);
+    throw error;
+  }
+
   const [
     // Core
     { default: categoriesRouter },
@@ -87,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     { default: materialsRouter },
     { default: sizeChartsRouter },
     // Utilities
-    { registerTaxonomyRoutes },
+
     { default: featureFlagsRouter },
     { inquiryRoutes },
     // Media
@@ -112,35 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     { registerMetricsRoutes },
     { registerMigrationExecutionRoutes },
     { default: docsRouter },
-  ] = await Promise.all([
-    import("./core/categories.js"),
-    import("./core/products.js"),
-    import("./core/fabrics.js"),
-    import("./core/accessories.js"),
-    import("./core/certificates.js"),
-    import("./core/materials.js"),
-    import("./core/size-charts.js"),
-    import("./core/taxonomy-routes.js"),
-    import("./feature-flags.js"),
-    import("./inquiries.js"),
-    import("./media/folder-management.routes.js"),
-    import("./media/index.js"),
-    import("./resources/content-management-routes.js"),
-    import("./resources/index.js"),
-    import("./resources/page-content-routes.js"),
-    import("./auth.js"),
-    import("./admin/admin.js"),
-    import("./worker.js"),
-    import("./utilities/inquiry-admin.js"),
-    import("./utilities/footer-config.js"),
-    import("./utilities/api-based-population.js"),
-    import("./utilities/data-creation.js"),
-    import("./utilities/direct-postgres-population.js"),
-    import("./utilities/kv-diagnostics.js"),
-    import("./utilities/metrics.js"),
-    import("./utilities/migration-execution.js"),
-    import("./docs.js"),
-  ]);
+  ] = dynamicImportsResult;
 
   // ============================================================================
   // ROUTE REGISTRATION
@@ -186,7 +207,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/docs", docsRouter);
 
   // Utilities / Functions
-  registerTaxonomyRoutes(app);
+
   registerMigrationExecutionRoutes(app);
 
   app.use("/api/kv-direct", diagnosticLimiter.middleware());

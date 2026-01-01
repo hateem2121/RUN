@@ -21,7 +21,7 @@ import {
 import { motion } from "framer-motion";
 import type React from "react";
 import { useState } from "react";
-import { useLocation } from "wouter";
+
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 
@@ -31,7 +31,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [_location] = useLocation();
+  // const [_location] = useLocation();
 
   const links = [
     {
@@ -173,12 +173,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
 export const Logo = () => {
   return (
-    <div className="relative z-elevated flex items-center space-x-2 py-1 font-normal text-black text-sm">
+    <div className="z-elevated relative flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="whitespace-pre font-medium text-black dark:text-white"
+        className="font-medium whitespace-pre text-black dark:text-white"
       >
         RUN APPAREL CMS
       </motion.span>
@@ -188,7 +188,7 @@ export const Logo = () => {
 
 export const LogoIcon = () => {
   return (
-    <div className="relative z-elevated flex items-center space-x-2 py-1 font-normal text-black text-sm">
+    <div className="z-elevated relative flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
     </div>
   );

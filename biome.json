@@ -7,7 +7,20 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!node_modules", "!.gemini", "!coverage", "!routeTree.gen.ts"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.gemini",
+      "!**/coverage",
+      "!**/routeTree.gen.ts",
+      "!**/.ds_store",
+      "!**/.env",
+      "!attached_assets",
+      "!**/.react-router",
+      "!client/.react-router"
+    ]
   },
   "formatter": {
     "enabled": true,

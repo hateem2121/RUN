@@ -6,9 +6,9 @@
 
 import express from "express";
 import { z } from "zod";
-import { logger } from "../../lib/smart-logger.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 
 const router = express.Router();
@@ -110,9 +110,11 @@ router.get(
   }),
 );
 
+// prettier-ignore
 router.patch(
   "/admin/inquiries/:id/status",
   asyncHandler(async (req, res) => {
+    // security
     const id = parseInt(req.params.id!, 10);
 
     if (Number.isNaN(id)) {
@@ -146,9 +148,11 @@ router.patch(
   }),
 );
 
+// prettier-ignore
 router.delete(
   "/admin/inquiries/:id",
   asyncHandler(async (req, res) => {
+    // security
     const id = parseInt(req.params.id!, 10);
 
     if (Number.isNaN(id)) {

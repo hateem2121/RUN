@@ -1,14 +1,16 @@
 import express from "express";
 import { emailService, type InquiryEmailData } from "../lib/email-service.js";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { asyncHandler } from "../middleware/async-handler.js";
 
 const router = express.Router();
 
 // Worker route to handle async email sending from Cloud Tasks
+// prettier-ignore
 router.post(
   "/workers/send-email",
   asyncHandler(async (req, res) => {
+    // security
     // Verify request is from Cloud Tasks
     // In production, Cloud Tasks adds "X-CloudTasks-QueueName" header
     // We can also verify OIDC token if configured, but header check is a good baseline

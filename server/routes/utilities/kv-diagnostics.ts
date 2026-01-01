@@ -2,7 +2,7 @@
 // Direct access to PostgreSQL data using actual available methods
 
 import type { Express } from "express";
-import { logger } from "../../lib/smart-logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 
 export function registerKVDiagnosticsRoutes(app: Express): void {

@@ -24,8 +24,8 @@
  * ============================================================================
  */
 
-import { appStorageService } from "../app-storage-service.js";
-import { logger, serializeError } from "./smart-logger.js";
+import { appStorageService } from "../lib/storage/app-service.js";
+import { logger, serializeError } from "./monitoring/logger.js";
 
 // ============================================================================
 // CONFIGURATION

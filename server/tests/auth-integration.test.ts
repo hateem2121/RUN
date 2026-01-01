@@ -18,7 +18,7 @@ vi.mock("../services/auth-service.js", () => ({
   },
 }));
 
-vi.mock("../lib/unified-cache.js", () => ({
+vi.mock("../lib/cache/unified-cache.js", () => ({
   UnifiedCache: {
     getInstance: () => ({
       get: vi.fn(),

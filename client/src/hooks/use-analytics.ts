@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation } from "react-router";
 import { analytics } from "../lib/google-analytics";
 
 interface UseAnalyticsOptions {
@@ -17,7 +17,7 @@ interface UseAnalyticsOptions {
  * Hook to automatically track page views and route changes
  */
 export function useAnalytics(options: UseAnalyticsOptions = {}) {
-  const [location] = useLocation();
+  const { pathname: location } = useLocation();
   const prevLocationRef = useRef<string>(location);
   const pageStartTime = useRef<number>(Date.now());
 

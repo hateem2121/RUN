@@ -143,7 +143,7 @@ export function AboutHeroTab() {
                       <FormItem>
                         <FormLabel>Title</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Main Title" />
+                          <Input {...field} value={field.value ?? ""} placeholder="Main Title" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -157,7 +157,7 @@ export function AboutHeroTab() {
                       <FormItem>
                         <FormLabel>Subtitle</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Subtitle" />
+                          <Input {...field} value={field.value ?? ""} placeholder="Subtitle" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -171,7 +171,12 @@ export function AboutHeroTab() {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea {...field} placeholder="Description" rows={4} />
+                          <Textarea
+                            {...field}
+                            value={field.value ?? ""}
+                            placeholder="Description"
+                            rows={4}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -199,7 +204,7 @@ export function AboutHeroTab() {
                           </Button>
                         </div>
                       ) : (
-                        <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed bg-muted">
+                        <div className="bg-muted flex h-20 w-32 items-center justify-center rounded-md border border-dashed">
                           <span className="text-muted-foreground text-xs">No media</span>
                         </div>
                       )}
@@ -231,7 +236,7 @@ export function AboutHeroTab() {
               </CardTitle>
               <CardDescription>Real-time preview of the hero section</CardDescription>
             </CardHeader>
-            <CardContent className="relative min-h-96 flex-1 overflow-hidden rounded-b-lg border bg-background p-0">
+            <CardContent className="bg-background relative min-h-96 flex-1 overflow-hidden rounded-b-lg border p-0">
               <div className="absolute inset-0 overflow-y-auto">
                 <div className="w-[125%] origin-top scale-[0.8] transform md:w-[125%] md:origin-top-left">
                   <HeroSection

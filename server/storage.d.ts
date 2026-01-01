@@ -90,13 +90,18 @@ import {
   InsertStorageAnalysisResult,
   StorageChangeLog,
   InsertStorageChangeLog,
+  User,
+  UpsertUser,
 } from "../shared/schema.js";
 import type { ProductSummary, ProductDetail } from "./lib/repositories/product-repository.js";
-import type { RepositoryCacheOptions } from "./lib/cache-strategies.js";
+import type { RepositoryCacheOptions } from "./lib/cache/cache-strategies.js";
 export interface IStorage {
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   getCategories(limit?: number, offset?: number): Promise<Category[]>;
   getCategoriesCount(): Promise<number>;
   getCategory(id: number): Promise<Category | undefined>;
+  getCategoryBySlug(slug: string): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined>;
   deleteCategory(id: number): Promise<boolean>;
@@ -150,12 +155,18 @@ export interface IStorage {
     search?: string;
     folderId?: number;
   }): Promise<number>;
+  getMediaAssetsWithCount(
+    limit: number,
+    offset: number,
+    filters?: { type?: string; searchTerm?: string; folderId?: number },
+  ): Promise<{ assets: MediaAsset[]; total: number }>;
   getMediaAsset(id: number): Promise<MediaAsset | undefined>;
   createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset>;
   updateMediaAsset(
     id: number,
     mediaAsset: Partial<InsertMediaAsset>,
   ): Promise<MediaAsset | undefined>;
+  get3DModelMetadata(id: number): Promise<any>;
   deleteMediaAsset(id: number): Promise<boolean>;
   getMediaAssetsByFolder(folderId: number | null): Promise<MediaAsset[]>;
   moveMediaAsset(id: number, targetFolderId: number | null): Promise<MediaAsset | undefined>;
@@ -188,6 +199,7 @@ export interface IStorage {
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: number): Promise<boolean>;
+  getProductByPath(path: string): Promise<any>;
   getNavigationItems(): Promise<NavigationItem[]>;
   getNavigationItem(id: number): Promise<NavigationItem | undefined>;
   createNavigationItem(navigationItem: InsertNavigationItem): Promise<NavigationItem>;
@@ -247,7 +259,7 @@ export interface IStorage {
       position: number;
     }[],
   ): Promise<void>;
-  getHomepageProcessCards(): Promise<HomepageProcessCard[]>;
+  getHomepageProcessCards(includeInactive?: boolean): Promise<HomepageProcessCard[]>;
   getHomepageProcessCard(id: number): Promise<HomepageProcessCard | undefined>;
   createHomepageProcessCard(card: InsertHomepageProcessCard): Promise<HomepageProcessCard>;
   updateHomepageProcessCard(

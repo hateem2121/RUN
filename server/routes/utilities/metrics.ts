@@ -5,15 +5,16 @@ import os from "node:os";
 import type { Express } from "express";
 import { z } from "zod";
 import { getPoolMetrics } from "../../db.js";
-import { type AlertThresholds, alertManager } from "../../lib/alert-manager.js";
-import { errorAggregator } from "../../lib/error-aggregator.js";
-import { httpMetricsTracker } from "../../lib/http-metrics-tracker.js";
-import { queryPerformanceMonitor } from "../../lib/query-performance-monitor.js";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
+import { UnifiedCache } from "../../lib/cache/unified-cache.js";
+import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
+import { type AlertThresholds, alertManager } from "../../lib/monitoring/alert-manager.js";
+import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
+import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
-import { UnifiedCache } from "../../lib/unified-cache.js";
+import { authService } from "../../services/auth-service.js";
 
 // Validation schema for alert threshold updates
 const alertThresholdsUpdateSchema = z
@@ -506,7 +507,8 @@ export function registerMetricsRoutes(app: Express): void {
    * PUT /api/metrics/alerts/thresholds
    * Update alert thresholds (runtime configuration) with validation
    */
-  app.put("/api/metrics/alerts/thresholds", (req, res) => {
+  // prettier-ignore
+  app.put("/api/metrics/alerts/thresholds", authService.requireAdmin, (req, res) => {
     try {
       // Validate request body
       const validation = alertThresholdsUpdateSchema.safeParse(req.body);
@@ -591,7 +593,7 @@ export function registerMetricsRoutes(app: Express): void {
         });
       }
 
-      const { getLatestInvalidationTime } = await import("../../lib/cache-events.js");
+      const { getLatestInvalidationTime } = await import("../../lib/cache/cache-events.js");
       const timestamp = await getLatestInvalidationTime(pattern);
 
       return res.json({

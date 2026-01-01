@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation } from "react-router";
 
 interface UseUnsavedChangesOptions {
   hasChanges: boolean;
@@ -10,7 +10,7 @@ export function useUnsavedChanges({
   hasChanges,
   message = "You have unsaved changes. Are you sure you want to leave?",
 }: UseUnsavedChangesOptions) {
-  const [location] = useLocation();
+  const { pathname: location } = useLocation();
   const previousLocationRef = useRef(location);
 
   const handleBeforeUnload = useCallback(

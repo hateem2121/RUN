@@ -1,4 +1,4 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 /**
  * DIRECT POSTGRESQL STORAGE SINGLETON
@@ -31,6 +31,7 @@ class StorageSingleton {
     StorageSingleton.isInitializing = true;
 
     try {
+      console.log("!!! REAL storage-singleton INIT RUNNING !!!");
       logger.info("[StorageSingleton] Initializing Direct PostgreSQL Storage...");
 
       // Initialize PostgreSQL-only storage (eliminates hybrid complexity)

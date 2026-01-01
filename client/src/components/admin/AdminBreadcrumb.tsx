@@ -1,6 +1,6 @@
 import { ChevronRight, Home } from "lucide-react";
 import React from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation } from "react-router";
 
 // import { cn } from '@/lib/utils';
 
@@ -29,7 +29,7 @@ const moduleLabels: Record<string, string> = {
 };
 
 export const AdminBreadcrumb = React.memo(function AdminBreadcrumb() {
-  const [location] = useLocation();
+  const { pathname: location } = useLocation();
   const pathSegments = location.split("/").filter(Boolean);
 
   const breadcrumbs: BreadcrumbItem[] = [{ label: "Dashboard", href: "/admin" }];
@@ -41,20 +41,20 @@ export const AdminBreadcrumb = React.memo(function AdminBreadcrumb() {
   }
 
   return (
-    <nav className="mb-4 flex items-center space-x-1 text-muted-foreground text-sm">
-      <Link href="/admin" className="flex items-center transition-colors hover:text-foreground">
+    <nav className="text-muted-foreground mb-4 flex items-center space-x-1 text-sm">
+      <Link to="/admin" className="hover:text-foreground flex items-center transition-colors">
         <Home className="h-4 w-4" />
       </Link>
 
       {breadcrumbs.slice(1).map((crumb, index) => (
         <div key={index} className="flex items-center space-x-1">
-          <ChevronRight className="h-4 w-4 text-muted-foreground/70" />
+          <ChevronRight className="text-muted-foreground/70 h-4 w-4" />
           {crumb.href ? (
-            <Link href={crumb.href} className="transition-colors hover:text-foreground">
+            <Link to={crumb.href} className="hover:text-foreground transition-colors">
               {crumb.label}
             </Link>
           ) : (
-            <span className="font-medium text-foreground">{crumb.label}</span>
+            <span className="text-foreground font-medium">{crumb.label}</span>
           )}
         </div>
       ))}

@@ -1,5 +1,5 @@
 import client from "prom-client";
-import { register } from "./prometheus.js";
+import { register } from "./monitoring/prometheus.js";
 
 // Business Metrics - Key Performance Indicators (KPIs)
 

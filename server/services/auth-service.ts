@@ -4,8 +4,8 @@ import type { Express, RequestHandler } from "express";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { adminCacheManager } from "../lib/admin-cache.js";
-import { logger } from "../lib/smart-logger.js";
+import { adminCacheManager } from "../lib/cache/admin-cache.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 export interface SessionUser extends User {
@@ -76,7 +76,11 @@ export class AuthService {
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        // P1 FIX: Secure cookies based on environment or connection
+        // 'auto' uses req.secure (trusted proxy must be enabled)
+        secure: process.env.NODE_ENV === "production" ? true : "auto",
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax", // Explicit SameSite
+
         maxAge: sessionTtl,
       },
     });

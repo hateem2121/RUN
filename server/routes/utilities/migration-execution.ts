@@ -4,12 +4,14 @@
 import type { Express } from "express";
 import { categories, homepageHero, homepageSections, products } from "../../../shared/schema.js";
 import { db } from "../../db.js";
-import { logger } from "../../lib/smart-logger.js";
-import { migrationUtilities } from "../../migration-utilities.js";
+import { migrationUtilities } from "../../lib/db/migration-utilities.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { authService } from "../../services/auth-service.js";
 
 export function registerMigrationExecutionRoutes(app: Express): void {
   // Execute live data migration
-  app.post("/api/migrate/execute-now", async (_req, res) => {
+  // prettier-ignore
+  app.post("/api/migrate/execute-now", authService.requireAdmin, async (_req, res) => {
     logger.debug("[Migration Execute] 🚀 Starting LIVE data migration...");
 
     try {

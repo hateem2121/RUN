@@ -1,10 +1,10 @@
 import type { MediaAsset } from "@shared/schema.js";
-import { appStorageService } from "../../app-storage-service.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger, serializeError } from "../../lib/smart-logger.js";
+import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import UPLOAD_CONFIG from "../../lib/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
 import { correctMimeType } from "../../utils.js";

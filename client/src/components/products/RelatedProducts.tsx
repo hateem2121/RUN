@@ -2,7 +2,7 @@ import type { Category, Product } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { LayoutGrid } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { batchFetchMediaContent } from "@/lib/queryClient";
@@ -169,7 +169,7 @@ export function RelatedProducts({
           }
 
           return (
-            <Link href={productUrl} key={product.id}>
+            <Link to={productUrl} key={product.id}>
               <Card className="group transition-shadow-sm h-full cursor-pointer overflow-hidden hover:shadow-lg">
                 {/* Media Preview */}
                 <div className="bg-muted relative aspect-4/5 overflow-hidden">

@@ -1,0 +1,163 @@
+import compression from "compression";
+import type { Express } from "express";
+import express from "express";
+import { getConfig } from "../config/production.js";
+import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
+import {
+  sentryErrorHandler,
+  sentryRequestHandler,
+  sentryTracingHandler,
+} from "../lib/monitoring/sentry.js";
+import { apiVersioningMiddleware, canonicalMiddleware } from "../middleware/canonical.js";
+import { correlationIdMiddleware } from "../middleware/correlation-id.js";
+import { createCorsMiddleware } from "../middleware/cors-config.js";
+import { healthCheckHandler, quickHealthHandler } from "../middleware/enhanced-health.js";
+import { nonceMiddleware } from "../middleware/nonce.js";
+import { performanceTrackingMiddleware } from "../middleware/performance-tracking.js";
+import {
+  notFoundHandler,
+  productionErrorHandler,
+  setupGlobalErrorHandlers,
+} from "../middleware/production-error-handler.js";
+import {
+  productionLogging,
+  requestTimeout,
+  requestValidation,
+  securityHeaders,
+} from "../middleware/production-security.js";
+import { apiRateLimiter } from "../middleware/rateLimiter.js";
+
+const config = getConfig();
+
+export function setupMiddleware(app: Express) {
+  // Trust Proxy (Must be first for IP rate limiting behind proxies)
+  app.set("trust proxy", true);
+
+  // Sentry Request Handler (Must be first middleware)
+  app.use(sentryRequestHandler);
+  app.use(sentryTracingHandler);
+
+  // Global Error Handlers Setup
+  setupGlobalErrorHandlers();
+
+  // Basic Security & Identity
+  app.use(createCorsMiddleware());
+  app.use(nonceMiddleware);
+
+  // Production Security features
+  if (config.app.environment === "production") {
+    app.use(securityHeaders);
+    app.use(requestValidation);
+    app.use(requestTimeout);
+    app.use(productionLogging);
+  }
+
+  // Request Tracing & Canonicalization
+  app.use(correlationIdMiddleware);
+  app.use(canonicalMiddleware);
+  app.use(apiVersioningMiddleware);
+
+  // Metrics & Observability
+  app.use(httpMetricsTracker.middleware());
+  app.use(performanceTrackingMiddleware);
+
+  // Rate Limiting (API Only)
+  app.use("/api", apiRateLimiter.middleware());
+
+  // Compression
+  configureCompression(app);
+
+  // Static Assets Cache Control (Production)
+  if (config.app.environment === "production") {
+    configureStaticCache(app);
+  }
+
+  // Request Body Parsers
+  configureBodyParsers(app);
+}
+
+export function setupErrorHandling(app: Express) {
+  // 404 Handler
+  app.use(notFoundHandler);
+
+  // Sentry Error Handler (Must be before other error middleware)
+  app.use(sentryErrorHandler);
+
+  // Production Error Handler
+  app.use(productionErrorHandler);
+
+  // Final Fallback Error Handler
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ message });
+  });
+}
+
+export function setupHealthChecks(app: Express) {
+  app.get("/health", quickHealthHandler);
+  // Protected health check configuration should be handled inside enhanced-health.ts
+  app.get("/health/detailed", healthCheckHandler);
+}
+
+function configureCompression(app: Express) {
+  app.use(
+    compression({
+      level: 9,
+      threshold: 512,
+      filter: (req, res) => {
+        if (req.headers["x-no-compression"] || req.path.includes("/api/media/")) {
+          return false;
+        }
+        if (req.path.endsWith(".css") || req.path.endsWith(".js")) {
+          return true;
+        }
+        return compression.filter(req, res);
+      },
+    }),
+  );
+}
+
+function configureStaticCache(app: Express) {
+  app.use("/src", (req, res, next) => {
+    const ext = req.path.substring(req.path.lastIndexOf("."));
+    const immutableAssets = [
+      ".css",
+      ".js",
+      ".woff",
+      ".woff2",
+      ".ttf",
+      ".otf",
+      ".eot",
+      ".glb",
+      ".gltf",
+    ];
+    const imageAssets = [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico"];
+
+    if (immutableAssets.includes(ext)) {
+      res.setHeader(
+        "Cache-Control",
+        "public, max-age=31536000, immutable, stale-while-revalidate=86400",
+      );
+      res.setHeader("ETag", `"static-${Date.now()}"`);
+    } else if (imageAssets.includes(ext)) {
+      res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=604800");
+    }
+    next();
+  });
+}
+
+function configureBodyParsers(app: Express) {
+  // Binary parser for chunks
+  app.use(
+    "/api/media/upload/chunk-raw",
+    express.raw({
+      type: "application/octet-stream",
+      limit: "1gb",
+    }),
+  );
+
+  // Standard parsers with limits
+  app.use(express.json({ limit: "10mb" }));
+  app.use(express.urlencoded({ extended: false, limit: "10mb" }));
+}

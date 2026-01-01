@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useNavigate } from "react-router";
 import { getQueryClient } from "@/lib/queryClient";
 
 interface AdminContextState {
@@ -24,9 +24,10 @@ interface AdminContextValue extends AdminContextState {
 const AdminContext = createContext<AdminContextValue | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: ReactNode }) {
-  const [location, setLocation] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [state, setState] = useState<AdminContextState>(() => ({
-    currentModule: location.split("/")[2] || "dashboard",
+    currentModule: location.pathname.split("/")[2] || "dashboard",
     isLoading: false,
     error: null,
     sidebarOpen: false,
@@ -77,10 +78,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         finalPath = `${path}?${state.queryParams.toString()}`;
       }
 
-      setLocation(finalPath);
+      navigate(finalPath);
       setCurrentModule(path.split("/")[2] || "dashboard");
     },
-    [state.hasUnsavedChanges, state.queryParams, setLocation, setCurrentModule],
+    [state.hasUnsavedChanges, state.queryParams, navigate, setCurrentModule],
   );
 
   const value = useMemo(

@@ -11,7 +11,7 @@ import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
-import { logger } from "./lib/smart-logger.js";
+import { logger } from "./lib/monitoring/logger.js";
 
 /**
  * Comprehensive DATABASE_URL validation at server startup
@@ -131,6 +131,18 @@ let currentConcurrentQueries = 0;
 // Wrap SQL function to track metrics - ALL queries go through this proxy
 const trackedSql = new Proxy(sql, {
   apply: async (target, thisArg, argArray) => {
+    // P1 RELIABILITY: Explicit Concurrency Limit
+    // Neon Serverless handles many connections, but NodeJS event loop can get clogged
+    // and we want to prevent "thundering herd" on the DB proxy.
+    const MAX_CONCURRENT_QUERIES = 50;
+
+    if (currentConcurrentQueries >= MAX_CONCURRENT_QUERIES) {
+      poolMetrics.failedQueries++;
+      throw new Error(
+        `[DB] Database concurrency limit reached (${MAX_CONCURRENT_QUERIES}). Please retry.`,
+      );
+    }
+
     currentConcurrentQueries++;
     poolMetrics.currentConcurrentQueries = currentConcurrentQueries;
     poolMetrics.peakConcurrentQueries = Math.max(
@@ -244,7 +256,7 @@ export async function wakeupDatabase(): Promise<{
 
   // Environment-aware timeout: 15s prod, 10s staging, 5s dev
   const env = process.env.NODE_ENV || "development";
-  const timeoutMs = env === "production" ? 15000 : env === "staging" ? 10000 : 5000;
+  const timeoutMs = env === "production" ? 15000 : env === "staging" ? 10000 : 15000;
 
   try {
     await withQueryTimeout(

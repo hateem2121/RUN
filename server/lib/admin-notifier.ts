@@ -1,6 +1,6 @@
 import { Client } from "pg";
-import { adminCacheManager } from "./admin-cache.js";
-import { logger } from "./smart-logger.js";
+import { adminCacheManager } from "./cache/admin-cache.js";
+import { logger } from "./monitoring/logger.js";
 
 const CHANNEL = "admin_cache_clear";
 let listenerClient: Client | null = null;
@@ -59,6 +59,10 @@ export const adminNotifier = {
       if (reconnectTimer) return;
       reconnectTimer = setTimeout(() => {
         reconnectTimer = null;
+        if (process.env.NODE_ENV !== "production") {
+          logger.warn("[AdminNotifier] Reconnect disabled in development to prevent log spam");
+          return;
+        }
         logger.info("[AdminNotifier] Reconnecting...");
         connect();
       }, 5000); // Retry every 5s

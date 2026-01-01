@@ -14,7 +14,8 @@ COPY client/package.json client/
 COPY server/package.json server/
 COPY shared/package.json shared/
 
-RUN npm ci --include=dev
+RUN --mount=type=cache,target=/root/.npm npm ci --include=dev
+
 
 # Copy source code
 COPY . .
@@ -26,11 +27,16 @@ RUN npm run build
 # Stage 2: Production
 FROM node:20-alpine
 
+# P1 FIX: Tini for zombie process reaping
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
 WORKDIR /app
 
 # Install production dependencies only
 COPY package*.json ./
-RUN npm ci --only=production
+RUN --mount=type=cache,target=/root/.npm npm ci --only=production
+
 
 # Copy built artifacts from builder
 COPY --from=builder /app/dist ./dist
@@ -42,6 +48,11 @@ COPY --from=builder /app/dist ./dist
 # Expose the port the app runs on
 ENV PORT=5000
 EXPOSE 5000
+
+# Start the server
+# P1 FIX: Healthcheck for container orchestration
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:5000/health || exit 1
 
 # Start the server
 CMD ["node", "dist/index.js"]

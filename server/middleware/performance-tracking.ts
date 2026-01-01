@@ -8,7 +8,7 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 // Performance metrics storage (in-memory, last 1000 requests)
 const MAX_METRICS = 1000;

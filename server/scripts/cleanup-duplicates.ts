@@ -1,6 +1,7 @@
 // import { getStorage } from "../lib/storage-singleton.js";
 import crypto from "node:crypto";
-import { appStorageService } from "../app-storage-service.js";
+import { logger } from "../lib/monitoring/logger.js";
+import { appStorageService } from "../lib/storage/app-service.js";
 
 async function cleanupDuplicates() {
   const storageFiles = await appStorageService.listAssets();

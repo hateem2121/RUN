@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { LayoutGrid, Play } from "lucide-react";
-import { Link } from "wouter";
+import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { apiRequest } from "@/lib/queryClient";
@@ -95,7 +95,7 @@ export function ProductGrid({
         }
 
         return (
-          <Link href={productUrl} key={product.id}>
+          <Link to={productUrl} key={product.id}>
             <Card
               className="group transition-shadow-sm cursor-pointer overflow-hidden hover:shadow-lg"
               onMouseEnter={() => handleProductHover(product)}

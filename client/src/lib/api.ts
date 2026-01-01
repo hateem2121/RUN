@@ -38,6 +38,12 @@ export async function apiRequest(
     headers = urlOrOptions.headers || {};
   }
 
+  // SSR Support: Prepend localhost for relative URLs on server
+  if (typeof window === "undefined" && url.startsWith("/")) {
+    const port = process.env.PORT || 5001;
+    url = `http://localhost:${port}${url}`;
+  }
+
   const isFormData = body instanceof FormData;
   const finalHeaders = { ...headers };
 

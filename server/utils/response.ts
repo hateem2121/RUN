@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { SuccessEnvelope } from "../../shared/contracts/envelopes.js";
-import { correlationContext } from "../lib/smart-logger.js";
+import { correlationContext } from "../lib/monitoring/logger.js";
 
 /**
  * Sends a standardized success response.

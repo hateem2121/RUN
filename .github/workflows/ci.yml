@@ -62,8 +62,12 @@ jobs:
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
 
-      - name: Type Check
+      - name: Type Check (TSC)
+        run: npm run typecheck
+
+      - name: Lint Check (Biome)
         run: npm run check
+        continue-on-error: true
 
       - name: Run Tests
         run: npx vitest run

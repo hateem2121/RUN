@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
-import { adminCacheManager } from "../lib/admin-cache.js";
-import { logger } from "../lib/smart-logger.js";
+import { adminCacheManager } from "../lib/cache/admin-cache.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 import { authService, type SessionUser } from "../services/auth-service.js";
 

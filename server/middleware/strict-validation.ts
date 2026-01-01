@@ -10,7 +10,7 @@
 
 import type { RequestHandler } from "express";
 import { z } from "zod";
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 /**
  * Middleware to detect and block admin routes without proper validation
@@ -78,7 +78,7 @@ export const enforceValidation: RequestHandler = (req, _res, next) => {
  *   price: z.number()
  * }).strict(); // Reject extraneous fields
  *
- * router.post('/products',
+ * router.post('/products', // security
  *   requireAdmin,
  *   validateBody(createProductSchema),
  *   async (req, res) => {

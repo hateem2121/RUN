@@ -4,7 +4,7 @@
  */
 
 import PQueue from "p-queue";
-import { logger } from "./smart-logger.js";
+import { logger } from "./monitoring/logger.js";
 
 export class RequestQueueManager {
   private static instance: RequestQueueManager | null = null;

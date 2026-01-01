@@ -11,7 +11,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useLocation } from "wouter";
+import { useSearchParams } from "react-router";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries, MediaQueryKeys } from "@/lib/media-query-keys";
@@ -770,7 +770,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
   );
 
   // URL Synchronization
-  const [location, setLocation] = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Helper function to parse URL parameters and create state updates
@@ -859,7 +859,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
   // Initialize state from URL on mount
   useEffect(() => {
-    const params = new URLSearchParams(globalThis.location.search);
+    const params = searchParams;
 
     // Parse URL params into state updates
     const updates = parseUrlParamsToUpdates(params, state);
@@ -894,14 +894,10 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     if (state.currentPage > 1) params.set("page", state.currentPage.toString());
 
     const newSearch = params.toString();
-    const currentSearch = globalThis.location.search.substring(1); // Remove '?'
+    const currentSearch = searchParams.toString();
 
     if (newSearch !== currentSearch) {
-      // Use replace to avoid cluttering history stack for every filter change,
-      // or push if you want back button support.
-      // Usually for filters/pagination, push is better for UX.
-      // wouter's setLocation defaults to push.
-      setLocation(location + (newSearch ? `?${newSearch}` : ""));
+      setSearchParams(params);
     }
   }, [
     state.searchTerm,
@@ -914,8 +910,8 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     state.sortOrder,
     state.currentPage,
     isInitialized,
-    location,
-    setLocation,
+    searchParams,
+    setSearchParams,
   ]);
 
   return (

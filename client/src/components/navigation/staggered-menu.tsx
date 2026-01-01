@@ -1,7 +1,7 @@
 import { useReducedMotion } from "framer-motion";
 import { gsap } from "gsap";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 export interface StaggeredMenuItem {
@@ -304,11 +304,11 @@ export const StaggeredMenu = ({
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-modal h-screen w-screen overflow-hidden">
+    <div className="sm-scope z-modal pointer-events-none fixed top-0 left-0 h-screen w-screen overflow-hidden">
       <div
         className={`${
           className ? `${className} ` : ""
-        }staggered-menu-wrapper relative z-sticky h-full w-full`}
+        }staggered-menu-wrapper z-sticky relative h-full w-full`}
         style={
           accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
@@ -317,7 +317,7 @@ export const StaggeredMenu = ({
       >
         <div
           ref={preLayersRef}
-          className="sm-prelayers pointer-events-none absolute top-0 right-0 bottom-0 z-default w-full"
+          className="sm-prelayers z-default pointer-events-none absolute top-0 right-0 bottom-0 w-full"
           aria-hidden="true"
         >
           {(() => {
@@ -340,13 +340,13 @@ export const StaggeredMenu = ({
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 z-dock flex w-full items-center justify-center bg-transparent p-4"
+          className="staggered-menu-header z-dock absolute top-0 left-0 flex w-full items-center justify-center bg-transparent p-4"
           aria-label="Main navigation header"
           style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="sm-toggle focus-visible:ring-ring pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
@@ -378,7 +378,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
+          className="staggered-menu-panel z-default bg-background/95 focus-visible:ring-ring pointer-events-auto absolute top-0 right-0 flex h-full w-full flex-col overflow-y-auto px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:ring-2 focus-visible:outline-none sm:w-[80vw] md:w-96"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
@@ -399,8 +399,8 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-4xl text-foreground uppercase leading-tight tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-5xl"
-                      href={it.link}
+                      className="sm-panel-item text-foreground hover:text-muted-foreground focus-visible:ring-ring relative inline-block cursor-pointer rounded-lg pr-[1.2em] text-4xl leading-tight font-bold tracking-tight uppercase no-underline transition-all duration-200 ease-out outline-none focus-visible:ring-2 active:scale-95 sm:text-5xl"
+                      to={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
                       data-testid={`mobile-nav-link-${it.label.toLowerCase().replace(/\s+/g, "-")}`}
@@ -408,7 +408,7 @@ export const StaggeredMenu = ({
                         toggleMenu();
                       }}
                     >
-                      <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
+                      <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                         {it.label}
                       </span>
                     </Link>
@@ -419,8 +419,8 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
-                    <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
+                  <span className="sm-panel-item text-muted-foreground relative inline-block cursor-pointer pr-[1.2em] text-4xl leading-tight font-bold tracking-tight uppercase no-underline transition-all duration-200 ease-out sm:text-5xl">
+                    <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                       No items
                     </span>
                   </span>

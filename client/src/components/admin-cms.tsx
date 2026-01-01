@@ -10,7 +10,7 @@ import type {
   SizeChart,
 } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
@@ -214,7 +214,7 @@ export default function AdminCMS() {
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mb-12 text-center">
-        <h2 className="mb-4 font-bold font-neue-stance text-3xl text-neutral-900">
+        <h2 className="font-neue-stance mb-4 text-3xl font-bold text-neutral-900">
           Admin Management Portal
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-neutral-600">
@@ -227,7 +227,7 @@ export default function AdminCMS() {
         {modules.map((module) => (
           <Link
             key={module.id}
-            href={module.id === "sizeCharts" ? "/admin/size-charts" : `/admin/${module.id}`}
+            to={module.id === "sizeCharts" ? "/admin/size-charts" : `/admin/${module.id}`}
           >
             <Card className="admin-card h-full cursor-pointer">
               <CardContent className="p-6">
@@ -236,11 +236,11 @@ export default function AdminCMS() {
                 >
                   <i className={`${module.icon} ${module.color.split(" ")[1]} text-xl`}></i>
                 </div>
-                <h3 className="mb-2 font-neue-stance font-semibold text-lg text-neutral-900">
+                <h3 className="font-neue-stance mb-2 text-lg font-semibold text-neutral-900">
                   {module.name}
                 </h3>
-                <p className="mb-4 text-neutral-600 text-sm">{module.description}</p>
-                <div className="text-neutral-500 text-xs">
+                <p className="mb-4 text-sm text-neutral-600">{module.description}</p>
+                <div className="text-xs text-neutral-500">
                   <span className="rounded bg-neutral-100 px-2 py-1">
                     {module.count} {module.count === 1 ? "Item" : "Items"}
                   </span>

@@ -13,11 +13,12 @@ import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
 } from "../../../shared/schema.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -54,7 +55,8 @@ router.get("/contact-page-configuration", async (_req, res) => {
   }
 });
 
-router.post("/contact-page-configuration", async (req, res) => {
+// prettier-ignore
+router.post("/contact-page-configuration", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertContactPageConfigurationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -84,7 +86,8 @@ router.post("/contact-page-configuration", async (req, res) => {
   }
 });
 
-router.patch("/contact-page-configuration", async (req, res) => {
+// prettier-ignore
+router.patch("/contact-page-configuration", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertContactPageConfigurationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -221,18 +224,18 @@ router.get("/navigation-items/:id", async (req, res) => {
 });
 
 // Create navigation item
-router.post("/navigation-items", async (req, res) => {
+router.post("/navigation-items", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertNavigationItemSchema.parse(req.body);
     // CHUNK 2: Populate BOTH legacy (label/url) AND modern (title/href) columns for compatibility
     // Database requires 'label' as notNull, but frontend uses 'title/href'
     const navigationItemData = {
       // Modern fields (frontend uses these)
-      title: validatedData.title,
-      href: validatedData.href,
+      title: validatedData.title || validatedData.label || "Untitled",
+      href: validatedData.href || validatedData.url || "#",
       // Legacy fields (database requires label as notNull)
-      label: validatedData.title,
-      url: validatedData.href,
+      label: validatedData.title || validatedData.label || "Untitled",
+      url: validatedData.href || validatedData.url || "#",
       // Other fields
       iconType: validatedData.iconType,
       iconSize: validatedData.iconSize,
@@ -268,7 +271,8 @@ router.post("/navigation-items", async (req, res) => {
 });
 
 // Bulk reorder navigation items
-router.patch("/navigation-items/reorder", async (req, res) => {
+// prettier-ignore
+router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const { items } = req.body;
     const reorderSchema = z.object({
@@ -348,9 +352,10 @@ router.patch("/navigation-items/reorder", async (req, res) => {
 });
 
 // Update navigation item
-router.patch("/navigation-items/:id", async (req, res) => {
+// prettier-ignore
+router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id!, 10);
     const validatedData = insertNavigationItemSchema.partial().parse(req.body);
 
     // Apply defensive defaults for boolean fields when explicitly provided
@@ -395,9 +400,10 @@ router.patch("/navigation-items/:id", async (req, res) => {
 });
 
 // Delete navigation item
-router.delete("/navigation-items/:id", async (req, res) => {
+// prettier-ignore
+router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id!, 10);
     const success = await withTimeout(
       getStorage().deleteNavigationItem(id),
       5000,
@@ -459,7 +465,8 @@ router.get("/navigation-glassmorphism-settings", async (_req, res) => {
   }
 });
 
-router.patch("/navigation-glassmorphism-settings", async (req, res) => {
+// prettier-ignore
+router.patch("/navigation-glassmorphism-settings", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
     if (!validation.success) {
@@ -516,7 +523,8 @@ router.get("/logo-animation-settings", async (_req, res) => {
   }
 });
 
-router.patch("/logo-animation-settings", async (req, res) => {
+// prettier-ignore
+router.patch("/logo-animation-settings", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertLogoAnimationSettingsSchema.safeParse(req.body);
     if (!validation.success) {

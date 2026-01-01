@@ -18,7 +18,6 @@ export function QueryErrorBoundary({ children, componentName = "Data Loading", f
     <QueryErrorResetBoundary>
       {({ reset }) => {
         return (
-          // @ts-expect-error: onReset prop mismatch in v4 types
           <ErrorBoundary onReset={reset} componentName={componentName} fallback={fallback}>
             {children}
           </ErrorBoundary>

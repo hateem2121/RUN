@@ -19,7 +19,6 @@ const iconModules = import.meta.glob<IconModule>(
   "../../../../node_modules/@tabler/icons-react/dist/esm/icons/*.mjs",
 );
 
-// @ts-expect-error: Implicit any for @tabler/icons-react module
 const DefaultHomeIcon = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconHome.mjs"));
 
 export const NavigationIcon = memo(function NavigationIcon({
@@ -66,19 +65,14 @@ export const NavigationIcon = memo(function NavigationIcon({
                 : undefined)
             }
             alt={mediaIcon.originalName || ""}
-            className="h-full w-full"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-              imageRendering: "crisp-edges",
-            }}
+            className="h-full w-full object-cover object-center [image-rendering:crisp-edges]"
           />
         </div>
       );
     } else {
       // For admin display - stays within container bounds
       return (
-        <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-muted/20">
+        <div className="bg-muted/20 flex h-full w-full items-center justify-center overflow-hidden rounded-full">
           <img
             src={
               urls?.small ||
@@ -88,12 +82,7 @@ export const NavigationIcon = memo(function NavigationIcon({
                 : undefined)
             }
             alt={mediaIcon.originalName || ""}
-            className="h-full w-full"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-              imageRendering: "crisp-edges",
-            }}
+            className="h-full w-full object-cover object-center [image-rendering:crisp-edges]"
           />
         </div>
       );

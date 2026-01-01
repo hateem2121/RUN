@@ -40,10 +40,10 @@ import {
   insertHomepageSectionSchema,
   insertHomepageSloganSchema,
 } from "../../../shared/schema.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache-strategies.js";
-import { logger } from "../../lib/smart-logger.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { unifiedCache } from "../../lib/unified-cache.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { authService } from "../../services/auth-service.js";
 
@@ -107,6 +107,7 @@ router.get(
 );
 
 // Update homepage hero
+// prettier-ignore
 router.patch(
   "/homepage-hero",
   authService.requireAdmin,
@@ -196,6 +197,7 @@ router.get(
 );
 
 // Create homepage slogan
+// prettier-ignore
 router.post(
   "/homepage-slogans",
   authService.requireAdmin,
@@ -211,6 +213,7 @@ router.post(
 );
 
 // Update homepage slogan
+// prettier-ignore
 router.patch(
   "/homepage-slogans/:id",
   authService.requireAdmin,
@@ -230,6 +233,7 @@ router.patch(
 );
 
 // Delete homepage slogan
+// prettier-ignore
 router.delete(
   "/homepage-slogans/:id",
   authService.requireAdmin,
@@ -245,6 +249,7 @@ router.delete(
 );
 
 // Reorder homepage slogans
+// prettier-ignore
 router.patch(
   "/homepage-slogans/reorder",
   authService.requireAdmin,
@@ -309,6 +314,7 @@ router.get(
 );
 
 // Create process card
+// prettier-ignore
 router.post(
   "/homepage-process-cards",
   authService.requireAdmin,
@@ -324,6 +330,7 @@ router.post(
 );
 
 // Update process card
+// prettier-ignore
 router.patch(
   "/homepage-process-cards/:id",
   authService.requireAdmin,
@@ -343,6 +350,7 @@ router.patch(
 );
 
 // Delete process card
+// prettier-ignore
 router.delete(
   "/homepage-process-cards/:id",
   authService.requireAdmin,
@@ -358,6 +366,7 @@ router.delete(
 );
 
 // Reorder process cards
+// prettier-ignore
 router.patch(
   "/homepage-process-cards/reorder",
   authService.requireAdmin,
@@ -396,7 +405,7 @@ router.get(
       logger.debug("[Homepage] Admin/debug request - bypassing cache for sections");
     }
 
-    const sections = await getStorage().getHomepageSections(shouldBypassCache(req));
+    const sections = await getStorage().getHomepageSections();
     const result = sections || [];
     await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -423,6 +432,7 @@ router.get(
 );
 
 // Update homepage section
+// prettier-ignore
 router.patch(
   "/homepage-sections/:id",
   authService.requireAdmin,
@@ -478,6 +488,7 @@ router.get(
 );
 
 // Update featured products settings
+// prettier-ignore
 router.patch(
   "/homepage-featured-products-settings",
   authService.requireAdmin,

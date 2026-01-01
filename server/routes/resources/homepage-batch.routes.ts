@@ -20,10 +20,10 @@
  */
 
 import express from "express";
-import { CacheOperations } from "../../lib/cache-strategies.js";
-import { logger } from "../../lib/smart-logger.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { twoTierBatchCache } from "../../lib/two-tier-batch-cache.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 
 const router = express.Router();

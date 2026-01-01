@@ -1,11 +1,12 @@
-import { logger } from "../lib/smart-logger.js";
+import { logger } from "../lib/monitoring/logger.js";
 // Enhanced Health Monitoring System
 // PHASE 4: Production Readiness - Comprehensive Health Checks
 
 import type { Request, Response } from "express";
-import { appStorageService } from "../app-storage-service.js";
 import { database, development } from "../config/environment.js";
 import { getConfig } from "../config/production.js";
+import { appStorageService } from "../lib/storage/app-service.js";
+import { getStorage } from "../lib/storage-singleton.js";
 import { storage } from "../storage.js";
 
 // import { IndexUsageMonitor } from '../scripts/monitor-index-usage.js';
@@ -532,7 +533,17 @@ export async function performHealthCheck(): Promise<SystemHealth> {
 }
 
 // Health Check Route Handler
-export async function healthCheckHandler(_req: Request, res: Response) {
+export async function healthCheckHandler(req: Request, res: Response) {
+  // P1 SECURITY: Protect detailed health info
+  const secret = process.env.HEALTH_CHECK_SECRET;
+  const providedSecret = req.headers["x-health-check-key"] || req.query.key;
+
+  if (secret && providedSecret !== secret) {
+    logger.warn(`[Health] Unauthorized access attempt to /health/detailed from ${req.ip}`);
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
   try {
     const health = await performHealthCheck();
 

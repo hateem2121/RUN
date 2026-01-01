@@ -47,6 +47,7 @@ const environmentSchema = z.object({
     .transform((val) => val === "true"),
   SENTRY_DSN: z.string().optional().describe("Sentry DSN for error tracking"),
   SENTRY_ENVIRONMENT: z.string().optional().describe("Sentry environment tag"),
+  SENTRY_REPORT_URI: z.string().optional().describe("Sentry Report URI for CSP violations"),
 
   // Security Configuration
   CORS_ALLOWED_ORIGINS: z
