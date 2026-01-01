@@ -72,3 +72,11 @@ We use a semantic Z-index scale defined in our Tailwind v4 theme to ensure corre
 // ✅ New
 <div className="bg-black/50 outline-hidden z-modal">
 ```
+
+### 4. Verification
+
+Before pushing your changes, run the integrity check to ensure you haven't introduced any regressions:
+
+```bash
+npm run verify:tech-integrity
+```

@@ -93,11 +93,15 @@ cp .env.example .env
 npm run db:push
 
 # Start development server
-# Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173` (Client) and `http://localhost:5001` (Server).
+The app will be available at `http://localhost:5001` (SSR Proxy).
+
+3. **Verify Integrity:**
+   ```bash
+   npm run verify:tech-integrity
+   ```
 
 ### Environment Variables
 

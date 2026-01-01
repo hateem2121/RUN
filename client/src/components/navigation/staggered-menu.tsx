@@ -88,7 +88,9 @@ export const StaggeredMenu = ({
 
       let preLayers: HTMLElement[] = [];
       if (preContainer) {
-        preLayers = Array.from(preContainer.querySelectorAll(".sm-prelayer")) as HTMLElement[];
+        preLayers = Array.from(
+          preContainer.querySelectorAll(".sm-prelayer"),
+        ) as HTMLElement[];
       }
       preLayerElsRef.current = preLayers;
 
@@ -99,7 +101,8 @@ export const StaggeredMenu = ({
       gsap.set(middle, { opacity: 1 });
       gsap.set(bottom, { y: 0, rotation: 0 });
 
-      if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      if (toggleBtnRef.current)
+        gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
     return () => ctx.revert();
   }, [menuButtonColor, position, panelRef.current]);
@@ -116,7 +119,9 @@ export const StaggeredMenu = ({
     }
     itemEntranceTweenRef.current?.kill();
 
-    const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
+    const itemEls = Array.from(
+      panel.querySelectorAll(".sm-panel-itemLabel"),
+    ) as HTMLElement[];
     const numberEls = Array.from(
       panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
     ) as HTMLElement[];
@@ -128,7 +133,8 @@ export const StaggeredMenu = ({
     const panelStart = Number(gsap.getProperty(panel, "xPercent"));
 
     if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
-    if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+    if (numberEls.length)
+      gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -146,7 +152,9 @@ export const StaggeredMenu = ({
       );
     });
 
-    const lastTime = layerStates.length ? (layerStates.length - 1) * staggerDelay : 0;
+    const lastTime = layerStates.length
+      ? (layerStates.length - 1) * staggerDelay
+      : 0;
     const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
 
     tl.fromTo(
@@ -224,13 +232,18 @@ export const StaggeredMenu = ({
       ease: "power3.in",
       overwrite: "auto",
       onComplete: () => {
-        const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
+        const itemEls = Array.from(
+          panel.querySelectorAll(".sm-panel-itemLabel"),
+        ) as HTMLElement[];
         if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
 
         const numberEls = Array.from(
-          panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
+          panel.querySelectorAll(
+            ".sm-panel-list[data-numbering] .sm-panel-item",
+          ),
         ) as HTMLElement[];
-        if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+        if (numberEls.length)
+          gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
         busyRef.current = false;
       },
@@ -297,7 +310,14 @@ export const StaggeredMenu = ({
 
     animateHamburger(target);
     animateColor(target);
-  }, [playOpen, playClose, animateHamburger, animateColor, onMenuOpen, onMenuClose]);
+  }, [
+    playOpen,
+    playClose,
+    animateHamburger,
+    animateColor,
+    onMenuOpen,
+    onMenuClose,
+  ]);
 
   // Handle ESC key directly in hook, but ensure aria attributes are correct here
   // Add safe area padding to style manually until Tailwind env() support is verified in this context,
@@ -310,7 +330,9 @@ export const StaggeredMenu = ({
           className ? `${className} ` : ""
         }staggered-menu-wrapper z-sticky relative h-full w-full`}
         style={
-          accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
+          accentColor
+            ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties)
+            : undefined
         }
         data-position={position}
         data-open={open || undefined}
@@ -351,7 +373,6 @@ export const StaggeredMenu = ({
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
             onClick={toggleMenu}
-            type="button"
             data-testid="mobile-menu-toggle"
           >
             <span
