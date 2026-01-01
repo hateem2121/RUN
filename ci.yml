@@ -582,7 +582,37 @@ jobs:
           echo "📊 Generating test coverage report"
           npm run test:coverage 2>/dev/null || echo "⚠️  Coverage reporting not configured"
 
-  # ==================== DEPLOYMENT READINESS ====================
+  # ==================== E2E TESTING ====================
+  e2e-testing:
+    name: 🎭 Playwright E2E Tests
+    runs-on: ubuntu-latest
+    needs: [integration-testing]
+    container:
+      image: mcr.microsoft.com/playwright:v1.45.0-focal
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install Dependencies
+        run: npm ci
+
+      - name: 🎭 Run Playwright Tests
+        run: |
+          echo "🎭 Running Playwright E2E tests"
+          npx playwright test
+        env:
+          CI: true
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: 📊 Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
   deployment-readiness:
     name: 🚀 Deployment Readiness Check
     runs-on: ubuntu-latest

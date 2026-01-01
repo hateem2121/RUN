@@ -14,7 +14,7 @@ interface RateLimitEntry {
   resetTime: number;
 }
 
-class RateLimiter {
+export class RateLimiter {
   private redis: Redis | null = null;
   private store: Map<string, RateLimitEntry> = new Map();
   private config: RateLimitConfig;

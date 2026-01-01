@@ -25,6 +25,7 @@
     "test": "vitest run",
     "test:contract": "vitest run shared/tests",
     "test:integration": "vitest run server/tests",
+    "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
     "prepare": "husky"
   },
   "devDependencies": {

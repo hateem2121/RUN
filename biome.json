@@ -19,7 +19,8 @@
       "!**/.env",
       "!attached_assets",
       "!**/.react-router",
-      "!client/.react-router"
+      "!client/.react-router",
+      "!**/scripts/archive"
     ]
   },
   "formatter": {

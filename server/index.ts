@@ -1,22 +1,6 @@
-import { createServer } from "node:http";
-import path from "node:path";
-import express from "express";
-import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
-import { setupRoutes } from "./boot/routes.js";
-import { startServices } from "./boot/services.js";
-import { getConfig } from "./config/production.js";
-import { logger } from "./lib/monitoring/logger.js";
-import { startOtel } from "./lib/monitoring/otel.js";
-import { initSentry } from "./lib/monitoring/sentry.js";
-
-// 1. Initialize Telemetry (Must be very first)
-startOtel();
-initSentry();
-
-const config = getConfig();
 const app = express();
 
-const BOOT_TIMEOUT = 30000; // 30s boot timeout
+const _BOOT_TIMEOUT = 30000; // 30s boot timeout
 
 (async () => {
   try {
@@ -35,8 +19,10 @@ const BOOT_TIMEOUT = 30000; // 30s boot timeout
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // Runs before error handlers but after API routes
     if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
-      const staticPath = path.resolve(process.cwd(), "dist/public");
-      app.use(express.static(staticPath, { index: false }));
+      // In production, assets should be served via CDN (GCS/Cloud CDN).
+      // We only serve favicon/robots here if absolutely necessary, but generally disable static serving
+      // to reduce Node.js load.
+      // app.use(express.static(path.resolve(process.cwd(), "dist/public"), { index: false }));
     }
 
     // 7. Setup Error Handling (Must be last middleware)

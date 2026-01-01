@@ -25,7 +25,7 @@ import {
   requestValidation,
   securityHeaders,
 } from "../middleware/production-security.js";
-import { apiRateLimiter } from "../middleware/rateLimiter.js";
+import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
 
 const config = getConfig();
 
@@ -61,11 +61,16 @@ export function setupMiddleware(app: Express) {
   app.use(httpMetricsTracker.middleware());
   app.use(performanceTrackingMiddleware);
 
-  // Rate Limiting (API Only)
-  app.use("/api", apiRateLimiter.middleware());
+  // Granular Rate Limiting
+  app.use("/api/auth", authLimiter.middleware());
+  app.use("/api/media", uploadLimiter.middleware());
+  app.use("/api", apiLimiter.middleware());
 
   // Compression
   configureCompression(app);
+
+  // API Caching
+  configureApiCaching(app);
 
   // Static Assets Cache Control (Production)
   if (config.app.environment === "production") {
@@ -116,6 +121,24 @@ function configureCompression(app: Express) {
       },
     }),
   );
+}
+
+// Phase 3: SWR Caching for Read-Heavy APIs
+function configureApiCaching(app: Express) {
+  const cacheMiddleware = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    if (req.method === "GET") {
+      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    }
+    next();
+  };
+
+  app.use("/api/categories", cacheMiddleware);
+  app.use("/api/products", cacheMiddleware);
+  app.use("/api/homepage-hero", cacheMiddleware);
 }
 
 function configureStaticCache(app: Express) {

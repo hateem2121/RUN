@@ -83,8 +83,8 @@
   },
   "scripts": {
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node20 --packages=external --format=esm --outfile=../dist/index.js",
-    "predev": "npx kill-port 5001 || true",
-    "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' index.ts",
+    "predev": "npx kill-port 5001 && pkill -f 'tsx watch' || true",
+    "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "build:ssr": "npm run build"
