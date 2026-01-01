@@ -27,53 +27,14 @@ const inquirySchema = z.object({
 
 // --- Endpoints ---
 
-// GET /api/products
-// Supports cursor-based pagination
-router.get("/products", (req, res) => {
-  const limit = Math.min(parseInt(req.query.limit as string, 10) || 20, 50);
-  const cursor = parseInt(req.query.cursor as string, 10) || 0;
-  const category = req.query.category as string;
-
-  let filteredProducts = products;
-
-  if (category) {
-    filteredProducts = products.filter((p) => p.category === category);
-  }
-
-  // Determine slice
-  // In a real DB, we would use WHERE id > cursor LIMIT limit
-  // Here for array mock, we'll just slice by index for simplicity if cursor isn't ID based,
-  // OR treat cursor as the ID of the last item seen.
-  // Let's treat cursor as the last seen ID.
-
-  const startIndex = cursor > 0 ? filteredProducts.findIndex((p) => p.id === cursor) + 1 : 0;
-
-  const items = filteredProducts.slice(startIndex, startIndex + limit);
-  const nextItem = filteredProducts[startIndex + limit];
-  const nextCursor = nextItem ? nextItem.id : null;
-
-  res.json({
-    items,
-    nextCursor,
-    total: filteredProducts.length,
-  });
-});
-
-// GET /api/products/:id
-router.get("/products/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const product = products.find((p) => p.id === id);
-
-  if (!product) {
-    res.status(404).json({ message: "Product not found" });
-    return;
-  }
-
-  res.json(product);
-});
+// Product routes moved to core/products.ts
+// router.get("/products", ...);
+// router.get("/products/:id", ...);
 
 // POST /api/inquiries
+// prettier-ignore
 router.post("/inquiries", (req, res) => {
+  // security (public)
   try {
     const validatedData = inquirySchema.parse(req.body);
 

@@ -18,6 +18,7 @@
     "@opentelemetry/sdk-node": "^0.208.0",
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@opentelemetry/semantic-conventions": "^1.38.0",
+    "@react-router/express": "^7.11.0",
     "@run-remix/shared": "*",
     "@sentry/node": "^10.32.0",
     "@sentry/profiling-node": "^10.32.0",
@@ -81,8 +82,11 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node20 --packages=external --outfile=../dist/index.js",
+    "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node20 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "npx kill-port 5001 || true",
-    "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' index.ts"
+    "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' index.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "build:ssr": "npm run build"
   }
 }

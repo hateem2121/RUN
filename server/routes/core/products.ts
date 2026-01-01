@@ -7,10 +7,10 @@
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { insertProductSchema } from "../../../shared/schema.js";
-import { retryDbOperation } from "../../lib/db-retry.js";
+import { retryDbOperation } from "../../lib/db/db-retry.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { jsonResponse, registry } from "../../lib/openapi-generator.js";
 import { withTimeout } from "../../lib/request-timeout.js";
-import { logger } from "../../lib/smart-logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import {
@@ -20,7 +20,7 @@ import {
   validateIdParam,
 } from "../../utils.js";
 
-// import { UnifiedCache } from "../../lib/unified-cache.js";
+// import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 
 // const unifiedCache = UnifiedCache.getInstance();
 
@@ -129,24 +129,32 @@ router.get("/products", async (req, res) => {
       totalCount = result.totalCount;
     }
 
-    res.json({
+    // console.log("Sending products response:", { count: products?.length, total: totalCount });
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return res.json({
       data: products,
       pagination: {
         page: pageNum,
         limit: pageSize,
         total: totalCount,
-        pages: Math.ceil(totalCount / pageSize),
+        pages: totalPages,
+        hasMore: pageNum < totalPages,
       },
     });
   } catch (error: unknown) {
     logger.error("Route: Error fetching products:", error);
-    res.status(500).json({
-      success: false,
-      error: {
-        message: "Failed to fetch products",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        error: {
+          message: "Failed to fetch products",
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+    }
+    return; // Satisfy strict null checks
   }
 });
 

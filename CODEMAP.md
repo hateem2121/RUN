@@ -92,12 +92,12 @@ The project uses **NPM Workspaces** to manage dependencies across packages.
 ### A. Rendering a Product Page
 
 1. **User** visits `/products/:slug`.
-2. **Client** (`EnhancedProductDetail.tsx`) calls `useQuery(getProduct)`.
-3. **API** receives `GET /api/products/:slug`.
-4. **Server** (`server/routes.ts` -> `storage.ts`) queries PostgreSQL via Drizzle.
+2. **Client** (`EnhancedProductDetail.tsx`) uses `useLoaderData` from React Router.
+3. **Server** (`server/routes/core/products.ts`) gets the request.
+4. **Logic** queries PostgreSQL via Drizzle.
 5. **DB** returns product data + joined media.
-6. **Server** sends JSON response.
-7. **Client** renders data; 3D viewer lazy-loads GLB model from GCP.
+6. **Server** sends JSON response (or renders HTML if SSR).
+7. **Client** hydrates data; 3D viewer lazy-loads GLB model from GCP.
 
 ### B. Admin Uploading a File
 
@@ -115,14 +115,14 @@ The project uses **NPM Workspaces** to manage dependencies across packages.
 
 Where to look when working on X:
 
-| Feature            | Frontend Entry                        | Backend Logic              | Database Table                 |
-| ------------------ | ------------------------------------- | -------------------------- | ------------------------------ |
-| **CMS/Admin**      | `client/src/pages/admin.tsx`          | `server/routes/admin.ts`   | `users`, `audit_logs`          |
-| **Products**       | `client/src/pages/products.tsx`       | `server/storage.ts`        | `products`, `product_variants` |
-| **Media**          | `client/src/components/admin/media`   | `server/services/media.ts` | `media_items`                  |
-| **Contact**        | `client/src/pages/contact.tsx`        | `server/routes/contact.ts` | `inquiries`                    |
-| **Sustainability** | `client/src/pages/sustainability.tsx` | `server/routes.ts`         | `sustainability_metrics`       |
-| **Theming**        | `client/src/index.css`                | N/A                        | N/A                            |
+| Feature            | Frontend Entry                         | Backend Logic              | Database Table                 |
+| ------------------ | -------------------------------------- | -------------------------- | ------------------------------ |
+| **CMS/Admin**      | `client/app/routes/admin.tsx`          | `server/routes/admin.ts`   | `users`, `audit_logs`          |
+| **Products**       | `client/app/routes/products.tsx`       | `server/routes/core`       | `products`, `product_variants` |
+| **Media**          | `client/src/components/admin/media`    | `server/services/media.ts` | `media_items`                  |
+| **Contact**        | `client/app/routes/contact.tsx`        | `server/routes/contact.ts` | `inquiries`                    |
+| **Sustainability** | `client/app/routes/sustainability.tsx` | `server/routes/core`       | `sustainability_metrics`       |
+| **Theming**        | `client/src/index.css`                 | N/A                        | N/A                            |
 
 ---
 
@@ -132,7 +132,7 @@ Where to look when working on X:
   - Keys: `['products']`, `['media', { page: 1 }]`.
   - Stale Time: 5 minutes (default).
 - **UI State**: React `useState` / `useReducer` for local interactions (modals, form inputs).
-- **URL State**: **Wouter** for routing, query params for filters (`?category=men`).
+- **URL State**: **React Router 7** for routing, search params for filters (`?category=men`).
 - **Global Auth**: React Context (`AuthProvider`) holding the session.
 
 ---

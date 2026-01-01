@@ -50,15 +50,15 @@ Use this map to orient yourself before diving into specific files.
 | Layer             | Technology               | Version |
 | ----------------- | ------------------------ | ------- |
 | **Frontend**      | React                    | 19.0    |
-| **Build Tool**    | Vite                     | 7.x     |
+| **Build Tool**    | Vite                     | 6.0.0   |
 | **Styling**       | Tailwind CSS             | 4.0     |
 | **Server**        | Express                  | 5.x     |
 | **Database**      | PostgreSQL + Drizzle ORM | Latest  |
 | **State**         | TanStack Query           | 5.x     |
-| **Routing**       | Wouter                   | Latest  |
+| **Routing**       | React Router             | 7.x     |
 | **Components**    | shadcn/ui + Radix        | Latest  |
 | **Linting**       | Biome                    | 2.3+    |
-| **Runtime**       | Node.js                  | 22+     |
+| **Runtime**       | Node.js                  | 20+     |
 | **E2E Testing**   | Playwright               | Latest  |
 | **Observability** | Sentry                   | Latest  |
 | **Caching**       | LRU + Upstash Redis (L2) | Latest  |
@@ -71,7 +71,7 @@ Use this map to orient yourself before diving into specific files.
 
 ### Prerequisites
 
-- Node.js 22+
+- Node.js 20+
 - PostgreSQL database
 - npm (pnpm also supported)
 
@@ -148,7 +148,7 @@ RUN-Remix/
 ├── scripts/                    # Build & verification scripts
 ├── docs/                       # Documentation
 └── tests/                      # Test suites
-```│
+```
 ├── scripts/                   # Build & verification scripts
 │   ├── verify-ssr-template.ts
 │   ├── verify-build.cjs
@@ -210,19 +210,17 @@ npm run test:performance # Performance benchmarks
 ### Verification
 
 ```bash
-npm run verify:build     # Verify build output
-npm run verify:serving   # Verify production serving
-npm run verify:sourcemaps # Verify source maps
-npm run verify:ssr       # Verify SSR invariants
-npm run verify:release   # Full release verification
-npm run ci:checks        # All CI checks
+npm run verify:build     # Verify build output and typecheck
+npm run verify:tech-integrity # Full integrity check (build + audit)
 ```
 
 ---
 
 ## Performance Metrics
 
-_Post React 19 + Vite 7 + Tailwind v4 migration (Dec 2025)_
+### Performance Benchmarks
+
+_Post React 19 + Vite 6 + Tailwind v4 migration (Dec 2025)_
 
 | Metric                     | Value  | Target       |
 | -------------------------- | ------ | ------------ |
@@ -258,7 +256,7 @@ _Post React 19 + Vite 7 + Tailwind v4 migration (Dec 2025)_
 
 ### File Organization
 
-```
+```text
 client/src/
 ├── index.css              # Single source of truth (931 lines)
 │   ├── @theme { }         # 116 design tokens
@@ -480,7 +478,7 @@ npm run start            # Start production server
 
 ### Build Output
 
-```
+```text
 dist/
 ├── public/              # Static assets
 │   └── assets/          # Bundled CSS/JS

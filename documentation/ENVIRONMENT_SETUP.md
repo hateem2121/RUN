@@ -10,13 +10,13 @@ The application uses NEON PostgreSQL with HTTP-based serverless connections for 
 
 **✅ Correct (with pooler):**
 
-```
+```bash
 postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech:5432/dbname
 ```
 
 **❌ Incorrect (without pooler):**
 
-```
+```bash
 postgresql://user:password@ep-xxx.region.aws.neon.tech:5432/dbname
 ```
 
@@ -49,13 +49,13 @@ The application automatically validates your DATABASE_URL on startup. You'll see
 
 **✅ Success:**
 
-```
+```bash
 [Database] ✅ DATABASE_URL validation passed
 ```
 
 **⚠️ Warning (missing pooler):**
 
-```
+```bash
 [Database] ⚠️ NEON pooling not detected - DATABASE_URL should include "-pooler" suffix
 for optimal serverless performance. Without pooling, the database may experience
 connection exhaustion in high-traffic scenarios.
@@ -64,7 +64,7 @@ Example: postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/dbname
 
 **❌ Error (invalid URL):**
 
-```
+```bash
 ❌ Invalid DATABASE_URL protocol: "mysql"
 DATABASE_URL must start with "postgresql://" or "postgres://"
 ```
@@ -129,22 +129,13 @@ The application uses Google OAuth 2.0 with a centralized `AuthService`.
 **Session Management**:
 Sessions are stored in PostgreSQL using `connect-pg-simple`. Ensure the `sessions` table exists or the application will attempt to create it on startup.
 
-### L2: Persistent Cache (Replit KV)
-
-- **Provider**: `@replit/database`
-- **TTL**: Configurable per resource type
-  - Batch/Navigation data: 15 minutes (900s)
-  - Individual gradient settings: 15 minutes (900s)
-  - Homepage data: 10 minutes (600s)
-- **Purpose**: Reduce NEON database queries
-
 ### Stale-While-Revalidate
 
-Technology and homepage batch endpoints use stale-while-revalidate:
+Most data-heavy endpoints use stale-while-revalidate via `UnifiedCache`:
 
-- **Stale Threshold**: 80% of TTL (e.g., 12 minutes for 15-minute cache)
-- **Behavior**: Serve stale data immediately + refresh in background
-- **Benefit**: Zero loading states for users, always instant responses
+- **Stale Threshold**: High-performance background refresh
+- **Behavior**: Serve data from L1/L2 immediately + refresh in background if stale
+- **Benefit**: Consistent sub-100ms responses for public storefront APIs
 
 ### Cache Invalidation
 
@@ -196,7 +187,7 @@ npm run dev
 Look for validation messages in logs:
 
 - ✅ Database URL validation
-- ✅ Cache initialization
+- ✅ Cache initialization (LRU + Upstash)
 - ✅ Server startup on port 5001
 
 ---
@@ -222,9 +213,7 @@ If no output, you're missing the pooler suffix.
 
 **Symptom**: Logs show cache initialization failures
 
-**Solution**: Ensure Replit Database is enabled for your project
-
-**Diagnosis**: Check Replit sidebar → Database tab is present
+**Solution**: Verify `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are set correctly in your environment.
 
 ### Slow Initial Page Load
 
@@ -266,13 +255,13 @@ X-Response-Time: 5.2    # Response time in milliseconds
 
 ```bash
 # Check server health
-curl http://localhost:5000/api/health
+curl http://localhost:5001/api/health
 
 # Check database connectivity
-curl http://localhost:5000/api/diagnostics/database
+curl http://localhost:5001/api/health/db
 
 # Force cache refresh
-curl -H "Cache-Control: no-cache" http://localhost:5000/api/technology-batch
+curl -H "Cache-Control: no-cache" http://localhost:5001/api/products
 ```
 
 ---
@@ -289,5 +278,5 @@ curl -H "Cache-Control: no-cache" http://localhost:5000/api/technology-batch
 
 ---
 
-_Last updated: October 19, 2025_
-_Related files: `server/db.ts`, `server/lib/unified-replit-cache.ts`, `server/routes/resources/page-content-routes.ts`_
+_Last updated: December 31, 2025_
+_Related files: `server/db.ts`, `server/lib/unified-cache.ts`, `server/routes/index.ts`_
