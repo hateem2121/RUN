@@ -11,36 +11,7 @@ import { errorAggregator } from "./error-aggregator.js";
 import { httpMetricsTracker } from "./http-metrics.js";
 import { logger } from "./logger.js";
 
-export interface AlertThresholds {
-  slowQuery: {
-    durationMs: number;
-    consecutiveCount: number;
-  };
-  errorRate: {
-    percentageThreshold: number;
-    timeWindowMinutes: number;
-  };
-  httpErrorRate: {
-    percentageThreshold: number;
-  };
-  circuitBreaker: {
-    alertOnOpen: boolean;
-    alertOnHalfOpen: boolean;
-  };
-  // CHUNK 8: Memory and DB connection monitoring
-  memory: {
-    percentageThreshold: number; // Default: 80%
-  };
-  dbConnection: {
-    alertOnError: boolean;
-    alertOnTimeout: boolean;
-  };
-  // PHASE 2: GC pause time monitoring
-  gcPause: {
-    enabled: boolean;
-    thresholdMs: number; // Default: 100ms
-  };
-}
+import { type AlertConfig, defaultAlertConfig } from "../../config/alerts.js";
 
 interface Alert {
   id: string;
@@ -69,7 +40,7 @@ interface GCMetrics {
 }
 
 class AlertManager {
-  private thresholds: AlertThresholds;
+  private thresholds: AlertConfig;
   private recentAlerts: Alert[] = [];
   private readonly maxAlerts = 100; // Keep last 100 alerts
   private alertCooldown: Map<string, number> = new Map(); // type -> last alert timestamp
@@ -90,38 +61,8 @@ class AlertManager {
   private gcObserver: PerformanceObserver | null = null;
 
   constructor() {
-    // Load thresholds from environment or use defaults
-    // CHUNK 8: Updated slow query threshold from 400ms to 500ms
-    this.thresholds = {
-      slowQuery: {
-        durationMs: parseInt(process.env.ALERT_SLOW_QUERY_MS || "500", 10),
-        consecutiveCount: parseInt(process.env.ALERT_SLOW_QUERY_CONSECUTIVE || "3", 10),
-      },
-      errorRate: {
-        percentageThreshold: parseFloat(process.env.ALERT_ERROR_RATE_PERCENT || "10"),
-        timeWindowMinutes: parseInt(process.env.ALERT_ERROR_WINDOW_MIN || "5", 10),
-      },
-      httpErrorRate: {
-        percentageThreshold: parseFloat(process.env.ALERT_HTTP_ERROR_RATE_PERCENT || "5"),
-      },
-      circuitBreaker: {
-        alertOnOpen: process.env.ALERT_CIRCUIT_OPEN !== "false",
-        alertOnHalfOpen: process.env.ALERT_CIRCUIT_HALF_OPEN === "true",
-      },
-      // CHUNK 8: Memory and DB connection monitoring
-      memory: {
-        percentageThreshold: parseFloat(process.env.ALERT_MEMORY_PERCENT || "80"),
-      },
-      dbConnection: {
-        alertOnError: process.env.ALERT_DB_ERROR !== "false",
-        alertOnTimeout: process.env.ALERT_DB_TIMEOUT !== "false",
-      },
-      // PHASE 2: GC pause time monitoring
-      gcPause: {
-        enabled: process.env.ALERT_GC_ENABLED !== "false",
-        thresholdMs: parseFloat(process.env.ALERT_GC_PAUSE_MS || "100"),
-      },
-    };
+    // Load thresholds from configuration
+    this.thresholds = { ...defaultAlertConfig };
 
     // PHASE 2: Initialize GC monitoring if enabled
     if (this.thresholds.gcPause.enabled && typeof global.gc !== "undefined") {
@@ -136,10 +77,15 @@ class AlertManager {
     try {
       if (!existsSync(this.heapSnapshotDir)) {
         mkdirSync(this.heapSnapshotDir, { recursive: true });
-        logger.info(`[AlertManager] Created heap snapshot directory: ${this.heapSnapshotDir}`);
+        logger.info(
+          `[AlertManager] Created heap snapshot directory: ${this.heapSnapshotDir}`,
+        );
       }
     } catch (error) {
-      logger.error("[AlertManager] Failed to create heap snapshot directory:", error);
+      logger.error(
+        "[AlertManager] Failed to create heap snapshot directory:",
+        error,
+      );
     }
 
     logger.info("[AlertManager] Initialized with thresholds:", this.thresholds);
@@ -192,7 +138,9 @@ class AlertManager {
 
     // Calculate slow query rate from stats
     const slowQueryRate =
-      stats.totalQueries > 0 ? (stats.slowQueries / stats.totalQueries) * 100 : 0;
+      stats.totalQueries > 0
+        ? (stats.slowQueries / stats.totalQueries) * 100
+        : 0;
 
     // Alert if slow query rate is high or average response time exceeds threshold
     if (
@@ -322,12 +270,17 @@ class AlertManager {
       };
     }
 
-    if (status.state === "HALF_OPEN" && this.thresholds.circuitBreaker.alertOnHalfOpen) {
+    if (
+      status.state === "HALF_OPEN" &&
+      this.thresholds.circuitBreaker.alertOnHalfOpen
+    ) {
       if (!this.canAlert("circuit_breaker")) return null;
 
       const successRate =
         status.successCount + status.failureCount > 0
-          ? (status.successCount / (status.successCount + status.failureCount)) * 100
+          ? (status.successCount /
+              (status.successCount + status.failureCount)) *
+            100
           : 0;
 
       return {
@@ -359,7 +312,8 @@ class AlertManager {
     // Check cooldown period (1 hour)
     if (now - this.lastHeapSnapshotTime < this.heapSnapshotCooldownMs) {
       const minutesRemaining = Math.ceil(
-        (this.heapSnapshotCooldownMs - (now - this.lastHeapSnapshotTime)) / 60000,
+        (this.heapSnapshotCooldownMs - (now - this.lastHeapSnapshotTime)) /
+          60000,
       );
       logger.info(
         `[AlertManager] Heap snapshot skipped - cooldown active (${minutesRemaining} minutes remaining)`,
@@ -441,7 +395,10 @@ class AlertManager {
       if (!metrics) return null;
 
       // Check for connection errors
-      if (this.thresholds.dbConnection.alertOnError && metrics.connectionErrors > 0) {
+      if (
+        this.thresholds.dbConnection.alertOnError &&
+        metrics.connectionErrors > 0
+      ) {
         return {
           id: `alert_${Date.now()}_db_connection`,
           type: "db_connection",
@@ -528,7 +485,7 @@ class AlertManager {
   /**
    * Get current thresholds configuration
    */
-  getThresholds(): AlertThresholds {
+  getThresholds(): AlertConfig {
     return { ...this.thresholds };
   }
 
@@ -536,7 +493,7 @@ class AlertManager {
    * Update thresholds (runtime configuration) with deep merge to preserve unspecified fields
    * @param updates - Validated partial threshold updates (should be validated before calling)
    */
-  updateThresholds(updates: Partial<AlertThresholds>): void {
+  updateThresholds(updates: Partial<AlertConfig>): void {
     // Guard against null/undefined category objects
     if (updates.slowQuery && typeof updates.slowQuery === "object") {
       this.thresholds.slowQuery = {
@@ -612,7 +569,10 @@ class AlertManager {
             this.gcMetrics.totalPauseTime += duration;
             this.gcMetrics.averagePauseTime =
               this.gcMetrics.totalPauseTime / this.gcMetrics.totalPauses;
-            this.gcMetrics.maxPauseTime = Math.max(this.gcMetrics.maxPauseTime, duration);
+            this.gcMetrics.maxPauseTime = Math.max(
+              this.gcMetrics.maxPauseTime,
+              duration,
+            );
             this.gcMetrics.lastPauseTime = duration;
 
             // Keep recent pauses (last 100)
@@ -637,7 +597,9 @@ class AlertManager {
                 id: `alert_${Date.now()}_gc_pause`,
                 type: "gc_pause",
                 severity:
-                  duration > this.thresholds.gcPause.thresholdMs * 2 ? "critical" : "warning",
+                  duration > this.thresholds.gcPause.thresholdMs * 2
+                    ? "critical"
+                    : "warning",
                 message: `GC pause exceeded ${this.thresholds.gcPause.thresholdMs}ms threshold`,
                 timestamp: new Date().toISOString(),
                 details: {

@@ -8,7 +8,7 @@ import { PublicCapabilitySection } from "@/components/public/manufacturing/Publi
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 import { PublicProcessSection } from "@/components/public/manufacturing/PublicProcessSection";
 import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
-import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+// useOptimizedQuery import removed as unused
 import type { Route } from "./+types/manufacturing";
 
 // CHUNK 6: Lazy-load CallToAction to defer lottie-web (168KB) from main bundle
@@ -33,7 +33,8 @@ export function meta({}: Route.MetaArgs) {
     { title: "Manufacturing | Run Apparel" },
     {
       name: "description",
-      content: "World-class sportswear manufacturing facilities with end-to-end quality control.",
+      content:
+        "World-class sportswear manufacturing facilities with end-to-end quality control.",
     },
   ];
 }
@@ -118,8 +119,12 @@ export default function Manufacturing() {
   });
 
   const isPending =
-    isHeroLoading || isProcessesLoading || isCapabilitiesLoading || isQualitiesLoading;
-  const error = heroError || processesError || capabilitiesError || qualitiesError;
+    isHeroLoading ||
+    isProcessesLoading ||
+    isCapabilitiesLoading ||
+    isQualitiesLoading;
+  const error =
+    heroError || processesError || capabilitiesError || qualitiesError;
 
   if (isPending) {
     return <ManufacturingLoadingSkeleton />;
@@ -154,13 +159,22 @@ export default function Manufacturing() {
           />
 
           {/* Processes Section */}
-          <PublicProcessSection mediaAssets={mediaAssets} processes={processes} />
+          <PublicProcessSection
+            mediaAssets={mediaAssets}
+            processes={processes}
+          />
 
           {/* Capabilities Section */}
-          <PublicCapabilitySection mediaAssets={mediaAssets} capabilities={capabilities} />
+          <PublicCapabilitySection
+            mediaAssets={mediaAssets}
+            capabilities={capabilities}
+          />
 
           {/* Quality Section */}
-          <PublicQualitySection mediaAssets={mediaAssets} qualities={qualityItems} />
+          <PublicQualitySection
+            mediaAssets={mediaAssets}
+            qualities={qualityItems}
+          />
 
           {/* Call to Action - CHUNK 6: Lazy-loaded to defer lottie-web */}
           <Suspense fallback={<div className="h-24" />}>

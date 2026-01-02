@@ -8,10 +8,16 @@ import {
   sentryRequestHandler,
   sentryTracingHandler,
 } from "../lib/monitoring/sentry.js";
-import { apiVersioningMiddleware, canonicalMiddleware } from "../middleware/canonical.js";
+import {
+  apiVersioningMiddleware,
+  canonicalMiddleware,
+} from "../middleware/canonical.js";
 import { correlationIdMiddleware } from "../middleware/correlation-id.js";
 import { createCorsMiddleware } from "../middleware/cors-config.js";
-import { healthCheckHandler, quickHealthHandler } from "../middleware/enhanced-health.js";
+import {
+  healthCheckHandler,
+  quickHealthHandler,
+} from "../middleware/enhanced-health.js";
 import { nonceMiddleware } from "../middleware/nonce.js";
 import { performanceTrackingMiddleware } from "../middleware/performance-tracking.js";
 import {
@@ -25,7 +31,12 @@ import {
   requestValidation,
   securityHeaders,
 } from "../middleware/production-security.js";
-import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
+import {
+  apiLimiter,
+  authLimiter,
+  uploadLimiter,
+} from "../middleware/rate-limits.js";
+import { responseTracker } from "../middleware/response-tracker.js";
 
 const config = getConfig();
 
@@ -34,8 +45,12 @@ export function setupMiddleware(app: Express) {
   app.set("trust proxy", true);
 
   // Sentry Request Handler (Must be first middleware)
-  app.use(sentryRequestHandler);
-  app.use(sentryTracingHandler);
+  // app.use(sentryRequestHandler);
+  // app.use(sentryTracingHandler);
+
+  // Phase 7: Express 5 Stability Fix
+  // Track response state to prevent 404 fall-through race conditions
+  app.use(responseTracker);
 
   // Global Error Handlers Setup
   setupGlobalErrorHandlers();
@@ -86,17 +101,24 @@ export function setupErrorHandling(app: Express) {
   app.use(notFoundHandler);
 
   // Sentry Error Handler (Must be before other error middleware)
-  app.use(sentryErrorHandler);
+  // app.use(sentryErrorHandler);
 
   // Production Error Handler
   app.use(productionErrorHandler);
 
   // Final Fallback Error Handler
-  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-  });
+  app.use(
+    (
+      err: any,
+      _req: express.Request,
+      res: express.Response,
+      _next: express.NextFunction,
+    ) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      res.status(status).json({ message });
+    },
+  );
 }
 
 export function setupHealthChecks(app: Express) {
@@ -111,12 +133,22 @@ function configureCompression(app: Express) {
       level: 9,
       threshold: 512,
       filter: (req, res) => {
-        if (req.headers["x-no-compression"] || req.path.includes("/api/media/")) {
+        if (req.headers["x-no-compression"]) {
           return false;
         }
-        if (req.path.endsWith(".css") || req.path.endsWith(".js")) {
+
+        // Optimize: explicitly skip heavy binary formats that are already compressed
+        // This saves CPU cycles on the server
+        if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf)$/i.test(req.path)) {
+          return false;
+        }
+
+        // Always compress text-based assets
+        if (/\.(css|js|json|xml|svg)$/i.test(req.path)) {
           return true;
         }
+
+        // Fallback to standard filter (checks Content-Type)
         return compression.filter(req, res);
       },
     }),
@@ -131,7 +163,10 @@ function configureApiCaching(app: Express) {
     next: express.NextFunction,
   ) => {
     if (req.method === "GET") {
-      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.setHeader(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
     }
     next();
   };
@@ -155,7 +190,15 @@ function configureStaticCache(app: Express) {
       ".glb",
       ".gltf",
     ];
-    const imageAssets = [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico"];
+    const imageAssets = [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".svg",
+      ".webp",
+      ".ico",
+    ];
 
     if (immutableAssets.includes(ext)) {
       res.setHeader(
@@ -164,7 +207,10 @@ function configureStaticCache(app: Express) {
       );
       res.setHeader("ETag", `"static-${Date.now()}"`);
     } else if (imageAssets.includes(ext)) {
-      res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=604800");
+      res.setHeader(
+        "Cache-Control",
+        "public, max-age=2592000, stale-while-revalidate=604800",
+      );
     }
     next();
   });

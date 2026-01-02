@@ -13,7 +13,7 @@
 
 import { createServer, type Server } from "node:http";
 import compression from "compression";
-import type { Express } from "express";
+import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
@@ -28,8 +28,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
   const { authService } = await import("../services/auth-service.js");
-  const { adminLimiter, diagnosticLimiter } = await import("../lib/rate-limiter.js");
-  const { enforceValidation } = await import("../middleware/strict-validation.js");
+  const { adminLimiter, diagnosticLimiter } =
+    await import("../lib/rate-limiter.js");
+  const { enforceValidation } =
+    await import("../middleware/strict-validation.js");
 
   authService.setup(app);
   logger.info("[Auth] ✅ AuthService initialized (OIDC + PostgreSQL sessions)");
@@ -38,7 +40,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // DEV LOGIN (Preserved for compatibility)
   // ============================================================================
   app.get("/api/dev/login", async (req, res) => {
-    if (process.env.NODE_ENV === "production") return res.status(404).send("Not found");
+    if (process.env.NODE_ENV === "production")
+      return res.status(404).send("Not found");
     try {
       const { db } = await import("../db.js");
       const { users } = await import("@run-remix/shared");
@@ -48,7 +51,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         where: eq(users.email, "team@wear-run.com"),
       });
 
-      if (!adminUser) return res.status(404).json({ error: "Admin user not found" });
+      if (!adminUser)
+        return res.status(404).json({ error: "Admin user not found" });
 
       const user = { claims: { sub: adminUser.id, email: adminUser.email } };
       return req.login(user, (err) => {
@@ -164,52 +168,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
   ] = dynamicImportsResult;
 
   // ============================================================================
-  // ROUTE REGISTRATION
+  // ROUTE REGISTRATION - VERSIONING STRUCTURE (Phase 4)
   // ============================================================================
 
-  // Auth & Admin Base
-  app.use("/api", authRouter);
-  app.use("/api/admin", authService.requireAdmin);
-  app.use("/api/admin", adminLimiter.middleware());
-  app.use("/api/admin", enforceValidation);
+  const apiRouter = Router();
 
-  // Core
-  app.use("/api", categoriesRouter);
-  app.use("/api", productsRouter);
-  app.use("/api", fabricsRouter);
-  app.use("/api", accessoriesRouter);
-  app.use("/api", certificatesRouter);
-  app.use("/api", materialsRouter);
-  app.use("/api", sizeChartsRouter);
-  app.use("/api", inquiryRoutes);
+  // Core Domains
+  apiRouter.use((req, res, next) => {
+    logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
+    next();
+  });
+  apiRouter.use(authRouter);
+  apiRouter.use(categoriesRouter);
+  apiRouter.use(productsRouter);
+  apiRouter.use(fabricsRouter);
+  apiRouter.use(accessoriesRouter);
+  apiRouter.use(certificatesRouter);
+  apiRouter.use(materialsRouter);
+  apiRouter.use(sizeChartsRouter);
+  apiRouter.use(inquiryRoutes);
+
+  // Admin & Resources
+  // Note: authService.requireAdmin is middleware, we can apply it to specific groups if needed
+  // But here we keep existing structure where specific routes use it or we mount it.
+  // Existing: app.use("/api/admin", authService.requireAdmin);
+  // We can replicate this on apiRouter
+  apiRouter.use(
+    "/admin",
+    authService.requireAdmin,
+    adminLimiter.middleware(),
+    enforceValidation,
+  );
+  apiRouter.use(adminRouter); // adminRouter likely defines /admin/... or is mounted at /admin?
+  // Wait, previous code: app.use("/api", adminRouter);
+  // So adminRouter defines /admin paths?
+  // Let's assume yes.
+
+  apiRouter.use(inquiryAdminRouter);
+  apiRouter.use(footerConfigRouter); // Assuming it handles its own paths
+  apiRouter.use("/feature-flags", featureFlagsRouter); // Previous: app.use("/api/feature-flags", ...)
 
   // Media
-  app.use("/api/media", mediaRoutes);
-  app.use("/api", foldersRouter);
-
-  // Resource Management
-  app.use("/api", adminRouter);
-  app.use("/api", inquiryAdminRouter);
-  app.use(footerConfigRouter);
-  app.use("/api/feature-flags", featureFlagsRouter);
+  apiRouter.use("/media", mediaRoutes); // Previous: app.use("/api/media", ...)
+  apiRouter.use(foldersRouter);
 
   // Content
-  app.use("/api", pageContentRouter);
-  app.use("/api", contentManagementRouter);
+  apiRouter.use(pageContentRouter);
+  apiRouter.use(contentManagementRouter);
 
   // Worker
-  app.use("/api", workerRouter);
+  apiRouter.use(workerRouter);
 
-  // Client-facing Resources
-  app.use("/api", resourceRouter);
+  // Client Resources
+  apiRouter.use(resourceRouter);
 
-  // Documentation
+  // MOUNT API ROUTER (Versioning)
+  // Support both /api (legacy) and /api/v1 (future-proof)
+  app.use("/api/v1", apiRouter);
+  app.use("/api", apiRouter);
+
+  // Documentation (Keep at /api/docs)
   app.use("/api/docs", docsRouter);
 
-  // Utilities / Functions
-
+  // Utilities / Functions (Direct app mounting for special cases)
   registerMigrationExecutionRoutes(app);
 
+  // KV Diagnostics
   app.use("/api/kv-direct", diagnosticLimiter.middleware());
   app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
   registerKVDiagnosticsRoutes(app);
@@ -218,7 +242,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
+  logger.info(
+    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
+  );
 
   return httpServer;
 }

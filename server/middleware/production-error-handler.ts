@@ -2,7 +2,7 @@ import { logger } from "../lib/monitoring/logger.js";
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { getConfig } from "../config/production.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 
@@ -50,7 +50,10 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   let severity: ErrorDetails["severity"] = "medium";
 
   // Classify by error properties
-  const errorCode = error && typeof error === "object" && "code" in error ? error.code : undefined;
+  const errorCode =
+    error && typeof error === "object" && "code" in error
+      ? error.code
+      : undefined;
   if (errorCode === "ECONNREFUSED" || errorCode === "ENOTFOUND") {
     type = "external_service";
     severity = "high";
@@ -60,9 +63,17 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   ) {
     type = "database";
     severity = "high";
-  } else if (error && typeof error === "object" && ("status" in error || "statusCode" in error)) {
+  } else if (
+    error &&
+    typeof error === "object" &&
+    ("status" in error || "statusCode" in error)
+  ) {
     const status = (
-      "status" in error ? error.status : "statusCode" in error ? error.statusCode : 0
+      "status" in error
+        ? error.status
+        : "statusCode" in error
+          ? error.statusCode
+          : 0
     ) as number;
     if (status === 404) {
       type = "not_found";
@@ -121,7 +132,10 @@ function logError(error: unknown, details: ErrorDetails) {
     method: details.method,
     ip: details.ip,
     userAgent: details.userAgent,
-    stack: config.app.enableDebugMode && error instanceof Error ? error.stack : undefined,
+    stack:
+      config.app.enableDebugMode && error instanceof Error
+        ? error.stack
+        : undefined,
   });
 
   // Always log critical and high severity errors
@@ -129,7 +143,9 @@ function logError(error: unknown, details: ErrorDetails) {
     logger.error(
       `[ERROR ${details.id}] ${details.type.toUpperCase()}: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
-    logger.error(`[ERROR ${details.id}] Path: ${details.method} ${details.path}`);
+    logger.error(
+      `[ERROR ${details.id}] Path: ${details.method} ${details.path}`,
+    );
     logger.error(`[ERROR ${details.id}] IP: ${details.ip}`);
 
     if (config.app.enableDebugMode && error instanceof Error) {
@@ -138,7 +154,10 @@ function logError(error: unknown, details: ErrorDetails) {
   }
 
   // Log medium severity in development and staging
-  else if (details.severity === "medium" && (logLevel === "info" || logLevel === "debug")) {
+  else if (
+    details.severity === "medium" &&
+    (logLevel === "info" || logLevel === "debug")
+  ) {
     logger.warn(
       `[WARN ${details.id}] ${details.type}: ${error instanceof Error ? error.message : "Unknown error"} (${details.path})`,
     );
@@ -153,7 +172,10 @@ function logError(error: unknown, details: ErrorDetails) {
 }
 
 // Generate user-friendly error responses
-function generateErrorResponse(error: unknown, details: ErrorDetails): Record<string, unknown> {
+function generateErrorResponse(
+  error: unknown,
+  details: ErrorDetails,
+): Record<string, unknown> {
   const baseResponse = {
     error: true,
     id: details.id,
@@ -206,7 +228,9 @@ function generateErrorResponse(error: unknown, details: ErrorDetails): Record<st
   // Development/staging responses (more detailed)
   else {
     const status =
-      error && typeof error === "object" && ("status" in error || "statusCode" in error)
+      error &&
+      typeof error === "object" &&
+      ("status" in error || "statusCode" in error)
         ? (("status" in error
             ? error.status
             : "statusCode" in error
@@ -231,8 +255,12 @@ export function productionErrorHandler(
   error: unknown,
   req: Request,
   res: Response,
-  // next: NextFunction
+  next: NextFunction,
 ) {
+  if (res.headersSent) {
+    return next(error);
+  }
+
   // Classify and log the error
   const errorDetails = classifyError(error, req);
   logError(error, errorDetails);
@@ -245,9 +273,7 @@ export function productionErrorHandler(
   res.setHeader("X-Error-Type", errorDetails.type);
 
   // Send error response
-  if (!res.headersSent) {
-    res.status(Number(errorResponse.status)).json(errorResponse);
-  }
+  res.status(Number(errorResponse.status)).json(errorResponse);
 }
 
 // 404 Handler
@@ -276,8 +302,9 @@ export function notFoundHandler(req: Request, res: Response) {
     userAgent: errorDetails.userAgent,
   });
 
-  if (config.monitoring.logLevel === "debug") {
-    logger.info(`[404 ${errorDetails.id}] ${req.method} ${req.path}`);
+  // Prevent sending headers if already sent (Fix for ERR_HTTP_HEADERS_SENT)
+  if (res.headersSent || (req as any)._handled || res.locals._handled) {
+    return;
   }
 
   res.status(404).json({
@@ -285,7 +312,9 @@ export function notFoundHandler(req: Request, res: Response) {
     id: errorDetails.id,
     type: "not_found",
     message:
-      config.app.environment === "production" ? "Resource not found" : `Path ${req.path} not found`,
+      config.app.environment === "production"
+        ? "Resource not found"
+        : `Path ${req.path} not found`,
     timestamp: errorDetails.timestamp,
   });
 }
@@ -298,7 +327,9 @@ export function setupGlobalErrorHandlers() {
 
     // In production, we might want to restart the process
     if (config.app.environment === "production") {
-      logger.error("[CRITICAL] Process may need restart due to unhandled rejection");
+      logger.error(
+        "[CRITICAL] Process may need restart due to unhandled rejection",
+      );
       // Don't exit automatically in Replit - let it handle gracefully
     }
   });

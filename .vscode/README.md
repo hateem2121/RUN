@@ -14,7 +14,8 @@ All 20 recommended extensions have been verified as:
 
 **This is the recommended method since `code` CLI isn't currently in your PATH.**
 
-### Steps:
+### Steps
+
 1. **Open this project in VS Code**
    - If VS Code is running, use: File → Open → Select this folder
    - Or right-click folder → Open with Code
@@ -57,6 +58,7 @@ If notification doesn't appear:
 4. Restart terminal
 
 **Then run:**
+
 ```bash
 # Navigate to project
 cd /Users/hateemjamshaid/Downloads/RUN-Remix
@@ -69,35 +71,40 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 
 ## 📋 Extension List (20 Total)
 
-### Essential Development (5)
-- ✅ `drizzle-kit.drizzle-kit` - Drizzle ORM tooling
-- ✅ `bradlc.vscode-tailwindcss` - TailwindCSS IntelliSense  
-- ✅ `dbaeumer.vscode-eslint` - ESLint
-- ✅ `esbenp.prettier-vscode` - Prettier formatter
+### Essential Development (3)
+
+- ✅ `biomejs.biome` - Biome linter & formatter (Core)
+- ✅ `bradlc.vscode-tailwindcss` - TailwindCSS IntelliSense
 - ✅ `usernamehw.errorlens` - Inline error display
 
 ### Database & Backend (2)
+
 - ✅ `ckolkman.vscode-postgres` - PostgreSQL management
 - ✅ `rangav.vscode-thunder-client` - API testing
 
 ### Cloud & DevOps (1)
+
 - ✅ `googlecloudtools.cloudcode` - GCP tools
 
 ### TypeScript & React (3)
+
 - ✅ `mattpocock.ts-error-translator` - Better TypeScript errors
-- ✅ `zenclabs.reactpreview` - React component preview  
+- ✅ `zenclabs.reactpreview` - React component preview
 - ✅ `wallabyjs.console-ninja` - Enhanced debugging
 
 ### 3D Development (1)
+
 - ✅ `cesium.gltf-vscode` - GLTF model tools
 
 ### Testing (2)
+
 - ✅ `vitest.explorer` - Vitest test runner
 - ✅ `ryanluker.vscode-coverage-gutters` - Test coverage
 
 ### Productivity (6)
+
 - ✅ `christian-kohler.path-intellisense` - Path autocomplete
-- ✅ `formulahendry.auto-rename-tag` - Auto rename JSX tags  
+- ✅ `formulahendry.auto-rename-tag` - Auto rename JSX tags
 - ✅ `wix.vscode-import-cost` - Bundle size display
 - ✅ `aaron-bond.better-comments` - Color-coded comments
 - ✅ `mhutchie.git-graph` - Git visualization
@@ -108,17 +115,20 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 ## ✨ After Installation
 
 ### 1. Verify Installation
+
 ```bash
 # Run verification script
 ./.vscode/verify-setup.sh
 ```
 
 ### 2. Configure PostgreSQL Extension
+
 - Open PostgreSQL panel
 - Add connection string from `.env` file
 - Your DATABASE_URL
 
 ### 3. Test Features
+
 - **Error Lens**: Open any .ts file - see inline errors
 - **TailwindCSS**: Type `className="` - see autocomplete
 - **Prettier**: Edit and save - auto-format works
@@ -129,22 +139,26 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 ## 🎯 Best Practices Applied
 
 ### ✅ Editor Settings
+
 - Auto-format on save
 - ESLint auto-fix enabled
 - Bracket pair colorization
 - Path auto-import updates
 
 ### ✅ TailwindCSS
+
 - Class regex for `cva()`, `clsx()`, `cn()`
 - TypeScript support enabled
 - Autocomplete for custom classes
 
 ### ✅ TypeScript
+
 - Workspace TypeScript version
 - Relative import preferences
 - Auto-update imports on file move
 
 ### ✅ Performance
+
 - Optimized file exclusions
 - Search path filters
 - Watcher exclusions for node_modules
@@ -154,19 +168,20 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 ## 🔍 Verification Checklist
 
 After installation, verify:
-- [ ] Extensions panel shows 20 new extensions
+
+- [ ] Biome extension handles formatting & linting
 - [ ] Error Lens shows inline TypeScript errors
 - [ ] TailwindCSS autocomplete works in JSX
-- [ ] Files auto-format on save
+- [ ] Files auto-format on save (via Biome)
 - [ ] PostgreSQL panel appears in sidebar
-- [ ] Thunder Client icon in activity bar
+- [ ] Bruno/Thunder Client testing active
 - [ ] Vitest tests appear in Testing panel
 
 ---
 
 ## 📦 File Structure
 
-```
+```text
 .vscode/
 ├── extensions.json           # 20 extension recommendations
 ├── settings.json             # Optimized editor settings
@@ -184,6 +199,7 @@ After installation, verify:
 ## 🚀 Quick Start
 
 **Absolute easiest path:**
+
 1. Open this folder in VS Code
 2. Click "Install All" in the notification
 3. Reload window

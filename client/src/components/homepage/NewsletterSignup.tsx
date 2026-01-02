@@ -3,18 +3,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 // Simulated Server Action
-const _subscribeToNewsletter = async (
-  email: string,
-): Promise<{ success: boolean; message: string }> => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  if (email.includes("error")) {
-    return { success: false, message: "Invalid email address." };
-  }
-
-  return { success: true, message: "Successfully subscribed!" };
-};
+// Simulated Server Action (unused)
+// const _subscribeToNewsletter = ...
 
 const NewsletterSignup: React.FC = () => {
   // REACT 19: useActionState (Replaces useState + useTransition for forms)
@@ -32,15 +22,17 @@ const NewsletterSignup: React.FC = () => {
   );
 
   return (
-    <section className="w-full border-black/5 border-t bg-luxury-surface py-24">
+    <section className="bg-luxury-surface w-full border-t border-black/5 py-24">
       <div className="mx-auto max-w-md px-6 text-center">
-        <h3 className="mb-2 font-bold text-2xl uppercase tracking-tight">Stay in the Loop</h3>
-        <p className="mx-auto mb-8 max-w-xs text-balance text-muted-foreground text-sm">
+        <h3 className="mb-2 text-2xl font-bold tracking-tight uppercase">
+          Stay in the Loop
+        </h3>
+        <p className="text-muted-foreground mx-auto mb-8 max-w-xs text-sm text-balance">
           Receive early access to new drops and exclusive archival content.
         </p>
 
         <form action={formAction} className="relative">
-          <div className="relative overflow-hidden rounded-full border border-black/10 bg-white shadow-sm-xs transition-shadow-sm focus-within:border-black/30 focus-within:shadow-md">
+          <div className="shadow-sm-xs transition-shadow-sm relative overflow-hidden rounded-full border border-black/10 bg-white focus-within:border-black/30 focus-within:shadow-md">
             <AnimatePresence mode="wait">
               {state.status === "success" ? (
                 <motion.div
@@ -48,7 +40,7 @@ const NewsletterSignup: React.FC = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -20, opacity: 0 }}
-                  className="center-flex absolute inset-0 bg-muted font-medium text-green-600 text-sm"
+                  className="center-flex bg-muted absolute inset-0 text-sm font-medium text-green-600"
                 >
                   ✓ Subscribed
                 </motion.div>
@@ -65,14 +57,14 @@ const NewsletterSignup: React.FC = () => {
                     type="email"
                     required
                     placeholder="ENTER EMAIL"
-                    className="flex-1 bg-transparent px-6 py-4 text-sm outline-hidden placeholder:text-xs placeholder:uppercase placeholder:tracking-widest"
+                    className="flex-1 bg-transparent px-6 py-4 text-sm outline-hidden placeholder:text-xs placeholder:tracking-widest placeholder:uppercase"
                     disabled={isPending}
                   />
                   <Button
                     type="submit"
                     disabled={isPending}
                     variant="ghost"
-                    className="h-auto rounded-none px-6 py-4 font-bold text-foreground text-xs uppercase tracking-widest hover:bg-transparent hover:text-blue-600"
+                    className="text-foreground h-auto rounded-none px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-transparent hover:text-blue-600"
                   >
                     {isPending ? "..." : "Join"}
                   </Button>
@@ -86,7 +78,7 @@ const NewsletterSignup: React.FC = () => {
             <motion.p
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute top-full left-0 mt-2 w-full text-center text-red-500 text-xs"
+              className="absolute top-full left-0 mt-2 w-full text-center text-xs text-red-500"
             >
               {state.message}
             </motion.p>

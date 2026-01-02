@@ -87,6 +87,7 @@
     "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "build:ssr": "npm run build"
+    "build:ssr": "npm run build",
+    "start": "node ../dist/index.js"
   }
 }

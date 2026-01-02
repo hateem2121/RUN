@@ -10,7 +10,11 @@ const config = getConfig();
 
 import helmet from "helmet";
 
-export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+export function securityHeaders(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (config.security.headers.enableSecurity) {
     // Use pre-generated Nonce from middleware
     const nonce = res.locals.cspNonce;
@@ -29,17 +33,22 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
           scriptSrc: [
             "'strict-dynamic'", // Modern browsers ignore whitelist if nonce/strict-dynamic is present
             `'nonce-${nonce}'`,
-            "'unsafe-eval'", // Required for various libs (e.g. some 3D engines)
             "https:", // Fallback for specific allowlisted domains if strict-dynamic not supported
             "'unsafe-inline'", // BACKWARD COMPAT: Kept for hydration scripts that might slip through, but nonce takes precedence
           ],
           styleSrc: [
             "'self'",
-            "'unsafe-inline'", // Critical for CSS-in-JS and style attributes
+            `'nonce-${nonce}'`,
+            "'unsafe-inline'",
             "https://fonts.googleapis.com",
             "https://cdnjs.cloudflare.com",
           ],
-          fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+          fontSrc: [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://cdnjs.cloudflare.com",
+            "data:",
+          ],
           imgSrc: ["'self'", "data:", "blob:", "https:"],
           connectSrc: ["'self'", "https:", "data:", "blob:", "wss:"],
           workerSrc: ["'self'", "blob:"],
@@ -64,10 +73,15 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 }
 
 // Request Validation Middleware
-export function requestValidation(req: Request, res: Response, next: NextFunction) {
+export function requestValidation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   // Validate request size
   const contentLength = parseInt(req.get("Content-Length") || "0", 10);
-  const maxSize = parseInt(config.app.maxRequestSize.replace("mb", ""), 10) * 1024 * 1024;
+  const maxSize =
+    parseInt(config.app.maxRequestSize.replace("mb", ""), 10) * 1024 * 1024;
 
   if (contentLength > maxSize) {
     return res.status(413).json({
@@ -101,7 +115,10 @@ export function requestValidation(req: Request, res: Response, next: NextFunctio
       allowedTypes.push("application/octet-stream");
     }
 
-    if (contentType && !allowedTypes.some((type) => contentType.startsWith(type))) {
+    if (
+      contentType &&
+      !allowedTypes.some((type) => contentType.startsWith(type))
+    ) {
       return res.status(415).json({
         error: "Unsupported Media Type",
         allowedTypes,
@@ -113,16 +130,27 @@ export function requestValidation(req: Request, res: Response, next: NextFunctio
 }
 
 // API Key Validation (for future use)
-export function apiKeyValidation(req: Request, res: Response, next: NextFunction) {
+export function apiKeyValidation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   // Skip API key validation in development
   if (config.app.environment === "development") {
     return next();
   }
 
   // For production, check API key for sensitive endpoints
-  const sensitiveEndpoints = ["/api/admin", "/api/enterprise", "/api/migration", "/api/backup"];
+  const sensitiveEndpoints = [
+    "/api/admin",
+    "/api/enterprise",
+    "/api/migration",
+    "/api/backup",
+  ];
 
-  const isSensitive = sensitiveEndpoints.some((endpoint) => req.path.startsWith(endpoint));
+  const isSensitive = sensitiveEndpoints.some((endpoint) =>
+    req.path.startsWith(endpoint),
+  );
 
   if (isSensitive) {
     const apiKey = req.headers["x-api-key"] || req.query.apiKey;
@@ -159,7 +187,11 @@ export function apiKeyValidation(req: Request, res: Response, next: NextFunction
 }
 
 // Request Timeout Middleware
-export function requestTimeout(req: Request, res: Response, next: NextFunction) {
+export function requestTimeout(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   // Skip timeout for media upload and streaming routes
   const mediaRoutes = [
     "/api/media",
@@ -196,7 +228,11 @@ export function requestTimeout(req: Request, res: Response, next: NextFunction) 
 }
 
 // Production-specific request logging
-export function productionLogging(req: Request, res: Response, next: NextFunction) {
+export function productionLogging(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (config.app.environment === "production") {
     // Log only essential information in production
     const startTime = Date.now();
@@ -205,11 +241,15 @@ export function productionLogging(req: Request, res: Response, next: NextFunctio
       const duration = Date.now() - startTime;
       const logLevel = res.statusCode >= 400 ? "ERROR" : "INFO";
 
-      logger.info(`[${logLevel}] ${req.method} ${req.path} ${res.statusCode} ${duration}ms`);
+      logger.info(
+        `[${logLevel}] ${req.method} ${req.path} ${res.statusCode} ${duration}ms`,
+      );
 
       // Log slow requests
       if (duration > config.monitoring.alertThresholds.responseTime) {
-        logger.warn(`[SLOW REQUEST] ${req.method} ${req.path} took ${duration}ms`);
+        logger.warn(
+          `[SLOW REQUEST] ${req.method} ${req.path} took ${duration}ms`,
+        );
       }
     });
   }

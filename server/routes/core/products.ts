@@ -40,7 +40,10 @@ registry.registerPath({
     { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
   ],
   responses: {
-    200: jsonResponse(z.array(z.any()), "List of products with pagination metadata"),
+    200: jsonResponse(
+      z.array(z.any()),
+      "List of products with pagination metadata",
+    ),
   },
 });
 
@@ -49,7 +52,9 @@ registry.registerPath({
   path: "/products/{id}",
   summary: "Get product by ID",
   tags: ["Products"],
-  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  parameters: [
+    { name: "id", in: "path", required: true, schema: { type: "integer" } },
+  ],
   responses: {
     200: jsonResponse(z.any(), "The product object"),
     404: { description: "Product not found" },
@@ -59,12 +64,19 @@ registry.registerPath({
 // GET /api/products - List products with pagination and filtering
 // CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
 router.get("/products", async (req, res) => {
+  (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      res.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      );
     } else {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
     }
 
     const { category, active, featured, tag, search, page, limit } = req.query;
@@ -84,17 +96,23 @@ router.get("/products", async (req, res) => {
         () => getStorage().searchProducts(search, pageSize, offset),
         { operationName: "Search products by query" },
       );
-      totalCount = await retryDbOperation(() => getStorage().searchProductsCount(search), {
-        operationName: "Count search results",
-      });
+      totalCount = await retryDbOperation(
+        () => getStorage().searchProductsCount(search),
+        {
+          operationName: "Count search results",
+        },
+      );
     } else if (tag && typeof tag === "string") {
       products = await retryDbOperation(
         () => getStorage().getProductsByTag(tag, pageSize, offset),
         { operationName: "Get products by tag" },
       );
-      totalCount = await retryDbOperation(() => getStorage().getProductsByTagCount(tag), {
-        operationName: "Count products by tag",
-      });
+      totalCount = await retryDbOperation(
+        () => getStorage().getProductsByTagCount(tag),
+        {
+          operationName: "Count products by tag",
+        },
+      );
     } else if (category && typeof category === "string") {
       const categoryId = parseInt(category, 10);
       products = await retryDbOperation(
@@ -106,9 +124,12 @@ router.get("/products", async (req, res) => {
         { operationName: "Count products by category" },
       );
     } else if (featured === "true") {
-      products = await retryDbOperation(() => getStorage().getFeaturedProducts(), {
-        operationName: "Get featured products",
-      });
+      products = await retryDbOperation(
+        () => getStorage().getFeaturedProducts(),
+        {
+          operationName: "Get featured products",
+        },
+      );
       totalCount = products.length;
       products = products.slice(offset, offset + pageSize);
     } else if (active === "true") {
@@ -160,6 +181,7 @@ router.get("/products", async (req, res) => {
 
 // GET /api/products/by-path - Get product by hierarchical URL path
 router.get("/products/by-path", async (req, res) => {
+  (req as any)._handled = true;
   try {
     const { path } = req.query;
 
@@ -212,6 +234,7 @@ router.get("/products/by-path", async (req, res) => {
 
 // PHASE 4: GET /api/products/:id/3d-model - Get 3D model metadata lazily
 router.get("/products/:id/3d-model", async (req, res) => {
+  (req as any)._handled = true;
   try {
     const id = validateIdParam(req, res, "id", "product");
     if (id === null) return; // Error response already sent
@@ -246,12 +269,19 @@ router.get("/products/:id/3d-model", async (req, res) => {
 
 // GET /api/products/:id - Get single product
 router.get("/products/:id", async (req, res) => {
+  (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      res.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      );
     } else {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
     }
 
     const id = validateIdParam(req, res, "id", "product");

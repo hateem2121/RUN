@@ -9,11 +9,17 @@ import {
   Package,
   Settings,
   ShoppingCart,
-  Users,
+  // Users removed
 } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Typography } from "@/components/ui/typography";
 import type { Route } from "./+types/dashboard";
@@ -50,7 +56,9 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <Typography.H1 className="text-3xl font-bold tracking-tight">Dashboard</Typography.H1>
+            <Typography.H1 className="text-3xl font-bold tracking-tight">
+              Dashboard
+            </Typography.H1>
             <Typography.P className="text-muted-foreground">
               Welcome back! Here's an overview of your account.
             </Typography.P>
@@ -75,24 +83,32 @@ export default function Dashboard() {
           <motion.div variants={itemVariants}>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Revenue
+                </CardTitle>
                 <DollarSign className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">$45,231.89</div>
-                <p className="text-muted-foreground text-xs">+20.1% from last month</p>
+                <p className="text-muted-foreground text-xs">
+                  +20.1% from last month
+                </p>
               </CardContent>
             </Card>
           </motion.div>
           <motion.div variants={itemVariants}>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Orders</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Active Orders
+                </CardTitle>
                 <ShoppingCart className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+12</div>
-                <p className="text-muted-foreground text-xs">+2 since last week</p>
+                <p className="text-muted-foreground text-xs">
+                  +2 since last week
+                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -116,7 +132,9 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">+573</div>
-                <p className="text-muted-foreground text-xs">+201 since last hour</p>
+                <p className="text-muted-foreground text-xs">
+                  +201 since last hour
+                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -128,7 +146,9 @@ export default function Dashboard() {
           <Card className="lg:col-span-4">
             <CardHeader>
               <CardTitle>Recent Orders</CardTitle>
-              <CardDescription>You have 3 active orders pending shipment.</CardDescription>
+              <CardDescription>
+                You have 3 active orders pending shipment.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -142,8 +162,12 @@ export default function Dashboard() {
                         <Package className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Order #{20240 + order}</p>
-                        <p className="text-muted-foreground text-xs">Processing</p>
+                        <p className="text-sm font-medium">
+                          Order #{20240 + order}
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          Processing
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -199,7 +223,9 @@ export default function Dashboard() {
                     <CreditCard className="text-muted-foreground h-4 w-4" />
                     <span className="text-sm">Pro Plan</span>
                   </div>
-                  <span className="text-xs font-medium text-green-500">Active</span>
+                  <span className="text-xs font-medium text-green-500">
+                    Active
+                  </span>
                 </div>
                 <Button variant="secondary" className="w-full">
                   Manage Subscription

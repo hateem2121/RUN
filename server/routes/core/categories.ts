@@ -48,7 +48,9 @@ registry.registerPath({
   path: "/categories/{id}",
   summary: "Get category by ID",
   tags: ["Categories"],
-  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  parameters: [
+    { name: "id", in: "path", required: true, schema: { type: "integer" } },
+  ],
   responses: {
     200: jsonResponse(z.any(), "The category object"),
     404: { description: "Category not found" },
@@ -57,16 +59,14 @@ registry.registerPath({
 
 // GET /api/categories - List all categories with optional pagination
 // CHUNK 5: Added pagination support for large category lists
+// GET /api/categories - List all categories with optional pagination
+// CHUNK 5: Added pagination support for large category lists
 router.get("/categories", async (req, res) => {
+  // CLAIM REQUEST: Prevent fall-through to 404 handler during async operations
+  (req as any)._handled = true;
+
   try {
     const { page, limit } = req.query;
-
-    // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
-    if (shouldBypassCache(req)) {
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-    } else {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
-    }
 
     // If pagination params provided, use pagination
     if (page || limit) {
@@ -74,19 +74,13 @@ router.get("/categories", async (req, res) => {
       const pageSize = Math.min(parseInt(limit as string, 10) || 50, 100);
       const offset = (pageNum - 1) * pageSize;
 
-      const categories = await withTimeout(
-        retryDbOperation(() => getStorage().getCategories(pageSize, offset), {
-          operationName: "Get categories with pagination",
-        }),
-        10000,
-        "Get categories with pagination",
+      const categories = await retryDbOperation(
+        () => getStorage().getCategories(pageSize, offset),
+        { operationName: "Get categories with pagination" },
       );
-      const totalCount = await withTimeout(
-        retryDbOperation(() => getStorage().getCategoriesCount(), {
-          operationName: "Get categories count",
-        }),
-        10000,
-        "Get categories count",
+      const totalCount = await retryDbOperation(
+        () => getStorage().getCategoriesCount(),
+        { operationName: "Get categories count" },
       );
 
       return res.json({
@@ -100,13 +94,11 @@ router.get("/categories", async (req, res) => {
       });
     } else {
       // No pagination requested - return all categories (backward compatible)
-      const categories = await withTimeout(
-        retryDbOperation(() => getStorage().getCategories(), {
-          operationName: "Get all categories",
-        }),
-        10000,
-        "Get all categories",
+      const categories = await retryDbOperation(
+        () => getStorage().getCategories(),
+        { operationName: "Get all categories" },
       );
+
       return res.json(categories);
     }
   } catch (error: unknown) {
@@ -122,96 +114,107 @@ router.get("/categories", async (req, res) => {
 });
 
 // Bulk reorder categories endpoint for drag-and-drop (MUST be before :id route)
-router.patch("/categories/reorder", authService.requireAdmin, async (req, res) => {
-  try {
-    // Validate request body structure
-    const reorderSchema = z.object({
-      categories: z.array(
-        z.object({
-          id: z.number(),
-          sortOrder: z.number(),
-          parentId: z.number().nullable().optional(),
-        }),
-      ),
-    });
-
-    const validatedData = reorderSchema.parse(req.body);
-
-    // Wrap all updates in a transaction for atomicity
-    const startTime = Date.now();
-    const results = await withTimeout(
-      db.transaction(async () => {
-        const storage = getStorage();
-        const updateResults = [];
-
-        for (const categoryData of validatedData.categories) {
-          const existingCategory = await storage.getCategory(categoryData.id);
-          if (existingCategory) {
-            const updatedCategory = {
-              ...existingCategory,
-              isActive: existingCategory.isActive ?? undefined,
-              description: existingCategory.description ?? undefined,
-              gridPosition: existingCategory.gridPosition ?? undefined,
-              featuredOnHomepage: existingCategory.featuredOnHomepage ?? undefined,
-              featuredContent: existingCategory.featuredContent
-                ? (existingCategory.featuredContent as any)
-                : undefined,
-              // Handle level and parentId
-              level: existingCategory.level ?? undefined,
-              parentId: existingCategory.parentId ?? undefined,
-
-              sortOrder: categoryData.sortOrder,
-              ...(categoryData.parentId !== undefined && {
-                parentId: categoryData.parentId,
-              }),
-            };
-            const updated = await storage.updateCategory(categoryData.id, updatedCategory as any);
-            updateResults.push(updated);
-          }
-        }
-        return updateResults;
-      }),
-      15000,
-      "Bulk reorder categories transaction",
-    );
-    const successCount = results.length;
-    const duration = Date.now() - startTime;
-
-    logger.debug(
-      `[Transaction] Bulk category reorder completed in ${duration}ms (${successCount} categories)`,
-    );
-
-    // CHUNK 10: Cache invalidation with new pattern
+router.patch(
+  "/categories/reorder",
+  authService.requireAdmin,
+  async (req, res) => {
     try {
-      await CacheOperations.invalidateCategories();
-    } catch (cacheError) {
-      logger.warn("[CACHE] Failed to invalidate category cache after reorder:", cacheError);
-    }
+      // Validate request body structure
+      const reorderSchema = z.object({
+        categories: z.array(
+          z.object({
+            id: z.number(),
+            sortOrder: z.number(),
+            parentId: z.number().nullable().optional(),
+          }),
+        ),
+      });
 
-    return res.json({
-      success: true,
-      message: `Successfully reordered ${successCount} categories`,
-      updated: successCount,
-    });
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
+      const validatedData = reorderSchema.parse(req.body);
+
+      // Wrap all updates in a transaction for atomicity
+      const startTime = Date.now();
+      const results = await withTimeout(
+        db.transaction(async () => {
+          const storage = getStorage();
+          const updateResults = [];
+
+          for (const categoryData of validatedData.categories) {
+            const existingCategory = await storage.getCategory(categoryData.id);
+            if (existingCategory) {
+              const updatedCategory = {
+                ...existingCategory,
+                isActive: existingCategory.isActive ?? undefined,
+                description: existingCategory.description ?? undefined,
+                gridPosition: existingCategory.gridPosition ?? undefined,
+                featuredOnHomepage:
+                  existingCategory.featuredOnHomepage ?? undefined,
+                featuredContent: existingCategory.featuredContent
+                  ? (existingCategory.featuredContent as any)
+                  : undefined,
+                // Handle level and parentId
+                level: existingCategory.level ?? undefined,
+                parentId: existingCategory.parentId ?? undefined,
+
+                sortOrder: categoryData.sortOrder,
+                ...(categoryData.parentId !== undefined && {
+                  parentId: categoryData.parentId,
+                }),
+              };
+              const updated = await storage.updateCategory(
+                categoryData.id,
+                updatedCategory as any,
+              );
+              updateResults.push(updated);
+            }
+          }
+          return updateResults;
+        }),
+        15000,
+        "Bulk reorder categories transaction",
+      );
+      const successCount = results.length;
+      const duration = Date.now() - startTime;
+
+      logger.debug(
+        `[Transaction] Bulk category reorder completed in ${duration}ms (${successCount} categories)`,
+      );
+
+      // CHUNK 10: Cache invalidation with new pattern
+      try {
+        await CacheOperations.invalidateCategories();
+      } catch (cacheError) {
+        logger.warn(
+          "[CACHE] Failed to invalidate category cache after reorder:",
+          cacheError,
+        );
+      }
+
+      return res.json({
+        success: true,
+        message: `Successfully reordered ${successCount} categories`,
+        updated: successCount,
+      });
+    } catch (error: unknown) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: "Invalid reorder data format",
+            details: error.issues,
+          },
+        });
+      }
+      return res.status(500).json({
         success: false,
         error: {
-          message: "Invalid reorder data format",
-          details: error.issues,
+          message: "Failed to reorder categories",
+          details: error instanceof Error ? error.message : "Unknown error",
         },
       });
     }
-    return res.status(500).json({
-      success: false,
-      error: {
-        message: "Failed to reorder categories",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-    });
-  }
-});
+  },
+);
 
 // GET /api/categories/by-slug/:slug - Get category by slug (SEO-friendly lookup)
 router.get("/categories/by-slug/:slug", async (req, res) => {
@@ -220,9 +223,15 @@ router.get("/categories/by-slug/:slug", async (req, res) => {
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      res.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      );
     } else {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
     }
 
     if (!slug) {
@@ -268,9 +277,15 @@ router.get("/categories/:id", async (req, res) => {
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      res.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      );
     } else {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
     }
 
     const category = await withTimeout(
@@ -307,7 +322,10 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
       });
     }
 
-    logger.debug("CREATE CATEGORY Request Body:", JSON.stringify(req.body, null, 2));
+    logger.debug(
+      "CREATE CATEGORY Request Body:",
+      JSON.stringify(req.body, null, 2),
+    );
 
     // Enhanced input validation and sanitization
     if (req.body.name) {
@@ -323,7 +341,9 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
       req.body.metaTitle = validateAndSanitizeInput(req.body.metaTitle);
     }
     if (req.body.metaDescription) {
-      req.body.metaDescription = validateAndSanitizeInput(req.body.metaDescription);
+      req.body.metaDescription = validateAndSanitizeInput(
+        req.body.metaDescription,
+      );
     }
 
     const validatedData = insertCategorySchema.parse(req.body);
@@ -340,7 +360,8 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
     // Validate unique grid position for featured categories
     if (validatedData.featuredOnHomepage && validatedData.gridPosition) {
       const existingCategory = allCategories.find(
-        (c: Category) => c.featuredOnHomepage && c.gridPosition === validatedData.gridPosition,
+        (c: Category) =>
+          c.featuredOnHomepage && c.gridPosition === validatedData.gridPosition,
       );
       if (existingCategory) {
         return res.status(400).json({
@@ -354,7 +375,10 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
 
     // Set default sortOrder if not provided
     if (!validatedData.sortOrder) {
-      const maxSortOrder = allCategories.reduce((max, cat) => Math.max(max, cat.sortOrder || 0), 0);
+      const maxSortOrder = allCategories.reduce(
+        (max, cat) => Math.max(max, cat.sortOrder || 0),
+        0,
+      );
       validatedData.sortOrder = maxSortOrder + 10;
     }
 
@@ -376,7 +400,10 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
     return res.status(201).json(category);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      logger.debug("CREATE CATEGORY Validation errors:", JSON.stringify(error.issues, null, 2));
+      logger.debug(
+        "CREATE CATEGORY Validation errors:",
+        JSON.stringify(error.issues, null, 2),
+      );
       return res.status(400).json({
         success: false,
         error: {
@@ -421,7 +448,8 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            message: "Cannot set parent category - this would create a circular reference",
+            message:
+              "Cannot set parent category - this would create a circular reference",
           },
         });
       }
@@ -431,7 +459,9 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
     if (validatedData.featuredOnHomepage && validatedData.gridPosition) {
       const existingCategory = allCategories.find(
         (c: Category) =>
-          c.id !== id && c.featuredOnHomepage && c.gridPosition === validatedData.gridPosition,
+          c.id !== id &&
+          c.featuredOnHomepage &&
+          c.gridPosition === validatedData.gridPosition,
       );
       if (existingCategory) {
         return res.status(400).json({
@@ -510,7 +540,8 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            message: "Cannot set parent category - this would create a circular reference",
+            message:
+              "Cannot set parent category - this would create a circular reference",
           },
         });
       }
@@ -520,7 +551,9 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
     if (validatedData.featuredOnHomepage && validatedData.gridPosition) {
       const existingCategory = allCategories.find(
         (c: Category) =>
-          c.id !== id && c.featuredOnHomepage && c.gridPosition === validatedData.gridPosition,
+          c.id !== id &&
+          c.featuredOnHomepage &&
+          c.gridPosition === validatedData.gridPosition,
       );
       if (existingCategory) {
         return res.status(400).json({
@@ -627,81 +660,89 @@ router.get("/categories/deleted", async (_req, res) => {
 });
 
 // POST /api/categories/:id/restore - Restore soft-deleted category
-router.post("/categories/:id/restore", authService.requireAdmin, async (req, res) => {
-  try {
-    const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
-    const restored = await withTimeout(
-      retryDbOperation(() => getStorage().restoreCategory(id), {
-        operationName: `Restore category ${id}`,
-      }),
-      10000,
-      `Restore category ${id}`,
-    );
+router.post(
+  "/categories/:id/restore",
+  authService.requireAdmin,
+  async (req, res) => {
+    try {
+      const id = validateIdParam(req, res, "id", "category");
+      if (id === null) return;
+      const restored = await withTimeout(
+        retryDbOperation(() => getStorage().restoreCategory(id), {
+          operationName: `Restore category ${id}`,
+        }),
+        10000,
+        `Restore category ${id}`,
+      );
 
-    if (!restored) {
-      return res.status(404).json({
+      if (!restored) {
+        return res.status(404).json({
+          success: false,
+          error: { message: "Category not found or already restored" },
+        });
+      }
+
+      // Invalidate both active and deleted categories cache
+      try {
+        await CacheOperations.invalidateCategories(id);
+      } catch (cacheError) {
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError);
+      }
+
+      return res.json({
+        success: true,
+        message: "Category restored successfully",
+        id,
+      });
+    } catch (error) {
+      logger.error("[Categories] Failed to restore category:", error);
+      return res.status(500).json({
         success: false,
-        error: { message: "Category not found or already restored" },
+        error: { message: "Failed to restore category" },
       });
     }
-
-    // Invalidate both active and deleted categories cache
-    try {
-      await CacheOperations.invalidateCategories(id);
-    } catch (cacheError) {
-      logger.warn("[CACHE] Failed to invalidate category cache:", cacheError);
-    }
-
-    return res.json({
-      success: true,
-      message: "Category restored successfully",
-      id,
-    });
-  } catch (error) {
-    logger.error("[Categories] Failed to restore category:", error);
-    return res.status(500).json({
-      success: false,
-      error: { message: "Failed to restore category" },
-    });
-  }
-});
+  },
+);
 
 // DELETE /api/categories/:id/hard-delete - Permanently delete category
-router.delete("/categories/:id/hard-delete", authService.requireAdmin, async (req, res) => {
-  try {
-    const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
-    const hardDeleted = await withTimeout(
-      retryDbOperation(() => getStorage().permanentlyDeleteCategory(id), {
-        operationName: `Hard delete category ${id}`,
-      }),
-      10000,
-      `Hard delete category ${id}`,
-    );
+router.delete(
+  "/categories/:id/hard-delete",
+  authService.requireAdmin,
+  async (req, res) => {
+    try {
+      const id = validateIdParam(req, res, "id", "category");
+      if (id === null) return;
+      const hardDeleted = await withTimeout(
+        retryDbOperation(() => getStorage().permanentlyDeleteCategory(id), {
+          operationName: `Hard delete category ${id}`,
+        }),
+        10000,
+        `Hard delete category ${id}`,
+      );
 
-    if (!hardDeleted) {
-      return res.status(404).json({
+      if (!hardDeleted) {
+        return res.status(404).json({
+          success: false,
+          error: { message: "Category not found" },
+        });
+      }
+
+      // Invalidate both active and deleted categories cache
+      try {
+        await CacheOperations.invalidateCategories(id);
+      } catch (cacheError) {
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError);
+      }
+
+      return res.status(204).send();
+    } catch (error) {
+      logger.error("[Categories] Failed to hard delete category:", error);
+      return res.status(500).json({
         success: false,
-        error: { message: "Category not found" },
+        error: { message: "Failed to permanently delete category" },
       });
     }
-
-    // Invalidate both active and deleted categories cache
-    try {
-      await CacheOperations.invalidateCategories(id);
-    } catch (cacheError) {
-      logger.warn("[CACHE] Failed to invalidate category cache:", cacheError);
-    }
-
-    return res.status(204).send();
-  } catch (error) {
-    logger.error("[Categories] Failed to hard delete category:", error);
-    return res.status(500).json({
-      success: false,
-      error: { message: "Failed to permanently delete category" },
-    });
-  }
-});
+  },
+);
 
 export default router;

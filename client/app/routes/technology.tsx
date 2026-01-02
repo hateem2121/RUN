@@ -2,7 +2,9 @@ import React from "react";
 
 // PHASE C: Lazy load heavy components to reduce initial bundle by ~350-500KB
 const GradientBlinds = React.lazy(() => import("@/components/GradientBlinds"));
-const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
+const UnifiedModelViewer = React.lazy(
+  () => import("@/components/ui/UnifiedModelViewer"),
+);
 
 import type {
   MediaAsset,
@@ -22,7 +24,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { LiquidGlassCard } from "@/components/ui/glass-card";
 import { Typography } from "@/components/ui/typography";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+// useMobileDetection import removed as unused
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
@@ -45,7 +47,8 @@ export function meta({}: Route.MetaArgs) {
     { title: "Technology & Innovation | Run Apparel" },
     {
       name: "description",
-      content: "Explore our cutting-edge manufacturing technology and innovations.",
+      content:
+        "Explore our cutting-edge manufacturing technology and innovations.",
     },
   ];
 }
@@ -197,7 +200,9 @@ type TechnologyBatchResponse = {
 };
 
 // Schema normalization adapters to handle type mismatches
-function resolveHeroBackgroundId(hero: TechnologyHero | undefined): number | null {
+function resolveHeroBackgroundId(
+  hero: TechnologyHero | undefined,
+): number | null {
   if (!hero) return null;
   // STRICT: Only use backgroundMediaId as per schema definition
   return hero.backgroundMediaId || null;
@@ -227,23 +232,39 @@ function mapGradientSettings(settings: TechnologyGradientSettings | undefined) {
   return {
     gradientColors: (settings.colors?.length
       ? settings.colors
-      : TECHNOLOGY_DEFAULTS.gradientSettings.gradientColors) as [string, string],
+      : TECHNOLOGY_DEFAULTS.gradientSettings.gradientColors) as [
+      string,
+      string,
+    ],
     angle: config?.angle ?? TECHNOLOGY_DEFAULTS.gradientSettings.angle,
     noise: config?.noise ?? TECHNOLOGY_DEFAULTS.gradientSettings.noise,
-    blindCount: config?.blindCount ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindCount,
-    blindMinWidth: config?.blindMinWidth ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindMinWidth,
+    blindCount:
+      config?.blindCount ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindCount,
+    blindMinWidth:
+      config?.blindMinWidth ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.blindMinWidth,
     spotlightRadius:
-      config?.spotlightRadius ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightRadius,
+      config?.spotlightRadius ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightRadius,
     spotlightSoftness:
-      config?.spotlightSoftness ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightSoftness,
+      config?.spotlightSoftness ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightSoftness,
     spotlightOpacity:
-      config?.spotlightOpacity ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightOpacity,
-    mouseDampening: config?.mouseDampening ?? TECHNOLOGY_DEFAULTS.gradientSettings.mouseDampening,
-    mirrorGradient: config?.mirrorGradient ?? TECHNOLOGY_DEFAULTS.gradientSettings.mirrorGradient,
-    distortAmount: config?.distortAmount ?? TECHNOLOGY_DEFAULTS.gradientSettings.distortAmount,
+      config?.spotlightOpacity ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightOpacity,
+    mouseDampening:
+      config?.mouseDampening ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.mouseDampening,
+    mirrorGradient:
+      config?.mirrorGradient ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.mirrorGradient,
+    distortAmount:
+      config?.distortAmount ??
+      TECHNOLOGY_DEFAULTS.gradientSettings.distortAmount,
     shineDirection: (config?.shineDirection ??
       TECHNOLOGY_DEFAULTS.gradientSettings.shineDirection) as "left" | "right",
-    mixBlendMode: config?.mixBlendMode ?? TECHNOLOGY_DEFAULTS.gradientSettings.mixBlendMode,
+    mixBlendMode:
+      config?.mixBlendMode ?? TECHNOLOGY_DEFAULTS.gradientSettings.mixBlendMode,
     paused: config?.paused ?? TECHNOLOGY_DEFAULTS.gradientSettings.paused,
   };
 }
@@ -261,20 +282,29 @@ function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
       h.title ||
       "Technology",
     subtitle:
-      (typeof heroData.subheadline === "string" ? heroData.subheadline : undefined) ||
+      (typeof heroData.subheadline === "string"
+        ? heroData.subheadline
+        : undefined) ||
       h.subtitle ||
       "",
     primaryCtaText:
-      (typeof heroData.primaryCtaText === "string" ? heroData.primaryCtaText : undefined) ||
+      (typeof heroData.primaryCtaText === "string"
+        ? heroData.primaryCtaText
+        : undefined) ||
       (typeof heroData.ctaText === "string" ? heroData.ctaText : undefined) ||
       "Learn more",
     secondaryCtaText:
-      (typeof heroData.secondaryCtaText === "string" ? heroData.secondaryCtaText : undefined) || "",
+      (typeof heroData.secondaryCtaText === "string"
+        ? heroData.secondaryCtaText
+        : undefined) || "",
     primaryCtaLink:
-      (typeof heroData.primaryCtaLink === "string" ? heroData.primaryCtaLink : undefined) || "#",
+      (typeof heroData.primaryCtaLink === "string"
+        ? heroData.primaryCtaLink
+        : undefined) || "#",
     secondaryCtaLink:
-      (typeof heroData.secondaryCtaLink === "string" ? heroData.secondaryCtaLink : undefined) ||
-      "#",
+      (typeof heroData.secondaryCtaLink === "string"
+        ? heroData.secondaryCtaLink
+        : undefined) || "#",
     backgroundImageId: resolveHeroBackgroundId(h),
   };
 }
@@ -386,7 +416,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   const [shouldLoadModel, setShouldLoadModel] = React.useState(false);
   const [userRequestedLoad, setUserRequestedLoad] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const autoLoadTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoLoadTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   // PHASE B: Optimized intersection observer with global instance sharing
   // Initialize model-viewer
@@ -416,7 +448,12 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
 
   // PHASE B: Auto-load timer for 3D models after 2 seconds of visibility
   React.useEffect(() => {
-    if (media.type === "3d_model" && isIntersecting && !userRequestedLoad && !shouldLoadModel) {
+    if (
+      media.type === "3d_model" &&
+      isIntersecting &&
+      !userRequestedLoad &&
+      !shouldLoadModel
+    ) {
       // Start 2-second timer when element becomes visible
       autoLoadTimerRef.current = setTimeout(() => {
         setShouldLoadModel(true);
@@ -429,7 +466,11 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           autoLoadTimerRef.current = null;
         }
       };
-    } else if (media.type !== "3d_model" && isIntersecting && !shouldLoadModel) {
+    } else if (
+      media.type !== "3d_model" &&
+      isIntersecting &&
+      !shouldLoadModel
+    ) {
       // Non-3D content loads immediately when intersecting
       setShouldLoadModel(true);
     }
@@ -523,7 +564,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                   mimeType: "model/gltf+json",
                   type: "3d_model" as const,
                   url: media.url || `/api/media/${media.id || 0}/content`,
-                  altText: media.altText || "Technology Hero 3D Model - Interactive display",
+                  altText:
+                    media.altText ||
+                    "Technology Hero 3D Model - Interactive display",
                   metadata: media.metadata || {},
                   tags: media.tags || [],
                   deletedAt: null,
@@ -547,7 +590,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           <video
             src={
               media.url ||
-              (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
+              (media.id && media.id < 1000000000000
+                ? `/api/media/${media.id}/content`
+                : undefined)
             }
             poster={posterUrl}
             autoPlay
@@ -561,7 +606,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           <img
             src={
               media.url ||
-              (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
+              (media.id && media.id < 1000000000000
+                ? `/api/media/${media.id}/content`
+                : undefined)
             }
             alt="Technology Hero Display"
             className="h-full w-full rounded-xl object-cover"
@@ -576,10 +623,11 @@ export default function Technology() {
   const loaderData = useLoaderData<typeof loader>();
   // OPTIMIZED: Single batch request replaces 7 separate HTTP calls (55-60% faster load time)
   // Batch endpoint includes: hero, innovations, equipment, research, roadmap, cta, gradientSettings, mediaAssets
-  const { data: batchData, isLoading: batchLoading } = useOptimizedQuery<TechnologyBatchResponse>({
-    queryKey: ["/api/technology-batch"],
-    // Use hook's default 15-minute stale time for optimal caching
-  });
+  const { data: batchData, isLoading: batchLoading } =
+    useOptimizedQuery<TechnologyBatchResponse>({
+      queryKey: ["/api/technology-batch"],
+      // Use hook's default 15-minute stale time for optimal caching
+    });
 
   // Destructure batch response into individual data pieces (same variable names as before)
   const hero = batchData?.hero;
@@ -651,10 +699,14 @@ export default function Technology() {
   }
 
   // Map gradient settings with fallback defaults
-  const safeGradientSettings = mapGradientSettings(gradientSettings ?? undefined);
+  const safeGradientSettings = mapGradientSettings(
+    gradientSettings ?? undefined,
+  );
 
   // Hero background media lookup - mirroring sustainability page approach
-  const backgroundMedia = mainHeroMediaId ? getMediaAsset(mainHeroMediaId) : null;
+  const backgroundMedia = mainHeroMediaId
+    ? getMediaAsset(mainHeroMediaId)
+    : null;
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
@@ -674,7 +726,9 @@ export default function Technology() {
               />
             }
           >
-            <ErrorBoundary fallback={<div className="bg-background fixed inset-0" />}>
+            <ErrorBoundary
+              fallback={<div className="bg-background fixed inset-0" />}
+            >
               <React.Suspense
                 fallback={
                   <div
@@ -699,7 +753,9 @@ export default function Technology() {
                   mouseDampening={safeGradientSettings.mouseDampening}
                   mirrorGradient={safeGradientSettings.mirrorGradient}
                   distortAmount={safeGradientSettings.distortAmount}
-                  shineDirection={safeGradientSettings.shineDirection as "left" | "right"}
+                  shineDirection={
+                    safeGradientSettings.shineDirection as "left" | "right"
+                  }
                   mixBlendMode={safeGradientSettings.mixBlendMode}
                   paused={safeGradientSettings.paused}
                   onWebGLReady={() => setWebglInitialized(true)}
@@ -725,7 +781,10 @@ export default function Technology() {
                   className="block w-full cursor-default p-8"
                 >
                   {batchLoading ? (
-                    <LoadingSkeleton type="text" className="text-center lg:text-left" />
+                    <LoadingSkeleton
+                      type="text"
+                      className="text-center lg:text-left"
+                    />
                   ) : (
                     <div className="text-center lg:text-left">
                       <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
@@ -744,7 +803,8 @@ export default function Technology() {
                       )}
 
                       {/* CTA Buttons */}
-                      {(vm.hero?.primaryCtaText || vm.hero?.secondaryCtaText) && (
+                      {(vm.hero?.primaryCtaText ||
+                        vm.hero?.secondaryCtaText) && (
                         <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
                           {vm.hero?.primaryCtaText && (
                             <a

@@ -26,7 +26,8 @@ import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 // REMOVED: Server-side imports replaced with browser-safe fallbacks below
 
 // Browser-safe fallbacks
-const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] => assets as MediaAsset[];
+const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] =>
+  assets as MediaAsset[];
 const logTypeError = (_error: Error, _context: string) => {};
 
 // CRITICAL FIX: Dedicated Web Worker for uploads to bypass DevTools monkeypatching
@@ -37,16 +38,23 @@ let uploadWorker: Worker | null = null;
 const getUploadWorker = (): Worker => {
   if (uploadWorker) return uploadWorker;
 
-  uploadWorker = new Worker(new URL("@/workers/uploader.ts?ver=20250916", import.meta.url), {
-    type: "module",
-  });
+  uploadWorker = new Worker(
+    new URL("@/workers/uploader.ts?ver=20250916", import.meta.url),
+    {
+      type: "module",
+    },
+  );
   return uploadWorker;
 };
 
 // PHASE 1.1: Enhanced MIME Type Detection for GLTF and other files (Fixed for chunked uploads)
 const detectMimeType = (file: File): string => {
   // 1. Try browser detection first (but allow fallback for chunked uploads)
-  if (file.type && file.type.trim() !== "" && file.type !== "application/octet-stream") {
+  if (
+    file.type &&
+    file.type.trim() !== "" &&
+    file.type !== "application/octet-stream"
+  ) {
     return file.type;
   }
 
@@ -224,7 +232,10 @@ class UploadQueueManager {
 const queueManager = new UploadQueueManager();
 
 // UPLOAD OPTIMIZATION: Enhanced Performance Tracking
-const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Promise<T> => {
+const trackPerformance = async <T,>(
+  operation: string,
+  fn: () => Promise<T>,
+): Promise<T> => {
   const start = Date.now();
   try {
     const result = await fn();
@@ -238,7 +249,7 @@ const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Pr
 
     return result;
   } catch (error) {
-    const _duration = Date.now() - start;
+    // const _duration = Date.now() - start;
 
     if (operation.includes("upload")) {
       uploadMetrics.failures++;
@@ -253,7 +264,8 @@ const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Pr
 // UPLOAD OPTIMIZATION: Format upload speed for display
 const formatUploadSpeed = (bytesPerSecond: number): string => {
   if (bytesPerSecond < 1024) return `${bytesPerSecond} B/s`;
-  if (bytesPerSecond < 1024 * 1024) return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
+  if (bytesPerSecond < 1024 * 1024)
+    return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
   return `${(bytesPerSecond / (1024 * 1024)).toFixed(1)} MB/s`;
 };
 
@@ -354,10 +366,16 @@ const UploadItem = React.memo(
                 <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                   <span>{item.progress.toFixed(1)}% uploaded</span>
                   <div className="flex gap-2">
-                    {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
-                    {item.estimatedTimeRemaining && item.estimatedTimeRemaining > 0 && (
-                      <span>• {formatTimeRemaining(item.estimatedTimeRemaining)} remaining</span>
+                    {item.uploadSpeed && (
+                      <span>{formatUploadSpeed(item.uploadSpeed)}</span>
                     )}
+                    {item.estimatedTimeRemaining &&
+                      item.estimatedTimeRemaining > 0 && (
+                        <span>
+                          • {formatTimeRemaining(item.estimatedTimeRemaining)}{" "}
+                          remaining
+                        </span>
+                      )}
                   </div>
                 </div>
               </div>
@@ -374,11 +392,12 @@ const UploadItem = React.memo(
               </div>
             )}
 
-            {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
-              <p className="text-muted-foreground mt-1 text-xs">
-                Queued • Position: {queueManager.getQueuePosition(item.id)}
-              </p>
-            )}
+            {item.status === "pending" &&
+              queueManager.peekNextInQueue()?.id !== item.id && (
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Queued • Position: {queueManager.getQueuePosition(item.id)}
+                </p>
+              )}
           </div>
         </div>
 
@@ -416,7 +435,9 @@ const UploadItem = React.memo(
             </Button>
           )}
 
-          {(item.status === "pending" || item.status === "paused" || item.status === "error") && (
+          {(item.status === "pending" ||
+            item.status === "paused" ||
+            item.status === "error") && (
             <Button
               variant="ghost"
               size="sm"
@@ -444,7 +465,8 @@ const UploadItem = React.memo(
 );
 
 export default function MediaUploadEnhanced() {
-  const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibraryEnhanced();
+  const { setErrorState, setSyncStatus, uploadFiles } =
+    useMediaLibraryEnhanced();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
@@ -476,7 +498,8 @@ export default function MediaUploadEnhanced() {
     // Update all cached media queries with optimistic entries
     getQueryClient().setQueriesData(
       {
-        predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
+        predicate: (query) =>
+          Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
       },
       (oldData: any) => {
         if (!oldData?.data?.data) return oldData;
@@ -521,8 +544,7 @@ export default function MediaUploadEnhanced() {
       const uploadPromise = new Promise<void>((resolve, reject) => {
         // Handle worker messages
         const messageHandler = (event: MessageEvent<WorkerResponse>) => {
-          const { type, fileId, percent, uploadId, totalChunks, serverResponse, message } =
-            event.data;
+          const { type, fileId, percent, message } = event.data;
 
           // Only handle messages for this specific file
           if (fileId !== item.id) return;
@@ -531,7 +553,9 @@ export default function MediaUploadEnhanced() {
             case "init":
               setUploadQueue((prev) =>
                 prev.map((qItem) =>
-                  qItem.id === item.id ? { ...qItem, status: "uploading" } : qItem,
+                  qItem.id === item.id
+                    ? { ...qItem, status: "uploading" }
+                    : qItem,
                 ),
               );
               break;
@@ -559,7 +583,9 @@ export default function MediaUploadEnhanced() {
               // Update UI to completed
               setUploadQueue((prev) =>
                 prev.map((qItem) =>
-                  qItem.id === item.id ? { ...qItem, progress: 100, status: "completed" } : qItem,
+                  qItem.id === item.id
+                    ? { ...qItem, progress: 100, status: "completed" }
+                    : qItem,
                 ),
               );
 
@@ -612,7 +638,9 @@ export default function MediaUploadEnhanced() {
       // Update UI with error message
       setUploadQueue((prev) =>
         prev.map((qItem) =>
-          qItem.id === item.id ? { ...qItem, status: "error", errorMessage } : qItem,
+          qItem.id === item.id
+            ? { ...qItem, status: "error", errorMessage }
+            : qItem,
         ),
       );
 
@@ -624,7 +652,9 @@ export default function MediaUploadEnhanced() {
   const processUploadQueue = useCallback(async () => {
     if (isUploading) return;
 
-    const pendingItems = uploadQueue.filter((item) => item.status === "pending");
+    const pendingItems = uploadQueue.filter(
+      (item) => item.status === "pending",
+    );
     if (pendingItems.length === 0) return;
 
     setIsUploading(true);
@@ -690,7 +720,8 @@ export default function MediaUploadEnhanced() {
                       break; // Success - exit retry loop
                     } catch (error) {
                       // Check if this is an HTTP error (has status property)
-                      const isHttpError = error && typeof error === "object" && "status" in error;
+                      const isHttpError =
+                        error && typeof error === "object" && "status" in error;
 
                       if (isHttpError) {
                         // HTTP errors (400, 413, 500, etc.) should NOT be retried
@@ -748,7 +779,9 @@ export default function MediaUploadEnhanced() {
               // PHASE 2.2: Simplified Error Handling - Don't stop entire upload process
               if (error instanceof Error && error.name === "AbortError") {
                 // Upload was cancelled
-                setUploadQueue((prev) => prev.filter((qItem) => qItem.id !== item.id));
+                setUploadQueue((prev) =>
+                  prev.filter((qItem) => qItem.id !== item.id),
+                );
               } else {
                 setUploadQueue((prev) =>
                   prev.map((qItem) =>
@@ -782,7 +815,9 @@ export default function MediaUploadEnhanced() {
 
       // Clear completed items after delay
       setTimeout(() => {
-        setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+        setUploadQueue((prev) =>
+          prev.filter((item) => item.status !== "completed"),
+        );
       }, 3000);
     } catch (error) {
       setSyncStatus("error");
@@ -908,25 +943,35 @@ export default function MediaUploadEnhanced() {
 
   const resumeUpload = useCallback((id: string): void => {
     setUploadQueue((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, status: "pending" } : item)),
+      prev.map((item) =>
+        item.id === id ? { ...item, status: "pending" } : item,
+      ),
     );
   }, []);
 
   // Clear all completed uploads
   const clearCompleted = useCallback((): void => {
-    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+    setUploadQueue((prev) =>
+      prev.filter((item) => item.status !== "completed"),
+    );
   }, []);
 
   // Drag and drop handlers
-  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    setIsDragging(true);
-  }, []);
+  const handleDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      setIsDragging(true);
+    },
+    [],
+  );
 
-  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    setIsDragging(false);
-  }, []);
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      setIsDragging(false);
+    },
+    [],
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>): void => {
@@ -956,8 +1001,12 @@ export default function MediaUploadEnhanced() {
     (item) => item.status === "uploading" || item.status === "pending",
   );
 
-  const completedCount = uploadQueue.filter((item) => item.status === "completed").length;
-  const errorCount = uploadQueue.filter((item) => item.status === "error").length;
+  const completedCount = uploadQueue.filter(
+    (item) => item.status === "completed",
+  ).length;
+  const errorCount = uploadQueue.filter(
+    (item) => item.status === "error",
+  ).length;
 
   return (
     <div className="space-y-4">
@@ -965,7 +1014,9 @@ export default function MediaUploadEnhanced() {
       <div
         className={cn(
           "cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors",
-          isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25",
+          isDragging
+            ? "border-primary bg-primary/10"
+            : "border-muted-foreground/25",
           hasActiveUploads && "opacity-50",
         )}
         onDragOver={handleDragOver}
@@ -973,8 +1024,8 @@ export default function MediaUploadEnhanced() {
         onDrop={handleDrop}
         onClick={() => {
           // LOG: Show accepted file types when file picker opens
-          const _acceptedTypes =
-            ".gltf,.glb,.jpg,.jpeg,.png,.gif,.svg,.mp4,.webm,.pdf,.doc,.docx,image/*,video/*,audio/*";
+          // LOG: Show accepted file types when file picker opens
+          // const _acceptedTypes = ".gltf,.glb,.jpg,.jpeg,.png,.gif,.svg,.mp4,.webm,.pdf,.doc,.docx,image/*,video/*,audio/*";
           fileInputRef.current?.click();
         }}
       >
@@ -995,7 +1046,9 @@ export default function MediaUploadEnhanced() {
             <p className="text-sm font-medium">
               {isDragging ? "Drop files here" : "Drag and drop files here"}
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">or click to select files</p>
+            <p className="text-muted-foreground mt-1 text-xs">
+              or click to select files
+            </p>
           </div>
 
           <Button variant="outline" size="sm" disabled={hasActiveUploads}>
@@ -1022,7 +1075,12 @@ export default function MediaUploadEnhanced() {
                   </Badge>
                 )}
                 {completedCount > 0 && (
-                  <Button variant="outline" size="sm" onClick={clearCompleted} className="text-xs">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearCompleted}
+                    className="text-xs"
+                  >
                     Clear Completed
                   </Button>
                 )}

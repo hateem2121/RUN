@@ -1,13 +1,13 @@
 import type { SizeChart } from "@shared/schema";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronUp, Globe, Info, Ruler, Search, User } from "lucide-react";
+import { Info, Ruler, User } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ResourceCard } from "@/components/resources/ResourceCard";
 import { ResourceGrid } from "@/components/resources/ResourceGrid";
 import { ResourceSearch } from "@/components/resources/ResourceSearch";
 import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+// Button import removed as unused
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
@@ -82,7 +82,10 @@ export default function SizeCharts() {
 
   const getSizeTable = (chart: SizeChart) => {
     // Parse measurements data
-    const measurements = chart.measurements as Record<string, Record<string, string>> | null;
+    const measurements = chart.measurements as Record<
+      string,
+      Record<string, string>
+    > | null;
 
     if (!measurements) return null;
 
@@ -140,12 +143,15 @@ export default function SizeCharts() {
             Size Specifications
           </Typography.H1>
           <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
-            Standardized sizing guides for global markets and various product categories
+            Standardized sizing guides for global markets and various product
+            categories
           </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">{sizeCharts.length}</div>
+              <div className="text-3xl font-bold text-purple-600">
+                {sizeCharts.length}
+              </div>
               <div className="text-muted-foreground text-sm">Size Guides</div>
             </div>
             <div className="text-center">
@@ -181,10 +187,14 @@ export default function SizeCharts() {
               >
                 <Ruler className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
                 <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
-                  {searchTerm ? "No size charts found" : "No size charts available"}
+                  {searchTerm
+                    ? "No size charts found"
+                    : "No size charts available"}
                 </Typography.H3>
                 <Typography.P className="text-muted-foreground">
-                  {searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}
+                  {searchTerm
+                    ? "Try adjusting your search terms"
+                    : "Check back later for updates"}
                 </Typography.P>
               </motion.div>
             }
@@ -210,13 +220,17 @@ export default function SizeCharts() {
                   expandedContent={
                     <div className="mt-4">
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="text-foreground/80 text-sm font-medium">Measurements</span>
+                        <span className="text-foreground/80 text-sm font-medium">
+                          Measurements
+                        </span>
                         <Badge variant="outline" className="text-xs">
                           {/* @ts-ignore - Schema mismatch potential */}
                           Units: {chart.unit || "CM"}
                         </Badge>
                       </div>
-                      <div className="overflow-x-auto">{getSizeTable(chart)}</div>
+                      <div className="overflow-x-auto">
+                        {getSizeTable(chart)}
+                      </div>
                     </div>
                   }
                   badges={

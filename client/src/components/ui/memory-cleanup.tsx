@@ -3,7 +3,7 @@ import { useEffect } from "react";
 export function MemoryCleanup() {
   useEffect(() => {
     const handleMemoryPressure = (event: CustomEvent) => {
-      const { usedMB, source } = event.detail;
+      const { usedMB: _usedMB, source: _source } = event.detail;
 
       // Force garbage collection if available
       if ("gc" in window && typeof window.gc === "function") {
@@ -49,7 +49,7 @@ export function MemoryCleanup() {
         const memory = performance.memory as any;
         const usedMB = memory.usedJSHeapSize / 1024 / 1024;
         // const totalMB = memory.totalJSHeapSize / 1024 / 1024;
-        const _limitMB = memory.jsHeapSizeLimit / 1024 / 1024;
+        // const _limitMB = memory.jsHeapSizeLimit / 1024 / 1024;
 
         // Log memory stats occasionally
         if (usedMB > 300) {
@@ -65,11 +65,17 @@ export function MemoryCleanup() {
       }
     }, 30000);
 
-    window.addEventListener("memory-pressure", handleMemoryPressure as EventListener);
+    window.addEventListener(
+      "memory-pressure",
+      handleMemoryPressure as EventListener,
+    );
 
     return () => {
       clearInterval(memoryMonitor);
-      window.removeEventListener("memory-pressure", handleMemoryPressure as EventListener);
+      window.removeEventListener(
+        "memory-pressure",
+        handleMemoryPressure as EventListener,
+      );
     };
   }, []);
 

@@ -41,11 +41,23 @@ import {
   uploadGltfPackage,
   uploadSingleFile,
 } from "./handlers.js";
-import { regularUpload, uploadOptimized, validateMagicNumbers } from "./middleware.js";
-import { getRateLimiterHealth, getRateLimiterStats } from "./rate-limiter-handlers.js";
+import {
+  regularUpload,
+  uploadOptimized,
+  validateMagicNumbers,
+} from "./middleware.js";
+import {
+  getRateLimiterHealth,
+  getRateLimiterStats,
+} from "./rate-limiter-handlers.js";
 import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
+import { logger } from "../../lib/monitoring/logger.js";
+router.use((req, res, next) => {
+  logger.info(`[Media Router Debug] Hit: ${req.method} ${req.url}`);
+  next();
+});
 
 // OpenAPI Registration
 registry.registerPath({
@@ -81,13 +93,18 @@ const bulkMediaLimiter = createRateLimiter({
   // Skip rate limiting for localhost connections (development)
   skip: (req: express.Request) => {
     const ip = req.ip || req.connection?.remoteAddress || "";
-    const isLocalhost = ip === "::1" || ip === "127.0.0.1" || ip?.includes("localhost");
+    const isLocalhost =
+      ip === "::1" || ip === "127.0.0.1" || ip?.includes("localhost");
     return isLocalhost && process.env.NODE_ENV !== "production";
   },
 });
 
 // Performance & monitoring
-router.get("/performance-dashboard", authService.requireAdmin, getPerformanceDashboard);
+router.get(
+  "/performance-dashboard",
+  authService.requireAdmin,
+  getPerformanceDashboard,
+);
 router.get("/upload-metrics", authService.requireAdmin, getUploadMetrics);
 router.get("/performance", authService.requireAdmin, getPerformanceMetrics);
 router.get("/system-status", authService.requireAdmin, getSystemStatus);
@@ -121,8 +138,16 @@ router.get("/rate-limiter/stats", (_req, res) => {
 });
 
 // FORENSIC INVESTIGATION - Phase 6: Rate limiter monitoring endpoints
-router.get("/rate-limiter/stats", authService.requireAdmin, getRateLimiterStats);
-router.get("/rate-limiter/health", authService.requireAdmin, getRateLimiterHealth);
+router.get(
+  "/rate-limiter/stats",
+  authService.requireAdmin,
+  getRateLimiterStats,
+);
+router.get(
+  "/rate-limiter/health",
+  authService.requireAdmin,
+  getRateLimiterHealth,
+);
 
 // Core CRUD (non-parametric routes first)
 router.get("/", bulkMediaLimiter, getMediaAssets);
@@ -227,7 +252,11 @@ router.post(
 router.post("/upload/chunk-raw", authService.requireAdmin, uploadChunkRaw);
 // prettier-ignore
 router.post("/upload/finalize", authService.requireAdmin, express.json(), finalizeUpload);
-router.get("/upload/progress/:uploadId", authService.requireAdmin, getUploadProgress);
+router.get(
+  "/upload/progress/:uploadId",
+  authService.requireAdmin,
+  getUploadProgress,
+);
 router.delete("/upload/:uploadId", authService.requireAdmin, cancelUpload);
 router.get("/upload/active", authService.requireAdmin, getActiveUploads);
 

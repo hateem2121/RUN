@@ -37,8 +37,6 @@ interface ProductDisplayProps {
   getMediaAsset: (mediaId: number) => MediaAsset | undefined;
   onProductSelect?: (product: Product) => void;
   onProductEdit?: (product: Product) => void;
-  selectedProductIds: number[];
-  setSelectedProductIds: (ids: number[]) => void;
 }
 
 function ProductDisplay({
@@ -49,8 +47,6 @@ function ProductDisplay({
   getMediaAsset,
   onProductSelect,
   onProductEdit,
-  selectedProductIds,
-  setSelectedProductIds,
 }: ProductDisplayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -104,7 +100,8 @@ function ProductDisplay({
   const PaginationControls = () => (
     <div className="mt-6 flex items-center justify-between">
       <p className="text-muted-foreground text-sm">
-        Showing {startIndex + 1}-{Math.min(endIndex, products.length)} of {products.length} products
+        Showing {startIndex + 1}-{Math.min(endIndex, products.length)} of{" "}
+        {products.length} products
       </p>
       <div className="flex items-center gap-2">
         <Button
@@ -123,7 +120,9 @@ function ProductDisplay({
           data-testid="pagination-next-button"
           variant="outline"
           size="sm"
-          onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+          }
           disabled={currentPage === totalPages}
         >
           Next
@@ -148,15 +147,23 @@ function ProductDisplay({
   );
 }
 
-export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }: ProductGridProps) {
+export function ProductGrid({
+  onProductSelect,
+  onProductEdit,
+  onProductCreate,
+}: ProductGridProps) {
   // Phase 3: Advanced Features - Enhanced State Management
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
   const [categoryFilter, setCategoryFilter] = useState<string>(
     searchParams.get("category") || "all",
   );
-  const [statusFilter, setStatusFilter] = useState<string>(searchParams.get("status") || "all");
+  const [statusFilter, setStatusFilter] = useState<string>(
+    searchParams.get("status") || "all",
+  );
   const [viewMode, setViewMode] = useState<"grid" | "list">(
     (searchParams.get("view") as "grid" | "list") || "grid",
   );
@@ -165,8 +172,12 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
   );
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
-  const [pageSize, setPageSize] = useState(Number(searchParams.get("limit")) || 20);
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get("page")) || 1,
+  );
+  const [pageSize, setPageSize] = useState(
+    Number(searchParams.get("limit")) || 20,
+  );
 
   // Sync state to URL
   useEffect(() => {
@@ -241,7 +252,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
   const { data: additionalProductResponse } = useQuery<PaginatedResponse>({
     queryKey: ["/api/products", currentPage, pageSize],
     queryFn: async () => {
-      const response = await fetch(`/api/products?page=${currentPage}&limit=${pageSize}`);
+      const response = await fetch(
+        `/api/products?page=${currentPage}&limit=${pageSize}`,
+      );
       if (!response.ok) throw new Error("Failed to fetch products");
       return response.json();
     },
@@ -283,7 +296,8 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
         product.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory =
-        categoryFilter === "all" || product.categoryId?.toString() === categoryFilter;
+        categoryFilter === "all" ||
+        product.categoryId?.toString() === categoryFilter;
 
       const matchesStatus =
         statusFilter === "all" ||
@@ -302,12 +316,16 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
   ]);
 
   // Helper functions for getting related data
-  const getCategory = (categoryId: number | null) => categories.find((c) => c.id === categoryId);
+  const getCategory = (categoryId: number | null) =>
+    categories.find((c) => c.id === categoryId);
 
-  const getFabric = (fabricId: number | null) => fabrics.find((f) => f.id === fabricId);
+  const getFabric = (fabricId: number | null) =>
+    fabrics.find((f) => f.id === fabricId);
 
   const getMediaAsset = (mediaId: number) =>
-    Array.isArray(mediaAssets) ? mediaAssets.find((m) => m.id === mediaId) : undefined;
+    Array.isArray(mediaAssets)
+      ? mediaAssets.find((m) => m.id === mediaId)
+      : undefined;
 
   if (productsLoading) {
     return (
@@ -328,7 +346,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           <Package className="h-8 w-8 text-blue-600" />
           <div>
             <h1 className="text-3xl font-bold">Product Management</h1>
-            <p className="text-muted-foreground">{displayProducts.length} products</p>
+            <p className="text-muted-foreground">
+              {displayProducts.length} products
+            </p>
           </div>
         </div>
         <Button
@@ -374,7 +394,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
         <div className="flex gap-2">
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger data-testid="category-filter-select" className="w-40">
+            <SelectTrigger
+              data-testid="category-filter-select"
+              className="w-40"
+            >
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -461,7 +484,8 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           )}
           {categoryFilter !== "all" && (
             <Badge variant="secondary" className="gap-1">
-              Category: {categories.find((c) => c.id.toString() === categoryFilter)?.name}
+              Category:{" "}
+              {categories.find((c) => c.id.toString() === categoryFilter)?.name}
               <button
                 data-testid="clear-category-filter-button"
                 onClick={() => setCategoryFilter("all")}
@@ -490,7 +514,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {displayProducts.length === 0 ? (
         <div className="bg-background rounded-lg py-12 text-center">
           <Package className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
-          <h3 className="text-foreground mb-2 text-lg font-medium">No products found</h3>
+          <h3 className="text-foreground mb-2 text-lg font-medium">
+            No products found
+          </h3>
           <p className="text-muted-foreground mb-4">
             {products.length === 0
               ? "Get started by creating your first product."
@@ -515,8 +541,6 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           getMediaAsset={getMediaAsset}
           onProductSelect={onProductSelect}
           onProductEdit={onProductEdit}
-          selectedProductIds={selectedProductIds}
-          setSelectedProductIds={setSelectedProductIds}
         />
       )}
 
@@ -525,7 +549,8 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
         <div className="mt-8 flex items-center justify-between rounded-lg border bg-white p-4">
           <div className="text-muted-foreground text-sm">
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
-            {Math.min(currentPage * pageSize, pagination.total)} of {pagination.total} products
+            {Math.min(currentPage * pageSize, pagination.total)} of{" "}
+            {pagination.total} products
           </div>
 
           <div className="flex items-center gap-2">
@@ -541,38 +566,43 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
             {/* Page numbers */}
             <div className="flex gap-1">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= pagination.totalPages - 2) {
-                  pageNum = pagination.totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
+              {Array.from(
+                { length: Math.min(5, pagination.totalPages) },
+                (_, i) => {
+                  let pageNum;
+                  if (pagination.totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= pagination.totalPages - 2) {
+                    pageNum = pagination.totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
 
-                return (
-                  <Button
-                    key={pageNum}
-                    data-testid={`pagination-page-${pageNum}-button`}
-                    variant={pageNum === currentPage ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className="w-10"
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
+                  return (
+                    <Button
+                      key={pageNum}
+                      data-testid={`pagination-page-${pageNum}-button`}
+                      variant={pageNum === currentPage ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNum)}
+                      className="w-10"
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                },
+              )}
             </div>
 
             <Button
               data-testid="pagination-bottom-next-button"
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
+              onClick={() =>
+                setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))
+              }
               disabled={!pagination.hasMore}
             >
               Next
@@ -586,7 +616,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               setCurrentPage(1); // Reset to first page when changing page size
             }}
           >
-            <SelectTrigger data-testid="page-size-select" className="w-32 sm:w-36">
+            <SelectTrigger
+              data-testid="page-size-select"
+              className="w-32 sm:w-36"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

@@ -77,7 +77,7 @@ The project uses **NPM Workspaces** to manage dependencies across packages.
 | `routes`     | **API Endpoints**. Definitions of REST limits.               | `router.get()`, `router.post()`.   |
 | `services`   | **Business Logic**. Complex operations isolated from routes. | `AuthService`, `MediaService`.     |
 | `middleware` | **Request Processing**. Auth, logging, rate limiting.        | `correlation-id.ts`, `nonce.ts`.   |
-| `db`         | **Database Config**. Drizzle setup.                          | `index.ts`, `migrate.ts`.          |
+| `db`         | **Database Config**. Drizzle setup.                          | `db.ts`, `migrations/`.            |
 | `lib`        | **System Core**. Caching, resilience, logging.               | `unified-cache.ts`, `db-retry.ts`. |
 
 ### `shared/` (`@run-remix/shared`)

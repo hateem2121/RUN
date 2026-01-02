@@ -17,11 +17,13 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
 
   useEffect(() => {
     const loadAllMedia = async () => {
-      const startTime = performance.now();
+      // const startTime = performance.now(); // Kept for logic if re-enabled
 
       // Load all media using batch system
-      const results: Record<number, { src: string | null; isInline: boolean; loadTime: number }> =
-        {};
+      const results: Record<
+        number,
+        { src: string | null; isInline: boolean; loadTime: number }
+      > = {};
 
       await Promise.all(
         assetIds.map(async (assetId) => {
@@ -37,7 +39,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
         }),
       );
 
-      const _totalTime = performance.now() - startTime;
+      // const _totalTime = performance.now() - startTime;
 
       setMediaResults(results);
       setIsLoading(false);
@@ -48,25 +50,37 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg bg-blue-50 p-4" data-testid="batch-demo-loading">
+      <div
+        className="rounded-lg bg-blue-50 p-4"
+        data-testid="batch-demo-loading"
+      >
         <h3 className="font-semibold text-blue-800">🚀 Batch Loading Test</h3>
-        <p className="text-blue-600">Loading {assetIds.length} assets using batch system...</p>
+        <p className="text-blue-600">
+          Loading {assetIds.length} assets using batch system...
+        </p>
       </div>
     );
   }
 
-  const inlineCount = Object.values(mediaResults).filter((r) => r.isInline).length;
+  const inlineCount = Object.values(mediaResults).filter(
+    (r) => r.isInline,
+  ).length;
   const totalAssets = assetIds.length;
 
   return (
-    <div className="rounded-lg bg-green-50 p-4" data-testid="batch-demo-results">
-      <h3 className="mb-2 font-semibold text-green-800">✅ Batch Loading Results</h3>
+    <div
+      className="rounded-lg bg-green-50 p-4"
+      data-testid="batch-demo-results"
+    >
+      <h3 className="mb-2 font-semibold text-green-800">
+        ✅ Batch Loading Results
+      </h3>
 
       <div className="mb-4 rounded border bg-white p-3">
         <div className="text-muted-foreground text-sm">
           <strong>Performance Impact:</strong>
         </div>
-        <div className="font-semibold text-green-700 text-lg">
+        <div className="text-lg font-semibold text-green-700">
           {inlineCount}/{totalAssets} assets inlined (eliminated N+1 requests)
         </div>
       </div>
@@ -78,7 +92,7 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
 
           return (
             <div key={assetId} className="rounded border bg-white p-2">
-              <div className="mb-1 text-muted-foreground text-xs">
+              <div className="text-muted-foreground mb-1 text-xs">
                 Asset {assetId} {result.isInline && "📦 INLINED"}
               </div>
               <img
@@ -87,15 +101,17 @@ export function BatchedMediaDemo({ assetIds }: BatchedMediaDemoProps) {
                 className="h-20 w-full rounded object-cover"
                 data-testid={`batched-image-${assetId}`}
               />
-              <div className="mt-1 text-muted-foreground/70 text-xs">
-                {result.isInline ? "No HTTP request!" : `${result.loadTime.toFixed(1)}ms`}
+              <div className="text-muted-foreground/70 mt-1 text-xs">
+                {result.isInline
+                  ? "No HTTP request!"
+                  : `${result.loadTime.toFixed(1)}ms`}
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="mt-3 text-muted-foreground text-xs">
+      <div className="text-muted-foreground mt-3 text-xs">
         🎯 This demo proves Phase 1A eliminates N+1 cascade for small assets
       </div>
     </div>

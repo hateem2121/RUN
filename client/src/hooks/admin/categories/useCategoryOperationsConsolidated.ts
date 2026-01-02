@@ -57,7 +57,8 @@ export default function useCategoryOperationsConsolidated() {
   // Queries
   const { data: categories = [], isLoading } = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
-    queryFn: () => validatedApiRequest("/api/categories", categoriesResponseSchema),
+    queryFn: () =>
+      validatedApiRequest("/api/categories", categoriesResponseSchema),
     staleTime: 60 * 1000,
   });
 
@@ -86,7 +87,8 @@ export default function useCategoryOperationsConsolidated() {
       const term = uiState.searchTerm.toLowerCase();
       result = result.filter(
         (c: any) =>
-          c.name.toLowerCase().includes(term) || c.description?.toLowerCase().includes(term),
+          c.name.toLowerCase().includes(term) ||
+          c.description?.toLowerCase().includes(term),
       );
     }
 
@@ -102,7 +104,7 @@ export default function useCategoryOperationsConsolidated() {
     (k) => uiState.selectedCategories[k],
   ).length;
 
-  const getProductCount = (id: number) => {
+  const getProductCount = (_id: number) => {
     // Mock product count retrieval
     return 0;
   };
@@ -128,7 +130,8 @@ export default function useCategoryOperationsConsolidated() {
   };
 
   // Dialog Handlers
-  const openCreateDialog = () => updateUIState({ showCreateDialog: true, editingCategory: null });
+  const openCreateDialog = () =>
+    updateUIState({ showCreateDialog: true, editingCategory: null });
   const openEditDialog = (category: any) =>
     updateUIState({ showEditDialog: true, editingCategory: category });
   const openDeleteDialog = (category: any) =>
@@ -157,7 +160,7 @@ export default function useCategoryOperationsConsolidated() {
 
   // Mutations (Mocked for now to pass build, but strict enough to be used)
   const createCategoryMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (_data: any) => {
       // return axios.post('/api/categories', data);
       await new Promise((r) => setTimeout(r, 500));
     },
@@ -172,7 +175,7 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   const updateCategoryMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id: _id, data: _data }: { id: number; data: any }) => {
       // return axios.put(`/api/categories/${id}`, data);
       await new Promise((r) => setTimeout(r, 500));
     },
@@ -184,7 +187,7 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   const deleteCategoryMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (_id: number) => {
       // Soft delete
       await new Promise((r) => setTimeout(r, 500));
     },
@@ -197,21 +200,23 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   // Exported wrappers
-  const createCategory = (data: any) => createCategoryMutation.mutateAsync(data);
-  const updateCategory = (data: any) => updateCategoryMutation.mutateAsync(data);
+  const createCategory = (data: any) =>
+    createCategoryMutation.mutateAsync(data);
+  const updateCategory = (data: any) =>
+    updateCategoryMutation.mutateAsync(data);
   const deleteCategory = (id: number) => deleteCategoryMutation.mutateAsync(id);
 
-  const restoreCategory = async (id: number) => {
+  const restoreCategory = async (_id: number) => {
     // Mock logic
     toast({ title: "Restore not implemented yet" });
   };
 
-  const hardDeleteCategory = async (id: number) => {
+  const hardDeleteCategory = async (_id: number) => {
     // Mock logic
     toast({ title: "Hard delete not implemented yet" });
   };
 
-  const reorderCategories = async (items: any) => {
+  const reorderCategories = async (_items: any) => {
     // Mock logic
   };
 

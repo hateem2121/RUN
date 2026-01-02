@@ -25,7 +25,7 @@ interface UsePerformanceOptimizationOptions {
  * Monitors render performance, memory usage, and API response times
  */
 export function usePerformanceOptimization({
-  componentName,
+  componentName: _componentName,
   enableMemoryTracking = true,
   enableRenderTracking = true,
   thresholds = {
@@ -66,7 +66,8 @@ export function usePerformanceOptimization({
         jsHeapSizeLimit: number;
       };
     };
-    if (!enableMemoryTracking || !(performance as PerformanceWithMemory).memory) return;
+    if (!enableMemoryTracking || !(performance as PerformanceWithMemory).memory)
+      return;
 
     const memoryInfo = (performance as PerformanceWithMemory).memory!;
     const usedMB = memoryInfo.usedJSHeapSize / 1024 / 1024;

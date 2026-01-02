@@ -1,60 +1,88 @@
-/**
- * SMART LOGGER - Structured Logging System
- * Phase 3 (Observability): JSON-based structured logging with correlation IDs
- */
-
 import { AsyncLocalStorage } from "node:async_hooks";
+import pino, { stdSerializers, type Logger } from "pino";
 import { isDevelopment, logging } from "../../config/environment.js";
 
 // AsyncLocalStorage for request-scoped correlation IDs
 export const correlationContext = new AsyncLocalStorage<string>();
 
-interface LogLevel {
-  DEBUG: 0;
-  INFO: 1;
-  WARN: 2;
-  ERROR: 3;
-}
-
-interface StructuredLogEntry {
-  timestamp: string;
-  level: "DEBUG" | "INFO" | "WARN" | "ERROR" | "PERF";
-  message: string;
-  service?: string;
-  correlationId?: string;
-  metadata?: unknown;
-  stack?: string;
-}
-
 class SmartLogger {
   private static instance: SmartLogger;
+  private logger: Logger;
   private isDevelopment: boolean;
-  private logLevel: number;
-  private useStructuredLogging: boolean;
-  private serviceName: string = "run-apparel-api";
-
-  private readonly LOG_LEVELS: LogLevel = {
-    DEBUG: 0,
-    INFO: 1,
-    WARN: 2,
-    ERROR: 3,
-  };
+  private logLevel: string;
 
   private constructor() {
     this.isDevelopment = isDevelopment;
-    this.useStructuredLogging = process.env.STRUCTURED_LOGGING === "true" || !isDevelopment;
+    this.logLevel = logging.level || (isDevelopment ? "debug" : "warn");
 
-    // Use centralized logging configuration
-    const levelMap = {
-      debug: this.LOG_LEVELS.DEBUG,
-      info: this.LOG_LEVELS.INFO,
-      warn: this.LOG_LEVELS.WARN,
-      error: this.LOG_LEVELS.ERROR,
-    };
-
-    this.logLevel =
-      levelMap[logging.level] ||
-      (this.isDevelopment ? this.LOG_LEVELS.DEBUG : this.LOG_LEVELS.WARN);
+    // Pino configuration
+    this.logger = pino({
+      level: this.logLevel,
+      redact: {
+        paths: [
+          "password",
+          "passwd",
+          "pwd",
+          "secret",
+          "token",
+          "apikey",
+          "api_key",
+          "accesstoken",
+          "access_token",
+          "refreshtoken",
+          "refresh_token",
+          "auth",
+          "authorization",
+          "bearer",
+          "session",
+          "cookie",
+          "csrf",
+          "private_key",
+          "privatekey",
+          "key",
+          "credential",
+          "credentials",
+          "database_url",
+          "db_url",
+          "connection_string",
+          "connectionstring",
+          "smtp_password",
+          "email_password",
+          "oauth_secret",
+          "client_secret",
+          // Object paths
+          "req.headers.authorization",
+          "req.headers.cookie",
+        ],
+        censor: "[REDACTED]",
+      },
+      serializers: {
+        err: stdSerializers.err,
+        req: stdSerializers.req,
+        res: stdSerializers.res,
+      },
+      // Mixin to inject correlation ID into every log
+      mixin: () => {
+        const correlationId = correlationContext.getStore();
+        return correlationId ? { correlationId } : {};
+      },
+      // Pretty printing in development
+      transport: isDevelopment
+        ? {
+            target: "pino-pretty",
+            options: {
+              translateTime: "SYS:standard",
+              ignore: "pid,hostname",
+              colorize: true,
+              messageFormat: "{msg} {metadata}", // Display metadata if present
+            },
+          }
+        : undefined,
+      // Base service name
+      base: {
+        service: "run-apparel-api",
+      },
+    });
   }
 
   public static getInstance(): SmartLogger {
@@ -65,285 +93,86 @@ class SmartLogger {
   }
 
   /**
-   * Get current correlation ID from AsyncLocalStorage
+   * Safe metadata serializer handling errors and objects
    */
-  private getCorrelationId(): string | undefined {
-    return correlationContext.getStore();
-  }
+  private prepareMetadata(metadata?: unknown, error?: Error): object {
+    const meta: Record<string, any> = {};
 
-  /**
-   * CHUNK 8: Sensitive data patterns that should be redacted from logs
-   * Prevents accidental logging of secrets, passwords, tokens, API keys
-   */
-  private readonly SENSITIVE_KEYS = [
-    "password",
-    "passwd",
-    "pwd",
-    "secret",
-    "token",
-    "apikey",
-    "api_key",
-    "accesstoken",
-    "access_token",
-    "refreshtoken",
-    "refresh_token",
-    "auth",
-    "authorization",
-    "bearer",
-    "session",
-    "cookie",
-    "csrf",
-    "private_key",
-    "privatekey",
-    "key",
-    "credential",
-    "credentials",
-    "database_url",
-    "db_url",
-    "connection_string",
-    "connectionstring",
-    "smtp_password",
-    "email_password",
-    "oauth_secret",
-    "client_secret",
-  ];
-
-  /**
-   * CHUNK 8: Sanitize sensitive data from logs
-   * Recursively redacts sensitive fields from objects and strings
-   */
-  private sanitize(data: unknown): unknown {
-    // Handle null/undefined
-    if (data === null || data === undefined) {
-      return data;
-    }
-
-    // Handle strings - check for sensitive patterns
-    if (typeof data === "string") {
-      // Redact common sensitive string patterns (e.g., Bearer tokens, API keys)
-      return data
-        .replace(/Bearer\s+[\w\-._~+/]+=*/gi, "Bearer [REDACTED]")
-        .replace(/api[_-]?key[:\s=]+[\w-]+/gi, "api_key=[REDACTED]")
-        .replace(/token[:\s=]+[\w\-._~+/]+=*/gi, "token=[REDACTED]")
-        .replace(/password[:\s=]+\S+/gi, "password=[REDACTED]");
-    }
-
-    // Handle arrays
-    if (Array.isArray(data)) {
-      return data.map((item) => this.sanitize(item));
-    }
-
-    // Handle objects
-    if (typeof data === "object") {
-      const sanitized: Record<string, unknown> = {};
-
-      for (const [key, value] of Object.entries(data)) {
-        const lowerKey = key.toLowerCase();
-
-        // Check if key matches sensitive patterns
-        const isSensitive = this.SENSITIVE_KEYS.some((pattern) =>
-          lowerKey.includes(pattern.toLowerCase()),
-        );
-
-        if (isSensitive) {
-          sanitized[key] = "[REDACTED]";
-        } else {
-          sanitized[key] = this.sanitize(value);
-        }
-      }
-
-      return sanitized;
-    }
-
-    // Return primitives as-is (numbers, booleans, etc.)
-    return data;
-  }
-
-  /**
-   * Safely stringify metadata with circular reference handling and sanitization
-   */
-  private safeStringify(obj: unknown): unknown {
-    // CHUNK 8: Sanitize first to prevent logging secrets
-    const sanitized = this.sanitize(obj);
-
-    const seen = new WeakSet();
-    return JSON.parse(
-      JSON.stringify(sanitized, (_key, value) => {
-        if (typeof value === "object" && value !== null) {
-          if (seen.has(value)) {
-            return "[Circular]";
-          }
-          seen.add(value);
-        }
-        return value;
-      }),
-    );
-  }
-
-  /**
-   * Format structured log entry as JSON
-   */
-  private formatStructured(
-    level: StructuredLogEntry["level"],
-    message: string,
-    metadata?: unknown,
-    error?: Error,
-  ): string {
-    // CHUNK 8: Sanitize message to prevent secret leakage
-    const sanitizedMessage =
-      typeof message === "string" ? (this.sanitize(message) as string) : message;
-
-    const entry: StructuredLogEntry = {
-      timestamp: new Date().toISOString(),
-      level,
-      message: sanitizedMessage,
-      service: this.serviceName,
-    };
-
-    const correlationId = this.getCorrelationId();
-    if (correlationId) {
-      entry.correlationId = correlationId;
-    }
-
-    if (metadata !== null && metadata !== undefined) {
-      try {
-        // Handle primitives (string, number, boolean) by wrapping in object
-        if (
-          typeof metadata === "string" ||
-          typeof metadata === "number" ||
-          typeof metadata === "boolean"
-        ) {
-          entry.metadata = { value: metadata };
-        } else if (typeof metadata === "object") {
-          // Serialize all objects (including Date, Map, Error, etc.) - rely on try/catch for failures
-          entry.metadata = this.safeStringify(metadata);
-        }
-      } catch (_err) {
-        entry.metadata = { serializationError: "Failed to serialize metadata" };
+    if (metadata) {
+      if (typeof metadata === "object" && metadata !== null) {
+        Object.assign(meta, metadata);
+      } else {
+        meta.metadata = metadata;
       }
     }
 
     if (error) {
-      entry.stack = error.stack;
-      const hasErrorMetadata =
-        typeof metadata === "object" &&
-        metadata !== null &&
-        ("error" in metadata || "message" in metadata);
-      if (!hasErrorMetadata) {
-        entry.metadata = {
-          ...(typeof entry.metadata === "object" ? entry.metadata : {}),
-          error: error.message,
-        };
-      }
+      meta.err = error;
     }
 
-    return JSON.stringify(entry);
+    return meta;
   }
 
-  /**
-   * Output log with appropriate formatting
-   */
-  private output(
-    level: StructuredLogEntry["level"],
-    message: string,
-    metadata?: unknown,
-    error?: Error,
-  ): void {
-    if (this.useStructuredLogging) {
-      const _formatted = this.formatStructured(level, message, metadata, error);
-      switch (level) {
-        case "ERROR":
-          console.error(_formatted);
-          break;
-        case "WARN":
-          console.warn(_formatted);
-          break;
-        default:
-          console.log(_formatted);
-      }
-    } else {
-      // Development mode: human-readable format
-      const prefix = `[${level}]`;
-      const correlationId = this.getCorrelationId();
-      const corrStr = correlationId ? ` [${correlationId}]` : "";
-
-      // CHUNK 8: Sanitize message and metadata before logging
-      const sanitizedMessage =
-        typeof message === "string" ? (this.sanitize(message) as string) : message;
-      const sanitizedMetadata = this.sanitize(metadata);
-
-      let metaStr = "";
-      try {
-        metaStr = sanitizedMetadata ? ` ${JSON.stringify(sanitizedMetadata)}` : "";
-      } catch (_err) {
-        metaStr = " [metadata: circular reference]";
-      }
-
-      const _logMessage = `${prefix}${corrStr} ${sanitizedMessage}${metaStr}`;
-
-      switch (level) {
-        case "ERROR":
-          console.error(_logMessage);
-          break;
-        case "WARN":
-          console.warn(_logMessage);
-          break;
-        default:
-          console.log(_logMessage);
-      }
-    }
-  }
-
-  /**
-   * Debug logging - only in development
-   */
   debug(message: string, metadata?: unknown, error?: Error): void {
-    if (this.logLevel <= this.LOG_LEVELS.DEBUG) {
-      this.output("DEBUG", message, metadata, error);
+    const obj = this.prepareMetadata(metadata, error);
+    if (Object.keys(obj).length > 0) {
+      this.logger.debug(obj, message);
+    } else {
+      this.logger.debug(message);
     }
   }
 
-  /**
-   * Info logging - development and important production info
-   */
   info(message: string, metadata?: unknown, error?: Error): void {
-    if (this.logLevel <= this.LOG_LEVELS.INFO) {
-      this.output("INFO", message, metadata, error);
+    const obj = this.prepareMetadata(metadata, error);
+    if (Object.keys(obj).length > 0) {
+      this.logger.info(obj, message);
+    } else {
+      this.logger.info(message);
     }
   }
 
-  /**
-   * Warning logging - always logged
-   */
   warn(message: string, metadata?: unknown, error?: Error): void {
-    if (this.logLevel <= this.LOG_LEVELS.WARN) {
-      this.output("WARN", message, metadata, error);
+    const obj = this.prepareMetadata(metadata, error);
+    if (Object.keys(obj).length > 0) {
+      this.logger.warn(obj, message);
+    } else {
+      this.logger.warn(message);
     }
   }
 
-  /**
-   * Error logging - always logged
-   */
   error(message: string, metadata?: unknown, error?: Error): void {
-    // Sentry Hook: Capture invalid usage or explicit errors
-    if (error instanceof Error) {
-      import("@sentry/node")
-        .then((Sentry) => {
-          Sentry.captureException(error, {
-            extra: { message, metadata },
-          });
-        })
-        .catch(() => {
-          /* Ignore if Sentry fails to load */
-        });
+    const obj = this.prepareMetadata(metadata, error);
+
+    // Sentry hook logic could go here, or we rely on Sentry's existing instrumentation
+    // The previous implementation had explicit Sentry capture.
+    // Best practice: Use automatic instrumentation (already in package.json),
+    // but explicit capture is good for manual log.error calls.
+    if (error && !process.env.SENTRY_DISABLE_AUTO_UPLOAD) {
+      // Simple guard
+      // We'll leave Sentry hooks to the global error handler or OTel instrumentation
+      // to avoid importing Sentry here which might cause circular deps or bundle bloat if shared.
+      // (Though previously it dynamically imported @sentry/node)
+      this.captureSentry(message, metadata, error);
     }
 
-    this.output("ERROR", message, metadata, error);
+    if (Object.keys(obj).length > 0) {
+      this.logger.error(obj, message);
+    } else {
+      this.logger.error(message);
+    }
   }
 
-  /**
-   * Performance logging - only in development unless critical
-   */
+  private captureSentry(message: string, metadata: unknown, error: Error) {
+    // Dynamic import to avoid strict dependency on boot
+    import("@sentry/node")
+      .then((Sentry) => {
+        Sentry.captureException(error, {
+          extra: { message, metadata },
+        });
+      })
+      .catch(() => {});
+  }
+
   performance(
     message: string,
     metadata?: unknown,
@@ -351,25 +180,28 @@ class SmartLogger {
     isCritical: boolean = false,
   ): void {
     if (this.isDevelopment || isCritical) {
-      this.output("PERF", message, metadata, error);
+      // Log as info with label 'PERF'
+      // Pino doesn't have custom levels by default unless configured.
+      // We'll use info with a tag.
+      this.logger.info(
+        { ...this.prepareMetadata(metadata, error), type: "PERF" },
+        message,
+      );
     }
   }
 
   /**
    * Production-safe debug logging (legacy support)
    */
-  devLog(_message: string, ..._args: unknown[]): void {
+  devLog(message: string, ...args: unknown[]): void {
     if (this.isDevelopment) {
+      this.logger.debug({ args }, message);
     }
   }
 }
 
 export const logger = SmartLogger.getInstance();
 
-/**
- * Type-safe error serializer for unknown errors from catch blocks
- * Converts unknown errors into loggable Record<string, any>
- */
 export function serializeError(error: unknown): Record<string, any> {
   if (error instanceof Error) {
     return {
@@ -378,7 +210,6 @@ export function serializeError(error: unknown): Record<string, any> {
       stack: error.stack,
     };
   }
-
   if (error && typeof error === "object") {
     try {
       return { error: JSON.stringify(error) };
@@ -386,14 +217,16 @@ export function serializeError(error: unknown): Record<string, any> {
       return { error: String(error) };
     }
   }
-
   return { error: String(error) };
 }
 
 // Production-safe debug helpers
-export const debugLog = (_message: string, ..._args: unknown[]) => {
+export const debugLog = (message: string, ...args: unknown[]) => {
   if (logging.enableDebug) {
+    logger.debug(message, { args });
   }
 };
 
-export const productionLog = (_message: string, ..._args: unknown[]) => {};
+export const productionLog = (message: string, ...args: unknown[]) => {
+  // Legacy placeholder
+};

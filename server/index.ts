@@ -1,4 +1,18 @@
+import express from "express";
+import { createServer } from "node:http";
+import path from "node:path";
+import {
+  setupMiddleware,
+  setupErrorHandling,
+  setupHealthChecks,
+} from "./boot/middleware.js";
+import { setupRoutes } from "./boot/routes.js";
+import { startServices } from "./boot/services.js";
+import { getConfig } from "./config/production.js";
+import { logger } from "./lib/monitoring/logger.js";
+
 const app = express();
+const config = getConfig();
 
 const _BOOT_TIMEOUT = 30000; // 30s boot timeout
 
@@ -18,7 +32,10 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
 
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // Runs before error handlers but after API routes
-    if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
+    if (
+      config.app.environment === "production" ||
+      process.env.NODE_ENV === "production"
+    ) {
       // In production, assets should be served via CDN (GCS/Cloud CDN).
       // We only serve favicon/robots here if absolutely necessary, but generally disable static serving
       // to reduce Node.js load.

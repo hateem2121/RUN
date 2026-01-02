@@ -19,9 +19,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Badge } from "@/components/ui/badge";
+// Badge import removed as unused
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/analytics";
@@ -50,7 +56,8 @@ export function meta({}: Route.MetaArgs) {
     { title: "Analytics Dashboard | RUN APPAREL" },
     {
       name: "description",
-      content: "View detailed analytics and performance metrics for your manufacturing and sales.",
+      content:
+        "View detailed analytics and performance metrics for your manufacturing and sales.",
     },
   ];
 }
@@ -75,7 +82,9 @@ const StatCard = ({
     </CardHeader>
     <CardContent>
       <div className="text-2xl font-bold">{value}</div>
-      <p className={`flex items-center text-xs ${trendUp ? "text-green-500" : "text-red-500"}`}>
+      <p
+        className={`flex items-center text-xs ${trendUp ? "text-green-500" : "text-red-500"}`}
+      >
         {trendUp ? (
           <ArrowUpRight className="mr-1 h-3 w-3" />
         ) : (
@@ -118,7 +127,9 @@ export default function Analytics() {
       <div className="bg-muted/10 min-h-screen space-y-8 p-8">
         <div className="flex items-center justify-between">
           <div>
-            <Typography.H1 className="text-3xl font-bold tracking-tight">Analytics</Typography.H1>
+            <Typography.H1 className="text-3xl font-bold tracking-tight">
+              Analytics
+            </Typography.H1>
             <Typography.P className="text-muted-foreground">
               Overview of your performance metrics and key indicators
             </Typography.P>
@@ -166,14 +177,22 @@ export default function Analytics() {
           <Card className="col-span-4">
             <CardHeader>
               <CardTitle>Revenue Overview</CardTitle>
-              <CardDescription>Monthly revenue performance for the current year</CardDescription>
+              <CardDescription>
+                Monthly revenue performance for the current year
+              </CardDescription>
             </CardHeader>
             <CardContent className="pl-2">
               <div className="h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="name" className="text-muted-foreground text-xs" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      className="text-muted-foreground text-xs"
+                    />
                     <YAxis className="text-muted-foreground text-xs" />
                     <Tooltip
                       content={({ active, payload }) => {
@@ -211,7 +230,12 @@ export default function Analytics() {
                       strokeWidth={2}
                       activeDot={{ r: 8 }}
                     />
-                    <Line type="monotone" dataKey="sales" stroke="#16a34a" strokeWidth={2} />
+                    <Line
+                      type="monotone"
+                      dataKey="sales"
+                      stroke="#16a34a"
+                      strokeWidth={2}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -228,7 +252,9 @@ export default function Analytics() {
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="flex items-center">
                     <div className="space-y-1">
-                      <p className="text-sm leading-none font-medium">New Order #{2023 + i}</p>
+                      <p className="text-sm leading-none font-medium">
+                        New Order #{2023 + i}
+                      </p>
                       <p className="text-muted-foreground text-sm">
                         {format(new Date(), "MMM dd, yyyy")}
                       </p>
@@ -249,7 +275,9 @@ export default function Analytics() {
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-4 w-4" /> System Health
                 </CardTitle>
-                <CardDescription>View system performance and logs</CardDescription>
+                <CardDescription>
+                  View system performance and logs
+                </CardDescription>
               </CardHeader>
             </Card>
           </Link>
@@ -269,7 +297,9 @@ export default function Analytics() {
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" /> Reports
                 </CardTitle>
-                <CardDescription>Generate sales and specific reports</CardDescription>
+                <CardDescription>
+                  Generate sales and specific reports
+                </CardDescription>
               </CardHeader>
             </Card>
           </Link>
