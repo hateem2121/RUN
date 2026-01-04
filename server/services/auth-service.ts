@@ -95,6 +95,41 @@ export class AuthService {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    // P1 SECURITY: Force Session ID Rotation every 15 minutes
+    // This effectively implements "Short-lived Access Token" behavior with Cookies
+    app.use((req, res, next) => {
+      if (!req.session || !req.user) return next();
+
+      const now = Date.now();
+      // Cast session to any to avoid TS errors with custom property
+      const sess = req.session as any;
+      const lastRotated = sess.lastRotated || (sess.lastRotated = now);
+      const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
+
+      if (now - lastRotated > ROTATION_INTERVAL) {
+        // Save old passport state
+        const passportState = sess.passport;
+
+        req.session.regenerate((err) => {
+          if (err) {
+            logger.error("[Auth] Session regeneration failed:", err);
+            return next(err);
+          }
+          // Restore passport state and update rotation timestamp
+          (req.session as any).passport = passportState;
+          (req.session as any).lastRotated = now;
+
+          // Explicitly save to ensure the new SID is stored
+          req.session.save((err) => {
+            if (err) logger.error("[Auth] Failed to save regenerated session:", err);
+            next();
+          });
+        });
+      } else {
+        next();
+      }
+    });
+
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       logger.warn("[AuthService] Google Auth credentials missing.");
       return;

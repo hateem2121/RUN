@@ -8,6 +8,7 @@
     "@gltf-transform/extensions": "^4.2.1",
     "@gltf-transform/functions": "^4.2.1",
     "@google-cloud/bigquery": "^8.1.1",
+    "@google-cloud/secret-manager": "^6.1.1",
     "@google-cloud/storage": "^7.18.0",
     "@google-cloud/tasks": "^6.2.1",
     "@neondatabase/serverless": "^1.0.2",
@@ -56,7 +57,7 @@
     "prom-client": "^15.1.3",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.5",
     "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1",
     "ws": "^8.18.0",
@@ -86,6 +87,7 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
+    "test": "vitest run",
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node20 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "npx kill-port 5001 && pkill -f 'tsx watch' || true",
     "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",

@@ -12,8 +12,6 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 - Media listings optimized from 25 fields → 8 fields (68% improvement)
 - Product detail context endpoint remains unchanged (full data required)
 
-**For detailed analysis**, see [API Fetched vs. Used Analysis](../api-fetched-vs-used-analysis.md)
-
 ---
 
 ## Table of Contents
@@ -453,22 +451,16 @@ The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was 
 - JSON serialization time reduced by ~40%
 - Frontend parsing time reduced by ~50%
 
----
-
 ### Support & Questions
-
-For detailed analysis of field usage patterns and over-fetching identification, see:
-
-- [API Fetched vs. Used Analysis](../api-fetched-vs-used-analysis.md)
 
 For questions or issues with the API:
 
-- Review field usage matrices in the analysis document
 - Check the Migration Guide above
 - Verify that required fields are present in the optimized response
+- Review field usage in the endpoint descriptions
 
 ---
 
-**Last Updated**: November 14, 2025
+**Last Updated**: January 2026
 **API Version**: 1.0 (implicit, no versioning)
 **Breaking Changes**: Column selection optimization (products: 25→7 fields, media: 25→8 fields)

@@ -27,6 +27,12 @@ export async function setupRoutes(app: Express, httpServer: Server) {
     }
   });
 
+  // P1 SECURITY: Block crawling of Admin/API routes
+  app.get("/robots.txt", (_req, res) => {
+    res.type("text/plain");
+    res.send("User-agent: *\nDisallow: /api/\nDisallow: /admin/\nDisallow: /auth/");
+  });
+
   // SSR Configuration (Must be last before error handling)
   // Dev: Vite HMR / Prod: Remix SSR
   try {

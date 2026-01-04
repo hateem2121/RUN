@@ -23,7 +23,10 @@ const defaultConfig: ValidationConfig = {
 };
 
 export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
-  const mergedConfig = { ...defaultConfig, ...config };
+  const mergedConfig = useMemo(
+    () => ({ ...defaultConfig, ...config }),
+    [config],
+  );
   const validationCache = useRef<Map<string, ValidationResult>>(new Map());
   const validationTimers = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
@@ -35,8 +38,10 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
         case "name":
           if (typeof value !== "string" || !value || value.trim().length === 0)
             return "Product name is required";
-          if (value.length < 3) return "Product name must be at least 3 characters";
-          if (value.length > 100) return "Product name must be less than 100 characters";
+          if (value.length < 3)
+            return "Product name must be at least 3 characters";
+          if (value.length > 100)
+            return "Product name must be less than 100 characters";
           return null;
 
         case "sku":
@@ -159,17 +164,21 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
 
   // Batch validation for form submission
   const validateForm = useCallback(
-    async (formData: Record<string, ProductFormFieldValue>): Promise<ValidationResult> => {
+    async (
+      formData: Record<string, ProductFormFieldValue>,
+    ): Promise<ValidationResult> => {
       const errors: Record<string, string> = {};
       const warnings: Record<string, string> = {};
 
       // Validate all fields in parallel
-      const validationPromises = Object.entries(formData).map(async ([field, value]) => {
-        const error = await validateField(field, value, true);
-        if (error) {
-          errors[field] = error;
-        }
-      });
+      const validationPromises = Object.entries(formData).map(
+        async ([field, value]) => {
+          const error = await validateField(field, value, true);
+          if (error) {
+            errors[field] = error;
+          }
+        },
+      );
 
       await Promise.all(validationPromises);
 
@@ -189,7 +198,9 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
 
   // Clear all timers on cleanup
   const clearTimers = useCallback(() => {
-    validationTimers.current.forEach((timer) => clearTimeout(timer));
+    validationTimers.current.forEach((timer) => {
+      clearTimeout(timer);
+    });
     validationTimers.current.clear();
   }, []);
 

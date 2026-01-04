@@ -43,9 +43,7 @@ export class UploadRateLimiter {
   private getClientKey(req: Request): string {
     // Use IP address as key, could be enhanced with user ID for authenticated users
     const forwarded = req.headers["x-forwarded-for"] as string;
-    const ip = forwarded
-      ? forwarded.split(",")[0]
-      : req.connection.remoteAddress;
+    const ip = forwarded ? forwarded.split(",")[0] : req.connection.remoteAddress;
     return `upload_${ip}`;
   }
 
@@ -138,8 +136,7 @@ export class GenericRateLimiter {
   constructor(options: RateLimitOptions) {
     this.maxRequests = options.max;
     this.windowMs = options.windowMs;
-    this.message =
-      options.message || "Too many requests, please try again later";
+    this.message = options.message || "Too many requests, please try again later";
     this.keyPrefix = options.keyPrefix || "rl";
     this.skipFn = options.skip || (() => false);
 
@@ -155,9 +152,7 @@ export class GenericRateLimiter {
   private getClientKey(req: Request): string {
     // Use IP address as key
     const forwarded = req.headers["x-forwarded-for"] as string;
-    const ip = forwarded
-      ? forwarded.split(",")[0]
-      : req.connection.remoteAddress;
+    const ip = forwarded ? forwarded.split(",")[0] : req.connection.remoteAddress;
     return `${this.keyPrefix}_${ip}`;
   }
 

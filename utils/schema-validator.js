@@ -98,9 +98,13 @@ export const validateMediaAsset = (data) => {
   } catch (error) {
     const errors = [];
     if (error instanceof z.ZodError) {
-      errors.push(...error.errors.map((e) => `${e.path.join(".")}: ${e.message}`));
+      errors.push(
+        ...error.errors.map((e) => `${e.path.join(".")}: ${e.message}`),
+      );
     } else {
-      errors.push(error instanceof Error ? error.message : "Unknown validation error");
+      errors.push(
+        error instanceof Error ? error.message : "Unknown validation error",
+      );
     }
     return {
       isValid: false,
@@ -149,7 +153,7 @@ export const filterValidMediaAssets = (assets) => {
   // Log validation summary in development
   if (process.env.NODE_ENV === "development") {
     if (result.invalid.length > 0) {
-      result.invalid.forEach(({ index, errors }) => {});
+      result.invalid.forEach(({ index: _index, errors: _errors }) => {});
     }
   }
   return result.valid;
@@ -168,7 +172,9 @@ export const validateApiResponse = (response) => {
   }
   const hasData = response.data && typeof response.data === "object";
   const hasPagination =
-    hasData && response.data.pagination && typeof response.data.pagination === "object";
+    hasData &&
+    response.data.pagination &&
+    typeof response.data.pagination === "object";
   if (!hasData) {
     errors.push("Response missing data object");
   }
@@ -190,7 +196,9 @@ export const monitorSchemaDrift = (apiData, _context = "unknown") => {
   const result = validateMediaAssetArray(apiData);
   if (result.invalid.length > 0) {
     // Sample first few errors for debugging
-    result.invalid.slice(0, 3).forEach(({ index, errors }) => {});
+    result.invalid
+      .slice(0, 3)
+      .forEach(({ index: _index, errors: _errors }) => {});
   }
   if (result.summary.warnings > 0) {
   }

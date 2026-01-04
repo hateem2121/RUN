@@ -8,17 +8,50 @@
  * - resources/    : CMS content
  * - media/        : Media management
  *
- * REFACTORED: Uses Dynamic Imports for startup performance and circular dependency avoidance.
+ * REFACTORED: Uses STATIC Imports execution (via server.ts bootstrap) for better type safety.
  */
 
 import { createServer, type Server } from "node:http";
 import compression from "compression";
 import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-
-// Critical static imports for type safety and base middleware
-// Note: We import setupAuth dynamically to ensure module isolation if needed,
-// but usually auth setup is core. We'll keep it dynamic to be consistent.
+import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";
+import { enforceValidation } from "../middleware/strict-validation.js";
+// Static Imports (Safe thanks to bootstrap.ts secret loading)
+import { authService } from "../services/auth-service.js";
+import adminRouter from "./admin/admin.js";
+// Auth & Admin
+import authRouter from "./auth.js";
+import accessoriesRouter from "./core/accessories.js";
+// Core
+import categoriesRouter from "./core/categories.js";
+import certificatesRouter from "./core/certificates.js";
+import fabricsRouter from "./core/fabrics.js";
+import materialsRouter from "./core/materials.js";
+import productsRouter from "./core/products.js";
+import sizeChartsRouter from "./core/size-charts.js";
+import docsRouter from "./docs.js";
+// Utilities
+import featureFlagsRouter from "./feature-flags.js";
+import { inquiryRoutes } from "./inquiries.js";
+// Media
+import foldersRouter from "./media/folder-management.routes.js";
+import mediaRoutes from "./media/index.js";
+// Resources
+import contentManagementRouter from "./resources/content-management-routes.js";
+import resourceRouter from "./resources/index.js";
+import pageContentRouter from "./resources/page-content-routes.js";
+// Populators / Diagnostics
+import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
+import { registerDataCreationRoutes } from "./utilities/data-creation.js";
+import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postgres-population.js";
+import footerConfigRouter from "./utilities/footer-config.js";
+import inquiryAdminRouter from "./utilities/inquiry-admin.js";
+import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
+import { registerMetricsRoutes } from "./utilities/metrics.js";
+import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
+// Workers & Misc
+import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -26,10 +59,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
-  const { authService } = await import("../services/auth-service.js");
-  const { adminLimiter, diagnosticLimiter } = await import("../lib/rate-limiter.js");
-  const { enforceValidation } = await import("../middleware/strict-validation.js");
-
   authService.setup(app);
   logger.info("[Auth] ✅ AuthService initialized (OIDC + PostgreSQL sessions)");
 
@@ -74,95 +103,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   logger.info("[Routes] Mounting API routes with flat structure (/api/*)");
 
   // ============================================================================
-  // DYNAMIC MODULE LOADING (Parallelized)
-  // ============================================================================
-  let dynamicImportsResult: any[] = [];
-
-  const importWithLog = async (path: string) => {
-    try {
-      console.log(`[Routes] Importing ${path}...`);
-      const mod = await import(path);
-      console.log(`[Routes] Imported ${path}`);
-      return mod;
-    } catch (e) {
-      console.error(`[Routes] Failed to import ${path}:`, e);
-      throw e;
-    }
-  };
-
-  try {
-    dynamicImportsResult = await Promise.all([
-      importWithLog("./core/categories.js"),
-      importWithLog("./core/products.js"),
-      importWithLog("./core/fabrics.js"),
-      importWithLog("./core/accessories.js"),
-      importWithLog("./core/certificates.js"),
-      importWithLog("./core/materials.js"),
-      importWithLog("./core/size-charts.js"),
-
-      importWithLog("./feature-flags.js"),
-      importWithLog("./inquiries.js"),
-      importWithLog("./media/folder-management.routes.js"),
-      importWithLog("./media/index.js"),
-      importWithLog("./resources/content-management-routes.js"),
-      importWithLog("./resources/index.js"),
-      importWithLog("./resources/page-content-routes.js"),
-      importWithLog("./auth.js"),
-      importWithLog("./admin/admin.js"),
-      importWithLog("./worker.js"),
-      importWithLog("./utilities/inquiry-admin.js"),
-      importWithLog("./utilities/footer-config.js"),
-      importWithLog("./utilities/api-based-population.js"),
-      importWithLog("./utilities/data-creation.js"),
-      importWithLog("./utilities/direct-postgres-population.js"),
-      importWithLog("./utilities/kv-diagnostics.js"),
-      importWithLog("./utilities/metrics.js"),
-      importWithLog("./utilities/migration-execution.js"),
-      importWithLog("./docs.js"),
-    ]);
-  } catch (error) {
-    logger.error("[Start] Failed to import routes:", error);
-    throw error;
-  }
-
-  const [
-    // Core
-    { default: categoriesRouter },
-    { default: productsRouter },
-    { default: fabricsRouter },
-    { default: accessoriesRouter },
-    { default: certificatesRouter },
-    { default: materialsRouter },
-    { default: sizeChartsRouter },
-    // Utilities
-
-    { default: featureFlagsRouter },
-    { inquiryRoutes },
-    // Media
-    { default: foldersRouter },
-    { default: mediaRoutes },
-    // Resources
-    { default: contentManagementRouter },
-    { default: resourceRouter },
-    { default: pageContentRouter },
-    // Auth & Admin
-    { default: authRouter },
-    { default: adminRouter },
-    // Workers & Misc
-    { default: workerRouter },
-    { default: inquiryAdminRouter },
-    { default: footerConfigRouter },
-    // Populators / Diagnostics
-    { registerAPIBasedPopulationRoutes },
-    { registerDataCreationRoutes },
-    { registerDirectPostgresPopulationRoutes },
-    { registerKVDiagnosticsRoutes },
-    { registerMetricsRoutes },
-    { registerMigrationExecutionRoutes },
-    { default: docsRouter },
-  ] = dynamicImportsResult;
-
-  // ============================================================================
   // ROUTE REGISTRATION - VERSIONING STRUCTURE (Phase 4)
   // ============================================================================
 
@@ -184,22 +124,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use(inquiryRoutes);
 
   // Admin & Resources
-  // Note: authService.requireAdmin is middleware, we can apply it to specific groups if needed
-  // But here we keep existing structure where specific routes use it or we mount it.
-  // Existing: app.use("/api/admin", authService.requireAdmin);
-  // We can replicate this on apiRouter
   apiRouter.use("/admin", authService.requireAdmin, adminLimiter.middleware(), enforceValidation);
-  apiRouter.use(adminRouter); // adminRouter likely defines /admin/... or is mounted at /admin?
-  // Wait, previous code: app.use("/api", adminRouter);
-  // So adminRouter defines /admin paths?
-  // Let's assume yes.
+  apiRouter.use(adminRouter);
 
   apiRouter.use(inquiryAdminRouter);
-  apiRouter.use(footerConfigRouter); // Assuming it handles its own paths
-  apiRouter.use("/feature-flags", featureFlagsRouter); // Previous: app.use("/api/feature-flags", ...)
+  apiRouter.use(footerConfigRouter);
+  apiRouter.use("/feature-flags", featureFlagsRouter);
 
   // Media
-  apiRouter.use("/media", mediaRoutes); // Previous: app.use("/api/media", ...)
+  apiRouter.use("/media", mediaRoutes);
   apiRouter.use(foldersRouter);
 
   // Content

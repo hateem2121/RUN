@@ -39,24 +39,15 @@ import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
 // Removed: react-window virtual scrolling for simplified grid layout
 // Import removed - using direct API response
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import {
-  apiRequest,
-  batchFetchMediaContent,
-  getQueryClient,
-} from "@/lib/queryClient";
+import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 // STEP 3 INTEGRATION: Import UnifiedModelViewer for 3D preview thumbnails
-const UnifiedModelViewer = React.lazy(
-  () => import("@/components/ui/UnifiedModelViewer"),
-);
+const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
 
 // Import centralized standardized query keys
-import {
-  createMediaQueryKey,
-  invalidateMediaQueries,
-} from "@/lib/media-query-keys";
+import { createMediaQueryKey, invalidateMediaQueries } from "@/lib/media-query-keys";
 
 // Consolidated Media Grid Item Component (replaces MediaGridItemEnhanced)
 interface MediaGridItemProps {
@@ -142,10 +133,7 @@ const MediaGridItem = React.memo(
         {/* Status badges */}
         <div className="z-elevated absolute top-2 right-2 flex gap-1">
           {isOptimistic && (
-            <Badge
-              variant="secondary"
-              className="status-badge-base status-badge-info"
-            >
+            <Badge variant="secondary" className="status-badge-base status-badge-info">
               Uploading
             </Badge>
           )}
@@ -242,10 +230,7 @@ const MediaGridItem = React.memo(
                       type: "model", // Ensure type is normalized
                       mimeType: asset.mimeType || "model/gltf-binary",
                       filename: asset.filename || `model-${asset.id}.glb`,
-                      url:
-                        signedUrl ||
-                        asset.url ||
-                        MediaUrlBuilder.buildUrlSafe(asset.id), // Ensure URL is available
+                      url: signedUrl || asset.url || MediaUrlBuilder.buildUrlSafe(asset.id), // Ensure URL is available
                     }}
                     showControls={false}
                     showLoadingProgress={false}
@@ -327,9 +312,7 @@ const MediaGridItem = React.memo(
           </div>
 
           <div className="text-muted flex items-center justify-between text-xs">
-            <span className="text-subtle">
-              {formatFileSize(asset.size || 0)}
-            </span>
+            <span className="text-subtle">{formatFileSize(asset.size || 0)}</span>
             <Badge variant="outline" className="text-xs">
               {asset.type}
             </Badge>
@@ -391,12 +374,7 @@ const MediaBulkOperations = React.memo(() => {
         },
         (oldData: unknown) => {
           const dataRecord = oldData as Record<string, unknown>;
-          if (
-            !dataRecord ||
-            !dataRecord.data ||
-            !Array.isArray(dataRecord.data)
-          )
-            return oldData;
+          if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) return oldData;
 
           // Filter out deleted items
           const filteredData = dataRecord.data.filter(
@@ -442,10 +420,7 @@ const MediaBulkOperations = React.memo(() => {
 
       toast({
         title: "Bulk delete failed",
-        description:
-          _err instanceof Error
-            ? _err.message
-            : "An error occurred during bulk delete",
+        description: _err instanceof Error ? _err.message : "An error occurred during bulk delete",
         variant: "destructive",
       });
     },
@@ -496,10 +471,7 @@ const MediaBulkOperations = React.memo(() => {
     onError: (error) => {
       toast({
         title: "Download failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An error occurred during download",
+        description: error instanceof Error ? error.message : "An error occurred during download",
         variant: "destructive",
       });
     },
@@ -551,10 +523,7 @@ const MediaBulkOperations = React.memo(() => {
             <Archive className="mr-2 h-4 w-4" />
             Archive Selected
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handleBulkDelete}
-            className="action-button-danger"
-          >
+          <DropdownMenuItem onClick={handleBulkDelete} className="action-button-danger">
             <Trash2 className="mr-2 h-4 w-4" />
             Delete Selected
           </DropdownMenuItem>
@@ -576,14 +545,8 @@ export default function MediaGrid({
   isStandalone?: boolean | undefined;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;
 } = {}) {
-  const {
-    state,
-    updateState,
-    setSelectedAsset,
-    setLightboxOpen,
-    setCurrentPage,
-    setTotalPages,
-  } = useMediaLibraryEnhanced();
+  const { state, updateState, setSelectedAsset, setLightboxOpen, setCurrentPage, setTotalPages } =
+    useMediaLibraryEnhanced();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -642,9 +605,7 @@ export default function MediaGrid({
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          throw new Error(
-            `Failed to fetch media: ${response.status} ${response.statusText}`,
-          );
+          throw new Error(`Failed to fetch media: ${response.status} ${response.statusText}`);
         }
 
         const jsonData = await response.json();
@@ -726,8 +687,7 @@ export default function MediaGrid({
       if (err?.message?.includes("Failed to fetch media: 4")) return false; // Don't retry 4xx errors
       if (error instanceof TypeError && error.message === "Failed to fetch")
         return failureCount < 2; // Network errors: 2 retries
-      if (err?.message?.includes("Failed to fetch media: 5"))
-        return failureCount < 2; // 5xx errors: 2 retries
+      if (err?.message?.includes("Failed to fetch media: 5")) return failureCount < 2; // 5xx errors: 2 retries
       return false; // Don't retry other errors
     },
     retryDelay: (attemptIndex, error) => {
@@ -759,10 +719,7 @@ export default function MediaGrid({
 
   // FIXED: Defensive parsing for both cache hit/miss response formats
   const response = mediaResponse as Record<string, unknown> | undefined;
-  const responseData = response?.data as
-    | Record<string, unknown>
-    | unknown[]
-    | undefined;
+  const responseData = response?.data as Record<string, unknown> | unknown[] | undefined;
   const displayAssets =
     responseData &&
     typeof responseData === "object" &&
@@ -786,9 +743,7 @@ export default function MediaGrid({
       }
     | undefined;
   const paginationRaw = (
-    responseData &&
-    typeof responseData === "object" &&
-    "pagination" in responseData
+    responseData && typeof responseData === "object" && "pagination" in responseData
       ? responseData.pagination
       : response?.pagination
   ) as
@@ -806,8 +761,7 @@ export default function MediaGrid({
   const calculatedTotalPages = total > 0 ? Math.ceil(total / limit) : 0;
 
   const pagination = {
-    totalPages:
-      metaRaw?.pages || paginationRaw?.totalPages || calculatedTotalPages,
+    totalPages: metaRaw?.pages || paginationRaw?.totalPages || calculatedTotalPages,
     total: total,
     page: metaRaw?.page || paginationRaw?.page || 1,
     limit: limit,
@@ -826,14 +780,7 @@ export default function MediaGrid({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    mediaResponse,
-    status,
-    state.currentPage,
-    pagination.limit,
-    pagination.page,
-    params.get,
-  ]);
+  }, [mediaResponse, status, state.currentPage, pagination.limit, pagination.page, params.get]);
 
   // Data validation logic retained without console output
 
@@ -988,9 +935,7 @@ export default function MediaGrid({
 
           <Select
             value={state.sortBy}
-            onValueChange={(value) =>
-              updateState("sortBy", value as typeof state.sortBy)
-            }
+            onValueChange={(value) => updateState("sortBy", value as typeof state.sortBy)}
           >
             <SelectTrigger className="w-36 sm:w-40">
               <SelectValue />
@@ -1006,12 +951,7 @@ export default function MediaGrid({
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              updateState(
-                "sortOrder",
-                state.sortOrder === "asc" ? "desc" : "asc",
-              )
-            }
+            onClick={() => updateState("sortOrder", state.sortOrder === "asc" ? "desc" : "asc")}
             className="action-button-icon"
           >
             {state.sortOrder === "asc" ? "↑" : "↓"}
@@ -1076,61 +1016,51 @@ export default function MediaGrid({
 
             {/* Page Numbers */}
             <div className="flex items-center gap-1">
-              {Array.from(
-                { length: Math.min(pagination.totalPages, 5) },
-                (_, i) => {
-                  let pageNum;
-                  if (pagination.totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (state.currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (state.currentPage >= pagination.totalPages - 2) {
-                    pageNum = pagination.totalPages - 4 + i;
-                  } else {
-                    pageNum = state.currentPage - 2 + i;
-                  }
+              {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
+                let pageNum;
+                if (pagination.totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (state.currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (state.currentPage >= pagination.totalPages - 2) {
+                  pageNum = pagination.totalPages - 4 + i;
+                } else {
+                  pageNum = state.currentPage - 2 + i;
+                }
 
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={
-                        pageNum === state.currentPage ? "default" : "outline"
-                      }
-                      size="sm"
-                      onClick={() => setCurrentPage(pageNum)}
-                      className="h-8 min-w-8"
-                    >
-                      {pageNum}
-                    </Button>
-                  );
-                },
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={pageNum === state.currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className="h-8 min-w-8"
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+
+              {pagination.totalPages > 5 && state.currentPage < pagination.totalPages - 2 && (
+                <>
+                  <span className="text-muted-foreground px-2">...</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(pagination.totalPages)}
+                    className="h-8 min-w-8"
+                  >
+                    {pagination.totalPages}
+                  </Button>
+                </>
               )}
-
-              {pagination.totalPages > 5 &&
-                state.currentPage < pagination.totalPages - 2 && (
-                  <>
-                    <span className="text-muted-foreground px-2">...</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage(pagination.totalPages)}
-                      className="h-8 min-w-8"
-                    >
-                      {pagination.totalPages}
-                    </Button>
-                  </>
-                )}
             </div>
 
             {/* Next Page Button */}
             <Button
               variant="outline"
               size="sm"
-              onClick={() =>
-                setCurrentPage(
-                  Math.min(pagination.totalPages, state.currentPage + 1),
-                )
-              }
+              onClick={() => setCurrentPage(Math.min(pagination.totalPages, state.currentPage + 1))}
               disabled={state.currentPage >= pagination.totalPages}
               className="flex items-center gap-1"
             >
@@ -1144,8 +1074,7 @@ export default function MediaGrid({
       {/* No pagination needed but show count - Now shown in both modes */}
       {pagination.totalPages <= 1 && displayAssets.length > 0 && (
         <div className="text-muted-foreground border-t py-4 text-center text-sm">
-          {displayAssets.length} media{" "}
-          {displayAssets.length === 1 ? "item" : "items"}
+          {displayAssets.length} media {displayAssets.length === 1 ? "item" : "items"}
         </div>
       )}
     </div>

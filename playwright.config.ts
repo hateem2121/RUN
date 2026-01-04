@@ -14,7 +14,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined, // Serial in CI for determinism
+  workers: undefined, // Fully parallel in all environments
   reporter: [
     ["html", { open: "never" }],
     ["json", { outputFile: "test-results/results.json" }],

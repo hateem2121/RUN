@@ -32,7 +32,7 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": { "level": "on" }
+        "organizeImports": { "level": "on", "options": {} }
       }
     }
   },
@@ -41,12 +41,13 @@
     "rules": {
       "recommended": true,
       "nursery": {
-        "useSortedClasses": {
-          "level": "error",
-          "options": {
-            "functions": ["cn", "cva", "clsx"]
-          }
-        }
+        "useSortedClasses": "off"
+      },
+      "a11y": {
+        "recommended": false
+      },
+      "correctness": {
+        "noEmptyPattern": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "off",

@@ -12,10 +12,7 @@ export const canonicalMiddleware: RequestHandler = (req, res, next) => {
 
   // Skip if we are already on primary host or IP address access (health checks)
   // Also allow localhost for testing/local production preview
-  if (
-    host === primaryHost ||
-    host?.match(/^(\d+\.\d+\.\d+\.\d+|localhost)(:\d+)?$/)
-  ) {
+  if (host === primaryHost || host?.match(/^(\d+\.\d+\.\d+\.\d+|localhost)(:\d+)?$/)) {
     return next();
   }
 
@@ -35,9 +32,19 @@ export const canonicalMiddleware: RequestHandler = (req, res, next) => {
  * rewrites /api/v1/* to /api/* internally for backward compatibility
  * while we transition.
  */
-export const apiVersioningMiddleware: RequestHandler = (req, _res, next) => {
+export const apiVersioningMiddleware: RequestHandler = (req, res, next) => {
   if (req.url.startsWith("/api/v1/")) {
     req.url = req.url.replace("/api/v1/", "/api/");
+    return next();
   }
+
+  // Reject future versions explicitly
+  if (req.url.match(/^\/api\/v\d+\//)) {
+    return res.status(400).json({
+      error: "UNSUPPORTED_VERSION",
+      message: "API version not supported. Please use v1.",
+    });
+  }
+
   next();
 };

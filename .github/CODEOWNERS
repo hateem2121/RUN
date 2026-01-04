@@ -1,4 +1,4 @@
-# CODEOWNERS - Tailwind v4 Migration Critical Files
+# CODEOWNERS - Critical Files
 #
 # These files require review from designated owners to prevent regressions
 # in CSS cascade, SSR, and visual regression testing.
@@ -16,10 +16,3 @@
 # CI Workflows - Pipeline Stability
 /.github/workflows/ @devops-team
 
-# Guardrail Scripts
-/scripts/lint-css-import-order.ts @frontend-team
-/scripts/check-ssr-preload.ts @frontend-team @backend-team
-
-# Post-Migration Documentation
-/TAILWIND_V4_POSTMIGRATION_CHECKLIST.md @frontend-team
-/TAILWIND_V4_SYSTEMWIDE_VISUAL_REGRESSION_AUDIT.md @frontend-team

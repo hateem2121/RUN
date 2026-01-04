@@ -1,6 +1,6 @@
 # RUN Apparel B2B Platform
 
-A modern B2B e-commerce platform for athletic apparel manufacturing, built with React 19, Express 5, Tailwind v4, and TypeScript.
+A modern B2B e-commerce platform for athletic apparel manufacturing, built with **React 19 (Stable)**, **Express 5.1**, **Tailwind CSS v4 (Stable)**, and TypeScript.
 
 ---
 
@@ -47,23 +47,23 @@ Use this map to orient yourself before diving into specific files.
 
 ## Tech Stack
 
-| Layer             | Technology               | Version |
-| ----------------- | ------------------------ | ------- |
-| **Frontend**      | React                    | 19.0    |
-| **Build Tool**    | Vite                     | 6.0.0   |
-| **Styling**       | Tailwind CSS             | 4.0     |
-| **Server**        | Express                  | 5.x     |
-| **Database**      | PostgreSQL + Drizzle ORM | Latest  |
-| **State**         | TanStack Query           | 5.x     |
-| **Routing**       | React Router             | 7.x     |
-| **Components**    | shadcn/ui + Radix        | Latest  |
-| **Linting**       | Biome                    | 2.3+    |
-| **Runtime**       | Node.js                  | 20+     |
-| **E2E Testing**   | Playwright               | Latest  |
-| **Observability** | Sentry                   | Latest  |
-| **Caching**       | LRU + Upstash Redis (L2) | Latest  |
-| **Documentation** | OpenAPI / Swagger        | 3.0     |
-| **Testing**       | Vitest + Supertest       | Latest  |
+| Layer             | Technology               | Version       |
+| ----------------- | ------------------------ | ------------- |
+| **Frontend**      | React                    | 19.0 (Stable) |
+| **Build Tool**    | Vite                     | 6.0.0         |
+| **Styling**       | Tailwind CSS             | 4.0 (Stable)  |
+| **Server**        | Express                  | 5.1 (Stable)  |
+| **Database**      | PostgreSQL + Drizzle ORM | Latest        |
+| **State**         | TanStack Query           | 5.x           |
+| **Routing**       | React Router             | 7.x           |
+| **Components**    | shadcn/ui + Radix        | Latest        |
+| **Linting**       | Biome                    | 2.3+          |
+| **Runtime**       | Node.js                  | 20+           |
+| **E2E Testing**   | Playwright               | Latest        |
+| **Observability** | Sentry                   | Latest        |
+| **Caching**       | LRU + Upstash Redis (L2) | Latest        |
+| **Documentation** | OpenAPI / Swagger        | 3.0           |
+| **Testing**       | Vitest + Supertest       | Latest        |
 
 ---
 
@@ -436,6 +436,20 @@ See `docs/api/endpoints.md` for full documentation.
 
 ---
 
+## Architecture & Security Features (New)
+
+### Secret Management
+
+- **Runtime Loading**: Secrets are loaded from Google Secret Manager at boot time.
+- **Rotation**: Session IDs are automatically rotated every 15 minutes.
+
+### Feature Management
+
+- **Feature Flags**: Managed via `/admin/features`. Supports percentage rollouts and user whitelisting.
+- **Audit Logs**: All admin mutations are structurally logged for compliance.
+
+---
+
 ## Testing
 
 ### Test Commands
@@ -444,9 +458,6 @@ See `docs/api/endpoints.md` for full documentation.
 npm run test             # Unit tests
 npm run test:integration # Integration tests
 npm run test:e2e         # E2E regression
-npm run test:a11y        # Accessibility
-npm run test:lighthouse  # Performance
-npm run test:e2e:prod    # Production E2E
 ```
 
 ### Test Files
@@ -485,19 +496,6 @@ dist/
 ├── ssr/                  # SSR bundle
 └── index.js             # Express server
 ```
-
-### Release Verification
-
-```bash
-npm run verify:release   # Full release checks
-```
-
-This runs:
-
-1. Production build
-2. Router verification
-3. Duplicate detection
-4. Visual regression E2E tests
 
 ### Health Checks
 

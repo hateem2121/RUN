@@ -9,17 +9,11 @@ import {
   sentryRequestHandler,
   sentryTracingHandler,
 } from "../lib/monitoring/sentry.js";
-import {
-  apiVersioningMiddleware,
-  canonicalMiddleware,
-} from "../middleware/canonical.js";
+import { apiVersioningMiddleware, canonicalMiddleware } from "../middleware/canonical.js";
 import { correlationIdMiddleware } from "../middleware/correlation-id.js";
 import { createCorsMiddleware } from "../middleware/cors-config.js";
 import { csrfProtection } from "../middleware/csrf.js";
-import {
-  healthCheckHandler,
-  quickHealthHandler,
-} from "../middleware/enhanced-health.js";
+import { healthCheckHandler, quickHealthHandler } from "../middleware/enhanced-health.js";
 import { nonceMiddleware } from "../middleware/nonce.js";
 import { performanceTrackingMiddleware } from "../middleware/performance-tracking.js";
 import {
@@ -33,11 +27,7 @@ import {
   requestValidation,
   securityHeaders,
 } from "../middleware/production-security.js";
-import {
-  apiLimiter,
-  authLimiter,
-  uploadLimiter,
-} from "../middleware/rate-limits.js";
+import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
 import { responseTracker } from "../middleware/response-tracker.js";
 
 const config = getConfig();
@@ -71,10 +61,7 @@ export function setupMiddleware(app: Express) {
   app.use(csrfProtection);
 
   // Production Security features
-  if (
-    config.app.environment === "production" ||
-    process.env.NODE_ENV === "production"
-  ) {
+  if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
     app.use(securityHeaders);
     app.use(requestValidation);
     app.use(requestTimeout);
@@ -108,6 +95,25 @@ export function setupMiddleware(app: Express) {
 
   // Request Body Parsers
   configureBodyParsers(app);
+
+  // PHASE 3: Audit Logging for Admin Mutations
+  // Log all state-changing operations in the admin panel
+  app.use("/api/admin", (req, _res, next) => {
+    // Only log mutations
+    if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+      import("../services/audit-log.js")
+        .then(({ logAuditAction }) => {
+          logAuditAction({
+            actor: (req.user as any) || { id: "anonymous", email: "unknown" },
+            action: req.method,
+            target: { type: "API_ROUTE", id: req.path },
+            metadata: { body_keys: Object.keys(req.body || {}) },
+          });
+        })
+        .catch((err) => console.error("Audit log failed", err));
+    }
+    next();
+  });
 }
 
 export function setupErrorHandling(app: Express) {
@@ -123,18 +129,11 @@ export function setupErrorHandling(app: Express) {
   app.use(productionErrorHandler);
 
   // Final Fallback Error Handler
-  app.use(
-    (
-      err: any,
-      _req: express.Request,
-      res: express.Response,
-      _next: express.NextFunction,
-    ) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-      res.status(status).json({ message });
-    },
-  );
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ message });
+  });
 }
 
 export function setupHealthChecks(app: Express) {
@@ -179,10 +178,7 @@ function configureApiCaching(app: Express) {
     next: express.NextFunction,
   ) => {
     if (req.method === "GET") {
-      res.setHeader(
-        "Cache-Control",
-        "public, max-age=60, stale-while-revalidate=300",
-      );
+      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
     next();
   };
@@ -206,15 +202,7 @@ function configureStaticCache(app: Express) {
       ".glb",
       ".gltf",
     ];
-    const imageAssets = [
-      ".jpg",
-      ".jpeg",
-      ".png",
-      ".gif",
-      ".svg",
-      ".webp",
-      ".ico",
-    ];
+    const imageAssets = [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico"];
 
     if (immutableAssets.includes(ext)) {
       res.setHeader(
@@ -223,10 +211,7 @@ function configureStaticCache(app: Express) {
       );
       res.setHeader("ETag", `"static-${Date.now()}"`);
     } else if (imageAssets.includes(ext)) {
-      res.setHeader(
-        "Cache-Control",
-        "public, max-age=2592000, stale-while-revalidate=604800",
-      );
+      res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=604800");
     }
     next();
   });
