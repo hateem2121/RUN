@@ -1,4 +1,4 @@
-import { logger } from "../lib/monitoring/logger.js";
+import { correlationContext, logger } from "../lib/monitoring/logger.js";
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
@@ -154,9 +154,13 @@ function logError(error: unknown, details: ErrorDetails) {
 
 // Generate user-friendly error responses
 function generateErrorResponse(error: unknown, details: ErrorDetails): Record<string, unknown> {
+  // Get request ID from correlation context
+  const requestId = correlationContext.getStore() || details.id;
+
   const baseResponse = {
     error: true,
     id: details.id,
+    requestId: requestId,
     timestamp: details.timestamp,
     type: details.type,
   };
@@ -244,9 +248,11 @@ export function productionErrorHandler(
   // Generate appropriate response
   const errorResponse = generateErrorResponse(error, errorDetails);
 
-  // Set response headers
+  // Set response headers with request ID for debugging
+  const requestId = correlationContext.getStore() || errorDetails.id;
   res.setHeader("X-Error-ID", errorDetails.id);
   res.setHeader("X-Error-Type", errorDetails.type);
+  res.setHeader("X-Request-ID", requestId);
 
   // Send error response
   res.status(Number(errorResponse.status)).json(errorResponse);

@@ -6,7 +6,7 @@
 import type { PgTable } from "drizzle-orm/pg-core";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
-import { safeQuery } from "../query-wrapper.js";
+import { safeQuery } from "../utilities/query-wrapper.js";
 
 const DEFAULT_QUERY_TIMEOUT = 10000; // 10 seconds
 

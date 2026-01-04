@@ -1,5 +1,5 @@
 import express from "express";
-import { emailService, type InquiryEmailData } from "../lib/email-service.js";
+import { emailService, type InquiryEmailData } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { asyncHandler } from "../middleware/async-handler.js";
 

@@ -9,10 +9,10 @@ import { removeUndefined } from "../../utils.js";
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { insertProductSchema } from "../../../shared/schema.js";
+import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { jsonResponse, registry } from "../../lib/openapi-generator.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import {

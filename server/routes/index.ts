@@ -15,7 +15,7 @@ import { createServer, type Server } from "node:http";
 import compression from "compression";
 import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { adminLimiter, diagnosticLimiter } from "../lib/rate-limiter.js";
+import { adminLimiter, diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
 import { enforceValidation } from "../middleware/strict-validation.js";
 // Static Imports (Safe thanks to bootstrap.ts secret loading)
 import { authService } from "../services/auth-service.js";

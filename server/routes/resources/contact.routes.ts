@@ -11,7 +11,7 @@ import { z } from "zod";
 import type { ContactPageConfiguration } from "../../../shared/schema.js";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { emailService } from "../../lib/email-service.js";
+import { emailService } from "../../lib/integrations/email-service.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 

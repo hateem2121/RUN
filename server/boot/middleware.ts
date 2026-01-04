@@ -60,10 +60,18 @@ export function setupMiddleware(app: Express) {
   // CSRF Protection (Double-Submit Cookie pattern)
   app.use(csrfProtection);
 
-  // Production Security features
-  if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
+  // Security headers - enabled in all environments by default
+  // Set DISABLE_DEV_SECURITY=true to disable in development (not recommended)
+  const enableDevSecurity = process.env.DISABLE_DEV_SECURITY !== "true";
+  const isProd = config.app.environment === "production" || process.env.NODE_ENV === "production";
+
+  if (isProd || enableDevSecurity) {
     app.use(securityHeaders);
     app.use(requestValidation);
+  }
+
+  // Request timeout and production logging only in production
+  if (isProd) {
     app.use(requestTimeout);
     app.use(productionLogging);
   }

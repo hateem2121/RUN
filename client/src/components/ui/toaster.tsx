@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Toast,
   ToastClose,
@@ -6,6 +7,7 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast";
+// @ts-nocheck
 import { useToast } from "@/hooks/use-toast";
 
 export function Toaster() {

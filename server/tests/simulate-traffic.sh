@@ -8,7 +8,8 @@ echo "================================================"
 echo ""
 
 # Configuration
-BASE_URL="http://localhost:5000"
+PORT="${PORT:-5001}"
+BASE_URL="http://localhost:${PORT}"
 DURATION_MINUTES=${1:-5}  # Default 5 minutes
 REQUESTS_PER_MINUTE=50
 TOTAL_REQUESTS=$((DURATION_MINUTES * REQUESTS_PER_MINUTE))

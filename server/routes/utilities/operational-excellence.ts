@@ -3,13 +3,13 @@
 
 import type { Request, Response } from "express";
 import { z } from "zod";
-import { apiRateLimiter } from "../../lib/api-rate-limiter.js";
-import { businessIntelligence } from "../../lib/business-intelligence.js";
-// import { getConfig } from '../../config/production.js';
-import { memoryOptimizer } from "../../lib/memory-optimizer.js";
+import { businessIntelligence } from "../../lib/core/business-intelligence.js";
+import { workflowAutomation } from "../../lib/integrations/workflow-automation.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
-import { workflowAutomation } from "../../lib/workflow-automation.js";
+import { apiRateLimiter } from "../../lib/resilience/api-rate-limiter.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
+// import { getConfig } from '../../config/production.js';
+import { memoryOptimizer } from "../../lib/utilities/memory-optimizer.js";
 
 // const config = getConfig();
 

@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 import { FEATURED_PRODUCTS } from "./constants";
 import { useStore } from "./store";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CursorVariant } from "./types";
 
 const FeaturedProducts: React.FC = () => {
@@ -40,7 +41,7 @@ const FeaturedProducts: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isMobile = useIsMobile();
 
   const handleCatalogueClick = () => {
     const catalogueSection = document.getElementById("catalogue");
@@ -50,17 +51,20 @@ const FeaturedProducts: React.FC = () => {
   };
 
   return (
-    <section ref={containerRef} className="w-full bg-background-alt px-4 py-32 md:px-8">
-      <div className="mx-auto max-w-container-2xl">
-        <div className="mb-16 flex items-end justify-between border-black/10 border-b pb-8">
-          <h2 className="font-bold text-[12vw] uppercase leading-[0.9] md:text-[5vw]">
+    <section
+      ref={containerRef}
+      className="bg-background-alt w-full px-4 py-32 md:px-8"
+    >
+      <div className="max-w-container-2xl mx-auto">
+        <div className="mb-16 flex items-end justify-between border-b border-black/10 pb-8">
+          <h2 className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]">
             Archive <br /> 24/25
           </h2>
           <div className="hidden text-right md:block">
-            <p className="mb-2 font-mono text-muted-foreground text-xs tracking-widest">
+            <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest">
               SEASON: CURRENT
             </p>
-            <p className="font-mono text-muted-foreground text-xs tracking-widest">
+            <p className="text-muted-foreground font-mono text-xs tracking-widest">
               STATUS: PRODUCTION READY
             </p>
           </div>
@@ -71,10 +75,12 @@ const FeaturedProducts: React.FC = () => {
             <div
               key={product.id}
               className={`product-card group relative ${index === 1 ? "md:mt-24" : ""}`}
-              onMouseEnter={() => !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")}
+              onMouseEnter={() =>
+                !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")
+              }
               onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
             >
-              <div className="relative mb-8 aspect-3/4 overflow-hidden bg-muted/20">
+              <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -86,16 +92,16 @@ const FeaturedProducts: React.FC = () => {
                 <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />
               </div>
 
-              <div className="flex items-start justify-between border-black/10 border-t pt-6">
+              <div className="flex items-start justify-between border-t border-black/10 pt-6">
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-bold text-xl uppercase leading-tight md:text-2xl">
+                  <h3 className="text-xl leading-tight font-bold uppercase md:text-2xl">
                     {product.name}
                   </h3>
-                  <p className="font-mono text-muted-foreground text-xs tracking-widest md:text-sm">
+                  <p className="text-muted-foreground font-mono text-xs tracking-widest md:text-sm">
                     {product.category}
                   </p>
                 </div>
-                <span className="ml-4 whitespace-nowrap rounded-full border border-black/20 px-3 py-1 font-mono text-xs">
+                <span className="ml-4 rounded-full border border-black/20 px-3 py-1 font-mono text-xs whitespace-nowrap">
                   {product.price}
                 </span>
               </div>
@@ -106,7 +112,7 @@ const FeaturedProducts: React.FC = () => {
         <div className="mt-24 text-center">
           <button
             onClick={handleCatalogueClick}
-            className="border-black border-b pb-1 font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-accent hover:text-brand-accent"
+            className="hover:border-brand-accent hover:text-brand-accent border-b border-black pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
             onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
             onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
           >

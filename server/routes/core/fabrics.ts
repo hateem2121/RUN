@@ -9,7 +9,7 @@ import { z } from "zod";
 import { insertFabricSchema } from "../../../shared/schema.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";

@@ -11,7 +11,7 @@ import { z } from "zod";
 import { insertAccessorySchema } from "../../../shared/schema.js";
 import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 

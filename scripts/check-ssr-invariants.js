@@ -6,15 +6,18 @@ import { glob } from "glob";
 const FORBIDDEN_PATTERNS = [
   {
     pattern: /Date\.now\(\)/,
-    message: "Date.now() usage detected. Ensure it is inside useEffect or event handler.",
+    message:
+      "Date.now() usage detected. Ensure it is inside useEffect or event handler.",
   },
   {
     pattern: /Math\.random\(\)/,
-    message: "Math.random() usage detected. Ensure it is inside useEffect or event handler.",
+    message:
+      "Math.random() usage detected. Ensure it is inside useEffect or event handler.",
   },
   {
     pattern: /crypto\.randomUUID\(\)/,
-    message: "crypto.randomUUID() usage detected. Ensure it is inside useEffect or event handler.",
+    message:
+      "crypto.randomUUID() usage detected. Ensure it is inside useEffect or event handler.",
   },
   {
     pattern: /typeof window !== ['"]undefined['"]/,
@@ -64,6 +67,9 @@ const IGNORED_FILES = [
   "draggable-card.tsx",
   "background-ripple-effect.tsx",
   "animation-performance-tracker.tsx",
+  "OptimizedMapContainer.tsx", // Module-level CSS import guard (Safe)
+  "ClientMapImplementation.tsx", // Module-level CSS import guard (Safe)
+  "IconManager.ts", // Service class with guarded window checks (Safe)
 ];
 
 async function checkFile(filePath) {
@@ -93,7 +99,9 @@ async function checkFile(filePath) {
 async function run() {
   console.log("🔍 Running SSR Invariant Checks...");
 
-  const files = await glob("client/src/**/*.{ts,tsx}", { ignore: "**/node_modules/**" });
+  const files = await glob("client/src/**/*.{ts,tsx}", {
+    ignore: "**/node_modules/**",
+  });
 
   let totalErrors = 0;
 

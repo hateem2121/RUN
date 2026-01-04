@@ -83,7 +83,10 @@ type MediaLibraryAction =
   | { type: "SET_FOLDER_FILTER"; payload: string }
   | { type: "SET_TAG_FILTERS"; payload: string[] }
   | { type: "SET_DATE_RANGE"; payload: { from?: Date; to?: Date } }
-  | { type: "SET_SIZE_RANGE"; payload: { min?: number | undefined; max?: number } }
+  | {
+      type: "SET_SIZE_RANGE";
+      payload: { min?: number | undefined; max?: number };
+    }
 
   // Modal actions
   | { type: "SET_SELECTED_ASSET"; payload: MediaAsset | null }
@@ -774,75 +777,87 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Helper function to parse URL parameters and create state updates
-  const parseUrlParamsToUpdates = (
-    params: URLSearchParams,
-    currentState: MediaLibraryState,
-  ): Array<{ key: keyof MediaLibraryState; value: any }> => {
-    const updates: Array<{ key: keyof MediaLibraryState; value: any }> = [];
+  const parseUrlParamsToUpdates = useCallback(
+    (
+      params: URLSearchParams,
+      currentState: MediaLibraryState,
+    ): Array<{ key: keyof MediaLibraryState; value: any }> => {
+      const updates: Array<{ key: keyof MediaLibraryState; value: any }> = [];
 
-    if (params.has("search")) {
-      updates.push({ key: "searchTerm", value: params.get("search") || "" });
-    }
-    if (params.has("type")) {
-      updates.push({ key: "selectedType", value: params.get("type") || "all" });
-    }
-    if (params.has("folder")) {
-      updates.push({ key: "folderFilter", value: params.get("folder") || "" });
-    }
-    if (params.has("tags")) {
-      updates.push({
-        key: "tagFilters",
-        value: params.get("tags")?.split(",") || [],
-      });
-    }
-    if (params.has("dateFrom")) {
-      updates.push({
-        key: "dateRange",
-        value: {
-          ...currentState.dateRange,
-          from: new Date(params.get("dateFrom")!),
-        },
-      });
-    }
-    if (params.has("dateTo")) {
-      updates.push({
-        key: "dateRange",
-        value: {
-          ...currentState.dateRange,
-          to: new Date(params.get("dateTo")!),
-        },
-      });
-    }
-    if (params.has("sizeMin")) {
-      updates.push({
-        key: "sizeRange",
-        value: {
-          ...currentState.sizeRange,
-          min: Number(params.get("sizeMin")),
-        },
-      });
-    }
-    if (params.has("sizeMax")) {
-      updates.push({
-        key: "sizeRange",
-        value: {
-          ...currentState.sizeRange,
-          max: Number(params.get("sizeMax")),
-        },
-      });
-    }
-    if (params.has("sortBy")) {
-      updates.push({ key: "sortBy", value: params.get("sortBy") as any });
-    }
-    if (params.has("sortOrder")) {
-      updates.push({ key: "sortOrder", value: params.get("sortOrder") as any });
-    }
-    if (params.has("page")) {
-      updates.push({ key: "currentPage", value: Number(params.get("page")) });
-    }
+      if (params.has("search")) {
+        updates.push({ key: "searchTerm", value: params.get("search") || "" });
+      }
+      if (params.has("type")) {
+        updates.push({
+          key: "selectedType",
+          value: params.get("type") || "all",
+        });
+      }
+      if (params.has("folder")) {
+        updates.push({
+          key: "folderFilter",
+          value: params.get("folder") || "",
+        });
+      }
+      if (params.has("tags")) {
+        updates.push({
+          key: "tagFilters",
+          value: params.get("tags")?.split(",") || [],
+        });
+      }
+      if (params.has("dateFrom")) {
+        updates.push({
+          key: "dateRange",
+          value: {
+            ...currentState.dateRange,
+            from: new Date(params.get("dateFrom")!),
+          },
+        });
+      }
+      if (params.has("dateTo")) {
+        updates.push({
+          key: "dateRange",
+          value: {
+            ...currentState.dateRange,
+            to: new Date(params.get("dateTo")!),
+          },
+        });
+      }
+      if (params.has("sizeMin")) {
+        updates.push({
+          key: "sizeRange",
+          value: {
+            ...currentState.sizeRange,
+            min: Number(params.get("sizeMin")),
+          },
+        });
+      }
+      if (params.has("sizeMax")) {
+        updates.push({
+          key: "sizeRange",
+          value: {
+            ...currentState.sizeRange,
+            max: Number(params.get("sizeMax")),
+          },
+        });
+      }
+      if (params.has("sortBy")) {
+        updates.push({ key: "sortBy", value: params.get("sortBy") as any });
+      }
+      if (params.has("sortOrder")) {
+        updates.push({
+          key: "sortOrder",
+          value: params.get("sortOrder") as any,
+        });
+      }
+      if (params.has("page")) {
+        updates.push({ key: "currentPage", value: Number(params.get("page")) });
+      }
 
-    return updates;
-  };
+      return updates;
+    },
+    [],
+  );
 
   // Action map for dispatching updates
   const ACTION_MAP: Record<string, string> = {

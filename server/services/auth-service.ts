@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
 import connectPg from "connect-pg-simple";
 import type { Express, RequestHandler } from "express";
@@ -39,6 +40,11 @@ export const AuthErrors = {
   INVALID_SESSION: {
     code: "INVALID_SESSION",
     message: "Invalid session. Please log in again.",
+    status: 401,
+  },
+  SESSION_UA_MISMATCH: {
+    code: "SESSION_UA_MISMATCH",
+    message: "Session security check failed. Please log in again.",
     status: 401,
   },
 } as const;
@@ -103,20 +109,44 @@ export class AuthService {
       const now = Date.now();
       // Cast session to any to avoid TS errors with custom property
       const sess = req.session as any;
+      const currentUA = req.headers["user-agent"] || "";
+
+      // P2 SECURITY: User Agent Binding - verify session wasn't stolen
+      // Hash the UA to avoid storing full strings and for privacy
+      const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
+
+      // On first request (or after session regeneration), store the UA hash
+      if (!sess.uaHash) {
+        sess.uaHash = uaHash;
+      } else if (sess.uaHash !== uaHash) {
+        // UA mismatch - potential session hijacking
+        logger.warn("[Auth] User agent mismatch detected, invalidating session", {
+          storedHash: sess.uaHash,
+          currentHash: uaHash,
+        });
+
+        return req.session.destroy((err) => {
+          if (err) logger.error("[Auth] Failed to destroy hijacked session:", err);
+          res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
+        });
+      }
+
       const lastRotated = sess.lastRotated || (sess.lastRotated = now);
       const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
 
       if (now - lastRotated > ROTATION_INTERVAL) {
-        // Save old passport state
+        // Save old passport state and UA hash
         const passportState = sess.passport;
+        const savedUaHash = sess.uaHash;
 
         req.session.regenerate((err) => {
           if (err) {
             logger.error("[Auth] Session regeneration failed:", err);
             return next(err);
           }
-          // Restore passport state and update rotation timestamp
+          // Restore passport state, UA hash, and update rotation timestamp
           (req.session as any).passport = passportState;
+          (req.session as any).uaHash = savedUaHash;
           (req.session as any).lastRotated = now;
 
           // Explicitly save to ensure the new SID is stored

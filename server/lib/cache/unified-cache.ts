@@ -1,5 +1,6 @@
 import { promisify } from "node:util";
 import { gunzip, gzip } from "node:zlib";
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
 import { isRedisEnabled, redis } from "./upstash-client.js";
@@ -22,6 +23,9 @@ const gunzipAsync = promisify(gunzip);
 
 // Min size to compress (1KB)
 const COMPRESSION_THRESHOLD = 1024;
+
+// OpenTelemetry tracer for cache operations
+const tracer = trace.getTracer("unified-cache", "1.0.0");
 
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
@@ -74,61 +78,100 @@ export class UnifiedCache {
   }
 
   /**
-   * Get value from cache
+   * Get value from cache with OpenTelemetry tracing
    */
   async get<T>(key: string, _namespace?: string): Promise<T | null> {
-    // 1. Check L1 Memory Cache
-    const memoryValue = this.memoryCache.get(key) as T;
-    if (memoryValue !== undefined) {
-      this.stats.hits++;
-      this.stats.l1Hits++;
-      return memoryValue;
-    }
+    return tracer.startActiveSpan("cache.get", async (span) => {
+      span.setAttribute("cache.key", key);
+      span.setAttribute("cache.operation", "get");
 
-    // 2. Check L2 Redis Cache (if enabled)
-    if (isRedisEnabled) {
       try {
-        const redisValue = await this.readL2<T>(key);
-        if (redisValue !== null) {
+        // 1. Check L1 Memory Cache
+        const memoryValue = this.memoryCache.get(key) as T;
+        if (memoryValue !== undefined) {
           this.stats.hits++;
-          this.stats.l2Hits++;
-
-          // Backfill L1 Memory Cache with default TTL
-          this.memoryCache.set(key, redisValue);
-
-          return redisValue;
+          this.stats.l1Hits++;
+          span.setAttribute("cache.hit", true);
+          span.setAttribute("cache.source", "l1");
+          span.setStatus({ code: SpanStatusCode.OK });
+          span.end();
+          return memoryValue;
         }
-      } catch (error) {
-        logger.error(`[Cache] L2 Get failed for ${key}:`, error);
-      }
-    }
 
-    // 3. Cache miss
-    this.stats.misses++;
-    return null;
+        // 2. Check L2 Redis Cache (if enabled)
+        if (isRedisEnabled) {
+          try {
+            const redisValue = await this.readL2<T>(key);
+            if (redisValue !== null) {
+              this.stats.hits++;
+              this.stats.l2Hits++;
+              span.setAttribute("cache.hit", true);
+              span.setAttribute("cache.source", "l2");
+
+              // Backfill L1 Memory Cache with default TTL
+              this.memoryCache.set(key, redisValue);
+
+              span.setStatus({ code: SpanStatusCode.OK });
+              span.end();
+              return redisValue;
+            }
+          } catch (error) {
+            logger.error(`[Cache] L2 Get failed for ${key}:`, error);
+            span.recordException(error as Error);
+          }
+        }
+
+        // 3. Cache miss
+        this.stats.misses++;
+        span.setAttribute("cache.hit", false);
+        span.setStatus({ code: SpanStatusCode.OK });
+        span.end();
+        return null;
+      } catch (error) {
+        span.recordException(error as Error);
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: (error as Error).message,
+        });
+        span.end();
+        throw error;
+      }
+    });
   }
 
   /**
-   * Set value in cache
+   * Set value in cache with OpenTelemetry tracing
    */
   async set(key: string, value: any, ttlSeconds: number = 3600, _category?: string): Promise<void> {
-    try {
-      // Set in L1 Memory Cache
-      this.memoryCache.set(key, value, { ttl: ttlSeconds * 1000 });
+    return tracer.startActiveSpan("cache.set", async (span) => {
+      span.setAttribute("cache.key", key);
+      span.setAttribute("cache.operation", "set");
+      span.setAttribute("cache.ttl", ttlSeconds);
 
-      // P2 OPTIMIZATION: Fire-and-forget L2 write (Parallelize)
-      // We don't await the L2 write to keep the critical path fast.
-      // We use Promise.allSettled to ensure no unhandled rejections crash the process.
-      if (isRedisEnabled) {
-        this.writeL2(key, value, ttlSeconds).catch((err) => {
-          logger.warn(`[UnifiedCache] L2 Write Failed for ${key}:`, err);
-        });
+      try {
+        // Set in L1 Memory Cache
+        this.memoryCache.set(key, value, { ttl: ttlSeconds * 1000 });
+        span.setAttribute("cache.l1", true);
+
+        // P2 OPTIMIZATION: Fire-and-forget L2 write (Parallelize)
+        // We don't await the L2 write to keep the critical path fast.
+        if (isRedisEnabled) {
+          span.setAttribute("cache.l2", true);
+          this.writeL2(key, value, ttlSeconds).catch((err) => {
+            logger.warn(`[UnifiedCache] L2 Write Failed for ${key}:`, err);
+          });
+        }
+
+        this.stats.sets++;
+        span.setStatus({ code: SpanStatusCode.OK });
+        span.end();
+      } catch (error: any) {
+        logger.error(`[Cache] Set failed for ${key}:`, error);
+        span.recordException(error);
+        span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+        span.end();
       }
-
-      this.stats.sets++;
-    } catch (error: any) {
-      logger.error(`[Cache] Set failed for ${key}:`, error);
-    }
+    });
   }
 
   // P2 OPTIMIZATION: Separate L2 write method for compression logic

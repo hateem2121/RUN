@@ -14,11 +14,11 @@ import {
 } from "../../../shared/schema.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { extractMediaIds } from "../../lib/media-utils.js";
 import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { extractMediaIds } from "../../lib/utilities/media-utils.js";
 import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
 

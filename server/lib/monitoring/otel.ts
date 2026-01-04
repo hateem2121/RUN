@@ -5,7 +5,7 @@ import { resourceFromAttributes } from "@opentelemetry/resources";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-base";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
-import { APP_VERSION } from "../version.js";
+import { APP_VERSION } from "../utilities/version.js";
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({

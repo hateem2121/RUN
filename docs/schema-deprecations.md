@@ -15,21 +15,24 @@ This document tracks all deprecated database schema fields, their replacement ap
 
 **Status**: ⚠️ **DEPRECATED** - Compatibility shim  
 **Timeline**:
+
 - **Deprecated Since**: September 2024
 - **Removal Target**: March 2026 (6+ months)
 - **Current Phase**: Monitoring usage with server-side telemetry
 
 **Details**:
+
 - **Field Type**: `string` (optional)
 - **Database Status**: Field never existed in Drizzle table definition
 - **Zod Status**: Present in `insertFabricSchema` for backward compatibility
 - **Why Deprecated**: Replaced by structured `compositions` array for richer fiber data
 
 **Replacement**:
+
 ```typescript
 // DEPRECATED (Legacy string format)
 {
-  composition: "65% Polyester, 35% Cotton"
+  composition: "65% Polyester, 35% Cotton";
 }
 
 // REPLACEMENT (Structured array format)
@@ -39,38 +42,40 @@ This document tracks all deprecated database schema fields, their replacement ap
       name: "Standard Blend",
       isDefault: true,
       fibers: [
-        { fiberId: 1, percentage: "65" },  // Polyester
-        { fiberId: 2, percentage: "35" }   // Cotton
-      ]
-    }
-  ]
+        { fiberId: 1, percentage: "65" }, // Polyester
+        { fiberId: 2, percentage: "35" }, // Cotton
+      ],
+    },
+  ];
 }
 ```
 
 **Migration Path**:
+
 1. Update API clients to use `compositions` array
 2. Server-side mapping converts legacy `composition` strings to `compositions` array automatically
 3. Monitor usage logs for zero `composition` submissions over 30-day window
 4. Remove field from Zod schema after confirmed zero usage
 
 **Monitoring & Telemetry**:
+
 - **Status**: ✅ **MONITORING ACTIVE** (Phase 2 enforcement in place)
 - **Implementation**: `server/lib/repositories/misc-repository.ts` lines 300-310
 - **Instrumentation Code**:
   ```typescript
   // transformFabricForDatabase() method
   if (composition !== undefined) {
-    logger.warn('[DEPRECATED_FIELD_USAGE] fabric.composition field used', {
-      event: 'deprecated_field_composition',
-      fabricName: name || 'unknown',
+    logger.warn("[DEPRECATED_FIELD_USAGE] fabric.composition field used", {
+      event: "deprecated_field_composition",
+      fabricName: name || "unknown",
       hasCompositionsArray: !!compositions,
       compositionValue: composition,
       timestamp: new Date().toISOString(),
-      deprecationRemovalDate: '2026-03',
+      deprecationRemovalDate: "2026-03",
     });
   }
   ```
-- **Metrics Collection**: 
+- **Metrics Collection**:
   - **Event Name**: `deprecated_field_composition`
   - **Log Level**: WARN (ensures visibility in monitoring dashboards)
   - **Log Location**: Smart logger JSON output (server/lib/smart-logger.ts)
@@ -83,6 +88,7 @@ This document tracks all deprecated database schema fields, their replacement ap
 - **Traceability**: File reference with exact line numbers enables audit verification
 
 **Impact Assessment**:
+
 - Low risk - Field never persisted to database
 - No data loss on removal
 - Server-side compatibility layer handles legacy requests
@@ -95,18 +101,21 @@ This document tracks all deprecated database schema fields, their replacement ap
 
 **Status**: ⏳ **CANDIDATE FOR DEPRECATION** - Not yet deprecated  
 **Timeline**:
+
 - **Identified**: November 2025
 - **Refactor Required**: Derive from `categoryProducts` context
 - **Deprecation Date**: TBD (after refactor complete)
 - **Removal Target**: TBD (6 months after deprecation)
 
 **Details**:
+
 - **Field Type**: `number[]` (JSONB array)
 - **Database Status**: Active column, populated and queried
 - **Current Usage**: Selected in `PRODUCT_DETAIL_COLUMNS` (line 121)
 - **Why Pending Deprecation**: Redundant with context-based `categoryProducts`
 
 **Current Behavior**:
+
 ```typescript
 // Current approach (products table)
 product.relatedProductIds = [1, 2, 3, 4, 5];
@@ -116,14 +125,16 @@ context.categoryProducts = [...]; // Same category products
 ```
 
 **Proposed Replacement**:
+
 ```typescript
 // After refactor - derive from categoryProducts
 const relatedProducts = context.categoryProducts
-  .filter(p => p.id !== product.id)
+  .filter((p) => p.id !== product.id)
   .slice(0, 10);
 ```
 
 **Refactor Checklist**:
+
 - [ ] Update frontend to consume `categoryProducts` from context
 - [ ] Remove `relatedProductIds` from `PRODUCT_DETAIL_COLUMNS`
 - [ ] Update product form to stop persisting `relatedProductIds`
@@ -188,6 +199,7 @@ These fields are intentionally duplicated or aliased for frontend/API compatibil
 **Rationale**: Frontend components exclusively consume `asset.size` rather than `asset.fileSize`
 
 **Key Consuming Components** (16+ total):
+
 - `client/src/components/ui/UnifiedModelViewer.tsx` - 3D model size validation (lines 205, 230, 867)
 - `client/src/components/admin/media-library/MediaGrid.tsx` - File size display (line 210)
 - `client/src/components/admin/media-library/MediaViewerModal.tsx` - Size calculation (line 396)
@@ -217,11 +229,12 @@ These fields are intentionally duplicated or aliased for frontend/API compatibil
 
 **Purpose**: URL/field aliases for frontend compatibility  
 **Status**: Active in certificates table  
-**Rationale**: 
+**Rationale**:
+
 - `issuingBody` → alias for `issuingOrganization`
 - `documentUrl` → URL alias for `documentId` (media reference)
 - `imageUrl` → URL alias for `imageId` (media reference)  
-**Database Columns**: Lines 1479-1481 in shared/schema.ts
+  **Database Columns**: Lines 1479-1481 in shared/schema.ts
 
 ---
 
@@ -230,7 +243,8 @@ These fields are intentionally duplicated or aliased for frontend/API compatibil
 **Purpose**: Frontend alias for `iconName`  
 **Status**: Active in multiple UI tables  
 **Consuming Components**: Navigation system, homepage configuration panels  
-**Database Columns**: 
+**Database Columns**:
+
 - Line 846 (categories table)
 - Line 938 (homepage sections)
 
@@ -240,6 +254,7 @@ These fields are intentionally duplicated or aliased for frontend/API compatibil
 
 **Purpose**: Frontend display name compatibility across tables  
 **Status**: Active in:
+
 - `homepage_hero.headline` → alias for `title` (line 1043)
 - `homepage_hero.subheadline` → alias for `subtitle` (line 1044)
 - `homepage_sections.title` → alias for `name` (line 1084)
@@ -295,6 +310,7 @@ For assistance with migrating off deprecated fields:
 ## Change Log
 
 ### November 2025
+
 - Added `fabrics.composition` deprecation documentation
 - Identified `products.relatedProductIds` as deprecation candidate
 - Documented 4 removed columns from Session 3 cleanup
@@ -304,6 +320,4 @@ For assistance with migrating off deprecated fields:
 
 ## Related Documentation
 
-- [`migrations/cleanup/001_remove_dead_columns.sql`](../migrations/cleanup/001_remove_dead_columns.sql) - Column removal migration
 - [`shared/schema.ts`](../shared/schema.ts) - Source of truth for schema definitions
-- [`server/lib/repositories/`](../server/lib/repositories/) - Repository layer using schema fields

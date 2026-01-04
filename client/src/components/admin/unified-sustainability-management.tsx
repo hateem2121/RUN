@@ -21,7 +21,7 @@ import {
   Undo2,
   Wind,
 } from "lucide-react";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
@@ -83,7 +83,7 @@ const SortableMetricItem = memo(function SortableMetricItem({
           <div
             {...attributes}
             {...listeners}
-            className="cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+            className="text-muted-foreground/70 hover:text-muted-foreground cursor-move"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -92,12 +92,12 @@ const SortableMetricItem = memo(function SortableMetricItem({
               <IconComponent className="h-5 w-5 text-green-600" />
             </div>
             <div>
-              <h4 className="font-medium text-foreground">{metric.name}</h4>
-              <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <h4 className="text-foreground font-medium">{metric.name}</h4>
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <span className="font-semibold">
                   {metric.value} {metric.unit}
                 </span>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{metric.category}</span>
+                <span className="bg-muted rounded-full px-2 py-0.5 text-xs">{metric.category}</span>
               </div>
             </div>
           </div>
@@ -153,7 +153,7 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -163,9 +163,9 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
                 <IconComponent className="h-5 w-5 text-green-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">{initiative.title}</h4>
+                <h4 className="text-foreground font-medium">{initiative.title}</h4>
                 {initiative.description && (
-                  <p className="mt-2 text-muted-foreground text-sm">{initiative.description}</p>
+                  <p className="text-muted-foreground mt-2 text-sm">{initiative.description}</p>
                 )}
               </div>
             </div>
@@ -214,7 +214,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
           <div
             {...attributes}
             {...listeners}
-            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
           >
             <GripVertical className="h-5 w-5" />
           </div>
@@ -224,13 +224,13 @@ const SortableGoalItem = memo(function SortableGoalItem({
                 <Target className="h-5 w-5 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">{goal.title}</h4>
+                <h4 className="text-foreground font-medium">{goal.title}</h4>
                 <div className="mt-2 flex items-center gap-4">
                   <div className="text-muted-foreground text-sm">
                     <span className="font-semibold">{goal.currentValue}</span> /{" "}
                     <span>{goal.targetValue}</span> {goal.unit}
                   </div>
-                  <div className="rounded-full bg-muted px-2 py-0.5 text-xs">
+                  <div className="bg-muted rounded-full px-2 py-0.5 text-xs">
                     Target: {goal.targetYear || "TBD"}
                   </div>
                   <div
@@ -272,10 +272,10 @@ export function UnifiedSustainabilityManagement() {
   const { toast } = useToast();
 
   // URL Param logic for active tab
-  const getTabFromUrl = () => {
+  const getTabFromUrl = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.search);
     return searchParams.get("tab") || "hero";
-  };
+  }, []);
 
   const [activeTab, setActiveTab] = useState(getTabFromUrl);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
@@ -341,7 +341,7 @@ export function UnifiedSustainabilityManagement() {
   );
 
   // Sync server data to local form state
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     if (unifiedData) {
       const mappedData: Partial<UnifiedSustainability> = {
         ...unifiedData,
@@ -358,7 +358,7 @@ export function UnifiedSustainabilityManagement() {
       setLocalForm(mappedData);
       setHasUnsavedChanges(false);
     }
-  };
+  }, [unifiedData]);
 
   useEffect(() => {
     resetForm();
@@ -556,7 +556,7 @@ export function UnifiedSustainabilityManagement() {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+          <div className="border-border mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-600" />
           <p className="text-muted-foreground">Loading sustainability data...</p>
         </div>
       </div>
@@ -566,19 +566,19 @@ export function UnifiedSustainabilityManagement() {
   return (
     <div className="relative space-y-6">
       {/* Global Sticky Header */}
-      <div className="sticky top-0 z-elevated -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 shadow-sm-xs backdrop-blur-xs">
+      <div className="z-elevated shadow-sm-xs sticky top-0 -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 backdrop-blur-xs">
         <div>
-          <h1 className="flex items-center gap-2 font-bold text-2xl text-foreground">
+          <h1 className="text-foreground flex items-center gap-2 text-2xl font-bold">
             <Leaf className="h-6 w-6 text-green-600" />
             Unified Sustainability Management
           </h1>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <p className="text-muted-foreground mt-1 text-sm">
             Manage all sustainability content from a single, unified interface
           </p>
         </div>
         <div className="flex items-center gap-2">
           {hasUnsavedChanges && (
-            <span className="mr-2 animate-pulse font-medium text-sm text-yellow-600">
+            <span className="mr-2 animate-pulse text-sm font-medium text-yellow-600">
               Unsaved changes
             </span>
           )}

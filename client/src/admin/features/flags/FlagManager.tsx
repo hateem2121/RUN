@@ -28,7 +28,7 @@ export default function FlagManager() {
       if (!res.ok) throw new Error("Failed to load flags");
       const data = await res.json();
       setFlags(data.flags);
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to load feature flags");
     } finally {
       setLoading(false);
@@ -42,9 +42,7 @@ export default function FlagManager() {
   const toggleFlag = async (key: string, currentState: boolean) => {
     try {
       // Optimistic update
-      setFlags((prev) =>
-        prev.map((f) => (f.key === key ? { ...f, enabled: !currentState } : f)),
-      );
+      setFlags((prev) => prev.map((f) => (f.key === key ? { ...f, enabled: !currentState } : f)));
 
       const res = await fetch(`/api/v1/feature-flags/${key}/toggle`, {
         method: "POST",
@@ -52,11 +50,9 @@ export default function FlagManager() {
 
       if (!res.ok) throw new Error("Failed to toggle");
       toast.success(`Flag ${key} ${!currentState ? "enabled" : "disabled"}`);
-    } catch (err) {
+    } catch (_err) {
       // Revert
-      setFlags((prev) =>
-        prev.map((f) => (f.key === key ? { ...f, enabled: currentState } : f)),
-      );
+      setFlags((prev) => prev.map((f) => (f.key === key ? { ...f, enabled: currentState } : f)));
       toast.error("Failed to update flag");
     }
   };
@@ -79,7 +75,7 @@ export default function FlagManager() {
       setNewFlagKey("");
       setNewFlagDesc("");
       fetchFlags();
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to create flag");
     }
   };
@@ -124,9 +120,7 @@ export default function FlagManager() {
 
           <div className="space-y-4">
             {flags.length === 0 && (
-              <p className="text-muted-foreground text-center">
-                No flags found.
-              </p>
+              <p className="text-muted-foreground text-center">No flags found.</p>
             )}
 
             {flags.map((flag) => (
@@ -136,18 +130,12 @@ export default function FlagManager() {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm font-bold">
-                      {flag.key}
-                    </span>
+                    <span className="font-mono text-sm font-bold">{flag.key}</span>
                     {flag.percentage !== undefined && (
-                      <Badge variant="secondary">
-                        {flag.percentage}% Rollout
-                      </Badge>
+                      <Badge variant="secondary">{flag.percentage}% Rollout</Badge>
                     )}
                   </div>
-                  <p className="text-muted-foreground text-sm">
-                    {flag.description}
-                  </p>
+                  <p className="text-muted-foreground text-sm">{flag.description}</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <span

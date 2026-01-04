@@ -27,7 +27,7 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
 
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // Runs before error handlers but after API routes
-    if (config.app.environment === "production" || process.env["NODE_ENV"] === "production") {
+    if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
       // In production, assets should be served via CDN (GCS/Cloud CDN).
       // We only serve favicon/robots here if absolutely necessary, but generally disable static serving
       // to reduce Node.js load.
@@ -41,7 +41,7 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
     await startServices();
 
     // 9. Start Server
-    const port = parseInt(process.env["PORT"] || "5001", 10);
+    const port = parseInt(process.env.PORT || "5001", 10);
     httpServer.listen(port, "0.0.0.0", () => {
       const address = httpServer.address();
       const actualPort = typeof address === "object" && address ? address.port : port;

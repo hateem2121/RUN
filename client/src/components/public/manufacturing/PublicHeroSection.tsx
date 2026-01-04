@@ -2,7 +2,8 @@ import type { ManufacturingHero, MediaAsset } from "@shared/schema";
 import { domAnimation, LazyMotion, m } from "framer-motion";
 import { ArrowDown, Factory } from "lucide-react";
 import { useRef } from "react";
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+
 import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
@@ -67,10 +68,10 @@ export function PublicHeroSection({
 
   if (!hero) {
     return (
-      <section className="center-flex min-h-screen bg-manufacturing-primary/10">
+      <section className="center-flex bg-manufacturing-primary/10 min-h-screen">
         <div className="text-center">
-          <Factory className="mx-auto mb-4 h-16 w-16 text-manufacturing-primary" />
-          <h1 className="mb-2 font-bold text-4xl text-foreground">Manufacturing Excellence</h1>
+          <Factory className="text-manufacturing-primary mx-auto mb-4 h-16 w-16" />
+          <h1 className="text-foreground mb-2 text-4xl font-bold">Manufacturing Excellence</h1>
           <p className="text-muted-foreground text-xl">
             Precision crafted solutions for your business
           </p>
@@ -84,7 +85,7 @@ export function PublicHeroSection({
       <LazyMotion features={domAnimation}>
         <m.section
           ref={heroRef}
-          className="center-flex relative min-h-screen overflow-hidden bg-[var(--gradient-manufacturing-hero)]"
+          className="center-flex relative min-h-screen overflow-hidden bg-(--gradient-manufacturing-hero)"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -95,7 +96,7 @@ export function PublicHeroSection({
         >
           {/* Background Media */}
           {heroBackgroundAsset && (
-            <div className="absolute inset-0 z-base">
+            <div className="z-base absolute inset-0">
               <OptimizedImage
                 mediaId={heroBackgroundAsset.id}
                 alt="Manufacturing Background"
@@ -111,13 +112,13 @@ export function PublicHeroSection({
           {/* Content */}
           <m.div
             style={{ rotateX, rotateY }}
-            className="relative z-default mx-auto max-w-4xl px-4 text-center text-white"
+            className="z-default relative mx-auto max-w-4xl px-4 text-center text-white"
           >
             <m.div variants={mechanicalVariants} className="mb-8">
-              <h1 className="mb-6 font-bold text-5xl leading-tight md:text-7xl">
+              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
                 {hero.headline || "Precision Manufacturing"}
               </h1>
-              <p className="mx-auto mb-8 max-w-3xl text-white text-xl drop-shadow-lg md:text-2xl">
+              <p className="mx-auto mb-8 max-w-3xl text-xl text-white drop-shadow-lg md:text-2xl">
                 {hero.subheadline ||
                   "Where innovation meets excellence in every stitch, every detail, every product"}
               </p>
@@ -132,7 +133,7 @@ export function PublicHeroSection({
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="bg-white px-8 py-4 text-lg text-manufacturing-primary hover:bg-blue-50"
+                  className="text-manufacturing-primary bg-white px-8 py-4 text-lg hover:bg-blue-50"
                   asChild
                 >
                   <a href={hero.ctaLink}>{hero.ctaText}</a>

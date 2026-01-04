@@ -1,9 +1,9 @@
 import { getConfig } from "../config/production.js";
 import { wakeupDatabase } from "../db.js";
-import { adminNotifier } from "../lib/admin-notifier.js";
 import { dbKeepAlive } from "../lib/db/keep-alive.js";
+import { adminNotifier } from "../lib/integrations/admin-notifier.js";
+import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { getLifecycleScheduler } from "../lib/storage-lifecycle-scheduler.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 const config = getConfig();

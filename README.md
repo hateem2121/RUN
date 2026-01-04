@@ -96,7 +96,7 @@ npm run db:push
 npm run dev
 ```
 
-The app will be available at `http://localhost:5001` (SSR Proxy).
+The app will be available at `http://localhost:5001` (Dev) or `http://localhost:5000` (Docker).
 
 3. **Verify Integrity:**
    ```bash
@@ -111,7 +111,7 @@ Create a `server/.env` file (for the backend) and a `.env` file (for the fronten
 
 ```bash
 # Server Configuration
-PORT=5001
+PORT=5001 # 5001 for Local Dev, 5000 for Docker/Container
 NODE_ENV=development
 
 # ... (Rest of variables)
@@ -394,6 +394,7 @@ npx tsx scripts/verify-ssr-template.ts  # Template verification
 ### Base URL
 
 - **Development**: `http://localhost:5001/api`
+- **Docker/Container**: `http://localhost:5000/api`
 - **Production**: `https://api.runapparel.com/api`
 
 ### API Documentation (`/api/docs`)

@@ -2,12 +2,13 @@ import type React from "react";
 import { useState } from "react";
 import { CATEGORIES } from "./constants";
 import { useStore } from "./store";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CursorVariant } from "./types";
 
 const Categories: React.FC = () => {
   const setCursor = useStore((state) => state.setCursor);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isMobile = useIsMobile();
 
   return (
     <section
@@ -17,9 +18,12 @@ const Categories: React.FC = () => {
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />
 
-      <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
+      <div
+        className="flex flex-col gap-0"
+        onMouseLeave={() => setHoveredIndex(null)}
+      >
         {/* Forward Marquee */}
-        <div className="flex animate-marquee whitespace-nowrap will-change-transform">
+        <div className="animate-marquee flex whitespace-nowrap will-change-transform">
           {/* Main Content */}
           {CATEGORIES.map((cat, index) => {
             const isHovered = hoveredIndex === index;
@@ -30,7 +34,7 @@ const Categories: React.FC = () => {
               <div
                 key={`${cat.id}-${index}`}
                 role="listitem"
-                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
+                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                 onMouseEnter={() => {
                   setHoveredIndex(index);
                   if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
@@ -39,9 +43,11 @@ const Categories: React.FC = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
+                  <span className="inline-block align-top text-[2vw] text-blue-600">
+                    ●
+                  </span>
                 </h2>
               </div>
             );
@@ -58,7 +64,7 @@ const Categories: React.FC = () => {
               return (
                 <div
                   key={`${cat.id}-dup-${index}`}
-                  className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
+                  className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                   onMouseEnter={() => {
                     setHoveredIndex(virtualIndex);
                     if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
@@ -67,9 +73,11 @@ const Categories: React.FC = () => {
                     setCursor(CursorVariant.DEFAULT);
                   }}
                 >
-                  <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                  <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                     {cat.name}{" "}
-                    <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
+                    <span className="inline-block align-top text-[2vw] text-blue-600">
+                      ●
+                    </span>
                   </h2>
                 </div>
               );
@@ -79,7 +87,7 @@ const Categories: React.FC = () => {
 
         {/* Reverse Marquee - Entirely Decorative/Redundant */}
         <div
-          className="mt-[-2vw] flex animate-marquee-reverse whitespace-nowrap will-change-transform"
+          className="animate-marquee-reverse mt-[-2vw] flex whitespace-nowrap will-change-transform"
           aria-hidden="true"
         >
           {[...CATEGORIES, ...CATEGORIES].reverse().map((cat, index) => {
@@ -92,7 +100,7 @@ const Categories: React.FC = () => {
             return (
               <div
                 key={`${cat.id}-rev-${index}`}
-                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "opacity-100 blur-0"}`}
+                className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                 onMouseEnter={() => {
                   setHoveredIndex(uniqueIndex);
                   if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
@@ -101,9 +109,11 @@ const Categories: React.FC = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2 className="stroke-text font-bold text-[10vw] text-transparent uppercase tracking-tighter transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-[2vw] text-success">●</span>
+                  <span className="text-success inline-block align-top text-[2vw]">
+                    ●
+                  </span>
                 </h2>
               </div>
             );

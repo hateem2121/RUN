@@ -20,7 +20,7 @@ import { z } from "zod";
 import { insertSustainabilityGoalSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 

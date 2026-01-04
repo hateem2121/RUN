@@ -3,7 +3,8 @@ import { lazy, Suspense } from "react";
 import {
   ManufacturingErrorBoundary,
   ManufacturingLoadingSkeleton,
-} from "@/components/manufacturing-error-boundary";
+} from "@/components/error-boundaries/manufacturing-error-boundary";
+
 import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 import { PublicProcessSection } from "@/components/public/manufacturing/PublicProcessSection";

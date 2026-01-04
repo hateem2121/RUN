@@ -139,7 +139,7 @@ Where to look when working on X:
 
 ## 6. CSS Architecture Map
 
-> See `DOCS-CSS-ARCHITECTURE.md` for full details.
+> See `docs/CSS_ARCHITECTURE.md` for full details.
 
 - **Tokens**: `client/src/index.css` (@theme block).
 - **Type-Safe Access**: `client/src/lib/design-tokens.ts`.

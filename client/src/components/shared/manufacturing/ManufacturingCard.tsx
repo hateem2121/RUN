@@ -3,7 +3,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 gsap.registerPlugin(ScrollTrigger);

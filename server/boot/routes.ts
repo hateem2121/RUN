@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { createSsrHandler } from "../lib/ssr-handler.js";
+import { createSsrHandler } from "../lib/ssr/ssr-handler.js";
 import { registerRoutes } from "../routes/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

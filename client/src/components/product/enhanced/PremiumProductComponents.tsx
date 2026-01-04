@@ -17,7 +17,13 @@ import {
   Play,
   Shield,
 } from "lucide-react";
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 
@@ -118,172 +124,175 @@ interface ProductGalleryProps {
   hotspots?: Hotspot[];
 }
 
-export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
-  ({ media }, ref) => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+export const ProductGallery = forwardRef<
+  ProductGalleryHandle,
+  ProductGalleryProps
+>(({ media }, ref) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-    useImperativeHandle(ref, () => ({
-      switchTo3DView: () => {
-        const model3DIndex = media.findIndex((item) => item.type === MediaType.Model3D);
-        if (model3DIndex !== -1) {
-          setActiveIndex(model3DIndex);
-        }
-      },
-    }));
-
-    // Reset loading state when active media changes
-    useEffect(() => {
-      setImageLoaded(false);
-    }, []);
-
-    useEffect(() => {
-      thumbnailRefs.current[activeIndex]?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }, [activeIndex]);
-
-    const renderMedia = () => {
-      const item = media[activeIndex];
-      if (!item) return null;
-
-      return (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={item.src}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="h-full w-full"
-          >
-            {(() => {
-              switch (item.type) {
-                case MediaType.Image:
-                  return (
-                    <>
-                      <img
-                        src={item.src}
-                        alt="Product"
-                        loading={activeIndex === 0 ? "eager" : "lazy"}
-                        {...(activeIndex === 0 && {
-                          fetchPriority: "high" as const,
-                        })}
-                        className={`h-full w-full object-contain transition-opacity duration-300 ${
-                          imageLoaded ? "opacity-100" : "opacity-0"
-                        }`}
-                        onLoad={() => setImageLoaded(true)}
-                      />
-                      {!imageLoaded && (
-                        <div className="center-flex absolute inset-0 bg-black">
-                          <div className="h-12 w-12 animate-spin rounded-full border-2 border-border border-t-2 border-t-white"></div>
-                        </div>
-                      )}
-                    </>
-                  );
-                case MediaType.Video:
-                  return (
-                    <video
-                      controls
-                      autoPlay
-                      loop
-                      muted
-                      className="h-full w-full object-contain"
-                      onError={(_e) => {}}
-                    >
-                      <source src={item.src} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  );
-                case MediaType.Model3D:
-                  return (
-                    <div className="h-full w-full">
-                      <LazyUnifiedModelViewer
-                        asset={
-                          {
-                            id: item.id,
-                            url: item.src,
-                            type: "3d_model",
-                            filename: item.filename || "product-model.glb",
-                            mimeType: item.mimeType || "model/gltf-binary",
-                            storagePath: item.src,
-                            bucketName: "default",
-                            originalName: "product-model.glb",
-                            fileSize: null,
-                            thumbnailUrl: null,
-                            thumbnailFilename: null,
-                            width: null,
-                            height: null,
-                            caption: null,
-                            altText: "Product 3D Model",
-                            blurhash: null,
-                            processing: false,
-                            processingProgress: null,
-                            processingError: null,
-                            metadata: {},
-                            tags: null,
-                            isPublic: true,
-                            isActive: true,
-                            folderId: null,
-                            downloadCount: 0,
-                            lastAccessedAt: null,
-                            deletedAt: null,
-                            uploadedAt: null,
-                            updatedAt: null,
-                            createdAt: null,
-                          } as any
-                        }
-                        config={{
-                          loading: "eager",
-                        }}
-                        className="h-full w-full"
-                        showControls={true}
-                        showLoadingProgress={true}
-                      />
-                    </div>
-                  );
-                default:
-                  return null;
-              }
-            })()}
-          </motion.div>
-        </AnimatePresence>
+  useImperativeHandle(ref, () => ({
+    switchTo3DView: () => {
+      const model3DIndex = media.findIndex(
+        (item) => item.type === MediaType.Model3D,
       );
-    };
+      if (model3DIndex !== -1) {
+        setActiveIndex(model3DIndex);
+      }
+    },
+  }));
+
+  // Reset loading state when active media changes
+  useEffect(() => {
+    setImageLoaded(false);
+  }, []);
+
+  useEffect(() => {
+    thumbnailRefs.current[activeIndex]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [activeIndex]);
+
+  const renderMedia = () => {
+    const item = media[activeIndex];
+    if (!item) return null;
 
     return (
-      <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
-        <div className="w-full max-w-3xl">
-          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
-            <div className="absolute inset-0 bg-black">{renderMedia()}</div>
-          </div>
-          <motion.div
-            className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          >
-            {media.map((item, index) => (
-              <ThumbnailButton
-                key={index}
-                item={item}
-                index={index}
-                isActive={activeIndex === index}
-                onClick={() => setActiveIndex(index)}
-                ref={(el) => {
-                  thumbnailRefs.current[index] = el;
-                }}
-              />
-            ))}
-          </motion.div>
-        </div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={item.src}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="h-full w-full"
+        >
+          {(() => {
+            switch (item.type) {
+              case MediaType.Image:
+                return (
+                  <>
+                    <img
+                      src={item.src}
+                      alt="Product"
+                      loading={activeIndex === 0 ? "eager" : "lazy"}
+                      {...(activeIndex === 0 && {
+                        fetchPriority: "high" as const,
+                      })}
+                      className={`h-full w-full object-contain transition-opacity duration-300 ${
+                        imageLoaded ? "opacity-100" : "opacity-0"
+                      }`}
+                      onLoad={() => setImageLoaded(true)}
+                    />
+                    {!imageLoaded && (
+                      <div className="center-flex absolute inset-0 bg-black">
+                        <div className="border-border h-12 w-12 animate-spin rounded-full border-2 border-t-2 border-t-white"></div>
+                      </div>
+                    )}
+                  </>
+                );
+              case MediaType.Video:
+                return (
+                  <video
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                    className="h-full w-full object-contain"
+                    onError={(_e) => {}}
+                  >
+                    <source src={item.src} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              case MediaType.Model3D:
+                return (
+                  <div className="h-full w-full">
+                    <LazyUnifiedModelViewer
+                      asset={
+                        {
+                          id: item.id,
+                          url: item.src,
+                          type: "3d_model",
+                          filename: item.filename || "product-model.glb",
+                          mimeType: item.mimeType || "model/gltf-binary",
+                          storagePath: item.src,
+                          bucketName: "default",
+                          originalName: "product-model.glb",
+                          fileSize: null,
+                          thumbnailUrl: null,
+                          thumbnailFilename: null,
+                          width: null,
+                          height: null,
+                          caption: null,
+                          altText: "Product 3D Model",
+                          blurhash: null,
+                          processing: false,
+                          processingProgress: null,
+                          processingError: null,
+                          metadata: {},
+                          tags: null,
+                          isPublic: true,
+                          isActive: true,
+                          folderId: null,
+                          downloadCount: 0,
+                          lastAccessedAt: null,
+                          deletedAt: null,
+                          uploadedAt: null,
+                          updatedAt: null,
+                          createdAt: null,
+                        } as any
+                      }
+                      config={{
+                        loading: "eager",
+                      }}
+                      className="h-full w-full"
+                      showControls={true}
+                      showLoadingProgress={true}
+                    />
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })()}
+        </motion.div>
+      </AnimatePresence>
     );
-  },
-);
+  };
+
+  return (
+    <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
+      <div className="w-full max-w-3xl">
+        <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
+          <div className="absolute inset-0 bg-black">{renderMedia()}</div>
+        </div>
+        <motion.div
+          className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+        >
+          {media.map((item, index) => (
+            <ThumbnailButton
+              key={index}
+              item={item}
+              index={index}
+              isActive={activeIndex === index}
+              onClick={() => setActiveIndex(index)}
+              ref={(el) => {
+                thumbnailRefs.current[index] = el;
+              }}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+});
 
 // ============================================================================
 // Thumbnail Button Component with Media Type Indicators
@@ -325,7 +334,8 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
         default:
           return {
             icon: <Box className="h-6 w-6 text-white" />,
-            bgColor: "bg-linear-to-br from-muted-foreground to-muted-foreground",
+            bgColor:
+              "bg-linear-to-br from-muted-foreground to-muted-foreground",
             label: "Media",
           };
       }
@@ -382,7 +392,9 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
               onError={() => setThumbnailError(true)}
               data-testid={`img-thumbnail-${index}`}
             />
-            {!imageLoaded && <div className="absolute inset-0 animate-pulse bg-muted/20" />}
+            {!imageLoaded && (
+              <div className="bg-muted/20 absolute inset-0 animate-pulse" />
+            )}
           </>
         )}
         {/* Media type badge overlay - always show for videos and 3D models when thumbnail loads successfully */}
@@ -413,7 +425,10 @@ interface TabbedDetailsProps {
   certificates: any[];
 }
 
-export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certificates }) => {
+export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
+  product,
+  certificates,
+}) => {
   const [activeTab, setActiveTab] = useState<Tab>("specs");
 
   const renderTabContent = () => {
@@ -422,13 +437,19 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Package className="h-5 w-5 text-muted-foreground" />
-              <h3 className="font-bold uppercase tracking-wider">Product Specs</h3>
+              <Package className="text-muted-foreground h-5 w-5" />
+              <h3 className="font-bold tracking-wider uppercase">
+                Product Specs
+              </h3>
             </div>
-            <ul className="space-y-2 pl-1 text-muted-foreground text-sm">
+            <ul className="text-muted-foreground space-y-2 pl-1 text-sm">
               {product.specifications && product.specifications.length > 0 ? (
                 product.specifications.map((spec, i) => (
-                  <li key={i} className="flex items-start" data-testid={`spec-item-${i}`}>
+                  <li
+                    key={i}
+                    className="flex items-start"
+                    data-testid={`spec-item-${i}`}
+                  >
                     <span className="mt-1 mr-2">-</span>
                     <span className="flex-1">{spec}</span>
                   </li>
@@ -436,7 +457,8 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               ) : (
                 <li className="py-6 text-center">
                   <p className="text-muted-foreground/70 text-sm italic">
-                    Product specifications are not currently available for this item.
+                    Product specifications are not currently available for this
+                    item.
                   </p>
                 </li>
               )}
@@ -447,28 +469,40 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <FileText className="h-5 w-5 text-muted-foreground" />
-              <h3 className="font-bold uppercase tracking-wider">Technical Specifications</h3>
+              <FileText className="text-muted-foreground h-5 w-5" />
+              <h3 className="font-bold tracking-wider uppercase">
+                Technical Specifications
+              </h3>
             </div>
-            {product.technicalSpecs && Object.keys(product.technicalSpecs).length > 0 ? (
+            {product.technicalSpecs &&
+            Object.keys(product.technicalSpecs).length > 0 ? (
               <div className="space-y-3" data-testid="tech-specs-list">
-                {Object.entries(product.technicalSpecs).map(([key, value], i) => (
-                  <div key={i} className="flex items-start" data-testid={`tech-spec-${i}`}>
-                    <div className="flex-1">
-                      <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
-                        {key.replace(/([A-Z])/g, " $1").trim()}
-                      </div>
-                      <div className="font-medium text-foreground/80 text-sm">
-                        {typeof value === "object" ? JSON.stringify(value) : String(value)}
+                {Object.entries(product.technicalSpecs).map(
+                  ([key, value], i) => (
+                    <div
+                      key={i}
+                      className="flex items-start"
+                      data-testid={`tech-spec-${i}`}
+                    >
+                      <div className="flex-1">
+                        <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
+                          {key.replace(/([A-Z])/g, " $1").trim()}
+                        </div>
+                        <div className="text-foreground/80 text-sm font-medium">
+                          {typeof value === "object"
+                            ? JSON.stringify(value)
+                            : String(value)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             ) : (
               <div className="py-6 text-center">
                 <p className="text-muted-foreground/70 text-sm italic">
-                  Technical specifications are not currently available for this item.
+                  Technical specifications are not currently available for this
+                  item.
                 </p>
               </div>
             )}
@@ -478,16 +512,23 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Heart className="h-5 w-5 text-muted-foreground" />
-              <h3 className="font-bold uppercase tracking-wider">Care Instructions</h3>
+              <Heart className="text-muted-foreground h-5 w-5" />
+              <h3 className="font-bold tracking-wider uppercase">
+                Care Instructions
+              </h3>
             </div>
             <ul
-              className="space-y-2 pl-1 text-muted-foreground text-sm"
+              className="text-muted-foreground space-y-2 pl-1 text-sm"
               data-testid="care-instructions-list"
             >
-              {product.careInstructions && product.careInstructions.length > 0 ? (
+              {product.careInstructions &&
+              product.careInstructions.length > 0 ? (
                 product.careInstructions.map((instruction, i) => (
-                  <li key={i} className="flex items-start" data-testid={`care-instruction-${i}`}>
+                  <li
+                    key={i}
+                    className="flex items-start"
+                    data-testid={`care-instruction-${i}`}
+                  >
                     <span className="mt-1 mr-2">•</span>
                     <span className="flex-1">{instruction}</span>
                   </li>
@@ -506,15 +547,16 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Info className="h-5 w-5 text-muted-foreground" />
-              <h3 className="font-bold uppercase tracking-wider">Key Info</h3>
+              <Info className="text-muted-foreground h-5 w-5" />
+              <h3 className="font-bold tracking-wider uppercase">Key Info</h3>
             </div>
-            <ul className="space-y-2 pl-1 text-muted-foreground text-sm">
+            <ul className="text-muted-foreground space-y-2 pl-1 text-sm">
               <li className="flex items-start">
                 <span className="mt-1 mr-2">-</span>
                 <span className="flex-1">
                   <strong>MOQ:</strong>{" "}
-                  {product.minimumOrderQuantity && product.minimumOrderQuantity > 0
+                  {product.minimumOrderQuantity &&
+                  product.minimumOrderQuantity > 0
                     ? `${product.minimumOrderQuantity} units`
                     : "Contact us for details"}
                 </span>
@@ -522,7 +564,8 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               <li className="flex items-start">
                 <span className="mt-1 mr-2">-</span>
                 <span className="flex-1">
-                  <strong>Lead Time:</strong> {product.leadTime || "Contact us for details"}
+                  <strong>Lead Time:</strong>{" "}
+                  {product.leadTime || "Contact us for details"}
                 </span>
               </li>
               {product.customFit && (
@@ -548,15 +591,20 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
         return (
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
-              <Shield className="h-5 w-5 text-muted-foreground" />
-              <h3 className="font-bold uppercase tracking-wider">Certifications</h3>
+              <Shield className="text-muted-foreground h-5 w-5" />
+              <h3 className="font-bold tracking-wider uppercase">
+                Certifications
+              </h3>
             </div>
             <div className="flex flex-col space-y-3">
               {certificates && certificates.length > 0 ? (
                 certificates.map((cert, i) => (
-                  <div key={i} className="flex items-center rounded bg-background p-3">
+                  <div
+                    key={i}
+                    className="bg-background flex items-center rounded p-3"
+                  >
                     <Shield className="mr-3 h-5 w-5 shrink-0 text-green-600" />
-                    <span className="font-medium text-foreground/80 text-sm">
+                    <span className="text-foreground/80 text-sm font-medium">
                       {cert.name || cert}
                     </span>
                   </div>
@@ -564,7 +612,8 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               ) : (
                 <div className="py-6 text-center">
                   <p className="text-muted-foreground/70 text-sm italic">
-                    Certifications information is not currently available for this item.
+                    Certifications information is not currently available for
+                    this item.
                   </p>
                 </div>
               )}
@@ -586,7 +635,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
 
   return (
     <div>
-      <div className="spacing-subsection relative border-border border-b">
+      <div className="spacing-subsection border-border relative border-b">
         <div
           className="scrollbar-hide flex snap-x snap-mandatory items-center space-x-2 overflow-x-auto pb-px sm:space-x-3 md:space-x-4"
           style={{
@@ -601,7 +650,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               key={tab.id}
               as="button"
               onClick={() => setActiveTab(tab.id as Tab)}
-              className={`relative -mb-px min-h-tab whitespace-nowrap px-4 py-3 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-6 md:tracking-[0.12em] ${
+              className={`min-h-tab tracking-premium md:tracking-premium-lg relative -mb-px px-4 py-3 text-sm font-bold whitespace-nowrap uppercase transition-all duration-300 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden sm:px-6 ${
                 activeTab === tab.id
                   ? "text-black"
                   : "text-muted-foreground/70 hover:scale-105 hover:text-black"
@@ -609,7 +658,9 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
               clipAmount={10}
               data-testid={`button-tab-${tab.id}`}
             >
-              <span className="max-w-32 truncate sm:max-w-none">{tab.label}</span>
+              <span className="max-w-32 truncate sm:max-w-none">
+                {tab.label}
+              </span>
               {activeTab === tab.id && (
                 <motion.span
                   layoutId="active-tab-indicator"
@@ -635,12 +686,12 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
       </div>
       {product.tags && product.tags.length > 0 && (
         <div className="mt-12">
-          <h3 className="mb-4 font-bold uppercase tracking-wider">Tags</h3>
+          <h3 className="mb-4 font-bold tracking-wider uppercase">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {product.tags.map((tag: string) => (
               <span
                 key={tag}
-                className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground text-xs"
+                className="bg-muted text-foreground rounded-full px-2.5 py-1 text-xs font-medium"
               >
                 {tag}
               </span>
@@ -660,19 +711,19 @@ interface SizeChartDisplayProps {
   sizeChart: any;
 }
 
-export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart }) => {
-  if (!sizeChart || !sizeChart.measurements) {
-    return (
-      <p className="text-muted-foreground">Size information is not available for this product.</p>
-    );
-  }
-
-  const sizes = Object.keys(sizeChart.measurements);
+export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({
+  sizeChart,
+}) => {
+  const sizes = sizeChart?.measurements
+    ? Object.keys(sizeChart.measurements)
+    : [];
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
 
-  if (sizes.length === 0) {
+  if (!sizeChart || !sizeChart.measurements || sizes.length === 0) {
     return (
-      <p className="text-muted-foreground">Size information is not available for this product.</p>
+      <p className="text-muted-foreground">
+        Size information is not available for this product.
+      </p>
     );
   }
 
@@ -681,16 +732,16 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-center gap-2 border-border border-b pb-3">
+      <div className="border-border mb-8 flex flex-wrap items-center gap-2 border-b pb-3">
         {sizes.map((size) => (
           <ClippedElement
             key={size}
             as="button"
             onClick={() => setSelectedSize(size)}
-            className={`min-h-tab px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
+            className={`min-h-tab tracking-premium md:tracking-premium-lg px-4 py-2.5 text-sm font-bold uppercase transition-all duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden sm:px-5 ${
               selectedSize === size
                 ? "scale-105 bg-black text-white"
-                : "bg-muted text-muted-foreground hover:scale-105 hover:bg-muted/20"
+                : "bg-muted text-muted-foreground hover:bg-muted/20 hover:scale-105"
             }`}
             clipAmount={8}
             aria-pressed={selectedSize === size}
@@ -712,10 +763,12 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
           >
             {measurementKeys.map((key) => (
               <div key={key}>
-                <span className="text-muted-foreground text-xs uppercase tracking-wider">
+                <span className="text-muted-foreground text-xs tracking-wider uppercase">
                   {key}
                 </span>
-                <p className="mt-1 font-bold text-base sm:text-lg">{measurements[key] || "N/A"}</p>
+                <p className="mt-1 text-base font-bold sm:text-lg">
+                  {measurements[key] || "N/A"}
+                </p>
               </div>
             ))}
           </motion.div>
@@ -734,7 +787,10 @@ interface FabricDisplayProps {
   fibers?: any[];
 }
 
-export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [] }) => {
+export const FabricDisplay: React.FC<FabricDisplayProps> = ({
+  fabric,
+  fibers = [],
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!fabric) {
@@ -750,22 +806,28 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
   // Check if we have collapsible content
   const hasDescription = !!fabric.description;
   const hasPerformanceFeatures =
-    fabric.properties?.performanceFeatures && fabric.properties.performanceFeatures.length > 0;
+    fabric.properties?.performanceFeatures &&
+    fabric.properties.performanceFeatures.length > 0;
   const hasFiberComposition =
-    fabric.properties?.compositions && fabric.properties.compositions.length > 0;
-  const hasCollapsibleContent = hasDescription || hasPerformanceFeatures || hasFiberComposition;
+    fabric.properties?.compositions &&
+    fabric.properties.compositions.length > 0;
+  const hasCollapsibleContent =
+    hasDescription || hasPerformanceFeatures || hasFiberComposition;
 
   return (
     <div>
       {/* Always Visible: Fabric Name */}
-      <h3 className="mb-4 font-bold text-xl sm:text-2xl" data-testid="text-fabric-name">
+      <h3
+        className="mb-4 text-xl font-bold sm:text-2xl"
+        data-testid="text-fabric-name"
+      >
         {fabric.name}
       </h3>
 
       {/* Desktop: Always show description */}
       {hasDescription && (
         <p
-          className="mb-8 hidden whitespace-pre-line text-foreground/80 leading-relaxed md:block"
+          className="text-foreground/80 mb-8 hidden leading-relaxed whitespace-pre-line md:block"
           data-testid="text-fabric-description"
         >
           {fabric.description}
@@ -775,24 +837,33 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       {/* Always Visible: Property Grid */}
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
         {fabric.weight && (
-          <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-weight">
-            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+          <div
+            className="border-l-4 border-black pl-4 sm:pl-6"
+            data-testid="info-fabric-weight"
+          >
+            <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Weight
             </div>
             <div className="font-semibold">{fabric.weight} GSM</div>
           </div>
         )}
         {fabric.fabricType && (
-          <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-type">
-            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+          <div
+            className="border-l-4 border-black pl-4 sm:pl-6"
+            data-testid="info-fabric-type"
+          >
+            <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Fabric Type
             </div>
             <div className="font-semibold">{fabric.fabricType}</div>
           </div>
         )}
         {fabric.sport && (
-          <div className="border-black border-l-4 pl-4 sm:pl-6" data-testid="info-fabric-sport">
-            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+          <div
+            className="border-l-4 border-black pl-4 sm:pl-6"
+            data-testid="info-fabric-sport"
+          >
+            <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Sport Category
             </div>
             <div className="font-semibold">{fabric.sport}</div>
@@ -800,10 +871,10 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
         )}
         {fabric.seasonality && (
           <div
-            className="border-black border-l-4 pl-4 sm:pl-6"
+            className="border-l-4 border-black pl-4 sm:pl-6"
             data-testid="info-fabric-seasonality"
           >
-            <div className="mb-1 text-muted-foreground text-xs uppercase tracking-wider">
+            <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Seasonality
             </div>
             <div className="font-semibold">{fabric.seasonality}</div>
@@ -815,7 +886,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       {hasCollapsibleContent && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-6 flex w-full items-center justify-center gap-2 border-border border-t border-b py-3 font-bold text-black text-sm uppercase tracking-wider transition-colors hover:bg-background md:hidden"
+          className="border-border hover:bg-background mt-6 flex w-full items-center justify-center gap-2 border-t border-b py-3 text-sm font-bold tracking-wider text-black uppercase transition-colors md:hidden"
           data-testid="button-toggle-materials"
         >
           <span>{isExpanded ? "Show Less" : "Show More"}</span>
@@ -831,23 +902,27 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
       <div className="hidden md:block">
         {hasPerformanceFeatures && (
           <div className="mt-8">
-            <h4 className="mb-4 font-bold text-sm uppercase tracking-wider">
+            <h4 className="mb-4 text-sm font-bold tracking-wider uppercase">
               Performance Features
             </h4>
             <ul className="space-y-2" data-testid="list-fabric-features">
-              {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
-                <li key={index} className="flex items-start text-sm">
-                  <span className="mr-2 text-black">•</span>
-                  <span className="text-foreground/80">{feature}</span>
-                </li>
-              ))}
+              {fabric.properties.performanceFeatures.map(
+                (feature: string, index: number) => (
+                  <li key={index} className="flex items-start text-sm">
+                    <span className="mr-2 text-black">•</span>
+                    <span className="text-foreground/80">{feature}</span>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
         )}
 
         {hasFiberComposition && (
-          <div className="mt-10 border-border border-t pt-8">
-            <h4 className="mb-6 font-bold text-sm uppercase tracking-wider">Fiber Composition</h4>
+          <div className="border-border mt-10 border-t pt-8">
+            <h4 className="mb-6 text-sm font-bold tracking-wider uppercase">
+              Fiber Composition
+            </h4>
             <FiberCompositionDisplay fabric={fabric} fibers={fibers} />
           </div>
         )}
@@ -866,7 +941,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
             <div className="pt-6">
               {hasDescription && (
                 <p
-                  className="mb-8 whitespace-pre-line text-foreground/80 leading-relaxed"
+                  className="text-foreground/80 mb-8 leading-relaxed whitespace-pre-line"
                   data-testid="text-fabric-description"
                 >
                   {fabric.description}
@@ -875,23 +950,25 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
 
               {hasPerformanceFeatures && (
                 <div className="mt-8">
-                  <h4 className="mb-4 font-bold text-sm uppercase tracking-wider">
+                  <h4 className="mb-4 text-sm font-bold tracking-wider uppercase">
                     Performance Features
                   </h4>
                   <ul className="space-y-2" data-testid="list-fabric-features">
-                    {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
-                      <li key={index} className="flex items-start text-sm">
-                        <span className="mr-2 text-black">•</span>
-                        <span className="text-foreground/80">{feature}</span>
-                      </li>
-                    ))}
+                    {fabric.properties.performanceFeatures.map(
+                      (feature: string, index: number) => (
+                        <li key={index} className="flex items-start text-sm">
+                          <span className="mr-2 text-black">•</span>
+                          <span className="text-foreground/80">{feature}</span>
+                        </li>
+                      ),
+                    )}
                   </ul>
                 </div>
               )}
 
               {hasFiberComposition && (
-                <div className="mt-10 border-border border-t pt-8">
-                  <h4 className="mb-6 font-bold text-sm uppercase tracking-wider">
+                <div className="border-border mt-10 border-t pt-8">
+                  <h4 className="mb-6 text-sm font-bold tracking-wider uppercase">
                     Fiber Composition
                   </h4>
                   <FiberCompositionDisplay fabric={fabric} fibers={fibers} />
@@ -914,11 +991,17 @@ interface FiberCompositionDisplayProps {
   fibers?: any[];
 }
 
-export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = ({
-  fabric,
-  fibers = [],
-}) => {
+export const FiberCompositionDisplay: React.FC<
+  FiberCompositionDisplayProps
+> = ({ fabric, fibers = [] }) => {
   const compositions = fabric?.properties?.compositions || [];
+
+  // Find default composition or use first one
+  const defaultComposition =
+    compositions.find((c: any) => c.isDefault) || compositions[0];
+  const [selectedComposition, setSelectedComposition] = useState<string>(
+    defaultComposition?.name || "",
+  );
 
   if (compositions.length === 0) {
     return (
@@ -928,14 +1011,9 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
     );
   }
 
-  // Find default composition or use first one
-  const defaultComposition = compositions.find((c: any) => c.isDefault) || compositions[0];
-  const [selectedComposition, setSelectedComposition] = useState<string>(
-    defaultComposition?.name || "",
-  );
-
   const currentComposition =
-    compositions.find((c: any) => c.name === selectedComposition) || defaultComposition;
+    compositions.find((c: any) => c.name === selectedComposition) ||
+    defaultComposition;
   const compositionFibers = currentComposition?.fibers || [];
 
   // Helper to get fiber details
@@ -958,23 +1036,23 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
     } else if (type.includes("recycled")) {
       return <Shield className="h-6 w-6 text-emerald-600" />;
     }
-    return <FileText className="h-6 w-6 text-muted-foreground" />;
+    return <FileText className="text-muted-foreground h-6 w-6" />;
   };
 
   return (
     <div>
       {/* Composition Toggle Buttons */}
       {compositions.length > 1 && (
-        <div className="mb-8 flex flex-wrap items-center gap-2 border-border border-b pb-3">
+        <div className="border-border mb-8 flex flex-wrap items-center gap-2 border-b pb-3">
           {compositions.map((comp: any) => (
             <ClippedElement
               key={comp.name}
               as="button"
               onClick={() => setSelectedComposition(comp.name)}
-              className={`min-h-tab px-4 py-2.5 font-bold text-sm uppercase tracking-[0.08em] transition-all duration-300 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:px-5 md:tracking-[0.12em] ${
+              className={`min-h-tab tracking-premium md:tracking-premium-lg px-4 py-2.5 text-sm font-bold uppercase transition-all duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden sm:px-5 ${
                 selectedComposition === comp.name
                   ? "scale-105 bg-black text-white"
-                  : "bg-muted text-muted-foreground hover:scale-105 hover:bg-muted/20"
+                  : "bg-muted text-muted-foreground hover:bg-muted/20 hover:scale-105"
               }`}
               clipAmount={8}
               aria-pressed={selectedComposition === comp.name}
@@ -1002,25 +1080,27 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
               return (
                 <div
                   key={index}
-                  className="rounded-lg border border-border p-4 transition-shadow-sm duration-200 hover:shadow-md"
+                  className="border-border transition-shadow-sm rounded-lg border p-4 duration-200 hover:shadow-md"
                   data-testid={`fiber-card-${index}`}
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       {getFiberIcon(fiberDetails.type)}
-                      <h4 className="font-bold text-sm uppercase tracking-wider">
+                      <h4 className="text-sm font-bold tracking-wider uppercase">
                         {fiberDetails.name}
                       </h4>
                     </div>
                   </div>
                   <div className="flex items-baseline justify-between">
-                    <span className="font-black text-3xl text-black">{fiber.percentage}%</span>
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">
+                    <span className="text-3xl font-black text-black">
+                      {fiber.percentage}%
+                    </span>
+                    <span className="text-muted-foreground text-xs tracking-wider uppercase">
                       {fiberDetails.type}
                     </span>
                   </div>
                   {/* Visual percentage bar */}
-                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted/20">
+                  <div className="bg-muted/20 mt-3 h-2 w-full overflow-hidden rounded-full">
                     <motion.div
                       className="h-full rounded-full bg-black"
                       initial={{ width: 0 }}
@@ -1037,7 +1117,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
 
       {/* Fallback: Minimalist Table for Simple Display */}
       {compositionFibers.length === 0 && (
-        <div className="py-8 text-center text-muted-foreground">
+        <div className="text-muted-foreground py-8 text-center">
           <p>No fiber composition data available for this selection.</p>
         </div>
       )}
@@ -1081,12 +1161,12 @@ export const EthicalManufacturing: React.FC = () => {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="mb-4 font-black-display text-3xl md:text-4xl">
+          <h2 className="font-black-display mb-4 text-3xl md:text-4xl">
             ETHICAL MANUFACTURING & INNOVATION
           </h2>
-          <p className="mx-auto max-w-3xl text-muted-foreground">
-            We merge a 135-year legacy with modern technology and an unwavering commitment to
-            transparency and ethical production.
+          <p className="text-muted-foreground mx-auto max-w-3xl">
+            We merge a 135-year legacy with modern technology and an unwavering
+            commitment to transparency and ethical production.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-12">
@@ -1100,8 +1180,12 @@ export const EthicalManufacturing: React.FC = () => {
               className="bg-white p-8 text-center"
             >
               <div className="mb-4 flex justify-center">{item.icon}</div>
-              <h3 className="mb-3 font-bold uppercase tracking-wider">{item.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+              <h3 className="mb-3 font-bold tracking-wider uppercase">
+                {item.title}
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {item.description}
+              </p>
             </motion.div>
           ))}
         </div>

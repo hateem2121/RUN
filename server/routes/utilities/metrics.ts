@@ -15,7 +15,7 @@ import { alertManager } from "../../lib/monitoring/alert-manager.js";
 import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 

@@ -8,7 +8,8 @@ import {
 import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router";
-import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { GlobalErrorBoundary } from "@/components/error-boundaries/GlobalErrorBoundary";
+
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductsListSEO } from "@/components/products/ProductsListSEO";
@@ -96,7 +97,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 function ProductsLoader() {
   return (
     <div className="flex min-h-96 items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
     </div>
   );
 }
@@ -283,7 +284,7 @@ export default function ProductsPage() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="min-h-screen bg-muted/30 pt-production-header">
+      <div className="bg-muted/30 pt-production-header min-h-screen">
         <GlobalErrorBoundary>
           <Suspense fallback={<ProductsLoader />}>
             {/* SEO Component */}
@@ -294,15 +295,15 @@ export default function ProductsPage() {
             />
 
             {/* Header */}
-            <div className="sticky top-0 z-modal-backdrop border-border border-b bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/60">
+            <div className="z-modal-backdrop border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-                  <Typography.H1 className="font-bold text-2xl">Products</Typography.H1>
+                  <Typography.H1 className="text-2xl font-bold">Products</Typography.H1>
 
                   <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                     {/* Search */}
                     <div className="relative flex-1 sm:flex-none">
-                      <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                       <Input
                         placeholder="Search products..."
                         value={searchTerm}
@@ -341,7 +342,7 @@ export default function ProductsPage() {
                     </Select>
 
                     {/* View Mode */}
-                    <div className="flex gap-1 rounded-md bg-muted p-1">
+                    <div className="bg-muted flex gap-1 rounded-md p-1">
                       <Button
                         size="sm"
                         variant={viewMode === "small" ? "default" : "ghost"}
@@ -382,7 +383,7 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Results count */}
-                <div className="mt-2 text-muted-foreground text-sm">
+                <div className="text-muted-foreground mt-2 text-sm">
                   Showing {sortedProducts.length} products
                   {searchTerm && ` for "${searchTerm}"`}
                   {selectedCategory &&
@@ -421,7 +422,7 @@ export default function ProductsPage() {
                   {/* Infinite scroll observer (Placeholder) */}
                   {hasMore && (
                     <div ref={observerRef} className="flex justify-center py-8">
-                      <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
+                      <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
                       <Typography.P className="text-luxury-body text-sm">
                         "Loading more products..."
                       </Typography.P>

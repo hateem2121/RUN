@@ -357,6 +357,65 @@ export function UnifiedMediaTheater({
     } catch (_error) {}
   };
 
+  // PHASE 3 INTEGRATION: UnifiedModelViewer hooks moved to top level to comply with Rules of Hooks
+  const modelAsset = useMemo(() => {
+    if (!currentMedia) {
+      // Return a safe fallback or undefined that the component can handle
+      // However, LazyUnifiedModelViewer expects a valid asset.
+      // Since it's only rendered when is3DModel is true, this value might effectively be ignored when !is3DModel,
+      // but we must return a valid shape or undefined.
+      // Let's return undefined and let the component handle it or ensure we don't crash here.
+      return undefined;
+    }
+
+    return {
+      ...currentMedia,
+      filename: currentMedia.filename || `${productName}_main_model.gltf`,
+      originalName: currentMedia.originalName || currentMedia.filename || productName,
+      fileSize: currentMedia.fileSize ?? currentMedia.size ?? null,
+      size: currentMedia.size ?? currentMedia.fileSize ?? null,
+      mimeType: currentMedia.mimeType || "model/gltf+json",
+      type: currentMedia.type || "model",
+      url: currentMedia.url || `/api/media/${currentMedia.id}/content`,
+      storagePath: currentMedia.storagePath || "",
+      bucketName: currentMedia.bucketName || "",
+      metadata: currentMedia.metadata || {},
+      tags: currentMedia.tags || [],
+    };
+  }, [currentMedia, productName]);
+
+  const modelConfig = useMemo(
+    () => ({
+      cameraControls: true,
+      autoRotate: true,
+      backgroundColorHex: "#f5f5f5",
+      exposure: 0.95,
+      shadowIntensity: 0.7,
+      interactionPolicy: "always-allow",
+      loading: "auto",
+    }),
+    [],
+  );
+
+  const handleModelLoad = useCallback(() => {
+    measureLoadTime(performance.now());
+    if (currentMedia) {
+      onMediaLoad?.(currentMedia);
+    }
+  }, [currentMedia, measureLoadTime, onMediaLoad]);
+
+  const handleModelInteraction = useCallback(
+    (event: string) => {
+      onInteraction?.({
+        type: "interact",
+        mediaType: "3d_model",
+        action: `model-${event}`,
+        duration: 0,
+      });
+    },
+    [onInteraction],
+  );
+
   // Track media load performance - 3D models now tracked via UnifiedModelViewer onLoad callback
   useEffect(() => {
     const startTime = performance.now();
@@ -374,12 +433,12 @@ export function UnifiedMediaTheater({
     return (
       <div
         className={cn(
-          "center-flex rounded-lg bg-background",
+          "center-flex bg-background rounded-lg",
           isMobile ? "aspect-4/3" : "aspect-square",
           className,
         )}
       >
-        <div className="text-center text-muted-foreground/70">
+        <div className="text-muted-foreground/70 text-center">
           <Layers className="mx-auto mb-2 h-16 w-16" />
           <p>No media available</p>
         </div>
@@ -444,7 +503,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-muted-foreground">No images available</div>
+              <div className="text-muted-foreground py-8 text-center">No images available</div>
             )}
           </TabsContent>
 
@@ -452,7 +511,7 @@ export function UnifiedMediaTheater({
             {model3DAssets.length > 0 ? (
               <div className="space-y-4">
                 {model3DAssets.map((asset) => (
-                  <div key={asset.id} className="relative aspect-square rounded-lg bg-muted">
+                  <div key={asset.id} className="bg-muted relative aspect-square rounded-lg">
                     {/* STEP 3 INTEGRATION: Replace manual model-viewer with UnifiedModelViewer */}
                     <LazyUnifiedModelViewer
                       asset={{
@@ -488,7 +547,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-muted-foreground">No 3D models available</div>
+              <div className="text-muted-foreground py-8 text-center">No 3D models available</div>
             )}
           </TabsContent>
 
@@ -508,7 +567,7 @@ export function UnifiedMediaTheater({
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-muted-foreground">No videos available</div>
+              <div className="text-muted-foreground py-8 text-center">No videos available</div>
             )}
           </TabsContent>
         </Tabs>
@@ -521,7 +580,7 @@ export function UnifiedMediaTheater({
     <div
       className={cn(
         "space-y-4",
-        isFullscreen && "fixed inset-0 z-modal flex flex-col bg-black",
+        isFullscreen && "z-modal fixed inset-0 flex flex-col bg-black",
         className,
       )}
       onKeyDown={handleKeyDown}
@@ -538,7 +597,7 @@ export function UnifiedMediaTheater({
       >
         <div
           className={cn(
-            "relative bg-muted",
+            "bg-muted relative",
             !isFullscreen && (isMobile ? "aspect-4/3" : "aspect-square"),
             isFullscreen && "h-full w-full",
           )}
@@ -610,72 +669,17 @@ export function UnifiedMediaTheater({
                   <div className="relative h-full w-full">
                     {/* STEP 3 INTEGRATION: Replace complex manual model-viewer with UnifiedModelViewer */}
                     <LazyUnifiedModelViewer
-                      asset={useMemo(
-                        () => ({
-                          ...currentMedia,
-                          filename: currentMedia.filename || `${productName}_main_model.gltf`,
-                          originalName:
-                            currentMedia.originalName || currentMedia.filename || productName,
-                          fileSize: currentMedia.fileSize ?? currentMedia.size ?? null,
-                          size: currentMedia.size ?? currentMedia.fileSize ?? null,
-                          mimeType: currentMedia.mimeType || "model/gltf+json",
-                          type: currentMedia.type || "model",
-                          url: currentMedia.url || `/api/media/${currentMedia.id}/content`,
-                          storagePath: currentMedia.storagePath || "",
-                          bucketName: currentMedia.bucketName || "",
-                          metadata: currentMedia.metadata || {},
-                          tags: currentMedia.tags || [],
-                        }),
-                        [
-                          currentMedia.id,
-                          currentMedia.url,
-                          currentMedia.filename,
-                          productName,
-                          currentMedia.bucketName,
-                          currentMedia.fileSize,
-                          currentMedia.metadata,
-                          currentMedia.mimeType,
-                          currentMedia.originalName,
-                          currentMedia.size,
-                          currentMedia.storagePath,
-                          currentMedia.tags,
-                          currentMedia,
-                        ],
-                      )}
-                      config={useMemo(
-                        () => ({
-                          cameraControls: true,
-                          autoRotate: true,
-                          backgroundColorHex: "#f5f5f5",
-                          exposure: 0.95,
-                          shadowIntensity: 0.7,
-                          interactionPolicy: "always-allow",
-                          loading: "auto",
-                        }),
-                        [],
-                      )}
-                      onLoad={useCallback(() => {
-                        measureLoadTime(performance.now());
-                        onMediaLoad?.(currentMedia);
-                      }, [currentMedia, measureLoadTime, onMediaLoad])}
-                      onInteraction={useCallback(
-                        (event: string) => {
-                          onInteraction?.({
-                            type: "interact",
-                            mediaType: "3d_model",
-                            action: `model-${event}`,
-                            duration: 0,
-                          });
-                        },
-                        [onInteraction],
-                      )}
+                      asset={modelAsset as any}
+                      config={modelConfig as any}
+                      onLoad={handleModelLoad}
+                      onInteraction={handleModelInteraction}
                       className="h-full w-full"
                     />
 
                     {/* NOTE: ModelViewerControls integration requires ref access - consider future enhancement */}
 
                     {/* 3D Model indicator */}
-                    <div className="absolute top-3 right-3 z-elevated rounded bg-purple-600 px-2 py-1 text-sm text-white">
+                    <div className="z-elevated absolute top-3 right-3 rounded bg-purple-600 px-2 py-1 text-sm text-white">
                       3D Model
                     </div>
                   </div>
@@ -722,29 +726,29 @@ export function UnifiedMediaTheater({
                 className={cn(
                   "absolute top-1/2 left-4 -translate-y-1/2 border p-3 transition-opacity",
                   "opacity-0 group-hover:opacity-100",
-                  "border-[var(--product-border)] bg-[var(--product-background)]",
+                  "border-(--product-border) bg-(--product-background)",
                 )}
                 aria-label="Previous media"
               >
-                <ChevronLeft className="h-5 w-5 text-[var(--product-text)]" />
+                <ChevronLeft className="h-5 w-5 text-(--product-text)" />
               </button>
               <button
                 onClick={handleNext}
                 className={cn(
                   "absolute top-1/2 right-4 -translate-y-1/2 border p-3 transition-opacity",
                   "opacity-0 group-hover:opacity-100",
-                  "border-[var(--product-border)] bg-[var(--product-background)]",
+                  "border-(--product-border) bg-(--product-background)",
                 )}
                 aria-label="Next media"
               >
-                <ChevronRight className="h-5 w-5 text-[var(--product-text)]" />
+                <ChevronRight className="h-5 w-5 text-(--product-text)" />
               </button>
             </>
           )}
 
           {/* Media Counter */}
           {sortedMedia.length > 1 && (
-            <div className="absolute bottom-4 left-4 border border-[var(--product-border)] bg-[var(--product-background)] px-3 py-1 font-mono text-[var(--product-text)] text-xs">
+            <div className="absolute bottom-4 left-4 border border-(--product-border) bg-(--product-background) px-3 py-1 font-mono text-xs text-(--product-text)">
               {selectedIndex + 1} / {sortedMedia.length}
             </div>
           )}
@@ -758,14 +762,14 @@ export function UnifiedMediaTheater({
                 className={cn(
                   "border p-2 transition-opacity",
                   isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100",
-                  "border-[var(--product-border)] bg-[var(--product-background)]",
+                  "border-(--product-border) bg-(--product-background)",
                 )}
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
                 {isFullscreen ? (
-                  <X className="h-4 w-4 text-[var(--product-text)]" />
+                  <X className="h-4 w-4 text-(--product-text)" />
                 ) : (
-                  <Maximize2 className="h-4 w-4 text-[var(--product-text)]" />
+                  <Maximize2 className="h-4 w-4 text-(--product-text)" />
                 )}
               </button>
             )}
@@ -778,7 +782,7 @@ export function UnifiedMediaTheater({
                   onClick={handleShare}
                   className={cn(
                     "border p-2 opacity-0 transition-opacity group-hover:opacity-100",
-                    "border-[var(--product-border)] bg-[var(--product-background)]",
+                    "border-(--product-border) bg-(--product-background)",
                   )}
                   aria-label="Share"
                 >
@@ -792,15 +796,12 @@ export function UnifiedMediaTheater({
                 onClick={togglePiP}
                 className={cn(
                   "border p-2 opacity-0 transition-opacity group-hover:opacity-100",
-                  isPiPActive && "border-blue-500",
+                  "bg-(--product-background)",
+                  isPiPActive ? "border-blue-500" : "border-(--product-border)",
                 )}
-                style={{
-                  backgroundColor: "var(--product-background)",
-                  borderColor: isPiPActive ? undefined : "var(--product-border)",
-                }}
                 aria-label="Picture in Picture"
               >
-                <PictureInPicture className="h-4 w-4" style={{ color: "var(--product-text)" }} />
+                <PictureInPicture className="h-4 w-4 text-(--product-text)" />
               </button>
             )}
           </div>
@@ -830,16 +831,14 @@ export function UnifiedMediaTheater({
                 }}
                 className={cn(
                   "relative shrink-0 overflow-hidden border transition-all",
-                  "h-20 w-20 min-w-thumbnail md:h-24 md:w-24",
+                  "min-w-thumbnail h-20 w-20 md:h-24 md:w-24",
+                  selectedIndex === index
+                    ? "border-2 border-(--product-text)"
+                    : "border border-(--product-border)",
                 )}
-                style={{
-                  borderColor:
-                    selectedIndex === index ? "var(--product-text)" : "var(--product-border)",
-                  borderWidth: selectedIndex === index ? "2px" : "1px",
-                }}
               >
                 {item.type === "video" ? (
-                  <div className="relative h-full w-full bg-muted">
+                  <div className="bg-muted relative h-full w-full">
                     <video
                       src={item.url || `/api/media/${item.id}/content`}
                       className="h-full w-full object-cover"
@@ -864,14 +863,7 @@ export function UnifiedMediaTheater({
 
                 {/* Primary indicator */}
                 {(item.id === primaryImageId || item.id === primaryVideoId) && (
-                  <div
-                    className="absolute top-1 left-1 border px-1 text-xs"
-                    style={{
-                      backgroundColor: "var(--product-text)",
-                      borderColor: "var(--product-text)",
-                      color: "var(--product-background)",
-                    }}
-                  >
+                  <div className="absolute top-1 left-1 border border-(--product-text) bg-(--product-text) px-1 text-xs text-(--product-background)">
                     Primary
                   </div>
                 )}
@@ -884,8 +876,7 @@ export function UnifiedMediaTheater({
       {/* Enhanced Mobile Instructions */}
       {!isFullscreen && (
         <motion.div
-          className="mt-3 space-y-1 text-center text-xs"
-          style={{ color: "var(--product-muted)" }}
+          className="mt-3 space-y-1 text-center text-xs text-(--product-muted)"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}

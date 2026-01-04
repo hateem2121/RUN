@@ -4,7 +4,7 @@
  */
 
 import multer from "multer";
-import UPLOAD_CONFIG from "../../lib/upload-config.js";
+import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
 import {
   MAX_CONCURRENT_UPLOADS,

@@ -3,7 +3,11 @@
  */
 
 import type { Request, Response } from "express";
-import { adminLimiter, diagnosticLimiter, generalLimiter } from "../../lib/rate-limiter.js";
+import {
+  adminLimiter,
+  diagnosticLimiter,
+  generalLimiter,
+} from "../../lib/resilience/rate-limiter.js";
 import { createErrorResponse, createSuccessResponse } from "./utils.js";
 
 /**

@@ -1,6 +1,6 @@
 import express, { type Router } from "express";
 import { z } from "zod";
-import { jsonResponse, registry } from "../../lib/openapi-generator.js";
+import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { createRateLimiter } from "../../middleware/rate-limiter.js";
 import { authService } from "../../services/auth-service.js";
 import {
@@ -200,7 +200,7 @@ router.post("/debug/repair-database-integrity", authService.requireAdmin, repair
 router.post("/repair/mime-types", authService.requireAdmin, repairMimeTypes);
 
 // Direct uploads (MUST be before parametric upload routes)
-import { optimizeImageMiddleware } from "../../lib/image-optimizer.js";
+import { optimizeImageMiddleware } from "../../lib/utilities/image-optimizer.js";
 
 // prettier-ignore
 router.post(

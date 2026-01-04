@@ -306,78 +306,81 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
   };
 
   // Phase 3: Advanced Form Validation Functions
-  const validateField = (field: string, value: unknown): string => {
-    switch (field) {
-      case "name":
-        if (typeof value !== "string" || !value || value.trim().length < 3) {
-          return "Product name must be at least 3 characters long";
-        }
-        if (value.length > 100) {
-          return "Product name cannot exceed 100 characters";
-        }
-        break;
+  const validateField = useCallback(
+    (field: string, value: unknown): string => {
+      switch (field) {
+        case "name":
+          if (typeof value !== "string" || !value || value.trim().length < 3) {
+            return "Product name must be at least 3 characters long";
+          }
+          if (value.length > 100) {
+            return "Product name cannot exceed 100 characters";
+          }
+          break;
 
-      case "sku":
-        if (typeof value !== "string" || !value || value.trim().length === 0) {
-          return "SKU is required for inventory management";
-        }
-        if (!/^[A-Z0-9-_]+$/i.test(value)) {
-          return "SKU can only contain letters, numbers, hyphens, and underscores";
-        }
-        break;
+        case "sku":
+          if (typeof value !== "string" || !value || value.trim().length === 0) {
+            return "SKU is required for inventory management";
+          }
+          if (!/^[A-Z0-9-_]+$/i.test(value)) {
+            return "SKU can only contain letters, numbers, hyphens, and underscores";
+          }
+          break;
 
-      case "description":
-        if (typeof value !== "string" || !value || value.trim().length < 20) {
-          return "Product description must be at least 20 characters for better customer understanding";
-        }
-        break;
+        case "description":
+          if (typeof value !== "string" || !value || value.trim().length < 20) {
+            return "Product description must be at least 20 characters for better customer understanding";
+          }
+          break;
 
-      case "categoryId":
-        if (!value) {
-          return "Product category is required for proper organization";
-        }
-        break;
+        case "categoryId":
+          if (!value) {
+            return "Product category is required for proper organization";
+          }
+          break;
 
-      case "fabricId":
-        if (!value) {
-          return "Fabric selection is required for technical specifications";
-        }
-        break;
+        case "fabricId":
+          if (!value) {
+            return "Fabric selection is required for technical specifications";
+          }
+          break;
 
-      case "selectedFiberComposition":
-        if (formData.fabricId && !value) {
-          return "Fiber composition must be selected when fabric is chosen";
-        }
-        break;
+        case "selectedFiberComposition":
+          if (formData.fabricId && !value) {
+            return "Fiber composition must be selected when fabric is chosen";
+          }
+          break;
 
-      case "primaryImageId":
-        if (!value) {
-          return "Primary image is required for product visibility";
-        }
-        break;
+        case "primaryImageId":
+          if (!value) {
+            return "Primary image is required for product visibility";
+          }
+          break;
 
-      case "minimumOrderQuantity":
-        if (value && (Number.isNaN(Number(value)) || Number(value) < 1)) {
-          return "Minimum order quantity must be a positive number";
-        }
-        break;
+        case "minimumOrderQuantity":
+          if (value && (Number.isNaN(Number(value)) || Number(value) < 1)) {
+            return "Minimum order quantity must be a positive number";
+          }
+          break;
 
-      case "leadTime":
-        if (
-          typeof value === "string" &&
-          value &&
-          value.trim().length > 0 &&
-          value.trim().length < 3
-        ) {
-          return 'Lead time description should be more detailed (e.g., "2-3 weeks")';
-        }
-        break;
+        case "leadTime":
+          if (
+            typeof value === "string" &&
+            value &&
+            value.trim().length > 0 &&
+            value.trim().length < 3
+          ) {
+            return 'Lead time description should be more detailed (e.g., "2-3 weeks")';
+          }
+          break;
 
-      default:
-        return "";
-    }
-    return "";
-  };
+        default:
+          return "";
+      }
+      return "";
+    },
+    [formData.fabricId],
+  );
 
   // Pure validation function - no side effects, properly memoized
   const validateFormPure = useCallback(
@@ -910,7 +913,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                             : "text-muted-foreground/70"
                       }`}
                     />
-                    <p className="mb-1 font-medium text-foreground/80 text-xs">
+                    <p className="text-foreground/80 mb-1 text-xs font-medium">
                       {typedSection.name}
                     </p>
                     <div className="center-flex gap-1 text-xs">
@@ -995,7 +998,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             {/* Phase 5.1: Lazy-loaded sections with Suspense boundaries */}
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <BasicInfoSection
@@ -1022,7 +1025,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <CategoryFabricSection
@@ -1047,7 +1050,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <MediaAssetsSection
@@ -1068,7 +1071,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <SpecificationsSection
@@ -1091,7 +1094,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <CertificationsSection
@@ -1116,7 +1119,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="animate-pulse rounded-lg border bg-background p-4">Loading...</div>
+                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
               }
             >
               <CustomizationSection
@@ -1140,7 +1143,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
               {!validationSummary.isValid && (
                 <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
                   <AlertCircle className="h-4 w-4 text-red-600" />
-                  <span className="text-red-700 text-sm">
+                  <span className="text-sm text-red-700">
                     Fix {validationSummary.errorCount} error
                     {validationSummary.errorCount !== 1 ? "s" : ""}
                     {validationSummary.warningCount > 0 &&

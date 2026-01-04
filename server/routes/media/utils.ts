@@ -5,11 +5,11 @@
 
 import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
 import { isImageFile, processImage } from "../../image-processor.js";
-import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import UPLOAD_CONFIG from "../../lib/upload-config.js";
+import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { correctMimeType } from "../../utils.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
 

@@ -1,6 +1,7 @@
 import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
 import { motion } from "framer-motion";
-import { ManufacturingErrorBoundary } from "@/components/manufacturing-error-boundary";
+import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+
 import { ProcessCard } from "@/components/shared/manufacturing";
 import { SmartBentoGrid } from "@/components/ui/smart-bento-grid";
 
@@ -30,8 +31,8 @@ export function PublicProcessSection({ mediaAssets, processes }: PublicProcessSe
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 font-bold text-4xl text-foreground">Manufacturing Processes</h2>
-            <p className="mx-auto max-w-3xl text-muted-foreground text-xl">
+            <h2 className="text-foreground mb-4 text-4xl font-bold">Manufacturing Processes</h2>
+            <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
               Advanced manufacturing techniques delivering precision and quality at every stage
             </p>
           </motion.div>

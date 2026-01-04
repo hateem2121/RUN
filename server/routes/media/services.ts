@@ -1,11 +1,11 @@
 import type { MediaAsset } from "@shared/schema.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
+import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import UPLOAD_CONFIG from "../../lib/upload-config.js";
+import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
 import { correctMimeType } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";

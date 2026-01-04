@@ -30,3 +30,15 @@ trivy
 # Client Build Artifacts
 client/build
 client/.react-router*.log
+
+# Debug/Test Artifacts (prevent accidental commits)
+*.log
+*_debug*.txt
+*_output*.txt
+biome_errors*.txt
+crash_*.txt
+slow_query_output*.txt
+proxy_debug*.txt
+cookies.txt
+curl_debug.txt
+FINAL_REMEDIATION_PROMPT.txt

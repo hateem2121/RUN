@@ -38,10 +38,9 @@ useEffect(() => setTime(Date.now()), []);
 
 ## 4. Verification
 
-Run `npm run verify:ssr` before merging PRs affecting core infrastructure. This runs the app in production mode on port 5003 and checks for:
+Run `npm run verify:ssr` before merging PRs affecting core infrastructure. This script executes static analysis tools to ensure:
 
-- Console hydration warnings (Strict Mode)
-- Visual regression (FOUC)
-- Dark mode injection
+- `index.html` contains the required SSR markers (`<!--app-head-->`, `<!--app-html-->`).
+- Codebase is scanned for forbidden SSR patterns (e.g., non-deterministic `Math.random` in render body).
 
 > **Contributor Guide**: Please review the [SSR Safety Checklist](./ssr-safety-checklist.md) before submitting PRs.

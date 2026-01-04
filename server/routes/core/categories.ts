@@ -10,16 +10,16 @@ import { Router } from "express";
 import { z } from "zod";
 import { type Category, insertCategorySchema } from "../../../shared/schema.js";
 import { db } from "../../db.js";
+import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
-import { jsonResponse, registry } from "../../lib/openapi-generator.js";
 
 // ... (existing imports)
 
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/request-timeout.js";
-import { normalizeSlug } from "../../lib/slug-utils.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { authService } from "../../services/auth-service.js";
 import {
   checkRateLimit,

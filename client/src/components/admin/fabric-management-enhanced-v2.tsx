@@ -24,7 +24,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 // Removed problematic hook imports - using inline implementations
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
@@ -218,7 +218,7 @@ export default function FabricManagementEnhancedV2() {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
   // Helper function to convert string values to numbers for comparison
-  const parseNumericValue = (value: string | number | null): number | null => {
+  const parseNumericValue = useCallback((value: string | number | null): number | null => {
     if (value === null || value === undefined) return null;
     if (typeof value === "number") return value;
     if (typeof value === "string") {
@@ -229,7 +229,7 @@ export default function FabricManagementEnhancedV2() {
       return match?.[1] ? parseFloat(match[1]) : null;
     }
     return null;
-  };
+  }, []);
 
   // Section Collapse States
   const [sectionsOpen, setSectionsOpen] = useState({
@@ -792,7 +792,7 @@ export default function FabricManagementEnhancedV2() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-3xl">Enhanced Fabric Management</h1>
+          <h1 className="text-3xl font-bold">Enhanced Fabric Management</h1>
           <p className="text-muted-foreground">
             Comprehensive fabric management with structured properties and enterprise features
           </p>
@@ -814,7 +814,7 @@ export default function FabricManagementEnhancedV2() {
               <Shirt className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-muted-foreground text-sm">Total Fabrics</p>
-                <p className="font-bold text-2xl">{fabrics.length}</p>
+                <p className="text-2xl font-bold">{fabrics.length}</p>
               </div>
             </div>
           </CardContent>
@@ -825,7 +825,7 @@ export default function FabricManagementEnhancedV2() {
               <Activity className="h-5 w-5 text-green-500" />
               <div>
                 <p className="text-muted-foreground text-sm">Active Fabrics</p>
-                <p className="font-bold text-2xl">{fabrics.filter((f) => f.isActive).length}</p>
+                <p className="text-2xl font-bold">{fabrics.filter((f) => f.isActive).length}</p>
               </div>
             </div>
           </CardContent>
@@ -836,7 +836,7 @@ export default function FabricManagementEnhancedV2() {
               <Award className="h-5 w-5 text-purple-500" />
               <div>
                 <p className="text-muted-foreground text-sm">Certified</p>
-                <p className="font-bold text-2xl">
+                <p className="text-2xl font-bold">
                   {fabrics.filter((f) => f.certifications && f.certifications.length > 0).length}
                 </p>
               </div>
@@ -849,7 +849,7 @@ export default function FabricManagementEnhancedV2() {
               <Globe className="h-5 w-5 text-emerald-500" />
               <div>
                 <p className="text-muted-foreground text-sm">Sustainable</p>
-                <p className="font-bold text-2xl">
+                <p className="text-2xl font-bold">
                   {
                     fabrics.filter((f) => {
                       const score = parseNumericValue(f.sustainabilityScore || "");
@@ -869,7 +869,7 @@ export default function FabricManagementEnhancedV2() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <div className="relative flex-1">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
                 <Input
                   data-testid={getInputTestId("search")}
                   placeholder="Search fabrics by name, type, or properties..."
@@ -930,9 +930,9 @@ export default function FabricManagementEnhancedV2() {
         <Card>
           <CardContent className="p-6">
             <div className="py-12 text-center">
-              <Shirt className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <h3 className="mb-2 font-semibold text-xl">No Fabrics Found</h3>
-              <p className="mb-4 text-muted-foreground">
+              <Shirt className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+              <h3 className="mb-2 text-xl font-semibold">No Fabrics Found</h3>
+              <p className="text-muted-foreground mb-4">
                 Get started by creating your first fabric with comprehensive properties
               </p>
               <Button
@@ -956,7 +956,7 @@ export default function FabricManagementEnhancedV2() {
                   {/* Always visible summary */}
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <h3 className="font-semibold text-xl">{fabric.name}</h3>
+                      <h3 className="text-xl font-semibold">{fabric.name}</h3>
                       <div className="flex items-center gap-2">
                         <Badge variant={fabric.isActive ? "default" : "secondary"}>
                           {fabric.isActive ? "Active" : "Inactive"}
@@ -1016,7 +1016,7 @@ export default function FabricManagementEnhancedV2() {
                   </div>
 
                   {/* Basic info always visible */}
-                  <p className="mb-4 text-muted-foreground">{fabric.description}</p>
+                  <p className="text-muted-foreground mb-4">{fabric.description}</p>
 
                   {/* Expandable detailed view */}
                   <Collapsible open={isExpanded} onOpenChange={() => toggleCardExpanded(fabric.id)}>
@@ -1026,7 +1026,7 @@ export default function FabricManagementEnhancedV2() {
                         <div className="space-y-4">
                           <div>
                             <div className="mb-2 flex items-center justify-between">
-                              <h3 className="font-semibold text-xl">{fabric.name}</h3>
+                              <h3 className="text-xl font-semibold">{fabric.name}</h3>
                               <div className="flex items-center gap-2">
                                 <Badge variant={fabric.isActive ? "default" : "secondary"}>
                                   {fabric.isActive ? "Active" : "Inactive"}
@@ -1051,7 +1051,7 @@ export default function FabricManagementEnhancedV2() {
                           {/* Classification */}
                           {fabric.fabricType && (
                             <div className="space-y-2">
-                              <h4 className="font-medium text-sm">Classification</h4>
+                              <h4 className="text-sm font-medium">Classification</h4>
                               <div className="flex flex-wrap gap-2">
                                 <Badge variant="outline">{fabric.fabricType}</Badge>
                                 {fabric.properties?.keyApplications?.map(
@@ -1068,7 +1068,7 @@ export default function FabricManagementEnhancedV2() {
                           {/* Certifications */}
                           {fabric.certifications && fabric.certifications.length > 0 && (
                             <div className="space-y-2">
-                              <h4 className="font-medium text-sm">Certifications</h4>
+                              <h4 className="text-sm font-medium">Certifications</h4>
                               <div className="flex flex-wrap gap-2">
                                 {fabric.certifications?.map((certName: string, idx: number) => {
                                   const cert = certificates.find((c) => c.name === certName);
@@ -1116,7 +1116,7 @@ export default function FabricManagementEnhancedV2() {
                             {fabric.properties?.yarnCountConstruction && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Construction:</span>
-                                <span className="font-medium text-xs">
+                                <span className="text-xs font-medium">
                                   {fabric.properties?.yarnCountConstruction}
                                 </span>
                               </div>
@@ -1136,7 +1136,7 @@ export default function FabricManagementEnhancedV2() {
                                       <Badge
                                         key={idx}
                                         variant="outline"
-                                        className="border-green-600 text-green-600 text-xs"
+                                        className="border-green-600 text-xs text-green-600"
                                       >
                                         <Activity className="mr-1 h-3 w-3" />
                                         {feature}
@@ -1200,7 +1200,7 @@ export default function FabricManagementEnhancedV2() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleDelete(fabric)}
-                              className="w-full justify-start text-destructive hover:text-destructive"
+                              className="text-destructive hover:text-destructive w-full justify-start"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete
@@ -1492,13 +1492,13 @@ export default function FabricManagementEnhancedV2() {
                                   >
                                     <SelectValue placeholder="Select fiber" />
                                   </SelectTrigger>
-                                  <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                                  <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                                     {fibers && fibers.length > 0 ? (
                                       fibers.map((fiber) => (
                                         <SelectItem
                                           key={fiber.id}
                                           value={fiber.id.toString()}
-                                          className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                          className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                         >
                                           {fiber.name}
                                         </SelectItem>
@@ -1507,7 +1507,7 @@ export default function FabricManagementEnhancedV2() {
                                       <SelectItem
                                         value="no-fibers"
                                         disabled
-                                        className="h-12 px-4 text-muted-foreground/70 text-sm"
+                                        className="text-muted-foreground/70 h-12 px-4 text-sm"
                                       >
                                         No fibers available
                                       </SelectItem>
@@ -1592,7 +1592,7 @@ export default function FabricManagementEnhancedV2() {
 
                         {/* Total Percentage */}
                         <div className="flex justify-end">
-                          <span className="font-medium text-sm">
+                          <span className="text-sm font-medium">
                             Total: {(() => {
                               const total = composition.fibers.reduce((sum, fiber) => {
                                 const percentage = parseFloat(fiber.percentage);
@@ -1639,7 +1639,7 @@ export default function FabricManagementEnhancedV2() {
               >
                 <Card>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-muted/50">
+                    <CardHeader className="hover:bg-muted/50 cursor-pointer">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Shirt className="h-5 w-5 text-blue-500" />
@@ -1670,34 +1670,34 @@ export default function FabricManagementEnhancedV2() {
                             <SelectTrigger className="h-12 px-4 text-sm">
                               <SelectValue placeholder="Select fabric type" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               <SelectItem
                                 value="Knit"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Knit
                               </SelectItem>
                               <SelectItem
                                 value="Woven"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Woven
                               </SelectItem>
                               <SelectItem
                                 value="Non-woven"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Non-woven
                               </SelectItem>
                               <SelectItem
                                 value="Composite"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Composite
                               </SelectItem>
                             </SelectContent>
                           </Select>
-                          <div className="mb-1 text-muted-foreground text-xs">
+                          <div className="text-muted-foreground mb-1 text-xs">
                             Or enter custom fabric type:
                           </div>
                           <Input
@@ -1750,46 +1750,46 @@ export default function FabricManagementEnhancedV2() {
                             <SelectTrigger className="h-12 px-4 text-sm">
                               <SelectValue placeholder="Add key applications" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               <SelectItem
                                 value="Activewear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Activewear
                               </SelectItem>
                               <SelectItem
                                 value="Outerwear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Outerwear
                               </SelectItem>
                               <SelectItem
                                 value="Base Layer"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Base Layer
                               </SelectItem>
                               <SelectItem
                                 value="Swimwear"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Swimwear
                               </SelectItem>
                               <SelectItem
                                 value="Athleisure"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Athleisure
                               </SelectItem>
                               <SelectItem
                                 value="Performance"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Performance
                               </SelectItem>
                               <SelectItem
                                 value="Casual"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Casual
                               </SelectItem>
@@ -1848,7 +1848,7 @@ export default function FabricManagementEnhancedV2() {
               >
                 <Card>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-muted/50">
+                    <CardHeader className="hover:bg-muted/50 cursor-pointer">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Activity className="h-5 w-5 text-green-500" />
@@ -1952,34 +1952,34 @@ export default function FabricManagementEnhancedV2() {
                                 >
                                   <SelectValue placeholder="Select rating" />
                                 </SelectTrigger>
-                                <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                                <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                                   <SelectItem
                                     value="Poor"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     Poor
                                   </SelectItem>
                                   <SelectItem
                                     value="Fair"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     Fair
                                   </SelectItem>
                                   <SelectItem
                                     value="Good"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     Good
                                   </SelectItem>
                                   <SelectItem
                                     value="Excellent"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     Excellent
                                   </SelectItem>
                                   <SelectItem
                                     value="Outstanding"
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     Outstanding
                                   </SelectItem>
@@ -2085,46 +2085,46 @@ export default function FabricManagementEnhancedV2() {
                             >
                               <SelectValue placeholder="Add performance features" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               <SelectItem
                                 value="Antimicrobial"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Antimicrobial
                               </SelectItem>
                               <SelectItem
                                 value="UV Protection"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 UV Protection
                               </SelectItem>
                               <SelectItem
                                 value="Quick-dry"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Quick-dry
                               </SelectItem>
                               <SelectItem
                                 value="Moisture Wicking"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Moisture Wicking
                               </SelectItem>
                               <SelectItem
                                 value="Breathable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Breathable
                               </SelectItem>
                               <SelectItem
                                 value="Temperature Regulation"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Temperature Regulation
                               </SelectItem>
                               <SelectItem
                                 value="Odor Control"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Odor Control
                               </SelectItem>
@@ -2184,7 +2184,7 @@ export default function FabricManagementEnhancedV2() {
               >
                 <Card>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-muted/50">
+                    <CardHeader className="hover:bg-muted/50 cursor-pointer">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Shield className="h-5 w-5 text-orange-500" />
@@ -2394,7 +2394,7 @@ export default function FabricManagementEnhancedV2() {
               >
                 <Card>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-muted/50">
+                    <CardHeader className="hover:bg-muted/50 cursor-pointer">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Globe className="h-5 w-5 text-emerald-500" />
@@ -2427,34 +2427,34 @@ export default function FabricManagementEnhancedV2() {
                             <SelectTrigger className="h-12 px-4 text-sm">
                               <SelectValue placeholder="Select rating" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               <SelectItem
                                 value="1"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 ⭐ 1 - Low Impact
                               </SelectItem>
                               <SelectItem
                                 value="2"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 ⭐⭐ 2 - Fair Impact
                               </SelectItem>
                               <SelectItem
                                 value="3"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 ⭐⭐⭐ 3 - Good Impact
                               </SelectItem>
                               <SelectItem
                                 value="4"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 ⭐⭐⭐⭐ 4 - Very Good Impact
                               </SelectItem>
                               <SelectItem
                                 value="5"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 ⭐⭐⭐⭐⭐ 5 - Excellent Impact
                               </SelectItem>
@@ -2517,14 +2517,14 @@ export default function FabricManagementEnhancedV2() {
                             <SelectTrigger className="h-12 px-4 text-sm">
                               <SelectValue placeholder="Add certifications" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               {certificates
                                 .filter((cert) => !formData.certificationTags.includes(cert.id))
                                 .map((cert) => (
                                   <SelectItem
                                     key={cert.id}
                                     value={cert.id.toString()}
-                                    className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                    className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                   >
                                     {cert.name}
                                   </SelectItem>
@@ -2574,40 +2574,40 @@ export default function FabricManagementEnhancedV2() {
                             <SelectTrigger className="h-12 px-4 text-sm">
                               <SelectValue placeholder="Add end-of-life options" />
                             </SelectTrigger>
-                            <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                            <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                               <SelectItem
                                 value="Recyclable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Recyclable
                               </SelectItem>
                               <SelectItem
                                 value="Biodegradable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Biodegradable
                               </SelectItem>
                               <SelectItem
                                 value="Compostable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Compostable
                               </SelectItem>
                               <SelectItem
                                 value="Reusable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Reusable
                               </SelectItem>
                               <SelectItem
                                 value="Upcyclable"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Upcyclable
                               </SelectItem>
                               <SelectItem
                                 value="Energy Recovery"
-                                className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                               >
                                 Energy Recovery
                               </SelectItem>
@@ -2663,7 +2663,7 @@ export default function FabricManagementEnhancedV2() {
               <Collapsible open={sectionsOpen.care} onOpenChange={() => toggleSectionOpen("care")}>
                 <Card>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-muted/50">
+                    <CardHeader className="hover:bg-muted/50 cursor-pointer">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Palette className="h-5 w-5 text-purple-500" />
@@ -2734,100 +2734,100 @@ export default function FabricManagementEnhancedV2() {
                               <SelectTrigger className="h-12 px-4 text-sm">
                                 <SelectValue placeholder="Add care instructions" />
                               </SelectTrigger>
-                              <SelectContent className="z-modal-nested max-h-72 w-full min-w-0 max-w-xs overflow-y-auto">
+                              <SelectContent className="z-modal-nested max-h-72 w-full max-w-xs min-w-0 overflow-y-auto">
                                 <SelectItem
                                   value="30°C Machine Wash"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   30°C Machine Wash
                                 </SelectItem>
                                 <SelectItem
                                   value="40°C Machine Wash"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   40°C Machine Wash
                                 </SelectItem>
                                 <SelectItem
                                   value="Hand Wash Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Hand Wash Only
                                 </SelectItem>
                                 <SelectItem
                                   value="Tumble Dry Low"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Tumble Dry Low
                                 </SelectItem>
                                 <SelectItem
                                   value="Iron Low Heat"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Iron Low Heat
                                 </SelectItem>
                                 <SelectItem
                                   value="Dry Clean Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Dry Clean Only
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Bleach"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Do Not Bleach
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Tumble Dry"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Do Not Tumble Dry
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Iron"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Do Not Iron
                                 </SelectItem>
                                 <SelectItem
                                   value="Do Not Dry Clean"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Do Not Dry Clean
                                 </SelectItem>
                                 <SelectItem
                                   value="No Fabric Softener"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   No Fabric Softener
                                 </SelectItem>
                                 <SelectItem
                                   value="No Direct Heat"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   No Direct Heat
                                 </SelectItem>
                                 <SelectItem
                                   value="Wash Separately"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Wash Separately
                                 </SelectItem>
                                 <SelectItem
                                   value="Inside Out Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Inside Out Only
                                 </SelectItem>
                                 <SelectItem
                                   value="No Soaking"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   No Soaking
                                 </SelectItem>
                                 <SelectItem
                                   value="Air Dry Only"
-                                  className="h-12 cursor-pointer px-4 text-sm hover:bg-background"
+                                  className="hover:bg-background h-12 cursor-pointer px-4 text-sm"
                                 >
                                   Air Dry Only
                                 </SelectItem>
@@ -2926,8 +2926,8 @@ export default function FabricManagementEnhancedV2() {
                                 className="h-16 w-16 rounded border object-contain"
                               />
                               <div className="flex-1">
-                                <div className="font-medium text-sm">Visual Swatch Selected</div>
-                                <div className="truncate text-muted-foreground text-xs">
+                                <div className="text-sm font-medium">Visual Swatch Selected</div>
+                                <div className="text-muted-foreground truncate text-xs">
                                   {selectedSwatchAsset.originalName || selectedSwatchAsset.filename}
                                 </div>
                               </div>
@@ -3003,7 +3003,7 @@ export default function FabricManagementEnhancedV2() {
             <DialogTitle>Delete Fabric</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <p className="text-neutral-600 text-sm">
+            <p className="text-sm text-neutral-600">
               Are you sure you want to delete "{fabricToDelete?.name}"? This action cannot be
               undone.
             </p>
