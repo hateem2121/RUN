@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "npm run dev:server",
     "dev:server": "npm run --workspace=@run-remix/server dev",
+    "start": "npm run --workspace=@run-remix/server start",
     "build": "npm run build --workspaces",
     "build:client": "npm run build --workspace=@run-remix/client",
     "build:server": "npm run build --workspace=@run-remix/server",

@@ -30,6 +30,18 @@ export default defineConfig({
       },
     },
   },
+  // PERFORMANCE: Limit concurrency to avoid checking out valid memory
+  // @ts-expect-error - poolOptions is valid in Vitest 2+ but types might be strict
+  poolOptions: {
+    threads: {
+      maxThreads: 4,
+      minThreads: 1,
+      // isolate: false, // Uncomment if tests are purely functional/stateless for 2x speed
+    },
+    vmThreads: {
+      memoryLimit: "2GB",
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),

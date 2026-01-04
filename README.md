@@ -155,7 +155,6 @@ RUN-Remix/
 ```
 ├── scripts/                   # Build & verification scripts
 │   ├── verify-ssr-template.ts
-│   ├── verify-build.cjs
 │   └── check-ssr-invariants.js
 │
 ├── docs/                      # Documentation
@@ -188,8 +187,7 @@ npm run lint:html        # HTML validation
 npm run build            # Full production build
 npm run build:client     # Build client with SSR manifest
 npm run build:ssr        # Build SSR entry
-npm run build:server     # TypeScript compile server
-npm run build:express    # esbuild bundle for production
+npm run build:server     # TypeScript compile + esbuild bundle
 npm run start            # Start production server
 ```
 

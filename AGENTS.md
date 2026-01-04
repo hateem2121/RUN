@@ -7,7 +7,9 @@ This file serves as the source of truth for AI agents operating on this reposito
 - **Technical Integrity Check:** `npm run verify:tech-integrity`
   - Runs build, typecheck, and audit. Use this before committing.
 - **Development Server:** `npm run dev`
-  - Starts the development server (Express 5 + Vite).
+  - Starts the development server. **Note:** The `client` workspace does not have a `dev` script; the Express server (`@run-remix/server`) handles Vite middleware.
+- **Production Start:** `npm run start` (or `npm start` in `server/`)
+  - Starts the compiled production server.
 - **Test Runner:** `npm test` or `npm run test:e2e`
 
 ## Directory Structure
@@ -25,5 +27,5 @@ This file serves as the source of truth for AI agents operating on this reposito
 
 ## Key References
 
-- **Architecture:** `CODEMAP.md` (System Map & Patterns)
+- **Architecture:** `CODEMAP.md` (System Map) & `docs/architecture/antigravity_architecture_report.md` (Deep Dive)
 - **Audits:** `docs/audits/` (Historical health checks)
