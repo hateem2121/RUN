@@ -42,3 +42,4 @@ proxy_debug*.txt
 cookies.txt
 curl_debug.txt
 FINAL_REMEDIATION_PROMPT.txt
+.turbo

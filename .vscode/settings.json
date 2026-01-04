@@ -23,6 +23,7 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsserver.maxTsServerMemory": 3072,
 
   // === Formatter Settings ===
   "[typescript]": {
