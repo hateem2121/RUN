@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * MANUFACTURING PROCESSES RESOURCE ROUTER
  *
@@ -119,7 +121,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newProcess = await withTimeout(
-      getStorage().createManufacturingProcess(validation.data),
+      getStorage().createManufacturingProcess(removeUndefined(validation.data)),
       10000,
       "Create manufacturing process",
     );
@@ -153,7 +155,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateManufacturingProcess(id, validation.data),
+      getStorage().updateManufacturingProcess(id, removeUndefined(validation.data)),
       10000,
       "Update manufacturing process",
     );
@@ -222,8 +224,9 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.processes.map(({ id, position }: { id: number; position: number }) =>
-        getStorage().updateManufacturingProcess(id, { sortOrder: position }),
+      removeUndefined(validation.data).processes.map(
+        ({ id, position }: { id: number; position: number }) =>
+          getStorage().updateManufacturingProcess(id, { sortOrder: position }),
       ),
     );
 

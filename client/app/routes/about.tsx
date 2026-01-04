@@ -125,7 +125,7 @@ export default function About() {
     longitude: parseFloat(location.longitude), // Convert decimal string to number
     city: location.city || "",
     country: location.country || "", // Handle null country values
-    details: location.details || undefined,
+    details: location.details || "",
     isActive: location.isActive ?? true,
   }));
 
@@ -138,10 +138,10 @@ export default function About() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-blue-600 border-b-2"></div>
           <Typography.P className="text-muted-foreground">Loading about page...</Typography.P>
           {batchLoading && (
-            <Typography.P className="text-muted-foreground/70 mt-2 text-sm">
+            <Typography.P className="mt-2 text-muted-foreground/70 text-sm">
               Loading about page data...
             </Typography.P>
           )}
@@ -154,7 +154,7 @@ export default function About() {
   const timelineData = sortedTimeline.map((item) => ({
     title: item.year.toString(),
     content: (
-      <GlassCard className="group shadow-inner-sm p-6">
+      <GlassCard className="group p-6 shadow-inner-sm">
         {/* Gradient overlay for depth */}
         <div className="pointer-events-none absolute inset-0 rounded-xl bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
@@ -162,8 +162,8 @@ export default function About() {
         <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
         {/* Content */}
-        <div className="z-default relative">
-          <Typography.H3 className="mb-3 text-xl font-bold text-neutral-900 dark:text-neutral-100">
+        <div className="relative z-default">
+          <Typography.H3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
             {item.title}
           </Typography.H3>
           {item.description && (
@@ -202,7 +202,7 @@ export default function About() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-background min-h-screen">
+      <div className="min-h-screen bg-background">
         {/* Unified Scroll Expansion Hero Section with Overlay Content */}
         <HeroSection
           heroData={heroData || {}}
@@ -230,7 +230,7 @@ export default function About() {
                 transition={{ duration: 0.8 }}
                 className="mx-auto max-w-4xl"
               >
-                <Card className="group border-border/60 bg-background/10 shadow-glow-lg shadow-inner-sm dark:border-border/70 dark:bg-background/5 relative overflow-hidden border backdrop-blur-md">
+                <Card className="group relative overflow-hidden border border-border/60 bg-background/10 shadow-glow-lg shadow-inner-sm backdrop-blur-md dark:border-border/70 dark:bg-background/5">
                   {/* Gradient overlay for depth */}
                   <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
 
@@ -244,7 +244,7 @@ export default function About() {
                     </div>
                   )}
 
-                  <CardContent className="z-default relative p-8 md:p-12">
+                  <CardContent className="relative z-default p-8 md:p-12">
                     <div className="grid items-center gap-8 md:grid-cols-2">
                       <div>
                         {teamMessage.imageId && getAsset(teamMessage.imageId) && (
@@ -260,20 +260,20 @@ export default function About() {
                         )}
                       </div>
                       <div>
-                        <MessageSquare className="text-primary mb-4 h-8 w-8" />
+                        <MessageSquare className="mb-4 h-8 w-8 text-primary" />
                         {teamMessage.title && (
-                          <Typography.H3 className="mb-4 text-2xl font-bold">
+                          <Typography.H3 className="mb-4 font-bold text-2xl">
                             {teamMessage.title}
                           </Typography.H3>
                         )}
                         {teamMessage.message && (
-                          <Typography.P className="text-muted-foreground mb-6 leading-relaxed">
+                          <Typography.P className="mb-6 text-muted-foreground leading-relaxed">
                             {teamMessage.message}
                           </Typography.P>
                         )}
                         {teamMessage.signature && (
                           <div className="border-t pt-4">
-                            <Typography.P className="text-foreground font-semibold">
+                            <Typography.P className="font-semibold text-foreground">
                               {teamMessage.signature}
                             </Typography.P>
                             <Typography.P className="text-muted-foreground text-sm">
@@ -306,10 +306,10 @@ export default function About() {
                 transition={{ duration: 0.6 }}
                 className="mb-16 text-center"
               >
-                <Typography.H2 className="mb-4 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                   Key Statistics
                 </Typography.H2>
-                <Typography.P className="max-w-reading text-muted-foreground mx-auto md:text-xl">
+                <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
                   Our impact and achievements in numbers
                 </Typography.P>
               </motion.div>
@@ -346,7 +346,7 @@ export default function About() {
                           <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
                             <IconComponent className="h-8 w-8 text-white" />
                           </div>
-                          <Typography.H3 className="mb-2 text-3xl font-bold text-white">
+                          <Typography.H3 className="mb-2 font-bold text-3xl text-white">
                             {stat.value}
                             {stat.unit && (
                               <span className="ml-1 text-lg text-white/70">{stat.unit}</span>
@@ -376,17 +376,17 @@ export default function About() {
                 transition={{ duration: 0.6 }}
                 className="mb-16 text-center"
               >
-                <Typography.H2 className="mb-4 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
                   Global Presence
                 </Typography.H2>
-                <Typography.P className="max-w-reading text-muted-foreground mx-auto md:text-xl">
+                <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
                   Our manufacturing facilities and client partnerships span across continents
                 </Typography.P>
               </motion.div>
 
               <ClientOnly
                 fallback={
-                  <div className="h-modal-sm bg-muted flex w-full animate-pulse items-center justify-center rounded-2xl">
+                  <div className="flex h-modal-sm w-full animate-pulse items-center justify-center rounded-2xl bg-muted">
                     Loading map...
                   </div>
                 }

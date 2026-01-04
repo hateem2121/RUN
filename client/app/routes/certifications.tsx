@@ -71,12 +71,12 @@ export default function Certifications() {
   const getCertificateDetails = (cert: Certificate) => (
     <div className="space-y-3 text-sm">
       <div>
-        <span className="text-foreground/80 font-medium">Issuing Body:</span>
+        <span className="font-medium text-foreground/80">Issuing Body:</span>
         <Typography.P className="text-muted-foreground">{cert.issuingBody}</Typography.P>
       </div>
       {cert.documentUrl && (
         <div>
-          <span className="text-foreground/80 font-medium">Documentation:</span>
+          <span className="font-medium text-foreground/80">Documentation:</span>
           <a
             href={cert.documentUrl}
             target="_blank"
@@ -89,15 +89,15 @@ export default function Certifications() {
       )}
       {cert.description && (
         <div>
-          <span className="text-foreground/80 font-medium">Details:</span>
-          <Typography.P className="text-muted-foreground mt-1">{cert.description}</Typography.P>
+          <span className="font-medium text-foreground/80">Details:</span>
+          <Typography.P className="mt-1 text-muted-foreground">{cert.description}</Typography.P>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="from-muted/30 to-background min-h-screen bg-linear-to-b">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         {/* Header */}
         <motion.div
@@ -105,21 +105,21 @@ export default function Certifications() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             Certifications & Standards
           </Typography.H1>
-          <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
+          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Industry-leading quality and compliance certifications for premium sportswear
             manufacturing
           </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">{certificates.length}</div>
+              <div className="font-bold text-3xl text-green-600">{certificates.length}</div>
               <div className="text-muted-foreground text-sm">Active Certifications</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="font-bold text-3xl text-blue-600">
                 {
                   certificates.filter((c) => c.type && c.type.toLowerCase() === "sustainability")
                     .length
@@ -152,8 +152,8 @@ export default function Certifications() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Shield className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
-                <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
+                <Shield className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   {searchTerm ? "No certifications found" : "No certifications available"}
                 </Typography.H3>
                 <Typography.P className="text-muted-foreground">

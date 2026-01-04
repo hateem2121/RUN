@@ -19,8 +19,8 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.errorCode = errorCode;
     this.isOperational = isOperational;
-    this.details = details;
-    this.metadata = metadata;
+    if (details) this.details = details;
+    if (metadata) this.metadata = metadata;
 
     Error.captureStackTrace(this);
   }

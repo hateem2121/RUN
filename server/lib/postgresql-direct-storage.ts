@@ -287,15 +287,19 @@ export class DirectPostgreSQLStorage implements IStorage {
   async getMediaAssets(
     limit: number = 100,
     offset: number = 0,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number;
+    },
   ): Promise<MediaAsset[]> {
     return (await this.mediaRepository.getMediaAssets(limit, offset, filters)) as any;
   }
 
   async getMediaAssetsCount(filters?: {
-    type?: string;
-    search?: string;
-    folderId?: number;
+    type?: string | undefined;
+    search?: string | undefined;
+    folderId?: number | undefined;
   }): Promise<number> {
     return await this.mediaRepository.getMediaAssetsCount(filters);
   }
@@ -303,7 +307,11 @@ export class DirectPostgreSQLStorage implements IStorage {
   async getMediaAssetsWithCount(
     limit?: number,
     offset?: number,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number;
+    },
   ): Promise<{ assets: MediaAsset[]; total: number }> {
     return (await this.mediaRepository.getMediaAssetsWithCount(limit, offset, filters)) as any;
   }
@@ -798,11 +806,11 @@ export class DirectPostgreSQLStorage implements IStorage {
   }
 
   async listInquiries(filters: {
-    page?: number;
-    limit?: number;
-    status?: string;
-    source?: string;
-    search?: string;
+    page?: number | undefined;
+    limit?: number | undefined;
+    status?: string | undefined;
+    source?: string | undefined;
+    search?: string | undefined;
   }): Promise<{ inquiries: Inquiry[]; total: number }> {
     return await this.miscRepository.listInquiries(filters);
   }

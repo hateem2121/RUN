@@ -1037,11 +1037,11 @@ export class MiscRepository {
   }
 
   async listInquiries(filters: {
-    page?: number;
-    limit?: number;
-    status?: string;
-    source?: string;
-    search?: string;
+    page?: number | undefined;
+    limit?: number | undefined;
+    status?: string | undefined;
+    source?: string | undefined;
+    search?: string | undefined;
   }): Promise<{ inquiries: Inquiry[]; total: number }> {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 20;

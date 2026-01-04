@@ -5,18 +5,18 @@ import { Label } from "@/components/ui/label";
 interface DropdownOption {
   value: string;
   label: string;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 interface CustomDropdownProps {
-  value?: string;
+  value?: string | undefined;
   onChange: (value: string) => void;
   options: DropdownOption[];
-  label?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
+  label?: string | undefined;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export function CustomDropdown({

@@ -102,10 +102,10 @@ export function SustainabilityFabricIntegration() {
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <Leaf className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">{totalFabrics}</span>
+                <span className="font-bold text-2xl text-green-600">{totalFabrics}</span>
               </div>
-              <h3 className="text-foreground font-medium">Total Fabrics</h3>
-              <p className="text-muted-foreground mt-1 text-sm">In our portfolio</p>
+              <h3 className="font-medium text-foreground">Total Fabrics</h3>
+              <p className="mt-1 text-muted-foreground text-sm">In our portfolio</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -119,12 +119,12 @@ export function SustainabilityFabricIntegration() {
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <Award className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">
+                <span className="font-bold text-2xl text-green-600">
                   {sustainableFabrics.length}
                 </span>
               </div>
-              <h3 className="text-foreground font-medium">Eco-Certified</h3>
-              <p className="text-muted-foreground mt-1 text-sm">4+ sustainability score</p>
+              <h3 className="font-medium text-foreground">Eco-Certified</h3>
+              <p className="mt-1 text-muted-foreground text-sm">4+ sustainability score</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -138,10 +138,10 @@ export function SustainabilityFabricIntegration() {
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <TrendingUp className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">{avgScore.toFixed(1)}/5</span>
+                <span className="font-bold text-2xl text-green-600">{avgScore.toFixed(1)}/5</span>
               </div>
-              <h3 className="text-foreground font-medium">Average Score</h3>
-              <p className="text-muted-foreground mt-1 text-sm">Sustainability rating</p>
+              <h3 className="font-medium text-foreground">Average Score</h3>
+              <p className="mt-1 text-muted-foreground text-sm">Sustainability rating</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -155,15 +155,15 @@ export function SustainabilityFabricIntegration() {
             <CardContent className="p-6">
               <div className="mb-2 flex items-center justify-between">
                 <BarChart3 className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">
+                <span className="font-bold text-2xl text-green-600">
                   {totalFabrics > 0
                     ? Math.round((sustainableFabrics.length / totalFabrics) * 100)
                     : 0}
                   %
                 </span>
               </div>
-              <h3 className="text-foreground font-medium">Sustainable</h3>
-              <p className="text-muted-foreground mt-1 text-sm">Of total fabrics</p>
+              <h3 className="font-medium text-foreground">Sustainable</h3>
+              <p className="mt-1 text-muted-foreground text-sm">Of total fabrics</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -195,7 +195,7 @@ export function SustainabilityFabricIntegration() {
                         {index + 1}
                       </div>
                       <div>
-                        <h4 className="text-foreground font-medium">{fabric.name}</h4>
+                        <h4 className="font-medium text-foreground">{fabric.name}</h4>
                         <p className="text-muted-foreground text-sm">
                           {fabric.weight} GSM • {fabric.weaveTypes}
                         </p>

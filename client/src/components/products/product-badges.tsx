@@ -1,6 +1,6 @@
 interface CertificationBadgeProps {
   text: string;
-  className?: string;
+  className?: string | undefined;
 }
 
 export const CertificationBadge = ({ text, className }: CertificationBadgeProps) => (

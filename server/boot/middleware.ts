@@ -1,4 +1,5 @@
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
 import { getConfig } from "../config/production.js";
@@ -14,6 +15,7 @@ import {
 } from "../middleware/canonical.js";
 import { correlationIdMiddleware } from "../middleware/correlation-id.js";
 import { createCorsMiddleware } from "../middleware/cors-config.js";
+import { csrfProtection } from "../middleware/csrf.js";
 import {
   healthCheckHandler,
   quickHealthHandler,
@@ -45,8 +47,11 @@ export function setupMiddleware(app: Express) {
   app.set("trust proxy", true);
 
   // Sentry Request Handler (Must be first middleware)
-  // app.use(sentryRequestHandler);
-  // app.use(sentryTracingHandler);
+  // Only enable if SENTRY_DSN is configured
+  if (process.env.SENTRY_DSN) {
+    app.use(sentryRequestHandler);
+    app.use(sentryTracingHandler);
+  }
 
   // Phase 7: Express 5 Stability Fix
   // Track response state to prevent 404 fall-through race conditions
@@ -55,12 +60,21 @@ export function setupMiddleware(app: Express) {
   // Global Error Handlers Setup
   setupGlobalErrorHandlers();
 
+  // Cookie Parser (Required for CSRF)
+  app.use(cookieParser());
+
   // Basic Security & Identity
   app.use(createCorsMiddleware());
   app.use(nonceMiddleware);
 
+  // CSRF Protection (Double-Submit Cookie pattern)
+  app.use(csrfProtection);
+
   // Production Security features
-  if (config.app.environment === "production") {
+  if (
+    config.app.environment === "production" ||
+    process.env.NODE_ENV === "production"
+  ) {
     app.use(securityHeaders);
     app.use(requestValidation);
     app.use(requestTimeout);
@@ -101,7 +115,9 @@ export function setupErrorHandling(app: Express) {
   app.use(notFoundHandler);
 
   // Sentry Error Handler (Must be before other error middleware)
-  // app.use(sentryErrorHandler);
+  if (process.env.SENTRY_DSN) {
+    app.use(sentryErrorHandler);
+  }
 
   // Production Error Handler
   app.use(productionErrorHandler);

@@ -29,7 +29,7 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
         const response = await fetch(`http://localhost:5000${endpoint}`, {
           method,
           headers: { "Content-Type": "application/json" },
-          body: data ? JSON.stringify(data) : undefined,
+          ...(data ? { body: JSON.stringify(data) } : {}),
         });
         if (!response.ok) {
           const errorText = await response.text();

@@ -3,8 +3,8 @@ import { useRef, useState } from "react";
 
 interface HoverCard3DProps {
   children: React.ReactNode;
-  className?: string;
-  maxRotation?: number;
+  className?: string | undefined;
+  maxRotation?: number | undefined;
 }
 
 export function HoverCard3D({ children, className = "", maxRotation = 15 }: HoverCard3DProps) {

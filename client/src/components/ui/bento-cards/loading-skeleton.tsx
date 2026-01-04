@@ -2,9 +2,9 @@ import { memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface LoadingSkeletonProps {
-  className?: string;
+  className?: string | undefined;
   type?: "card" | "media" | "text";
-  animated?: boolean;
+  animated?: boolean | undefined;
 }
 
 const LoadingSkeleton = memo(function LoadingSkeleton({

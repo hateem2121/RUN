@@ -47,15 +47,24 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         Chevron: ({
           orientation,
           className,
+          size,
+          disabled,
           ...props
         }: {
           orientation?: "left" | "right" | "up" | "down";
-          className?: string;
-          size?: number;
-          disabled?: boolean;
+          className?: string | undefined;
+          size?: number | undefined;
+          disabled?: boolean | undefined;
         }) => {
           const Icon = orientation === "left" ? ChevronLeft : ChevronRight;
-          return <Icon className={cn("h-4 w-4", className)} {...props} />;
+          return (
+            <Icon
+              className={cn("h-4 w-4", className)}
+              {...(size ? { size } : {})}
+              {...(disabled !== undefined ? { disabled } : {})}
+              {...props}
+            />
+          );
         },
       }}
       {...props}

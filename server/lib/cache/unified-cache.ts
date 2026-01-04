@@ -1,6 +1,6 @@
+import { promisify } from "node:util";
+import { gunzip, gzip } from "node:zlib";
 import { LRUCache } from "lru-cache";
-import { promisify } from "util";
-import { gunzip, gzip } from "zlib";
 import { logger } from "../monitoring/logger.js";
 import { isRedisEnabled, redis } from "./upstash-client.js";
 
@@ -14,7 +14,7 @@ import { isRedisEnabled, redis } from "./upstash-client.js";
  */
 export interface SWRConfig {
   ttl: number;
-  staleWhileRevalidate?: number;
+  staleWhileRevalidate?: number | undefined;
 }
 
 const gzipAsync = promisify(gzip);
@@ -139,7 +139,7 @@ export class UnifiedCache {
     if (payload.length > COMPRESSION_THRESHOLD) {
       const buffer = await gzipAsync(Buffer.from(payload));
       // Store as base64 with prefix to identify compressed data
-      payload = "gz:" + buffer.toString("base64");
+      payload = `gz:${buffer.toString("base64")}`;
     }
 
     await redis.set(key, payload, { ex: ttlSeconds });
@@ -326,7 +326,7 @@ export class UnifiedCache {
         if (latency > 500) {
           issues.push(`High Redis latency: ${Math.round(latency)}ms`);
         }
-      } catch (err) {
+      } catch (_err) {
         issues.push("Redis connection failed");
       }
     }

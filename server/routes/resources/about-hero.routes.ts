@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ABOUT HERO RESOURCE ROUTER
  *
@@ -66,7 +68,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
 
     // Update hero
     const updatedHero = await withTimeout(
-      aboutService.updateHero(validation.data),
+      aboutService.updateHero(removeUndefined(validation.data)),
       10000,
       "Update about hero",
     );

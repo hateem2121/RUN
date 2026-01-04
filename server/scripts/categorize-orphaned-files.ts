@@ -4,16 +4,16 @@ import fs from "node:fs";
 
 // interface OrphanedFile {
 //   path: string;
-//   size?: number;
-//   concern?: string;
-//   reason?: string;
+//   size?: number | undefined;
+//   concern?: string | undefined;
+//   reason?: string | undefined;
 // }
 
 interface VerifiedResult {
   path: string;
   status: "FALSE_POSITIVE" | "TRUE_ORPHAN" | "NEEDS_MANUAL_REVIEW";
   reason: string;
-  size?: number;
+  size?: number | undefined;
 }
 
 interface CategorizedFiles {

@@ -28,18 +28,18 @@ interface CategoryDisplayProps {
   category: Category;
   mode: "table" | "grid" | "tree";
   isSelected: boolean;
-  isExpanded?: boolean;
-  depth?: number;
+  isExpanded?: boolean | undefined;
+  depth?: number | undefined;
   productCount: number;
-  parentName?: string;
-  isLoading?: boolean;
+  parentName?: string | undefined;
+  isLoading?: boolean | undefined;
   onToggleSelection: (id: number) => void;
-  onToggleExpanded?: (id: number) => void;
+  onToggleExpanded?: ((id: number) => void) | undefined;
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
   // Drag and drop props
-  isDragging?: boolean;
-  enableDragDrop?: boolean;
+  isDragging?: boolean | undefined;
+  enableDragDrop?: boolean | undefined;
 }
 
 // Helper functions
@@ -83,7 +83,7 @@ const CategoryActions = memo(
     category: Category;
     onEdit: (category: Category) => void;
     onDelete: (category: Category) => void;
-    isLoading?: boolean;
+    isLoading?: boolean | undefined;
   }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -136,9 +136,7 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
     <tr
       ref={setNodeRef}
       style={style}
-      className={`group transition-colors hover:bg-background ${isSelected ? "bg-blue-50" : ""}
-        ${isDragging ? "border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""}
-      `}
+      className={`group transition-colors hover:bg-background ${isSelected ? "bg-blue-50" : ""} ${isDragging ? "border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""} `}
     >
       <td className="w-12 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -220,9 +218,7 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
       style={style}
       className={`group transition-all hover:shadow-md ${
         isSelected ? "bg-blue-50 ring-2 ring-ring" : ""
-      }
-        ${isDragging ? "scale-105 opacity-50 shadow-lg ring-2 ring-blue-300 ring-dashed" : ""}
-      `}
+      } ${isDragging ? "scale-105 opacity-50 shadow-lg ring-2 ring-blue-300 ring-dashed" : ""} `}
     >
       <CardContent className="p-4">
         <div className="space-y-3">
@@ -316,13 +312,9 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
       style={style}
       className={`group flex items-center rounded-lg p-2 transition-colors hover:bg-background ${
         isSelected ? "bg-blue-50" : ""
-      }
-        ${
-          isDragging
-            ? "scale-105 border-2 border-blue-300 border-dashed bg-blue-100 opacity-50"
-            : ""
-        }
-      `}
+      } ${
+        isDragging ? "scale-105 border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""
+      } `}
       data-depth={depth}
     >
       {/* Expand/collapse button */}

@@ -45,7 +45,7 @@ interface StandardMediaSelectionDialogProps {
   onSelect: (assets: MediaAsset[] | MediaAsset) => void;
 
   /** Dialog title */
-  title?: string;
+  title?: string | undefined;
 
   /** Media picker context identifier for filtering */
   mediaPickerTarget: string;
@@ -54,7 +54,7 @@ interface StandardMediaSelectionDialogProps {
   selectionMode?: "single" | "multiple";
 
   /** Maximum number of assets for multiple selection */
-  maxSelection?: number;
+  maxSelection?: number | undefined;
 
   /** Pre-selected asset IDs */
   initialSelectedIds?: number[];

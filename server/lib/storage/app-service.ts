@@ -100,7 +100,7 @@ export class AppStorageService {
   async uploadAsset(
     key: string,
     data: Buffer | Uint8Array | string,
-    metadata?: { contentType?: string; isPublic?: boolean },
+    metadata?: { contentType?: string | undefined; isPublic?: boolean },
   ): Promise<string> {
     try {
       const bucket = this.storage.bucket(this.bucketName);
@@ -168,9 +168,9 @@ export class AppStorageService {
   async listAssets(prefix?: string): Promise<string[]> {
     try {
       const bucket = this.storage.bucket(this.bucketName);
-      const [files] = await bucket.getFiles({ prefix });
+      const [files] = (await bucket.getFiles({ ...(prefix ? { prefix } : {}) } as any)) as any;
 
-      const keys = files.map((file) => file.name);
+      const keys = files.map((file: any) => file.name);
       logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
       return keys;
     } catch (error) {
@@ -200,7 +200,7 @@ export class AppStorageService {
     assets: Array<{
       key: string;
       data: Buffer | Uint8Array | string;
-      metadata?: { contentType?: string; isPublic?: boolean };
+      metadata?: { contentType?: string | undefined; isPublic?: boolean };
     }>,
   ): Promise<string[]> {
     // Parallel uploads

@@ -34,9 +34,9 @@ export default defineConfig(
         Inspect(),
         // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
         sentryVitePlugin({
-          org: process.env.SENTRY_ORG,
-          project: process.env.SENTRY_PROJECT,
-          authToken: process.env.SENTRY_AUTH_TOKEN,
+          ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
+          ...(process.env.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
+          ...(process.env.SENTRY_AUTH_TOKEN ? { authToken: process.env.SENTRY_AUTH_TOKEN } : {}),
           disable: mode !== "production", // Only upload in production
         }),
       ],

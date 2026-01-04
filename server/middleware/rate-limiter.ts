@@ -10,14 +10,15 @@ interface RateLimitStore {
 interface RateLimitOptions {
   windowMs: number;
   max: number;
-  message?: string;
-  keyPrefix?: string;
-  skipSuccessfulRequests?: boolean;
+  message?: string | undefined;
+  keyPrefix?: string | undefined;
+  skipSuccessfulRequests?: boolean | undefined;
   skip?: (req: Request) => boolean; // Allow skipping rate limit for certain requests
 }
 
 /**
  * Simple rate limiter for upload endpoints to prevent abuse
+ * @deprecated Use `rateLimiter.ts` (Redis-backed) instead. This in-memory implementation is legacy.
  */
 export class UploadRateLimiter {
   private store: RateLimitStore = {};
@@ -42,7 +43,9 @@ export class UploadRateLimiter {
   private getClientKey(req: Request): string {
     // Use IP address as key, could be enhanced with user ID for authenticated users
     const forwarded = req.headers["x-forwarded-for"] as string;
-    const ip = forwarded ? forwarded.split(",")[0] : req.connection.remoteAddress;
+    const ip = forwarded
+      ? forwarded.split(",")[0]
+      : req.connection.remoteAddress;
     return `upload_${ip}`;
   }
 
@@ -70,10 +73,19 @@ export class UploadRateLimiter {
 
     if (this.store[key].count >= this.maxRequests) {
       const resetIn = Math.ceil((this.store[key].resetTime - now) / 1000);
+      // IETF draft rate limit headers + Retry-After
+      // Reference: https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/
       res.set({
+        // Legacy headers (for backwards compatibility)
         "X-RateLimit-Limit": this.maxRequests.toString(),
         "X-RateLimit-Remaining": "0",
         "X-RateLimit-Reset": resetIn.toString(),
+        // IETF standard headers
+        "RateLimit-Limit": this.maxRequests.toString(),
+        "RateLimit-Remaining": "0",
+        "RateLimit-Reset": resetIn.toString(),
+        // RFC 7231 Retry-After
+        "Retry-After": resetIn.toString(),
       });
 
       res.status(429).json({
@@ -86,10 +98,17 @@ export class UploadRateLimiter {
     }
 
     this.store[key].count++;
+    const remaining = this.maxRequests - this.store[key].count;
+    const resetIn = Math.ceil((this.store[key].resetTime - now) / 1000);
     res.set({
+      // Legacy headers
       "X-RateLimit-Limit": this.maxRequests.toString(),
-      "X-RateLimit-Remaining": (this.maxRequests - this.store[key].count).toString(),
-      "X-RateLimit-Reset": Math.ceil((this.store[key].resetTime - now) / 1000).toString(),
+      "X-RateLimit-Remaining": remaining.toString(),
+      "X-RateLimit-Reset": resetIn.toString(),
+      // IETF standard headers
+      "RateLimit-Limit": this.maxRequests.toString(),
+      "RateLimit-Remaining": remaining.toString(),
+      "RateLimit-Reset": resetIn.toString(),
     });
 
     next();
@@ -105,6 +124,7 @@ export class UploadRateLimiter {
 /**
  * Generic rate limiter class for any endpoint
  * Phase 1, Block 1D: Rate limiting for expensive endpoints
+ * @deprecated Use `rateLimiter.ts` (Redis-backed) instead. This in-memory implementation is legacy.
  */
 export class GenericRateLimiter {
   private store: RateLimitStore = {};
@@ -118,9 +138,10 @@ export class GenericRateLimiter {
   constructor(options: RateLimitOptions) {
     this.maxRequests = options.max;
     this.windowMs = options.windowMs;
-    this.message = options.message || "Too many requests, please try again later";
+    this.message =
+      options.message || "Too many requests, please try again later";
     this.keyPrefix = options.keyPrefix || "rl";
-    this.skipFn = options.skip;
+    this.skipFn = options.skip || (() => false);
 
     // Cleanup expired entries periodically
     this.cleanupInterval = setInterval(
@@ -134,7 +155,9 @@ export class GenericRateLimiter {
   private getClientKey(req: Request): string {
     // Use IP address as key
     const forwarded = req.headers["x-forwarded-for"] as string;
-    const ip = forwarded ? forwarded.split(",")[0] : req.connection.remoteAddress;
+    const ip = forwarded
+      ? forwarded.split(",")[0]
+      : req.connection.remoteAddress;
     return `${this.keyPrefix}_${ip}`;
   }
 

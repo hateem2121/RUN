@@ -2,7 +2,7 @@
 // Provides workflow management and automation capabilities
 
 export const workflowAutomation = {
-  getAllWorkflows(options?: { limit?: number; offset?: number }) {
+  getAllWorkflows(options?: { limit?: number | undefined; offset?: number }) {
     const { limit = 20, offset = 0 } = options || {};
 
     // Clamp to non-negative integers, then enforce max limit of 100

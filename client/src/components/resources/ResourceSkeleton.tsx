@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface ResourceSkeletonProps {
-  count?: number;
+  count?: number | undefined;
   columns?: 1 | 2 | 3 | 4;
-  showDescription?: boolean;
+  showDescription?: boolean | undefined;
 }
 
 export function ResourceSkeleton({

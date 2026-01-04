@@ -20,9 +20,7 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     const vite = await createServer({
       server: {
         middlewareMode: true,
-        hmr: {
-          server: server, // Attach HMR to the existing HTTP server
-        },
+        hmr: { ...(server ? { server: server as any } : {}) },
       },
       appType: "custom",
       configFile: path.resolve(root, "client/vite.config.ts"),

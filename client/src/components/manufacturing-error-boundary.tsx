@@ -10,7 +10,7 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error?: Error;
+  error?: Error | null;
 }
 
 export class ManufacturingErrorBoundary extends Component<Props, State> {
@@ -26,7 +26,7 @@ export class ManufacturingErrorBoundary extends Component<Props, State> {
   componentDidCatch(_error: Error, _errorInfo: ErrorInfo) {}
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
+    this.setState({ hasError: false, error: null });
   };
 
   render() {
@@ -77,7 +77,7 @@ export const ManufacturingLoadingSkeleton = React.memo(function ManufacturingLoa
 export const AssetPlaceholder = React.memo(function AssetPlaceholder({
   className = "",
 }: {
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <div

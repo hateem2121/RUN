@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { z } from "zod";
-import { products } from "../seeds/products.js";
 
 const router = Router();
 

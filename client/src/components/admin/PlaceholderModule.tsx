@@ -7,16 +7,16 @@ interface PlaceholderModuleProps {
 
 export default function PlaceholderModule({ moduleName }: PlaceholderModuleProps) {
   return (
-    <div className="border-border/50 bg-muted/20 h-loading-center m-4 flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
-      <div className="bg-muted mb-6 rounded-full p-4">
-        <Wrench className="text-muted-foreground h-10 w-10" />
+    <div className="m-4 flex h-loading-center flex-col items-center justify-center rounded-lg border-2 border-border/50 border-dashed bg-muted/20 p-8 text-center">
+      <div className="mb-6 rounded-full bg-muted p-4">
+        <Wrench className="h-10 w-10 text-muted-foreground" />
       </div>
       <Typography.H2 className="mb-2">{moduleName} Module Check</Typography.H2>
-      <Typography.P className="text-muted-foreground mb-6 max-w-md">
+      <Typography.P className="mb-6 max-w-md text-muted-foreground">
         This administration module is currently being migrated to the new architecture. Please check
         back soon.
       </Typography.P>
-      <div className="bg-muted text-muted-foreground rounded px-3 py-1 font-mono text-xs">
+      <div className="rounded bg-muted px-3 py-1 font-mono text-muted-foreground text-xs">
         Status: Migration Pending
       </div>
     </div>

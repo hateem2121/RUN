@@ -65,17 +65,11 @@ export function MemoryCleanup() {
       }
     }, 30000);
 
-    window.addEventListener(
-      "memory-pressure",
-      handleMemoryPressure as EventListener,
-    );
+    window.addEventListener("memory-pressure", handleMemoryPressure as EventListener);
 
     return () => {
       clearInterval(memoryMonitor);
-      window.removeEventListener(
-        "memory-pressure",
-        handleMemoryPressure as EventListener,
-      );
+      window.removeEventListener("memory-pressure", handleMemoryPressure as EventListener);
     };
   }, []);
 

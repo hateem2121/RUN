@@ -35,9 +35,9 @@ export const SidebarProvider = ({
   animate = true,
 }: {
   children: React.ReactNode;
-  open?: boolean;
+  open?: boolean | undefined;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
+  animate?: boolean | undefined;
 }) => {
   const [openState, setOpenState] = useState(false);
 
@@ -58,12 +58,16 @@ export const Sidebar = ({
   animate,
 }: {
   children: React.ReactNode;
-  open?: boolean;
+  open?: boolean | undefined;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
+  animate?: boolean | undefined;
 }) => {
   return (
-    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
+    <SidebarProvider
+      open={open}
+      {...(setOpen ? { setOpen } : {})}
+      {...(animate !== undefined ? { animate } : {})}
+    >
       {children}
     </SidebarProvider>
   );
@@ -73,7 +77,7 @@ export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
     <>
       <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <MobileSidebar {...(props as unknown as React.ComponentProps<"div">)} />
     </>
   );
 };
@@ -87,7 +91,7 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "z-sticky fixed top-0 bottom-0 left-0 hidden w-80 shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800",
+        "fixed top-0 bottom-0 left-0 z-sticky hidden w-80 shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800",
         className,
       )}
       style={{ transform: "none", willChange: "auto" }}
@@ -108,7 +112,7 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
   return (
     <div
       className={cn(
-        "z-modal fixed top-0 right-0 left-0 flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
+        "fixed top-0 right-0 left-0 z-modal flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
       )}
       {...props}
     >
@@ -129,12 +133,12 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
               ease: "easeInOut",
             }}
             className={cn(
-              "z-modal fixed inset-0 flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
+              "fixed inset-0 z-modal flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
               className,
             )}
           >
             <div
-              className="z-modal absolute top-10 right-10 text-neutral-800 dark:text-neutral-200"
+              className="absolute top-10 right-10 z-modal text-neutral-800 dark:text-neutral-200"
               onClick={() => setOpen(!open)}
             >
               <IconX />
@@ -183,7 +187,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
         className={cn(
-          "!m-0 inline-block !p-0 text-sm whitespace-pre transition duration-150",
+          "!m-0 !p-0 inline-block whitespace-pre text-sm transition duration-150",
           isActive
             ? "font-medium text-neutral-900 dark:text-white"
             : "text-neutral-700 dark:text-neutral-200",

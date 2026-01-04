@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 
 interface ManufacturingStatusIndicatorProps {
-  value?: number;
-  maximum?: number;
-  label?: string;
+  value?: number | undefined;
+  maximum?: number | undefined;
+  label?: string | undefined;
   status?: "active" | "inactive" | "pending" | "success" | "warning";
   variant?: "progress" | "badge" | "metric" | "quality";
-  animate?: boolean;
-  delay?: number;
-  unit?: string;
-  showIcon?: boolean;
-  className?: string;
+  animate?: boolean | undefined;
+  delay?: number | undefined;
+  unit?: string | undefined;
+  showIcon?: boolean | undefined;
+  className?: string | undefined;
 }
 
 /**

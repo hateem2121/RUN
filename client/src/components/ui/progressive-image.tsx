@@ -8,22 +8,22 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ProgressiveImageProps {
-  src?: string;
+  src?: string | undefined;
   alt: string;
-  className?: string;
-  thumbnailSrc?: string;
-  blurhash?: string;
-  sizes?: string;
-  srcSet?: string;
+  className?: string | undefined;
+  thumbnailSrc?: string | undefined;
+  blurhash?: string | undefined;
+  sizes?: string | undefined;
+  srcSet?: string | undefined;
   loading?: "lazy" | "eager";
-  priority?: boolean;
+  priority?: boolean | undefined;
   onLoad?: () => void;
   onError?: (error: Error) => void;
-  aspectRatio?: number;
+  aspectRatio?: number | undefined;
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
   asset?: MediaAsset;
-  width?: number;
-  height?: number;
+  width?: number | undefined;
+  height?: number | undefined;
 }
 
 export function ProgressiveImage({
@@ -165,7 +165,7 @@ export function ProgressiveImage({
     // This would use a blurhash library in production
     return (
       <div
-        className="from-surface-muted to-surface-emphasis absolute inset-0 animate-pulse bg-linear-to-br"
+        className="absolute inset-0 animate-pulse bg-linear-to-br from-surface-muted to-surface-emphasis"
         aria-hidden="true"
       />
     );
@@ -178,9 +178,9 @@ export function ProgressiveImage({
     }
 
     return (
-      <div className="bg-surface-muted absolute inset-0 animate-pulse">
+      <div className="absolute inset-0 animate-pulse bg-surface-muted">
         <svg
-          className="text-surface-emphasis absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full text-surface-emphasis"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -193,7 +193,7 @@ export function ProgressiveImage({
 
   return (
     <div
-      className={cn("bg-surface-subtle relative overflow-hidden", className)}
+      className={cn("relative overflow-hidden bg-surface-subtle", className)}
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       {/* Placeholder / Loading state */}
@@ -234,10 +234,10 @@ export function ProgressiveImage({
 
       {/* Error state */}
       {imageState === "error" && (
-        <div className="center-flex bg-surface-subtle absolute inset-0">
+        <div className="center-flex absolute inset-0 bg-surface-subtle">
           <div className="p-4 text-center">
             <svg
-              className="text-text-subtle mx-auto mb-2 h-12 w-12"
+              className="mx-auto mb-2 h-12 w-12 text-text-subtle"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -249,7 +249,7 @@ export function ProgressiveImage({
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-text-muted text-sm">Failed to load image</p>
+            <p className="text-sm text-text-muted">Failed to load image</p>
           </div>
         </div>
       )}

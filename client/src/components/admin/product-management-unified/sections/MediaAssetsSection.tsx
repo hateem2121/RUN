@@ -21,15 +21,15 @@ import { Label } from "@/components/ui/label";
 interface SimpleMediaGridProps {
   mediaAssets: MediaAsset[];
   onOrderChange?: (reorderedAssets: MediaAsset[]) => void;
-  className?: string;
-  gridCols?: number;
-  itemSize?: string;
-  showStars?: boolean;
+  className?: string | undefined;
+  gridCols?: number | undefined;
+  itemSize?: string | undefined;
+  showStars?: boolean | undefined;
   primaryImageId?: number | null;
   primaryVideoId?: number | null;
   onStarToggle?: (assetId: number, assetType: "image" | "video") => void;
-  autoPlayOnHover?: boolean;
-  showVideoControls?: boolean;
+  autoPlayOnHover?: boolean | undefined;
+  showVideoControls?: boolean | undefined;
 }
 
 function SimpleMediaGrid({

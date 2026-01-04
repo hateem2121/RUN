@@ -13,18 +13,18 @@ export type RaysOrigin =
 
 interface LightRaysProps {
   raysOrigin?: RaysOrigin;
-  raysColor?: string;
-  raysSpeed?: number;
-  lightSpread?: number;
-  rayLength?: number;
-  pulsating?: boolean;
-  fadeDistance?: number;
-  saturation?: number;
-  followMouse?: boolean;
-  mouseInfluence?: number;
-  noiseAmount?: number;
-  distortion?: number;
-  className?: string;
+  raysColor?: string | undefined;
+  raysSpeed?: number | undefined;
+  lightSpread?: number | undefined;
+  rayLength?: number | undefined;
+  pulsating?: boolean | undefined;
+  fadeDistance?: number | undefined;
+  saturation?: number | undefined;
+  followMouse?: boolean | undefined;
+  mouseInfluence?: number | undefined;
+  noiseAmount?: number | undefined;
+  distortion?: number | undefined;
+  className?: string | undefined;
 }
 
 const DEFAULT_COLOR = "hsl(0 0% 100%)"; // white
@@ -429,7 +429,7 @@ void main() {
   return (
     <div
       ref={containerRef}
-      className={`z-default pointer-events-none relative h-full w-full overflow-hidden ${className}`.trim()}
+      className={`pointer-events-none relative z-default h-full w-full overflow-hidden ${className}`.trim()}
     />
   );
 };

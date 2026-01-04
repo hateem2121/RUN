@@ -22,7 +22,7 @@ export function AboutTeamMessageTab() {
     title: "",
     message: "",
     signature: "",
-    imageId: undefined,
+    imageId: null,
     isActive: true,
   });
 
@@ -118,7 +118,7 @@ export function AboutTeamMessageTab() {
 
   const handleRemoveMedia = () => {
     setSelectedMedia(null);
-    setFormData({ ...formData, imageId: undefined });
+    setFormData({ ...formData, imageId: null });
     setIsDirty(true);
   };
 

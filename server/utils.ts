@@ -13,10 +13,10 @@ import { logger } from "./lib/monitoring/logger.js";
 
 export interface SafeIdResult {
   isValid: boolean;
-  id?: number;
-  error?: string;
-  originalValue?: string;
-  context?: string;
+  id?: number | undefined;
+  error?: string | undefined;
+  originalValue?: string | undefined;
+  context?: string | undefined;
 }
 
 /**
@@ -25,11 +25,13 @@ export interface SafeIdResult {
 export function safeParseId(
   param: string | undefined,
   context: string = "entity",
-  requestInfo?: { method?: string; url?: string; userAgent?: string },
+  requestInfo?: {
+    method?: string | undefined;
+    url?: string | undefined;
+    userAgent?: string | undefined;
+  },
 ): SafeIdResult {
-  const debugInfo = requestInfo
-    ? ` [${requestInfo.method} ${requestInfo.url}]`
-    : "";
+  const debugInfo = requestInfo ? ` [${requestInfo.method} ${requestInfo.url}]` : "";
 
   if (!param) {
     const error = `Missing ${context} ID parameter`;
@@ -37,8 +39,7 @@ export function safeParseId(
     return { isValid: false, error, originalValue: param, context };
   }
 
-  const isLikelySlug =
-    param.includes("-") || param.includes("_") || /[a-zA-Z]/.test(param);
+  const isLikelySlug = param.includes("-") || param.includes("_") || /[a-zA-Z]/.test(param);
   if (isLikelySlug) {
     const error = `SLUG_DETECTED: Received slug-like ${context} parameter: '${param}' - expected numeric ID`;
     logger.error(`[SafeIdParser]${debugInfo} ${error}`);
@@ -71,9 +72,7 @@ export function safeParseId(
     return { isValid: false, error, originalValue: param, context };
   }
 
-  logger.debug(
-    `[SafeIdParser]${debugInfo} Successfully parsed ${context} ID: ${id}`,
-  );
+  logger.debug(`[SafeIdParser]${debugInfo} Successfully parsed ${context} ID: ${id}`);
   return { isValid: true, id, originalValue: param, context };
 }
 
@@ -134,8 +133,7 @@ export function validateIdParam(
 
 export function transformNullToUndefined<T>(obj: T): T {
   if (obj === null) return undefined as T;
-  if (Array.isArray(obj))
-    return obj.map((item) => transformNullToUndefined(item)) as T;
+  if (Array.isArray(obj)) return obj.map((item) => transformNullToUndefined(item)) as T;
   if (typeof obj === "object" && obj !== null) {
     const transformed: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -174,9 +172,7 @@ export function cleanApiData<T>(obj: unknown): Partial<T> {
 // Handles BigInt serialization for JSON responses
 export function safeSerialize<T>(data: T): T {
   return JSON.parse(
-    JSON.stringify(data, (_, value) =>
-      typeof value === "bigint" ? value.toString() : value,
-    ),
+    JSON.stringify(data, (_, value) => (typeof value === "bigint" ? value.toString() : value)),
   );
 }
 
@@ -204,11 +200,7 @@ export function validateFilename(filename: string): string {
   if (!filename || typeof filename !== "string") {
     throw new Error("Invalid filename: must be a non-empty string");
   }
-  if (
-    filename.includes("..") ||
-    filename.includes("/") ||
-    filename.includes("\\")
-  ) {
+  if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
     throw new Error("Invalid filename: path traversal detected");
   }
   return filename;
@@ -229,16 +221,11 @@ export const setSecureCORSHeaders = (res: Response, origin?: string): void => {
     res.setHeader("Access-Control-Allow-Origin", "*");
   } else {
     const allowedOrigin =
-      origin?.includes("replit.dev") || origin?.includes("replit.app")
-        ? origin
-        : "https://repl.co";
+      origin?.includes("replit.dev") || origin?.includes("replit.app") ? origin : "https://repl.co";
     res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
   }
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS",
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Max-Age", "3600");
 };
@@ -289,11 +276,7 @@ export class MediaUrlBuilder {
 // ============================================================================
 
 export const responseOptimizer = {
-  optimizedJsonResponse: async (
-    res: Response,
-    data: unknown,
-    _cacheKey?: string,
-  ) => {
+  optimizedJsonResponse: async (res: Response, data: unknown, _cacheKey?: string) => {
     res.setHeader("Content-Type", "application/json");
     // Use safeSerialize to handle BigInts
     res.json(safeSerialize(data));
@@ -363,16 +346,12 @@ export class RetryManager {
 
 export const migrationService = {
   migrateAllToPostgreSQL: async () => {
-    logger.info(
-      "[Migration] Using Drizzle ORM migrations - enhanced migration service archived",
-    );
+    logger.info("[Migration] Using Drizzle ORM migrations - enhanced migration service archived");
     return { status: "completed", message: "Using Drizzle ORM migrations" };
   },
 
   migrateProductsToPostgreSQL: async () => {
-    logger.info(
-      "[Migration] Using Drizzle ORM migrations - enhanced migration service archived",
-    );
+    logger.info("[Migration] Using Drizzle ORM migrations - enhanced migration service archived");
     return { status: "completed", message: "Using Drizzle ORM migrations" };
   },
 };
@@ -397,9 +376,7 @@ export const MediaValidator = {
       ".glb",
       ".gltf",
     ];
-    return allowedExtensions.some((ext) =>
-      filename.toLowerCase().endsWith(ext),
-    );
+    return allowedExtensions.some((ext) => filename.toLowerCase().endsWith(ext));
   },
   validateFileType: (type: string): boolean => {
     const allowedTypes = ["image", "video", "model", "document"];
@@ -415,10 +392,7 @@ export const MediaValidator = {
  * Fixes NULL/incorrect MIME types for uploaded files, especially 3D models
  * Handles browser misdetection of .glb/.gltf files as application/octet-stream
  */
-export function correctMimeType(
-  originalMimeType: string,
-  filename: string,
-): string {
+export function correctMimeType(originalMimeType: string, filename: string): string {
   const extension = filename.toLowerCase().split(".").pop();
 
   // Handle 3D model files specifically - these are commonly misdetected
@@ -442,11 +416,7 @@ export function correctMimeType(
   };
 
   // If browser detected generic type, use extension mapping
-  if (
-    originalMimeType === "application/octet-stream" &&
-    extension &&
-    extensionMimeMap[extension]
-  ) {
+  if (originalMimeType === "application/octet-stream" && extension && extensionMimeMap[extension]) {
     return extensionMimeMap[extension];
   }
 
@@ -477,3 +447,20 @@ export default {
   correctMimeType,
   safeSerialize,
 };
+
+/**
+ * Removes undefined properties from an object to satisfy exactOptionalPropertyTypes.
+ * Useful when working with Zod partials (which allow undefined) and APIs that reject explicit undefined.
+ */
+export function removeUndefined<T extends object>(
+  obj: T,
+): { [K in keyof T]: Exclude<T[K], undefined> } {
+  if (!obj) return obj as any;
+  const result: any = { ...obj };
+  Object.keys(result).forEach((key) => {
+    if (result[key] === undefined) {
+      delete result[key];
+    }
+  });
+  return result;
+}

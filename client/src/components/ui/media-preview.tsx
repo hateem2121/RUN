@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 
 interface MediaPreviewProps {
   asset: MediaAsset;
-  className?: string;
+  className?: string | undefined;
   size?: "sm" | "md" | "lg";
-  showTypeIcon?: boolean;
+  showTypeIcon?: boolean | undefined;
 }
 
 const getTypeIcon = (type: string) => {

@@ -188,15 +188,15 @@ export default function Contact() {
 
   if (isLoading) {
     return (
-      <div className="bg-muted/30 flex min-h-screen items-center justify-center">
-        <div className="border-foreground h-12 w-12 animate-spin rounded-full border-b-2"></div>
+      <div className="flex min-h-screen items-center justify-center bg-muted/30">
+        <div className="h-12 w-12 animate-spin rounded-full border-foreground border-b-2"></div>
       </div>
     );
   }
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-muted/30 text-foreground min-h-screen pt-32 pb-24">
+      <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
         <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
             {/* Left Column: Contact Form */}
@@ -204,11 +204,11 @@ export default function Contact() {
               <GlassCardDecorations showShimmer={!isMobile} />
               <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
-              <div className="z-default relative">
+              <div className="relative z-default">
                 {!showSuccess ? (
                   <div>
                     <Typography.H1
-                      className="text-foreground/90 mb-8 text-3xl leading-none font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
+                      className="mb-8 font-bold text-3xl text-foreground/90 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
                       style={{ fontFamily: "'Anton', sans-serif" }}
                     >
                       {contactConfig?.heroTitle || "DROP US A MESSAGE"}
@@ -232,7 +232,7 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.firstName && (
-                            <Typography.P className="mt-2 text-sm text-red-500">
+                            <Typography.P className="mt-2 text-red-500 text-sm">
                               {form.formState.errors.firstName.message}
                             </Typography.P>
                           )}
@@ -248,7 +248,7 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.lastName && (
-                            <Typography.P className="mt-2 text-sm text-red-500">
+                            <Typography.P className="mt-2 text-red-500 text-sm">
                               {form.formState.errors.lastName.message}
                             </Typography.P>
                           )}
@@ -295,7 +295,7 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.email && (
-                            <Typography.P className="mt-2 text-sm text-red-500">
+                            <Typography.P className="mt-2 text-red-500 text-sm">
                               {form.formState.errors.email.message}
                             </Typography.P>
                           )}
@@ -309,7 +309,7 @@ export default function Contact() {
                               type="button"
                               data-testid="button-country-dropdown"
                               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                              className="border-border bg-background shadow-sm-xs hover:border-border/80 focus:border-primary focus:ring-primary relative w-full cursor-default rounded-lg border p-3 text-left transition-colors focus:ring-2 focus:outline-hidden sm:text-sm"
+                              className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
                             >
                               <span className="flex items-center">
                                 {selectedCountry && (
@@ -325,7 +325,7 @@ export default function Contact() {
                               </span>
                             </button>
                             {showCountryDropdown && (
-                              <div className="z-dock border-border bg-background absolute mt-1 max-h-60 w-full overflow-y-auto rounded-lg border py-1 text-base shadow-xl sm:text-sm">
+                              <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
                                 <div className="p-2">
                                   <Input
                                     type="text"
@@ -345,7 +345,7 @@ export default function Contact() {
                                         setShowCountryDropdown(false);
                                         setCountrySearch("");
                                       }}
-                                      className="text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer py-2 pr-9 pl-3 select-none"
+                                      className="cursor-pointer select-none py-2 pr-9 pl-3 text-foreground hover:bg-primary hover:text-primary-foreground"
                                     >
                                       <div className="flex items-center">
                                         <img
@@ -362,7 +362,7 @@ export default function Contact() {
                             )}
                           </div>
                           {form.formState.errors.country && (
-                            <Typography.P className="mt-2 text-sm text-red-500">
+                            <Typography.P className="mt-2 text-red-500 text-sm">
                               {form.formState.errors.country.message}
                             </Typography.P>
                           )}
@@ -378,12 +378,12 @@ export default function Contact() {
                               type="button"
                               data-testid="button-platform-dropdown"
                               onClick={() => setShowPlatformDropdown(!showPlatformDropdown)}
-                              className="border-border bg-background shadow-sm-xs hover:border-border/80 focus:border-primary focus:ring-primary relative w-full cursor-default rounded-lg border p-3 text-left transition-colors focus:ring-2 focus:outline-hidden sm:text-sm"
+                              className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
                             >
                               <span className="block truncate">{selectedPlatform}</span>
                             </button>
                             {showPlatformDropdown && (
-                              <ul className="z-dock border-border bg-background absolute mt-1 max-h-60 w-full overflow-y-auto rounded-lg border py-1 text-base shadow-xl sm:text-sm">
+                              <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
                                 {platforms.map((platform) => (
                                   <li
                                     key={platform}
@@ -391,7 +391,7 @@ export default function Contact() {
                                       form.setValue("platform", platform);
                                       setShowPlatformDropdown(false);
                                     }}
-                                    className="text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer px-3 py-2 select-none"
+                                    className="cursor-pointer select-none px-3 py-2 text-foreground hover:bg-primary hover:text-primary-foreground"
                                   >
                                     {platform}
                                   </li>
@@ -404,8 +404,8 @@ export default function Contact() {
                           <Label htmlFor="contactNumber" className={LABEL_CLASSES}>
                             Contact Number / Handle
                           </Label>
-                          <div className="border-border shadow-sm-xs focus-within:border-primary focus-within:ring-primary flex items-center overflow-hidden rounded-lg border transition-colors focus-within:ring-2">
-                            <span className="border-border bg-muted text-foreground/80 inline-flex items-center border-r px-3 sm:text-sm">
+                          <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary">
+                            <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm">
                               {selectedCountry ? `+${selectedCountry.phone}` : "--"}
                             </span>
                             <Input
@@ -446,7 +446,7 @@ export default function Contact() {
                           className={INPUT_CLASSES}
                         />
                         {form.formState.errors.message && (
-                          <Typography.P className="mt-2 text-sm text-red-500">
+                          <Typography.P className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.message.message}
                           </Typography.P>
                         )}
@@ -491,13 +491,13 @@ export default function Contact() {
                           data-testid="button-submit"
                           disabled={fetcher.state === "submitting" || fetcher.state === "loading"}
                           size="lg"
-                          className="bg-primary text-primary-foreground h-12 w-full font-semibold shadow-md hover:shadow-lg"
+                          className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
                         >
                           {fetcher.state === "submitting" || fetcher.state === "loading"
                             ? "Sending..."
                             : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                         </Button>
-                        <Typography.P className="text-muted-foreground mt-4 text-center text-xs">
+                        <Typography.P className="mt-4 text-center text-muted-foreground text-xs">
                           {contactConfig?.formPrivacyText ||
                             "We value your privacy and will never share your information."}
                         </Typography.P>
@@ -509,16 +509,16 @@ export default function Contact() {
                     <div className="mb-6 inline-block rounded-full bg-green-100 p-4">
                       <CheckCircle2 className="h-12 w-12 text-green-600" />
                     </div>
-                    <Typography.H2 className="text-foreground/90 mb-3 text-3xl font-bold">
+                    <Typography.H2 className="mb-3 font-bold text-3xl text-foreground/90">
                       {contactConfig?.successHeading || "Thank you!"}
                     </Typography.H2>
-                    <Typography.P className="text-muted-foreground mb-8">
+                    <Typography.P className="mb-8 text-muted-foreground">
                       {contactConfig?.successMessage ||
                         "We've received your message and will be in touch shortly."}
                     </Typography.P>
                     <Button
                       onClick={() => setShowSuccess(false)}
-                      className="focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:outline-hidden"
+                      className="focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                       data-testid="button-send-another"
                     >
                       Send Another Message
@@ -532,11 +532,11 @@ export default function Contact() {
             <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
               {/* Location Box */}
               <ContactInfoCard isMobile={isMobile}>
-                <MapPin className="text-foreground/90 mb-4 h-6 w-6" />
-                <Typography.H2 className="mb-4 text-xl font-bold tracking-tight">
+                <MapPin className="mb-4 h-6 w-6 text-foreground/90" />
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   LOCATION
                 </Typography.H2>
-                <Typography.P className="text-muted-foreground mb-6">
+                <Typography.P className="mb-6 text-muted-foreground">
                   {contactConfig?.locationLine1 || "123 Main Street,"}
                   <br />
                   {contactConfig?.locationLine2 || "Anytown, USA 12345"}
@@ -548,11 +548,11 @@ export default function Contact() {
 
               {/* Contact Box */}
               <ContactInfoCard isMobile={isMobile}>
-                <Mail className="text-foreground/90 mb-4 h-6 w-6" />
-                <Typography.H2 className="mb-4 text-xl font-bold tracking-tight">
+                <Mail className="mb-4 h-6 w-6 text-foreground/90" />
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   CONTACT
                 </Typography.H2>
-                <ul className="text-muted-foreground space-y-2">
+                <ul className="space-y-2 text-muted-foreground">
                   <li>
                     <a
                       href={`mailto:${contactConfig?.email || "info@example.com"}`}
@@ -576,11 +576,11 @@ export default function Contact() {
 
               {/* Trading Hours Box */}
               <ContactInfoCard isMobile={isMobile}>
-                <Clock className="text-foreground/90 mb-4 h-6 w-6" />
-                <Typography.H2 className="mb-4 text-xl font-bold tracking-tight">
+                <Clock className="mb-4 h-6 w-6 text-foreground/90" />
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   TRADING HOURS
                 </Typography.H2>
-                <div className="text-muted-foreground space-y-1">
+                <div className="space-y-1 text-muted-foreground">
                   {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
                     contactConfig.tradingHours.map((hours, index) => (
                       <Typography.P key={index}>
@@ -605,11 +605,11 @@ export default function Contact() {
 
               {/* Social Links Box */}
               <ContactInfoCard isMobile={isMobile}>
-                <Share2 className="text-foreground/90 mb-4 h-6 w-6" />
-                <Typography.H2 className="mb-4 text-xl font-bold tracking-tight">
+                <Share2 className="mb-4 h-6 w-6 text-foreground/90" />
+                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   FOLLOW US
                 </Typography.H2>
-                <ul className="text-muted-foreground space-y-2">
+                <ul className="space-y-2 text-muted-foreground">
                   {contactConfig?.socialLinks &&
                   Object.keys(contactConfig.socialLinks).length > 0 ? (
                     Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
@@ -672,6 +672,6 @@ const ContactInfoCard = ({
 }) => (
   <GlassCard className="p-6 lg:p-8">
     <GlassCardDecorations showShimmer={!isMobile} />
-    <div className="z-elevated relative">{children}</div>
+    <div className="relative z-elevated">{children}</div>
   </GlassCard>
 );

@@ -1,4 +1,3 @@
-import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 import { getStorage } from "../lib/storage-singleton.js";
 

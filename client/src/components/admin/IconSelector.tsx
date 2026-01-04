@@ -19,9 +19,9 @@ import { MediaQueryKeys } from "@/lib/media-query-keys";
 interface IconSelectorProps {
   value?: string | number;
   onChange: (value: string | number) => void;
-  label?: string;
-  placeholder?: string;
-  allowCustom?: boolean;
+  label?: string | undefined;
+  placeholder?: string | undefined;
+  allowCustom?: boolean | undefined;
 }
 
 const predefinedIcons = [

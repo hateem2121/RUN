@@ -7,10 +7,10 @@ interface ManufacturingFormWrapperProps {
   description: string;
   children: React.ReactNode;
   onSubmit: (e: React.FormEvent) => void;
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
   submitLabel: string;
-  showSubmitButton?: boolean;
-  className?: string;
+  showSubmitButton?: boolean | undefined;
+  className?: string | undefined;
 }
 
 /**

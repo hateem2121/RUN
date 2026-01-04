@@ -51,7 +51,7 @@ interface AboutHeroSectionProps {
     unit: string;
     icon: string;
   }>;
-  backgroundImage?: string;
+  backgroundImage?: string | undefined;
 }
 
 export function AboutHeroSection({
@@ -195,12 +195,12 @@ export function AboutHeroSection({
 }
 
 interface ClientsSectionProps {
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
   clientLogos?: Array<{
     name: string;
     logo: string;
-    website?: string;
+    website?: string | undefined;
   }>;
 }
 
@@ -273,8 +273,8 @@ export function ClientsSection({
 }
 
 interface ServicesSectionProps {
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
   services?: Array<{
     icon: string;
     title: string;

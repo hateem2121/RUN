@@ -10,8 +10,8 @@ import { usePerformanceMonitor } from "@/hooks/use-performance-monitor";
 
 interface PerformanceStatusProps {
   componentName: string;
-  showDetailed?: boolean;
-  className?: string;
+  showDetailed?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export function PerformanceStatus({

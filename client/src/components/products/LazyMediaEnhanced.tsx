@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils";
 interface LazyMediaEnhancedProps {
   mediaId: number;
   alt: string;
-  className?: string;
-  priority?: boolean;
-  quality?: number;
+  className?: string | undefined;
+  priority?: boolean | undefined;
+  quality?: number | undefined;
   onLoad?: () => void;
   onError?: (error: Error) => void;
 }

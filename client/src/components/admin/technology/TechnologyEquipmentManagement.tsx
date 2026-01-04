@@ -158,7 +158,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
 }
 
 interface TechnologyEquipmentManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyEquipmentManagement({

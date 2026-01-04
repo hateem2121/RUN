@@ -32,7 +32,7 @@ interface CategoryFormProps {
   onSubmit: (data: any) => void;
   initialData?: Category | null;
   categories?: Category[];
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
   mode: "create" | "edit";
 }
 
@@ -53,8 +53,8 @@ interface FormData {
       description: string;
       mediaUrl: string;
       link: string;
-      maskSvgUrl?: string; // New SVG mask field
-      contentMediaUrl?: string; // New content media field
+      maskSvgUrl?: string | undefined; // New SVG mask field
+      contentMediaUrl?: string | undefined; // New content media field
     };
     card2: {
       title: string;
@@ -68,7 +68,7 @@ interface FormData {
       description: string;
       mediaUrl: string;
       link: string;
-      subtitle?: string;
+      subtitle?: string | undefined;
       features?: string[];
     };
     card4: {

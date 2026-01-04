@@ -48,7 +48,7 @@ export default function NavigationManagement() {
     .map((item) => {
       if (item.iconType === "media" && item.mediaIconId) {
         const mediaIcon = mediaAssets.find((asset) => asset.id === item.mediaIconId);
-        return { ...item, mediaIcon };
+        return { ...item, ...(mediaIcon ? { mediaIcon } : {}) };
       }
       return item;
     });

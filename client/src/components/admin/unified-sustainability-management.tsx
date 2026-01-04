@@ -383,7 +383,7 @@ export function UnifiedSustainabilityManagement() {
     if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
 
     // Hero section fields (database columns at top-level, not in data JSONB)
-    // These are stored in localForm.data.* by UI but need to go to top-level columns
+    // These are stored in localForm.data['']* by UI but need to go to top-level columns
     if (localForm.data?.headline !== undefined) cleanedData.headline = localForm.data.headline;
     if (localForm.data?.subheadline !== undefined)
       cleanedData.subheadline = localForm.data.subheadline;

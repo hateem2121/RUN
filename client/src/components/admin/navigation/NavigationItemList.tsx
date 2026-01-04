@@ -68,8 +68,8 @@ const SortableNavigationItem = memo(function SortableNavigationItem({
           <div className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
             <NavigationIcon
               iconType={item.iconType as "media" | "fallback"}
-              mediaIcon={item.mediaIcon}
-              fallbackIcon={item.fallbackIcon || undefined}
+              {...(item.mediaIcon ? { mediaIcon: item.mediaIcon } : {})}
+              {...(item.fallbackIcon ? { fallbackIcon: item.fallbackIcon } : {})}
               className="h-8 w-8"
               useAbsolutePositioning={false}
             />

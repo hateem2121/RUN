@@ -20,19 +20,14 @@ async function verifyRoutes() {
 
     while ((match = importRegex.exec(content)) !== null) {
       const importPath = match[1]!;
-      const fullPath = path.resolve(
-        routesDir,
-        importPath.replace(/\.js$/, ".ts"),
-      );
+      const fullPath = path.resolve(routesDir, importPath.replace(/\.js$/, ".ts"));
 
       // Check .ts file existence (since we verify source)
       try {
         await fs.access(fullPath);
         checked++;
       } catch {
-        console.error(
-          `❌ Missing route module: ${importPath} (at ${fullPath})`,
-        );
+        console.error(`❌ Missing route module: ${importPath} (at ${fullPath})`);
         errors++;
       }
     }

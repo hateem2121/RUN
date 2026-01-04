@@ -71,8 +71,8 @@ export interface UploadMetrics {
 export interface UploadResult {
   success: boolean;
   asset?: MediaAsset;
-  error?: string;
-  filename?: string;
+  error?: string | undefined;
+  filename?: string | undefined;
 }
 
 // Batch upload result
@@ -93,7 +93,7 @@ export interface BatchUploadResult {
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
-  error?: string;
+  error?: string | undefined;
   details?: Record<string, unknown>;
 }
 
@@ -115,16 +115,16 @@ export interface ValidationResult {
 
 export interface MediaMetadata {
   filename: string;
-  originalName?: string;
+  originalName?: string | undefined;
   totalSize: number;
   mimeType: string;
   type: string;
   url: string;
-  storagePath?: string;
-  bucketName?: string;
+  storagePath?: string | undefined;
+  bucketName?: string | undefined;
   tags?: string[];
-  altText?: string;
-  caption?: string;
+  altText?: string | undefined;
+  caption?: string | undefined;
   folderId?: number | null;
 }
 

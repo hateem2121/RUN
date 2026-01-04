@@ -1,5 +1,5 @@
-import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
+import { removeUndefined } from "../utils.js";
 
 /**
  * SECURITY & EDGE CASE PATH TEST
@@ -12,9 +12,9 @@ async function securityPathTest() {
   type TestCase = {
     description: string;
     path: string;
-    isPublic?: boolean;
+    isPublic?: boolean | undefined;
     shouldPass: boolean;
-    expectedPath?: string;
+    expectedPath?: string | undefined;
   };
 
   const testCases: TestCase[] = [
@@ -105,9 +105,13 @@ async function securityPathTest() {
     }
 
     try {
-      const url = await appStorageService.uploadAsset(testCase.path, testBuffer, {
-        isPublic: testCase.isPublic,
-      });
+      const url = await appStorageService.uploadAsset(
+        testCase.path,
+        testBuffer,
+        removeUndefined({
+          isPublic: testCase.isPublic,
+        }),
+      );
 
       // Extract actual path from URL
       const actualPath = url.replace("/api/media/proxy/", "");

@@ -218,9 +218,9 @@ export default function CategoriesPage() {
   // FIX: Only block on categories loading, not media batch
   if (categoriesLoading) {
     return (
-      <div className="bg-card flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-card">
         <div className="text-center">
-          <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
+          <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
           <Typography.P className="text-luxury-body text-sm">
             {categoriesLoading
               ? "Loading categories..."
@@ -233,13 +233,13 @@ export default function CategoriesPage() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
+      <div className="min-h-screen bg-card pt-12 pb-6 md:pt-20 md:pb-12">
         {/* Hero Section */}
         <div className="container mx-auto mt-0 mb-0 px-4 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
           <motion.h1
             className={cn(
               headingVariants({ variant: "h1" }),
-              "font-neue-stance text-luxury-heading text-center font-bold md:text-5xl",
+              "text-center font-bold font-neue-stance text-luxury-heading md:text-5xl",
             )}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,7 +248,7 @@ export default function CategoriesPage() {
             Product Categories
           </motion.h1>
           <motion.p
-            className="text-luxury-body mx-auto mt-3 mb-4 max-w-2xl text-center text-lg"
+            className="mx-auto mt-3 mb-4 max-w-2xl text-center text-lg text-luxury-body"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.05 }}
@@ -281,14 +281,14 @@ export default function CategoriesPage() {
                           duration: 0.3,
                           delay: categoryIndex * 0.05,
                         }}
-                        className="border-luxury-light shadow-sm-luxury-lg mb-20 rounded-lg border bg-white p-8"
+                        className="mb-20 rounded-lg border border-luxury-light bg-white p-8 shadow-sm-luxury-lg"
                       >
                         <div className="mb-6 text-center">
-                          <Typography.H2 className="font-neue-stance text-luxury-charcoal mb-4 text-2xl font-bold">
+                          <Typography.H2 className="mb-4 font-bold font-neue-stance text-2xl text-luxury-charcoal">
                             {category.name}
                           </Typography.H2>
                           {category.description && (
-                            <Typography.P className="text-luxury-body mx-auto mb-4 max-w-2xl">
+                            <Typography.P className="mx-auto mb-4 max-w-2xl text-luxury-body">
                               {category.description}
                             </Typography.P>
                           )}
@@ -331,13 +331,13 @@ export default function CategoriesPage() {
                         {/* Category Header */}
                         <div className="mb-6 text-center md:mb-10">
                           <div className="mb-3 flex flex-col items-center justify-center gap-3 md:flex-row md:gap-8">
-                            <Typography.H2 className="font-neue-stance text-luxury-heading text-3xl font-bold md:text-4xl">
+                            <Typography.H2 className="font-bold font-neue-stance text-3xl text-luxury-heading md:text-4xl">
                               {category.name}
                             </Typography.H2>
                             <CircularNavButton href={`/products?category=${category.slug}`} />
                           </div>
                           {category.description && (
-                            <Typography.P className="text-luxury-body mx-auto max-w-3xl px-4 leading-tight md:px-0 md:leading-normal">
+                            <Typography.P className="mx-auto max-w-3xl px-4 text-luxury-body leading-tight md:px-0 md:leading-normal">
                               {category.description}
                             </Typography.P>
                           )}
@@ -390,7 +390,7 @@ export default function CategoriesPage() {
 
                           {/* Card 4 - Fluid Glass Lens with 3D Model or Image Background */}
                           <div className={cn("bento-card", getResponsiveSpanClasses("card4"))}>
-                            <div className="max-h-modal-md relative h-auto min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+                            <div className="relative h-auto max-h-modal-md min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
                               {/* Media Background - 3D Model or Image */}
                               {getMediaUrl(featuredContent.card4?.mediaUrl) &&
                                 (() => {
@@ -402,7 +402,7 @@ export default function CategoriesPage() {
                                   const isModel = isModelUrl(resolvedUrl, mimeType);
 
                                   return (
-                                    <div className="z-base absolute inset-0">
+                                    <div className="absolute inset-0 z-base">
                                       {isModel ? (
                                         // 3D Model Viewer for GLB/GLTF files
                                         <LazyUnifiedModelViewer
@@ -459,7 +459,7 @@ export default function CategoriesPage() {
                                     <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
                                   }
                                 >
-                                  <div className="z-modal-backdrop pointer-events-none absolute inset-0">
+                                  <div className="pointer-events-none absolute inset-0 z-modal-backdrop">
                                     <FluidGlass mode="lens" />
                                   </div>
                                 </Suspense>
@@ -467,9 +467,9 @@ export default function CategoriesPage() {
                               {/* Text Content from Admin Console */}
                               {(featuredContent.card4?.title ||
                                 featuredContent.card4?.description) && (
-                                <div className="z-modal pointer-events-none absolute right-0 bottom-0 left-0 p-6">
+                                <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-modal p-6">
                                   {featuredContent.card4?.title && (
-                                    <Typography.H3 className="font-neue-stance mb-2 text-xl font-bold text-white drop-shadow-lg">
+                                    <Typography.H3 className="mb-2 font-bold font-neue-stance text-white text-xl drop-shadow-lg">
                                       {featuredContent.card4.title}
                                     </Typography.H3>
                                   )}

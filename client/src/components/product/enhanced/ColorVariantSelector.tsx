@@ -18,9 +18,9 @@ interface ColorVariantSelectorProps {
   variants: ColorVariant[];
   selectedVariant: string | null;
   onVariantChange: (variantId: string) => void;
-  className?: string;
-  disabled?: boolean;
-  showLabels?: boolean;
+  className?: string | undefined;
+  disabled?: boolean | undefined;
+  showLabels?: boolean | undefined;
 }
 
 export function ColorVariantSelector({

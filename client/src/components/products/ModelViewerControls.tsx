@@ -10,10 +10,10 @@ interface ModelViewerControlsProps {
   cameraPositions?: Array<{
     name: string;
     orbit: string;
-    target?: string;
-    fieldOfView?: string;
+    target?: string | undefined;
+    fieldOfView?: string | undefined;
   }>;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function ModelViewerControls({

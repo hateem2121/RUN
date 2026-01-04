@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 interface EnhancedLoadingSkeletonProps {
   type: "card" | "media" | "text";
-  className?: string;
-  animated?: boolean;
+  className?: string | undefined;
+  animated?: boolean | undefined;
 }
 
 export function EnhancedLoadingSkeleton({
@@ -36,7 +36,7 @@ interface LoadingStateProps {
   isLoading: boolean;
   type: "card" | "media" | "text";
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function LoadingState({ isLoading, type, children, className }: LoadingStateProps) {
@@ -69,7 +69,13 @@ export function MediaLoadingState({ className }: { className?: string }) {
   );
 }
 
-export function TextLoadingState({ lines = 3, className }: { lines?: number; className?: string }) {
+export function TextLoadingState({
+  lines = 3,
+  className,
+}: {
+  lines?: number | undefined;
+  className?: string;
+}) {
   return (
     <div className={cn("space-y-2", className)}>
       {Array.from({ length: lines }).map((_, i) => (

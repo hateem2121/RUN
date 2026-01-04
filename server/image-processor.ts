@@ -12,7 +12,7 @@ export interface ImageVariants {
 export interface ImageMetadata {
   width: number;
   height: number;
-  thumbnailFilename?: string;
+  thumbnailFilename?: string | undefined;
   variants?: ImageVariants;
 }
 

@@ -5,7 +5,7 @@ interface ProductSEOProps {
   product: Product;
   category?: Category;
   fabric?: Fabric;
-  imageUrl?: string;
+  imageUrl?: string | undefined;
 }
 
 export function ProductSEO({ product, category, fabric, imageUrl }: ProductSEOProps) {

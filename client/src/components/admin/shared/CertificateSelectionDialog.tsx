@@ -34,13 +34,13 @@ interface CertificateSelectionDialogProps {
   onSelect: (certificates: Certificate[] | Certificate) => void;
 
   /** Dialog title */
-  title?: string;
+  title?: string | undefined;
 
   /** Selection mode */
   selectionMode?: "single" | "multiple";
 
   /** Maximum number of certificates for multiple selection */
-  maxSelection?: number;
+  maxSelection?: number | undefined;
 
   /** Pre-selected certificate IDs */
   initialSelectedIds?: number[];

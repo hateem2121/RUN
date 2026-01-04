@@ -79,7 +79,7 @@ export function calculateGridSpan(analysis: ContentAnalysis, index: number): Gri
 
 interface SmartBentoGridProps {
   children: React.ReactNode[];
-  className?: string;
+  className?: string | undefined;
 }
 
 export function SmartBentoGrid({ children, className }: SmartBentoGridProps) {
@@ -93,7 +93,7 @@ export function SmartBentoGrid({ children, className }: SmartBentoGridProps) {
 interface BentoGridItemProps {
   children: React.ReactNode;
   gridSpan: GridSpan;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function BentoGridItem({ children, gridSpan, className }: BentoGridItemProps) {
@@ -102,9 +102,9 @@ export function BentoGridItem({ children, gridSpan, className }: BentoGridItemPr
 
 // Dynamic media component that adapts to card size
 interface NaturalMediaProps {
-  src?: string;
+  src?: string | undefined;
   alt: string;
-  className?: string;
+  className?: string | undefined;
   cardSpan?: GridSpan;
 }
 

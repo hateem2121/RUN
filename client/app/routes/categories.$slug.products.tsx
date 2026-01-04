@@ -50,8 +50,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     },
   });
 
-  const categories =
-    queryClient.getQueryData<Category[]>(["/api/categories"]) || [];
+  const categories = queryClient.getQueryData<Category[]>(["/api/categories"]) || [];
   const category = categories.find((c) => c.slug === slug);
 
   if (category) {
@@ -59,9 +58,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       queryClient.prefetchQuery({
         queryKey: ["/api/products", "category", category.id],
         queryFn: async () => {
-          const res = await apiRequest(
-            `/api/products?category=${category.id}&active=true`,
-          );
+          const res = await apiRequest(`/api/products?category=${category.id}&active=true`);
           return res.json();
         },
       }),
@@ -89,9 +86,7 @@ export default function CategoryProductsPage() {
   // location unused
   // const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState<"small" | "medium" | "large">(
-    "medium",
-  );
+  const [viewMode, setViewMode] = useState<"small" | "medium" | "large">("medium");
   const [sortBy, setSortBy] = useState("name");
 
   // Fetch category by slug
@@ -106,9 +101,7 @@ export default function CategoryProductsPage() {
   const category = categories.find((c) => c.slug === slug);
 
   // Fetch subcategories
-  const subcategories = categories.filter(
-    (c) => c.parentId === category?.id && c.isActive,
-  );
+  const subcategories = categories.filter((c) => c.parentId === category?.id && c.isActive);
 
   // Fetch media assets
   const { data: mediaData } = useQuery<{ data: MediaAsset[] }>({
@@ -128,9 +121,7 @@ export default function CategoryProductsPage() {
     queryKey: ["/api/products", "category", category?.id],
     queryFn: async () => {
       if (!category?.id) return { data: [] };
-      const res = await apiRequest(
-        `/api/products?category=${category.id}&active=true`,
-      );
+      const res = await apiRequest(`/api/products?category=${category.id}&active=true`);
       return res.json();
     },
     enabled: !!category?.id,
@@ -155,10 +146,7 @@ export default function CategoryProductsPage() {
       case "name":
         return (a.name || "").localeCompare(b.name || "");
       case "newest":
-        return (
-          new Date(b.createdAt || 0).getTime() -
-          new Date(a.createdAt || 0).getTime()
-        );
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
       case "featured":
         return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
       default:
@@ -200,13 +188,7 @@ export default function CategoryProductsPage() {
     });
 
     const optimizedSrc = urls?.large || urls?.medium || fallbackUrl;
-    return (
-      <img
-        src={optimizedSrc}
-        alt={alt}
-        className="h-full w-full object-cover"
-      />
-    );
+    return <img src={optimizedSrc} alt={alt} className="h-full w-full object-cover" />;
   };
 
   // Get all images for a product (for carousel)
@@ -260,10 +242,7 @@ export default function CategoryProductsPage() {
     // This allows the UI to render with a working URL
     return {
       id: primaryId,
-      type:
-        product.primaryVideoId === primaryId
-          ? ("video" as const)
-          : ("image" as const),
+      type: product.primaryVideoId === primaryId ? ("video" as const) : ("image" as const),
       url: MediaUrlBuilder.buildUrlSafe(primaryId),
       filename: `media-${primaryId}`,
       size: 0,
@@ -272,17 +251,9 @@ export default function CategoryProductsPage() {
   };
 
   // Product Image Carousel Component
-  const ProductImageCarousel = ({
-    product,
-    viewMode,
-  }: {
-    product: Product;
-    viewMode: string;
-  }) => {
+  const ProductImageCarousel = ({ product, viewMode }: { product: Product; viewMode: string }) => {
     const images = getProductImages(product);
-    const primaryVideo = product.primaryVideoId
-      ? getPrimaryMedia(product)
-      : null;
+    const primaryVideo = product.primaryVideoId ? getPrimaryMedia(product) : null;
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
@@ -305,9 +276,7 @@ export default function CategoryProductsPage() {
 
       // PHASE 2: Check if next image is preloaded for instant navigation
       const nextImageId = images[hasVideo ? nextIndex - 1 : nextIndex]?.id;
-      const isNextImageLoaded = nextImageId
-        ? loadedImages.has(nextImageId)
-        : true;
+      const isNextImageLoaded = nextImageId ? loadedImages.has(nextImageId) : true;
 
       setIsNavigating(true);
       setCurrentImageIndex(nextIndex);
@@ -326,9 +295,7 @@ export default function CategoryProductsPage() {
 
       // PHASE 2: Check if previous image is preloaded for instant navigation
       const prevImageId = images[hasVideo ? prevIndex - 1 : prevIndex]?.id;
-      const isPrevImageLoaded = prevImageId
-        ? loadedImages.has(prevImageId)
-        : true;
+      const isPrevImageLoaded = prevImageId ? loadedImages.has(prevImageId) : true;
 
       setIsNavigating(true);
       setCurrentImageIndex(prevIndex);
@@ -345,9 +312,7 @@ export default function CategoryProductsPage() {
 
       // PHASE 2: Check if target image is preloaded for instant navigation
       const targetImageId = images[hasVideo ? index - 1 : index]?.id;
-      const isTargetImageLoaded = targetImageId
-        ? loadedImages.has(targetImageId)
-        : true;
+      const isTargetImageLoaded = targetImageId ? loadedImages.has(targetImageId) : true;
 
       setIsNavigating(true);
       setCurrentImageIndex(index);
@@ -387,10 +352,7 @@ export default function CategoryProductsPage() {
           });
         };
         // PHASE 2: Use content URL for all images
-        img.src =
-          getOptimizedMediaUrl(imageId) ||
-          MediaUrlBuilder.buildContentUrl(imageId) ||
-          "";
+        img.src = getOptimizedMediaUrl(imageId) || MediaUrlBuilder.buildContentUrl(imageId) || "";
       };
 
       // PHASE 2: Enhanced batch preloading strategy
@@ -401,9 +363,7 @@ export default function CategoryProductsPage() {
         }
 
         // Priority 2: Adjacent images (immediate navigation)
-        const nextImageIndex = hasVideo
-          ? imageIndex + 1
-          : (imageIndex + 1) % images.length;
+        const nextImageIndex = hasVideo ? imageIndex + 1 : (imageIndex + 1) % images.length;
         const prevImageIndex = hasVideo
           ? imageIndex - 1
           : (imageIndex - 1 + images.length) % images.length;
@@ -411,11 +371,7 @@ export default function CategoryProductsPage() {
         if (images[nextImageIndex] && nextImageIndex >= 0) {
           preloadImage(images[nextImageIndex].id, true);
         }
-        if (
-          images[prevImageIndex] &&
-          prevImageIndex >= 0 &&
-          prevImageIndex !== nextImageIndex
-        ) {
+        if (images[prevImageIndex] && prevImageIndex >= 0 && prevImageIndex !== nextImageIndex) {
           preloadImage(images[prevImageIndex].id, true);
         }
 
@@ -429,18 +385,10 @@ export default function CategoryProductsPage() {
             ? imageIndex - offset
             : (imageIndex - offset + images.length) % images.length;
 
-          if (
-            images[nextExtended] &&
-            nextExtended >= 0 &&
-            nextExtended < images.length
-          ) {
+          if (images[nextExtended] && nextExtended >= 0 && nextExtended < images.length) {
             extendedIndices.push(nextExtended);
           }
-          if (
-            images[prevExtended] &&
-            prevExtended >= 0 &&
-            prevExtended !== nextExtended
-          ) {
+          if (images[prevExtended] && prevExtended >= 0 && prevExtended !== nextExtended) {
             extendedIndices.push(prevExtended);
           }
         }
@@ -475,7 +423,7 @@ export default function CategoryProductsPage() {
 
     if (totalItems === 0) {
       return (
-        <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center text-muted-foreground/50">
           <LayoutGrid className="h-12 w-12" />
         </div>
       );
@@ -501,8 +449,7 @@ export default function CategoryProductsPage() {
               onError={(e) => {
                 const target = e.currentTarget;
                 target.style.display = "none";
-                const placeholder =
-                  target.parentElement?.querySelector(".media-fallback");
+                const placeholder = target.parentElement?.querySelector(".media-fallback");
                 if (placeholder) {
                   (placeholder as HTMLElement).style.display = "flex";
                 }
@@ -511,7 +458,7 @@ export default function CategoryProductsPage() {
             <div className="absolute top-2 right-2 rounded bg-black/70 p-1 text-white">
               <Play className="h-3 w-3" />
             </div>
-            <div className="media-fallback bg-muted text-muted-foreground/50 absolute inset-0 hidden h-full w-full items-center justify-center">
+            <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-muted text-muted-foreground/50">
               <Play className="h-12 w-12" />
             </div>
           </div>
@@ -520,11 +467,11 @@ export default function CategoryProductsPage() {
             <>
               {/* Enhanced Loading State */}
               {!loadedImages.has(images[imageIndex].id) && (
-                <div className="bg-muted absolute inset-0 flex h-full w-full animate-pulse items-center justify-center">
-                  <div className="text-muted-foreground/50 text-center">
+                <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
+                  <div className="text-center text-muted-foreground/50">
                     {loadingImages.has(images[imageIndex].id) ? (
                       <>
-                        <div className="border-muted-foreground mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+                        <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-muted-foreground border-b-2"></div>
                         <div className="text-xs">Loading...</div>
                       </>
                     ) : (
@@ -545,32 +492,27 @@ export default function CategoryProductsPage() {
                     : "opacity-0",
                 )}
                 onLoadStart={() =>
-                  images[imageIndex] &&
-                  handleImageLoadStart(images[imageIndex].id)
+                  images[imageIndex] && handleImageLoadStart(images[imageIndex].id)
                 }
-                onLoad={() =>
-                  images[imageIndex] && handleImageLoad(images[imageIndex].id)
-                }
+                onLoad={() => images[imageIndex] && handleImageLoad(images[imageIndex].id)}
                 onError={(e) => {
                   const target = e.currentTarget;
                   target.style.display = "none";
-                  const placeholder =
-                    target.parentElement?.querySelector(".media-fallback");
+                  const placeholder = target.parentElement?.querySelector(".media-fallback");
                   if (placeholder) {
                     (placeholder as HTMLElement).style.display = "flex";
                   }
                   // Remove from loading state
                   setLoadingImages((prev) => {
                     const newSet = new Set(prev);
-                    if (images[imageIndex])
-                      newSet.delete(images[imageIndex].id);
+                    if (images[imageIndex]) newSet.delete(images[imageIndex].id);
                     return newSet;
                   });
                 }}
               />
 
               {/* Fallback for errors */}
-              <div className="media-fallback bg-muted text-muted-foreground/50 absolute inset-0 hidden h-full w-full items-center justify-center">
+              <div className="media-fallback absolute inset-0 hidden h-full w-full items-center justify-center bg-muted text-muted-foreground/50">
                 <LayoutGrid className="h-12 w-12" />
               </div>
             </>
@@ -593,9 +535,7 @@ export default function CategoryProductsPage() {
                       : "bg-black/50 hover:bg-black/70",
                   )}
                 >
-                  <ChevronLeft
-                    className={cn("h-4 w-4", isNavigating && "opacity-50")}
-                  />
+                  <ChevronLeft className={cn("h-4 w-4", isNavigating && "opacity-50")} />
                 </button>
                 <button
                   onClick={goToNext}
@@ -607,9 +547,7 @@ export default function CategoryProductsPage() {
                       : "bg-black/50 hover:bg-black/70",
                   )}
                 >
-                  <ChevronRight
-                    className={cn("h-4 w-4", isNavigating && "opacity-50")}
-                  />
+                  <ChevronRight className={cn("h-4 w-4", isNavigating && "opacity-50")} />
                 </button>
               </>
             )}
@@ -653,7 +591,7 @@ export default function CategoryProductsPage() {
 
         {/* Image Counter - show for large view */}
         {totalItems > 1 && viewMode === "large" && (
-          <div className="absolute top-2 left-2 flex items-center gap-1 rounded bg-black/70 px-2 py-1 text-xs text-white">
+          <div className="absolute top-2 left-2 flex items-center gap-1 rounded bg-black/70 px-2 py-1 text-white text-xs">
             <span>
               {currentImageIndex + 1} / {totalItems}
             </span>
@@ -690,10 +628,8 @@ export default function CategoryProductsPage() {
   };
 
   const gridClasses = {
-    small:
-      "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3",
-    medium:
-      "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4",
+    small: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3",
+    medium: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4",
     large: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
   };
 
@@ -701,15 +637,11 @@ export default function CategoryProductsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <Typography.H2 className="mb-2 text-2xl font-bold">
-            Category Not Found
-          </Typography.H2>
-          <Typography.P className="text-muted-foreground mb-4">
+          <Typography.H2 className="mb-2 font-bold text-2xl">Category Not Found</Typography.H2>
+          <Typography.P className="mb-4 text-muted-foreground">
             The category you're looking for doesn't exist.
           </Typography.P>
-          <Button onClick={() => navigate("/products")}>
-            Browse All Products
-          </Button>
+          <Button onClick={() => navigate("/products")}>Browse All Products</Button>
         </div>
       </div>
     );
@@ -717,7 +649,7 @@ export default function CategoryProductsPage() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-muted/30 min-h-screen">
+      <div className="min-h-screen bg-muted/30">
         {/* Hero Section */}
         {category.bannerUrl && (
           <div className="relative h-64 overflow-hidden md:h-80">
@@ -728,7 +660,7 @@ export default function CategoryProductsPage() {
             />
             <div className="center-flex absolute inset-0 bg-black/40">
               <div className="text-center text-white">
-                <Typography.H1 className="mb-2 text-4xl font-bold md:text-5xl">
+                <Typography.H1 className="mb-2 font-bold text-4xl md:text-5xl">
                   {category.name}
                 </Typography.H1>
                 {category.description && (
@@ -745,19 +677,11 @@ export default function CategoryProductsPage() {
         <div className="border-b bg-white pt-20">
           <div className="container mx-auto px-4 py-3">
             <nav className="flex items-center gap-2 text-sm">
-              <Button
-                variant="link"
-                className="h-auto p-0"
-                onClick={() => navigate("/")}
-              >
+              <Button variant="link" className="h-auto p-0" onClick={() => navigate("/")}>
                 Home
               </Button>
               <span>/</span>
-              <Button
-                variant="link"
-                className="h-auto p-0"
-                onClick={() => navigate("/products")}
-              >
+              <Button variant="link" className="h-auto p-0" onClick={() => navigate("/products")}>
                 Products
               </Button>
               <span>/</span>
@@ -770,41 +694,31 @@ export default function CategoryProductsPage() {
         {subcategories.length > 0 && (
           <div className="border-b bg-white">
             <div className="container mx-auto px-4 py-6">
-              <Typography.H2 className="mb-4 text-lg font-semibold">
-                Subcategories
-              </Typography.H2>
+              <Typography.H2 className="mb-4 font-semibold text-lg">Subcategories</Typography.H2>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {subcategories.map((subcat) => (
                   <Link to={`/categories/${subcat.slug}`} key={subcat.id}>
-                    <Card className="group transition-shadow-sm cursor-pointer hover:shadow-md">
+                    <Card className="group cursor-pointer transition-shadow-sm hover:shadow-md">
                       <div className="flex items-center justify-between p-4">
                         <div className="flex items-center gap-3">
                           {subcat.imageUrl && (
                             <img
                               src={
-                                getOptimizedMediaUrl(
-                                  parseInt(subcat.imageUrl, 10),
-                                ) || subcat.imageUrl
+                                getOptimizedMediaUrl(parseInt(subcat.imageUrl, 10)) ||
+                                subcat.imageUrl
                               }
                               alt={subcat.name}
                               className="h-12 w-12 rounded-lg object-cover"
                             />
                           )}
                           <div>
-                            <Typography.H3 className="font-medium">
-                              {subcat.name}
-                            </Typography.H3>
+                            <Typography.H3 className="font-medium">{subcat.name}</Typography.H3>
                             <Typography.P className="text-muted-foreground text-sm">
-                              {
-                                products.filter(
-                                  (p) => p.categoryId === subcat.id,
-                                ).length
-                              }{" "}
-                              products
+                              {products.filter((p) => p.categoryId === subcat.id).length} products
                             </Typography.P>
                           </div>
                         </div>
-                        <ChevronRight className="text-muted-foreground/50 group-hover:text-muted-foreground h-5 w-5" />
+                        <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-muted-foreground" />
                       </div>
                     </Card>
                   </Link>
@@ -815,10 +729,10 @@ export default function CategoryProductsPage() {
         )}
 
         {/* Header */}
-        <div className="shadow-sm-xs border-b bg-white">
+        <div className="border-b bg-white shadow-sm-xs">
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-              <Typography.H1 className="text-2xl font-bold">
+              <Typography.H1 className="font-bold text-2xl">
                 {!category.bannerUrl && category.name}
                 {category.bannerUrl && "Products"}
               </Typography.H1>
@@ -826,7 +740,7 @@ export default function CategoryProductsPage() {
               <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                 {/* Search */}
                 <div className="relative flex-1 sm:flex-none">
-                  <Search className="text-muted-foreground/50 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                  <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                   <Input
                     placeholder="Search products..."
                     value={searchTerm}
@@ -848,7 +762,7 @@ export default function CategoryProductsPage() {
                 </Select>
 
                 {/* View Mode */}
-                <div className="bg-muted flex gap-1 rounded-md p-1">
+                <div className="flex gap-1 rounded-md bg-muted p-1">
                   <Button
                     size="sm"
                     variant={viewMode === "small" ? "default" : "ghost"}
@@ -878,7 +792,7 @@ export default function CategoryProductsPage() {
             </div>
 
             {/* Results count */}
-            <div className="text-muted-foreground mt-2 text-sm">
+            <div className="mt-2 text-muted-foreground text-sm">
               Showing {sortedProducts.length} products
               {searchTerm && ` for "${searchTerm}"`}
             </div>
@@ -888,8 +802,8 @@ export default function CategoryProductsPage() {
         {/* Products Grid */}
         <div className="container mx-auto px-4 py-8">
           {isLoading ? (
-            <div className="min-h-value-card flex items-center justify-center">
-              <Loader2 className="text-muted-foreground/50 h-8 w-8 animate-spin" />
+            <div className="flex min-h-value-card items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/50" />
             </div>
           ) : sortedProducts.length === 0 ? (
             <div className="py-12 text-center">
@@ -901,50 +815,33 @@ export default function CategoryProductsPage() {
             <div className={cn("grid", gridClasses[viewMode])}>
               {sortedProducts.map((product) => {
                 return (
-                  <Link
-                    to={`/categories/${slug}/${product.slug || product.id}`}
-                    key={product.id}
-                  >
-                    <Card className="group transition-shadow-sm cursor-pointer overflow-hidden hover:shadow-lg">
+                  <Link to={`/categories/${slug}/${product.slug || product.id}`} key={product.id}>
+                    <Card className="group cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg">
                       {/* Interactive Image Carousel */}
                       <div
                         className={cn(
-                          "bg-muted relative overflow-hidden",
+                          "relative overflow-hidden bg-muted",
                           viewMode === "small" ? "aspect-3/4" : "aspect-4/5",
                         )}
                       >
-                        <ProductImageCarousel
-                          product={product}
-                          viewMode={viewMode}
-                        />
+                        <ProductImageCarousel product={product} viewMode={viewMode} />
 
                         {/* Badges - moved outside carousel to prevent conflicts */}
-                        <div className="z-modal absolute top-2 left-2 flex flex-col gap-1">
+                        <div className="absolute top-2 left-2 z-modal flex flex-col gap-1">
                           {product.isFeatured && (
-                            <Badge className="bg-yellow-500 text-white">
-                              Featured
-                            </Badge>
+                            <Badge className="bg-yellow-500 text-white">Featured</Badge>
                           )}
-                          {product.tags &&
-                            product.tags.length > 0 &&
-                            viewMode !== "small" && (
-                              <Badge variant="secondary">
-                                {product.tags[0]}
-                              </Badge>
-                            )}
+                          {product.tags && product.tags.length > 0 && viewMode !== "small" && (
+                            <Badge variant="secondary">{product.tags[0]}</Badge>
+                          )}
                         </div>
                       </div>
 
                       {/* Product Info */}
-                      <div
-                        className={cn(
-                          "p-3",
-                          viewMode === "small" ? "p-2" : "p-3",
-                        )}
-                      >
+                      <div className={cn("p-3", viewMode === "small" ? "p-2" : "p-3")}>
                         <h3
                           className={cn(
-                            "text-foreground line-clamp-2 font-semibold",
+                            "line-clamp-2 font-semibold text-foreground",
                             viewMode === "small" ? "text-sm" : "text-base",
                           )}
                         >
@@ -953,15 +850,14 @@ export default function CategoryProductsPage() {
 
                         {viewMode !== "small" && (
                           <>
-                            <Typography.P className="text-muted-foreground mt-1 text-sm">
+                            <Typography.P className="mt-1 text-muted-foreground text-sm">
                               SKU: {product.sku}
                             </Typography.P>
-                            {product.shortDescription &&
-                              viewMode === "large" && (
-                                <Typography.P className="text-muted-foreground mt-2 line-clamp-2 text-sm">
-                                  {product.shortDescription}
-                                </Typography.P>
-                              )}
+                            {product.shortDescription && viewMode === "large" && (
+                              <Typography.P className="mt-2 line-clamp-2 text-muted-foreground text-sm">
+                                {product.shortDescription}
+                              </Typography.P>
+                            )}
                           </>
                         )}
                       </div>

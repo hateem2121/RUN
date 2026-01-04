@@ -163,7 +163,7 @@ export class FileSecurityScanner {
    */
   static validateFilename(filename: string): {
     isValid: boolean;
-    reason?: string;
+    reason?: string | undefined;
   } {
     // Check for suspicious characters
     const suspiciousChars = /[<>:"|?*\x00-\x1F]/;

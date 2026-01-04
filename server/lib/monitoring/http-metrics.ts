@@ -10,8 +10,8 @@ interface HttpMetric {
   statusCode: number;
   duration: number;
   timestamp: number;
-  userAgent?: string;
-  contentLength?: number;
+  userAgent?: string | undefined;
+  contentLength?: number | undefined;
 }
 
 interface RouteMetrics {

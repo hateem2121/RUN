@@ -89,9 +89,9 @@ import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface GradientBlindsProps {
-  className?: string;
-  dpr?: number;
-  paused?: boolean;
+  className?: string | undefined;
+  dpr?: number | undefined;
+  paused?: boolean | undefined;
   gradientColors: string[]; // REQUIRED: Always provided by admin settings
   angle: number;
   noise: number;
@@ -272,7 +272,7 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
 
   const [webglSupport, setWebglSupport] = useState<{
     supported: boolean;
-    error?: string;
+    error?: string | undefined;
   } | null>(null);
   const [webglInitialized, setWebglInitialized] = useState(false);
 
@@ -736,10 +736,10 @@ void main() {
         />
 
         {/* User feedback for fallback mode */}
-        <div className="z-default pointer-events-none absolute right-4 bottom-4" aria-live="polite">
-          <div className="border-border bg-card text-foreground flex items-center gap-2 rounded-lg border px-4 py-2 font-sans text-xs font-medium shadow-md transition-opacity duration-300 hover:opacity-100">
+        <div className="pointer-events-none absolute right-4 bottom-4 z-default" aria-live="polite">
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 font-medium font-sans text-foreground text-xs shadow-md transition-opacity duration-300 hover:opacity-100">
             <span className="text-sm opacity-90">ℹ️</span>
-            <span className="font-medium whitespace-nowrap">
+            <span className="whitespace-nowrap font-medium">
               Static preview mode. For interactive effects, use a WebGL-capable browser.
             </span>
           </div>

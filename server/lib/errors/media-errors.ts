@@ -18,6 +18,6 @@ export class CacheInvalidationError extends Error {
       `Cache invalidation failed for ${operation} operation: ${cause?.message || "Unknown error"}`,
     );
     this.name = "CacheInvalidationError";
-    this.cause = cause;
+    this.cause = cause || new Error("Unknown cause");
   }
 }

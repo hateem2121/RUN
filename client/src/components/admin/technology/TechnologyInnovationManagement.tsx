@@ -148,7 +148,7 @@ function SortableInnovationItem({ innovation, onEdit, onDelete }: SortableInnova
 }
 
 interface TechnologyInnovationManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyInnovationManagement({

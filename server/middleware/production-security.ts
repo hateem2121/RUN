@@ -33,6 +33,7 @@ export function securityHeaders(
           scriptSrc: [
             "'strict-dynamic'", // Modern browsers ignore whitelist if nonce/strict-dynamic is present
             `'nonce-${nonce}'`,
+            "'self'", // Required for standard CSP validation and older browsers
             "https:", // Fallback for specific allowlisted domains if strict-dynamic not supported
             "'unsafe-inline'", // BACKWARD COMPAT: Kept for hydration scripts that might slip through, but nonce takes precedence
           ],
@@ -54,6 +55,13 @@ export function securityHeaders(
           workerSrc: ["'self'", "blob:"],
           mediaSrc: ["'self'", "https:", "data:", "blob:"],
         },
+      },
+      // HSTS: Enforce HTTPS for 1 year with preload eligibility
+      // Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+      hsts: {
+        maxAge: 31536000, // 1 year in seconds
+        includeSubDomains: true,
+        preload: true,
       },
       crossOriginEmbedderPolicy: false, // Often causes issues with 3rd party assets
       crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -82,6 +90,12 @@ export function requestValidation(
   const contentLength = parseInt(req.get("Content-Length") || "0", 10);
   const maxSize =
     parseInt(config.app.maxRequestSize.replace("mb", ""), 10) * 1024 * 1024;
+
+  // BLOCK: Source map files in production (Case Insensitive & Handle Encoded)
+  const decodedPath = decodeURIComponent(req.path);
+  if (/\.map$/i.test(decodedPath)) {
+    return res.status(404).send("Not Found");
+  }
 
   if (contentLength > maxSize) {
     return res.status(413).json({

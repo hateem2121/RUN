@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * MANUFACTURING HERO RESOURCES
  *
@@ -66,7 +68,7 @@ router.patch(
       }
 
       const hero = await withTimeout(
-        getStorage().updateManufacturingHero(validation.data),
+        getStorage().updateManufacturingHero(removeUndefined(validation.data)),
         10000,
         "Update manufacturing hero",
       );

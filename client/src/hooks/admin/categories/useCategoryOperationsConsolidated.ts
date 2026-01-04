@@ -57,8 +57,7 @@ export default function useCategoryOperationsConsolidated() {
   // Queries
   const { data: categories = [], isLoading } = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
-    queryFn: () =>
-      validatedApiRequest("/api/categories", categoriesResponseSchema),
+    queryFn: () => validatedApiRequest("/api/categories", categoriesResponseSchema),
     staleTime: 60 * 1000,
   });
 
@@ -87,8 +86,7 @@ export default function useCategoryOperationsConsolidated() {
       const term = uiState.searchTerm.toLowerCase();
       result = result.filter(
         (c: any) =>
-          c.name.toLowerCase().includes(term) ||
-          c.description?.toLowerCase().includes(term),
+          c.name.toLowerCase().includes(term) || c.description?.toLowerCase().includes(term),
       );
     }
 
@@ -130,8 +128,7 @@ export default function useCategoryOperationsConsolidated() {
   };
 
   // Dialog Handlers
-  const openCreateDialog = () =>
-    updateUIState({ showCreateDialog: true, editingCategory: null });
+  const openCreateDialog = () => updateUIState({ showCreateDialog: true, editingCategory: null });
   const openEditDialog = (category: any) =>
     updateUIState({ showEditDialog: true, editingCategory: category });
   const openDeleteDialog = (category: any) =>
@@ -200,10 +197,8 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   // Exported wrappers
-  const createCategory = (data: any) =>
-    createCategoryMutation.mutateAsync(data);
-  const updateCategory = (data: any) =>
-    updateCategoryMutation.mutateAsync(data);
+  const createCategory = (data: any) => createCategoryMutation.mutateAsync(data);
+  const updateCategory = (data: any) => updateCategoryMutation.mutateAsync(data);
   const deleteCategory = (id: number) => deleteCategoryMutation.mutateAsync(id);
 
   const restoreCategory = async (_id: number) => {

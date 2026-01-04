@@ -20,10 +20,10 @@ export interface PerformanceMetric {
   path: string;
   statusCode: number;
   duration: number;
-  ttfb?: number;
-  dbTime?: number;
-  cacheHit?: boolean;
-  userAgent?: string;
+  ttfb?: number | undefined;
+  dbTime?: number | undefined;
+  cacheHit?: boolean | undefined;
+  userAgent?: string | undefined;
 }
 
 export interface PerformanceStats {

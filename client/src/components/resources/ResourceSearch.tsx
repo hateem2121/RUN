@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 interface ResourceSearchProps {
   value: string;
   onChange: (value: string) => void;
-  placeholder?: string;
-  className?: string;
+  placeholder?: string | undefined;
+  className?: string | undefined;
 }
 
 export function ResourceSearch({

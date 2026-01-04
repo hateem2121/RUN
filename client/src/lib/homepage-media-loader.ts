@@ -97,7 +97,7 @@ export function useHomepageMediaLoader(
               url: r.content
                 ? `data:${r.mimeType};base64,${r.content}`
                 : r.url || `/api/media/${r.id}/content`,
-              content: r.content,
+              ...(r.content ? { content: r.content } : {}),
               cached: true,
               prefetch: true,
             }),
@@ -173,16 +173,17 @@ export function useHomepageMediaLoader(
       };
     },
     // Only fetch when we have media IDs in targeted mode
-    enabled:
+    enabled: !!(
       !options.targetedLoading ||
-      (options.extractedMediaIds && options.extractedMediaIds.length > 0),
+      (options.extractedMediaIds && options.extractedMediaIds.length > 0)
+    ),
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   });
 
   // Load additional batches when needed
   const loadMoreAssets = useCallback(async () => {
-    if (isLoadingMore || hasReachedEnd || !initialBatch?.hasMore) {
+    if (isLoadingMore || hasReachedEnd || !(initialBatch as any)?.hasMore) {
       return;
     }
 
@@ -216,30 +217,24 @@ export function useHomepageMediaLoader(
     } finally {
       setIsLoadingMore(false);
     }
-  }, [
-    currentPage,
-    isLoadingMore,
-    hasReachedEnd,
-    initialBatch?.hasMore,
-    options.additionalBatchSize,
-  ]);
+  }, [currentPage, isLoadingMore, hasReachedEnd, options.additionalBatchSize, initialBatch]);
 
   // Combine initial batch with additionally loaded assets
-  const allAssets = [...(initialBatch?.data || []), ...allLoadedAssets];
+  const allAssets = [...((initialBatch as any)?.data || []), ...allLoadedAssets];
 
   // Initialize with first batch
   useEffect(() => {
-    if (initialBatch?.data && allLoadedAssets.length === 0) {
+    if ((initialBatch as any)?.data && allLoadedAssets.length === 0) {
       // Assets are managed in initialBatch, no need to duplicate in allLoadedAssets
     }
-  }, [initialBatch?.data, allLoadedAssets.length]);
+  }, [allLoadedAssets.length, initialBatch]);
 
   return {
     assets: allAssets,
     isInitialLoading,
     isLoadingMore,
-    hasMore: !hasReachedEnd && initialBatch?.hasMore !== false,
-    totalCount: initialBatch?.totalCount || 0,
+    hasMore: !hasReachedEnd && (initialBatch as any)?.hasMore !== false,
+    totalCount: (initialBatch as any)?.totalCount || 0,
     loadMoreAssets,
 
     // Helper functions

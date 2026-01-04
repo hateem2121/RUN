@@ -166,17 +166,17 @@ export interface IStorage {
   getMediaAssets(
     limit?: number,
     offset?: number,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
   ): Promise<MediaAsset[]>;
   getMediaAssetsCount(filters?: {
-    type?: string;
-    search?: string;
-    folderId?: number;
+    type?: string | undefined;
+    search?: string | undefined;
+    folderId?: number | undefined;
   }): Promise<number>;
   getMediaAssetsWithCount(
     limit?: number,
     offset?: number,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
   ): Promise<{ assets: MediaAsset[]; total: number }>;
   getMediaAsset(id: number): Promise<MediaAsset | undefined>;
   createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset>;
@@ -247,11 +247,11 @@ export interface IStorage {
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
   getInquiryById(id: number): Promise<Inquiry | undefined>;
   listInquiries(filters: {
-    page?: number;
-    limit?: number;
-    status?: string;
-    source?: string;
-    search?: string;
+    page?: number | undefined;
+    limit?: number | undefined;
+    status?: string | undefined;
+    source?: string | undefined;
+    search?: string | undefined;
   }): Promise<{ inquiries: Inquiry[]; total: number }>;
   updateInquiryStatus(
     id: number,

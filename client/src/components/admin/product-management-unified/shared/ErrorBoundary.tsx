@@ -10,14 +10,14 @@ import { logger } from "./logger";
 
 interface Props {
   children: ReactNode;
-  fallbackTitle?: string;
-  fallbackMessage?: string;
-  sectionName?: string;
+  fallbackTitle?: string | undefined;
+  fallbackMessage?: string | undefined;
+  sectionName?: string | undefined;
 }
 
 interface State {
   hasError: boolean;
-  error?: Error;
+  error?: Error | null;
   errorInfo?: any;
 }
 
@@ -45,7 +45,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+    this.setState({ hasError: false, error: null, errorInfo: undefined });
   };
 
   render() {

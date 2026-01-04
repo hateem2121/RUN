@@ -45,8 +45,7 @@ export function meta({}: Route.MetaArgs) {
     { title: "Products | Run Apparel" },
     {
       name: "description",
-      content:
-        "Browse our extensive catalog of sportswear products and textiles.",
+      content: "Browse our extensive catalog of sportswear products and textiles.",
     },
   ];
 }
@@ -86,8 +85,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     }),
     queryClient.prefetchQuery({
       queryKey: ["/api/products", search, category],
-      queryFn: () =>
-        apiRequest(`/api/products?search=${search}&category=${category}`),
+      queryFn: () => apiRequest(`/api/products?search=${search}&category=${category}`),
     }),
   ]);
 
@@ -98,7 +96,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 function ProductsLoader() {
   return (
     <div className="flex min-h-96 items-center justify-center">
-      <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
     </div>
   );
 }
@@ -108,9 +106,7 @@ export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   usePerformanceMonitor("ProductsPage");
   const { trackPageView, trackFunnelStage } = useAnalyticsTracker();
-  const [displayedProducts, setDisplayedProducts] = useState<ProductSummary[]>(
-    [],
-  );
+  const [displayedProducts, setDisplayedProducts] = useState<ProductSummary[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const itemsPerPage = 12;
 
@@ -119,17 +115,13 @@ export default function ProductsPage() {
   const initialCategory = searchParams.get("category") || "all";
   const viewParam = searchParams.get("view");
   const validViewMode =
-    viewParam === "small" || viewParam === "medium" || viewParam === "large"
-      ? viewParam
-      : "medium";
+    viewParam === "small" || viewParam === "medium" || viewParam === "large" ? viewParam : "medium";
   const initialSortBy = searchParams.get("sort") || "name";
 
   // State
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [viewMode, setViewMode] = useState<"small" | "medium" | "large">(
-    validViewMode,
-  );
+  const [viewMode, setViewMode] = useState<"small" | "medium" | "large">(validViewMode);
   const [sortBy, setSortBy] = useState(initialSortBy);
 
   // Advanced filters state
@@ -179,10 +171,7 @@ export default function ProductsPage() {
     queryKey: MediaQueryKeys.list,
     queryFn: () => apiRequest("/api/media?all=true", { method: "GET" }),
   });
-  const mediaAssets = safeParseArray(
-    MediaAssetSchema,
-    mediaResponse?.data || [],
-  );
+  const mediaAssets = safeParseArray(MediaAssetSchema, mediaResponse?.data || []);
 
   // 7. Products
   const {
@@ -194,10 +183,7 @@ export default function ProductsPage() {
     queryFn: () => apiRequest("/api/products", { method: "GET" }),
     placeholderData: keepPreviousData,
   });
-  const products = safeParseArray(
-    ProductSummarySchema,
-    productsResponse?.data || [],
-  );
+  const products = safeParseArray(ProductSummarySchema, productsResponse?.data || []);
 
   // Track page view on mount
   useEffect(() => {
@@ -209,8 +195,7 @@ export default function ProductsPage() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set("search", searchTerm);
-    if (selectedCategory && selectedCategory !== "all")
-      params.set("category", selectedCategory);
+    if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
     if (viewMode !== "medium") params.set("view", viewMode);
     if (sortBy !== "name") params.set("sort", sortBy);
 
@@ -218,9 +203,7 @@ export default function ProductsPage() {
   }, [searchTerm, selectedCategory, viewMode, sortBy, setSearchParams]);
 
   // Extract unique tags from all products
-  const availableTags = [
-    ...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || [])),
-  ];
+  const availableTags = [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))];
 
   // Filter and sort products
   const sortedProducts = (products || [])
@@ -236,11 +219,7 @@ export default function ProductsPage() {
 
       if (selectedFilters.certificates.length > 0) {
         const productCerts = product.certificateIds || [];
-        if (
-          !selectedFilters.certificates.some((certId) =>
-            productCerts.includes(certId),
-          )
-        ) {
+        if (!selectedFilters.certificates.some((certId) => productCerts.includes(certId))) {
           return false;
         }
       }
@@ -254,11 +233,7 @@ export default function ProductsPage() {
 
       if (selectedFilters.accessories.length > 0) {
         const productAccs = product.accessoryIds || [];
-        if (
-          !selectedFilters.accessories.some((accId) =>
-            productAccs.includes(accId),
-          )
-        ) {
+        if (!selectedFilters.accessories.some((accId) => productAccs.includes(accId))) {
           return false;
         }
       }
@@ -275,10 +250,7 @@ export default function ProductsPage() {
         typeof product.minimumOrderQuantity === "string"
           ? parseInt(product.minimumOrderQuantity, 10) || 0
           : product.minimumOrderQuantity || 0;
-      if (
-        moq < selectedFilters.moqRange[0] ||
-        moq > selectedFilters.moqRange[1]
-      ) {
+      if (moq < selectedFilters.moqRange[0] || moq > selectedFilters.moqRange[1]) {
         return false;
       }
 
@@ -290,10 +262,7 @@ export default function ProductsPage() {
           return (a?.name || "").localeCompare(b?.name || "");
         case "newest":
           // Date parsing
-          return (
-            new Date(b?.createdAt || 0).getTime() -
-            new Date(a?.createdAt || 0).getTime()
-          );
+          return new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime();
         case "featured":
           return (b?.isFeatured ? 1 : 0) - (a?.isFeatured ? 1 : 0);
         default:
@@ -310,13 +279,11 @@ export default function ProductsPage() {
   const observerRef = { current: null };
 
   // Get selected category object for SEO
-  const selectedCategoryObj = categories.find(
-    (c) => c.id.toString() === selectedCategory,
-  );
+  const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-muted/30 pt-production-header min-h-screen">
+      <div className="min-h-screen bg-muted/30 pt-production-header">
         <GlobalErrorBoundary>
           <Suspense fallback={<ProductsLoader />}>
             {/* SEO Component */}
@@ -327,17 +294,15 @@ export default function ProductsPage() {
             />
 
             {/* Header */}
-            <div className="z-modal-backdrop border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
+            <div className="sticky top-0 z-modal-backdrop border-border border-b bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/60">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-                  <Typography.H1 className="text-2xl font-bold">
-                    Products
-                  </Typography.H1>
+                  <Typography.H1 className="font-bold text-2xl">Products</Typography.H1>
 
                   <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                     {/* Search */}
                     <div className="relative flex-1 sm:flex-none">
-                      <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                      <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         placeholder="Search products..."
                         value={searchTerm}
@@ -347,10 +312,7 @@ export default function ProductsPage() {
                     </div>
 
                     {/* Category Filter */}
-                    <Select
-                      value={selectedCategory}
-                      onValueChange={setSelectedCategory}
-                    >
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                       <SelectTrigger className="w-full sm:w-48">
                         <SelectValue placeholder="All Categories" />
                       </SelectTrigger>
@@ -359,10 +321,7 @@ export default function ProductsPage() {
                         {categories
                           .filter((c) => c.isActive)
                           .map((category) => (
-                            <SelectItem
-                              key={category.id}
-                              value={category.id.toString()}
-                            >
+                            <SelectItem key={category.id} value={category.id.toString()}>
                               {category?.name || "Category"}
                             </SelectItem>
                           ))}
@@ -382,7 +341,7 @@ export default function ProductsPage() {
                     </Select>
 
                     {/* View Mode */}
-                    <div className="bg-muted flex gap-1 rounded-md p-1">
+                    <div className="flex gap-1 rounded-md bg-muted p-1">
                       <Button
                         size="sm"
                         variant={viewMode === "small" ? "default" : "ghost"}
@@ -423,14 +382,13 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Results count */}
-                <div className="text-muted-foreground mt-2 text-sm">
+                <div className="mt-2 text-muted-foreground text-sm">
                   Showing {sortedProducts.length} products
                   {searchTerm && ` for "${searchTerm}"`}
                   {selectedCategory &&
                     ` in ${
-                      categories.find(
-                        (c) => c.id.toString() === selectedCategory,
-                      )?.name || "Category"
+                      categories.find((c) => c.id.toString() === selectedCategory)?.name ||
+                      "Category"
                     }`}
                 </div>
               </div>
@@ -442,9 +400,7 @@ export default function ProductsPage() {
                 <ProductsLoader />
               ) : sortedProducts.length === 0 ? (
                 <div className="py-12 text-center">
-                  <Typography.P className="text-muted-foreground">
-                    No products found
-                  </Typography.P>
+                  <Typography.P className="text-muted-foreground">No products found</Typography.P>
                 </div>
               ) : (
                 <>
@@ -465,7 +421,7 @@ export default function ProductsPage() {
                   {/* Infinite scroll observer (Placeholder) */}
                   {hasMore && (
                     <div ref={observerRef} className="flex justify-center py-8">
-                      <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
+                      <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-luxury-gray-600" />
                       <Typography.P className="text-luxury-body text-sm">
                         "Loading more products..."
                       </Typography.P>

@@ -8,11 +8,11 @@ interface ResourceGridProps<T> {
   items: T[];
   renderItem: (item: T, index: number) => ReactNode;
   columns?: 1 | 2 | 3 | 4;
-  gap?: number;
-  enableInfiniteScroll?: boolean;
+  gap?: number | undefined;
+  enableInfiniteScroll?: boolean | undefined;
   emptyState?: ReactNode;
   loadingState?: ReactNode;
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function ResourceGrid<T>({

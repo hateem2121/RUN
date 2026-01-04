@@ -29,12 +29,12 @@ interface ScrollTriggerInstance {
 interface AnimationErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
-  componentName?: string;
+  componentName?: string | undefined;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
   // Enhanced error recovery options
-  enableGsapCleanup?: boolean;
-  enableErrorLogging?: boolean;
-  autoRetryDelay?: number;
+  enableGsapCleanup?: boolean | undefined;
+  enableErrorLogging?: boolean | undefined;
+  autoRetryDelay?: number | undefined;
 }
 
 interface AnimationErrorBoundaryState {

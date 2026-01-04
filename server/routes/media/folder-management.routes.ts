@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * FOLDERS ROUTER MODULE
  * Extracted from routes.ts for better organization
@@ -105,7 +107,7 @@ router.post("/folders", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFolderSchema.parse(req.body);
     const folder = await withTimeout(
-      getStorage().createFolder(validatedData),
+      getStorage().createFolder(removeUndefined(validatedData)),
       10000,
       "Create folder",
     );
@@ -134,7 +136,7 @@ router.put("/folders/:id", authService.requireAdmin, async (req, res) => {
 
     const validatedData = insertFolderSchema.partial().parse(req.body);
     const folder = await withTimeout(
-      getStorage().updateFolder(id, validatedData),
+      getStorage().updateFolder(id, removeUndefined(validatedData)),
       10000,
       "Update folder",
     );

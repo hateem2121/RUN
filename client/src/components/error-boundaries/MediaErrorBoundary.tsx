@@ -8,8 +8,8 @@ interface MediaErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-  context?: string;
-  showRetry?: boolean;
+  context?: string | undefined;
+  showRetry?: boolean | undefined;
 }
 
 interface MediaErrorBoundaryState {

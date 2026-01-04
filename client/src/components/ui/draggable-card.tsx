@@ -33,7 +33,7 @@ export const DraggableCardBody = ({
   className,
   children,
 }: {
-  className?: string;
+  className?: string | undefined;
   children?: React.ReactNode;
 }) => {
   const isMobile = useIsMobile();
@@ -249,7 +249,7 @@ export const DraggableCardContainer = ({
   className,
   children,
 }: {
-  className?: string;
+  className?: string | undefined;
   children?: React.ReactNode;
 }) => {
   return <div className={cn("perspective-deep", className)}>{children}</div>;

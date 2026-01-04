@@ -12,7 +12,7 @@ const AsteriskIcon = ({ className }: { className?: string }) => (
 
 interface ScrollingBannerProps {
   text: string;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function ScrollingBanner({ text, className }: ScrollingBannerProps) {

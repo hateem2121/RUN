@@ -10,8 +10,8 @@ import { ClippedElement } from "./PremiumProductComponents";
 
 interface EnhancedRecommendationsProps {
   products: Product[];
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
 }
 
 export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
@@ -32,9 +32,9 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-black-display mb-4 text-center text-3xl md:text-4xl">{title}</h2>
+          <h2 className="mb-4 text-center font-black-display text-3xl md:text-4xl">{title}</h2>
           {description && (
-            <p className="text-muted-foreground mx-auto mb-16 max-w-2xl text-center">
+            <p className="mx-auto mb-16 max-w-2xl text-center text-muted-foreground">
               {description}
             </p>
           )}
@@ -48,14 +48,14 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
             return (
               <Link key={product.id} to={productUrl}>
                 <motion.div
-                  className="group hover:border-border cursor-pointer border border-transparent p-4 text-center transition-all duration-300 ease-in-out"
+                  className="group cursor-pointer border border-transparent p-4 text-center transition-all duration-300 ease-in-out hover:border-border"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   data-testid={`card-recommendation-${product.id}`}
                 >
-                  <div className="aspect-h-4 aspect-w-3 bg-muted overflow-hidden">
+                  <div className="aspect-h-4 aspect-w-3 overflow-hidden bg-muted">
                     {product.primaryImageId ? (
                       <img
                         src={`/api/media/${product.primaryImageId}`}
@@ -64,21 +64,21 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
                         data-testid={`img-recommendation-${product.id}`}
                       />
                     ) : (
-                      <div className="bg-muted flex h-full w-full items-center justify-center">
+                      <div className="flex h-full w-full items-center justify-center bg-muted">
                         <span className="text-muted-foreground/70 text-sm">No Image</span>
                       </div>
                     )}
                   </div>
                   <div className="mt-4">
                     <h3
-                      className="text-foreground text-sm font-semibold"
+                      className="font-semibold text-foreground text-sm"
                       data-testid={`text-recommendation-name-${product.id}`}
                     >
                       {product.name}
                     </h3>
                     {product.sku && (
                       <p
-                        className="text-muted-foreground mt-1 text-sm"
+                        className="mt-1 text-muted-foreground text-sm"
                         data-testid={`text-recommendation-sku-${product.id}`}
                       >
                         {product.sku}
@@ -101,7 +101,7 @@ export const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = (
           <Link to="/products">
             <ClippedElement
               as="button"
-              className="hover:bg-muted/80 transform bg-black px-16 py-4 text-sm font-bold tracking-[0.2em] text-white transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
+              className="transform bg-black px-16 py-4 font-bold text-sm text-white tracking-[0.2em] transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-muted/80"
             >
               EXPLORE FULL CATALOG
             </ClippedElement>

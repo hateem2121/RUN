@@ -132,7 +132,7 @@ export default function CategoryManagementSimplified() {
       {/* Header - Simplified */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Categories</h1>
+          <h1 className="font-bold text-2xl">Categories</h1>
           <p className="text-muted-foreground text-sm">
             {filteredCategories.length} of {categories?.length || 0} categories
             {selectedCount > 0 && ` • ${selectedCount} selected`}
@@ -175,20 +175,20 @@ export default function CategoryManagementSimplified() {
             <select
               value={uiState.filterStatus}
               onChange={(e) => updateUIState({ filterStatus: e.target.value as any })}
-              className="border-input rounded-md border px-3 py-2"
+              className="rounded-md border border-input px-3 py-2"
             >
               <option value="all">All Categories</option>
               <option value="active">Active Only</option>
               <option value="inactive">Inactive Only</option>
             </select>
-            <div className="border-input bg-background flex items-center gap-2 rounded-md border px-3 py-2">
+            <div className="flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2">
               <Switch
                 id="show-deleted"
                 checked={uiState.showDeletedCategories}
                 onCheckedChange={(checked) => updateUIState({ showDeletedCategories: checked })}
                 data-testid="toggle-deleted-categories"
               />
-              <Label htmlFor="show-deleted" className="cursor-pointer text-sm whitespace-nowrap">
+              <Label htmlFor="show-deleted" className="cursor-pointer whitespace-nowrap text-sm">
                 Show Deleted
               </Label>
             </div>
@@ -197,7 +197,7 @@ export default function CategoryManagementSimplified() {
           {/* View Mode & Bulk Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">View:</span>
+              <span className="font-medium text-sm">View:</span>
               <div className="flex gap-1">
                 <Button
                   variant={uiState.viewMode === "list" ? "default" : "outline"}
@@ -266,11 +266,11 @@ export default function CategoryManagementSimplified() {
       {uiState.showAdvancedMode && (
         <Card className="border-amber-200 bg-amber-50">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg text-amber-800">
+            <CardTitle className="flex items-center gap-2 text-amber-800 text-lg">
               <Settings className="h-5 w-5" />
               Advanced Features
             </CardTitle>
-            <p className="text-sm text-amber-700">
+            <p className="text-amber-700 text-sm">
               Additional tools for power users. These features are being simplified.
             </p>
           </CardHeader>
@@ -289,7 +289,7 @@ export default function CategoryManagementSimplified() {
                 Bulk Content
               </Button>
             </div>
-            <p className="mt-2 text-sm text-amber-700">
+            <p className="mt-2 text-amber-700 text-sm">
               Advanced features are being consolidated for a cleaner experience.
             </p>
           </CardContent>
@@ -324,7 +324,7 @@ export default function CategoryManagementSimplified() {
               <Trash2 className="h-5 w-5" />
               Deleted Categories ({deletedCategories.length})
             </CardTitle>
-            <p className="text-sm text-red-700 dark:text-red-300">
+            <p className="text-red-700 text-sm dark:text-red-300">
               {isLoadingDeleted
                 ? "Loading deleted categories..."
                 : deletedCategories.length > 0
@@ -338,7 +338,7 @@ export default function CategoryManagementSimplified() {
                 <p className="font-medium text-red-600 dark:text-red-400">
                   Failed to load deleted categories
                 </p>
-                <p className="text-muted-foreground mt-2 text-sm">
+                <p className="mt-2 text-muted-foreground text-sm">
                   {(deletedCategoriesError as any)?.message ||
                     "An error occurred while fetching deleted categories"}
                 </p>
@@ -367,24 +367,24 @@ export default function CategoryManagementSimplified() {
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-red-200 border-t-red-600" />
               </div>
             ) : deletedCategories.length === 0 ? (
-              <p className="text-muted-foreground py-8 text-center">No deleted categories</p>
+              <p className="py-8 text-center text-muted-foreground">No deleted categories</p>
             ) : (
               <div className="space-y-2">
                 {deletedCategories.map((category: any) => (
                   <div
                     key={category.id}
-                    className="dark:bg-foreground flex items-center justify-between rounded-lg border border-red-200 bg-white p-4 dark:border-red-900"
+                    className="flex items-center justify-between rounded-lg border border-red-200 bg-white p-4 dark:border-red-900 dark:bg-foreground"
                     data-testid={`deleted-category-${category.id}`}
                   >
                     <div className="flex-1">
-                      <h3 className="text-foreground dark:text-foreground font-medium">
+                      <h3 className="font-medium text-foreground dark:text-foreground">
                         {category.name}
                       </h3>
-                      <p className="text-muted-foreground dark:text-muted-foreground/70 text-sm">
+                      <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
                         {category.slug}
                       </p>
                       {category.deletedAt && (
-                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                        <p className="mt-1 text-red-600 text-xs dark:text-red-400">
                           Deleted: {new Date(category.deletedAt).toLocaleDateString()}
                         </p>
                       )}

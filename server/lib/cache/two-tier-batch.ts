@@ -88,7 +88,7 @@ export class TwoTierBatchCache {
     key: string,
     fetchFn: () => Promise<T>,
     options?: {
-      bypassCache?: boolean;
+      bypassCache?: boolean | undefined;
       swrConfig?: SWRConfig;
     },
   ): Promise<{ data: T; benchmark: BenchmarkResult }> {

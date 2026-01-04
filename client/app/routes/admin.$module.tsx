@@ -55,9 +55,9 @@ const InquiryManagement = () => <PlaceholderModule moduleName="Inquiry Managemen
 // Loading component
 function ModuleLoader() {
   return (
-    <div className="h-loading-center flex items-center justify-center">
+    <div className="flex h-loading-center items-center justify-center">
       <div className="text-center">
-        <div className="border-muted border-t-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4" />
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-muted border-t-primary" />
         <Typography.P className="text-muted-foreground text-sm">Loading module...</Typography.P>
       </div>
     </div>

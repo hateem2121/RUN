@@ -15,7 +15,6 @@ import { createServer, type Server } from "node:http";
 import compression from "compression";
 import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 // Critical static imports for type safety and base middleware
 // Note: We import setupAuth dynamically to ensure module isolation if needed,
@@ -28,10 +27,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
   const { authService } = await import("../services/auth-service.js");
-  const { adminLimiter, diagnosticLimiter } =
-    await import("../lib/rate-limiter.js");
-  const { enforceValidation } =
-    await import("../middleware/strict-validation.js");
+  const { adminLimiter, diagnosticLimiter } = await import("../lib/rate-limiter.js");
+  const { enforceValidation } = await import("../middleware/strict-validation.js");
 
   authService.setup(app);
   logger.info("[Auth] ✅ AuthService initialized (OIDC + PostgreSQL sessions)");
@@ -40,8 +37,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // DEV LOGIN (Preserved for compatibility)
   // ============================================================================
   app.get("/api/dev/login", async (req, res) => {
-    if (process.env.NODE_ENV === "production")
-      return res.status(404).send("Not found");
+    if (process.env.NODE_ENV === "production") return res.status(404).send("Not found");
     try {
       const { db } = await import("../db.js");
       const { users } = await import("@run-remix/shared");
@@ -51,8 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         where: eq(users.email, "team@wear-run.com"),
       });
 
-      if (!adminUser)
-        return res.status(404).json({ error: "Admin user not found" });
+      if (!adminUser) return res.status(404).json({ error: "Admin user not found" });
 
       const user = { claims: { sub: adminUser.id, email: adminUser.email } };
       return req.login(user, (err) => {
@@ -174,7 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = Router();
 
   // Core Domains
-  apiRouter.use((req, res, next) => {
+  apiRouter.use((req, _res, next) => {
     logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
     next();
   });
@@ -193,12 +188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // But here we keep existing structure where specific routes use it or we mount it.
   // Existing: app.use("/api/admin", authService.requireAdmin);
   // We can replicate this on apiRouter
-  apiRouter.use(
-    "/admin",
-    authService.requireAdmin,
-    adminLimiter.middleware(),
-    enforceValidation,
-  );
+  apiRouter.use("/admin", authService.requireAdmin, adminLimiter.middleware(), enforceValidation);
   apiRouter.use(adminRouter); // adminRouter likely defines /admin/... or is mounted at /admin?
   // Wait, previous code: app.use("/api", adminRouter);
   // So adminRouter defines /admin paths?
@@ -242,9 +232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info(
-    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
-  );
+  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 
   return httpServer;
 }

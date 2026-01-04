@@ -22,8 +22,8 @@ interface ErrorDetails {
     | "external_service";
   severity: "low" | "medium" | "high" | "critical";
   timestamp: string;
-  userAgent?: string;
-  ip?: string;
+  userAgent?: string | undefined;
+  ip?: string | undefined;
   path: string;
   method: string;
 }
@@ -50,10 +50,7 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   let severity: ErrorDetails["severity"] = "medium";
 
   // Classify by error properties
-  const errorCode =
-    error && typeof error === "object" && "code" in error
-      ? error.code
-      : undefined;
+  const errorCode = error && typeof error === "object" && "code" in error ? error.code : undefined;
   if (errorCode === "ECONNREFUSED" || errorCode === "ENOTFOUND") {
     type = "external_service";
     severity = "high";
@@ -63,17 +60,9 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   ) {
     type = "database";
     severity = "high";
-  } else if (
-    error &&
-    typeof error === "object" &&
-    ("status" in error || "statusCode" in error)
-  ) {
+  } else if (error && typeof error === "object" && ("status" in error || "statusCode" in error)) {
     const status = (
-      "status" in error
-        ? error.status
-        : "statusCode" in error
-          ? error.statusCode
-          : 0
+      "status" in error ? error.status : "statusCode" in error ? error.statusCode : 0
     ) as number;
     if (status === 404) {
       type = "not_found";
@@ -132,10 +121,7 @@ function logError(error: unknown, details: ErrorDetails) {
     method: details.method,
     ip: details.ip,
     userAgent: details.userAgent,
-    stack:
-      config.app.enableDebugMode && error instanceof Error
-        ? error.stack
-        : undefined,
+    stack: config.app.enableDebugMode && error instanceof Error ? error.stack : undefined,
   });
 
   // Always log critical and high severity errors
@@ -143,9 +129,7 @@ function logError(error: unknown, details: ErrorDetails) {
     logger.error(
       `[ERROR ${details.id}] ${details.type.toUpperCase()}: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
-    logger.error(
-      `[ERROR ${details.id}] Path: ${details.method} ${details.path}`,
-    );
+    logger.error(`[ERROR ${details.id}] Path: ${details.method} ${details.path}`);
     logger.error(`[ERROR ${details.id}] IP: ${details.ip}`);
 
     if (config.app.enableDebugMode && error instanceof Error) {
@@ -154,10 +138,7 @@ function logError(error: unknown, details: ErrorDetails) {
   }
 
   // Log medium severity in development and staging
-  else if (
-    details.severity === "medium" &&
-    (logLevel === "info" || logLevel === "debug")
-  ) {
+  else if (details.severity === "medium" && (logLevel === "info" || logLevel === "debug")) {
     logger.warn(
       `[WARN ${details.id}] ${details.type}: ${error instanceof Error ? error.message : "Unknown error"} (${details.path})`,
     );
@@ -172,10 +153,7 @@ function logError(error: unknown, details: ErrorDetails) {
 }
 
 // Generate user-friendly error responses
-function generateErrorResponse(
-  error: unknown,
-  details: ErrorDetails,
-): Record<string, unknown> {
+function generateErrorResponse(error: unknown, details: ErrorDetails): Record<string, unknown> {
   const baseResponse = {
     error: true,
     id: details.id,
@@ -228,9 +206,7 @@ function generateErrorResponse(
   // Development/staging responses (more detailed)
   else {
     const status =
-      error &&
-      typeof error === "object" &&
-      ("status" in error || "statusCode" in error)
+      error && typeof error === "object" && ("status" in error || "statusCode" in error)
         ? (("status" in error
             ? error.status
             : "statusCode" in error
@@ -312,9 +288,7 @@ export function notFoundHandler(req: Request, res: Response) {
     id: errorDetails.id,
     type: "not_found",
     message:
-      config.app.environment === "production"
-        ? "Resource not found"
-        : `Path ${req.path} not found`,
+      config.app.environment === "production" ? "Resource not found" : `Path ${req.path} not found`,
     timestamp: errorDetails.timestamp,
   });
 }
@@ -327,9 +301,7 @@ export function setupGlobalErrorHandlers() {
 
     // In production, we might want to restart the process
     if (config.app.environment === "production") {
-      logger.error(
-        "[CRITICAL] Process may need restart due to unhandled rejection",
-      );
+      logger.error("[CRITICAL] Process may need restart due to unhandled rejection");
       // Don't exit automatically in Replit - let it handle gracefully
     }
   });

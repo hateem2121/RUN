@@ -68,17 +68,17 @@ export interface LiquidGlassCardProps
     "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
   > {
   children?: React.ReactNode;
-  draggable?: boolean;
-  expandable?: boolean;
-  width?: string;
-  height?: string;
-  expandedWidth?: string;
-  expandedHeight?: string;
+  draggable?: boolean | undefined;
+  expandable?: boolean | undefined;
+  width?: string | undefined;
+  height?: string | undefined;
+  expandedWidth?: string | undefined;
+  expandedHeight?: string | undefined;
   // Deprecated props - keeping for temporary compat if needed, but effectively unused by new system
-  blurIntensity?: string;
-  borderRadius?: string;
-  glowIntensity?: string;
-  shadowIntensity?: string;
+  blurIntensity?: string | undefined;
+  borderRadius?: string | undefined;
+  glowIntensity?: string | undefined;
+  shadowIntensity?: string | undefined;
   ref?: React.Ref<HTMLDivElement>;
 }
 
@@ -170,21 +170,21 @@ const LiquidGlassCard = ({
     <motion.div
       ref={ref}
       drag={shouldEnableDrag}
-      dragConstraints={shouldEnableDrag ? dragConstraints : undefined}
-      dragElastic={shouldEnableDrag ? 0.1 : undefined}
-      dragTransition={shouldEnableDrag ? { bounceStiffness: 600, bounceDamping: 20 } : undefined}
-      onDragEnd={shouldEnableDrag ? handleDragEnd : undefined}
+      {...(shouldEnableDrag ? { dragConstraints } : {})}
+      {...(shouldEnableDrag ? { dragElastic: 0.1 } : {})}
+      {...(shouldEnableDrag ? { dragTransition: { bounceStiffness: 600, bounceDamping: 20 } } : {})}
+      {...(shouldEnableDrag ? { onDragEnd: handleDragEnd } : {})}
       style={{
-        x: shouldEnableDrag ? x : undefined,
-        y: shouldEnableDrag ? y : undefined,
-        rotateX: shouldEnableDrag ? rotateX : undefined,
-        rotateY: shouldEnableDrag ? rotateY : undefined,
+        ...(shouldEnableDrag ? { x } : {}),
+        ...(shouldEnableDrag ? { y } : {}),
+        ...(shouldEnableDrag ? { rotateX } : {}),
+        ...(shouldEnableDrag ? { rotateY } : {}),
         borderRadius,
         width: currentWidth,
         height: currentHeight,
-        perspective: shouldEnableDrag ? "1000px" : undefined,
-        transformStyle: shouldEnableDrag ? "preserve-3d" : undefined,
-        ...style,
+        ...(shouldEnableDrag ? { perspective: "1000px" } : {}),
+        ...(shouldEnableDrag ? { transformStyle: "preserve-3d" } : {}),
+        ...(style as any),
       }}
       animate={{
         width: currentWidth,
@@ -238,7 +238,7 @@ LiquidGlassCard.displayName = "LiquidGlassCard";
 
 interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
-  subtitle?: string;
+  subtitle?: string | undefined;
   icon?: React.ReactNode;
 }
 
@@ -269,8 +269,8 @@ function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 
 interface LiquidGlassTitleProps {
   title: string;
-  subtitle?: string;
-  className?: string;
+  subtitle?: string | undefined;
+  className?: string | undefined;
 }
 
 export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({

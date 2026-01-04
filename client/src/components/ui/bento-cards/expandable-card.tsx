@@ -10,13 +10,13 @@ import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 interface ExpandableCardProps {
   title: string;
   description: string;
-  mediaUrl?: string | null;
-  link?: string;
+  mediaUrl?: string | null | undefined;
+  link?: string | undefined;
   expandedContent?: Array<{
     title: string;
     text: string;
   }>;
-  cardId?: string;
+  cardId?: string | undefined;
 }
 
 const ExpandableCard = memo(function ExpandableCard({

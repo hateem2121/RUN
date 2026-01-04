@@ -7,17 +7,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ResourceCardProps {
   title: string;
-  subtitle?: string;
-  description?: string;
-  icon?: ReactNode;
-  tags?: string[];
+  subtitle?: string | undefined;
+  description?: string | undefined;
+  icon?: ReactNode | undefined;
+  tags?: string[] | undefined;
   isExpanded: boolean;
   onToggleExpand: () => void;
-  expandedContent?: ReactNode;
-  badges?: Array<{
-    label: string;
-    variant?: "default" | "secondary" | "outline" | "destructive";
-  }>;
+  expandedContent?: ReactNode | undefined;
+  badges?:
+    | Array<{
+        label: string;
+        variant?: "default" | "secondary" | "outline" | "destructive" | undefined;
+      }>
+    | undefined;
 }
 
 export function ResourceCard({

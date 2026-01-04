@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * TECHNOLOGY EQUIPMENT RESOURCE ROUTER
  *
@@ -92,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newEquipment = await withTimeout(
-      getStorage().createTechnologyEquipment(validation.data),
+      getStorage().createTechnologyEquipment(removeUndefined(validation.data)),
       10000,
       "Create technology equipment",
     );
@@ -128,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyEquipment(id, validation.data),
+      getStorage().updateTechnologyEquipment(id, removeUndefined(validation.data)),
       10000,
       "Update technology equipment",
     );
@@ -198,7 +200,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.equipment.map(({ id, position }) =>
+      removeUndefined(validation.data).equipment.map(({ id, position }) =>
         getStorage().updateTechnologyEquipment(id, { sortOrder: position }),
       ),
     );

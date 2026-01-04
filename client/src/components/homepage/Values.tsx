@@ -75,8 +75,8 @@ interface ValuesCardProps {
   title: string;
   subtitle: string;
   icon: React.ElementType;
-  colSpan?: string;
-  withRipple?: boolean;
+  colSpan?: string | undefined;
+  withRipple?: boolean | undefined;
   isMobile: boolean;
   setCursor: (variant: CursorVariant) => void;
   image: string;
@@ -98,7 +98,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
     <Card
       className={cn(
         colSpan,
-        "group min-h-value-card relative flex flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
+        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
       )}
       variant="glass-premium"
       onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
@@ -117,14 +117,14 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
 
       {/* Ripple Layer - Only rendered on desktop for performance */}
       {withRipple && !isMobile && (
-        <div className="z-base pointer-events-none absolute inset-0 opacity-60 mix-blend-soft-light">
+        <div className="pointer-events-none absolute inset-0 z-base opacity-60 mix-blend-soft-light">
           <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
             <WaterRipple />
           </Canvas>
         </div>
       )}
 
-      <CardContent className="z-elevated relative flex h-full flex-col justify-between p-8">
+      <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
         <div className="flex w-full justify-end">
           {IconComponent && (
             <IconComponent
@@ -136,8 +136,8 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
           )}
         </div>
         <div>
-          <h3 className="mb-2 text-2xl font-bold text-white uppercase">{title}</h3>
-          <p className="text-muted-foreground/70 group-hover:text-foreground/80 transition-colors">
+          <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
+          <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
             {subtitle}
           </p>
         </div>
@@ -158,9 +158,9 @@ const Values: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-background-alt w-full px-4 py-32 md:px-8">
-      <div className="max-w-container-2xl mx-auto">
-        <h2 className="text-display-xl mb-16 text-center leading-none font-bold uppercase">
+    <section className="w-full bg-background-alt px-4 py-32 md:px-8">
+      <div className="mx-auto max-w-container-2xl">
+        <h2 className="mb-16 text-center font-bold text-display-xl uppercase leading-none">
           Built on <span className="font-serif italic">Precision</span>
         </h2>
 
@@ -203,8 +203,8 @@ const Values: React.FC = () => {
         </div>
 
         {/* Scrolling Ticker */}
-        <div className="mt-24 w-full overflow-hidden border-y border-black py-6" aria-hidden="true">
-          <div className="animate-marquee flex whitespace-nowrap">
+        <div className="mt-24 w-full overflow-hidden border-black border-y py-6" aria-hidden="true">
+          <div className="flex animate-marquee whitespace-nowrap">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
               .map((text, i) => (

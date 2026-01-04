@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * MATERIALS ROUTER MODULE
  * Handles fibers, fabrics, and certificates management
@@ -40,7 +42,7 @@ router.post("/fibers", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFiberSchema.parse(req.body);
     const fiber = await withTimeout(
-      retryDbOperation(() => getStorage().createFiber(validatedData), {
+      retryDbOperation(() => getStorage().createFiber(removeUndefined(validatedData)), {
         operationName: "Create fiber",
       }),
       10000,
@@ -62,7 +64,7 @@ router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
 
     const validatedData = insertFiberSchema.partial().parse(req.body);
     const fiber = await withTimeout(
-      retryDbOperation(() => getStorage().updateFiber(id, validatedData), {
+      retryDbOperation(() => getStorage().updateFiber(id, removeUndefined(validatedData)), {
         operationName: "Update fiber",
       }),
       10000,

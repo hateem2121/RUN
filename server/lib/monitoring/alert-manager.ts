@@ -5,13 +5,12 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { PerformanceObserver } from "node:perf_hooks";
 import { writeHeapSnapshot } from "node:v8";
+import { type AlertConfig, defaultAlertConfig } from "../../config/alerts.js";
 import { queryPerformanceMonitor } from "../db/query-performance.js";
 import { appStorageService } from "../storage/app-service.js";
 import { errorAggregator } from "./error-aggregator.js";
 import { httpMetricsTracker } from "./http-metrics.js";
 import { logger } from "./logger.js";
-
-import { type AlertConfig, defaultAlertConfig } from "../../config/alerts.js";
 
 interface Alert {
   id: string;
@@ -77,15 +76,10 @@ class AlertManager {
     try {
       if (!existsSync(this.heapSnapshotDir)) {
         mkdirSync(this.heapSnapshotDir, { recursive: true });
-        logger.info(
-          `[AlertManager] Created heap snapshot directory: ${this.heapSnapshotDir}`,
-        );
+        logger.info(`[AlertManager] Created heap snapshot directory: ${this.heapSnapshotDir}`);
       }
     } catch (error) {
-      logger.error(
-        "[AlertManager] Failed to create heap snapshot directory:",
-        error,
-      );
+      logger.error("[AlertManager] Failed to create heap snapshot directory:", error);
     }
 
     logger.info("[AlertManager] Initialized with thresholds:", this.thresholds);
@@ -138,9 +132,7 @@ class AlertManager {
 
     // Calculate slow query rate from stats
     const slowQueryRate =
-      stats.totalQueries > 0
-        ? (stats.slowQueries / stats.totalQueries) * 100
-        : 0;
+      stats.totalQueries > 0 ? (stats.slowQueries / stats.totalQueries) * 100 : 0;
 
     // Alert if slow query rate is high or average response time exceeds threshold
     if (
@@ -270,17 +262,12 @@ class AlertManager {
       };
     }
 
-    if (
-      status.state === "HALF_OPEN" &&
-      this.thresholds.circuitBreaker.alertOnHalfOpen
-    ) {
+    if (status.state === "HALF_OPEN" && this.thresholds.circuitBreaker.alertOnHalfOpen) {
       if (!this.canAlert("circuit_breaker")) return null;
 
       const successRate =
         status.successCount + status.failureCount > 0
-          ? (status.successCount /
-              (status.successCount + status.failureCount)) *
-            100
+          ? (status.successCount / (status.successCount + status.failureCount)) * 100
           : 0;
 
       return {
@@ -312,8 +299,7 @@ class AlertManager {
     // Check cooldown period (1 hour)
     if (now - this.lastHeapSnapshotTime < this.heapSnapshotCooldownMs) {
       const minutesRemaining = Math.ceil(
-        (this.heapSnapshotCooldownMs - (now - this.lastHeapSnapshotTime)) /
-          60000,
+        (this.heapSnapshotCooldownMs - (now - this.lastHeapSnapshotTime)) / 60000,
       );
       logger.info(
         `[AlertManager] Heap snapshot skipped - cooldown active (${minutesRemaining} minutes remaining)`,
@@ -395,10 +381,7 @@ class AlertManager {
       if (!metrics) return null;
 
       // Check for connection errors
-      if (
-        this.thresholds.dbConnection.alertOnError &&
-        metrics.connectionErrors > 0
-      ) {
+      if (this.thresholds.dbConnection.alertOnError && metrics.connectionErrors > 0) {
         return {
           id: `alert_${Date.now()}_db_connection`,
           type: "db_connection",
@@ -569,10 +552,7 @@ class AlertManager {
             this.gcMetrics.totalPauseTime += duration;
             this.gcMetrics.averagePauseTime =
               this.gcMetrics.totalPauseTime / this.gcMetrics.totalPauses;
-            this.gcMetrics.maxPauseTime = Math.max(
-              this.gcMetrics.maxPauseTime,
-              duration,
-            );
+            this.gcMetrics.maxPauseTime = Math.max(this.gcMetrics.maxPauseTime, duration);
             this.gcMetrics.lastPauseTime = duration;
 
             // Keep recent pauses (last 100)
@@ -597,9 +577,7 @@ class AlertManager {
                 id: `alert_${Date.now()}_gc_pause`,
                 type: "gc_pause",
                 severity:
-                  duration > this.thresholds.gcPause.thresholdMs * 2
-                    ? "critical"
-                    : "warning",
+                  duration > this.thresholds.gcPause.thresholdMs * 2 ? "critical" : "warning",
                 message: `GC pause exceeded ${this.thresholds.gcPause.thresholdMs}ms threshold`,
                 timestamp: new Date().toISOString(),
                 details: {

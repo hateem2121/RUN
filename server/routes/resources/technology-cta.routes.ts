@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * TECHNOLOGY CTA RESOURCE ROUTER
  *
@@ -54,7 +56,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyCta(validation.data),
+      getStorage().updateTechnologyCta(removeUndefined(validation.data)),
       10000,
       "Update technology CTA",
     );

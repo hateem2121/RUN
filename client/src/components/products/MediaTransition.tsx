@@ -6,7 +6,7 @@ interface MediaTransitionProps {
   media: MediaAsset;
   isActive: boolean;
   direction: 1 | -1;
-  className?: string;
+  className?: string | undefined;
   children: React.ReactNode;
 }
 

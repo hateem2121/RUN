@@ -73,25 +73,15 @@
  *    - dynamic: Fallback for uncategorized data (30s)
  */
 
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  type QueryFunction,
-} from "@tanstack/react-query";
+import { MutationCache, QueryCache, QueryClient, type QueryFunction } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
-import {
-  createMediaQueryKey,
-  invalidateMediaQueries,
-} from "@/lib/media-query-keys";
+import { createMediaQueryKey, invalidateMediaQueries } from "@/lib/media-query-keys";
 import { ApiError, apiRequest } from "./api";
 
 // Re-export apiRequest for backward compatibility
 export { apiRequest };
 
-export const getQueryFn: <T>(options: {
-  on401: "returnNull" | "throw";
-}) => QueryFunction<T> =
+export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     try {
@@ -205,10 +195,7 @@ export const createQueryClient = () =>
             if (error.status >= 400 && error.status < 500) return false;
           }
 
-          if (
-            error instanceof Error &&
-            error.message.includes("non-JSON response")
-          ) {
+          if (error instanceof Error && error.message.includes("non-JSON response")) {
             return false;
           }
 
@@ -285,24 +272,19 @@ interface BatchMediaResponse {
 // FORENSIC INVESTIGATION FIX: Use request manager to prevent connection exhaustion
 import { requestManager } from "./request-manager";
 
-export const batchFetchMediaContent = async (
-  assetIds: number[],
-): Promise<BatchMediaResult[]> => {
+export const batchFetchMediaContent = async (assetIds: number[]): Promise<BatchMediaResult[]> => {
   if (assetIds.length === 0) return [];
 
   try {
     const idsString = assetIds.join(",");
 
     // FORENSIC FIX: Use request manager to prevent browser connection exhaustion
-    const response = await requestManager.fetch(
-      `/api/media/batch/content?ids=${idsString}`,
-      {
-        method: "GET",
-        credentials: "include",
-        priority: "high", // Media content is high priority
-        timeout: 30000, // 30s timeout
-      },
-    );
+    const response = await requestManager.fetch(`/api/media/batch/content?ids=${idsString}`, {
+      method: "GET",
+      credentials: "include",
+      priority: "high", // Media content is high priority
+      timeout: 30000, // 30s timeout
+    });
 
     if (!response.ok) {
       // Fallback to individual requests
@@ -321,9 +303,9 @@ export const batchFetchMediaContent = async (
       id: asset.id,
       success: true,
       url: asset.url,
-      mimeType: asset.mimeType,
-      filename: asset.filename,
-      type: asset.type,
+      ...(asset.mimeType ? { mimeType: asset.mimeType } : {}),
+      ...(asset.filename ? { filename: asset.filename } : {}),
+      ...(asset.type ? { type: asset.type } : {}),
     }));
   } catch (error) {
     // Fallback to individual requests
@@ -339,8 +321,7 @@ export const batchFetchMediaContent = async (
 // Smart batch request scheduler
 class MediaBatchScheduler {
   private pending: Set<number> = new Set();
-  private callbacks: Map<number, ((result: BatchMediaResult) => void)[]> =
-    new Map();
+  private callbacks: Map<number, ((result: BatchMediaResult) => void)[]> = new Map();
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   // Add asset to batch queue
@@ -402,10 +383,7 @@ class MediaBatchScheduler {
             callback({
               id: assetId,
               success: false,
-              error:
-                error instanceof Error
-                  ? error.message
-                  : "Batch processing failed",
+              error: error instanceof Error ? error.message : "Batch processing failed",
               url: `/api/media/${assetId}/content`,
             }),
           );
@@ -435,7 +413,6 @@ export const useMediaResolver = (_assetId: number): MediaResolverResult => {
     src: null,
     isInline: false,
     isLoading: true,
-    error: undefined,
   };
 };
 
@@ -452,13 +429,7 @@ export const getMediaSrc = async (assetId: number): Promise<string | null> => {
 
 // CHUNK 4: Optimized Query Settings for Different Data Types
 // Success criteria: Error states surface <10s, cache memory <120MB
-export type QueryDataType =
-  | "static"
-  | "cms"
-  | "products"
-  | "media"
-  | "live"
-  | "dynamic";
+export type QueryDataType = "static" | "cms" | "products" | "media" | "live" | "dynamic";
 
 export const getOptimizedQueryOptions = (dataType: QueryDataType) => {
   switch (dataType) {
@@ -553,10 +524,7 @@ export const getCacheMetrics = (): CacheMetrics => {
     }
 
     // Track oldest query
-    if (
-      query.state.dataUpdatedAt > 0 &&
-      query.state.dataUpdatedAt < oldestTimestamp
-    ) {
+    if (query.state.dataUpdatedAt > 0 && query.state.dataUpdatedAt < oldestTimestamp) {
       oldestTimestamp = query.state.dataUpdatedAt;
     }
   });
@@ -624,18 +592,15 @@ export const queryKeys = {
   // Products - bounded parameters
   products: {
     all: () => ["/api/products"] as const,
-    byCategory: (categoryId: number) =>
-      ["/api/products", { category: categoryId }] as const,
+    byCategory: (categoryId: number) => ["/api/products", { category: categoryId }] as const,
     byPath: (path: string) => ["/api/products/by-path", path] as const,
-    paginated: (page: number, limit: number) =>
-      ["/api/products", { page, limit }] as const,
+    paginated: (page: number, limit: number) => ["/api/products", { page, limit }] as const,
   },
 
   // Media - bounded pagination
   media: {
     all: () => ["/api/media"] as const,
-    paginated: (page: number, limit: number) =>
-      ["/api/media", { page, limit }] as const,
+    paginated: (page: number, limit: number) => ["/api/media", { page, limit }] as const,
     byId: (id: number) => ["/api/media", id] as const,
   },
 
@@ -657,10 +622,7 @@ export const queryKeys = {
   inquiries: {
     stats: () => ["/api/admin/inquiries/stats"] as const,
     list: (page: number, statusFilter: string, searchQuery: string) =>
-      [
-        "/api/admin/inquiries",
-        { page, status: statusFilter, search: searchQuery },
-      ] as const,
+      ["/api/admin/inquiries", { page, status: statusFilter, search: searchQuery }] as const,
   },
 } as const;
 
@@ -805,13 +767,10 @@ export const forceResetMediaCache = async () => {
         getQueryClient().prefetchQuery({
           queryKey: createMediaQueryKey.paginated({ page: 1, limit: 24 }),
           queryFn: async () => {
-            const response = await fetch(
-              `/api/media?page=1&limit=24&cache_bust=${Date.now()}`,
-              {
-                cache: "no-cache",
-                headers: { "Cache-Control": "no-cache" },
-              },
-            );
+            const response = await fetch(`/api/media?page=1&limit=24&cache_bust=${Date.now()}`, {
+              cache: "no-cache",
+              headers: { "Cache-Control": "no-cache" },
+            });
             if (!response.ok) throw new Error("Failed to fetch media");
             return response.json();
           },
@@ -819,10 +778,7 @@ export const forceResetMediaCache = async () => {
         }),
 
       // Strategy 2: Direct API call fallback
-      () =>
-        fetch(`/api/media?page=1&limit=24&fallback=${Date.now()}`).then((r) =>
-          r.json(),
-        ),
+      () => fetch(`/api/media?page=1&limit=24&fallback=${Date.now()}`).then((r) => r.json()),
 
       // Strategy 3: PHASE 1.2 FIX - Use unified cache invalidation
       async () => {

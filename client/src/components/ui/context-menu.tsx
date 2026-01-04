@@ -23,7 +23,7 @@ const ContextMenuSubTrigger = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubTrigger> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof ContextMenuPrimitive.SubTrigger>>;
 }) => (
   <ContextMenuPrimitive.SubTrigger
@@ -85,7 +85,7 @@ const ContextMenuItem = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof ContextMenuPrimitive.Item>>;
 }) => (
   <ContextMenuPrimitive.Item
@@ -115,7 +115,7 @@ const ContextMenuCheckboxItem = ({
       "relative flex cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
-    checked={checked}
+    {...(checked !== undefined ? { checked } : {})}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
@@ -160,7 +160,7 @@ const ContextMenuLabel = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof ContextMenuPrimitive.Label>>;
 }) => (
   <ContextMenuPrimitive.Label

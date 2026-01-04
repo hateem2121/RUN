@@ -42,8 +42,8 @@ export function useResourceSearch(
           id: cert.id,
           type: "certificate",
           title: cert.name,
-          subtitle: cert.issuingBody || undefined,
-          description: cert.description || undefined,
+          ...(cert.issuingBody ? { subtitle: cert.issuingBody } : {}),
+          ...(cert.description ? { description: cert.description } : {}),
           tags: [cert.type || "Unknown"],
           data: cert,
         });
@@ -62,8 +62,8 @@ export function useResourceSearch(
           id: acc.id,
           type: "accessory",
           title: acc.name,
-          subtitle: acc.type || undefined,
-          description: acc.description || undefined,
+          ...(acc.type ? { subtitle: acc.type } : {}),
+          ...(acc.description ? { description: acc.description } : {}),
           tags: [acc.category || "Uncategorized"],
           data: acc,
         });
@@ -81,7 +81,7 @@ export function useResourceSearch(
           id: chart.id,
           type: "sizechart",
           title: chart.name,
-          subtitle: chart.region || undefined,
+          ...(chart.region ? { subtitle: chart.region } : {}),
           tags: chart.category ? [chart.category] : [],
           data: chart,
         });
@@ -107,7 +107,7 @@ export function useResourceSearch(
           type: "fabric",
           title: fabric.name,
           subtitle: `${fabric.weight} GSM`,
-          description: fabric.description || undefined,
+          ...(fabric.description ? { description: fabric.description } : {}),
           tags: [fabric.weaveType, fabric.finishTreatment].filter((t): t is string => Boolean(t)),
           data: fabric,
         });
@@ -127,11 +127,12 @@ export function useResourceSearch(
           type: "fiber",
           title: fiber.name,
           subtitle: fiber.type,
-          description: fiber.description || undefined,
-          tags: fiber.properties
-            ?.split(",")
-            .map((p: string) => p.trim())
-            .slice(0, 3),
+          ...(fiber.description ? { description: fiber.description } : {}),
+          tags:
+            fiber.properties
+              ?.split(",")
+              .map((p: string) => p.trim())
+              .slice(0, 3) || [],
           data: fiber,
         });
       }

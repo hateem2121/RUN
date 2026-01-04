@@ -23,8 +23,8 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
         iconType={
           item.iconType === "media" || item.iconType === "fallback" ? item.iconType : "fallback"
         }
-        mediaIcon={item.mediaIcon}
-        fallbackIcon={item.fallbackIcon || undefined}
+        {...(item.mediaIcon ? { mediaIcon: item.mediaIcon } : {})}
+        {...(item.fallbackIcon ? { fallbackIcon: item.fallbackIcon } : {})}
         className="h-full w-full"
       />
     ),

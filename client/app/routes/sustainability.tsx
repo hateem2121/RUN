@@ -170,7 +170,7 @@ export default function Sustainability() {
           {backgroundMedia && <OptimizedSustainabilityHero media={backgroundMedia} />}
 
           {/* Hero Content */}
-          <div className="z-modal relative mx-auto max-w-4xl px-4 text-center">
+          <div className="relative z-modal mx-auto max-w-4xl px-4 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -198,7 +198,7 @@ export default function Sustainability() {
                 className="group relative overflow-hidden border-stone-300 text-stone-900 hover:bg-stone-100 hover:text-stone-900"
                 asChild
               >
-                <Link to={hero?.ctaLink || "/contact"} className="z-modal-backdrop relative">
+                <Link to={hero?.ctaLink || "/contact"} className="relative z-modal-backdrop">
                   <span className="absolute inset-0 -top-2 -bottom-2 -translate-x-full -skew-x-12 transform bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"></span>
                   {hero?.ctaText || "Learn More"}
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -213,7 +213,7 @@ export default function Sustainability() {
           <section className="relative bg-white py-20">
             <div className="container mx-auto px-4">
               <motion.div {...fadeInUp} className="mb-16 text-center">
-                <Typography.H2 className="font-neue-stance mb-6 text-3xl font-bold text-stone-900">
+                <Typography.H2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
                   {featuresData.title}
                 </Typography.H2>
                 <Typography.P className="mx-auto max-w-4xl text-lg text-stone-600">
@@ -232,10 +232,10 @@ export default function Sustainability() {
                       transition={{ ...springTransition, delay: index * 0.1 }}
                       className="rounded-xl border border-stone-200 bg-stone-50 p-6 shadow-xs"
                     >
-                      <Typography.H3 className="mb-3 text-xl font-semibold text-stone-900">
+                      <Typography.H3 className="mb-3 font-semibold text-stone-900 text-xl">
                         {feature.title}
                       </Typography.H3>
-                      <Typography.P className="leading-relaxed text-stone-600">
+                      <Typography.P className="text-stone-600 leading-relaxed">
                         {feature.description}
                       </Typography.P>
                     </motion.div>
@@ -254,7 +254,7 @@ export default function Sustainability() {
         >
           <div className="container mx-auto px-4">
             <motion.div {...fadeInUp} className="mb-16 text-center">
-              <Typography.H2 className="font-neue-stance mb-4 text-3xl font-bold text-stone-900">
+              <Typography.H2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-900">
                 {metricsTitle}
               </Typography.H2>
               <Typography.P className="mx-auto max-w-3xl text-lg text-stone-600">
@@ -321,7 +321,7 @@ export default function Sustainability() {
           <section className="bg-stone-50 py-20">
             <div className="container mx-auto px-4">
               <motion.div {...fadeInUp} className="mb-16 text-center">
-                <Typography.H2 className="font-neue-stance mb-6 text-3xl font-bold text-stone-900">
+                <Typography.H2 className="mb-6 font-bold font-neue-stance text-3xl text-stone-900">
                   {fabricPortfolioData.title}
                 </Typography.H2>
                 {fabricPortfolioData.description && (
@@ -343,9 +343,9 @@ export default function Sustainability() {
             <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-stone-700" />
           </div>
 
-          <div className="z-modal-backdrop relative container mx-auto px-4 text-center">
+          <div className="container relative z-modal-backdrop mx-auto px-4 text-center">
             <motion.div {...fadeInUp}>
-              <Typography.H2 className="font-neue-stance mb-4 text-3xl font-bold text-stone-100">
+              <Typography.H2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-100">
                 {callToActionTitle}
               </Typography.H2>
               <Typography.P className="mx-auto mb-8 max-w-2xl text-lg text-stone-300">

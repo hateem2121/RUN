@@ -1,10 +1,9 @@
-import express from "express";
 import { createServer } from "node:http";
-import path from "node:path";
+import express from "express";
 import {
-  setupMiddleware,
   setupErrorHandling,
   setupHealthChecks,
+  setupMiddleware,
 } from "./boot/middleware.js";
 import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
@@ -34,7 +33,7 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
     // Runs before error handlers but after API routes
     if (
       config.app.environment === "production" ||
-      process.env.NODE_ENV === "production"
+      process.env["NODE_ENV"] === "production"
     ) {
       // In production, assets should be served via CDN (GCS/Cloud CDN).
       // We only serve favicon/robots here if absolutely necessary, but generally disable static serving
@@ -49,9 +48,12 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
     await startServices();
 
     // 9. Start Server
-    const port = parseInt(process.env.PORT || "5001", 10);
+    const port = parseInt(process.env["PORT"] || "5001", 10);
     httpServer.listen(port, "0.0.0.0", () => {
-      logger.info(`Server running on port ${port}`);
+      const address = httpServer.address();
+      const actualPort =
+        typeof address === "object" && address ? address.port : port;
+      logger.info(`Server running on port ${actualPort}`);
       logger.info(`Environment: ${config.app.environment}`);
     });
 

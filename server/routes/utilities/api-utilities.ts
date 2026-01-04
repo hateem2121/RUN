@@ -15,7 +15,7 @@ const featureFlags = {
   // Internal flags storage (stub - would be real flag registry in production)
   _flags: {} as Record<string, boolean>,
 
-  getAllFlags: function (options?: { limit?: number; offset?: number }) {
+  getAllFlags: function (options?: { limit?: number | undefined; offset?: number }) {
     // Parse options with defaults
     const limit = options?.limit ?? 20;
     const offset = options?.offset ?? 0;
@@ -250,7 +250,7 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
   // prettier-ignore
   app.post("/api/feature-flags/:flag", authService.requireAdmin, (req: Request, res: Response) => {
     try {
-      const { flag } = req.params;
+      const { flag } = req.params as any;
       const { enabled } = req.body;
 
       if (typeof enabled !== "boolean") {

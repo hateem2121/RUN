@@ -86,13 +86,8 @@ export class MediaUrlBuilder {
     }
 
     // Legacy formats support for migration
-    if (
-      url.startsWith("/api/media/proxy/") ||
-      url.startsWith("/api/media/fast/")
-    ) {
-      const idStr = url
-        .replace("/api/media/proxy/", "")
-        .replace("/api/media/fast/", "");
+    if (url.startsWith("/api/media/proxy/") || url.startsWith("/api/media/fast/")) {
+      const idStr = url.replace("/api/media/proxy/", "").replace("/api/media/fast/", "");
       const id = parseInt(idStr, 10);
       return Number.isNaN(id) ? null : id;
     }
@@ -104,10 +99,7 @@ export class MediaUrlBuilder {
    * Build URL with comprehensive validation and fallback
    * Enhanced error handling and logging
    */
-  static buildUrlSafe(
-    id: number | undefined | null,
-    fallback?: string,
-  ): string {
+  static buildUrlSafe(id: number | undefined | null, fallback?: string): string {
     const url = MediaUrlBuilder.buildContentUrl(id);
 
     if (url && MediaUrlBuilder.isValidUrl(url)) {
@@ -304,22 +296,10 @@ export class MediaUrlBuilder {
         if (retryCount === 1) {
           // On second retry, try switching endpoint if possible
           const altAsset = MediaUrlBuilder.createAlternativeAsset(asset);
-          return MediaUrlBuilder.executeWithRetry(
-            id,
-            altAsset,
-            fallback,
-            retryCount + 1,
-            signal,
-          );
+          return MediaUrlBuilder.executeWithRetry(id, altAsset, fallback, retryCount + 1, signal);
         }
 
-        return MediaUrlBuilder.executeWithRetry(
-          id,
-          asset,
-          fallback,
-          retryCount + 1,
-          signal,
-        );
+        return MediaUrlBuilder.executeWithRetry(id, asset, fallback, retryCount + 1, signal);
       }
 
       // Max retries reached or cancelled, use fallback
@@ -333,16 +313,13 @@ export class MediaUrlBuilder {
   /**
    * ARCHITECT FEEDBACK FIX: Endpoint validation with timeout
    */
-  private static async validateEndpoint(
-    url: string,
-    signal?: AbortSignal,
-  ): Promise<void> {
+  private static async validateEndpoint(url: string, signal?: AbortSignal): Promise<void> {
     if (typeof window === "undefined") return; // Skip in SSR
 
     try {
       const response = await fetch(url, {
         method: "HEAD", // Just check if endpoint exists
-        signal,
+        signal: signal ?? null,
         cache: "no-cache",
       });
 
@@ -442,12 +419,7 @@ export class MediaUrlBuilder {
 
         const mimeType = mimeMatch[1];
         // Ensure ImageBitmapLoader-compatible MIME types
-        const compatibleTypes = [
-          "image/png",
-          "image/jpeg",
-          "image/webp",
-          "image/bmp",
-        ];
+        const compatibleTypes = ["image/png", "image/jpeg", "image/webp", "image/bmp"];
         return compatibleTypes.includes(mimeType);
       }
 

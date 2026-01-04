@@ -17,14 +17,14 @@ interface DeleteConfirmationDialogProps {
   onConfirm: () => void;
   title: string;
   description: string;
-  triggerClassName?: string;
-  disabled?: boolean;
+  triggerClassName?: string | undefined;
+  disabled?: boolean | undefined;
   trigger?: React.ReactNode;
-  asChild?: boolean;
-  confirmText?: string;
-  open?: boolean;
+  asChild?: boolean | undefined;
+  confirmText?: string | undefined;
+  open?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
-  showTrigger?: boolean;
+  showTrigger?: boolean | undefined;
   variant?: "destructive" | "default";
 }
 
@@ -53,7 +53,10 @@ export const DeleteConfirmationDialog = React.memo(function DeleteConfirmationDi
   );
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog
+      {...(open !== undefined ? { open } : {})}
+      {...(onOpenChange ? { onOpenChange } : {})}
+    >
       {showTrigger && (
         <AlertDialogTrigger asChild={trigger ? asChild : true}>
           {trigger || defaultTrigger}

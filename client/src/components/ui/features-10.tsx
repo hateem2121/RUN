@@ -89,7 +89,7 @@ export function Features() {
 
 interface FeatureCardProps {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 const FeatureCard = ({ children, className }: FeatureCardProps) => (
@@ -130,7 +130,7 @@ interface DualModeImageProps {
   alt: string;
   width: number;
   height: number;
-  className?: string;
+  className?: string | undefined;
 }
 
 const DualModeImage = ({
@@ -166,7 +166,7 @@ interface CircleConfig {
 interface CircularUIProps {
   label: string;
   circles: CircleConfig[];
-  className?: string;
+  className?: string | undefined;
 }
 
 const CircularUI = ({ label, circles, className }: CircularUIProps) => (

@@ -11,11 +11,7 @@ import type { NextFunction, Request, Response } from "express";
  * `res.json`, `res.send`, or `res.end` is called, providing a synchronous
  * signal that a response is in progress.
  */
-export function responseTracker(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function responseTracker(_req: Request, res: Response, next: NextFunction) {
   // Initialize the flag
   res.locals._handled = false;
 
@@ -35,11 +31,7 @@ export function responseTracker(
 
   // Monkey-patch res.end
   const originalEnd = res.end;
-  res.end = function (
-    chunk?: any,
-    encoding?: BufferEncoding | (() => void),
-    cb?: () => void,
-  ) {
+  res.end = function (chunk?: any, encoding?: BufferEncoding | (() => void), cb?: () => void) {
     res.locals._handled = true;
     return originalEnd.call(this, chunk, encoding as any, cb);
   };

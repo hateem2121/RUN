@@ -61,7 +61,7 @@ export class RequestQueueManager {
    */
   async add<T>(
     fn: () => Promise<T>,
-    options?: { priority?: number; signal?: AbortSignal },
+    options?: { priority?: number | undefined; signal?: AbortSignal },
   ): Promise<T> {
     const { priority = 0, signal } = options || {};
 
@@ -96,7 +96,7 @@ export class RequestQueueManager {
    */
   async addAll<T>(
     fns: Array<() => Promise<T>>,
-    options?: { priority?: number; signal?: AbortSignal },
+    options?: { priority?: number | undefined; signal?: AbortSignal },
   ): Promise<T[]> {
     const promises = fns.map((fn) => this.add(fn, options));
     return Promise.all(promises);

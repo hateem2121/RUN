@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * SUSTAINABILITY METRICS RESOURCE ROUTER
  *
@@ -129,7 +131,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newMetric = await withTimeout(
-      getStorage().createSustainabilityMetric(validation.data),
+      getStorage().createSustainabilityMetric(removeUndefined(validation.data)),
       10000,
       "Create sustainability metric",
     );
@@ -165,7 +167,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateSustainabilityMetric(id, validation.data),
+      getStorage().updateSustainabilityMetric(id, removeUndefined(validation.data)),
       10000,
       "Update sustainability metric",
     );
@@ -235,15 +237,17 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     await withTimeout(
-      getStorage().reorderSustainabilityMetrics(validation.data.metrics),
+      getStorage().reorderSustainabilityMetrics(removeUndefined(validation.data).metrics),
       10000,
       "Reorder sustainability metrics",
     );
 
     // Cache invalidation is handled internally by reorderSustainabilityMetrics repo method
 
-    logger.info(`[SustainabilityMetrics] Reordered ${validation.data.metrics.length} metrics`);
-    return res.json({ success: true, count: validation.data.metrics.length });
+    logger.info(
+      `[SustainabilityMetrics] Reordered ${removeUndefined(validation.data).metrics.length} metrics`,
+    );
+    return res.json({ success: true, count: removeUndefined(validation.data).metrics.length });
   } catch (error) {
     logger.error("[SustainabilityMetrics] Error reordering metrics:", error);
     return res.status(500).json({

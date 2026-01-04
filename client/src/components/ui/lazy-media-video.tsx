@@ -12,17 +12,17 @@ import { cn } from "@/lib/utils";
 
 interface LazyMediaVideoProps {
   asset: MediaAsset;
-  className?: string;
+  className?: string | undefined;
   style?: React.CSSProperties;
-  priority?: boolean; // Load immediately without intersection observer
-  autoPlay?: boolean;
-  muted?: boolean;
-  loop?: boolean;
-  controls?: boolean;
+  priority?: boolean | undefined; // Load immediately without intersection observer
+  autoPlay?: boolean | undefined;
+  muted?: boolean | undefined;
+  loop?: boolean | undefined;
+  controls?: boolean | undefined;
   onLoad?: () => void;
   onError?: (error: Error) => void;
-  placeholderClassName?: string;
-  posterImage?: string; // Optional poster image URL
+  placeholderClassName?: string | undefined;
+  posterImage?: string | undefined; // Optional poster image URL
 }
 
 export function LazyMediaVideo({

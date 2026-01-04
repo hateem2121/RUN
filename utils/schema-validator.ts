@@ -102,7 +102,7 @@ export const validateMediaAsset = (data: unknown): SchemaValidationResult => {
     return {
       isValid: true,
       data: validated as MediaAsset,
-      warnings: warnings.length > 0 ? warnings : undefined,
+      ...(warnings.length > 0 ? { warnings } : {}),
     };
   } catch (error) {
     const errors: string[] = [];
@@ -218,7 +218,7 @@ export const validateApiResponse = (
     isValid: errors.length === 0,
     hasData,
     hasPagination,
-    errors: errors.length > 0 ? errors : undefined,
+    ...(errors.length > 0 ? { errors } : {}),
   };
 };
 

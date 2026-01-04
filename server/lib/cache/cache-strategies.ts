@@ -40,7 +40,7 @@ export interface RepositoryCacheOptions {
 
 // Cache options type for strategies
 type CacheOptions = {
-  ttl?: number;
+  ttl?: number | undefined;
   category?: "media" | "data" | "static";
   priority?: "critical" | "high" | "normal" | "low";
   tags?: string[];

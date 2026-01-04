@@ -11,7 +11,11 @@ export const canonicalMiddleware: RequestHandler = (req, res, next) => {
   const primaryHost = process.env.PRIMARY_HOST || "app.wear-run.com";
 
   // Skip if we are already on primary host or IP address access (health checks)
-  if (host === primaryHost || host?.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+  // Also allow localhost for testing/local production preview
+  if (
+    host === primaryHost ||
+    host?.match(/^(\d+\.\d+\.\d+\.\d+|localhost)(:\d+)?$/)
+  ) {
     return next();
   }
 

@@ -59,25 +59,25 @@ interface ResearchFormData {
 interface TechnologyResearch {
   id: number;
   title: string;
-  description?: string;
-  researchArea?: string;
+  description?: string | undefined;
+  researchArea?: string | undefined;
   status?: "Planning" | "In Progress" | "Testing" | "Completed" | "Ongoing";
   startDate?: Date | null;
   expectedCompletion?: Date | null;
-  funding?: number;
+  funding?: number | undefined;
   teamMembers?: string[];
   objectives?: string[];
   currentProjects?: ResearchProject[];
   publications?: string[];
   partners?: string[];
   outcomes?: string[];
-  icon?: string;
-  isActive?: boolean;
-  position?: number;
+  icon?: string | undefined;
+  isActive?: boolean | undefined;
+  position?: number | undefined;
 }
 
 interface TechnologyResearchManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyResearchManagement({

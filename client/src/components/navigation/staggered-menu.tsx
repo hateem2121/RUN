@@ -14,13 +14,13 @@ export interface StaggeredMenuProps {
   position?: "left" | "right";
   colors?: string[];
   items?: StaggeredMenuItem[];
-  displayItemNumbering?: boolean;
-  className?: string;
-  logoUrl?: string;
-  menuButtonColor?: string;
-  openMenuButtonColor?: string;
-  accentColor?: string;
-  changeMenuColorOnOpen?: boolean;
+  displayItemNumbering?: boolean | undefined;
+  className?: string | undefined;
+  logoUrl?: string | undefined;
+  menuButtonColor?: string | undefined;
+  openMenuButtonColor?: string | undefined;
+  accentColor?: string | undefined;
+  changeMenuColorOnOpen?: boolean | undefined;
   onMenuOpen?: () => void;
   onMenuClose?: () => void;
 }
@@ -88,9 +88,7 @@ export const StaggeredMenu = ({
 
       let preLayers: HTMLElement[] = [];
       if (preContainer) {
-        preLayers = Array.from(
-          preContainer.querySelectorAll(".sm-prelayer"),
-        ) as HTMLElement[];
+        preLayers = Array.from(preContainer.querySelectorAll(".sm-prelayer")) as HTMLElement[];
       }
       preLayerElsRef.current = preLayers;
 
@@ -101,8 +99,7 @@ export const StaggeredMenu = ({
       gsap.set(middle, { opacity: 1 });
       gsap.set(bottom, { y: 0, rotation: 0 });
 
-      if (toggleBtnRef.current)
-        gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
     return () => ctx.revert();
   }, [menuButtonColor, position, panelRef.current]);
@@ -119,9 +116,7 @@ export const StaggeredMenu = ({
     }
     itemEntranceTweenRef.current?.kill();
 
-    const itemEls = Array.from(
-      panel.querySelectorAll(".sm-panel-itemLabel"),
-    ) as HTMLElement[];
+    const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
     const numberEls = Array.from(
       panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
     ) as HTMLElement[];
@@ -133,8 +128,7 @@ export const StaggeredMenu = ({
     const panelStart = Number(gsap.getProperty(panel, "xPercent"));
 
     if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
-    if (numberEls.length)
-      gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+    if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -152,9 +146,7 @@ export const StaggeredMenu = ({
       );
     });
 
-    const lastTime = layerStates.length
-      ? (layerStates.length - 1) * staggerDelay
-      : 0;
+    const lastTime = layerStates.length ? (layerStates.length - 1) * staggerDelay : 0;
     const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
 
     tl.fromTo(
@@ -232,18 +224,13 @@ export const StaggeredMenu = ({
       ease: "power3.in",
       overwrite: "auto",
       onComplete: () => {
-        const itemEls = Array.from(
-          panel.querySelectorAll(".sm-panel-itemLabel"),
-        ) as HTMLElement[];
+        const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
         if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
 
         const numberEls = Array.from(
-          panel.querySelectorAll(
-            ".sm-panel-list[data-numbering] .sm-panel-item",
-          ),
+          panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
         ) as HTMLElement[];
-        if (numberEls.length)
-          gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+        if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
         busyRef.current = false;
       },
@@ -310,36 +297,27 @@ export const StaggeredMenu = ({
 
     animateHamburger(target);
     animateColor(target);
-  }, [
-    playOpen,
-    playClose,
-    animateHamburger,
-    animateColor,
-    onMenuOpen,
-    onMenuClose,
-  ]);
+  }, [playOpen, playClose, animateHamburger, animateColor, onMenuOpen, onMenuClose]);
 
   // Handle ESC key directly in hook, but ensure aria attributes are correct here
   // Add safe area padding to style manually until Tailwind env() support is verified in this context,
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope z-modal pointer-events-none fixed top-0 left-0 h-screen w-screen overflow-hidden">
+    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-modal h-screen w-screen overflow-hidden">
       <div
         className={`${
           className ? `${className} ` : ""
-        }staggered-menu-wrapper z-sticky relative h-full w-full`}
+        }staggered-menu-wrapper relative z-sticky h-full w-full`}
         style={
-          accentColor
-            ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties)
-            : undefined
+          accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
         data-position={position}
         data-open={open || undefined}
       >
         <div
           ref={preLayersRef}
-          className="sm-prelayers z-default pointer-events-none absolute top-0 right-0 bottom-0 w-full"
+          className="sm-prelayers pointer-events-none absolute top-0 right-0 bottom-0 z-default w-full"
           aria-hidden="true"
         >
           {(() => {
@@ -362,13 +340,13 @@ export const StaggeredMenu = ({
         </div>
 
         <header
-          className="staggered-menu-header z-dock absolute top-0 left-0 flex w-full items-center justify-center bg-transparent p-4"
+          className="staggered-menu-header absolute top-0 left-0 z-dock flex w-full items-center justify-center bg-transparent p-4"
           aria-label="Main navigation header"
           style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle focus-visible:ring-ring pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
@@ -399,7 +377,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel z-default bg-background/95 focus-visible:ring-ring pointer-events-auto absolute top-0 right-0 flex h-full w-full flex-col overflow-y-auto px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:ring-2 focus-visible:outline-none sm:w-[80vw] md:w-96"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
@@ -420,7 +398,7 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item text-foreground hover:text-muted-foreground focus-visible:ring-ring relative inline-block cursor-pointer rounded-lg pr-[1.2em] text-4xl leading-tight font-bold tracking-tight uppercase no-underline transition-all duration-200 ease-out outline-none focus-visible:ring-2 active:scale-95 sm:text-5xl"
+                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-4xl text-foreground uppercase leading-tight tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-5xl"
                       to={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -429,7 +407,7 @@ export const StaggeredMenu = ({
                         toggleMenu();
                       }}
                     >
-                      <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
+                      <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                         {it.label}
                       </span>
                     </Link>
@@ -440,8 +418,8 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item text-muted-foreground relative inline-block cursor-pointer pr-[1.2em] text-4xl leading-tight font-bold tracking-tight uppercase no-underline transition-all duration-200 ease-out sm:text-5xl">
-                    <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
+                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
+                    <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                       No items
                     </span>
                   </span>

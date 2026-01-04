@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * SIZE CHARTS ROUTER MODULE
  * Extracted from routes.ts for better organization
@@ -34,7 +36,7 @@ router.post("/size-charts", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertSizeChartSchema.parse(req.body);
     const sizeChart = await withTimeout(
-      getStorage().createSizeChart(validatedData),
+      getStorage().createSizeChart(removeUndefined(validatedData)),
       10000,
       "Create size chart",
     );
@@ -62,7 +64,7 @@ router.put("/size-charts/:id", authService.requireAdmin, async (req, res) => {
     if (id === null) return;
     const validatedData = insertSizeChartSchema.partial().parse(req.body);
     const sizeChart = await withTimeout(
-      getStorage().updateSizeChart(id, validatedData),
+      getStorage().updateSizeChart(id, removeUndefined(validatedData)),
       10000,
       "Update size chart",
     );

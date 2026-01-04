@@ -10,13 +10,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface ManufacturingCardProps {
   children: React.ReactNode;
-  title?: string;
-  subtitle?: string;
-  index?: number;
+  title?: string | undefined;
+  subtitle?: string | undefined;
+  index?: number | undefined;
   variant?: "public" | "admin";
-  enableAnimations?: boolean;
-  hoverEffects?: boolean;
-  className?: string;
+  enableAnimations?: boolean | undefined;
+  hoverEffects?: boolean | undefined;
+  className?: string | undefined;
   headerContent?: React.ReactNode;
 }
 

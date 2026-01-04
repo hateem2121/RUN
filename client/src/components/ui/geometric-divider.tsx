@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface GeometricDividerProps {
-  categoryIndex?: number;
-  nextCategoryName?: string;
-  className?: string;
+  categoryIndex?: number | undefined;
+  nextCategoryName?: string | undefined;
+  className?: string | undefined;
 }
 
 export function GeometricDivider({

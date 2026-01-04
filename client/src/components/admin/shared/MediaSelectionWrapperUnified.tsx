@@ -10,9 +10,9 @@ interface UnifiedMediaSelectionProps {
   onCancel?: () => void;
   mediaPickerTarget: string;
   selectionMode?: "single" | "multiple";
-  maxSelection?: number;
+  maxSelection?: number | undefined;
   initialSelectedIds?: number[];
-  className?: string; // Allow custom sizing from parent dialog
+  className?: string | undefined; // Allow custom sizing from parent dialog
 }
 
 // Simplified filter mapping

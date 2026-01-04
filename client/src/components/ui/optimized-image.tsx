@@ -14,16 +14,16 @@ import { cn } from "@/lib/utils";
 interface OptimizedImageProps
   extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "onLoad" | "onError"> {
   // Legacy Props
-  mediaId?: number;
-  priority?: boolean;
-  quality?: number;
+  mediaId?: number | undefined;
+  priority?: boolean | undefined;
+  quality?: number | undefined;
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
 
   // New Props
-  src?: string;
+  src?: string | undefined;
   aspectRatio?: number | string; // supports "aspect-square" (string) or 1.5 (number)
-  fallbackSrc?: string;
-  imageClassName?: string;
+  fallbackSrc?: string | undefined;
+  imageClassName?: string | undefined;
 
   // Handlers
   onLoad?: () => void;
@@ -126,8 +126,8 @@ const LegacyImage: React.FC<OptimizedImageProps> = ({
       alt={alt || `Media ${mediaId}`}
       aspectRatio={aspectRatio}
       objectFit={objectFit}
-      onLoad={onLoad}
-      onError={onError}
+      {...(onLoad ? { onLoad } : {})}
+      {...(onError ? { onError } : {})}
       {...props}
     />
   );

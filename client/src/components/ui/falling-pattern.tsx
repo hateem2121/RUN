@@ -7,15 +7,15 @@ import { cn } from "@/lib/utils";
 
 type FallingPatternProps = React.ComponentProps<"div"> & {
   /** Primary color of the falling elements (default: 'var(--primary)') */
-  color?: string;
+  color?: string | undefined;
   /** Background color (default: 'var(--background)') */
-  backgroundColor?: string;
+  backgroundColor?: string | undefined;
   /** Animation duration in seconds (default: 150) */
-  duration?: number;
+  duration?: number | undefined;
   /** Blur intensity for the overlay effect (default: '1em') */
-  blurIntensity?: string;
+  blurIntensity?: string | undefined;
   /** Pattern density - affects spacing (default: 1) */
-  density?: number;
+  density?: number | undefined;
 };
 
 export function FallingPattern({

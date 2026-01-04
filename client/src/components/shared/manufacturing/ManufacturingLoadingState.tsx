@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface ManufacturingLoadingStateProps {
   variant?: "card" | "skeleton" | "spinner" | "grid";
-  count?: number;
-  message?: string;
-  className?: string;
+  count?: number | undefined;
+  message?: string | undefined;
+  className?: string | undefined;
 }
 
 /**

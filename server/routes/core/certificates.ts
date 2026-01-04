@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * CERTIFICATES ROUTER MODULE
  * Extracted from routes.ts for better organization
@@ -47,7 +49,7 @@ router.post("/certificates", authService.requireAdmin, async (req, res) => {
     };
 
     const certificate = await withTimeout(
-      getStorage().createCertificate(validatedData),
+      getStorage().createCertificate(removeUndefined(validatedData)),
       10000,
       "Create certificate",
     );
@@ -93,7 +95,7 @@ router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
     };
 
     const certificate = await withTimeout(
-      getStorage().updateCertificate(id, validatedData),
+      getStorage().updateCertificate(id, removeUndefined(validatedData)),
       10000,
       "Update certificate",
     );

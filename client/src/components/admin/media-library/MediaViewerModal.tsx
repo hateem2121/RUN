@@ -22,7 +22,7 @@ import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 // PHASE 1: Progressive Loading Integration
 declare global {
   interface Window {
-    needleProgressiveLoaded?: boolean;
+    needleProgressiveLoaded?: boolean | undefined;
   }
 }
 
@@ -76,13 +76,13 @@ if (typeof window !== "undefined") {
 //   progress: number;
 //   estimatedTimeRemaining: number;
 //   startTime: number;
-//   bytesLoaded?: number;
-//   totalBytes?: number;
+//   bytesLoaded?: number | undefined;
+//   totalBytes?: number | undefined;
 //   loadingStrategy: "standard" | "progressive" | "chunked";
 //   performanceMetrics?: {
-//     fcp?: number;
-//     lcp?: number;
-//     cls?: number;
+//     fcp?: number | undefined;
+//     lcp?: number | undefined;
+//     cls?: number | undefined;
 //   };
 // }
 

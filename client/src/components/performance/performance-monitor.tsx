@@ -36,7 +36,7 @@ const DEFAULT_THRESHOLDS: PerformanceThresholds = {
 
 interface PerformanceMonitorProps {
   componentName: string;
-  enabled?: boolean;
+  enabled?: boolean | undefined;
   thresholds?: Partial<PerformanceThresholds>;
   onPerformanceAlert?: (metric: string, value: number, threshold: number) => void;
   children?: React.ReactNode;

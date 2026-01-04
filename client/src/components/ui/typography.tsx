@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 // --- Headings ---
 
-export const headingVariants = cva("font-bold text-balance transition-colors", {
+export const headingVariants = cva("text-balance font-bold transition-colors", {
   variants: {
     variant: {
       h1: "mb-6 text-4xl leading-[1.2] lg:text-5xl",
@@ -14,20 +14,20 @@ export const headingVariants = cva("font-bold text-balance transition-colors", {
       h5: "mb-2 text-lg leading-snug",
       h6: "mb-2 text-base leading-snug",
       "hero-heading":
-        "mb-8 text-5xl leading-none font-extrabold tracking-tight drop-shadow-lg lg:text-7xl",
+        "mb-8 font-extrabold text-5xl leading-none tracking-tight drop-shadow-lg lg:text-7xl",
       // Display variants using new Phase 1 tokens (responsive clamp-based sizing)
-      "display-xs": "text-display-xs font-extrabold tracking-tighter",
-      "display-sm": "text-display-sm font-extrabold tracking-tighter",
-      "display-md": "text-display-md font-extrabold tracking-tighter",
-      "display-lg": "text-display-lg font-black tracking-tighter",
-      "display-xl": "text-display-xl font-black tracking-tighter",
+      "display-xs": "font-extrabold text-display-xs tracking-tighter",
+      "display-sm": "font-extrabold text-display-sm tracking-tighter",
+      "display-md": "font-extrabold text-display-md tracking-tighter",
+      "display-lg": "font-black text-display-lg tracking-tighter",
+      "display-xl": "font-black text-display-xl tracking-tighter",
     },
     color: {
       default: "text-foreground",
       primary: "text-primary",
       muted: "text-muted-foreground",
       white: "text-white",
-      gradient: "from-primary to-brand-purple-light bg-linear-to-r bg-clip-text text-transparent",
+      gradient: "bg-linear-to-r from-primary to-brand-purple-light bg-clip-text text-transparent",
     },
   },
   defaultVariants: {
@@ -71,11 +71,11 @@ export const textVariants = cva("text-pretty transition-colors", {
     variant: {
       p: "mb-4 text-base leading-relaxed",
       lead: "text-muted-foreground text-xl",
-      large: "text-lg font-semibold",
-      small: "text-sm leading-none font-medium",
+      large: "font-semibold text-lg",
+      small: "font-medium text-sm leading-none",
       muted: "text-muted-foreground text-sm",
-      tiny: "text-xs leading-[1.2] font-medium",
-      "subtle-caption": "text-muted-foreground text-xs font-semibold tracking-wider uppercase",
+      tiny: "font-medium text-xs leading-[1.2]",
+      "subtle-caption": "font-semibold text-muted-foreground text-xs uppercase tracking-wider",
     },
     color: {
       default: "text-foreground",

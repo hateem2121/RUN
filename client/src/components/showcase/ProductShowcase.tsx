@@ -14,7 +14,7 @@ interface ProductResponse {
     minOrderQuantity: number;
     specifications: Record<string, string>;
   }>;
-  nextCursor?: number;
+  nextCursor?: number | undefined;
 }
 
 const ProductShowcase = () => {
@@ -63,7 +63,7 @@ const ProductShowcase = () => {
     <div className="min-h-screen bg-neutral-50 p-8 font-sans">
       <div className="mx-auto max-w-7xl">
         <header className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="mb-4 font-bold text-4xl text-slate-900 tracking-tight dark:text-white">
             Industrial Manufacturing Showcase
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-slate-300">
@@ -77,7 +77,7 @@ const ProductShowcase = () => {
           <input
             type="text"
             placeholder="Search catalog..."
-            className="focus-visible:ring-ring w-full rounded-lg border border-slate-200 px-4 py-3 transition-all outline-none focus-visible:border-transparent focus-visible:ring-2 md:w-96"
+            className="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition-all focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-ring md:w-96"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -96,7 +96,7 @@ const ProductShowcase = () => {
 
         {/* Grid - Phase 3: Container Query */}
         <div className="@container">
-          <div className="grid grid-cols-1 gap-8 @md:grid-cols-2 @xl:grid-cols-3">
+          <div className="grid @md:grid-cols-2 @xl:grid-cols-3 grid-cols-1 gap-8">
             {status === "pending" ? (
               <div className="col-span-full py-20 text-center text-slate-500">
                 Loading catalog...
@@ -118,19 +118,19 @@ const ProductShowcase = () => {
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
                     />
-                    <div className="absolute top-4 right-4 rounded-full border border-white/50 bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur-sm">
+                    <div className="absolute top-4 right-4 rounded-full border border-white/50 bg-white/90 px-3 py-1 font-semibold text-slate-700 text-xs shadow-sm backdrop-blur-sm">
                       MOQ: {product.minOrderQuantity}
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <div className="mb-2 text-xs font-medium tracking-wider text-blue-600 uppercase">
+                    <div className="mb-2 font-medium text-blue-600 text-xs uppercase tracking-wider">
                       {product.category}
                     </div>
-                    <h3 className="mb-2 text-xl font-bold text-slate-900 transition-colors group-hover:text-blue-600">
+                    <h3 className="mb-2 font-bold text-slate-900 text-xl transition-colors group-hover:text-blue-600">
                       {product.name}
                     </h3>
-                    <p className="mb-4 line-clamp-2 text-sm text-slate-500">
+                    <p className="mb-4 line-clamp-2 text-slate-500 text-sm">
                       {product.description}
                     </p>
 

@@ -2,13 +2,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
-import {
-  type ReactNode,
-  type RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { type ReactNode, type RefObject, useEffect, useMemo, useRef } from "react";
 import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 
 // Use global GSAP instance from HTML head
@@ -27,24 +21,24 @@ if (typeof window !== "undefined" && !window.gsap && gsap) {
 interface ScrollFloatProps {
   children: ReactNode;
   scrollContainerRef?: RefObject<HTMLElement | null>;
-  containerClassName?: string;
-  textClassName?: string;
-  animationDuration?: number;
-  ease?: string;
-  scrollStart?: string;
-  scrollEnd?: string;
-  stagger?: number;
+  containerClassName?: string | undefined;
+  textClassName?: string | undefined;
+  animationDuration?: number | undefined;
+  ease?: string | undefined;
+  scrollStart?: string | undefined;
+  scrollEnd?: string | undefined;
+  stagger?: number | undefined;
   // TIMING COORDINATION: Wait for expansion completion
-  waitForTrigger?: boolean;
-  triggerCondition?: boolean;
+  waitForTrigger?: boolean | undefined;
+  triggerCondition?: boolean | undefined;
   // DRAMATIC ENHANCEMENT OPTIONS
   dramatiMode?: "cinematic" | "explosive" | "elegant" | "standard";
-  rotationRange?: number;
+  rotationRange?: number | undefined;
   scaleRange?: [number, number];
   yRange?: [number, number];
   opacityRange?: [number, number];
-  blurSm?: boolean;
-  glitch?: boolean;
+  blurSm?: boolean | undefined;
+  glitch?: boolean | undefined;
 }
 
 const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
@@ -95,8 +89,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
   // Phase 2: Mobile Gesture Detection and Setup
   useEffect(() => {
     // Detect if device supports touch
-    isTouchDevice.current =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     if (isTouchDevice.current) {
     }
@@ -120,8 +113,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
   };
 
   const handleTouchMove = (e: TouchEvent) => {
-    if (!isTouchDevice.current || !touchStart.current || !containerRef.current)
-      return;
+    if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
 
     const touch = e.touches[0];
     if (!touch) return;
@@ -148,12 +140,8 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
         // Apply smooth transform based on progress
         window.gsap.set(span, {
           y: yRange[0] * (1 - clampedProgress) + yRange[1] * clampedProgress,
-          opacity:
-            opacityRange[0] * (1 - clampedProgress) +
-            opacityRange[1] * clampedProgress,
-          scale:
-            scaleRange[0] * (1 - clampedProgress) +
-            scaleRange[1] * clampedProgress,
+          opacity: opacityRange[0] * (1 - clampedProgress) + opacityRange[1] * clampedProgress,
+          scale: scaleRange[0] * (1 - clampedProgress) + scaleRange[1] * clampedProgress,
           rotation: rotationRange * (1 - clampedProgress),
         });
       });
@@ -168,8 +156,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
   };
 
   const handleTouchEnd = () => {
-    if (!isTouchDevice.current || !touchStart.current || !containerRef.current)
-      return;
+    if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
 
     // const touchEndTime = Date.now();
 
@@ -241,8 +228,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
     }
 
     // Use global GSAP or fallback to imported
-    const GSAP =
-      typeof window !== "undefined" && window.gsap ? window.gsap : gsap;
+    const GSAP = typeof window !== "undefined" && window.gsap ? window.gsap : gsap;
 
     if (!GSAP) {
       return;
@@ -250,9 +236,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
     const config = getDramaticConfig();
 
-    const scroller = scrollContainerRef?.current
-      ? scrollContainerRef.current
-      : window;
+    const scroller = scrollContainerRef?.current ? scrollContainerRef.current : window;
 
     const charElements = el.querySelectorAll(".inline-block");
 
@@ -298,11 +282,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
         start: scrollStart,
         end: scrollEnd,
         scrub: true,
-        onUpdate: (self: {
-          progress: number;
-          pause?: () => void;
-          resume?: () => void;
-        }) => {
+        onUpdate: (self: { progress: number; pause?: () => void; resume?: () => void }) => {
           // Store current ScrollTrigger instance for mobile control
           scrollTriggerInstance.current = self;
         },
@@ -386,9 +366,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
         willChange: "transform, opacity",
       }}
     >
-      <span
-        className={`inline-block text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] ${textClassName}`}
-      >
+      <span className={`inline-block text-[clamp(1.6rem,4vw,3rem)] leading-[1.5] ${textClassName}`}>
         {splitText}
       </span>
     </h2>

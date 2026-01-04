@@ -1,8 +1,6 @@
 import { getConfig } from "../config/production.js";
 import { wakeupDatabase } from "../db.js";
 import { adminNotifier } from "../lib/admin-notifier.js";
-import { unifiedCache } from "../lib/cache/unified-cache.js";
-import { retryDbOperation } from "../lib/db/db-retry.js";
 import { dbKeepAlive } from "../lib/db/keep-alive.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { getLifecycleScheduler } from "../lib/storage-lifecycle-scheduler.js";

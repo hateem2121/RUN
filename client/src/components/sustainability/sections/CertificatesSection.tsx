@@ -8,9 +8,9 @@ export function CertificatesSection({
   footerNote = "These certifications represent our ongoing commitment to environmental responsibility, social accountability, and quality excellence in everything we do.",
 }: {
   certificates: Certificate[];
-  title?: string;
-  description?: string;
-  footerNote?: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  footerNote?: string | undefined;
 }) {
   return (
     <section className="relative bg-stone-50 py-20">

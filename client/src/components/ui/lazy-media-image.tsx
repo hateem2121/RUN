@@ -11,13 +11,13 @@ import { cn } from "@/lib/utils";
 
 interface LazyMediaImageProps {
   asset: MediaAsset;
-  alt?: string;
-  className?: string;
+  alt?: string | undefined;
+  className?: string | undefined;
   style?: React.CSSProperties;
-  priority?: boolean; // Load immediately without intersection observer
+  priority?: boolean | undefined; // Load immediately without intersection observer
   onLoad?: () => void;
   onError?: (error: Error) => void;
-  placeholderClassName?: string;
+  placeholderClassName?: string | undefined;
 }
 
 export function LazyMediaImage({

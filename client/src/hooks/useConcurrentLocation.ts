@@ -16,7 +16,7 @@ export function useConcurrentLocation(): [
   const setLocationConcurrent = useCallback(
     (to: string, options?: { replace?: boolean }) => {
       startTransition(() => {
-        navigate(to, { replace: options?.replace });
+        navigate(to, { ...(options?.replace !== undefined ? { replace: options.replace } : {}) });
       });
     },
     [navigate],

@@ -23,7 +23,7 @@ const DropdownMenuSubTrigger = ({
   ref,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
 }) => (
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
@@ -82,7 +82,7 @@ const DropdownMenuItem = ({
   ref,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
 }) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
@@ -109,7 +109,7 @@ const DropdownMenuCheckboxItem = ({
       "relative flex cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
-    checked={checked}
+    {...(checked !== undefined ? { checked } : {})}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
@@ -152,7 +152,7 @@ const DropdownMenuLabel = ({
   ref,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
 }) => (
   <DropdownMenuPrimitive.Label
     ref={ref}

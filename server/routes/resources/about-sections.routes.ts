@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ABOUT SECTIONS RESOURCE ROUTER
  *
@@ -98,7 +100,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newSection = await withTimeout(
-      aboutService.createSection(validation.data),
+      aboutService.createSection(removeUndefined(validation.data)),
       10000,
       "Create about section",
     );
@@ -142,7 +144,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updatedSection = await withTimeout(
-      aboutService.updateSection(id, validation.data),
+      aboutService.updateSection(id, removeUndefined(validation.data)),
       10000,
       "Update about section",
     );
@@ -221,7 +223,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     // Update positions
     const updates = await Promise.all(
-      validation.data.entries.map(({ id, position }) =>
+      removeUndefined(validation.data).entries.map(({ id, position }) =>
         aboutService.updateSection(id, { sortOrder: position }),
       ),
     );

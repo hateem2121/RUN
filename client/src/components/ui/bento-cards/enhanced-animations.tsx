@@ -74,9 +74,9 @@ export const scaleIn = {
 
 interface AnimatedCardWrapperProps {
   children: ReactNode;
-  className?: string;
-  delay?: number;
-  enableHover?: boolean;
+  className?: string | undefined;
+  delay?: number | undefined;
+  enableHover?: boolean | undefined;
 }
 
 export function AnimatedCardWrapper({
@@ -91,7 +91,7 @@ export function AnimatedCardWrapper({
       variants={cardVariants}
       initial="initial"
       animate="animate"
-      whileHover={enableHover ? "hover" : undefined}
+      {...(enableHover ? { whileHover: "hover" } : {})}
       whileTap="tap"
       style={{
         transition: `transform 0.2s ease-out, box-shadow 0.2s ease-out`,

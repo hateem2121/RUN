@@ -31,7 +31,7 @@ import { useMediaPerformance } from "./MediaPerformanceMonitor";
 
 export interface EnhancedMediaAsset extends MediaAsset {
   loadPriority?: "high" | "medium" | "low";
-  preloadUrl?: string;
+  preloadUrl?: string | undefined;
   cameraPositions?: ModelViewerPosition[];
   chapters?: VideoChapter[];
 }
@@ -39,8 +39,8 @@ export interface EnhancedMediaAsset extends MediaAsset {
 interface ModelViewerPosition {
   name: string;
   orbit: string;
-  target?: string;
-  fieldOfView?: string;
+  target?: string | undefined;
+  fieldOfView?: string | undefined;
 }
 
 interface VideoChapter {
@@ -51,8 +51,8 @@ interface VideoChapter {
 interface MediaInteractionEvent {
   type: "view" | "interact" | "fullscreen" | "zoom";
   mediaType: "image" | "video" | "3d_model";
-  duration?: number;
-  action?: string;
+  duration?: number | undefined;
+  action?: string | undefined;
 }
 
 interface UnifiedMediaTheaterProps {
@@ -66,7 +66,7 @@ interface UnifiedMediaTheaterProps {
   onInteraction?: (event: MediaInteractionEvent) => void;
   onZoom?: (media: MediaAsset) => void;
   onMediaLoad?: (asset: MediaAsset) => void;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function UnifiedMediaTheater({

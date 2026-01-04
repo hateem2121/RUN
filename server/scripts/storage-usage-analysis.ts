@@ -1,6 +1,5 @@
 import { mediaAssets } from "../../shared/schema.js";
 import { db } from "../db.js";
-import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 
 interface FileUsage {
@@ -10,7 +9,7 @@ interface FileUsage {
   category: "main" | "thumbnail" | "health-probe" | "other";
   extension: string;
   hasDBRecord: boolean;
-  dbId?: number;
+  dbId?: number | undefined;
 }
 
 interface CategoryStats {

@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import pino, { stdSerializers, type Logger } from "pino";
+import pino, { type Logger, stdSerializers } from "pino";
 import { isDevelopment, logging } from "../../config/environment.js";
 
 // AsyncLocalStorage for request-scoped correlation IDs
@@ -51,8 +51,8 @@ class SmartLogger {
           "oauth_secret",
           "client_secret",
           // Object paths
-          "req.headers.authorization",
-          "req.headers.cookie",
+          "req.headers['authorization']",
+          "req.headers['cookie']",
         ],
         censor: "[REDACTED]",
       },
@@ -77,7 +77,7 @@ class SmartLogger {
               messageFormat: "{msg} {metadata}", // Display metadata if present
             },
           }
-        : undefined,
+        : (undefined as any),
       // Base service name
       base: {
         service: "run-apparel-api",
@@ -183,10 +183,7 @@ class SmartLogger {
       // Log as info with label 'PERF'
       // Pino doesn't have custom levels by default unless configured.
       // We'll use info with a tag.
-      this.logger.info(
-        { ...this.prepareMetadata(metadata, error), type: "PERF" },
-        message,
-      );
+      this.logger.info({ ...this.prepareMetadata(metadata, error), type: "PERF" }, message);
     }
   }
 
@@ -227,6 +224,6 @@ export const debugLog = (message: string, ...args: unknown[]) => {
   }
 };
 
-export const productionLog = (message: string, ...args: unknown[]) => {
+export const productionLog = (_message: string, ..._args: unknown[]) => {
   // Legacy placeholder
 };

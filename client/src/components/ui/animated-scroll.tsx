@@ -5,8 +5,8 @@ import { MediaUrlBuilder } from "@/lib/media-url-builder";
 interface AnimatedScrollProps {
   sections: AboutSection[];
   mediaAssets: MediaAsset[];
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
 }
 
 // Helper function to get media URL

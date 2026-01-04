@@ -70,7 +70,7 @@ interface GradientFormData {
 interface TechnologyGradientSettingsProps {
   gradientData: GradientFormData;
   setGradientData: (data: GradientFormData) => void;
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyGradientSettings({

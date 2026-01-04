@@ -10,8 +10,8 @@ export function InitiativesSection({
 }: {
   initiatives: SustainabilityInitiative[];
   mediaAssets?: MediaAsset[];
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
 }) {
   return (
     <section className="relative bg-white py-20">
@@ -39,7 +39,7 @@ export function InitiativesSection({
                 key={initiative.id}
                 initiative={initiative}
                 index={index}
-                initiativeImage={initiativeImage}
+                {...(initiativeImage ? { initiativeImage } : {})}
               />
             );
           })}

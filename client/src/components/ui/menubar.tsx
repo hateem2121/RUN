@@ -69,7 +69,7 @@ const MenubarSubTrigger = ({
   ref,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.SubTrigger> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof MenubarPrimitive.SubTrigger>>;
 }) => (
   <MenubarPrimitive.SubTrigger
@@ -137,7 +137,7 @@ const MenubarItem = ({
   ref,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Item> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof MenubarPrimitive.Item>>;
 }) => (
   <MenubarPrimitive.Item
@@ -167,7 +167,7 @@ const MenubarCheckboxItem = ({
       "relative flex cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
-    checked={checked}
+    {...(checked !== undefined ? { checked } : {})}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
@@ -212,7 +212,7 @@ const MenubarLabel = ({
   ref,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Label> & {
-  inset?: boolean;
+  inset?: boolean | undefined;
   ref?: React.Ref<React.ElementRef<typeof MenubarPrimitive.Label>>;
 }) => (
   <MenubarPrimitive.Label

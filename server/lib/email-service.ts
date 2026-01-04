@@ -12,18 +12,18 @@ interface EmailOptions {
   to: string;
   subject: string;
   html: string;
-  text?: string;
+  text?: string | undefined;
 }
 
 interface InquiryEmailData {
   id: number;
   name: string;
   email: string;
-  company?: string;
-  phone?: string;
-  country?: string;
+  company?: string | undefined;
+  phone?: string | undefined;
+  country?: string | undefined;
   message: string;
-  preferredPlatform?: string;
+  preferredPlatform?: string | undefined;
   submittedAt: Date;
 }
 

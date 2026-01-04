@@ -7,7 +7,7 @@ import { OptimizedImage } from "@/components/ui/optimized-image";
 interface StackingCard {
   title: string;
   description: string;
-  mediaId?: number;
+  mediaId?: number | undefined;
   color: string;
   sectionType: string;
 }
@@ -22,7 +22,7 @@ interface CardProps {
   i: number;
   title: string;
   description: string;
-  mediaId?: number;
+  mediaId?: number | undefined;
   color: string;
   progress: MotionValue<number>;
   range: [number, number];

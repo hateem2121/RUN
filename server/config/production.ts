@@ -42,7 +42,7 @@ export interface ProductionConfig {
     };
     logLevel: "error" | "warn" | "info" | "debug";
     sentry?: {
-      reportUri?: string;
+      reportUri?: string | undefined;
     };
   };
 

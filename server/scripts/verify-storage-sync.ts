@@ -20,7 +20,7 @@ interface SyncResult {
     filename: string;
     storagePath: string;
     bucketName: string;
-    error?: string;
+    error?: string | undefined;
   }>;
 }
 

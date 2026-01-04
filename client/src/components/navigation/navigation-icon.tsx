@@ -5,9 +5,9 @@ import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 interface NavigationIconProps {
   iconType: "media" | "fallback";
   mediaIcon?: MediaAsset;
-  fallbackIcon?: string;
-  className?: string;
-  useAbsolutePositioning?: boolean; // for floating dock vs admin display
+  fallbackIcon?: string | undefined;
+  className?: string | undefined;
+  useAbsolutePositioning?: boolean | undefined; // for floating dock vs admin display
 }
 
 // Define the type for the glob import module
@@ -72,7 +72,7 @@ export const NavigationIcon = memo(function NavigationIcon({
     } else {
       // For admin display - stays within container bounds
       return (
-        <div className="bg-muted/20 flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+        <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-muted/20">
           <img
             src={
               urls?.small ||

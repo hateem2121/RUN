@@ -13,9 +13,9 @@ import {
 interface EasingSelectorProps {
   value: string;
   onChange: (value: string) => void;
-  label?: string;
-  disabled?: boolean;
-  className?: string;
+  label?: string | undefined;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
 }
 
 const easingOptions = [

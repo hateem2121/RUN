@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * SUSTAINABILITY INITIATIVES RESOURCE ROUTER
  *
@@ -92,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newInitiative = await withTimeout(
-      getStorage().createSustainabilityInitiative(validation.data),
+      getStorage().createSustainabilityInitiative(removeUndefined(validation.data)),
       10000,
       "Create sustainability initiative",
     );
@@ -128,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateSustainabilityInitiative(id, validation.data),
+      getStorage().updateSustainabilityInitiative(id, removeUndefined(validation.data)),
       10000,
       "Update sustainability initiative",
     );
@@ -198,7 +200,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.initiatives.map(({ id, position }) =>
+      removeUndefined(validation.data).initiatives.map(({ id, position }) =>
         getStorage().updateSustainabilityInitiative(id, {
           sortOrder: position,
         }),

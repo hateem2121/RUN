@@ -11,7 +11,7 @@ interface TestResult {
   name: string;
   passed: boolean;
   duration: number;
-  error?: string;
+  error?: string | undefined;
   details?: any;
 }
 

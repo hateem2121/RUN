@@ -1,6 +1,5 @@
 // import { getStorage } from "../lib/storage-singleton.js";
 import crypto from "node:crypto";
-import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 
 async function cleanupDuplicates() {

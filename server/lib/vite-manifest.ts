@@ -7,9 +7,9 @@ import path from "node:path";
  */
 export interface ManifestChunk {
   file: string;
-  src?: string;
-  isEntry?: boolean;
-  isDynamicEntry?: boolean;
+  src?: string | undefined;
+  isEntry?: boolean | undefined;
+  isDynamicEntry?: boolean | undefined;
   imports?: string[];
   dynamicImports?: string[];
   css?: string[];

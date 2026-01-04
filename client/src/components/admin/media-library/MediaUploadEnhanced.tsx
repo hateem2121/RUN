@@ -26,8 +26,7 @@ import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 // REMOVED: Server-side imports replaced with browser-safe fallbacks below
 
 // Browser-safe fallbacks
-const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] =>
-  assets as MediaAsset[];
+const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] => assets as MediaAsset[];
 const logTypeError = (_error: Error, _context: string) => {};
 
 // CRITICAL FIX: Dedicated Web Worker for uploads to bypass DevTools monkeypatching
@@ -38,23 +37,16 @@ let uploadWorker: Worker | null = null;
 const getUploadWorker = (): Worker => {
   if (uploadWorker) return uploadWorker;
 
-  uploadWorker = new Worker(
-    new URL("@/workers/uploader.ts?ver=20250916", import.meta.url),
-    {
-      type: "module",
-    },
-  );
+  uploadWorker = new Worker(new URL("@/workers/uploader.ts?ver=20250916", import.meta.url), {
+    type: "module",
+  });
   return uploadWorker;
 };
 
 // PHASE 1.1: Enhanced MIME Type Detection for GLTF and other files (Fixed for chunked uploads)
 const detectMimeType = (file: File): string => {
   // 1. Try browser detection first (but allow fallback for chunked uploads)
-  if (
-    file.type &&
-    file.type.trim() !== "" &&
-    file.type !== "application/octet-stream"
-  ) {
+  if (file.type && file.type.trim() !== "" && file.type !== "application/octet-stream") {
     return file.type;
   }
 
@@ -232,10 +224,7 @@ class UploadQueueManager {
 const queueManager = new UploadQueueManager();
 
 // UPLOAD OPTIMIZATION: Enhanced Performance Tracking
-const trackPerformance = async <T,>(
-  operation: string,
-  fn: () => Promise<T>,
-): Promise<T> => {
+const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Promise<T> => {
   const start = Date.now();
   try {
     const result = await fn();
@@ -264,8 +253,7 @@ const trackPerformance = async <T,>(
 // UPLOAD OPTIMIZATION: Format upload speed for display
 const formatUploadSpeed = (bytesPerSecond: number): string => {
   if (bytesPerSecond < 1024) return `${bytesPerSecond} B/s`;
-  if (bytesPerSecond < 1024 * 1024)
-    return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
+  if (bytesPerSecond < 1024 * 1024) return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
   return `${(bytesPerSecond / (1024 * 1024)).toFixed(1)} MB/s`;
 };
 
@@ -284,13 +272,13 @@ interface UploadQueueItem {
   status: "pending" | "uploading" | "paused" | "completed" | "error";
   progress: number;
   optimisticAsset?: MediaAsset;
-  errorMessage?: string;
+  errorMessage?: string | undefined;
   abortController?: AbortController;
   // OPTIMIZATION: Performance tracking
-  startTime?: number;
-  uploadSpeed?: number; // bytes per second
-  estimatedTimeRemaining?: number; // seconds
-  retryCount?: number;
+  startTime?: number | undefined;
+  uploadSpeed?: number | undefined; // bytes per second
+  estimatedTimeRemaining?: number | undefined; // seconds
+  retryCount?: number | undefined;
   priority?: "high" | "normal" | "low";
 }
 
@@ -335,7 +323,7 @@ const UploadItem = React.memo(
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
           );
         default:
-          return <Icon className="text-muted-foreground h-4 w-4" />;
+          return <Icon className="h-4 w-4 text-muted-foreground" />;
       }
     };
 
@@ -348,13 +336,13 @@ const UploadItem = React.memo(
     };
 
     return (
-      <div className="bg-muted/50 flex items-center justify-between rounded-lg p-3">
+      <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
         <div className="flex flex-1 items-center gap-3">
           <div className="shrink-0">{getStatusIcon()}</div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="truncate text-sm font-medium">{item.file.name}</p>
+              <p className="truncate font-medium text-sm">{item.file.name}</p>
               <Badge variant="outline" className="text-xs">
                 {formatFileSize(item.file.size)}
               </Badge>
@@ -363,19 +351,13 @@ const UploadItem = React.memo(
             {item.status === "uploading" && (
               <div className="mt-1">
                 <Progress value={item.progress} className="h-1" />
-                <div className="text-muted-foreground mt-1 flex justify-between text-xs">
+                <div className="mt-1 flex justify-between text-muted-foreground text-xs">
                   <span>{item.progress.toFixed(1)}% uploaded</span>
                   <div className="flex gap-2">
-                    {item.uploadSpeed && (
-                      <span>{formatUploadSpeed(item.uploadSpeed)}</span>
+                    {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
+                    {item.estimatedTimeRemaining && item.estimatedTimeRemaining > 0 && (
+                      <span>• {formatTimeRemaining(item.estimatedTimeRemaining)} remaining</span>
                     )}
-                    {item.estimatedTimeRemaining &&
-                      item.estimatedTimeRemaining > 0 && (
-                        <span>
-                          • {formatTimeRemaining(item.estimatedTimeRemaining)}{" "}
-                          remaining
-                        </span>
-                      )}
                   </div>
                 </div>
               </div>
@@ -383,7 +365,7 @@ const UploadItem = React.memo(
 
             {item.status === "error" && item.errorMessage && (
               <div className="mt-1">
-                <p className="text-xs text-red-500">{item.errorMessage}</p>
+                <p className="text-red-500 text-xs">{item.errorMessage}</p>
                 {item.retryCount && item.retryCount > 0 && (
                   <p className="text-muted-foreground text-xs">
                     Retry attempts: {item.retryCount}/3
@@ -392,12 +374,11 @@ const UploadItem = React.memo(
               </div>
             )}
 
-            {item.status === "pending" &&
-              queueManager.peekNextInQueue()?.id !== item.id && (
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Queued • Position: {queueManager.getQueuePosition(item.id)}
-                </p>
-              )}
+            {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
+              <p className="mt-1 text-muted-foreground text-xs">
+                Queued • Position: {queueManager.getQueuePosition(item.id)}
+              </p>
+            )}
           </div>
         </div>
 
@@ -435,9 +416,7 @@ const UploadItem = React.memo(
             </Button>
           )}
 
-          {(item.status === "pending" ||
-            item.status === "paused" ||
-            item.status === "error") && (
+          {(item.status === "pending" || item.status === "paused" || item.status === "error") && (
             <Button
               variant="ghost"
               size="sm"
@@ -465,8 +444,7 @@ const UploadItem = React.memo(
 );
 
 export default function MediaUploadEnhanced() {
-  const { setErrorState, setSyncStatus, uploadFiles } =
-    useMediaLibraryEnhanced();
+  const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibraryEnhanced();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
@@ -498,8 +476,7 @@ export default function MediaUploadEnhanced() {
     // Update all cached media queries with optimistic entries
     getQueryClient().setQueriesData(
       {
-        predicate: (query) =>
-          Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
+        predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
       },
       (oldData: any) => {
         if (!oldData?.data?.data) return oldData;
@@ -553,9 +530,7 @@ export default function MediaUploadEnhanced() {
             case "init":
               setUploadQueue((prev) =>
                 prev.map((qItem) =>
-                  qItem.id === item.id
-                    ? { ...qItem, status: "uploading" }
-                    : qItem,
+                  qItem.id === item.id ? { ...qItem, status: "uploading" } : qItem,
                 ),
               );
               break;
@@ -583,9 +558,7 @@ export default function MediaUploadEnhanced() {
               // Update UI to completed
               setUploadQueue((prev) =>
                 prev.map((qItem) =>
-                  qItem.id === item.id
-                    ? { ...qItem, progress: 100, status: "completed" }
-                    : qItem,
+                  qItem.id === item.id ? { ...qItem, progress: 100, status: "completed" } : qItem,
                 ),
               );
 
@@ -638,9 +611,7 @@ export default function MediaUploadEnhanced() {
       // Update UI with error message
       setUploadQueue((prev) =>
         prev.map((qItem) =>
-          qItem.id === item.id
-            ? { ...qItem, status: "error", errorMessage }
-            : qItem,
+          qItem.id === item.id ? { ...qItem, status: "error", errorMessage } : qItem,
         ),
       );
 
@@ -652,9 +623,7 @@ export default function MediaUploadEnhanced() {
   const processUploadQueue = useCallback(async () => {
     if (isUploading) return;
 
-    const pendingItems = uploadQueue.filter(
-      (item) => item.status === "pending",
-    );
+    const pendingItems = uploadQueue.filter((item) => item.status === "pending");
     if (pendingItems.length === 0) return;
 
     setIsUploading(true);
@@ -720,8 +689,7 @@ export default function MediaUploadEnhanced() {
                       break; // Success - exit retry loop
                     } catch (error) {
                       // Check if this is an HTTP error (has status property)
-                      const isHttpError =
-                        error && typeof error === "object" && "status" in error;
+                      const isHttpError = error && typeof error === "object" && "status" in error;
 
                       if (isHttpError) {
                         // HTTP errors (400, 413, 500, etc.) should NOT be retried
@@ -779,9 +747,7 @@ export default function MediaUploadEnhanced() {
               // PHASE 2.2: Simplified Error Handling - Don't stop entire upload process
               if (error instanceof Error && error.name === "AbortError") {
                 // Upload was cancelled
-                setUploadQueue((prev) =>
-                  prev.filter((qItem) => qItem.id !== item.id),
-                );
+                setUploadQueue((prev) => prev.filter((qItem) => qItem.id !== item.id));
               } else {
                 setUploadQueue((prev) =>
                   prev.map((qItem) =>
@@ -815,9 +781,7 @@ export default function MediaUploadEnhanced() {
 
       // Clear completed items after delay
       setTimeout(() => {
-        setUploadQueue((prev) =>
-          prev.filter((item) => item.status !== "completed"),
-        );
+        setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
       }, 3000);
     } catch (error) {
       setSyncStatus("error");
@@ -943,35 +907,25 @@ export default function MediaUploadEnhanced() {
 
   const resumeUpload = useCallback((id: string): void => {
     setUploadQueue((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, status: "pending" } : item,
-      ),
+      prev.map((item) => (item.id === id ? { ...item, status: "pending" } : item)),
     );
   }, []);
 
   // Clear all completed uploads
   const clearCompleted = useCallback((): void => {
-    setUploadQueue((prev) =>
-      prev.filter((item) => item.status !== "completed"),
-    );
+    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
   }, []);
 
   // Drag and drop handlers
-  const handleDragOver = useCallback(
-    (e: React.DragEvent<HTMLDivElement>): void => {
-      e.preventDefault();
-      setIsDragging(true);
-    },
-    [],
-  );
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
 
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent<HTMLDivElement>): void => {
-      e.preventDefault();
-      setIsDragging(false);
-    },
-    [],
-  );
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>): void => {
@@ -1001,12 +955,8 @@ export default function MediaUploadEnhanced() {
     (item) => item.status === "uploading" || item.status === "pending",
   );
 
-  const completedCount = uploadQueue.filter(
-    (item) => item.status === "completed",
-  ).length;
-  const errorCount = uploadQueue.filter(
-    (item) => item.status === "error",
-  ).length;
+  const completedCount = uploadQueue.filter((item) => item.status === "completed").length;
+  const errorCount = uploadQueue.filter((item) => item.status === "error").length;
 
   return (
     <div className="space-y-4">
@@ -1014,9 +964,7 @@ export default function MediaUploadEnhanced() {
       <div
         className={cn(
           "cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors",
-          isDragging
-            ? "border-primary bg-primary/10"
-            : "border-muted-foreground/25",
+          isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25",
           hasActiveUploads && "opacity-50",
         )}
         onDragOver={handleDragOver}
@@ -1041,14 +989,12 @@ export default function MediaUploadEnhanced() {
         />
 
         <div className="flex flex-col items-center gap-2">
-          <Upload className="text-muted-foreground h-8 w-8" />
+          <Upload className="h-8 w-8 text-muted-foreground" />
           <div>
-            <p className="text-sm font-medium">
+            <p className="font-medium text-sm">
               {isDragging ? "Drop files here" : "Drag and drop files here"}
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">
-              or click to select files
-            </p>
+            <p className="mt-1 text-muted-foreground text-xs">or click to select files</p>
           </div>
 
           <Button variant="outline" size="sm" disabled={hasActiveUploads}>
@@ -1075,12 +1021,7 @@ export default function MediaUploadEnhanced() {
                   </Badge>
                 )}
                 {completedCount > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearCompleted}
-                    className="text-xs"
-                  >
+                  <Button variant="outline" size="sm" onClick={clearCompleted} className="text-xs">
                     Clear Completed
                   </Button>
                 )}
@@ -1106,8 +1047,8 @@ export default function MediaUploadEnhanced() {
       {/* Overall progress */}
       {hasActiveUploads && (
         <div className="text-center">
-          <div className="text-muted-foreground inline-flex items-center gap-2 text-sm">
-            <div className="border-primary h-4 w-4 animate-spin rounded-full border-b-2"></div>
+          <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
+            <div className="h-4 w-4 animate-spin rounded-full border-primary border-b-2"></div>
             Processing uploads...
           </div>
         </div>

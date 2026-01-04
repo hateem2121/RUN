@@ -58,8 +58,8 @@ export function GlobalErrorBoundary({ children }: { children: React.ReactNode })
 
     reportClientError({
       message: error.message,
-      stack: error.stack,
-      componentStack: info.componentStack || undefined,
+      ...(error.stack ? { stack: error.stack } : {}),
+      ...(info.componentStack ? { componentStack: info.componentStack } : {}),
       level: "error",
       context: { boundary: "global" },
     });

@@ -21,12 +21,12 @@ interface RateLimitEntry {
 interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds
   max: number; // Maximum requests per window
-  message?: string; // Custom error message
-  statusCode?: number; // HTTP status code (default: 429)
+  message?: string | undefined; // Custom error message
+  statusCode?: number | undefined; // HTTP status code (default: 429)
   keyGenerator?: (req: Request) => string; // Custom key generator
   skip?: (req: Request) => boolean; // Skip rate limiting for certain requests
-  testMode?: boolean; // FORENSIC: Enable production-like limits in dev
-  warningThreshold?: number; // FORENSIC: Warn at X% of limit (default: 80)
+  testMode?: boolean | undefined; // FORENSIC: Enable production-like limits in dev
+  warningThreshold?: number | undefined; // FORENSIC: Warn at X% of limit (default: 80)
 }
 
 class RateLimiter {
@@ -116,7 +116,11 @@ class RateLimiter {
       res.setHeader("RateLimit-Usage", `${Math.round(usagePercent)}%`);
 
       // FORENSIC: Warning threshold (80% by default)
-      if (usagePercent >= this.config.warningThreshold && usagePercent < 100) {
+      if (
+        usagePercent &&
+        usagePercent >= (this.config.warningThreshold || 80) &&
+        usagePercent < 100
+      ) {
         this.stats.warningsSent++;
         res.setHeader("RateLimit-Warning", `Approaching limit: ${Math.round(usagePercent)}%`);
         logger.warn(
@@ -134,7 +138,7 @@ class RateLimiter {
         );
 
         res.setHeader("Retry-After", resetInSeconds.toString());
-        res.status(this.config.statusCode).json({
+        res.status(this.config.statusCode || 429).json({
           success: false,
           error: {
             message: this.config.message,
@@ -164,7 +168,7 @@ class RateLimiter {
         windowMs: this.config.windowMs,
         max: this.config.max,
         testMode: this.config.testMode,
-        warningThreshold: this.config.warningThreshold,
+        warningThreshold: this.config.warningThreshold || 80,
       },
       stats: { ...this.stats },
     };

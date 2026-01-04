@@ -7,8 +7,7 @@ export function auditStyles() {
         // Broaden detection: Look for --tw- variables or specific tailwind string in href
         const checkRules = (rules: CSSRuleList): boolean => {
           return Array.from(rules).some((r) => {
-            if (r instanceof CSSStyleRule && r.cssText.includes("--tw-"))
-              return true;
+            if (r instanceof CSSStyleRule && r.cssText.includes("--tw-")) return true;
             // Tailwind v4: Check inside @layer blocks
             if ("layerName" in r && (r as any).cssRules) {
               return checkRules((r as any).cssRules);
@@ -32,9 +31,7 @@ export function auditStyles() {
       .flatMap((ss) => {
         try {
           return Array.from(ss.cssRules)
-            .filter(
-              (r) => r instanceof CSSStyleRule && r.selectorText === ":root",
-            )
+            .filter((r) => r instanceof CSSStyleRule && r.selectorText === ":root")
             .flatMap((r) => {
               const rule = r as CSSStyleRule;
               const cssText = rule.style.cssText;

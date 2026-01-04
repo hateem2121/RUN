@@ -72,7 +72,7 @@ export class UnifiedMemoryCache {
     key: string,
     fetchFn: () => Promise<T>,
     options?: {
-      bypassCache?: boolean;
+      bypassCache?: boolean | undefined;
       swrConfig?: SWRConfig;
     },
   ): Promise<{ data: T; benchmark: BenchmarkResult }> {

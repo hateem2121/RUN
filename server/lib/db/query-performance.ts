@@ -140,7 +140,7 @@ export class QueryPerformanceMonitor {
       timestamp: Date.now(), // Use current timestamp for the record
       cacheHit: false,
       parameters: { success },
-    });
+    }) as any;
   }
 
   /**
@@ -316,7 +316,7 @@ export class QueryPerformanceMonitor {
       threshold: threshold,
       category: category,
       performanceStats: stats,
-    });
+    }) as any;
   }
 
   /**
@@ -329,24 +329,25 @@ export class QueryPerformanceMonitor {
     const totalQueries = recentMetrics.length;
 
     // PHASE 6: Filter to ONLY alertable queries for accurate performance measurement
-    const alertableMetrics = recentMetrics.filter((m) => {
+    const alertableMetrics = recentMetrics.filter((m: any) => {
       const { shouldAlert } = this.getThresholdForQuery(m.operation);
       return shouldAlert;
-    });
+    }) as any;
 
     // Calculate slow queries ONLY for alertable categories
-    const slowQueries = alertableMetrics.filter((m) => {
+    const slowQueries = alertableMetrics.filter((m: any) => {
       const { threshold } = this.getThresholdForQuery(m.operation);
       return m.duration > threshold;
     }).length;
 
-    const cacheHits = recentMetrics.filter((m) => m.cacheHit).length;
+    const cacheHits = recentMetrics.filter((m: any) => m.cacheHit).length;
 
     // CRITICAL FIX: Calculate average ONLY from alertable queries
     // This prevents cache-warmup from inflating average response time
     const averageResponseTime =
       alertableMetrics.length > 0
-        ? alertableMetrics.reduce((sum, m) => sum + m.duration, 0) / alertableMetrics.length
+        ? alertableMetrics.reduce((sum: any, m: any) => sum + m.duration, 0) /
+          alertableMetrics.length
         : 0;
 
     const cacheHitRate = totalQueries > 0 ? (cacheHits / totalQueries) * 100 : 0;
@@ -366,7 +367,7 @@ export class QueryPerformanceMonitor {
    */
   private getRecentMetrics(): QueryMetrics[] {
     const oneHourAgo = Date.now() - this.METRICS_TTL;
-    return this.metrics.filter((m) => m.timestamp > oneHourAgo);
+    return this.metrics.filter((m: any) => m.timestamp > oneHourAgo);
   }
 
   /**
@@ -379,10 +380,10 @@ export class QueryPerformanceMonitor {
     const stats = this.getPerformanceStats();
     // Performance is degraded ONLY if >10% of ALERTABLE queries exceed their category thresholds
     // This prevents admin/cache-warmup operations from triggering false degraded state
-    const alertableMetrics = this.getRecentMetrics().filter((m) => {
+    const alertableMetrics = this.getRecentMetrics().filter((m: any) => {
       const { shouldAlert } = this.getThresholdForQuery(m.operation);
       return shouldAlert;
-    });
+    }) as any;
 
     const alertableCount = alertableMetrics.length;
     if (alertableCount === 0) return false; // No alertable queries, system is healthy
@@ -403,7 +404,7 @@ export class QueryPerformanceMonitor {
     const recentMetrics = this.getRecentMetrics();
     // PHASE 6: Filter slow queries - ONLY include alertable categories
     const slowQueries = recentMetrics
-      .filter((m) => {
+      .filter((m: any) => {
         const { threshold, shouldAlert } = this.getThresholdForQuery(m.operation);
         return shouldAlert && m.duration > threshold; // Only alertable slow queries
       })
@@ -462,7 +463,7 @@ export class QueryPerformanceMonitor {
     setInterval(
       () => {
         const oneHourAgo = Date.now() - this.METRICS_TTL;
-        this.metrics = this.metrics.filter((m) => m.timestamp > oneHourAgo);
+        this.metrics = this.metrics.filter((m: any) => m.timestamp > oneHourAgo);
 
         if (this.metrics.length === 0) {
           this.consecutiveSlowQueries = 0;
@@ -561,7 +562,7 @@ export class QueryTracker {
         phaseSum: Math.round(phaseSum * 100) / 100,
         unaccounted: Math.round(unaccounted * 100) / 100,
         sample: `${QueryTracker.sampleCounter}/${QueryTracker.SAMPLE_RATE}`,
-      });
+      }) as any;
     }
 
     this.monitor.recordQuery({
@@ -569,8 +570,8 @@ export class QueryTracker {
       duration,
       timestamp: this.startTime, // Wall-clock timestamp for TTL/alerting
       cacheHit: this.cacheHit,
-      parameters: this.parameters,
-      phases: Object.keys(this.phases).length > 0 ? this.phases : undefined, // Only include if phases recorded
+      ...(this.parameters ? { parameters: this.parameters } : {}),
+      ...(Object.keys(this.phases).length > 0 ? { phases: this.phases } : {}), // Only include if phases recorded
     });
 
     return duration;

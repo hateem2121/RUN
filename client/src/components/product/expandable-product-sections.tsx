@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils";
 interface ProductSectionProps {
   product: any;
   context: any;
-  categoryColor?: string;
+  categoryColor?: string | undefined;
 }
 
 interface ExpandableSectionProps {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
-  defaultOpen?: boolean;
-  accent?: string;
+  defaultOpen?: boolean | undefined;
+  accent?: string | undefined;
 }
 
 function ExpandableSection({
@@ -81,9 +81,9 @@ function MaterialSwatch({
   onClick,
 }: {
   name: string;
-  color?: string;
-  pattern?: string;
-  isSelected?: boolean;
+  color?: string | undefined;
+  pattern?: string | undefined;
+  isSelected?: boolean | undefined;
   onClick?: () => void;
 }) {
   return (
@@ -122,7 +122,7 @@ function ColorSwatch({
 }: {
   color: string;
   name: string;
-  isSelected?: boolean;
+  isSelected?: boolean | undefined;
   onClick?: () => void;
 }) {
   return (

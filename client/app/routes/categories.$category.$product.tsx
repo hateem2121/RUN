@@ -103,7 +103,7 @@ function Gallery({ media, name }: { media: any[]; name: string }) {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="scrollbar-hide bg-muted flex aspect-3/4 w-full snap-x snap-mandatory overflow-x-auto rounded-lg lg:aspect-square"
+        className="scrollbar-hide flex aspect-3/4 w-full snap-x snap-mandatory overflow-x-auto rounded-lg bg-muted lg:aspect-square"
       >
         {media.map((item, idx) => (
           <div key={idx} className="relative w-full shrink-0 snap-center">
@@ -146,7 +146,7 @@ function ProductSpecs({ specs }: { specs: any[] }) {
 
   return (
     <div className="mt-12">
-      <Typography.H3 className="mb-6 text-xl font-bold tracking-tight">
+      <Typography.H3 className="mb-6 font-bold text-xl tracking-tight">
         Technical Specifications
       </Typography.H3>
 
@@ -160,12 +160,12 @@ function ProductSpecs({ specs }: { specs: any[] }) {
         {specs.map((spec, i) => (
           <div
             key={i}
-            className="border-border bg-muted/50 row-span-2 grid grid-rows-subgrid gap-1 rounded-lg border p-4"
+            className="row-span-2 grid grid-rows-subgrid gap-1 rounded-lg border border-border bg-muted/50 p-4"
           >
-            <span className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
+            <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
               {spec.name || "Feature"}
             </span>
-            <span className="text-foreground font-medium text-balance">{spec.value}</span>
+            <span className="text-balance font-medium text-foreground">{spec.value}</span>
           </div>
         ))}
       </div>
@@ -174,7 +174,7 @@ function ProductSpecs({ specs }: { specs: any[] }) {
       <dl className="grid grid-cols-[1fr_1fr] gap-x-4 gap-y-4 text-sm md:hidden">
         {specs.map((spec, i) => (
           <div key={i} className="contents">
-            <dt className="text-muted-foreground font-medium">{spec.name}</dt>
+            <dt className="font-medium text-muted-foreground">{spec.name}</dt>
             <dd className="text-foreground">{spec.value}</dd>
           </div>
         ))}
@@ -212,14 +212,14 @@ function AddToCartSection({ product }: { product: any }) {
   };
 
   return (
-    <div className="border-border mt-8 flex flex-col gap-4 border-t pt-8">
+    <div className="mt-8 flex flex-col gap-4 border-border border-t pt-8">
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-2xl font-bold tracking-tight">$249.00</span>
+        <span className="font-bold text-2xl tracking-tight">$249.00</span>
         {optimisticState.status === "added" && (
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-1 text-sm font-medium text-green-600"
+            className="flex items-center gap-1 font-medium text-green-600 text-sm"
           >
             <Check className="h-4 w-4" /> Added to Cart
           </motion.span>
@@ -230,7 +230,7 @@ function AddToCartSection({ product }: { product: any }) {
         onClick={handleAddToCart}
         disabled={isPending && optimisticState.status !== "added"} // Don't disable if optimized, keep interactive feel
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-lg font-bold tracking-wide transition-all duration-300",
+          "flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 font-bold text-lg tracking-wide transition-all duration-300",
           optimisticState.status === "added"
             ? "bg-green-600 text-white hover:bg-green-700"
             : "bg-black text-white hover:bg-neutral-800 active:scale-[0.98]",
@@ -245,7 +245,7 @@ function AddToCartSection({ product }: { product: any }) {
         )}
       </button>
 
-      <Typography.P className="text-muted-foreground/50 mt-2 text-center text-xs">
+      <Typography.P className="mt-2 text-center text-muted-foreground/50 text-xs">
         Free shipping on orders over $500. Global delivery available.
       </Typography.P>
     </div>
@@ -256,7 +256,7 @@ function ProductDetailContent() {
   const params = useParams();
   // Construct path logic similar to original but adapted for fixed route parameters if needed.
   // Original logic:
-  // const pathSegments = [params.category, params.subcategory, params.subsubcategory, params.product].filter(Boolean);
+  // const pathSegments = [params['category'], params['subcategory'], params['subsubcategory'], params['product']].filter(Boolean);
   // const fullPath = `/categories/${pathSegments.join("/")}`;
 
   // New logic using RR7 params:
@@ -309,7 +309,7 @@ function ProductDetailContent() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4">
         <AlertCircle className="h-12 w-12 text-red-500" />
-        <Typography.H1 className="text-xl font-bold">Product Not Found</Typography.H1>
+        <Typography.H1 className="font-bold text-xl">Product Not Found</Typography.H1>
         <Link to="/products" className="text-blue-600 hover:underline">
           Return to Shop
         </Link>
@@ -337,29 +337,29 @@ function ProductDetailContent() {
           {/* Right: Product Info */}
           <div className="flex flex-col">
             <div className="mb-2">
-              <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
+              <span className="font-bold text-blue-600 text-xs uppercase tracking-wider">
                 {context.category?.name || "Premium Collection"}
               </span>
             </div>
 
-            <Typography.H1 className="mb-6 text-4xl leading-[0.9] font-black tracking-tight text-balance md:text-5xl lg:text-6xl">
+            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl">
               {product.name}
             </Typography.H1>
 
             <div className="mb-8 flex items-center gap-4 text-sm">
               {product.sku && (
-                <span className="bg-muted text-muted-foreground rounded px-2 py-1 font-mono text-xs">
+                <span className="rounded bg-muted px-2 py-1 font-mono text-muted-foreground text-xs">
                   {product.sku}
                 </span>
               )}
               <div className="flex items-center gap-1 text-yellow-500">
                 <span className="font-bold text-black">4.9</span>
                 <span>★★★★★</span>
-                <span className="text-muted-foreground/50 ml-1 text-xs">(128 Reviews)</span>
+                <span className="ml-1 text-muted-foreground/50 text-xs">(128 Reviews)</span>
               </div>
             </div>
 
-            <Typography.P className="text-muted-foreground mb-8 text-lg leading-relaxed text-pretty">
+            <Typography.P className="mb-8 text-pretty text-lg text-muted-foreground leading-relaxed">
               {product.description ||
                 product.shortDescription ||
                 "Engineered for peak performance, this product represents the pinnacle of our material science innovation. Designed for athletes who demand the absolute best."}
@@ -368,8 +368,8 @@ function ProductDetailContent() {
             {/* Sizes (Mock) */}
             <div className="mb-8">
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-sm font-bold tracking-wider uppercase">Select Size</label>
-                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors">
+                <label className="font-bold text-sm uppercase tracking-wider">Select Size</label>
+                <button className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground">
                   <Ruler className="h-3 w-3" /> Size Guide
                 </button>
               </div>
@@ -377,7 +377,7 @@ function ProductDetailContent() {
                 {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                   <button
                     key={size}
-                    className="border-border hover:border-foreground focus:ring-foreground flex h-12 items-center justify-center rounded border transition-colors focus:ring-2 focus:outline-hidden"
+                    className="flex h-12 items-center justify-center rounded border border-border transition-colors hover:border-foreground focus:outline-hidden focus:ring-2 focus:ring-foreground"
                   >
                     {size}
                   </button>
@@ -387,7 +387,7 @@ function ProductDetailContent() {
 
             {/* Colors (Mock) */}
             <div className="mb-10">
-              <label className="mb-3 block text-sm font-bold tracking-wider uppercase">
+              <label className="mb-3 block font-bold text-sm uppercase tracking-wider">
                 Select Color
               </label>
               <div className="flex gap-3">
@@ -401,10 +401,10 @@ function ProductDetailContent() {
             <AddToCartSection product={product} />
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <button className="center-flex border-border hover:bg-muted gap-2 rounded border py-3 text-sm font-bold transition-colors">
+              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
                 <Heart className="h-4 w-4" /> Save
               </button>
-              <button className="center-flex border-border hover:bg-muted gap-2 rounded border py-3 text-sm font-bold transition-colors">
+              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
                 <Share2 className="h-4 w-4" /> Share
               </button>
             </div>

@@ -10,20 +10,20 @@ import {
 interface SelectOption {
   value: string;
   label: string;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 interface RobustSelectProps {
-  value?: string;
+  value?: string | undefined;
   onChange: (value: string) => void;
   options: SelectOption[];
-  label?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
-  triggerClassName?: string;
-  contentClassName?: string;
+  label?: string | undefined;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  className?: string | undefined;
+  triggerClassName?: string | undefined;
+  contentClassName?: string | undefined;
 }
 
 import React from "react";
@@ -65,7 +65,7 @@ export const RobustSelect = React.memo(function RobustSelect({
             <SelectItem
               key={option.value}
               value={option.value}
-              disabled={option.disabled}
+              disabled={!!option.disabled}
               onClick={() => {}}
             >
               {option.label}

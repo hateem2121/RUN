@@ -5,7 +5,7 @@ export class ApiError extends Error {
   constructor(message: string, status: number, retryAfter?: number) {
     super(message);
     this.status = status;
-    this.retryAfter = retryAfter;
+    this.retryAfter = retryAfter || 1000;
     this.name = "ApiError";
   }
 }

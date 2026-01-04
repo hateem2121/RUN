@@ -66,8 +66,7 @@ export function usePerformanceOptimization({
         jsHeapSizeLimit: number;
       };
     };
-    if (!enableMemoryTracking || !(performance as PerformanceWithMemory).memory)
-      return;
+    if (!enableMemoryTracking || !(performance as PerformanceWithMemory).memory) return;
 
     const memoryInfo = (performance as PerformanceWithMemory).memory!;
     const usedMB = memoryInfo.usedJSHeapSize / 1024 / 1024;

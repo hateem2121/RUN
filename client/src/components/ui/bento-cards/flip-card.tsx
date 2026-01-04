@@ -7,12 +7,12 @@ import { AnimatedCardWrapper } from "./enhanced-animations";
 import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 
 interface FlipCardProps {
-  title?: string;
-  subtitle?: string;
-  description?: string;
+  title?: string | undefined;
+  subtitle?: string | undefined;
+  description?: string | undefined;
   features?: string[];
-  mediaUrl?: string | null;
-  link?: string;
+  mediaUrl?: string | null | undefined;
+  link?: string | undefined;
 }
 
 const FlipCard = memo(function FlipCard({

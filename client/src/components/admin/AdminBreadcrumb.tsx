@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router";
 
 interface BreadcrumbItem {
   label: string;
-  href?: string;
+  href?: string | undefined;
 }
 
 const moduleLabels: Record<string, string> = {
@@ -41,20 +41,20 @@ export const AdminBreadcrumb = React.memo(function AdminBreadcrumb() {
   }
 
   return (
-    <nav className="text-muted-foreground mb-4 flex items-center space-x-1 text-sm">
-      <Link to="/admin" className="hover:text-foreground flex items-center transition-colors">
+    <nav className="mb-4 flex items-center space-x-1 text-muted-foreground text-sm">
+      <Link to="/admin" className="flex items-center transition-colors hover:text-foreground">
         <Home className="h-4 w-4" />
       </Link>
 
       {breadcrumbs.slice(1).map((crumb, index) => (
         <div key={index} className="flex items-center space-x-1">
-          <ChevronRight className="text-muted-foreground/70 h-4 w-4" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground/70" />
           {crumb.href ? (
-            <Link to={crumb.href} className="hover:text-foreground transition-colors">
+            <Link to={crumb.href} className="transition-colors hover:text-foreground">
               {crumb.label}
             </Link>
           ) : (
-            <span className="text-foreground font-medium">{crumb.label}</span>
+            <span className="font-medium text-foreground">{crumb.label}</span>
           )}
         </div>
       ))}

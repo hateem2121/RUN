@@ -139,7 +139,7 @@ export default function Resources() {
   };
 
   return (
-    <div className="from-muted/30 to-background min-h-screen bg-linear-to-b">
+    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         {/* Header */}
         <motion.div
@@ -147,10 +147,10 @@ export default function Resources() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
+          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
             Resources Hub
           </Typography.H1>
-          <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
+          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
             Access technical specifications, material properties, and industry standards
           </Typography.P>
 
@@ -159,12 +159,12 @@ export default function Resources() {
             <div className="text-center">
               <AnimatedCounter
                 value={totalResources}
-                className="text-foreground text-3xl font-bold"
+                className="font-bold text-3xl text-foreground"
               />
               <div className="text-muted-foreground text-sm">Total Resources</div>
             </div>
             <div className="text-center">
-              <AnimatedCounter value={5} className="text-3xl font-bold text-purple-600" />
+              <AnimatedCounter value={5} className="font-bold text-3xl text-purple-600" />
               <div className="text-muted-foreground text-sm">Categories</div>
             </div>
           </div>
@@ -213,8 +213,8 @@ export default function Resources() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Filter className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
-                <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
+                <Filter className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   No results found
                 </Typography.H3>
                 <Typography.P className="text-muted-foreground">
@@ -290,7 +290,7 @@ export default function Resources() {
                             <CardTitle className="text-xl">{category.title}</CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <Typography.P className="text-muted-foreground mb-4">
+                            <Typography.P className="mb-4 text-muted-foreground">
                               {category.description}
                             </Typography.P>
                             <Button className="w-full transition-transform group-hover:translate-x-1">
@@ -316,7 +316,7 @@ export default function Resources() {
                           <CardTitle className="text-xl">{category.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <Typography.P className="text-muted-foreground mb-4">
+                          <Typography.P className="mb-4 text-muted-foreground">
                             {category.description}
                           </Typography.P>
                           <Button className="w-full transition-transform group-hover:translate-x-1">

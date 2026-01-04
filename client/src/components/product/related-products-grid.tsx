@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 
 interface RelatedProductsGridProps {
   products: Product[];
-  title?: string;
-  className?: string;
-  showViewAll?: boolean;
-  viewAllUrl?: string;
+  title?: string | undefined;
+  className?: string | undefined;
+  showViewAll?: boolean | undefined;
+  viewAllUrl?: string | undefined;
   media?: MediaAsset[];
 }
 
@@ -43,11 +43,11 @@ export function RelatedProductsGrid({
     <section className={cn("", className)}>
       {title && (
         <div className="mb-12 flex items-center justify-between">
-          <h2 className="text-4xl font-bold tracking-tight text-black uppercase">{title}</h2>
+          <h2 className="font-bold text-4xl text-black uppercase tracking-tight">{title}</h2>
           {showViewAll && viewAllUrl && (
             <Link
               to={viewAllUrl}
-              className="text-sm font-medium tracking-widest text-black uppercase underline hover:no-underline"
+              className="font-medium text-black text-sm uppercase tracking-widest underline hover:no-underline"
             >
               Explore More
             </Link>
@@ -63,7 +63,7 @@ export function RelatedProductsGrid({
           return (
             <Link key={product.id} to={productUrl}>
               <div className="group cursor-pointer">
-                <div className="bg-background relative mb-4 aspect-square overflow-hidden">
+                <div className="relative mb-4 aspect-square overflow-hidden bg-background">
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -74,16 +74,16 @@ export function RelatedProductsGrid({
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <Package className="text-muted-foreground/50 h-16 w-16" />
+                      <Package className="h-16 w-16 text-muted-foreground/50" />
                     </div>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="line-clamp-2 text-base font-medium text-black group-hover:underline">
+                  <h3 className="line-clamp-2 font-medium text-base text-black group-hover:underline">
                     {product.name}
                   </h3>
                   {product.sku && (
-                    <p className="text-muted-foreground/70 font-mono text-xs">{product.sku}</p>
+                    <p className="font-mono text-muted-foreground/70 text-xs">{product.sku}</p>
                   )}
                 </div>
               </div>
@@ -95,7 +95,7 @@ export function RelatedProductsGrid({
       {showViewAll && viewAllUrl && (
         <div className="mt-12 text-center">
           <Link to={viewAllUrl}>
-            <button className="hover:bg-foreground rounded-none bg-black px-8 py-4 text-sm font-semibold tracking-widest text-white uppercase transition-colors">
+            <button className="rounded-none bg-black px-8 py-4 font-semibold text-sm text-white uppercase tracking-widest transition-colors hover:bg-foreground">
               Explore More
             </button>
           </Link>

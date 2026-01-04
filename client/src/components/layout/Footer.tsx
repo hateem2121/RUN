@@ -45,7 +45,10 @@ const Footer: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; specs?: string }>({});
+  const [errors, setErrors] = useState<{
+    email?: string | undefined;
+    specs?: string;
+  }>({});
 
   // Refs
   const footerRef = useRef<HTMLDivElement>(null);
@@ -91,7 +94,7 @@ const Footer: React.FC = () => {
     const specsInput = form.elements.namedItem("specs") as HTMLTextAreaElement;
 
     // Validation Logic
-    const newErrors: { email?: string; specs?: string } = {};
+    const newErrors: { email?: string | undefined; specs?: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailInput || !emailRegex.test(emailInput.value)) {
@@ -235,7 +238,7 @@ const Footer: React.FC = () => {
                 disabled={isSubmitting || isSent}
                 className={footerInputVariants({ hasError: !!errors.email })}
                 placeholder="NAME@DOMAIN.COM"
-                onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
+                onChange={() => setErrors(({ email, ...prev }) => prev)}
               />
             </div>
             <div className="group">
@@ -261,7 +264,7 @@ const Footer: React.FC = () => {
                 disabled={isSubmitting || isSent}
                 className={cn(footerInputVariants({ hasError: !!errors.specs }), "resize-none")}
                 placeholder="FABRIC / QUANTITY / TIMELINE"
-                onChange={() => setErrors((prev) => ({ ...prev, specs: undefined }))}
+                onChange={() => setErrors(({ specs, ...prev }) => prev)}
               />
             </div>
 

@@ -21,7 +21,7 @@ export type CacheWarmupTask = {
    * and warmTask should skip its own set() call
    * @default false
    */
-  primedByLoader?: boolean;
+  primedByLoader?: boolean | undefined;
 };
 
 export const CacheWarmupRegistry = {
@@ -340,7 +340,7 @@ export const CacheWarmupRegistry = {
     loader: async () => {
       // Get featured product settings to identify which products to warm
       const featuredSettings = await storage.getHomepageFeaturedProductsSettings();
-      const featuredProductIds = featuredSettings?.featuredProductIds || [];
+      const _featuredProductIds = featuredSettings?.featuredProductIds || [];
 
       // Also get first page of active products to warm popular ones
       const productsResult = await storage.getProducts(10); // Top 10 products
@@ -351,7 +351,7 @@ export const CacheWarmupRegistry = {
 
       // Combine and deduplicate
       const allIds = [
-        ...(Array.isArray(featuredProductIds) ? featuredProductIds : []),
+        ...(Array.isArray(["featuredProductIds"]) ? ["featuredProductIds"] : []),
         ...(Array.isArray(popularProductIds) ? popularProductIds : []),
       ];
       const productIdsToWarm = Array.from(new Set(allIds.filter((id) => id != null)));

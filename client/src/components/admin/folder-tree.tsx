@@ -54,7 +54,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
 
   // Create folder mutation
   const createMutation = useMutation({
-    mutationFn: (data: { name: string; description?: string; parentId?: number }) =>
+    mutationFn: (data: { name: string; description?: string | undefined; parentId?: number }) =>
       apiRequest("/api/folders", { method: "POST", body: data }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
@@ -333,8 +333,8 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
               onClick={() => {
                 createMutation.mutate({
                   name: folderName,
-                  description: folderDescription || undefined,
-                  parentId: selectedFolder?.id,
+                  ...(folderDescription ? { description: folderDescription } : {}),
+                  ...(selectedFolder?.id ? { parentId: selectedFolder.id } : {}),
                 });
               }}
               disabled={!folderName.trim() || createMutation.isPending}
@@ -380,7 +380,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
                     id: selectedFolder.id,
                     data: {
                       name: folderName,
-                      description: folderDescription || undefined,
+                      ...(folderDescription ? { description: folderDescription } : {}),
                     },
                   });
                 }

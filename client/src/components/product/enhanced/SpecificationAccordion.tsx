@@ -18,13 +18,13 @@ interface SpecificationSection {
   title: string;
   icon: React.ReactNode;
   items: SpecificationItem[];
-  defaultExpanded?: boolean;
+  defaultExpanded?: boolean | undefined;
 }
 
 interface SpecificationAccordionProps {
   specifications: SpecificationSection[];
-  className?: string;
-  allowMultiple?: boolean;
+  className?: string | undefined;
+  allowMultiple?: boolean | undefined;
 }
 
 export function SpecificationAccordion({
@@ -33,11 +33,7 @@ export function SpecificationAccordion({
   allowMultiple = false,
 }: SpecificationAccordionProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(
-      specifications
-        .filter((spec) => spec.defaultExpanded)
-        .map((spec) => spec.id),
-    ),
+    new Set(specifications.filter((spec) => spec.defaultExpanded).map((spec) => spec.id)),
   );
   const [focusedSection, setFocusedSection] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,13 +65,10 @@ export function SpecificationAccordion({
         toggleSection(sectionId);
       } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
-        const currentIndex = specifications.findIndex(
-          (spec) => spec.id === sectionId,
-        );
+        const currentIndex = specifications.findIndex((spec) => spec.id === sectionId);
         const direction = e.key === "ArrowDown" ? 1 : -1;
         const nextIndex =
-          (currentIndex + direction + specifications.length) %
-          specifications.length;
+          (currentIndex + direction + specifications.length) % specifications.length;
         const nextSection = specifications[nextIndex];
 
         if (nextSection) {
@@ -107,7 +100,7 @@ export function SpecificationAccordion({
       role="region"
       aria-label="Product specifications"
     >
-      <h2 className="text-foreground dark:text-foreground mb-6 text-2xl font-bold">
+      <h2 className="mb-6 font-bold text-2xl text-foreground dark:text-foreground">
         Technical Specifications
       </h2>
 
@@ -118,7 +111,7 @@ export function SpecificationAccordion({
           <div
             key={section.id}
             className={cn(
-              "border-border dark:border-border dark:bg-muted/80 rounded-lg border bg-white",
+              "rounded-lg border border-border bg-white dark:border-border dark:bg-muted/80",
               "transition-all duration-200 ease-out",
               isExpanded ? "shadow-md" : "shadow-sm-xs hover:shadow-md",
             )}
@@ -129,7 +122,7 @@ export function SpecificationAccordion({
               type="button"
               className={cn(
                 "flex w-full items-center justify-between px-6 py-4 text-left",
-                "focus:ring-ring focus:ring-2 focus:outline-hidden focus:ring-inset",
+                "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-inset",
                 "transition-colors duration-200",
                 "hover:bg-background dark:hover:bg-muted",
               )}
@@ -141,17 +134,15 @@ export function SpecificationAccordion({
               onBlur={() => setFocusedSection(null)}
             >
               <div className="flex items-center space-x-3">
-                <div className="shrink-0 text-blue-600 dark:text-blue-400">
-                  {section.icon}
-                </div>
-                <span className="text-foreground dark:text-foreground font-semibold">
+                <div className="shrink-0 text-blue-600 dark:text-blue-400">{section.icon}</div>
+                <span className="font-semibold text-foreground dark:text-foreground">
                   {section.title}
                 </span>
               </div>
 
               <ChevronDown
                 className={cn(
-                  "text-muted-foreground dark:text-muted-foreground/70 h-5 w-5 transition-transform duration-200",
+                  "h-5 w-5 text-muted-foreground transition-transform duration-200 dark:text-muted-foreground/70",
                   isExpanded ? "rotate-180 transform" : "",
                 )}
                 aria-hidden="true"
@@ -167,17 +158,14 @@ export function SpecificationAccordion({
               )}
               aria-hidden={!isExpanded}
             >
-              <div className="border-border dark:border-border border-t px-6 pb-4">
+              <div className="border-border border-t px-6 pb-4 dark:border-border">
                 <div className="space-y-3 pt-4">
                   {section.items.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start justify-between py-2"
-                    >
-                      <span className="min-w-label text-muted-foreground dark:text-muted-foreground/70 text-sm font-medium">
+                    <div key={index} className="flex items-start justify-between py-2">
+                      <span className="min-w-label font-medium text-muted-foreground text-sm dark:text-muted-foreground/70">
                         {item.label}
                       </span>
-                      <span className="text-foreground dark:text-foreground ml-4 flex-1 text-right text-sm">
+                      <span className="ml-4 flex-1 text-right text-foreground text-sm dark:text-foreground">
                         {item.value}
                       </span>
                     </div>
@@ -226,10 +214,7 @@ export const createFabricSpecifications = (
   const items = [
     {
       label: "Material",
-      value:
-        fabricData?.name ||
-        technicalSpecs.material ||
-        "Advanced Moisture-Wicking Blend",
+      value: fabricData?.name || technicalSpecs.material || "Advanced Moisture-Wicking Blend",
     },
   ];
 
@@ -255,10 +240,7 @@ export const createFabricSpecifications = (
     {
       label: "Fit",
       value:
-        productData?.customFit ||
-        technicalSpecs.fit ||
-        technicalSpecs.fit_type ||
-        "Athletic Slim",
+        productData?.customFit || technicalSpecs.fit || technicalSpecs.fit_type || "Athletic Slim",
     },
     {
       label: "Construction",
@@ -278,9 +260,7 @@ export const createFabricSpecifications = (
   };
 };
 
-export const createTechnologySpecifications = (
-  productData?: any,
-): SpecificationSection => {
+export const createTechnologySpecifications = (productData?: any): SpecificationSection => {
   const technicalSpecs = productData?.technicalSpecs || {};
   const defaultItems = [
     { label: "Moisture Management", value: "3x faster drying technology" },
@@ -307,10 +287,7 @@ export const createTechnologySpecifications = (
       const dynamicItems = technologyKeys.map((key) => ({
         label: key
           .split(/[_-]/)
-          .map(
-            (word) =>
-              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-          )
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
           .join(" "),
         value: technicalSpecs[key],
       }));
@@ -320,9 +297,7 @@ export const createTechnologySpecifications = (
       defaultItems.forEach((defaultItem) => {
         if (
           !dynamicItems.some((item) =>
-            item.label
-              .toLowerCase()
-              .includes(defaultItem.label.toLowerCase().split(" ")[0]!),
+            item.label.toLowerCase().includes(defaultItem.label.toLowerCase().split(" ")[0]!),
           )
         ) {
           mergedItems.push(defaultItem);
@@ -346,9 +321,7 @@ export const createTechnologySpecifications = (
   };
 };
 
-export const createCustomizationSpecifications = (
-  productData?: any,
-): SpecificationSection => {
+export const createCustomizationSpecifications = (productData?: any): SpecificationSection => {
   const customizationOptions = productData?.customizationOptions || [];
 
   if (!customizationOptions || customizationOptions.length === 0) {
@@ -377,9 +350,7 @@ export const createCustomizationSpecifications = (
       id: "customization",
       title: "Customization Options",
       icon: <Settings className="h-5 w-5" />,
-      items: [
-        { label: "Available Options", value: customizationOptions.join(", ") },
-      ],
+      items: [{ label: "Available Options", value: customizationOptions.join(", ") }],
     };
   }
 
@@ -391,9 +362,7 @@ export const createCustomizationSpecifications = (
   };
 };
 
-export const createSustainabilitySpecifications = (
-  productData?: any,
-): SpecificationSection => {
+export const createSustainabilitySpecifications = (productData?: any): SpecificationSection => {
   const technicalSpecs = productData?.technicalSpecs || {};
   const certificates = productData?.certificates || [];
   const fabric = productData?.fabric;
@@ -415,9 +384,7 @@ export const createSustainabilitySpecifications = (
     items.push({
       label: key
         .split(/[_-]/)
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-        )
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(" "),
       value: technicalSpecs[key],
     });
@@ -457,9 +424,7 @@ export const createSustainabilitySpecifications = (
   };
 };
 
-export const createCareSpecifications = (
-  productData?: any,
-): SpecificationSection => {
+export const createCareSpecifications = (productData?: any): SpecificationSection => {
   const careInstructions = productData?.careInstructions || [];
   const technicalSpecs = productData?.technicalSpecs || {};
 
@@ -471,18 +436,15 @@ export const createCareSpecifications = (
     const careCategories = {
       washing: careInstructions.filter(
         (instruction: string) =>
-          instruction.toLowerCase().includes("wash") ||
-          instruction.toLowerCase().includes("clean"),
+          instruction.toLowerCase().includes("wash") || instruction.toLowerCase().includes("clean"),
       ),
       drying: careInstructions.filter(
         (instruction: string) =>
-          instruction.toLowerCase().includes("dry") ||
-          instruction.toLowerCase().includes("tumble"),
+          instruction.toLowerCase().includes("dry") || instruction.toLowerCase().includes("tumble"),
       ),
       ironing: careInstructions.filter(
         (instruction: string) =>
-          instruction.toLowerCase().includes("iron") ||
-          instruction.toLowerCase().includes("press"),
+          instruction.toLowerCase().includes("iron") || instruction.toLowerCase().includes("press"),
       ),
       bleaching: careInstructions.filter(
         (instruction: string) =>
@@ -554,9 +516,7 @@ export const createCareSpecifications = (
       .join(" ");
 
     if (
-      !items.some((item) =>
-        item.label.toLowerCase().includes(label.toLowerCase().split(" ")[0]!),
-      )
+      !items.some((item) => item.label.toLowerCase().includes(label.toLowerCase().split(" ")[0]!))
     ) {
       items.push({
         label,

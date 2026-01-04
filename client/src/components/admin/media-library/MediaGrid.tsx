@@ -67,8 +67,8 @@ interface MediaGridItemProps {
   onClick: (asset: MediaAsset, index: number) => void;
   formatFileSize: (bytes: number) => string;
   index: number;
-  selectionMode?: boolean; // SCROLL FIX: Add selectionMode prop to control pointer events
-  signedUrl?: string | null; // PERFORMANCE FIX: Direct signed URL from batch fetch
+  selectionMode?: boolean | undefined; // SCROLL FIX: Add selectionMode prop to control pointer events
+  signedUrl?: string | null | undefined; // PERFORMANCE FIX: Direct signed URL from batch fetch
 }
 
 const MediaGridItem = React.memo(
@@ -391,7 +391,11 @@ const MediaBulkOperations = React.memo(() => {
         },
         (oldData: unknown) => {
           const dataRecord = oldData as Record<string, unknown>;
-          if (!dataRecord?.data || !Array.isArray(dataRecord.data))
+          if (
+            !dataRecord ||
+            !dataRecord.data ||
+            !Array.isArray(dataRecord.data)
+          )
             return oldData;
 
           // Filter out deleted items
@@ -568,8 +572,8 @@ export default function MediaGrid({
   // isStandalone removed
   onAssetSelect,
 }: {
-  selectionMode?: boolean;
-  isStandalone?: boolean;
+  selectionMode?: boolean | undefined;
+  isStandalone?: boolean | undefined;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;
 } = {}) {
   const {
@@ -676,7 +680,7 @@ export default function MediaGrid({
     // CLIENT-SIDE FILTER (Phase 5): Safety net for stale cache
     select: (data) => {
       const dataRecord = data as Record<string, unknown>;
-      if (!dataRecord?.data || !Array.isArray(dataRecord.data)) {
+      if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) {
         return data;
       }
 
@@ -703,7 +707,7 @@ export default function MediaGrid({
     retry: (failureCount, error) => {
       // DIALOG FIX: Enhanced abort signal detection for all variations
       const err = error as Error & {
-        code?: string;
+        code?: string | undefined;
         response?: { headers?: Record<string, string> };
       };
       const isAbortError =
@@ -774,7 +778,12 @@ export default function MediaGrid({
       ? responseData.meta
       : response?.meta
   ) as
-    | { pages?: number; total?: number; page?: number; limit?: number }
+    | {
+        pages?: number | undefined;
+        total?: number | undefined;
+        page?: number | undefined;
+        limit?: number;
+      }
     | undefined;
   const paginationRaw = (
     responseData &&
@@ -783,7 +792,12 @@ export default function MediaGrid({
       ? responseData.pagination
       : response?.pagination
   ) as
-    | { totalPages?: number; total?: number; page?: number; limit?: number }
+    | {
+        totalPages?: number | undefined;
+        total?: number | undefined;
+        page?: number | undefined;
+        limit?: number;
+      }
     | undefined;
 
   // PAGINATION FIX: Calculate totalPages from total/limit if not provided

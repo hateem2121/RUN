@@ -4,7 +4,7 @@ import { ErrorBoundary } from "./ErrorBoundary";
 
 interface Props {
   children: ReactNode;
-  componentName?: string;
+  componentName?: string | undefined;
   fallback?: ReactNode;
 }
 

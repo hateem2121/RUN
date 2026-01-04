@@ -60,7 +60,7 @@ export async function getSystemPerformance(_req: Request, res: Response) {
  */
 export async function getEndpointPerformance(req: Request, res: Response) {
   try {
-    const { path } = req.query;
+    const { path } = req.query as any;
 
     if (path && typeof path !== "string") {
       return res.status(400).json(createErrorResponse("Invalid 'path' query parameter"));

@@ -28,12 +28,12 @@ export const FloatingDock = ({
     title: string;
     icon: React.ReactNode;
     href: string;
-    iconSize?: string;
+    iconSize?: string | undefined;
   }[];
-  desktopClassName?: string;
-  mobileClassName?: string;
+  desktopClassName?: string | undefined;
+  mobileClassName?: string | undefined;
   iconSize?: "small" | "medium" | "large";
-  disableMobile?: boolean;
+  disableMobile?: boolean | undefined;
 }) => {
   return (
     <>
@@ -55,9 +55,9 @@ const FloatingDockMobile = ({
     title: string;
     icon: React.ReactNode;
     href: string;
-    iconSize?: string;
+    iconSize?: string | undefined;
   }[];
-  className?: string;
+  className?: string | undefined;
   iconSize?: "small" | "medium" | "large";
 }) => {
   const [open, setOpen] = useState(false);
@@ -178,9 +178,9 @@ const FloatingDockDesktop = ({
     title: string;
     icon: React.ReactNode;
     href: string;
-    iconSize?: string;
+    iconSize?: string | undefined;
   }[];
-  className?: string;
+  className?: string | undefined;
   iconSize?: "small" | "medium" | "large";
 }) => {
   const mouseX = useMotionValue(Infinity);
@@ -221,7 +221,7 @@ function IconContainer({
   title: string;
   icon: React.ReactNode;
   href: string;
-  iconSize?: string;
+  iconSize?: string | undefined;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();

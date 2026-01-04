@@ -35,7 +35,7 @@ export interface MediaLibraryState {
   folderFilter: string;
   tagFilters: string[];
   dateRange: { from?: Date; to?: Date };
-  sizeRange: { min?: number; max?: number };
+  sizeRange: { min?: number | undefined; max?: number };
 
   // Modal State (3 properties)
   selectedAsset: MediaAsset | null;
@@ -50,7 +50,7 @@ export interface MediaLibraryState {
     {
       progress: number;
       status: UploadStatus;
-      error?: string;
+      error?: string | undefined;
     }
   >;
   isUploading: boolean;
@@ -83,7 +83,7 @@ type MediaLibraryAction =
   | { type: "SET_FOLDER_FILTER"; payload: string }
   | { type: "SET_TAG_FILTERS"; payload: string[] }
   | { type: "SET_DATE_RANGE"; payload: { from?: Date; to?: Date } }
-  | { type: "SET_SIZE_RANGE"; payload: { min?: number; max?: number } }
+  | { type: "SET_SIZE_RANGE"; payload: { min?: number | undefined; max?: number } }
 
   // Modal actions
   | { type: "SET_SELECTED_ASSET"; payload: MediaAsset | null }
@@ -382,7 +382,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
       } else if (key === "sizeRange") {
         dispatch({
           type: "SET_SIZE_RANGE",
-          payload: value as { min?: number; max?: number },
+          payload: value as { min?: number | undefined; max?: number },
         });
       }
     },
@@ -873,7 +873,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     }
 
     setIsInitialized(true);
-  }, [parseUrlParamsToUpdates, state]);
+  }, [parseUrlParamsToUpdates, state, searchParams]);
 
   // Sync state to URL
   useEffect(() => {

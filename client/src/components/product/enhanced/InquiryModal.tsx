@@ -15,7 +15,7 @@ interface InquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
   productName: string;
-  productId?: string;
+  productId?: string | undefined;
 }
 
 type FormState = "idle" | "submitting" | "success" | "error";

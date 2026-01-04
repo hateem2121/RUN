@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * PRODUCTS ROUTER MODULE
  * Extracted from routes.ts for better organization
@@ -40,10 +42,7 @@ registry.registerPath({
     { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
   ],
   responses: {
-    200: jsonResponse(
-      z.array(z.any()),
-      "List of products with pagination metadata",
-    ),
+    200: jsonResponse(z.array(z.any()), "List of products with pagination metadata"),
   },
 });
 
@@ -52,9 +51,7 @@ registry.registerPath({
   path: "/products/{id}",
   summary: "Get product by ID",
   tags: ["Products"],
-  parameters: [
-    { name: "id", in: "path", required: true, schema: { type: "integer" } },
-  ],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
   responses: {
     200: jsonResponse(z.any(), "The product object"),
     404: { description: "Product not found" },
@@ -68,18 +65,12 @@ router.get("/products", async (req, res) => {
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate",
-      );
+      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     } else {
-      res.set(
-        "Cache-Control",
-        "public, max-age=60, stale-while-revalidate=300",
-      );
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
 
-    const { category, active, featured, tag, search, page, limit } = req.query;
+    const { category, active, featured, tag, search, page, limit } = req.query as any;
 
     // Parse pagination parameters
     const pageNum = parseInt(page as string, 10) || 1;
@@ -96,23 +87,17 @@ router.get("/products", async (req, res) => {
         () => getStorage().searchProducts(search, pageSize, offset),
         { operationName: "Search products by query" },
       );
-      totalCount = await retryDbOperation(
-        () => getStorage().searchProductsCount(search),
-        {
-          operationName: "Count search results",
-        },
-      );
+      totalCount = await retryDbOperation(() => getStorage().searchProductsCount(search), {
+        operationName: "Count search results",
+      });
     } else if (tag && typeof tag === "string") {
       products = await retryDbOperation(
         () => getStorage().getProductsByTag(tag, pageSize, offset),
         { operationName: "Get products by tag" },
       );
-      totalCount = await retryDbOperation(
-        () => getStorage().getProductsByTagCount(tag),
-        {
-          operationName: "Count products by tag",
-        },
-      );
+      totalCount = await retryDbOperation(() => getStorage().getProductsByTagCount(tag), {
+        operationName: "Count products by tag",
+      });
     } else if (category && typeof category === "string") {
       const categoryId = parseInt(category, 10);
       products = await retryDbOperation(
@@ -124,12 +109,9 @@ router.get("/products", async (req, res) => {
         { operationName: "Count products by category" },
       );
     } else if (featured === "true") {
-      products = await retryDbOperation(
-        () => getStorage().getFeaturedProducts(),
-        {
-          operationName: "Get featured products",
-        },
-      );
+      products = await retryDbOperation(() => getStorage().getFeaturedProducts(), {
+        operationName: "Get featured products",
+      });
       totalCount = products.length;
       products = products.slice(offset, offset + pageSize);
     } else if (active === "true") {
@@ -183,7 +165,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/by-path", async (req, res) => {
   (req as any)._handled = true;
   try {
-    const { path } = req.query;
+    const { path } = req.query as any;
 
     if (!path || typeof path !== "string") {
       logger.warn(`[URL Validation] ❌ Missing or invalid path parameter`);
@@ -273,15 +255,9 @@ router.get("/products/:id", async (req, res) => {
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate",
-      );
+      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     } else {
-      res.set(
-        "Cache-Control",
-        "public, max-age=60, stale-while-revalidate=300",
-      );
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
 
     const id = validateIdParam(req, res, "id", "product");
@@ -331,7 +307,7 @@ router.post("/products", authService.requireAdmin, async (req, res) => {
 
     const validatedData = insertProductSchema.parse(req.body);
     const product = await withTimeout(
-      retryDbOperation(() => getStorage().createProduct(validatedData), {
+      retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
         operationName: "Create product",
       }),
       10000,
@@ -364,7 +340,7 @@ const updateProductHandler = async (req: Request, res: Response) => {
 
     const validatedData = insertProductSchema.partial().parse(req.body);
     const product = await withTimeout(
-      retryDbOperation(() => getStorage().updateProduct(id, validatedData), {
+      retryDbOperation(() => getStorage().updateProduct(id, removeUndefined(validatedData)), {
         operationName: "Update product",
       }),
       10000,

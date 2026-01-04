@@ -25,7 +25,7 @@ for (const [name, schema] of Object.entries(schemas)) {
   if (schema instanceof z.ZodType) {
     try {
       registry.register(name, schema);
-    } catch (e) {
+    } catch (_e) {
       // Ignore Zod extension errors to allow server to start
       // console.warn("Failed to register schema in OpenAPI:", name);
     }

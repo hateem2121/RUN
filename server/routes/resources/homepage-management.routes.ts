@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * HOMEPAGE MANAGEMENT ROUTES MODULE
  * Page-specific CRUD operations for Homepage content
@@ -126,9 +128,9 @@ router.patch(
     }
 
     logger.info("✅ Validation passed, updating hero in database...");
-    logger.info("📦 Validated data:", JSON.stringify(validation.data));
+    logger.info("📦 Validated data:", JSON.stringify(removeUndefined(validation.data)));
 
-    const hero = await getStorage().updateHomepageHero(validation.data);
+    const hero = await getStorage().updateHomepageHero(removeUndefined(validation.data));
 
     logger.info("✅ Hero updated in database successfully");
     logger.info("📦 Updated hero data:", JSON.stringify(hero));
@@ -206,7 +208,7 @@ router.post(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const slogan = await getStorage().createHomepageSlogan(validation.data);
+    const slogan = await getStorage().createHomepageSlogan(removeUndefined(validation.data));
     await invalidateHomepageCache();
     return res.status(201).json(slogan);
   }),
@@ -223,7 +225,7 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const slogan = await getStorage().updateHomepageSlogan(id, validation.data);
+    const slogan = await getStorage().updateHomepageSlogan(id, removeUndefined(validation.data));
     if (!slogan) {
       return res.status(404).json({ message: "Slogan not found" });
     }
@@ -323,7 +325,7 @@ router.post(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const card = await getStorage().createHomepageProcessCard(validation.data);
+    const card = await getStorage().createHomepageProcessCard(removeUndefined(validation.data));
     await invalidateHomepageCache();
     return res.status(201).json(card);
   }),
@@ -340,7 +342,7 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const card = await getStorage().updateHomepageProcessCard(id, validation.data);
+    const card = await getStorage().updateHomepageProcessCard(id, removeUndefined(validation.data));
     if (!card) {
       return res.status(404).json({ message: "Process card not found" });
     }
@@ -442,7 +444,10 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const section = await getStorage().updateHomepageSectionById(id, validation.data);
+    const section = await getStorage().updateHomepageSectionById(
+      id,
+      removeUndefined(validation.data),
+    );
     if (!section) {
       return res.status(404).json({ message: "Section not found" });
     }
@@ -497,7 +502,9 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const settings = await getStorage().updateHomepageFeaturedProductsSettings(validation.data);
+    const settings = await getStorage().updateHomepageFeaturedProductsSettings(
+      removeUndefined(validation.data),
+    );
     await invalidateHomepageCache();
     return res.json(settings);
   }),

@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ABOUT TEAM MESSAGE RESOURCE ROUTER
  *
@@ -54,7 +56,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      aboutService.updateTeamMessage(validation.data),
+      aboutService.updateTeamMessage(removeUndefined(validation.data)),
       10000,
       "Update team message",
     );

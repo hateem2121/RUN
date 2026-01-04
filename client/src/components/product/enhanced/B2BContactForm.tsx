@@ -44,9 +44,9 @@ const b2bContactSchema = z.object({
 type B2BContactFormData = z.infer<typeof b2bContactSchema>;
 
 interface B2BContactFormProps {
-  productName?: string;
-  productId?: string;
-  className?: string;
+  productName?: string | undefined;
+  productId?: string | undefined;
+  className?: string | undefined;
   onSubmit?: (data: B2BContactFormData) => Promise<void>;
   prefilledType?: "samples" | "wholesale" | "customization";
 }
@@ -108,7 +108,7 @@ export function B2BContactForm({
       contactName: "",
       email: "",
       phone: "",
-      inquiryType: prefilledType || undefined,
+      inquiryType: (prefilledType || undefined) as any,
       message:
         prefilledType === "samples" && productName
           ? `I would like to request samples of the ${productName} for evaluation.`

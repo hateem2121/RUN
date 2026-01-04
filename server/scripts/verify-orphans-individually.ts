@@ -5,7 +5,7 @@ interface OrphanFile {
   path: string;
   status: string;
   reason: string;
-  size?: number;
+  size?: number | undefined;
 }
 
 interface VerificationResult {

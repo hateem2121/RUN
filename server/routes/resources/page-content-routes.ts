@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * PHASE 3.2: PAGE CONTENT ROUTES EXTRACTION
  *
@@ -141,7 +143,7 @@ router.patch("/sustainability-hero", authService.requireAdmin, async (req, res) 
       return res.status(400).json({ error: validation.error.message });
     }
     const hero = await withTimeout(
-      getStorage().updateSustainabilityHero(validation.data),
+      getStorage().updateSustainabilityHero(removeUndefined(validation.data)),
       10000,
       "Update sustainability hero",
     );
@@ -265,7 +267,7 @@ router.patch("/technology-hero", authService.requireAdmin, async (req, res) => {
       return res.status(400).json({ error: validation.error.message });
     }
     const hero = await withTimeout(
-      getStorage().updateTechnologyHero(validation.data),
+      getStorage().updateTechnologyHero(removeUndefined(validation.data)),
       10000,
       "Update technology hero",
     );

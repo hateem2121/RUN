@@ -11,12 +11,12 @@ import { cn } from "@/lib/utils";
 
 interface SizeData {
   size: string;
-  chest?: string;
-  length?: string;
-  shoulder?: string;
-  waist?: string;
-  hip?: string;
-  inseam?: string;
+  chest?: string | undefined;
+  length?: string | undefined;
+  shoulder?: string | undefined;
+  waist?: string | undefined;
+  hip?: string | undefined;
+  inseam?: string | undefined;
 }
 
 interface SizeChart {
@@ -24,7 +24,7 @@ interface SizeChart {
   name: string;
   unit: "inches" | "cm";
   sizes: SizeData[];
-  description?: string;
+  description?: string | undefined;
 }
 
 interface SizeGuideModalProps {
@@ -33,7 +33,7 @@ interface SizeGuideModalProps {
   productName: string;
   sizeCharts: SizeChart[];
   recommendations?: string[];
-  className?: string;
+  className?: string | undefined;
 }
 
 export function SizeGuideModal({

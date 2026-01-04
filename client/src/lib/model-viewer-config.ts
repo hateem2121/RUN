@@ -61,8 +61,8 @@ export const DEFAULT_MODEL_VIEWER_CONFIG: ModelViewerConfig = {
   loading: "lazy", // PHASE 1: Lazy loading with IntersectionObserver - only loads when visible in viewport
 
   // Enhanced compatibility for ImageBitmapLoader embedded texture support
-  environmentImage: undefined, // Avoid external dependencies that could interfere with data URIs
-  skyboxImage: undefined, // Avoid external dependencies that could interfere with data URIs
+  // Avoid external dependencies that could interfere with data URIs
+  // Avoid external dependencies that could interfere with data URIs
   autoPlay: false, // Reduce initial load complexity to help embedded textures load first
 
   // Additional settings for blob URL and data URI compatibility

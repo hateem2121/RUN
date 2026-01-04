@@ -23,13 +23,7 @@
   },
   "include": ["src/**/*", "app/**/*", "../utils/**/*", "vite.config.ts"],
 
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "../server/**/*"
-  ],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts", "../server/**/*"],
   "references": [
     {
       "path": "../shared"

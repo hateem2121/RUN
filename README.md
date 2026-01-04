@@ -205,10 +205,6 @@ npm run db:push          # Push schema to database
 npm run test             # Unit tests (vitest)
 npm run test:integration # Integration tests
 npm run test:e2e         # Playwright E2E (regression)
-npm run test:a11y        # Accessibility tests
-npm run test:lighthouse  # Lighthouse CI
-npm run test:e2e:prod    # E2E against production
-npm run test:performance # Performance benchmarks
 ```
 
 ### Verification
@@ -290,7 +286,7 @@ const buttonVariants = cva("base", { variants: {...} });
 <p className="text-gray-500">Don't do this</p>
 ```
 
-See `DOCS-CSS-ARCHITECTURE.md` and `client/src/design-system.md` for details.
+See `docs/CSS_ARCHITECTURE.md` and `client/src/design-system.md` for details.
 
 ---
 
@@ -543,7 +539,7 @@ This runs:
 | `README.md`                   | This file                |
 | `CONTRIBUTING.md`             | Contribution guidelines  |
 | `CHANGELOG.md`                | Version history          |
-| `DOCS-CSS-ARCHITECTURE.md`    | CSS architecture (10/10) |
+| `docs/CSS_ARCHITECTURE.md`    | CSS architecture (10/10) |
 | `client/src/design-system.md` | Design token reference   |
 | `docs/STYLING_GUIDE.md`       | Styling best practices   |
 | `docs/api/endpoints.md`       | API documentation        |

@@ -21,9 +21,7 @@ export default function handleRequest(
     // Ensure requests from bots and SPA-less browsers wait for all content to load
     // before communicating the response.
     const readyOption =
-      (userAgent && isbot(userAgent)) || routerContext.isSpaMode
-        ? "onAllReady"
-        : "onShellReady";
+      (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? "onAllReady" : "onShellReady";
 
     const { pipe, abort } = renderToPipeableStream(
       <ServerRouter context={routerContext} url={request.url} />,

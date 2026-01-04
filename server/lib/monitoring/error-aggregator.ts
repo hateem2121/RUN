@@ -17,9 +17,9 @@ interface ErrorEntry {
   timestamp: string;
   path: string;
   method: string;
-  ip?: string;
-  userAgent?: string;
-  stack?: string;
+  ip?: string | undefined;
+  userAgent?: string | undefined;
+  stack?: string | undefined;
 }
 
 interface ErrorMetrics {
@@ -143,10 +143,10 @@ class ErrorAggregator {
    * Get errors filtered by criteria
    */
   getErrorsFiltered(filters: {
-    type?: string;
-    severity?: string;
+    type?: string | undefined;
+    severity?: string | undefined;
     since?: Date;
-    limit?: number;
+    limit?: number | undefined;
   }): ErrorEntry[] {
     let filtered = [...this.errors];
 

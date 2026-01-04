@@ -5,7 +5,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
-  showTechnicalDetails?: boolean;
+  showTechnicalDetails?: boolean | undefined;
   onRetry?: () => void;
 }
 
@@ -119,7 +119,7 @@ export function SimpleErrorBoundary({
   message = "Something went wrong",
 }: {
   children: ReactNode;
-  message?: string;
+  message?: string | undefined;
 }) {
   return (
     <EnhancedBentoCardErrorBoundary

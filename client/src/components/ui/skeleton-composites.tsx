@@ -17,11 +17,11 @@ import { cn } from "@/lib/utils";
  */
 
 interface SkeletonCardProps {
-  className?: string;
+  className?: string | undefined;
   /** Show image area at top */
-  showImage?: boolean;
+  showImage?: boolean | undefined;
   /** Number of text lines to show */
-  lines?: number;
+  lines?: number | undefined;
 }
 
 /** Card skeleton for product cards, feature cards */
@@ -38,11 +38,11 @@ export function SkeletonCard({ className, showImage = true, lines = 2 }: Skeleto
 }
 
 interface SkeletonTextProps {
-  className?: string;
+  className?: string | undefined;
   /** Number of lines */
-  lines?: number;
+  lines?: number | undefined;
   /** Line height class */
-  lineHeight?: string;
+  lineHeight?: string | undefined;
 }
 
 /** Text skeleton for paragraphs, descriptions */
@@ -60,11 +60,11 @@ export function SkeletonText({ className, lines = 3, lineHeight = "h-4" }: Skele
 }
 
 interface SkeletonMediaProps {
-  className?: string;
+  className?: string | undefined;
   /** Aspect ratio (CSS aspect-ratio value) */
-  aspectRatio?: string;
+  aspectRatio?: string | undefined;
   /** Show loading spinner overlay */
-  showSpinner?: boolean;
+  showSpinner?: boolean | undefined;
   /** Media type for icon */
   type?: "image" | "video" | "model";
 }
@@ -127,9 +127,9 @@ export function SkeletonMedia({
 }
 
 interface SkeletonMetricProps {
-  className?: string;
+  className?: string | undefined;
   /** Show trend/change indicator */
-  showTrend?: boolean;
+  showTrend?: boolean | undefined;
 }
 
 /** Metric skeleton for dashboard stats, KPI cards */
@@ -150,8 +150,8 @@ export function SkeletonMetric({ className, showTrend = true }: SkeletonMetricPr
 
 interface SkeletonTableRowProps {
   /** Number of columns */
-  columns?: number;
-  className?: string;
+  columns?: number | undefined;
+  className?: string | undefined;
 }
 
 /** Table row skeleton */
@@ -170,9 +170,9 @@ export function SkeletonTableRow({ columns = 4, className }: SkeletonTableRowPro
 interface SkeletonAvatarProps {
   /** Size variant */
   size?: "sm" | "md" | "lg";
-  className?: string;
+  className?: string | undefined;
   /** Show name next to avatar */
-  showName?: boolean;
+  showName?: boolean | undefined;
 }
 
 /** Avatar skeleton for user profiles */
@@ -198,12 +198,12 @@ export function SkeletonAvatar({ size = "md", className, showName = false }: Ske
 
 interface SkeletonGridProps {
   /** Number of items in grid */
-  count?: number;
+  count?: number | undefined;
   /** Grid columns configuration */
   columns?: 1 | 2 | 3 | 4;
   /** Skeleton type for each item */
   type?: "card" | "media" | "metric";
-  className?: string;
+  className?: string | undefined;
 }
 
 /** Grid of skeleton items */

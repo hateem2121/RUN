@@ -1,0 +1,222 @@
+
+> run-remix-monorepo@1.0.0 test
+> vitest run tests/api.test.ts
+
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90m/Users/hateemjamshaid/Downloads/RUN-Remix[39m
+
+[90mstdout[2m | tests/api.test.ts
+[22m[39m!!! MOCK storage-singleton FACTORY RUNNING !!!
+
+{"level":30,"time":1767372183433,"service":"run-apparel-api","effectiveOrigins":["*"],"msg":"[CORS] Middleware initialized for development"}
+{"level":30,"time":1767372183469,"service":"run-apparel-api","msg":"[RateLimiter] Production-grade rate limiters initialized"}
+{"level":30,"time":1767372183469,"service":"run-apparel-api","msg":"[RateLimiter] General: 100 req/900000ms"}
+{"level":30,"time":1767372183469,"service":"run-apparel-api","msg":"[RateLimiter] Admin: 30 req/900000ms"}
+{"level":30,"time":1767372183469,"service":"run-apparel-api","msg":"[RateLimiter] Diagnostic: 10 req/60000ms"}
+{"level":30,"time":1767372183481,"service":"run-apparel-api","msg":"[AuthService] ✅ Authentication configured"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Importing ./core/categories.js...
+[Routes] Importing ./core/products.js...
+[Routes] Importing ./core/fabrics.js...
+[Routes] Importing ./core/accessories.js...
+[Routes] Importing ./core/certificates.js...
+[Routes] Importing ./core/materials.js...
+[Routes] Importing ./core/size-charts.js...
+[Routes] Importing ./feature-flags.js...
+[Routes] Importing ./inquiries.js...
+[Routes] Importing ./media/folder-management.routes.js...
+[Routes] Importing ./media/index.js...
+[Routes] Importing ./resources/content-management-routes.js...
+[Routes] Importing ./resources/index.js...
+[Routes] Importing ./resources/page-content-routes.js...
+[Routes] Importing ./auth.js...
+[Routes] Importing ./admin/admin.js...
+[Routes] Importing ./worker.js...
+[Routes] Importing ./utilities/inquiry-admin.js...
+[Routes] Importing ./utilities/footer-config.js...
+[Routes] Importing ./utilities/api-based-population.js...
+[Routes] Importing ./utilities/data-creation.js...
+[Routes] Importing ./utilities/direct-postgres-population.js...
+[Routes] Importing ./utilities/kv-diagnostics.js...
+[Routes] Importing ./utilities/metrics.js...
+[Routes] Importing ./utilities/migration-execution.js...
+[Routes] Importing ./docs.js...
+
+{"level":30,"time":1767372183481,"service":"run-apparel-api","msg":"[Auth] ✅ AuthService initialized (OIDC + PostgreSQL sessions)"}
+{"level":30,"time":1767372183481,"service":"run-apparel-api","msg":"[Routes] Mounting API routes with flat structure (/api/*)"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./auth.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./feature-flags.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/api-based-population.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/kv-diagnostics.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./inquiries.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/data-creation.js
+
+{"level":40,"time":1767372183594,"service":"run-apparel-api","msg":"UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting will fall back to in-memory storage."}
+[90mstderr[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+[Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./admin/admin.js
+
+{"level":30,"time":1767372183596,"service":"run-apparel-api","msg":"[Cache] ⚠️ Unified In-Memory Cache initialized (L2 Redis disabled)"}
+{"level":40,"time":1767372183610,"service":"run-apparel-api","msg":"[Email] Gmail credentials not configured - email notifications disabled"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/inquiry-admin.js
+[Routes] Imported ./worker.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./docs.js
+
+{"level":30,"time":1767372183876,"service":"run-apparel-api","msg":"[Database] ✅ DATABASE_URL validation passed"}
+[90mstderr[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m          
+        ************************************************************
+        *                                                          *
+        *  WARNING: Running SQL directly from the browser can have *
+        *  security implications. Even if your database is         *
+        *  protected by Row-Level Security (RLS), use it at your   *
+        *  own risk. This approach is great for fast prototyping,  *
+        *  but ensure proper safeguards are in place to prevent    *
+        *  misuse or execution of expensive SQL queries by your    *
+        *  end users.                                              *
+        *                                                          *
+        *  If you've assessed the risks, suppress this message     *
+        *  using the disableWarningInBrowsers configuration        *
+        *  parameter.                                              *
+        *                                                          *
+        ************************************************************
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/direct-postgres-population.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/size-charts.js
+[Routes] Imported ./media/folder-management.routes.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/fabrics.js
+[Routes] Imported ./core/materials.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/products.js
+
+{"level":30,"time":1767372183906,"service":"run-apparel-api","msg":"[DB Retry] Database retry logic initialized (maxRetries=3, backoffMs=50, exponential)"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/migration-execution.js
+
+{"level":30,"time":1767372183912,"service":"run-apparel-api","msg":"[TwoTierBatchCache] 🚀 Initialized: Delegating to UnifiedCache with SWR support"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/footer-config.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/certificates.js
+[Routes] Imported ./resources/content-management-routes.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/categories.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./resources/page-content-routes.js
+
+{"level":30,"time":1767372183926,"service":"run-apparel-api","msg":"DatabaseCircuitBreaker initialized with retry logic (max 3 attempts) and circuit breaker"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./core/accessories.js
+
+{"level":40,"time":1767372183950,"service":"run-apparel-api","msg":"[AlertManager] GC monitoring enabled but --expose-gc flag not set. GC pause tracking unavailable."}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./utilities/metrics.js
+
+{"level":30,"time":1767372183951,"service":"run-apparel-api","slowQuery":{"durationMs":500,"consecutiveCount":3},"errorRate":{"percentageThreshold":5,"timeWindowMinutes":5},"httpErrorRate":{"percentageThreshold":5},"circuitBreaker":{"alertOnOpen":true,"alertOnHalfOpen":false},"memory":{"percentageThreshold":80},"dbConnection":{"alertOnError":true,"alertOnTimeout":true},"gcPause":{"enabled":true,"thresholdMs":100},"msg":"[AlertManager] Initialized with thresholds:"}
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./media/index.js
+
+[90mstdout[2m | tests/api.test.ts[2m > [22m[2mFORENSIC API TESTS - Critical Endpoint Validation
+[22m[39m[Routes] Imported ./resources/index.js
+
+{"level":30,"time":1767372184230,"service":"run-apparel-api","msg":"[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time"}
+{"level":30,"time":1767372184230,"service":"run-apparel-api","msg":"[Routes] ✅ All routes registered successfully (Centralized Auth)"}
+{"level":30,"time":1767372184242,"service":"run-apparel-api","correlationId":"eda61ab1-27c6-4291-8c87-7d7e972816b5","msg":"[Router Debug] API Router hit: GET /homepage-hero"}
+{"level":30,"time":1767372184246,"service":"run-apparel-api","correlationId":"eda61ab1-27c6-4291-8c87-7d7e972816b5","msg":"[404 err_18953538467516] GET /api/homepage-hero"}
+{"level":30,"time":1767372184257,"service":"run-apparel-api","correlationId":"eda61ab1-27c6-4291-8c87-7d7e972816b5","msg":"[ProductionErrorHandler] Caught error err_18953538479066 for GET /api/homepage-hero. Headers sent: true. handled: true"}
+{"level":30,"time":1767372184260,"service":"run-apparel-api","correlationId":"a9643bd8-296e-45a3-89dd-fbd644f01c85","msg":"[Router Debug] API Router hit: GET /homepage-sections"}
+{"level":30,"time":1767372184266,"service":"run-apparel-api","correlationId":"a9643bd8-296e-45a3-89dd-fbd644f01c85","msg":"[404 err_18953538430280] GET /api/homepage-sections"}
+{"level":30,"time":1767372184271,"service":"run-apparel-api","correlationId":"a9643bd8-296e-45a3-89dd-fbd644f01c85","msg":"[ProductionErrorHandler] Caught error err_18953538452538 for GET /api/homepage-sections. Headers sent: true. handled: true"}
+{"level":30,"time":1767372184273,"service":"run-apparel-api","correlationId":"dd0b3a87-5fdb-43a8-8bc9-c4e81bd45091","msg":"[Router Debug] API Router hit: GET /categories"}
+{"level":30,"time":1767372184274,"service":"run-apparel-api","correlationId":"dd0b3a87-5fdb-43a8-8bc9-c4e81bd45091","msg":"[404 err_18953538455959] GET /api/categories"}
+{"level":30,"time":1767372184282,"service":"run-apparel-api","correlationId":"affc17b8-bf34-424b-8b5d-d73f394f22c9","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184283,"service":"run-apparel-api","correlationId":"affc17b8-bf34-424b-8b5d-d73f394f22c9","msg":"[404 err_18953538420337] POST /api/categories"}
+{"level":30,"time":1767372184286,"service":"run-apparel-api","correlationId":"180a658d-d74b-4525-97c2-0b86ae21f417","msg":"[Router Debug] API Router hit: GET /categories"}
+{"level":30,"time":1767372184286,"service":"run-apparel-api","correlationId":"180a658d-d74b-4525-97c2-0b86ae21f417","msg":"[404 err_18953538430203] GET /api/categories"}
+{"level":30,"time":1767372184291,"service":"run-apparel-api","correlationId":"65189e6f-99f7-453c-82e5-29a7d2937a39","msg":"[Router Debug] API Router hit: PATCH /categories/reorder"}
+{"level":30,"time":1767372184291,"service":"run-apparel-api","correlationId":"65189e6f-99f7-453c-82e5-29a7d2937a39","msg":"[404 err_18953538468045] PATCH /api/categories/reorder"}
+{"level":30,"time":1767372184293,"service":"run-apparel-api","correlationId":"4f4c1977-dc3e-48ae-a84d-93eeda9e8b28","msg":"[Router Debug] API Router hit: GET /products?page=1&limit=5"}
+{"level":30,"time":1767372184294,"service":"run-apparel-api","correlationId":"4f4c1977-dc3e-48ae-a84d-93eeda9e8b28","msg":"[404 err_18953538480878] GET /api/products"}
+{"level":30,"time":1767372184296,"service":"run-apparel-api","correlationId":"4f1e6e8d-e402-4783-b0ae-83760a2b818a","msg":"[Router Debug] API Router hit: GET /products/by-path?path=casual-wear/t-shirts/premium-cotton-tee"}
+{"level":30,"time":1767372184296,"service":"run-apparel-api","correlationId":"4f1e6e8d-e402-4783-b0ae-83760a2b818a","msg":"[URL Validation] 🔍 Requested path: \"casual-wear/t-shirts/premium-cotton-tee\""}
+{"level":30,"time":1767372184297,"service":"run-apparel-api","correlationId":"4f1e6e8d-e402-4783-b0ae-83760a2b818a","msg":"[404 err_18953538403491] GET /api/products/by-path"}
+{"level":30,"time":1767372184297,"service":"run-apparel-api","correlationId":"4f1e6e8d-e402-4783-b0ae-83760a2b818a","msg":"[URL Validation] ✅ Product found for path \"casual-wear/t-shirts/premium-cotton-tee\" → Test Product (ID: 1)"}
+{"level":30,"time":1767372184300,"service":"run-apparel-api","correlationId":"e5114085-989a-409b-b855-6d97b565fdd1","msg":"[Router Debug] API Router hit: POST /products"}
+{"level":30,"time":1767372184301,"service":"run-apparel-api","correlationId":"e5114085-989a-409b-b855-6d97b565fdd1","msg":"[404 err_18953538481050] POST /api/products"}
+{"level":30,"time":1767372184306,"service":"run-apparel-api","correlationId":"c93d38ef-25c2-446a-9ce6-ae44b5031884","msg":"[Router Debug] API Router hit: GET /media?page=1&limit=10"}
+{"level":30,"time":1767372184307,"service":"run-apparel-api","correlationId":"c93d38ef-25c2-446a-9ce6-ae44b5031884","msg":"[Media Router Debug] Hit: GET /?page=1&limit=10"}
+{"level":30,"time":1767372184307,"service":"run-apparel-api","correlationId":"c93d38ef-25c2-446a-9ce6-ae44b5031884","msg":"[404 err_18953538486603] GET /api/"}
+{"level":30,"time":1767372184312,"service":"run-apparel-api","correlationId":"fa5ae840-61e6-4508-a64b-eb1fa3017c4e","msg":"[Router Debug] API Router hit: POST /media/batch"}
+{"level":30,"time":1767372184312,"service":"run-apparel-api","correlationId":"fa5ae840-61e6-4508-a64b-eb1fa3017c4e","msg":"[Media Router Debug] Hit: POST /batch"}
+{"level":30,"time":1767372184313,"service":"run-apparel-api","correlationId":"fa5ae840-61e6-4508-a64b-eb1fa3017c4e","msg":"[404 err_18953538430894] POST /api/batch"}
+{"level":30,"time":1767372184315,"service":"run-apparel-api","correlationId":"18c94eda-c3c2-4008-82a1-f06fcdf86174","msg":"[Router Debug] API Router hit: GET /media/proxy/1"}
+{"level":30,"time":1767372184315,"service":"run-apparel-api","correlationId":"18c94eda-c3c2-4008-82a1-f06fcdf86174","msg":"[Media Router Debug] Hit: GET /proxy/1"}
+{"level":30,"time":1767372184315,"service":"run-apparel-api","correlationId":"18c94eda-c3c2-4008-82a1-f06fcdf86174","msg":"[404 err_18953538411250] GET /api/proxy/1"}
+{"level":30,"time":1767372184317,"service":"run-apparel-api","correlationId":"ef982cb6-893a-4a75-907d-d42c7b1a02d1","msg":"[Router Debug] API Router hit: POST /products/batch"}
+{"level":30,"time":1767372184319,"service":"run-apparel-api","correlationId":"ef982cb6-893a-4a75-907d-d42c7b1a02d1","msg":"[404 err_18953538486429] POST /api/products/batch"}
+{"level":30,"time":1767372184320,"service":"run-apparel-api","correlationId":"7f47f8e3-e939-4a68-bd19-5d2658361b16","msg":"[Router Debug] API Router hit: POST /categories/batch"}
+{"level":30,"time":1767372184321,"service":"run-apparel-api","correlationId":"7f47f8e3-e939-4a68-bd19-5d2658361b16","msg":"[404 err_18953538439246] POST /api/categories/batch"}
+{"level":30,"time":1767372184322,"service":"run-apparel-api","correlationId":"a25512a6-b6d7-4b1a-9c75-3617132835bb","msg":"[Router Debug] API Router hit: GET /metrics/performance"}
+{"level":30,"time":1767372184322,"service":"run-apparel-api","correlationId":"a25512a6-b6d7-4b1a-9c75-3617132835bb","msg":"[404 err_18953538417383] GET /api/metrics/performance"}
+{"level":30,"time":1767372184323,"service":"run-apparel-api","correlationId":"0a9ad5e0-24a9-48c6-9212-33ee4b16fcfb","msg":"[Router Debug] API Router hit: GET /categories"}
+{"level":30,"time":1767372184323,"service":"run-apparel-api","correlationId":"0a9ad5e0-24a9-48c6-9212-33ee4b16fcfb","msg":"[404 err_18953538450360] GET /api/categories"}
+{"level":30,"time":1767372184326,"service":"run-apparel-api","correlationId":"8fbf1d2a-7f0f-464b-bba3-01eb78b6f688","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184326,"service":"run-apparel-api","correlationId":"8fbf1d2a-7f0f-464b-bba3-01eb78b6f688","msg":"[404 err_18953538483574] POST /api/categories"}
+{"level":30,"time":1767372184327,"service":"run-apparel-api","correlationId":"3bc7b320-4a38-49e3-9102-830acdbcbc4c","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184327,"service":"run-apparel-api","correlationId":"3bc7b320-4a38-49e3-9102-830acdbcbc4c","msg":"[404 err_18953538432524] POST /api/categories"}
+{"level":30,"time":1767372184328,"service":"run-apparel-api","correlationId":"3fc36f24-550f-4121-a742-61f2935ac77f","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184328,"service":"run-apparel-api","correlationId":"3fc36f24-550f-4121-a742-61f2935ac77f","msg":"[404 err_18953538420682] POST /api/categories"}
+{"level":30,"time":1767372184328,"service":"run-apparel-api","correlationId":"0728ab51-6a59-4901-b178-729dda7ebb1a","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184329,"service":"run-apparel-api","correlationId":"0728ab51-6a59-4901-b178-729dda7ebb1a","msg":"[404 err_18953538495910] POST /api/categories"}
+{"level":30,"time":1767372184329,"service":"run-apparel-api","correlationId":"629a8bc9-9624-42ca-a129-c458fc22d40c","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184329,"service":"run-apparel-api","correlationId":"629a8bc9-9624-42ca-a129-c458fc22d40c","msg":"[404 err_18953538496688] POST /api/categories"}
+{"level":30,"time":1767372184332,"service":"run-apparel-api","correlationId":"3ac733dd-2f9b-475e-a32b-04ca02840b46","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184332,"service":"run-apparel-api","correlationId":"3ac733dd-2f9b-475e-a32b-04ca02840b46","msg":"[404 err_18953538421161] POST /api/categories"}
+{"level":30,"time":1767372184334,"service":"run-apparel-api","correlationId":"e7b9712c-e33c-4d23-ba3e-af1e517a05e5","msg":"[Router Debug] API Router hit: GET /products/99999"}
+{"level":30,"time":1767372184334,"service":"run-apparel-api","correlationId":"e7b9712c-e33c-4d23-ba3e-af1e517a05e5","msg":"[404 err_18953538411213] GET /api/products/99999"}
+{"level":30,"time":1767372184336,"service":"run-apparel-api","correlationId":"167ca07c-27eb-499c-af56-cd3e2ec3958c","msg":"[Router Debug] API Router hit: POST /categories"}
+{"level":30,"time":1767372184336,"service":"run-apparel-api","correlationId":"167ca07c-27eb-499c-af56-cd3e2ec3958c","msg":"[404 err_18953538491412] POST /api/categories"}
+{"level":30,"time":1767372184337,"service":"run-apparel-api","correlationId":"7a6063ad-956a-46dc-be65-775596585f92","msg":"[Router Debug] API Router hit: GET /homepage-hero"}
+{"level":30,"time":1767372184337,"service":"run-apparel-api","correlationId":"7a6063ad-956a-46dc-be65-775596585f92","msg":"[404 err_18953538467012] GET /api/homepage-hero"}
+{"level":30,"time":1767372184338,"service":"run-apparel-api","correlationId":"7a6063ad-956a-46dc-be65-775596585f92","msg":"[ProductionErrorHandler] Caught error err_18953538452259 for GET /api/homepage-hero. Headers sent: true. handled: true"}
+{"level":30,"time":1767372184338,"service":"run-apparel-api","correlationId":"2b734427-6884-4e20-8c29-08f50c61bc97","msg":"[Router Debug] API Router hit: GET /homepage-sections"}
+{"level":30,"time":1767372184339,"service":"run-apparel-api","correlationId":"2b734427-6884-4e20-8c29-08f50c61bc97","msg":"[404 err_18953538417089] GET /api/homepage-sections"}
+{"level":30,"time":1767372184339,"service":"run-apparel-api","correlationId":"2b734427-6884-4e20-8c29-08f50c61bc97","msg":"[ProductionErrorHandler] Caught error err_18953538429506 for GET /api/homepage-sections. Headers sent: true. handled: true"}
+{"level":30,"time":1767372184340,"service":"run-apparel-api","correlationId":"af9cf4fc-8d86-44d5-8743-4467185f3a57","msg":"[Router Debug] API Router hit: GET /products"}
+{"level":30,"time":1767372184340,"service":"run-apparel-api","correlationId":"af9cf4fc-8d86-44d5-8743-4467185f3a57","msg":"[404 err_18953538468908] GET /api/products"}
+{"level":30,"time":1767372184341,"service":"run-apparel-api","correlationId":"e9e642ef-11c2-4500-aaef-a0780cc33e06","msg":"[Router Debug] API Router hit: GET /categories"}
+{"level":30,"time":1767372184341,"service":"run-apparel-api","correlationId":"e9e642ef-11c2-4500-aaef-a0780cc33e06","msg":"[404 err_18953538438965] GET /api/categories"}
+ [32m✓[39m tests/api.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 910[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+[2m   Start at [22m 21:43:02
+[2m   Duration [22m 1.89s[2m (transform 2.16s, setup 74ms, import 513ms, tests 910ms, environment 254ms)[22m
+
+{"level":30,"time":1767372184347,"service":"run-apparel-api","msg":"[RateLimiter] Shutting down rate limiters..."}

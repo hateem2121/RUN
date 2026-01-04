@@ -26,16 +26,16 @@ interface ResearchProject {
 interface TechnologyResearch {
   id: number;
   title: string;
-  description?: string;
+  description?: string | undefined;
   currentProjects?: ResearchProject[];
   publications?: string[];
   partners?: string[];
   outcomes?: string[];
-  icon?: string;
+  icon?: string | undefined;
   imageId?: number | null;
   videoId?: number | null;
-  isActive?: boolean;
-  position?: number;
+  isActive?: boolean | undefined;
+  position?: number | undefined;
 }
 
 interface SortableResearchItemProps {

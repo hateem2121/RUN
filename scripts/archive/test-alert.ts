@@ -20,7 +20,7 @@ async function run() {
       timestamp: new Date().toISOString(),
       details: {
         info: "If you see this, the notification pipeline is working!",
-        environment: process.env.NODE_ENV || "development",
+        environment: process.env['NODE_ENV'] || "development",
         timestamp: Date.now(),
       },
     });

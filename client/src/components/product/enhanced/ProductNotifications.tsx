@@ -11,10 +11,10 @@ import { cn } from "@/lib/utils";
 interface Notification {
   id: string;
   type: "success" | "error" | "info" | "warning";
-  title?: string;
+  title?: string | undefined;
   message: string;
-  duration?: number;
-  persistent?: boolean;
+  duration?: number | undefined;
+  persistent?: boolean | undefined;
   action?: {
     label: string;
     onClick: () => void;
@@ -40,8 +40,8 @@ export function useNotifications() {
 
 interface NotificationProviderProps {
   children: React.ReactNode;
-  maxNotifications?: number;
-  defaultDuration?: number;
+  maxNotifications?: number | undefined;
+  defaultDuration?: number | undefined;
 }
 
 export function NotificationProvider({
@@ -106,7 +106,7 @@ function NotificationContainer() {
 
   return (
     <div
-      className="z-toast pointer-events-none fixed top-4 right-4 space-y-3"
+      className="pointer-events-none fixed top-4 right-4 z-toast space-y-3"
       aria-live="polite"
       aria-label="Notifications"
     >
@@ -191,11 +191,11 @@ function NotificationItem({ notification }: NotificationItemProps) {
           {/* Content */}
           <div className="min-w-0 flex-1">
             {notification.title && (
-              <h4 className="text-foreground dark:text-foreground mb-1 text-sm font-semibold">
+              <h4 className="mb-1 font-semibold text-foreground text-sm dark:text-foreground">
                 {notification.title}
               </h4>
             )}
-            <p className="text-foreground/80 dark:text-muted-foreground/50 text-sm">
+            <p className="text-foreground/80 text-sm dark:text-muted-foreground/50">
               {notification.message}
             </p>
 
@@ -205,9 +205,9 @@ function NotificationItem({ notification }: NotificationItemProps) {
                 <button
                   onClick={handleAction}
                   className={cn(
-                    "rounded-md px-3 py-1.5 text-sm font-medium",
-                    "dark:hover:bg-muted/80/50 hover:bg-white/50",
-                    "focus:ring-2 focus:ring-offset-1 focus:outline-hidden",
+                    "rounded-md px-3 py-1.5 font-medium text-sm",
+                    "hover:bg-white/50 dark:hover:bg-muted/80/50",
+                    "focus:outline-hidden focus:ring-2 focus:ring-offset-1",
                     "transition-colors duration-200",
                     colorMap[notification.type],
                   )}
@@ -226,7 +226,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
                 "inline-flex rounded-md p-1.5",
                 "text-muted-foreground/70 hover:text-muted-foreground dark:hover:text-muted-foreground/50",
                 "hover:bg-muted dark:hover:bg-muted/80",
-                "focus:ring-muted-foreground focus:ring-2 focus:ring-offset-1 focus:outline-hidden",
+                "focus:outline-hidden focus:ring-2 focus:ring-muted-foreground focus:ring-offset-1",
                 "transition-colors duration-200",
               )}
               aria-label="Dismiss notification"
@@ -238,7 +238,7 @@ function NotificationItem({ notification }: NotificationItemProps) {
 
         {/* Progress Bar for timed notifications */}
         {!notification.persistent && notification.duration && notification.duration > 0 && (
-          <div className="bg-muted/20 dark:bg-muted/70 mt-3 h-1 overflow-hidden rounded-full">
+          <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted/20 dark:bg-muted/70">
             <div
               className={cn("notification-progress h-full rounded-full", {
                 "bg-green-500": notification.type === "success",

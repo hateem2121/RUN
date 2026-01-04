@@ -4,7 +4,7 @@ import { Typography } from "@/components/ui/typography";
 
 interface HeroSectionProps {
   heroData: Partial<AboutHero>;
-  mediaUrl?: string;
+  mediaUrl?: string | undefined;
   mediaType?: "image" | "video";
 }
 

@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ABOUT STATISTICS RESOURCE ROUTER
  *
@@ -102,7 +104,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newStatistic = await withTimeout(
-      aboutService.createStatistic(validation.data),
+      aboutService.createStatistic(removeUndefined(validation.data)),
       10000,
       "Create about statistic",
     );
@@ -146,7 +148,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updatedStatistic = await withTimeout(
-      aboutService.updateStatistic(id, validation.data),
+      aboutService.updateStatistic(id, removeUndefined(validation.data)),
       10000,
       "Update about statistic",
     );
@@ -225,7 +227,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     // Update positions
     const updates = await Promise.all(
-      validation.data.entries.map(({ id, position }) =>
+      removeUndefined(validation.data).entries.map(({ id, position }) =>
         aboutService.updateStatistic(id, { sortOrder: position }),
       ),
     );

@@ -1,12 +1,5 @@
 import type { MediaAsset } from "@shared/schema";
-import {
-  AlertCircle,
-  Box,
-  Download,
-  Loader2,
-  Play,
-  RefreshCw,
-} from "lucide-react";
+import { AlertCircle, Box, Download, Loader2, Play, RefreshCw } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -27,7 +20,7 @@ import { cn } from "@/lib/utils";
 // Type definitions for model-viewer and browser APIs
 type ModelViewerEvent = {
   detail?: {
-    totalProgress?: number;
+    totalProgress?: number | undefined;
     [key: string]: unknown;
   };
   [key: string]: unknown;
@@ -37,20 +30,20 @@ type ModelViewerEvent = {
 interface LoadingState {
   status: "idle" | "initializing" | "loading" | "loaded" | "error";
   progress: number;
-  bytesLoaded?: number;
-  totalBytes?: number;
-  errorMessage?: string;
+  bytesLoaded?: number | undefined;
+  totalBytes?: number | undefined;
+  errorMessage?: string | undefined;
   retryCount: number;
   startTime: number;
 }
 
 export interface UnifiedModelViewerProps {
   asset: MediaAsset;
-  className?: string;
+  className?: string | undefined;
   config?: ModelViewerConfig;
-  showControls?: boolean;
-  showLoadingProgress?: boolean;
-  showFileInfo?: boolean;
+  showControls?: boolean | undefined;
+  showLoadingProgress?: boolean | undefined;
+  showFileInfo?: boolean | undefined;
   onLoad?: (asset: MediaAsset) => void;
   onError?: (error: Error, asset: MediaAsset) => void;
   onInteraction?: (type: string, data?: unknown) => void;
@@ -89,9 +82,7 @@ export default function UnifiedModelViewer({
 
   const [isModelViewerReady, setIsModelViewerReady] = useState(false);
   const [webglLost, setWebglLost] = useState(false);
-  const [shouldLoadModel, setShouldLoadModel] = useState(
-    finalConfig.loading !== "lazy",
-  );
+  const [shouldLoadModel, setShouldLoadModel] = useState(finalConfig.loading !== "lazy");
   const [retryTimeouts, setRetryTimeouts] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(finalConfig.loading !== "lazy");
 
@@ -101,9 +92,7 @@ export default function UnifiedModelViewer({
 
   // State for cached GLTF content management
   const [cachedModelBlob, setCachedModelBlob] = useState<string | null>(null);
-  const [optimizedModelUrl, setOptimizedModelUrl] = useState<string | null>(
-    null,
-  );
+  const [optimizedModelUrl, setOptimizedModelUrl] = useState<string | null>(null);
 
   // Refs
   const modelViewerRef = useRef<any>(null);
@@ -169,11 +158,9 @@ export default function UnifiedModelViewer({
   const analyzeFile = useCallback(() => {
     const sizeInMB = (asset.size || 0) / (1024 * 1024);
     const isGltf =
-      asset.originalName?.toLowerCase().endsWith(".gltf") ||
-      asset.mimeType?.includes("gltf+json");
+      asset.originalName?.toLowerCase().endsWith(".gltf") || asset.mimeType?.includes("gltf+json");
     const isGlb =
-      asset.originalName?.toLowerCase().endsWith(".glb") ||
-      asset.mimeType?.includes("gltf-binary");
+      asset.originalName?.toLowerCase().endsWith(".glb") || asset.mimeType?.includes("gltf-binary");
     const isLarge = sizeInMB > 20;
     const isVeryLarge = sizeInMB > 50;
 
@@ -418,14 +405,8 @@ export default function UnifiedModelViewer({
       // Clean up WebGL listeners from Shadow DOM
       const currentCanvas = getCanvas();
       if (currentCanvas) {
-        currentCanvas.removeEventListener(
-          "webglcontextlost",
-          handleContextLost,
-        );
-        currentCanvas.removeEventListener(
-          "webglcontextrestored",
-          handleContextRestored,
-        );
+        currentCanvas.removeEventListener("webglcontextlost", handleContextLost);
+        currentCanvas.removeEventListener("webglcontextrestored", handleContextRestored);
       }
     };
   }, [asset.id, asset, handleError, handleProgress, onInteraction, onLoad]);
@@ -462,9 +443,7 @@ export default function UnifiedModelViewer({
                       const response = await fetch(result.content);
                       const arrayBuffer = await response.arrayBuffer();
                       const modelBlob = new Blob([arrayBuffer], {
-                        type: fileAnalysis.isGlb
-                          ? "model/gltf-binary"
-                          : "model/gltf+json",
+                        type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                       });
                       const blobUrl = URL.createObjectURL(modelBlob);
                       setCachedModelBlob(blobUrl);
@@ -480,9 +459,7 @@ export default function UnifiedModelViewer({
                           bytes[i] = binaryString.charCodeAt(i);
                         }
                         const modelBlob = new Blob([bytes], {
-                          type: fileAnalysis.isGlb
-                            ? "model/gltf-binary"
-                            : "model/gltf+json",
+                          type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                         });
                         const blobUrl = URL.createObjectURL(modelBlob);
                         setCachedModelBlob(blobUrl);
@@ -493,9 +470,7 @@ export default function UnifiedModelViewer({
                   } else {
                     // Binary content - create blob directly
                     const modelBlob = new Blob([result.content], {
-                      type: fileAnalysis.isGlb
-                        ? "model/gltf-binary"
-                        : "model/gltf+json",
+                      type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                     });
                     const blobUrl = URL.createObjectURL(modelBlob);
                     setCachedModelBlob(blobUrl);
@@ -600,12 +575,7 @@ export default function UnifiedModelViewer({
   // Programmatically set src to prevent Lit element update conflicts
   // Gate src assignment behind userActivated to prevent premature loading
   useEffect(() => {
-    if (
-      isModelViewerReady &&
-      modelViewerRef.current &&
-      shouldLoadModel &&
-      isVisible
-    ) {
+    if (isModelViewerReady && modelViewerRef.current && shouldLoadModel && isVisible) {
       // Use cached blob URL first, fallback to network
       let modelUrl: string;
 
@@ -619,8 +589,7 @@ export default function UnifiedModelViewer({
       } else {
         // Priority 3: Fallback to network URL
         modelUrl =
-          MediaUrlBuilder.buildModelUrlSafe(asset.id, asset) ||
-          `/api/media/${asset.id}/content`;
+          MediaUrlBuilder.buildModelUrlSafe(asset.id, asset) || `/api/media/${asset.id}/content`;
       }
 
       // Set src programmatically to avoid React/Lit element conflicts
@@ -692,10 +661,7 @@ export default function UnifiedModelViewer({
     setIsVisible(true);
 
     // Dismiss poster to start loading the 3D model
-    if (
-      modelViewerRef.current &&
-      typeof modelViewerRef.current.dismissPoster === "function"
-    ) {
+    if (modelViewerRef.current && typeof modelViewerRef.current.dismissPoster === "function") {
       modelViewerRef.current.dismissPoster();
     }
 
@@ -745,14 +711,14 @@ export default function UnifiedModelViewer({
     return (
       <div
         className={cn(
-          "center-flex from-surface-subtle to-surface-muted bg-linear-to-br",
-          "dark:from-muted dark:to-background aspect-square rounded-lg",
+          "center-flex bg-linear-to-br from-surface-subtle to-surface-muted",
+          "aspect-square rounded-lg dark:from-muted dark:to-background",
           className,
         )}
       >
         <div className="space-y-3 text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
-          <p className="text-text-disabled dark:text-muted-foreground text-sm">
+          <p className="text-sm text-text-disabled dark:text-muted-foreground">
             Initializing 3D viewer...
           </p>
         </div>
@@ -780,16 +746,14 @@ export default function UnifiedModelViewer({
         {/* Overlay Content */}
         <div className="z-10 text-center">
           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
-            <Box className="text-foreground/80 h-8 w-8 dark:text-white" />
+            <Box className="h-8 w-8 text-foreground/80 dark:text-white" />
           </div>
-          <p className="text-foreground font-medium dark:text-white">
-            Product Preview
-          </p>
+          <p className="font-medium text-foreground dark:text-white">Product Preview</p>
           <p className="text-muted-foreground text-xs">3D Model Unavailable</p>
 
           {/* Debug info in development only */}
           {MODEL_VIEWER_ENVIRONMENT.isDevelopment && (
-            <p className="max-w-widget-track text-xxs mt-2 truncate px-2 text-red-400">
+            <p className="mt-2 max-w-widget-track truncate px-2 text-red-400 text-xxs">
               {loadingState.errorMessage}
             </p>
           )}
@@ -821,7 +785,7 @@ export default function UnifiedModelViewer({
       <div
         ref={containerRef}
         className={cn(
-          "from-background to-surface-subtle relative overflow-hidden rounded-lg bg-linear-to-br",
+          "relative overflow-hidden rounded-lg bg-linear-to-br from-background to-surface-subtle",
           "dark:from-muted dark:to-background",
           className,
         )}
@@ -829,8 +793,8 @@ export default function UnifiedModelViewer({
       >
         {/* Simplified file info - only for large files */}
         {showFileInfo && fileInfo.isLarge && (
-          <div className="z-elevated absolute top-2 left-2">
-            <div className="flex items-center gap-1 rounded bg-orange-100 px-2 py-1 text-xs text-orange-800 dark:bg-orange-900/50 dark:text-orange-200">
+          <div className="absolute top-2 left-2 z-elevated">
+            <div className="flex items-center gap-1 rounded bg-orange-100 px-2 py-1 text-orange-800 text-xs dark:bg-orange-900/50 dark:text-orange-200">
               <AlertCircle className="h-3 w-3" />
               {fileInfo.sizeInMB}MB
             </div>
@@ -841,10 +805,10 @@ export default function UnifiedModelViewer({
         {showLoadingProgress &&
           loadingState.status === "loading" &&
           loadingState.progress < 100 && (
-            <div className="center-flex z-elevated bg-background/80 dark:bg-background/80 absolute inset-0">
+            <div className="center-flex absolute inset-0 z-elevated bg-background/80 dark:bg-background/80">
               <div className="space-y-2 text-center">
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-                <p className="text-text-disabled dark:text-muted-foreground text-sm">
+                <p className="text-sm text-text-disabled dark:text-muted-foreground">
                   {loadingState.progress}%
                 </p>
               </div>
@@ -853,7 +817,7 @@ export default function UnifiedModelViewer({
 
         {/* Simplified controls - only download for grid cards */}
         {showControls && loadingState.status === "loaded" && (
-          <div className="z-dropdown absolute top-2 right-2">
+          <div className="absolute top-2 right-2 z-dropdown">
             <Button
               variant="secondary"
               size="sm"
@@ -868,17 +832,12 @@ export default function UnifiedModelViewer({
 
         {/* WebGL lost warning */}
         {webglLost && (
-          <div className="center-flex z-sticky absolute inset-4">
+          <div className="center-flex absolute inset-4 z-sticky">
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 Graphics context lost.
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={handleWebGLRecovery}
-                  className="ml-2 p-0"
-                >
+                <Button variant="link" size="sm" onClick={handleWebGLRecovery} className="ml-2 p-0">
                   Recover
                 </Button>
               </AlertDescription>
@@ -894,27 +853,20 @@ export default function UnifiedModelViewer({
             // src set programmatically in useEffect
             alt: asset.originalName || "3D Model",
             poster: asset.thumbnailUrl || undefined, // Use thumbnail as poster image
-            reveal:
-              userActivated || finalConfig.loading === "auto"
-                ? "auto"
-                : "interaction", // Use "auto" for modal, "interaction" for grid
+            reveal: userActivated || finalConfig.loading === "auto" ? "auto" : "interaction", // Use "auto" for modal, "interaction" for grid
             "camera-controls": finalConfig.cameraControls,
             "auto-rotate": isMobile ? false : finalConfig.autoRotate, // Disable auto-rotate on mobile to save battery
             "background-color": finalConfig.backgroundColorHex,
-            exposure: isMobile
-              ? Math.min(finalConfig.exposure || 1, 0.8)
-              : finalConfig.exposure, // Reduce exposure on mobile
+            exposure: isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure, // Reduce exposure on mobile
             "shadow-intensity": isMobile ? 0.5 : finalConfig.shadowIntensity, // Reduce shadow-sm intensity on mobile (50% less GPU work)
             "interaction-policy": finalConfig.interactionPolicy,
-            "draco-decoder-path":
-              "https://www.gstatic.com/draco/versioned/decoders/1.5.6/", // Enable Draco compression
+            "draco-decoder-path": "https://www.gstatic.com/draco/versioned/decoders/1.5.6/", // Enable Draco compression
             className: "w-full h-full min-h-96",
             style: {
               width: "100%",
               height: "100%",
               minHeight: "400px",
-              backgroundColor:
-                finalConfig.backgroundColorHex || "hsl(240 10% 4%)", // matches --background
+              backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)", // matches --background
             },
             "data-testid": "model-viewer-element",
           })}
@@ -940,28 +892,21 @@ export default function UnifiedModelViewer({
             <div className="absolute inset-0 bg-linear-to-br from-black/40 via-black/30 to-black/50 transition-all duration-300 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60" />
 
             {/* "View 3D Model" button */}
-            <div className="z-elevated relative space-y-3 text-center">
+            <div className="relative z-elevated space-y-3 text-center">
               <div className="mx-20 my-12 rounded-full bg-white/80 p-4 px-4 py-8 shadow-xl backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-black/90">
-                <Play
-                  className="text-foreground h-8 w-8 dark:text-white"
-                  fill="currentColor"
-                />
+                <Play className="h-8 w-8 text-foreground dark:text-white" fill="currentColor" />
               </div>
-              <p className="text-lg font-medium text-white drop-shadow-lg">
-                View 3D Model
-              </p>
-              <p className="text-xs text-white/80">
-                Click to load interactive 3D viewer
-              </p>
+              <p className="font-medium text-lg text-white drop-shadow-lg">View 3D Model</p>
+              <p className="text-white/80 text-xs">Click to load interactive 3D viewer</p>
             </div>
           </div>
         )}
 
         {/* Lazy loading placeholder - shown before viewport intersection */}
         {(!shouldLoadModel || !isVisible) && (
-          <div className="center-flex from-surface-subtle to-surface-muted dark:from-muted dark:to-background absolute inset-0 bg-linear-to-br">
+          <div className="center-flex absolute inset-0 bg-linear-to-br from-surface-subtle to-surface-muted dark:from-muted dark:to-background">
             <div className="space-y-2 text-center">
-              <Box className="text-text-subtle mx-auto h-8 w-8" />
+              <Box className="mx-auto h-8 w-8 text-text-subtle" />
               {!shouldLoadModel ? (
                 <p className="text-text-muted text-xs">Scroll to load</p>
               ) : (

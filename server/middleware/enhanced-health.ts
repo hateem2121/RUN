@@ -6,7 +6,6 @@ import type { Request, Response } from "express";
 import { database, development } from "../config/environment.js";
 import { getConfig } from "../config/production.js";
 import { appStorageService } from "../lib/storage/app-service.js";
-import { getStorage } from "../lib/storage-singleton.js";
 import { storage } from "../storage.js";
 
 // import { IndexUsageMonitor } from '../scripts/monitor-index-usage.js';
@@ -16,7 +15,7 @@ const config = getConfig();
 interface HealthCheckResult {
   service: string;
   status: "healthy" | "degraded" | "unhealthy";
-  responseTime?: number;
+  responseTime?: number | undefined;
   details?: any;
   timestamp: string;
 }

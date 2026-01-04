@@ -30,21 +30,14 @@ export interface AlertConfig {
 export const defaultAlertConfig: AlertConfig = {
   slowQuery: {
     durationMs: parseInt(process.env.ALERT_SLOW_QUERY_MS || "500", 10),
-    consecutiveCount: parseInt(
-      process.env.ALERT_SLOW_QUERY_CONSECUTIVE || "3",
-      10,
-    ),
+    consecutiveCount: parseInt(process.env.ALERT_SLOW_QUERY_CONSECUTIVE || "3", 10),
   },
   errorRate: {
-    percentageThreshold: parseFloat(
-      process.env.ALERT_ERROR_RATE_PERCENT || "5",
-    ),
+    percentageThreshold: parseFloat(process.env.ALERT_ERROR_RATE_PERCENT || "5"),
     timeWindowMinutes: parseInt(process.env.ALERT_ERROR_WINDOW_MIN || "5", 10),
   },
   httpErrorRate: {
-    percentageThreshold: parseFloat(
-      process.env.ALERT_HTTP_ERROR_RATE_PERCENT || "5",
-    ),
+    percentageThreshold: parseFloat(process.env.ALERT_HTTP_ERROR_RATE_PERCENT || "5"),
   },
   circuitBreaker: {
     alertOnOpen: process.env.ALERT_CIRCUIT_OPEN !== "false",

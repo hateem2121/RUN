@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ACCESSORIES ROUTER MODULE
  * Extracted from routes.ts for better organization
@@ -32,10 +34,14 @@ router.get("/accessories", async (req, res) => {
     if (withCount) {
       // Return accessories with total count for pagination
       const result = await withTimeout(
-        accessoryRepository.getAccessoriesWithCount(limit, offset, {
-          category,
-          search,
-        }),
+        accessoryRepository.getAccessoriesWithCount(
+          limit,
+          offset,
+          removeUndefined({
+            category,
+            search,
+          }),
+        ),
         5000,
         "Get accessories with count",
       );
@@ -43,7 +49,7 @@ router.get("/accessories", async (req, res) => {
     } else {
       // Return just accessories array
       const accessories = await withTimeout(
-        accessoryRepository.getAccessories(limit, offset, { category, search }),
+        accessoryRepository.getAccessories(limit, offset, removeUndefined({ category, search })),
         5000,
         "Get accessories",
       );
@@ -105,7 +111,7 @@ router.put("/accessories/:id", authService.requireAdmin, async (req, res) => {
     };
 
     const accessory = await withTimeout(
-      accessoryRepository.updateAccessory(id, dataToUpdate),
+      accessoryRepository.updateAccessory(id, removeUndefined(dataToUpdate)),
       10000,
       "Update accessory",
     );

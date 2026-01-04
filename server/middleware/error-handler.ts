@@ -58,7 +58,7 @@ export const globalErrorHandler = (
       requestId,
       url: req.url,
       method: req.method,
-      details: error.details,
+      ...(error.details ? { details: error.details } : {}),
     });
   }
 
@@ -81,7 +81,7 @@ export const globalErrorHandler = (
       type: error.constructor.name,
       code: error.errorCode,
       message: error.message,
-      details: error.details,
+      ...(error.details ? { details: error.details } : {}),
       requestId,
       timestamp: Date.now(),
     },

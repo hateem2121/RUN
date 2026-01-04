@@ -2,9 +2,9 @@ import { Helmet } from "react-helmet-async";
 
 interface SEOProps {
   title: string;
-  description?: string;
-  name?: string;
-  type?: string;
+  description?: string | undefined;
+  name?: string | undefined;
+  type?: string | undefined;
 }
 
 export function SEO({ title, description, name = "My App", type = "article" }: SEOProps) {

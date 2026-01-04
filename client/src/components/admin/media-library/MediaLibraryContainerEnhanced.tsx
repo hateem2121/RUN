@@ -10,13 +10,7 @@ const MediaUploadEnhanced = React.lazy(() => import("./MediaUploadEnhanced"));
 const MediaViewerModal = React.lazy(() => import("./MediaViewerModal"));
 
 import type { MediaAsset } from "@shared/schema";
-import {
-  AlertTriangle,
-  PanelLeft,
-  RefreshCw,
-  Settings,
-  Trash2,
-} from "lucide-react";
+import { AlertTriangle, PanelLeft, RefreshCw, Settings, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,18 +33,14 @@ function ErrorFallback({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="text-sm text-red-700">
+          <div className="text-red-700 text-sm">
             <p className="mb-2 font-medium">Something went wrong:</p>
-            <p className="rounded-md bg-red-100 p-3 font-mono text-xs">
-              {error.message}
-            </p>
+            <p className="rounded-md bg-red-100 p-3 font-mono text-xs">{error.message}</p>
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-red-600">
-              Recovery Options:
-            </p>
-            <ul className="space-y-1 text-sm text-red-600">
+            <p className="font-medium text-red-600 text-sm">Recovery Options:</p>
+            <ul className="space-y-1 text-red-600 text-sm">
               <li>• Try refreshing the page</li>
               <li>• Clear browser cache</li>
               <li>• Check internet connection</li>
@@ -94,20 +84,18 @@ function LoadingFallback() {
   return (
     <div className="center-flex p-8">
       <div className="text-center">
-        <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-        <p className="text-muted-foreground text-sm">
-          Loading media library...
-        </p>
+        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-primary border-b-2"></div>
+        <p className="text-muted-foreground text-sm">Loading media library...</p>
       </div>
     </div>
   );
 }
 
 interface MediaLibraryContainerEnhancedProps {
-  selectionMode?: boolean;
-  useExistingContext?: boolean;
-  initialFilter?: string; // Auto-set initial filter type
-  mediaPickerTarget?: string; // For context-aware filtering
+  selectionMode?: boolean | undefined;
+  useExistingContext?: boolean | undefined;
+  initialFilter?: string | undefined; // Auto-set initial filter type
+  mediaPickerTarget?: string | undefined; // For context-aware filtering
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void; // Direct asset selection callback
 }
 
@@ -136,14 +124,11 @@ export default function MediaLibraryContainerEnhanced({
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
       // FORENSIC FIX: Use the correct endpoint that actually exists
-      const response = await fetch(
-        "/api/admin/media-sync/repair?cleanup=true",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          signal: controller.signal,
-        },
-      );
+      const response = await fetch("/api/admin/media-sync/repair?cleanup=true", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+      });
 
       clearTimeout(timeoutId);
 
@@ -152,9 +137,7 @@ export default function MediaLibraryContainerEnhanced({
       try {
         result = await response.json();
       } catch (_jsonError) {
-        throw new Error(
-          `Invalid response format: ${response.status} ${response.statusText}`,
-        );
+        throw new Error(`Invalid response format: ${response.status} ${response.statusText}`);
       }
 
       if (response.ok) {
@@ -177,9 +160,7 @@ export default function MediaLibraryContainerEnhanced({
       } else {
         // Handle different types of server errors - fix boolean conversion
         const errorMessage = String(
-          result?.message ||
-            result?.error ||
-            `Server error: ${response.status}`,
+          result?.message || result?.error || `Server error: ${response.status}`,
         );
         throw new Error(errorMessage);
       }
@@ -191,16 +172,13 @@ export default function MediaLibraryContainerEnhanced({
       if (error instanceof Error) {
         if (error.name === "AbortError") {
           errorTitle = "Cleanup Timeout";
-          errorMessage =
-            "Database cleanup took too long and was cancelled. Try again later.";
+          errorMessage = "Database cleanup took too long and was cancelled. Try again later.";
         } else if (error.message.includes("Failed to fetch")) {
           errorTitle = "Connection Error";
-          errorMessage =
-            "Unable to connect to the server. Check your internet connection.";
+          errorMessage = "Unable to connect to the server. Check your internet connection.";
         } else if (error.message.includes("Invalid response")) {
           errorTitle = "Server Error";
-          errorMessage =
-            "Server returned an invalid response. Please try again.";
+          errorMessage = "Server returned an invalid response. Please try again.";
         } else {
           errorMessage = error.message;
         }
@@ -221,8 +199,7 @@ export default function MediaLibraryContainerEnhanced({
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       // Enhanced logging with categorization
       const error = event.reason;
-      const errorType =
-        error instanceof Error ? error.constructor.name : typeof error;
+      const errorType = error instanceof Error ? error.constructor.name : typeof error;
       const message = error instanceof Error ? error.message : String(error);
       const stack = error instanceof Error ? error.stack : undefined;
 
@@ -288,8 +265,7 @@ export default function MediaLibraryContainerEnhanced({
       // Show user-friendly error message for genuine system errors
       toast({
         title: "System Error",
-        description:
-          "A critical error occurred. The system will attempt to recover.",
+        description: "A critical error occurred. The system will attempt to recover.",
         variant: "destructive",
       });
 
@@ -313,10 +289,7 @@ export default function MediaLibraryContainerEnhanced({
     globalThis.addEventListener("error", handleError);
 
     return () => {
-      globalThis.removeEventListener(
-        "unhandledrejection",
-        handleUnhandledRejection,
-      );
+      globalThis.removeEventListener("unhandledrejection", handleUnhandledRejection);
       globalThis.removeEventListener("error", handleError);
     };
   }, [toast]);
@@ -327,17 +300,17 @@ export default function MediaLibraryContainerEnhanced({
   const content = (
     <div
       className={cn(
-        "bg-background flex h-full flex-col",
+        "flex h-full flex-col bg-background",
         // STANDALONE MODE: Enable overflow-hidden to contain scrolling within component
         isStandalone && "overflow-hidden",
       )}
     >
       {/* Enhanced responsive header */}
-      <div className="bg-card shrink-0 border-b">
+      <div className="shrink-0 border-b bg-card">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-2 md:gap-4">
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold md:text-2xl">Media Library</h1>
+              <h1 className="font-bold text-lg md:text-2xl">Media Library</h1>
             </div>
           </div>
           {!selectionMode && (
@@ -345,17 +318,14 @@ export default function MediaLibraryContainerEnhanced({
               {/* Development controls */}
               {(import.meta as any).env?.MODE === "development" && (
                 <>
-                  <div className="bg-muted/50 hidden items-center gap-2 rounded-lg px-3 py-1 md:flex">
-                    <Settings className="text-muted-foreground h-4 w-4" />
+                  <div className="hidden items-center gap-2 rounded-lg bg-muted/50 px-3 py-1 md:flex">
+                    <Settings className="h-4 w-4 text-muted-foreground" />
                     <Badge variant="outline" className="text-xs">
                       Pagination Mode
                     </Badge>
                   </div>
 
-                  <Separator
-                    orientation="vertical"
-                    className="hidden h-6 md:block"
-                  />
+                  <Separator orientation="vertical" className="hidden h-6 md:block" />
 
                   <Button
                     onClick={handleDatabaseCleanup}
@@ -377,7 +347,7 @@ export default function MediaLibraryContainerEnhanced({
       {/* Main content area with enhanced error boundaries */}
       <MediaLibraryMainContent
         selectionMode={selectionMode}
-        onAssetSelect={onAssetSelect}
+        {...(onAssetSelect ? { onAssetSelect } : {})}
         paginationMode={paginationMode}
         isStandalone={isStandalone}
       />
@@ -412,7 +382,7 @@ function MediaLibraryMainContent({
   // paginationMode removed
   isStandalone,
 }: Readonly<{
-  selectionMode?: boolean;
+  selectionMode?: boolean | undefined;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;
   paginationMode?: "traditional";
   isStandalone: boolean;
@@ -431,13 +401,11 @@ function MediaLibraryMainContent({
       {state.showFiltersPanel && (
         <>
           {/* Desktop sidebar */}
-          <div className="bg-card hidden w-80 border-r transition-all duration-300 ease-in-out lg:block">
+          <div className="hidden w-80 border-r bg-card transition-all duration-300 ease-in-out lg:block">
             <ErrorBoundary
               FallbackComponent={({ resetErrorBoundary }) => (
                 <div className="p-4 text-center">
-                  <p className="mb-2 text-sm text-red-600">
-                    Filter panel error
-                  </p>
+                  <p className="mb-2 text-red-600 text-sm">Filter panel error</p>
                   <Button size="sm" onClick={resetErrorBoundary}>
                     Reset
                   </Button>
@@ -452,7 +420,7 @@ function MediaLibraryMainContent({
 
           {/* Mobile/Tablet modal overlay with proper accessibility */}
           <div
-            className="z-modal-nested fixed inset-0 cursor-default bg-black/50 lg:hidden"
+            className="fixed inset-0 z-modal-nested cursor-default bg-black/50 lg:hidden"
             onClick={() => updateState("showFiltersPanel", false)}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
@@ -466,16 +434,14 @@ function MediaLibraryMainContent({
               aria-modal="true"
               aria-labelledby="filters-panel-title"
               tabIndex={-1}
-              className="bg-card fixed inset-y-0 left-0 w-80 max-w-md shadow-xl sm:max-w-lg"
+              className="fixed inset-y-0 left-0 w-80 max-w-md bg-card shadow-xl sm:max-w-lg"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
             >
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <div className="p-4 text-center">
-                    <p className="mb-2 text-sm text-red-600">
-                      Filter panel error
-                    </p>
+                    <p className="mb-2 text-red-600 text-sm">Filter panel error</p>
                     <Button size="sm" onClick={resetErrorBoundary}>
                       Reset
                     </Button>
@@ -495,7 +461,7 @@ function MediaLibraryMainContent({
       <div className={cn("flex min-h-0 min-w-0 flex-1 flex-col")}>
         {/* Show filters toggle when panel is hidden */}
         {!state.showFiltersPanel && (
-          <div className="bg-card shrink-0 border-b p-2">
+          <div className="shrink-0 border-b bg-card p-2">
             <Button
               variant="outline"
               size="sm"
@@ -512,13 +478,11 @@ function MediaLibraryMainContent({
         <div className={cn("flex min-h-0 flex-1 flex-col")}>
           {/* Enhanced upload section - hidden in selection mode */}
           {!selectionMode && (
-            <div className="bg-card shrink-0 border-b">
+            <div className="shrink-0 border-b bg-card">
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <div className="p-4 text-center">
-                    <p className="mb-2 text-sm text-red-600">
-                      Upload handler error
-                    </p>
+                    <p className="mb-2 text-red-600 text-sm">Upload handler error</p>
                     <Button size="sm" onClick={resetErrorBoundary}>
                       Reset
                     </Button>
@@ -544,7 +508,7 @@ function MediaLibraryMainContent({
             <ErrorBoundary
               FallbackComponent={({ resetErrorBoundary }) => (
                 <div className="p-8 text-center">
-                  <p className="mb-4 text-sm text-red-600">Media grid error</p>
+                  <p className="mb-4 text-red-600 text-sm">Media grid error</p>
                   <Button onClick={resetErrorBoundary}>Reset Grid</Button>
                 </div>
               )}
@@ -553,7 +517,7 @@ function MediaLibraryMainContent({
                 <MediaGrid
                   selectionMode={selectionMode}
                   isStandalone={isStandalone}
-                  onAssetSelect={onAssetSelect}
+                  {...(onAssetSelect ? { onAssetSelect } : {})}
                 />
               </Suspense>
             </ErrorBoundary>

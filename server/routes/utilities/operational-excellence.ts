@@ -189,7 +189,7 @@ export async function getWorkflows(req: Request, res: Response) {
 
 export async function executeWorkflow(req: Request, res: Response) {
   try {
-    const { workflowId } = req.params;
+    const { workflowId } = req.params as any;
 
     const result = await withTimeout(
       workflowAutomation.executeWorkflowManually(workflowId!),
@@ -214,7 +214,7 @@ export async function executeWorkflow(req: Request, res: Response) {
 
 export async function getWorkflowHistory(req: Request, res: Response) {
   try {
-    const { workflowId } = req.params;
+    const { workflowId } = req.params as any;
 
     const history = workflowAutomation.getExecutionHistory();
 
@@ -260,7 +260,7 @@ export async function getRateLimitStats(_req: Request, res: Response) {
 
 export async function getClientQuota(req: Request, res: Response) {
   try {
-    const { clientId } = req.params;
+    const { clientId } = req.params as any;
 
     const clientInfo = apiRateLimiter.getClientInfo(clientId!);
 
@@ -288,7 +288,7 @@ export async function getClientQuota(req: Request, res: Response) {
 
 export async function setClientQuota(req: Request, res: Response) {
   try {
-    const { clientId } = req.params;
+    const { clientId } = req.params as any;
     const validatedData = setClientQuotaSchema.parse(req.body);
     const { tier, limits } = validatedData;
 
@@ -315,7 +315,7 @@ export async function setClientQuota(req: Request, res: Response) {
 
 export async function blacklistClient(req: Request, res: Response) {
   try {
-    const { clientId } = req.params;
+    const { clientId } = req.params as any;
     const validatedData = blacklistClientSchema.parse(req.body);
     const { duration } = validatedData;
 

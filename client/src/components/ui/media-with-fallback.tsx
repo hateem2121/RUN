@@ -11,16 +11,16 @@ interface MediaWithFallbackProps {
   src: string;
   alt: string;
   type: "image" | "video";
-  className?: string;
+  className?: string | undefined;
   onError?: () => void;
   onLoad?: () => void;
-  poster?: string;
+  poster?: string | undefined;
 }
 
 interface MediaPlaceholderProps {
   type: "image" | "video";
-  className?: string;
-  error?: string;
+  className?: string | undefined;
+  error?: string | undefined;
 }
 
 function MediaPlaceholder({ type, className, error }: MediaPlaceholderProps) {

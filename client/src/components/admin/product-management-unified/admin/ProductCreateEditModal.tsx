@@ -259,10 +259,12 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
     queryKey: ["/api/products"],
     staleTime: 1 * 60 * 1000, // 1 minute for products
     gcTime: 5 * 60 * 1000,
-    enabled: isOpen && accordionStates.customization, // Only fetch when customization section is open
+    enabled: !!(isOpen && accordionStates.customization), // Only fetch when customization section is open
   });
   // Ensure allProducts is always an array, even during loading states
-  const allProducts = Array.isArray(productsResponse?.data) ? productsResponse.data : [];
+  const allProducts = Array.isArray((productsResponse as any)?.data)
+    ? (productsResponse as any).data
+    : [];
 
   const { data: mediaAssets = [] } = useQuery<MediaAsset[]>({
     queryKey: createMediaQueryKey.list({ limit: 100 }), // Fetch assets for product form

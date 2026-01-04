@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface LivePreviewGridProps {
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function LivePreviewGrid({ children, className }: LivePreviewGridProps) {

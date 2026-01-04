@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * PHASE 3.2: CONTENT MANAGEMENT ROUTES EXTRACTION
  *
@@ -373,7 +375,7 @@ router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res)
     };
 
     const navigationItem = await withTimeout(
-      getStorage().updateNavigationItem(id, updateData),
+      getStorage().updateNavigationItem(id, removeUndefined(updateData)),
       5000,
       "Update navigation item",
     );

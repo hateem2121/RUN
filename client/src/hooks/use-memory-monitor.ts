@@ -56,7 +56,7 @@ export function useMemoryMonitor() {
       }
     });
 
-    // if (process.env.NODE_ENV === 'development')
+    // if (process.env['NODE_ENV'] === 'development')
   }, []);
 
   useEffect(() => {

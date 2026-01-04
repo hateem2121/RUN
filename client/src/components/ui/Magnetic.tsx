@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 
 interface MagneticProps {
   children: React.ReactElement;
-  strength?: number; // 0 to 1 ideally, default 0.35
+  strength?: number | undefined; // 0 to 1 ideally, default 0.35
 }
 
 /**

@@ -6,8 +6,8 @@ interface VirtualListProps<T> {
   renderItem: (item: T, index: number) => ReactNode;
   itemHeight: number;
   containerHeight: number;
-  overscan?: number;
-  className?: string;
+  overscan?: number | undefined;
+  className?: string | undefined;
 }
 
 export function ResourceVirtualList<T>({

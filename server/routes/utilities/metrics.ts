@@ -1,14 +1,16 @@
+import { removeUndefined } from "../../utils.js";
+
 // Unified Metrics Endpoint
 // Aggregates metrics from cache, database, and performance monitoring systems
 
 import os from "node:os";
 import type { Express } from "express";
 import { z } from "zod";
+import type { AlertConfig } from "../../config/alerts.js";
 import { getPoolMetrics } from "../../db.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
-import { type AlertConfig } from "../../config/alerts.js";
 import { alertManager } from "../../lib/monitoring/alert-manager.js";
 import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
@@ -88,9 +90,7 @@ export function registerMetricsRoutes(app: Express): void {
           external: Math.round(process.memoryUsage().external / 1024 / 1024),
           systemTotal: Math.round(os.totalmem() / 1024 / 1024),
           systemFree: Math.round(os.freemem() / 1024 / 1024),
-          systemUsagePercent: Math.round(
-            ((os.totalmem() - os.freemem()) / os.totalmem()) * 100,
-          ),
+          systemUsagePercent: Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100),
         },
         cpu: {
           cores: os.cpus().length,
@@ -112,12 +112,7 @@ export function registerMetricsRoutes(app: Express): void {
         responseTime: Math.round((performance.now() - startTime) * 100) / 100,
         health: {
           overall: overallHealth,
-          status:
-            overallHealth >= 80
-              ? "healthy"
-              : overallHealth >= 50
-                ? "degraded"
-                : "unhealthy",
+          status: overallHealth >= 80 ? "healthy" : overallHealth >= 50 ? "degraded" : "unhealthy",
           cache: {
             score: cacheHealth,
             healthy: cacheHealth >= 70,
@@ -130,10 +125,7 @@ export function registerMetricsRoutes(app: Express): void {
             healthy: httpHealthy,
             totalRequests: httpStats.totalRequests,
             avgLatency: httpStats.averageLatency,
-            errorRate:
-              ((statusCategories["5xx"] || 0) /
-                (httpStats.totalRequests || 1)) *
-              100,
+            errorRate: ((statusCategories["5xx"] || 0) / (httpStats.totalRequests || 1)) * 100,
           },
           system: {
             memoryUsage: systemMetrics.memory.systemUsagePercent,
@@ -195,12 +187,7 @@ export function registerMetricsRoutes(app: Express): void {
         timestamp: new Date().toISOString(),
         metrics,
         healthScore,
-        status:
-          healthScore >= 70
-            ? "healthy"
-            : healthScore >= 40
-              ? "degraded"
-              : "critical",
+        status: healthScore >= 70 ? "healthy" : healthScore >= 40 ? "degraded" : "critical",
       });
     } catch (error) {
       logger.error(
@@ -241,8 +228,7 @@ export function registerMetricsRoutes(app: Express): void {
           hitRateMet: batchMetrics.hitRate >= 80,
           batchQueryTarget: "<300ms",
           batchQueryCurrent: `${batchMetrics.avgDbTime.toFixed(2)}ms`,
-          batchQueryMet:
-            batchMetrics.avgDbTime < 300 || batchMetrics.avgDbTime === 0,
+          batchQueryMet: batchMetrics.avgDbTime < 300 || batchMetrics.avgDbTime === 0,
         },
         health: {
           status:
@@ -251,11 +237,7 @@ export function registerMetricsRoutes(app: Express): void {
               ? "healthy"
               : "degraded",
           cacheEfficiency:
-            batchMetrics.hitRate >= 80
-              ? "excellent"
-              : batchMetrics.hitRate >= 60
-                ? "good"
-                : "poor",
+            batchMetrics.hitRate >= 80 ? "excellent" : batchMetrics.hitRate >= 60 ? "good" : "poor",
           queryPerformance:
             batchMetrics.avgDbTime < 300 || batchMetrics.avgDbTime === 0
               ? "excellent"
@@ -287,8 +269,7 @@ export function registerMetricsRoutes(app: Express): void {
     try {
       const legacyMetrics = queryPerformanceMonitor.getMetrics();
       const performanceStats = queryPerformanceMonitor.getPerformanceStats();
-      const performanceReport =
-        queryPerformanceMonitor.generatePerformanceReport();
+      const performanceReport = queryPerformanceMonitor.generatePerformanceReport();
       const healthy = queryPerformanceMonitor.isHealthy();
       const poolMetrics = getPoolMetrics();
 
@@ -414,8 +395,7 @@ export function registerMetricsRoutes(app: Express): void {
         healthy,
         stats,
         statusCategories,
-        errorRate:
-          ((statusCategories["5xx"] || 0) / (stats.totalRequests || 1)) * 100,
+        errorRate: ((statusCategories["5xx"] || 0) / (stats.totalRequests || 1)) * 100,
       });
     } catch (error) {
       logger.error(
@@ -447,7 +427,7 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/metrics/errors", (req, res) => {
     try {
-      const { type, severity, since, limit } = req.query;
+      const { type, severity, since, limit } = req.query as any;
 
       // Get aggregated metrics
       const metrics = errorAggregator.getMetrics();
@@ -455,12 +435,14 @@ export function registerMetricsRoutes(app: Express): void {
       // If filters provided, also return filtered errors
       let filtered;
       if (type || severity || since || limit) {
-        filtered = errorAggregator.getErrorsFiltered({
-          type: type as string,
-          severity: severity as string,
-          since: since ? new Date(since as string) : undefined,
-          limit: limit ? parseInt(limit as string, 10) : undefined,
-        });
+        filtered = errorAggregator.getErrorsFiltered(
+          removeUndefined({
+            type: type as string,
+            severity: severity as string,
+            since: since ? new Date(since as string) : undefined,
+            limit: limit ? parseInt(limit as string, 10) : undefined,
+          }),
+        );
       }
 
       res.json({
@@ -486,7 +468,7 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/metrics/alerts", (req, res) => {
     try {
-      const { type, limit } = req.query;
+      const { type, limit } = req.query as any;
 
       // Get alerts (optionally filtered by type)
       const validAlertTypes = [
@@ -496,14 +478,9 @@ export function registerMetricsRoutes(app: Express): void {
         "circuit_breaker",
       ] as const;
       const alerts =
-        type &&
-        validAlertTypes.includes(type as (typeof validAlertTypes)[number])
-          ? alertManager.getAlertsByType(
-              type as (typeof validAlertTypes)[number],
-            )
-          : alertManager.getAlerts(
-              limit ? parseInt(limit as string, 10) : undefined,
-            );
+        type && validAlertTypes.includes(type as (typeof validAlertTypes)[number])
+          ? alertManager.getAlertsByType(type as (typeof validAlertTypes)[number])
+          : alertManager.getAlerts(limit ? parseInt(limit as string, 10) : undefined);
 
       // Check current metrics and get any new alerts
       const newAlerts = alertManager.checkMetrics();
@@ -617,20 +594,17 @@ export function registerMetricsRoutes(app: Express): void {
       if (!pattern || typeof pattern !== "string") {
         return res.status(400).json({
           error: "Missing or invalid pattern query parameter",
-          message:
-            "Please provide a valid cache pattern (e.g., ?pattern=media:)",
+          message: "Please provide a valid cache pattern (e.g., ?pattern=media:)",
         });
       }
 
-      const { getLatestInvalidationTime } =
-        await import("../../lib/cache/cache-events.js");
+      const { getLatestInvalidationTime } = await import("../../lib/cache/cache-events.js");
       const timestamp = await getLatestInvalidationTime(pattern);
 
       return res.json({
         pattern,
         timestamp,
-        lastInvalidation:
-          timestamp > 0 ? new Date(timestamp).toISOString() : null,
+        lastInvalidation: timestamp > 0 ? new Date(timestamp).toISOString() : null,
       });
     } catch (error) {
       logger.error("[Metrics] Failed to get cache invalidation time:", error);

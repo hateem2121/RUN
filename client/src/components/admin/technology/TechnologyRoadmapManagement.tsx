@@ -47,16 +47,16 @@ interface TechnologyRoadmap {
   id: number;
   title: string;
   timeline: string;
-  description?: string;
+  description?: string | undefined;
   impact?: string[];
   imageId?: number | null;
   videoId?: number | null;
-  isActive?: boolean;
-  position?: number;
+  isActive?: boolean | undefined;
+  position?: number | undefined;
 }
 
 interface TechnologyRoadmapManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyRoadmapManagement({

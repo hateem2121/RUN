@@ -64,20 +64,20 @@ const contactContentSchema = z.object({
 type ContactContentForm = z.infer<typeof contactContentSchema>;
 
 interface ContactConfig {
-  id?: number;
-  heroTitle?: string;
-  email?: string;
-  phone?: string;
-  locationLine1?: string;
-  locationLine2?: string;
-  locationButtonText?: string;
+  id?: number | undefined;
+  heroTitle?: string | undefined;
+  email?: string | undefined;
+  phone?: string | undefined;
+  locationLine1?: string | undefined;
+  locationLine2?: string | undefined;
+  locationButtonText?: string | undefined;
   tradingHours?: Array<{ label: string; value: string }>;
   socialLinks?: Record<string, string>;
   platformOptions?: string[];
-  formButtonText?: string;
-  formPrivacyText?: string;
-  successHeading?: string;
-  successMessage?: string;
+  formButtonText?: string | undefined;
+  formPrivacyText?: string | undefined;
+  successHeading?: string | undefined;
+  successMessage?: string | undefined;
 }
 
 export function ContactPageSettings() {

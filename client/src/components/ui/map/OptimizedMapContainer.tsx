@@ -21,7 +21,7 @@ const MapMarkers = lazy(() => import("./MapMarkers").then((mod) => ({ default: m
 
 interface OptimizedMapContainerProps {
   locations: MapLocation[];
-  className?: string;
+  className?: string | undefined;
 }
 
 export function OptimizedMapContainer({ locations, className = "" }: OptimizedMapContainerProps) {

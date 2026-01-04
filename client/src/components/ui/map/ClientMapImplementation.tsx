@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 
 interface ClientMapProps {
   locations: MapLocation[];
-  className?: string;
+  className?: string | undefined;
 }
 
 export default function ClientMapImplementation({ locations, className = "" }: ClientMapProps) {

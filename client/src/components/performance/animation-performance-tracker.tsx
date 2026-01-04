@@ -18,7 +18,7 @@ interface AnimationPerformanceMetrics {
 
 interface AnimationPerformanceTrackerProps {
   componentName: string;
-  enabled?: boolean;
+  enabled?: boolean | undefined;
   onMetricsUpdate?: (metrics: AnimationPerformanceMetrics) => void;
 }
 

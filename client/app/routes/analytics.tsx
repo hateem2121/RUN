@@ -21,13 +21,7 @@ import {
 } from "recharts";
 // Badge import removed as unused
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/analytics";
@@ -56,8 +50,7 @@ export function meta({}: Route.MetaArgs) {
     { title: "Analytics Dashboard | RUN APPAREL" },
     {
       name: "description",
-      content:
-        "View detailed analytics and performance metrics for your manufacturing and sales.",
+      content: "View detailed analytics and performance metrics for your manufacturing and sales.",
     },
   ];
 }
@@ -77,14 +70,12 @@ const StatCard = ({
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <Icon className="text-muted-foreground h-4 w-4" />
+      <CardTitle className="font-medium text-sm">{title}</CardTitle>
+      <Icon className="h-4 w-4 text-muted-foreground" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p
-        className={`flex items-center text-xs ${trendUp ? "text-green-500" : "text-red-500"}`}
-      >
+      <div className="font-bold text-2xl">{value}</div>
+      <p className={`flex items-center text-xs ${trendUp ? "text-green-500" : "text-red-500"}`}>
         {trendUp ? (
           <ArrowUpRight className="mr-1 h-3 w-3" />
         ) : (
@@ -124,12 +115,10 @@ export default function Analytics() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-muted/10 min-h-screen space-y-8 p-8">
+      <div className="min-h-screen space-y-8 bg-muted/10 p-8">
         <div className="flex items-center justify-between">
           <div>
-            <Typography.H1 className="text-3xl font-bold tracking-tight">
-              Analytics
-            </Typography.H1>
+            <Typography.H1 className="font-bold text-3xl tracking-tight">Analytics</Typography.H1>
             <Typography.P className="text-muted-foreground">
               Overview of your performance metrics and key indicators
             </Typography.P>
@@ -177,42 +166,34 @@ export default function Analytics() {
           <Card className="col-span-4">
             <CardHeader>
               <CardTitle>Revenue Overview</CardTitle>
-              <CardDescription>
-                Monthly revenue performance for the current year
-              </CardDescription>
+              <CardDescription>Monthly revenue performance for the current year</CardDescription>
             </CardHeader>
             <CardContent className="pl-2">
               <div className="h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      className="stroke-muted"
-                    />
-                    <XAxis
-                      dataKey="name"
-                      className="text-muted-foreground text-xs"
-                    />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="name" className="text-muted-foreground text-xs" />
                     <YAxis className="text-muted-foreground text-xs" />
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           return (
-                            <div className="bg-background rounded-lg border p-2 shadow-xs">
+                            <div className="rounded-lg border bg-background p-2 shadow-xs">
                               <div className="grid grid-cols-2 gap-2">
                                 <div className="flex flex-col">
-                                  <span className="text-muted-foreground text-[0.70rem] uppercase">
+                                  <span className="text-[0.70rem] text-muted-foreground uppercase">
                                     Sales
                                   </span>
-                                  <span className="text-muted-foreground font-bold">
+                                  <span className="font-bold text-muted-foreground">
                                     {payload[0].value}
                                   </span>
                                 </div>
                                 <div className="flex flex-col">
-                                  <span className="text-muted-foreground text-[0.70rem] uppercase">
+                                  <span className="text-[0.70rem] text-muted-foreground uppercase">
                                     Revenue
                                   </span>
-                                  <span className="text-muted-foreground font-bold">
+                                  <span className="font-bold text-muted-foreground">
                                     ${payload[1].value}
                                   </span>
                                 </div>
@@ -230,12 +211,7 @@ export default function Analytics() {
                       strokeWidth={2}
                       activeDot={{ r: 8 }}
                     />
-                    <Line
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="#16a34a"
-                      strokeWidth={2}
-                    />
+                    <Line type="monotone" dataKey="sales" stroke="#16a34a" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -252,9 +228,7 @@ export default function Analytics() {
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="flex items-center">
                     <div className="space-y-1">
-                      <p className="text-sm leading-none font-medium">
-                        New Order #{2023 + i}
-                      </p>
+                      <p className="font-medium text-sm leading-none">New Order #{2023 + i}</p>
                       <p className="text-muted-foreground text-sm">
                         {format(new Date(), "MMM dd, yyyy")}
                       </p>
@@ -270,19 +244,17 @@ export default function Analytics() {
         {/* Quick Links */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Link to="/admin">
-            <Card className="hover:bg-muted/50 cursor-pointer transition-colors">
+            <Card className="cursor-pointer transition-colors hover:bg-muted/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-4 w-4" /> System Health
                 </CardTitle>
-                <CardDescription>
-                  View system performance and logs
-                </CardDescription>
+                <CardDescription>View system performance and logs</CardDescription>
               </CardHeader>
             </Card>
           </Link>
           <Link to="/products">
-            <Card className="hover:bg-muted/50 cursor-pointer transition-colors">
+            <Card className="cursor-pointer transition-colors hover:bg-muted/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="h-4 w-4" /> Products
@@ -292,14 +264,12 @@ export default function Analytics() {
             </Card>
           </Link>
           <Link to="/admin/media">
-            <Card className="hover:bg-muted/50 cursor-pointer transition-colors">
+            <Card className="cursor-pointer transition-colors hover:bg-muted/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" /> Reports
                 </CardTitle>
-                <CardDescription>
-                  Generate sales and specific reports
-                </CardDescription>
+                <CardDescription>Generate sales and specific reports</CardDescription>
               </CardHeader>
             </Card>
           </Link>

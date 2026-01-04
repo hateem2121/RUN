@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 
 interface AnimatedCounterProps {
   value: number;
-  duration?: number;
-  decimals?: number;
-  prefix?: string;
-  suffix?: string;
-  className?: string;
+  duration?: number | undefined;
+  decimals?: number | undefined;
+  prefix?: string | undefined;
+  suffix?: string | undefined;
+  className?: string | undefined;
 }
 
 export function AnimatedCounter({

@@ -2,10 +2,10 @@ import { AppError, BadRequestError, ConflictError, InternalError } from "../erro
 import { logger } from "../lib/monitoring/logger.js";
 
 interface PostgresError extends Error {
-  code?: string;
-  detail?: string;
-  table?: string;
-  constraint?: string;
+  code?: string | undefined;
+  detail?: string | undefined;
+  table?: string | undefined;
+  constraint?: string | undefined;
   [key: string]: any;
 }
 

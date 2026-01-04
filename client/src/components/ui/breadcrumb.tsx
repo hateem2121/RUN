@@ -46,7 +46,7 @@ const BreadcrumbLink = ({
   ref,
   ...props
 }: React.ComponentProps<"a"> & {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
   ref?: React.Ref<HTMLAnchorElement>;
 }) => {
   const Comp = asChild ? Slot : "a";

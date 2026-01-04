@@ -17,10 +17,7 @@ export async function ensureModelViewerLoaded(): Promise<void> {
     try {
       // CRITICAL FIX: Disable ImageBitmap to avoid Replit DevTools fetch interception
       // Forces @google/model-viewer to use HTMLImageElement for embedded textures
-      if (
-        typeof window !== "undefined" &&
-        typeof window.createImageBitmap === "function"
-      ) {
+      if (typeof window !== "undefined" && typeof window.createImageBitmap === "function") {
         try {
           const win = window as unknown as Record<string, unknown>;
           delete win.createImageBitmap;
@@ -36,13 +33,10 @@ export async function ensureModelViewerLoaded(): Promise<void> {
         global.litIsInSSR = false;
         global.litElementVersions = [];
 
-        // Override process.env.NODE_ENV for Lit if needed
+        // Override process.env['NODE_ENV'] for Lit if needed
         if (typeof process === "undefined") {
           global.process = { env: { NODE_ENV: "production" } };
-        } else if (
-          !process.env.NODE_ENV ||
-          process.env.NODE_ENV === "development"
-        ) {
+        } else if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
           // Force production mode for Lit even in development environment
           process.env.NODE_ENV = "production";
         }

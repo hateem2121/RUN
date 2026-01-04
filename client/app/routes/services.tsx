@@ -89,12 +89,12 @@ export default function Services() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-muted/30 relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
+      <section className="relative overflow-hidden bg-muted/30 px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <Typography.H1 className="text-foreground text-4xl font-bold tracking-tight sm:text-6xl">
+          <Typography.H1 className="font-bold text-4xl text-foreground tracking-tight sm:text-6xl">
             End-to-End Manufacturing Services
           </Typography.H1>
-          <Typography.P className="text-muted-foreground mt-6 text-lg leading-8">
+          <Typography.P className="mt-6 text-lg text-muted-foreground leading-8">
             We provide comprehensive solutions for sportswear brands, from initial concept to final
             delivery. Our integrated approach ensures quality, efficiency, and scalability for your
             business.
@@ -115,24 +115,24 @@ export default function Services() {
             >
               {services.map((service) => (
                 <motion.div key={service.title} variants={itemVariants} className="flex flex-col">
-                  <Card className="bg-muted/20 hover:bg-muted/40 flex h-full flex-col transition-colors">
+                  <Card className="flex h-full flex-col bg-muted/20 transition-colors hover:bg-muted/40">
                     <CardContent className="flex flex-1 flex-col p-8">
                       <div className="mb-6 flex">
                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600">
                           <service.icon className="h-6 w-6 text-white" aria-hidden="true" />
                         </div>
                       </div>
-                      <Typography.H3 className="text-foreground text-xl leading-7 font-bold">
+                      <Typography.H3 className="font-bold text-foreground text-xl leading-7">
                         {service.title}
                       </Typography.H3>
-                      <Typography.P className="text-muted-foreground mt-4 flex flex-1 text-base leading-7">
+                      <Typography.P className="mt-4 flex flex-1 text-base text-muted-foreground leading-7">
                         {service.description}
                       </Typography.P>
                       <ul className="mt-8 space-y-3">
                         {service.features.map((feature) => (
                           <li
                             key={feature}
-                            className="text-foreground/80 flex items-center text-sm"
+                            className="flex items-center text-foreground/80 text-sm"
                           >
                             <span className="mr-3 h-1.5 w-1.5 rounded-full bg-blue-600" />
                             {feature}
@@ -149,12 +149,12 @@ export default function Services() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-foreground relative isolate overflow-hidden px-6 py-16 sm:py-24 lg:px-8">
+      <section className="relative isolate overflow-hidden bg-foreground px-6 py-16 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <Typography.H2 className="text-background text-3xl font-bold tracking-tight sm:text-4xl">
+          <Typography.H2 className="font-bold text-3xl text-background tracking-tight sm:text-4xl">
             Ready to start your project?
           </Typography.H2>
-          <Typography.P className="text-background/80 mx-auto mt-6 max-w-xl text-lg leading-8">
+          <Typography.P className="mx-auto mt-6 max-w-xl text-background/80 text-lg leading-8">
             Contact us today to discuss your requirements and how we can help bring your sportswear
             collection to life.
           </Typography.P>

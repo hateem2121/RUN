@@ -9,8 +9,8 @@ interface VirtualizedListProps<T> {
   height: number;
   itemHeight: number;
   renderItem: (props: { index: number; style: React.CSSProperties; data: T }) => React.ReactNode;
-  className?: string;
-  overscanCount?: number;
+  className?: string | undefined;
+  overscanCount?: number | undefined;
 }
 
 /**

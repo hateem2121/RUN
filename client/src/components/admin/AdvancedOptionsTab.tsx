@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface ProductFormData {
   name: string;
   sku: string;
-  description?: string;
+  description?: string | undefined;
   categoryId?: number | null;
   fabricId?: number | null;
   sizeChartId?: number | null;
@@ -29,22 +29,22 @@ interface ProductFormData {
   modelFileId?: number | null;
   accessoryIds?: number[];
   certificateIds?: number[];
-  isActive?: boolean;
-  isFeatured?: boolean;
-  slug?: string;
-  shortDescription?: string;
+  isActive?: boolean | undefined;
+  isFeatured?: boolean | undefined;
+  slug?: string | undefined;
+  shortDescription?: string | undefined;
   technicalSpecs?: Record<string, string>;
   careInstructions?: string[];
   tags?: string[];
   specifications?: string[];
-  minimumOrderQuantity?: string;
-  leadTime?: string;
+  minimumOrderQuantity?: string | undefined;
+  leadTime?: string | undefined;
   customizationOptions?: string[];
   relatedProductIds?: number[];
   primaryImageId?: number | null;
   primaryVideoId?: number | null;
-  metaTitle?: string;
-  metaDescription?: string;
+  metaTitle?: string | undefined;
+  metaDescription?: string | undefined;
 }
 
 interface AdvancedOptionsTabProps {

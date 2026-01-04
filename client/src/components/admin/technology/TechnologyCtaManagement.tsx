@@ -27,11 +27,11 @@ interface TechnologyCta {
   buttonText: string;
   buttonLink: string;
   benefits: string[];
-  isActive?: boolean;
+  isActive?: boolean | undefined;
 }
 
 interface TechnologyCtaManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyCtaManagement({

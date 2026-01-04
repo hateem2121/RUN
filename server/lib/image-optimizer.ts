@@ -9,7 +9,7 @@ import { logger } from "./monitoring/logger.js";
  * - Reduces quality to 80%
  * - Updates req.file.buffer and size
  */
-export const optimizeImageMiddleware: RequestHandler = async (req, res, next) => {
+export const optimizeImageMiddleware: RequestHandler = async (req, _res, next) => {
   if (!req.file || !req.file.buffer) {
     return next();
   }

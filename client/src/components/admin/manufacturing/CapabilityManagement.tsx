@@ -97,18 +97,18 @@ function SortableCapabilityItem({
           <div
             {...attributes}
             {...listeners}
-            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
+            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
           >
             <GripVertical className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h4 className="text-foreground font-medium">{capability.title || capability.name}</h4>
+            <h4 className="font-medium text-foreground">{capability.title || capability.name}</h4>
             {capability.description && (
-              <p className="text-muted-foreground mt-2 text-sm">{capability.description}</p>
+              <p className="mt-2 text-muted-foreground text-sm">{capability.description}</p>
             )}
             {specs.length > 0 && (
               <div className="mt-2">
-                <p className="text-muted-foreground text-xs font-medium">Specifications:</p>
+                <p className="font-medium text-muted-foreground text-xs">Specifications:</p>
                 <div className="text-muted-foreground text-xs">
                   {specs
                     .slice(0, 2)
@@ -125,7 +125,7 @@ function SortableCapabilityItem({
             )}
             {capability.equipment && capability.equipment.length > 0 && (
               <div className="mt-2">
-                <p className="text-muted-foreground text-xs font-medium">Equipment:</p>
+                <p className="font-medium text-muted-foreground text-xs">Equipment:</p>
                 <div className="text-muted-foreground text-xs">
                   {capability.equipment.slice(0, 3).join(", ")}
                   {capability.equipment.length > 3 && ` +${capability.equipment.length - 3} more`}
@@ -372,7 +372,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
         {capabilitiesLoading ? (
           <div className="py-8 text-center">Loading capabilities...</div>
         ) : capabilities.length === 0 ? (
-          <div className="text-muted-foreground py-8 text-center">
+          <div className="py-8 text-center text-muted-foreground">
             No manufacturing capabilities found. Create your first capability to get started.
           </div>
         ) : (
@@ -460,7 +460,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                       <div>
                         <Label htmlFor="capability-icon">Icon</Label>
                         <Select
-                          value={capabilityForm.icon || undefined}
+                          value={capabilityForm.icon || ""}
                           onValueChange={(value) =>
                             setCapabilityForm({
                               ...capabilityForm,
@@ -668,7 +668,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                   {showPreview && (
                     <div className="flex-1 border-l pl-6">
                       <div className="sticky top-0 space-y-4">
-                        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm">
+                        <div className="mb-4 flex items-center gap-2 text-muted-foreground text-sm">
                           <LayoutTemplate className="h-4 w-4" />
                           <span>Live Preview</span>
                         </div>
@@ -679,7 +679,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
                             mediaAssets={mediaAssets}
                           />
                         </LivePreviewGrid>
-                        <div className="bg-muted/50 text-muted-foreground rounded-lg p-4 text-xs">
+                        <div className="rounded-lg bg-muted/50 p-4 text-muted-foreground text-xs">
                           <p>
                             This preview shows how the capability card will appear on the public
                             site. The layout size may adjust based on content volume.

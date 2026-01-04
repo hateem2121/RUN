@@ -90,7 +90,7 @@ export const enforceValidation: RequestHandler = (req, _res, next) => {
 export function validateBody<T extends z.ZodType>(
   schema: T,
   options: {
-    allowEmpty?: boolean; // Default: false - reject empty bodies
+    allowEmpty?: boolean | undefined; // Default: false - reject empty bodies
   } = {},
 ): RequestHandler {
   const { allowEmpty = false } = options;

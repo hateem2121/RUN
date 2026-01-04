@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 
 interface MediaSkeletonProps {
   type?: "image" | "video" | "3d-model";
-  className?: string;
-  aspectRatio?: string;
+  className?: string | undefined;
+  aspectRatio?: string | undefined;
 }
 
 export function MediaSkeleton({

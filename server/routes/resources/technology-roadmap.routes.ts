@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * TECHNOLOGY ROADMAP RESOURCE ROUTER
  *
@@ -92,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newItem = await withTimeout(
-      getStorage().createTechnologyRoadmap(validation.data),
+      getStorage().createTechnologyRoadmap(removeUndefined(validation.data)),
       10000,
       "Create technology roadmap item",
     );
@@ -128,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyRoadmap(id, validation.data),
+      getStorage().updateTechnologyRoadmap(id, removeUndefined(validation.data)),
       10000,
       "Update technology roadmap item",
     );
@@ -198,7 +200,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.roadmap.map(({ id, position }) =>
+      removeUndefined(validation.data).roadmap.map(({ id, position }) =>
         getStorage().updateTechnologyRoadmap(id, { sortOrder: position }),
       ),
     );

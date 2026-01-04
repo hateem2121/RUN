@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * ABOUT TIMELINE RESOURCE ROUTER
  *
@@ -98,7 +100,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newEntry = await withTimeout(
-      aboutService.createTimelineEntry(validation.data),
+      aboutService.createTimelineEntry(removeUndefined(validation.data)),
       10000,
       "Create timeline entry",
     );
@@ -143,7 +145,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updatedEntry = await withTimeout(
-      aboutService.updateTimelineEntry(id, validation.data),
+      aboutService.updateTimelineEntry(id, removeUndefined(validation.data)),
       10000,
       "Update timeline entry",
     );
@@ -224,7 +226,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     // Update positions for each entry
     const updates = await Promise.all(
-      validation.data.entries.map(({ id, position }) =>
+      removeUndefined(validation.data).entries.map(({ id, position }) =>
         aboutService.updateTimelineEntry(id, { sortOrder: position }),
       ),
     );

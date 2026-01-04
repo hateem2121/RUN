@@ -40,8 +40,8 @@ interface IconPickerProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (iconName: string) => void;
-  currentIcon?: string;
-  title?: string;
+  currentIcon?: string | undefined;
+  title?: string | undefined;
 }
 
 export function IconPicker({
@@ -149,8 +149,8 @@ export function getIconComponent(iconName: string | null | undefined): LucideIco
 // Helper component for displaying selected icon
 interface IconDisplayProps {
   iconName: string | null | undefined;
-  className?: string;
-  showBackground?: boolean;
+  className?: string | undefined;
+  showBackground?: boolean | undefined;
 }
 
 export function IconDisplay({

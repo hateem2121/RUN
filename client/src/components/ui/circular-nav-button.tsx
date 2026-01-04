@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 interface CircularNavButtonProps {
   href: string;
-  text?: string;
+  text?: string | undefined;
 }
 
 export function CircularNavButton({

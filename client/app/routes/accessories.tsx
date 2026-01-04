@@ -119,10 +119,10 @@ export default function Accessories() {
     <div className="space-y-3 text-sm">
       {accessory.specifications && accessory.specifications.length > 0 && (
         <div>
-          <span className="text-foreground/80 font-medium">Specifications:</span>
+          <span className="font-medium text-foreground/80">Specifications:</span>
           <ul className="mt-2 space-y-1">
             {accessory.specifications.map((spec: string, index: number) => (
-              <li key={index} className="text-muted-foreground relative pl-4">
+              <li key={index} className="relative pl-4 text-muted-foreground">
                 <span className="absolute left-0">•</span>
                 {spec}
               </li>
@@ -132,8 +132,8 @@ export default function Accessories() {
       )}
       {accessory.description && (
         <div>
-          <span className="text-foreground/80 font-medium">Details:</span>
-          <Typography.P className="text-muted-foreground mt-1">
+          <span className="font-medium text-foreground/80">Details:</span>
+          <Typography.P className="mt-1 text-muted-foreground">
             {accessory.description}
           </Typography.P>
         </div>
@@ -143,7 +143,7 @@ export default function Accessories() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="from-muted/30 to-background min-h-screen bg-linear-to-b">
+      <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           {/* Header */}
           <motion.div
@@ -151,20 +151,20 @@ export default function Accessories() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-12 text-center"
           >
-            <Typography.H1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
+            <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
               Accessories & Components
             </Typography.H1>
-            <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
+            <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
               Premium components and customization options for professional sportswear manufacturing
             </Typography.P>
 
             <div className="mt-8 flex justify-center gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{accessories.length}</div>
+                <div className="font-bold text-3xl text-blue-600">{accessories.length}</div>
                 <div className="text-muted-foreground text-sm">Total Accessories</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">
+                <div className="font-bold text-3xl text-purple-600">
                   {new Set(accessories.map((a) => a.category).filter(Boolean)).size}
                 </div>
                 <div className="text-muted-foreground text-sm">Categories</div>
@@ -194,8 +194,8 @@ export default function Accessories() {
                   animate={{ opacity: 1 }}
                   className="py-16 text-center"
                 >
-                  <Package className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
-                  <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
+                  <Package className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                  <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                     {searchTerm ? "No accessories found" : "No accessories available"}
                   </Typography.H3>
                   <Typography.P className="text-muted-foreground">

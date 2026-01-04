@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 interface StatusBadgeProps {
   isActive: boolean;
   activeColor?: "green" | "blue" | "purple" | "indigo";
-  activeLabel?: string;
-  inactiveLabel?: string;
-  className?: string;
+  activeLabel?: string | undefined;
+  inactiveLabel?: string | undefined;
+  className?: string | undefined;
 }
 
 /**

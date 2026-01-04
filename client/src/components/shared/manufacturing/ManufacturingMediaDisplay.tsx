@@ -8,11 +8,11 @@ interface ManufacturingMediaDisplayProps {
   mediaAssets: MediaAsset[];
   mediaIds?: number[] | null;
   mediaId?: number | null;
-  className?: string;
+  className?: string | undefined;
   variant?: "hero" | "gallery" | "thumbnail" | "background";
-  showMultipleIndicator?: boolean;
+  showMultipleIndicator?: boolean | undefined;
   aspectRatio?: "square" | "video" | "banner" | "auto";
-  enableLightbox?: boolean;
+  enableLightbox?: boolean | undefined;
   placeholder?: React.ReactNode;
 }
 

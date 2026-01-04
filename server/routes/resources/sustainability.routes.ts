@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * SUSTAINABILITY RESOURCE ROUTER
  *
@@ -284,7 +286,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
 
     // Update in database with timeout protection
     const updated = await withTimeout(
-      getStorage().updateUnifiedSustainability(validatedData),
+      getStorage().updateUnifiedSustainability(removeUndefined(validatedData)),
       10000,
       "Update unified sustainability config",
     );
@@ -301,7 +303,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
 
     // Log successful save with persisted data
     logger.info(`[Sustainability] ✅ Save successful [${reqId}]`, {
-      savedFields: Object.keys(validatedData),
+      savedFields: Object.keys(removeUndefined(validatedData)),
       certificationIds: updated.certificationIds,
       backgroundImageId: updated.backgroundImageId,
       ctaText: updated.ctaText,

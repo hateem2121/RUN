@@ -29,19 +29,19 @@ interface TechnologyHero {
   id: number;
   title: string;
   subtitle: string;
-  description?: string;
+  description?: string | undefined;
   primaryButtonText: string;
   primaryButtonLink: string;
-  secondaryButtonText?: string;
-  secondaryButtonLink?: string;
+  secondaryButtonText?: string | undefined;
+  secondaryButtonLink?: string | undefined;
   backgroundMediaId?: number | null;
-  isActive?: boolean;
+  isActive?: boolean | undefined;
 }
 
 // MediaAsset imported from shared schema
 
 interface TechnologyHeroManagementProps {
-  isLoading?: boolean;
+  isLoading?: boolean | undefined;
 }
 
 export function TechnologyHeroManagement({

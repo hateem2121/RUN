@@ -12,14 +12,14 @@ interface FilterConfig {
   categories?: string[];
   scoreRange?: { min: number; max: number };
   status?: string[];
-  searchTerm?: string;
+  searchTerm?: string | undefined;
 }
 
 interface InteractiveDataFilterProps {
   onFilterChange: (filters: FilterConfig) => void;
   categories?: string[];
-  showScoreFilter?: boolean;
-  showStatusFilter?: boolean;
+  showScoreFilter?: boolean | undefined;
+  showStatusFilter?: boolean | undefined;
 }
 
 export function InteractiveDataFilter({
@@ -38,9 +38,9 @@ export function InteractiveDataFilter({
   const applyFilters = () => {
     const newFilters: FilterConfig = {
       searchTerm: localSearch,
-      categories: selectedCategories.length > 0 ? selectedCategories : undefined,
-      scoreRange: showScoreFilter ? { min: scoreRange[0]!, max: scoreRange[1]! } : undefined,
-      status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+      ...(selectedCategories.length > 0 ? { categories: selectedCategories } : {}),
+      ...(showScoreFilter ? { scoreRange: { min: scoreRange[0]!, max: scoreRange[1]! } } : {}),
+      ...(selectedStatuses.length > 0 ? { status: selectedStatuses } : {}),
     };
     setFilters(newFilters);
     onFilterChange(newFilters);

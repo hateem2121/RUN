@@ -73,18 +73,18 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
   return (
     <>
       <div
-        className="z-modal-backdrop fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 z-modal-backdrop bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Drawer - Wrapped in FocusScope for keyboard accessibility */}
       <FocusScope trapped>
-        <div className="z-modal fixed inset-y-0 right-0 flex h-full w-full transform flex-col border-l border-slate-200 bg-white shadow-2xl transition-transform duration-300 ease-in-out md:w-lg">
+        <div className="fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-slate-200 border-l bg-white shadow-2xl transition-transform duration-300 ease-in-out md:w-lg">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 p-6">
+          <div className="flex items-center justify-between border-slate-100 border-b bg-slate-50 p-6">
             <div>
-              <h2 className="text-xl font-bold text-slate-900">Project Inquiry</h2>
-              <p className="mt-1 text-sm text-slate-500">Review items and request a quote</p>
+              <h2 className="font-bold text-slate-900 text-xl">Project Inquiry</h2>
+              <p className="mt-1 text-slate-500 text-sm">Review items and request a quote</p>
             </div>
             <button
               type="button"
@@ -109,7 +109,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
           </div>
 
           {success ? (
-            <div className="fade-in zoom-in animate-in flex flex-1 flex-col items-center justify-center p-8 text-center duration-300">
+            <div className="fade-in zoom-in flex flex-1 animate-in flex-col items-center justify-center p-8 text-center duration-300">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +125,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <h3 className="mb-2 text-2xl font-bold text-slate-900">Request Received!</h3>
+              <h3 className="mb-2 font-bold text-2xl text-slate-900">Request Received!</h3>
               <p className="text-slate-600">
                 We have received your project inquiry. Our engineering team will review your
                 specifications and contact you shortly.
@@ -136,7 +136,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {/* Items List */}
               <div className="space-y-6 p-6">
                 {items.length === 0 ? (
-                  <div className="rounded-xl border-2 border-dashed border-slate-200 py-12 text-center">
+                  <div className="rounded-xl border-2 border-slate-200 border-dashed py-12 text-center">
                     <p className="text-slate-500">Your quote list is empty.</p>
                     <button
                       type="button"
@@ -148,7 +148,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                    <h3 className="font-semibold text-slate-500 text-xs uppercase tracking-wider">
                       Selected Items ({items.length})
                     </h3>
                     {items.map((item: any) => (
@@ -179,7 +179,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                               >
                                 -
                               </button>
-                              <span className="w-12 px-2 text-center text-sm font-medium">
+                              <span className="w-12 px-2 text-center font-medium text-sm">
                                 {item.quantity}
                               </span>
                               <button
@@ -193,7 +193,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                             <button
                               type="button"
                               onClick={() => removeFromQuote(item.id)}
-                              className="text-xs text-red-500 hover:underline"
+                              className="text-red-500 text-xs hover:underline"
                             >
                               Remove
                             </button>
@@ -207,8 +207,8 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
               {/* Inquiry Form */}
               {items.length > 0 && (
-                <div className="border-t border-slate-100 bg-slate-50/50 p-6">
-                  <h3 className="mb-4 text-lg font-bold text-slate-900">Contact Details</h3>
+                <div className="border-slate-100 border-t bg-slate-50/50 p-6">
+                  <h3 className="mb-4 font-bold text-lg text-slate-900">Contact Details</h3>
                   <Form {...methods}>
                     <form
                       id="inquiry-form"
@@ -220,7 +220,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         name="contact.name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="mb-1 block text-sm font-medium text-slate-700">
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
                               Full Name
                             </FormLabel>
                             <FormControl>
@@ -236,7 +236,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         name="contact.company"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="mb-1 block text-sm font-medium text-slate-700">
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
                               Company Name
                             </FormLabel>
                             <FormControl>
@@ -252,7 +252,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         name="contact.email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="mb-1 block text-sm font-medium text-slate-700">
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
                               Work Email
                             </FormLabel>
                             <FormControl>
@@ -268,7 +268,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         name="contact.projectDescription"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="mb-1 block text-sm font-medium text-slate-700">
+                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
                               Project Description (Optional)
                             </FormLabel>
                             <FormControl>
@@ -292,12 +292,12 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
           {/* Footer Actions */}
           {!success && items.length > 0 && (
-            <div className="border-t border-slate-200 bg-white p-6">
+            <div className="border-slate-200 border-t bg-white p-6">
               <button
                 type="submit"
                 form="inquiry-form"
                 disabled={mutation.isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 font-bold text-white shadow-blue-600/20 shadow-lg transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {mutation.isPending ? "Processing..." : "Submit Quote Request"}
                 {!mutation.isPending && (

@@ -6,7 +6,7 @@ interface VideoMaskCardProps {
   title: string;
   description: string;
   mediaUrl?: string | null;
-  link?: string;
+  link?: string | undefined;
 }
 
 function VideoMaskCard({ title, description, mediaUrl, link }: VideoMaskCardProps) {

@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * TECHNOLOGY GRADIENT SETTINGS RESOURCE ROUTER
  *
@@ -130,7 +132,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyGradientSettings(finalValidation.data),
+      getStorage().updateTechnologyGradientSettings(removeUndefined(finalValidation.data)),
       10000,
       "Update technology gradient settings",
     );

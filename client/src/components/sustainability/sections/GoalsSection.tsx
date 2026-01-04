@@ -10,8 +10,8 @@ export function GoalsSection({
   description = "Track our progress toward achieving ambitious sustainability targets and environmental commitments.",
 }: {
   goals: SustainabilityGoal[];
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
 }) {
   const goalsWithProgress = useMemo(
     () =>

@@ -53,7 +53,7 @@ const DialogOverlay = ({
   ref,
   ...props
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
-  nestingLevel?: number;
+  nestingLevel?: number | undefined;
   ref?: React.Ref<React.ElementRef<typeof DialogPrimitive.Overlay>>;
 }) => {
   const baseOpacity = nestingLevel === 0 ? "bg-black/80" : "bg-black/60";
@@ -80,14 +80,14 @@ DialogOverlay.displayName = "DialogOverlay";
 // Enhanced content with focus management and accessibility
 interface DialogContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
-  nestingLevel?: number;
+  nestingLevel?: number | undefined;
   onOpenChange?: (open: boolean) => void;
-  isOpen?: boolean;
-  shouldTrapFocus?: boolean;
-  restoreFocus?: boolean;
-  autoFocus?: boolean;
-  description?: string;
-  role?: string;
+  isOpen?: boolean | undefined;
+  shouldTrapFocus?: boolean | undefined;
+  restoreFocus?: boolean | undefined;
+  autoFocus?: boolean | undefined;
+  description?: string | undefined;
+  role?: string | undefined;
   contentType?: "default" | "media-library" | "form" | "fullscreen";
   preferredSize?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
   ref?: React.Ref<React.ElementRef<typeof DialogPrimitive.Content>>;
@@ -461,11 +461,11 @@ interface NestedDialogProps {
   onOpenChange: (open: boolean) => void;
   trigger?: React.ReactNode;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: React.ReactNode;
-  nestingLevel?: number;
+  nestingLevel?: number | undefined;
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
-  className?: string;
+  className?: string | undefined;
   contentType?: "default" | "media-library" | "form" | "fullscreen";
 }
 

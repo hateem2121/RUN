@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * MANUFACTURING CAPABILITIES RESOURCE ROUTER
  *
@@ -84,7 +86,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newCapability = await withTimeout(
-      getStorage().createManufacturingCapability(validation.data as any),
+      getStorage().createManufacturingCapability(removeUndefined(validation.data) as any),
       10000,
       "Create manufacturing capability",
     );
@@ -117,7 +119,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateManufacturingCapability(id, validation.data),
+      getStorage().updateManufacturingCapability(id, removeUndefined(validation.data)),
       10000,
       "Update manufacturing capability",
     );
@@ -184,10 +186,11 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.capabilities.map(({ id, position }: { id: number; position: number }) =>
-        getStorage().updateManufacturingCapability(id, {
-          sortOrder: position,
-        }),
+      removeUndefined(validation.data).capabilities.map(
+        ({ id, position }: { id: number; position: number }) =>
+          getStorage().updateManufacturingCapability(id, {
+            sortOrder: position,
+          }),
       ),
     );
 

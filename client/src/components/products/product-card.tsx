@@ -36,7 +36,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
       data-testid={`product-card-${product.id}`}
     >
       <CardContent className="p-0">
-        <div className="bg-muted/50 relative flex aspect-4/3 items-center justify-center overflow-hidden">
+        <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-muted/50">
           {activeMediaId ? (
             <OptimizedImage
               mediaId={activeMediaId}
@@ -66,7 +66,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
           <div className="absolute inset-0 hidden items-center justify-center bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
             <button
               onClick={() => onQuickViewClick(product)}
-              className="bg-background/90 text-foreground hover:bg-background focus:ring-ring flex min-h-11 items-center justify-center px-6 py-3 text-xs tracking-widest uppercase backdrop-blur-xs transition-colors focus:ring-2 focus:ring-offset-2"
+              className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
               data-testid={`quick-view-${product.id}`}
             >
               Quick View
@@ -76,7 +76,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
           {/* Mobile quick view button */}
           <button
             onClick={() => onQuickViewClick(product)}
-            className="bg-background text-foreground hover:bg-muted focus:ring-ring absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 shadow-lg transition-colors focus:ring-2 focus:ring-offset-2 md:hidden"
+            className="absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2 md:hidden"
             data-testid={`quick-view-mobile-${product.id}`}
             aria-label="Quick view product"
           >
@@ -86,15 +86,15 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
       </CardContent>
 
       <CardFooter className="flex-col items-start p-4 text-center">
-        <h3 className="text-foreground mb-2 w-full text-lg font-semibold tracking-wide uppercase">
+        <h3 className="mb-2 w-full font-semibold text-foreground text-lg uppercase tracking-wide">
           {product.name}
         </h3>
-        <div className="text-muted-foreground mt-1 w-full space-x-2 text-sm tracking-wide uppercase">
+        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
           <span>{product.fabric}</span>
           <span>|</span>
           <span>{product.weight.value} GSM</span>
         </div>
-        <div className="text-muted-foreground mt-1 w-full space-x-2 text-sm tracking-wide uppercase">
+        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
           <span>MOQ: {product.moq}</span>
           <span>|</span>
           <span>LEAD: {product.leadTime}</span>
@@ -103,7 +103,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
         <div className="mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
           <Link
             to={product.detailUrl}
-            className="border-border bg-background text-foreground hover:border-foreground focus:ring-ring flex min-h-11 w-full items-center justify-center gap-2 border px-4 py-3 text-xs tracking-widest uppercase transition-colors focus:ring-2 focus:ring-offset-2"
+            className="flex min-h-11 w-full items-center justify-center gap-2 border border-border bg-background px-4 py-3 text-foreground text-xs uppercase tracking-widest transition-colors hover:border-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2"
             data-testid={`view-details-${product.id}`}
           >
             <span>View Details</span>
@@ -112,7 +112,7 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
           <button
             onClick={handleRequestQuote}
             disabled={alreadyInCart}
-            className="bg-primary text-primary-foreground focus:ring-ring disabled:bg-muted disabled:text-muted-foreground flex min-h-11 w-full items-center justify-center px-4 py-3 text-xs tracking-widest uppercase transition-colors focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed"
+            className="flex min-h-11 w-full items-center justify-center bg-primary px-4 py-3 text-primary-foreground text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
             data-testid={`request-quote-${product.id}`}
           >
             {alreadyInCart ? "Added" : "Request Quote"}

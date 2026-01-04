@@ -7,9 +7,9 @@
 import { logger } from "../monitoring/logger.js";
 
 interface RetryOptions {
-  maxRetries?: number;
-  backoffMs?: number;
-  operationName?: string;
+  maxRetries?: number | undefined;
+  backoffMs?: number | undefined;
+  operationName?: string | undefined;
 }
 
 /**

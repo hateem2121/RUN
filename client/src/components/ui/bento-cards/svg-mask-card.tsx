@@ -9,11 +9,11 @@ interface SvgMaskCardProps {
   title: string;
   description: string;
   // Enhanced dual media props
-  maskSvgUrl?: string | null; // New: Custom SVG mask file
-  contentMediaUrl?: string | null; // New: Content media (video/image)
+  maskSvgUrl?: string | null | undefined; // Custom SVG mask file
+  contentMediaUrl?: string | null | undefined; // Content media (video/image)
   // Legacy support
-  mediaUrl?: string | null; // Backward compatibility
-  link?: string;
+  mediaUrl?: string | null | undefined; // Backward compatibility
+  link?: string | undefined;
 }
 
 const SvgMaskCard = memo(function SvgMaskCard({

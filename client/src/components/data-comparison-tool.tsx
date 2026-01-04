@@ -9,12 +9,12 @@ interface DataPoint {
   label: string;
   value: number;
   unit: string;
-  change?: number;
+  change?: number | undefined;
 }
 
 interface DataComparisonToolProps {
   data: DataPoint[];
-  title?: string;
+  title?: string | undefined;
 }
 
 export function DataComparisonTool({ data, title = "Data Overview" }: DataComparisonToolProps) {

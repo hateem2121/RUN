@@ -25,9 +25,11 @@ export function useCachedResources<T>(
   return useQuery<T>({
     queryKey,
     queryFn: fetcher,
-    staleTime: mergedOptions.staleTime,
-    gcTime: mergedOptions.gcTime,
-    refetchOnWindowFocus: mergedOptions.refetchOnWindowFocus,
+    ...(mergedOptions.staleTime !== undefined ? { staleTime: mergedOptions.staleTime } : {}),
+    ...(mergedOptions.gcTime !== undefined ? { gcTime: mergedOptions.gcTime } : {}),
+    ...(mergedOptions.refetchOnWindowFocus !== undefined
+      ? { refetchOnWindowFocus: mergedOptions.refetchOnWindowFocus }
+      : {}),
   });
 }
 

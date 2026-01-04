@@ -407,8 +407,8 @@ export function buildInsertMediaAsset(metadata: MediaMetadata): InsertMediaAsset
 
 export interface UploadOptions {
   tags?: string[];
-  altText?: string;
-  caption?: string;
+  altText?: string | undefined;
+  caption?: string | undefined;
   folderId?: number | null;
 }
 
@@ -466,10 +466,10 @@ export async function processUploadedFile(
       url: `/api/media/${storageKey}`,
       storagePath: storageKey,
       bucketName: appStorageService.getBucketName(),
-      tags: options.tags,
-      altText: options.altText,
-      caption: options.caption,
-      folderId: options.folderId,
+      tags: options.tags || [],
+      altText: options.altText || "",
+      caption: options.caption || "",
+      folderId: options.folderId ?? null,
     };
 
     // Save to database

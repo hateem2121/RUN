@@ -3,9 +3,9 @@ import { useEffect } from "react";
 interface SEOMetaProps {
   title: string;
   description: string;
-  keywords?: string;
-  ogImage?: string;
-  ogType?: string;
+  keywords?: string | undefined;
+  ogImage?: string | undefined;
+  ogType?: string | undefined;
 }
 
 export function SEOMeta({

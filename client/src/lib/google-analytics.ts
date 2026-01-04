@@ -109,7 +109,7 @@ export class GoogleAnalytics {
       page_path: path || window.location.pathname,
       page_title: title || document.title,
       page_location: window.location.href,
-      custom_parameters: customParams,
+      ...(customParams ? { custom_parameters: customParams } : {}),
     };
 
     window.gtag("config", this.measurementId, {

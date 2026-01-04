@@ -25,7 +25,7 @@ interface QueryPlanMetrics {
   indexScans: number;
   plan: string;
   status: "success" | "error" | "timeout";
-  error?: string;
+  error?: string | undefined;
 }
 
 interface ComparisonResults {

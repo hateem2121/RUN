@@ -96,9 +96,7 @@ class PerformanceMonitor {
       }
 
       const paintEntries = performance.getEntriesByType("paint");
-      const fcpEntry = paintEntries.find(
-        (entry) => entry.name === "first-contentful-paint",
-      );
+      const fcpEntry = paintEntries.find((entry) => entry.name === "first-contentful-paint");
       if (fcpEntry) {
         this.metrics.fcp = fcpEntry.startTime;
       }
@@ -118,13 +116,10 @@ class PerformanceMonitor {
   }
 
   private measureMemoryUsage() {
-    if (typeof window === "undefined" || typeof performance === "undefined")
-      return;
+    if (typeof window === "undefined" || typeof performance === "undefined") return;
 
     if ("memory" in performance) {
-      const memory = (
-        performance as Performance & { memory: { usedJSHeapSize: number } }
-      ).memory;
+      const memory = (performance as Performance & { memory: { usedJSHeapSize: number } }).memory;
       this.metrics.memoryUsage = memory.usedJSHeapSize / 1024 / 1024; // MB
     }
   }
@@ -132,9 +127,7 @@ class PerformanceMonitor {
   // Bundle Analysis (Client-side estimation)
   public async analyzeBundles(): Promise<BundleAnalysis> {
     const scripts = Array.from(document.querySelectorAll("script[src]"));
-    const links = Array.from(
-      document.querySelectorAll('link[rel="stylesheet"]'),
-    );
+    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
 
     const chunks: { name: string; size: number }[] = [];
     let totalSize = 0;
@@ -145,10 +138,7 @@ class PerformanceMonitor {
       if (src?.includes("/assets/")) {
         try {
           const response = await fetch(src, { method: "HEAD" });
-          const size = parseInt(
-            response.headers.get("content-length") || "0",
-            10,
-          );
+          const size = parseInt(response.headers.get("content-length") || "0", 10);
           const name = src.split("/").pop() || "unknown";
           chunks.push({ name, size });
           totalSize += size;
@@ -162,10 +152,7 @@ class PerformanceMonitor {
       if (href?.includes("/assets/")) {
         try {
           const response = await fetch(href, { method: "HEAD" });
-          const size = parseInt(
-            response.headers.get("content-length") || "0",
-            10,
-          );
+          const size = parseInt(response.headers.get("content-length") || "0", 10);
           const name = href.split("/").pop() || "unknown";
           chunks.push({ name, size });
           totalSize += size;
@@ -261,17 +248,11 @@ ${
 export const performanceMonitor = new PerformanceMonitor();
 
 // Export utilities for performance testing
-export const measureComponentRender = (
-  _componentName: string,
-  fn: () => void,
-) => {
+export const measureComponentRender = (_componentName: string, fn: () => void) => {
   fn();
 };
 
-export const measureAsyncOperation = async (
-  _operationName: string,
-  fn: () => Promise<any>,
-) => {
+export const measureAsyncOperation = async (_operationName: string, fn: () => Promise<any>) => {
   const result = await fn();
   return result;
 };
@@ -279,9 +260,7 @@ export const measureAsyncOperation = async (
 // Memory leak detection
 export const detectMemoryLeaks = () => {
   if ("memory" in performance) {
-    const memory = (
-      performance as Performance & { memory: { usedJSHeapSize: number } }
-    ).memory;
+    const memory = (performance as Performance & { memory: { usedJSHeapSize: number } }).memory;
     const baseline = memory.usedJSHeapSize;
 
     setTimeout(() => {

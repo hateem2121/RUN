@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 
 interface BentoCardContainerProps {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   style?: React.CSSProperties;
-  autoRows?: string;
+  autoRows?: string | undefined;
 }
 
 export function BentoCardContainer({

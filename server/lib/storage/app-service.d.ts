@@ -170,8 +170,8 @@ export declare class AppStorageService {
     key: string,
     data: Buffer | Uint8Array | string,
     metadata?: {
-      contentType?: string;
-      isPublic?: boolean;
+      contentType?: string | undefined;
+      isPublic?: boolean | undefined;
     },
   ): Promise<string>;
   private isUint8Array;
@@ -213,8 +213,8 @@ export declare class AppStorageService {
       key: string;
       data: Buffer | Uint8Array | string;
       metadata?: {
-        contentType?: string;
-        isPublic?: boolean;
+        contentType?: string | undefined;
+        isPublic?: boolean | undefined;
       };
     }>,
   ): Promise<string[]>;

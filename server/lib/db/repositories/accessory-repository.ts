@@ -24,7 +24,7 @@ const ACCESSORY_CACHE_TTL = 86400 * 1000; // 24 hours (accessories change infreq
  * Normalize filter object for consistent cache keys
  * Sorts object keys alphabetically before serialization to prevent cache misses from key order differences
  */
-function normalizeFilters(filters?: { category?: string; search?: string }): string {
+function normalizeFilters(filters?: { category?: string | undefined; search?: string }): string {
   if (!filters || Object.keys(filters).length === 0) return "{}";
 
   // Sort keys alphabetically for consistent cache keys
@@ -74,7 +74,7 @@ export class AccessoryRepository {
   async getAccessories(
     limit: number = 100,
     offset: number = 0,
-    filters?: { category?: string; search?: string },
+    filters?: { category?: string | undefined; search?: string },
   ): Promise<Accessory[]> {
     const perfTracker = queryPerformanceMonitor.startQuery("getAccessories");
 
@@ -130,7 +130,10 @@ export class AccessoryRepository {
   /**
    * Get total count of accessories with filters
    */
-  async getAccessoriesCount(filters?: { category?: string; search?: string }): Promise<number> {
+  async getAccessoriesCount(filters?: {
+    category?: string | undefined;
+    search?: string;
+  }): Promise<number> {
     const conditions = [isNull(accessories.deletedAt), eq(accessories.isActive, true)];
 
     if (filters?.category) {
@@ -162,7 +165,7 @@ export class AccessoryRepository {
   async getAccessoriesWithCount(
     limit: number = 100,
     offset: number = 0,
-    filters?: { category?: string; search?: string },
+    filters?: { category?: string | undefined; search?: string },
   ): Promise<{ accessories: Accessory[]; total: number }> {
     const perfTracker = queryPerformanceMonitor.startQuery("getAccessoriesWithCount");
     const cacheKey = `accessories:batch:${limit}:${offset}:${normalizeFilters(filters)}`;

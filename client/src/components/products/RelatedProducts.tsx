@@ -10,8 +10,8 @@ import { LazyMediaEnhanced } from "./LazyMediaEnhanced";
 
 interface RelatedProductsProps {
   currentProductId: number;
-  categoryId?: number;
-  fabricId?: number;
+  categoryId?: number | undefined;
+  fabricId?: number | undefined;
   tags?: string[];
 }
 
@@ -157,7 +157,7 @@ export function RelatedProducts({
 
   return (
     <div className="mt-16">
-      <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
+      <h2 className="mb-6 font-bold text-2xl">Related Products</h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {relatedProducts.map((product) => {
           const primaryMedia = getPrimaryMedia(product);
@@ -170,9 +170,9 @@ export function RelatedProducts({
 
           return (
             <Link to={productUrl} key={product.id}>
-              <Card className="group transition-shadow-sm h-full cursor-pointer overflow-hidden hover:shadow-lg">
+              <Card className="group h-full cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg">
                 {/* Media Preview */}
-                <div className="bg-muted relative aspect-4/5 overflow-hidden">
+                <div className="relative aspect-4/5 overflow-hidden bg-muted">
                   {primaryMedia ? (
                     <LazyMediaEnhanced
                       mediaId={primaryMedia.id}
@@ -181,7 +181,7 @@ export function RelatedProducts({
                       priority={false}
                     />
                   ) : (
-                    <div className="text-muted-foreground/70 flex h-full w-full items-center justify-center">
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
                       <LayoutGrid className="h-12 w-12" />
                     </div>
                   )}
@@ -199,14 +199,14 @@ export function RelatedProducts({
 
                 {/* Product Info */}
                 <div className="p-4">
-                  <h3 className="mb-1 text-lg font-semibold transition-colors group-hover:text-blue-600">
+                  <h3 className="mb-1 font-semibold text-lg transition-colors group-hover:text-blue-600">
                     {product.name || "Unnamed Product"}
                   </h3>
                   {product.sku && (
-                    <p className="text-muted-foreground mb-2 text-sm">SKU: {product.sku}</p>
+                    <p className="mb-2 text-muted-foreground text-sm">SKU: {product.sku}</p>
                   )}
                   {product.description && (
-                    <p className="text-foreground/80 line-clamp-2 text-sm">{product.description}</p>
+                    <p className="line-clamp-2 text-foreground/80 text-sm">{product.description}</p>
                   )}
                 </div>
               </Card>

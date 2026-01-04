@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
   icon?: React.ElementType<{ className?: string }>;
   action?: {
     label: string;
     onClick: () => void;
   };
-  className?: string;
+  className?: string | undefined;
 }
 
 export function EmptyState({
@@ -23,16 +23,16 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "fade-in-50 animate-in flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center",
+        "fade-in-50 flex min-h-[400px] w-full animate-in flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center",
         "border-border/50 bg-surface-subtle/50 dark:bg-muted/10",
         className,
       )}
     >
-      <div className="bg-surface-muted dark:bg-muted mx-auto flex h-12 w-12 items-center justify-center rounded-full">
-        <Icon className="text-muted-foreground h-6 w-6" />
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-muted dark:bg-muted">
+        <Icon className="h-6 w-6 text-muted-foreground" />
       </div>
-      <h3 className="text-foreground mt-4 text-lg font-semibold">{title}</h3>
-      <p className="text-muted-foreground mt-2 mb-4 max-w-sm text-sm">{description}</p>
+      <h3 className="mt-4 font-semibold text-foreground text-lg">{title}</h3>
+      <p className="mt-2 mb-4 max-w-sm text-muted-foreground text-sm">{description}</p>
       {action && (
         <Button onClick={action.onClick} variant="outline">
           {action.label}

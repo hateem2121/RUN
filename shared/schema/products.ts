@@ -35,18 +35,12 @@ export const products = pgTable(
     // REMOVED 2025-11-14: categoryPath column (never populated - client-side path computation used)
 
     // Primary media
-    primaryImageId: integer("primary_image_id").references(
-      () => mediaAssets.id,
-      {
-        onDelete: "set null",
-      },
-    ),
-    primaryVideoId: integer("primary_video_id").references(
-      () => mediaAssets.id,
-      {
-        onDelete: "set null",
-      },
-    ),
+    primaryImageId: integer("primary_image_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
+    primaryVideoId: integer("primary_video_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
     modelFileId: integer("model_file_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
@@ -116,10 +110,7 @@ export const products = pgTable(
     index("products_category_id_idx").on(table.categoryId),
     index("products_is_active_idx").on(table.isActive),
     index("products_is_featured_idx").on(table.isFeatured),
-    index("products_active_created_idx").on(
-      table.isActive,
-      table.createdAt.desc(),
-    ),
+    index("products_active_created_idx").on(table.isActive, table.createdAt.desc()),
     index("products_featured_active_idx").on(table.isFeatured, table.isActive),
     index("products_category_active_idx").on(table.categoryId, table.isActive),
     // PERFORMANCE FIX: Index for SKU lookups (inventory tracking)
@@ -127,17 +118,9 @@ export const products = pgTable(
     // PERFORMANCE FIX: Index for fabric relationship queries
     index("products_fabric_id_idx").on(table.fabricId),
     // CRITICAL PERFORMANCE: Composite index for urlPath lookups (getProductByPath query)
-    index("products_url_path_active_idx").on(
-      table.urlPath,
-      table.isActive,
-      table.deletedAt,
-    ),
+    index("products_url_path_active_idx").on(table.urlPath, table.isActive, table.deletedAt),
     // PHASE 2D: Hot query index for homepage/products listing (deleted_at IS NULL, is_active = true, ORDER BY created_at DESC)
-    index("products_hot_query_idx").on(
-      table.deletedAt,
-      table.isActive,
-      table.createdAt.desc(),
-    ),
+    index("products_hot_query_idx").on(table.deletedAt, table.isActive, table.createdAt.desc()),
     // AUDIT FIX: Foreign key indexes for media relationships (prevents slow JOINs)
     index("products_primary_image_id_idx").on(table.primaryImageId),
     index("products_primary_video_id_idx").on(table.primaryVideoId),

@@ -1,11 +1,11 @@
 import { Helmet } from "react-helmet-async";
 
 interface SEOProps {
-  title?: string;
-  description?: string;
-  ogImage?: string;
-  ogType?: string;
-  canonicalUrl?: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  ogImage?: string | undefined;
+  ogType?: string | undefined;
+  canonicalUrl?: string | undefined;
 }
 
 export function SEO({

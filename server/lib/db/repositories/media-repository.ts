@@ -67,7 +67,11 @@ const MEDIA_DETAIL_COLUMNS = {
  * PERFORMANCE FIX: Normalize filters for consistent cache keys
  * Sorts object keys alphabetically before serialization to prevent cache misses from key order differences
  */
-function normalizeFilters(filters?: { type?: string; search?: string; folderId?: number }): string {
+function normalizeFilters(filters?: {
+  type?: string | undefined;
+  search?: string | undefined;
+  folderId?: number;
+}): string {
   if (!filters || Object.keys(filters).length === 0) return "{}";
 
   // Sort keys alphabetically for consistent cache keys
@@ -129,7 +133,7 @@ export class MediaRepository {
   async getMediaAssets(
     limit: number = 100,
     offset: number = 0,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
   ): Promise<MediaAssetSummary[]> {
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssets");
 
@@ -312,9 +316,9 @@ export class MediaRepository {
   }
 
   async getMediaAssetsCount(filters?: {
-    type?: string;
-    search?: string;
-    folderId?: number;
+    type?: string | undefined;
+    search?: string | undefined;
+    folderId?: number | undefined;
   }): Promise<number> {
     const conditions = [isNull(mediaAssets.deletedAt), eq(mediaAssets.isActive, true)];
 
@@ -357,7 +361,7 @@ export class MediaRepository {
   async getMediaAssetsWithCount(
     limit: number = 100,
     offset: number = 0,
-    filters?: { type?: string; search?: string; folderId?: number },
+    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
   ): Promise<{ assets: MediaAssetSummary[]; total: number }> {
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssetsWithCount");
     // PERFORMANCE FIX: Normalized filters for consistent cache keys

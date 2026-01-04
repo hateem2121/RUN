@@ -4,16 +4,9 @@
  */
 
 import type { Request, Response } from "express";
-import {
-  generateResponsiveVariants,
-  isImageFile,
-  processImage,
-} from "../../image-processor.js";
+import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import {
-  CacheInvalidationError,
-  MediaNotFoundError,
-} from "../../lib/errors/media-errors.js";
+import { CacheInvalidationError, MediaNotFoundError } from "../../lib/errors/media-errors.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/request-timeout.js";
@@ -79,19 +72,13 @@ async function getAllMediaAssets(): Promise<MediaAsset[]> {
 export async function getMediaAssets(req: Request, res: Response) {
   res.locals._handled = true;
   try {
-    const { page = 1, limit = 50, type, search, folderId } = req.query;
+    const { page = 1, limit = 50, type, search, folderId } = req.query as any;
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate",
-      );
+      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     } else {
-      res.set(
-        "Cache-Control",
-        "public, max-age=60, stale-while-revalidate=300",
-      );
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
 
     const pageNum = parseInt(page as string, 10);
@@ -109,7 +96,7 @@ export async function getMediaAssets(req: Request, res: Response) {
 
     // Fetch assets and total count in single batched transaction (reduces NEON active time)
     const { assets, total } = await storage
-      .getMediaAssetsWithCount(limitNum, offset, filters)
+      .getMediaAssetsWithCount(limitNum, offset, filters as any)
       .catch((err) => {
         // Force a real error object to prevent next(undefined) -> 404 fallthrough
         throw err || new Error("Unknown storage error");
@@ -130,28 +117,20 @@ export async function getMediaAssets(req: Request, res: Response) {
     if (res.headersSent) {
       return;
     }
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to fetch media assets"));
+    return res.status(500).json(createErrorResponse("Failed to fetch media assets"));
   }
 }
 
 export async function getMediaAssetById(req: Request, res: Response) {
   res.locals._handled = true;
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
-      res.set(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate",
-      );
+      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     } else {
-      res.set(
-        "Cache-Control",
-        "public, max-age=60, stale-while-revalidate=300",
-      );
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
 
     const storage = getStorage();
@@ -163,23 +142,18 @@ export async function getMediaAssetById(req: Request, res: Response) {
 
     return res.json(createSuccessResponse(asset));
   } catch (error) {
-    logger.error(
-      `Error fetching media asset ${req.params.id}:`,
-      serializeError(error),
-    );
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to fetch media asset"));
+    logger.error(`Error fetching media asset ${req.params.id}:`, serializeError(error));
+    return res.status(500).json(createErrorResponse("Failed to fetch media asset"));
   }
 }
 
 export async function getMediaCount(req: Request, res: Response) {
   try {
-    const { type, folderId } = req.query;
+    const { type, folderId } = req.query as any;
     const storage = getStorage();
 
     // Build filters object for database-level filtering
-    const filters: { type?: string; folderId?: number } = {};
+    const filters: { type?: string | undefined; folderId?: number } = {};
 
     if (type) {
       filters.type = type as string;
@@ -195,19 +169,21 @@ export async function getMediaCount(req: Request, res: Response) {
     return res.json(createSuccessResponse({ count }));
   } catch (error) {
     logger.error("Error getting media count:", serializeError(error));
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to get media count"));
+    return res.status(500).json(createErrorResponse("Failed to get media count"));
   }
 }
 
 export async function searchMediaAssets(req: Request, res: Response) {
   try {
-    const { query: searchQuery, type, limit = 20, folderId } = req.query;
+    const { query: searchQuery, type, limit = 20, folderId } = req.query as any;
     const storage = getStorage();
 
     // Build filters object for database-level filtering
-    const filters: { type?: string; search?: string; folderId?: number } = {};
+    const filters: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number;
+    } = {};
 
     if (searchQuery) {
       filters.search = searchQuery as string;
@@ -223,11 +199,7 @@ export async function searchMediaAssets(req: Request, res: Response) {
 
     // Use database-level filtering with Drizzle's ilike() operator
     // This pushes filtering to PostgreSQL instead of loading all records into memory
-    const assets = await storage.getMediaAssets(
-      parseInt(limit as string, 10),
-      0,
-      filters,
-    );
+    const assets = await storage.getMediaAssets(parseInt(limit as string, 10), 0, filters);
 
     return res.json(createSuccessResponse(assets));
   } catch (error) {
@@ -242,7 +214,7 @@ export async function searchMediaAssets(req: Request, res: Response) {
 
 export async function updateMediaAsset(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
 
     const updated = await storage.updateMediaAsset(parseInt(id!, 10), req.body);
@@ -253,19 +225,14 @@ export async function updateMediaAsset(req: Request, res: Response) {
 
     return res.json(createSuccessResponse(updated));
   } catch (error) {
-    logger.error(
-      `Error updating media asset ${req.params.id}:`,
-      serializeError(error),
-    );
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to update media asset"));
+    logger.error(`Error updating media asset ${req.params.id}:`, serializeError(error));
+    return res.status(500).json(createErrorResponse("Failed to update media asset"));
   }
 }
 
 export async function deleteMediaAsset(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const assetId = parseInt(id!, 10);
     const storage = getStorage();
 
@@ -285,12 +252,9 @@ export async function deleteMediaAsset(req: Request, res: Response) {
       appStorageService
         .deleteAsset(asset.storagePath)
         .then(() => {
-          logger.info(
-            `[MediaHandler] ✅ Physical file cleanup completed for asset ${assetId}`,
-            {
-              storagePath: asset.storagePath,
-            },
-          );
+          logger.info(`[MediaHandler] ✅ Physical file cleanup completed for asset ${assetId}`, {
+            storagePath: asset.storagePath,
+          });
         })
         .catch((err) => {
           logger.warn(
@@ -312,9 +276,7 @@ export async function deleteMediaAsset(req: Request, res: Response) {
         `[MediaHandler] ⚠️ Asset ${req.params.id} not found or already deleted:`,
         serializeError(error),
       );
-      return res
-        .status(404)
-        .json(createErrorResponse("Media asset not found or already deleted"));
+      return res.status(404).json(createErrorResponse("Media asset not found or already deleted"));
     }
 
     if (error instanceof CacheInvalidationError) {
@@ -356,9 +318,7 @@ export async function initializeUpload(req: Request, res: Response) {
     const { filename, fileSize, mimeType, chunkSize } = req.body;
 
     if (!filename || !fileSize || !mimeType || !chunkSize) {
-      return res
-        .status(400)
-        .json(createErrorResponse("Missing required fields"));
+      return res.status(400).json(createErrorResponse("Missing required fields"));
     }
 
     const uploadId = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
@@ -388,9 +348,7 @@ export async function initializeUpload(req: Request, res: Response) {
     );
   } catch (error) {
     logger.error("Error initializing upload:", serializeError(error));
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to initialize upload"));
+    return res.status(500).json(createErrorResponse("Failed to initialize upload"));
   }
 }
 
@@ -400,16 +358,12 @@ export async function uploadChunk(req: Request, res: Response) {
     const file = req.file;
 
     if (!file || !uploadId || chunkNumber === undefined) {
-      return res
-        .status(400)
-        .json(createErrorResponse("Missing required fields"));
+      return res.status(400).json(createErrorResponse("Missing required fields"));
     }
 
     const session = uploadSessions.get(uploadId);
     if (!session) {
-      return res
-        .status(404)
-        .json(createErrorResponse("Upload session not found"));
+      return res.status(404).json(createErrorResponse("Upload session not found"));
     }
 
     session.lastActivityAt = new Date();
@@ -421,9 +375,7 @@ export async function uploadChunk(req: Request, res: Response) {
     });
     session.receivedChunks.set(parseInt(chunkNumber, 10), true);
 
-    const progress = Math.round(
-      (session.receivedChunks.size / session.totalChunks) * 100,
-    );
+    const progress = Math.round((session.receivedChunks.size / session.totalChunks) * 100);
     const isComplete = session.receivedChunks.size === session.totalChunks;
 
     return res.status(201).json(
@@ -448,9 +400,7 @@ export async function finalizeUpload(req: Request, res: Response) {
     const session = uploadSessions.get(uploadId);
 
     if (!session) {
-      return res
-        .status(404)
-        .json(createErrorResponse("Upload session not found"));
+      return res.status(404).json(createErrorResponse("Upload session not found"));
     }
 
     if (session.receivedChunks.size !== session.totalChunks) {
@@ -463,17 +413,14 @@ export async function finalizeUpload(req: Request, res: Response) {
       // Download all chunks concurrently using Promise.all instead of sequential loop
       const assemblyStartTime = Date.now();
 
-      const chunkDownloadPromises = Array.from(
-        { length: session.totalChunks },
-        async (_, i) => {
-          const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
-          const buffer = await appStorageService.downloadAsset(chunkKey);
-          if (!buffer) {
-            throw new Error(`Chunk ${i} missing`);
-          }
-          return { index: i, buffer };
-        },
-      );
+      const chunkDownloadPromises = Array.from({ length: session.totalChunks }, async (_, i) => {
+        const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
+        const buffer = await appStorageService.downloadAsset(chunkKey);
+        if (!buffer) {
+          throw new Error(`Chunk ${i} missing`);
+        }
+        return { index: i, buffer };
+      });
 
       const downloadedChunks = await Promise.all(chunkDownloadPromises);
       const chunks = downloadedChunks
@@ -492,10 +439,7 @@ export async function finalizeUpload(req: Request, res: Response) {
         const storage = getStorage();
         const mediaType = detectMediaType(session.mimeType);
 
-        const storageKey = generateOrganizedStoragePath(
-          mediaType,
-          session.filename,
-        );
+        const storageKey = generateOrganizedStoragePath(mediaType, session.filename);
 
         finalStorageKey = storageKey;
         await appStorageService.uploadAsset(storageKey, assembledFile);
@@ -504,8 +448,7 @@ export async function finalizeUpload(req: Request, res: Response) {
         let fileType = "document";
         if (isImageFile(session.mimeType)) fileType = "image";
         else if (session.mimeType.startsWith("video/")) fileType = "video";
-        else if (isGLTFFile(session.mimeType, session.filename))
-          fileType = "model";
+        else if (isGLTFFile(session.mimeType, session.filename)) fileType = "model";
 
         // STANDARDIZED NAMING: Use slugified filename to match storage path
         const slugifiedFilename = slugifyFilename(session.filename);
@@ -522,9 +465,7 @@ export async function finalizeUpload(req: Request, res: Response) {
           bucketName: appStorageService.getBucketName(),
         };
 
-        const asset = await storage.createMediaAsset(
-          buildInsertMediaAsset(metadata),
-        );
+        const asset = await storage.createMediaAsset(buildInsertMediaAsset(metadata));
 
         // FIX: Update URL to use asset ID instead of storagePath
         await storage.updateMediaAsset(asset.id, {
@@ -535,10 +476,7 @@ export async function finalizeUpload(req: Request, res: Response) {
         if (fileType === "image") {
           // Process image thumbnails and metadata + generate responsive variants
           try {
-            const imageData = await processImage(
-              assembledFile,
-              session.filename,
-            );
+            const imageData = await processImage(assembledFile, session.filename);
             const imageMetadata = {
               dimensions: {
                 width: imageData.width,
@@ -551,10 +489,7 @@ export async function finalizeUpload(req: Request, res: Response) {
             let imageVariants;
 
             try {
-              imageVariants = await generateResponsiveVariants(
-                assembledFile,
-                session.filename,
-              );
+              imageVariants = await generateResponsiveVariants(assembledFile, session.filename);
               logger.info(
                 "Responsive variants generated - getMediaContent will serve compressed version",
                 {
@@ -582,10 +517,7 @@ export async function finalizeUpload(req: Request, res: Response) {
               hasVariants: !!imageVariants,
             });
           } catch (error) {
-            logger.error(
-              "Image processing failed (chunked upload):",
-              serializeError(error),
-            );
+            logger.error("Image processing failed (chunked upload):", serializeError(error));
             // Upload succeeds even if thumbnail generation fails
           }
         } else if (fileType === "video") {
@@ -607,17 +539,13 @@ export async function finalizeUpload(req: Request, res: Response) {
               metadata: videoMetadata,
             });
           } catch (error) {
-            logger.error(
-              "Video metadata creation failed (chunked upload):",
-              serializeError(error),
-            );
+            logger.error("Video metadata creation failed (chunked upload):", serializeError(error));
           }
         } else if (fileType === "model") {
           // Process GLTF metadata for models
           try {
             const gltfProcessor = getGLTFProcessor();
-            const processed =
-              await gltfProcessor.processForUpload(assembledFile);
+            const processed = await gltfProcessor.processForUpload(assembledFile);
 
             if (processed.success) {
               const gltfMetadata = {
@@ -637,10 +565,7 @@ export async function finalizeUpload(req: Request, res: Response) {
               });
             }
           } catch (error) {
-            logger.error(
-              "GLTF processing failed (chunked upload):",
-              serializeError(error),
-            );
+            logger.error("GLTF processing failed (chunked upload):", serializeError(error));
             // Still set thumbnail URL even if processing fails
             await storage.updateMediaAsset(asset.id, {
               thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
@@ -650,20 +575,16 @@ export async function finalizeUpload(req: Request, res: Response) {
 
         // Fetch the updated asset with metadata
         const updatedAsset = await storage.getMediaAsset(asset.id);
-        return res
-          .status(201)
-          .json(createSuccessResponse(updatedAsset || asset));
+        return res.status(201).json(createSuccessResponse(updatedAsset || asset));
       } catch (error) {
         // Compensating delete: Remove assembled file if DB insert fails
         if (finalStorageKey) {
-          await appStorageService
-            .deleteAsset(finalStorageKey)
-            .catch((cleanupError) =>
-              logger.error("Failed to cleanup assembled file:", {
-                finalStorageKey,
-                error: serializeError(cleanupError),
-              }),
-            );
+          await appStorageService.deleteAsset(finalStorageKey).catch((cleanupError) =>
+            logger.error("Failed to cleanup assembled file:", {
+              finalStorageKey,
+              error: serializeError(cleanupError),
+            }),
+          );
         }
         throw error; // Re-throw to outer handler
       }
@@ -678,9 +599,7 @@ export async function finalizeUpload(req: Request, res: Response) {
     }
   } catch (error) {
     logger.error("Error finalizing upload:", serializeError(error));
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to finalize upload"));
+    return res.status(500).json(createErrorResponse("Failed to finalize upload"));
   }
 }
 
@@ -690,7 +609,7 @@ export async function finalizeUpload(req: Request, res: Response) {
 
 export async function getMediaContent(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
     const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
@@ -726,10 +645,7 @@ export async function getMediaContent(req: Request, res: Response) {
     }
 
     // Generate signed URL with 5-minute expiry
-    const signedUrl = await appStorageService.generateSignedUrl(
-      pathToServe,
-      300,
-    );
+    const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
 
     // Redirect browser to CDN instead of proxying through Node.js
     // This reduces Node.js bandwidth by 90%+ and improves LCP from 5-12s to <900ms
@@ -738,10 +654,7 @@ export async function getMediaContent(req: Request, res: Response) {
     res.set("Cache-Control", "public, max-age=300");
     return res.redirect(302, signedUrl);
   } catch (error) {
-    logger.error(
-      `Error serving media ${req.params.id}:`,
-      serializeError(error),
-    );
+    logger.error(`Error serving media ${req.params.id}:`, serializeError(error));
     try {
       const fs = await import("node:fs");
       fs.appendFileSync(
@@ -755,7 +668,7 @@ export async function getMediaContent(req: Request, res: Response) {
 
 export async function getThumbnail(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
     const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
@@ -782,19 +695,13 @@ export async function getThumbnail(req: Request, res: Response) {
       return res.status(404).send("Thumbnail not available");
     }
 
-    const signedUrl = await appStorageService.generateSignedUrl(
-      pathToServe,
-      300,
-    );
+    const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.set("Cache-Control", "public, max-age=300");
     return res.redirect(302, signedUrl);
   } catch (error) {
-    logger.error(
-      `Error serving thumbnail ${req.params.id}:`,
-      serializeError(error),
-    );
+    logger.error(`Error serving thumbnail ${req.params.id}:`, serializeError(error));
     return res.status(500).send("Failed to serve thumbnail");
   }
 }
@@ -821,10 +728,7 @@ export async function batchOperations(req: Request, res: Response) {
     // If no operation in body yet, it might be because this is a JSON request
     // that wasn't parsed. The uploadOptimized middleware only handles multipart.
     // Since we don't have files, check if this could be a JSON request.
-    if (
-      !operation &&
-      req.headers["content-type"]?.includes("application/json")
-    ) {
+    if (!operation && req.headers["content-type"]?.includes("application/json")) {
       // Body should already be parsed by previous middleware or express default
       operation = req.body?.operation;
     }
@@ -855,9 +759,7 @@ export async function batchCreateAssets(req: Request, res: Response) {
       return res.status(400).json(createErrorResponse("No files provided"));
     }
 
-    const results = await Promise.all(
-      files.map((file) => processUploadedFile(file)),
-    );
+    const results = await Promise.all(files.map((file) => processUploadedFile(file)));
 
     // Invalidate cache after successful batch upload
     // Clear media listings, counts, search results, and all media content caches
@@ -867,9 +769,7 @@ export async function batchCreateAssets(req: Request, res: Response) {
       unifiedCache.delete("media-count"),
       unifiedCache.delete("search"),
     ]);
-    logger.info(
-      `[Batch Upload] Cache invalidated for ${results.length} uploaded assets`,
-    );
+    logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
 
     return res.status(201).json(createSuccessResponse(results));
   } catch (error) {
@@ -883,9 +783,7 @@ export async function batchDeleteAssets(req: Request, res: Response) {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res
-        .status(400)
-        .json(createErrorResponse("No IDs provided for deletion"));
+      return res.status(400).json(createErrorResponse("No IDs provided for deletion"));
     }
 
     const storage = getStorage();
@@ -901,14 +799,10 @@ export async function batchDeleteAssets(req: Request, res: Response) {
       ids.map((id) => storage.deleteMediaAsset(parseInt(id, 10))),
     );
 
-    const successCount = results.filter(
-      (r) => r.status === "fulfilled" && r.value === true,
-    ).length;
+    const successCount = results.filter((r) => r.status === "fulfilled" && r.value === true).length;
     const failedCount = results.length - successCount;
 
-    logger.info(
-      `Batch delete completed: ${successCount} succeeded, ${failedCount} failed`,
-    );
+    logger.info(`Batch delete completed: ${successCount} succeeded, ${failedCount} failed`);
 
     // 3. Clean up physical files from Object Storage with rollback on failure
     let finalSuccessCount = successCount;
@@ -920,8 +814,7 @@ export async function batchDeleteAssets(req: Request, res: Response) {
         assetsToDelete.map(async (asset, index) => {
           // Only clean up if DB delete succeeded
           const dbDeleteSucceeded =
-            results[index]?.status === "fulfilled" &&
-            results[index]?.value === true;
+            results[index]?.status === "fulfilled" && results[index]?.value === true;
           if (dbDeleteSucceeded && asset?.storagePath) {
             try {
               await appStorageService.deleteAsset(asset.storagePath);
@@ -935,29 +828,22 @@ export async function batchDeleteAssets(req: Request, res: Response) {
               try {
                 await storage.updateMediaAsset(asset.id, { deletedAt: null });
                 rollbackCount++;
-                logger.info(
-                  "Storage deletion failed, DB rollback successful - asset restored:",
-                  {
-                    assetId: asset.id,
-                    storagePath: asset.storagePath,
-                    error: serializeError(storageError),
-                  },
-                );
+                logger.info("Storage deletion failed, DB rollback successful - asset restored:", {
+                  assetId: asset.id,
+                  storagePath: asset.storagePath,
+                  error: serializeError(storageError),
+                });
                 return { success: false, rolledBack: true };
               } catch (restoreError) {
                 // CRITICAL: Both storage delete AND DB rollback failed
                 criticalFailureCount++;
-                logger.error(
-                  "CRITICAL: Failed to restore asset after storage deletion failure:",
-                  {
-                    assetId: asset.id,
-                    storagePath: asset.storagePath,
-                    state:
-                      "INCONSISTENT - soft-deleted in DB, file exists in storage",
-                    originalError: serializeError(storageError),
-                    restoreError: serializeError(restoreError),
-                  },
-                );
+                logger.error("CRITICAL: Failed to restore asset after storage deletion failure:", {
+                  assetId: asset.id,
+                  storagePath: asset.storagePath,
+                  state: "INCONSISTENT - soft-deleted in DB, file exists in storage",
+                  originalError: serializeError(storageError),
+                  restoreError: serializeError(restoreError),
+                });
                 // Don't increment rollbackCount since rollback failed
                 return { success: false, rolledBack: false, critical: true };
               }
@@ -987,9 +873,7 @@ export async function batchDeleteAssets(req: Request, res: Response) {
         unifiedCache.delete("media-count"),
         unifiedCache.delete("search"),
       ]);
-      logger.info(
-        `[Batch Delete] Cache invalidated for ${finalSuccessCount} deleted assets`,
-      );
+      logger.info(`[Batch Delete] Cache invalidated for ${finalSuccessCount} deleted assets`);
     }
 
     return res.json(
@@ -1009,15 +893,13 @@ export async function batchDeleteAssets(req: Request, res: Response) {
 
 export async function batchGetContent(req: Request, res: Response) {
   try {
-    const { ids } = req.query;
+    const { ids } = req.query as any;
 
     if (!ids) {
       return res.status(400).json(createErrorResponse("No IDs provided"));
     }
 
-    const idList = (ids as string)
-      .split(",")
-      .map((id) => parseInt(id.trim(), 10));
+    const idList = (ids as string).split(",").map((id) => parseInt(id.trim(), 10));
 
     // PERFORMANCE FIX: Add caching for batch requests with 45-minute TTL
     // CACHE BUSTING: Include environment in key to separate dev/prod caches
@@ -1040,10 +922,7 @@ export async function batchGetContent(req: Request, res: Response) {
       const allAssets = await storage.getMediaAssetsByIds(idList.map(String));
       assetsMap = new Map(allAssets.map((asset) => [asset.id, asset]));
     } catch (error) {
-      logger.error(
-        "[Batch Content] Batch fetch failed:",
-        serializeError(error),
-      );
+      logger.error("[Batch Content] Batch fetch failed:", serializeError(error));
     }
 
     // PERFORMANCE FIX: Generate signed URLs directly to eliminate N+1 requests
@@ -1053,9 +932,7 @@ export async function batchGetContent(req: Request, res: Response) {
       idList.map(async (id) => {
         const asset = assetsMap.get(id);
         if (!asset || !asset.storagePath) {
-          logger.warn(
-            `[Batch Content] Asset ${id} not found or missing storagePath`,
-          );
+          logger.warn(`[Batch Content] Asset ${id} not found or missing storagePath`);
           return null;
         }
 
@@ -1067,10 +944,7 @@ export async function batchGetContent(req: Request, res: Response) {
           }
 
           // Generate signed URL with 60-minute expiry
-          const signedUrl = await appStorageService.generateSignedUrl(
-            pathToServe,
-            3600,
-          );
+          const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 3600);
 
           // DEBUG: Log signed URL generation for models
           if (asset.type === "model") {
@@ -1096,9 +970,7 @@ export async function batchGetContent(req: Request, res: Response) {
 
           // Additional debug for models
           if (asset.type === "model") {
-            logger.info(
-              `  Final URL type: ${url === signedUrl ? "SIGNED GCS" : "PROXY"}`,
-            );
+            logger.info(`  Final URL type: ${url === signedUrl ? "SIGNED GCS" : "PROXY"}`);
             logger.info(`  URL being returned: ${url?.substring(0, 80)}...`);
           }
 
@@ -1151,9 +1023,7 @@ export async function batchGetContent(req: Request, res: Response) {
     return res.json(response);
   } catch (error) {
     logger.error("Batch content fetch error:", serializeError(error));
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to fetch batch content"));
+    return res.status(500).json(createErrorResponse("Failed to fetch batch content"));
   }
 }
 
@@ -1207,16 +1077,9 @@ export async function getCacheStats(_req: Request, res: Response) {
     const recommendations: string[] = [];
 
     // Generate actionable recommendations based on metrics
-    if (
-      healthStatus.stats.hitRate < 50 &&
-      healthStatus.stats.totalOperations > 100
-    ) {
-      recommendations.push(
-        "Consider increasing cache TTL for frequently accessed resources",
-      );
-      recommendations.push(
-        "Review cache invalidation patterns - may be clearing too aggressively",
-      );
+    if (healthStatus.stats.hitRate < 50 && healthStatus.stats.totalOperations > 100) {
+      recommendations.push("Consider increasing cache TTL for frequently accessed resources");
+      recommendations.push("Review cache invalidation patterns - may be clearing too aggressively");
     }
 
     if (healthStatus.stats.calculatedSize / (100 * 1024 * 1024) > 0.8) {
@@ -1226,9 +1089,7 @@ export async function getCacheStats(_req: Request, res: Response) {
     }
 
     if (healthStatus.stats.itemCount > 4000) {
-      recommendations.push(
-        "High item count - review if all cached items are necessary",
-      );
+      recommendations.push("High item count - review if all cached items are necessary");
     }
 
     if (recommendations.length === 0) {
@@ -1253,7 +1114,7 @@ export async function getCacheStats(_req: Request, res: Response) {
 
 export async function clearMediaCache(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
     const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
@@ -1313,9 +1174,7 @@ export async function getPerformanceDashboard(_req: Request, res: Response) {
     });
   } catch (error) {
     logger.error("Performance dashboard error:", serializeError(error));
-    res
-      .status(500)
-      .json({ success: false, error: "Failed to generate performance report" });
+    res.status(500).json({ success: false, error: "Failed to generate performance report" });
   }
 }
 
@@ -1359,15 +1218,13 @@ export async function getHealthScan(_req: Request, res: Response) {
     });
   } catch (error) {
     logger.error("Health scan error:", serializeError(error));
-    res
-      .status(500)
-      .json({ success: false, error: "Failed to perform health scan" });
+    res.status(500).json({ success: false, error: "Failed to perform health scan" });
   }
 }
 
 export async function clearAssetCache(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     res.json(createSuccessResponse({ cleared: true, assetId: id }));
   } catch (error) {
     logger.error("Clear cache error:", serializeError(error));
@@ -1375,10 +1232,7 @@ export async function clearAssetCache(req: Request, res: Response) {
   }
 }
 
-export async function testObjectStorageConnectivity(
-  _req: Request,
-  res: Response,
-) {
+export async function testObjectStorageConnectivity(_req: Request, res: Response) {
   try {
     res.json(createSuccessResponse({ connectivity: "OK", status: "healthy" }));
   } catch (error) {
@@ -1389,9 +1243,7 @@ export async function testObjectStorageConnectivity(
 
 export async function repairDatabaseIntegrity(_req: Request, res: Response) {
   try {
-    res.json(
-      createSuccessResponse({ repaired: 0, status: "Database integrity OK" }),
-    );
+    res.json(createSuccessResponse({ repaired: 0, status: "Database integrity OK" }));
   } catch (error) {
     logger.error("Database repair error:", serializeError(error));
     res.status(500).json(createErrorResponse("Repair failed"));
@@ -1440,12 +1292,7 @@ export async function uploadChunkRaw(req: Request, res: Response) {
       "x-total-chunks": totalChunksHeader,
     } = req.headers;
 
-    if (
-      !uploadId ||
-      chunkIndexHeader === undefined ||
-      !chunkSizeHeader ||
-      !chunkHash
-    ) {
+    if (!uploadId || chunkIndexHeader === undefined || !chunkSizeHeader || !chunkHash) {
       return res
         .status(400)
         .json(
@@ -1459,36 +1306,23 @@ export async function uploadChunkRaw(req: Request, res: Response) {
     const chunkSize = parseInt(String(chunkSizeHeader), 10);
     const totalChunks = parseInt(String(totalChunksHeader), 10);
 
-    if (
-      Number.isNaN(chunkNumber) ||
-      Number.isNaN(chunkSize) ||
-      Number.isNaN(totalChunks)
-    ) {
-      return res
-        .status(400)
-        .json(createErrorResponse("Invalid numeric headers"));
+    if (Number.isNaN(chunkNumber) || Number.isNaN(chunkSize) || Number.isNaN(totalChunks)) {
+      return res.status(400).json(createErrorResponse("Invalid numeric headers"));
     }
 
     if (!req.body || req.body.length === 0) {
-      return res
-        .status(400)
-        .json(createErrorResponse("No chunk data received"));
+      return res.status(400).json(createErrorResponse("No chunk data received"));
     }
 
     const chunkData = req.body as Buffer;
 
     // Use the enhanced upload service with integrity checking
     const result = await withTimeout(
-      enhancedUploadService.uploadRawChunk(
-        String(uploadId),
-        chunkNumber,
-        chunkData,
-        {
-          chunkSize,
-          chunkHash: String(chunkHash),
-          totalChunks,
-        },
-      ),
+      enhancedUploadService.uploadRawChunk(String(uploadId), chunkNumber, chunkData, {
+        chunkSize,
+        chunkHash: String(chunkHash),
+        totalChunks,
+      }),
       60000,
       "Upload raw chunk with integrity check",
     );
@@ -1503,36 +1337,30 @@ export async function uploadChunkRaw(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        createErrorResponse(
-          error instanceof Error ? error.message : "Raw chunk upload failed",
-        ),
+        createErrorResponse(error instanceof Error ? error.message : "Raw chunk upload failed"),
       );
   }
 }
 
 export async function getUploadProgress(req: Request, res: Response) {
   try {
-    const { uploadId } = req.params;
+    const { uploadId } = req.params as any;
     const progress = enhancedUploadService.getUploadProgress(uploadId!);
 
     if (progress.status === "not_found") {
-      return res
-        .status(404)
-        .json(createErrorResponse("Upload session not found"));
+      return res.status(404).json(createErrorResponse("Upload session not found"));
     }
 
     return res.json(createSuccessResponse(progress));
   } catch (error) {
     logger.error("Upload progress error:", serializeError(error));
-    return res
-      .status(500)
-      .json(createErrorResponse("Failed to get upload progress"));
+    return res.status(500).json(createErrorResponse("Failed to get upload progress"));
   }
 }
 
 export async function cancelUpload(req: Request, res: Response) {
   try {
-    const { uploadId } = req.params;
+    const { uploadId } = req.params as any;
     const deleted = enhancedUploadService.cancelUpload(uploadId!);
     return res.json(
       createSuccessResponse({
@@ -1601,14 +1429,8 @@ export async function uploadSingleFile(req: Request, res: Response) {
     // Extract optional fields from request body
     // multipart/form-data sends all values as strings, so we need to handle them carefully
     const options: UploadOptions = {
-      altText:
-        req.body.altText && req.body.altText.trim() !== ""
-          ? req.body.altText
-          : undefined,
-      caption:
-        req.body.caption && req.body.caption.trim() !== ""
-          ? req.body.caption
-          : undefined,
+      altText: req.body.altText && req.body.altText.trim() !== "" ? req.body.altText : undefined,
+      caption: req.body.caption && req.body.caption.trim() !== "" ? req.body.caption : undefined,
       folderId: req.body.folderId ? parseInt(req.body.folderId, 10) : undefined,
       tags: req.body.tags
         ? Array.isArray(req.body.tags)
@@ -1621,7 +1443,7 @@ export async function uploadSingleFile(req: Request, res: Response) {
               }
             })()
         : undefined,
-    };
+    } as any;
 
     const asset = await processUploadedFile(req.file, options);
 
@@ -1632,9 +1454,7 @@ export async function uploadSingleFile(req: Request, res: Response) {
       unifiedCache.delete("media-count"),
       unifiedCache.delete("search"),
     ]);
-    logger.info(
-      `[Single Upload] Cache invalidated for newly uploaded asset: ${asset.filename}`,
-    );
+    logger.info(`[Single Upload] Cache invalidated for newly uploaded asset: ${asset.filename}`);
 
     // Convert BigInt fields to numbers for JSON serialization
     const safeAsset = {
@@ -1656,7 +1476,7 @@ export async function uploadSingleFile(req: Request, res: Response) {
 
 export async function getMediaContentWithPath(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     res.redirect(`/api/media/${id}/content`);
   } catch (error) {
     logger.error("Content with path error:", serializeError(error));
@@ -1666,7 +1486,7 @@ export async function getMediaContentWithPath(req: Request, res: Response) {
 
 export async function getMediaGeometry(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     res.json(
       createSuccessResponse({
         id,
@@ -1681,7 +1501,7 @@ export async function getMediaGeometry(req: Request, res: Response) {
 
 export async function getMediaRaw(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     res.redirect(`/api/media/${id}/content`);
   } catch (error) {
     logger.error("Raw content error:", serializeError(error));
@@ -1692,7 +1512,7 @@ export async function getMediaRaw(req: Request, res: Response) {
 export async function getMediaProxy(req: Request, res: Response) {
   res.locals._handled = true;
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
     const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
@@ -1707,10 +1527,7 @@ export async function getMediaProxy(req: Request, res: Response) {
       pathToServe = asset.imageVariants.original;
     }
 
-    const signedUrl = await appStorageService.generateSignedUrl(
-      pathToServe,
-      300,
-    );
+    const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.set("Cache-Control", "public, max-age=300");
@@ -1723,7 +1540,7 @@ export async function getMediaProxy(req: Request, res: Response) {
 
 export async function getThumbnailProxy(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const { id } = req.params as any;
     const storage = getStorage();
     const asset = await storage.getMediaAsset(parseInt(id!, 10));
 
@@ -1750,10 +1567,7 @@ export async function getThumbnailProxy(req: Request, res: Response) {
       return res.status(404).send("Thumbnail not available");
     }
 
-    const signedUrl = await appStorageService.generateSignedUrl(
-      pathToServe,
-      300,
-    );
+    const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.set("Cache-Control", "public, max-age=300");

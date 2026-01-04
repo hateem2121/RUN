@@ -111,7 +111,7 @@ export function ProductFilters({
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent className="sm:w-sheet-md md:w-sheet-lg w-full overflow-y-auto">
+        <SheetContent className="w-full overflow-y-auto sm:w-sheet-md md:w-sheet-lg">
           <SheetHeader>
             <SheetTitle className="flex items-center justify-between">
               Product Filters
@@ -128,7 +128,7 @@ export function ProductFilters({
             {/* Fabrics */}
             {fabrics.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Fabrics</Label>
+                <Label className="font-semibold text-base">Fabrics</Label>
                 <div className="space-y-2">
                   {fabrics.map((fabric) => (
                     <div key={fabric.id} className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`fabric-${fabric.id}`}
-                        className="cursor-pointer text-sm font-normal"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {fabric?.name || "Unknown Fabric"}
                       </Label>
@@ -152,7 +152,7 @@ export function ProductFilters({
             {/* Certificates */}
             {certificates.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Certifications</Label>
+                <Label className="font-semibold text-base">Certifications</Label>
                 <div className="space-y-2">
                   {certificates.map((cert) => (
                     <div key={cert.id} className="flex items-center space-x-2">
@@ -163,7 +163,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`cert-${cert.id}`}
-                        className="cursor-pointer text-sm font-normal"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {cert?.name || "Unknown Certificate"}
                       </Label>
@@ -176,7 +176,7 @@ export function ProductFilters({
             {/* Size Charts */}
             {sizeCharts.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Size Standards</Label>
+                <Label className="font-semibold text-base">Size Standards</Label>
                 <div className="space-y-2">
                   {sizeCharts.map((size) => (
                     <div key={size.id} className="flex items-center space-x-2">
@@ -187,7 +187,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`size-${size.id}`}
-                        className="cursor-pointer text-sm font-normal"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {size?.name || "Unknown Size"}
                       </Label>
@@ -200,7 +200,7 @@ export function ProductFilters({
             {/* Accessories */}
             {accessories.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Available Accessories</Label>
+                <Label className="font-semibold text-base">Available Accessories</Label>
                 <div className="space-y-2">
                   {accessories.map((acc) => (
                     <div key={acc.id} className="flex items-center space-x-2">
@@ -211,7 +211,7 @@ export function ProductFilters({
                       />
                       <Label
                         htmlFor={`acc-${acc.id}`}
-                        className="cursor-pointer text-sm font-normal"
+                        className="cursor-pointer font-normal text-sm"
                       >
                         {acc?.name || "Unknown Accessory"}
                       </Label>
@@ -224,7 +224,7 @@ export function ProductFilters({
             {/* Tags */}
             {availableTags.length > 0 && (
               <div className="space-y-3">
-                <Label className="text-base font-semibold">Product Tags</Label>
+                <Label className="font-semibold text-base">Product Tags</Label>
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tag) => (
                     <Badge
@@ -242,7 +242,7 @@ export function ProductFilters({
 
             {/* MOQ Range */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold">Minimum Order Quantity</Label>
+              <Label className="font-semibold text-base">Minimum Order Quantity</Label>
               <div className="px-2">
                 <Slider
                   value={selectedFilters.moqRange}
@@ -252,7 +252,7 @@ export function ProductFilters({
                   step={100}
                   className="mb-2"
                 />
-                <div className="text-muted-foreground flex justify-between text-sm">
+                <div className="flex justify-between text-muted-foreground text-sm">
                   <span>{selectedFilters.moqRange[0]} units</span>
                   <span>{selectedFilters.moqRange[1]} units</span>
                 </div>

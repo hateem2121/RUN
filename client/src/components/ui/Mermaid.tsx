@@ -3,7 +3,7 @@ import { memo, useEffect, useRef, useState } from "react";
 
 export interface MermaidProps {
   chart: string;
-  className?: string; // Optional for Tailwind styling
+  className?: string | undefined; // Optional for Tailwind styling
   theme?: "default" | "dark" | "neutral" | "base" | "forest";
 }
 

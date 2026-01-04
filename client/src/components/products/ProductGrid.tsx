@@ -97,13 +97,13 @@ export function ProductGrid({
         return (
           <Link to={productUrl} key={product.id}>
             <Card
-              className="group transition-shadow-sm cursor-pointer overflow-hidden hover:shadow-lg"
+              className="group cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg"
               onMouseEnter={() => handleProductHover(product)}
             >
               {/* Media Preview */}
               <div
                 className={cn(
-                  "bg-muted relative overflow-hidden",
+                  "relative overflow-hidden bg-muted",
                   viewMode === "small" ? "aspect-3/4" : "aspect-4/5",
                 )}
               >
@@ -115,7 +115,7 @@ export function ProductGrid({
                     priority={false}
                   />
                 ) : (
-                  <div className="text-muted-foreground/70 flex h-full w-full items-center justify-center">
+                  <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
                     <LayoutGrid className="h-12 w-12" />
                   </div>
                 )}
@@ -149,7 +149,7 @@ export function ProductGrid({
                   {product.videos && product.videos.length > 0 && (
                     <Badge
                       variant="secondary"
-                      className="bg-green-100 px-2 py-0.5 text-xs text-green-800"
+                      className="bg-green-100 px-2 py-0.5 text-green-800 text-xs"
                     >
                       {product.videos.length} videos
                     </Badge>
@@ -169,17 +169,17 @@ export function ProductGrid({
                 </h3>
 
                 {/* Defensive Rendering for Category Relation */}
-                <p className="text-muted-foreground mb-2 text-xs">
+                <p className="mb-2 text-muted-foreground text-xs">
                   {categories.find((c) => c.id === product.categoryId)?.name ?? "Uncategorized"}
                 </p>
 
                 {viewMode !== "small" && (
                   <>
                     {product.sku && (
-                      <p className="text-muted-foreground mb-2 text-sm">SKU: {product.sku}</p>
+                      <p className="mb-2 text-muted-foreground text-sm">SKU: {product.sku}</p>
                     )}
                     {product.description && viewMode === "large" && (
-                      <p className="text-foreground/80 line-clamp-2 text-sm">
+                      <p className="line-clamp-2 text-foreground/80 text-sm">
                         {product.description}
                       </p>
                     )}

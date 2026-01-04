@@ -25,7 +25,7 @@ interface RelationshipIndicatorsProps {
   hasCategory: boolean;
   hasFabric: boolean;
   has3DModel: boolean;
-  compact?: boolean;
+  compact?: boolean | undefined;
 }
 
 export function RelationshipIndicators({

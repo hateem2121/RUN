@@ -28,8 +28,8 @@ import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 interface ClippedElementProps {
   as?: React.ElementType;
   children: React.ReactNode;
-  className?: string;
-  clipAmount?: number;
+  className?: string | undefined;
+  clipAmount?: number | undefined;
   style?: React.CSSProperties;
   [x: string]: any;
 }
@@ -98,8 +98,8 @@ interface MediaItem {
   type: MediaType;
   src: string;
   thumbnail: string;
-  filename?: string;
-  mimeType?: string;
+  filename?: string | undefined;
+  mimeType?: string | undefined;
 }
 
 interface Hotspot {
@@ -405,7 +405,7 @@ interface TabbedDetailsProps {
     specifications?: string[];
     technicalSpecs?: Record<string, any>;
     careInstructions?: string[];
-    minimumOrderQuantity?: number;
+    minimumOrderQuantity?: number | undefined;
     leadTime?: string | null;
     customFit?: string | null;
     customWeight?: string | null;

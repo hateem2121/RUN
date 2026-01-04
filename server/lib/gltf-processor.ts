@@ -15,7 +15,7 @@ export interface GLTFProcessingResult {
   processedSize: number;
   texturesEmbedded: number;
   externalReferencesRemoved: number;
-  error?: string;
+  error?: string | undefined;
 }
 
 export interface GLTFValidationResult {
@@ -25,7 +25,7 @@ export interface GLTFValidationResult {
   externalReferences: string[];
   textureCount: number;
   bufferCount: number;
-  error?: string;
+  error?: string | undefined;
 }
 
 /**
@@ -43,13 +43,6 @@ export class GLTFProcessor {
    * PHASE 1.1 FIX: Helper method to detect GLB format
    */
   private isGLBFormat(buffer: Buffer): boolean {
-    return isGLBBuffer(buffer);
-  }
-
-  /**
-   * PHASE 1.1 NEW: Detect GLB format from buffer (static utility)
-   */
-  private isGLBBuffer(buffer: Buffer): boolean {
     return isGLBBuffer(buffer);
   }
 
@@ -441,7 +434,7 @@ export class GLTFProcessor {
    * PHASE 1.1 ENHANCED: Auto-convert external textures to embedded (with strict validation)
    */
   async processForUpload(buffer: Buffer, baseUrl?: string): Promise<GLTFProcessingResult> {
-    const originalSize = buffer.length;
+    const _originalSize = buffer.length;
     const validation = await this.validateGLTF(buffer);
 
     if (!validation.isValid) {
@@ -466,7 +459,7 @@ export class GLTFProcessor {
    */
   async validateForProductionUpload(buffer: Buffer): Promise<{
     valid: boolean;
-    reason?: string;
+    reason?: string | undefined;
     details?: GLTFValidationResult;
   }> {
     const validation = await this.validateGLTF(buffer);

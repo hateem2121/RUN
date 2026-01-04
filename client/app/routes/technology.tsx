@@ -2,9 +2,7 @@ import React from "react";
 
 // PHASE C: Lazy load heavy components to reduce initial bundle by ~350-500KB
 const GradientBlinds = React.lazy(() => import("@/components/GradientBlinds"));
-const UnifiedModelViewer = React.lazy(
-  () => import("@/components/ui/UnifiedModelViewer"),
-);
+const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
 
 import type {
   MediaAsset,
@@ -47,8 +45,7 @@ export function meta({}: Route.MetaArgs) {
     { title: "Technology & Innovation | Run Apparel" },
     {
       name: "description",
-      content:
-        "Explore our cutting-edge manufacturing technology and innovations.",
+      content: "Explore our cutting-edge manufacturing technology and innovations.",
     },
   ];
 }
@@ -92,16 +89,16 @@ type InnovationVM = {
   id: number;
   name: string;
   description: string;
-  shortDescription?: string;
-  iconName?: string;
-  status?: string;
-  technicalDetails?: Record<string, any>;
+  shortDescription?: string | undefined;
+  iconName?: string | undefined;
+  status?: string | undefined;
+  technicalDetails?: Record<string, any> | undefined;
   relatedProducts?: string[];
   category: string;
   benefits: string[];
-  imageId?: number;
-  videoId?: number;
-  developmentYear?: string;
+  imageId?: number | undefined;
+  videoId?: number | undefined;
+  developmentYear?: string | undefined;
 };
 
 type EquipmentVM = {
@@ -109,33 +106,33 @@ type EquipmentVM = {
   name: string;
   brand: string;
   model: string;
-  category?: string;
-  quantity?: number;
-  capacity?: string;
-  maintenanceSchedule?: string;
+  category?: string | undefined;
+  quantity?: number | undefined;
+  capacity?: string | undefined;
+  maintenanceSchedule?: string | undefined;
   certifications?: string[];
   capabilities: string[];
   specs: Record<string, unknown> | null;
-  imageId?: number;
-  installationDate?: string;
+  imageId?: number | undefined;
+  installationDate?: string | undefined;
 };
 
 type ResearchVM = {
   id: number;
   name: string;
   description: string;
-  researchArea?: string;
-  status?: string;
-  startDate?: string;
-  expectedCompletion?: string;
-  funding?: number;
+  researchArea?: string | undefined;
+  status?: string | undefined;
+  startDate?: string | undefined;
+  expectedCompletion?: string | undefined;
+  funding?: number | undefined;
   teamMembers?: string[];
   objectives?: string[];
   partners?: string[];
   outcomes?: string[];
   publications?: string[];
-  imageId?: number;
-  videoId?: number;
+  imageId?: number | undefined;
+  videoId?: number | undefined;
 };
 
 type RoadmapVM = {
@@ -143,8 +140,8 @@ type RoadmapVM = {
   name: string;
   description: string;
   timeline: string;
-  imageId?: number;
-  videoId?: number;
+  imageId?: number | undefined;
+  videoId?: number | undefined;
 };
 
 type CtaVM = {
@@ -200,9 +197,7 @@ type TechnologyBatchResponse = {
 };
 
 // Schema normalization adapters to handle type mismatches
-function resolveHeroBackgroundId(
-  hero: TechnologyHero | undefined,
-): number | null {
+function resolveHeroBackgroundId(hero: TechnologyHero | undefined): number | null {
   if (!hero) return null;
   // STRICT: Only use backgroundMediaId as per schema definition
   return hero.backgroundMediaId || null;
@@ -219,8 +214,8 @@ function collectMediaIds(item: MediaEntity): {
   videoId?: number;
 } {
   return {
-    imageId: item.imageId ?? undefined,
-    videoId: item.videoId ?? undefined,
+    ...(item.imageId ? { imageId: item.imageId } : {}),
+    ...(item.videoId ? { videoId: item.videoId } : {}),
   };
 }
 
@@ -232,39 +227,23 @@ function mapGradientSettings(settings: TechnologyGradientSettings | undefined) {
   return {
     gradientColors: (settings.colors?.length
       ? settings.colors
-      : TECHNOLOGY_DEFAULTS.gradientSettings.gradientColors) as [
-      string,
-      string,
-    ],
+      : TECHNOLOGY_DEFAULTS.gradientSettings.gradientColors) as [string, string],
     angle: config?.angle ?? TECHNOLOGY_DEFAULTS.gradientSettings.angle,
     noise: config?.noise ?? TECHNOLOGY_DEFAULTS.gradientSettings.noise,
-    blindCount:
-      config?.blindCount ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindCount,
-    blindMinWidth:
-      config?.blindMinWidth ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.blindMinWidth,
+    blindCount: config?.blindCount ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindCount,
+    blindMinWidth: config?.blindMinWidth ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindMinWidth,
     spotlightRadius:
-      config?.spotlightRadius ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightRadius,
+      config?.spotlightRadius ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightRadius,
     spotlightSoftness:
-      config?.spotlightSoftness ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightSoftness,
+      config?.spotlightSoftness ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightSoftness,
     spotlightOpacity:
-      config?.spotlightOpacity ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.spotlightOpacity,
-    mouseDampening:
-      config?.mouseDampening ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.mouseDampening,
-    mirrorGradient:
-      config?.mirrorGradient ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.mirrorGradient,
-    distortAmount:
-      config?.distortAmount ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.distortAmount,
+      config?.spotlightOpacity ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightOpacity,
+    mouseDampening: config?.mouseDampening ?? TECHNOLOGY_DEFAULTS.gradientSettings.mouseDampening,
+    mirrorGradient: config?.mirrorGradient ?? TECHNOLOGY_DEFAULTS.gradientSettings.mirrorGradient,
+    distortAmount: config?.distortAmount ?? TECHNOLOGY_DEFAULTS.gradientSettings.distortAmount,
     shineDirection: (config?.shineDirection ??
       TECHNOLOGY_DEFAULTS.gradientSettings.shineDirection) as "left" | "right",
-    mixBlendMode:
-      config?.mixBlendMode ?? TECHNOLOGY_DEFAULTS.gradientSettings.mixBlendMode,
+    mixBlendMode: config?.mixBlendMode ?? TECHNOLOGY_DEFAULTS.gradientSettings.mixBlendMode,
     paused: config?.paused ?? TECHNOLOGY_DEFAULTS.gradientSettings.paused,
   };
 }
@@ -282,29 +261,20 @@ function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
       h.title ||
       "Technology",
     subtitle:
-      (typeof heroData.subheadline === "string"
-        ? heroData.subheadline
-        : undefined) ||
+      (typeof heroData.subheadline === "string" ? heroData.subheadline : undefined) ||
       h.subtitle ||
       "",
     primaryCtaText:
-      (typeof heroData.primaryCtaText === "string"
-        ? heroData.primaryCtaText
-        : undefined) ||
+      (typeof heroData.primaryCtaText === "string" ? heroData.primaryCtaText : undefined) ||
       (typeof heroData.ctaText === "string" ? heroData.ctaText : undefined) ||
       "Learn more",
     secondaryCtaText:
-      (typeof heroData.secondaryCtaText === "string"
-        ? heroData.secondaryCtaText
-        : undefined) || "",
+      (typeof heroData.secondaryCtaText === "string" ? heroData.secondaryCtaText : undefined) || "",
     primaryCtaLink:
-      (typeof heroData.primaryCtaLink === "string"
-        ? heroData.primaryCtaLink
-        : undefined) || "#",
+      (typeof heroData.primaryCtaLink === "string" ? heroData.primaryCtaLink : undefined) || "#",
     secondaryCtaLink:
-      (typeof heroData.secondaryCtaLink === "string"
-        ? heroData.secondaryCtaLink
-        : undefined) || "#",
+      (typeof heroData.secondaryCtaLink === "string" ? heroData.secondaryCtaLink : undefined) ||
+      "#",
     backgroundImageId: resolveHeroBackgroundId(h),
   };
 }
@@ -416,9 +386,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   const [shouldLoadModel, setShouldLoadModel] = React.useState(false);
   const [userRequestedLoad, setUserRequestedLoad] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const autoLoadTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
+  const autoLoadTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // PHASE B: Optimized intersection observer with global instance sharing
   // Initialize model-viewer
@@ -448,12 +416,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
 
   // PHASE B: Auto-load timer for 3D models after 2 seconds of visibility
   React.useEffect(() => {
-    if (
-      media.type === "3d_model" &&
-      isIntersecting &&
-      !userRequestedLoad &&
-      !shouldLoadModel
-    ) {
+    if (media.type === "3d_model" && isIntersecting && !userRequestedLoad && !shouldLoadModel) {
       // Start 2-second timer when element becomes visible
       autoLoadTimerRef.current = setTimeout(() => {
         setShouldLoadModel(true);
@@ -466,11 +429,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           autoLoadTimerRef.current = null;
         }
       };
-    } else if (
-      media.type !== "3d_model" &&
-      isIntersecting &&
-      !shouldLoadModel
-    ) {
+    } else if (media.type !== "3d_model" && isIntersecting && !shouldLoadModel) {
       // Non-3D content loads immediately when intersecting
       setShouldLoadModel(true);
     }
@@ -502,31 +461,31 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   return (
     <div
       ref={containerRef}
-      className="hero-3d-model border-glass relative overflow-hidden rounded-2xl border bg-transparent"
+      className="hero-3d-model relative overflow-hidden rounded-2xl border border-glass bg-transparent"
     >
       {media.type === "3d_model" ? (
         <div className="relative aspect-4/3">
           {/* PHASE E: Enhanced progressive enhancement with intersection awareness */}
           {!shouldLoadModel && (
-            <div className="z-modal bg-muted/90 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm">
-              <div className="bg-primary/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                <div className="border-primary/60 h-8 w-8 rounded-lg border-2"></div>
+            <div className="absolute inset-0 z-modal flex flex-col items-center justify-center bg-muted/90 backdrop-blur-sm">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+                <div className="h-8 w-8 rounded-lg border-2 border-primary/60"></div>
               </div>
               <Typography.P className="mb-2 font-medium text-white">
                 Interactive 3D Model
               </Typography.P>
-              <Typography.P className="text-primary-foreground/80 mb-4 text-sm">
+              <Typography.P className="mb-4 text-primary-foreground/80 text-sm">
                 {isIntersecting ? "Preparing to load..." : "Scroll to view"}
               </Typography.P>
               <button
                 onClick={() => {
                   setUserRequestedLoad(true);
                 }}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm transition-colors duration-200"
+                className="rounded-lg bg-primary px-4 py-2 text-primary-foreground text-sm transition-colors duration-200 hover:bg-primary/90"
               >
                 Load 3D Model
               </button>
-              <Typography.P className="text-primary-foreground/70 mt-2 text-xs">
+              <Typography.P className="mt-2 text-primary-foreground/70 text-xs">
                 Interactive 3D experience • Optimized streaming
               </Typography.P>
             </div>
@@ -534,9 +493,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
 
           {/* Loading Overlay - only shows when model is actually loading */}
           {isLoading && shouldLoadModel && (
-            <div className="z-modal-backdrop absolute inset-0 flex flex-col items-center justify-center bg-black/60">
-              <Loader2 className="text-primary mb-3 h-8 w-8 animate-spin" />
-              <Typography.P className="mb-2 text-sm font-medium text-white">
+            <div className="absolute inset-0 z-modal-backdrop flex flex-col items-center justify-center bg-black/60">
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
+              <Typography.P className="mb-2 font-medium text-sm text-white">
                 Loading 3D Model...
               </Typography.P>
               <Typography.P className="text-muted-foreground/70 text-xs">
@@ -551,7 +510,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
             <React.Suspense
               fallback={
                 <div className="flex h-full min-h-96 w-full items-center justify-center rounded-xl bg-black/20">
-                  <Loader2 className="text-primary h-8 w-8 animate-spin" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               }
             >
@@ -564,9 +523,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                   mimeType: "model/gltf+json",
                   type: "3d_model" as const,
                   url: media.url || `/api/media/${media.id || 0}/content`,
-                  altText:
-                    media.altText ||
-                    "Technology Hero 3D Model - Interactive display",
+                  altText: media.altText || "Technology Hero 3D Model - Interactive display",
                   metadata: media.metadata || {},
                   tags: media.tags || [],
                   deletedAt: null,
@@ -590,9 +547,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           <video
             src={
               media.url ||
-              (media.id && media.id < 1000000000000
-                ? `/api/media/${media.id}/content`
-                : undefined)
+              (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
             }
             poster={posterUrl}
             autoPlay
@@ -606,9 +561,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           <img
             src={
               media.url ||
-              (media.id && media.id < 1000000000000
-                ? `/api/media/${media.id}/content`
-                : undefined)
+              (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
             }
             alt="Technology Hero Display"
             className="h-full w-full rounded-xl object-cover"
@@ -623,11 +576,10 @@ export default function Technology() {
   const loaderData = useLoaderData<typeof loader>();
   // OPTIMIZED: Single batch request replaces 7 separate HTTP calls (55-60% faster load time)
   // Batch endpoint includes: hero, innovations, equipment, research, roadmap, cta, gradientSettings, mediaAssets
-  const { data: batchData, isLoading: batchLoading } =
-    useOptimizedQuery<TechnologyBatchResponse>({
-      queryKey: ["/api/technology-batch"],
-      // Use hook's default 15-minute stale time for optimal caching
-    });
+  const { data: batchData, isLoading: batchLoading } = useOptimizedQuery<TechnologyBatchResponse>({
+    queryKey: ["/api/technology-batch"],
+    // Use hook's default 15-minute stale time for optimal caching
+  });
 
   // Destructure batch response into individual data pieces (same variable names as before)
   const hero = batchData?.hero;
@@ -699,20 +651,16 @@ export default function Technology() {
   }
 
   // Map gradient settings with fallback defaults
-  const safeGradientSettings = mapGradientSettings(
-    gradientSettings ?? undefined,
-  );
+  const safeGradientSettings = mapGradientSettings(gradientSettings ?? undefined);
 
   // Hero background media lookup - mirroring sustainability page approach
-  const backgroundMedia = mainHeroMediaId
-    ? getMediaAsset(mainHeroMediaId)
-    : null;
+  const backgroundMedia = mainHeroMediaId ? getMediaAsset(mainHeroMediaId) : null;
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
         {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
-        <div className="-z-elevated fixed inset-0">
+        <div className="fixed inset-0 -z-elevated">
           {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
           <ClientOnly
             fallback={
@@ -726,9 +674,7 @@ export default function Technology() {
               />
             }
           >
-            <ErrorBoundary
-              fallback={<div className="bg-background fixed inset-0" />}
-            >
+            <ErrorBoundary fallback={<div className="fixed inset-0 bg-background" />}>
               <React.Suspense
                 fallback={
                   <div
@@ -753,9 +699,7 @@ export default function Technology() {
                   mouseDampening={safeGradientSettings.mouseDampening}
                   mirrorGradient={safeGradientSettings.mirrorGradient}
                   distortAmount={safeGradientSettings.distortAmount}
-                  shineDirection={
-                    safeGradientSettings.shineDirection as "left" | "right"
-                  }
+                  shineDirection={safeGradientSettings.shineDirection as "left" | "right"}
                   mixBlendMode={safeGradientSettings.mixBlendMode}
                   paused={safeGradientSettings.paused}
                   onWebGLReady={() => setWebglInitialized(true)}
@@ -781,16 +725,13 @@ export default function Technology() {
                   className="block w-full cursor-default p-8"
                 >
                   {batchLoading ? (
-                    <LoadingSkeleton
-                      type="text"
-                      className="text-center lg:text-left"
-                    />
+                    <LoadingSkeleton type="text" className="text-center lg:text-left" />
                   ) : (
                     <div className="text-center lg:text-left">
-                      <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+                      <Typography.H1 className="mb-6 font-bold text-3xl text-white leading-tight drop-shadow-lg sm:text-4xl lg:text-5xl">
                         {vm.hero?.title || "Technology & Innovation"}
                       </Typography.H1>
-                      <Typography.H2 className="mb-6 text-lg leading-relaxed font-medium text-white/90 drop-shadow-sm lg:text-xl">
+                      <Typography.H2 className="mb-6 font-medium text-lg text-white/90 leading-relaxed drop-shadow-sm lg:text-xl">
                         {vm.hero?.subtitle ||
                           "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
                       </Typography.H2>
@@ -803,13 +744,12 @@ export default function Technology() {
                       )}
 
                       {/* CTA Buttons */}
-                      {(vm.hero?.primaryCtaText ||
-                        vm.hero?.secondaryCtaText) && (
+                      {(vm.hero?.primaryCtaText || vm.hero?.secondaryCtaText) && (
                         <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
                           {vm.hero?.primaryCtaText && (
                             <a
                               href={vm.hero?.primaryCtaLink || "#"}
-                              className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring rounded-lg px-8 py-3 text-center font-semibold transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+                              className="rounded-lg bg-primary px-8 py-3 text-center font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
                             >
                               {vm.hero.primaryCtaText}
                             </a>
@@ -826,7 +766,7 @@ export default function Technology() {
                       )}
 
                       {/* Decorative Divider */}
-                      <div className="from-primary to-accent mx-auto h-1 w-24 rounded-full bg-linear-to-r lg:mx-0"></div>
+                      <div className="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-primary to-accent lg:mx-0"></div>
                     </div>
                   )}
                 </LiquidGlassCard>
@@ -839,7 +779,7 @@ export default function Technology() {
                     <OptimizedTechnologyHero media={backgroundMedia} />
                   </div>
                 ) : (
-                  <div className="border-glass flex aspect-4/3 items-center justify-center rounded-2xl border bg-white/5 backdrop-blur-sm">
+                  <div className="flex aspect-4/3 items-center justify-center rounded-2xl border border-glass bg-white/5 backdrop-blur-sm">
                     <div className="text-center text-white/40">
                       <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 transition-transform duration-500 hover:scale-110">
                         <Box className="h-8 w-8 text-white/30" />

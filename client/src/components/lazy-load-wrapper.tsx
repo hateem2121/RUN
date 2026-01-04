@@ -76,8 +76,8 @@ export function OptimizedMotion({
 }: {
   children: React.ReactNode;
   variant?: keyof typeof mobileAnimationVariants;
-  className?: string;
-  delay?: number;
+  className?: string | undefined;
+  delay?: number | undefined;
 }) {
   const reducedMotion = useReducedMotion();
   const animationProps = mobileAnimationVariants[variant];

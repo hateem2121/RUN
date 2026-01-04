@@ -118,7 +118,7 @@ export default function Fibers() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="from-muted/30 to-background min-h-screen bg-linear-to-b">
+      <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
         {/* Hero Section */}
         <section className="px-4 pt-24 pb-12">
           <div className="mx-auto max-w-7xl">
@@ -127,20 +127,20 @@ export default function Fibers() {
               animate={{ opacity: 1, y: 0 }}
               className="mb-8 text-center"
             >
-              <Typography.H1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
+              <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
                 Fiber Materials Library
               </Typography.H1>
-              <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
+              <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
                 Understanding the building blocks of high-performance sportswear fabrics
               </Typography.P>
 
               <div className="mt-8 flex justify-center gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600">{fibers.length}</div>
+                  <div className="font-bold text-3xl text-purple-600">{fibers.length}</div>
                   <div className="text-muted-foreground text-sm">Total Fibers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600">
+                  <div className="font-bold text-3xl text-green-600">
                     {
                       fibers.filter((f) => f.sustainabilityScore && f.sustainabilityScore >= 4)
                         .length
@@ -154,7 +154,7 @@ export default function Fibers() {
             {/* Search Bar */}
             <div className="mx-auto max-w-2xl">
               <div className="relative">
-                <Search className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />
+                <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-muted-foreground" />
                 <Input
                   placeholder="Search fibers..."
                   value={searchTerm}
@@ -174,12 +174,12 @@ export default function Fibers() {
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <Card key={i} className="h-64 animate-pulse">
                     <CardHeader>
-                      <div className="bg-muted h-6 w-3/4 rounded"></div>
+                      <div className="h-6 w-3/4 rounded bg-muted"></div>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        <div className="bg-muted h-4 rounded"></div>
-                        <div className="bg-muted h-4 w-5/6 rounded"></div>
+                        <div className="h-4 rounded bg-muted"></div>
+                        <div className="h-4 w-5/6 rounded bg-muted"></div>
                       </div>
                     </CardContent>
                   </Card>
@@ -196,7 +196,7 @@ export default function Fibers() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                       >
-                        <Typography.H2 className="text-foreground/90 mb-4 flex items-center gap-2 text-xl font-semibold">
+                        <Typography.H2 className="mb-4 flex items-center gap-2 font-semibold text-foreground/90 text-xl">
                           {(() => {
                             const Icon = getTypeIcon(type);
                             return <Icon className="h-5 w-5" />;
@@ -217,13 +217,13 @@ export default function Fibers() {
                                 transition={{ duration: 0.2 }}
                               >
                                 <Card
-                                  className="transition-shadow-sm h-full cursor-pointer hover:shadow-lg"
+                                  className="h-full cursor-pointer transition-shadow-sm hover:shadow-lg"
                                   onClick={() => toggleExpanded(fiber.id)}
                                 >
                                   <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between">
                                       <div className="flex-1">
-                                        <CardTitle className="text-base font-semibold">
+                                        <CardTitle className="font-semibold text-base">
                                           {fiber.name}
                                         </CardTitle>
                                         <div className="mt-2 flex items-center gap-2">
@@ -298,7 +298,7 @@ export default function Fibers() {
                                             {fiber.properties &&
                                               getPropertiesArray(fiber.properties).length > 3 && (
                                                 <div className="space-y-1">
-                                                  <Typography.P className="text-foreground/80 text-xs font-semibold">
+                                                  <Typography.P className="font-semibold text-foreground/80 text-xs">
                                                     All Properties:
                                                   </Typography.P>
                                                   <div className="flex flex-wrap gap-1">
@@ -319,12 +319,12 @@ export default function Fibers() {
 
                                             {fiber.sustainabilityScore && (
                                               <div className="space-y-2">
-                                                <Typography.P className="text-foreground/80 text-xs font-semibold">
+                                                <Typography.P className="font-semibold text-foreground/80 text-xs">
                                                   Sustainability Assessment:
                                                 </Typography.P>
                                                 {getSustainabilityBadge(fiber.sustainabilityScore)}
                                                 {fiber.environmentalImpact && (
-                                                  <Typography.P className="text-muted-foreground mt-1 text-xs">
+                                                  <Typography.P className="mt-1 text-muted-foreground text-xs">
                                                     {fiber.environmentalImpact}
                                                   </Typography.P>
                                                 )}
@@ -349,8 +349,8 @@ export default function Fibers() {
                     animate={{ opacity: 1 }}
                     className="py-16 text-center"
                   >
-                    <Sparkles className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
-                    <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
+                    <Sparkles className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
+                    <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                       No fibers found
                     </Typography.H3>
                     <Typography.P className="text-muted-foreground">

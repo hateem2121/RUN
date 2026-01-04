@@ -27,6 +27,7 @@ import {
   horizontalListSortingStrategy,
   SortableContext,
   type SortableContextProps,
+  type SortingStrategy,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -108,7 +109,7 @@ type SortableProps<T> = DndContextProps & {
   onMove?: (event: DragEndEvent) => void;
   strategy?: SortableContextProps["strategy"];
   orientation?: "vertical" | "horizontal" | "mixed";
-  flatCursor?: boolean;
+  flatCursor?: boolean | undefined;
 } & (T extends object ? GetItemValue<T> : Partial<GetItemValue<T>>);
 
 function Sortable<T>(props: SortableProps<T>) {
@@ -192,9 +193,20 @@ function Sortable<T>(props: SortableProps<T>) {
     <SortableRootContext.Provider value={contextValue as SortableRootContextValue<unknown>}>
       <DndContext
         id={id}
-        modifiers={modifiers ?? config.modifiers}
-        sensors={sensorsProp ?? sensors}
-        collisionDetection={collisionDetection ?? config.collisionDetection}
+        autoScroll={false as any}
+        cancelDrop={undefined as any}
+        measuring={undefined as any}
+        onDragAbort={() => {}}
+        onDragPending={() => {}}
+        onDragMove={() => {}}
+        onDragOver={() => {}}
+        {...((modifiers ?? config.modifiers) ? { modifiers: modifiers ?? config.modifiers } : {})}
+        {...((sensorsProp ?? sensors) ? { sensors: sensorsProp ?? sensors } : {})}
+        {...((collisionDetection ?? config.collisionDetection)
+          ? {
+              collisionDetection: collisionDetection ?? config.collisionDetection,
+            }
+          : {})}
         onDragStart={({ active }) => setActiveId(active.id)}
         onDragEnd={onDragEnd}
         onDragCancel={() => setActiveId(null)}
@@ -251,7 +263,7 @@ SortableContentContext.displayName = CONTENT_NAME;
 interface SortableContentProps extends SlotProps {
   strategy?: SortableContextProps["strategy"];
   children: React.ReactNode;
-  asChild?: boolean;
+  asChild?: boolean | undefined;
   ref?: React.Ref<HTMLDivElement>;
 }
 
@@ -289,7 +301,12 @@ const SortableContent = ({
 
   return (
     <SortableContentContext.Provider value={true}>
-      <SortableContext items={items} strategy={strategyProp ?? context.strategy}>
+      <SortableContext
+        items={items}
+        {...((strategyProp ?? context.strategy)
+          ? { strategy: (strategyProp ?? context.strategy) as SortingStrategy }
+          : {})}
+      >
         <ContentSlot {...contentProps} ref={ref} />
       </SortableContext>
     </SortableContentContext.Provider>
@@ -302,8 +319,8 @@ interface SortableItemContextValue {
   attributes: React.HTMLAttributes<HTMLElement>;
   listeners: DraggableSyntheticListeners | undefined;
   setActivatorNodeRef: (node: HTMLElement | null) => void;
-  isDragging?: boolean;
-  disabled?: boolean;
+  isDragging?: boolean | undefined;
+  disabled?: boolean | undefined;
 }
 
 const SortableItemContext = React.createContext<SortableItemContextValue>({
@@ -317,9 +334,9 @@ SortableItemContext.displayName = ITEM_NAME;
 
 interface SortableItemProps extends SlotProps {
   value: UniqueIdentifier;
-  asHandle?: boolean;
-  asChild?: boolean;
-  disabled?: boolean;
+  asHandle?: boolean | undefined;
+  asChild?: boolean | undefined;
+  disabled?: boolean | undefined;
   ref?: React.Ref<HTMLDivElement>;
 }
 
@@ -359,7 +376,10 @@ const SortableItem = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: value, disabled });
+  } = useSortable({
+    id: value,
+    ...(disabled !== undefined ? { disabled } : {}),
+  });
 
   const composedRef = useComposedRefs(forwardedRef, (node) => {
     if (disabled) return;
@@ -419,7 +439,7 @@ const SortableItem = ({
 SortableItem.displayName = ITEM_NAME;
 
 interface SortableItemHandleProps extends React.ComponentPropsWithoutRef<"button"> {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
   ref?: React.Ref<HTMLButtonElement>;
 }
 
@@ -495,7 +515,11 @@ function SortableOverlay(props: SortableOverlayProps) {
   if (!container) return null;
 
   return ReactDOM.createPortal(
-    <DragOverlay modifiers={context.modifiers} dropAnimation={dropAnimation} {...overlayProps}>
+    <DragOverlay
+      {...(context.modifiers ? { modifiers: context.modifiers } : {})}
+      dropAnimation={dropAnimation}
+      {...overlayProps}
+    >
       <SortableOverlayContext.Provider value={true}>
         {typeof children === "function" ? children({ value: context.activeId! }) : children}
       </SortableOverlayContext.Provider>

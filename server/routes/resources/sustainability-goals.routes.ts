@@ -1,3 +1,5 @@
+import { removeUndefined } from "../../utils.js";
+
 /**
  * SUSTAINABILITY GOALS RESOURCE ROUTER
  *
@@ -92,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newGoal = await withTimeout(
-      getStorage().createSustainabilityGoal(validation.data),
+      getStorage().createSustainabilityGoal(removeUndefined(validation.data)),
       10000,
       "Create sustainability goal",
     );
@@ -128,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateSustainabilityGoal(id, validation.data),
+      getStorage().updateSustainabilityGoal(id, removeUndefined(validation.data)),
       10000,
       "Update sustainability goal",
     );
@@ -198,7 +200,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     }
 
     const updates = await Promise.all(
-      validation.data.goals.map(({ id, position }) =>
+      removeUndefined(validation.data).goals.map(({ id, position }) =>
         getStorage().updateSustainabilityGoal(id, { sortOrder: position }),
       ),
     );

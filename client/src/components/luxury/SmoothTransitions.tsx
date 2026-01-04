@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 interface SmoothTransitionProps extends MotionProps {
   children: ReactNode;
-  className?: string;
-  delay?: number;
-  duration?: number;
+  className?: string | undefined;
+  delay?: number | undefined;
+  duration?: number | undefined;
   variant?: "fade" | "slide" | "scale" | "luxury";
 }
 
@@ -68,8 +68,8 @@ export function SmoothTransition({
 
 interface StaggerContainerProps {
   children: ReactNode;
-  className?: string;
-  staggerDelay?: number;
+  className?: string | undefined;
+  staggerDelay?: number | undefined;
 }
 
 export function StaggerContainer({
@@ -102,9 +102,9 @@ export function StaggerContainer({
 
 interface FloatingElementProps {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   intensity?: "subtle" | "normal" | "strong";
-  duration?: number;
+  duration?: number | undefined;
 }
 
 export function FloatingElement({
@@ -138,9 +138,9 @@ export function FloatingElement({
 
 interface GlassEffectProps {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   variant?: "light" | "card" | "elevated";
-  interactive?: boolean;
+  interactive?: boolean | undefined;
 }
 
 export function GlassEffect({
@@ -173,8 +173,8 @@ interface LuxuryButtonProps {
   onClick?: () => void;
   variant?: "primary" | "secondary" | "ghost";
   size?: "sm" | "md" | "lg";
-  className?: string;
-  disabled?: boolean;
+  className?: string | undefined;
+  disabled?: boolean | undefined;
 }
 
 export function LuxuryButton({
