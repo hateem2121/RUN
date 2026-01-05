@@ -137,6 +137,10 @@ jobs:
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
 
+      - name: Check Bundle Size
+        run: npm run check:bundle
+        continue-on-error: true
+
   delete_neon_branch:
     name: Delete Neon Branch
     needs: setup

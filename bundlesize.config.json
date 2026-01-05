@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "dist/public/assets/vendor-react-*.js",
+      "maxSize": "200 kB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/public/assets/vendor-ui-*.js",
+      "maxSize": "150 kB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/public/assets/vendor-3d-*.js",
+      "maxSize": "100 kB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/public/assets/vendor-utils-*.js",
+      "maxSize": "50 kB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/public/assets/index-*.js",
+      "maxSize": "100 kB",
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/public/assets/index-*.css",
+      "maxSize": "50 kB",
+      "compression": "gzip"
+    }
+  ]
+}

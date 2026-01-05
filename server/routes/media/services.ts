@@ -1,12 +1,15 @@
 import type { MediaAsset } from "@shared/schema.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
+import {
+  getGLTFProcessor,
+  isGLTFFile,
+} from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
-import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
+import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
 import { correctMimeType } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import {
@@ -56,7 +59,8 @@ export const enhancedUploadService = {
     mimeType: string,
     originalName: string,
   ) => {
-    const uploadId = Date.now().toString() + Math.random().toString(36).substring(2, 11);
+    const uploadId =
+      Date.now().toString() + Math.random().toString(36).substring(2, 11);
     const chunkSize = UPLOAD_CONFIG.chunkSize;
     const totalChunks = Math.ceil(totalSize / chunkSize);
 
@@ -81,7 +85,9 @@ export const enhancedUploadService = {
     // Auto-cleanup after TTL with enhanced cleanup
     setTimeout(() => {
       if (uploadSessions.has(uploadId)) {
-        logger.warn(`[Enhanced Upload] Auto-cleaning expired session: ${uploadId}`);
+        logger.warn(
+          `[Enhanced Upload] Auto-cleaning expired session: ${uploadId}`,
+        );
         uploadSessions.delete(uploadId);
         enhancedUploadService.activeFileOperations.delete(uploadId);
         // MEMORY LEAK FIX: Force garbage collection on expired sessions
@@ -91,11 +97,17 @@ export const enhancedUploadService = {
       }
     }, UPLOAD_CONFIG.sessionTTL);
 
-    logger.debug(`[Enhanced Upload] Initialized session: ${uploadId} (${totalChunks} chunks)`);
+    logger.debug(
+      `[Enhanced Upload] Initialized session: ${uploadId} (${totalChunks} chunks)`,
+    );
     return { uploadId, chunkSize, totalChunks };
   },
 
-  uploadChunk: async (uploadId: string, chunkNumber: number, buffer: Buffer) => {
+  uploadChunk: async (
+    uploadId: string,
+    chunkNumber: number,
+    buffer: Buffer,
+  ) => {
     const session = uploadSessions.get(uploadId);
     if (!session) {
       throw new Error("Upload session not found or expired");
@@ -115,7 +127,9 @@ export const enhancedUploadService = {
     );
     session.receivedChunks.set(chunkNumber, true); // Track receipt, not data
 
-    const progress = Math.round((session.receivedChunks.size / session.totalChunks) * 100);
+    const progress = Math.round(
+      (session.receivedChunks.size / session.totalChunks) * 100,
+    );
     const isComplete = session.receivedChunks.size === session.totalChunks;
 
     logger.debug(
@@ -156,7 +170,11 @@ export const enhancedUploadService = {
     }
 
     // Verify chunk integrity with SHA-256
-    const crypto = await withTimeout(import("node:crypto"), 5000, "Import crypto module");
+    const crypto = await withTimeout(
+      import("node:crypto"),
+      5000,
+      "Import crypto module",
+    );
     const hash = crypto.createHash("sha256");
     hash.update(chunkData);
     const computedHash = hash.digest("base64");
@@ -165,7 +183,9 @@ export const enhancedUploadService = {
       logger.error(
         `[Raw Chunk] Hash mismatch for chunk ${chunkNumber}: expected ${metadata.chunkHash}, got ${computedHash}`,
       );
-      throw new Error(`Chunk integrity check failed: hash mismatch for chunk ${chunkNumber}`);
+      throw new Error(
+        `Chunk integrity check failed: hash mismatch for chunk ${chunkNumber}`,
+      );
     }
 
     session.lastActivityAt = new Date();
@@ -181,7 +201,9 @@ export const enhancedUploadService = {
     );
     session.receivedChunks.set(chunkNumber, true); // Track receipt, not data
 
-    const progress = Math.round((session.receivedChunks.size / session.totalChunks) * 100);
+    const progress = Math.round(
+      (session.receivedChunks.size / session.totalChunks) * 100,
+    );
     const isComplete = session.receivedChunks.size === session.totalChunks;
 
     logger.debug(
@@ -204,7 +226,9 @@ export const enhancedUploadService = {
       return { status: "not_found", progress: 0 };
     }
 
-    const progress = Math.round((session.receivedChunks.size / session.totalChunks) * 100);
+    const progress = Math.round(
+      (session.receivedChunks.size / session.totalChunks) * 100,
+    );
     const isComplete = session.receivedChunks.size === session.totalChunks;
 
     return {
@@ -246,19 +270,26 @@ export const enhancedUploadService = {
         batchStart < session.totalChunks;
         batchStart += PARALLEL_BATCH_SIZE
       ) {
-        const batchEnd = Math.min(batchStart + PARALLEL_BATCH_SIZE, session.totalChunks);
+        const batchEnd = Math.min(
+          batchStart + PARALLEL_BATCH_SIZE,
+          session.totalChunks,
+        );
         const batchPromises = [];
 
         for (let i = batchStart; i < batchEnd; i++) {
           // Use shared CHUNK_STORAGE_BASE constant - MUST match upload path exactly
           const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
           batchPromises.push(
-            (unifiedCache as any).getOrFetchMediaContent(chunkKey).then((result: any) => {
-              if (!result?.buffer) {
-                throw new Error(`Chunk ${i} missing or corrupted - cannot assemble file`);
-              }
-              return { index: i, chunk: result.buffer };
-            }),
+            (unifiedCache as any)
+              .getOrFetchMediaContent(chunkKey)
+              .then((result: any) => {
+                if (!result?.buffer) {
+                  throw new Error(
+                    `Chunk ${i} missing or corrupted - cannot assemble file`,
+                  );
+                }
+                return { index: i, chunk: result.buffer };
+              }),
           );
         }
 
@@ -274,7 +305,9 @@ export const enhancedUploadService = {
           }
           orderedChunks[index] = chunk;
           computedTotal += chunk.length;
-          logger.debug(`[ChunkAssembly] 📥 Retrieved chunk ${index}: ${chunk.length} bytes`);
+          logger.debug(
+            `[ChunkAssembly] 📥 Retrieved chunk ${index}: ${chunk.length} bytes`,
+          );
         }
       }
 
@@ -288,7 +321,9 @@ export const enhancedUploadService = {
         `[ChunkAssembly] 🔧 Performing single Buffer.concat with ${orderedChunks.length} chunks, exact total: ${computedTotal}`,
       );
       let assembledFile = Buffer.concat(orderedChunks, computedTotal);
-      logger.info(`[ChunkAssembly] ✅ Parallel assembly complete: ${assembledFile.length} bytes`);
+      logger.info(
+        `[ChunkAssembly] ✅ Parallel assembly complete: ${assembledFile.length} bytes`,
+      );
 
       // Verify file size
       if (assembledFile.length !== session.totalSize) {
@@ -302,13 +337,18 @@ export const enhancedUploadService = {
 
       // PHASE 1.1 ENHANCED: GLTF Processing & Validation - Embed textures and enforce zero external dependencies
       if (isGLTFFile(session.mimeType, session.filename)) {
-        logger.debug(`[GLTF] Processing and validating GLTF file: ${session.filename}`);
+        logger.debug(
+          `[GLTF] Processing and validating GLTF file: ${session.filename}`,
+        );
         logger.debug(
           `[GLTF] Assembled file size: ${assembledFile.length} bytes, expected: ${session.totalSize} bytes`,
         );
 
         // ENHANCED: Robust GLTF format detection with proper validation
-        const fileHeader = assembledFile.subarray(0, Math.min(4096, assembledFile.length)); // Expanded scan window
+        const fileHeader = assembledFile.subarray(
+          0,
+          Math.min(4096, assembledFile.length),
+        ); // Expanded scan window
         const fileStartHex = fileHeader.subarray(0, 20).toString("hex");
 
         // GLB format detection with proper header validation
@@ -321,7 +361,10 @@ export const enhancedUploadService = {
           const declaredLength = assembledFile.readUInt32LE(8);
 
           const magicMatch =
-            magic[0] === 0x67 && magic[1] === 0x6c && magic[2] === 0x54 && magic[3] === 0x46; // 'glTF'
+            magic[0] === 0x67 &&
+            magic[1] === 0x6c &&
+            magic[2] === 0x54 &&
+            magic[3] === 0x46; // 'glTF'
           const versionValid = version === 2;
           const lengthValid = declaredLength === assembledFile.length;
 
@@ -351,11 +394,16 @@ export const enhancedUploadService = {
             hasAssetProperty = true;
           } else if (assembledFile.length > 1024 * 1024) {
             // For large files (>1MB), check first 32KB for asset field
-            const largerHeader = assembledFile.subarray(0, Math.min(32768, assembledFile.length));
+            const largerHeader = assembledFile.subarray(
+              0,
+              Math.min(32768, assembledFile.length),
+            );
             const largerText = largerHeader.toString("utf8");
             if (largerText.includes('"asset"')) {
               hasAssetProperty = true;
-              logger.info(`[GLTF] Found asset field in larger scan window for large file`);
+              logger.info(
+                `[GLTF] Found asset field in larger scan window for large file`,
+              );
             } else {
               // For very large files, accept if JSON structure is valid
               logger.info(
@@ -369,7 +417,10 @@ export const enhancedUploadService = {
             // Attempt to parse first part to validate JSON structure
             const firstBraceEnd = jsonText.indexOf("}") + 1;
             if (firstBraceEnd > 0) {
-              const partialJson = jsonText.substring(0, Math.min(1000, firstBraceEnd));
+              const partialJson = jsonText.substring(
+                0,
+                Math.min(1000, firstBraceEnd),
+              );
               JSON.parse(`${partialJson}}`); // Just for validation
               isJSONFormat = true;
             }
@@ -449,14 +500,20 @@ export const enhancedUploadService = {
       let type = "document";
       if (session.mimeType.startsWith("image/")) type = "image";
       else if (session.mimeType.startsWith("video/")) type = "video";
-      else if (session.mimeType.includes("gltf") || session.mimeType.startsWith("model/"))
+      else if (
+        session.mimeType.includes("gltf") ||
+        session.mimeType.startsWith("model/")
+      )
         type = "model";
 
       // Generate organized storage path with automatic slugification
       // Format: {partition}/media/{type}/{yyyy}/{mm}/{timestamp}-{slugified-filename}.{ext}
       // The filename will be automatically slugified by generateOrganizedStoragePath
       const mediaType = detectMediaType(session.mimeType);
-      const storagePath = generateOrganizedStoragePath(mediaType, session.filename);
+      const storagePath = generateOrganizedStoragePath(
+        mediaType,
+        session.filename,
+      );
 
       // Store file in Replit Object Storage using correct pattern
       const storage = getStorage();
@@ -474,7 +531,8 @@ export const enhancedUploadService = {
       // Build metadata for database insertion using standardized field mapping
       // STANDARDIZED NAMING: Use slugified filename to match what's in storage
       const slugifiedFilename = slugifyFilename(session.filename);
-      const actualBucketName = process.env.REPLIT_OBJSTORE_BUCKET_ID || "replit-default-bucket";
+      const actualBucketName =
+        process.env.REPLIT_OBJSTORE_BUCKET_ID || "replit-default-bucket";
       const metadata = buildInsertMediaAsset({
         filename: slugifiedFilename,
         originalName: session.originalName, // Preserve original for display
@@ -521,7 +579,10 @@ export const enhancedUploadService = {
             "Delete uploaded file from storage (cleanup)",
           );
         } catch (cleanupError) {
-          logger.error("[Upload] Failed to cleanup object storage:", serializeError(cleanupError));
+          logger.error(
+            "[Upload] Failed to cleanup object storage:",
+            serializeError(cleanupError),
+          );
         }
         throw new Error(
           `Database creation failed: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
@@ -570,7 +631,10 @@ export const enhancedUploadService = {
         message: "Upload completed successfully",
       };
     } catch (error) {
-      logger.error(`[Enhanced Upload] Finalization failed for ${uploadId}:`, serializeError(error));
+      logger.error(
+        `[Enhanced Upload] Finalization failed for ${uploadId}:`,
+        serializeError(error),
+      );
       throw error;
     }
   },
@@ -588,7 +652,9 @@ export const enhancedUploadService = {
         session.receivedChunks.clear();
       }
 
-      logger.debug(`[Enhanced Upload] Cancelled session with cleanup: ${uploadId}`);
+      logger.debug(
+        `[Enhanced Upload] Cancelled session with cleanup: ${uploadId}`,
+      );
     }
 
     return deleted;
@@ -598,7 +664,9 @@ export const enhancedUploadService = {
     return Array.from(uploadSessions.values()).map((session) => ({
       uploadId: session.uploadId,
       filename: session.filename,
-      progress: Math.round((session.receivedChunks.size / session.totalChunks) * 100),
+      progress: Math.round(
+        (session.receivedChunks.size / session.totalChunks) * 100,
+      ),
       startedAt: session.startedAt,
       lastActivityAt: session.lastActivityAt,
     }));
@@ -616,7 +684,9 @@ export const enhancedUploadService = {
         // Cleanup stale sessions
         for (const [uploadId, session] of uploadSessions.entries()) {
           if (now - session.lastActivityAt.getTime() > STALE_THRESHOLD) {
-            logger.warn(`[File Handle Cleanup] Removing stale session: ${uploadId}`);
+            logger.warn(
+              `[File Handle Cleanup] Removing stale session: ${uploadId}`,
+            );
             uploadSessions.delete(uploadId);
             enhancedUploadService.activeFileOperations.delete(uploadId);
             cleanedCount++;
@@ -633,7 +703,9 @@ export const enhancedUploadService = {
         }
 
         if (cleanedCount > 0) {
-          logger.info(`[File Handle Cleanup] Cleaned ${cleanedCount} stale operations`);
+          logger.info(
+            `[File Handle Cleanup] Cleaned ${cleanedCount} stale operations`,
+          );
           // Force garbage collection if available
           if (global.gc) {
             global.gc();

@@ -15,7 +15,10 @@ import { createServer, type Server } from "node:http";
 import compression from "compression";
 import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { adminLimiter, diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
+import {
+  adminLimiter,
+  diagnosticLimiter,
+} from "../lib/resilience/rate-limiter.js";
 import { enforceValidation } from "../middleware/strict-validation.js";
 // Static Imports (Safe thanks to bootstrap.ts secret loading)
 import { authService } from "../services/auth-service.js";
@@ -59,14 +62,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
-  authService.setup(app);
-  logger.info("[Auth] ✅ AuthService initialized (OIDC + PostgreSQL sessions)");
+  await authService.setup(app);
+  logger.info(
+    "[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)",
+  );
 
   // ============================================================================
   // DEV LOGIN (Preserved for compatibility)
   // ============================================================================
   app.get("/api/dev/login", async (req, res) => {
-    if (process.env.NODE_ENV === "production") return res.status(404).send("Not found");
+    if (process.env.NODE_ENV === "production")
+      return res.status(404).send("Not found");
     try {
       const { db } = await import("../db.js");
       const { users } = await import("@run-remix/shared");
@@ -76,7 +82,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         where: eq(users.email, "team@wear-run.com"),
       });
 
-      if (!adminUser) return res.status(404).json({ error: "Admin user not found" });
+      if (!adminUser)
+        return res.status(404).json({ error: "Admin user not found" });
 
       const user = { claims: { sub: adminUser.id, email: adminUser.email } };
       return req.login(user, (err) => {
@@ -124,7 +131,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use(inquiryRoutes);
 
   // Admin & Resources
-  apiRouter.use("/admin", authService.requireAdmin, adminLimiter.middleware(), enforceValidation);
+  apiRouter.use(
+    "/admin",
+    authService.requireAdmin,
+    adminLimiter.middleware(),
+    enforceValidation,
+  );
   apiRouter.use(adminRouter);
 
   apiRouter.use(inquiryAdminRouter);
@@ -165,7 +177,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
+  logger.info(
+    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
+  );
 
   return httpServer;
 }

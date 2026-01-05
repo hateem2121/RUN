@@ -16,28 +16,28 @@ The system has a **lean background job architecture** with only 2 active schedul
 
 ### 1.1 Active Scheduled Jobs
 
-| Job Name | Frequency | Database Impact | File Reference |
-|----------|-----------|-----------------|----------------|
-| **Storage Lifecycle Scheduler** | Every 1 hour | ❌ **NONE** (Object Storage only) | `server/lib/storage-lifecycle-scheduler.ts` |
-| **Database Keep-Alive** | Every 4 minutes | ✅ **MINIMAL** (`SELECT 1`) | `server/lib/database-keep-alive.ts` |
-| **Cache Warming** | Startup only | 🟡 **MODERATE** (30+ queries) | `server/lib/unified-replit-cache.ts` |
-| **Homepage Background Refresh** | Configured interval | 🟡 **MODERATE** (8 queries) | `server/lib/unified-replit-cache.ts:1862` |
+| Job Name                        | Frequency           | Database Impact                   | File Reference                              |
+| ------------------------------- | ------------------- | --------------------------------- | ------------------------------------------- |
+| **Storage Lifecycle Scheduler** | Every 1 hour        | ❌ **NONE** (Object Storage only) | `server/lib/storage-lifecycle-scheduler.ts` |
+| **Database Keep-Alive**         | Every 4 minutes     | ✅ **MINIMAL** (`SELECT 1`)       | `server/lib/database-keep-alive.ts`         |
+| **Cache Warming**               | Startup only        | 🟡 **MODERATE** (30+ queries)     | `server/lib/cache/unified-cache.ts`         |
+| **Homepage Background Refresh** | Configured interval | 🟡 **MODERATE** (8 queries)       | `server/lib/cache/unified-cache.ts`         |
 
 ### 1.2 Inactive/Stub Jobs
 
-| Job Name | Status | Notes |
-|----------|--------|-------|
-| Backup Scheduler | **STUB** | Logs only - relies on PostgreSQL automatic backups |
-| Workflow Automation | **STUB** | No actual background operations |
-| Database Performance Optimizer | **STUB** | Replaced with PostgreSQL built-in optimization |
+| Job Name                       | Status   | Notes                                              |
+| ------------------------------ | -------- | -------------------------------------------------- |
+| Backup Scheduler               | **STUB** | Logs only - relies on PostgreSQL automatic backups |
+| Workflow Automation            | **STUB** | No actual background operations                    |
+| Database Performance Optimizer | **STUB** | Replaced with PostgreSQL built-in optimization     |
 
 ### 1.3 Manual/On-Demand Scripts
 
-| Script Name | Trigger | Database Impact | File Reference |
-|-------------|---------|-----------------|----------------|
-| **Backfill Thumbnails** | Manual | 🔴 **HIGH** (bulk UPDATE) | `server/scripts/backfill-thumbnails.ts` |
+| Script Name                    | Trigger    | Database Impact                         | File Reference                                          |
+| ------------------------------ | ---------- | --------------------------------------- | ------------------------------------------------------- |
+| **Backfill Thumbnails**        | Manual     | 🔴 **HIGH** (bulk UPDATE)               | `server/scripts/backfill-thumbnails.ts`                 |
 | **Direct Postgres Population** | Manual/API | 🔴 **HIGH** (47 INSERTs in transaction) | `server/routes/utilities/direct-postgres-population.ts` |
-| **Migration Service** | Manual | 🟡 **MODERATE** (analysis only) | `server/migration-service.ts` |
+| **Migration Service**          | Manual     | 🟡 **MODERATE** (analysis only)         | `server/migration-service.ts`                           |
 
 ---
 
@@ -68,7 +68,7 @@ The system has a **lean background job architecture** with only 2 active schedul
        │
 100ms  ├─ Cache warming initiated (non-blocking, fire-and-forget)
        │  ├─ Retry 1: 500ms delay
-       │  ├─ Retry 2: 1000ms delay  
+       │  ├─ Retry 2: 1000ms delay
        │  ├─ Retry 3: 2000ms delay
        │  └─ Executes 30+ warmup tasks in parallel
        │
@@ -92,6 +92,7 @@ The system has a **lean background job architecture** with only 2 active schedul
 **Finding**: The system has **NO scheduled bulk write operations** that could cause table locks or contention.
 
 **Evidence**:
+
 - All repository operations use **single-row INSERT/UPDATE** (see `server/lib/repositories/*.ts`)
 - No `bulkInsert()`, `bulkUpdate()`, or `batchSize` loops in repositories
 - Grep search for bulk operations returned only:
@@ -101,6 +102,7 @@ The system has a **lean background job architecture** with only 2 active schedul
 **Manual Bulk Operations** (requires explicit trigger):
 
 1. **Direct Postgres Population** (`server/routes/utilities/direct-postgres-population.ts`)
+
    ```typescript
    // Wraps ALL 47 inserts in a single transaction
    await db.transaction(async (tx) => {
@@ -108,19 +110,22 @@ The system has a **lean background job architecture** with only 2 active schedul
      // Total: 47 INSERTs in one transaction
    });
    ```
+
    - **Risk**: ⚠️ Holds transaction lock for duration of all 47 inserts
    - **Duration**: ~500-1000ms (estimated)
    - **Frequency**: Manual only (data seeding)
    - **Recommendation**: Should be run during maintenance windows
 
 2. **Backfill Thumbnails** (`server/scripts/backfill-thumbnails.ts`)
+
    ```typescript
    // Processes 5 assets at a time
    BATCH_SIZE = 5
    DELAY_BETWEEN_BATCHES = 1000ms
-   
+
    // For each asset: UPDATE media_assets SET thumbnail_filename = ?
    ```
+
    - **Risk**: 🟡 Medium - Uses batching with delays
    - **Duration**: ~10-20ms per UPDATE (110 assets × 10ms = 1.1s total)
    - **Frequency**: Manual only (one-time backfill)
@@ -133,12 +138,14 @@ The system has a **lean background job architecture** with only 2 active schedul
 **Finding**: System relies entirely on **PostgreSQL autovacuum** - no scheduled manual maintenance.
 
 **Evidence**:
+
 - Grep search for `VACUUM|REINDEX|ANALYZE` found:
   - ✅ References in documentation only
   - ❌ NO active cron jobs or scripts executing these commands
   - ❌ NO nightly maintenance windows
 
 **PostgreSQL Autovacuum Configuration** (implicit):
+
 ```sql
 -- Default Neon/PostgreSQL settings:
 autovacuum = on (runs automatically when 20% of table changes)
@@ -146,7 +153,8 @@ autovacuum_analyze_scale_factor = 0.1
 autovacuum_vacuum_scale_factor = 0.2
 ```
 
-**Recommendation**: 
+**Recommendation**:
+
 - ✅ **GOOD**: Autovacuum is appropriate for this workload
 - 🟡 Consider monitoring autovacuum activity during peak traffic
 - 📊 Add metric: `pg_stat_user_tables.last_autovacuum` to health checks
@@ -158,11 +166,13 @@ autovacuum_vacuum_scale_factor = 0.2
 **Finding**: No scheduled imports from external sources.
 
 **Evidence**:
+
 - No cron jobs importing data from APIs
 - No ETL/data sync workflows
 - No scheduled CSV imports or data feeds
 
 **Migration Service** (`server/migration-service.ts`):
+
 - **Status**: Analysis mode only
 - **Trigger**: Manual
 - **Database Impact**: Reads only (no writes during analysis)
@@ -179,16 +189,18 @@ autovacuum_vacuum_scale_factor = 0.2
 // server/lib/cache-events.ts
 export async function emitCacheInvalidation(
   pattern: string,
-  reason: 'delete' | 'update' | 'create'
-): Promise<void>
+  reason: "delete" | "update" | "create",
+): Promise<void>;
 ```
 
 **How It Works**:
+
 1. Backend writes to DB → Emits invalidation event to KV Store
 2. Frontend polls KV Store every ~5s → Detects timestamp changes
 3. Frontend refetches data via React Query
 
 **Benefits**:
+
 - ✅ No race conditions (uses timestamps)
 - ✅ Non-blocking (best-effort)
 - ✅ Decoupled (backend/frontend communicate via event bus)
@@ -201,12 +213,13 @@ export async function emitCacheInvalidation(
 // server/index.ts:319
 retryDbOperation(() => unifiedCache.warmCache(), {
   maxRetries: 3,
-  backoffMs: 500,  // 500ms, 1s, 2s, 4s exponential backoff
+  backoffMs: 500, // 500ms, 1s, 2s, 4s exponential backoff
   operationName: "Cache warming (NEON cold start recovery)",
-})
+});
 ```
 
 **Database Impact**:
+
 - **Query Count**: 30+ parallel queries
 - **Duration**: 1-3 seconds (varies by NEON cold start state)
 - **Frequency**: Startup only
@@ -214,27 +227,27 @@ retryDbOperation(() => unifiedCache.warmCache(), {
 
 **Warmup Tasks** (from `server/lib/cache-warmup-registry.ts`):
 
-| Task | Query Type | Expected Duration | TTL |
-|------|-----------|-------------------|-----|
-| homepageBatch | 7 parallel queries | 200-500ms | 10 min |
-| productsSummary | 1 query (100 products) | 50-200ms | 10 min |
-| productCount | 1 query (COUNT) | 10-50ms | 60 min |
-| categories | 1 query | 20-100ms | 30 min |
-| mediaAssets | 1 query (20 assets) | 20-80ms | 15 min |
-| certificates | 1 query | 10-30ms | 60 min |
-| sizeCharts | 1 query | 10-30ms | 60 min |
-| accessories | 1 query | 10-30ms | 60 min |
-| fabrics | 1 query | 10-30ms | 60 min |
-| fibers | 1 query | 10-30ms | 60 min |
-| featuredProducts | 15 parallel queries | 300-800ms | 60 min |
-| ... | ... | ... | ... |
+| Task             | Query Type             | Expected Duration | TTL    |
+| ---------------- | ---------------------- | ----------------- | ------ |
+| homepageBatch    | 7 parallel queries     | 200-500ms         | 10 min |
+| productsSummary  | 1 query (100 products) | 50-200ms          | 10 min |
+| productCount     | 1 query (COUNT)        | 10-50ms           | 60 min |
+| categories       | 1 query                | 20-100ms          | 30 min |
+| mediaAssets      | 1 query (20 assets)    | 20-80ms           | 15 min |
+| certificates     | 1 query                | 10-30ms           | 60 min |
+| sizeCharts       | 1 query                | 10-30ms           | 60 min |
+| accessories      | 1 query                | 10-30ms           | 60 min |
+| fabrics          | 1 query                | 10-30ms           | 60 min |
+| fibers           | 1 query                | 10-30ms           | 60 min |
+| featuredProducts | 15 parallel queries    | 300-800ms         | 60 min |
+| ...              | ...                    | ...               | ...    |
 
 **Total Startup Load**: ~30-40 queries executed in parallel
 
 #### Homepage Background Refresh
 
 ```typescript
-// server/lib/unified-replit-cache.ts:1861
+// server/lib/cache/unified-cache.ts
 private startHomepageBackgroundRefresh(): void {
   this._homepageRefreshInterval = setInterval(() => {
     if (!this.isRefreshingHomepage) {
@@ -245,6 +258,7 @@ private startHomepageBackgroundRefresh(): void {
 ```
 
 **Database Impact**:
+
 - **Query Count**: 8 parallel queries (hero, slogans, sections, sustainability, featured products, process cards, products, categories)
 - **Frequency**: Periodic (interval not shown in code, likely 5-10 minutes)
 - **Blocking**: ❌ **NON-BLOCKING** (background refresh while serving stale data)
@@ -257,18 +271,20 @@ private startHomepageBackgroundRefresh(): void {
 **Finding**: System uses **TTL-based expiration** - no scheduled full cache clears.
 
 **Evidence**:
+
 - Grep search for `cache.clear|cache.flush|cache.purge` found:
   - ✅ Manual `cache.delete()` after mutations
   - ❌ NO scheduled purge operations
   - ❌ NO nightly cache clearing
 
 **Cache Eviction Strategy**:
+
 ```typescript
 // L1 In-Memory LRU Cache
 maxSize: 500 entries
 evictionPolicy: 'lru'
 
-// L2 Replit KV Store  
+// L2 Replit KV Store
 ttl: varies by cache key (10min - 60min)
 evictionPolicy: 'ttl-based'
 ```
@@ -278,12 +294,14 @@ evictionPolicy: 'ttl-based'
 #### ✅ NO RACE CONDITIONS DETECTED
 
 **Cache Write Pattern**:
+
 ```typescript
 // Single-threaded writes with event bus coordination
 1. Mutate database → 2. Emit invalidation event → 3. Delete cache key
 ```
 
 **Event Bus Guarantees**:
+
 - Timestamps prevent race conditions (max timestamp wins)
 - Events persist in KV Store (no event loss)
 - Frontend polling handles eventual consistency
@@ -299,6 +317,7 @@ evictionPolicy: 'ttl-based'
 **Finding**: Schema is stable - no active ALTER TABLE operations.
 
 **Evidence**:
+
 - No `.sql` migration files in `drizzle/migrations/` directory
 - Schema defined in `shared/schema.ts` (Drizzle ORM)
 - Changes applied via Drizzle migrations (not manual SQL)
@@ -308,32 +327,35 @@ evictionPolicy: 'ttl-based'
 #### 🟡 MIXED INDEX CREATION STRATEGIES
 
 **Good Practice** (`migrations/optimizations/001_add_search_indexes.sql`):
+
 ```sql
 -- ✅ Uses CONCURRENTLY - does not lock table
-CREATE INDEX CONCURRENTLY IF NOT EXISTS fabrics_name_trgm_idx 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS fabrics_name_trgm_idx
 ON fabrics USING gin (name gin_trgm_ops);
 ```
 
 **Risky Pattern** (`drizzle/optimizations/add_missing_foreign_key_indexes.sql`):
+
 ```sql
 -- ⚠️ No CONCURRENTLY - may lock table during index build
-CREATE INDEX IF NOT EXISTS products_primary_image_id_idx 
+CREATE INDEX IF NOT EXISTS products_primary_image_id_idx
 ON products(primary_image_id);
 ```
 
 **Impact Assessment**:
 
-| Index | Table | Rows | Lock Duration | Risk |
-|-------|-------|------|---------------|------|
-| fabrics_name_trgm_idx | fabrics | ~10-50 | **0ms** (CONCURRENTLY) | 🟢 Low |
-| accessories_*_trgm_idx | accessories | ~20-100 | **0ms** (CONCURRENTLY) | 🟢 Low |
-| products_primary_image_id_idx | products | ~100-500 | **50-200ms** (estimate) | 🟡 Medium |
-| products_primary_video_id_idx | products | ~100-500 | **50-200ms** (estimate) | 🟡 Medium |
+| Index                         | Table       | Rows     | Lock Duration           | Risk      |
+| ----------------------------- | ----------- | -------- | ----------------------- | --------- |
+| fabrics_name_trgm_idx         | fabrics     | ~10-50   | **0ms** (CONCURRENTLY)  | 🟢 Low    |
+| accessories\_\*\_trgm_idx     | accessories | ~20-100  | **0ms** (CONCURRENTLY)  | 🟢 Low    |
+| products_primary_image_id_idx | products    | ~100-500 | **50-200ms** (estimate) | 🟡 Medium |
+| products_primary_video_id_idx | products    | ~100-500 | **50-200ms** (estimate) | 🟡 Medium |
 
 **Recommendation**:
+
 ```sql
 -- ✅ ALWAYS use CONCURRENTLY for production index creation
-CREATE INDEX CONCURRENTLY IF NOT EXISTS products_primary_image_id_idx 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS products_primary_image_id_idx
 ON products(primary_image_id);
 ```
 
@@ -350,14 +372,16 @@ DELAY_BETWEEN_BATCHES = 1000ms  // 1 second delay between batches
 ```
 
 **Database Impact Per Asset**:
+
 ```sql
 -- Single UPDATE per asset (~10-20ms)
-UPDATE media_assets 
-SET thumbnail_filename = ?, updated_at = NOW() 
+UPDATE media_assets
+SET thumbnail_filename = ?, updated_at = NOW()
 WHERE id = ?;
 ```
 
 **Total Impact** (110 assets):
+
 - **Total UPDATEs**: 110
 - **Batch Count**: 22 batches (5 assets each)
 - **Total Duration**: ~22 seconds (with delays)
@@ -365,6 +389,7 @@ WHERE id = ?;
 - **Table Lock**: ❌ None (single-row UPDATEs)
 
 **Risk Assessment**: 🟢 **LOW**
+
 - Well-designed with concurrency control
 - Batch delays prevent overwhelming the database
 - Single-row updates minimize lock contention
@@ -376,28 +401,29 @@ WHERE id = ?;
 ### 6.1 Background Job Scheduling vs. Peak Traffic
 
 **Assumption**: Peak traffic hours (based on typical B2B patterns):
+
 - **Peak Hours**: 9:00 AM - 5:00 PM (business hours)
 - **Off-Peak Hours**: 6:00 PM - 8:00 AM
 
 **Background Job Schedule**:
 
-| Job | Frequency | Runs During Peak? | Database Queries | Impact |
-|-----|-----------|-------------------|------------------|--------|
-| DB Keep-Alive | Every 4min | ✅ YES | 1 (`SELECT 1`) | 🟢 **NEGLIGIBLE** |
-| Storage Lifecycle | Every 1hr | ✅ YES | 0 (Object Storage only) | 🟢 **NONE** |
-| Homepage Refresh | Periodic | ✅ YES | 8 (parallel) | 🟡 **MINIMAL** |
-| Cache Warming | Startup | ⚠️ MAYBE | 30+ (parallel) | 🟡 **MODERATE** |
+| Job               | Frequency  | Runs During Peak? | Database Queries        | Impact            |
+| ----------------- | ---------- | ----------------- | ----------------------- | ----------------- |
+| DB Keep-Alive     | Every 4min | ✅ YES            | 1 (`SELECT 1`)          | 🟢 **NEGLIGIBLE** |
+| Storage Lifecycle | Every 1hr  | ✅ YES            | 0 (Object Storage only) | 🟢 **NONE**       |
+| Homepage Refresh  | Periodic   | ✅ YES            | 8 (parallel)            | 🟡 **MINIMAL**    |
+| Cache Warming     | Startup    | ⚠️ MAYBE          | 30+ (parallel)          | 🟡 **MODERATE**   |
 
 ### 6.2 Contention Risk Matrix
 
-| Scenario | Probability | Impact | Mitigation |
-|----------|-------------|--------|------------|
-| **Cache warming during peak traffic** | 🟡 Medium (on restarts) | 🟡 Medium (30+ queries) | ✅ Non-blocking fire-and-forget |
-| **Homepage refresh during peak** | 🟢 Low | 🟢 Low (8 queries, stale-while-revalidate) | ✅ Background refresh with SWR |
-| **DB Keep-Alive during peak** | 🟢 None | 🟢 None (`SELECT 1` is ~1ms) | ✅ Prevents cold starts |
-| **Storage cleanup during peak** | 🟢 None | 🟢 None (Object Storage only) | ✅ No database impact |
-| **Manual backfill during peak** | 🔴 High (if run manually) | 🟡 Medium (110 UPDATEs over 22s) | ⚠️ Run during off-peak hours |
-| **Index creation during peak** | 🔴 High (if not using CONCURRENTLY) | 🔴 High (table locks) | ⚠️ Always use CONCURRENTLY |
+| Scenario                              | Probability                         | Impact                                     | Mitigation                      |
+| ------------------------------------- | ----------------------------------- | ------------------------------------------ | ------------------------------- |
+| **Cache warming during peak traffic** | 🟡 Medium (on restarts)             | 🟡 Medium (30+ queries)                    | ✅ Non-blocking fire-and-forget |
+| **Homepage refresh during peak**      | 🟢 Low                              | 🟢 Low (8 queries, stale-while-revalidate) | ✅ Background refresh with SWR  |
+| **DB Keep-Alive during peak**         | 🟢 None                             | 🟢 None (`SELECT 1` is ~1ms)               | ✅ Prevents cold starts         |
+| **Storage cleanup during peak**       | 🟢 None                             | 🟢 None (Object Storage only)              | ✅ No database impact           |
+| **Manual backfill during peak**       | 🔴 High (if run manually)           | 🟡 Medium (110 UPDATEs over 22s)           | ⚠️ Run during off-peak hours    |
+| **Index creation during peak**        | 🔴 High (if not using CONCURRENTLY) | 🔴 High (table locks)                      | ⚠️ Always use CONCURRENTLY      |
 
 ---
 
@@ -408,13 +434,14 @@ WHERE id = ?;
 **Issue**: Some index creation scripts don't use `CONCURRENTLY`
 
 **Fix**:
+
 ```sql
 -- BEFORE (⚠️ Locks table)
-CREATE INDEX IF NOT EXISTS products_primary_image_id_idx 
+CREATE INDEX IF NOT EXISTS products_primary_image_id_idx
 ON products(primary_image_id);
 
 -- AFTER (✅ No table lock)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS products_primary_image_id_idx 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS products_primary_image_id_idx
 ON products(primary_image_id);
 ```
 
@@ -429,9 +456,10 @@ ON products(primary_image_id);
 **Issue**: No visibility into autovacuum operations
 
 **Fix**: Add autovacuum metrics to health checks
+
 ```sql
 -- Add to server/middleware/enhanced-health.ts
-SELECT 
+SELECT
   schemaname,
   relname,
   last_autovacuum,
@@ -454,11 +482,12 @@ LIMIT 10;
 **Issue**: Manual scripts could be run during peak hours
 
 **Fix**: Add scheduling recommendations to script headers
+
 ```typescript
 /**
  * ⚠️ RUN DURING OFF-PEAK HOURS ONLY
  * Recommended: 6:00 PM - 8:00 AM (outside business hours)
- * 
+ *
  * This script performs 110 UPDATEs over ~22 seconds
  * Running during peak traffic may impact query performance
  */
@@ -475,14 +504,17 @@ LIMIT 10;
 **Issue**: Direct postgres population transaction could hang indefinitely
 
 **Fix**: Add timeout to bulk insert transaction
+
 ```typescript
 // server/routes/utilities/direct-postgres-population.ts
 const TRANSACTION_TIMEOUT_MS = 10000; // 10 seconds
 
 await db.transaction(async (tx) => {
   // Set transaction timeout
-  await tx.execute(sql`SET LOCAL statement_timeout = ${TRANSACTION_TIMEOUT_MS}`);
-  
+  await tx.execute(
+    sql`SET LOCAL statement_timeout = ${TRANSACTION_TIMEOUT_MS}`,
+  );
+
   // ... 47 INSERTs ...
 });
 ```
@@ -498,9 +530,12 @@ await db.transaction(async (tx) => {
 **Issue**: No visibility into cache warming performance
 
 **Fix**: Add progress logging to warmCache()
+
 ```typescript
-// server/lib/unified-replit-cache.ts
-logger.info(`[Cache Warming] Progress: ${successful}/${total} tasks (${Math.round(successful/total*100)}%)`);
+// server/lib/cache/unified-cache.ts
+logger.info(
+  `[Cache Warming] Progress: ${successful}/${total} tasks (${Math.round((successful / total) * 100)}%)`,
+);
 ```
 
 **Impact**: Better observability during cold starts
@@ -521,7 +556,8 @@ logger.info(`[Cache Warming] Progress: ${successful}/${total} tasks (${Math.roun
 4. **No scheduled bulk writes**: All background jobs are read-heavy or non-DB
 5. **Event-driven invalidation**: Cache invalidation doesn't block database writes
 
-**Conclusion**: 
+**Conclusion**:
+
 - ✅ Background jobs have **MINIMAL impact** on database performance
 - ✅ No scheduled jobs that compete with peak traffic queries
 - ✅ Well-designed concurrency controls (batching, delays, SWR)
@@ -568,6 +604,7 @@ Legend:
 ```
 
 **Key Observations**:
+
 1. **No peak-hour-specific jobs**: All jobs run 24/7
 2. **Uniform load distribution**: No spikes or scheduled bursts
 3. **Minimal database impact**: Only Keep-Alive touches DB during normal operation
@@ -580,6 +617,7 @@ Legend:
 ### Overall Assessment: ✅ **EXCELLENT BACKGROUND JOB DESIGN**
 
 **Strengths**:
+
 - ✅ Minimal scheduled database operations (only `SELECT 1` every 4 minutes)
 - ✅ Non-blocking cache warming (fire-and-forget pattern)
 - ✅ No bulk write operations that could lock tables
@@ -588,6 +626,7 @@ Legend:
 - ✅ Stale-while-revalidate pattern for background refresh
 
 **Areas for Improvement**:
+
 - 🟡 Some index creation scripts don't use `CONCURRENTLY`
 - 🟡 No autovacuum monitoring in health checks
 - 🟡 Manual backfill scripts lack scheduling recommendations
@@ -606,18 +645,18 @@ Legend:
 // server/lib/storage-lifecycle-scheduler.ts:52
 const DEFAULT_CONFIG: LifecycleConfig = {
   enabled: true,
-  interval: 60 * 60 * 1000,  // 1 hour
+  interval: 60 * 60 * 1000, // 1 hour
   batchSize: 100,
   maxDeletionsPerRun: 1000,
   dryRun: false,
   rules: {
     tempUploadsCleanup: {
       enabled: true,
-      maxAgeHours: 24,  // Delete temp files older than 24 hours
+      maxAgeHours: 24, // Delete temp files older than 24 hours
     },
     orphanedFilesCleanup: {
       enabled: true,
-      mediaDirectories: ['public/media/', 'public/thumbnails/'],
+      mediaDirectories: ["public/media/", "public/thumbnails/"],
     },
   },
 };
@@ -650,12 +689,11 @@ private readonly PING_INTERVAL_MS = 4 * 60 * 1000; // 4 minutes
 
 ```typescript
 // server/lib/repositories/media-repository.ts:171
-const [created] = await db.insert(mediaAssets)
-  .values(asset)
-  .returning();
+const [created] = await db.insert(mediaAssets).values(asset).returning();
 ```
 
 **Characteristics**:
+
 - Single-row INSERT/UPDATE/DELETE
 - Fast execution (~10-20ms)
 - Minimal lock contention
@@ -674,6 +712,7 @@ await db.transaction(async (tx) => {
 ```
 
 **Characteristics**:
+
 - Holds transaction lock for ~500-1000ms
 - All-or-nothing atomicity
 - **Used in**: Data seeding only (manual trigger)
@@ -690,6 +729,7 @@ const [assetResult, folderResult] = await Promise.all([
 ```
 
 **Characteristics**:
+
 - Uses Promise.all for parallel execution
 - No ACID guarantees (Neon HTTP driver limitation)
 - Faster than sequential operations
@@ -700,14 +740,16 @@ const [assetResult, folderResult] = await Promise.all([
 ## Appendix C: Files Analyzed
 
 ### Background Job Files
+
 - `server/lib/storage-lifecycle-scheduler.ts` - Storage cleanup scheduler
 - `server/lib/database-keep-alive.ts` - Database ping job
-- `server/lib/unified-replit-cache.ts` - Cache warming and homepage refresh
+- `server/lib/cache/unified-cache.ts` - Cache warming and homepage refresh
 - `server/lib/cache-warmup-registry.ts` - Cache warmup task registry
 - `server/lib/workflow-automation.ts` - Workflow automation (stub)
 - `server/index.ts` - Background job initialization
 
 ### Repository Files (Write Operations)
+
 - `server/lib/repositories/media-repository.ts` - Media CRUD operations
 - `server/lib/repositories/product-repository.ts` - Product CRUD operations
 - `server/lib/repositories/misc-repository.ts` - Taxonomy CRUD operations
@@ -715,22 +757,25 @@ const [assetResult, folderResult] = await Promise.all([
 - `server/lib/repositories/shared-utils.ts` - Transaction helpers
 
 ### Migration Files
+
 - `migrations/optimizations/001_add_search_indexes.sql` - Search index creation (CONCURRENTLY)
 - `drizzle/optimizations/add_missing_foreign_key_indexes.sql` - FK indexes (no CONCURRENTLY)
 - `shared/schema.ts` - Schema definitions with index declarations
 
 ### Script Files
+
 - `server/scripts/backfill-thumbnails.ts` - Thumbnail generation backfill
 - `server/routes/utilities/direct-postgres-population.ts` - Bulk data seeding
 - `server/migration-service.ts` - Migration analysis service
 
 ### Cache Files
+
 - `server/lib/cache-events.ts` - Event-driven cache invalidation
 - `server/lib/cache-strategies.ts` - Cache fetch strategies
 - `server/lib/two-tier-batch-cache.ts` - Two-tier batch cache service
 
 ---
 
-*Document created: 2025-11-14*  
-*Analysis period: Full codebase*  
-*Status: ✅ Complete*
+_Document created: 2025-11-14_  
+_Analysis period: Full codebase_  
+_Status: ✅ Complete_

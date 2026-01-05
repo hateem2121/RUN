@@ -1,5 +1,7 @@
 # AI Agent Operational Map
 
+**Last Verified:** 2026-01-05
+
 This file serves as the source of truth for AI agents operating on this repository.
 
 ## Canonical Commands

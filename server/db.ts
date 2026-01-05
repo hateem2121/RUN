@@ -131,44 +131,51 @@ let currentConcurrentQueries = 0;
 // Wrap SQL function to track metrics - ALL queries go through this proxy
 const trackedSql = new Proxy(sql, {
   apply: async (target, thisArg, argArray) => {
-    // P1 RELIABILITY: Explicit Concurrency Limit
-    // Neon Serverless handles many connections, but NodeJS event loop can get clogged
-    // and we want to prevent "thundering herd" on the DB proxy.
-    const MAX_CONCURRENT_QUERIES = 50;
+    // Dynamic import to avoid circular dependency
+    const { withCircuitBreaker } =
+      await import("./lib/resilience/db-circuit-breaker.js");
 
-    if (currentConcurrentQueries >= MAX_CONCURRENT_QUERIES) {
-      poolMetrics.failedQueries++;
-      throw new Error(
-        `[DB] Database concurrency limit reached (${MAX_CONCURRENT_QUERIES}). Please retry.`,
-      );
-    }
+    return await withCircuitBreaker(async () => {
+      // P1 RELIABILITY: Explicit Concurrency Limit
+      // Neon Serverless handles many connections, but NodeJS event loop can get clogged
+      // and we want to prevent "thundering herd" on the DB proxy.
+      const MAX_CONCURRENT_QUERIES = 50;
 
-    currentConcurrentQueries++;
-    poolMetrics.currentConcurrentQueries = currentConcurrentQueries;
-    poolMetrics.peakConcurrentQueries = Math.max(
-      poolMetrics.peakConcurrentQueries,
-      currentConcurrentQueries,
-    );
+      if (currentConcurrentQueries >= MAX_CONCURRENT_QUERIES) {
+        poolMetrics.failedQueries++;
+        throw new Error(
+          `[DB] Database concurrency limit reached (${MAX_CONCURRENT_QUERIES}). Please retry.`,
+        );
+      }
 
-    const startTime = performance.now();
-    poolMetrics.totalQueries++;
-
-    try {
-      const result = await Reflect.apply(target, thisArg, argArray);
-      poolMetrics.successfulQueries++;
-
-      const duration = performance.now() - startTime;
-      poolMetrics.totalQueryTime += duration;
-      poolMetrics.averageQueryTime = poolMetrics.totalQueryTime / poolMetrics.totalQueries;
-
-      return result;
-    } catch (error) {
-      poolMetrics.failedQueries++;
-      throw error;
-    } finally {
-      currentConcurrentQueries--;
+      currentConcurrentQueries++;
       poolMetrics.currentConcurrentQueries = currentConcurrentQueries;
-    }
+      poolMetrics.peakConcurrentQueries = Math.max(
+        poolMetrics.peakConcurrentQueries,
+        currentConcurrentQueries,
+      );
+
+      const startTime = performance.now();
+      poolMetrics.totalQueries++;
+
+      try {
+        const result = await Reflect.apply(target, thisArg, argArray);
+        poolMetrics.successfulQueries++;
+
+        const duration = performance.now() - startTime;
+        poolMetrics.totalQueryTime += duration;
+        poolMetrics.averageQueryTime =
+          poolMetrics.totalQueryTime / poolMetrics.totalQueries;
+
+        return result;
+      } catch (error) {
+        poolMetrics.failedQueries++;
+        throw error;
+      } finally {
+        currentConcurrentQueries--;
+        poolMetrics.currentConcurrentQueries = currentConcurrentQueries;
+      }
+    }, "db-query");
   },
 });
 
@@ -180,7 +187,11 @@ export const db: NeonHttpDatabase<typeof schema> = drizzle(trackedSql as any, {
 // Type alias for database client - supports both direct db access and transactions
 export type DbClient =
   | NeonHttpDatabase<typeof schema>
-  | PgTransaction<NeonHttpQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
+  | PgTransaction<
+      NeonHttpQueryResultHKT,
+      typeof schema,
+      ExtractTablesWithRelations<typeof schema>
+    >;
 
 // CHUNK 3: Database timeout protection wrapper
 // Uses Promise.race + AbortController for Neon HTTP compatibility
@@ -218,7 +229,9 @@ export async function withQueryTimeout<T>(
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof QueryTimeoutError) {
-      logger.error(`[Query Timeout] ${operationName} exceeded ${timeoutMs}ms limit`);
+      logger.error(
+        `[Query Timeout] ${operationName} exceeded ${timeoutMs}ms limit`,
+      );
     }
     throw error;
   }
@@ -256,7 +269,8 @@ export async function wakeupDatabase(): Promise<{
 
   // Environment-aware timeout: 15s prod, 10s staging, 5s dev
   const env = process.env.NODE_ENV || "development";
-  const timeoutMs = env === "production" ? 15000 : env === "staging" ? 10000 : 15000;
+  const timeoutMs =
+    env === "production" ? 15000 : env === "staging" ? 10000 : 15000;
 
   try {
     await withQueryTimeout(
@@ -271,11 +285,16 @@ export async function wakeupDatabase(): Promise<{
     const latency = performance.now() - startTime;
     poolMetrics.lastHealthCheckAt = new Date();
 
-    logger.info(`[Database] ✅ Database wakeup successful (${latency.toFixed(0)}ms)`);
+    logger.info(
+      `[Database] ✅ Database wakeup successful (${latency.toFixed(0)}ms)`,
+    );
     return { success: true, latency };
   } catch (error) {
     const latency = performance.now() - startTime;
-    logger.error(`[Database] ❌ Database wakeup failed after ${timeoutMs}ms`, error);
+    logger.error(
+      `[Database] ❌ Database wakeup failed after ${timeoutMs}ms`,
+      error,
+    );
     return { success: false, latency };
   }
 }

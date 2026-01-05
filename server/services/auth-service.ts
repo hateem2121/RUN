@@ -29,7 +29,8 @@ export const AuthErrors = {
   },
   AUTH_SERVER_ERROR: {
     code: "AUTH_SERVER_ERROR",
-    message: "Authentication server is temporarily unavailable. Please try again.",
+    message:
+      "Authentication server is temporarily unavailable. Please try again.",
     status: 503,
   },
   USER_NOT_FOUND: {
@@ -64,20 +65,28 @@ export class AuthService {
   /**
    * Internal session setup
    */
-  private getSessionMiddleware() {
+  private async getSessionMiddleware() {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-    const pgStore = connectPg(session);
+    const { redis, isRedisEnabled } =
+      await import("../lib/cache/upstash-client.js");
+    const { UpstashRedisStore } = await import("../lib/auth/redis-store.js");
 
-    const sessionStore = new pgStore({
-      conString: process.env.DATABASE_URL,
-      createTableIfMissing: false,
-      ttl: sessionTtl,
-      tableName: "sessions",
-    });
+    const sessionStore = isRedisEnabled
+      ? new UpstashRedisStore({
+          client: redis,
+          ttl: Math.floor(sessionTtl / 1000),
+          prefix: "sess:",
+        })
+      : new (connectPg(session))({
+          conString: process.env.DATABASE_URL,
+          createTableIfMissing: false,
+          ttl: sessionTtl / 1000,
+          tableName: "sessions",
+        });
 
     return session({
       secret: process.env.SESSION_SECRET || "default-secret-change-me-in-prod",
-      store: sessionStore,
+      store: sessionStore as any,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -85,7 +94,7 @@ export class AuthService {
         // P1 FIX: Secure cookies based on environment or connection
         // 'auto' uses req.secure (trusted proxy must be enabled)
         secure: process.env.NODE_ENV === "production" ? true : "auto",
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax", // Explicit SameSite
+        sameSite: "lax", // Explicit SameSite
 
         maxAge: sessionTtl,
       },
@@ -95,9 +104,10 @@ export class AuthService {
   /**
    * Configure Passport and Session
    */
-  public setup(app: Express) {
+  public async setup(app: Express) {
     app.set("trust proxy", 1);
-    app.use(this.getSessionMiddleware());
+    const sessionMiddleware = await this.getSessionMiddleware();
+    app.use(sessionMiddleware);
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -113,20 +123,27 @@ export class AuthService {
 
       // P2 SECURITY: User Agent Binding - verify session wasn't stolen
       // Hash the UA to avoid storing full strings and for privacy
-      const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
+      const uaHash = createHash("sha256")
+        .update(currentUA)
+        .digest("hex")
+        .substring(0, 16);
 
       // On first request (or after session regeneration), store the UA hash
       if (!sess.uaHash) {
         sess.uaHash = uaHash;
       } else if (sess.uaHash !== uaHash) {
         // UA mismatch - potential session hijacking
-        logger.warn("[Auth] User agent mismatch detected, invalidating session", {
-          storedHash: sess.uaHash,
-          currentHash: uaHash,
-        });
+        logger.warn(
+          "[Auth] User agent mismatch detected, invalidating session",
+          {
+            storedHash: sess.uaHash,
+            currentHash: uaHash,
+          },
+        );
 
         return req.session.destroy((err) => {
-          if (err) logger.error("[Auth] Failed to destroy hijacked session:", err);
+          if (err)
+            logger.error("[Auth] Failed to destroy hijacked session:", err);
           res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
         });
       }
@@ -151,7 +168,8 @@ export class AuthService {
 
           // Explicitly save to ensure the new SID is stored
           req.session.save((err) => {
-            if (err) logger.error("[Auth] Failed to save regenerated session:", err);
+            if (err)
+              logger.error("[Auth] Failed to save regenerated session:", err);
             next();
           });
         });
@@ -194,9 +212,12 @@ export class AuthService {
       ),
     );
 
-    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) => cb(null, user));
-    passport.deserializeUser((user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
+    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) =>
       cb(null, user),
+    );
+    passport.deserializeUser(
+      (user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
+        cb(null, user),
     );
 
     logger.info("[AuthService] ✅ Authentication configured");

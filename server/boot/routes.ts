@@ -30,7 +30,9 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   // P1 SECURITY: Block crawling of Admin/API routes
   app.get("/robots.txt", (_req, res) => {
     res.type("text/plain");
-    res.send("User-agent: *\nDisallow: /api/\nDisallow: /admin/\nDisallow: /auth/");
+    res.send(
+      "User-agent: *\nDisallow: /api/\nDisallow: /admin/\nDisallow: /auth/",
+    );
   });
 
   // SSR Configuration (Must be last before error handling)
@@ -38,8 +40,15 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   try {
     logger.info("[Startup] Initializing SSR Handler...");
     const ssrHandler = await createSsrHandler(app, httpServer);
+
+    // P3 PERFORMANCE: Add edge caching for public SSR pages
+    const { ssrCacheMiddleware } = await import("../middleware/ssr-cache.js");
+    app.use(ssrCacheMiddleware);
+
     app.use(ssrHandler);
-    logger.info("[Startup] SSR Handler mounted successfully.");
+    logger.info(
+      "[Startup] SSR Handler mounted successfully with edge caching.",
+    );
   } catch (error) {
     logger.error("Failed to initialize SSR Handler:", error);
     // In dev, this is fatal. In prod, we might want to fail hard too as FE won't load.

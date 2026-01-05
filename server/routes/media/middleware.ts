@@ -5,7 +5,7 @@
 
 import multer from "multer";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
-import { UploadRateLimiter } from "../../middleware/rate-limiter.js";
+import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
 import {
   MAX_CONCURRENT_UPLOADS,
   MAX_FILES,
@@ -107,7 +107,8 @@ export const uploadMetrics = {
 
     // Update average upload time
     this.averageUploadTime =
-      (this.averageUploadTime * (this.totalUploads - 1) + duration) / this.totalUploads;
+      (this.averageUploadTime * (this.totalUploads - 1) + duration) /
+      this.totalUploads;
   },
 
   updateConcurrent(count: number) {

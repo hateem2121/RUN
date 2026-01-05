@@ -138,6 +138,18 @@ export function createCircuit<TResult>(
 }
 
 /**
+ * Higher-level wrapper to execute an operation with circuit breaker protection
+ */
+export async function withCircuit<T>(
+  name: string,
+  operation: () => Promise<T>,
+  options: Partial<CircuitBreakerConfig> = {},
+): Promise<T> {
+  const circuit = createCircuit(name, operation, options);
+  return (await circuit.fire()) as T;
+}
+
+/**
  * Get all circuit metrics for monitoring
  */
 export function getCircuitMetrics(): CircuitMetrics[] {

@@ -101,7 +101,12 @@ export function setupAuth(app: Express) {
         callbackURL: "/api/auth/google/callback", // Relative URL works with proxy
         proxy: true,
       },
-      async (_accessToken: string, _refreshToken: string, profile: any, done: any) => {
+      async (
+        _accessToken: string,
+        _refreshToken: string,
+        profile: any,
+        done: any,
+      ) => {
         try {
           const user = await upsertUser(profile);
           // Attach tokens to user object for session
@@ -143,9 +148,32 @@ export function setupAuth(app: Express) {
     passport.authenticate("google", {
       failureRedirect: "/api/login",
     }),
-    (_req, res) => {
-      // Successful authentication, redirect home.
-      res.redirect("/");
+    (req, res) => {
+      // P1 SECURITY: Regenerate session ID after successful authentication
+      // Prevents session fixation attacks
+      // Reference: https://owasp.org/www-community/attacks/Session_fixation
+      if (req.session) {
+        const user = req.user;
+        req.session.regenerate((err) => {
+          if (err) {
+            logger.error("[Auth] Session regeneration failed:", err);
+            res.status(500).json({ error: "Authentication failed" });
+            return;
+          }
+          // Re-attach user to the new session
+          req.login(user as Express.User, (loginErr) => {
+            if (loginErr) {
+              logger.error("[Auth] Session re-login failed:", loginErr);
+              res.status(500).json({ error: "Authentication failed" });
+              return;
+            }
+            logger.info("[Auth] Session regenerated successfully for user");
+            res.redirect("/");
+          });
+        });
+      } else {
+        res.redirect("/");
+      }
     },
   );
 

@@ -68,7 +68,7 @@ Sessions are stored in PostgreSQL using `connect-pg-simple`.
 
 ## Rate Limiting
 
-Rate limits are configured in `server/middleware/rate-limits.ts` with the following defaults:
+Rate limits are configured in `server/middleware/rateLimiter.ts` with the following defaults:
 
 - **API**: 1000 requests per 15 minutes
 - **Auth**: 5 attempts per 15 minutes

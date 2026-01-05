@@ -1,7 +1,7 @@
 import express from "express";
 import { z } from "zod";
 import { logger } from "../lib/monitoring/logger.js";
-import { createRateLimiter } from "../middleware/rate-limiter.js";
+import { createRateLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
