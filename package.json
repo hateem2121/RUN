@@ -27,6 +27,7 @@
     "lint": "biome check .",
     "check": "npm run typecheck && npm run lint",
     "check:apply": "biome check --write .",
+    "check:audit": "audit-ci --config .audit-ci.json",
     "check:bundle": "bundlesize",
     "typecheck": "tsc -b",
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",

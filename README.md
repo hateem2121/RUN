@@ -108,10 +108,11 @@ npm run dev
 
 The app will be available at `http://localhost:5001` (Dev) or `http://localhost:5000` (Docker).
 
-3. **Verify Integrity:**
-   ```bash
-   npm run verify:tech-integrity
-   ```
+### 6. Verify Integrity
+
+```bash
+npm run verify:tech-integrity
+```
 
 ### Environment Variables
 
@@ -133,7 +134,7 @@ NODE_ENV=development
 
 The project is structured as a **Monorepo** using NPM Workspaces:
 
-````
+```text
 RUN-Remix/
 ├── client/ (@run-remix/client) # Frontend application (React 19, Vite)
 │   ├── src/
@@ -160,10 +161,6 @@ RUN-Remix/
 │   └── package.json            # "type": "module"
 │
 ├── scripts/                    # Build & verification scripts
-├── docs/                       # Documentation
-└── tests/                      # Test suites
-```
-├── scripts/                    # Build & verification scripts
 │   └── verify-tech-integrity.ts
 │
 ├── docs/                      # Documentation
@@ -174,13 +171,13 @@ RUN-Remix/
 └── tests/                     # Test suites
     ├── e2e/                   # Playwright E2E tests
     └── integration/           # Integration tests
-````
+```
 
 ---
 
 ## npm Scripts
 
-### Development
+### Development Scripts
 
 ```bash
 npm run dev              # Start dev server (port 5001)
@@ -190,7 +187,7 @@ npm run lint             # Biome lint only
 npm run lint:html        # HTML validation
 ```
 
-### Build
+### Build Scripts
 
 ```bash
 npm run build            # Full production build
@@ -200,13 +197,13 @@ npm run build:server     # TypeScript compile + esbuild bundle
 npm run start            # Start production server
 ```
 
-### Database
+### Database Scripts
 
 ```bash
 npm run db:push          # Push schema to database
 ```
 
-### Testing
+### Testing Scripts
 
 ```bash
 npm run test             # Unit tests (vitest)
@@ -215,7 +212,7 @@ npm run test:e2e         # Playwright E2E (regression)
 npm run test:integration:full # Full integration tests with Docker DB
 ```
 
-### Verification
+### Verification Scripts
 
 ```bash
 npm run check:bundle     # Verify bundle limits
@@ -295,7 +292,7 @@ const buttonVariants = cva("base", { variants: {...} });
 <p className="text-gray-500">Don't do this</p>
 ```
 
-See `docs/CSS_ARCHITECTURE.md` and `client/src/design-system.md` for details.
+See `docs/CSS_ARCHITECTURE.md` for details.
 
 ---
 
@@ -388,7 +385,7 @@ function getWidth() {
 }
 ```
 
-### Verification
+### SSR Verification
 
 ```bash
 npm run verify:ssr           # Full SSR verification (Unit Tests)
@@ -540,19 +537,19 @@ dist/
 
 ## Documentation Index
 
-| Document                      | Description              |
-| ----------------------------- | ------------------------ |
-| `README.md`                   | This file                |
-| `CONTRIBUTING.md`             | Contribution guidelines  |
-| `CHANGELOG.md`                | Version history          |
-| `docs/CSS_ARCHITECTURE.md`    | CSS architecture (10/10) |
-| `client/src/design-system.md` | Design token reference   |
-| `docs/STYLING_GUIDE.md`       | Styling best practices   |
-| `docs/api/endpoints.md`       | API documentation        |
-| `docs/testing/e2e.md`         | E2E testing guide        |
-| `docs/testing/A11Y.md`        | Accessibility guide      |
-| `docs/runbooks/`              | Operational runbooks     |
-| `docs/ssr-invariants.md`      | SSR safety rules         |
+| Document                   | Description              |
+| -------------------------- | ------------------------ |
+| `README.md`                | This file                |
+| `CONTRIBUTING.md`          | Contribution guidelines  |
+| `CHANGELOG.md`             | Version history          |
+| `docs/CSS_ARCHITECTURE.md` | CSS architecture (10/10) |
+
+| `docs/STYLING_GUIDE.md` | Styling best practices |
+| `docs/api/endpoints.md` | API documentation |
+| `docs/testing/e2e.md` | E2E testing guide |
+| `docs/testing/A11Y.md` | Accessibility guide |
+| `docs/runbooks/` | Operational runbooks |
+| `docs/ssr-invariants.md` | SSR safety rules |
 
 ---
 
