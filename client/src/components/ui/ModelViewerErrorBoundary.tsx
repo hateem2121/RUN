@@ -6,12 +6,25 @@
  */
 
 import type { MediaAsset } from "@shared/schema";
-import { AlertCircle, Box, Download, FileX, RefreshCw, Shield } from "lucide-react";
+import {
+  AlertCircle,
+  Box,
+  Download,
+  FileX,
+  RefreshCw,
+  Shield,
+} from "lucide-react";
 import type React from "react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 // Removed unused Alert components import
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { MODEL_VIEWER_ENVIRONMENT } from "@/lib/model-viewer-config";
 
 interface Props {
@@ -63,14 +76,16 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidUpdate(prevProps: Props) {
+  override componentDidUpdate(prevProps: Props) {
     // PHASE 3.2: Auto-reset on asset change or resetKeys change
     if (this.state.hasError) {
       const assetChanged = prevProps.asset?.id !== this.props.asset?.id;
       const resetKeysChanged =
         this.props.resetKeys &&
         prevProps.resetKeys &&
-        this.props.resetKeys.some((key, index) => key !== prevProps.resetKeys?.[index]);
+        this.props.resetKeys.some(
+          (key, index) => key !== prevProps.resetKeys?.[index],
+        );
 
       if (assetChanged || resetKeysChanged) {
         if (MODEL_VIEWER_ENVIRONMENT.isDevelopment) {
@@ -90,7 +105,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error details
     this.setState({
       error,
@@ -194,7 +209,11 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
       };
     }
 
-    if (message.includes("gltf") || message.includes("model") || message.includes("texture")) {
+    if (
+      message.includes("gltf") ||
+      message.includes("model") ||
+      message.includes("texture")
+    ) {
       return {
         type: "Model Loading Error",
         icon: Box,
@@ -208,7 +227,8 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
         type: "Graphics Error",
         icon: Shield,
         color: "text-purple-600",
-        suggestion: "Your browser or graphics card may not support this 3D model.",
+        suggestion:
+          "Your browser or graphics card may not support this 3D model.",
       };
     }
 
@@ -229,17 +249,18 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     const errorDetails = this.getErrorType(error);
     const IconComponent = errorDetails.icon;
     const canRetry = retryCount < this.maxRetries;
-    const showDevDetails = this.props.showDevDetails ?? MODEL_VIEWER_ENVIRONMENT.isDevelopment;
+    const showDevDetails =
+      this.props.showDevDetails ?? MODEL_VIEWER_ENVIRONMENT.isDevelopment;
 
     return (
-      <Card className="mx-auto w-full max-w-md border-destructive/20 bg-destructive/5">
+      <Card className="border-destructive/20 bg-destructive/5 mx-auto w-full max-w-md">
         <CardHeader className="pb-4 text-center">
           <div
-            className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10`}
+            className={`bg-destructive/10 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full`}
           >
             <IconComponent className={`h-6 w-6 ${errorDetails.color}`} />
           </div>
-          <CardTitle className="font-semibold text-destructive text-lg">
+          <CardTitle className="text-destructive text-lg font-semibold">
             {errorDetails.type}
           </CardTitle>
           <CardDescription className="text-muted-foreground text-sm">
@@ -250,8 +271,10 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
         <CardContent className="space-y-4">
           {/* Asset Info */}
           {asset && (
-            <div className="rounded bg-muted/50 p-2 text-muted-foreground text-xs">
-              <div className="font-medium">{asset.filename || "Unknown file"}</div>
+            <div className="bg-muted/50 text-muted-foreground rounded p-2 text-xs">
+              <div className="font-medium">
+                {asset.filename || "Unknown file"}
+              </div>
               {asset.id && <div>Asset ID: {asset.id}</div>}
             </div>
           )}
@@ -280,7 +303,12 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
               </Button>
             )}
 
-            <Button onClick={this.handleReset} variant="outline" size="sm" className="w-full">
+            <Button
+              onClick={this.handleReset}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
               <Box className="mr-2 h-4 w-4" />
               Reset Viewer
             </Button>
@@ -301,22 +329,24 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
           {/* Development Details */}
           {showDevDetails && (
             <details className="text-xs">
-              <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+              <summary className="text-muted-foreground hover:text-foreground cursor-pointer">
                 Developer Details
               </summary>
-              <div className="mt-2 rounded border bg-muted/30 p-2">
+              <div className="bg-muted/30 mt-2 rounded border p-2">
                 <div className="font-medium">Error Message:</div>
-                <div className="mb-2 break-all font-mono text-red-600">{error.message}</div>
+                <div className="mb-2 font-mono break-all text-red-600">
+                  {error.message}
+                </div>
 
                 <div className="font-medium">Error ID:</div>
-                <div className="mb-2 break-all font-mono text-muted-foreground">
+                <div className="text-muted-foreground mb-2 font-mono break-all">
                   {this.state.errorId}
                 </div>
 
                 {error.stack && (
                   <>
                     <div className="font-medium">Stack Trace:</div>
-                    <pre className="max-h-32 overflow-x-auto rounded bg-muted/50 p-1 text-muted-foreground text-xs">
+                    <pre className="bg-muted/50 text-muted-foreground max-h-32 overflow-x-auto rounded p-1 text-xs">
                       {error.stack.slice(0, 1000)}
                     </pre>
                   </>
@@ -329,13 +359,13 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     );
   }
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout);
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallbackComponent) {

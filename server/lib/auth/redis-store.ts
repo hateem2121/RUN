@@ -64,7 +64,7 @@ export class UpstashRedisStore extends Store {
     }
   }
 
-  public async touch(
+  public override async touch(
     sid: string,
     session: any,
     callback?: (err?: any) => void,

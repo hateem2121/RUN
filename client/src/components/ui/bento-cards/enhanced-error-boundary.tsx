@@ -36,7 +36,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       error,
       errorInfo,
@@ -56,7 +56,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
     }
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -70,9 +70,13 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
         >
           <AlertTriangle className="mb-4 h-12 w-12 text-red-500" />
 
-          <h3 className="mb-2 font-semibold text-lg text-red-800">Card Error</h3>
+          <h3 className="mb-2 text-lg font-semibold text-red-800">
+            Card Error
+          </h3>
 
-          <p className="mb-4 text-red-600 text-sm">Something went wrong while loading this card.</p>
+          <p className="mb-4 text-sm text-red-600">
+            Something went wrong while loading this card.
+          </p>
 
           <div className="flex flex-col gap-2">
             {this.state.retryCount < this.maxRetries && (
@@ -87,7 +91,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
 
             <button
               onClick={() => (window.location.href = "/")}
-              className="flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-secondary-foreground transition-colors hover:bg-secondary/80"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80 flex items-center gap-2 rounded-lg px-4 py-2 transition-colors"
             >
               <Home className="h-4 w-4" />
               Go Home
@@ -96,10 +100,10 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
 
           {this.props.showTechnicalDetails && this.state.error && (
             <details className="mt-4 w-full">
-              <summary className="cursor-pointer text-red-700 text-sm hover:text-red-800">
+              <summary className="cursor-pointer text-sm text-red-700 hover:text-red-800">
                 Technical Details
               </summary>
-              <pre className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-2 text-red-600 text-xs">
+              <pre className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-2 text-xs text-red-600">
                 {this.state.error.toString()}
                 {this.state.errorInfo?.componentStack}
               </pre>
@@ -124,10 +128,10 @@ export function SimpleErrorBoundary({
   return (
     <EnhancedBentoCardErrorBoundary
       fallback={
-        <div className="flex h-full min-h-48 items-center justify-center rounded-lg border border-surface-emphasis bg-surface-subtle">
+        <div className="border-surface-emphasis bg-surface-subtle flex h-full min-h-48 items-center justify-center rounded-lg border">
           <div className="text-center">
-            <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-text-muted" />
-            <p className="text-sm text-text-disabled">{message}</p>
+            <AlertTriangle className="text-text-muted mx-auto mb-2 h-8 w-8" />
+            <p className="text-text-disabled text-sm">{message}</p>
           </div>
         </div>
       }

@@ -11,7 +11,7 @@ export class MediaNotFoundError extends Error {
 }
 
 export class CacheInvalidationError extends Error {
-  cause?: Error;
+  override cause?: Error;
 
   constructor(operation: string, cause?: Error) {
     super(

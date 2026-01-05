@@ -1,4 +1,7 @@
-import { loadSecrets } from "./config/secrets.js";
+import {
+  injectSecretsToEnv,
+  loadSecrets,
+} from "./lib/secrets/secret-manager.js";
 
 /**
  * BOOTSTRAP ENTRY POINT
@@ -11,9 +14,10 @@ import { loadSecrets } from "./config/secrets.js";
 (async () => {
   try {
     // 1. Load Secrets (Async)
-    console.log("[Bootstrap] Loading secrets...");
-    await loadSecrets();
-    console.log("[Bootstrap] Secrets loaded.");
+    console.log("[Bootstrap] Loading secrets from Secret Manager...");
+    const secrets = await loadSecrets();
+    injectSecretsToEnv();
+    console.log(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
 
     // 2. Import Main Server (Dynamic)
     // This defers evaluation of 'environment.ts' variables (Zod validation)

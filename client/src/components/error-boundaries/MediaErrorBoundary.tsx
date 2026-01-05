@@ -35,7 +35,9 @@ export class MediaErrorBoundary extends Component<
     };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<MediaErrorBoundaryState> {
+  static getDerivedStateFromError(
+    error: Error,
+  ): Partial<MediaErrorBoundaryState> {
     return {
       hasError: true,
       error,
@@ -43,7 +45,7 @@ export class MediaErrorBoundary extends Component<
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
@@ -63,7 +65,9 @@ export class MediaErrorBoundary extends Component<
       "Loading chunk",
     ];
 
-    return transientMessages.some((msg) => error.message.toLowerCase().includes(msg.toLowerCase()));
+    return transientMessages.some((msg) =>
+      error.message.toLowerCase().includes(msg.toLowerCase()),
+    );
   }
 
   private scheduleRetry = () => {
@@ -96,13 +100,13 @@ export class MediaErrorBoundary extends Component<
     window.location.href = "/";
   };
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout);
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallback) {
@@ -126,9 +130,13 @@ export class MediaErrorBoundary extends Component<
             </p>
 
             {this.state.error && (
-              <details className="rounded bg-muted p-2 text-left text-xs">
-                <summary className="cursor-pointer font-medium">Error Details</summary>
-                <pre className="mt-2 whitespace-pre-wrap">{this.state.error.message}</pre>
+              <details className="bg-muted rounded p-2 text-left text-xs">
+                <summary className="cursor-pointer font-medium">
+                  Error Details
+                </summary>
+                <pre className="mt-2 whitespace-pre-wrap">
+                  {this.state.error.message}
+                </pre>
               </details>
             )}
 
@@ -166,20 +174,26 @@ export class MediaErrorBoundary extends Component<
 }
 
 // Specialized error boundaries for different media contexts
-export const MediaGalleryErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const MediaGalleryErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <MediaErrorBoundary context="Media Gallery" onError={(_error) => {}}>
     {children}
   </MediaErrorBoundary>
 );
 
-export const MediaViewerErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const MediaViewerErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <MediaErrorBoundary
     context="Media Viewer"
     fallback={
-      <div className="flex h-64 items-center justify-center rounded-lg bg-muted">
+      <div className="bg-muted flex h-64 items-center justify-center rounded-lg">
         <div className="text-center">
-          <AlertCircle className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-          <p className="text-muted-foreground text-sm">Media viewer unavailable</p>
+          <AlertCircle className="text-muted-foreground mx-auto mb-2 h-8 w-8" />
+          <p className="text-muted-foreground text-sm">
+            Media viewer unavailable
+          </p>
         </div>
       </div>
     }
@@ -188,7 +202,9 @@ export const MediaViewerErrorBoundary: React.FC<{ children: ReactNode }> = ({ ch
   </MediaErrorBoundary>
 );
 
-export const MediaGridErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const MediaGridErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <MediaErrorBoundary
     context="Media Grid"
     fallback={
@@ -196,9 +212,9 @@ export const MediaGridErrorBoundary: React.FC<{ children: ReactNode }> = ({ chil
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="flex aspect-square items-center justify-center rounded-lg bg-muted"
+            className="bg-muted flex aspect-square items-center justify-center rounded-lg"
           >
-            <AlertCircle className="h-6 w-6 text-muted-foreground" />
+            <AlertCircle className="text-muted-foreground h-6 w-6" />
           </div>
         ))}
       </div>
@@ -208,8 +224,14 @@ export const MediaGridErrorBoundary: React.FC<{ children: ReactNode }> = ({ chil
   </MediaErrorBoundary>
 );
 
-export const MediaUploadErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <MediaErrorBoundary context="Media Upload" showRetry={true} onError={(_error) => {}}>
+export const MediaUploadErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
+  <MediaErrorBoundary
+    context="Media Upload"
+    showRetry={true}
+    onError={(_error) => {}}
+  >
     {children}
   </MediaErrorBoundary>
 );

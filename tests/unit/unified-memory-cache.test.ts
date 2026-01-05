@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { unifiedCache } from "../../server/lib/unified-cache.js";
-import { unifiedMemoryCache } from "../../server/lib/unified-memory-cache.js";
+import { unifiedCache } from "../../server/lib/cache/unified-cache.js";
+import { unifiedMemoryCache } from "../../server/lib/cache/unified-memory-cache.js";
 
 describe("UnifiedMemoryCache", () => {
   beforeEach(async () => {
@@ -65,7 +65,9 @@ describe("UnifiedMemoryCache", () => {
     const fetchFn = vi.fn().mockRejectedValue(error);
     const key = "test:error";
 
-    await expect(unifiedMemoryCache.get(key, fetchFn)).rejects.toThrow("Fetch failed");
+    await expect(unifiedMemoryCache.get(key, fetchFn)).rejects.toThrow(
+      "Fetch failed",
+    );
   });
 
   it("should support SWR config", async () => {

@@ -10,34 +10,39 @@
     "shared"
   ],
   "scripts": {
-    "dev": "npm run dev:server",
     "dev:server": "npm run --workspace=@run-remix/server dev",
     "start": "npm run --workspace=@run-remix/server start",
-    "build": "npm run build --workspaces",
     "build:client": "npm run build --workspace=@run-remix/client",
     "build:server": "npm run build --workspace=@run-remix/server",
     "migrate:deploy": "npm run --workspace=@run-remix/server db:migrate",
     "db:push": "npm run --workspace=@run-remix/server db:push",
-    "typecheck": "tsc -b client server",
-    "check": "biome check . && tsx scripts/verify-routes.ts",
-    "check:audit": "audit-ci --high",
-    "check:apply": "biome check --write .",
-    "check:links": "markdown-link-check **/*.md",
-    "verify:build": "npm run build && npm run typecheck",
-    "verify:tech-integrity": "npm run verify:build && npm run check:audit",
-    "check:bundle": "bundlesize --config bundlesize.config.json",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
     "test": "vitest run",
-    "test:contract": "vitest run shared/tests",
-    "test:integration": "vitest run server/tests",
-    "lint": "biome lint .",
-    "test:e2e": "npx playwright test",
-    "test:load": "bash server/tests/simulate-traffic.sh",
+    "test:e2e": "playwright test",
+    "test:integration": "vitest run tests/integration",
+    "lint": "biome check .",
+    "check": "npm run typecheck && npm run lint",
+    "check:apply": "biome check --write .",
+    "check:bundle": "bundlesize",
+    "typecheck": "tsc -b",
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "tsx scripts/verify-ssr-template.ts && node scripts/check-ssr-invariants.js",
+    "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
     "check:invariants": "node scripts/check-ssr-invariants.js",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
     "prepare": "husky"
   },
+  "bundlesize": [
+    {
+      "path": "./client/build/client/assets/index-*.js",
+      "maxSize": "150 kB"
+    },
+    {
+      "path": "./client/build/client/assets/root-*.css",
+      "maxSize": "50 kB"
+    }
+  ],
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@playwright/test": "^1.57.0",
@@ -60,6 +65,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^39.0.1",
+    "turbo": "^2.7.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.6"
   },
@@ -70,5 +76,9 @@
     "*.{js,json,md}": [
       "biome check --write"
     ]
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "yargs": "^18.0.0"
   }
 }

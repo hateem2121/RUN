@@ -70,9 +70,9 @@ class ErrorBoundary extends React.Component<
     return { hasError: true };
   }
 
-  componentDidCatch(_error: unknown, _errorInfo: React.ErrorInfo) {}
+  override componentDidCatch(_error: unknown, _errorInfo: React.ErrorInfo) {}
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return this.props.fallback;
     }

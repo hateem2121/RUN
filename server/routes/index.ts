@@ -12,7 +12,7 @@
  */
 
 import { createServer, type Server } from "node:http";
-import compression from "compression";
+import shrinkRay from "shrink-ray-current"; // Brotli support
 import { type Express, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 import {
@@ -36,6 +36,7 @@ import sizeChartsRouter from "./core/size-charts.js";
 import docsRouter from "./docs.js";
 // Utilities
 import featureFlagsRouter from "./feature-flags.js";
+import debugRouter from "./debug.js";
 import { inquiryRoutes } from "./inquiries.js";
 // Media
 import foldersRouter from "./media/folder-management.routes.js";
@@ -96,8 +97,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.use(
-    compression({
-      level: 6,
+    shrinkRay({
+      brotli: {
+        quality: 6, // Balanced compression
+      },
       threshold: 1024,
       filter: (_req, res) => {
         if (res.get("Content-Type")?.includes("application/json")) return true;
@@ -142,6 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use(inquiryAdminRouter);
   apiRouter.use(footerConfigRouter);
   apiRouter.use("/feature-flags", featureFlagsRouter);
+  apiRouter.use("/debug", debugRouter);
 
   // Media
   apiRouter.use("/media", mediaRoutes);

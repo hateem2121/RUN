@@ -4,7 +4,7 @@
  */
 
 // import { db } from '../../server/db.js';
-import { logger } from "../../server/lib/smart-logger.js";
+import { logger } from "../../server/lib/monitoring/logger.js";
 
 export interface SeedResult {
   tableName: string;
@@ -52,7 +52,9 @@ export async function seedWithTransaction<T>(
     const results = await seedFn();
     const duration = performance.now() - startTime;
 
-    logger.info(`[Seed] ✅ ${tableName}: ${results.length} records (${duration.toFixed(0)}ms)`);
+    logger.info(
+      `[Seed] ✅ ${tableName}: ${results.length} records (${duration.toFixed(0)}ms)`,
+    );
 
     return {
       tableName,
@@ -87,7 +89,10 @@ export function generateSlug(name: string): string {
 /**
  * Generate realistic lorem ipsum text
  */
-export function generateDescription(minWords: number = 10, maxWords: number = 30): string {
+export function generateDescription(
+  minWords: number = 10,
+  maxWords: number = 30,
+): string {
   const words = [
     "innovative",
     "sustainable",
@@ -124,7 +129,8 @@ export function generateDescription(minWords: number = 10, maxWords: number = 30
     "capabilities",
   ];
 
-  const wordCount = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
+  const wordCount =
+    Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
   const selectedWords: string[] = [];
 
   for (let i = 0; i < wordCount; i++) {
@@ -139,7 +145,9 @@ export function generateDescription(minWords: number = 10, maxWords: number = 30
  * Generate a random date within a range
  */
 export function randomDate(start: Date, end: Date): Date {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  return new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+  );
 }
 
 /**
@@ -210,7 +218,10 @@ export class SeedProgressTracker {
     const duration = performance.now() - this.startTime;
     const successful = this.results.filter((r) => r.success).length;
     const failed = this.results.filter((r) => !r.success).length;
-    const totalRecords = this.results.reduce((sum, r) => sum + r.recordsInserted, 0);
+    const totalRecords = this.results.reduce(
+      (sum, r) => sum + r.recordsInserted,
+      0,
+    );
 
     return {
       phase: this.phaseName,

@@ -23,9 +23,9 @@ export class ResourceErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(_error: Error, _errorInfo: any) {}
+  override componentDidCatch(_error: Error, _errorInfo: any) {}
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -41,10 +41,14 @@ export class ResourceErrorBoundary extends Component<Props, State> {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="mb-4 text-muted-foreground">
-                We encountered an error while loading this resource. Please try again.
+              <p className="text-muted-foreground mb-4">
+                We encountered an error while loading this resource. Please try
+                again.
               </p>
-              <Button onClick={() => this.setState({ hasError: false })} className="w-full">
+              <Button
+                onClick={() => this.setState({ hasError: false })}
+                className="w-full"
+              >
                 Try Again
               </Button>
             </CardContent>

@@ -8,7 +8,13 @@ import type React from "react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface Props {
   children: ReactNode;
@@ -47,7 +53,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Update state with error information
     this.setState((prevState) => ({
       errorInfo,
@@ -114,22 +120,29 @@ export class AdminErrorBoundary extends Component<Props, State> {
     window.history.back();
   };
 
-  private getErrorSeverity = (error: Error): "low" | "medium" | "high" | "critical" => {
+  private getErrorSeverity = (
+    error: Error,
+  ): "low" | "medium" | "high" | "critical" => {
     const message = error.message.toLowerCase();
 
     if (message.includes("network") || message.includes("fetch")) return "high";
-    if (message.includes("permission") || message.includes("auth")) return "critical";
-    if (message.includes("validation") || message.includes("parse")) return "medium";
+    if (message.includes("permission") || message.includes("auth"))
+      return "critical";
+    if (message.includes("validation") || message.includes("parse"))
+      return "medium";
     return "low";
   };
 
   private getErrorCategory = (error: Error): string => {
     const message = error.message.toLowerCase();
 
-    if (message.includes("network") || message.includes("fetch")) return "Network Error";
-    if (message.includes("permission") || message.includes("auth")) return "Authentication Error";
+    if (message.includes("network") || message.includes("fetch"))
+      return "Network Error";
+    if (message.includes("permission") || message.includes("auth"))
+      return "Authentication Error";
     if (message.includes("validation")) return "Validation Error";
-    if (message.includes("parse") || message.includes("json")) return "Data Format Error";
+    if (message.includes("parse") || message.includes("json"))
+      return "Data Format Error";
     return "Application Error";
   };
 
@@ -148,7 +161,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
     }
   };
 
-  render() {
+  override render() {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -173,7 +186,10 @@ export class AdminErrorBoundary extends Component<Props, State> {
                   <CardDescription className="mt-1 flex items-center gap-2">
                     <Badge
                       variant={
-                        this.getSeverityColor(severity) as "destructive" | "secondary" | "outline"
+                        this.getSeverityColor(severity) as
+                          | "destructive"
+                          | "secondary"
+                          | "outline"
                       }
                     >
                       {severity.toUpperCase()}
@@ -188,12 +204,16 @@ export class AdminErrorBoundary extends Component<Props, State> {
               {/* Error Message */}
               <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                 <h4 className="mb-2 font-medium text-red-900">Error Details</h4>
-                <p className="font-mono text-red-700 text-sm">{this.state.error.message}</p>
+                <p className="font-mono text-sm text-red-700">
+                  {this.state.error.message}
+                </p>
               </div>
 
               {/* Recovery Actions */}
               <div className="space-y-3">
-                <h4 className="font-medium text-foreground">Recovery Options</h4>
+                <h4 className="text-foreground font-medium">
+                  Recovery Options
+                </h4>
 
                 <div className="flex flex-wrap gap-3">
                   {canRetry && (
@@ -204,7 +224,8 @@ export class AdminErrorBoundary extends Component<Props, State> {
                       className="flex items-center gap-2"
                     >
                       <RefreshCw className="h-4 w-4" />
-                      Retry ({this.maxRetries - this.state.retryCount} attempts left)
+                      Retry ({this.maxRetries - this.state.retryCount} attempts
+                      left)
                     </Button>
                   )}
 
@@ -233,14 +254,20 @@ export class AdminErrorBoundary extends Component<Props, State> {
               {/* Error History (for debugging) */}
               {this.state.errorHistory.length > 1 && (
                 <details className="text-sm">
-                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
-                    Recent Error History ({this.state.errorHistory.length} errors)
+                  <summary className="text-muted-foreground hover:text-foreground cursor-pointer">
+                    Recent Error History ({this.state.errorHistory.length}{" "}
+                    errors)
                   </summary>
                   <div className="mt-2 max-h-32 space-y-2 overflow-y-auto">
                     {this.state.errorHistory.slice(-3).map((entry, index) => (
-                      <div key={index} className="rounded bg-background p-2 text-xs">
-                        <div className="font-mono text-foreground/80">{entry.error.message}</div>
-                        <div className="mt-1 text-muted-foreground">
+                      <div
+                        key={index}
+                        className="bg-background rounded p-2 text-xs"
+                      >
+                        <div className="text-foreground/80 font-mono">
+                          {entry.error.message}
+                        </div>
+                        <div className="text-muted-foreground mt-1">
                           {entry.timestamp.toLocaleTimeString()}
                         </div>
                       </div>
@@ -251,22 +278,26 @@ export class AdminErrorBoundary extends Component<Props, State> {
 
               {/* Help Text */}
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h4 className="mb-2 font-medium text-blue-900">What happened?</h4>
-                <p className="text-blue-700 text-sm">
-                  The {this.props.module} module encountered an unexpected error. This could be due
-                  to a network issue, data problem, or temporary service interruption.
-                  {canRetry && " Try the retry button to attempt the operation again."}
+                <h4 className="mb-2 font-medium text-blue-900">
+                  What happened?
+                </h4>
+                <p className="text-sm text-blue-700">
+                  The {this.props.module} module encountered an unexpected
+                  error. This could be due to a network issue, data problem, or
+                  temporary service interruption.
+                  {canRetry &&
+                    " Try the retry button to attempt the operation again."}
                 </p>
               </div>
 
               {/* Debug Information (development only) */}
               {process.env.NODE_ENV === "development" && (
                 <details className="text-xs">
-                  <summary className="flex cursor-pointer items-center gap-1 text-muted-foreground hover:text-foreground/80">
+                  <summary className="text-muted-foreground hover:text-foreground/80 flex cursor-pointer items-center gap-1">
                     <Bug className="h-3 w-3" />
                     Debug Information
                   </summary>
-                  <div className="mt-2 max-h-40 overflow-auto rounded bg-foreground p-3 text-background">
+                  <div className="bg-foreground text-background mt-2 max-h-40 overflow-auto rounded p-3">
                     <pre>{this.state.error.stack}</pre>
                   </div>
                 </details>
@@ -282,22 +313,28 @@ export class AdminErrorBoundary extends Component<Props, State> {
 }
 
 // Factory functions for specific admin modules
-export const ProductsErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <AdminErrorBoundary module="Products">{children}</AdminErrorBoundary>
-);
+export const ProductsErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => <AdminErrorBoundary module="Products">{children}</AdminErrorBoundary>;
 
-export const CategoriesErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <AdminErrorBoundary module="Categories">{children}</AdminErrorBoundary>
-);
+export const CategoriesErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => <AdminErrorBoundary module="Categories">{children}</AdminErrorBoundary>;
 
-export const MediaErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const MediaErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <AdminErrorBoundary module="Media Library">{children}</AdminErrorBoundary>
 );
 
-export const FabricErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const FabricErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <AdminErrorBoundary module="Fabric Management">{children}</AdminErrorBoundary>
 );
 
-export const FiberErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const FiberErrorBoundary: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => (
   <AdminErrorBoundary module="Fiber Management">{children}</AdminErrorBoundary>
 );

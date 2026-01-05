@@ -1,7 +1,13 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface Props {
   children: ReactNode;
@@ -27,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ errorInfo });
 
     // Call custom error handler if provided
@@ -45,7 +51,7 @@ export class ErrorBoundary extends Component<Props, State> {
     });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Custom fallback UI if provided
       if (this.props.fallback) {
@@ -58,7 +64,9 @@ export class ErrorBoundary extends Component<Props, State> {
           <CardHeader>
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-600" />
-              <CardTitle className="text-red-700">Something went wrong</CardTitle>
+              <CardTitle className="text-red-700">
+                Something went wrong
+              </CardTitle>
             </div>
             <CardDescription className="text-red-600">
               {this.props.componentName
@@ -70,16 +78,18 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="space-y-4">
               {process.env.NODE_ENV === "development" && this.state.error && (
                 <div className="rounded border border-red-200 bg-red-100 p-3">
-                  <p className="mb-2 font-medium text-red-800 text-sm">Error Details:</p>
-                  <p className="break-all font-mono text-red-700 text-xs">
+                  <p className="mb-2 text-sm font-medium text-red-800">
+                    Error Details:
+                  </p>
+                  <p className="font-mono text-xs break-all text-red-700">
                     {this.state.error.message}
                   </p>
                   {this.state.errorInfo?.componentStack && (
                     <details className="mt-2">
-                      <summary className="cursor-pointer text-red-600 text-xs">
+                      <summary className="cursor-pointer text-xs text-red-600">
                         Component Stack
                       </summary>
-                      <pre className="mt-1 whitespace-pre-wrap text-red-700 text-xs">
+                      <pre className="mt-1 text-xs whitespace-pre-wrap text-red-700">
                         {this.state.errorInfo.componentStack}
                       </pre>
                     </details>

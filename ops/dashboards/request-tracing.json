@@ -1,0 +1,41 @@
+{
+  "title": "Request Tracing & Latency",
+  "panels": [
+    {
+      "title": "Request Latency (p50, p95, p99)",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p99"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p50"
+        }
+      ]
+    },
+    {
+      "title": "Error Rate by Route",
+      "type": "heatmap",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status=~'5..'}[5m])) by (route)"
+        }
+      ]
+    },
+    {
+      "title": "Cache Hit Rate",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "sum(rate(cache_hits_total[5m])) / (sum(rate(cache_hits_total[5m])) + sum(rate(cache_misses_total[5m])))"
+        }
+      ]
+    }
+  ]
+}

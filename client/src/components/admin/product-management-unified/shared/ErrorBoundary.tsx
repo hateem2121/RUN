@@ -31,12 +31,15 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
-    logger.error(`Error in ${this.props.sectionName || "admin products section"}`, {
-      error: error.message,
-      stack: error.stack,
-      errorInfo,
-    });
+  override componentDidCatch(error: Error, errorInfo: any) {
+    logger.error(
+      `Error in ${this.props.sectionName || "admin products section"}`,
+      {
+        error: error.message,
+        stack: error.stack,
+        errorInfo,
+      },
+    );
 
     this.setState({
       error,
@@ -48,7 +51,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: false, error: null, errorInfo: undefined });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return (
         <div className="rounded-lg border border-red-200 bg-red-50 p-6">
@@ -56,9 +59,10 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-6 w-6 text-red-600" />
             <div>
               <h3 className="font-semibold text-red-900">
-                {this.props.fallbackTitle || `${this.props.sectionName || "Section"} Error`}
+                {this.props.fallbackTitle ||
+                  `${this.props.sectionName || "Section"} Error`}
               </h3>
-              <p className="text-red-700 text-sm">
+              <p className="text-sm text-red-700">
                 {this.props.fallbackMessage ||
                   "This section encountered an error and has been isolated to prevent system-wide issues."}
               </p>
@@ -67,12 +71,14 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
 
           {process.env.NODE_ENV === "development" && this.state.error && (
             <details className="mb-4">
-              <summary className="cursor-pointer font-medium text-red-800 text-sm hover:text-red-900">
+              <summary className="cursor-pointer text-sm font-medium text-red-800 hover:text-red-900">
                 Technical Details (Development Only)
               </summary>
-              <div className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-3 font-mono text-red-800 text-xs">
+              <div className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-3 font-mono text-xs text-red-800">
                 <div className="font-semibold">{this.state.error.message}</div>
-                <div className="mt-1 text-red-600">{this.state.error.stack}</div>
+                <div className="mt-1 text-red-600">
+                  {this.state.error.stack}
+                </div>
               </div>
             </details>
           )}

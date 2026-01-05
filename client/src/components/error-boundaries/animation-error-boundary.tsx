@@ -70,14 +70,16 @@ export class AnimationErrorBoundary extends Component<
     };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<AnimationErrorBoundaryState> {
+  static getDerivedStateFromError(
+    error: Error,
+  ): Partial<AnimationErrorBoundaryState> {
     return {
       hasError: true,
       error,
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const now = Date.now();
     this.setState({
       error,
@@ -115,7 +117,8 @@ export class AnimationErrorBoundary extends Component<
         // Kill all GSAP timelines
         const gsapInstance = (window as any).gsap as GSAPInstance | undefined;
         if (gsapInstance) {
-          const timelines = gsapInstance.globalTimeline?.getChildren(true) || [];
+          const timelines =
+            gsapInstance.globalTimeline?.getChildren(true) || [];
           timelines.forEach((tl: GSAPTimeline) => {
             if (tl && typeof tl.kill === "function") {
               tl.kill();
@@ -130,7 +133,9 @@ export class AnimationErrorBoundary extends Component<
         }
 
         // Clear ScrollTrigger instances
-        const scrollTrigger = (window as any).ScrollTrigger as ScrollTriggerInstance | undefined;
+        const scrollTrigger = (window as any).ScrollTrigger as
+          | ScrollTriggerInstance
+          | undefined;
         if (scrollTrigger) {
           scrollTrigger.getAll().forEach((trigger: GSAPScrollTrigger) => {
             if (trigger && typeof trigger.kill === "function") {
@@ -151,7 +156,8 @@ export class AnimationErrorBoundary extends Component<
         errorMessage: error.message,
         errorStack: error.stack || null,
         errorBoundary: "AnimationErrorBoundary",
-        userAgent: typeof window !== "undefined" ? window.navigator.userAgent : null,
+        userAgent:
+          typeof window !== "undefined" ? window.navigator.userAgent : null,
         retryCount: this.state.retryCount,
         resolved: false,
       };
@@ -200,7 +206,7 @@ export class AnimationErrorBoundary extends Component<
   };
 
   // Cleanup on unmount
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout);
     }
@@ -225,22 +231,26 @@ export class AnimationErrorBoundary extends Component<
           ) : (
             <AlertTriangle className="mr-2 h-6 w-6 text-red-500" />
           )}
-          <h3 className="font-semibold text-lg text-red-800">
+          <h3 className="text-lg font-semibold text-red-800">
             {isRecovering ? "Recovering Animation" : "Animation Error"}
           </h3>
         </div>
 
         <p className="mb-4 text-red-700">
-          {componentName ? `${componentName} animation failed` : "Animation failed to load"}
+          {componentName
+            ? `${componentName} animation failed`
+            : "Animation failed to load"}
         </p>
 
         {process.env.NODE_ENV === "development" && error && (
           <details className="mb-4 rounded border bg-red-100 p-3 text-left">
-            <summary className="cursor-pointer font-medium text-red-800">Error Details</summary>
-            <div className="mt-2 text-red-700 text-sm">
+            <summary className="cursor-pointer font-medium text-red-800">
+              Error Details
+            </summary>
+            <div className="mt-2 text-sm text-red-700">
               <strong>Error:</strong> {error.message}
               {error.stack && (
-                <pre className="mt-2 overflow-x-auto whitespace-pre-wrap text-xs">
+                <pre className="mt-2 overflow-x-auto text-xs whitespace-pre-wrap">
                   {error.stack}
                 </pre>
               )}
@@ -259,13 +269,15 @@ export class AnimationErrorBoundary extends Component<
         )}
 
         {retryCount >= this.maxRetries && (
-          <p className="text-red-600 text-sm">Maximum retries reached. Please refresh the page.</p>
+          <p className="text-sm text-red-600">
+            Maximum retries reached. Please refresh the page.
+          </p>
         )}
       </div>
     );
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return this.renderFallbackUI();
     }

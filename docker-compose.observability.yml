@@ -37,6 +37,15 @@ services:
     volumes:
       - ./ops/grafana/provisioning:/etc/grafana/provisioning
       - ./ops/dashboards:/var/lib/grafana/dashboards
+      - observability
+
+  jaeger:
+    image: jaegertracing/jaeger:1.54
+    ports:
+      - "16686:16686" # UI
+      - "4318:4318"   # OTLP HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
     networks:
       - observability
 

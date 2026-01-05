@@ -6,13 +6,22 @@ import type { Express, RequestHandler } from "express";
 import { logger } from "../monitoring/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "../..");
+// server/lib/ssr -> ../../.. -> server root -> .. -> monorepo root
+// But wait, the previous code was `path.resolve(__dirname, "../..")`.
+// If __dirname is `/.../server/lib/ssr`, then `../..` is `/.../server`.
+// `client/vite.config.ts` is `../client/vite.config.ts` RELATIVE TO SERVER ROOT.
+// So if `root` is `server`, then `path.resolve(root, "client/vite.config.ts")` looks for `server/client/vite.config.ts`.
+// Correct: `root` should be monorepo root. `server` is at `monorepo/server`. `../..` from `server/lib/ssr` is `server`. `../../..` is monorepo root.
+const root = path.resolve(__dirname, "../../..");
 
 /**
  * Creates a Request Handler for React Router 7
  * Handles both Development (Vite Middleware) and Production (Built Server)
  */
-export async function createSsrHandler(app: Express, server?: Server): Promise<RequestHandler> {
+export async function createSsrHandler(
+  app: Express,
+  server?: Server,
+): Promise<RequestHandler> {
   const isProduction = process.env.NODE_ENV === "production";
 
   if (!isProduction) {
@@ -32,7 +41,8 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     logger.info("[SSR] Initialized Vite Dev Server with React Router");
 
     return createRequestHandler({
-      build: () => vite.ssrLoadModule("virtual:react-router/server-build") as any,
+      build: () =>
+        vite.ssrLoadModule("virtual:react-router/server-build") as any,
       getLoadContext: (_req, res) => ({
         cspNonce: res.locals.cspNonce,
       }),

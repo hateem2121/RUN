@@ -8,6 +8,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
+import { getSecret } from "../lib/secrets/secret-manager.js";
 
 export interface SessionUser extends User {
   claims: {
@@ -67,25 +68,28 @@ export class AuthService {
    */
   private async getSessionMiddleware() {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-    const { redis, isRedisEnabled } =
-      await import("../lib/cache/upstash-client.js");
-    const { UpstashRedisStore } = await import("../lib/auth/redis-store.js");
+    const { RedisStore } = await import("connect-redis");
+    const { redis } = await import("../lib/cache/upstash-client.js");
 
-    const sessionStore = isRedisEnabled
-      ? new UpstashRedisStore({
-          client: redis,
-          ttl: Math.floor(sessionTtl / 1000),
-          prefix: "sess:",
-        })
-      : new (connectPg(session))({
-          conString: process.env.DATABASE_URL,
-          createTableIfMissing: false,
-          ttl: sessionTtl / 1000,
-          tableName: "sessions",
-        });
+    const sessionStore = new RedisStore({
+      client: redis as any,
+      prefix: "sess:",
+      ttl: sessionTtl / 1000,
+    });
+
+    // P1 SECURITY: Support Secret Rotation
+    // If SESSION_SECRET_PREVIOUS is set, use it for verifying old sessions
+    const currentSecret =
+      getSecret("SESSION_SECRET") ||
+      process.env.SESSION_SECRET ||
+      "default-secret-change-me-in-prod";
+    const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
+    const secrets = previousSecret
+      ? [currentSecret, previousSecret]
+      : currentSecret;
 
     return session({
-      secret: process.env.SESSION_SECRET || "default-secret-change-me-in-prod",
+      secret: secrets,
       store: sessionStore as any,
       resave: false,
       saveUninitialized: false,

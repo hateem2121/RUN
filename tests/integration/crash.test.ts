@@ -21,11 +21,14 @@ describe("Process Crash Integrity (Integration Tier)", () => {
 
   it("should exit with code 1 on uncaught exception", async () => {
     try {
-      await fetch(`${server.baseUrl}/api/debug/crash`, {
+      const res = await fetch(`${server.baseUrl}/api/debug/crash`, {
         method: "POST",
         headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
       });
-    } catch (_e) {
+      console.log(`[Test] Crash request status: ${res.status}`);
+      if (!res.ok) console.log(`[Test] Body: ${await res.text()}`);
+    } catch (e: any) {
+      console.log(`[Test] Fetch error: ${e.message}`);
       // Expected connection reset
     }
 

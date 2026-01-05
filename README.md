@@ -77,22 +77,32 @@ Use this map to orient yourself before diving into specific files.
 
 ### Installation
 
-```bash
-# Clone repository
+````bash
+# 1. Clone repository
 git clone <repository-url>
 cd RUN-Remix
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Set up environment
+# 3. Environment Setup
+
+Create `.env` file from example:
+```bash
 cp .env.example .env
-# Edit .env with your credentials
+````
 
-# Push database schema
+> **Security Note:** In production, secrets are loaded automatically from Google Secret Manager. Ensure the Cloud Run service account has `Secret Accessor` role.
+
+### 4. Push database schema
+
+```bash
 npm run db:push
+```
 
-# Start development server
+### 5. Start development server
+
+```bash
 npm run dev
 ```
 

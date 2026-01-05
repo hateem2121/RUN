@@ -1,9 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "build/**"]
+      "outputs": ["dist/**", "build/**"]
     },
     "test": {
       "dependsOn": ["build"],
@@ -11,14 +12,20 @@
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts"]
     },
     "lint": {
-      "outputs": []
+      "dependsOn": ["^build"]
     },
     "typecheck": {
-      "outputs": []
+      "dependsOn": ["^build"]
+    },
+    "check": {
+      "dependsOn": ["^build"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "db:push": {
+      "cache": false
     }
   }
 }
