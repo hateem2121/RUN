@@ -21,15 +21,7 @@ import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 type FolderType = typeof folders.$inferSelect;
 
-import {
-  ChevronDown,
-  ChevronRight,
-  Edit2,
-  Folder,
-  FolderOpen,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Edit2, Folder, FolderOpen, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -43,14 +35,8 @@ interface FolderTreeProps {
   onDrop?: (mediaIds: number[], folderId: number) => void;
 }
 
-export default function FolderTree({
-  selectedFolderId,
-  onFolderSelect,
-  onDrop,
-}: FolderTreeProps) {
-  const [expandedFolders, setExpandedFolders] = useState<Set<number>>(
-    new Set(),
-  );
+export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }: FolderTreeProps) {
+  const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -68,11 +54,8 @@ export default function FolderTree({
 
   // Create folder mutation
   const createMutation = useMutation({
-    mutationFn: (data: {
-      name: string;
-      description?: string | undefined;
-      parentId?: number;
-    }) => apiRequest("/api/folders", { method: "POST", body: data }),
+    mutationFn: (data: { name: string; description?: string | undefined; parentId?: number }) =>
+      apiRequest("/api/folders", { method: "POST", body: data }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
       toast({ title: "Folder created successfully" });
@@ -91,13 +74,8 @@ export default function FolderTree({
 
   // Update folder mutation
   const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: number;
-      data: { name: string; description?: string };
-    }) => apiRequest(`/api/folders/${id}`, { method: "PATCH", body: data }),
+    mutationFn: ({ id, data }: { id: number; data: { name: string; description?: string } }) =>
+      apiRequest(`/api/folders/${id}`, { method: "PATCH", body: data }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
       toast({ title: "Folder updated successfully" });
@@ -114,8 +92,7 @@ export default function FolderTree({
 
   // Delete folder mutation
   const deleteMutation = useMutation({
-    mutationFn: (id: number) =>
-      apiRequest(`/api/folders/${id}`, { method: "DELETE" }),
+    mutationFn: (id: number) => apiRequest(`/api/folders/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
       toast({ title: "Folder deleted successfully" });
@@ -258,9 +235,7 @@ export default function FolderTree({
           </ContextMenuContent>
         </ContextMenu>
         {isExpanded && hasChildren && (
-          <div>
-            {folder.children?.map((child) => renderFolder(child, level + 1))}
-          </div>
+          <div>{folder.children?.map((child) => renderFolder(child, level + 1))}</div>
         )}
       </div>
     );
@@ -319,9 +294,7 @@ export default function FolderTree({
         </div>
 
         {/* Folder Tree */}
-        <div className="space-y-1">
-          {folderTree.map((folder) => renderFolder(folder))}
-        </div>
+        <div className="space-y-1">{folderTree.map((folder) => renderFolder(folder))}</div>
       </div>
 
       {/* Create Folder Dialog */}
@@ -329,9 +302,7 @@ export default function FolderTree({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {selectedFolder
-                ? `Create Subfolder in "${selectedFolder.name}"`
-                : "Create Folder"}
+              {selectedFolder ? `Create Subfolder in "${selectedFolder.name}"` : "Create Folder"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -344,9 +315,7 @@ export default function FolderTree({
               />
             </div>
             <div>
-              <Label className="text-sm font-medium">
-                Description (optional)
-              </Label>
+              <Label className="text-sm font-medium">Description (optional)</Label>
               <Input
                 value={folderDescription}
                 onChange={(e) => setFolderDescription(e.target.value)}
@@ -355,22 +324,15 @@ export default function FolderTree({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setCreateDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
               Cancel
             </Button>
             <Button
               onClick={() => {
                 createMutation.mutate({
                   name: folderName,
-                  ...(folderDescription
-                    ? { description: folderDescription }
-                    : {}),
-                  ...(selectedFolder?.id
-                    ? { parentId: selectedFolder.id }
-                    : {}),
+                  ...(folderDescription ? { description: folderDescription } : {}),
+                  ...(selectedFolder?.id ? { parentId: selectedFolder.id } : {}),
                 });
               }}
               disabled={!folderName.trim() || createMutation.isPending}
@@ -397,9 +359,7 @@ export default function FolderTree({
               />
             </div>
             <div>
-              <Label className="text-sm font-medium">
-                Description (optional)
-              </Label>
+              <Label className="text-sm font-medium">Description (optional)</Label>
               <Input
                 value={folderDescription}
                 onChange={(e) => setFolderDescription(e.target.value)}
@@ -418,9 +378,7 @@ export default function FolderTree({
                     id: selectedFolder.id,
                     data: {
                       name: folderName,
-                      ...(folderDescription
-                        ? { description: folderDescription }
-                        : {}),
+                      ...(folderDescription ? { description: folderDescription } : {}),
                     },
                   });
                 }
@@ -440,14 +398,11 @@ export default function FolderTree({
             <DialogTitle>Delete Folder</DialogTitle>
           </DialogHeader>
           <p>
-            Are you sure you want to delete the folder "{selectedFolder?.name}"?
-            This folder must be empty before it can be deleted.
+            Are you sure you want to delete the folder "{selectedFolder?.name}"? This folder must be
+            empty before it can be deleted.
           </p>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
             <Button

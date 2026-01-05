@@ -139,12 +139,16 @@ export async function checkSchemaConsistency(): Promise<SchemaValidationResult> 
 
     if (errors.length > 0) {
       logger.error("[Schema Validator] Found schema errors:");
-      errors.forEach((error) => logger.error(`  - ${error}`));
+      errors.forEach((error) => {
+        logger.error(`  - ${error}`);
+      });
     }
 
     if (warnings.length > 0) {
       logger.warn("[Schema Validator] Found schema warnings:");
-      warnings.forEach((warning) => logger.warn(`  - ${warning}`));
+      warnings.forEach((warning) => {
+        logger.warn(`  - ${warning}`);
+      });
     }
 
     return {

@@ -3,15 +3,9 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Color,
-  DoubleSide,
-  MathUtils,
-  type Mesh,
-  type ShaderMaterial,
-} from "three";
-import { colors } from "@/lib/design-tokens";
+import { Color, DoubleSide, MathUtils, type Mesh, type ShaderMaterial } from "three";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { colors } from "@/lib/design-tokens";
 import { HERO_TEXT } from "./constants";
 
 // Shader definitions moved outside component for performance
@@ -271,10 +265,7 @@ const Hero: React.FC = () => {
       className="bg-background-alt relative h-screen w-full overflow-hidden"
     >
       {/* 3D Background - Frameloop conditional for performance */}
-      <div
-        className="absolute inset-0 z-0 opacity-20"
-        style={{ pointerEvents: "none" }}
-      >
+      <div className="absolute inset-0 z-0 opacity-20" style={{ pointerEvents: "none" }}>
         <Canvas
           frameloop={isInView ? "always" : "never"}
           dpr={dpr as [number, number]}
@@ -292,10 +283,7 @@ const Hero: React.FC = () => {
           className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px]"
         >
           {HERO_TEXT.map((line, i) => (
-            <div
-              key={i}
-              className="hero-line -my-2 overflow-visible py-2 will-change-transform"
-            >
+            <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
               <h1 className="text-surface-dark text-[14vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply will-change-transform md:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>

@@ -30,9 +30,7 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   // P1 SECURITY: Block crawling of Admin/API routes
   app.get("/robots.txt", (_req, res) => {
     res.type("text/plain");
-    res.send(
-      "User-agent: *\nDisallow: /api/\nDisallow: /admin/\nDisallow: /auth/",
-    );
+    res.send("User-agent: *\nDisallow: /api/\nDisallow: /admin/\nDisallow: /auth/");
   });
 
   // SSR Configuration (Must be last before error handling)
@@ -46,9 +44,24 @@ export async function setupRoutes(app: Express, httpServer: Server) {
     app.use(ssrCacheMiddleware);
 
     app.use(ssrHandler);
-    logger.info(
-      "[Startup] SSR Handler mounted successfully with edge caching.",
-    );
+    logger.info("[Startup] SSR Handler mounted successfully with edge caching.");
+
+    // Fallback 404 handler - catches everything not handled by API or SSR
+    // Critical for test mode where SSR is skipped
+    app.use((req, res) => {
+      if (req.path.startsWith("/api/") || process.env.NODE_ENV === "test") {
+        res.status(404).json({
+          success: false,
+          error: {
+            code: "RESOURCE_NOT_FOUND",
+            message: "The requested resource was not found",
+          },
+        });
+      } else {
+        // In production without SSR matching, just send 404 string
+        res.status(404).send("Not Found");
+      }
+    });
   } catch (error) {
     logger.error("Failed to initialize SSR Handler:", error);
     // In dev, this is fatal. In prod, we might want to fail hard too as FE won't load.

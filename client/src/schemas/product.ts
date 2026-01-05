@@ -7,6 +7,7 @@ import { z } from "zod";
  */
 export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
   if (!Array.isArray(data)) {
+    // biome-ignore lint/suspicious/noConsole: debugging
     console.warn("safeParseArray: Input is not an array", data);
     return [];
   }
@@ -18,6 +19,7 @@ export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
     } else {
       // In development, log the schema error for debugging
       if (import.meta.env.DEV) {
+        // biome-ignore lint/suspicious/noConsole: debugging
         console.warn("Schema validation failed for item:", item, result.error);
       }
     }

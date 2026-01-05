@@ -301,24 +301,26 @@ export function notFoundHandler(req: Request, res: Response) {
 
 // Unhandled promise rejection handler
 export function setupGlobalErrorHandlers() {
+  const shouldForceExit =
+    config.app.environment === "production" || process.env.FORCE_EXIT_ON_CRASH === "true";
+
   process.on("unhandledRejection", (reason, promise) => {
     logger.error("[CRITICAL] Unhandled Promise Rejection:", reason);
     logger.error("[CRITICAL] Promise:", promise);
 
-    // In production, we might want to restart the process
-    if (config.app.environment === "production") {
-      logger.error("[CRITICAL] Process may need restart due to unhandled rejection");
-      // Don't exit automatically in Replit - let it handle gracefully
+    if (shouldForceExit) {
+      logger.error("[CRITICAL] Exiting process due to unhandled rejection");
+      // Allow a brief window for logs to flush
+      setTimeout(() => process.exit(1), 100).unref();
     }
   });
 
   process.on("uncaughtException", (error) => {
     logger.error("[CRITICAL] Uncaught Exception:", error);
 
-    // In production, log and gracefully shut down
-    if (config.app.environment === "production") {
-      logger.error("[CRITICAL] Process must restart due to uncaught exception");
-      // Don't exit automatically in Replit
+    if (shouldForceExit) {
+      logger.error("[CRITICAL] Exiting process due to uncaught exception");
+      process.exit(1);
     }
   });
 }

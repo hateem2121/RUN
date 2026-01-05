@@ -233,7 +233,9 @@ class PerformanceTracker {
   }
 
   cleanup() {
-    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.forEach((observer) => {
+      observer.disconnect();
+    });
     this.observers = [];
   }
 }

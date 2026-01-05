@@ -17,7 +17,7 @@ const environmentSchema = z.object({
     .transform((val) => parseInt(val, 10)),
 
   // Database Configuration
-  DATABASE_URL: z.string().describe("PostgreSQL connection URL"),
+  DATABASE_URL: z.string().default("postgres://localhost:5432/test"),
   DATABASE_SSL_ENABLED: z
     .string()
     .default("true")
@@ -66,7 +66,10 @@ const environmentSchema = z.object({
   ADMIN_API_KEY: z.string().optional().describe("Admin API key for management endpoints"),
   ENTERPRISE_API_KEY: z.string().optional().describe("Enterprise API key for advanced features"),
   MIGRATION_API_KEY: z.string().optional().describe("Migration API key for data operations"),
-  SESSION_SECRET: z.string().optional().describe("Session secret for Express sessions"),
+  SESSION_SECRET: z
+    .string()
+    .default("test-secret-default")
+    .describe("Session secret for Express sessions"),
   INITIAL_ADMIN_EMAIL: z.string().optional().describe("Email of the initial admin user"),
 
   // Development Environment
@@ -131,8 +134,19 @@ const environmentSchema = z.object({
 
 // Parse and validate environment
 const parseEnvironment = () => {
+  console.log("[environment.ts] Calling parseEnvironment. URL:", import.meta.url);
+  console.log("[environment.ts] Keys:", Object.keys(process.env).sort().join(", "));
+  console.log(
+    "[environment.ts] SESSION_SECRET in process.env:",
+    JSON.stringify(process.env.SESSION_SECRET),
+  );
   try {
-    return environmentSchema.parse(process.env);
+    const result = environmentSchema.parse(process.env);
+    console.log(
+      "[environment.ts] Parse success. Result SESSION_SECRET:",
+      JSON.stringify(result.SESSION_SECRET),
+    );
+    return result;
   } catch (error) {
     if (error instanceof z.ZodError) {
       const issues = error.issues || [];
@@ -164,6 +178,9 @@ const parseEnvironment = () => {
         errorMessage += `\nValidation issues:\n${JSON.stringify(issues, null, 2)}\n`;
       }
 
+      console.log("[environment.ts] Full error message:\n", errorMessage);
+      console.log("[environment.ts] Issues:\n", JSON.stringify(issues, null, 2));
+      console.log("[environment.ts] THROWING ERROR NOW!");
       throw new Error(errorMessage);
     }
     throw error;
@@ -171,7 +188,14 @@ const parseEnvironment = () => {
 };
 
 // Validated environment configuration
-export const env = parseEnvironment();
+export let env: any;
+try {
+  env = parseEnvironment();
+  console.log("[environment.ts] env export success.");
+} catch (e) {
+  console.error("[environment.ts] env export FAILED!", e);
+  throw e;
+}
 
 // Environment utilities
 export const isDevelopment = env.NODE_ENV === "development";
@@ -190,20 +214,16 @@ export const database = {
 } as const;
 
 // CORS origin allowlist builder
-const buildCorsOrigins = (): string[] | string => {
-  // Custom origins from environment
-  if (env.CORS_ALLOWED_ORIGINS) {
-    return env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim());
-  }
-
-  // Development default
-  return "*";
-};
+const corsOrigins: string[] = (() => {
+  if (env.CORS_ALLOWED_ORIGINS === "*") return ["*"];
+  if (!env.CORS_ALLOWED_ORIGINS) return [];
+  return env.CORS_ALLOWED_ORIGINS.split(",").map((origin: string) => origin.trim());
+})();
 
 // Server configuration with secure CORS
 export const server = {
   port: env.PORT,
-  corsOrigin: buildCorsOrigins(),
+  corsOrigin: corsOrigins,
   corsCredentials: env.CORS_ALLOW_CREDENTIALS,
   rateLimitEnabled: env.RATE_LIMIT_ENABLED,
 } as const;

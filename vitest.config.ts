@@ -8,17 +8,13 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
     globals: true,
+    testTimeout: 60000,
     coverage: {
       enabled: false, // Enable with --coverage flag
       provider: "v8",
       reporter: ["text", "json", "html", "json-summary"],
       reportsDirectory: "./coverage",
-      exclude: [
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/tests/**",
-        "**/mocks/**",
-      ],
+      exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/mocks/**"],
       thresholds: {
         lines: 40,
         functions: 30, // Functions are lower

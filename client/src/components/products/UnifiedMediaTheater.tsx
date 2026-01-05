@@ -101,7 +101,7 @@ export function UnifiedMediaTheater({
 
   const { measureLoadTime } = useMediaPerformance();
   // Simple error handler to replace removed useMediaErrorHandler
-  const handleError = (_error: Error, _context?: string) => {};
+  const handleError = useCallback((_error: Error, _context?: string) => {}, []);
 
   // Sort media to prioritize primary items and ensure consistent URL patterns
   const sortedMedia = [...media]
@@ -130,21 +130,24 @@ export function UnifiedMediaTheater({
   );
 
   // Feature detection
-  const features = {
-    hasTouch: "ontouchstart" in window,
-    hasWebGL: (() => {
-      try {
-        const canvas = document.createElement("canvas");
-        return !!(
-          window.WebGLRenderingContext &&
-          (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-        );
-      } catch (_e) {
-        return false;
-      }
-    })(),
-    connectionSpeed: (navigator as any).connection?.effectiveType || "unknown",
-  };
+  const features = useMemo(
+    () => ({
+      hasTouch: "ontouchstart" in window,
+      hasWebGL: (() => {
+        try {
+          const canvas = document.createElement("canvas");
+          return !!(
+            window.WebGLRenderingContext &&
+            (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+          );
+        } catch (_e) {
+          return false;
+        }
+      })(),
+      connectionSpeed: (navigator as any).connection?.effectiveType || "unknown",
+    }),
+    [],
+  );
 
   // WebGL Context Recovery now handled by UnifiedModelViewer component
 

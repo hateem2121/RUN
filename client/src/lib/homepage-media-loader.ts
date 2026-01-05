@@ -151,8 +151,12 @@ export function useHomepageMediaLoader(
       }
 
       // Add first few process card and product media IDs as priority
-      processCardMediaIds.slice(0, 4).forEach((id) => priorityIds.add(id));
-      productMediaIds.slice(0, 6).forEach((id) => priorityIds.add(id));
+      processCardMediaIds.slice(0, 4).forEach((id) => {
+        priorityIds.add(id);
+      });
+      productMediaIds.slice(0, 6).forEach((id) => {
+        priorityIds.add(id);
+      });
 
       // Request with priority hint
       const priorityParam = Array.from(priorityIds).join(",");

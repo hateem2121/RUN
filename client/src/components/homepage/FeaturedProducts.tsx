@@ -1,9 +1,9 @@
 import gsap from "gsap";
 import type React from "react";
 import { useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { FEATURED_PRODUCTS } from "./constants";
 import { useStore } from "./store";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CursorVariant } from "./types";
 
 const FeaturedProducts: React.FC = () => {
@@ -51,10 +51,7 @@ const FeaturedProducts: React.FC = () => {
   };
 
   return (
-    <section
-      ref={containerRef}
-      className="bg-background-alt w-full px-4 py-32 md:px-8"
-    >
+    <section ref={containerRef} className="bg-background-alt w-full px-4 py-32 md:px-8">
       <div className="max-w-container-2xl mx-auto">
         <div className="mb-16 flex items-end justify-between border-b border-black/10 pb-8">
           <h2 className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]">
@@ -75,9 +72,7 @@ const FeaturedProducts: React.FC = () => {
             <div
               key={product.id}
               className={`product-card group relative ${index === 1 ? "md:mt-24" : ""}`}
-              onMouseEnter={() =>
-                !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")
-              }
+              onMouseEnter={() => !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")}
               onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
             >
               <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">

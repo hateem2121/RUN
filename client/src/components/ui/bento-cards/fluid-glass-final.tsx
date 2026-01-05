@@ -162,7 +162,9 @@ const FluidGlass = memo(function FluidGlass({
         }
         if (glassRef.current.material) {
           if (Array.isArray(glassRef.current.material)) {
-            glassRef.current.material.forEach((mat: Material) => mat.dispose());
+            glassRef.current.material.forEach((mat: Material) => {
+              mat.dispose();
+            });
           } else {
             (glassRef.current.material as Material).dispose();
           }
@@ -185,7 +187,9 @@ const FluidGlass = memo(function FluidGlass({
           if (object instanceof Mesh) {
             object.geometry?.dispose();
             if (Array.isArray(object.material)) {
-              object.material.forEach((mat: Material) => mat.dispose());
+              object.material.forEach((mat: Material) => {
+                mat.dispose();
+              });
             } else {
               (object.material as Material)?.dispose();
             }
@@ -209,10 +213,11 @@ const FluidGlass = memo(function FluidGlass({
   }, [initializeThreeJS]);
 
   return (
+    // biome-ignore lint: component requirement
     <div className="relative h-full w-full" style={{ minHeight: "400px" }}>
       {isLoading && (
         <div className="center-flex absolute inset-0 bg-linear-to-br from-purple-50 to-blue-50">
-          <div className="h-12 w-12 animate-spin rounded-full border-purple-600 border-b-2"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-purple-600"></div>
         </div>
       )}
       <div ref={mountRef} className="h-full w-full" />

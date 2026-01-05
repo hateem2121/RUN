@@ -56,7 +56,7 @@ const Mermaid = memo(({ chart, className = "", theme = "default" }: MermaidProps
   if (error) {
     return (
       <div
-        className={`whitespace-pre-wrap rounded border border-red-300 bg-red-50 p-4 font-mono text-red-600 text-sm ${className}`}
+        className={`rounded border border-red-300 bg-red-50 p-4 font-mono text-sm whitespace-pre-wrap text-red-600 ${className}`}
       >
         {error}
       </div>
@@ -67,6 +67,7 @@ const Mermaid = memo(({ chart, className = "", theme = "default" }: MermaidProps
     <div
       ref={containerRef}
       className={`mermaid-chart ${className}`}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid svg rendering
       dangerouslySetInnerHTML={{ __html: svgContent }}
     />
   );

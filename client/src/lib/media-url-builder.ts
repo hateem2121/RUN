@@ -22,6 +22,7 @@ interface InFlightRequest {
   timestamp: number;
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern
 export class MediaUrlBuilder {
   /**
    * Build a content URL for a media asset ID (ID-based for reliability)

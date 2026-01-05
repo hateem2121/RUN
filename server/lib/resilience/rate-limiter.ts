@@ -77,7 +77,8 @@ class RateLimiter {
     return (req: Request, res: Response, next: NextFunction): void => {
       // Skip if configured to skip this request
       if (this.config.skip(req)) {
-        return next();
+        next();
+        return;
       }
 
       const key = this.config.keyGenerator(req);

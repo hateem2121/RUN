@@ -51,6 +51,7 @@ export class ViteAssetManager {
         }
       }
     } catch (e) {
+      // biome-ignore lint/suspicious/noConsole: library logging
       console.error("[ViteAssetManager] Failed to load manifest:", e);
       this.manifest = null;
     }
@@ -133,7 +134,9 @@ export class ViteAssetManager {
 
     // Process entry imports
     if (entry.imports) {
-      entry.imports.forEach((key) => collectRecursive(key));
+      entry.imports.forEach((key) => {
+        collectRecursive(key);
+      });
     }
 
     // Ensure the entry JS file itself is not preloaded (it's loaded by script tag usually),

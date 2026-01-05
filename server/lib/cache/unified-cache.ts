@@ -3,10 +3,7 @@ import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
-import {
-  REDIS_CIRCUIT_OPTIONS,
-  withCircuit,
-} from "../resilience/circuit-breaker.js";
+import { REDIS_CIRCUIT_OPTIONS, withCircuit } from "../resilience/circuit-breaker.js";
 import { isRedisEnabled, redis } from "./upstash-client.js";
 
 /**
@@ -68,13 +65,9 @@ export class UnifiedCache {
     });
 
     if (isRedisEnabled) {
-      logger.info(
-        "[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)",
-      );
+      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)");
     } else {
-      logger.info(
-        "[Cache] ⚠️ Unified In-Memory Cache initialized (L2 Redis disabled)",
-      );
+      logger.info("[Cache] ⚠️ Unified In-Memory Cache initialized (L2 Redis disabled)");
     }
   }
 
@@ -150,12 +143,7 @@ export class UnifiedCache {
   /**
    * Set value in cache with OpenTelemetry tracing
    */
-  async set(
-    key: string,
-    value: any,
-    ttlSeconds: number = 3600,
-    _category?: string,
-  ): Promise<void> {
+  async set(key: string, value: any, ttlSeconds: number = 3600, _category?: string): Promise<void> {
     return tracer.startActiveSpan("cache.set", async (span) => {
       span.setAttribute("cache.key", key);
       span.setAttribute("cache.operation", "set");
@@ -189,11 +177,7 @@ export class UnifiedCache {
 
   // P2 OPTIMIZATION: Separate L2 write method for compression logic
   // Protected by circuit breaker to prevent cascade failures
-  private async writeL2(
-    key: string,
-    value: any,
-    ttlSeconds: number,
-  ): Promise<void> {
+  private async writeL2(key: string, value: any, ttlSeconds: number): Promise<void> {
     let payload = JSON.stringify(value);
 
     // Compress if large
@@ -229,9 +213,7 @@ export class UnifiedCache {
         const decompressed = await gunzipAsync(buffer);
         return JSON.parse(decompressed.toString());
       }
-      return typeof data === "string"
-        ? JSON.parse(data)
-        : (data as unknown as T);
+      return typeof data === "string" ? JSON.parse(data) : (data as unknown as T);
     } catch (err) {
       logger.error(`[UnifiedCache] L2 Read/Decompress Error for ${key}:`, err);
       return null;
@@ -302,9 +284,7 @@ export class UnifiedCache {
       try {
         // Use SCAN to find keys matching pattern in L2
         // For simplicity and matching current logic, we'll use wildcards
-        const redisPattern = isRegex
-          ? pattern.replace("^", "").replace(".*", "*")
-          : `*${pattern}*`;
+        const redisPattern = isRegex ? pattern.replace("^", "").replace(".*", "*") : `*${pattern}*`;
         let cursor = "0";
 
         do {
@@ -333,12 +313,7 @@ export class UnifiedCache {
       for (const task of tasks) {
         try {
           const data = await task.loader();
-          await this.set(
-            task.key,
-            data,
-            task.options?.ttl,
-            task.options?.category,
-          );
+          await this.set(task.key, data, task.options?.ttl, task.options?.category);
         } catch (err: any) {
           logger.warn(`[Cache] Warmup failed for ${task.key}`, err);
         }
@@ -360,8 +335,7 @@ export class UnifiedCache {
    */
   getStats() {
     const totalOperations = this.stats.hits + this.stats.misses;
-    const hitRate =
-      totalOperations > 0 ? (this.stats.hits / totalOperations) * 100 : 0;
+    const hitRate = totalOperations > 0 ? (this.stats.hits / totalOperations) * 100 : 0;
 
     return {
       ...this.stats,
@@ -390,17 +364,13 @@ export class UnifiedCache {
     const maxSize = 100 * 1024 * 1024; // 100MB
     const usagePercent = (stats.calculatedSize / maxSize) * 100;
     if (usagePercent > 80) {
-      issues.push(
-        `High cache usage: ${Math.round(usagePercent)}% (threshold: 80%)`,
-      );
+      issues.push(`High cache usage: ${Math.round(usagePercent)}% (threshold: 80%)`);
     }
 
     // Check if cache is near item limit
     const itemUsagePercent = (stats.itemCount / 5000) * 100;
     if (itemUsagePercent > 80) {
-      issues.push(
-        `High item count: ${stats.itemCount}/5000 (${Math.round(itemUsagePercent)}%)`,
-      );
+      issues.push(`High item count: ${stats.itemCount}/5000 (${Math.round(itemUsagePercent)}%)`);
     }
 
     // Redis Health
@@ -421,11 +391,7 @@ export class UnifiedCache {
 
     return {
       healthy: isHealthy,
-      status: isHealthy
-        ? "healthy"
-        : issues.length === 1
-          ? "degraded"
-          : "unhealthy",
+      status: isHealthy ? "healthy" : issues.length === 1 ? "degraded" : "unhealthy",
       stats,
       issues,
       timestamp: Date.now(),
@@ -446,13 +412,7 @@ export class UnifiedCache {
     _namespace: string = "default",
   ): Promise<{
     data: T;
-    source:
-      | "memory"
-      | "kv"
-      | "stale_memory"
-      | "stale_kv"
-      | "loader"
-      | "swr_hit";
+    source: "memory" | "kv" | "stale_memory" | "stale_kv" | "loader" | "swr_hit";
     timings: any;
   }> {
     const start = performance.now();
@@ -481,10 +441,7 @@ export class UnifiedCache {
             await this.set(key, fresh, config.ttl);
             // logger.debug(`[Cache] Background revalidation success for ${key}`);
           } catch (e) {
-            logger.error(
-              `[Cache] Background revalidation failed for ${key}`,
-              e,
-            );
+            logger.error(`[Cache] Background revalidation failed for ${key}`, e);
           }
         });
         return {

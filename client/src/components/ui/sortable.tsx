@@ -113,8 +113,9 @@ type SortableProps<T> = DndContextProps & {
 } & (T extends object ? GetItemValue<T> : Partial<GetItemValue<T>>);
 
 function Sortable<T>(props: SortableProps<T>) {
+  const generatedId = React.useId();
   const {
-    id = React.useId(),
+    id = generatedId,
     value,
     onValueChange,
     collisionDetection,
@@ -421,7 +422,7 @@ const SortableItem = ({
         ref={composedRef}
         style={composedStyle}
         className={cn(
-          "focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden",
           {
             "touch-none select-none": asHandle,
             "cursor-default": context.flatCursor,

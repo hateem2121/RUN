@@ -65,9 +65,7 @@ describe("UnifiedMemoryCache", () => {
     const fetchFn = vi.fn().mockRejectedValue(error);
     const key = "test:error";
 
-    await expect(unifiedMemoryCache.get(key, fetchFn)).rejects.toThrow(
-      "Fetch failed",
-    );
+    await expect(unifiedMemoryCache.get(key, fetchFn)).rejects.toThrow("Fetch failed");
   });
 
   it("should support SWR config", async () => {

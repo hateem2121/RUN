@@ -161,6 +161,7 @@ class OrphanedFilesAnalyzer {
     const standardImportRegex =
       /import\s+(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
     let match;
+    // biome-ignore lint/suspicious/noAssignInExpressions: standard regex loop pattern
     while ((match = standardImportRegex.exec(content)) !== null) {
       imports.push({
         importedPath: match[1]!,
@@ -171,6 +172,7 @@ class OrphanedFilesAnalyzer {
 
     // Pattern 2: Dynamic imports - import("...")
     const dynamicImportRegex = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+    // biome-ignore lint/suspicious/noAssignInExpressions: standard regex loop pattern
     while ((match = dynamicImportRegex.exec(content)) !== null) {
       imports.push({
         importedPath: match[1]!,
@@ -181,6 +183,7 @@ class OrphanedFilesAnalyzer {
 
     // Pattern 3: React.lazy - lazy(() => import("..."))
     const lazyImportRegex = /lazy\s*\(\s*\(\s*\)\s*=>\s*import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+    // biome-ignore lint/suspicious/noAssignInExpressions: standard regex loop pattern
     while ((match = lazyImportRegex.exec(content)) !== null) {
       imports.push({
         importedPath: match[1]!,
@@ -191,6 +194,7 @@ class OrphanedFilesAnalyzer {
 
     // Pattern 4: Require statements - require("...")
     const requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+    // biome-ignore lint/suspicious/noAssignInExpressions: standard regex loop pattern
     while ((match = requireRegex.exec(content)) !== null) {
       imports.push({
         importedPath: match[1]!,

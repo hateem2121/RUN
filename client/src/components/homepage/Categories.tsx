@@ -1,8 +1,8 @@
 import type React from "react";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CATEGORIES } from "./constants";
 import { useStore } from "./store";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CursorVariant } from "./types";
 
 const Categories: React.FC = () => {
@@ -18,10 +18,7 @@ const Categories: React.FC = () => {
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />
 
-      <div
-        className="flex flex-col gap-0"
-        onMouseLeave={() => setHoveredIndex(null)}
-      >
+      <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
         <div className="animate-marquee flex whitespace-nowrap will-change-transform">
           {/* Main Content */}
@@ -45,9 +42,7 @@ const Categories: React.FC = () => {
               >
                 <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-[2vw] text-blue-600">
-                    ●
-                  </span>
+                  <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
                 </h2>
               </div>
             );
@@ -75,9 +70,7 @@ const Categories: React.FC = () => {
                 >
                   <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                     {cat.name}{" "}
-                    <span className="inline-block align-top text-[2vw] text-blue-600">
-                      ●
-                    </span>
+                    <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
                   </h2>
                 </div>
               );
@@ -111,9 +104,7 @@ const Categories: React.FC = () => {
               >
                 <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="text-success inline-block align-top text-[2vw]">
-                    ●
-                  </span>
+                  <span className="text-success inline-block align-top text-[2vw]">●</span>
                 </h2>
               </div>
             );

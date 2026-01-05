@@ -31,6 +31,7 @@ export interface HomepageBatchData {
   };
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern
 export class HomepageBatchLoader {
   private static performanceMetrics: {
     batchTime: number;

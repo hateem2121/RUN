@@ -38,9 +38,11 @@ useEffect(() => setTime(Date.now()), []);
 
 ## 4. Verification
 
-Run `npm run verify:ssr` before merging PRs affecting core infrastructure. This script executes static analysis tools to ensure:
+Run `npm run verify:ssr` before merging PRs affecting core infrastructure. This runs the **Vitest SSR Invariants Suite** (`tests/unit/ssr/invariants.test.ts`), which ensures:
 
 - `index.html` contains the required SSR markers (`<!--app-head-->`, `<!--app-html-->`).
+- `vite.config.ts` properly externalizes backend dependencies.
+- `entry.client.tsx` uses React 19 `startTransition`.
 - Codebase is scanned for forbidden SSR patterns (e.g., non-deterministic `Math.random` in render body).
 
 > **Contributor Guide**: Please review the [SSR Safety Checklist](./ssr-safety-checklist.md) before submitting PRs.

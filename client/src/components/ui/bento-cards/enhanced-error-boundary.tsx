@@ -70,13 +70,9 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
         >
           <AlertTriangle className="mb-4 h-12 w-12 text-red-500" />
 
-          <h3 className="mb-2 text-lg font-semibold text-red-800">
-            Card Error
-          </h3>
+          <h3 className="mb-2 text-lg font-semibold text-red-800">Card Error</h3>
 
-          <p className="mb-4 text-sm text-red-600">
-            Something went wrong while loading this card.
-          </p>
+          <p className="mb-4 text-sm text-red-600">Something went wrong while loading this card.</p>
 
           <div className="flex flex-col gap-2">
             {this.state.retryCount < this.maxRetries && (
@@ -90,7 +86,9 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
             )}
 
             <button
-              onClick={() => (window.location.href = "/")}
+              onClick={() => {
+                window.location.href = "/";
+              }}
               className="bg-secondary text-secondary-foreground hover:bg-secondary/80 flex items-center gap-2 rounded-lg px-4 py-2 transition-colors"
             >
               <Home className="h-4 w-4" />

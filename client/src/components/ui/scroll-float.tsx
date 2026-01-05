@@ -2,7 +2,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
-import { type ReactNode, type RefObject, useEffect, useMemo, useRef } from "react";
+import { type ReactNode, type RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 import { AnimationErrorBoundary } from "@/components/error-boundaries/animation-error-boundary";
 
 // Use global GSAP instance from HTML head
@@ -96,7 +96,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
   }, []);
 
   // Phase 2: Touch Event Handlers for Mobile Animation Control
-  const handleTouchStart = (e: TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     if (!isTouchDevice.current || !containerRef.current) return;
 
     const touch = e.touches[0];
@@ -110,52 +110,55 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
     // Pause ScrollTrigger animation during manual touch control
     scrollTriggerInstance.current?.pause?.();
-  };
+  }, []);
 
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
 
-    const touch = e.touches[0];
-    if (!touch) return;
-    const deltaY = touchStart.current.y - touch.clientY;
-    const deltaTime = Date.now() - touchStart.current.time;
+      const touch = e.touches[0];
+      if (!touch) return;
+      const deltaY = touchStart.current.y - touch.clientY;
+      const deltaTime = Date.now() - touchStart.current.time;
 
-    // Calculate velocity
-    if (deltaTime > 0) {
-      touchVelocity.current = deltaY / deltaTime;
-    }
+      // Calculate velocity
+      if (deltaTime > 0) {
+        touchVelocity.current = deltaY / deltaTime;
+      }
 
-    // Calculate manual progress based on vertical swipe
-    const swipeDistance = Math.abs(deltaY);
-    const maxSwipeDistance = window.innerHeight * 0.5; // Half screen height for full progress
-    const progress = Math.min(swipeDistance / maxSwipeDistance, 1);
+      // Calculate manual progress based on vertical swipe
+      const swipeDistance = Math.abs(deltaY);
+      const maxSwipeDistance = window.innerHeight * 0.5; // Half screen height for full progress
+      const progress = Math.min(swipeDistance / maxSwipeDistance, 1);
 
-    // Update animation progress manually
-    if (window.gsap && containerRef.current) {
-      const spans = containerRef.current.querySelectorAll("span");
-      spans.forEach((span, index) => {
-        const staggeredProgress = Math.max(0, progress - index * stagger);
-        const clampedProgress = Math.min(staggeredProgress, 1);
+      // Update animation progress manually
+      if (window.gsap && containerRef.current) {
+        const spans = containerRef.current.querySelectorAll("span");
+        spans.forEach((span, index) => {
+          const staggeredProgress = Math.max(0, progress - index * stagger);
+          const clampedProgress = Math.min(staggeredProgress, 1);
 
-        // Apply smooth transform based on progress
-        window.gsap.set(span, {
-          y: yRange[0] * (1 - clampedProgress) + yRange[1] * clampedProgress,
-          opacity: opacityRange[0] * (1 - clampedProgress) + opacityRange[1] * clampedProgress,
-          scale: scaleRange[0] * (1 - clampedProgress) + scaleRange[1] * clampedProgress,
-          rotation: rotationRange * (1 - clampedProgress),
+          // Apply smooth transform based on progress
+          window.gsap.set(span, {
+            y: yRange[0] * (1 - clampedProgress) + yRange[1] * clampedProgress,
+            opacity: opacityRange[0] * (1 - clampedProgress) + opacityRange[1] * clampedProgress,
+            scale: scaleRange[0] * (1 - clampedProgress) + scaleRange[1] * clampedProgress,
+            rotation: rotationRange * (1 - clampedProgress),
+          });
         });
-      });
-    }
+      }
 
-    animationProgress.current = progress;
+      animationProgress.current = progress;
 
-    // Prevent default scrolling during gesture
-    if (Math.abs(touchVelocity.current) > 0.1) {
-      e.preventDefault();
-    }
-  };
+      // Prevent default scrolling during gesture
+      if (Math.abs(touchVelocity.current) > 0.1) {
+        e.preventDefault();
+      }
+    },
+    [stagger, yRange, opacityRange, scaleRange, rotationRange],
+  );
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
 
     // const touchEndTime = Date.now();
@@ -170,10 +173,11 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
     touchStart.current = null;
     touchVelocity.current = 0;
     touchInProgress.current = false;
-  };
+  }, []);
 
   // Dramatic mode configuration
-  const getDramaticConfig = () => {
+  // Dramatic mode configuration
+  const getDramaticConfig = useCallback(() => {
     switch (dramatiMode) {
       case "cinematic":
         return {
@@ -216,7 +220,16 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
           duration: animationDuration,
         };
     }
-  };
+  }, [
+    dramatiMode,
+    ease,
+    rotationRange,
+    scaleRange,
+    yRange,
+    opacityRange,
+    stagger,
+    animationDuration,
+  ]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -361,6 +374,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
     <h2
       ref={containerRef}
       className={`my-5 overflow-hidden ${containerClassName}`}
+      // biome-ignore lint: optimization flags needed
       style={{
         contain: "layout style paint",
         willChange: "transform, opacity",

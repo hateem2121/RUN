@@ -91,9 +91,12 @@ describe("Idempotency Middleware", () => {
     it("should track stored entries", async () => {
       await request(app).post("/test").set("Idempotency-Key", "metrics-key").send({});
 
+      // Wait for async cache operation
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       const metrics = getIdempotencyMetrics();
-      expect(metrics.entriesCount).toBe(1);
-      expect(metrics.oldestEntry).toBeDefined();
+      expect(metrics.memoryEntriesCount).toBe(1);
+      expect(metrics.oldestMemoryEntry).toBeDefined();
     });
 
     it("should clear entries correctly", async () => {
@@ -102,7 +105,7 @@ describe("Idempotency Middleware", () => {
       clearIdempotencyStore();
 
       const metrics = getIdempotencyMetrics();
-      expect(metrics.entriesCount).toBe(0);
+      expect(metrics.memoryEntriesCount).toBe(0);
     });
   });
 

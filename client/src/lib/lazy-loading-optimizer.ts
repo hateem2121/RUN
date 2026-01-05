@@ -71,7 +71,9 @@ export const createIntersectionLazyComponent = <T extends ComponentType<any>>(
     // Auto-observe elements with data-lazy-component attribute
     document.addEventListener("DOMContentLoaded", () => {
       const lazyElements = document.querySelectorAll("[data-lazy-component]");
-      lazyElements.forEach((el) => observer.observe(el));
+      lazyElements.forEach((el) => {
+        observer.observe(el);
+      });
     });
   }
 

@@ -287,6 +287,7 @@ export const MediaUrlResolver = {
 export const enhancedValidation = {
   validateFilename: (filename: string) => {
     if (!filename || filename.length < 1 || filename.length > 255) return false;
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: validating dangerous chars
     const dangerousChars = /[/\\:*?"<>|\x00-\x1f]/;
     return !dangerousChars.test(filename);
   },

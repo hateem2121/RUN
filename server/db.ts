@@ -68,18 +68,36 @@ function validateDatabaseUrl(url: string): void {
   logger.info("[Database] ✅ DATABASE_URL validation passed");
 }
 
-// Validate the URL
-validateDatabaseUrl(database.url);
+// Skip validation and connection in test mode - tests use fake DB URLs
+const isTestMode = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+const enableRealDb = process.env.TEST_REAL_DB === "true";
 
-// Use the URL directly from environment
-// In Cloud Run, we will provide the correct pooled URL via the environment variable if needed
-const connectionUrl = database.url;
+let connectionUrl: string;
+let sql: ReturnType<typeof neon>;
 
-// NEON SERVERLESS OPTIMIZATION: fullResults: false reduces overhead
-// Returns rows only (not metadata) for better performance and lower active time
-const sql = neon(connectionUrl, {
-  fullResults: false,
-});
+if (isTestMode && !enableRealDb) {
+  logger.info("[Database] Test mode - skipping real DB connection (Mock Mode)");
+  connectionUrl = database.url || "postgres://test:test@localhost/test";
+  // Create a no-op SQL function for tests
+  sql = (() => Promise.resolve([])) as any;
+} else {
+  if (isTestMode && enableRealDb) {
+    logger.info("[Database] Test mode - Using REAL DB connection");
+  } else {
+    // Validate the URL only in non-test or real-db modes
+    validateDatabaseUrl(database.url);
+  }
+
+  // Use the URL directly from environment
+  // In Cloud Run, we will provide the correct pooled URL via the environment variable if needed
+  connectionUrl = database.url;
+
+  // NEON SERVERLESS OPTIMIZATION: fullResults: false reduces overhead
+  // Returns rows only (not metadata) for better performance and lower active time
+  sql = neon(connectionUrl, {
+    fullResults: false,
+  });
+}
 
 /**
  * RECOMMENDED POSTGRESQL EXTENSIONS FOR NEON
@@ -132,8 +150,7 @@ let currentConcurrentQueries = 0;
 const trackedSql = new Proxy(sql, {
   apply: async (target, thisArg, argArray) => {
     // Dynamic import to avoid circular dependency
-    const { withCircuitBreaker } =
-      await import("./lib/resilience/db-circuit-breaker.js");
+    const { withCircuitBreaker } = await import("./lib/resilience/db-circuit-breaker.js");
 
     return await withCircuitBreaker(async () => {
       // P1 RELIABILITY: Explicit Concurrency Limit
@@ -164,8 +181,7 @@ const trackedSql = new Proxy(sql, {
 
         const duration = performance.now() - startTime;
         poolMetrics.totalQueryTime += duration;
-        poolMetrics.averageQueryTime =
-          poolMetrics.totalQueryTime / poolMetrics.totalQueries;
+        poolMetrics.averageQueryTime = poolMetrics.totalQueryTime / poolMetrics.totalQueries;
 
         return result;
       } catch (error) {
@@ -187,11 +203,7 @@ export const db: NeonHttpDatabase<typeof schema> = drizzle(trackedSql as any, {
 // Type alias for database client - supports both direct db access and transactions
 export type DbClient =
   | NeonHttpDatabase<typeof schema>
-  | PgTransaction<
-      NeonHttpQueryResultHKT,
-      typeof schema,
-      ExtractTablesWithRelations<typeof schema>
-    >;
+  | PgTransaction<NeonHttpQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
 
 // CHUNK 3: Database timeout protection wrapper
 // Uses Promise.race + AbortController for Neon HTTP compatibility
@@ -229,9 +241,7 @@ export async function withQueryTimeout<T>(
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof QueryTimeoutError) {
-      logger.error(
-        `[Query Timeout] ${operationName} exceeded ${timeoutMs}ms limit`,
-      );
+      logger.error(`[Query Timeout] ${operationName} exceeded ${timeoutMs}ms limit`);
     }
     throw error;
   }
@@ -269,8 +279,7 @@ export async function wakeupDatabase(): Promise<{
 
   // Environment-aware timeout: 15s prod, 10s staging, 5s dev
   const env = process.env.NODE_ENV || "development";
-  const timeoutMs =
-    env === "production" ? 15000 : env === "staging" ? 10000 : 15000;
+  const timeoutMs = env === "production" ? 15000 : env === "staging" ? 10000 : 15000;
 
   try {
     await withQueryTimeout(
@@ -285,16 +294,11 @@ export async function wakeupDatabase(): Promise<{
     const latency = performance.now() - startTime;
     poolMetrics.lastHealthCheckAt = new Date();
 
-    logger.info(
-      `[Database] ✅ Database wakeup successful (${latency.toFixed(0)}ms)`,
-    );
+    logger.info(`[Database] ✅ Database wakeup successful (${latency.toFixed(0)}ms)`);
     return { success: true, latency };
   } catch (error) {
     const latency = performance.now() - startTime;
-    logger.error(
-      `[Database] ❌ Database wakeup failed after ${timeoutMs}ms`,
-      error,
-    );
+    logger.error(`[Database] ❌ Database wakeup failed after ${timeoutMs}ms`, error);
     return { success: false, latency };
   }
 }
@@ -305,31 +309,34 @@ export async function closeDatabaseConnection(): Promise<void> {
 }
 
 // Startup connection pool metrics logging
-(async () => {
-  try {
-    const connectionHealthy = await checkDatabaseConnection();
+// Skip in test environment - tests use fake DB URLs
+if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {
+  (async () => {
+    try {
+      const connectionHealthy = await checkDatabaseConnection();
 
-    if (connectionHealthy) {
-      logger.info("[Database] ✅ Connection pool metrics initialized:", {
-        pooling: poolMetrics.connectionPooling,
-        driver: "Neon HTTP (stateless)",
-        concurrencyTracking: "enabled",
-        metricsEndpoint: "/api/metrics/database",
-      });
+      if (connectionHealthy) {
+        logger.info("[Database] ✅ Connection pool metrics initialized:", {
+          pooling: poolMetrics.connectionPooling,
+          driver: "Neon HTTP (stateless)",
+          concurrencyTracking: "enabled",
+          metricsEndpoint: "/api/metrics/database",
+        });
 
-      if (poolMetrics.connectionPooling === "enabled") {
-        logger.info(
-          "[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users",
-        );
+        if (poolMetrics.connectionPooling === "enabled") {
+          logger.info(
+            "[Database] ✅ NEON CONNECTION POOLING ENABLED - Production ready for 300+ concurrent users",
+          );
+        } else {
+          logger.warn(
+            "[Database] ⚠️ Connection pooling DISABLED - May experience issues under high load",
+          );
+        }
       } else {
-        logger.warn(
-          "[Database] ⚠️ Connection pooling DISABLED - May experience issues under high load",
-        );
+        logger.error("[Database] ❌ Initial connection health check failed");
       }
-    } else {
-      logger.error("[Database] ❌ Initial connection health check failed");
+    } catch (error) {
+      logger.error("[Database] ❌ Failed to initialize pool metrics:", error);
     }
-  } catch (error) {
-    logger.error("[Database] ❌ Failed to initialize pool metrics:", error);
-  }
-})();
+  })();
+}

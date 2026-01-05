@@ -239,7 +239,9 @@ ${
 
   // Cleanup observers
   public destroy() {
-    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.forEach((observer) => {
+      observer.disconnect();
+    });
     this.observers = [];
   }
 }

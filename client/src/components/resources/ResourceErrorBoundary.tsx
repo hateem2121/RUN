@@ -42,13 +42,9 @@ export class ResourceErrorBoundary extends Component<Props, State> {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                We encountered an error while loading this resource. Please try
-                again.
+                We encountered an error while loading this resource. Please try again.
               </p>
-              <Button
-                onClick={() => this.setState({ hasError: false })}
-                className="w-full"
-              >
+              <Button onClick={() => this.setState({ hasError: false })} className="w-full">
                 Try Again
               </Button>
             </CardContent>

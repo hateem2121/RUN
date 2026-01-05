@@ -13,10 +13,7 @@ const sizeClasses = {
  * Get sustainability icon component by name
  * Consolidated icon mapper for metrics, initiatives, and goals
  */
-export function getSustainabilityIcon(
-  iconName: string | null,
-  size: IconSize = "md",
-) {
+export function getSustainabilityIcon(iconName: string | null, size: IconSize = "md") {
   const className = `${sizeClasses[size]} text-stone-700`;
 
   switch (iconName) {

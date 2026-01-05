@@ -114,6 +114,7 @@ export function useProductsPageData({
         setMediaContentMap(mediaMap);
       } catch (_error) {
         // Silently fail media fetch to prevent UI crash
+        // biome-ignore lint/suspicious/noConsole: debugging
         console.error("Failed to fetch media content", _error);
       } finally {
         setIsLoadingMedia(false);
@@ -161,7 +162,9 @@ export function useProductsPageData({
     const tags = new Set<string>();
     products.forEach((product) => {
       if (Array.isArray(product.tags)) {
-        product.tags.forEach((tag) => tags.add(tag));
+        product.tags.forEach((tag) => {
+          tags.add(tag);
+        });
       }
     });
     return Array.from(tags);

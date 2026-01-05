@@ -21,6 +21,7 @@ export interface MediaResolverOptions {
   enableLogging?: boolean;
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern
 export class MediaResolver {
   private static assets: MediaAsset[] = [];
   private static _enableLogging = false;

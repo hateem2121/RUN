@@ -71,7 +71,7 @@ Use this map to orient yourself before diving into specific files.
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22 (LTS)
 - PostgreSQL database
 - npm (pnpm also supported)
 
@@ -163,9 +163,8 @@ RUN-Remix/
 ├── docs/                       # Documentation
 └── tests/                      # Test suites
 ```
-├── scripts/                   # Build & verification scripts
-│   ├── verify-ssr-template.ts
-│   └── check-ssr-invariants.js
+├── scripts/                    # Build & verification scripts
+│   └── verify-tech-integrity.ts
 │
 ├── docs/                      # Documentation
 │   ├── api/                   # API documentation
@@ -185,7 +184,7 @@ RUN-Remix/
 
 ```bash
 npm run dev              # Start dev server (port 5001)
-npm run check            # Biome lint check
+npm run check            # Typecheck (tsc) + Biome lint
 npm run check:apply      # Biome lint + auto-fix
 npm run lint             # Biome lint only
 npm run lint:html        # HTML validation
@@ -211,14 +210,16 @@ npm run db:push          # Push schema to database
 
 ```bash
 npm run test             # Unit tests (vitest)
-npm run test:integration # Integration tests
+npm run test:integration # Integration tests (Server spawn)
 npm run test:e2e         # Playwright E2E (regression)
+npm run test:integration:full # Full integration tests with Docker DB
 ```
 
 ### Verification
 
 ```bash
-npm run verify:build     # Verify build output and typecheck
+npm run check:bundle     # Verify bundle limits
+npm run verify:ssr       # Verify SSR invariants (Test Suite)
 npm run verify:tech-integrity # Full integrity check (build + audit)
 ```
 
@@ -390,9 +391,7 @@ function getWidth() {
 ### Verification
 
 ```bash
-npm run verify:ssr           # Full SSR verification
-npm run check:invariants     # Check SSR invariants only
-npx tsx scripts/verify-ssr-template.ts  # Template verification
+npm run verify:ssr           # Full SSR verification (Unit Tests)
 ```
 
 ---

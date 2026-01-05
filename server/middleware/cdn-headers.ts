@@ -64,7 +64,8 @@ export function cdnHeaders(req: Request, res: Response, next: NextFunction): voi
   if (req.isAuthenticated?.() || req.get("Authorization")) {
     res.set("Cache-Control", "private, no-store");
     res.set("Vary", "Authorization, Cookie");
-    return next();
+    next();
+    return;
   }
 
   // Hook into response to set headers after content-type is determined

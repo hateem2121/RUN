@@ -37,7 +37,9 @@ export function sanitizeExtensionAttributes(): void {
   EXTENSION_ATTRIBUTES.forEach((attr) => {
     try {
       const elements = document.querySelectorAll(`[${attr}]`);
-      elements.forEach((el) => el.removeAttribute(attr));
+      elements.forEach((el) => {
+        el.removeAttribute(attr);
+      });
     } catch {
       // Attribute selector might be invalid for some edge cases
     }

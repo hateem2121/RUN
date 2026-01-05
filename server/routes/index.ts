@@ -2,59 +2,32 @@
  * MASTER ROUTER - Route Orchestration & Documentation
  *
  * FOLDER STRUCTURE (Domain-Driven Organization - CHUNK 14):
- * - core/         : Business entities
- * - admin/        : Admin panel operations
- * - utilities/    : Diagnostics, metrics, migrations
- * - resources/    : CMS content
- * - media/        : Media management
+ * - v1/           : Modularized route definitions
  *
- * REFACTORED: Uses STATIC Imports execution (via server.ts bootstrap) for better type safety.
+ * REFACTORED: Validated via automated tests.
  */
 
 import { createServer, type Server } from "node:http";
-import shrinkRay from "shrink-ray-current"; // Brotli support
 import { type Express, Router } from "express";
+import shrinkRay from "shrink-ray-current"; // Brotli support
 import { logger } from "../lib/monitoring/logger.js";
-import {
-  adminLimiter,
-  diagnosticLimiter,
-} from "../lib/resilience/rate-limiter.js";
-import { enforceValidation } from "../middleware/strict-validation.js";
+import { diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
 // Static Imports (Safe thanks to bootstrap.ts secret loading)
 import { authService } from "../services/auth-service.js";
-import adminRouter from "./admin/admin.js";
-// Auth & Admin
 import authRouter from "./auth.js";
-import accessoriesRouter from "./core/accessories.js";
-// Core
-import categoriesRouter from "./core/categories.js";
-import certificatesRouter from "./core/certificates.js";
-import fabricsRouter from "./core/fabrics.js";
-import materialsRouter from "./core/materials.js";
-import productsRouter from "./core/products.js";
-import sizeChartsRouter from "./core/size-charts.js";
-import docsRouter from "./docs.js";
-// Utilities
-import featureFlagsRouter from "./feature-flags.js";
 import debugRouter from "./debug.js";
-import { inquiryRoutes } from "./inquiries.js";
-// Media
-import foldersRouter from "./media/folder-management.routes.js";
-import mediaRoutes from "./media/index.js";
-// Resources
-import contentManagementRouter from "./resources/content-management-routes.js";
-import resourceRouter from "./resources/index.js";
-import pageContentRouter from "./resources/page-content-routes.js";
-// Populators / Diagnostics
+import docsRouter from "./docs.js";
+// Utilities / Populators
 import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
 import { registerDataCreationRoutes } from "./utilities/data-creation.js";
 import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postgres-population.js";
-import footerConfigRouter from "./utilities/footer-config.js";
-import inquiryAdminRouter from "./utilities/inquiry-admin.js";
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
-// Workers & Misc
+import v1AdminRouter from "./v1/admin.js";
+// V1 Modular Routers
+import v1CoreRouter from "./v1/core.js";
+import v1MediaRouter from "./v1/media.js";
 import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -64,16 +37,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
   await authService.setup(app);
-  logger.info(
-    "[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)",
-  );
+  logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
 
   // ============================================================================
   // DEV LOGIN (Preserved for compatibility)
   // ============================================================================
   app.get("/api/dev/login", async (req, res) => {
-    if (process.env.NODE_ENV === "production")
-      return res.status(404).send("Not found");
+    if (process.env.NODE_ENV === "production") return res.status(404).send("Not found");
     try {
       const { db } = await import("../db.js");
       const { users } = await import("@run-remix/shared");
@@ -83,8 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         where: eq(users.email, "team@wear-run.com"),
       });
 
-      if (!adminUser)
-        return res.status(404).json({ error: "Admin user not found" });
+      if (!adminUser) return res.status(404).json({ error: "Admin user not found" });
 
       const user = { claims: { sub: adminUser.id, email: adminUser.email } };
       return req.login(user, (err) => {
@@ -118,48 +87,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const apiRouter = Router();
 
-  // Core Domains
   apiRouter.use((req, _res, next) => {
     logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
     next();
   });
+
+  // 1. Auth & Worker (Root Level)
   apiRouter.use(authRouter);
-  apiRouter.use(categoriesRouter);
-  apiRouter.use(productsRouter);
-  apiRouter.use(fabricsRouter);
-  apiRouter.use(accessoriesRouter);
-  apiRouter.use(certificatesRouter);
-  apiRouter.use(materialsRouter);
-  apiRouter.use(sizeChartsRouter);
-  apiRouter.use(inquiryRoutes);
-
-  // Admin & Resources
-  apiRouter.use(
-    "/admin",
-    authService.requireAdmin,
-    adminLimiter.middleware(),
-    enforceValidation,
-  );
-  apiRouter.use(adminRouter);
-
-  apiRouter.use(inquiryAdminRouter);
-  apiRouter.use(footerConfigRouter);
-  apiRouter.use("/feature-flags", featureFlagsRouter);
-  apiRouter.use("/debug", debugRouter);
-
-  // Media
-  apiRouter.use("/media", mediaRoutes);
-  apiRouter.use(foldersRouter);
-
-  // Content
-  apiRouter.use(pageContentRouter);
-  apiRouter.use(contentManagementRouter);
-
-  // Worker
   apiRouter.use(workerRouter);
 
-  // Client Resources
-  apiRouter.use(resourceRouter);
+  // 2. Core Business Domains
+  apiRouter.use(v1CoreRouter);
+
+  // 3. Media Management
+  apiRouter.use(v1MediaRouter);
+
+  // 4. Admin & Resources
+  apiRouter.use(v1AdminRouter);
 
   // MOUNT API ROUTER (Versioning)
   // Support both /api (legacy) and /api/v1 (future-proof)
@@ -168,6 +112,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Documentation (Keep at /api/docs)
   app.use("/api/docs", docsRouter);
+
+  // Debug (Development only, gated internally)
+  app.use("/api/debug", debugRouter);
 
   // Utilities / Functions (Direct app mounting for special cases)
   registerMigrationExecutionRoutes(app);
@@ -181,9 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info(
-    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
-  );
+  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 
   return httpServer;
 }

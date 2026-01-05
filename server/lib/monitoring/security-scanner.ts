@@ -166,6 +166,7 @@ export class FileSecurityScanner {
     reason?: string | undefined;
   } {
     // Check for suspicious characters
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: validating input
     const suspiciousChars = /[<>:"|?*\x00-\x1F]/;
     if (suspiciousChars.test(filename)) {
       return {

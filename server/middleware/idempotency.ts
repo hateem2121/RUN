@@ -142,19 +142,22 @@ async function setCachedEntry(storeKey: string, entry: IdempotencyEntry): Promis
 export function idempotencyMiddleware(req: Request, res: Response, next: NextFunction): void {
   // Only apply to state-changing methods
   if (!["POST", "PUT", "PATCH"].includes(req.method)) {
-    return next();
+    next();
+    return;
   }
 
   // Skip excluded routes
   if (isExcludedRoute(req.path)) {
-    return next();
+    next();
+    return;
   }
 
   const idempotencyKey = req.get(IDEMPOTENCY_HEADER);
 
   // If no idempotency key provided, continue without caching
   if (!idempotencyKey) {
-    return next();
+    next();
+    return;
   }
 
   const storeKey = generateStoreKey(idempotencyKey, req.method, req.path);

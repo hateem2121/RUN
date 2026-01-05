@@ -18,11 +18,19 @@ const root = path.resolve(__dirname, "../../..");
  * Creates a Request Handler for React Router 7
  * Handles both Development (Vite Middleware) and Production (Built Server)
  */
-export async function createSsrHandler(
-  app: Express,
-  server?: Server,
-): Promise<RequestHandler> {
+export async function createSsrHandler(app: Express, server?: Server): Promise<RequestHandler> {
   const isProduction = process.env.NODE_ENV === "production";
+  // Check for test mode - VITEST variable exists when running tests (not just "true")
+  const isTest =
+    process.env.NODE_ENV === "test" ||
+    process.env.VITEST !== undefined ||
+    process.env.VITEST_WORKER_ID !== undefined;
+
+  // In test mode, return a no-op handler - integration tests don't need SSR
+  if (isTest) {
+    logger.info("[SSR] Test mode detected - returning no-op handler");
+    return (_req, _res, next) => next();
+  }
 
   if (!isProduction) {
     const { createServer } = await import("vite");
@@ -41,8 +49,7 @@ export async function createSsrHandler(
     logger.info("[SSR] Initialized Vite Dev Server with React Router");
 
     return createRequestHandler({
-      build: () =>
-        vite.ssrLoadModule("virtual:react-router/server-build") as any,
+      build: () => vite.ssrLoadModule("virtual:react-router/server-build") as any,
       getLoadContext: (_req, res) => ({
         cspNonce: res.locals.cspNonce,
       }),

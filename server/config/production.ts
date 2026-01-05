@@ -70,8 +70,8 @@ export const productionConfig: ProductionConfig = {
 
   security: {
     rateLimiting: {
-      windowMs: 60000, // 1 minute
-      maxRequests: 1000, // Increased for admin operations - 16.6 req/sec
+      windowMs: parseInt(process.env.RATELIMIT_API_WINDOW_MS || "60000", 10), // 1 minute
+      maxRequests: parseInt(process.env.RATELIMIT_API_MAX_REQUESTS || "1000", 10),
     },
     cors: {
       origins: process.env.CORS_ALLOWED_ORIGINS

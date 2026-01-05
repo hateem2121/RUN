@@ -101,12 +101,7 @@ export function setupAuth(app: Express) {
         callbackURL: "/api/auth/google/callback", // Relative URL works with proxy
         proxy: true,
       },
-      async (
-        _accessToken: string,
-        _refreshToken: string,
-        profile: any,
-        done: any,
-      ) => {
+      async (_accessToken: string, _refreshToken: string, profile: any, done: any) => {
         try {
           const user = await upsertUser(profile);
           // Attach tokens to user object for session

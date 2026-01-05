@@ -17,13 +17,7 @@ import {
   Play,
   Shield,
 } from "lucide-react";
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 
@@ -124,175 +118,172 @@ interface ProductGalleryProps {
   hotspots?: Hotspot[];
 }
 
-export const ProductGallery = forwardRef<
-  ProductGalleryHandle,
-  ProductGalleryProps
->(({ media }, ref) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
+  ({ media }, ref) => {
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  useImperativeHandle(ref, () => ({
-    switchTo3DView: () => {
-      const model3DIndex = media.findIndex(
-        (item) => item.type === MediaType.Model3D,
+    useImperativeHandle(ref, () => ({
+      switchTo3DView: () => {
+        const model3DIndex = media.findIndex((item) => item.type === MediaType.Model3D);
+        if (model3DIndex !== -1) {
+          setActiveIndex(model3DIndex);
+        }
+      },
+    }));
+
+    // Reset loading state when active media changes
+    useEffect(() => {
+      setImageLoaded(false);
+    }, []);
+
+    useEffect(() => {
+      thumbnailRefs.current[activeIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }, [activeIndex]);
+
+    const renderMedia = () => {
+      const item = media[activeIndex];
+      if (!item) return null;
+
+      return (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={item.src}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="h-full w-full"
+          >
+            {(() => {
+              switch (item.type) {
+                case MediaType.Image:
+                  return (
+                    <>
+                      <img
+                        src={item.src}
+                        alt="Product"
+                        loading={activeIndex === 0 ? "eager" : "lazy"}
+                        {...(activeIndex === 0 && {
+                          fetchPriority: "high" as const,
+                        })}
+                        className={`h-full w-full object-contain transition-opacity duration-300 ${
+                          imageLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                        onLoad={() => setImageLoaded(true)}
+                      />
+                      {!imageLoaded && (
+                        <div className="center-flex absolute inset-0 bg-black">
+                          <div className="border-border h-12 w-12 animate-spin rounded-full border-2 border-t-2 border-t-white"></div>
+                        </div>
+                      )}
+                    </>
+                  );
+                case MediaType.Video:
+                  return (
+                    <video
+                      controls
+                      autoPlay
+                      loop
+                      muted
+                      className="h-full w-full object-contain"
+                      onError={(_e) => {}}
+                    >
+                      <source src={item.src} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  );
+                case MediaType.Model3D:
+                  return (
+                    <div className="h-full w-full">
+                      <LazyUnifiedModelViewer
+                        asset={
+                          {
+                            id: item.id,
+                            url: item.src,
+                            type: "3d_model",
+                            filename: item.filename || "product-model.glb",
+                            mimeType: item.mimeType || "model/gltf-binary",
+                            storagePath: item.src,
+                            bucketName: "default",
+                            originalName: "product-model.glb",
+                            fileSize: null,
+                            thumbnailUrl: null,
+                            thumbnailFilename: null,
+                            width: null,
+                            height: null,
+                            caption: null,
+                            altText: "Product 3D Model",
+                            blurhash: null,
+                            processing: false,
+                            processingProgress: null,
+                            processingError: null,
+                            metadata: {},
+                            tags: null,
+                            isPublic: true,
+                            isActive: true,
+                            folderId: null,
+                            downloadCount: 0,
+                            lastAccessedAt: null,
+                            deletedAt: null,
+                            uploadedAt: null,
+                            updatedAt: null,
+                            createdAt: null,
+                          } as any
+                        }
+                        config={{
+                          loading: "eager",
+                        }}
+                        className="h-full w-full"
+                        showControls={true}
+                        showLoadingProgress={true}
+                      />
+                    </div>
+                  );
+                default:
+                  return null;
+              }
+            })()}
+          </motion.div>
+        </AnimatePresence>
       );
-      if (model3DIndex !== -1) {
-        setActiveIndex(model3DIndex);
-      }
-    },
-  }));
-
-  // Reset loading state when active media changes
-  useEffect(() => {
-    setImageLoaded(false);
-  }, []);
-
-  useEffect(() => {
-    thumbnailRefs.current[activeIndex]?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [activeIndex]);
-
-  const renderMedia = () => {
-    const item = media[activeIndex];
-    if (!item) return null;
+    };
 
     return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={item.src}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="h-full w-full"
-        >
-          {(() => {
-            switch (item.type) {
-              case MediaType.Image:
-                return (
-                  <>
-                    <img
-                      src={item.src}
-                      alt="Product"
-                      loading={activeIndex === 0 ? "eager" : "lazy"}
-                      {...(activeIndex === 0 && {
-                        fetchPriority: "high" as const,
-                      })}
-                      className={`h-full w-full object-contain transition-opacity duration-300 ${
-                        imageLoaded ? "opacity-100" : "opacity-0"
-                      }`}
-                      onLoad={() => setImageLoaded(true)}
-                    />
-                    {!imageLoaded && (
-                      <div className="center-flex absolute inset-0 bg-black">
-                        <div className="border-border h-12 w-12 animate-spin rounded-full border-2 border-t-2 border-t-white"></div>
-                      </div>
-                    )}
-                  </>
-                );
-              case MediaType.Video:
-                return (
-                  <video
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                    className="h-full w-full object-contain"
-                    onError={(_e) => {}}
-                  >
-                    <source src={item.src} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                );
-              case MediaType.Model3D:
-                return (
-                  <div className="h-full w-full">
-                    <LazyUnifiedModelViewer
-                      asset={
-                        {
-                          id: item.id,
-                          url: item.src,
-                          type: "3d_model",
-                          filename: item.filename || "product-model.glb",
-                          mimeType: item.mimeType || "model/gltf-binary",
-                          storagePath: item.src,
-                          bucketName: "default",
-                          originalName: "product-model.glb",
-                          fileSize: null,
-                          thumbnailUrl: null,
-                          thumbnailFilename: null,
-                          width: null,
-                          height: null,
-                          caption: null,
-                          altText: "Product 3D Model",
-                          blurhash: null,
-                          processing: false,
-                          processingProgress: null,
-                          processingError: null,
-                          metadata: {},
-                          tags: null,
-                          isPublic: true,
-                          isActive: true,
-                          folderId: null,
-                          downloadCount: 0,
-                          lastAccessedAt: null,
-                          deletedAt: null,
-                          uploadedAt: null,
-                          updatedAt: null,
-                          createdAt: null,
-                        } as any
-                      }
-                      config={{
-                        loading: "eager",
-                      }}
-                      className="h-full w-full"
-                      showControls={true}
-                      showLoadingProgress={true}
-                    />
-                  </div>
-                );
-              default:
-                return null;
-            }
-          })()}
-        </motion.div>
-      </AnimatePresence>
-    );
-  };
-
-  return (
-    <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
-      <div className="w-full max-w-3xl">
-        <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
-          <div className="absolute inset-0 bg-black">{renderMedia()}</div>
+      <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
+        <div className="w-full max-w-3xl">
+          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
+            <div className="absolute inset-0 bg-black">{renderMedia()}</div>
+          </div>
+          <motion.div
+            className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+          >
+            {media.map((item, index) => (
+              <ThumbnailButton
+                key={index}
+                item={item}
+                index={index}
+                isActive={activeIndex === index}
+                onClick={() => setActiveIndex(index)}
+                ref={(el) => {
+                  thumbnailRefs.current[index] = el;
+                }}
+              />
+            ))}
+          </motion.div>
         </div>
-        <motion.div
-          className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-        >
-          {media.map((item, index) => (
-            <ThumbnailButton
-              key={index}
-              item={item}
-              index={index}
-              isActive={activeIndex === index}
-              onClick={() => setActiveIndex(index)}
-              ref={(el) => {
-                thumbnailRefs.current[index] = el;
-              }}
-            />
-          ))}
-        </motion.div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 // ============================================================================
 // Thumbnail Button Component with Media Type Indicators
@@ -334,8 +325,7 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
         default:
           return {
             icon: <Box className="h-6 w-6 text-white" />,
-            bgColor:
-              "bg-linear-to-br from-muted-foreground to-muted-foreground",
+            bgColor: "bg-linear-to-br from-muted-foreground to-muted-foreground",
             label: "Media",
           };
       }
@@ -392,9 +382,7 @@ const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
               onError={() => setThumbnailError(true)}
               data-testid={`img-thumbnail-${index}`}
             />
-            {!imageLoaded && (
-              <div className="bg-muted/20 absolute inset-0 animate-pulse" />
-            )}
+            {!imageLoaded && <div className="bg-muted/20 absolute inset-0 animate-pulse" />}
           </>
         )}
         {/* Media type badge overlay - always show for videos and 3D models when thumbnail loads successfully */}
@@ -425,10 +413,7 @@ interface TabbedDetailsProps {
   certificates: any[];
 }
 
-export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
-  product,
-  certificates,
-}) => {
+export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certificates }) => {
   const [activeTab, setActiveTab] = useState<Tab>("specs");
 
   const renderTabContent = () => {
@@ -438,18 +423,12 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
               <Package className="text-muted-foreground h-5 w-5" />
-              <h3 className="font-bold tracking-wider uppercase">
-                Product Specs
-              </h3>
+              <h3 className="font-bold tracking-wider uppercase">Product Specs</h3>
             </div>
             <ul className="text-muted-foreground space-y-2 pl-1 text-sm">
               {product.specifications && product.specifications.length > 0 ? (
                 product.specifications.map((spec, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start"
-                    data-testid={`spec-item-${i}`}
-                  >
+                  <li key={i} className="flex items-start" data-testid={`spec-item-${i}`}>
                     <span className="mt-1 mr-2">-</span>
                     <span className="flex-1">{spec}</span>
                   </li>
@@ -457,8 +436,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
               ) : (
                 <li className="py-6 text-center">
                   <p className="text-muted-foreground/70 text-sm italic">
-                    Product specifications are not currently available for this
-                    item.
+                    Product specifications are not currently available for this item.
                   </p>
                 </li>
               )}
@@ -470,39 +448,27 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
               <FileText className="text-muted-foreground h-5 w-5" />
-              <h3 className="font-bold tracking-wider uppercase">
-                Technical Specifications
-              </h3>
+              <h3 className="font-bold tracking-wider uppercase">Technical Specifications</h3>
             </div>
-            {product.technicalSpecs &&
-            Object.keys(product.technicalSpecs).length > 0 ? (
+            {product.technicalSpecs && Object.keys(product.technicalSpecs).length > 0 ? (
               <div className="space-y-3" data-testid="tech-specs-list">
-                {Object.entries(product.technicalSpecs).map(
-                  ([key, value], i) => (
-                    <div
-                      key={i}
-                      className="flex items-start"
-                      data-testid={`tech-spec-${i}`}
-                    >
-                      <div className="flex-1">
-                        <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
-                          {key.replace(/([A-Z])/g, " $1").trim()}
-                        </div>
-                        <div className="text-foreground/80 text-sm font-medium">
-                          {typeof value === "object"
-                            ? JSON.stringify(value)
-                            : String(value)}
-                        </div>
+                {Object.entries(product.technicalSpecs).map(([key, value], i) => (
+                  <div key={i} className="flex items-start" data-testid={`tech-spec-${i}`}>
+                    <div className="flex-1">
+                      <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
+                        {key.replace(/([A-Z])/g, " $1").trim()}
+                      </div>
+                      <div className="text-foreground/80 text-sm font-medium">
+                        {typeof value === "object" ? JSON.stringify(value) : String(value)}
                       </div>
                     </div>
-                  ),
-                )}
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="py-6 text-center">
                 <p className="text-muted-foreground/70 text-sm italic">
-                  Technical specifications are not currently available for this
-                  item.
+                  Technical specifications are not currently available for this item.
                 </p>
               </div>
             )}
@@ -513,22 +479,15 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
               <Heart className="text-muted-foreground h-5 w-5" />
-              <h3 className="font-bold tracking-wider uppercase">
-                Care Instructions
-              </h3>
+              <h3 className="font-bold tracking-wider uppercase">Care Instructions</h3>
             </div>
             <ul
               className="text-muted-foreground space-y-2 pl-1 text-sm"
               data-testid="care-instructions-list"
             >
-              {product.careInstructions &&
-              product.careInstructions.length > 0 ? (
+              {product.careInstructions && product.careInstructions.length > 0 ? (
                 product.careInstructions.map((instruction, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start"
-                    data-testid={`care-instruction-${i}`}
-                  >
+                  <li key={i} className="flex items-start" data-testid={`care-instruction-${i}`}>
                     <span className="mt-1 mr-2">•</span>
                     <span className="flex-1">{instruction}</span>
                   </li>
@@ -555,8 +514,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
                 <span className="mt-1 mr-2">-</span>
                 <span className="flex-1">
                   <strong>MOQ:</strong>{" "}
-                  {product.minimumOrderQuantity &&
-                  product.minimumOrderQuantity > 0
+                  {product.minimumOrderQuantity && product.minimumOrderQuantity > 0
                     ? `${product.minimumOrderQuantity} units`
                     : "Contact us for details"}
                 </span>
@@ -564,8 +522,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
               <li className="flex items-start">
                 <span className="mt-1 mr-2">-</span>
                 <span className="flex-1">
-                  <strong>Lead Time:</strong>{" "}
-                  {product.leadTime || "Contact us for details"}
+                  <strong>Lead Time:</strong> {product.leadTime || "Contact us for details"}
                 </span>
               </li>
               {product.customFit && (
@@ -592,17 +549,12 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
           <div className="animate-fade-in">
             <div className="mb-4 flex items-center space-x-3">
               <Shield className="text-muted-foreground h-5 w-5" />
-              <h3 className="font-bold tracking-wider uppercase">
-                Certifications
-              </h3>
+              <h3 className="font-bold tracking-wider uppercase">Certifications</h3>
             </div>
             <div className="flex flex-col space-y-3">
               {certificates && certificates.length > 0 ? (
                 certificates.map((cert, i) => (
-                  <div
-                    key={i}
-                    className="bg-background flex items-center rounded p-3"
-                  >
+                  <div key={i} className="bg-background flex items-center rounded p-3">
                     <Shield className="mr-3 h-5 w-5 shrink-0 text-green-600" />
                     <span className="text-foreground/80 text-sm font-medium">
                       {cert.name || cert}
@@ -612,8 +564,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
               ) : (
                 <div className="py-6 text-center">
                   <p className="text-muted-foreground/70 text-sm italic">
-                    Certifications information is not currently available for
-                    this item.
+                    Certifications information is not currently available for this item.
                   </p>
                 </div>
               )}
@@ -658,9 +609,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({
               clipAmount={10}
               data-testid={`button-tab-${tab.id}`}
             >
-              <span className="max-w-32 truncate sm:max-w-none">
-                {tab.label}
-              </span>
+              <span className="max-w-32 truncate sm:max-w-none">{tab.label}</span>
               {activeTab === tab.id && (
                 <motion.span
                   layoutId="active-tab-indicator"
@@ -711,19 +660,13 @@ interface SizeChartDisplayProps {
   sizeChart: any;
 }
 
-export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({
-  sizeChart,
-}) => {
-  const sizes = sizeChart?.measurements
-    ? Object.keys(sizeChart.measurements)
-    : [];
+export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart }) => {
+  const sizes = sizeChart?.measurements ? Object.keys(sizeChart.measurements) : [];
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
 
   if (!sizeChart || !sizeChart.measurements || sizes.length === 0) {
     return (
-      <p className="text-muted-foreground">
-        Size information is not available for this product.
-      </p>
+      <p className="text-muted-foreground">Size information is not available for this product.</p>
     );
   }
 
@@ -766,9 +709,7 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({
                 <span className="text-muted-foreground text-xs tracking-wider uppercase">
                   {key}
                 </span>
-                <p className="mt-1 text-base font-bold sm:text-lg">
-                  {measurements[key] || "N/A"}
-                </p>
+                <p className="mt-1 text-base font-bold sm:text-lg">{measurements[key] || "N/A"}</p>
               </div>
             ))}
           </motion.div>
@@ -787,10 +728,7 @@ interface FabricDisplayProps {
   fibers?: any[];
 }
 
-export const FabricDisplay: React.FC<FabricDisplayProps> = ({
-  fabric,
-  fibers = [],
-}) => {
+export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!fabric) {
@@ -806,21 +744,15 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
   // Check if we have collapsible content
   const hasDescription = !!fabric.description;
   const hasPerformanceFeatures =
-    fabric.properties?.performanceFeatures &&
-    fabric.properties.performanceFeatures.length > 0;
+    fabric.properties?.performanceFeatures && fabric.properties.performanceFeatures.length > 0;
   const hasFiberComposition =
-    fabric.properties?.compositions &&
-    fabric.properties.compositions.length > 0;
-  const hasCollapsibleContent =
-    hasDescription || hasPerformanceFeatures || hasFiberComposition;
+    fabric.properties?.compositions && fabric.properties.compositions.length > 0;
+  const hasCollapsibleContent = hasDescription || hasPerformanceFeatures || hasFiberComposition;
 
   return (
     <div>
       {/* Always Visible: Fabric Name */}
-      <h3
-        className="mb-4 text-xl font-bold sm:text-2xl"
-        data-testid="text-fabric-name"
-      >
+      <h3 className="mb-4 text-xl font-bold sm:text-2xl" data-testid="text-fabric-name">
         {fabric.name}
       </h3>
 
@@ -837,10 +769,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
       {/* Always Visible: Property Grid */}
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
         {fabric.weight && (
-          <div
-            className="border-l-4 border-black pl-4 sm:pl-6"
-            data-testid="info-fabric-weight"
-          >
+          <div className="border-l-4 border-black pl-4 sm:pl-6" data-testid="info-fabric-weight">
             <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Weight
             </div>
@@ -848,10 +777,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
           </div>
         )}
         {fabric.fabricType && (
-          <div
-            className="border-l-4 border-black pl-4 sm:pl-6"
-            data-testid="info-fabric-type"
-          >
+          <div className="border-l-4 border-black pl-4 sm:pl-6" data-testid="info-fabric-type">
             <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Fabric Type
             </div>
@@ -859,10 +785,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
           </div>
         )}
         {fabric.sport && (
-          <div
-            className="border-l-4 border-black pl-4 sm:pl-6"
-            data-testid="info-fabric-sport"
-          >
+          <div className="border-l-4 border-black pl-4 sm:pl-6" data-testid="info-fabric-sport">
             <div className="text-muted-foreground mb-1 text-xs tracking-wider uppercase">
               Sport Category
             </div>
@@ -906,23 +829,19 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
               Performance Features
             </h4>
             <ul className="space-y-2" data-testid="list-fabric-features">
-              {fabric.properties.performanceFeatures.map(
-                (feature: string, index: number) => (
-                  <li key={index} className="flex items-start text-sm">
-                    <span className="mr-2 text-black">•</span>
-                    <span className="text-foreground/80">{feature}</span>
-                  </li>
-                ),
-              )}
+              {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
+                <li key={index} className="flex items-start text-sm">
+                  <span className="mr-2 text-black">•</span>
+                  <span className="text-foreground/80">{feature}</span>
+                </li>
+              ))}
             </ul>
           </div>
         )}
 
         {hasFiberComposition && (
           <div className="border-border mt-10 border-t pt-8">
-            <h4 className="mb-6 text-sm font-bold tracking-wider uppercase">
-              Fiber Composition
-            </h4>
+            <h4 className="mb-6 text-sm font-bold tracking-wider uppercase">Fiber Composition</h4>
             <FiberCompositionDisplay fabric={fabric} fibers={fibers} />
           </div>
         )}
@@ -954,14 +873,12 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({
                     Performance Features
                   </h4>
                   <ul className="space-y-2" data-testid="list-fabric-features">
-                    {fabric.properties.performanceFeatures.map(
-                      (feature: string, index: number) => (
-                        <li key={index} className="flex items-start text-sm">
-                          <span className="mr-2 text-black">•</span>
-                          <span className="text-foreground/80">{feature}</span>
-                        </li>
-                      ),
-                    )}
+                    {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
+                      <li key={index} className="flex items-start text-sm">
+                        <span className="mr-2 text-black">•</span>
+                        <span className="text-foreground/80">{feature}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -991,14 +908,14 @@ interface FiberCompositionDisplayProps {
   fibers?: any[];
 }
 
-export const FiberCompositionDisplay: React.FC<
-  FiberCompositionDisplayProps
-> = ({ fabric, fibers = [] }) => {
+export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = ({
+  fabric,
+  fibers = [],
+}) => {
   const compositions = fabric?.properties?.compositions || [];
 
   // Find default composition or use first one
-  const defaultComposition =
-    compositions.find((c: any) => c.isDefault) || compositions[0];
+  const defaultComposition = compositions.find((c: any) => c.isDefault) || compositions[0];
   const [selectedComposition, setSelectedComposition] = useState<string>(
     defaultComposition?.name || "",
   );
@@ -1012,8 +929,7 @@ export const FiberCompositionDisplay: React.FC<
   }
 
   const currentComposition =
-    compositions.find((c: any) => c.name === selectedComposition) ||
-    defaultComposition;
+    compositions.find((c: any) => c.name === selectedComposition) || defaultComposition;
   const compositionFibers = currentComposition?.fibers || [];
 
   // Helper to get fiber details
@@ -1092,9 +1008,7 @@ export const FiberCompositionDisplay: React.FC<
                     </div>
                   </div>
                   <div className="flex items-baseline justify-between">
-                    <span className="text-3xl font-black text-black">
-                      {fiber.percentage}%
-                    </span>
+                    <span className="text-3xl font-black text-black">{fiber.percentage}%</span>
                     <span className="text-muted-foreground text-xs tracking-wider uppercase">
                       {fiberDetails.type}
                     </span>
@@ -1165,8 +1079,8 @@ export const EthicalManufacturing: React.FC = () => {
             ETHICAL MANUFACTURING & INNOVATION
           </h2>
           <p className="text-muted-foreground mx-auto max-w-3xl">
-            We merge a 135-year legacy with modern technology and an unwavering
-            commitment to transparency and ethical production.
+            We merge a 135-year legacy with modern technology and an unwavering commitment to
+            transparency and ethical production.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-12">
@@ -1180,12 +1094,8 @@ export const EthicalManufacturing: React.FC = () => {
               className="bg-white p-8 text-center"
             >
               <div className="mb-4 flex justify-center">{item.icon}</div>
-              <h3 className="mb-3 font-bold tracking-wider uppercase">
-                {item.title}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {item.description}
-              </p>
+              <h3 className="mb-3 font-bold tracking-wider uppercase">{item.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
             </motion.div>
           ))}
         </div>

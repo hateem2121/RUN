@@ -354,7 +354,9 @@ class MediaBatchScheduler {
       for (const result of results) {
         const callbacks = this.callbacks.get(result.id);
         if (callbacks) {
-          callbacks.forEach((callback) => callback(result));
+          callbacks.forEach((callback) => {
+            callback(result);
+          });
           this.callbacks.delete(result.id);
         }
       }
@@ -363,14 +365,14 @@ class MediaBatchScheduler {
       for (const assetId of assetIds) {
         const callbacks = this.callbacks.get(assetId);
         if (callbacks) {
-          callbacks.forEach((callback) =>
+          callbacks.forEach((callback) => {
             callback({
               id: assetId,
               success: false,
               error: "Not found in batch response",
               url: `/api/media/${assetId}/content`,
-            }),
-          );
+            });
+          });
           this.callbacks.delete(assetId);
         }
       }
@@ -379,14 +381,14 @@ class MediaBatchScheduler {
       for (const assetId of assetIds) {
         const callbacks = this.callbacks.get(assetId);
         if (callbacks) {
-          callbacks.forEach((callback) =>
+          callbacks.forEach((callback) => {
             callback({
               id: assetId,
               success: false,
               error: error instanceof Error ? error.message : "Batch processing failed",
               url: `/api/media/${assetId}/content`,
-            }),
-          );
+            });
+          });
           this.callbacks.delete(assetId);
         }
       }

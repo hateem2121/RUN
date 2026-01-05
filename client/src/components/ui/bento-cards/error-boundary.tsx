@@ -16,10 +16,7 @@ interface ErrorBoundaryState {
   errorId: string;
 }
 
-class BentoCardErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+class BentoCardErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   private resetTimeoutId: number | null = null;
 
   constructor(props: ErrorBoundaryProps) {
@@ -57,9 +54,7 @@ class BentoCardErrorBoundary extends Component<
     const { hasError } = this.state;
 
     if (hasError && prevProps.resetKeys !== resetKeys) {
-      if (
-        resetKeys?.some((key, index) => key !== prevProps.resetKeys?.[index])
-      ) {
+      if (resetKeys?.some((key, index) => key !== prevProps.resetKeys?.[index])) {
         this.resetError();
       }
     }
@@ -109,9 +104,7 @@ class BentoCardErrorBoundary extends Component<
             <AlertTriangle className="h-8 w-8 text-red-500" />
           </div>
 
-          <h3 className="mb-2 text-lg font-semibold text-red-800">
-            Something went wrong
-          </h3>
+          <h3 className="mb-2 text-lg font-semibold text-red-800">Something went wrong</h3>
 
           <p className="mb-4 max-w-xs text-sm text-red-600">
             {error?.message || "An unexpected error occurred"}
@@ -132,9 +125,7 @@ class BentoCardErrorBoundary extends Component<
 
           {process.env.NODE_ENV === "development" && errorInfo && (
             <details className="mt-4 w-full max-w-md">
-              <summary className="cursor-pointer text-xs text-red-500">
-                Technical Details
-              </summary>
+              <summary className="cursor-pointer text-xs text-red-500">Technical Details</summary>
               <pre className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-2 text-xs text-red-700">
                 {error?.stack}
               </pre>

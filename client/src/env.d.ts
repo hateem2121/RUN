@@ -45,13 +45,4 @@ declare global {
   }
 }
 
-interface ImportMetaEnv {
-  readonly VITE_API_BASE_URL: string;
-  // Add other env vars your app uses
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
-
 export {};

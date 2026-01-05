@@ -1,14 +1,14 @@
 import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
-import connectPg from "connect-pg-simple";
+
 import type { Express, RequestHandler } from "express";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 import { getSecret } from "../lib/secrets/secret-manager.js";
+import { getStorage } from "../lib/storage-singleton.js";
 
 export interface SessionUser extends User {
   claims: {
@@ -30,8 +30,7 @@ export const AuthErrors = {
   },
   AUTH_SERVER_ERROR: {
     code: "AUTH_SERVER_ERROR",
-    message:
-      "Authentication server is temporarily unavailable. Please try again.",
+    message: "Authentication server is temporarily unavailable. Please try again.",
     status: 503,
   },
   USER_NOT_FOUND: {
@@ -84,9 +83,7 @@ export class AuthService {
       process.env.SESSION_SECRET ||
       "default-secret-change-me-in-prod";
     const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
-    const secrets = previousSecret
-      ? [currentSecret, previousSecret]
-      : currentSecret;
+    const secrets = previousSecret ? [currentSecret, previousSecret] : currentSecret;
 
     return session({
       secret: secrets,
@@ -127,32 +124,29 @@ export class AuthService {
 
       // P2 SECURITY: User Agent Binding - verify session wasn't stolen
       // Hash the UA to avoid storing full strings and for privacy
-      const uaHash = createHash("sha256")
-        .update(currentUA)
-        .digest("hex")
-        .substring(0, 16);
+      const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
 
       // On first request (or after session regeneration), store the UA hash
       if (!sess.uaHash) {
         sess.uaHash = uaHash;
       } else if (sess.uaHash !== uaHash) {
         // UA mismatch - potential session hijacking
-        logger.warn(
-          "[Auth] User agent mismatch detected, invalidating session",
-          {
-            storedHash: sess.uaHash,
-            currentHash: uaHash,
-          },
-        );
+        logger.warn("[Auth] User agent mismatch detected, invalidating session", {
+          storedHash: sess.uaHash,
+          currentHash: uaHash,
+        });
 
         return req.session.destroy((err) => {
-          if (err)
-            logger.error("[Auth] Failed to destroy hijacked session:", err);
+          if (err) logger.error("[Auth] Failed to destroy hijacked session:", err);
           res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
         });
       }
 
-      const lastRotated = sess.lastRotated || (sess.lastRotated = now);
+      let lastRotated = sess.lastRotated;
+      if (!lastRotated) {
+        sess.lastRotated = now;
+        lastRotated = now;
+      }
       const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
 
       if (now - lastRotated > ROTATION_INTERVAL) {
@@ -172,8 +166,7 @@ export class AuthService {
 
           // Explicitly save to ensure the new SID is stored
           req.session.save((err) => {
-            if (err)
-              logger.error("[Auth] Failed to save regenerated session:", err);
+            if (err) logger.error("[Auth] Failed to save regenerated session:", err);
             next();
           });
         });
@@ -216,12 +209,9 @@ export class AuthService {
       ),
     );
 
-    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) =>
+    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) => cb(null, user));
+    passport.deserializeUser((user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
       cb(null, user),
-    );
-    passport.deserializeUser(
-      (user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
-        cb(null, user),
     );
 
     logger.info("[AuthService] ✅ Authentication configured");

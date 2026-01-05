@@ -270,6 +270,9 @@ export const insertHomepageSustainabilitySchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+export type HomepageSustainability = z.infer<typeof insertHomepageSustainabilitySchema>;
+export type InsertHomepageSustainability = z.infer<typeof insertHomepageSustainabilitySchema>;
+
 export const insertSustainabilityCallToActionSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),

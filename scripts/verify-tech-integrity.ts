@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
-import yargs from "yargs/yargs";
-import { hideBin } from "yargs/helpers";
 import chalk from "chalk";
+import { hideBin } from "yargs/helpers";
+import yargs from "yargs/yargs";
 
 /**
  * RUN-Remix Technical Integrity Verifier
@@ -51,7 +51,7 @@ const steps = [
   {
     name: "SSR Invariant Check",
     command: "npm",
-    args: ["run", "check:invariants"],
+    args: ["run", "test", "tests/unit/ssr/invariants.test.ts"],
     critical: true,
   },
 ];
@@ -89,9 +89,7 @@ async function runCommand(step: {
         resolve(true);
       } else {
         if (step.critical || argv.ci) {
-          console.error(
-            chalk.red(`✘ ${step.name} failed (Exit code: ${code})`),
-          );
+          console.error(chalk.red(`✘ ${step.name} failed (Exit code: ${code})`));
           resolve(false);
         } else {
           console.warn(chalk.yellow(`⚠ ${step.name} failed (Non-critical)`));
@@ -101,18 +99,14 @@ async function runCommand(step: {
     });
 
     child.on("error", (err) => {
-      console.error(
-        chalk.red(`✘ ${step.name} failed to start: ${err.message}`),
-      );
+      console.error(chalk.red(`✘ ${step.name} failed to start: ${err.message}`));
       resolve(false);
     });
   });
 }
 
 async function main() {
-  console.log(
-    chalk.bold.magenta("🚀 Starting Technical Integrity Verification\n"),
-  );
+  console.log(chalk.bold.magenta("🚀 Starting Technical Integrity Verification\n"));
 
   let success = true;
 
@@ -126,14 +120,10 @@ async function main() {
 
   console.log(chalk.bold("\n----------------------------------------"));
   if (success) {
-    console.log(
-      chalk.bold.green("✅ VERIFICATION SUCCESSFUL: System is healthy."),
-    );
+    console.log(chalk.bold.green("✅ VERIFICATION SUCCESSFUL: System is healthy."));
     process.exit(0);
   } else {
-    console.log(
-      chalk.bold.red("❌ VERIFICATION FAILED: Please fix the errors above."),
-    );
+    console.log(chalk.bold.red("❌ VERIFICATION FAILED: Please fix the errors above."));
     process.exit(1);
   }
 }

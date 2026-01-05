@@ -19,7 +19,7 @@ export declare const TECHNOLOGY_THEME: {
   };
 };
 export declare const TECHNOLOGY_DEFAULTS: {
-  hero: {};
+  hero: object;
   gradientSettings: {
     gradientColors: [string, string];
     angle: number;

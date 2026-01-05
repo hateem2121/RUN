@@ -118,6 +118,7 @@ export const MediaDeleteResponseSchema = z.object({
 });
 
 // Enhanced Validation helpers with comprehensive error tracking
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern
 export class MediaApiValidator {
   /**
    * Validate and sanitize media list response with schema drift monitoring

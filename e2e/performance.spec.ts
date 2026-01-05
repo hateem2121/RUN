@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Web Vitals & Performance", () => {
   test("Homepage should load with good LCP", async ({ page }) => {

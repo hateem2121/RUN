@@ -32,7 +32,9 @@ class IntersectionManager {
         entries.forEach((entry) => {
           const callbacks = this.callbacks.get(entry.target);
           if (callbacks) {
-            callbacks.forEach((callback) => callback(entry));
+            callbacks.forEach((callback) => {
+              callback(entry);
+            });
           }
         });
       }, options);
@@ -72,7 +74,9 @@ class IntersectionManager {
   }
 
   disconnect() {
-    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.forEach((observer) => {
+      observer.disconnect();
+    });
     this.observers.clear();
     this.callbacks.clear();
   }
@@ -244,7 +248,9 @@ export function useBatchIntersectionObserver<T extends Element>(
     });
 
     return () => {
-      cleanupFunctions.forEach((cleanup) => cleanup());
+      cleanupFunctions.forEach((cleanup) => {
+        cleanup();
+      });
     };
   }, [refs, observerOptions]);
 

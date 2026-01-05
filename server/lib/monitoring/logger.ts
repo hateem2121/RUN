@@ -1,6 +1,14 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import pino, { type Logger, stdSerializers } from "pino";
-import { isDevelopment, logging } from "../../config/environment.js";
+
+// LAZY LOADING: Use process.env directly to avoid circular dependency
+// environment.ts imports logger.ts via secret-manager.ts, so we can't import
+// environment.ts here at the top level without causing evaluation before secrets load.
+const isDevelopment = process.env.NODE_ENV === "development";
+const logging = {
+  level: process.env.LOG_LEVEL || (isDevelopment ? "debug" : "warn"),
+  enableDebug: process.env.ENABLE_DEBUG_LOGS === "true" || isDevelopment,
+};
 
 // AsyncLocalStorage for request-scoped correlation IDs
 export const correlationContext = new AsyncLocalStorage<string>();

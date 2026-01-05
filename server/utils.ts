@@ -245,6 +245,7 @@ export function shouldBypassCache(req: Request): boolean {
 // MEDIA URL UTILITIES
 // ============================================================================
 
+// biome-ignore lint/complexity/noStaticOnlyClass: utility namespace
 export class MediaUrlBuilder {
   static buildStorageKey(filename: string): string {
     return `media/${filename}`;
@@ -322,6 +323,7 @@ export class UrlPathService {
 // RETRY UTILITIES
 // ============================================================================
 
+// biome-ignore lint/complexity/noStaticOnlyClass: utility namespace
 export class RetryManager {
   static async retry<T>(
     operation: () => Promise<T>,

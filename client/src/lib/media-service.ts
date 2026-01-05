@@ -12,6 +12,7 @@ export interface ResponsiveImageOptions {
   format?: "webp" | "jpeg" | "png" | "auto";
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern
 export class MediaService {
   /**
    * Generate safe URL from media asset, with fallback handling

@@ -38,6 +38,7 @@ export default function SizeCharts() {
   const [expandedCharts, setExpandedCharts] = useState<Set<number>>(new Set());
 
   const { sizeCharts, isLoading } = useResourceBatch(["sizechart"]);
+  // biome-ignore lint/suspicious/noConsole: debugging
   console.log("SizeCharts data:", sizeCharts);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -128,7 +129,7 @@ export default function SizeCharts() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
+    <div className="from-muted/30 to-background min-h-screen bg-linear-to-b">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         {/* Header */}
         <motion.div
@@ -136,20 +137,20 @@ export default function SizeCharts() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">
+          <Typography.H1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
             Size Specifications
           </Typography.H1>
-          <Typography.P className="mx-auto max-w-3xl text-lg text-muted-foreground">
+          <Typography.P className="text-muted-foreground mx-auto max-w-3xl text-lg">
             Standardized sizing guides for global markets and various product categories
           </Typography.P>
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
-              <div className="font-bold text-3xl text-purple-600">{sizeCharts.length}</div>
+              <div className="text-3xl font-bold text-purple-600">{sizeCharts.length}</div>
               <div className="text-muted-foreground text-sm">Size Guides</div>
             </div>
             <div className="text-center">
-              <div className="font-bold text-3xl text-blue-600">
+              <div className="text-3xl font-bold text-blue-600">
                 {new Set(sizeCharts.map((c) => c.region).filter(Boolean)).size}
               </div>
               <div className="text-muted-foreground text-sm">Regions</div>
@@ -179,8 +180,8 @@ export default function SizeCharts() {
                 animate={{ opacity: 1 }}
                 className="py-16 text-center"
               >
-                <Ruler className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
-                <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
+                <Ruler className="text-muted-foreground/50 mx-auto mb-4 h-16 w-16" />
+                <Typography.H3 className="text-foreground mb-2 text-xl font-semibold">
                   {searchTerm ? "No size charts found" : "No size charts available"}
                 </Typography.H3>
                 <Typography.P className="text-muted-foreground">
@@ -210,7 +211,7 @@ export default function SizeCharts() {
                   expandedContent={
                     <div className="mt-4">
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="font-medium text-foreground/80 text-sm">Measurements</span>
+                        <span className="text-foreground/80 text-sm font-medium">Measurements</span>
                         <Badge variant="outline" className="text-xs">
                           {/* @ts-ignore - Schema mismatch potential */}
                           Units: {chart.unit || "CM"}

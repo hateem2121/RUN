@@ -33,8 +33,7 @@ const footerInputVariants = cva(
     variants: {
       hasError: {
         true: "border-destructive text-destructive placeholder:text-destructive/50",
-        false:
-          "border-border text-foreground placeholder:text-muted-foreground",
+        false: "border-border text-foreground placeholder:text-muted-foreground",
       },
     },
     defaultVariants: { hasError: false },
@@ -174,8 +173,7 @@ const Footer: React.FC = () => {
       <div
         className="bg-size-[24px_24px] pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, currentColor 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
         }}
         aria-hidden="true"
       />
@@ -191,9 +189,7 @@ const Footer: React.FC = () => {
           <div
             aria-live="polite"
             className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              showSuccess
-                ? "mb-8 max-h-24 opacity-100"
-                : "mb-0 max-h-0 opacity-0"
+              showSuccess ? "mb-8 max-h-24 opacity-100" : "mb-0 max-h-0 opacity-0"
             }`}
           >
             <div className="border-brand-lime/30 bg-brand-lime/5 flex items-center gap-3 border p-4">
@@ -204,11 +200,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="mt-12 max-w-lg space-y-8"
-          >
+          <form ref={formRef} onSubmit={handleSubmit} className="mt-12 max-w-lg space-y-8">
             <div className="group">
               <label
                 htmlFor="company"
@@ -238,10 +230,7 @@ const Footer: React.FC = () => {
                   02 {/* Email Protocol */}
                 </label>
                 {errors.email && (
-                  <span
-                    role="alert"
-                    className="text-destructive text-micro animate-pulse"
-                  >
+                  <span role="alert" className="text-destructive text-micro animate-pulse">
                     [{errors.email}]
                   </span>
                 )}
@@ -269,10 +258,7 @@ const Footer: React.FC = () => {
                   03 {/* Project Specifications */}
                 </label>
                 {errors.specs && (
-                  <span
-                    role="alert"
-                    className="text-destructive text-micro animate-pulse"
-                  >
+                  <span role="alert" className="text-destructive text-micro animate-pulse">
                     [{errors.specs}]
                   </span>
                 )}
@@ -282,10 +268,7 @@ const Footer: React.FC = () => {
                 name="specs"
                 rows={3}
                 disabled={isSubmitting || isSent}
-                className={cn(
-                  footerInputVariants({ hasError: !!errors.specs }),
-                  "resize-none",
-                )}
+                className={cn(footerInputVariants({ hasError: !!errors.specs }), "resize-none")}
                 placeholder="FABRIC / QUANTITY / TIMELINE"
                 onChange={() => setErrors(({ specs, ...prev }) => prev)}
               />
@@ -306,11 +289,7 @@ const Footer: React.FC = () => {
                 onMouseEnter={() => !isSent && setCursor("button")}
                 onMouseLeave={() => resetCursor()}
               >
-                {isSubmitting
-                  ? "PROCESSING..."
-                  : isSent
-                    ? "CONFIRMED"
-                    : "INITIALIZE ORDER"}
+                {isSubmitting ? "PROCESSING..." : isSent ? "CONFIRMED" : "INITIALIZE ORDER"}
               </button>
             </Magnetic>
           </form>
@@ -333,10 +312,7 @@ const Footer: React.FC = () => {
             <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ DIRECT LINE ]
             </h4>
-            <a
-              href="mailto:hello@runapparel.com"
-              className={footerLinkVariants()}
-            >
+            <a href="mailto:hello@runapparel.com" className={footerLinkVariants()}>
               hello@runapparel.com
             </a>
             <a href="tel:+41441234567" className={footerLinkVariants()}>
@@ -353,10 +329,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {["Instagram", "LinkedIn", "Behance"].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
-                    className={footerLinkVariants({ display: "inline" })}
-                  >
+                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
                     {item}
                   </a>
                 </li>
@@ -370,10 +343,7 @@ const Footer: React.FC = () => {
             <ul className="text-muted-foreground space-y-2 text-sm">
               {["Privacy Policy", "Terms of Service"].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
-                    className={footerLinkVariants({ display: "inline" })}
-                  >
+                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
                     {item}
                   </a>
                 </li>

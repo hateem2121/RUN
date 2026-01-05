@@ -59,19 +59,17 @@ function isPublicCacheablePath(path: string): boolean {
  * app.use(ssrCacheMiddleware);
  * app.use(ssrHandler); // Must come after
  */
-export function ssrCacheMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function ssrCacheMiddleware(req: Request, res: Response, next: NextFunction): void {
   // Only apply to GET requests (SSR pages)
   if (req.method !== "GET") {
-    return next();
+    next();
+    return;
   }
 
   // Skip API routes (handled separately)
   if (req.path.startsWith("/api/")) {
-    return next();
+    next();
+    return;
   }
 
   // Set cache headers based on path
@@ -80,17 +78,11 @@ export function ssrCacheMiddleware(
     // s-maxage: edge/CDN cache time
     // max-age: browser cache time
     // stale-while-revalidate: serve stale while fetching fresh
-    res.setHeader(
-      "Cache-Control",
-      "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
-    );
+    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
     res.setHeader("Vary", "Accept-Encoding, Cookie");
   } else {
     // No caching for dynamic/private content
-    res.setHeader(
-      "Cache-Control",
-      "private, no-cache, no-store, must-revalidate",
-    );
+    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
   }
 
   next();

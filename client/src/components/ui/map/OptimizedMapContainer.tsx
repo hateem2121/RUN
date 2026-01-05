@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Loader2, Map, Satellite } from "lucide-react";
+import { Loader2, Map as MapIcon, Satellite } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { MapErrorBoundary } from "./components/MapErrorBoundary";
 import type { MapLocation } from "./hooks/useMapMarkers";
@@ -36,19 +36,19 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className={`rounded-3xl bg-background p-8 shadow-lg ${className}`}
+      className={`bg-background rounded-3xl p-8 shadow-lg ${className}`}
     >
       <div className="relative h-128 w-full overflow-hidden rounded-2xl">
         {/* Map Layer Toggle Button */}
         <motion.div
-          className="absolute top-4 right-4 z-max"
+          className="z-max absolute top-4 right-4"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
           <motion.button
             onClick={toggleLayer}
-            className="flex items-center gap-2 rounded-xl border border-border/50 bg-background/90 px-4 py-2 font-medium text-sm shadow-lg transition-all duration-200 hover:shadow-xl"
+            className="border-border/50 bg-background/90 flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium shadow-lg transition-all duration-200 hover:shadow-xl"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -59,7 +59,7 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
               </>
             ) : (
               <>
-                <Map className="h-4 w-4" />
+                <MapIcon className="h-4 w-4" />
                 Roadmap
               </>
             )}
@@ -69,8 +69,8 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
         <MapErrorBoundary>
           <Suspense
             fallback={
-              <div className="flex h-full w-full items-center justify-center bg-muted/20">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <div className="bg-muted/20 flex h-full w-full items-center justify-center">
+                <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
               </div>
             }
           >

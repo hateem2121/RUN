@@ -36,20 +36,14 @@ function generateToken(): string {
  * Check if a route is excluded from CSRF protection
  */
 function isExcludedRoute(path: string): boolean {
-  return EXCLUDED_ROUTES.some(
-    (route) => path === route || path.startsWith(`${route}/`),
-  );
+  return EXCLUDED_ROUTES.some((route) => path === route || path.startsWith(`${route}/`));
 }
 
 /**
  * CSRF Token Generation Middleware
  * Ensures a CSRF token cookie is set on every response
  */
-export function csrfTokenGenerator(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function csrfTokenGenerator(req: Request, res: Response, next: NextFunction): void {
   // Check if token already exists in cookies
   let token = req.cookies?.[CSRF_COOKIE_NAME];
 
@@ -74,19 +68,17 @@ export function csrfTokenGenerator(
  * CSRF Validation Middleware
  * Validates CSRF token on state-changing requests (POST, PUT, PATCH, DELETE)
  */
-export function csrfValidator(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function csrfValidator(req: Request, res: Response, next: NextFunction): void {
   // Skip for safe methods
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) {
-    return next();
+    next();
+    return;
   }
 
   // Skip for excluded routes
   if (isExcludedRoute(req.path)) {
-    return next();
+    next();
+    return;
   }
 
   const cookieToken = req.cookies?.[CSRF_COOKIE_NAME];
@@ -107,9 +99,7 @@ export function csrfValidator(
   }
 
   // Constant-time comparison to prevent timing attacks
-  if (
-    !crypto.timingSafeEqual(Buffer.from(cookieToken), Buffer.from(headerToken))
-  ) {
+  if (!crypto.timingSafeEqual(Buffer.from(cookieToken), Buffer.from(headerToken))) {
     logger.warn("[CSRF] Token mismatch", { path: req.path });
     res.status(403).json({
       error: "CSRF_TOKEN_INVALID",
@@ -125,11 +115,7 @@ export function csrfValidator(
  * Combined CSRF middleware for convenience
  * Generates token on all requests, validates on mutations
  */
-export function csrfProtection(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function csrfProtection(req: Request, res: Response, next: NextFunction): void {
   csrfTokenGenerator(req, res, (err) => {
     if (err) return next(err);
     csrfValidator(req, res, next);

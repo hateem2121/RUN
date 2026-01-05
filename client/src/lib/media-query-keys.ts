@@ -108,6 +108,7 @@ export const invalidateMediaQueries = (queryClient: any) => {
  * @deprecated Use invalidateMediaQueries instead
  * Legacy class kept for backward compatibility during transition
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: legacy support
 export class MediaCacheInvalidator {
   static async invalidateAll(queryClient: any): Promise<void> {
     return invalidateMediaQueries(queryClient);

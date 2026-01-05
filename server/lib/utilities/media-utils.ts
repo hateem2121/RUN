@@ -28,7 +28,9 @@ export function extractMediaIds(data: any): Set<number> {
   if (Array.isArray(data)) {
     for (const item of data) {
       const subIds = extractMediaIds(item);
-      subIds.forEach((id) => mediaIds.add(id));
+      subIds.forEach((id) => {
+        mediaIds.add(id);
+      });
     }
     return mediaIds;
   }

@@ -1,5 +1,5 @@
 import type { AboutSection, MediaAsset } from "@shared/schema";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 
 interface AnimatedScrollProps {
@@ -76,33 +76,45 @@ export default function AnimatedScroll({
 
   const finalNumOfPages = pages.length;
 
-  const navigateUp = () => {
+  const navigateUp = useCallback(() => {
     if (currentPage > 1) setCurrentPage((p) => p - 1);
-  };
+  }, [currentPage]);
 
-  const navigateDown = () => {
+  const navigateDown = useCallback(() => {
     if (currentPage < finalNumOfPages) setCurrentPage((p) => p + 1);
-  };
+  }, [currentPage, finalNumOfPages]);
 
-  const handleWheel = (e: WheelEvent) => {
-    if (scrolling.current) return;
-    scrolling.current = true;
-    e.deltaY > 0 ? navigateDown() : navigateUp();
-    setTimeout(() => (scrolling.current = false), animTime);
-  };
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      if (scrolling.current) return;
+      scrolling.current = true;
+      e.deltaY > 0 ? navigateDown() : navigateUp();
+      setTimeout(() => {
+        scrolling.current = false;
+      }, animTime);
+    },
+    [navigateDown, navigateUp],
+  );
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (scrolling.current) return;
-    if (e.key === "ArrowUp") {
-      scrolling.current = true;
-      navigateUp();
-      setTimeout(() => (scrolling.current = false), animTime);
-    } else if (e.key === "ArrowDown") {
-      scrolling.current = true;
-      navigateDown();
-      setTimeout(() => (scrolling.current = false), animTime);
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (scrolling.current) return;
+      if (e.key === "ArrowUp") {
+        scrolling.current = true;
+        navigateUp();
+        setTimeout(() => {
+          scrolling.current = false;
+        }, animTime);
+      } else if (e.key === "ArrowDown") {
+        scrolling.current = true;
+        navigateDown();
+        setTimeout(() => {
+          scrolling.current = false;
+        }, animTime);
+      }
+    },
+    [navigateUp, navigateDown],
+  );
 
   useEffect(() => {
     window.addEventListener("wheel", handleWheel);
@@ -118,7 +130,7 @@ export default function AnimatedScroll({
     return (
       <section className="bg-muted/20 py-20">
         <div className="container mx-auto px-4 text-center md:px-6">
-          <h2 className="mb-4 font-bold text-3xl">{title || "Manufacturing Capabilities"}</h2>
+          <h2 className="mb-4 text-3xl font-bold">{title || "Manufacturing Capabilities"}</h2>
           <p className="text-muted-foreground">{description || "No sections configured yet."}</p>
         </div>
       </section>
@@ -128,10 +140,12 @@ export default function AnimatedScroll({
   return (
     <div className="relative h-screen overflow-hidden bg-black">
       {/* Page Indicator */}
-      <div className="absolute top-8 right-8 z-dock flex flex-col gap-2">
+      <div className="z-dock absolute top-8 right-8 flex flex-col gap-2">
         {Array.from({ length: finalNumOfPages }, (_, i) => (
           <button
             key={i + 1}
+            type="button"
+            aria-label={`Go to page ${i + 1}`}
             onClick={() => {
               if (!scrolling.current) {
                 setCurrentPage(i + 1);
@@ -145,7 +159,7 @@ export default function AnimatedScroll({
       </div>
 
       {/* Navigation Instructions */}
-      <div className="absolute bottom-8 left-8 z-dock text-sm text-white/70">
+      <div className="z-dock absolute bottom-8 left-8 text-sm text-white/70">
         <p>Use arrow keys or scroll to navigate</p>
         <p className="mt-1 text-xs">
           {currentPage} of {finalNumOfPages}
@@ -164,11 +178,13 @@ export default function AnimatedScroll({
           <div key={idx} className="absolute inset-0">
             {/* Left Half */}
             <div
-              className="absolute top-0 left-0 h-full w-1/2 transition-transform duration-style1-slow ease-out"
+              className="duration-style1-slow absolute top-0 left-0 h-full w-1/2 transition-transform ease-out"
+              // biome-ignore lint: dynamic transform needed
               style={{ transform: leftTrans }}
             >
               <div
-                className="relative h-full w-full bg-center bg-cover bg-no-repeat"
+                className="relative h-full w-full bg-cover bg-center bg-no-repeat"
+                // biome-ignore lint: dynamic background needed
                 style={{
                   backgroundImage: page.leftBgImage ? `url(${page.leftBgImage})` : undefined,
                   backgroundColor: !page.leftBgImage ? "hsl(240 10% 10%)" : undefined, // surface-dark
@@ -177,10 +193,10 @@ export default function AnimatedScroll({
                 {/* Overlay for better text readability */}
                 {page.leftBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
-                <div className="relative z-elevated flex h-full flex-col items-center justify-center p-8 text-white">
+                <div className="z-elevated relative flex h-full flex-col items-center justify-center p-8 text-white">
                   {page.leftContent && (
                     <>
-                      <h2 className="mb-6 text-center font-bold text-2xl uppercase tracking-wide md:text-3xl lg:text-4xl">
+                      <h2 className="mb-6 text-center text-2xl font-bold tracking-wide uppercase md:text-3xl lg:text-4xl">
                         {page.leftContent.heading}
                       </h2>
                       <p className="max-w-md text-center text-lg leading-relaxed md:text-xl">
@@ -194,11 +210,13 @@ export default function AnimatedScroll({
 
             {/* Right Half */}
             <div
-              className="absolute top-0 left-1/2 h-full w-1/2 transition-transform duration-style1-slow ease-out"
+              className="duration-style1-slow absolute top-0 left-1/2 h-full w-1/2 transition-transform ease-out"
+              // biome-ignore lint: dynamic transform needed
               style={{ transform: rightTrans }}
             >
               <div
-                className="relative h-full w-full bg-center bg-cover bg-no-repeat"
+                className="relative h-full w-full bg-cover bg-center bg-no-repeat"
+                // biome-ignore lint: dynamic background needed
                 style={{
                   backgroundImage: page.rightBgImage ? `url(${page.rightBgImage})` : undefined,
                   backgroundColor: !page.rightBgImage ? "hsl(240 10% 16%)" : undefined, // surface-dark variant
@@ -207,10 +225,10 @@ export default function AnimatedScroll({
                 {/* Overlay for better text readability */}
                 {page.rightBgImage && <div className="absolute inset-0 bg-black/40"></div>}
 
-                <div className="relative z-elevated flex h-full flex-col items-center justify-center p-8 text-white">
+                <div className="z-elevated relative flex h-full flex-col items-center justify-center p-8 text-white">
                   {page.rightContent && (
                     <>
-                      <h2 className="mb-6 text-center font-bold text-2xl uppercase tracking-wide md:text-3xl lg:text-4xl">
+                      <h2 className="mb-6 text-center text-2xl font-bold tracking-wide uppercase md:text-3xl lg:text-4xl">
                         {page.rightContent.heading}
                       </h2>
                       {typeof page.rightContent.description === "string" ? (

@@ -32,14 +32,11 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
   }
 
   override componentDidCatch(error: Error, errorInfo: any) {
-    logger.error(
-      `Error in ${this.props.sectionName || "admin products section"}`,
-      {
-        error: error.message,
-        stack: error.stack,
-        errorInfo,
-      },
-    );
+    logger.error(`Error in ${this.props.sectionName || "admin products section"}`, {
+      error: error.message,
+      stack: error.stack,
+      errorInfo,
+    });
 
     this.setState({
       error,
@@ -59,8 +56,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-6 w-6 text-red-600" />
             <div>
               <h3 className="font-semibold text-red-900">
-                {this.props.fallbackTitle ||
-                  `${this.props.sectionName || "Section"} Error`}
+                {this.props.fallbackTitle || `${this.props.sectionName || "Section"} Error`}
               </h3>
               <p className="text-sm text-red-700">
                 {this.props.fallbackMessage ||
@@ -76,9 +72,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
               </summary>
               <div className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-3 font-mono text-xs text-red-800">
                 <div className="font-semibold">{this.state.error.message}</div>
-                <div className="mt-1 text-red-600">
-                  {this.state.error.stack}
-                </div>
+                <div className="mt-1 text-red-600">{this.state.error.stack}</div>
               </div>
             </details>
           )}

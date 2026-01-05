@@ -14,15 +14,25 @@ export interface TestServer {
 }
 
 export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<TestServer> {
+  const spawnEnv = {
+    ...process.env,
+    PORT: "0", // Dynamic port
+    ENABLE_DEBUG_ROUTES: "true",
+    DEBUG_ROUTE_TOKEN: "test-token-123",
+    // Inherit real DB config if present
+    DATABASE_URL: process.env.DATABASE_URL || "postgres://localhost:5432/test",
+    TEST_REAL_DB: process.env.TEST_REAL_DB || "false",
+    ...env,
+    SESSION_SECRET: "test-session-secret-12345",
+    JWT_SECRET: "test-jwt-secret-12345",
+    FORCE_LISTEN: "true",
+    VITEST: "true", // Ensure spawned server knows it's in test mode
+  };
+  console.log("[TestServer] spawnEnv keys:", Object.keys(spawnEnv).sort().join(", "));
   const serverProcess = spawn(TSX_PATH, [SERVER_PATH], {
-    env: {
-      ...process.env,
-      PORT: "0", // Dynamic port
-      JWT_SECRET: process.env.JWT_SECRET || "test-jwt-secret-12345", // Ensure valid secret for startup check
-      FORCE_LISTEN: "true", // Force server to listen even in test mode
-      ...env,
-    },
+    env: spawnEnv,
     stdio: ["ignore", "pipe", "pipe"],
+    shell: true,
   });
 
   let killed = false;
@@ -80,6 +90,8 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     serverProcess.on("exit", (code) => {
       if (!baseUrl) {
         clearTimeout(timeout);
+        console.error("[TestServer] Premature exit stderr:", _stderrData);
+        console.log("[TestServer] Premature exit stdout:", _stdoutData);
         reject(new Error(`Server exited prematurely with code ${code}`));
       }
     });

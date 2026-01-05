@@ -60,8 +60,8 @@ export class GoogleAnalytics {
       window.dataLayer = window.dataLayer || [];
 
       // Add gtag function
-      window.gtag = function gtag() {
-        window.dataLayer.push(arguments);
+      window.gtag = function gtag(...args: unknown[]) {
+        window.dataLayer.push(args);
       };
 
       // Add Google Analytics script

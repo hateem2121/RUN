@@ -6,24 +6,30 @@ import { startServices } from "./boot/services.js";
 import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 
-const app = express();
+export const app = express();
 const config = getConfig();
 
-const _BOOT_TIMEOUT = 30000; // 30s boot timeout
+export let serverReady: Promise<void>;
 
-(async () => {
+serverReady = (async () => {
   try {
+    console.log("[Server] Starting server initialization...");
+
     // 2. Create HTTP Server (Required for Vite HMR / SSR)
     const httpServer = createServer(app);
+    console.log("[Server] HTTP server created");
 
     // 3. Setup Global Middleware
     setupMiddleware(app);
+    console.log("[Server] Middleware setup complete");
 
     // 4. Setup Routes & SSR
     await setupRoutes(app, httpServer);
+    console.log("[Server] Routes setup complete");
 
     // 5. Setup Health Checks
     setupHealthChecks(app);
+    console.log("[Server] Health checks setup complete");
 
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // Runs before error handlers but after API routes
@@ -45,6 +51,8 @@ const _BOOT_TIMEOUT = 30000; // 30s boot timeout
     httpServer.listen(port, "0.0.0.0", () => {
       const address = httpServer.address();
       const actualPort = typeof address === "object" && address ? address.port : port;
+      // Plain console.log for integration test detection
+      console.log(`Server running on port ${actualPort}`);
       logger.info(`Server running on port ${actualPort}`);
       logger.info(`Environment: ${config.app.environment}`);
     });

@@ -56,7 +56,7 @@
         "age_months": 6
       },
       "implementation": "native",
-      "comment": "Requires native GCS lifecycle support - currently disabled",
+      "implementation_notes": "Requires native GCS lifecycle support - currently disabled",
       "cost_impact": {
         "coldline_cost_per_gb_month": "$0.004",
         "standard_cost_per_gb_month": "$0.020",

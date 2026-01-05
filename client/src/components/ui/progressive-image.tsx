@@ -4,7 +4,7 @@
  */
 
 import type { MediaAsset } from "@shared/schema";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ProgressiveImageProps {
@@ -51,98 +51,85 @@ export function ProgressiveImage({
   const src = asset?.url || srcProp || "";
 
   // Generate optimized URLs
-  const getOptimizedSrcSet = () => {
+
+  // Optimize srcSet generation
+  const getOptimizedSrcSet = useCallback(() => {
     if (srcSet) return srcSet;
     if (!src) return "";
 
-    // Extract base URL and extension
     const urlParts = src.match(/(.+?)(\.[^.]+)?$/);
     if (!urlParts) return "";
 
     const baseUrl = urlParts[1];
     const ext = urlParts[2] || "";
 
-    // Generate srcset for different sizes (optimized for common breakpoints)
     const sizes = [640, 1024, 1920];
     return sizes.map((size) => `${baseUrl}?size=${size}${ext} ${size}w`).join(", ");
-  };
-
-  const loadMainImage = () => {
-    const img = new Image();
-
-    // Set srcset if available
-    if (srcSet || src.includes("/api/media/")) {
-      img.srcset = getOptimizedSrcSet();
-    }
-
-    img.src = src;
-
-    img.onload = () => {
-      setCurrentSrc(src);
-      setImageState("loaded");
-      onLoad?.();
-    };
-
-    img.onerror = () => {
-      setImageState("error");
-      onError?.(new Error(`Failed to load image: ${src}`));
-    };
-  };
-
-  const loadFullImage = () => {
-    // First load thumbnail if available
-    if (thumbnailSrc && thumbnailSrc !== currentSrc) {
-      const thumbnailImg = new Image();
-      thumbnailImg.src = thumbnailSrc;
-      thumbnailImg.onload = () => {
-        setCurrentSrc(thumbnailSrc);
-        // Continue loading full image
-        loadMainImage();
-      };
-      thumbnailImg.onerror = () => {
-        // Skip thumbnail, load main image directly
-        loadMainImage();
-      };
-    } else {
-      loadMainImage();
-    }
-  };
-
-  const setupIntersectionObserver = () => {
-    if (!imgRef.current || typeof IntersectionObserver === "undefined") {
-      loadFullImage(); // Fallback for older browsers
-      return;
-    }
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            loadFullImage();
-            if (observerRef.current) {
-              observerRef.current.disconnect();
-            }
-          }
-        });
-      },
-      {
-        rootMargin: "200px",
-        threshold: 0.01,
-      },
-    );
-
-    observerRef.current.observe(imgRef.current);
-  };
+  }, [src, srcSet]);
 
   // Load image progressively
   useEffect(() => {
     if (!src) return;
 
+    const loadMainImage = () => {
+      const img = new Image();
+      if (srcSet || src.includes("/api/media/")) {
+        img.srcset = getOptimizedSrcSet();
+      }
+      img.src = src;
+      img.onload = () => {
+        setCurrentSrc(src);
+        setImageState("loaded");
+        onLoad?.();
+      };
+      img.onerror = () => {
+        setImageState("error");
+        onError?.(new Error(`Failed to load image: ${src}`));
+      };
+    };
+
+    const loadFullImage = () => {
+      if (thumbnailSrc && thumbnailSrc !== currentSrc) {
+        const thumbnailImg = new Image();
+        thumbnailImg.src = thumbnailSrc;
+        thumbnailImg.onload = () => {
+          setCurrentSrc(thumbnailSrc);
+          loadMainImage();
+        };
+        thumbnailImg.onerror = () => {
+          loadMainImage();
+        };
+      } else {
+        loadMainImage();
+      }
+    };
+
+    const setupIntersectionObserver = () => {
+      if (!imgRef.current || typeof IntersectionObserver === "undefined") {
+        loadFullImage();
+        return;
+      }
+
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              loadFullImage();
+              if (observerRef.current) {
+                observerRef.current.disconnect();
+              }
+            }
+          });
+        },
+        { rootMargin: "200px", threshold: 0.01 },
+      );
+
+      observerRef.current.observe(imgRef.current);
+    };
+
     if (priority) {
-      // Load immediately for priority images
       loadFullImage();
     } else {
-      // Set up intersection observer for lazy loading
       setupIntersectionObserver();
     }
 
@@ -151,12 +138,7 @@ export function ProgressiveImage({
         observerRef.current.unobserve(imgRef.current);
       }
     };
-  }, [
-    src,
-    priority, // Load immediately for priority images
-    loadFullImage, // Set up intersection observer for lazy loading
-    setupIntersectionObserver,
-  ]);
+  }, [src, priority, srcSet, thumbnailSrc, onLoad, onError, currentSrc, getOptimizedSrcSet]);
 
   // Render blurhash placeholder if available
   const renderBlurhash = () => {
@@ -165,7 +147,7 @@ export function ProgressiveImage({
     // This would use a blurhash library in production
     return (
       <div
-        className="absolute inset-0 animate-pulse bg-linear-to-br from-surface-muted to-surface-emphasis"
+        className="from-surface-muted to-surface-emphasis absolute inset-0 animate-pulse bg-linear-to-br"
         aria-hidden="true"
       />
     );
@@ -178,9 +160,9 @@ export function ProgressiveImage({
     }
 
     return (
-      <div className="absolute inset-0 animate-pulse bg-surface-muted">
+      <div className="bg-surface-muted absolute inset-0 animate-pulse">
         <svg
-          className="absolute inset-0 h-full w-full text-surface-emphasis"
+          className="text-surface-emphasis absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -193,7 +175,8 @@ export function ProgressiveImage({
 
   return (
     <div
-      className={cn("relative overflow-hidden bg-surface-subtle", className)}
+      className={cn("bg-surface-subtle relative overflow-hidden", className)}
+      // biome-ignore lint: dynamic aspect ratio needed
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       {/* Placeholder / Loading state */}
@@ -234,10 +217,10 @@ export function ProgressiveImage({
 
       {/* Error state */}
       {imageState === "error" && (
-        <div className="center-flex absolute inset-0 bg-surface-subtle">
+        <div className="center-flex bg-surface-subtle absolute inset-0">
           <div className="p-4 text-center">
             <svg
-              className="mx-auto mb-2 h-12 w-12 text-text-subtle"
+              className="text-text-subtle mx-auto mb-2 h-12 w-12"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -249,7 +232,7 @@ export function ProgressiveImage({
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-sm text-text-muted">Failed to load image</p>
+            <p className="text-text-muted text-sm">Failed to load image</p>
           </div>
         </div>
       )}

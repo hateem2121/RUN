@@ -34,18 +34,14 @@ export async function loadSecrets(): Promise<Record<string, string>> {
 
   // Skip in development - use .env file
   if (process.env.NODE_ENV !== "production") {
-    logger.info(
-      "[SecretManager] Development mode - using environment variables",
-    );
+    logger.info("[SecretManager] Development mode - using environment variables");
     cachedSecrets = {};
     return cachedSecrets;
   }
 
   const projectId = process.env.GOOGLE_CLOUD_PROJECT;
   if (!projectId) {
-    logger.warn(
-      "[SecretManager] GOOGLE_CLOUD_PROJECT not set - falling back to env vars",
-    );
+    logger.warn("[SecretManager] GOOGLE_CLOUD_PROJECT not set - falling back to env vars");
     cachedSecrets = {};
     return cachedSecrets;
   }
@@ -82,12 +78,9 @@ export async function loadSecrets(): Promise<Record<string, string>> {
   }
 
   if (failed.length > 0) {
-    logger.warn(
-      `[SecretManager] ${failed.length} secrets failed to load - using env fallback`,
-      {
-        failed,
-      },
-    );
+    logger.warn(`[SecretManager] ${failed.length} secrets failed to load - using env fallback`, {
+      failed,
+    });
   }
 
   cachedSecrets = loaded;

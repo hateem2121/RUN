@@ -107,8 +107,7 @@ export const uploadMetrics = {
 
     // Update average upload time
     this.averageUploadTime =
-      (this.averageUploadTime * (this.totalUploads - 1) + duration) /
-      this.totalUploads;
+      (this.averageUploadTime * (this.totalUploads - 1) + duration) / this.totalUploads;
   },
 
   updateConcurrent(count: number) {

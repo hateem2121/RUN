@@ -80,7 +80,8 @@ function shouldSkipCache(path: string): boolean {
 export function cdnDynamicHeaders(req: Request, res: Response, next: NextFunction): void {
   // Skip for API routes, admin, and authenticated pages
   if (shouldSkipCache(req.path)) {
-    return next();
+    next();
+    return;
   }
 
   // Skip if user is authenticated (has session cookie)
@@ -88,7 +89,8 @@ export function cdnDynamicHeaders(req: Request, res: Response, next: NextFunctio
   if (hasSessionCookie) {
     res.setHeader("Cache-Control", "private, no-cache");
     res.setHeader("Vary", "Cookie");
-    return next();
+    next();
+    return;
   }
 
   // Get cache configuration for this route

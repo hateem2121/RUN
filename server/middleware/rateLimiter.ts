@@ -24,16 +24,11 @@ export class RateLimiter {
     this.config = config;
 
     // Try to initialize Redis
-    if (
-      process.env.UPSTASH_REDIS_REST_URL &&
-      process.env.UPSTASH_REDIS_REST_TOKEN
-    ) {
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
       try {
         this.redis = Redis.fromEnv();
       } catch (_error) {
-        logger.warn(
-          "[RateLimiter] Failed to initialize Redis, falling back to memory",
-        );
+        logger.warn("[RateLimiter] Failed to initialize Redis, falling back to memory");
       }
     } else {
     }
@@ -66,10 +61,7 @@ export class RateLimiter {
           // Redis Fixed Window
           const requests = await this.redis.incr(key);
           if (requests === 1) {
-            await this.redis.expire(
-              key,
-              Math.ceil(this.config.windowMs / 1000),
-            );
+            await this.redis.expire(key, Math.ceil(this.config.windowMs / 1000));
             ttl = Math.ceil(this.config.windowMs / 1000);
           } else {
             ttl = await this.redis.ttl(key);
@@ -138,10 +130,7 @@ export class RateLimiter {
           next();
         } catch (innerError) {
           // If even memory fails, allow request but log critical error
-          logger.error(
-            "[RateLimiter] Critical failure in fallback",
-            innerError,
-          );
+          logger.error("[RateLimiter] Critical failure in fallback", innerError);
           next();
         }
       }
@@ -235,7 +224,8 @@ export class UploadRateLimiter {
         resetTime: now + this.windowMs,
       };
       this.store.set(key, entry);
-      return next();
+      next();
+      return;
     }
 
     if (entry.count >= this.maxRequests) {

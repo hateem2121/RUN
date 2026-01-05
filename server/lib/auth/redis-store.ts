@@ -1,5 +1,5 @@
+import type { Redis } from "@upstash/redis";
 import { Store } from "express-session";
-import { Redis } from "@upstash/redis";
 import { logger } from "../monitoring/logger.js";
 
 /**
@@ -19,10 +19,7 @@ export class UpstashRedisStore extends Store {
     this.ttl = options.ttl || 86400; // Default 1 day
   }
 
-  public async get(
-    sid: string,
-    callback: (err: any, session?: any) => void,
-  ): Promise<void> {
+  public async get(sid: string, callback: (err: any, session?: any) => void): Promise<void> {
     try {
       const data = await this.client.get<any>(this.prefix + sid);
       if (!data) return callback(null, null);
@@ -33,16 +30,10 @@ export class UpstashRedisStore extends Store {
     }
   }
 
-  public async set(
-    sid: string,
-    session: any,
-    callback?: (err?: any) => void,
-  ): Promise<void> {
+  public async set(sid: string, session: any, callback?: (err?: any) => void): Promise<void> {
     try {
       // Use the maxAge from session cookie if available, or default TTL
-      const ttl = session.cookie?.maxAge
-        ? Math.floor(session.cookie.maxAge / 1000)
-        : this.ttl;
+      const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;
       await this.client.set(this.prefix + sid, session, { ex: ttl });
       if (callback) callback();
     } catch (err) {
@@ -51,10 +42,7 @@ export class UpstashRedisStore extends Store {
     }
   }
 
-  public async destroy(
-    sid: string,
-    callback?: (err?: any) => void,
-  ): Promise<void> {
+  public async destroy(sid: string, callback?: (err?: any) => void): Promise<void> {
     try {
       await this.client.del(this.prefix + sid);
       if (callback) callback();
@@ -70,9 +58,7 @@ export class UpstashRedisStore extends Store {
     callback?: (err?: any) => void,
   ): Promise<void> {
     try {
-      const ttl = session.cookie?.maxAge
-        ? Math.floor(session.cookie.maxAge / 1000)
-        : this.ttl;
+      const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;
       await this.client.expire(this.prefix + sid, ttl);
       if (callback) callback();
     } catch (err) {

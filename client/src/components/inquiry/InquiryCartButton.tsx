@@ -169,9 +169,7 @@ export function InquiryCartButton() {
                         />
                         <div className="flex-1">
                           <h3 className="font-semibold">{item.product.name}</h3>
-                          <p className="text-muted-foreground text-sm">
-                            SKU: {item.product.sku}
-                          </p>
+                          <p className="text-muted-foreground text-sm">SKU: {item.product.sku}</p>
                           <p className="text-muted-foreground text-sm">
                             MOQ: {item.product.moq} units
                           </p>
@@ -191,10 +189,7 @@ export function InquiryCartButton() {
                 )
               ) : (
                 <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-4"
-                  >
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                       control={form.control}
                       name="name"
@@ -216,11 +211,7 @@ export function InquiryCartButton() {
                         <FormItem>
                           <FormLabel>Email *</FormLabel>
                           <FormControl>
-                            <Input
-                              type="email"
-                              {...field}
-                              data-testid="inquiry-email"
-                            />
+                            <Input type="email" {...field} data-testid="inquiry-email" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

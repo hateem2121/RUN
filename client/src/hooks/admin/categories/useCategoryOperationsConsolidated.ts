@@ -123,7 +123,9 @@ export default function useCategoryOperationsConsolidated() {
 
   const selectAll = () => {
     const newSelection: Record<string, boolean> = {};
-    filteredCategories.forEach((c: any) => (newSelection[c.id] = true));
+    filteredCategories.forEach((c: any) => {
+      newSelection[c.id] = true;
+    });
     updateUIState({ selectedCategories: newSelection });
   };
 

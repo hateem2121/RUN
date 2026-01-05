@@ -170,9 +170,7 @@ export function getSLOMetrics() {
       p95: calculatePercentile(state.latencies, 95),
       p99: calculatePercentile(state.latencies, 99),
       target: SLO_CONFIG.latency.p95Target,
-      passing:
-        calculatePercentile(state.latencies, 95) <=
-        SLO_CONFIG.latency.p95Target,
+      passing: calculatePercentile(state.latencies, 95) <= SLO_CONFIG.latency.p95Target,
     },
     stats: {
       totalRequests: state.totalRequests,
