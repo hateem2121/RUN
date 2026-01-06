@@ -29,5 +29,5 @@ This file serves as the source of truth for AI agents operating on this reposito
 
 ## Key References
 
-- **Architecture:** `CODEMAP.md` (System Map) & `docs/architecture/antigravity_architecture_report.md` (Deep Dive)
+- **Architecture:** `CODEMAP.md` (System Map) & `docs/architecture/REPORT.md` (Deep Dive)
 - **Audits:** `docs/audits/` (Historical health checks)

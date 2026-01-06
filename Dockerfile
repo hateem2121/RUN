@@ -28,6 +28,7 @@ RUN npm run build
 FROM node:22-alpine
 
 # P1 FIX: Tini for zombie process reaping
+ENV NODE_ENV=production
 RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
 

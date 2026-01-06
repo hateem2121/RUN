@@ -1,10 +1,27 @@
-import { injectSecretsToEnv, loadSecrets } from "./lib/secrets/secret-manager.js";
+import { initTelemetry } from "./lib/monitoring/telemetry.js";
+
+// 0. Initialize Telemetry (Must be first)
+initTelemetry();
+
+import {
+  injectSecretsToEnv,
+  loadSecrets,
+} from "./lib/secrets/secret-manager.js";
 import "dotenv/config";
 import { z } from "zod";
 
-console.log("[Bootstrap] Full process.env keys:", Object.keys(process.env).sort());
-console.log("[Bootstrap] DATABASE_URL:", JSON.stringify(process.env.DATABASE_URL));
-console.log("[Bootstrap] SESSION_SECRET:", JSON.stringify(process.env.SESSION_SECRET));
+console.log(
+  "[Bootstrap] Full process.env keys:",
+  Object.keys(process.env).sort(),
+);
+console.log(
+  "[Bootstrap] DATABASE_URL:",
+  JSON.stringify(process.env.DATABASE_URL),
+);
+console.log(
+  "[Bootstrap] SESSION_SECRET:",
+  JSON.stringify(process.env.SESSION_SECRET),
+);
 export let app: any;
 export let serverReady: Promise<void>;
 
@@ -17,6 +34,11 @@ serverReady = (async () => {
     injectSecretsToEnv();
     // biome-ignore lint/suspicious/noConsole: startup logging
     console.log(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
+
+    // 1.5. Validate Environment Variables
+    const { validateEnv } = await import("./env.schema.js");
+    validateEnv();
+    console.log("[Bootstrap] Environment variables validated successfully.");
 
     // 2. Import Main Server (Dynamic)
     // This defers evaluation of 'environment.ts' variables (Zod validation)

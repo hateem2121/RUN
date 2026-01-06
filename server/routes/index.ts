@@ -37,33 +37,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
   await authService.setup(app);
-  logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
+  logger.info(
+    "[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)",
+  );
 
   // ============================================================================
-  // DEV LOGIN (Preserved for compatibility)
+  // DEV TOOLS (Development only)
   // ============================================================================
-  app.get("/api/dev/login", async (req, res) => {
-    if (process.env.NODE_ENV === "production") return res.status(404).send("Not found");
-    try {
-      const { db } = await import("../db.js");
-      const { users } = await import("@run-remix/shared");
-      const { eq } = await import("drizzle-orm");
-
-      const adminUser = await db.query.users.findFirst({
-        where: eq(users.email, "team@wear-run.com"),
-      });
-
-      if (!adminUser) return res.status(404).json({ error: "Admin user not found" });
-
-      const user = { claims: { sub: adminUser.id, email: adminUser.email } };
-      return req.login(user, (err) => {
-        if (err) return res.status(500).json({ error: "Login failed" });
-        return res.json({ success: true, message: "Logged in as admin", user });
-      });
-    } catch (error) {
-      return res.status(500).json({ error: String(error) });
-    }
-  });
+  if (process.env.NODE_ENV !== "production") {
+    const { default: devRouter } = await import("./dev.js");
+    app.use("/api/dev", devRouter);
+  }
 
   app.use(
     shrinkRay({
@@ -128,7 +112,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
+  logger.info(
+    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
+  );
 
   return httpServer;
 }

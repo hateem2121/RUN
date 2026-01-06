@@ -1,6 +1,6 @@
 # RUN Apparel B2B Platform
 
-A modern B2B e-commerce platform for athletic apparel manufacturing, built with **React 19 (Stable)**, **Express 5.1**, **Tailwind CSS v4 (Stable)**, and TypeScript.
+A modern B2B e-commerce platform for athletic apparel manufacturing, built with **React 19 (Stable)**, **Express 5.1**, **Tailwind CSS v4 (Stable)**, and **React Router 7** (formerly Remix).
 
 ---
 
@@ -47,23 +47,23 @@ Use this map to orient yourself before diving into specific files.
 
 ## Tech Stack
 
-| Layer             | Technology               | Version       |
-| ----------------- | ------------------------ | ------------- |
-| **Frontend**      | React                    | 19.0 (Stable) |
-| **Build Tool**    | Vite                     | 6.0.0         |
-| **Styling**       | Tailwind CSS             | 4.0 (Stable)  |
-| **Server**        | Express                  | 5.1 (Stable)  |
-| **Database**      | PostgreSQL + Drizzle ORM | Latest        |
-| **State**         | TanStack Query           | 5.x           |
-| **Routing**       | React Router             | 7.x           |
-| **Components**    | shadcn/ui + Radix        | Latest        |
-| **Linting**       | Biome                    | 2.3+          |
-| **Runtime**       | Node.js                  | 20+           |
-| **E2E Testing**   | Playwright               | Latest        |
-| **Observability** | Sentry                   | Latest        |
-| **Caching**       | LRU + Upstash Redis (L2) | Latest        |
-| **Documentation** | OpenAPI / Swagger        | 3.0           |
-| **Testing**       | Vitest + Supertest       | Latest        |
+| Layer             | Technology               | Version         |
+| ----------------- | ------------------------ | --------------- |
+| **Frontend**      | React                    | 19.0 (Stable)   |
+| **Build Tool**    | Vite                     | 6.0.0           |
+| **Styling**       | Tailwind CSS             | 4.0 (Stable)    |
+| **Server**        | Express                  | 5.1 (Stable)    |
+| **Database**      | PostgreSQL + Drizzle ORM | Latest          |
+| **State**         | TanStack Query           | 5.x             |
+| **Routing**       | React Router             | 7.x (Framework) |
+| **Components**    | shadcn/ui + Radix        | Latest          |
+| **Linting**       | Biome                    | 2.3+            |
+| **Runtime**       | Node.js                  | 20+             |
+| **E2E Testing**   | Playwright               | Latest          |
+| **Observability** | Sentry                   | Latest          |
+| **Caching**       | LRU + Upstash Redis (L2) | Latest          |
+| **Documentation** | OpenAPI / Swagger        | 3.0             |
+| **Testing**       | Vitest + Supertest       | Latest          |
 
 ---
 
@@ -292,7 +292,7 @@ const buttonVariants = cva("base", { variants: {...} });
 <p className="text-gray-500">Don't do this</p>
 ```
 
-See `docs/CSS_ARCHITECTURE.md` for details.
+See `docs/guides/STYLING_V4.md` for details.
 
 ---
 
@@ -338,7 +338,7 @@ export function Component({ className, ...props }) {
 | --------------- | -------- | -------------- | ------------------------------------ |
 | **Linting**     | Biome    | ESLint         | Use `biomejs.biome` VSCode extension |
 | **API Testing** | Bruno    | Thunder Client | FOSS policy                          |
-| **Security**    | Trivy    | -              | `trivy filesystem .`                 |
+| **Security**    | audit-ci | -              | `npm run check:audit`                |
 
 ### Performance Debugging
 
@@ -511,7 +511,7 @@ dist/
 
 ## Contributing
 
-1. Read `CONTRIBUTING.md`
+1. Read `docs/guides/CONTRIBUTING.md`
 2. Follow coding standards above
 3. Ensure all checks pass: `npm run ci:checks`
 4. Submit PR with description
@@ -537,19 +537,17 @@ dist/
 
 ## Documentation Index
 
-| Document                   | Description              |
-| -------------------------- | ------------------------ |
-| `README.md`                | This file                |
-| `CONTRIBUTING.md`          | Contribution guidelines  |
-| `CHANGELOG.md`             | Version history          |
-| `docs/CSS_ARCHITECTURE.md` | CSS architecture (10/10) |
-
-| `docs/STYLING_GUIDE.md` | Styling best practices |
-| `docs/api/endpoints.md` | API documentation |
-| `docs/testing/e2e.md` | E2E testing guide |
-| `docs/testing/A11Y.md` | Accessibility guide |
-| `docs/runbooks/` | Operational runbooks |
-| `docs/ssr-invariants.md` | SSR safety rules |
+| Document                      | Description                         |
+| ----------------------------- | ----------------------------------- |
+| `README.md`                   | This file                           |
+| `docs/guides/CONTRIBUTING.md` | Contribution guidelines             |
+| `CHANGELOG.md`                | Version history                     |
+| `docs/guides/STYLING_V4.md`   | CSS architecture & Styling (Merged) |
+| `docs/api/endpoints.md`       | API documentation                   |
+| `docs/testing/e2e.md`         | E2E testing guide                   |
+| `docs/testing/A11Y.md`        | Accessibility guide                 |
+| `docs/runbooks/`              | Operational runbooks                |
+| `docs/ssr-invariants.md`      | SSR safety rules                    |
 
 ---
 

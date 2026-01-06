@@ -1,5 +1,0 @@
-3D models placeholder directory. 
-The Three.js Fluid Glass component expects:
-- lens.glb
-- bar.glb
-- cube.glb

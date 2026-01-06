@@ -34,7 +34,7 @@ const steps = [
     name: "Linting",
     command: "npm",
     args: ["run", "lint"],
-    critical: false, // TODO: Enable strict linting after fixing 12k errors
+    critical: false, // Non-critical until current errors are resolved
   },
   {
     name: "Build Verification",
@@ -57,14 +57,14 @@ const steps = [
 ];
 
 // Add Audit separately as it might be flaky
-// if (!argv.ci) {
-//   steps.push({
-//     name: "Security Audit",
-//     command: "npm",
-//     args: ["audit", "--audit-level=high"],
-//     critical: false,
-//   });
-// }
+if (!argv.ci) {
+  steps.push({
+    name: "Security Audit",
+    command: "npm",
+    args: ["run", "check:audit"],
+    critical: false,
+  });
+}
 
 async function runCommand(step: {
   name: string;
@@ -89,7 +89,9 @@ async function runCommand(step: {
         resolve(true);
       } else {
         if (step.critical || argv.ci) {
-          console.error(chalk.red(`✘ ${step.name} failed (Exit code: ${code})`));
+          console.error(
+            chalk.red(`✘ ${step.name} failed (Exit code: ${code})`),
+          );
           resolve(false);
         } else {
           console.warn(chalk.yellow(`⚠ ${step.name} failed (Non-critical)`));
@@ -99,14 +101,18 @@ async function runCommand(step: {
     });
 
     child.on("error", (err) => {
-      console.error(chalk.red(`✘ ${step.name} failed to start: ${err.message}`));
+      console.error(
+        chalk.red(`✘ ${step.name} failed to start: ${err.message}`),
+      );
       resolve(false);
     });
   });
 }
 
 async function main() {
-  console.log(chalk.bold.magenta("🚀 Starting Technical Integrity Verification\n"));
+  console.log(
+    chalk.bold.magenta("🚀 Starting Technical Integrity Verification\n"),
+  );
 
   let success = true;
 
@@ -120,10 +126,14 @@ async function main() {
 
   console.log(chalk.bold("\n----------------------------------------"));
   if (success) {
-    console.log(chalk.bold.green("✅ VERIFICATION SUCCESSFUL: System is healthy."));
+    console.log(
+      chalk.bold.green("✅ VERIFICATION SUCCESSFUL: System is healthy."),
+    );
     process.exit(0);
   } else {
-    console.log(chalk.bold.red("❌ VERIFICATION FAILED: Please fix the errors above."));
+    console.log(
+      chalk.bold.red("❌ VERIFICATION FAILED: Please fix the errors above."),
+    );
     process.exit(1);
   }
 }

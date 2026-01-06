@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "doctype-style": "off",
+    "void-style": "off",
+    "no-inline-style": "off",
+    "element-required-attributes": "off"
+  }
+}

@@ -25,6 +25,7 @@
     "test:db:down": "docker-compose -f docker-compose.test.yml down",
     "test:integration:full": "npm run test:db:up && sleep 5 && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db npm run --workspace=@run-remix/server db:push -- --force && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db vitest run tests/integration && npm run test:db:down",
     "lint": "biome check .",
+    "lint:html": "npm run --workspace=@run-remix/client lint:html",
     "check": "npm run typecheck && npm run lint",
     "check:apply": "biome check --write .",
     "check:audit": "audit-ci --config .audit-ci.json",
@@ -33,6 +34,8 @@
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",
     "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
+    "ci:checks": "npm run verify:tech-integrity",
+    "verify:build": "npm run build && npm run check:bundle",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
     "prepare": "husky"
   },
