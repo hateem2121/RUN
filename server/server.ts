@@ -23,13 +23,13 @@ serverReady = (async () => {
     setupMiddleware(app);
     console.log("[Server] Middleware setup complete");
 
-    // 4. Setup Routes & SSR
-    await setupRoutes(app, httpServer);
-    console.log("[Server] Routes setup complete");
-
-    // 5. Setup Health Checks
+    // 4. Setup Health Checks (Must be before Routes/SSR to avoid shadowing)
     setupHealthChecks(app);
     console.log("[Server] Health checks setup complete");
+
+    // 5. Setup Routes & SSR
+    await setupRoutes(app, httpServer);
+    console.log("[Server] Routes setup complete");
 
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // Runs before error handlers but after API routes

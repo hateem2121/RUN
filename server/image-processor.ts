@@ -105,9 +105,9 @@ export async function processImage(
 }
 
 /**
- * Generate responsive image variants with aggressive compression
- * Targets: <500KB for all variants to fix 60-85s load times
- * Variants: 200px (thumbnail), 800px (medium), 1600px (large), compressed original
+ * Generate responsive image variants with efficient single-pass compression
+ * Optimized for speed and size to fix 60-85s cold-start delays.
+ * Uses sequential downsampling (Large -> Medium -> Thumbnail) for better performance.
  */
 export async function generateResponsiveVariants(
   fileBuffer: Buffer,
@@ -117,43 +117,37 @@ export async function generateResponsiveVariants(
   const baseName = originalFilename.replace(/\.[^/.]+$/, "");
   const sanitizedBaseName = baseName.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  // Helper function to compress image to target size
-  async function compressToTarget(
-    buffer: Buffer,
-    width: number,
-    targetSizeKB: number = 500,
-  ): Promise<Buffer> {
-    let quality = 78; // Reduced from 82 for smaller files with minimal quality loss
-    let compressed: Buffer;
+  // Fixed quality heuristic (safe for WebP, provides excellent compression vs quality)
+  const QUALITY = 75;
+  const EFFORT = 6; // Max effort for smallest file size at fixed quality
 
-    // Try WebP first (better compression)
-    compressed = await sharp(buffer)
-      .resize(width, null, { fit: "inside", withoutEnlargement: true })
-      .webp({ quality, effort: 6 }) // Added effort: 6 for better compression
-      .toBuffer();
+  // 1. Generate Compressed Original (Max 3000px)
+  const originalBuffer = await sharp(fileBuffer)
+    .resize(3000, null, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 80, effort: EFFORT }) // Slightly higher quality for the "original"
+    .toBuffer();
 
-    // If still too large, reduce quality iteratively
-    while (compressed.length > targetSizeKB * 1024 && quality > 55) {
-      // Reduced from 60 to 55
-      quality -= 5;
-      compressed = await sharp(buffer)
-        .resize(width, null, { fit: "inside", withoutEnlargement: true })
-        .webp({ quality, effort: 6 })
-        .toBuffer();
-    }
+  // 2. Generate Large Variant (1600px) from Original Buffer
+  // We use the original buffer for the first resize to maintain quality
+  const largeBuffer = await sharp(fileBuffer)
+    .resize(1600, null, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: QUALITY, effort: EFFORT })
+    .toBuffer();
 
-    return compressed;
-  }
+  // 3. Generate Medium Variant (800px) from Large Buffer (Sequential Downsampling)
+  // This is faster than processing from the original high-res buffer
+  const mediumBuffer = await sharp(largeBuffer)
+    .resize(800, null, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: QUALITY, effort: EFFORT })
+    .toBuffer();
 
-  // Generate variants in parallel for speed
-  const [thumbnailBuffer, mediumBuffer, largeBuffer, compressedOriginal] = await Promise.all([
-    compressToTarget(fileBuffer, 200, 50), // Thumbnail: 200px, <50KB
-    compressToTarget(fileBuffer, 800, 200), // Medium: 800px, <200KB
-    compressToTarget(fileBuffer, 1600, 500), // Large: 1600px, <500KB
-    compressToTarget(fileBuffer, 3000, 500), // Compressed original: max 3000px, <500KB
-  ]);
+  // 4. Generate Thumbnail Variant (200px) from Medium Buffer
+  const thumbnailBuffer = await sharp(mediumBuffer)
+    .resize(200, null, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: QUALITY, effort: EFFORT })
+    .toBuffer();
 
-  // Generate variant paths (use 'images' folder type as variants are processed images)
+  // Generate organized storage paths
   const thumbnailPath = generateOrganizedStoragePath(
     "images",
     `${randomString}-thumb-${sanitizedBaseName}.webp`,
@@ -172,14 +166,14 @@ export async function generateResponsiveVariants(
   );
 
   // Upload all variants in parallel
+  // This is safe even for many uploads as GCS handles high concurrency well
   await Promise.all([
     appStorageService.uploadAsset(thumbnailPath, thumbnailBuffer),
     appStorageService.uploadAsset(mediumPath, mediumBuffer),
     appStorageService.uploadAsset(largePath, largeBuffer),
-    appStorageService.uploadAsset(originalPath, compressedOriginal),
+    appStorageService.uploadAsset(originalPath, originalBuffer),
   ]);
 
-  // Return storage paths (not URLs) for all variants
   return {
     thumbnail: thumbnailPath,
     medium: mediumPath,

@@ -35,10 +35,19 @@ export function createCorsMiddleware() {
         return callback(null, true);
       }
 
-      // Development: Allow all origins
+      // Development: Allow local origins only
+      const isLocalHost = 
+        origin.startsWith("http://localhost:") || 
+        origin.startsWith("http://127.0.0.1:") ||
+        origin === "http://localhost" ||
+        origin === "http://127.0.0.1";
+
       if (config.app.environment === "development") {
-        logger.debug(`[CORS] Development mode - allowing origin: ${origin}`);
-        return callback(null, true);
+        if (isLocalHost) {
+          return callback(null, true);
+        }
+        logger.warn(`[CORS] Development block: ${origin} is not a local origin`);
+        return callback(new Error(`CORS policy: Local development only allows local origins`));
       }
 
       // Production/Staging: Strict origin validation

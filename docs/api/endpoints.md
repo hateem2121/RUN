@@ -6,10 +6,10 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 
 **🚀 Interactive Documentation**: All API endpoints are now available via Swagger UI at `/api/docs`. This is the recommended way to explore and test the API.
 
-**Recent Updates (November 2025)**:
+**Recent Updates (January 2026)**:
 
-- Product listings optimized from 25 fields → 7 fields (72% improvement)
-- Media listings optimized from 25 fields → 8 fields (68% improvement)
+- Product listings optimized from 25 fields → 20 fields (20% improvement)
+- Media listings select 24 fields (includes essential metadata)
 - Product detail context endpoint remains unchanged (full data required)
 
 ---
@@ -32,7 +32,7 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 
 **Purpose**: Retrieve paginated list of products for catalog listings
 
-**Optimization Applied**: Column selection reduced from 25 → 7 fields
+**Optimization Applied**: Column selection reduced from 25 → 20 fields
 
 #### Response Format
 
@@ -92,7 +92,7 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 }
 ```
 
-**AFTER (7 fields)**:
+**AFTER (20 fields)**:
 
 ```typescript
 {
@@ -216,7 +216,7 @@ Product cards in catalog listings only display: image, name, description preview
 
 **Purpose**: Retrieve paginated list of media assets for admin media library
 
-**Optimization Applied**: Column selection reduced from 25 → 8 fields
+**Optimization Applied**: Column selection defined via `MEDIA_DETAIL_COLUMNS` (24 fields)
 
 #### Response Format
 

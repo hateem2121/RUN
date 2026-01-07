@@ -5,9 +5,9 @@
 
 export * from "./image-optimizer.js";
 export * from "./media-utils.js";
-export * from "./memory-optimizer.js";
+
 export * from "./query-wrapper.js";
-export * from "./result-bridge.js";
+
 export * from "./slug-utils.js";
 export * from "./upload-config.js";
 export * from "./version.js";

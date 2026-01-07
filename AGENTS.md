@@ -2,7 +2,7 @@
 
 **Last Verified:** 2026-01-05
 
-This file serves as the source of truth for AI agents operating on this repository.
+This file serves as the operational map for AI agents. For detailed technical specifications (tools, extensions, MCP), see **[SYSTEM_CONTEXT.md](./SYSTEM_CONTEXT.md)**.
 
 ## Canonical Commands
 
@@ -17,17 +17,19 @@ This file serves as the source of truth for AI agents operating on this reposito
 ## Directory Structure
 
 - `client/`: React 19 + Vite 6 frontend.
-- `server/`: Express 5 + Node 20 backend.
+- `server/`: Express 5 + Node 22 backend.
 - `shared/`: Shared types and schemas.
-- `docs/`: Project documentation.
+- `docs/`: Project documentation (Structured by core, operations, development).
+- `scripts/`: Operational and setup scripts.
 
 ## Critical Rules
 
 1. **No ForwardRef:** Use props for refs (React 19).
 2. **Tailwind v4:** Use modern syntax (e.g. `outline-hidden`, `bg-black/50`).
-3. **Z-Index:** Use semantic tokens (e.g. `z-modal`) from `CONTRIBUTING.md`.
+3. **Z-Index:** Use semantic tokens (e.g. `z-modal`) from `docs/development/styling.md`.
 
 ## Key References
 
-- **Architecture:** `CODEMAP.md` (System Map) & `docs/architecture/REPORT.md` (Deep Dive)
+- **Architecture:** `docs/core/architecture.md` (System Map & Deep Dive)
+- **Environment:** `docs/operations/environment.md`
 - **Audits:** `docs/audits/` (Historical health checks)

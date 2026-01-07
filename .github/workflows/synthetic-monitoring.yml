@@ -7,10 +7,11 @@ on:
   workflow_dispatch: # Allow manual trigger
 
 env:
-  PRODUCTION_URL: ${{ secrets.PRODUCTION_URL || 'https://api.runapparel.com' }}
+  PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
 
 jobs:
   health-check:
+    if: github.event_name == 'workflow_dispatch' || (secrets.PRODUCTION_URL != null && secrets.PRODUCTION_URL != '')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     
@@ -18,6 +19,11 @@ jobs:
       - name: Health Endpoint Check
         id: health
         run: |
+          if [ -z "${{ env.PRODUCTION_URL }}" ]; then
+            echo "::warning::PRODUCTION_URL is not set. Skipping checks."
+            exit 0
+          fi
+          
           response=$(curl -sf -w "%{http_code}" -o response.json "${{ env.PRODUCTION_URL }}/health" || echo "000")
           echo "status_code=$response" >> $GITHUB_OUTPUT
           

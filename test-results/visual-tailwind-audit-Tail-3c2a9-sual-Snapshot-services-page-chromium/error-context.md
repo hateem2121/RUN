@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - link "RUN APPAREL (PVT) LTD" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e4]:
+        - heading "RUN APPAREL" [level=1] [ref=e5]
+        - paragraph [ref=e7]: (PVT) LTD
+    - img [ref=e12]
+  - generic [ref=e21]:
+    - generic [ref=e23]:
+      - heading "End-to-End Manufacturing Services" [level=1] [ref=e24]
+      - paragraph [ref=e25]: We provide comprehensive solutions for sportswear brands, from initial concept to final delivery. Our integrated approach ensures quality, efficiency, and scalability for your business.
+    - generic [ref=e29]:
+      - generic [ref=e32]:
+        - img [ref=e35]
+        - heading "Design & Development" [level=3] [ref=e40]
+        - paragraph [ref=e41]: From initial concept sketch to tech pack creation. Our design team helps bring your vision to life with professional guidance on fit, fabrication, and feasibility.
+        - list [ref=e42]:
+          - listitem [ref=e43]: Trend Analysis
+          - listitem [ref=e45]: Tech Packs
+          - listitem [ref=e47]: Pattern Making
+          - listitem [ref=e49]: 3D Prototyping
+      - generic [ref=e53]:
+        - img [ref=e56]
+        - heading "Fabric Sourcing" [level=3] [ref=e60]
+        - paragraph [ref=e61]: Access our extensive network of premium fabric suppliers. We source high-performance technical fabrics, finding the perfect balance between functionality and sustainability.
+        - list [ref=e62]:
+          - listitem [ref=e63]: Technical Fabrics
+          - listitem [ref=e65]: Sustainable Materials
+          - listitem [ref=e67]: Trims Sourcing
+          - listitem [ref=e69]: Lab Dips
+      - generic [ref=e73]:
+        - img [ref=e76]
+        - heading "Sample Making" [level=3] [ref=e79]
+        - paragraph [ref=e80]: Quick-turn sampling process to verify fit and quality before bulk production. We offer multiple rounds of sampling until the product meets your exact specifications.
+        - list [ref=e81]:
+          - listitem [ref=e82]: Proto Samples
+          - listitem [ref=e84]: Fit Samples
+          - listitem [ref=e86]: Salesman Samples
+          - listitem [ref=e88]: Pre-production Samples
+      - generic [ref=e92]:
+        - img [ref=e95]
+        - heading "Production Management" [level=3] [ref=e99]
+        - paragraph [ref=e100]: Full-service production oversight in our state-of-the-art facilities. We handle everything from cutting and sewing to finishing, ensuring efficiency and consistency.
+        - list [ref=e101]:
+          - listitem [ref=e102]: Cut & Sew
+          - listitem [ref=e104]: Printing & Embroidery
+          - listitem [ref=e106]: Strict Quality Control
+          - listitem [ref=e108]: Scalable Capacity
+      - generic [ref=e112]:
+        - img [ref=e115]
+        - heading "Logistics & Fulfillment" [level=3] [ref=e120]
+        - paragraph [ref=e121]: End-to-end logistics solutions including packaging, warehousing, and global shipping. We ensure your products reach their destination safely and on time.
+        - list [ref=e122]:
+          - listitem [ref=e123]: Custom Packaging
+          - listitem [ref=e125]: Freight Forwarding
+          - listitem [ref=e127]: Warehousing
+          - listitem [ref=e129]: Global Distribution
+      - generic [ref=e133]:
+        - img [ref=e136]
+        - heading "Brand Consultation" [level=3] [ref=e139]
+        - paragraph [ref=e140]: Strategic guidance for new and established brands. We help with collection planning, pricing strategy, and market positioning to maximize your brand's potential.
+        - list [ref=e141]:
+          - listitem [ref=e142]: Collection Planning
+          - listitem [ref=e144]: Cost Engineering
+          - listitem [ref=e146]: Market Analysis
+          - listitem [ref=e148]: Growth Strategy
+    - generic [ref=e151]:
+      - heading "Ready to start your project?" [level=2] [ref=e152]
+      - paragraph [ref=e153]: Contact us today to discuss your requirements and how we can help bring your sportswear collection to life.
+      - link "Get a Quote" [ref=e155] [cursor=pointer]:
+        - /url: /contact
+        - button "Get a Quote" [ref=e156]:
+          - text: Get a Quote
+          - img
+  - contentinfo [ref=e157]:
+    - generic [ref=e158]:
+      - generic [ref=e159]:
+        - heading "Start Your Order" [level=2] [ref=e160]:
+          - text: Start Your
+          - text: Order
+        - paragraph [ref=e163]: SUBMISSION CONFIRMED!
+        - generic [ref=e164]:
+          - generic [ref=e165]:
+            - generic [ref=e166]: "01"
+            - textbox "01" [ref=e167]:
+              - /placeholder: ENTER CORPORATION
+          - generic [ref=e168]:
+            - generic [ref=e170]: "02"
+            - textbox "02" [ref=e171]:
+              - /placeholder: NAME@DOMAIN.COM
+          - generic [ref=e172]:
+            - generic [ref=e174]: "03"
+            - textbox "03" [ref=e175]:
+              - /placeholder: FABRIC / QUANTITY / TIMELINE
+          - button "INITIALIZE ORDER" [ref=e176]
+      - generic [ref=e177]:
+        - generic [ref=e178]:
+          - heading "[ HQ COORDINATES ]" [level=4] [ref=e179]
+          - paragraph [ref=e180]:
+            - text: 142 Industrial Ave,
+            - text: Zurich, Switzerland
+            - text: "8005"
+        - generic [ref=e181]:
+          - heading "[ DIRECT LINE ]" [level=4] [ref=e182]
+          - link "hello@runapparel.com" [ref=e183] [cursor=pointer]:
+            - /url: mailto:hello@runapparel.com
+          - link "+41 44 123 45 67" [ref=e184] [cursor=pointer]:
+            - /url: tel:+41441234567
+      - generic [ref=e185]:
+        - generic [ref=e186]:
+          - heading "[ NETWORK ]" [level=4] [ref=e187]
+          - list [ref=e188]:
+            - listitem [ref=e189]:
+              - link "Instagram" [ref=e190] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e191]:
+              - link "LinkedIn" [ref=e192] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e193]:
+              - link "Behance" [ref=e194] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e195]:
+          - heading "[ PROTOCOLS ]" [level=4] [ref=e196]
+          - list [ref=e197]:
+            - listitem [ref=e198]:
+              - link "Privacy Policy" [ref=e199] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e200]:
+              - link "Terms of Service" [ref=e201] [cursor=pointer]:
+                - /url: "#"
+    - paragraph [ref=e203]: © 2026 RUN APPAREL (PVT) LTD — ALL RIGHTS RESERVED
+    - heading "RUN APPAREL" [level=1] [ref=e205]
+  - generic:
+    - button "Back to top":
+      - img
+```

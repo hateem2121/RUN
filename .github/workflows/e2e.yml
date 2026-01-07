@@ -30,15 +30,15 @@ jobs:
       - name: 🔨 Build Application
         run: npm run build
 
-      - name: 🚀 Start Production Server
+      - name: "🚀 Start Production Server"
         env:
           PORT: 3000
         run: npm run start &
       
-      - name: 🛡️ Policy Check: Z-Index
+      - name: "🛡️ Policy Check: Z-Index"
         run: ./scripts/prevent-z-index-bloat.sh
 
-      - name: 🧪 Run Proof Suite
+      - name: "🧪 Run Proof Suite"
         run: ./scripts/run-proof.sh
         env:
           CI: true

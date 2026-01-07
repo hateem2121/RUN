@@ -1,0 +1,127 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - link "RUN APPAREL (PVT) LTD" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e4]:
+        - heading "RUN APPAREL" [level=1] [ref=e5]
+        - paragraph [ref=e7]: (PVT) LTD
+    - button "Toggle theme" [ref=e9]:
+      - img [ref=e10]
+    - navigation "Desktop navigation dock" [ref=e14]:
+      - link "Home" [ref=e15] [cursor=pointer]:
+        - /url: /
+        - img [ref=e18]
+        - generic [ref=e22]: Home
+      - link "Products" [ref=e23] [cursor=pointer]:
+        - /url: /products
+        - img [ref=e26]
+        - generic [ref=e31]: Products
+      - link "About" [ref=e32] [cursor=pointer]:
+        - /url: /about
+        - img [ref=e35]
+        - generic [ref=e38]: About
+      - link "Manufacturing" [ref=e39] [cursor=pointer]:
+        - /url: /manufacturing
+        - img [ref=e42]
+        - generic [ref=e46]: Manufacturing
+      - link "Sustainability" [ref=e47] [cursor=pointer]:
+        - /url: /sustainability
+        - img [ref=e50]
+        - generic [ref=e53]: Sustainability
+      - link "Technology" [ref=e54] [cursor=pointer]:
+        - /url: /technology
+        - img [ref=e57]
+        - generic [ref=e60]: Technology
+      - link "Contact" [ref=e61] [cursor=pointer]:
+        - /url: /contact
+        - img [ref=e64]
+        - generic [ref=e67]: Contact
+    - text: 01 02 03 04 05 06 07
+  - generic [ref=e68]:
+    - banner "Sustainability hero section with interactive water ripple effects" [ref=e69]:
+      - generic [ref=e70]:
+        - heading "Sustainable Future" [level=1] [ref=e71]
+        - paragraph [ref=e72]: Leading the way in eco-friendly sportswear manufacturing
+        - link "Learn More" [ref=e74] [cursor=pointer]:
+          - /url: /contact
+          - text: Learn More
+          - img
+    - main "Sustainability impact metrics" [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - heading "Our Impact" [level=2] [ref=e79]
+          - paragraph [ref=e80]: Measuring our commitment to environmental sustainability through real metrics and achievements.
+        - group "Sustainability metrics"
+        - paragraph [ref=e82]: No impact metrics configured. Add metrics in the admin panel to display here.
+    - generic [ref=e88]:
+      - heading "Join Our Sustainable Journey" [level=2] [ref=e89]
+      - paragraph [ref=e90]: Partner with us to create eco-friendly sportswear that performs as well as it protects our planet
+      - link "Get Started" [ref=e91] [cursor=pointer]:
+        - /url: /contact
+        - text: Get Started
+        - img
+  - contentinfo [ref=e92]:
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - heading "Start Your Order" [level=2] [ref=e95]:
+          - text: Start Your
+          - text: Order
+        - paragraph [ref=e98]: SUBMISSION CONFIRMED!
+        - generic [ref=e99]:
+          - generic [ref=e100]:
+            - generic [ref=e101]: "01"
+            - textbox "01" [ref=e102]:
+              - /placeholder: ENTER CORPORATION
+          - generic [ref=e103]:
+            - generic [ref=e105]: "02"
+            - textbox "02" [ref=e106]:
+              - /placeholder: NAME@DOMAIN.COM
+          - generic [ref=e107]:
+            - generic [ref=e109]: "03"
+            - textbox "03" [ref=e110]:
+              - /placeholder: FABRIC / QUANTITY / TIMELINE
+          - button "INITIALIZE ORDER" [ref=e111]
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - heading "[ HQ COORDINATES ]" [level=4] [ref=e114]
+          - paragraph [ref=e115]:
+            - text: 142 Industrial Ave,
+            - text: Zurich, Switzerland
+            - text: "8005"
+        - generic [ref=e116]:
+          - heading "[ DIRECT LINE ]" [level=4] [ref=e117]
+          - link "hello@runapparel.com" [ref=e118] [cursor=pointer]:
+            - /url: mailto:hello@runapparel.com
+          - link "+41 44 123 45 67" [ref=e119] [cursor=pointer]:
+            - /url: tel:+41441234567
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - heading "[ NETWORK ]" [level=4] [ref=e122]
+          - list [ref=e123]:
+            - listitem [ref=e124]:
+              - link "Instagram" [ref=e125] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e126]:
+              - link "LinkedIn" [ref=e127] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e128]:
+              - link "Behance" [ref=e129] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e130]:
+          - heading "[ PROTOCOLS ]" [level=4] [ref=e131]
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - link "Privacy Policy" [ref=e134] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e135]:
+              - link "Terms of Service" [ref=e136] [cursor=pointer]:
+                - /url: "#"
+    - paragraph [ref=e138]: © 2026 RUN APPAREL (PVT) LTD — ALL RIGHTS RESERVED
+    - heading "RUN APPAREL" [level=1] [ref=e140]
+  - generic:
+    - button "Back to top":
+      - img
+```

@@ -1,0 +1,70 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - link "RUN APPAREL (PVT) LTD" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e4]:
+        - heading "RUN APPAREL" [level=1] [ref=e5]
+        - paragraph [ref=e7]: (PVT) LTD
+    - img [ref=e12]
+  - generic [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]: RUN APPAREL (PVT) LTD
+      - generic [ref=e24]: EST. 1889
+    - heading "0" [level=1] [ref=e26]
+    - generic [ref=e28]:
+      - generic [ref=e29]: "[INITIALIZING KINETIC FRAMEWORK]"
+      - generic [ref=e30]: "SYSTEM STATUS: ONLINE"
+  - main [ref=e32]:
+    - generic [ref=e34]:
+      - generic:
+        - generic:
+          - generic:
+            - heading "YOUR STRATEGIC" [level=1]
+          - generic:
+            - heading "B2B MANUFACTURING" [level=1]
+          - generic:
+            - heading "PARTNER" [level=1]
+      - img [ref=e40]:
+        - generic [ref=e42]: Scroll Down • Scroll Down •
+    - generic [ref=e45]:
+      - generic:
+        - generic:
+          - img "Factory Background"
+      - generic [ref=e47]:
+        - heading "The Evolution of Athletic Craftsmanship" [level=2] [ref=e48]:
+          - text: The Evolution of
+          - text: Athletic Craftsmanship
+        - paragraph [ref=e49]: Blending century-old artisanal techniques with cutting-edge robotic precision. We don't just manufacture; we engineer performance.
+      - generic [ref=e50]:
+        - generic [ref=e51]:
+          - heading "135" [level=3] [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: "135"
+              - text: "000"
+          - heading "Years of Heritage" [level=4] [ref=e56]
+          - paragraph [ref=e57]: Legacy defining craftsmanship since 1889.
+        - generic [ref=e58]:
+          - heading "200+" [level=3] [ref=e59]:
+            - generic [ref=e60]:
+              - generic [ref=e61]: 200+
+              - text: "000"
+          - heading "Master Artisans" [level=4] [ref=e63]
+          - paragraph [ref=e64]: Dedicated specialists in technical apparel.
+        - generic [ref=e65]:
+          - heading "100K" [level=3] [ref=e66]:
+            - generic [ref=e67]:
+              - generic [ref=e68]: 100K
+              - text: "000"
+          - heading "Monthly Capacity" [level=4] [ref=e70]
+          - paragraph [ref=e71]: Units produced with precision engineering.
+    - region "Product Categories" [ref=e73]:
+      - generic [ref=e75]:
+        - listitem [ref=e76]:
+          - heading "Team Wear ●" [level=2] [ref=e77]:
+            - text: Team Wear
+            - generic [ref=e78]: ●
+        - listitem [ref=e79]
+```

@@ -43,3 +43,6 @@ cookies.txt
 curl_debug.txt
 FINAL_REMEDIATION_PROMPT.txt
 .turbo
+playwright-report/
+test-results/
+openapi-spec.json

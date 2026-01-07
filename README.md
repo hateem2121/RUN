@@ -7,7 +7,8 @@ A modern B2B e-commerce platform for athletic apparel manufacturing, built with 
 ## Table of Contents
 
 - [Overview](#overview)
-- [CodeMap (System Map)](#codemap-system-map)
+- [System Context](#system-context)
+- [Architecture Guide](#architecture-guide)
 - [Tech Stack](#tech-stack)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
@@ -35,13 +36,19 @@ RUN Apparel is a comprehensive B2B platform enabling:
 
 ---
 
-## CodeMap (System Map)
+## System Context
 
-For a high-level visual guide to how the system works, including architecture diagrams, data flows, and directory maps, please see:
+👉 **[System Context](./SYSTEM_CONTEXT.md)** 👈
 
-👉 **[CODEMAP.md](./CODEMAP.md)** 👈
+Comprehensive technical reference for tools, extensions, MCP servers, and system architecture.
 
-Use this map to orient yourself before diving into specific files.
+---
+
+## Architecture Guide
+
+👉 **[Architecture Guide](./docs/core/architecture.md)** 👈
+
+Use this guide to orient yourself before diving into specific files.
 
 ---
 
@@ -49,7 +56,7 @@ Use this map to orient yourself before diving into specific files.
 
 | Layer             | Technology               | Version         |
 | ----------------- | ------------------------ | --------------- |
-| **Frontend**      | React                    | 19.0 (Stable)   |
+| **Frontend**      | React                    | 19.2 (Stable)   |
 | **Build Tool**    | Vite                     | 6.0.0           |
 | **Styling**       | Tailwind CSS             | 4.0 (Stable)    |
 | **Server**        | Express                  | 5.1 (Stable)    |
@@ -58,7 +65,7 @@ Use this map to orient yourself before diving into specific files.
 | **Routing**       | React Router             | 7.x (Framework) |
 | **Components**    | shadcn/ui + Radix        | Latest          |
 | **Linting**       | Biome                    | 2.3+            |
-| **Runtime**       | Node.js                  | 20+             |
+| **Runtime**       | Node.js                  | 22              |
 | **E2E Testing**   | Playwright               | Latest          |
 | **Observability** | Sentry                   | Latest          |
 | **Caching**       | LRU + Upstash Redis (L2) | Latest          |
@@ -106,7 +113,7 @@ npm run db:push
 npm run dev
 ```
 
-The app will be available at `http://localhost:5001` (Dev) or `http://localhost:5000` (Docker).
+The app will be available at `http://localhost:5001`. For Docker environments (via `docker-compose`), it also runs on `http://localhost:5001`.
 
 ### 6. Verify Integrity
 
@@ -116,9 +123,9 @@ npm run verify:tech-integrity
 
 ### Environment Variables
 
-Create a `server/.env` file (for the backend) and a `.env` file (for the frontend, if needed).
+Create a root `.env` file following the structure in `.env.example`.
 
-**Server (`server/.env`):**
+**Root (`.env`):**
 
 ```bash
 # Server Configuration
@@ -160,12 +167,15 @@ RUN-Remix/
 │   ├── schema.ts               # Drizzle Schema + Zod
 │   └── package.json            # "type": "module"
 │
-├── scripts/                    # Build & verification scripts
+├── scripts/                    # Build & setup scripts
+│   ├── setup/                 # Environment and CLI setup
 │   └── verify-tech-integrity.ts
 │
 ├── docs/                      # Documentation
 │   ├── api/                   # API documentation
-│   ├── runbooks/              # Operational guides
+│   ├── operations/            # Operational guides
+│   ├── core/                  # Architecture & Tech Stack
+│   ├── development/           # Development guides
 │   └── testing/               # Testing guides
 │
 └── tests/                     # Test suites
@@ -190,11 +200,11 @@ npm run lint:html        # HTML validation
 ### Build Scripts
 
 ```bash
-npm run build            # Full production build
+npm run build            # Full production build (Required before start)
 npm run build:client     # Build client with SSR manifest
 npm run build:ssr        # Build SSR entry
 npm run build:server     # TypeScript compile + esbuild bundle
-npm run start            # Start production server
+npm run start            # Start production server (Delegates to @run-remix/server)
 ```
 
 ### Database Scripts
@@ -292,7 +302,7 @@ const buttonVariants = cva("base", { variants: {...} });
 <p className="text-gray-500">Don't do this</p>
 ```
 
-See `docs/guides/STYLING_V4.md` for details.
+See `docs/development/styling.md` for details.
 
 ---
 
@@ -398,7 +408,7 @@ npm run verify:ssr           # Full SSR verification (Unit Tests)
 ### Base URL
 
 - **Development**: `http://localhost:5001/api`
-- **Docker/Container**: `http://localhost:5000/api`
+- **Docker/Container**: `http://localhost:5001/api`
 - **Production**: `https://api.runapparel.com/api`
 
 ### API Documentation (`/api/docs`)
@@ -511,7 +521,7 @@ dist/
 
 ## Contributing
 
-1. Read `docs/guides/CONTRIBUTING.md`
+1. Read `docs/development/contributing.md`
 2. Follow coding standards above
 3. Ensure all checks pass: `npm run ci:checks`
 4. Submit PR with description
@@ -537,17 +547,16 @@ dist/
 
 ## Documentation Index
 
-| Document                      | Description                         |
-| ----------------------------- | ----------------------------------- |
-| `README.md`                   | This file                           |
-| `docs/guides/CONTRIBUTING.md` | Contribution guidelines             |
-| `CHANGELOG.md`                | Version history                     |
-| `docs/guides/STYLING_V4.md`   | CSS architecture & Styling (Merged) |
-| `docs/api/endpoints.md`       | API documentation                   |
-| `docs/testing/e2e.md`         | E2E testing guide                   |
-| `docs/testing/A11Y.md`        | Accessibility guide                 |
-| `docs/runbooks/`              | Operational runbooks                |
-| `docs/ssr-invariants.md`      | SSR safety rules                    |
+| Document                           | Description                |
+| ---------------------------------- | -------------------------- |
+| `README.md`                        | This file                  |
+| `docs/development/contributing.md` | Contribution guidelines    |
+| `CHANGELOG.md`                     | Version history            |
+| `docs/development/styling.md`      | CSS architecture & Styling |
+| `docs/api/endpoints.md`            | API documentation          |
+| `docs/testing/testing-e2e-prod.md` | E2E testing guide          |
+| `docs/operations/`                 | Operational runbooks       |
+| `docs/core/ssr-invariants.md`      | SSR safety rules           |
 
 ---
 
@@ -557,7 +566,7 @@ Proprietary - All rights reserved.
 
 ---
 
-_Last updated: December 2025_  
+_Last updated: January 2026_  
 _CSS Architecture Score: 10/10_  
 _Performance Score: 92/100_
 

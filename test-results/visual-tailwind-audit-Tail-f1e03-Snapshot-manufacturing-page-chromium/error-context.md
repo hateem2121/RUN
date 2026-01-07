@@ -1,0 +1,73 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - link "RUN APPAREL (PVT) LTD" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e4]:
+        - heading "RUN APPAREL" [level=1] [ref=e5]
+        - paragraph [ref=e7]: (PVT) LTD
+    - img [ref=e12]
+  - contentinfo [ref=e32]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - heading "Start Your Order" [level=2] [ref=e35]:
+          - text: Start Your
+          - text: Order
+        - paragraph [ref=e38]: SUBMISSION CONFIRMED!
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]: "01"
+            - textbox "01" [ref=e42]:
+              - /placeholder: ENTER CORPORATION
+          - generic [ref=e43]:
+            - generic [ref=e45]: "02"
+            - textbox "02" [ref=e46]:
+              - /placeholder: NAME@DOMAIN.COM
+          - generic [ref=e47]:
+            - generic [ref=e49]: "03"
+            - textbox "03" [ref=e50]:
+              - /placeholder: FABRIC / QUANTITY / TIMELINE
+          - button "INITIALIZE ORDER" [ref=e51]
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - heading "[ HQ COORDINATES ]" [level=4] [ref=e54]
+          - paragraph [ref=e55]:
+            - text: 142 Industrial Ave,
+            - text: Zurich, Switzerland
+            - text: "8005"
+        - generic [ref=e56]:
+          - heading "[ DIRECT LINE ]" [level=4] [ref=e57]
+          - link "hello@runapparel.com" [ref=e58] [cursor=pointer]:
+            - /url: mailto:hello@runapparel.com
+          - link "+41 44 123 45 67" [ref=e59] [cursor=pointer]:
+            - /url: tel:+41441234567
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - heading "[ NETWORK ]" [level=4] [ref=e62]
+          - list [ref=e63]:
+            - listitem [ref=e64]:
+              - link "Instagram" [ref=e65] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e66]:
+              - link "LinkedIn" [ref=e67] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e68]:
+              - link "Behance" [ref=e69] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e70]:
+          - heading "[ PROTOCOLS ]" [level=4] [ref=e71]
+          - list [ref=e72]:
+            - listitem [ref=e73]:
+              - link "Privacy Policy" [ref=e74] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e75]:
+              - link "Terms of Service" [ref=e76] [cursor=pointer]:
+                - /url: "#"
+    - paragraph [ref=e78]: © 2026 RUN APPAREL (PVT) LTD — ALL RIGHTS RESERVED
+    - heading "RUN APPAREL" [level=1] [ref=e80]
+  - generic:
+    - button "Back to top":
+      - img
+```

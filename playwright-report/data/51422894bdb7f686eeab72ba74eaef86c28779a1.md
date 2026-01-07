@@ -1,0 +1,205 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - link "RUN APPAREL (PVT) LTD" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e4]:
+        - heading "RUN APPAREL" [level=1] [ref=e5]
+        - paragraph [ref=e7]: (PVT) LTD
+    - button "Toggle theme" [ref=e9]:
+      - img [ref=e10]
+    - navigation "Desktop navigation dock" [ref=e14]:
+      - link "Home" [ref=e15] [cursor=pointer]:
+        - /url: /
+        - img [ref=e18]
+        - generic [ref=e22]: Home
+      - link "Products" [ref=e23] [cursor=pointer]:
+        - /url: /products
+        - img [ref=e26]
+        - generic [ref=e31]: Products
+      - link "About" [ref=e32] [cursor=pointer]:
+        - /url: /about
+        - img [ref=e35]
+        - generic [ref=e38]: About
+      - link "Manufacturing" [ref=e39] [cursor=pointer]:
+        - /url: /manufacturing
+        - img [ref=e42]
+        - generic [ref=e46]: Manufacturing
+      - link "Sustainability" [ref=e47] [cursor=pointer]:
+        - /url: /sustainability
+        - img [ref=e50]
+        - generic [ref=e53]: Sustainability
+      - link "Technology" [ref=e54] [cursor=pointer]:
+        - /url: /technology
+        - img [ref=e57]
+        - generic [ref=e60]: Technology
+      - link "Contact" [ref=e61] [cursor=pointer]:
+        - /url: /contact
+        - img [ref=e64]
+        - generic [ref=e67]: Contact
+    - text: 01 02 03 04 05 06 07
+  - generic [ref=e70]:
+    - generic [ref=e73]:
+      - heading "Get In Touch" [level=1] [ref=e74]
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]: First Name *
+            - textbox "First Name *" [ref=e79]
+          - generic [ref=e80]:
+            - generic [ref=e81]: Last Name *
+            - textbox "Last Name *" [ref=e82]
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: Job Title
+            - textbox "Job Title" [ref=e86]
+          - generic [ref=e87]:
+            - generic [ref=e88]: Company Name
+            - textbox "Company Name" [ref=e89]
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: Email Address *
+            - textbox "Email Address * 02" [ref=e93]
+          - generic [ref=e94]:
+            - generic [ref=e95]: Country *
+            - button "Select Country" [ref=e97]:
+              - generic [ref=e99]: Select Country
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]: Preferred Platform
+            - button "Phone Call" [ref=e104]:
+              - generic [ref=e105]: Phone Call
+          - generic [ref=e106]:
+            - generic [ref=e107]: Contact Number / Handle
+            - generic [ref=e108]:
+              - generic [ref=e109]: "--"
+              - textbox "Contact Number / Handle" [ref=e110]
+        - generic [ref=e111]:
+          - generic [ref=e112]: Message *
+          - textbox "Message *" [ref=e113]
+        - generic [ref=e114]:
+          - generic [ref=e115]: How should we contact you?
+          - radiogroup [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]:
+                - radio "Email" [checked] [ref=e119]:
+                  - img [ref=e121]
+                - radio [checked]
+                - generic [ref=e123]: Email
+              - generic [ref=e124]:
+                - radio "Your Preferred Platform" [ref=e125]
+                - radio
+                - generic [ref=e126]: Your Preferred Platform
+        - generic [ref=e127]:
+          - text: "Do not fill this out if you are human:"
+          - textbox [ref=e128]
+        - generic [ref=e129]:
+          - button "Get a Response Within 24 Hours" [ref=e130]
+          - paragraph [ref=e131]: We value your privacy and will never share your information.
+    - generic [ref=e132]:
+      - generic [ref=e134]:
+        - img [ref=e135]
+        - heading "LOCATION" [level=2] [ref=e138]
+        - paragraph [ref=e139]:
+          - text: 13km Daska Road
+          - text: Sialkot 51040, Pakistan
+        - button "GET DIRECTIONS" [ref=e140]
+      - generic [ref=e142]:
+        - img [ref=e143]
+        - heading "CONTACT" [level=2] [ref=e146]
+        - list [ref=e147]:
+          - listitem [ref=e148]:
+            - link "team@run-apparel.com" [ref=e149] [cursor=pointer]:
+              - /url: mailto:team@run-apparel.com
+          - listitem [ref=e150]:
+            - link "+92 336 1777313" [ref=e151] [cursor=pointer]:
+              - /url: tel:+92 336 1777313
+      - generic [ref=e153]:
+        - img [ref=e154]
+        - heading "TRADING HOURS" [level=2] [ref=e157]
+        - generic [ref=e158]:
+          - paragraph [ref=e159]:
+            - strong [ref=e160]: "Monday - Friday:"
+            - text: 9:00 AM - 6:00 PM
+          - paragraph [ref=e161]:
+            - strong [ref=e162]: "Saturday:"
+            - text: 9:00 AM - 2:00 PM
+          - paragraph [ref=e163]:
+            - strong [ref=e164]: "Sunday:"
+            - text: Closed
+      - generic [ref=e166]:
+        - img [ref=e167]
+        - heading "FOLLOW US" [level=2] [ref=e173]
+        - list [ref=e174]:
+          - listitem [ref=e175]:
+            - link "facebook" [ref=e176] [cursor=pointer]:
+              - /url: https://facebook.com/runapparel
+          - listitem [ref=e177]:
+            - link "linkedin" [ref=e178] [cursor=pointer]:
+              - /url: https://linkedin.com/company/run-apparel
+          - listitem [ref=e179]:
+            - link "instagram" [ref=e180] [cursor=pointer]:
+              - /url: https://instagram.com/runapparel
+  - contentinfo [ref=e181]:
+    - generic [ref=e182]:
+      - generic [ref=e183]:
+        - heading "Start Your Order" [level=2] [ref=e184]:
+          - text: Start Your
+          - text: Order
+        - paragraph [ref=e187]: SUBMISSION CONFIRMED!
+        - generic [ref=e188]:
+          - generic [ref=e189]:
+            - generic [ref=e190]: "01"
+            - textbox "01" [ref=e191]:
+              - /placeholder: ENTER CORPORATION
+          - generic [ref=e192]:
+            - generic [ref=e194]: "02"
+            - textbox "NAME@DOMAIN.COM" [ref=e195]
+          - generic [ref=e196]:
+            - generic [ref=e198]: "03"
+            - textbox "03" [ref=e199]:
+              - /placeholder: FABRIC / QUANTITY / TIMELINE
+          - button "INITIALIZE ORDER" [ref=e200]
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - heading "[ HQ COORDINATES ]" [level=4] [ref=e203]
+          - paragraph [ref=e204]:
+            - text: 142 Industrial Ave,
+            - text: Zurich, Switzerland
+            - text: "8005"
+        - generic [ref=e205]:
+          - heading "[ DIRECT LINE ]" [level=4] [ref=e206]
+          - link "hello@runapparel.com" [ref=e207] [cursor=pointer]:
+            - /url: mailto:hello@runapparel.com
+          - link "+41 44 123 45 67" [ref=e208] [cursor=pointer]:
+            - /url: tel:+41441234567
+      - generic [ref=e209]:
+        - generic [ref=e210]:
+          - heading "[ NETWORK ]" [level=4] [ref=e211]
+          - list [ref=e212]:
+            - listitem [ref=e213]:
+              - link "Instagram" [ref=e214] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e215]:
+              - link "LinkedIn" [ref=e216] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e217]:
+              - link "Behance" [ref=e218] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e219]:
+          - heading "[ PROTOCOLS ]" [level=4] [ref=e220]
+          - list [ref=e221]:
+            - listitem [ref=e222]:
+              - link "Privacy Policy" [ref=e223] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e224]:
+              - link "Terms of Service" [ref=e225] [cursor=pointer]:
+                - /url: "#"
+    - paragraph [ref=e227]: © 2026 RUN APPAREL (PVT) LTD — ALL RIGHTS RESERVED
+    - heading "RUN APPAREL" [level=1] [ref=e229]
+  - generic:
+    - button "Back to top":
+      - img
+```

@@ -49,6 +49,24 @@ const steps = [
     critical: false, // Don't fail entire integrity check if bundle is slightly off, unless in CI
   },
   {
+    name: "Link Integrity",
+    command: "npx",
+    args: [
+      "markdown-link-check",
+      "README.md",
+      "SYSTEM_CONTEXT.md",
+      "AGENTS.md",
+    ],
+    critical: true,
+  },
+  {
+    name: "Dead Code Check",
+    command: "npx",
+    args: ["knip", "--no-exit-code"],
+    critical: false,
+    env: { DATABASE_URL: "postgres://dummy:dummy@localhost:5432/dummy" },
+  },
+  {
     name: "SSR Invariant Check",
     command: "npm",
     args: ["run", "test", "tests/unit/ssr/invariants.test.ts"],
@@ -79,6 +97,7 @@ async function runCommand(step: {
     const child = spawn(step.command, step.args, {
       stdio: "inherit",
       shell: true,
+      env: { ...process.env, ...(step as any).env },
     });
 
     child.on("close", (code) => {

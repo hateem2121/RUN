@@ -72,6 +72,13 @@ export function securityHeaders(
       crossOriginResourcePolicy: { policy: "cross-origin" },
     })(req, res, next);
 
+    // P1 SECURITY: Permissions Policy
+    // Restricts sensitive browser features
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    );
+
     // P1 FIX: CSP Reporting (Report-Only)
     // Helps catch violations before they break production
     if (config.monitoring?.sentry?.reportUri) {
