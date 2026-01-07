@@ -29,6 +29,7 @@ test.describe("Accessibility Audit", () => {
 
       // Log violations for debugging
       if (accessibilityScanResults.violations.length > 0) {
+        // biome-ignore lint/suspicious/noConsole: debugging output
         console.log(
           "Accessibility violations:",
           JSON.stringify(accessibilityScanResults.violations, null, 2),

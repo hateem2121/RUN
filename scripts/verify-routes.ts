@@ -16,7 +16,8 @@ async function verifyRoutes() {
     let errors = 0;
     let _checked = 0;
 
-    while ((match = importRegex.exec(content)) !== null) {
+    match = importRegex.exec(content);
+    while (match !== null) {
       const importPath = match[1]!;
       const fullPath = path.resolve(routesDir, importPath.replace(/\.js$/, ".ts"));
 
@@ -27,6 +28,7 @@ async function verifyRoutes() {
       } catch {
         errors++;
       }
+      match = importRegex.exec(content);
     }
 
     if (errors > 0) {

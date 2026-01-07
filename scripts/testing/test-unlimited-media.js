@@ -53,4 +53,5 @@ async function testUnlimitedCapacity() {
 }
 
 // Run the test
+// biome-ignore lint/suspicious/noConsole: allowed in script
 testUnlimitedCapacity().catch(console.error);

@@ -90,7 +90,7 @@
   },
   "scripts": {
     "test": "vitest run",
-    "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node20 --packages=external --format=esm --outfile=../dist/index.js",
+    "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node22 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "npx kill-port 5001 && pkill -f 'tsx watch' || true",
     "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
     "db:migrate": "drizzle-kit migrate",

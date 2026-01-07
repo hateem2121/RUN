@@ -13,6 +13,10 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   // API Routes
   await registerRoutes(app);
 
+  // API Documentation UI
+  const { default: docsRouter } = await import("../routes/docs.js");
+  app.use("/docs", docsRouter);
+
   // API Documentation
   app.get("/api-docs", async (_req, res) => {
     try {

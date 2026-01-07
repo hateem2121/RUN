@@ -38,7 +38,7 @@ RUN Apparel is a comprehensive B2B platform enabling:
 
 ## System Context
 
-👉 **[System Context](./SYSTEM_CONTEXT.md)** 👈
+👉 **[System Context](./docs/overview.md)** 👈
 
 Comprehensive technical reference for tools, extensions, MCP servers, and system architecture.
 

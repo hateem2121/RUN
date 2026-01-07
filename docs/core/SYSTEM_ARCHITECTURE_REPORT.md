@@ -5,7 +5,7 @@
 
 ## 1. Executive Overview
 
-*   **Modern & Bleeding Edge Stack**: The system is built on **React 19 (RC/Beta)**, **Tailwind CSS v4**, and **Express 5**.
+*   **Modern & Bleeding Edge Stack**: The system is built on **React 19 (Stable)**, **Tailwind CSS v4**, and **Express 5**.
 *   **Robust Monorepo Structure**: Uses **Turbo Repo** and **npm workspaces** with a strict separation of concerns.
 *   **Standardized Data Layer**: **Neon Serverless (HTTP)** connection via standard `drizzle-orm` driver, ensuring standardized reliability.
 *   **Automated Documentation**: System context and architecture docs are **auto-generated** to prevent drift.

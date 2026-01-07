@@ -277,7 +277,9 @@ test.describe("CSS Load Order Analysis", () => {
     await page.goto("/", { waitUntil: "networkidle" });
 
     // Log timing for analysis
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("CSS load times:", cssLoadTimes);
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("JS load times:", jsLoadTimes);
 
     // CSS should load before or around the same time as main JS
@@ -305,6 +307,7 @@ test.describe("Stacking Context Analysis", () => {
       return null;
     });
 
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("Header z-index:", headerZIndex);
     expect(headerZIndex).not.toBe("auto");
   });
@@ -320,6 +323,7 @@ test.describe("Stacking Context Analysis", () => {
       return Array.from(portals).map((p) => window.getComputedStyle(p).zIndex);
     });
 
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("Portal z-indexes:", portalZIndexes);
   });
 });

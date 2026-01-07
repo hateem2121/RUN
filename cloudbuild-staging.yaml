@@ -1,0 +1,42 @@
+steps:
+  # Build the staging container
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/run-remix-staging:$SHORT_SHA", "."]
+
+  # Push to GCR
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/run-remix-staging:$SHORT_SHA"]
+
+  # Upload staging assets
+  - name: "gcr.io/cloud-builders/gsutil"
+    args: ["-m", "rsync", "-r", "-c", "dist/public", "gs://$PROJECT_ID-staging-assets"]
+
+  # Deploy to Cloud Run (Staging Service)
+  # No canary needed for staging - direct replace
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "run-remix-staging"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/run-remix-staging:$SHORT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--memory"
+      - "512Mi"
+      - "--cpu"
+      - "1"
+      - "--set-env-vars"
+      - "NODE_ENV=production"
+      - "--set-env-vars"
+      - "ENVIRONMENT=staging"
+
+images:
+  - "gcr.io/$PROJECT_ID/run-remix-staging:$SHORT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

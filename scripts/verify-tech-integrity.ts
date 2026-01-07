@@ -50,7 +50,7 @@ const steps = [
   {
     name: "Link Integrity",
     command: "npx",
-    args: ["markdown-link-check", "README.md", "SYSTEM_CONTEXT.md", "AGENTS.md"],
+    args: ["markdown-link-check", "README.md", "AGENTS.md"],
     critical: true,
   },
   {

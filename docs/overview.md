@@ -1,8 +1,8 @@
-# FULL_SYSTEM_CONTEXT
+# System Overview & Architecture
 
-**Generated At:** 2026-01-07T17:25:34+05:00
-**Repo Name:** run-remix-monorepo
 **Scope:** Full Stack Audit
+**Repo:** `run-remix-monorepo`
+**Status:** Canonical Source of Truth
 
 ---
 
@@ -145,32 +145,16 @@ npm ci
 *   **React**: `dsznajder.es7-react-js-snippets`, `mattpocock.ts-error-translator`.
 
 ### MCP (Model Context Protocol)
-**Status:** 🔴 **NOT DETECTED**
-*   Searched: Root, `.agent/`, `package.json` dependencies.
-*   Findings: No `mcp.json` or `@modelcontextprotocol/sdk` usage found.
+**Status:** ✅ **ACTIVE**
+**Source:** `mcp.json`
+
+| Server | Type | Description |
+| :--- | :--- | :--- |
+| `filesystem` | `@modelcontextprotocol/server-filesystem` | Direct file access |
+| `git` | `@modelcontextprotocol/server-git` | Git repository awareness |
+| `postgres` | `@modelcontextprotocol/server-postgres` | Direct Neon DB context |
 
 ### AI Agent Tools
 *   **Operational Map:** See `AGENTS.md`.
 *   **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
 *   **Context:** `docs/core/architecture.md` provides definitions for AI decision making.
-
----
-
-## 8. Regeneration Playbook
-
-To update this context file:
-
-1.  **Run Audit**:
-    ```bash
-    ls -R
-    grep -r "dependencies" .
-    cat server/env.schema.ts
-    ```
-2.  **Verify Versions**:
-    ```bash
-    node -v
-    npm -v
-    ```
-3.  **Check Drift**:
-    *   Compare `package.json` versions against this doc.
-    *   Check `cloudbuild.yaml` for deployment changes.

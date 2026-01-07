@@ -123,6 +123,9 @@ router.patch("/contact-page-configuration", authService.requireAdmin, async (req
 // NAVIGATION MANAGEMENT ROUTES
 // ============================================================================
 
+import { ApiError } from "../../lib/errors/api-error.js";
+import { NavigationService } from "../../services/navigation-service.js";
+
 // Simple test route first
 router.get("/navigation-test", async (_req, res) => {
   return res.json({
@@ -131,74 +134,23 @@ router.get("/navigation-test", async (_req, res) => {
   });
 });
 
-// Get all navigation items - CHUNK 4: Added caching with conditional TTL
+// Get all navigation items
 router.get("/navigation-items", async (req, res) => {
-  const startTime = performance.now();
   try {
-    // CHUNK 3: Defensive transformation - supports legacy label/url fields during transition period
-    const normalizeNavigationItems = (items: any[]) =>
-      items.map((item) => ({
-        ...item,
-        title: item.title || item.label || "",
-        href: item.href || item.url || "#",
-      }));
+    const bypassCache = shouldBypassCache(req);
+    const result = await NavigationService.getItems(bypassCache);
 
-    // CHUNK 7: For admin/debug requests, skip cache for real-time updates
-    if (shouldBypassCache(req)) {
-      logger.info("[Navigation] Admin request detected - bypassing cache for real-time data");
-      const navigationItems = await withTimeout(
-        getStorage().getNavigationItems(),
-        5000,
-        "Get navigation items (admin)",
-      );
-      logger.debug(
-        "[Navigation DEBUG] Raw from DB:",
-        JSON.stringify(navigationItems.slice(0, 2), null, 2),
-      );
-      const normalizedItems = normalizeNavigationItems(navigationItems);
-      logger.debug(
-        "[Navigation DEBUG] After normalization:",
-        JSON.stringify(normalizedItems.slice(0, 2), null, 2),
-      );
-
+    if (result.metadata.ttl > 0) {
+      res.setHeader("Cache-Control", `public, max-age=${result.metadata.ttl}`);
+    } else {
       res.setHeader("Cache-Control", "no-cache, max-age=0");
-      res.setHeader("X-Admin-Request", "true");
-      res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
-      return res.json(normalizedItems);
     }
 
-    // CHUNK 4: For public requests, use cache (NEON cost optimization)
-    const cacheKey = CacheKeys.navigation.items();
-    const cached = (await unifiedCache.get(cacheKey)) as any;
+    res.setHeader("X-Cache-Hit", String(result.metadata.cacheHit));
+    res.setHeader("X-Response-Time", String(result.metadata.responseTime));
+    if (bypassCache) res.setHeader("X-Admin-Request", "true");
 
-    if (cached) {
-      logger.info("[Navigation] Returning cached navigation items (public)");
-      res.setHeader("Cache-Control", "public, max-age=7200"); // 120 minutes - Phase 1 optimization
-      res.setHeader("X-Cache-Hit", "true");
-      res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
-      const normalized = normalizeNavigationItems(Array.isArray(cached) ? cached : [cached]);
-      return res.json(normalized);
-    }
-
-    logger.info("[Navigation] Cache miss - fetching from database (public)");
-
-    const navigationItems = await withTimeout(
-      getStorage().getNavigationItems(),
-      5000,
-      "Get navigation items (public)",
-    );
-
-    // CHUNK 3: Normalize before caching to ensure consistent structure
-    const normalizedItems = normalizeNavigationItems(navigationItems);
-
-    // CHUNK 4: Cache the normalized navigation items for 120 minutes (7200s)
-    await unifiedCache.set(cacheKey, normalizedItems, CACHE_TTL_NAVIGATION * 1000);
-    logger.info("[Navigation] Navigation items cached for 120 minutes / 2 hours (public)");
-
-    res.setHeader("Cache-Control", "public, max-age=7200");
-    res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
-    res.setHeader("X-Cache-Hit", "false");
-    return res.json(normalizedItems);
+    return res.json(result.data);
   } catch (error) {
     return res.status(500).json({
       message: "Failed to fetch navigation items",
@@ -211,16 +163,12 @@ router.get("/navigation-items", async (req, res) => {
 router.get("/navigation-items/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const navigationItem = await withTimeout(
-      getStorage().getNavigationItem(id),
-      5000,
-      "Get navigation item",
-    );
-    if (!navigationItem) {
-      return res.status(404).json({ message: "Navigation item not found" });
+    const item = await NavigationService.getItem(id);
+    return res.json(item);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.status).json({ message: error.message });
     }
-    return res.json(navigationItem);
-  } catch (_error) {
     return res.status(500).json({ message: "Failed to fetch navigation item" });
   }
 });
@@ -229,41 +177,8 @@ router.get("/navigation-items/:id", async (req, res) => {
 router.post("/navigation-items", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertNavigationItemSchema.parse(req.body);
-    // CHUNK 2: Populate BOTH legacy (label/url) AND modern (title/href) columns for compatibility
-    // Database requires 'label' as notNull, but frontend uses 'title/href'
-    const navigationItemData = {
-      // Modern fields (frontend uses these)
-      title: validatedData.title || validatedData.label || "Untitled",
-      href: validatedData.href || validatedData.url || "#",
-      // Legacy fields (database requires label as notNull)
-      label: validatedData.title || validatedData.label || "Untitled",
-      url: validatedData.href || validatedData.url || "#",
-      // Other fields
-      iconType: validatedData.iconType,
-      iconSize: validatedData.iconSize,
-      fallbackIcon: validatedData.fallbackIcon,
-      mediaIconId: validatedData.mediaIconId,
-      sortOrder: validatedData.sortOrder,
-      isActive: validatedData.isActive ?? true,
-      showOnDesktop: validatedData.showOnDesktop ?? true,
-      showOnMobile: validatedData.showOnMobile ?? true,
-    };
-    const navigationItem = await withTimeout(
-      getStorage().createNavigationItem(navigationItemData),
-      5000,
-      "Create navigation item",
-    );
-
-    // CHUNK 4: Invalidate navigation cache after successful creation
-    try {
-      await CacheOperations.invalidateNavigation();
-      logger.info("[Navigation] ✅ Cache invalidated after navigation item creation");
-    } catch (err) {
-      logger.error("[Navigation] ❌ Cache invalidation failed:", err);
-      // Don't throw - cache failure should not block DB mutation
-    }
-
-    return res.status(201).json(navigationItem);
+    const newItem = await NavigationService.createItem(validatedData);
+    return res.status(201).json(newItem);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Validation error", errors: error.issues });
@@ -273,192 +188,64 @@ router.post("/navigation-items", authService.requireAdmin, async (req, res) => {
 });
 
 // Bulk reorder navigation items
-// prettier-ignore
 router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, res) => {
   try {
     const { items } = req.body;
     const reorderSchema = z.object({
-      items: z.array(
-        z.object({
-          id: z.number(),
-          sortOrder: z.number(),
-        }),
-      ),
+      items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
     });
-
     const validatedData = reorderSchema.parse({ items });
 
-    // NEON HTTP driver doesn't support transactions, so we update sequentially
-    // Note: This is not atomic, but works for admin operations
-    const startTime = Date.now();
-    const storage = getStorage();
-
-    for (const item of validatedData.items) {
-      const result = await withTimeout(
-        storage.updateNavigationItem(item.id, {
-          sortOrder: item.sortOrder,
-        }),
-        5000,
-        `Update navigation item ${item.id}`,
-      );
-      if (!result) {
-        throw new Error(`Navigation item with ID ${item.id} not found`);
-      }
-    }
-    const duration = Date.now() - startTime;
-
-    logger.debug(
-      `[Transaction] Bulk navigation reorder completed in ${duration}ms (${validatedData.items.length} items)`,
-    );
-
-    // CHUNK 4: Invalidate navigation cache after successful reorder
-    try {
-      await CacheOperations.invalidateNavigation();
-      logger.info("[Navigation] ✅ Cache invalidated after navigation items reorder");
-    } catch (err) {
-      logger.error("[Navigation] ❌ Cache invalidation failed:", err);
-      // Don't throw - cache failure should not block DB mutation
-    }
-
-    const updatedItems = await withTimeout(
-      getStorage().getNavigationItems(),
-      5000,
-      "Get updated navigation items",
-    );
-
-    // Ensures frontend receives normalized navigation items after order mutation
-    const normalizedItems = updatedItems.map((item) => ({
-      ...item,
-      title: item.title || item.label || "Untitled",
-      href: item.href || item.url || "#",
-    }));
-
-    return res.json(normalizedItems);
+    const updatedItems = await NavigationService.reorderItems(validatedData.items);
+    return res.json(updatedItems);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Validation error", errors: error.issues });
     }
-    // Enhanced error logging
-    logger.error("[Navigation Reorder] Error details:", {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      type: typeof error,
-      error: error,
-    });
     return res.status(500).json({
       message: "Failed to reorder navigation items",
       error: error instanceof Error ? error.message : String(error),
-      details: JSON.stringify(error),
     });
   }
 });
 
 // Update navigation item
-// prettier-ignore
 router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id!, 10);
     const validatedData = insertNavigationItemSchema.partial().parse(req.body);
-
-    // Apply defensive defaults for boolean fields when explicitly provided
-    const updateData = {
-      ...validatedData,
-      ...(validatedData.isActive !== undefined && {
-        isActive: validatedData.isActive ?? true,
-      }),
-      ...(validatedData.showOnDesktop !== undefined && {
-        showOnDesktop: validatedData.showOnDesktop ?? true,
-      }),
-      ...(validatedData.showOnMobile !== undefined && {
-        showOnMobile: validatedData.showOnMobile ?? true,
-      }),
-    };
-
-    const navigationItem = await withTimeout(
-      getStorage().updateNavigationItem(id, removeUndefined(updateData)),
-      5000,
-      "Update navigation item",
-    );
-    if (!navigationItem) {
-      return res.status(404).json({ message: "Navigation item not found" });
-    }
-
-    // CHUNK 4: Invalidate navigation cache after successful update
-    try {
-      await CacheOperations.invalidateNavigation();
-      logger.info("[Navigation] ✅ Cache invalidated after navigation item update");
-    } catch (err) {
-      logger.error("[Navigation] ❌ Cache invalidation failed:", err);
-      // Don't throw - cache failure should not block DB mutation
-    }
-
-    return res.json(navigationItem);
+    const updated = await NavigationService.updateItem(id, validatedData);
+    return res.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Validation error", errors: error.issues });
+    }
+    if (error instanceof ApiError) {
+      return res.status(error.status).json({ message: error.message });
     }
     return res.status(500).json({ message: "Failed to update navigation item" });
   }
 });
 
 // Delete navigation item
-// prettier-ignore
 router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id!, 10);
-    const success = await withTimeout(
-      getStorage().deleteNavigationItem(id),
-      5000,
-      "Delete navigation item",
-    );
-    if (!success) {
-      return res.status(404).json({ message: "Navigation item not found" });
-    }
-
-    // CHUNK 4: Invalidate navigation cache after successful deletion
-    try {
-      await CacheOperations.invalidateNavigation();
-      logger.info("[Navigation] ✅ Cache invalidated after navigation item deletion");
-    } catch (err) {
-      logger.error("[Navigation] ❌ Cache invalidation failed:", err);
-      // Don't throw - cache failure should not block DB mutation
-    }
-
+    await NavigationService.deleteItem(id);
     return res.status(204).send();
-  } catch (_error) {
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.status).json({ message: error.message });
+    }
     return res.status(500).json({ message: "Failed to delete navigation item" });
   }
 });
 
-// Navigation glassmorphism settings - CHUNK 5: Added caching
+// Navigation glassmorphism settings
 router.get("/navigation-glassmorphism-settings", async (_req, res) => {
   try {
-    const cacheKey = "navigation-glassmorphism-settings";
-    const cached = await unifiedCache.get(cacheKey);
-    if (cached) {
-      return res.json(cached);
-    }
-
-    const settings = await withTimeout(
-      getStorage().getNavigationGlassmorphismSettings(),
-      5000,
-      "Get glassmorphism settings",
-    );
-    // Returns default glassmorphism settings when DB is empty/uninitialized
-    const defaultSettings = {
-      enabled: true,
-      backgroundOpacity: "15",
-      blurStrength: 5,
-      borderOpacity: "30",
-      shadowIntensity: "10",
-      topHighlightOpacity: "80",
-      leftHighlightOpacity: "80",
-      innerShadowOpacity: "50",
-      borderRadius: 20,
-    };
-    const result = settings || defaultSettings;
-    await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
-    return res.json(result);
+    const settings = await NavigationService.getGlassmorphismSettings();
+    return res.json(settings);
   } catch (error) {
     return res.status(500).json({
       error:
@@ -467,25 +254,14 @@ router.get("/navigation-glassmorphism-settings", async (_req, res) => {
   }
 });
 
-// prettier-ignore
+// Update glassmorphism settings
 router.patch("/navigation-glassmorphism-settings", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    // Convert opacity from number to string (database uses decimal type)
-    const settingsData = {
-      ...validation.data,
-      opacity: validation.data.opacity !== undefined ? String(validation.data.opacity) : undefined,
-    };
-    const settings = await withTimeout(
-      getStorage().updateNavigationGlassmorphismSettings(settingsData),
-      5000,
-      "Update glassmorphism settings",
-    );
-    // CHUNK 5: Clear cache when settings change
-    await unifiedCache.delete("navigation-glassmorphism-settings");
+    const settings = await NavigationService.updateGlassmorphismSettings(validation.data);
     return res.json(settings);
   } catch (error) {
     return res.status(500).json({

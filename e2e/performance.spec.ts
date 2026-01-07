@@ -18,6 +18,7 @@ test.describe("Web Vitals & Performance", () => {
       });
     });
 
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log(`LCP: ${lcp}ms`);
     // Threshold: < 2500ms (Good)
     expect(lcp).toBeLessThan(2500);
@@ -43,6 +44,7 @@ test.describe("Web Vitals & Performance", () => {
       });
     });
 
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log(`CLS: ${cls}`);
     // Threshold: < 0.1 (Good)
     expect(cls).toBeLessThan(0.1);

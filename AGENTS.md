@@ -21,7 +21,7 @@
 | `client/` | **Frontend Application** | Use `cn()` for styles. No raw colors. |
 | `server/` | **Backend API** | Stateless interactions only. No sticky sessions. |
 | `shared/` | **Shared Library** | Zero dependencies. Pure types/schemas only. |
-| `docs/` | **Knowledge Base** | `SYSTEM_CONTEXT.md` is auto-generated. |
+| `docs/` | **Knowledge Base** | `docs/overview.md` is the Single Source of Truth. |
 | `scripts/` | **Automation** | Use `tsx` for execution. |
 
 ## 3. Operational Commands (The Tool Belt)
@@ -34,7 +34,7 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 | **Start Dev** | `npm run dev` | Starts Backend (5001) + Frontend Proxy. |
 | **Typecheck** | `npm run typecheck` | Validates TypeScript across all workspaces. |
 | **Lint (Fix)** | `npm run check:apply` | Auto-fixes Biome linting issues. |
-| **Docs** | `npm run docs:generate` | Refreshes `SYSTEM_CONTEXT.md`. |
+| **Docs** | `npm run docs:generate` | Refreshes `docs/overview.md` (Manual). |
 | **DB Push** | `npm run db:push` | Syncs Drizzle schema to Neon DB. |
 
 ## 4. Architectural Rules (Strict Invariants)
