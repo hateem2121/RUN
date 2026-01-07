@@ -21,12 +21,7 @@ export interface ApiResponse<T = any> {
 }
 
 export const apiResponse = {
-  success: <T>(
-    res: Response,
-    data?: T,
-    statusCode = 200,
-    meta?: ApiResponse["meta"],
-  ) => {
+  success: <T>(res: Response, data?: T, statusCode = 200, meta?: ApiResponse["meta"]) => {
     return res.status(statusCode).json({
       success: true,
       data,
@@ -34,13 +29,7 @@ export const apiResponse = {
     } as ApiResponse<T>);
   },
 
-  error: (
-    res: Response,
-    message: string,
-    statusCode = 500,
-    code?: string,
-    details?: any,
-  ) => {
+  error: (res: Response, message: string, statusCode = 500, code?: string, details?: any) => {
     return res.status(statusCode).json({
       success: false,
       error: {

@@ -18,7 +18,6 @@ vi.mock("../server/lib/storage/app-service.js", () => ({
 
 // Mock Storage to avoid DB connection and ensure consistent data
 vi.mock("../server/lib/storage-singleton.js", () => {
-  console.log("!!! MOCK storage-singleton FACTORY RUNNING !!!");
   return {
     getStorage: vi.fn().mockReturnValue({
       // Categories
@@ -278,7 +277,6 @@ describe("FORENSIC API TESTS - Critical Endpoint Validation", () => {
 
       if (response.status === 200) {
         if (!response.body.data) {
-          console.log("FAILED PRODUCT RESPONSE BODY:", JSON.stringify(response.body, null, 2));
         }
         // Use toMatchObject to see the diff if it fails
         expect(response.body).toMatchObject({

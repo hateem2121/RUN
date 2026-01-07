@@ -6,8 +6,22 @@
  */
 
 import CircuitBreaker from "opossum";
-import { withQueryTimeout } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
+
+// Helper to enforce timeouts
+async function withQueryTimeout<T>(
+  operation: () => Promise<T>,
+  timeoutMs: number,
+  operationName: string,
+): Promise<T> {
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`Operation '${operationName}' timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
+
+  return Promise.race([operation(), timeoutPromise]);
+}
 
 // Database circuit breaker configuration
 const DB_CIRCUIT_CONFIG = {

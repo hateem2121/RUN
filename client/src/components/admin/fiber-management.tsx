@@ -799,7 +799,7 @@ export default function FiberManagement() {
     e.preventDefault();
 
     // Validate name for duplicates
-    if (checkDuplicateName(formData["name"])) {
+    if (checkDuplicateName(formData.name)) {
       setNameError("A fiber with this name already exists");
       return;
     }
@@ -812,7 +812,7 @@ export default function FiberManagement() {
     if (!editingFiber) return;
 
     // Validate name for duplicates (excluding current fiber)
-    if (checkDuplicateName(formData["name"], editingFiber.id)) {
+    if (checkDuplicateName(formData.name, editingFiber.id)) {
       setNameError("A fiber with this name already exists");
       return;
     }
@@ -1108,7 +1108,7 @@ export default function FiberManagement() {
         <Label htmlFor="name">Fiber Name</Label>
         <Input
           id="name"
-          value={formData["name"]}
+          value={formData.name}
           onChange={(e) => handleNameChange(e.target.value)}
           placeholder="e.g., Merino Wool, Polyester, Cotton"
           required
@@ -1120,7 +1120,7 @@ export default function FiberManagement() {
       <div>
         <Label>Fiber Type</Label>
         <Select
-          value={isCustomType ? "custom" : formData["type"]}
+          value={isCustomType ? "custom" : formData.type}
           onValueChange={(value) => {
             if (value === "custom") {
               setIsCustomType(true);
@@ -1132,7 +1132,7 @@ export default function FiberManagement() {
             }
           }}
         >
-          <SelectTrigger className={formData["type"] ? "" : "text-muted-foreground/70"}>
+          <SelectTrigger className={formData.type ? "" : "text-muted-foreground/70"}>
             <SelectValue placeholder="Select fiber type" />
           </SelectTrigger>
           <SelectContent>
@@ -1163,7 +1163,7 @@ export default function FiberManagement() {
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
-          value={formData["description"]}
+          value={formData.description}
           onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
           placeholder="Describe the fiber characteristics and origin"
           className="h-20"

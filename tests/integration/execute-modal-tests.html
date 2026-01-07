@@ -19,14 +19,12 @@
     <script>
         // Inline test execution
         (() => {
-            console.log('🚀 Starting Modal Dialog Integration Tests');
             
             const results = { tests: [], score: 0 };
             const statusEl = document.getElementById('status');
             const resultsEl = document.getElementById('results');
             
             function log(message, isError = false) {
-                console.log(message);
                 const p = document.createElement('p');
                 p.textContent = message;
                 p.className = isError ? 'fail' : 'pass';

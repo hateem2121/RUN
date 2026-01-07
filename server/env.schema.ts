@@ -6,33 +6,20 @@ export const envSchema = z.object({
     .string()
     .transform((val) => parseInt(val, 10))
     .default(5001),
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
-  DATABASE_URL: z
-    .string()
-    .url("DATABASE_URL must be a valid connection string"),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  DATABASE_URL: z.string().url("DATABASE_URL must be a valid connection string"),
 
   // Authentication
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
   GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
-  SESSION_SECRET: z
-    .string()
-    .min(32, "SESSION_SECRET must be at least 32 characters long"),
-  INITIAL_ADMIN_EMAIL: z
-    .string()
-    .email("INITIAL_ADMIN_EMAIL must be a valid email")
-    .optional(),
+  SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters long"),
+  INITIAL_ADMIN_EMAIL: z.string().email("INITIAL_ADMIN_EMAIL must be a valid email").optional(),
 
   // Observability (Optional in Dev, Recommended in Prod)
   SENTRY_DSN: z.string().url().optional(),
 
   // OpenTelemetry
-  OTEL_EXPORTER_OTLP_ENDPOINT: z
-    .string()
-    .url()
-    .optional()
-    .default("http://localhost:4318"),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional().default("http://localhost:4318"),
   OTEL_SERVICE_NAME: z.string().optional().default("run-remix"),
 
   // Caching (Redis)
@@ -46,8 +33,6 @@ export function validateEnv() {
   const result = envSchema.safeParse(process.env);
 
   if (!result.success) {
-    console.error("❌ Invalid environment variables:");
-    console.error(JSON.stringify(result.error.format(), null, 2));
     process.exit(1);
   }
 

@@ -35,12 +35,8 @@ export default defineConfig(
         // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
         sentryVitePlugin({
           ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
-          ...(process.env.SENTRY_PROJECT
-            ? { project: process.env.SENTRY_PROJECT }
-            : {}),
-          ...(process.env.SENTRY_AUTH_TOKEN
-            ? { authToken: process.env.SENTRY_AUTH_TOKEN }
-            : {}),
+          ...(process.env.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
+          ...(process.env.SENTRY_AUTH_TOKEN ? { authToken: process.env.SENTRY_AUTH_TOKEN } : {}),
           disable: mode !== "production", // Only upload in production
         }),
       ],
@@ -64,11 +60,7 @@ export default defineConfig(
             manualChunks: isSsrBuild
               ? undefined
               : {
-                  "vendor-react": [
-                    "react",
-                    "react-dom",
-                    "@tanstack/react-query",
-                  ],
+                  "vendor-react": ["react", "react-dom", "@tanstack/react-query"],
                   // OPTIMIZATION: Separate Admin Vendor Chunk
                   "admin-vendor": [
                     // Shared deps moved to respective vendor chunks to avoid duplication
@@ -94,11 +86,7 @@ export default defineConfig(
                   ],
                   "vendor-3d": ["three", "@google/model-viewer"],
                   "vendor-utils": ["date-fns", "zod", "react-hook-form"],
-                  "vendor-schema": [
-                    "@run-remix/shared",
-                    "drizzle-orm",
-                    "drizzle-zod",
-                  ], // Use package name
+                  "vendor-schema": ["@run-remix/shared", "drizzle-orm", "drizzle-zod"], // Use package name
                   "vendor-icons-lucide": ["lucide-react"],
                   "vendor-icons-radix": ["@radix-ui/react-icons"],
                   "vendor-icons": ["react-icons"],
@@ -110,12 +98,7 @@ export default defineConfig(
       ssr: {
         // P0: Externalize backend dependencies
         external: ["pg", "drizzle-orm", "better-sqlite3", "fsevents"],
-        noExternal: [
-          "react-helmet-async",
-          "lucide-react",
-          "recharts",
-          "recharts-scale",
-        ],
+        noExternal: ["react-helmet-async", "lucide-react", "recharts", "recharts-scale"],
       },
       server: {
         // FORENSIC: Dev server optimizations for faster module loading
@@ -128,6 +111,9 @@ export default defineConfig(
         fs: {
           strict: true,
           deny: ["**/.*"],
+        },
+        headers: {
+          "Cache-Control": "public, max-age=31536000",
         },
       },
     }) as any,

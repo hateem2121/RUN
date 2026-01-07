@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import chalk from "chalk";
 import { hideBin } from "yargs/helpers";
 import yargs from "yargs/yargs";
 
@@ -51,12 +50,7 @@ const steps = [
   {
     name: "Link Integrity",
     command: "npx",
-    args: [
-      "markdown-link-check",
-      "README.md",
-      "SYSTEM_CONTEXT.md",
-      "AGENTS.md",
-    ],
+    args: ["markdown-link-check", "README.md", "SYSTEM_CONTEXT.md", "AGENTS.md"],
     critical: true,
   },
   {
@@ -90,10 +84,7 @@ async function runCommand(step: {
   args: string[];
   critical: boolean;
 }) {
-  console.log(chalk.blue(`\n▶ Running: ${step.name}...`));
-
   return new Promise<boolean>((resolve) => {
-    const start = Date.now();
     const child = spawn(step.command, step.args, {
       stdio: "inherit",
       shell: true,
@@ -101,38 +92,26 @@ async function runCommand(step: {
     });
 
     child.on("close", (code) => {
-      const duration = ((Date.now() - start) / 1000).toFixed(2);
+      // const _duration = ((Date.now() - start) / 1000).toFixed(2); // Unused
 
       if (code === 0) {
-        console.log(chalk.green(`✔ ${step.name} passed in ${duration}s`));
         resolve(true);
       } else {
         if (step.critical || argv.ci) {
-          console.error(
-            chalk.red(`✘ ${step.name} failed (Exit code: ${code})`),
-          );
           resolve(false);
         } else {
-          console.warn(chalk.yellow(`⚠ ${step.name} failed (Non-critical)`));
           resolve(true);
         }
       }
     });
 
-    child.on("error", (err) => {
-      console.error(
-        chalk.red(`✘ ${step.name} failed to start: ${err.message}`),
-      );
+    child.on("error", (_err) => {
       resolve(false);
     });
   });
 }
 
 async function main() {
-  console.log(
-    chalk.bold.magenta("🚀 Starting Technical Integrity Verification\n"),
-  );
-
   let success = true;
 
   for (const step of steps) {
@@ -142,22 +121,13 @@ async function main() {
       if (argv.ci) break; // Fail fast in CI
     }
   }
-
-  console.log(chalk.bold("\n----------------------------------------"));
   if (success) {
-    console.log(
-      chalk.bold.green("✅ VERIFICATION SUCCESSFUL: System is healthy."),
-    );
     process.exit(0);
   } else {
-    console.log(
-      chalk.bold.red("❌ VERIFICATION FAILED: Please fix the errors above."),
-    );
     process.exit(1);
   }
 }
 
-main().catch((err) => {
-  console.error("Fatal error:", err);
+main().catch((_err) => {
   process.exit(1);
 });

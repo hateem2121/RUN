@@ -1,77 +1,63 @@
-# System Context 🌐
+# SYSTEM CONTEXT (Auto-Generated)
 
-**Version:** 1.0.0  
-**Last Updated:** January 7, 2026  
-**Status:** Canonical Reference
+**Generated At:** 2026-01-07T17:14:12.761Z
+**Project:** run-remix-monorepo
+**Version:** 1.0.0
 
-This document provides the definitive technical context for the RUN-Remix platform. It is designed to be the first point of reference for both human developers and AI agents.
+## 1. Core Runtime
+| Component | Version | Source |
+| :--- | :--- | :--- |
+| **Node.js** | 22 | Dockerfile |
+| **Package Manager** | `npm@10.9.2` | package.json |
+| **Workspace** | TurboRepo ^2.7.2 | package.json |
 
----
+## 2. Stack Versions
+### Frontend (@run-remix/client)
+| Lib | Version |
+| :--- | :--- |
+| React | 19.2.3 |
+| Vite | ^6.0.0 |
+| Tailwind | 4.0.0 |
 
-## 1. Ecosystem Overview
+### Backend (@run-remix/server)
+| Lib | Version |
+| :--- | :--- |
+| Express | ^5.1.0 |
+| Drizzle | ^0.44.5 |
+| Neon Driver | ^1.0.2 |
 
-| Layer             | Component         | Implementation                       |
-| :---------------- | :---------------- | :----------------------------------- |
-| **Monorepo**      | NPM Workspaces    | `client/`, `server/`, `shared/`      |
-| **Frontend**      | React 19 (Stable) | React Router 7 (Framework), Vite 6   |
-| **Backend**       | Express 5.1       | Node 22, TypeScript                  |
-| **Database**      | PostgreSQL        | Neon (Serverless), Drizzle ORM       |
-| **Styling**       | Tailwind CSS v4   | CSS Variables, `@theme` syntax       |
-| **Observability** | Sentry & OTel     | OpenTelemetry SDK, Pino Logging      |
-| **Caching**       | Unified Cache     | L1 (LRU Memory) + L2 (Upstash Redis) |
-
----
-
-## 2. Model Context Protocol (MCP)
-
-The repository integrates with the following MCP servers for enhanced agentic capabilities:
-
-- **mcp-server-neon**: Used for direct database management, schema migrations, and query tuning within the Neon ecosystem.
-- **Sentry MCP**: Integrated for real-time error tracking and issue analysis directly via the agent interface.
-
----
-
-## 3. Tooling & Extensions (VS Code)
-
-### Required Extensions
-
-See `.vscode/extensions.json` for the full list. Key recommendations:
-
-- **Biome**: Linter and formatter (replaces ESLint/Prettier).
-- **Drizzle Lab**: Visualizer for the database schema.
-- **Vite/Vitest Explorer**: For managing build and test workflows.
-- **Tailwind CSS v4**: Official IntelliSense for modern CSS syntax.
-
-### Core Scripts
-
-| Command                         | Action                                        |
-| :------------------------------ | :-------------------------------------------- |
-| `npm run dev`                   | Starts system with Vite HMR + Express server. |
-| `npm run build`                 | Full production build (Frontend + Backend).   |
-| `npm run check`                 | Typecheck and Biome lint.                     |
-| `npm run verify:tech-integrity` | Comprehensive system health check.            |
-
----
-
-## 4. Architecture & Structure
-
-Detailed maps and deep-dives are located in the following directories:
-
-- **[Architecture Deep-Dive](./docs/core/architecture.md)**: Visual diagrams and data flows.
-- **[Directory Map](./docs/core/architecture.md#2-directory-map-the-why)**: Explanations of workspace responsibilities.
-- **[Environment Setup](./docs/operations/environment.md)**: Configuration and `.env` standards.
-- **[API Reference](./docs/api/endpoints.md)**: Endpoints, field counts, and authentication.
+## 3. Scripts
+| Command | Definition |
+| :--- | :--- |
+| `npm run dev:server` | `npm run --workspace=@run-remix/server dev` |
+| `npm run start` | `npm run --workspace=@run-remix/server start` |
+| `npm run build:client` | `npm run build --workspace=@run-remix/client` |
+| `npm run build:server` | `npm run build --workspace=@run-remix/server` |
+| `npm run migrate:deploy` | `npm run --workspace=@run-remix/server db:migrate` |
+| `npm run db:push` | `npm run --workspace=@run-remix/server db:push` |
+| `npm run dev` | `turbo run dev` |
+| `npm run build` | `turbo run build` |
+| `npm run test` | `vitest run` |
+| `npm run test:e2e` | `playwright test` |
+| `npm run test:integration` | `vitest run tests/integration` |
+| `npm run test:db:up` | `docker-compose -f docker-compose.test.yml up -d` |
+| `npm run test:db:down` | `docker-compose -f docker-compose.test.yml down` |
+| `npm run test:integration:full` | `npm run test:db:up && sleep 5 && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db npm run --workspace=@run-remix/server db:push -- --force && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db vitest run tests/integration && npm run test:db:down` |
+| `npm run lint` | `biome check .` |
+| `npm run lint:html` | `npm run --workspace=@run-remix/client lint:html` |
+| `npm run check` | `npm run typecheck && npm run lint` |
+| `npm run check:apply` | `biome check --write .` |
+| `npm run check:audit` | `audit-ci --config .audit-ci.json` |
+| `npm run check:bundle` | `bundlesize` |
+| `npm run typecheck` | `tsc -b` |
+| `npm run build:ssr` | `npm run --workspace=@run-remix/server build:ssr` |
+| `npm run verify:ssr` | `vitest run tests/unit/ssr/invariants.test.ts` |
+| `npm run docs:generate` | `tsx scripts/generate-context.ts` |
+| `npm run verify:tech-integrity` | `tsx scripts/verify-tech-integrity.ts` |
+| `npm run ci:checks` | `npm run verify:tech-integrity` |
+| `npm run verify:build` | `npm run build && npm run check:bundle` |
+| `npm run kill:all` | `pkill -f 'RUN-Remix' || echo 'No processes found'` |
+| `npm run prepare` | `husky` |
 
 ---
-
-## 5. Agent Operational Mode
-
-All AI agents should adhere to the following rules documented in **[AGENTS.md](./AGENTS.md)**:
-
-1. **Source of Truth**: Always check `shared/schema.ts` for data shapes.
-2. **Standard Ports**: Use `5001` for dev and `5000` for prod/docker.
-3. **No Legacy**: Avoid using hardcoded ports or orphaned scripts in `scripts/legacy/`.
-
----
-
-_This file is maintained as the primary technical baseline. Propose updates via PR when architecture or tooling changes._
+*Generated by scripts/generate-context.ts. Do not edit manually.*

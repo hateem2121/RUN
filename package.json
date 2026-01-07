@@ -33,6 +33,7 @@
     "typecheck": "tsc -b",
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",
+    "docs:generate": "tsx scripts/generate-context.ts",
     "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
     "ci:checks": "npm run verify:tech-integrity",
     "verify:build": "npm run build && npm run check:bundle",

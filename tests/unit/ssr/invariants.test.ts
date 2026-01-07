@@ -10,7 +10,7 @@ describe("SSR Invariants", () => {
   it("client/index.html must contain SSR markers", () => {
     const indexPath = resolve(CLIENT_DIR, "index.html");
     const html = readFileSync(indexPath, "utf-8");
-    const $ = cheerio.load(html);
+    const _$ = cheerio.load(html);
 
     // Check for comments involves looking at raw HTML or iterating nodes,
     // but simple string includes is safer for comment markers.

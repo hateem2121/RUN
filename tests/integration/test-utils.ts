@@ -28,7 +28,6 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     FORCE_LISTEN: "true",
     VITEST: "true", // Ensure spawned server knows it's in test mode
   };
-  console.log("[TestServer] spawnEnv keys:", Object.keys(spawnEnv).sort().join(", "));
   const serverProcess = spawn(TSX_PATH, [SERVER_PATH], {
     env: spawnEnv,
     stdio: ["ignore", "pipe", "pipe"],
@@ -90,8 +89,6 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     serverProcess.on("exit", (code) => {
       if (!baseUrl) {
         clearTimeout(timeout);
-        console.error("[TestServer] Premature exit stderr:", _stderrData);
-        console.log("[TestServer] Premature exit stdout:", _stdoutData);
         reject(new Error(`Server exited prematurely with code ${code}`));
       }
     });

@@ -4,10 +4,10 @@
  * and ensures they have optimized responsive variants pre-generated.
  */
 
-import { getStorage } from "../../server/lib/storage-singleton.js";
-import { appStorageService } from "../../server/lib/storage/app-service.js";
 import { generateResponsiveVariants } from "../../server/image-processor.js";
 import { logger } from "../../server/lib/monitoring/logger.js";
+import { appStorageService } from "../../server/lib/storage/app-service.js";
+import { getStorage } from "../../server/lib/storage-singleton.js";
 import type { MediaAsset } from "../../shared/schema.js";
 
 async function warmMediaCache() {
@@ -18,21 +18,19 @@ async function warmMediaCache() {
   // We'll target:
   // - Assets associated with featured products
   // - The 50 most recent uploads
-  
+
   logger.info("🔍 Identifying high-traffic assets...");
-  
+
   // Get recent assets
   const recentAssets = await storage.getMediaAssets(50, 0);
-  
+
   // Get featured product IDs and their images
   // (In a real scenario, we'd query the DB for this, here we'll simplify by focusing on recent & missing)
-  
+
   const targetAssets = recentAssets.filter(
     (asset: MediaAsset) =>
       asset.type === "image" &&
-      (!asset.imageVariants ||
-        !asset.imageVariants.thumbnail ||
-        !asset.imageVariants.original),
+      (!asset.imageVariants || !asset.imageVariants.thumbnail || !asset.imageVariants.original),
   );
 
   logger.info(`Found ${targetAssets.length} assets requiring warming.`);

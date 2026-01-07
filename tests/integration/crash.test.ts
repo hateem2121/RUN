@@ -25,10 +25,8 @@ describe("Process Crash Integrity (Integration Tier)", () => {
         method: "POST",
         headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
       });
-      console.log(`[Test] Crash request status: ${res.status}`);
-      if (!res.ok) console.log(`[Test] Body: ${await res.text()}`);
-    } catch (e: any) {
-      console.log(`[Test] Fetch error: ${e.message}`);
+      if (!res.ok) throw new Error("Request failed");
+    } catch (_e: any) {
       // Expected connection reset
     }
 

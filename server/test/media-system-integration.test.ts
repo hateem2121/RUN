@@ -26,8 +26,8 @@ import mediaRoutes from "../routes/media/routes.js";
 import { authService } from "../services/auth-service.js";
 
 // Mock admin auth for integration tests
-authService.requireAdmin = (req: any, res: any, next: any) => next();
-authService.isAuthenticated = (req: any, res: any, next: any) => next();
+authService.requireAdmin = (_req: any, _res: any, next: any) => next();
+authService.isAuthenticated = (_req: any, _res: any, next: any) => next();
 
 app.use("/api/media", mediaRoutes);
 
@@ -35,13 +35,13 @@ const runTests = process.env.TEST_REAL_DB === "true" ? describe : describe.skip;
 
 runTests("Media System Integration Tests", () => {
   let _testAssetId: number;
-  let fileId: string;
-  const testBuffer = Buffer.from("test media content");
+  let _fileId: string;
+  const _testBuffer = Buffer.from("test media content");
 
   beforeAll(async () => {
     // Only verify setup if running tests
     if (process.env.TEST_REAL_DB === "true") {
-      const storage = await getStorage();
+      const _storage = await getStorage();
       // await storage.verifyConnection(); // Not available on IStorage interface
     }
   });

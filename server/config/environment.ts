@@ -134,18 +134,8 @@ const environmentSchema = z.object({
 
 // Parse and validate environment
 const parseEnvironment = () => {
-  console.log("[environment.ts] Calling parseEnvironment. URL:", import.meta.url);
-  console.log("[environment.ts] Keys:", Object.keys(process.env).sort().join(", "));
-  console.log(
-    "[environment.ts] SESSION_SECRET in process.env:",
-    JSON.stringify(process.env.SESSION_SECRET),
-  );
   try {
     const result = environmentSchema.parse(process.env);
-    console.log(
-      "[environment.ts] Parse success. Result SESSION_SECRET:",
-      JSON.stringify(result.SESSION_SECRET),
-    );
     return result;
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -177,10 +167,6 @@ const parseEnvironment = () => {
       if (missingVars.length === 0 && invalidVars.length === 0 && issues.length > 0) {
         errorMessage += `\nValidation issues:\n${JSON.stringify(issues, null, 2)}\n`;
       }
-
-      console.log("[environment.ts] Full error message:\n", errorMessage);
-      console.log("[environment.ts] Issues:\n", JSON.stringify(issues, null, 2));
-      console.log("[environment.ts] THROWING ERROR NOW!");
       throw new Error(errorMessage);
     }
     throw error;
@@ -191,9 +177,7 @@ const parseEnvironment = () => {
 export let env: any;
 try {
   env = parseEnvironment();
-  console.log("[environment.ts] env export success.");
 } catch (e) {
-  console.error("[environment.ts] env export FAILED!", e);
   throw e;
 }
 

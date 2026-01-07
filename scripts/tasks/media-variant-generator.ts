@@ -4,10 +4,10 @@
  * This ensures 100/100 performance scores for all historically uploaded assets.
  */
 
-import { getStorage } from "../../server/lib/storage-singleton.js";
-import { appStorageService } from "../../server/lib/storage/app-service.js";
 import { generateResponsiveVariants } from "../../server/image-processor.js";
 import { logger } from "../../server/lib/monitoring/logger.js";
+import { appStorageService } from "../../server/lib/storage/app-service.js";
+import { getStorage } from "../../server/lib/storage-singleton.js";
 import type { MediaAsset } from "../../shared/schema.js";
 
 async function runOptimization() {
@@ -27,17 +27,13 @@ async function runOptimization() {
     else offset += pageSize;
   }
 
-  logger.info(
-    `Found ${allAssets.length} total assets. Scanning for unoptimized images...`,
-  );
+  logger.info(`Found ${allAssets.length} total assets. Scanning for unoptimized images...`);
 
   // 2. Identify unoptimized images
   const unoptimized = allAssets.filter(
     (asset) =>
       asset.type === "image" &&
-      (!asset.imageVariants ||
-        !asset.imageVariants.thumbnail ||
-        !asset.imageVariants.original),
+      (!asset.imageVariants || !asset.imageVariants.thumbnail || !asset.imageVariants.original),
   );
 
   logger.info(`Found ${unoptimized.length} unoptimized images.`);

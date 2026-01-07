@@ -92,7 +92,7 @@ export async function loadSecrets(): Promise<Record<string, string>> {
  */
 export function getSecret(name: ManagedSecret): string | undefined {
   // Check Secret Manager first
-  if (cachedSecrets && cachedSecrets[name]) {
+  if (cachedSecrets?.[name]) {
     return cachedSecrets[name];
   }
   // Fall back to environment variable

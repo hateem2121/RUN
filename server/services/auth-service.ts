@@ -79,7 +79,7 @@ export class AuthService {
     // P1 SECURITY: Support Secret Rotation
     // If SESSION_SECRET_PREVIOUS is set, use it for verifying old sessions
     const currentSecret = getSecret("SESSION_SECRET") || process.env.SESSION_SECRET;
-    
+
     if (!currentSecret) {
       if (process.env.NODE_ENV === "production") {
         throw new Error("CRITICAL SECURITY ERROR: SESSION_SECRET must be provided in production.");

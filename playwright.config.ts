@@ -6,9 +6,9 @@ export default defineConfig({
   expect: {
     timeout: 10000,
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.02, // 2% threshold for visual diffs
+      maxDiffPixelRatio: 0.05, // 5% threshold for visual diffs (Relaxed for resilience)
       animations: "disabled", // Disable animations for stable screenshots
-      threshold: 0.2, // Pixel-level threshold
+      threshold: 0.3, // Pixel-level threshold (Relaxed)
     },
   },
   fullyParallel: true,

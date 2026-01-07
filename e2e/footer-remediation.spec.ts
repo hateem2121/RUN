@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Footer Remediation Verification", () => {
-  test("Footer content is reachable on short laptop screens (1366x768)", async ({
-    page,
-  }) => {
+  test("Footer content is reachable on short laptop screens (1366x768)", async ({ page }) => {
     // 1. Set viewport to standard laptop resolution
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/");
@@ -56,9 +54,7 @@ test.describe("Footer Remediation Verification", () => {
 
     // Verify copyright has current year
     const currentYear = new Date().getFullYear().toString();
-    const copyright = page.getByText(
-      new RegExp(`© ${currentYear}.*ALL RIGHTS RESERVED`),
-    );
+    const copyright = page.getByText(new RegExp(`© ${currentYear}.*ALL RIGHTS RESERVED`));
     await expect(copyright).toBeVisible();
   });
 

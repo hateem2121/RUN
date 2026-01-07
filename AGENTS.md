@@ -1,35 +1,73 @@
-# AI Agent Operational Map
+# AGENTS.md - Operational Intelligence Map
 
-**Last Verified:** 2026-01-05
+> **Context Injection for AI Agents**: This file is the primary entry point for AI agents working on the RUN-Remix repository. It defines technical constraints, architectural boundaries, and operational commands.
 
-This file serves as the operational map for AI agents. For detailed technical specifications (tools, extensions, MCP), see **[SYSTEM_CONTEXT.md](./SYSTEM_CONTEXT.md)**.
+---
 
-## Canonical Commands
+## 1. System Identity & Stack
 
-- **Technical Integrity Check:** `npm run verify:tech-integrity`
-  - Runs build, typecheck, and audit. Use this before committing.
-- **Development Server:** `npm run dev`
-  - Starts the development server. **Note:** The `client` workspace does not have a `dev` script; the Express server (`@run-remix/server`) handles Vite middleware.
-- **Production Start:** `npm run start` (or `npm start` in `server/`)
-  - Starts the compiled production server.
-- **Test Runner:** `npm test` or `npm run test:e2e`
+**Identity**: `run-remix-monorepo`
+**Core Stack**:
+- **Frontend**: React 19 (Stable), Vite 6, Tailwind CSS v4.
+- **Backend**: Express 5 (Stable), Node.js 22 (LTS).
+- **Data**: Neon Serverless Postgres (HTTP Driver via `drizzle-orm`).
+- **State**: TanStack Query v5 + Upstash Redis (L2 Cache).
+- **Architecture**: Monorepo using NPM Workspaces + TurboRepo.
 
-## Directory Structure
+## 2. Directory Map (Context Boundaries)
 
-- `client/`: React 19 + Vite 6 frontend.
-- `server/`: Express 5 + Node 22 backend.
-- `shared/`: Shared types and schemas.
-- `docs/`: Project documentation (Structured by core, operations, development).
-- `scripts/`: Operational and setup scripts.
+| Path | Context | Constraints |
+| :--- | :--- | :--- |
+| `client/` | **Frontend Application** | Use `cn()` for styles. No raw colors. |
+| `server/` | **Backend API** | Stateless interactions only. No sticky sessions. |
+| `shared/` | **Shared Library** | Zero dependencies. Pure types/schemas only. |
+| `docs/` | **Knowledge Base** | `SYSTEM_CONTEXT.md` is auto-generated. |
+| `scripts/` | **Automation** | Use `tsx` for execution. |
 
-## Critical Rules
+## 3. Operational Commands (The Tool Belt)
 
-1. **No ForwardRef:** Use props for refs (React 19).
-2. **Tailwind v4:** Use modern syntax (e.g. `outline-hidden`, `bg-black/50`).
-3. **Z-Index:** Use semantic tokens (e.g. `z-modal`) from `docs/development/styling.md`.
+Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 
-## Key References
+| Action | Command | Expectation |
+| :--- | :--- | :--- |
+| **Verify** | `npm run verify:tech-integrity` | **MANDATORY** pre-commit check. |
+| **Start Dev** | `npm run dev` | Starts Backend (5001) + Frontend Proxy. |
+| **Typecheck** | `npm run typecheck` | Validates TypeScript across all workspaces. |
+| **Lint (Fix)** | `npm run check:apply` | Auto-fixes Biome linting issues. |
+| **Docs** | `npm run docs:generate` | Refreshes `SYSTEM_CONTEXT.md`. |
+| **DB Push** | `npm run db:push` | Syncs Drizzle schema to Neon DB. |
 
-- **Architecture:** `docs/core/architecture.md` (System Map & Deep Dive)
-- **Environment:** `docs/operations/environment.md`
-- **Audits:** `docs/audits/` (Historical health checks)
+## 4. Architectural Rules (Strict Invariants)
+
+### A. Frontend (React 19)
+1.  **Ref Pattern**: DO NOT use `forwardRef`. Use `ref` as a standard prop.
+2.  **Form Actions**: Use `useActionState` and `<form action={fn}>` for mutations.
+3.  **Styles**: Use semantic `@theme` tokens (e.g., `bg-card`) from `client/index.css`. **BANNED**: Raw hex codes or `text-gray-500`.
+
+### B. Backend (Express 5)
+1.  **Async Handlers**: Express 5 supports async natively. DO NOT wrap in `try/catch` boilerplate; let the global error handler catch rejected promises.
+2.  **Database**: Use `server/db.ts`. It implements the Neon HTTP driver. **DO NOT** create new connection pools manually.
+
+### C. Monorepo
+1.  **Shared Code**: All shared Zod schemas MUST live in `shared/schema.ts`.
+2.  **Imports**: Use workspace aliases (`@run-remix/shared`) instead of relative paths for cross-package imports.
+
+## 5. Development Workflow
+
+1.  **Exploration**: Read `SYSTEM_ARCHITECTURE_REPORT.md` for high-level understanding.
+2.  **Modification**:
+    *   Edit files.
+    *   Run `npm run check:apply` to format.
+    *   Run `npm run typecheck` to verify safety.
+3.  **Verification**:
+    *   Always run `npm run verify:tech-integrity` before declaring task complete.
+
+## 6. Common Pitfalls (AI Memory Bank)
+
+*   **Port Conflicts**: If port 5001 is busy, use `npm run kill:all` to clear zombie Node processes.
+*   **Vite HMR**: If HMR fails, ensure `client/vite.config.ts` has `server.hmr.clientPort` set to 5001.
+*   **Neon Cold Starts**: The DB sleeps after inactivity. The first request may take 3-5s. `server/db.ts` handles the wakeup via `wakeupDatabase()`.
+
+---
+
+**End of Context**

@@ -1,0 +1,176 @@
+# FULL_SYSTEM_CONTEXT
+
+**Generated At:** 2026-01-07T17:25:34+05:00
+**Repo Name:** run-remix-monorepo
+**Scope:** Full Stack Audit
+
+---
+
+## 1. Platform & Runtime
+
+| Component | Policy / Version | Provenance |
+| :--- | :--- | :--- |
+| **OS** | Linux (Alpine) in Prod; Mac/Linux for Dev | `Dockerfile` (node:22-alpine), User Agent |
+| **Node.js** | **v22** (Strict) | `Dockerfile`, `AGENTS.md` |
+| **Package Manager** | **npm 10.9.2** | `package.json` (packageManager field) |
+| **Workspace Tool** | npm workspaces + Turbo Repo | `package.json`, `turbo.json` |
+
+### Reproducing the Environment
+```bash
+# 1. Install correct Node version
+nvm install 22
+nvm use 22
+
+# 2. Install dependencies
+npm ci
+```
+
+---
+
+## 2. Stack & Critical Versions
+
+### Frontend (`@run-remix/client`)
+| Technology | Version | Purpose | Provenance |
+| :--- | :--- | :--- | :--- |
+| **React** | `19.2.3` | UI Framework | `client/package.json` |
+| **Vite** | `6.0.0` | Build Tool / Bundler | `client/package.json` |
+| **React Router** | `7.11.0` | Routing (Client & SSR) | `client/package.json` |
+| **Tailwind CSS** | `4.0.0` | Styling Engine | `client/package.json` |
+| **TanStack Query** | `^5.90.12` | Server State Management | `client/package.json` |
+| **Three.js** | `^0.181.0` | 3D Visualization | `client/package.json` |
+
+### Backend (`@run-remix/server`)
+| Technology | Version | Purpose | Provenance |
+| :--- | :--- | :--- | :--- |
+| **Express** | `^5.1.0` | Web Framework | `server/package.json` |
+| **Node.js** | `22` | Runtime | `Dockerfile` |
+| **Drizzle ORM** | `^0.44.5` | Database ORM | `server/package.json` |
+| **PostgreSQL** | `pg` (Neon) | Database Driver | `server/package.json` |
+| **Redis** | `Upstash` | L2 Cache | `server/package.json` |
+| **Tini** | (Alpine Pkg) | Init Process | `Dockerfile` |
+
+### Operations & Tooling
+| Tool | Version | Config Source |
+| :--- | :--- | :--- |
+| **Biome** | `2.3.10` | `biome.json` (Lint/Format) |
+| **Vitest** | `^4.0.6` | `vitest.config.ts` |
+| **Playwright** | `^1.57.0` | `playwright.config.ts` |
+| **Turbo** | `^2.7.2` | `turbo.json` |
+
+---
+
+## 3. Architecture & Boundaries
+
+### Repo Map
+```
+/
+├── client/ (@run-remix/client)   # React 19 SPA/SSR Application
+│   ├── src/
+│   │   ├── components/ui/        # Atomic Design System (shadcn/ui)
+│   │   ├── components/admin/     # Admin Domain
+│   │   └── lib/                  # Tokens & Utils
+│   └── vite.config.ts            # Vite 6 Config
+│
+├── server/ (@run-remix/server)   # Express 5 API
+│   ├── boot/                     # App Startup
+│   ├── routes/                   # API Endpoints
+│   ├── services/                 # Business Logic
+│   └── db.ts                     # Drizzle Instance
+│
+└── shared/ (@run-remix/shared)   # Zod Schemas & Contracts
+    └── schema.ts                 # Database & Validation Types
+```
+
+### Dependency Rules
+*   **Client** depends on **Shared**.
+*   **Server** depends on **Shared**.
+*   **Client** does NOT depend on Server (loose coupling via API).
+*   **Shared** is a pure library (no side effects).
+
+---
+
+## 4. Scripts & Operational Commands
+
+| Context | Command | Description | Ports/Vars |
+| :--- | :--- | :--- | :--- |
+| **Root** | `npm run dev` | Starts Turbo Dev Pipeline | Opens port 5001 |
+| **Root** | `npm run build` | Builds Client & Server | Outs: `dist/` |
+| **Root** | `npm run verify:tech-integrity` | **CRITICAL**: Full check (Types, Lint, Audit) | |
+| **Root** | `npm test` | Runs Unit Tests (Vitest) | |
+| **Server** | `npm run db:migrate` | Runs Drizzle Migrations | Needs `DATABASE_URL` |
+| **Server** | `npm run db:push` | Pushes schema to DB (Dev only) | Needs `DATABASE_URL` |
+
+> **Note**: The client workspace deliberately lacks a `dev` script. The Express server handles Vite middleware in development.
+
+---
+
+## 5. Environment Variables
+
+**Schema Source:** `server/env.schema.ts`
+
+| Variable | Required | Format | Description |
+| :--- | :--- | :--- | :--- |
+| `NODE_ENV` | **Yes** | `dev`\|`prod`\|`test` | Runtime mode |
+| `PORT` | No | Number | Defaults to `5001` |
+| `DATABASE_URL` | **Yes** | Postgres URL | Must use `-pooler` endpoint for Neon |
+| `GOOGLE_CLIENT_ID` | **Yes** | String | OAuth Auth |
+| `GOOGLE_CLIENT_SECRET` | **Yes** | String | OAuth Secrets |
+| `SESSION_SECRET` | **Yes** | String (>32 chars) | Session signing |
+| `INITIAL_ADMIN_EMAIL` | No | Email | Auto-grants admin on signup |
+| `SENTRY_DSN` | No | URL | Err tracking (Req for Prod) |
+| `UPSTASH_REDIS_REST_URL`| No | URL | L2 Cache (Req for Prod) |
+| `UPSTASH_REDIS_REST_TOKEN`| No | String | L2 Cache Auth |
+
+---
+
+## 6. Infrastructure & Deployment
+
+| Feature | Strategy | Provenance |
+| :--- | :--- | :--- |
+| **Container** | Multi-stage Docker build (Alpine) | `Dockerfile` |
+| **Orchestration** | Cloud Run (Managed) | `cloudbuild.yaml` |
+| **Rollout** | Canary (0% → 10% → 50% → 100%) | `cloudbuild.yaml` |
+| **Health Check** | `wget` to `/api/health` | `Dockerfile` |
+| **Process Mgr** | `tini` (prevents zombie processes) | `Dockerfile` |
+| **Assets** | Uploaded to GCSCDN | `cloudbuild.yaml` |
+
+---
+
+## 7. Extensions & AI Context
+
+### IDE Extensions (VS Code)
+**Source:** `.vscode/extensions.json`
+*   **Essential**: `biomejs.biome` (Linting), `bradlc.vscode-tailwindcss` (Styles).
+*   **Database**: `rphlmr.drizzle-lab`, `ckolkman.vscode-postgres`.
+*   **React**: `dsznajder.es7-react-js-snippets`, `mattpocock.ts-error-translator`.
+
+### MCP (Model Context Protocol)
+**Status:** 🔴 **NOT DETECTED**
+*   Searched: Root, `.agent/`, `package.json` dependencies.
+*   Findings: No `mcp.json` or `@modelcontextprotocol/sdk` usage found.
+
+### AI Agent Tools
+*   **Operational Map:** See `AGENTS.md`.
+*   **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
+*   **Context:** `docs/core/architecture.md` provides definitions for AI decision making.
+
+---
+
+## 8. Regeneration Playbook
+
+To update this context file:
+
+1.  **Run Audit**:
+    ```bash
+    ls -R
+    grep -r "dependencies" .
+    cat server/env.schema.ts
+    ```
+2.  **Verify Versions**:
+    ```bash
+    node -v
+    npm -v
+    ```
+3.  **Check Drift**:
+    *   Compare `package.json` versions against this doc.
+    *   Check `cloudbuild.yaml` for deployment changes.

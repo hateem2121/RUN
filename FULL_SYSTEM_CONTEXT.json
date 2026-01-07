@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-01-07T17:25:34+05:00",
+  "repo": {
+    "name": "run-remix-monorepo",
+    "root": "/Users/hateemjamshaid/Downloads/RUN-Remix",
+    "commit": "UNKNOWN",
+    "workspaces": ["@run-remix/client", "@run-remix/server", "@run-remix/shared"]
+  },
+  "runtime": {
+    "os": "Linux (Alpine)",
+    "node": "22",
+    "package_manager": {
+      "name": "npm",
+      "version": "10.9.2"
+    }
+  },
+  "stack": {
+    "frontend": {
+      "framework": "React 19.2.3",
+      "router": "React Router 7.11.0",
+      "build": "Vite 6.0.0",
+      "style": "Tailwind CSS 4.0.0"
+    },
+    "backend": {
+      "framework": "Express 5.1.0",
+      "runtime": "Node.js 22"
+    },
+    "db": {
+      "driver": "pg (Neon)",
+      "url_requirement": "Must use -pooler endpoint"
+    },
+    "orm": {
+      "name": "Drizzle ORM",
+      "version": "0.44.5"
+    },
+    "cache": {
+      "l1": "In-Memory LRU",
+      "l2": "Upstash Redis"
+    },
+    "observability": {
+      "errors": "Sentry",
+      "tracing": "OpenTelemetry"
+    },
+    "tooling": {
+      "lint": "Biome",
+      "test": "Vitest",
+      "e2e": "Playwright"
+    }
+  },
+  "scripts": {
+    "root": {
+      "dev": "npm run dev",
+      "build": "npm run build",
+      "verify": "npm run verify:tech-integrity"
+    },
+    "packages": {
+      "server": ["dev", "start", "db:migrate", "db:push"],
+      "client": ["build", "preview", "lint:html"],
+      "shared": ["build"]
+    }
+  },
+  "env": {
+    "required": [
+      {
+        "name": "NODE_ENV",
+        "format": "enum(dev, prod, test)",
+        "used_for": "Runtime mode config",
+        "where_referenced": ["server/env.schema.ts", "Dockerfile"]
+      },
+      {
+        "name": "DATABASE_URL",
+        "format": "postgres_url",
+        "used_for": "Main DB connection",
+        "where_referenced": ["server/env.schema.ts", "server/db.ts"]
+      },
+      {
+        "name": "GOOGLE_CLIENT_ID",
+        "format": "string",
+        "used_for": "OAuth",
+        "where_referenced": ["server/env.schema.ts"]
+      },
+      {
+        "name": "GOOGLE_CLIENT_SECRET",
+        "format": "string",
+        "used_for": "OAuth",
+        "where_referenced": ["server/env.schema.ts"]
+      },
+      {
+        "name": "SESSION_SECRET",
+        "format": "string",
+        "used_for": "Session cookie signing",
+        "where_referenced": ["server/env.schema.ts"]
+      }
+    ],
+    "optional": [
+      {
+        "name": "SENTRY_DSN",
+        "format": "url",
+        "used_for": "Error reporting",
+        "where_referenced": ["server/env.schema.ts"]
+      },
+      {
+        "name": "UPSTASH_REDIS_REST_URL",
+        "format": "url",
+        "used_for": "Redis caching",
+        "where_referenced": ["server/env.schema.ts"]
+      }
+    ]
+  },
+  "ports": [
+    {
+      "name": "Server",
+      "port": 5001,
+      "where": "server/env.schema.ts"
+    }
+  ],
+  "health_endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "purpose": "Container orchestration health check"
+    }
+  ],
+  "ci_cd": {
+    "workflows": [
+      {
+        "file": "cloudbuild.yaml",
+        "triggers": ["Main branch push"],
+        "jobs": ["Build Docker", "Push GCR", "Deploy Canary", "Health Check", "Rollout"]
+      }
+    ]
+  },
+  "ide_extensions": [
+    {
+      "id": "biomejs.biome",
+      "required": true,
+      "reason": "Linting and formatting"
+    },
+    {
+      "id": "bradlc.vscode-tailwindcss",
+      "required": true,
+      "reason": "CSS Intellisense"
+    }
+  ],
+  "browser_extensions": [],
+  "mcp": {
+    "detected": false,
+    "servers": [],
+    "notes": "No MCP configuration found in repo."
+  },
+  "agent_tools": [
+    {
+      "name": "verify:tech-integrity",
+      "purpose": "Full codebase validation",
+      "how_to_invoke": "npm run verify:tech-integrity",
+      "side_effects": "None"
+    }
+  ],
+  "provenance": [
+    {
+      "item": "Node Version",
+      "source": "Dockerfile"
+    },
+    {
+      "item": "Stack Versions",
+      "source": "package.json files in workspaces"
+    },
+    {
+      "item": "Env Schema",
+      "source": "server/env.schema.ts"
+    }
+  ],
+  "unknowns": [
+    {
+      "item": "Commit Hash",
+      "how_to_verify": "git rev-parse HEAD"
+    }
+  ]
+}

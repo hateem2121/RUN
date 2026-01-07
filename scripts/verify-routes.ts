@@ -6,8 +6,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function verifyRoutes() {
-  console.log("🔍 Verifying dynamic route imports...");
-
   const routesDir = path.resolve(__dirname, "../server/routes");
   const indexFile = path.join(routesDir, "index.ts");
 
@@ -16,7 +14,7 @@ async function verifyRoutes() {
     const importRegex = /importWithLog\("([^"]+)"\)/g;
     let match;
     let errors = 0;
-    let checked = 0;
+    let _checked = 0;
 
     while ((match = importRegex.exec(content)) !== null) {
       const importPath = match[1]!;
@@ -25,21 +23,17 @@ async function verifyRoutes() {
       // Check .ts file existence (since we verify source)
       try {
         await fs.access(fullPath);
-        checked++;
+        _checked++;
       } catch {
-        console.error(`❌ Missing route module: ${importPath} (at ${fullPath})`);
         errors++;
       }
     }
 
     if (errors > 0) {
-      console.error(`\nFound ${errors} missing route modules.`);
       process.exit(1);
     } else {
-      console.log(`✅ Verified ${checked} route modules. All good.`);
     }
-  } catch (error) {
-    console.error("Failed to read routes index:", error);
+  } catch (_error) {
     process.exit(1);
   }
 }

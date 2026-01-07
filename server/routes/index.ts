@@ -37,9 +37,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
   await authService.setup(app);
-  logger.info(
-    "[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)",
-  );
+  logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
 
   // ============================================================================
   // DEV TOOLS (Development only)
@@ -112,9 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
 
-  logger.info(
-    "[Routes] ✅ All routes registered successfully (Centralized Auth)",
-  );
+  logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 
   return httpServer;
 }

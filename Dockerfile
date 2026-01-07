@@ -53,7 +53,7 @@ EXPOSE 5001
 # Start the server
 # P1 FIX: Healthcheck for container orchestration
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:5001/api/health || exit 1
+  CMD node scripts/healthcheck.js || exit 1
 
 # Start the server
 CMD ["node", "dist/index.js"]

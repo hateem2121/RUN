@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { eq } from "drizzle-orm";
-import { db } from "../db.js";
 import { users } from "@run-remix/shared";
+import { eq } from "drizzle-orm";
+import { Router } from "express";
+import { db } from "../db.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 const devRouter = Router();
