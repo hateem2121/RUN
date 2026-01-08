@@ -18,109 +18,103 @@ import { mediaAssets } from "../media";
 // Navigation Items - Enhanced for floating dock navigation
 export const navigationItems = pgTable("navigation_items", {
   id: serial("id").primaryKey(),
-  label: varchar("label", { length: 255 }).notNull(),
-  name: varchar("name", { length: 255 }), // Alias for label (frontend compatibility)
-  title: varchar("title", { length: 255 }), // Frontend display title (alias for label)
-  url: varchar("url", { length: 255 }),
-  href: varchar("href", { length: 255 }), // Alias for url (frontend compatibility)
-  path: varchar("path", { length: 255 }), // Path alias (frontend compatibility)
-  iconName: varchar("icon_name", { length: 100 }),
+  label: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }), // Alias for label (frontend compatibility)
+  title: varchar({ length: 255 }), // Frontend display title (alias for label)
+  url: varchar({ length: 255 }),
+  href: varchar({ length: 255 }), // Alias for url (frontend compatibility)
+  path: varchar({ length: 255 }), // Path alias (frontend compatibility)
+  iconName: varchar({ length: 100 }),
 
   // Enhanced icon system (optional future expansion)
-  iconType: varchar("icon_type", { length: 20 }).default("fallback"), // 'media' | 'fallback'
-  iconSize: varchar("icon_size", { length: 20 }).default("medium"), // 'small' | 'medium' | 'large'
-  fallbackIcon: varchar("fallback_icon", { length: 100 }).default("IconHome"), // Tabler icon name
-  mediaIconId: integer("media_icon_id").references(() => mediaAssets.id, {
+  iconType: varchar({ length: 20 }).default("fallback"), // 'media' | 'fallback'
+  iconSize: varchar({ length: 20 }).default("medium"), // 'small' | 'medium' | 'large'
+  fallbackIcon: varchar({ length: 100 }).default("IconHome"), // Tabler icon name
+  mediaIconId: integer().references(() => mediaAssets.id, {
     onDelete: "set null",
   }),
 
   // Hierarchical navigation
-  parentId: integer("parent_id"),
-  level: integer("level").default(0),
+  parentId: integer(),
+  level: integer().default(0),
 
   // Display settings
-  showOnDesktop: boolean("show_on_desktop").default(true),
-  showOnMobile: boolean("show_on_mobile").default(true),
+  showOnDesktop: boolean().default(true),
+  showOnMobile: boolean().default(true),
 
   // Behavior settings
-  isExternal: boolean("is_external").default(false),
-  target: varchar("target", { length: 20 }).default("_self"),
-  isActive: boolean("is_active").default(true),
-  sortOrder: integer("sort_order").default(0),
+  isExternal: boolean().default(false),
+  target: varchar({ length: 20 }).default("_self"),
+  isActive: boolean().default(true),
+  sortOrder: integer().default(0),
 
-  createdAt: timestamp("created_at", {
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
 
   // Soft delete support
-  deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+  deletedAt: timestamp({ mode: "date", precision: 3 }),
 });
 
 // Contact Page Configuration
 export const contactPageConfigurations = pgTable("contact_page_configurations", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }),
-  heroTitle: varchar("hero_title", { length: 255 }), // Frontend expects heroTitle
-  description: text("description"),
-  address: text("address"),
-  phone: varchar("phone", { length: 50 }),
-  email: varchar("email", { length: 255 }),
-  workingHours: text("working_hours"),
-  mapCoordinates: jsonb("map_coordinates").$type<{
+  title: varchar({ length: 255 }),
+  heroTitle: varchar({ length: 255 }), // Frontend expects heroTitle
+  description: text(),
+  address: text(),
+  phone: varchar({ length: 50 }),
+  email: varchar({ length: 255 }),
+  workingHours: text(),
+  mapCoordinates: jsonb().$type<{
     lat: number;
     lng: number;
   }>(),
-  socialLinks: jsonb("social_links").$type<Record<string, string>>(),
+  socialLinks: jsonb().$type<Record<string, string>>(),
 
   // New Contact Page Fields for Enhanced UI
-  locationLine1: text("location_line1"),
-  locationLine2: text("location_line2"),
-  locationButtonText: varchar("location_button_text", {
+  locationLine1: text(),
+  locationLine2: text(),
+  locationButtonText: varchar({
     length: 100,
   }).default("GET DIRECTIONS"),
-  tradingHours: jsonb("trading_hours").$type<Array<{ label: string; value: string }>>(),
-  platformOptions: jsonb("platform_options")
+  tradingHours: jsonb().$type<Array<{ label: string; value: string }>>(),
+  platformOptions: jsonb()
     .$type<string[]>()
     .default(sql`'["Phone Call", "WhatsApp", "WeChat", "Telegram", "Other"]'::jsonb`),
-  formButtonText: varchar("form_button_text", { length: 255 }).default(
-    "Get a Response Within 24 Hours",
-  ),
-  formPrivacyText: text("form_privacy_text").default(
-    "We value your privacy and will never share your information.",
-  ),
-  successHeading: varchar("success_heading", { length: 255 }).default("Thank you!"),
-  successMessage: text("success_message").default(
-    "We've received your message and will be in touch shortly.",
-  ),
+  formButtonText: varchar({ length: 255 }).default("Get a Response Within 24 Hours"),
+  formPrivacyText: text().default("We value your privacy and will never share your information."),
+  successHeading: varchar({ length: 255 }).default("Thank you!"),
+  successMessage: text().default("We've received your message and will be in touch shortly."),
 
   // Admin UI Control Fields - Contact Page Settings
-  contactInfoTitle: varchar("contact_info_title", { length: 255 }),
-  contactInfoSubtitle: text("contact_info_subtitle"),
-  showContactInfo: boolean("show_contact_info").default(true),
-  showBusinessHours: boolean("show_business_hours").default(true),
-  showLocationMap: boolean("show_location_map").default(true),
-  heroBackgroundStyle: varchar("hero_background_style", {
+  contactInfoTitle: varchar({ length: 255 }),
+  contactInfoSubtitle: text(),
+  showContactInfo: boolean().default(true),
+  showBusinessHours: boolean().default(true),
+  showLocationMap: boolean().default(true),
+  heroBackgroundStyle: varchar({
     length: 100,
   }).default("gradient"),
-  heroBackgroundColor: varchar("hero_background_color", { length: 50 }),
-  contactCardsLayout: varchar("contact_cards_layout", { length: 50 }).default("grid"),
-  showFormInSeparateSection: boolean("show_form_in_separate_section").default(false),
-  formBackgroundStyle: varchar("form_background_style", {
+  heroBackgroundColor: varchar({ length: 50 }),
+  contactCardsLayout: varchar({ length: 50 }).default("grid"),
+  showFormInSeparateSection: boolean().default(false),
+  formBackgroundStyle: varchar({
     length: 100,
   }).default("default"),
-  metaTitle: varchar("meta_title", { length: 255 }),
+  metaTitle: varchar({ length: 255 }),
 
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at", {
+  isActive: boolean().default(true),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
@@ -130,30 +124,30 @@ export const contactPageConfigurations = pgTable("contact_page_configurations", 
 export const inquiries = pgTable(
   "inquiries",
   {
-    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
     // Contact information
-    name: varchar("name", { length: 100 }).notNull(),
-    email: varchar("email", { length: 320 }).notNull(),
-    company: varchar("company", { length: 100 }),
-    phone: varchar("phone", { length: 20 }),
-    country: varchar("country", { length: 100 }),
+    name: varchar({ length: 100 }).notNull(),
+    email: varchar({ length: 320 }).notNull(),
+    company: varchar({ length: 100 }),
+    phone: varchar({ length: 20 }),
+    country: varchar({ length: 100 }),
 
     // Form data
-    preferredPlatform: varchar("preferred_platform", { length: 50 }),
-    message: text("message").notNull(),
+    preferredPlatform: varchar({ length: 50 }),
+    message: text().notNull(),
 
     // Metadata
-    source: varchar("source", { length: 50 }).default("contact-page").notNull(),
-    status: varchar("status", { length: 20 }).default("new").notNull(),
+    source: varchar({ length: 50 }).default("contact-page").notNull(),
+    status: varchar({ length: 20 }).default("new").notNull(),
 
     // Timestamps
-    submittedAt: timestamp("submitted_at", { mode: "date", precision: 3 }).defaultNow().notNull(),
-    respondedAt: timestamp("responded_at", { mode: "date", precision: 3 }),
+    submittedAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
+    respondedAt: timestamp({ mode: "date", precision: 3 }),
 
     // Admin fields
-    adminNotes: text("admin_notes"),
-    assignedTo: varchar("assigned_to", { length: 100 }),
+    adminNotes: text(),
+    assignedTo: varchar({ length: 100 }),
   },
   (table) => [
     // Performance indexes
@@ -171,13 +165,11 @@ export const footerConfiguration = pgTable("footer_configuration", {
   id: serial("id").primaryKey(),
 
   // General Settings
-  contactFormHeading: varchar("contact_form_heading", { length: 500 })
-    .default("GET IN TOUCH WITH RUN APPAREL")
-    .notNull(),
-  contactFormEnabled: boolean("contact_form_enabled").default(true).notNull(),
+  contactFormHeading: varchar({ length: 500 }).default("GET IN TOUCH WITH RUN APPAREL").notNull(),
+  contactFormEnabled: boolean().default(true).notNull(),
 
   // Navigation & Links
-  navigationColumns: jsonb("navigation_columns")
+  navigationColumns: jsonb()
     .$type<
       Array<{
         title: string;
@@ -187,7 +179,7 @@ export const footerConfiguration = pgTable("footer_configuration", {
     .notNull()
     .default(sql`'[]'::jsonb`),
 
-  socialLinks: jsonb("social_links")
+  socialLinks: jsonb()
     .$type<
       Array<{
         name: string;
@@ -199,34 +191,34 @@ export const footerConfiguration = pgTable("footer_configuration", {
     .notNull()
     .default(sql`'[]'::jsonb`),
 
-  legalLinks: jsonb("legal_links")
+  legalLinks: jsonb()
     .$type<Array<{ label: string; href: string }>>()
     .notNull()
     .default(sql`'[]'::jsonb`),
 
   // Certificates
-  certificateIds: jsonb("certificate_ids").$type<number[]>().notNull().default(sql`'[]'::jsonb`),
+  certificateIds: jsonb().$type<number[]>().notNull().default(sql`'[]'::jsonb`),
 
   // Company Info
-  companyName: varchar("company_name", { length: 255 }).notNull().default(""),
-  companyAddress: text("company_address").notNull().default(""),
-  companyPhone: varchar("company_phone", { length: 50 }).notNull().default(""),
-  companyEmail: varchar("company_email", { length: 255 }).notNull().default(""),
+  companyName: varchar({ length: 255 }).notNull().default(""),
+  companyAddress: text().notNull().default(""),
+  companyPhone: varchar({ length: 50 }).notNull().default(""),
+  companyEmail: varchar({ length: 255 }).notNull().default(""),
 
   // Branding
-  brandText: varchar("brand_text", { length: 255 }).notNull().default(""),
-  brandTagline: varchar("brand_tagline", { length: 255 }).notNull().default(""),
-  brandSubtext: varchar("brand_subtext", { length: 255 }).notNull().default(""),
+  brandText: varchar({ length: 255 }).notNull().default(""),
+  brandTagline: varchar({ length: 255 }).notNull().default(""),
+  brandSubtext: varchar({ length: 255 }).notNull().default(""),
 
   // SEO
-  structuredData: jsonb("structured_data").$type<Record<string, any>>(),
+  structuredData: jsonb().$type<Record<string, any>>(),
 
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at", {
+  isActive: boolean().default(true),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
@@ -235,48 +227,48 @@ export const footerConfiguration = pgTable("footer_configuration", {
 // Navigation Glassmorphism Settings
 export const navigationGlassmorphismSettings = pgTable("navigation_glassmorphism_settings", {
   id: serial("id").primaryKey(),
-  opacity: decimal("opacity", { precision: 3, scale: 2 }).default("0.8"),
-  blur: integer("blur").default(10),
-  borderRadius: integer("border_radius").default(12),
-  backdropFilter: varchar("backdrop_filter", { length: 100 }).default("blur(10px)"),
-  backgroundColor: varchar("background_color", { length: 20 }).default("rgba(255,255,255,0.1)"),
-  borderColor: varchar("border_color", { length: 20 }).default("rgba(255,255,255,0.2)"),
+  opacity: decimal({ precision: 3, scale: 2 }).default("0.8"),
+  blur: integer().default(10),
+  borderRadius: integer().default(12),
+  backdropFilter: varchar({ length: 100 }).default("blur(10px)"),
+  backgroundColor: varchar({ length: 20 }).default("rgba(255,255,255,0.1)"),
+  borderColor: varchar({ length: 20 }).default("rgba(255,255,255,0.2)"),
 
   // Admin UI Advanced Glassmorphism Controls
-  backgroundOpacity: decimal("background_opacity", {
+  backgroundOpacity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.8"),
-  blurStrength: integer("blur_strength").default(10),
-  borderOpacity: decimal("border_opacity", {
+  blurStrength: integer().default(10),
+  borderOpacity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.2"),
-  shadowIntensity: decimal("shadow_intensity", {
+  shadowIntensity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.1"),
-  topHighlightOpacity: decimal("top_highlight_opacity", {
+  topHighlightOpacity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.5"),
-  leftHighlightOpacity: decimal("left_highlight_opacity", {
+  leftHighlightOpacity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.3"),
-  innerShadowOpacity: decimal("inner_shadow_opacity", {
+  innerShadowOpacity: decimal({
     precision: 3,
     scale: 2,
   }).default("0.5"), // Inner shadow opacity for glassmorphism
-  enabled: boolean("enabled").default(true), // Frontend toggle for glassmorphism effects
+  enabled: boolean().default(true), // Frontend toggle for glassmorphism effects
 
-  settings: jsonb("settings").$type<Record<string, any>>(),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at", {
+  settings: jsonb().$type<Record<string, any>>(),
+  isActive: boolean().default(true),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),

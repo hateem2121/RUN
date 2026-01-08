@@ -4,7 +4,8 @@
  */
 
 import { ChevronLeft, ChevronRight, Maximize2, X, ZoomIn, ZoomOut } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 import { cn } from "@/lib/utils";
@@ -17,15 +18,20 @@ interface GalleryImage {
 }
 
 // Optimized image component that uses ultra-high-resolution variants
-const OptimizedGalleryImage = React.forwardRef<
-  HTMLImageElement,
-  {
-    image: GalleryImage;
-    className?: string | undefined;
-    style?: React.CSSProperties;
-    onLoad?: () => void;
-  } & React.ImgHTMLAttributes<HTMLImageElement>
->(({ image, className, style, onLoad, ...props }, ref) => {
+const OptimizedGalleryImage = ({
+  image,
+  className,
+  style,
+  onLoad,
+  ref,
+  ...props
+}: {
+  image: GalleryImage;
+  className?: string | undefined;
+  style?: React.CSSProperties;
+  onLoad?: () => void;
+  ref?: React.Ref<HTMLImageElement>;
+} & React.ImgHTMLAttributes<HTMLImageElement>) => {
   const { urls } = useOptimizedMedia(
     typeof image.id === "string" ? parseInt(image.id, 10) : image.id,
     {
@@ -50,7 +56,7 @@ const OptimizedGalleryImage = React.forwardRef<
       draggable={false}
     />
   );
-});
+};
 
 interface InteractiveImageGalleryProps {
   images: GalleryImage[];

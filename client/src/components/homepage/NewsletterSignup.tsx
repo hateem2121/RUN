@@ -6,20 +6,15 @@ import { Button } from "@/components/ui/button";
 // Simulated Server Action (unused)
 // const _subscribeToNewsletter = ...
 
-const NewsletterSignup: React.FC = () => {
-  // REACT 19: useActionState (Replaces useState + useTransition for forms)
-  const [state, formAction, isPending] = React.useActionState(
-    async (_state: any, formData: FormData) => {
-      const email = formData.get("email") as string;
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate delay
+import { subscribeToNewsletter } from "@/actions/newsletter";
 
-      if (email.includes("error")) {
-        return { status: "error", message: "Invalid email address." };
-      }
-      return { status: "success", message: "Successfully subscribed!" };
-    },
-    { status: "idle", message: "" }, // Initial State
-  );
+const NewsletterSignup: React.FC = () => {
+  // REACT 19: Server Action Integration
+
+  // Initial State matches the ActionState type
+  const initialState = { status: "idle" as const, message: "" };
+
+  const [state, formAction, isPending] = React.useActionState(subscribeToNewsletter, initialState);
 
   return (
     <section className="w-full border-black/5 border-t bg-luxury-surface py-24">

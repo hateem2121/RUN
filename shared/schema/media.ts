@@ -15,24 +15,24 @@ import { pgTable } from "./common";
 // Folders
 export const folders = pgTable("folders", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description"),
-  parentId: integer("parent_id"),
-  path: varchar("path", { length: 500 }),
-  level: integer("level").default(0),
-  isActive: boolean("is_active").default(true),
-  sortOrder: integer("sort_order").default(0),
-  createdAt: timestamp("created_at", {
+  name: varchar({ length: 255 }).notNull(),
+  description: text(),
+  parentId: integer(),
+  path: varchar({ length: 500 }),
+  level: integer().default(0),
+  isActive: boolean().default(true),
+  sortOrder: integer().default(0),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
 
   // Soft delete support
-  deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+  deletedAt: timestamp({ mode: "date", precision: 3 }),
 });
 
 // Media Assets for file storage
@@ -40,15 +40,15 @@ export const mediaAssets = pgTable(
   "media_assets",
   {
     id: serial("id").primaryKey(),
-    filename: varchar("filename", { length: 255 }).notNull(),
+    filename: varchar({ length: 255 }).notNull(),
     originalName: varchar("original_name", { length: 255 }),
     fileSize: integer("file_size"),
-    size: integer("size"), // Alias for fileSize for compatibility
+    size: integer(), // Alias for fileSize for compatibility
     mimeType: varchar("mime_type", { length: 100 }).notNull(), // REQUIRED for proper file handling
 
     // File organization
-    type: varchar("type", { length: 50 }).notNull(), // 'image', 'video', 'model', 'document'
-    url: text("url").notNull(),
+    type: varchar({ length: 50 }).notNull(), // 'image', 'video', 'model', 'document'
+    url: text().notNull(),
     thumbnailUrl: text("thumbnail_url"),
     thumbnailFilename: varchar("thumbnail_filename", { length: 255 }), // For thumbnail reference
     thumbnailStoragePath: text("thumbnail_storage_path"), // Thumbnail storage path in GCS
@@ -67,35 +67,35 @@ export const mediaAssets = pgTable(
     folderId: integer("folder_id").references(() => folders.id, {
       onDelete: "set null",
     }),
-    tags: jsonb("tags").$type<string[]>(),
+    tags: jsonb().$type<string[]>(),
 
     // Enhanced metadata
     altText: text("alt_text"),
-    caption: text("caption"),
-    metadata: jsonb("metadata").$type<Record<string, any>>().notNull().default(sql`'{}'::jsonb`),
+    caption: text(),
+    metadata: jsonb().$type<Record<string, any>>().notNull().default(sql`'{}'::jsonb`),
 
     // REMOVED 2025-11-14: Usage tracking columns (never updated - tracking not implemented)
     // - downloadCount: integer("download_count").default(0)
     // - lastAccessedAt: timestamp("last_accessed_at")
     // NOTE: size column is RETAINED despite being duplicate of fileSize
     // Reason: Actively used in 16+ frontend locations - requires separate refactoring task
-    uploadedAt: timestamp("uploaded_at", {
+    uploadedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(), // For upload timestamp
 
     isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
   (table) => [
     // PERFORMANCE INDEXES for media queries

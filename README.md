@@ -57,7 +57,7 @@ Use this guide to orient yourself before diving into specific files.
 | Layer             | Technology               | Version         |
 | ----------------- | ------------------------ | --------------- |
 | **Frontend**      | React                    | 19.2 (Stable)   |
-| **Build Tool**    | Vite                     | 6.0.0           |
+| **Build Tool**    | Vite                     | 7.0.0           |
 | **Styling**       | Tailwind CSS             | 4.0 (Stable)    |
 | **Server**        | Express                  | 5.1 (Stable)    |
 | **Database**      | PostgreSQL + Drizzle ORM | Latest          |
@@ -65,7 +65,7 @@ Use this guide to orient yourself before diving into specific files.
 | **Routing**       | React Router             | 7.x (Framework) |
 | **Components**    | shadcn/ui + Radix        | Latest          |
 | **Linting**       | Biome                    | 2.3+            |
-| **Runtime**       | Node.js                  | 22              |
+| **Runtime**       | Node.js                  | 24 (Krypton)    |
 | **E2E Testing**   | Playwright               | Latest          |
 | **Observability** | Sentry                   | Latest          |
 | **Caching**       | LRU + Upstash Redis (L2) | Latest          |
@@ -78,7 +78,7 @@ Use this guide to orient yourself before diving into specific files.
 
 ### Prerequisites
 
-- Node.js 22 (LTS)
+- Node.js 24 (LTS)
 - PostgreSQL database
 - npm (pnpm also supported)
 

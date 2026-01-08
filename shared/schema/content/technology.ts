@@ -19,28 +19,28 @@ export const technologyHero = pgTable(
   "technology_hero",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    subtitle: text("subtitle"),
-    description: text("description"),
-    primaryButtonText: varchar("primary_button_text", { length: 100 }),
-    primaryButtonLink: varchar("primary_button_link", { length: 255 }),
-    secondaryButtonText: varchar("secondary_button_text", { length: 100 }),
-    secondaryButtonLink: varchar("secondary_button_link", { length: 255 }),
-    backgroundMediaId: integer("background_media_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    subtitle: text(),
+    description: text(),
+    primaryButtonText: varchar({ length: 100 }),
+    primaryButtonLink: varchar({ length: 255 }),
+    secondaryButtonText: varchar({ length: 100 }),
+    secondaryButtonLink: varchar({ length: 255 }),
+    backgroundMediaId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }), // Preserve existing database column
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    videoId: integer("video_id").references(() => mediaAssets.id, {
+    videoId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -58,22 +58,22 @@ export const technologyInnovations = pgTable(
   "technology_innovations",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    description: text("description"),
-    category: varchar("category", { length: 100 }),
-    shortDescription: text("short_description"),
-    iconName: varchar("icon_name", { length: 100 }),
-    status: varchar("status", { length: 50 }).default("Active"),
-    technicalDetails: jsonb("technical_details").$type<Record<string, any>>(),
-    relatedProducts: jsonb("related_products").$type<string[]>(),
-    benefits: jsonb("benefits").$type<string[]>(),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    category: varchar({ length: 100 }),
+    shortDescription: text(),
+    iconName: varchar({ length: 100 }),
+    status: varchar({ length: 50 }).default("Active"),
+    technicalDetails: jsonb().$type<Record<string, any>>(),
+    relatedProducts: jsonb().$type<string[]>(),
+    benefits: jsonb().$type<string[]>(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    developmentYear: varchar("development_year", { length: 10 }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    developmentYear: varchar({ length: 10 }),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -90,26 +90,26 @@ export const technologyEquipment = pgTable(
   "technology_equipment",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    manufacturer: varchar("manufacturer", { length: 255 }),
-    model: varchar("model", { length: 255 }),
-    category: varchar("category", { length: 100 }),
-    quantity: integer("quantity").default(1),
-    capacity: varchar("capacity", { length: 255 }),
-    maintenanceSchedule: varchar("maintenance_schedule", { length: 255 }),
-    certifications: jsonb("certifications").$type<string[]>(),
-    description: text("description"),
-    specifications: jsonb("specifications").$type<Record<string, any>>(),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    manufacturer: varchar({ length: 255 }),
+    model: varchar({ length: 255 }),
+    category: varchar({ length: 100 }),
+    quantity: integer().default(1),
+    capacity: varchar({ length: 255 }),
+    maintenanceSchedule: varchar({ length: 255 }),
+    certifications: jsonb().$type<string[]>(),
+    description: text(),
+    specifications: jsonb().$type<Record<string, any>>(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    installationDate: timestamp("installation_date", {
+    installationDate: timestamp({
       mode: "date",
       precision: 3,
     }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -126,30 +126,29 @@ export const technologyResearch = pgTable(
   "technology_research",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    researchArea: varchar("research_area", { length: 255 }),
-    status: varchar("status", { length: 50 }).default("ongoing"),
-    startDate: timestamp("start_date", { mode: "date", precision: 3 }),
-    expectedCompletion: timestamp("expected_completion", {
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    researchArea: varchar({ length: 255 }),
+    status: varchar({ length: 50 }).default("ongoing"),
+    startDate: timestamp({ mode: "date", precision: 3 }),
+    expectedCompletion: timestamp({
       mode: "date",
       precision: 3,
     }),
-    teamMembers: jsonb("team_members").$type<string[]>(),
-    objectives: jsonb("objectives").$type<string[]>(),
-    partners: jsonb("partners").$type<string[]>(),
-    currentProjects:
-      jsonb("current_projects").$type<Array<{ name: string; status: string; progress: number }>>(),
-    publications: jsonb("publications").$type<string[]>(),
-    outcomes: jsonb("outcomes").$type<string[]>(),
-    funding: decimal("funding", { precision: 12, scale: 2 }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    teamMembers: jsonb().$type<string[]>(),
+    objectives: jsonb().$type<string[]>(),
+    partners: jsonb().$type<string[]>(),
+    currentProjects: jsonb().$type<Array<{ name: string; status: string; progress: number }>>(),
+    publications: jsonb().$type<string[]>(),
+    outcomes: jsonb().$type<string[]>(),
+    funding: decimal({ precision: 12, scale: 2 }),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -165,27 +164,27 @@ export const technologyRoadmap = pgTable(
   "technology_roadmap",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    timeline: varchar("timeline", { length: 255 }),
-    targetDate: timestamp("target_date", { mode: "date", precision: 3 }),
-    status: varchar("status", { length: 50 }).default("planned"),
-    priority: varchar("priority", { length: 20 }).default("medium"),
-    milestones: jsonb("milestones").$type<Record<string, any>>(),
-    impact: jsonb("impact").$type<string[]>(),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    timeline: varchar({ length: 255 }),
+    targetDate: timestamp({ mode: "date", precision: 3 }),
+    status: varchar({ length: 50 }).default("planned"),
+    priority: varchar({ length: 20 }).default("medium"),
+    milestones: jsonb().$type<Record<string, any>>(),
+    impact: jsonb().$type<string[]>(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    videoId: integer("video_id").references(() => mediaAssets.id, {
+    videoId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -201,17 +200,17 @@ export const technologyGradientSettings = pgTable(
   "technology_gradient_settings",
   {
     id: serial("id").primaryKey(),
-    gradientType: varchar("gradient_type", { length: 100 }).notNull(),
-    colors: jsonb("colors").$type<string[]>(),
-    direction: varchar("direction", { length: 50 }).default("to-right"),
-    opacity: decimal("opacity", { precision: 3, scale: 2 }).default("1.0"),
-    settings: jsonb("settings").$type<Record<string, any>>(),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    gradientType: varchar({ length: 100 }).notNull(),
+    colors: jsonb().$type<string[]>(),
+    direction: varchar({ length: 50 }).default("to-right"),
+    opacity: decimal({ precision: 3, scale: 2 }).default("1.0"),
+    settings: jsonb().$type<Record<string, any>>(),
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -224,19 +223,19 @@ export const technologyCta = pgTable(
   "technology_cta",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    content: text("content"),
-    ctaText: varchar("cta_text", { length: 100 }),
-    ctaLink: varchar("cta_link", { length: 255 }),
-    benefits: jsonb("benefits").$type<string[]>(),
-    backgroundColor: varchar("background_color", { length: 20 }),
-    textColor: varchar("text_color", { length: 20 }),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    title: varchar({ length: 255 }).notNull(),
+    content: text(),
+    ctaText: varchar({ length: 100 }),
+    ctaLink: varchar({ length: 255 }),
+    benefits: jsonb().$type<string[]>(),
+    backgroundColor: varchar({ length: 20 }),
+    textColor: varchar({ length: 20 }),
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),

@@ -18,39 +18,39 @@ export const certificates = pgTable(
   "certificates",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    type: varchar("type", { length: 100 }).default("sustainability"), // Categorical: sustainability, compliance, quality, safety, environmental
-    issuingOrganization: varchar("issuing_organization", { length: 255 }),
-    description: text("description"),
-    certificateNumber: varchar("certificate_number", { length: 100 }),
-    issueDate: timestamp("issue_date", { mode: "date", precision: 3 }),
-    expiryDate: timestamp("expiry_date", { mode: "date", precision: 3 }),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    type: varchar({ length: 100 }).default("sustainability"), // Categorical: sustainability, compliance, quality, safety, environmental
+    issuingOrganization: varchar({ length: 255 }),
+    description: text(),
+    certificateNumber: varchar({ length: 100 }),
+    issueDate: timestamp({ mode: "date", precision: 3 }),
+    expiryDate: timestamp({ mode: "date", precision: 3 }),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    documentId: integer("document_id").references(() => mediaAssets.id, {
+    documentId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
 
     // Frontend compatibility: URL and naming aliases
-    issuingBody: varchar("issuing_body", { length: 255 }), // Alias for issuingOrganization
-    documentUrl: varchar("document_url", { length: 500 }), // URL alias for documentId
-    imageUrl: varchar("image_url", { length: 500 }), // URL alias for imageId
+    issuingBody: varchar({ length: 255 }), // Alias for issuingOrganization
+    documentUrl: varchar({ length: 500 }), // URL alias for documentId
+    imageUrl: varchar({ length: 500 }), // URL alias for imageId
 
-    status: varchar("status", { length: 50 }).default("active"),
-    showOnSustainabilityPage: boolean("show_on_sustainability_page").default(false), // Missing property causing errors
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    status: varchar({ length: 50 }).default("active"),
+    showOnSustainabilityPage: boolean().default(false), // Missing property causing errors
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
   (table) => [
     // PERFORMANCE INDEXES for certificate queries
@@ -64,25 +64,25 @@ export const sizeCharts = pgTable(
   "size_charts",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    description: text("description"), // Chart description for admin UI
-    category: varchar("category", { length: 100 }),
-    gender: varchar("gender", { length: 20 }),
-    type: varchar("type", { length: 100 }), // Frontend expects chart type
-    region: varchar("region", { length: 100 }), // Regional sizing standards (US, EU, UK, etc.)
-    measurements: jsonb("measurements").$type<Record<string, any>>(),
-    sizeRange: jsonb("size_range").$type<string[]>(),
-    unit: varchar("unit", { length: 10 }).default("cm"),
-    fitNotes: text("fit_notes"), // Fit guidance and notes
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    description: text(), // Chart description for admin UI
+    category: varchar({ length: 100 }),
+    gender: varchar({ length: 20 }),
+    type: varchar({ length: 100 }), // Frontend expects chart type
+    region: varchar({ length: 100 }), // Regional sizing standards (US, EU, UK, etc.)
+    measurements: jsonb().$type<Record<string, any>>(),
+    sizeRange: jsonb().$type<string[]>(),
+    unit: varchar({ length: 10 }).default("cm"),
+    fitNotes: text(), // Fit guidance and notes
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -103,25 +103,25 @@ export const accessories = pgTable(
   "accessories",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    description: text("description"),
-    category: varchar("category", { length: 100 }),
-    type: varchar("type", { length: 100 }), // Frontend expects accessory type
-    material: varchar("material", { length: 255 }),
-    color: varchar("color", { length: 100 }),
-    size: varchar("size", { length: 100 }),
-    sku: varchar("sku", { length: 100 }),
-    price: decimal("price", { precision: 10, scale: 2 }),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    category: varchar({ length: 100 }),
+    type: varchar({ length: 100 }), // Frontend expects accessory type
+    material: varchar({ length: 255 }),
+    color: varchar({ length: 100 }),
+    size: varchar({ length: 100 }),
+    sku: varchar({ length: 100 }),
+    price: decimal({ precision: 10, scale: 2 }),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    specifications: jsonb("specifications").$type<Record<string, any>>(),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    specifications: jsonb().$type<Record<string, any>>(),
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),

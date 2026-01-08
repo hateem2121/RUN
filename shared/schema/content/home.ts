@@ -18,20 +18,20 @@ export const homepageHero = pgTable(
   "homepage_hero",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    subtitle: text("subtitle"),
-    backgroundImageId: integer("background_image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    subtitle: text(),
+    backgroundImageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    ctaText: varchar("cta_text", { length: 100 }),
-    ctaLink: varchar("cta_link", { length: 255 }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    ctaText: varchar({ length: 100 }),
+    ctaLink: varchar({ length: 255 }),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -48,14 +48,14 @@ export const homepageSlogans = pgTable(
   "homepage_slogans",
   {
     id: serial("id").primaryKey(),
-    text: text("text").notNull(),
-    position: varchar("position", { length: 50 }),
-    fontSize: varchar("font_size", { length: 20 }),
-    color: varchar("color", { length: 20 }),
-    animationType: varchar("animation_type", { length: 50 }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    text: text().notNull(),
+    position: varchar({ length: 50 }),
+    fontSize: varchar({ length: 20 }),
+    color: varchar({ length: 20 }),
+    animationType: varchar({ length: 50 }),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -71,26 +71,26 @@ export const homepageProcessCards = pgTable(
   "homepage_process_cards",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    iconName: varchar("icon_name", { length: 100 }),
-    step: integer("step").notNull(),
+    iconName: varchar({ length: 100 }),
+    step: integer().notNull(),
 
     // Additional fields to match frontend expectations
-    icon: varchar("icon", { length: 100 }), // For text/emoji icons
-    iconMediaId: integer("icon_media_id").references(() => mediaAssets.id, {
+    icon: varchar({ length: 100 }), // For text/emoji icons
+    iconMediaId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }), // For image icons
-    iconType: varchar("icon_type", { length: 20 }), // 'text' or 'image'
-    category: varchar("category", { length: 100 }), // process category
-    position: integer("position").default(0), // position/order
+    iconType: varchar({ length: 20 }), // 'text' or 'image'
+    category: varchar({ length: 100 }), // process category
+    position: integer().default(0), // position/order
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -108,20 +108,20 @@ export const homepageSections = pgTable(
   "homepage_sections",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    title: varchar("title", { length: 255 }),
-    heroTitle: varchar("hero_title", { length: 255 }), // Additional hero title field for compatibility
-    content: text("content"),
-    sectionType: varchar("section_type", { length: 100 }).notNull(),
-    data: jsonb("data").$type<Record<string, any>>(),
-    mediaIds: jsonb("media_ids").$type<number[]>(), // Missing property causing errors
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    name: varchar({ length: 255 }).notNull(),
+    title: varchar({ length: 255 }),
+    heroTitle: varchar({ length: 255 }), // Additional hero title field for compatibility
+    content: text(),
+    sectionType: varchar({ length: 100 }).notNull(),
+    data: jsonb().$type<Record<string, any>>(),
+    mediaIds: jsonb().$type<number[]>(), // Missing property causing errors
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -135,16 +135,16 @@ export const homepageSections = pgTable(
 // Homepage Featured Products Settings
 export const homepageFeaturedProductsSettings = pgTable("homepage_featured_products_settings", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }),
-  maxProducts: integer("max_products").default(8),
-  autoSelect: boolean("auto_select").default(true),
-  selectedProductIds: jsonb("selected_product_ids").$type<number[]>(),
-  sortBy: varchar("sort_by", { length: 50 }).default("featured"),
-  isActive: boolean("is_active").default(true),
+  title: varchar({ length: 255 }),
+  maxProducts: integer().default(8),
+  autoSelect: boolean().default(true),
+  selectedProductIds: jsonb().$type<number[]>(),
+  sortBy: varchar({ length: 50 }).default("featured"),
+  isActive: boolean().default(true),
 
   // Animation Settings - Phase 4 Schema Alignment
-  isEnabled: boolean("is_enabled").default(true),
-  dotGrid: jsonb("dot_grid").$type<{
+  isEnabled: boolean().default(true),
+  dotGrid: jsonb().$type<{
     dotSize: number;
     gap: number;
     baseColor: string;
@@ -155,13 +155,13 @@ export const homepageFeaturedProductsSettings = pgTable("homepage_featured_produ
     resistance: number;
     returnDuration: number;
   }>(),
-  liquidGlass: jsonb("liquid_glass").$type<{
+  liquidGlass: jsonb().$type<{
     blur: number;
     opacity: number;
     borderOpacity: number;
     cardHoverScale: number;
   }>(),
-  swipeAnimation: jsonb("swipe_animation").$type<{
+  swipeAnimation: jsonb().$type<{
     transitionDuration: number;
     easing:
       | "ease-out"
@@ -174,11 +174,11 @@ export const homepageFeaturedProductsSettings = pgTable("homepage_featured_produ
       | "easeInOut";
   }>(),
 
-  createdAt: timestamp("created_at", {
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),

@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 // --- Headings ---
@@ -44,24 +44,29 @@ interface HeadingProps
   as?: HeadingElement;
 }
 
-const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, variant, color, as, ...props }, ref) => {
-    // Default to strict 'h1' if not provided or if variant is special like 'hero-heading'
-    const Component =
-      as ||
-      (variant && variant in ["h1", "h2", "h3", "h4", "h5", "h6"]
-        ? (variant as HeadingElement)
-        : "h1");
+const Heading = ({
+  className,
+  variant,
+  color,
+  as,
+  ref,
+  ...props
+}: HeadingProps & { ref?: React.Ref<HTMLHeadingElement> }) => {
+  // Default to strict 'h1' if not provided or if variant is special like 'hero-heading'
+  const Component =
+    as ||
+    (variant && variant in ["h1", "h2", "h3", "h4", "h5", "h6"]
+      ? (variant as HeadingElement)
+      : "h1");
 
-    return (
-      <Component
-        ref={ref}
-        className={cn(className, headingVariants({ variant, color }))}
-        {...props}
-      />
-    );
-  },
-);
+  return (
+    <Component
+      ref={ref}
+      className={cn(className, headingVariants({ variant, color }))}
+      {...props}
+    />
+  );
+};
 Heading.displayName = "Heading";
 
 // --- Text / Paragraphs ---
@@ -101,18 +106,23 @@ interface TextProps
   as?: TextElement;
 }
 
-const Text = React.forwardRef<HTMLElement, TextProps>(
-  ({ className, variant, color, as = "p", ...props }, ref) => {
-    const Component = as;
-    return (
-      <Component
-        ref={ref as any}
-        className={cn(className, textVariants({ variant, color }))}
-        {...props}
-      />
-    );
-  },
-);
+const Text = ({
+  className,
+  variant,
+  color,
+  as = "p",
+  ref,
+  ...props
+}: TextProps & { ref?: React.Ref<HTMLElement> }) => {
+  const Component = as;
+  return (
+    <Component
+      ref={ref as any}
+      className={cn(className, textVariants({ variant, color }))}
+      {...props}
+    />
+  );
+};
 Text.displayName = "Text";
 
 // --- Exports ---

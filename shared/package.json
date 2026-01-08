@@ -8,7 +8,7 @@
     "build": "tsc -b"
   },
   "dependencies": {
-    "drizzle-orm": "^0.44.5",
+    "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "zod": "^4.2.1"
   },

@@ -19,21 +19,21 @@ export const sustainabilityHero = pgTable(
   "sustainability_hero",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    subtitle: text("subtitle"),
-    description: text("description"),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    subtitle: text(),
+    description: text(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    videoId: integer("video_id").references(() => mediaAssets.id, {
+    videoId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -50,20 +50,20 @@ export const sustainabilityMetrics = pgTable(
   "sustainability_metrics",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    value: varchar("value", { length: 100 }).notNull(),
-    unit: varchar("unit", { length: 50 }),
-    description: text("description"),
-    category: varchar("category", { length: 100 }),
-    iconName: varchar("icon_name", { length: 100 }),
+    name: varchar({ length: 255 }).notNull(),
+    value: varchar({ length: 100 }).notNull(),
+    unit: varchar({ length: 50 }),
+    description: text(),
+    category: varchar({ length: 100 }),
+    iconName: varchar({ length: 100 }),
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -79,28 +79,28 @@ export const sustainabilityInitiatives = pgTable(
   "sustainability_initiatives",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    impact: text("impact"),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    impact: text(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
 
     // Frontend compatibility: Additional categorization fields
-    iconName: varchar("icon_name", { length: 50 }),
-    category: varchar("category", { length: 100 }),
-    highlightedFeatures: jsonb("highlighted_features").$type<string[]>(), // Key features to highlight
+    iconName: varchar({ length: 50 }),
+    category: varchar({ length: 100 }),
+    highlightedFeatures: jsonb().$type<string[]>(), // Key features to highlight
 
-    status: varchar("status", { length: 50 }).default("active"),
+    status: varchar({ length: 50 }).default("active"),
     startDate: timestamp("start_date", { mode: "date", precision: 3 }),
     targetDate: timestamp("target_date", { mode: "date", precision: 3 }),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -117,27 +117,27 @@ export const sustainabilityGoals = pgTable(
   "sustainability_goals",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    target: varchar("target", { length: 255 }),
-    currentProgress: decimal("current_progress", { precision: 5, scale: 2 }),
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    target: varchar({ length: 255 }),
+    currentProgress: decimal({ precision: 5, scale: 2 }),
 
     // Frontend compatibility: Numeric values for progress tracking
-    currentValue: decimal("current_value", { precision: 10, scale: 2 }),
-    targetValue: decimal("target_value", { precision: 10, scale: 2 }),
-    targetYear: integer("target_year"),
-    unit: varchar("unit", { length: 50 }), // Unit for currentValue/targetValue
+    currentValue: decimal({ precision: 10, scale: 2 }),
+    targetValue: decimal({ precision: 10, scale: 2 }),
+    targetYear: integer(),
+    unit: varchar({ length: 50 }), // Unit for currentValue/targetValue
 
     targetDate: timestamp("target_date", { mode: "date", precision: 3 }),
-    category: varchar("category", { length: 100 }),
-    priority: varchar("priority", { length: 20 }).default("medium"),
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    category: varchar({ length: 100 }),
+    priority: varchar({ length: 20 }).default("medium"),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -151,19 +151,18 @@ export const sustainabilityGoals = pgTable(
 // Additional entities from research (unified sustainability, features, etc.)
 export const sustainabilityFeatures = pgTable("sustainability_features", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
-  description: text("description"),
-  category: varchar("category", { length: 100 }),
-  impact: text("impact"),
-  imageId: integer("image_id").references(() => mediaAssets.id, {
+  title: varchar({ length: 255 }).notNull(),
+  description: text(),
+  category: varchar({ length: 100 }),
+  impact: text(),
+  imageId: integer().references(() => mediaAssets.id, {
     onDelete: "set null",
   }),
-  metrics: jsonb("metrics").$type<Record<string, any>>(),
-  highlightedFeatures:
-    jsonb("highlighted_features").$type<Array<{ title: string; description: string }>>(), // Key features to highlight
-  isActive: boolean("is_active").default(true),
-  sortOrder: integer("sort_order").default(0),
-  createdAt: timestamp("created_at", {
+  metrics: jsonb().$type<Record<string, any>>(),
+  highlightedFeatures: jsonb().$type<Array<{ title: string; description: string }>>(), // Key features to highlight
+  isActive: boolean().default(true),
+  sortOrder: integer().default(0),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
@@ -171,52 +170,52 @@ export const sustainabilityFeatures = pgTable("sustainability_features", {
 
 export const unifiedSustainability = pgTable("unified_sustainability", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
-  headline: varchar("headline", { length: 255 }), // Frontend display headline
-  subheadline: text("subheadline"), // Frontend display subheadline
-  content: text("content"),
-  sectionType: varchar("section_type", { length: 100 }).notNull(),
-  data: jsonb("data").$type<Record<string, any>>(),
+  title: varchar({ length: 255 }).notNull(),
+  headline: varchar({ length: 255 }), // Frontend display headline
+  subheadline: text(), // Frontend display subheadline
+  content: text(),
+  sectionType: varchar({ length: 100 }).notNull(),
+  data: jsonb().$type<Record<string, any>>(),
   // REMOVED: metrics JSONB column (use sustainability_metrics table instead)
-  ctaText: varchar("cta_text", { length: 100 }), // Call-to-action button text
-  ctaLink: varchar("cta_link", { length: 255 }), // Call-to-action button link
+  ctaText: varchar({ length: 100 }), // Call-to-action button text
+  ctaLink: varchar({ length: 255 }), // Call-to-action button link
 
   // Section-specific titles and descriptions
-  metricsTitle: varchar("metrics_title", { length: 255 }),
-  metricsDescription: text("metrics_description"),
-  certificationsTitle: varchar("certifications_title", { length: 255 }),
-  certificationsDescription: text("certifications_description"),
-  certificationsFooterNote: text("certifications_footer_note"),
-  certificationIds: jsonb("certification_ids").$type<number[]>(), // Array of certification IDs
-  initiativesTitle: varchar("initiatives_title", { length: 255 }),
-  initiativesDescription: text("initiatives_description"),
-  goalsTitle: varchar("goals_title", { length: 255 }),
-  goalsDescription: text("goals_description"),
-  fabricPortfolioTitle: varchar("fabric_portfolio_title", { length: 255 }),
-  fabricPortfolioDescription: text("fabric_portfolio_description"),
-  featuresTitle: varchar("features_title", { length: 255 }),
-  featuresDescription: text("features_description"),
-  callToActionTitle: varchar("call_to_action_title", { length: 255 }),
-  callToActionDescription: text("call_to_action_description"),
-  callToActionButtonText: varchar("call_to_action_button_text", {
+  metricsTitle: varchar({ length: 255 }),
+  metricsDescription: text(),
+  certificationsTitle: varchar({ length: 255 }),
+  certificationsDescription: text(),
+  certificationsFooterNote: text(),
+  certificationIds: jsonb().$type<number[]>(), // Array of certification IDs
+  initiativesTitle: varchar({ length: 255 }),
+  initiativesDescription: text(),
+  goalsTitle: varchar({ length: 255 }),
+  goalsDescription: text(),
+  fabricPortfolioTitle: varchar({ length: 255 }),
+  fabricPortfolioDescription: text(),
+  featuresTitle: varchar({ length: 255 }),
+  featuresDescription: text(),
+  callToActionTitle: varchar({ length: 255 }),
+  callToActionDescription: text(),
+  callToActionButtonText: varchar({
     length: 100,
   }),
-  callToActionButtonLink: varchar("call_to_action_button_link", {
+  callToActionButtonLink: varchar({
     length: 255,
   }),
-  buttonText: varchar("button_text", { length: 100 }), // Generic button text
-  buttonLink: varchar("button_link", { length: 255 }), // Generic button link
-  backgroundImageId: integer("background_image_id").references(() => mediaAssets.id, {
+  buttonText: varchar({ length: 100 }), // Generic button text
+  buttonLink: varchar({ length: 255 }), // Generic button link
+  backgroundImageId: integer().references(() => mediaAssets.id, {
     onDelete: "set null",
   }), // Background image
 
-  isActive: boolean("is_active").default(true),
-  sortOrder: integer("sort_order").default(0),
-  createdAt: timestamp("created_at", {
+  isActive: boolean().default(true),
+  sortOrder: integer().default(0),
+  createdAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),
-  updatedAt: timestamp("updated_at", {
+  updatedAt: timestamp({
     mode: "date",
     precision: 3,
   }).defaultNow(),

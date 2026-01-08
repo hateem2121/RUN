@@ -45,6 +45,7 @@ if (isTestMode && !enableRealDb) {
  */
 export const db: NeonHttpDatabase<typeof schema> = drizzle(sql, {
   schema,
+  casing: "snake_case",
   logger: process.env.NODE_ENV === "development", // Built-in query logging in dev
 });
 

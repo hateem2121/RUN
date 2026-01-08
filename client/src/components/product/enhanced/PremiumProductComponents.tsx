@@ -17,7 +17,7 @@ import {
   Play,
   Shield,
 } from "lucide-react";
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 
@@ -118,172 +118,173 @@ interface ProductGalleryProps {
   hotspots?: Hotspot[];
 }
 
-export const ProductGallery = forwardRef<ProductGalleryHandle, ProductGalleryProps>(
-  ({ media }, ref) => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+export const ProductGallery = ({
+  media,
+  ref,
+}: ProductGalleryProps & { ref?: React.Ref<ProductGalleryHandle> }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-    useImperativeHandle(ref, () => ({
-      switchTo3DView: () => {
-        const model3DIndex = media.findIndex((item) => item.type === MediaType.Model3D);
-        if (model3DIndex !== -1) {
-          setActiveIndex(model3DIndex);
-        }
-      },
-    }));
+  useImperativeHandle(ref, () => ({
+    switchTo3DView: () => {
+      const model3DIndex = media.findIndex((item) => item.type === MediaType.Model3D);
+      if (model3DIndex !== -1) {
+        setActiveIndex(model3DIndex);
+      }
+    },
+  }));
 
-    // Reset loading state when active media changes
-    useEffect(() => {
-      setImageLoaded(false);
-    }, []);
+  // Reset loading state when active media changes
+  useEffect(() => {
+    setImageLoaded(false);
+  }, []);
 
-    useEffect(() => {
-      thumbnailRefs.current[activeIndex]?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }, [activeIndex]);
+  useEffect(() => {
+    thumbnailRefs.current[activeIndex]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [activeIndex]);
 
-    const renderMedia = () => {
-      const item = media[activeIndex];
-      if (!item) return null;
-
-      return (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={item.src}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="h-full w-full"
-          >
-            {(() => {
-              switch (item.type) {
-                case MediaType.Image:
-                  return (
-                    <>
-                      <img
-                        src={item.src}
-                        alt="Product"
-                        loading={activeIndex === 0 ? "eager" : "lazy"}
-                        {...(activeIndex === 0 && {
-                          fetchPriority: "high" as const,
-                        })}
-                        className={`h-full w-full object-contain transition-opacity duration-300 ${
-                          imageLoaded ? "opacity-100" : "opacity-0"
-                        }`}
-                        onLoad={() => setImageLoaded(true)}
-                      />
-                      {!imageLoaded && (
-                        <div className="center-flex absolute inset-0 bg-black">
-                          <div className="border-border h-12 w-12 animate-spin rounded-full border-2 border-t-2 border-t-white"></div>
-                        </div>
-                      )}
-                    </>
-                  );
-                case MediaType.Video:
-                  return (
-                    <video
-                      controls
-                      autoPlay
-                      loop
-                      muted
-                      className="h-full w-full object-contain"
-                      onError={(_e) => {}}
-                    >
-                      <source src={item.src} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  );
-                case MediaType.Model3D:
-                  return (
-                    <div className="h-full w-full">
-                      <LazyUnifiedModelViewer
-                        asset={
-                          {
-                            id: item.id,
-                            url: item.src,
-                            type: "3d_model",
-                            filename: item.filename || "product-model.glb",
-                            mimeType: item.mimeType || "model/gltf-binary",
-                            storagePath: item.src,
-                            bucketName: "default",
-                            originalName: "product-model.glb",
-                            fileSize: null,
-                            thumbnailUrl: null,
-                            thumbnailFilename: null,
-                            width: null,
-                            height: null,
-                            caption: null,
-                            altText: "Product 3D Model",
-                            blurhash: null,
-                            processing: false,
-                            processingProgress: null,
-                            processingError: null,
-                            metadata: {},
-                            tags: null,
-                            isPublic: true,
-                            isActive: true,
-                            folderId: null,
-                            downloadCount: 0,
-                            lastAccessedAt: null,
-                            deletedAt: null,
-                            uploadedAt: null,
-                            updatedAt: null,
-                            createdAt: null,
-                          } as any
-                        }
-                        config={{
-                          loading: "eager",
-                        }}
-                        className="h-full w-full"
-                        showControls={true}
-                        showLoadingProgress={true}
-                      />
-                    </div>
-                  );
-                default:
-                  return null;
-              }
-            })()}
-          </motion.div>
-        </AnimatePresence>
-      );
-    };
+  const renderMedia = () => {
+    const item = media[activeIndex];
+    if (!item) return null;
 
     return (
-      <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
-        <div className="w-full max-w-3xl">
-          <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
-            <div className="absolute inset-0 bg-black">{renderMedia()}</div>
-          </div>
-          <motion.div
-            className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          >
-            {media.map((item, index) => (
-              <ThumbnailButton
-                key={index}
-                item={item}
-                index={index}
-                isActive={activeIndex === index}
-                onClick={() => setActiveIndex(index)}
-                ref={(el) => {
-                  thumbnailRefs.current[index] = el;
-                }}
-              />
-            ))}
-          </motion.div>
-        </div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={item.src}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="h-full w-full"
+        >
+          {(() => {
+            switch (item.type) {
+              case MediaType.Image:
+                return (
+                  <>
+                    <img
+                      src={item.src}
+                      alt="Product"
+                      loading={activeIndex === 0 ? "eager" : "lazy"}
+                      {...(activeIndex === 0 && {
+                        fetchPriority: "high" as const,
+                      })}
+                      className={`h-full w-full object-contain transition-opacity duration-300 ${
+                        imageLoaded ? "opacity-100" : "opacity-0"
+                      }`}
+                      onLoad={() => setImageLoaded(true)}
+                    />
+                    {!imageLoaded && (
+                      <div className="center-flex absolute inset-0 bg-black">
+                        <div className="border-border h-12 w-12 animate-spin rounded-full border-2 border-t-2 border-t-white"></div>
+                      </div>
+                    )}
+                  </>
+                );
+              case MediaType.Video:
+                return (
+                  <video
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                    className="h-full w-full object-contain"
+                    onError={(_e) => {}}
+                  >
+                    <source src={item.src} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              case MediaType.Model3D:
+                return (
+                  <div className="h-full w-full">
+                    <LazyUnifiedModelViewer
+                      asset={
+                        {
+                          id: item.id,
+                          url: item.src,
+                          type: "3d_model",
+                          filename: item.filename || "product-model.glb",
+                          mimeType: item.mimeType || "model/gltf-binary",
+                          storagePath: item.src,
+                          bucketName: "default",
+                          originalName: "product-model.glb",
+                          fileSize: null,
+                          thumbnailUrl: null,
+                          thumbnailFilename: null,
+                          width: null,
+                          height: null,
+                          caption: null,
+                          altText: "Product 3D Model",
+                          blurhash: null,
+                          processing: false,
+                          processingProgress: null,
+                          processingError: null,
+                          metadata: {},
+                          tags: null,
+                          isPublic: true,
+                          isActive: true,
+                          folderId: null,
+                          downloadCount: 0,
+                          lastAccessedAt: null,
+                          deletedAt: null,
+                          uploadedAt: null,
+                          updatedAt: null,
+                          createdAt: null,
+                        } as any
+                      }
+                      config={{
+                        loading: "eager",
+                      }}
+                      className="h-full w-full"
+                      showControls={true}
+                      showLoadingProgress={true}
+                    />
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })()}
+        </motion.div>
+      </AnimatePresence>
     );
-  },
-);
+  };
+
+  return (
+    <div className="flex w-full justify-center p-3 sm:p-5 md:p-7 lg:p-9">
+      <div className="w-full max-w-3xl">
+        <div className="product-gallery-container relative aspect-square w-full overflow-hidden rounded-lg bg-black sm:aspect-4/3 lg:aspect-video">
+          <div className="absolute inset-0 bg-black">{renderMedia()}</div>
+        </div>
+        <motion.div
+          className="thumbnail-scrollbar mt-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto p-2 sm:mt-4 sm:gap-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+        >
+          {media.map((item, index) => (
+            <ThumbnailButton
+              key={index}
+              item={item}
+              index={index}
+              isActive={activeIndex === index}
+              onClick={() => setActiveIndex(index)}
+              ref={(el) => {
+                thumbnailRefs.current[index] = el;
+              }}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
 
 // ============================================================================
 // Thumbnail Button Component with Media Type Indicators
@@ -296,101 +297,105 @@ interface ThumbnailButtonProps {
   onClick: () => void;
 }
 
-const ThumbnailButton = forwardRef<HTMLButtonElement, ThumbnailButtonProps>(
-  ({ item, index, isActive, onClick }, ref) => {
-    const [thumbnailError, setThumbnailError] = useState(false);
-    const [imageLoaded, setImageLoaded] = useState(false);
+const ThumbnailButton = ({
+  item,
+  index,
+  isActive,
+  onClick,
+  ref,
+}: ThumbnailButtonProps & { ref?: React.Ref<HTMLButtonElement> }) => {
+  const [thumbnailError, setThumbnailError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-    // Check if thumbnail URL is missing or invalid
-    const hasThumbnail = item.thumbnail && item.thumbnail.trim() !== "";
+  // Check if thumbnail URL is missing or invalid
+  const hasThumbnail = item.thumbnail && item.thumbnail.trim() !== "";
 
-    // Determine if we should show a fallback (only when thumbnail is missing or failed to load)
-    const shouldShowFallback = !hasThumbnail || thumbnailError;
+  // Determine if we should show a fallback (only when thumbnail is missing or failed to load)
+  const shouldShowFallback = !hasThumbnail || thumbnailError;
 
-    // Get fallback icon and background color based on media type
-    const getFallbackContent = () => {
-      switch (item.type) {
-        case MediaType.Video:
-          return {
-            icon: <Play className="h-6 w-6 text-white" fill="white" />,
-            bgColor: "bg-linear-to-br from-purple-500 to-pink-500",
-            label: "Video",
-          };
-        case MediaType.Model3D:
-          return {
-            icon: <Boxes className="h-6 w-6 text-white" />,
-            bgColor: "bg-linear-to-br from-blue-500 to-cyan-500",
-            label: "3D Model",
-          };
-        default:
-          return {
-            icon: <Box className="h-6 w-6 text-white" />,
-            bgColor: "bg-linear-to-br from-muted-foreground to-muted-foreground",
-            label: "Media",
-          };
-      }
-    };
+  // Get fallback icon and background color based on media type
+  const getFallbackContent = () => {
+    switch (item.type) {
+      case MediaType.Video:
+        return {
+          icon: <Play className="h-6 w-6 text-white" fill="white" />,
+          bgColor: "bg-linear-to-br from-purple-500 to-pink-500",
+          label: "Video",
+        };
+      case MediaType.Model3D:
+        return {
+          icon: <Boxes className="h-6 w-6 text-white" />,
+          bgColor: "bg-linear-to-br from-blue-500 to-cyan-500",
+          label: "3D Model",
+        };
+      default:
+        return {
+          icon: <Box className="h-6 w-6 text-white" />,
+          bgColor: "bg-linear-to-br from-muted-foreground to-muted-foreground",
+          label: "Media",
+        };
+    }
+  };
 
-    const fallbackContent = getFallbackContent();
+  const fallbackContent = getFallbackContent();
 
-    // Get badge for media type indicator (small overlay on thumbnail)
-    const getMediaTypeBadge = () => {
-      if (item.type === MediaType.Image) return null;
-
-      return (
-        <div className="absolute top-0.5 right-0.5 rounded-full bg-black/70 p-0.5">
-          {item.type === MediaType.Video ? (
-            <Play className="h-2.5 w-2.5 text-white" fill="white" />
-          ) : (
-            <Boxes className="h-2.5 w-2.5 text-white" />
-          )}
-        </div>
-      );
-    };
+  // Get badge for media type indicator (small overlay on thumbnail)
+  const getMediaTypeBadge = () => {
+    if (item.type === MediaType.Image) return null;
 
     return (
-      <button
-        ref={ref}
-        onClick={onClick}
-        className={`relative h-14 min-h-11 w-14 min-w-11 shrink-0 transform touch-manipulation snap-center overflow-hidden rounded-md transition-all duration-300 ease-in-out sm:h-16 sm:w-16 ${
-          isActive
-            ? "scale-105 ring-2 ring-black ring-offset-2"
-            : "opacity-60 hover:scale-105 hover:opacity-100 active:scale-95"
-        }`}
-        data-testid={`button-gallery-thumbnail-${index}`}
-        aria-label={`View ${fallbackContent.label} ${index + 1}`}
-      >
-        {shouldShowFallback ? (
-          // Fallback UI with icon (shown when no thumbnail or failed to load)
-          <div
-            className={`flex h-full w-full items-center justify-center ${fallbackContent.bgColor}`}
-          >
-            {fallbackContent.icon}
-          </div>
+      <div className="absolute top-0.5 right-0.5 rounded-full bg-black/70 p-0.5">
+        {item.type === MediaType.Video ? (
+          <Play className="h-2.5 w-2.5 text-white" fill="white" />
         ) : (
-          // Show the actual thumbnail image
-          <>
-            <img
-              src={item.thumbnail}
-              alt={`Thumbnail ${index + 1}`}
-              className={`h-full w-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              loading="lazy"
-              decoding="async"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setThumbnailError(true)}
-              data-testid={`img-thumbnail-${index}`}
-            />
-            {!imageLoaded && <div className="bg-muted/20 absolute inset-0 animate-pulse" />}
-          </>
+          <Boxes className="h-2.5 w-2.5 text-white" />
         )}
-        {/* Media type badge overlay - always show for videos and 3D models when thumbnail loads successfully */}
-        {!shouldShowFallback && getMediaTypeBadge()}
-      </button>
+      </div>
     );
-  },
-);
+  };
+
+  return (
+    <button
+      ref={ref}
+      onClick={onClick}
+      className={`relative h-14 min-h-11 w-14 min-w-11 shrink-0 transform touch-manipulation snap-center overflow-hidden rounded-md transition-all duration-300 ease-in-out sm:h-16 sm:w-16 ${
+        isActive
+          ? "scale-105 ring-2 ring-black ring-offset-2"
+          : "opacity-60 hover:scale-105 hover:opacity-100 active:scale-95"
+      }`}
+      data-testid={`button-gallery-thumbnail-${index}`}
+      aria-label={`View ${fallbackContent.label} ${index + 1}`}
+    >
+      {shouldShowFallback ? (
+        // Fallback UI with icon (shown when no thumbnail or failed to load)
+        <div
+          className={`flex h-full w-full items-center justify-center ${fallbackContent.bgColor}`}
+        >
+          {fallbackContent.icon}
+        </div>
+      ) : (
+        // Show the actual thumbnail image
+        <>
+          <img
+            src={item.thumbnail}
+            alt={`Thumbnail ${index + 1}`}
+            className={`h-full w-full object-cover transition-opacity duration-300 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setThumbnailError(true)}
+            data-testid={`img-thumbnail-${index}`}
+          />
+          {!imageLoaded && <div className="bg-muted/20 absolute inset-0 animate-pulse" />}
+        </>
+      )}
+      {/* Media type badge overlay - always show for videos and 3D models when thumbnail loads successfully */}
+      {!shouldShowFallback && getMediaTypeBadge()}
+    </button>
+  );
+};
 
 ThumbnailButton.displayName = "ThumbnailButton";
 

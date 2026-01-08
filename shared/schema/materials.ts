@@ -18,22 +18,22 @@ export const fabrics = pgTable(
   "fabrics",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    description: text("description"),
-    fabricType: varchar("fabric_type", { length: 100 }),
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    fabricType: varchar({ length: 100 }),
 
     // PRODUCT ESSENCE - B2B Core Fields
-    sport: text("sport"), // Sport category (Running, Cycling, Training, etc.)
+    sport: text(), // Sport category (Running, Cycling, Training, etc.)
     marketSegment: text("market_segment"), // Market segment (Premium, Performance, Mass Market, etc.)
-    seasonality: text("seasonality"), // Seasonal use (All-Season, Summer, Winter, Spring/Fall)
+    seasonality: text(), // Seasonal use (All-Season, Summer, Winter, Spring/Fall)
 
     // Technical specifications
-    weight: varchar("weight", { length: 50 }),
-    weave: varchar("weave", { length: 100 }),
-    weaveType: varchar("weave_type", { length: 100 }), // Weave type alias for compatibility
-    weaveTypes: jsonb("weave_types").$type<string[]>(), // Array of weave types
-    stretch: varchar("stretch", { length: 50 }),
-    finishTreatment: varchar("finish_treatment", { length: 255 }), // Fabric finishing treatment
+    weight: varchar({ length: 50 }),
+    weave: varchar({ length: 100 }),
+    weaveType: varchar({ length: 100 }), // Weave type alias for compatibility
+    weaveTypes: jsonb().$type<string[]>(), // Array of weave types
+    stretch: varchar({ length: 50 }),
+    finishTreatment: varchar({ length: 255 }), // Fabric finishing treatment
 
     // Properties - Stores structured technical data including:
     // - compositions: Array<{name, isDefault, fibers: Array<{fiberId, percentage}>}>
@@ -41,27 +41,27 @@ export const fabrics = pgTable(
     // - Durability: colorfastness, tensileStrength, tearStrength, abrasionResistance, pillingGrade, shrinkageTolerancePercentage, washTemperature, yarnCountConstruction
     // - Care: washCareInstructions {careSymbols[], instructions, restrictions[]}
     // - Sustainability: endOfLifeOptions[]
-    properties: jsonb("properties").$type<Record<string, any>>(),
-    careInstructions: text("care_instructions"),
+    properties: jsonb().$type<Record<string, any>>(),
+    careInstructions: text(),
 
     // Sustainability
-    sustainabilityScore: integer("sustainability_score"),
-    certifications: jsonb("certifications").$type<string[]>(),
+    sustainabilityScore: integer(),
+    certifications: jsonb().$type<string[]>(),
 
     // Visual and application fields
-    visualSwatchId: integer("visual_swatch_id").references(() => mediaAssets.id, {
+    visualSwatchId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }), // Visual swatch media
-    keyApplications: jsonb("key_applications").$type<string[]>(), // Key applications/uses for this fabric
+    keyApplications: jsonb().$type<string[]>(), // Key applications/uses for this fabric
 
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
   (table) => [
     // PERFORMANCE INDEXES for fabric queries
@@ -79,23 +79,23 @@ export const fibers = pgTable(
   "fibers",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    type: varchar("type", { length: 100 }).notNull(), // Required type field for fabrics
-    description: text("description"),
+    name: varchar({ length: 255 }).notNull(),
+    type: varchar({ length: 100 }).notNull(), // Required type field for fabrics
+    description: text(),
 
     // Business fields
-    sustainabilityScore: integer("sustainability_score"),
-    environmentalImpact: text("environmental_impact"),
-    properties: jsonb("properties").$type<Record<string, any>>(),
+    sustainabilityScore: integer(),
+    environmentalImpact: text(),
+    properties: jsonb().$type<Record<string, any>>(),
 
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
   (table) => [
     // PERFORMANCE INDEXES for fiber queries
@@ -108,9 +108,9 @@ export const fibers = pgTable(
 // Fabric Compositions stub (for relationship queries)
 export const fabricCompositions = pgTable("fabric_compositions", {
   id: serial("id").primaryKey(),
-  fabricId: integer("fabric_id").references(() => fabrics.id),
-  fiberId: integer("fiber_id").references(() => fibers.id),
-  percentage: decimal("percentage"),
+  fabricId: integer().references(() => fabrics.id),
+  fiberId: integer().references(() => fibers.id),
+  percentage: decimal(),
 });
 
 // Types

@@ -21,52 +21,52 @@ export const categories = pgTable(
   "categories",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    slug: varchar("slug", { length: 255 }).notNull(),
-    description: text("description"),
+    name: varchar({ length: 255 }).notNull(),
+    slug: varchar({ length: 255 }).notNull(),
+    description: text(),
 
     // Self-referencing hierarchy - HARDENED FK INTEGRITY
-    parentId: integer("parent_id"),
+    parentId: integer(),
 
     // Primary image reference - HARDENED CASCADE
     // TODO: Consider adding an index for faster queries
-    primaryImageId: integer("primary_image_id").references(
+    primaryImageId: integer().references(
       () => mediaAssets.id,
       { onDelete: "set null" }, // SAFE: Category can exist without image
     ),
 
-    sortOrder: integer("sort_order").default(0),
-    isActive: boolean("is_active").default(true),
-    level: integer("level").default(0),
-    fullPath: varchar("full_path", { length: 500 }),
+    sortOrder: integer().default(0),
+    isActive: boolean().default(true),
+    level: integer().default(0),
+    fullPath: varchar({ length: 500 }),
 
     // SEO fields
-    metaTitle: varchar("meta_title", { length: 255 }),
-    metaDescription: text("meta_description"),
+    metaTitle: varchar({ length: 255 }),
+    metaDescription: text(),
 
     // Enhanced fields
-    featuredOnHomepage: boolean("featured_on_homepage").default(false),
-    gridPosition: integer("grid_position").default(0), // Missing property for grid layout
-    displayOrder: integer("display_order").default(0), // Display order for sorting
+    featuredOnHomepage: boolean().default(false),
+    gridPosition: integer().default(0), // Missing property for grid layout
+    displayOrder: integer().default(0), // Display order for sorting
     // REMOVED 2025-11-14: productCount column (never updated - COUNT queries used instead)
-    featuredContent: jsonb("featured_content").$type<Record<string, any>>(),
-    bannerUrl: varchar("banner_url", { length: 500 }), // Banner image URL for category pages
-    imageUrl: varchar("image_url", { length: 500 }), // Direct image URL (alternative to primaryImageId)
+    featuredContent: jsonb().$type<Record<string, any>>(),
+    bannerUrl: varchar({ length: 500 }), // Banner image URL for category pages
+    imageUrl: varchar({ length: 500 }), // Direct image URL (alternative to primaryImageId)
 
-    createdAt: timestamp("created_at", {
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
 
     // OPTIMISTIC LOCKING: Version field for concurrent access control (Phase 2.3)
-    version: integer("version").default(1).notNull(),
+    version: integer().default(1).notNull(),
   },
   (table) => [
     // Self-referencing foreign key - defined here to avoid implicit 'any' during type inference

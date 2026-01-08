@@ -18,29 +18,29 @@ export const aboutHero = pgTable(
   "about_hero",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    subtitle: text("subtitle"),
-    description: text("description"),
+    title: varchar({ length: 255 }).notNull(),
+    subtitle: text(),
+    description: text(),
 
     // Added for component compatibility
-    headline: varchar("headline", { length: 255 }),
-    subheadline: text("subheadline"),
+    headline: varchar({ length: 255 }),
+    subheadline: text(),
 
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    videoId: integer("video_id").references(() => mediaAssets.id, {
+    videoId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    backgroundMediaId: integer("background_media_id").references(() => mediaAssets.id, {
+    backgroundMediaId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -58,19 +58,19 @@ export const aboutTimelineEntries = pgTable(
   "about_timeline_entries",
   {
     id: serial("id").primaryKey(),
-    year: varchar("year", { length: 10 }).notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    year: varchar({ length: 10 }).notNull(),
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
 
     // Added for component compatibility
-    position: integer("position").default(0),
+    position: integer().default(0),
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -87,21 +87,21 @@ export const aboutMapLocations = pgTable(
   "about_map_locations",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    latitude: decimal("latitude", { precision: 10, scale: 8 }).notNull(),
-    longitude: decimal("longitude", { precision: 11, scale: 8 }).notNull(),
-    description: text("description"),
-    address: text("address"),
-    locationType: varchar("location_type", { length: 100 }),
+    name: varchar({ length: 255 }).notNull(),
+    latitude: decimal({ precision: 10, scale: 8 }).notNull(),
+    longitude: decimal({ precision: 11, scale: 8 }).notNull(),
+    description: text(),
+    address: text(),
+    locationType: varchar({ length: 100 }),
 
     // Added for component compatibility
-    type: varchar("type", { length: 50 }),
-    city: varchar("city", { length: 255 }),
-    country: varchar("country", { length: 255 }),
-    details: text("details"),
+    type: varchar({ length: 50 }),
+    city: varchar({ length: 255 }),
+    country: varchar({ length: 255 }),
+    details: text(),
 
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -114,25 +114,25 @@ export const aboutSections = pgTable(
   "about_sections",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title", { length: 255 }).notNull(),
-    content: text("content"),
-    sectionType: varchar("section_type", { length: 100 }).notNull(),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    title: varchar({ length: 255 }).notNull(),
+    content: text(),
+    sectionType: varchar({ length: 100 }).notNull(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    data: jsonb("data").$type<Record<string, any>>(),
-    mediaIds: jsonb("media_ids").$type<number[]>(),
+    data: jsonb().$type<Record<string, any>>(),
+    mediaIds: jsonb().$type<number[]>(),
 
     // Added for component compatibility
-    position: integer("position").default(0),
+    position: integer().default(0),
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -149,19 +149,19 @@ export const aboutStatistics = pgTable(
   "about_statistics",
   {
     id: serial("id").primaryKey(),
-    label: varchar("label", { length: 255 }).notNull(),
-    value: varchar("value", { length: 100 }).notNull(),
-    unit: varchar("unit", { length: 50 }),
-    description: text("description"),
-    iconName: varchar("icon_name", { length: 100 }),
+    label: varchar({ length: 255 }).notNull(),
+    value: varchar({ length: 100 }).notNull(),
+    unit: varchar({ length: 50 }),
+    description: text(),
+    iconName: varchar({ length: 100 }),
 
     // Added for component compatibility
-    icon: varchar("icon", { length: 100 }), // alias for iconName
-    position: integer("position").default(0),
+    icon: varchar({ length: 100 }), // alias for iconName
+    position: integer().default(0),
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -177,20 +177,20 @@ export const aboutTeamMessages = pgTable(
   "about_team_messages",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    position: varchar("position", { length: 255 }),
-    message: text("message").notNull(),
-    imageId: integer("image_id").references(() => mediaAssets.id, {
+    name: varchar({ length: 255 }).notNull(),
+    position: varchar({ length: 255 }),
+    message: text().notNull(),
+    imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
 
     // Added for component compatibility
-    title: varchar("title", { length: 255 }),
-    signature: varchar("signature", { length: 255 }),
+    title: varchar({ length: 255 }),
+    signature: varchar({ length: 255 }),
 
-    isActive: boolean("is_active").default(true),
-    sortOrder: integer("sort_order").default(0),
-    createdAt: timestamp("created_at", {
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),

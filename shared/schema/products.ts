@@ -21,13 +21,13 @@ export const products = pgTable(
   "products",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    slug: varchar("slug", { length: 255 }).notNull().unique(),
-    description: text("description"),
-    shortDescription: text("short_description"),
+    name: varchar({ length: 255 }).notNull(),
+    slug: varchar({ length: 255 }).notNull().unique(),
+    description: text(),
+    shortDescription: text(),
 
     // Category relationship - HARDENED CASCADE RULE
-    categoryId: integer("category_id")
+    categoryId: integer()
       .references(() => categories.id, {
         onDelete: "restrict", // PROTECT: Don't allow category deletion if products exist
       })
@@ -35,75 +35,75 @@ export const products = pgTable(
     // REMOVED 2025-11-14: categoryPath column (never populated - client-side path computation used)
 
     // Primary media
-    primaryImageId: integer("primary_image_id").references(() => mediaAssets.id, {
+    primaryImageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    primaryVideoId: integer("primary_video_id").references(() => mediaAssets.id, {
+    primaryVideoId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    modelFileId: integer("model_file_id").references(() => mediaAssets.id, {
+    modelFileId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
 
     // Business fields
-    sku: varchar("sku", { length: 100 }).notNull(), // REQUIRED for inventory tracking
+    sku: varchar({ length: 100 }).notNull(), // REQUIRED for inventory tracking
 
     // B2B specific
-    minimumOrderQuantity: integer("minimum_order_quantity").default(1),
-    leadTime: varchar("lead_time", { length: 100 }),
+    minimumOrderQuantity: integer().default(1),
+    leadTime: varchar({ length: 100 }),
 
     // Product specifications - Note: specifications is array format, technicalSpecs is key-value object format
-    specifications: jsonb("specifications").$type<string[]>(),
-    technicalSpecs: jsonb("technical_specs").$type<Record<string, any>>(),
-    fiberComposition: jsonb("fiber_composition").$type<Record<string, any>>(), // Fiber/material breakdown
-    tags: jsonb("tags").$type<string[]>(),
-    careInstructions: jsonb("care_instructions").$type<string[]>(),
+    specifications: jsonb().$type<string[]>(),
+    technicalSpecs: jsonb().$type<Record<string, any>>(),
+    fiberComposition: jsonb().$type<Record<string, any>>(), // Fiber/material breakdown
+    tags: jsonb().$type<string[]>(),
+    careInstructions: jsonb().$type<string[]>(),
 
     // Additional media properties
-    imageIds: jsonb("image_ids").$type<number[]>(), // Array of media asset IDs for product gallery
-    videos: jsonb("videos").$type<Record<string, any>[]>(), // Array of video objects
-    urlPath: varchar("url_path", { length: 500 }), // SEO-friendly URL path
+    imageIds: jsonb().$type<number[]>(), // Array of media asset IDs for product gallery
+    videos: jsonb().$type<Record<string, any>[]>(), // Array of video objects
+    urlPath: varchar({ length: 500 }), // SEO-friendly URL path
 
     // Custom product properties
-    customWeight: varchar("custom_weight", { length: 100 }),
-    customFit: varchar("custom_fit", { length: 100 }),
-    customizationOptions: jsonb("customization_options").$type<string[]>(), // Product customization options for B2B clients
+    customWeight: varchar({ length: 100 }),
+    customFit: varchar({ length: 100 }),
+    customizationOptions: jsonb().$type<string[]>(), // Product customization options for B2B clients
 
     // Relationships to other entities
-    fabricId: integer("fabric_id").references(() => fabrics.id, {
+    fabricId: integer().references(() => fabrics.id, {
       onDelete: "set null",
     }),
-    sizeChartId: integer("size_chart_id").references(() => sizeCharts.id, {
+    sizeChartId: integer().references(() => sizeCharts.id, {
       onDelete: "set null",
     }),
-    certificateIds: jsonb("certificate_ids").$type<number[]>(),
-    accessoryIds: jsonb("accessory_ids").$type<number[]>(),
+    certificateIds: jsonb().$type<number[]>(),
+    accessoryIds: jsonb().$type<number[]>(),
     // TODO: Candidate for deprecation - Currently used in PRODUCT_DETAIL_COLUMNS
     // Plan: Refactor to derive related products from categoryProducts context (see getProductByPath)
     // Once refactored, mark with @deprecated and set removal timeline
     // Related: server/lib/repositories/product-repository.ts line 680 (categoryProducts derivation)
-    relatedProductIds: jsonb("related_product_ids").$type<number[]>(),
+    relatedProductIds: jsonb().$type<number[]>(),
 
     // SEO
-    metaTitle: varchar("meta_title", { length: 255 }),
-    metaDescription: text("meta_description"),
-    metadata: jsonb("metadata").$type<Record<string, any>>(), // Additional product metadata
+    metaTitle: varchar({ length: 255 }),
+    metaDescription: text(),
+    metadata: jsonb().$type<Record<string, any>>(), // Additional product metadata
 
     // Status
-    isActive: boolean("is_active").default(true),
-    isFeatured: boolean("is_featured").default(false),
+    isActive: boolean().default(true),
+    isFeatured: boolean().default(false),
 
-    createdAt: timestamp("created_at", {
+    createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
+    updatedAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
 
     // Soft delete support
-    deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
   (table) => [
     // PERFORMANCE INDEXES for product queries - CRITICAL for 50ms query times

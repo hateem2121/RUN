@@ -4,7 +4,7 @@
  */
 import type { VariantProps } from "class-variance-authority";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import * as React from "react";
+import type * as React from "react";
 import { useEffect, useState } from "react";
 
 import { cardVariants } from "@/components/ui/card";
@@ -273,7 +273,7 @@ interface LiquidGlassTitleProps {
   className?: string | undefined;
 }
 
-export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
+export const LiquidGlassTitle = function LiquidGlassTitle({
   title,
   subtitle,
   className,
@@ -296,38 +296,39 @@ export const LiquidGlassTitle = React.memo(function LiquidGlassTitle({
       )}
     </LiquidGlassCard>
   );
-});
+};
 
 export interface GlassCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof glassCardVariants> {}
 
-export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ className, interactive, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(cardVariants({ variant: "glass-premium", interactive }), className)}
-      {...props}
-    />
-  ),
+export const GlassCard = ({
+  className,
+  interactive,
+  ref,
+  ...props
+}: GlassCardProps & { ref?: React.Ref<HTMLDivElement> }) => (
+  <div
+    ref={ref}
+    className={cn(cardVariants({ variant: "glass-premium", interactive }), className)}
+    {...props}
+  />
 );
 GlassCard.displayName = "GlassCard";
 
-export const GlassCardDecorations = React.memo(
-  ({ showShimmer = true }: { showShimmer?: boolean }) => (
-    <>
-      {/* Gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
-      {/* Inner glow */}
-      <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
-      {/* Hover shimmer */}
-      {showShimmer && (
-        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-          <div className="shimmer-overlay" />
-        </div>
-      )}
-    </>
-  ),
+export const GlassCardDecorations = ({ showShimmer = true }: { showShimmer?: boolean }) => (
+  <>
+    {/* Gradient overlay */}
+    <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
+    {/* Inner glow */}
+    <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
+    {/* Hover shimmer */}
+    {showShimmer && (
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <div className="shimmer-overlay" />
+      </div>
+    )}
+  </>
 );
 GlassCardDecorations.displayName = "GlassCardDecorations";
 

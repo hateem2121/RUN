@@ -25,7 +25,13 @@ export interface InputProps
     VariantProps<typeof inputVariants> {}
 
 const Input = React.memo(
-  React.forwardRef<HTMLInputElement, InputProps>(({ className, type, variant, ...props }, ref) => {
+  ({
+    className,
+    type,
+    variant,
+    ref,
+    ...props
+  }: InputProps & { ref?: React.Ref<HTMLInputElement> }) => {
     return (
       <input
         type={type}
@@ -34,7 +40,7 @@ const Input = React.memo(
         {...props}
       />
     );
-  }),
+  },
 );
 Input.displayName = "Input";
 

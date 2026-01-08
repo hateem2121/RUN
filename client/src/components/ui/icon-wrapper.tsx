@@ -1,6 +1,6 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const iconWrapperVariants = cva("inline-center-flex shrink-0", {
@@ -38,18 +38,19 @@ export interface IconWrapperProps
  * reliable wrapper for icons to enforce consistent sizing and coloring
  * avoids "utility soup" like "h-5 w-5 text-neutral-500 shrink-0"
  */
-const IconWrapper = React.forwardRef<HTMLDivElement, IconWrapperProps>(
-  ({ className, size, variant, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "div";
-    return (
-      <Comp
-        className={cn(iconWrapperVariants({ size, variant, className }))}
-        ref={ref}
-        {...props}
-      />
-    );
-  },
-);
+const IconWrapper = ({
+  className,
+  size,
+  variant,
+  asChild = false,
+  ref,
+  ...props
+}: IconWrapperProps & { ref?: React.Ref<HTMLDivElement> }) => {
+  const Comp = asChild ? Slot : "div";
+  return (
+    <Comp className={cn(iconWrapperVariants({ size, variant, className }))} ref={ref} {...props} />
+  );
+};
 IconWrapper.displayName = "IconWrapper";
 
 export { IconWrapper, iconWrapperVariants };

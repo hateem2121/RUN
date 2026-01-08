@@ -1,15 +1,17 @@
 import {
-  dehydrate,
-  HydrationBoundary,
-  keepPreviousData,
-  // QueryClient removed
-  useQuery,
-} from "@tanstack/react-query";
+  accessories,
+  categories,
+  certificates,
+  fabrics,
+  mediaAssets,
+  products,
+  sizeCharts,
+} from "@run-remix/shared";
+import { and, desc, eq, isNull, like, or, type SQL } from "drizzle-orm";
 import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router";
 import { GlobalErrorBoundary } from "@/components/error-boundaries/GlobalErrorBoundary";
-
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductsListSEO } from "@/components/products/ProductsListSEO";
@@ -25,9 +27,7 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { useAnalyticsTracker } from "@/hooks/useAnalyticsTracker";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
-import { MediaQueryKeys } from "@/lib/media-query-keys";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { cn } from "@/lib/utils";
+import { db } from "@/lib/db.server";
 import {
   AccessorySchema,
   CategorySchema,
@@ -52,45 +52,127 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const queryClient = getQueryClient(); // Server-side new instance
-
   const url = new URL(request.url);
   const search = url.searchParams.get("search") || "";
-  const category = url.searchParams.get("category") || "all";
+  const categoryId = url.searchParams.get("category");
 
-  // Prefetch critical data in parallel
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["/api/categories"],
-      queryFn: () => apiRequest("/api/categories"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/fabrics"],
-      queryFn: () => apiRequest("/api/fabrics"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/certificates"],
-      queryFn: () => apiRequest("/api/certificates"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/size-charts"],
-      queryFn: () => apiRequest("/api/size-charts"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/accessories"],
-      queryFn: () => apiRequest("/api/accessories"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: MediaQueryKeys.list,
-      queryFn: () => apiRequest("/api/media?all=true"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/products", search, category],
-      queryFn: () => apiRequest(`/api/products?search=${search}&category=${category}`),
-    }),
+  // Products Query Logic (Replicates ProductRepository.getProductsSummary + Search/Category)
+  const productFilters: SQL[] = [eq(products.isActive, true), isNull(products.deletedAt)];
+
+  if (search) {
+    const searchFilter = or(
+      like(products.name, `%${search}%`),
+      like(products.description, `%${search}%`),
+      like(products.sku, `%${search}%`),
+    );
+    if (searchFilter) {
+      productFilters.push(searchFilter);
+    }
+  }
+
+  if (categoryId && categoryId !== "all") {
+    // Check if categoryId is a number
+    const catIdNum = parseInt(categoryId, 10);
+    if (!isNaN(catIdNum)) {
+      productFilters.push(eq(products.categoryId, catIdNum));
+    }
+  }
+
+  // Define columns to match ProductSummary
+  // Using explicit selection for performance optimization (RSC pattern)
+  const summaryColumns = {
+    id: products.id,
+    name: products.name,
+    slug: products.slug,
+    sku: products.sku,
+    description: products.description,
+    primaryImageId: products.primaryImageId,
+    primaryVideoId: products.primaryVideoId,
+    imageIds: products.imageIds,
+    videos: products.videos,
+    minimumOrderQuantity: products.minimumOrderQuantity,
+    leadTime: products.leadTime,
+    careInstructions: products.careInstructions,
+    technicalSpecs: products.technicalSpecs,
+    customFit: products.customFit,
+    fiberComposition: products.fiberComposition,
+    specifications: products.specifications,
+    isActive: products.isActive,
+    isFeatured: products.isFeatured,
+    categoryId: products.categoryId,
+    fabricId: products.fabricId,
+    certificateIds: products.certificateIds,
+    sizeChartId: products.sizeChartId,
+    accessoryIds: products.accessoryIds,
+    tags: products.tags,
+    urlPath: products.urlPath,
+    createdAt: products.createdAt,
+  };
+
+  // Parallel Data Fetching Direct from DB (Zero-API)
+  const [
+    categoriesData,
+    fabricsData,
+    certificatesData,
+    sizeChartsData,
+    accessoriesData,
+    mediaAssetsData,
+    productsData,
+  ] = await Promise.all([
+    // 1. Categories
+    db
+      .select()
+      .from(categories)
+      .orderBy(categories.name),
+
+    // 2. Fabrics
+    db
+      .select()
+      .from(fabrics)
+      .orderBy(fabrics.name),
+
+    // 3. Certificates
+    db
+      .select()
+      .from(certificates)
+      .orderBy(certificates.name),
+
+    // 4. Size Charts
+    db
+      .select()
+      .from(sizeCharts)
+      .orderBy(sizeCharts.name),
+
+    // 5. Accessories
+    db
+      .select()
+      .from(accessories)
+      .orderBy(accessories.name),
+
+    // 6. Media Assets (all=true equivalent)
+    db
+      .select()
+      .from(mediaAssets)
+      .limit(100), // Limit to avoid massive payload as in original API
+
+    // 7. Products
+    db
+      .select(summaryColumns)
+      .from(products)
+      .where(and(...productFilters))
+      .orderBy(desc(products.createdAt))
+      .limit(100), // Match max limit from API
   ]);
 
-  return { dehydratedState: dehydrate(queryClient) };
+  return {
+    categories: categoriesData,
+    fabrics: fabricsData,
+    certificates: certificatesData,
+    sizeCharts: sizeChartsData,
+    accessories: accessoriesData,
+    mediaAssets: mediaAssetsData,
+    products: productsData,
+  };
 }
 
 // Loading Fallback Component
@@ -103,7 +185,17 @@ function ProductsLoader() {
 }
 
 export default function ProductsPage() {
-  const loaderData = useLoaderData<typeof loader>();
+  // Direct Server Data (No client-side fetch required for initial load)
+  const {
+    categories: serverCategories,
+    fabrics: serverFabrics,
+    certificates: serverCertificates,
+    sizeCharts: serverSizeCharts,
+    accessories: serverAccessories,
+    mediaAssets: serverMediaAssets,
+    products: serverProducts,
+  } = useLoaderData<typeof loader>();
+
   const [searchParams, setSearchParams] = useSearchParams();
   usePerformanceMonitor("ProductsPage");
   const { trackPageView, trackFunnelStage } = useAnalyticsTracker();
@@ -135,56 +227,17 @@ export default function ProductsPage() {
     moqRange: [0, 10000] as [number, number],
   });
 
-  // --- Centralized Data Fetching ---
+  // --- Safe Parsing of Server Data ---
+  const categories = safeParseArray(CategorySchema, serverCategories);
+  const fabrics = safeParseArray(FabricSchema, serverFabrics);
+  const certificates = safeParseArray(CertificateSchema, serverCertificates);
+  const sizeCharts = safeParseArray(SizeChartSchema, serverSizeCharts);
+  const accessories = safeParseArray(AccessorySchema, serverAccessories);
+  const mediaAssets = safeParseArray(MediaAssetSchema, serverMediaAssets);
 
-  // 1. Categories
-  const { data: categoriesData = [] } = useQuery<unknown[]>({
-    queryKey: ["/api/categories"],
-  });
-  const categories = safeParseArray(CategorySchema, categoriesData);
-
-  // 2. Fabrics
-  const { data: fabricsData = [] } = useQuery<unknown[]>({
-    queryKey: ["/api/fabrics"],
-  });
-  const fabrics = safeParseArray(FabricSchema, fabricsData);
-
-  // 3. Certificates
-  const { data: certificatesData = [] } = useQuery<unknown[]>({
-    queryKey: ["/api/certificates"],
-  });
-  const certificates = safeParseArray(CertificateSchema, certificatesData);
-
-  // 4. Size Charts
-  const { data: sizeChartsData = [] } = useQuery<unknown[]>({
-    queryKey: ["/api/size-charts"],
-  });
-  const sizeCharts = safeParseArray(SizeChartSchema, sizeChartsData);
-
-  // 5. Accessories
-  const { data: accessoriesData = [] } = useQuery<unknown[]>({
-    queryKey: ["/api/accessories"],
-  });
-  const accessories = safeParseArray(AccessorySchema, accessoriesData);
-
-  // 6. Media Assets
-  const { data: mediaResponse } = useQuery({
-    queryKey: MediaQueryKeys.list,
-    queryFn: () => apiRequest("/api/media?all=true", { method: "GET" }),
-  });
-  const mediaAssets = safeParseArray(MediaAssetSchema, mediaResponse?.data || []);
-
-  // 7. Products
-  const {
-    data: productsResponse,
-    isLoading,
-    isPlaceholderData,
-  } = useQuery({
-    queryKey: ["/api/products", searchTerm, selectedCategory],
-    queryFn: () => apiRequest("/api/products", { method: "GET" }),
-    placeholderData: keepPreviousData,
-  });
-  const products = safeParseArray(ProductSummarySchema, productsResponse?.data || []);
+  // Use server products by default.
+  // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.
+  const products = safeParseArray(ProductSummarySchema, serverProducts);
 
   // Track page view on mount
   useEffect(() => {
@@ -194,19 +247,47 @@ export default function ProductsPage() {
 
   // Update URL params when filters change (Debounced sync)
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchTerm) params.set("search", searchTerm);
-    if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
-    if (viewMode !== "medium") params.set("view", viewMode);
-    if (sortBy !== "name") params.set("sort", sortBy);
+    const params = new URLSearchParams(searchParams);
 
-    setSearchParams(params, { replace: true });
-  }, [searchTerm, selectedCategory, viewMode, sortBy, setSearchParams]);
+    // Only update if changed
+    const currentSearch = params.get("search") || "";
+    const currentCategory = params.get("category") || "all";
+    const currentView = params.get("view") || "medium";
+    const currentSort = params.get("sort") || "name";
+
+    let changed = false;
+
+    if (searchTerm !== currentSearch) {
+      if (searchTerm) params.set("search", searchTerm);
+      else params.delete("search");
+      changed = true;
+    }
+
+    if (selectedCategory !== currentCategory) {
+      if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
+      else params.delete("category");
+      changed = true;
+    }
+
+    if (viewMode !== currentView) {
+      params.set("view", viewMode);
+      changed = true;
+    }
+
+    if (sortBy !== currentSort) {
+      params.set("sort", sortBy);
+      changed = true;
+    }
+
+    if (changed) {
+      setSearchParams(params, { replace: true, preventScrollReset: true });
+    }
+  }, [searchTerm, selectedCategory, viewMode, sortBy, setSearchParams, searchParams]);
 
   // Extract unique tags from all products
   const availableTags = [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))];
 
-  // Filter and sort products
+  // Filter and sort products (Client-side refinement of server results)
   const sortedProducts = (products || [])
     .filter((product) => {
       if (!product) return false;
@@ -283,157 +364,149 @@ export default function ProductsPage() {
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-muted/30 pt-production-header min-h-screen">
-        <GlobalErrorBoundary>
-          <Suspense fallback={<ProductsLoader />}>
-            {/* SEO Component */}
-            <ProductsListSEO
-              category={selectedCategoryObj}
-              searchTerm={searchTerm}
-              totalProducts={sortedProducts.length}
-            />
+    <div className="bg-muted/30 pt-production-header min-h-screen">
+      <GlobalErrorBoundary>
+        <Suspense fallback={<ProductsLoader />}>
+          {/* SEO Component */}
+          <ProductsListSEO
+            category={selectedCategoryObj}
+            searchTerm={searchTerm}
+            totalProducts={sortedProducts.length}
+          />
 
-            {/* Header */}
-            <div className="z-modal-backdrop border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-                  <Typography.H1 className="text-2xl font-bold">Products</Typography.H1>
+          {/* Header */}
+          <div className="z-modal-backdrop border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+                <Typography.H1 className="text-2xl font-bold">Products</Typography.H1>
 
-                  <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-                    {/* Search */}
-                    <div className="relative flex-1 sm:flex-none">
-                      <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                      <Input
-                        placeholder="Search products..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 sm:w-80"
-                      />
-                    </div>
-
-                    {/* Category Filter */}
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                      <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="All Categories" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
-                        {categories
-                          .filter((c) => c.isActive)
-                          .map((category) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
-                              {category?.name || "Category"}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-
-                    {/* Sort */}
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-full sm:w-40">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="featured">Featured</SelectItem>
-                      </SelectContent>
-                    </Select>
-
-                    {/* View Mode */}
-                    <div className="bg-muted flex gap-1 rounded-md p-1">
-                      <Button
-                        size="sm"
-                        variant={viewMode === "small" ? "default" : "ghost"}
-                        onClick={() => setViewMode("small")}
-                        className="p-2"
-                      >
-                        <Grid3X3 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={viewMode === "medium" ? "default" : "ghost"}
-                        onClick={() => setViewMode("medium")}
-                        className="p-2"
-                      >
-                        <Grid2X2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={viewMode === "large" ? "default" : "ghost"}
-                        onClick={() => setViewMode("large")}
-                        className="p-2"
-                      >
-                        <LayoutGrid className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    {/* Advanced Filters */}
-                    <ProductFilters
-                      fabrics={fabrics.filter((f) => f.isActive)}
-                      certificates={certificates.filter((c) => c.isActive)}
-                      sizeCharts={sizeCharts.filter((s) => s.isActive)}
-                      accessories={accessories.filter((a) => a.isActive)}
-                      selectedFilters={selectedFilters}
-                      onFiltersChange={setSelectedFilters}
-                      availableTags={availableTags}
+                <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+                  {/* Search */}
+                  <div className="relative flex-1 sm:flex-none">
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                    <Input
+                      placeholder="Search products..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 sm:w-80"
                     />
+                  </div>
+
+                  {/* Category Filter */}
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {categories
+                        .filter((c) => c.isActive)
+                        .map((category) => (
+                          <SelectItem key={category.id} value={category.id.toString()}>
+                            {category?.name || "Category"}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Sort */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-full sm:w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="name">Name</SelectItem>
+                      <SelectItem value="newest">Newest</SelectItem>
+                      <SelectItem value="featured">Featured</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* View Mode */}
+                  <div className="bg-muted flex gap-1 rounded-md p-1">
+                    <Button
+                      size="sm"
+                      variant={viewMode === "small" ? "default" : "ghost"}
+                      onClick={() => setViewMode("small")}
+                      className="p-2"
+                    >
+                      <Grid3X3 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={viewMode === "medium" ? "default" : "ghost"}
+                      onClick={() => setViewMode("medium")}
+                      className="p-2"
+                    >
+                      <Grid2X2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={viewMode === "large" ? "default" : "ghost"}
+                      onClick={() => setViewMode("large")}
+                      className="p-2"
+                    >
+                      <LayoutGrid className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
 
-                {/* Results count */}
-                <div className="text-muted-foreground mt-2 text-sm">
-                  Showing {sortedProducts.length} products
-                  {searchTerm && ` for "${searchTerm}"`}
-                  {selectedCategory &&
-                    ` in ${
-                      categories.find((c) => c.id.toString() === selectedCategory)?.name ||
-                      "Category"
-                    }`}
-                </div>
+                {/* Advanced Filters */}
+                <ProductFilters
+                  fabrics={fabrics.filter((f) => f.isActive)}
+                  certificates={certificates.filter((c) => c.isActive)}
+                  sizeCharts={sizeCharts.filter((s) => s.isActive)}
+                  accessories={accessories.filter((a) => a.isActive)}
+                  selectedFilters={selectedFilters}
+                  onFiltersChange={setSelectedFilters}
+                  availableTags={availableTags}
+                />
               </div>
             </div>
 
-            {/* Products Grid */}
-            <div className="container mx-auto px-4 py-8">
-              {isLoading ? (
-                <ProductsLoader />
-              ) : sortedProducts.length === 0 ? (
-                <div className="py-12 text-center">
-                  <Typography.P className="text-muted-foreground">No products found</Typography.P>
-                </div>
-              ) : (
-                <>
-                  <div
-                    className={cn(
-                      "transition-opacity duration-200",
-                      isPlaceholderData && "opacity-50",
-                    )}
-                  >
-                    <ProductGrid
-                      products={displayedProducts}
-                      mediaAssets={mediaAssets}
-                      viewMode={viewMode}
-                      categories={categories}
-                    />
-                  </div>
-
-                  {/* Infinite scroll observer (Placeholder) */}
-                  {hasMore && (
-                    <div ref={observerRef} className="flex justify-center py-8">
-                      <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
-                      <Typography.P className="text-luxury-body text-sm">
-                        "Loading more products..."
-                      </Typography.P>
-                    </div>
-                  )}
-                </>
-              )}
+            {/* Results count */}
+            <div className="text-muted-foreground mt-2 text-sm container mx-auto px-4 pb-2">
+              Showing {sortedProducts.length} products
+              {searchTerm && ` for "${searchTerm}"`}
+              {selectedCategory &&
+                selectedCategory !== "all" &&
+                ` in ${
+                  categories.find((c) => c.id.toString() === selectedCategory)?.name || "Category"
+                }`}
             </div>
-          </Suspense>
-        </GlobalErrorBoundary>
-      </div>
-    </HydrationBoundary>
+          </div>
+
+          {/* Products Grid */}
+          <div className="container mx-auto px-4 py-8">
+            {/* No isLoading state needed as loader suspense handles it */}
+            {sortedProducts.length === 0 ? (
+              <div className="py-12 text-center">
+                <Typography.P className="text-muted-foreground">No products found</Typography.P>
+              </div>
+            ) : (
+              <>
+                <div className="transition-opacity duration-200">
+                  <ProductGrid
+                    products={displayedProducts}
+                    mediaAssets={mediaAssets}
+                    viewMode={viewMode}
+                    categories={categories}
+                  />
+                </div>
+
+                {/* Infinite scroll observer (Placeholder) */}
+                {hasMore && (
+                  <div ref={observerRef} className="flex justify-center py-8">
+                    <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
+                    <Typography.P className="text-luxury-body text-sm">
+                      "Loading more products..."
+                    </Typography.P>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </Suspense>
+      </GlobalErrorBoundary>
+    </div>
   );
 }
