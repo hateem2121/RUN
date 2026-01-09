@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { CheckCircle2, Clock, Mail, MapPin, Share2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useActionState, useOptimistic, useEffect, useState, startTransition } from "react";
 import { useForm } from "react-hook-form";
-import { type ActionFunctionArgs, useFetcher, useLoaderData } from "react-router";
+import { type ActionFunctionArgs, useLoaderData } from "react-router";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { GlassCard, GlassCardDecorations } from "@/components/ui/glass-card";
@@ -70,7 +70,7 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-import { submitInquiry } from "../services/inquiry.server";
+import { submitInquiry, submitInquiryAction } from "../services/inquiry.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const data = await request.json();
@@ -106,9 +106,6 @@ export default function Contact() {
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showPlatformDropdown, setShowPlatformDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
-
-  const fetcher = useFetcher<typeof action>();
-
   const { data: contactConfig, isLoading } = useQuery<ContactConfig>({
     queryKey: ["/api/contact-info"],
     staleTime: 300000,
@@ -135,25 +132,29 @@ export default function Contact() {
   const selectedPlatform = form.watch("platform");
   const showOtherPlatform = selectedPlatform === "Other";
 
-  // Handle Fetcher State
+  const [state, formAction, isPending] = useActionState(submitInquiryAction, { success: false, error: "" });
+  const [optimisticSuccess, setOptimisticSuccess] = useOptimistic(state.success);
+
+  // Sync optimistic state
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data?.success) {
-      setShowSuccess(true);
+    if (state.success) {
+      setOptimisticSuccess(true);
       form.reset();
       toast({
         title: "Success!",
-        description:
-          contactConfig?.successMessage ||
-          "Thank you for your message. We'll get back to you soon!",
+        description: contactConfig?.successMessage || "Thank you for your message. We'll get back to you soon!",
       });
-    } else if (fetcher.state === "idle" && fetcher.data?.success === false) {
-      toast({
+      setShowSuccess(true);
+    } else if (state.success === false && state.error) {
+       toast({
         title: "Error",
-        description: fetcher.data.error || "Failed to send message. Please try again.",
+        description: state.error || "Failed to send message. Please try again.",
         variant: "destructive",
       });
     }
-  }, [fetcher.state, fetcher.data, form, contactConfig, toast]);
+  }, [state, form, contactConfig, toast, setOptimisticSuccess]);
+
+
 
   const onSubmit = (data: ContactFormData) => {
     if (data.honeypot) return; // Silent fail for bots
@@ -164,21 +165,30 @@ export default function Contact() {
     const preferredPlatform =
       data.platform === "Other" ? data.otherPlatform || null : data.platform;
 
-    const payload = {
-      name: fullName,
-      email: data.email,
-      company,
-      phone,
-      country: data.country || null,
-      preferredPlatform,
-      message: data.message,
-      honeypot: data.honeypot || "",
-      // Add individual fields in case different API expectations, but typically payload object is cleaner
-      // But fetcher.submit takes FormData or flat object usually.
-      // If we pass nested object or strictly typed object, useEncType json is best.
-    };
 
-    fetcher.submit(payload, { method: "POST", encType: "application/json" });
+
+    // React 19: trigger Server Action via standard form submission (programmatic or declarative)
+    // We use programmatic here because we are integrating with RHF
+    const formData = new FormData();
+    formData.append("name", fullName);
+    formData.append("email", data.email);
+    formData.append("country", data.country);
+    formData.append("message", data.message);
+    if (company) formData.append("company", company);
+    if (phone) formData.append("phone", phone);
+    if (preferredPlatform) formData.append("preferredPlatform", preferredPlatform);
+    if (data.honeypot) formData.append("honeypot", data.honeypot);
+    
+    // Trigger optimistic update immediately
+    setOptimisticSuccess(true);
+    
+    // Call Server Action
+    // Note: In a pure R19 flow we'd pass `formAction` to <form>, but with RHF handleSubmit we bridge it.
+    // We pass the formData to the startTransition wrapper provided by React or simple async call if not using transition explicitly? 
+    // Actually, useActionState returns a wrapped action that handles transition.
+    startTransition(() => {
+        formAction(formData);
+    });
   };
 
   const filteredCountries = countries.filter((c) =>
@@ -496,11 +506,11 @@ export default function Contact() {
                         <Button
                           type="submit"
                           data-testid="button-submit"
-                          disabled={fetcher.state === "submitting" || fetcher.state === "loading"}
+                          disabled={isPending || optimisticSuccess}
                           size="lg"
                           className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
                         >
-                          {fetcher.state === "submitting" || fetcher.state === "loading"
+                          {isPending || optimisticSuccess
                             ? "Sending..."
                             : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                         </Button>

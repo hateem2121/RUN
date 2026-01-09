@@ -8,11 +8,13 @@ import { logger } from "../monitoring/logger.js";
  */
 
 // Circuit breaker states
-enum CircuitState {
-  CLOSED = "CLOSED", // Normal operation
-  OPEN = "OPEN", // Blocking requests
-  HALF_OPEN = "HALF_OPEN", // Testing if database recovered
-}
+export const CircuitState = {
+  CLOSED: "CLOSED", // Normal operation
+  OPEN: "OPEN", // Blocking requests
+  HALF_OPEN: "HALF_OPEN", // Testing if database recovered
+} as const;
+
+export type CircuitState = (typeof CircuitState)[keyof typeof CircuitState];
 
 interface CircuitBreakerMetrics {
   queries: {
@@ -64,10 +66,15 @@ export class DatabaseCircuitBreaker {
   /**
    * Execute a database query with circuit breaker protection
    */
-  async execute<T>(operation: () => Promise<T>, operationName: string): Promise<T> {
+  async execute<T>(
+    operation: () => Promise<T>,
+    operationName: string,
+    options?: { isIdempotent?: boolean },
+  ): Promise<T> {
     // Check circuit breaker before attempting operation
     this.canProceedWithRequest(operationName);
 
+    const isIdempotent = options?.isIdempotent ?? true;
     const isHalfOpen = this.circuitState === CircuitState.HALF_OPEN;
     let lastError: Error | null = null;
     let retryCount = 0;
@@ -113,6 +120,13 @@ export class DatabaseCircuitBreaker {
             }
             this.recordFailure(operationName, error as Error);
             throw error;
+          }
+
+          // NON-IDEMPOTENT SAFETY: Never retry non-idempotent operations (writes)
+          if (!isIdempotent) {
+             logger.warn(`🛑 ${operationName} failed, not retrying (non-idempotent): ${(error as Error).message}`);
+             this.recordFailure(operationName, error as Error);
+             throw error;
           }
 
           if (attempt === this.MAX_RETRIES || !isTransientError) {

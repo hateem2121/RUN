@@ -1,3 +1,5 @@
+"use server";
+
 import { inquiries } from "@shared/schema";
 import { db } from "../db.server";
 
@@ -11,6 +13,30 @@ export type SubmitInquiryData = {
   preferredPlatform?: string | null;
   honeypot?: string;
 };
+
+// React 19 Server Action Adapter
+export async function submitInquiryAction(_prevState: any, formData: FormData) {
+  const data = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    message: formData.get("message") as string,
+    company: formData.get("company") as string,
+    phone: formData.get("phone") as string,
+    country: formData.get("country") as string,
+    preferredPlatform: formData.get("preferredPlatform") as string,
+    honeypot: formData.get("honeypot") as string,
+  };
+
+  try {
+    const result = await submitInquiry(data);
+    return { success: true, data: result };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Submission failed" 
+    };
+  }
+}
 
 export async function submitInquiry(data: SubmitInquiryData) {
   // 1. Honeypot check

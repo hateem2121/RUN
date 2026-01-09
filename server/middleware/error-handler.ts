@@ -74,19 +74,19 @@ export const globalErrorHandler = (
     Sentry.setContext("validation_errors", error.details);
   }
 
-  // 3. Construct Envelope
-  const response: ErrorEnvelope = {
-    success: false,
-    error: {
-      type: error.constructor.name,
-      code: error.errorCode,
-      message: error.message,
-      ...(error.details ? { details: error.details } : {}),
-      requestId,
-      timestamp: Date.now(),
-    },
+  // 3. Construct RFC 7807 Problem Details
+  // Standard: https://tools.ietf.org/html/rfc7807
+  const problemDetails = {
+    type: `https://api.run-remix.com/errors/${error.errorCode.toLowerCase().replace(/_/g, "-")}`,
+    title: error.constructor.name || "Error",
+    status: error.statusCode,
+    detail: error.message,
+    instance: req.path,
+    requestId: requestId, // Extension
+    // Standardize validation errors into 'invalid-params' extension
+    ...(error.details ? { "invalid-params": error.details } : {}),
   };
 
   // 4. Send
-  res.status(error.statusCode).json(response);
+  res.status(error.statusCode).header("Content-Type", "application/problem+json").json(problemDetails);
 };

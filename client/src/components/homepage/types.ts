@@ -1,9 +1,11 @@
-export enum CursorVariant {
-  DEFAULT = "DEFAULT",
-  TEXT = "TEXT",
-  VIEW = "VIEW",
-  BUTTON = "BUTTON",
-}
+export const CursorVariant = {
+  DEFAULT: "DEFAULT",
+  TEXT: "TEXT",
+  VIEW: "VIEW",
+  BUTTON: "BUTTON",
+} as const;
+
+export type CursorVariant = (typeof CursorVariant)[keyof typeof CursorVariant];
 
 export interface NavItem {
   label: string;

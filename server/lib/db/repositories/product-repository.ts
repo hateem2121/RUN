@@ -800,15 +800,23 @@ export class ProductRepository {
   }
 
   async createProduct(product: InsertProduct, tx?: DbClient): Promise<Product> {
-    const dbInstance = tx || db;
-    const [created] = await dbInstance.insert(products).values(product).returning();
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const [created] = await dbInstance.insert(products).values(product).returning();
 
-    if (!tx) {
-      await this.invalidateProductCache();
-      await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
-    }
+        if (!created) throw new Error("Failed to create product");
 
-    return created!;
+        if (!tx) {
+          await this.invalidateProductCache();
+          await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
+        }
+
+        return created;
+      },
+      "createProduct",
+      { isIdempotent: false },
+    );
   }
 
   async updateProduct(
@@ -816,36 +824,48 @@ export class ProductRepository {
     product: Partial<InsertProduct>,
     tx?: DbClient,
   ): Promise<Product | undefined> {
-    const dbInstance = tx || db;
-    const [updated] = await dbInstance
-      .update(products)
-      .set({ ...product, updatedAt: sql`NOW()` })
-      .where(and(eq(products.id, id), isNull(products.deletedAt)))
-      .returning();
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const [updated] = await dbInstance
+          .update(products)
+          .set({ ...product, updatedAt: sql`NOW()` })
+          .where(and(eq(products.id, id), isNull(products.deletedAt)))
+          .returning();
 
-    if (!tx && updated) {
-      await this.invalidateProductCache();
-      await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
-    }
+        if (!tx && updated) {
+          await this.invalidateProductCache();
+          await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
+        }
 
-    return updated;
+        return updated;
+      },
+      "updateProduct",
+      { isIdempotent: false },
+    );
   }
 
   async deleteProduct(id: number, tx?: DbClient): Promise<boolean> {
-    const dbInstance = tx || db;
-    const result = await dbInstance
-      .update(products)
-      .set({ deletedAt: sql`NOW()`, updatedAt: sql`NOW()` })
-      .where(eq(products.id, id));
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance
+          .update(products)
+          .set({ deletedAt: sql`NOW()`, updatedAt: sql`NOW()` })
+          .where(eq(products.id, id));
 
-    const success = (result.rowCount ?? 0) > 0;
+        const success = (result.rowCount ?? 0) > 0;
 
-    if (!tx && success) {
-      await this.invalidateProductCache();
-      await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
-    }
+        if (!tx && success) {
+          await this.invalidateProductCache();
+          await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
+        }
 
-    return success;
+        return success;
+      },
+      "deleteProduct",
+      { isIdempotent: false },
+    );
   }
 
   // =============================================================================
@@ -1024,16 +1044,22 @@ export class ProductRepository {
   }
 
   async createCategory(category: InsertCategory, tx?: DbClient): Promise<Category> {
-    const dbInstance = tx || db;
-    const result = await dbInstance.insert(categories).values(category).returning();
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance.insert(categories).values(category).returning();
 
-    if (Array.isArray(result) && result.length > 0) {
-      if (!tx) {
-        await this.invalidateCategoryCache();
-      }
-      return result[0]!;
-    }
-    throw new Error("Failed to create category");
+        if (Array.isArray(result) && result.length > 0) {
+          if (!tx) {
+            await this.invalidateCategoryCache();
+          }
+          return result[0]!;
+        }
+        throw new Error("Failed to create category");
+      },
+      "createCategory",
+      { isIdempotent: false },
+    );
   }
 
   async updateCategory(
@@ -1041,35 +1067,47 @@ export class ProductRepository {
     category: Partial<InsertCategory>,
     tx?: DbClient,
   ): Promise<Category | undefined> {
-    const dbInstance = tx || db;
-    const [updated] = (await dbInstance
-      .update(categories)
-      .set({ ...category, updatedAt: sql`NOW()` })
-      .where(and(eq(categories.id, id), isNull(categories.deletedAt)))
-      .returning()) as Category[];
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const [updated] = (await dbInstance
+          .update(categories)
+          .set({ ...category, updatedAt: sql`NOW()` })
+          .where(and(eq(categories.id, id), isNull(categories.deletedAt)))
+          .returning()) as Category[];
 
-    if (!tx && updated) {
-      await this.invalidateCategoryCache();
-    }
+        if (!tx && updated) {
+          await this.invalidateCategoryCache();
+        }
 
-    return updated;
+        return updated;
+      },
+      "updateCategory",
+      { isIdempotent: false },
+    );
   }
 
   async deleteCategory(id: number, tx?: DbClient): Promise<boolean> {
-    const dbInstance = tx || db;
-    const result = await dbInstance
-      .update(categories)
-      .set({ deletedAt: sql`NOW()`, updatedAt: sql`NOW()` })
-      .where(eq(categories.id, id));
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance
+          .update(categories)
+          .set({ deletedAt: sql`NOW()`, updatedAt: sql`NOW()` })
+          .where(eq(categories.id, id));
 
-    const success = (result.rowCount ?? 0) > 0;
+        const success = (result.rowCount ?? 0) > 0;
 
-    if (!tx && success) {
-      await this.invalidateCategoryCache();
-      await unifiedCache.delete("categories:deleted");
-    }
+        if (!tx && success) {
+          await this.invalidateCategoryCache();
+          await unifiedCache.delete("categories:deleted");
+        }
 
-    return success;
+        return success;
+      },
+      "deleteCategory",
+      { isIdempotent: false },
+    );
   }
 
   // DELETED CATEGORIES MANAGEMENT
@@ -1107,36 +1145,48 @@ export class ProductRepository {
   }
 
   async restoreCategory(id: number, tx?: DbClient): Promise<boolean> {
-    const dbInstance = tx || db;
-    const result = await dbInstance
-      .update(categories)
-      .set({ deletedAt: null, updatedAt: sql`NOW()` })
-      .where(eq(categories.id, id));
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance
+          .update(categories)
+          .set({ deletedAt: null, updatedAt: sql`NOW()` })
+          .where(eq(categories.id, id));
 
-    const success = (result.rowCount ?? 0) > 0;
+        const success = (result.rowCount ?? 0) > 0;
 
-    if (!tx && success) {
-      await this.invalidateCategoryCache();
-      await unifiedCache.delete("categories:deleted");
-    }
+        if (!tx && success) {
+          await this.invalidateCategoryCache();
+          await unifiedCache.delete("categories:deleted");
+        }
 
-    return success;
+        return success;
+      },
+      "restoreCategory",
+      { isIdempotent: false },
+    );
   }
 
   async permanentlyDeleteCategory(id: number, tx?: DbClient): Promise<boolean> {
-    const dbInstance = tx || db;
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
 
-    // Hard delete - permanently removes the record
-    const result = await dbInstance.delete(categories).where(eq(categories.id, id));
+        // Hard delete - permanently removes the record
+        const result = await dbInstance.delete(categories).where(eq(categories.id, id));
 
-    const success = (result.rowCount ?? 0) > 0;
+        const success = (result.rowCount ?? 0) > 0;
 
-    if (!tx && success) {
-      await this.invalidateCategoryCache();
-      await unifiedCache.delete("categories:deleted");
-    }
+        if (!tx && success) {
+          await this.invalidateCategoryCache();
+          await unifiedCache.delete("categories:deleted");
+        }
 
-    return success;
+        return success;
+      },
+      "permanentlyDeleteCategory",
+      { isIdempotent: false },
+    );
   }
 
   // =============================================================================

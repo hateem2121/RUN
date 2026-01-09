@@ -1,12 +1,39 @@
 export class ApiError extends Error {
   status: number;
   retryAfter?: number;
+  title?: string;
+  detail?: string;
+  type?: string;
+  instance?: string;
+  requestId?: string;
+  invalidParams?: Record<string, string[]>;
 
-  constructor(message: string, status: number, retryAfter?: number) {
-    super(message);
+  constructor(
+    status: number,
+    data: {
+      message?: string; // fallback
+      title?: string;
+      detail?: string;
+      type?: string;
+      instance?: string;
+      requestId?: string;
+      "invalid-params"?: Record<string, string[]>;
+      retryAfter?: number;
+    },
+  ) {
+    // Prefer 'detail' for the main error message, fallback to 'title' or generic 'message'
+    const msg = data.detail || data.title || data.message || "Unknown API Error";
+    super(msg);
+
     this.status = status;
-    this.retryAfter = retryAfter || 1000;
     this.name = "ApiError";
+    this.retryAfter = data.retryAfter || 1000;
+    if (data.title) this.title = data.title;
+    if (data.detail) this.detail = data.detail;
+    if (data.type) this.type = data.type;
+    if (data.instance) this.instance = data.instance;
+    if (data.requestId) this.requestId = data.requestId;
+    if (data["invalid-params"]) this.invalidParams = data["invalid-params"];
   }
 }
 
@@ -59,29 +86,37 @@ export async function apiRequest(
   });
 
   if (!res.ok) {
-    let errorMessage = res.statusText;
-    let retryAfter: number | undefined;
+    let errorData: any = {};
+    const contentType = res.headers.get("content-type");
 
     try {
       const text = await res.text();
       if (text) {
         try {
-          const json = JSON.parse(text);
-          errorMessage = json.message || json.error?.message || errorMessage;
-
-          // Handle Rate Limit Error specifically
-          if (res.status === 429 && json.error?.retryAfter) {
-            retryAfter = json.error.retryAfter;
+          if (contentType?.includes("application/problem+json") || contentType?.includes("application/json")) {
+            errorData = JSON.parse(text);
+          } else {
+            errorData = { message: text };
           }
         } catch {
-          errorMessage = text;
+          errorData = { message: text };
         }
       }
     } catch {
       // Ignore parsing errors
     }
 
-    throw new ApiError(errorMessage, res.status, retryAfter);
+    // Handle Rate Limit specifically
+    if (res.status === 429 && errorData.error?.retryAfter) {
+      errorData.retryAfter = errorData.error.retryAfter;
+    }
+
+    // Fallback: if 'error' key exists (legacy), lift it up
+    if (errorData.error && typeof errorData.error === "object") {
+       errorData = { ...errorData, ...errorData.error };
+    }
+
+    throw new ApiError(res.status, errorData);
   }
 
   // Handle empty responses
@@ -90,7 +125,7 @@ export async function apiRequest(
   }
 
   const contentType = res.headers.get("content-type");
-  if (contentType?.includes("application/json")) {
+  if (contentType?.includes("application/json") || contentType?.includes("application/problem+json")) {
     return res.json();
   }
 

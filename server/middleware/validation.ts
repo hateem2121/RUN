@@ -4,9 +4,12 @@ import { ValidationError } from "../errors/AppError.js";
 
 // Validation wrapper for Request Body
 export const validateBody =
-  (schema: z.ZodSchema) => (req: Request, _res: Response, next: NextFunction) => {
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      // Use parseAsync to handle both sync and async schemas uniformly
+      const data = await schema.parseAsync(req.body);
+      // Replace body with parsed data (handles transformations)
+      req.body = data;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -26,21 +29,17 @@ export const validateBody =
 
 // Validation wrapper for Request Params
 export const validateParams =
-  (schema: z.ZodSchema) => (req: Request, _res: Response, next: NextFunction) => {
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      // Parse query params, body and params
-      // We parse query specially to handle string numbers if needed, but Zod usually handles coercion
-
       if (schema) {
-        const result = schema.safeParse({
+        // Use parseAsync to handle both sync and async schemas uniformly
+        const result = await schema.safeParseAsync({
           body: req.body,
           query: req.query,
           params: req.params,
         });
 
         if (!result.success) {
-          // Format Zod errors
-
           const errorMessages = (result.error as any).errors.map(
             (err: any) => `${err.path.join(".")}: ${err.message}`,
           );
@@ -56,9 +55,11 @@ export const validateParams =
 
 // Validation wrapper for Request Query
 export const validateQuery =
-  (schema: z.ZodSchema) => (req: Request, _res: Response, next: NextFunction) => {
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      const parsed = schema.parse(req.query);
+        // Use parseAsync to handle both sync and async schemas uniformly
+      const parsed = await schema.parseAsync(req.query);
+
       // Fix: req.query might be a getter-only property in some environments
       try {
         req.query = parsed as any;

@@ -60,6 +60,19 @@ export default function App() {
   return <Outlet />;
 }
 
+export function HydrateFallback() {
+  return (
+    <div className="flex h-screen w-screen items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <p className="animate-pulse text-muted-foreground text-sm font-medium">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+import { ApiError } from "@/lib/api";
+
 export function ErrorBoundary() {
   const error = useRouteError();
   let message = "Oops!";
@@ -70,6 +83,10 @@ export function ErrorBoundary() {
     message = error.status === 404 ? "404" : "Error";
     details =
       error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+  } else if (error instanceof ApiError) {
+    // RFC 7807 Error Handling
+    message = error.title || "Error";
+    details = error.detail || error.message || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;

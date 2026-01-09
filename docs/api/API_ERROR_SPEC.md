@@ -1,17 +1,19 @@
 # API Error & Response Specification
 
-**Version:** 1.0 (2025-12-19)
-**Status:** DRAFT (Implementation in Progress)
+**Version:** 2.0 (2026-01-09)
+**Status:** ACTIVE (RFC 7807 Compliant)
 
 ---
 
 ## 1. Overview
 
-All API endpoints in the RUN-Remix system MUST return a consistent JSON text envelope. This contract ensures that the frontend can reliably parse responses without ad-hoc `try/catch` logic or guessing the error shape.
+All API endpoints in the RUN-Remix system MUST return errors compliant with **RFC 7807: Problem Details for HTTP APIs**. This ensures interoperability, automated client parsing, and consistent observability.
 
-## 2. Response Envelopes
+## 2. Response Formats
 
-### 2.1 Success Envelope (HTTP 2xx)
+### 2.1 Success Response (HTTP 2xx)
+
+Success responses remain unchanged and should return the resource directly or a simple envelope.
 
 ```json
 {
@@ -19,56 +21,55 @@ All API endpoints in the RUN-Remix system MUST return a consistent JSON text env
   "data": {
     // ... payload ...
   },
-  "meta": {
-    "requestId": "req_12345",
-    "timestamp": 1700000000
-  }
+  "requestId": "req_12345"
 }
 ```
 
-### 2.2 Error Envelope (HTTP 4xx/5xx)
+### 2.2 Error Response (HTTP 4xx/5xx)
+
+ALL error responses MUST use the `application/problem+json` content type.
 
 ```json
 {
-  "success": false,
-  "error": {
-    "type": "ValidationError",
-    "code": "INVALID_INPUT",
-    "message": "The provided email is invalid.",
-    "details": {
-      "email": ["Invalid email format"]
-    },
-    "requestId": "req_12345",
-    "timestamp": 1700000000
+  "type": "https://api.run-remix.com/errors/validation-failed",
+  "title": "Validation Failed",
+  "status": 400,
+  "detail": "The request contained invalid parameters.",
+  "instance": "/api/subscribe",
+  "requestId": "req_12345",
+  "invalid-params": {
+    "email": ["Invalid email format"]
   }
 }
 ```
 
-## 3. Standard Error Types
+## 3. Standard Field Definitions
 
-| HTTP Status | Error Type           | Error Code            | Description                                                    |
-| :---------- | :------------------- | :-------------------- | :------------------------------------------------------------- |
-| **400**     | `ValidationError`    | `INVALID_INPUT`       | Zod schema validation failed. `details` contains field errors. |
-| **400**     | `BadRequestError`    | `BAD_REQUEST`         | Generic bad request (malformed JSON, etc.).                    |
-| **401**     | `UnauthorizedError`  | `UNAUTHORIZED`        | Missing or invalid authentication token.                       |
-| **403**     | `ForbiddenError`     | `FORBIDDEN`           | Authenticated but permissions denied.                          |
-| **404**     | `NotFoundError`      | `RESOURCE_NOT_FOUND`  | The requested resource (ID, route) does not exist.             |
-| **409**     | `ConflictError`      | `CONFLICT`            | Resource state conflict (e.g., duplicate email).               |
-| **429**     | `RateLimitError`     | `RATE_LIMIT_EXCEEDED` | Too many requests.                                             |
-| **500**     | `InternalError`      | `INTERNAL_ERROR`      | Unhandled server exception.                                    |
-| **503**     | `ServiceUnavailable` | `SERVICE_UNAVAILABLE` | Database or external service is down.                          |
+| Field | Description |
+| :--- | :--- |
+| `type` | A URI reference that identifies the problem type. |
+| `title` | A short, human-readable summary of the problem type (should not change for the same type). |
+| `status` | The HTTP status code generated for this occurrence of the problem. |
+| `detail` | A human-readable explanation specific to this occurrence of the problem. |
+| `instance` | A URI reference that identifies the specific occurrence of the problem (usually the request path). |
+| `requestId` | **Extension Field**: The unique trace ID for this request. |
+| `invalid-params` | **Extension Field**: A map of validation errors (for 400 Bad Request). |
 
-## 4. Implementation Rules
+## 4. Standard Error Types
 
-1. **Never** return a plain string or raw object. Always wrap in `SuccessEnvelope` or `ErrorEnvelope`.
-2. **Never** leak stack traces in the `message` field.
-3. **Always** include `requestId` for correlation.
-4. **Validation**: Use `details` to map field names to error arrays.
+| HTTP Status | Type URI Suffix | Title |
+| :---------- | :--- | :--- |
+| **400**     | `/errors/validation-failed` | Validation Failed |
+| **401**     | `/errors/unauthorized` | Unauthorized |
+| **403**     | `/errors/forbidden` | Forbidden |
+| **404**     | `/errors/resource-not-found` | Resource Not Found |
+| **409**     | `/errors/conflict` | Resource Conflict |
+| **429**     | `/errors/rate-limit-exceeded` | Rate Limit Exceeded |
+| **500**     | `/errors/internal-error` | Internal Server Error |
+| **503**     | `/errors/service-unavailable` | Service Unavailable |
 
-## 5. Frontend Consumption
+## 5. Implementation Rules
 
-The frontend `api.ts` client is the **only** place allowed to unwrap these envelopes. It should:
-
-1. Check `success`.
-2. If `true`, return `data`.
-3. If `false`, throw a typed `ApiError` containing the envelope's error object.
+1.  **Always** set `Content-Type: application/problem+json` for errors.
+2.  **Never** leak stack traces in the `detail` field.
+3.  **Validation**: Use `invalid-params` extension key for field-specific errors.

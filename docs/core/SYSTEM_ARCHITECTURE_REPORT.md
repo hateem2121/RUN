@@ -24,7 +24,7 @@ C4Context
     
     System_Boundary(run_remix, "RUN-Remix Platform") {
         Container(frontend, "Frontend SPA", "React 19, Vite", "Client-side application")
-        Container(backend, "Backend API", "Express 5, Node 22", "REST API & Business Logic")
+        Container(backend, "Backend API", "Express 5, Node 24", "REST API & Business Logic")
     }
 
     System_Ext(google_auth, "Google OAuth", "Authentication Provider")

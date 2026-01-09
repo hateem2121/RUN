@@ -59,11 +59,13 @@ export const ClippedElement: React.FC<ClippedElementProps> = ({
 // Enhanced Product Gallery with Thumbnails
 // ============================================================================
 
-export enum MediaType {
-  Image = "image",
-  Video = "video",
-  Model3D = "3d_model",
-}
+export const MediaType = {
+  Image: "image",
+  Video: "video",
+  Model3D: "3d_model",
+} as const;
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType];
 
 /**
  * Normalizes media type strings from various backend formats into MediaType enum

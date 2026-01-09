@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "erasableSyntaxOnly": true,
     "strict": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

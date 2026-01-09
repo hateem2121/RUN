@@ -137,6 +137,15 @@ export function setupErrorHandling(app: Express) {
   app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
+    
+    // Log all 500 errors (or if status is missing)
+    if (status >= 500) {
+      // Dynamic import to avoid circular dependency issues during boot
+      import("../lib/monitoring/logger.js").then(({ logger }) => {
+        logger.error(`[GlobalErrorHandler] Uncaught error: ${message}`, err);
+      });
+    }
+    
     res.status(status).json({ message });
   });
 }

@@ -186,11 +186,12 @@ export function formatDuration(ms: number): string {
 export class SeedProgressTracker {
   private startTime: number;
   private results: SeedResult[] = [];
+  private totalTables: number;
+  private phaseName: string;
 
-  constructor(
-    private totalTables: number,
-    private phaseName: string,
-  ) {
+  constructor(totalTables: number, phaseName: string) {
+    this.totalTables = totalTables;
+    this.phaseName = phaseName;
     this.startTime = performance.now();
   }
 

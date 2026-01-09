@@ -8,7 +8,7 @@ echo "================================================"
 echo ""
 
 # Configuration
-PORT="${PORT:-5001}"
+PORT="${PORT:-5001}" # Default to 5001 (Local Dev), override for 5000 (Docker)
 BASE_URL="http://localhost:${PORT}"
 DURATION_MINUTES=${1:-5}  # Default 5 minutes
 REQUESTS_PER_MINUTE=50

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
-import { ApiError } from "../lib/errors/api-error.js";
+import { NotFoundError } from "../errors/AppError.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { getStorage } from "../lib/storage-singleton.js";
@@ -80,7 +80,7 @@ export class NavigationService {
 
   static async getItem(id: number) {
     const item = await withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item");
-    if (!item) throw ApiError.notFound(`Navigation item ${id} not found`);
+    if (!item) throw new NotFoundError(`Navigation item ${id} not found`);
     return item;
   }
 
@@ -129,7 +129,7 @@ export class NavigationService {
       "Update navigation item",
     );
 
-    if (!updated) throw ApiError.notFound(`Navigation item ${id} not found`);
+    if (!updated) throw new NotFoundError(`Navigation item ${id} not found`);
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),
@@ -145,7 +145,7 @@ export class NavigationService {
       "Delete navigation item",
     );
 
-    if (!success) throw ApiError.notFound(`Navigation item ${id} not found`);
+    if (!success) throw new NotFoundError(`Navigation item ${id} not found`);
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),
@@ -160,7 +160,7 @@ export class NavigationService {
     // Sticking to sequential for robustness as per original logic
     for (const item of items) {
       const result = await storage.updateNavigationItem(item.id, { sortOrder: item.sortOrder });
-      if (!result) throw ApiError.notFound(`Navigation item ${item.id} not found during reorder`);
+      if (!result) throw new NotFoundError(`Navigation item ${item.id} not found during reorder`);
     }
 
     await CacheOperations.invalidateNavigation().catch((err) =>

@@ -123,7 +123,7 @@ router.patch("/contact-page-configuration", authService.requireAdmin, async (req
 // NAVIGATION MANAGEMENT ROUTES
 // ============================================================================
 
-import { ApiError } from "../../lib/errors/api-error.js";
+import { AppError } from "../../errors/AppError.js";
 import { NavigationService } from "../../services/navigation-service.js";
 
 // Simple test route first
@@ -166,8 +166,8 @@ router.get("/navigation-items/:id", async (req, res) => {
     const item = await NavigationService.getItem(id);
     return res.json(item);
   } catch (error) {
-    if (error instanceof ApiError) {
-      return res.status(error.status).json({ message: error.message });
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ message: error.message });
     }
     return res.status(500).json({ message: "Failed to fetch navigation item" });
   }
@@ -220,8 +220,8 @@ router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res)
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Validation error", errors: error.issues });
     }
-    if (error instanceof ApiError) {
-      return res.status(error.status).json({ message: error.message });
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ message: error.message });
     }
     return res.status(500).json({ message: "Failed to update navigation item" });
   }
@@ -234,8 +234,8 @@ router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res
     await NavigationService.deleteItem(id);
     return res.status(204).send();
   } catch (error) {
-    if (error instanceof ApiError) {
-      return res.status(error.status).json({ message: error.message });
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ message: error.message });
     }
     return res.status(500).json({ message: "Failed to delete navigation item" });
   }
