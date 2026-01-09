@@ -32,39 +32,26 @@ const inquirySchema = z.object({
 
 // POST /api/inquiries
 // prettier-ignore
-router.post("/inquiries", (req, res) => {
+router.post("/inquiries", async (req, res) => {
   // security (public)
-  try {
-    const validatedData = inquirySchema.parse(req.body);
+  const validatedData = inquirySchema.parse(req.body);
 
-    // Logic: Log to DB (Mocked)
-    // biome-ignore lint/suspicious/noConsole: Log payload
-    console.log("[Inquiry Received]", {
-      timestamp: new Date().toISOString(),
-      ...validatedData,
-    });
+  // Logic: Log to DB (Mocked)
+  // biome-ignore lint/suspicious/noConsole: Log payload
+  console.log("[Inquiry Received]", {
+    timestamp: new Date().toISOString(),
+    ...validatedData,
+  });
 
-    // Mock Email Send
-    // biome-ignore lint/suspicious/noConsole: Mock email
-    console.log(`[Email Mock] Sending quote confirmation to ${validatedData.contact.email}`);
+  // Mock Email Send
+  // biome-ignore lint/suspicious/noConsole: Mock email
+  console.log(`[Email Mock] Sending quote confirmation to ${validatedData.contact.email}`);
 
-    res.status(201).json({
-      success: true,
-      message: "Quote request received successfully",
-      inquiryId: `INQ-${Date.now()}`,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({
-        message: "Validation failed",
-        errors: error.message,
-      });
-    } else {
-      // biome-ignore lint/suspicious/noConsole: Log error for internal tracking
-      console.error("Inquiry Error:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
+  res.status(201).json({
+    success: true,
+    message: "Quote request received successfully",
+    inquiryId: `INQ-${Date.now()}`,
+  });
 });
 
 export const inquiryRoutes = router;

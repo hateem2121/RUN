@@ -70,19 +70,26 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
+import { submitInquiry } from "../services/inquiry.server";
+
 export async function action({ request }: ActionFunctionArgs) {
   const data = await request.json();
 
-  // Basic validation or transformation if needed before sending to API
-  // Note: RHF handles client-side, but we should validate server-side too implicitly via schema or API
-
   try {
-    const response = await apiRequest("/api/contact", {
-      method: "POST",
-      body: data, // apiRequest handles object -> JSON
+    const result = await submitInquiry({
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      company: data.company,
+      phone: data.phone,
+      country: data.country,
+      preferredPlatform: data.preferredPlatform,
+      honeypot: data.honeypot,
     });
-    return { success: true, data: response };
+    return { success: true, data: result };
   } catch (error) {
+    // biome-ignore lint/suspicious/noConsole: action error logging
+    console.error("Action Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Submission failed",

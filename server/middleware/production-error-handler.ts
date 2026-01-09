@@ -60,6 +60,9 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   ) {
     type = "database";
     severity = "high";
+  } else if (error instanceof Error && error.name === "ZodError") {
+    type = "validation";
+    severity = "low";
   } else if (error && typeof error === "object" && ("status" in error || "statusCode" in error)) {
     const status = (
       "status" in error ? error.status : "statusCode" in error ? error.statusCode : 0
@@ -173,6 +176,7 @@ function generateErrorResponse(error: unknown, details: ErrorDetails): Record<st
           ...baseResponse,
           message: "Invalid request data",
           status: 400,
+          issues: "issues" in (error as any) ? (error as any).issues : undefined,
         };
       case "authentication":
         return {
