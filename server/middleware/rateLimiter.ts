@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis";
 import type { NextFunction, Request, Response } from "express";
+import { RateLimitError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 interface RateLimitConfig {
@@ -93,21 +94,17 @@ export class RateLimiter {
         res.setHeader("RateLimit-Reset", ttl.toString());
 
         if (current > this.config.max) {
-          res.setHeader("Retry-After", ttl.toString());
-          res.status(this.config.statusCode).json({
-            success: false,
-            error: {
-              message: this.config.message,
+          return next(
+            new RateLimitError(this.config.message, {
               retryAfter: ttl,
               limit: this.config.max,
               windowMs: this.config.windowMs,
-            },
-          });
-          return;
+            }),
+          );
         }
 
         next();
-      } catch (error) {
+      } catch (error: any) {
         // Fallback to in-memory if Redis fails during the request
         logger.error(
           "[RateLimiter] Error in rate limiter, falling back to memory strict",
@@ -124,8 +121,12 @@ export class RateLimiter {
           }
           entry.count++;
           if (entry.count > this.config.max) {
-            res.status(429).json({ error: "Too many requests (fallback)" });
-            return;
+             return next(
+                new RateLimitError("Too many requests (fallback)", {
+                    retryAfter: 60, // Default 1 min fallback type
+                    fallback: true
+                })
+             );
           }
           next();
         } catch (innerError) {

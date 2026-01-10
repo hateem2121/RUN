@@ -32,11 +32,40 @@ const inquirySchema = z.object({
 
 // POST /api/inquiries
 // prettier-ignore
-router.post("/inquiries", async (req, res) => {
-  // security (public)
-  const validatedData = inquirySchema.parse(req.body);
+import { sql } from "drizzle-orm";
+import { db, safeQuery } from "../db.js";
+import { DatabaseError } from "../lib/errors.js";
 
-  // Logic: Log to DB (Mocked)
+// ... (schema remains)
+
+// POST /api/inquiries
+router.post("/inquiries", async (req, res, next) => {
+  // 1. Validation
+  const result = inquirySchema.safeParse(req.body);
+  if (!result.success) {
+    // We let the global handler parse ZodError if we threw it, 
+    // but here we demonstrate manual handling if desired, 
+    // OR just throw a new ValidationError wrapping it.
+    // For now, let's stick to standard Zod behavior or 400.
+    return res.status(400).json({
+      success: false, 
+      error: "Validation Failed", 
+      issues: result.error.issues 
+    });
+  }
+  const validatedData = result.data;
+
+  // 2. Safety Check: Ensure DB is alive using Result pattern
+  const dbHealth = await safeQuery(db.execute(sql`SELECT 1`));
+
+  if (dbHealth.isErr()) {
+    // Functional Error Handling:
+    // We explicitly handle the error here. 
+    // We could return a 503 directly, or pass to global handler.
+    return next(dbHealth.error);
+  }
+
+  // 3. Logic: Log to DB (Still Mocked for now, but guarded by health check)
   // biome-ignore lint/suspicious/noConsole: Log payload
   console.log("[Inquiry Received]", {
     timestamp: new Date().toISOString(),

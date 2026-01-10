@@ -11,7 +11,8 @@ interface ErrorEntry {
     | "rate_limit"
     | "internal"
     | "database"
-    | "external_service";
+    | "external_service"
+    | "conflict";
   severity: "low" | "medium" | "high" | "critical";
   message: string;
   timestamp: string;

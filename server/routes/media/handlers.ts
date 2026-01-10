@@ -1,9 +1,12 @@
-/**
- * MEDIA HANDLERS
- * Request handlers for all 37 media API endpoints
- */
-
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { err, ok, type Result } from "neverthrow";
+import { safeQuery } from "../../db.js";
+import {
+  AppError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError,
+} from "../../lib/errors.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 
@@ -44,32 +47,38 @@ setInterval(
 ); // Run every 15 minutes
 
 // Helper: Fetch ALL media assets by iterating through all pages
-async function getAllMediaAssets(): Promise<MediaAsset[]> {
+async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
   const storage = getStorage();
   const allAssets: MediaAsset[] = [];
   const pageSize = 1000;
   let offset = 0;
   let hasMore = true;
 
-  while (hasMore) {
-    const batch = await storage.getMediaAssets(pageSize, offset);
-    allAssets.push(...batch);
+  try {
+    while (hasMore) {
+      const batchResult = await safeQuery(storage.getMediaAssets(pageSize, offset));
+      if (batchResult.isErr()) return err(batchResult.error);
 
-    if (batch.length < pageSize) {
-      hasMore = false; // Last page
-    } else {
-      offset += pageSize;
+      const batch = batchResult.value;
+      allAssets.push(...batch);
+
+      if (batch.length < pageSize) {
+        hasMore = false; // Last page
+      } else {
+        offset += pageSize;
+      }
     }
+    return ok(allAssets);
+  } catch (error) {
+    return err(new DatabaseError("Failed to fetch all media assets", { originalError: error }));
   }
-
-  return allAssets;
 }
 
 // ============================================================================
 // QUERY & LISTING HANDLERS
 // ============================================================================
 
-export async function getMediaAssets(req: Request, res: Response) {
+export async function getMediaAssets(req: Request, res: Response, next: NextFunction) {
   res.locals._handled = true;
   const { page = 1, limit = 50, type, search, folderId } = req.query as any;
 
@@ -94,12 +103,15 @@ export async function getMediaAssets(req: Request, res: Response) {
   };
 
   // Fetch assets and total count in single batched transaction (reduces NEON active time)
-  const { assets, total } = await storage
-    .getMediaAssetsWithCount(limitNum, offset, filters as any)
-    .catch((err) => {
-      // Force a real error object to prevent next(undefined) -> 404 fallthrough
-      throw err || new Error("Unknown storage error");
-    });
+  const result = await safeQuery(
+    storage.getMediaAssetsWithCount(limitNum, offset, filters as any)
+  );
+
+  if (result.isErr()) {
+    return next(result.error);
+  }
+
+  const { assets, total } = result.value;
 
   return res.json(
     safeSerialize(
@@ -113,7 +125,7 @@ export async function getMediaAssets(req: Request, res: Response) {
   );
 }
 
-export async function getMediaAssetById(req: Request, res: Response) {
+export async function getMediaAssetById(req: Request, res: Response, next: NextFunction) {
   res.locals._handled = true;
   const { id } = req.params as any;
 
@@ -125,16 +137,22 @@ export async function getMediaAssetById(req: Request, res: Response) {
   }
 
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
+
+  if (result.isErr()) {
+      return next(result.error);
+  }
+
+  const asset = result.value;
 
   if (!asset) {
-    return res.status(404).json(createErrorResponse("Media asset not found"));
+    return next(new NotFoundError("Media asset not found"));
   }
 
   return res.json(createSuccessResponse(asset));
 }
 
-export async function getMediaCount(req: Request, res: Response) {
+export async function getMediaCount(req: Request, res: Response, next: NextFunction) {
   const { type, folderId } = req.query as any;
   const storage = getStorage();
 
@@ -150,12 +168,14 @@ export async function getMediaCount(req: Request, res: Response) {
   }
 
   // Use database-level COUNT with filtering - no need to load all records
-  const count = await storage.getMediaAssetsCount(filters);
+  const result = await safeQuery(storage.getMediaAssetsCount(filters));
 
-  return res.json(createSuccessResponse({ count }));
+  if (result.isErr()) return next(result.error);
+
+  return res.json(createSuccessResponse({ count: result.value }));
 }
 
-export async function searchMediaAssets(req: Request, res: Response) {
+export async function searchMediaAssets(req: Request, res: Response, next: NextFunction) {
   const { query: searchQuery, type, limit = 20, folderId } = req.query as any;
   const storage = getStorage();
 
@@ -180,42 +200,53 @@ export async function searchMediaAssets(req: Request, res: Response) {
 
   // Use database-level filtering with Drizzle's ilike() operator
   // This pushes filtering to PostgreSQL instead of loading all records into memory
-  const assets = await storage.getMediaAssets(parseInt(limit as string, 10), 0, filters);
+  const result = await safeQuery(storage.getMediaAssets(parseInt(limit as string, 10), 0, filters));
 
-  return res.json(createSuccessResponse(assets));
+  if (result.isErr()) return next(result.error);
+
+  return res.json(createSuccessResponse(result.value));
 }
 
 // ============================================================================
 // CRUD HANDLERS
 // ============================================================================
 
-export async function updateMediaAsset(req: Request, res: Response) {
+export async function updateMediaAsset(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params as any;
   const storage = getStorage();
 
-  const updated = await storage.updateMediaAsset(parseInt(id!, 10), req.body);
+  const result = await safeQuery(storage.updateMediaAsset(parseInt(id!, 10), req.body));
+
+  if (result.isErr()) return next(result.error);
+  
+  const updated = result.value;
 
   if (!updated) {
-    return res.status(404).json(createErrorResponse("Media asset not found"));
+    return next(new NotFoundError("Media asset not found"));
   }
 
   return res.json(createSuccessResponse(updated));
 }
 
-export async function deleteMediaAsset(req: Request, res: Response) {
+export async function deleteMediaAsset(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params as any;
   const assetId = parseInt(id!, 10);
   const storage = getStorage();
 
   // Get asset metadata before deletion (needed for physical file cleanup)
-  const asset = await storage.getMediaAsset(assetId);
+  const assetResult = await safeQuery(storage.getMediaAsset(assetId));
+  if (assetResult.isErr()) return next(assetResult.error);
+  
+  const asset = assetResult.value;
+
   if (!asset) {
-    return res.status(404).json(createErrorResponse("Media asset not found"));
+    return next(new NotFoundError("Media asset not found"));
   }
 
   // ATOMIC OPERATION: Both DB soft delete AND cache invalidation succeed or both rollback
   // Transaction ensures cache is cleared BEFORE response is sent (fixes race condition)
-  await storage.deleteMediaAsset(assetId);
+  const deleteResult = await safeQuery(storage.deleteMediaAsset(assetId));
+  if (deleteResult.isErr()) return next(deleteResult.error);
 
   // Physical file cleanup: Async, non-blocking, best-effort
   // Run after successful DB+cache delete to avoid blocking response
@@ -316,7 +347,7 @@ export async function uploadChunk(req: Request, res: Response) {
   );
 }
 
-export async function finalizeUpload(req: Request, res: Response) {
+export async function finalizeUpload(req: Request, res: Response, next: NextFunction) {
   const { uploadId } = req.body;
   const session = uploadSessions.get(uploadId);
 
@@ -384,12 +415,15 @@ export async function finalizeUpload(req: Request, res: Response) {
         bucketName: appStorageService.getBucketName(),
       };
 
-      const asset = await storage.createMediaAsset(buildInsertMediaAsset(metadata));
+      const createResult = await safeQuery(storage.createMediaAsset(buildInsertMediaAsset(metadata)));
+      if (createResult.isErr()) throw createResult.error;
+      const asset = createResult.value;
 
       // FIX: Update URL to use asset ID instead of storagePath
-      await storage.updateMediaAsset(asset.id, {
+      const urlUpdateResult = await safeQuery(storage.updateMediaAsset(asset.id, {
         url: `/api/media/${asset.id}/content`,
-      });
+      }));
+      if (urlUpdateResult.isErr()) throw urlUpdateResult.error;
 
       // Process metadata based on file type
       if (fileType === "image") {
@@ -424,11 +458,12 @@ export async function finalizeUpload(req: Request, res: Response) {
             );
           }
 
-          await storage.updateMediaAsset(asset.id, {
+          const updateImageResult = await safeQuery(storage.updateMediaAsset(asset.id, {
             thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
             metadata: imageMetadata,
             imageVariants: imageVariants || undefined,
-          });
+          }));
+          if (updateImageResult.isErr()) throw updateImageResult.error;
 
           logger.info("Image metadata extracted (chunked upload)", {
             assetId: asset.id,
@@ -448,10 +483,11 @@ export async function finalizeUpload(req: Request, res: Response) {
             resolution: null,
           };
 
-          await storage.updateMediaAsset(asset.id, {
+          const updateVideoResult = await safeQuery(storage.updateMediaAsset(asset.id, {
             thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
             metadata: videoMetadata,
-          });
+          }));
+          if (updateVideoResult.isErr()) throw updateVideoResult.error;
 
           logger.info("Video metadata placeholder created (chunked upload)", {
             assetId: asset.id,
@@ -473,10 +509,11 @@ export async function finalizeUpload(req: Request, res: Response) {
               originalSize: processed.originalSize || 0,
             };
 
-            await storage.updateMediaAsset(asset.id, {
+            const updateGltfResult = await safeQuery(storage.updateMediaAsset(asset.id, {
               thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
               metadata: gltfMetadata,
-            });
+            }));
+            if (updateGltfResult.isErr()) throw updateGltfResult.error;
 
             logger.info("GLTF metadata extracted (chunked upload)", {
               assetId: asset.id,
@@ -493,7 +530,10 @@ export async function finalizeUpload(req: Request, res: Response) {
       }
 
       // Fetch the updated asset with metadata
-      const updatedAsset = await storage.getMediaAsset(asset.id);
+      const finalAssetResult = await safeQuery(storage.getMediaAsset(asset.id));
+      if (finalAssetResult.isErr()) throw finalAssetResult.error;
+      
+      const updatedAsset = finalAssetResult.value;
       return res.status(201).json(createSuccessResponse(updatedAsset || asset));
     } catch (error) {
       // Compensating delete: Remove assembled file if DB insert fails
@@ -505,7 +545,7 @@ export async function finalizeUpload(req: Request, res: Response) {
           }),
         );
       }
-      throw error; // Re-throw to outer handler
+      return next(error); // Re-throw to outer handler
     }
   } finally {
     // Always cleanup temp chunks and session, regardless of success or failure
@@ -522,13 +562,17 @@ export async function finalizeUpload(req: Request, res: Response) {
 // CONTENT DELIVERY HANDLERS
 // ============================================================================
 
-export async function getMediaContent(req: Request, res: Response) {
+export async function getMediaContent(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params as any;
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
+
+  if (result.isErr()) return next(result.error);
+  
+  const asset = result.value;
 
   if (!asset || !asset.storagePath) {
-    return res.status(404).send("Media not found");
+    return next(new NotFoundError("Media not found"));
   }
 
   // CHUNK 3: Use signed URL redirect instead of Node.js proxy for better performance
@@ -611,13 +655,13 @@ export async function getThumbnail(req: Request, res: Response) {
 // ============================================================================
 
 // Batch operations router - handles both upload and delete
-export async function batchOperations(req: Request, res: Response) {
+export async function batchOperations(req: Request, res: Response, next: NextFunction) {
   // Check if this is a file upload (multipart/form-data with files)
   const files = req.files as Express.Multer.File[];
 
   if (files && files.length > 0) {
     // This is a batch upload operation
-    return batchCreateAssets(req, res);
+    return batchCreateAssets(req, res, next);
   }
 
   // Check if body is already parsed (from express.json middleware applied earlier)
@@ -633,7 +677,7 @@ export async function batchOperations(req: Request, res: Response) {
   }
 
   if (operation === "delete") {
-    return batchDeleteAssets(req, res);
+    return batchDeleteAssets(req, res, next);
   }
 
   // Invalid request
@@ -646,29 +690,33 @@ export async function batchOperations(req: Request, res: Response) {
     );
 }
 
-export async function batchCreateAssets(req: Request, res: Response) {
+export async function batchCreateAssets(req: Request, res: Response, next: NextFunction) {
   const files = req.files as Express.Multer.File[];
 
   if (!files || files.length === 0) {
     return res.status(400).json(createErrorResponse("No files provided"));
   }
 
-  const results = await Promise.all(files.map((file) => processUploadedFile(file)));
+  try {
+    const results = await Promise.all(files.map((file) => processUploadedFile(file)));
 
-  // Invalidate cache after successful batch upload
-  // Clear media listings, counts, search results, and all media content caches
-  await Promise.allSettled([
-    unifiedCache.clearPattern("data:/api/media.*"),
-    unifiedCache.clearPattern("media:.*"),
-    unifiedCache.delete("media-count"),
-    unifiedCache.delete("search"),
-  ]);
-  logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
+    // Invalidate cache after successful batch upload
+    // Clear media listings, counts, search results, and all media content caches
+    await Promise.allSettled([
+        unifiedCache.clearPattern("data:/api/media.*"),
+        unifiedCache.clearPattern("media:.*"),
+        unifiedCache.delete("media-count"),
+        unifiedCache.delete("search"),
+    ]);
+    logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
 
-  return res.status(201).json(createSuccessResponse(results));
+    return res.status(201).json(createSuccessResponse(results));
+  } catch (error) {
+    return next(error);
+  }
 }
 
-export async function batchDeleteAssets(req: Request, res: Response) {
+export async function batchDeleteAssets(req: Request, res: Response, next: NextFunction) {
   const { ids } = req.body;
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -685,7 +733,11 @@ export async function batchDeleteAssets(req: Request, res: Response) {
 
   // 2. Perform soft deletes in database
   const results = await Promise.allSettled(
-    ids.map((id) => storage.deleteMediaAsset(parseInt(id, 10))),
+    ids.map(async (id) => {
+        const result = await safeQuery(storage.deleteMediaAsset(parseInt(id, 10)));
+        if (result.isErr()) throw result.error;
+        return result.value;
+    }),
   );
 
   const successCount = results.filter((r) => r.status === "fulfilled" && r.value === true).length;
@@ -776,7 +828,7 @@ export async function batchDeleteAssets(req: Request, res: Response) {
   );
 }
 
-export async function batchGetContent(req: Request, res: Response) {
+export async function batchGetContent(req: Request, res: Response, next: NextFunction) {
   const { ids } = req.query as any;
 
   if (!ids) {
@@ -802,7 +854,11 @@ export async function batchGetContent(req: Request, res: Response) {
   // Previous: N individual queries via Promise.allSettled + getMediaAsset
   // Current: 1 batch query via getMediaAssetsByIds
   let assetsMap = new Map<number, any>();
-  const allAssets = await storage.getMediaAssetsByIds(idList.map(String));
+  
+  const result = await safeQuery(storage.getMediaAssetsByIds(idList.map(String)));
+  if (result.isErr()) return next(result.error);
+  
+  const allAssets = result.value;
   assetsMap = new Map(allAssets.map((asset) => [asset.id, asset]));
 
   // PERFORMANCE FIX: Generate signed URLs directly to eliminate N+1 requests
@@ -907,9 +963,15 @@ export async function batchGetContent(req: Request, res: Response) {
 // ANALYTICS & MONITORING HANDLERS
 // ============================================================================
 
-export async function getAnalytics(_req: Request, res: Response) {
+export async function getAnalytics(_req: Request, res: Response, next: NextFunction) {
   // Fetch ALL assets (unbounded) for analytics
-  const allAssets = await getAllMediaAssets();
+  const result = await getAllMediaAssets();
+  
+  if (result.isErr()) {
+      return next(result.error);
+  }
+
+  const allAssets = result.value;
   const totalAssets = allAssets.length;
 
   const byType = {
@@ -923,6 +985,9 @@ export async function getAnalytics(_req: Request, res: Response) {
     createSuccessResponse({
       totalAssets,
       byType,
+      cacheStatus: {
+         bypass: shouldBypassCache(_req),
+      }
     }),
   );
 }

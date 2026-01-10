@@ -33,6 +33,8 @@ export function validateEnv() {
   const result = envSchema.safeParse(process.env);
 
   if (!result.success) {
+    // biome-ignore lint/suspicious/noConsole: Critical startup error
+    console.error("Invalid environment variables:", JSON.stringify(result.error.format(), null, 2));
     process.exit(1);
   }
 

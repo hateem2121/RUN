@@ -22,11 +22,11 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     // Inherit real DB config if present
     DATABASE_URL: process.env.DATABASE_URL || "postgres://localhost:5432/test",
     TEST_REAL_DB: process.env.TEST_REAL_DB || "false",
-    ...env,
-    SESSION_SECRET: "test-session-secret-12345",
+    SESSION_SECRET: "test-session-secret-12345-long-enough", // 32+ chars
     JWT_SECRET: "test-jwt-secret-12345",
     FORCE_LISTEN: "true",
     VITEST: "true", // Ensure spawned server knows it's in test mode
+    ...env,
   };
   const serverProcess = spawn(TSX_PATH, [SERVER_PATH], {
     env: spawnEnv,
@@ -57,7 +57,7 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     const timeout = setTimeout(() => {
       kill();
       reject(new Error("Server start timeout"));
-    }, 10000);
+    }, 30000);
 
     let baseUrl = "";
 

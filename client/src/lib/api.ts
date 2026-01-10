@@ -9,6 +9,7 @@ export class ApiError extends Error {
   instance?: string;
   requestId?: string;
   invalidParams?: Record<string, string[]>;
+  code?: string; // Standardized AppError code
 
   constructor(
     status: number,
@@ -16,6 +17,8 @@ export class ApiError extends Error {
       message?: string;
       retryAfter?: number;
       "invalid-params"?: Record<string, string[]>;
+      code?: string; // Add code to constructor type
+      error?: { code?: string }; // Handle nested error object case
     },
   ) {
     // Prefer 'detail' for the main error message, fallback to 'title' or generic 'message'
@@ -32,6 +35,10 @@ export class ApiError extends Error {
     if (data.type) this.type = data.type;
     if (data.instance) this.instance = data.instance;
     if (data.requestId) this.requestId = data.requestId;
+    
+    // Map AppError code (support flattened or nested)
+    const code = data.code || data.error?.code;
+    if (code) this.code = code;
 
     // Handle extensions
     if (data["invalid-params"]) this.invalidParams = data["invalid-params"];

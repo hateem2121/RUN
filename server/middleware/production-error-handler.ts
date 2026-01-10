@@ -1,12 +1,21 @@
+import type { NextFunction, Request, Response } from "express";
+import { getConfig } from "../config/production.js";
+import {
+  AppError,
+  AuthenticationError,
+  ConflictError,
+  DatabaseError,
+  ForbiddenError,
+  NotFoundError,
+  RateLimitError,
+  ValidationError,
+} from "../lib/errors.js";
+import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
-
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
 import type { ProblemDetails } from "@run-remix/shared";
-import type { NextFunction, Request, Response } from "express";
-import { getConfig } from "../config/production.js";
-import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 
 const config = getConfig();
 
@@ -21,7 +30,8 @@ interface ErrorDetails {
     | "rate_limit"
     | "internal"
     | "database"
-    | "external_service";
+    | "external_service"
+    | "conflict";
   severity: "low" | "medium" | "high" | "critical";
   timestamp: string;
   userAgent?: string | undefined;
@@ -30,9 +40,8 @@ interface ErrorDetails {
   method: string;
 }
 
-// Generate unique error ID for tracking - safe for database integer compatibility
+// Generate unique error ID for tracking
 function generateErrorId(): string {
-  // Use compact timestamp approach to stay within safe integer ranges
   const epochStart = new Date("2020-01-01").getTime();
   const compactTimestamp = Math.floor((Date.now() - epochStart) / 1000);
   const randomSuffix = Math.floor(Math.random() * 99999);
@@ -51,43 +60,75 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   let type: ErrorDetails["type"] = "internal";
   let severity: ErrorDetails["severity"] = "medium";
 
-  // Classify by error properties
-  const errorCode = error && typeof error === "object" && "code" in error ? error.code : undefined;
-  if (errorCode === "ECONNREFUSED" || errorCode === "ENOTFOUND") {
-    type = "external_service";
-    severity = "high";
-  } else if (
-    error instanceof Error &&
-    (error.message?.includes("database") || error.message?.includes("SQL"))
-  ) {
-    type = "database";
-    severity = "high";
-  } else if (error instanceof Error && error.name === "ZodError") {
-    type = "validation";
-    severity = "low";
-  } else if (error && typeof error === "object" && ("status" in error || "statusCode" in error)) {
-    const status = (
-      "status" in error ? error.status : "statusCode" in error ? error.statusCode : 0
-    ) as number;
-    if (status === 404) {
-      type = "not_found";
-      severity = "low";
-    } else if (status === 401) {
-      type = "authentication";
-      severity = "medium";
-    } else if (status === 403) {
-      type = "authorization";
-      severity = "medium";
-    } else if (status === 429) {
-      type = "rate_limit";
-      severity = "low";
-    } else if (status >= 400 && status < 500) {
+  if (error instanceof AppError) {
+    if (error instanceof ValidationError) {
       type = "validation";
       severity = "low";
+    } else if (error instanceof AuthenticationError) {
+      type = "authentication";
+      severity = "medium";
+    } else if (error instanceof ForbiddenError) {
+      type = "authorization";
+      severity = "medium";
+    } else if (error instanceof NotFoundError) {
+      type = "not_found";
+      severity = "low";
+    } else if (error instanceof ConflictError) {
+      type = "conflict";
+      severity = "low";
+    } else if (error instanceof RateLimitError) {
+      type = "rate_limit";
+      severity = "low";
+    } else if (error instanceof DatabaseError) {
+      type = "database";
+      severity = "high";
+    } else {
+      // Fallback for generic AppError logic if extended elsewhere
+      type = error.statusCode >= 500 ? "internal" : "validation";
+      severity = error.statusCode >= 500 ? "high" : "low";
     }
-  } else {
-    type = "internal";
-    severity = "critical";
+  }
+  // Generic / External Errors
+  else {
+    const errorCode =
+      error && typeof error === "object" && "code" in error ? error.code : undefined;
+
+    if (errorCode === "ECONNREFUSED" || errorCode === "ENOTFOUND") {
+      type = "external_service";
+      severity = "high";
+    } else if (
+      error instanceof Error &&
+      (error.message?.includes("database") || error.message?.includes("SQL"))
+    ) {
+      type = "database";
+      severity = "high";
+    } else if (error instanceof Error && error.name === "ZodError") {
+      type = "validation";
+      severity = "low";
+    } else if (error && typeof error === "object" && ("status" in error || "statusCode" in error)) {
+      const status = (
+        "status" in error ? error.status : "statusCode" in error ? error.statusCode : 0
+      ) as number;
+      if (status === 404) {
+        type = "not_found";
+        severity = "low";
+      } else if (status === 401) {
+        type = "authentication";
+        severity = "medium";
+      } else if (status === 403) {
+        type = "authorization";
+        severity = "medium";
+      } else if (status === 429) {
+        type = "rate_limit";
+        severity = "low";
+      } else if (status >= 400 && status < 500) {
+        type = "validation";
+        severity = "low";
+      }
+    } else {
+      type = "internal";
+      severity = "critical";
+    }
   }
 
   return {
@@ -106,15 +147,6 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
 function logError(error: unknown, details: ErrorDetails) {
   const logLevel = config.monitoring.logLevel;
 
-  // DEBUG: Write to file
-  try {
-    const fs = require("node:fs");
-    const logEntry = `[${new Date().toISOString()}] ${details.type.toUpperCase()} (${details.id}): ${error instanceof Error ? error.message : "Unknown error"}\nStack: ${error instanceof Error ? error.stack : "No stack"}\n\n`;
-    fs.appendFileSync("error.log", logEntry);
-  } catch (_e) {
-    // ignore
-  }
-
   // Record error in aggregator for metrics
   errorAggregator.recordError({
     id: details.id,
@@ -129,30 +161,44 @@ function logError(error: unknown, details: ErrorDetails) {
     stack: config.app.enableDebugMode && error instanceof Error ? error.stack : undefined,
   });
 
+  const correlationId = correlationContext.getStore();
+  const meta = {
+    errorId: details.id,
+    path: details.path,
+    method: details.method,
+    ip: details.ip,
+    type: details.type,
+    correlationId,
+    ...(error instanceof AppError && error.details ? error.details : {}),
+  };
+
   // Always log critical and high severity errors
   if (details.severity === "critical" || details.severity === "high") {
     logger.error(
-      `[ERROR ${details.id}] ${details.type.toUpperCase()}: ${error instanceof Error ? error.message : "Unknown error"}`,
+      `[ERROR ${details.id}] ${details.type.toUpperCase()}: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+      meta,
+      error instanceof Error ? error : undefined,
     );
-    logger.error(`[ERROR ${details.id}] Path: ${details.method} ${details.path}`);
-    logger.error(`[ERROR ${details.id}] IP: ${details.ip}`);
-
-    if (config.app.enableDebugMode && error instanceof Error) {
-      logger.error(`[ERROR ${details.id}] Stack:`, error.stack);
-    }
   }
-
-  // Log medium severity in development and staging
+  // Log medium severity in development and staging or if warn level
   else if (details.severity === "medium" && (logLevel === "info" || logLevel === "debug")) {
     logger.warn(
-      `[WARN ${details.id}] ${details.type}: ${error instanceof Error ? error.message : "Unknown error"} (${details.path})`,
+      `[WARN ${details.id}] ${details.type}: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+      meta,
+      error instanceof Error ? error : undefined,
     );
   }
-
   // Log low severity only in debug mode
   else if (details.severity === "low" && logLevel === "debug") {
     logger.info(
-      `[INFO ${details.id}] ${details.type}: ${error instanceof Error ? error.message : "Unknown error"}`,
+      `[INFO ${details.id}] ${details.type}: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+      meta,
     );
   }
 }
@@ -175,6 +221,59 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
     timestamp: details.timestamp,
   };
 
+  // If using AppError, we can trust the public message for operational errors
+  if (error instanceof AppError && error.isOperational) {
+    problemDetails.detail = error.message;
+    problemDetails.status = error.statusCode;
+    // Add standardized error code for frontend clients
+    problemDetails.code = error.code;
+
+    // Type-specific overrides
+    switch (details.type) {
+      case "validation":
+        problemDetails.type = "urn:problem:validation-error";
+        problemDetails.title = "Validation Failed";
+        break;
+      case "authentication":
+        problemDetails.type = "urn:problem:authentication-required";
+        problemDetails.title = "Authentication Required";
+        break;
+      case "authorization":
+        problemDetails.type = "urn:problem:access-denied";
+        problemDetails.title = "Access Denied";
+        break;
+      case "not_found":
+        problemDetails.type = "urn:problem:not-found";
+        problemDetails.title = "Resource Not Found";
+        break;
+      case "rate_limit":
+        problemDetails.type = "urn:problem:rate-limit-exceeded";
+        problemDetails.title = "Rate Limit Exceeded";
+        break;
+      case "conflict":
+        problemDetails.type = "urn:problem:conflict";
+        problemDetails.title = "Resource Conflict";
+        break;
+      case "database":
+        // For database errors, we might want to hide details in prod
+        problemDetails.type = "urn:problem:database-error";
+        problemDetails.title = "Service Unavailable";
+        problemDetails.detail = isProd ? "Service temporarily unavailable" : error.message;
+        break;
+    }
+
+    if (error.details) {
+      if (details.type === "validation") {
+        problemDetails["invalid-params"] = error.details;
+      } else {
+        problemDetails.details = error.details;
+      }
+    }
+
+    return problemDetails;
+  }
+
+  // Fallback for non-AppErrors (Legacy Mode)
   if (isProd) {
     switch (details.type) {
       case "validation":
@@ -211,17 +310,15 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
         problemDetails.detail = "Too many requests, please try again later";
         break;
       default:
+        // Keep generic 500
         problemDetails.type = "urn:problem:internal-server-error";
-        problemDetails.title = "Internal Server Error";
-        problemDetails.status = 500;
-        problemDetails.detail = "An unexpected server error occurred";
+        break;
     }
   } else {
     // Development/Staging - Detailed
     problemDetails.type = `urn:problem:${details.type}`;
     problemDetails.title = error instanceof Error ? error.name : "Error";
 
-    // Determine status from error object if possible
     const status =
       error && typeof error === "object" && ("status" in error || "statusCode" in error)
         ? (("status" in error
@@ -267,51 +364,23 @@ export function productionErrorHandler(
   res.setHeader("X-Error-Type", errorDetails.type);
   res.setHeader("X-Request-ID", requestId);
 
+  // Handle Rate Limit Retry-After
+  if (errorDetails.type === "rate_limit" && error instanceof AppError) {
+    // If we have a details.retryAfter in our RateLimitError, use it
+    if (error.details?.retryAfter) {
+      res.setHeader("Retry-After", String(error.details.retryAfter));
+    }
+  }
+
   // Send error response
   res.status(Number(errorResponse.status)).json(errorResponse);
 }
 
 // 404 Handler
-export function notFoundHandler(req: Request, res: Response) {
-  const errorDetails = {
-    id: generateErrorId(),
-    type: "not_found" as const,
-    severity: "low" as const,
-    timestamp: new Date().toISOString(),
-    path: req.path,
-    method: req.method,
-    ip: req.ip,
-    userAgent: req.get("User-Agent"),
-  };
-
-  // Record 404 in error aggregator
-  errorAggregator.recordError({
-    id: errorDetails.id,
-    type: errorDetails.type,
-    severity: errorDetails.severity,
-    message: `Resource not found: ${req.method} ${req.path}`,
-    timestamp: errorDetails.timestamp,
-    path: errorDetails.path,
-    method: errorDetails.method,
-    ip: errorDetails.ip,
-    userAgent: errorDetails.userAgent,
-  });
-
-  // Prevent sending headers if already sent (Fix for ERR_HTTP_HEADERS_SENT)
-  if (res.headersSent || (req as any)._handled || res.locals._handled) {
-    return;
-  }
-
-  res.status(404).json({
-    type: "urn:problem:not-found",
-    title: "Resource Not Found",
-    status: 404,
-    detail:
-      config.app.environment === "production" ? "Resource not found" : `Path ${req.path} not found`,
-    instance: req.path,
-    requestId: errorDetails.id,
-    timestamp: errorDetails.timestamp,
-  });
+export function notFoundHandler(req: Request, _res: Response, next: NextFunction) {
+  // Instead of handling it here, pass a NotFoundError to the global handler
+  // This ensures consistent logging and formatting
+  next(new NotFoundError(req.path));
 }
 
 // Unhandled promise rejection handler
@@ -338,18 +407,4 @@ export function setupGlobalErrorHandlers() {
       process.exit(1);
     }
   });
-}
-
-// Extended error interface for rate limiting
-interface RateLimitError extends Error {
-  status: number;
-  type: string;
-}
-
-// Rate limiting error helper
-export function createRateLimitError(): RateLimitError {
-  const error = new Error("Too many requests from this IP") as RateLimitError;
-  error.status = 429;
-  error.type = "rate_limit";
-  return error;
 }
