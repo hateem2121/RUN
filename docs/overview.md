@@ -11,7 +11,7 @@
 | Component | Policy / Version | Provenance |
 | :--- | :--- | :--- |
 | **OS** | Linux (Alpine) in Prod; Mac/Linux for Dev | `Dockerfile` (node:22-alpine), User Agent |
-| **Node.js** | **v22** (Strict) | `Dockerfile`, `AGENTS.md` |
+| **Node.js** | **v24** (Strict) | `Dockerfile`, `AGENTS.md` |
 | **Package Manager** | **npm 10.9.2** | `package.json` (packageManager field) |
 | **Workspace Tool** | npm workspaces + Turbo Repo | `package.json`, `turbo.json` |
 
@@ -43,7 +43,7 @@ npm ci
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
 | **Express** | `^5.1.0` | Web Framework | `server/package.json` |
-| **Node.js** | `22` | Runtime | `Dockerfile` |
+| **Node.js** | `24` | Runtime | `Dockerfile` |
 | **Drizzle ORM** | `^0.44.5` | Database ORM | `server/package.json` |
 | **PostgreSQL** | `pg` (Neon) | Database Driver | `server/package.json` |
 | **Redis** | `Upstash` | L2 Cache | `server/package.json` |

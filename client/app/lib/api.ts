@@ -45,103 +45,131 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiRequest(
-  urlOrOptions:
-    | string
-    | {
-        url: string;
-        method?: string;
-        body?: any;
-        headers?: Record<string, string>;
-      },
-  options?: { method?: string; body?: any; headers?: Record<string, string> },
-): Promise<any> {
-  let url: string;
-  let method: string;
-  let body: any;
-  let headers: Record<string, string>;
+interface RequestOptions extends RequestInit {
+  timeout?: number; // Timeout in milliseconds, defaults to 15000 (15s)
+}
 
-  if (typeof urlOrOptions === "string") {
-    url = urlOrOptions;
-    method = options?.method || "GET";
-    body = options?.body;
-    headers = options?.headers || {};
-  } else {
-    url = urlOrOptions.url;
-    method = urlOrOptions.method || "GET";
-    body = urlOrOptions.body;
-    headers = urlOrOptions.headers || {};
-  }
-
+/**
+ * Enhanced fetch wrapper with:
+ * - RFC 7807 Error Parsing
+ * - Default Timeout (15s)
+ * - Automatic Retry-After handling for 429s
+ */
+export async function apiRequest<T>(
+  endpoint: string,
+  { timeout = 15000, ...options }: RequestOptions = {}
+): Promise<T> {
   // SSR Support: Prepend localhost for relative URLs on server
+  let url = endpoint;
   if (typeof window === "undefined" && url.startsWith("/")) {
     const port = process.env.PORT || 5001;
     url = `http://localhost:${port}${url}`;
   }
 
-  const isFormData = body instanceof FormData;
-  const finalHeaders = { ...headers };
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
-  if (!isFormData && body) {
-    finalHeaders["Content-Type"] = "application/json";
-    body = JSON.stringify(body);
+  // Merge signals if one was provided in options
+  if (options.signal) {
+    if (options.signal instanceof AbortSignal) {
+      options.signal.addEventListener("abort", () => controller.abort());
+    }
   }
 
-  const res = await fetch(url, {
-    method,
-    headers: finalHeaders,
-    body: body as BodyInit,
-  });
+  const config: RequestInit = {
+    ...options,
+    signal: controller.signal,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  };
 
-  if (!res.ok) {
-    let errorData: any = {};
-    const contentType = res.headers.get("content-type");
+  try {
+    const res = await fetch(url, config);
+    clearTimeout(id); // Clear timeout on success
 
-    try {
-      const text = await res.text();
-      if (text) {
-        try {
-          if (
-            contentType?.includes("application/problem+json") ||
-            contentType?.includes("application/json")
-          ) {
-            errorData = JSON.parse(text);
-          } else {
-            errorData = { message: text };
-          }
-        } catch {
-          errorData = { message: text };
+    if (!res.ok) {
+      const errorData = (await extractErrorBody(res)) as any;
+
+      if (res.status === 429 && typeof errorData === "object" && errorData !== null) {
+        const retryHeader = res.headers.get("Retry-After");
+        if (retryHeader) {
+          errorData.retryAfter = parseInt(retryHeader, 10);
         }
       }
-    } catch {
-      // Ignore parsing errors
+
+      if (isProblemDetails(errorData)) {
+        throw new ApiError(res.status, errorData);
+      }
+
+      // Fallback for non-standard error bodies
+      const fallbackError: any = {
+        type: "about:blank",
+        title: res.statusText || "Unknown Error",
+        status: res.status,
+        detail: typeof errorData === 'string' ? errorData : JSON.stringify(errorData),
+      };
+      throw new ApiError(res.status, fallbackError);
     }
 
-    // Handle Rate Limit specifically
-    if (res.status === 429 && errorData.error?.retryAfter) {
-      errorData.retryAfter = errorData.error.retryAfter;
+    // Handle 204 No Content
+    if (res.status === 204) {
+      return {} as T;
     }
 
-    // Fallback: if 'error' key exists (legacy), lift it up
-    if (errorData.error && typeof errorData.error === "object") {
-      errorData = { ...errorData, ...errorData.error };
+    // Attempt to parse JSON
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await res.json();
+    }
+    return (await res.text()) as unknown as T;
+
+  } catch (error) {
+    clearTimeout(id); // Ensure clear on error too
+
+    if (error instanceof ApiError || (error as any)?.name === "ApiError") {
+      throw error;
     }
 
-    throw new ApiError(res.status, errorData);
-  }
+    // Handle AbortError / Timeout
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new ApiError(408, {
+        type: "urn:problem:client-timeout",
+        title: "Request Timeout",
+        status: 408,
+        detail: `The request timed out after ${timeout}ms`,
+        instance: url
+      });
+    }
 
-  // Handle empty responses
-  if (res.status === 204) {
-    return {};
+    // Network errors or other fetch failures
+    throw new ApiError(500, {
+      type: "urn:problem:network-error",
+      title: "Network Error",
+      status: 500,
+      detail: error instanceof Error ? error.message : "Failed to connect to server",
+      instance: url
+    });
   }
+}
 
-  const contentType = res.headers.get("content-type");
-  if (
-    contentType?.includes("application/json") ||
-    contentType?.includes("application/problem+json")
-  ) {
-    return res.json();
+async function extractErrorBody(res: Response): Promise<unknown> {
+  try {
+    const contentType = res.headers.get("content-type");
+    if (contentType && (contentType.includes("application/json") || contentType.includes("application/problem+json"))) {
+      return await res.json();
+    }
+    return await res.text();
+  } catch {
+    return "Unknown error occurred";
   }
+}
 
-  return res.text();
+function isProblemDetails(data: any): data is ProblemDetails {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    (typeof data.title === "string" || typeof data.detail === "string")
+  );
 }

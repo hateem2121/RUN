@@ -36,7 +36,7 @@ Execute a targeted series of architectural improvements to raise the system scor
 ### Phase 3: Maintainability & Documentation (Score +2)
 **Goal:** Ensure documentation never drifts from reality.
 
-#### [NEW] [scripts/generate-context.ts](file:///Users/hateemjamshaid/Downloads/RUN-Remix/scripts/generate-context.ts)
+#### [NEW] scripts/generate-context.ts
 - Script to auto-generate `SYSTEM_CONTEXT.md`.
 - Scans `package.json`, `docker-compose`, and cloud config.
 - Updates version tables automatically.

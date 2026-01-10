@@ -50,7 +50,7 @@ export default defineConfig(
       },
       root: __dirname, // Current folder is client
       build: {
-        sourcemap: mode === "development", // Enable source maps only for development
+        sourcemap: true, // Enable source maps for Sentry upload (plugin handles security/deletion if configured)
         outDir: isSsrBuild
           ? path.resolve(__dirname, "../dist/server")
           : path.resolve(__dirname, "../dist/public"),

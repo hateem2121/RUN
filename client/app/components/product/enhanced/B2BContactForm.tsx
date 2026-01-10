@@ -18,11 +18,14 @@ import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { submitInquiryAction as submitInquiry } from "../../../../app/services/inquiry.server";
+import { useServerValidation } from "@/hooks/useServerValidation";
+import { ApiError } from "@/lib/api";
 
 type ContactState = {
   status: "idle" | "success" | "error";
   message: string;
   timestamp: number;
+  error?: any;
 };
 
 // Define local initial state matching the server action return type
@@ -134,6 +137,16 @@ export function B2BContactForm({
       timeline: "",
     },
   });
+
+  // Hydrate server error for validation hook
+  const apiError = React.useMemo(() => {
+    if (state.status === "error" && state.error) {
+      return new ApiError(state.error.status || 500, state.error);
+    }
+    return null;
+  }, [state]);
+
+  useServerValidation({ form, error: apiError });
 
   // Handle side effects from action state
   React.useEffect(() => {

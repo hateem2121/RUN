@@ -34,6 +34,7 @@
     "check:audit": "audit-ci --config .audit-ci.json",
     "check:bundle": "bundlesize",
     "check:links": "tsx scripts/verify-routes.ts",
+    "check:docs": "find . -name '*.md' -not -path '*/node_modules/*' -not -path '*/.gemini/*' -print0 | xargs -0 markdown-link-check -c .markdown-link-check.json",
     "typecheck": "tsc -b",
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",

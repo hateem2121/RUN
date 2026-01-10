@@ -24,6 +24,17 @@ const enableRealDb = process.env.TEST_REAL_DB === "true";
 
 let sql: NeonQueryFunction<boolean, boolean>;
 
+const metrics = {
+  totalQueries: 0,
+  successfulQueries: 0,
+  failedQueries: 0,
+  totalQueryTimeMs: 0,
+  peakConcurrentQueries: 0,
+  currentConcurrentQueries: 0,
+  lastHealthCheckAt: new Date(),
+  connectionPooling: database.url.includes("-pooler") ? "enabled" : "disabled",
+};
+
 if (isTestMode && !enableRealDb) {
   logger.info("[Database] Test mode - skipping real DB connection (Mock Mode)");
 
@@ -37,16 +48,40 @@ if (isTestMode && !enableRealDb) {
   }
 } else {
   // Use standard Neon HTTP driver
-  // fullResults: false is optimal for Drizzle performance
   sql = neon(database.url, {
     fullResults: false,
     fetchOptions: {
-      // Standard fetch options for reliability
       cache: "no-store",
       keepalive: true,
     },
   });
 }
+
+// Wrap SQL function to track metrics (for both real and mock modes)
+const internalSql = sql;
+sql = ((strings: TemplateStringsArray | string, ...values: any[]) => {
+  metrics.totalQueries++;
+  metrics.currentConcurrentQueries++;
+  if (metrics.currentConcurrentQueries > metrics.peakConcurrentQueries) {
+    metrics.peakConcurrentQueries = metrics.currentConcurrentQueries;
+  }
+  const start = performance.now();
+
+  // @ts-ignore - Neon types are tricky with wrappers
+  return internalSql(strings, ...values)
+    .then((res) => {
+      metrics.successfulQueries++;
+      return res;
+    })
+    .catch((err) => {
+      metrics.failedQueries++;
+      throw err;
+    })
+    .finally(() => {
+      metrics.currentConcurrentQueries--;
+      metrics.totalQueryTimeMs += (performance.now() - start);
+    });
+}) as any;
 
 /**
  * Standard Drizzle HTTP Database Instance
@@ -72,6 +107,7 @@ export type Database = typeof db;
 export async function checkDatabaseConnection(): Promise<boolean> {
   try {
     await sql`SELECT 1`;
+    metrics.lastHealthCheckAt = new Date(); // Update health check time
     return true;
   } catch (error) {
     logger.error("[Database] Health check failed:", error);
@@ -105,17 +141,18 @@ export async function wakeupDatabase(
   return { success: false, latency: 0 };
 }
 
-// Export a stripped-down metrics object for compatibility with existing monitoring calls
-// until those are fully refactored
+// Export metrics
 export const getPoolMetrics = () => ({
-  totalQueries: 0, // Deprecated
-  successfulQueries: 0,
-  failedQueries: 0,
-  averageQueryTime: 0,
-  peakConcurrentQueries: 0,
-  currentConcurrentQueries: 0,
-  lastHealthCheckAt: new Date(),
-  connectionPooling: database.url.includes("-pooler") ? "enabled" : "disabled",
+  totalQueries: metrics.totalQueries,
+  successfulQueries: metrics.successfulQueries,
+  failedQueries: metrics.failedQueries,
+  averageQueryTime: metrics.successfulQueries > 0 
+    ? Math.round(metrics.totalQueryTimeMs / metrics.successfulQueries) 
+    : 0,
+  peakConcurrentQueries: metrics.peakConcurrentQueries,
+  currentConcurrentQueries: metrics.currentConcurrentQueries,
+  lastHealthCheckAt: metrics.lastHealthCheckAt,
+  connectionPooling: metrics.connectionPooling,
 });
 
 export const closeDatabaseConnection = async () => {}; // No-op for HTTP

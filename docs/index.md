@@ -15,7 +15,7 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 ## 🚀 Quick Links
 
-- **[System Context](../SYSTEM_CONTEXT.md)**: High-level technical reference.
+- **[System Context](./core/architecture.md)**: High-level technical reference.
 - **[README](../README.md)**: Project onboarding and quick start.
 
 ## 🧠 For AI Agents
