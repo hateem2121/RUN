@@ -43,7 +43,7 @@ export default defineConfig(
 
       resolve: {
         alias: {
-          "@": path.resolve(__dirname, "src"),
+          "@": path.resolve(__dirname, "app"),
           "@shared": path.resolve(__dirname, "../shared"), // Sibling folder
           "@assets": path.resolve(__dirname, "../attached_assets"),
         },

@@ -17,7 +17,21 @@ import {
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { initialState, submitInquiry } from "@/actions/contact";
+import { submitInquiryAction as submitInquiry } from "../../../../app/services/inquiry.server";
+
+type ContactState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  timestamp: number;
+};
+
+// Define local initial state matching the server action return type
+const initialState: ContactState = {
+  status: "idle",
+  message: "",
+  timestamp: Date.now(),
+};
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

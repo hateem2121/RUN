@@ -1,14 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../../db.js";
-import {
-  AppError,
-  DatabaseError,
-  NotFoundError,
-  ValidationError,
-} from "../../lib/errors.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../../lib/errors.js";
 
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
@@ -103,9 +98,7 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
   };
 
   // Fetch assets and total count in single batched transaction (reduces NEON active time)
-  const result = await safeQuery(
-    storage.getMediaAssetsWithCount(limitNum, offset, filters as any)
-  );
+  const result = await safeQuery(storage.getMediaAssetsWithCount(limitNum, offset, filters as any));
 
   if (result.isErr()) {
     return next(result.error);
@@ -140,7 +133,7 @@ export async function getMediaAssetById(req: Request, res: Response, next: NextF
   const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   const asset = result.value;
@@ -218,7 +211,7 @@ export async function updateMediaAsset(req: Request, res: Response, next: NextFu
   const result = await safeQuery(storage.updateMediaAsset(parseInt(id!, 10), req.body));
 
   if (result.isErr()) return next(result.error);
-  
+
   const updated = result.value;
 
   if (!updated) {
@@ -236,7 +229,7 @@ export async function deleteMediaAsset(req: Request, res: Response, next: NextFu
   // Get asset metadata before deletion (needed for physical file cleanup)
   const assetResult = await safeQuery(storage.getMediaAsset(assetId));
   if (assetResult.isErr()) return next(assetResult.error);
-  
+
   const asset = assetResult.value;
 
   if (!asset) {
@@ -415,14 +408,18 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
         bucketName: appStorageService.getBucketName(),
       };
 
-      const createResult = await safeQuery(storage.createMediaAsset(buildInsertMediaAsset(metadata)));
+      const createResult = await safeQuery(
+        storage.createMediaAsset(buildInsertMediaAsset(metadata)),
+      );
       if (createResult.isErr()) throw createResult.error;
       const asset = createResult.value;
 
       // FIX: Update URL to use asset ID instead of storagePath
-      const urlUpdateResult = await safeQuery(storage.updateMediaAsset(asset.id, {
-        url: `/api/media/${asset.id}/content`,
-      }));
+      const urlUpdateResult = await safeQuery(
+        storage.updateMediaAsset(asset.id, {
+          url: `/api/media/${asset.id}/content`,
+        }),
+      );
       if (urlUpdateResult.isErr()) throw urlUpdateResult.error;
 
       // Process metadata based on file type
@@ -458,11 +455,13 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
             );
           }
 
-          const updateImageResult = await safeQuery(storage.updateMediaAsset(asset.id, {
-            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-            metadata: imageMetadata,
-            imageVariants: imageVariants || undefined,
-          }));
+          const updateImageResult = await safeQuery(
+            storage.updateMediaAsset(asset.id, {
+              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+              metadata: imageMetadata,
+              imageVariants: imageVariants || undefined,
+            }),
+          );
           if (updateImageResult.isErr()) throw updateImageResult.error;
 
           logger.info("Image metadata extracted (chunked upload)", {
@@ -483,10 +482,12 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
             resolution: null,
           };
 
-          const updateVideoResult = await safeQuery(storage.updateMediaAsset(asset.id, {
-            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-            metadata: videoMetadata,
-          }));
+          const updateVideoResult = await safeQuery(
+            storage.updateMediaAsset(asset.id, {
+              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+              metadata: videoMetadata,
+            }),
+          );
           if (updateVideoResult.isErr()) throw updateVideoResult.error;
 
           logger.info("Video metadata placeholder created (chunked upload)", {
@@ -509,10 +510,12 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
               originalSize: processed.originalSize || 0,
             };
 
-            const updateGltfResult = await safeQuery(storage.updateMediaAsset(asset.id, {
-              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-              metadata: gltfMetadata,
-            }));
+            const updateGltfResult = await safeQuery(
+              storage.updateMediaAsset(asset.id, {
+                thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+                metadata: gltfMetadata,
+              }),
+            );
             if (updateGltfResult.isErr()) throw updateGltfResult.error;
 
             logger.info("GLTF metadata extracted (chunked upload)", {
@@ -532,7 +535,7 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
       // Fetch the updated asset with metadata
       const finalAssetResult = await safeQuery(storage.getMediaAsset(asset.id));
       if (finalAssetResult.isErr()) throw finalAssetResult.error;
-      
+
       const updatedAsset = finalAssetResult.value;
       return res.status(201).json(createSuccessResponse(updatedAsset || asset));
     } catch (error) {
@@ -568,7 +571,7 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
   const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
 
   if (result.isErr()) return next(result.error);
-  
+
   const asset = result.value;
 
   if (!asset || !asset.storagePath) {
@@ -703,10 +706,10 @@ export async function batchCreateAssets(req: Request, res: Response, next: NextF
     // Invalidate cache after successful batch upload
     // Clear media listings, counts, search results, and all media content caches
     await Promise.allSettled([
-        unifiedCache.clearPattern("data:/api/media.*"),
-        unifiedCache.clearPattern("media:.*"),
-        unifiedCache.delete("media-count"),
-        unifiedCache.delete("search"),
+      unifiedCache.clearPattern("data:/api/media.*"),
+      unifiedCache.clearPattern("media:.*"),
+      unifiedCache.delete("media-count"),
+      unifiedCache.delete("search"),
     ]);
     logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
 
@@ -734,9 +737,9 @@ export async function batchDeleteAssets(req: Request, res: Response, next: NextF
   // 2. Perform soft deletes in database
   const results = await Promise.allSettled(
     ids.map(async (id) => {
-        const result = await safeQuery(storage.deleteMediaAsset(parseInt(id, 10)));
-        if (result.isErr()) throw result.error;
-        return result.value;
+      const result = await safeQuery(storage.deleteMediaAsset(parseInt(id, 10)));
+      if (result.isErr()) throw result.error;
+      return result.value;
     }),
   );
 
@@ -854,10 +857,10 @@ export async function batchGetContent(req: Request, res: Response, next: NextFun
   // Previous: N individual queries via Promise.allSettled + getMediaAsset
   // Current: 1 batch query via getMediaAssetsByIds
   let assetsMap = new Map<number, any>();
-  
+
   const result = await safeQuery(storage.getMediaAssetsByIds(idList.map(String)));
   if (result.isErr()) return next(result.error);
-  
+
   const allAssets = result.value;
   assetsMap = new Map(allAssets.map((asset) => [asset.id, asset]));
 
@@ -966,9 +969,9 @@ export async function batchGetContent(req: Request, res: Response, next: NextFun
 export async function getAnalytics(_req: Request, res: Response, next: NextFunction) {
   // Fetch ALL assets (unbounded) for analytics
   const result = await getAllMediaAssets();
-  
+
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   const allAssets = result.value;
@@ -986,8 +989,8 @@ export async function getAnalytics(_req: Request, res: Response, next: NextFunct
       totalAssets,
       byType,
       cacheStatus: {
-         bypass: shouldBypassCache(_req),
-      }
+        bypass: shouldBypassCache(_req),
+      },
     }),
   );
 }

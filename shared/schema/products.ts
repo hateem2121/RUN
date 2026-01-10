@@ -16,6 +16,20 @@ import { pgTable } from "./common";
 import { fabrics } from "./materials";
 import { mediaAssets } from "./media";
 
+// Schemas for JSONB columns
+const ProductTechnicalSpecsSchema = z.record(
+  z.string(),
+  z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
+);
+const ProductFiberCompositionSchema = z.record(z.string(), z.union([z.string(), z.number()]));
+const ProductVideoSchema = z.object({
+  url: z.string(),
+  title: z.string().optional(),
+  type: z.string().optional(),
+  thumbnail: z.string().optional(),
+});
+const ProductMetadataSchema = z.record(z.string(), z.any());
+
 // Products table
 export const products = pgTable(
   "products",
@@ -54,14 +68,14 @@ export const products = pgTable(
 
     // Product specifications - Note: specifications is array format, technicalSpecs is key-value object format
     specifications: jsonb().$type<string[]>(),
-    technicalSpecs: jsonb().$type<Record<string, any>>(),
-    fiberComposition: jsonb().$type<Record<string, any>>(), // Fiber/material breakdown
+    technicalSpecs: jsonb().$type<z.infer<typeof ProductTechnicalSpecsSchema>>(),
+    fiberComposition: jsonb().$type<z.infer<typeof ProductFiberCompositionSchema>>(), // Fiber/material breakdown
     tags: jsonb().$type<string[]>(),
     careInstructions: jsonb().$type<string[]>(),
 
     // Additional media properties
     imageIds: jsonb().$type<number[]>(), // Array of media asset IDs for product gallery
-    videos: jsonb().$type<Record<string, any>[]>(), // Array of video objects
+    videos: jsonb().$type<z.infer<typeof ProductVideoSchema>[]>(), // Array of video objects
     urlPath: varchar({ length: 500 }), // SEO-friendly URL path
 
     // Custom product properties
@@ -87,7 +101,7 @@ export const products = pgTable(
     // SEO
     metaTitle: varchar({ length: 255 }),
     metaDescription: text(),
-    metadata: jsonb().$type<Record<string, any>>(), // Additional product metadata
+    metadata: jsonb().$type<z.infer<typeof ProductMetadataSchema>>(), // Additional product metadata
 
     // Status
     isActive: boolean().default(true),
@@ -222,7 +236,7 @@ export const insertProductSchema = z.object({
   primaryVideoId: z.number().optional().nullable(),
   modelFileId: z.number().optional().nullable(),
   imageIds: z.array(z.number()).optional(),
-  videos: z.array(z.record(z.string(), z.any())).optional(),
+  videos: z.array(ProductVideoSchema).optional(),
 
   // Business fields
   sku: z.string().min(1, "SKU is required"),
@@ -233,8 +247,8 @@ export const insertProductSchema = z.object({
 
   // Product specifications
   specifications: z.array(z.string()).optional(),
-  technicalSpecs: z.record(z.string(), z.any()).optional(),
-  fiberComposition: z.record(z.string(), z.any()).optional(),
+  technicalSpecs: ProductTechnicalSpecsSchema.optional(),
+  fiberComposition: ProductFiberCompositionSchema.optional(),
   tags: z.array(z.string()).optional(),
   careInstructions: z.array(z.string()).optional(),
 

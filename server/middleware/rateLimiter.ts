@@ -121,12 +121,12 @@ export class RateLimiter {
           }
           entry.count++;
           if (entry.count > this.config.max) {
-             return next(
-                new RateLimitError("Too many requests (fallback)", {
-                    retryAfter: 60, // Default 1 min fallback type
-                    fallback: true
-                })
-             );
+            return next(
+              new RateLimitError("Too many requests (fallback)", {
+                retryAfter: 60, // Default 1 min fallback type
+                fallback: true,
+              }),
+            );
           }
           next();
         } catch (innerError) {

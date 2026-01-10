@@ -13,9 +13,9 @@ import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
 } from "../../../shared/schema.js";
+import { safeQuery } from "../../db.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { safeQuery } from "../../db.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
@@ -44,11 +44,7 @@ function shouldBypassCache(req: Request): boolean {
 // Contact page configuration
 router.get("/contact-page-configuration", async (_req, res, next) => {
   const result = await safeQuery(
-    withTimeout(
-      getStorage().getContactPageConfiguration(),
-      5000,
-      "Get contact page config",
-    ),
+    withTimeout(getStorage().getContactPageConfiguration(), 5000, "Get contact page config"),
   );
 
   if (result.isErr()) {
@@ -63,7 +59,9 @@ router.get("/contact-page-configuration", async (_req, res, next) => {
 router.post("/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
   const validation = insertContactPageConfigurationSchema.safeParse(req.body);
   if (!validation.success) {
-    return next(new ValidationError("Invalid contact configuration", { issues: validation.error.issues }));
+    return next(
+      new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+    );
   }
 
   const result = await safeQuery(
@@ -95,7 +93,9 @@ router.post("/contact-page-configuration", authService.requireAdmin, async (req,
 router.patch("/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
   const validation = insertContactPageConfigurationSchema.safeParse(req.body);
   if (!validation.success) {
-    return next(new ValidationError("Invalid contact configuration", { issues: validation.error.issues }));
+    return next(
+      new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+    );
   }
   // Contact page configuration is a singleton - always use ID 1
   const result = await safeQuery(
@@ -142,7 +142,7 @@ router.get("/navigation-items", async (req, res, next) => {
   const result = await NavigationService.getItems(bypassCache);
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   const data = result.value;
@@ -164,9 +164,9 @@ router.get("/navigation-items", async (req, res, next) => {
 router.get("/navigation-items/:id", async (req, res, next) => {
   const id = parseInt(req.params.id, 10);
   const result = await NavigationService.getItem(id);
-  
+
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
   return res.json(result.value);
 });
@@ -175,15 +175,17 @@ router.get("/navigation-items/:id", async (req, res, next) => {
 router.post("/navigation-items", authService.requireAdmin, async (req, res, next) => {
   const validatedData = insertNavigationItemSchema.safeParse(req.body);
   if (!validatedData.success) {
-    return next(new ValidationError("Invalid navigation item", { issues: validatedData.error.issues }));
+    return next(
+      new ValidationError("Invalid navigation item", { issues: validatedData.error.issues }),
+    );
   }
-  
-  // NavigationService likely wraps DB calls internally, but we can wrap it here too for safety/consistency 
+
+  // NavigationService likely wraps DB calls internally, but we can wrap it here too for safety/consistency
   // if it returns a Promise. Assuming NavigationService.* methods throw on DB error.
   const result = await NavigationService.createItem(validatedData.data);
-  
+
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   return res.status(201).json(result.value);
@@ -198,13 +200,13 @@ router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, 
   const validation = reorderSchema.safeParse({ items });
 
   if (!validation.success) {
-      return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));
+    return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));
   }
 
   const result = await NavigationService.reorderItems(validation.data.items);
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
   return res.json(result.value);
 });
@@ -213,15 +215,15 @@ router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, 
 router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id!, 10);
   const validatedData = insertNavigationItemSchema.partial().safeParse(req.body);
-  
+
   if (!validatedData.success) {
-      return next(new ValidationError("Invalid update data", { issues: validatedData.error.issues }));
+    return next(new ValidationError("Invalid update data", { issues: validatedData.error.issues }));
   }
 
   const result = await NavigationService.updateItem(id, validatedData.data);
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
   return res.json(result.value);
 });
@@ -232,7 +234,7 @@ router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res
   const result = await NavigationService.deleteItem(id);
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
   return res.status(204).send();
 });
@@ -242,24 +244,30 @@ router.get("/navigation-glassmorphism-settings", async (_req, res, next) => {
   const result = await NavigationService.getGlassmorphismSettings();
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
   return res.json(result.value);
 });
 
 // Update glassmorphism settings
-router.patch("/navigation-glassmorphism-settings", authService.requireAdmin, async (req, res, next) => {
-  const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
-  if (!validation.success) {
-    return next(new ValidationError("Invalid glassmorphism settings", { issues: validation.error.issues }));
-  }
-  const result = await NavigationService.updateGlassmorphismSettings(validation.data);
+router.patch(
+  "/navigation-glassmorphism-settings",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
+    if (!validation.success) {
+      return next(
+        new ValidationError("Invalid glassmorphism settings", { issues: validation.error.issues }),
+      );
+    }
+    const result = await NavigationService.updateGlassmorphismSettings(validation.data);
 
-  if (result.isErr()) {
+    if (result.isErr()) {
       return next(result.error);
-  }
-  return res.json(result.value);
-});
+    }
+    return res.json(result.value);
+  },
+);
 
 // ============================================================================
 // UI/DESIGN SETTINGS ROUTES
@@ -274,15 +282,11 @@ router.get("/logo-animation-settings", async (_req, res, next) => {
   }
 
   const result = await safeQuery(
-    withTimeout(
-      getStorage().getLogoAnimationSettings(),
-      5000,
-      "Get logo animation settings",
-    ),
+    withTimeout(getStorage().getLogoAnimationSettings(), 5000, "Get logo animation settings"),
   );
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   const settings = result.value || {};
@@ -306,7 +310,7 @@ router.patch("/logo-animation-settings", authService.requireAdmin, async (req, r
   );
 
   if (result.isErr()) {
-      return next(result.error);
+    return next(result.error);
   }
 
   // CHUNK 5: Clear cache when settings change

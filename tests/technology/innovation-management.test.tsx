@@ -4,7 +4,7 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the component for testing isolation
-const MockTechnologyInnovationManagement = ({ isLoading }: any) => {
+const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: any) => {
   const [innovationForm, setInnovationForm] = React.useState({
     title: "Smart Fabric Technology",
     category: "Fabric Technology",

@@ -71,7 +71,7 @@ export async function loader() {
 }
 
 import { useFetcher } from "react-router";
-import { submitInquiry } from "../services/inquiry.server";
+import { submitContactInquiry } from "../services/inquiry.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -88,7 +88,7 @@ export async function action({ request }: ActionFunctionArgs) {
   };
 
   try {
-    const result = await submitInquiry(data);
+    const result = await submitContactInquiry(data);
     return { success: true, data: result };
   } catch (error) {
     // biome-ignore lint/suspicious/noConsole: action error logging

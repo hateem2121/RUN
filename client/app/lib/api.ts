@@ -35,7 +35,7 @@ export class ApiError extends Error {
     if (data.type) this.type = data.type;
     if (data.instance) this.instance = data.instance;
     if (data.requestId) this.requestId = data.requestId;
-    
+
     // Map AppError code (support flattened or nested)
     const code = data.code || data.error?.code;
     if (code) this.code = code;

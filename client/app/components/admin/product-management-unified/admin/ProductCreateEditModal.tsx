@@ -721,7 +721,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       sizeChartId: formData.sizeChartId,
       fiberComposition:
         formData.selectedFiberComposition && formData.selectedFiberComposition.length > 0
-          ? { selected: formData.selectedFiberComposition }
+          ? ({ selected: formData.selectedFiberComposition } as any)
           : undefined,
 
       // Media Assets - Using correct schema fields
@@ -730,7 +730,19 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       imageIds: formData.imageIds.length > 0 ? formData.imageIds : undefined,
       videos:
         formData.videos.length > 0
-          ? formData.videos.map((id) => ({ id, type: "video" }))
+          ? formData.videos
+              .map((id) => {
+                const asset = mediaAssets.find((m) => m.id === id);
+                return asset
+                  ? {
+                      url: asset.url,
+                      thumbnail: asset.url, // Video thumbnail same as URL for now
+                      type: "video",
+                      title: asset.filename,
+                    }
+                  : null;
+              })
+              .filter((v): v is NonNullable<typeof v> => v !== null)
           : undefined,
       modelFileId: formData.modelFileId,
 

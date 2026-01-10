@@ -1,8 +1,8 @@
 import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../db.js";
-import { AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { getStorage } from "../lib/storage-singleton.js";
@@ -26,7 +26,9 @@ export class NavigationService {
   /**
    * Get all navigation items with caching strategy
    */
-  static async getItems(bypassCache = false): Promise<Result<{ data: any[]; metadata: any }, AppError>> {
+  static async getItems(
+    bypassCache = false,
+  ): Promise<Result<{ data: any[]; metadata: any }, AppError>> {
     const startTime = performance.now();
     const storage = getStorage();
 
@@ -34,7 +36,7 @@ export class NavigationService {
     if (bypassCache) {
       logger.info("[Navigation] Bypassing cache for real-time data");
       const result = await safeQuery(
-        withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)")
+        withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
       );
 
       if (result.isErr()) return err(result.error);
@@ -67,7 +69,7 @@ export class NavigationService {
 
     // Cache miss
     const result = await safeQuery(
-      withTimeout(storage.getNavigationItems(), 5000, "Get navigation items")
+      withTimeout(storage.getNavigationItems(), 5000, "Get navigation items"),
     );
 
     if (result.isErr()) return err(result.error);
@@ -87,7 +89,7 @@ export class NavigationService {
 
   static async getItem(id: number): Promise<Result<any, AppError>> {
     const result = await safeQuery(
-      withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item")
+      withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item"),
     );
 
     if (result.isErr()) return err(result.error);
@@ -114,14 +116,14 @@ export class NavigationService {
     };
 
     const result = await safeQuery(
-      withTimeout(getStorage().createNavigationItem(itemData), 5000, "Create navigation item")
+      withTimeout(getStorage().createNavigationItem(itemData), 5000, "Create navigation item"),
     );
 
     if (result.isErr()) return err(result.error);
 
     // Invalidate cache
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err)
+      logger.error("[Navigation] Cache invalidation failed:", err),
     );
 
     return ok(result.value);
@@ -136,14 +138,18 @@ export class NavigationService {
     });
 
     const result = await safeQuery(
-      withTimeout(getStorage().updateNavigationItem(id, updateData), 5000, "Update navigation item")
+      withTimeout(
+        getStorage().updateNavigationItem(id, updateData),
+        5000,
+        "Update navigation item",
+      ),
     );
 
     if (result.isErr()) return err(result.error);
     if (!result.value) return err(new NotFoundError(`Navigation item ${id} not found`));
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err)
+      logger.error("[Navigation] Cache invalidation failed:", err),
     );
 
     return ok(result.value);
@@ -151,40 +157,43 @@ export class NavigationService {
 
   static async deleteItem(id: number): Promise<Result<void, AppError>> {
     const result = await safeQuery(
-      withTimeout(getStorage().deleteNavigationItem(id), 5000, "Delete navigation item")
+      withTimeout(getStorage().deleteNavigationItem(id), 5000, "Delete navigation item"),
     );
 
     if (result.isErr()) return err(result.error);
     if (!result.value) return err(new NotFoundError(`Navigation item ${id} not found`));
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err)
+      logger.error("[Navigation] Cache invalidation failed:", err),
     );
 
     return ok(undefined);
   }
 
-  static async reorderItems(items: { id: number; sortOrder: number }[]): Promise<Result<any[], AppError>> {
+  static async reorderItems(
+    items: { id: number; sortOrder: number }[],
+  ): Promise<Result<any[], AppError>> {
     const storage = getStorage();
 
     // Sequential update
     for (const item of items) {
       const result = await safeQuery(
-         storage.updateNavigationItem(item.id, { sortOrder: item.sortOrder })
+        storage.updateNavigationItem(item.id, { sortOrder: item.sortOrder }),
       );
-      
+
       if (result.isErr()) return err(result.error);
-      if (!result.value) return err(new NotFoundError(`Navigation item ${item.id} not found during reorder`));
+      if (!result.value)
+        return err(new NotFoundError(`Navigation item ${item.id} not found during reorder`));
     }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err)
+      logger.error("[Navigation] Cache invalidation failed:", err),
     );
 
     // Return updated list - recursive call to getItems needs error handling
     const getResult = await NavigationService.getItems(true);
     if (getResult.isErr()) return err(getResult.error);
-    
+
     return ok(getResult.value.data);
   }
 
@@ -197,8 +206,8 @@ export class NavigationService {
       withTimeout(
         getStorage().getNavigationGlassmorphismSettings(),
         5000,
-        "Get glassmorphism settings"
-      )
+        "Get glassmorphism settings",
+      ),
     );
 
     if (result.isErr()) return err(result.error);
@@ -229,8 +238,8 @@ export class NavigationService {
       withTimeout(
         getStorage().updateNavigationGlassmorphismSettings(settingsData),
         5000,
-        "Update glassmorphism settings"
-      )
+        "Update glassmorphism settings",
+      ),
     );
 
     if (result.isErr()) return err(result.error);

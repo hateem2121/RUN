@@ -1,63 +1,73 @@
 "use server";
 
 import { inquiries } from "@shared/schema";
+import { z } from "zod";
 import { db } from "../db.server";
 
-export type SubmitInquiryData = {
-  name: string;
-  email: string;
-  message: string;
-  company?: string | null;
-  phone?: string | null;
-  country?: string | null;
-  preferredPlatform?: string | null;
-  honeypot?: string;
-};
+// --- Schemas ---
 
-// React 19 Server Action Adapter
-export async function submitInquiryAction(_prevState: any, formData: FormData) {
-  const data = {
-    name: formData.get("name") as string,
-    email: formData.get("email") as string,
-    message: formData.get("message") as string,
-    company: formData.get("company") as string,
-    phone: formData.get("phone") as string,
-    country: formData.get("country") as string,
-    preferredPlatform: formData.get("preferredPlatform") as string,
-    honeypot: formData.get("honeypot") as string,
-  };
+export const ContactSubmissionSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
+  company: z.string().nullish(),
+  phone: z.string().nullish(),
+  country: z.string().nullish(),
+  preferredPlatform: z.string().nullish(),
+  honeypot: z.string().optional(),
+});
 
-  try {
-    const result = await submitInquiry(data);
-    return { success: true, data: result };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Submission failed",
-    };
-  }
-}
+export const QuoteSubmissionSchema = z.object({
+  contact: z.object({
+    name: z.string().min(2, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    company: z.string().min(2, "Company name is required"),
+    phone: z.string().optional(),
+    projectDescription: z.string().optional(),
+  }),
+  items: z
+    .array(
+      z.object({
+        productId: z.number(),
+        quantity: z.number().min(1),
+        notes: z.string().optional(),
+      }),
+    )
+    .min(1, "At least one item must be added to the quote"),
+});
 
-export async function submitInquiry(data: SubmitInquiryData) {
-  // 1. Honeypot check
-  if (data.honeypot && data.honeypot.trim().length > 0) {
+export type ContactSubmissionData = z.infer<typeof ContactSubmissionSchema>;
+export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
+
+// --- Actions ---
+
+/**
+ * Handles B2B Contact Form submissions.
+ * Inserts directly into the database.
+ */
+export async function submitContactInquiry(data: ContactSubmissionData) {
+  // 1. Validation
+  const validated = ContactSubmissionSchema.parse(data);
+
+  // 2. Honeypot check
+  if (validated.honeypot && validated.honeypot.trim().length > 0) {
     // biome-ignore lint/suspicious/noConsole: honeypot logging
-    console.warn(`[Inquiry] Honeypot triggered: ${data.email}`);
+    console.warn(`[Inquiry] Honeypot triggered: ${validated.email}`);
     throw new Error("Invalid submission");
   }
 
   try {
-    // 2. Insert into Database
+    // 3. Insert into Database
     const [result] = await db
       .insert(inquiries)
       .values({
-        name: data.name,
-        email: data.email,
-        message: data.message,
-        company: data.company,
-        phone: data.phone,
-        country: data.country,
-        preferredPlatform: data.preferredPlatform,
+        name: validated.name,
+        email: validated.email,
+        message: validated.message,
+        company: validated.company || null,
+        phone: validated.phone || null,
+        country: validated.country || null,
+        preferredPlatform: validated.preferredPlatform || null,
         source: "contact-page",
         status: "new",
       })
@@ -70,8 +80,7 @@ export async function submitInquiry(data: SubmitInquiryData) {
     // biome-ignore lint/suspicious/noConsole: tracking
     console.log(`[Inquiry] Created inquiry #${result.id} via Server Action`);
 
-    // 3. Mock Email (Replacement for backend emailService)
-    // In a full refactor, we would import a shared email service here using an interface
+    // 4. Mock Email
     await mockSendEmail(result);
 
     return { success: true, submissionId: result.id };
@@ -82,6 +91,55 @@ export async function submitInquiry(data: SubmitInquiryData) {
   }
 }
 
+/**
+ * Handles Quote Requests (from InquiryDrawer).
+ * Currently mocks the persistence (matching legacy API behavior).
+ */
+export async function submitQuoteRequest(data: QuoteSubmissionData) {
+  // 1. Validation
+  const validated = QuoteSubmissionSchema.parse(data);
+
+  try {
+    // 2. Logic: Log to DB (Still Mocked)
+    // biome-ignore lint/suspicious/noConsole: Log payload
+    console.log("[Quote Request Received]", {
+      timestamp: new Date().toISOString(),
+      ...validated,
+    });
+
+    // 3. Mock Email Send
+    // biome-ignore lint/suspicious/noConsole: Mock email
+    console.log(`[Email Mock] Sending quote confirmation to ${validated.contact.email}`);
+
+    // In the future: Insert into inquiries table (needs schema migration for items)
+    /*
+     await db.insert(inquiries).values({
+        name: validated.contact.name,
+        email: validated.contact.email,
+        message: `Quote Request for ${validated.items.length} items.\n\nDescription: ${validated.contact.projectDescription}`,
+        company: validated.contact.company,
+        phone: validated.contact.phone,
+        source: "quote-drawer",
+        status: "new"
+     });
+     */
+
+    return {
+      success: true,
+      message: "Quote request received successfully",
+      inquiryId: `INQ-${Date.now()}`,
+    };
+  } catch (error) {
+    // biome-ignore lint/suspicious/noConsole: error logging
+    console.error("[Quote] Failed to submit:", error);
+    throw new Error("Failed to submit quote request");
+  }
+}
+
+// --- Internal ---
+
+// --- Internal ---
+
 async function mockSendEmail(inquiry: any) {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 100));
@@ -90,3 +148,40 @@ async function mockSendEmail(inquiry: any) {
   // biome-ignore lint/suspicious/noConsole: mock email
   console.log(`[Email Mock] Sending admin notification for inquiry #${inquiry.id}`);
 }
+
+// React 19 Server Action Adapter for useActionState
+export async function submitInquiryAction(_prevState: any, formData: FormData) {
+  const data = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    message: formData.get("message") as string,
+    company: formData.get("companyName") as string, // B2B form uses companyName
+    phone: formData.get("phone") as string,
+    // Add other fields from B2B form if needed
+  };
+
+  try {
+    const result = await submitContactInquiry({
+      ...data,
+      country: null,
+      preferredPlatform: null,
+      honeypot: undefined,
+    });
+
+    return {
+      status: "success" as const,
+      message: "Thank you for your inquiry. Our B2B team will contact you within 24 hours.",
+      timestamp: Date.now(),
+      data: result,
+    };
+  } catch (error) {
+    return {
+      status: "error" as const,
+      message: error instanceof Error ? error.message : "Submission failed",
+      timestamp: Date.now(),
+    };
+  }
+}
+
+// --- Legacy Alias (Deprecation Path) ---
+export { submitContactInquiry as submitInquiry };

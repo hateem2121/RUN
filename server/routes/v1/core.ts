@@ -6,7 +6,8 @@ import fabricsRouter from "../core/fabrics.js";
 import materialsRouter from "../core/materials.js";
 import productsRouter from "../core/products.js";
 import sizeChartsRouter from "../core/size-charts.js";
-import { inquiryRoutes } from "../inquiries.js";
+
+// import { inquiryRoutes } from "../inquiries.js";
 
 const router = Router();
 
@@ -17,6 +18,6 @@ router.use(accessoriesRouter);
 router.use(certificatesRouter);
 router.use(materialsRouter);
 router.use(sizeChartsRouter);
-router.use(inquiryRoutes);
+// router.use(inquiryRoutes);
 
 export default router;

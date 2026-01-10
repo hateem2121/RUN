@@ -4,11 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { submitQuoteRequest } from "../../../app/services/inquiry.server";
 import { useHydratedStore } from "../../lib/useHydratedStore";
 import { useQuoteStore } from "../../stores/useQuoteStore";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+
+// ... existing imports
 
 // Form Validation Schema
 const inquiryFormSchema = z.object({
@@ -42,21 +45,17 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const mutation = useMutation({
     mutationFn: async (data: InquiryFormData) => {
       const payload = {
-        ...data,
+        contact: data.contact,
         items: items.map((i: any) => ({
           productId: i.id,
           quantity: i.quantity,
+          notes: "", // Default notes
         })),
       };
 
-      const res = await fetch("/api/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Submission failed");
-      return res.json();
+      // REACT 19 / SERVER ACTION MIGRATION
+      // Directly call server service instead of API endpoint
+      return await submitQuoteRequest(payload);
     },
     onSuccess: () => {
       setSuccess(true);

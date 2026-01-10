@@ -8,12 +8,11 @@ import type { ExtractTablesWithRelations } from "drizzle-orm";
 import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
 import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import type { PgTransaction } from "drizzle-orm/pg-core";
+import { err, ok, type Result } from "neverthrow";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
-import { err, ok, type Result } from "neverthrow";
 import { DatabaseError } from "./lib/errors.js";
 import { logger } from "./lib/monitoring/logger.js";
-
 
 // Validate connection string presence
 if (!database.url && process.env.NODE_ENV !== "test") {
@@ -27,14 +26,14 @@ let sql: NeonQueryFunction<boolean, boolean>;
 
 if (isTestMode && !enableRealDb) {
   logger.info("[Database] Test mode - skipping real DB connection (Mock Mode)");
-  
+
   if (process.env.TEST_MOCK_ERROR === "true") {
-      logger.info("[Database] Mock Error Mode Enabled");
-      sql = (() => Promise.reject(new Error("Mock Database Error"))) as any;
+    logger.info("[Database] Mock Error Mode Enabled");
+    sql = (() => Promise.reject(new Error("Mock Database Error"))) as any;
   } else {
-      // Create a no-op SQL function for tests
-      // Return empty array to simulate empty result set
-      sql = (() => Promise.resolve([])) as any;
+    // Create a no-op SQL function for tests
+    // Return empty array to simulate empty result set
+    sql = (() => Promise.resolve([])) as any;
   }
 } else {
   // Use standard Neon HTTP driver
@@ -125,9 +124,7 @@ export const closeDatabaseConnection = async () => {}; // No-op for HTTP
  * Safe Database Query Wrapper
  * Puts a functional safety layer around Drizzle promises
  */
-export async function safeQuery<T>(
-  promise: Promise<T>,
-): Promise<Result<T, DatabaseError>> {
+export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, DatabaseError>> {
   try {
     const data = await promise;
     return ok(data);
@@ -152,4 +149,3 @@ export async function safeQuery<T>(
     );
   }
 }
-

@@ -15,14 +15,14 @@
     "tsBuildInfoFile": "../dist/client/.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["app/*"],
       "@shared/*": ["../shared/*"],
       "@assets/*": ["../attached_assets/*"]
     },
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["src/**/*", "app/**/*", "../utils/**/*", "vite.config.ts"],
+  "include": ["app/**/*", "../utils/**/*", "vite.config.ts"],
 
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts", "../server/**/*"],
   "references": [

@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { startTestServer, type TestServer } from "./test-utils";
+
 // biome-ignore lint/suspicious/noConsole: Test debugging
 console.log("Starting Media Reliability Tests...");
 
@@ -28,9 +29,11 @@ describe("Media Reliability & Error Standardization", () => {
   it("GET /api/media should return standardized error context when DB fails (or 200 if DB up)", async () => {
     const res = await fetch(`${server.baseUrl}/api/media`);
     const contentType = res.headers.get("content-type");
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
 
+    // biome-ignore lint/suspicious/noConsole: test debugging
     console.log("GET /api/media status:", res.status);
+    // biome-ignore lint/suspicious/noConsole: test debugging
     console.log("GET /api/media body:", JSON.stringify(body, null, 2));
 
     if (res.status === 200) {
@@ -66,7 +69,8 @@ describe("Media Reliability & Error Standardization", () => {
       body: JSON.stringify({ filename: "test.png" }),
     });
 
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
+    // biome-ignore lint/suspicious/noConsole: test debug
     console.log("POST /api/media/upload/init status:", res.status);
 
     // Can be 401 (Auth) or 403 (CSRF/Forbidden) depending on middleware order

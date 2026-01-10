@@ -156,7 +156,13 @@ function productFormReducer(state: ProductFormState, action: ProductFormAction):
         imageIds: product.imageIds || [],
         videos: Array.isArray(product.videos)
           ? product.videos
-              .map((v) => (typeof v === "number" ? v : typeof v === "object" && v?.id ? v.id : 0))
+              .map((v) =>
+                typeof v === "number"
+                  ? v
+                  : typeof v === "object" && v && "id" in v
+                    ? (v as any).id
+                    : 0,
+              )
               .filter((id) => id !== 0)
           : [],
         modelFileId: product.modelFileId || null,
