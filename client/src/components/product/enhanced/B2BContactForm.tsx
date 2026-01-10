@@ -14,9 +14,10 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { initialState, submitInquiry } from "@/actions/contact";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -95,10 +96,12 @@ export function B2BContactForm({
   productName,
   productId,
   className,
-  onSubmit,
+  onSubmit: _onSubmit,
   prefilledType,
 }: B2BContactFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // REACT 19: Server Action Integration
+  const [state, action, isPending] = React.useActionState(submitInquiry, initialState);
+
   const { toast } = useToast();
 
   const form = useForm<B2BContactFormData>({
@@ -118,51 +121,45 @@ export function B2BContactForm({
     },
   });
 
+  // Handle side effects from action state
+  React.useEffect(() => {
+    if (state.status === "success") {
+      toast({
+        title: "Inquiry Submitted",
+        description: state.message,
+      });
+      form.reset();
+    } else if (state.status === "error") {
+      toast({
+        title: "Submission Failed",
+        description: state.message,
+        variant: "destructive",
+      });
+    }
+  }, [toast, form, state.status, state.message]);
+
   const handleSubmit = useCallback(
-    async (data: B2BContactFormData) => {
-      setIsSubmitting(true);
+    (data: B2BContactFormData) => {
+      // Bridge React Hook Form to Server Action
+      React.startTransition(() => {
+        const formData = new FormData();
 
-      try {
-        // Add product context if available
-        const submitData = {
-          ...data,
-          ...(productName && { productName }),
-          ...(productId && { productId }),
-          timestamp: new Date().toISOString(),
-        };
-
-        if (onSubmit) {
-          await onSubmit(submitData);
-        } else {
-          // Default submission to API
-          const response = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(submitData),
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to submit inquiry");
+        // Add form fields
+        Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(key, value.toString());
           }
-        }
-
-        toast({
-          title: "Inquiry Submitted",
-          description: "Thank you for your inquiry. Our B2B team will contact you within 24 hours.",
         });
 
-        form.reset();
-      } catch (_error) {
-        toast({
-          title: "Submission Failed",
-          description: "Please try again or contact us directly.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsSubmitting(false);
-      }
+        // Add context
+        if (productName) formData.append("productName", productName);
+        if (productId) formData.append("productId", productId);
+        formData.append("timestamp", new Date().toISOString());
+
+        action(formData);
+      });
     },
-    [onSubmit, productName, productId, toast, form],
+    [action, productName, productId],
   );
 
   const handleRequestSamples = useCallback(() => {
@@ -264,7 +261,7 @@ export function B2BContactForm({
                     {...form.register("companyName")}
                     className="pl-10"
                     placeholder="Your Company"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                   />
                 </div>
                 {form.formState.errors.companyName && (
@@ -288,7 +285,7 @@ export function B2BContactForm({
                     {...form.register("contactName")}
                     className="pl-10"
                     placeholder="Your Name"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                   />
                 </div>
                 {form.formState.errors.contactName && (
@@ -316,7 +313,7 @@ export function B2BContactForm({
                     {...form.register("email")}
                     className="pl-10"
                     placeholder="contact@company.com"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                   />
                 </div>
                 {form.formState.errors.email && (
@@ -341,7 +338,7 @@ export function B2BContactForm({
                     {...form.register("phone")}
                     className="pl-10"
                     placeholder="+1 (555) 123-4567"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                   />
                 </div>
               </div>
@@ -355,7 +352,7 @@ export function B2BContactForm({
               <Select
                 onValueChange={(value) => form.setValue("inquiryType", value as any)}
                 defaultValue={form.getValues("inquiryType")}
-                disabled={isSubmitting}
+                disabled={isPending}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select inquiry type" />
@@ -386,7 +383,7 @@ export function B2BContactForm({
                 </label>
                 <Select
                   onValueChange={(value) => form.setValue("volume", value)}
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select volume" />
@@ -407,7 +404,7 @@ export function B2BContactForm({
                 </label>
                 <Select
                   onValueChange={(value) => form.setValue("timeline", value)}
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select timeline" />
@@ -438,7 +435,7 @@ export function B2BContactForm({
                   {...form.register("message")}
                   className="min-h-[100px] pl-10"
                   placeholder="Please provide details about your requirements..."
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 />
               </div>
               {form.formState.errors.message && (
@@ -449,8 +446,8 @@ export function B2BContactForm({
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Send Inquiry
             </Button>
           </form>
