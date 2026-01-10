@@ -4,6 +4,8 @@
  */
 
 export class MediaNotFoundError extends Error {
+  public readonly status: number = 404;
+
   constructor(mediaId: number | string) {
     super(`Media asset not found or already deleted: ${mediaId}`);
     this.name = "MediaNotFoundError";
@@ -11,6 +13,7 @@ export class MediaNotFoundError extends Error {
 }
 
 export class CacheInvalidationError extends Error {
+  public readonly status: number = 500;
   override cause?: Error;
 
   constructor(operation: string, cause?: Error) {

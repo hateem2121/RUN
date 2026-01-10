@@ -40,3 +40,17 @@ export interface ApiErrorResponse {
   statusCode: number;
   stack?: string;
 }
+
+/**
+ * RFC 7807 Problem Details
+ * Standard error response format for HTTP APIs
+ */
+export interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+  requestId?: string;
+  [key: string]: unknown;
+}

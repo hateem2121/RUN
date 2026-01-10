@@ -124,9 +124,11 @@ export class DatabaseCircuitBreaker {
 
           // NON-IDEMPOTENT SAFETY: Never retry non-idempotent operations (writes)
           if (!isIdempotent) {
-             logger.warn(`🛑 ${operationName} failed, not retrying (non-idempotent): ${(error as Error).message}`);
-             this.recordFailure(operationName, error as Error);
-             throw error;
+            logger.warn(
+              `🛑 ${operationName} failed, not retrying (non-idempotent): ${(error as Error).message}`,
+            );
+            this.recordFailure(operationName, error as Error);
+            throw error;
           }
 
           if (attempt === this.MAX_RETRIES || !isTransientError) {

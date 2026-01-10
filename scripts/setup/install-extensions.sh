@@ -1,7 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
 # VS Code Extensions Auto-Installer
-# Installs all recommended extensions for RUN-Remix project
+# Installs all recommended extensions from .vscode/extensions.json
+# Uses Node.js to safely parse the JSON configuration
 
 echo "🚀 Installing VS Code Extensions..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -36,54 +38,57 @@ fi
 echo -e "${GREEN}✅ VS Code CLI found${NC}"
 echo ""
 
-# Extension list (December 2025 - VERIFIED WORKING)
-declare -a extensions=(
-    # Essential Development
-    "rphlmr.drizzle-lab"
-    "bradlc.vscode-tailwindcss"
-    "dbaeumer.vscode-eslint"
-    "esbenp.prettier-vscode"
-    "usernamehw.errorlens"
-    
-    # Database & Backend
-    "ckolkman.vscode-postgres"
-    "rangav.vscode-thunder-client"
-    
-    # Cloud & DevOps
-    "googlecloudtools.cloudcode"
-    
-    # TypeScript & React
-    "mattpocock.ts-error-translator"
-    "previewjs.previewjs"
-    "wallabyjs.console-ninja"
-    
-    # 3D Development
-    "cesium.gltf-vscode"
-    
-    # Testing
-    "vitest.explorer"
-    "ryanluker.vscode-coverage-gutters"
-    
-    # Productivity
-    "christian-kohler.path-intellisense"
-    "formulahendry.auto-rename-tag"
-    "wix.vscode-import-cost"
-    "aaron-bond.better-comments"
-    "mhutchie.git-graph"
-    "mikestead.dotenv"
-)
+# Check for extension config
+if [ ! -f ".vscode/extensions.json" ]; then
+    echo -e "${RED}❌ .vscode/extensions.json not found!${NC}"
+    exit 1
+fi
+
+# Use Node.js to safely parse JSON (guaranteed dependency in this project)
+# We filter out comments by parsing standard JSON (VS Code allows comments, but we need to arguably handle them)
+# Actually, JSON.parse does NOT support comments. VS Code uses "JSON with Comments" (jsonc).
+# To be safe, we'll use a regex in node or stripping comments.
+# Since we are in a node >= 24 env, we can use fs.readFileSync and some regex to strip comments before parsing.
+echo "reading .vscode/extensions.json..."
+
+# Extract extensions using Node.js with comment stripping
+EXTENSIONS_LIST=$(node -e '
+  const fs = require("fs");
+  const content = fs.readFileSync(".vscode/extensions.json", "utf8");
+  // Simple regex to strip JS style comments
+  const jsonContent = content.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+  try {
+    const json = JSON.parse(jsonContent);
+    if (json.recommendations && Array.isArray(json.recommendations)) {
+      console.log(json.recommendations.join("\n"));
+    }
+  } catch (e) {
+    console.error("Failed to parse extensions.json:", e.message);
+    process.exit(1);
+  }
+')
+
+# Convert newline separated string to array
+mapfile -t extensions <<< "$EXTENSIONS_LIST"
+
+# Filter out empty lines if any
+extensions=(${extensions[@]})
 
 total=${#extensions[@]}
 installed=0
 failed=0
 
-echo "📦 Installing $total extensions..."
+echo "📦 Found $total extensions in configuration"
 echo ""
 
 # Install each extension
 for ext in "${extensions[@]}"; do
+    # Skip if empty (safety check)
+    if [ -z "$ext" ]; then continue; fi
+
     echo -n "Installing $ext... "
     
+    # We use || true to prevent set -e from killing the script on individual extension failure
     if code --install-extension "$ext" --force > /dev/null 2>&1; then
         echo -e "${GREEN}✓${NC}"
         ((installed++))

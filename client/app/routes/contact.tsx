@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { CheckCircle2, Clock, Mail, MapPin, Share2 } from "lucide-react";
-import { useActionState, useOptimistic, useEffect, useState, startTransition } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
 import { z } from "zod";
@@ -70,22 +70,25 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-import { submitInquiry, submitInquiryAction } from "../services/inquiry.server";
+import { useFetcher } from "react-router";
+import { submitInquiry } from "../services/inquiry.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const data = await request.json();
+  const formData = await request.formData();
+
+  const data = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    message: formData.get("message") as string,
+    company: formData.get("company") as string,
+    phone: formData.get("phone") as string,
+    country: formData.get("country") as string,
+    preferredPlatform: formData.get("preferredPlatform") as string,
+    honeypot: formData.get("honeypot") as string,
+  };
 
   try {
-    const result = await submitInquiry({
-      name: data.name,
-      email: data.email,
-      message: data.message,
-      company: data.company,
-      phone: data.phone,
-      country: data.country,
-      preferredPlatform: data.preferredPlatform,
-      honeypot: data.honeypot,
-    });
+    const result = await submitInquiry(data);
     return { success: true, data: result };
   } catch (error) {
     // biome-ignore lint/suspicious/noConsole: action error logging
@@ -132,29 +135,28 @@ export default function Contact() {
   const selectedPlatform = form.watch("platform");
   const showOtherPlatform = selectedPlatform === "Other";
 
-  const [state, formAction, isPending] = useActionState(submitInquiryAction, { success: false, error: "" });
-  const [optimisticSuccess, setOptimisticSuccess] = useOptimistic(state.success);
+  const fetcher = useFetcher<{ success: boolean; error?: string }>();
+  const isPending = fetcher.state === "submitting" || fetcher.state === "loading";
 
-  // Sync optimistic state
+  // Sync state
   useEffect(() => {
-    if (state.success) {
-      setOptimisticSuccess(true);
+    if (fetcher.data?.success) {
       form.reset();
       toast({
         title: "Success!",
-        description: contactConfig?.successMessage || "Thank you for your message. We'll get back to you soon!",
+        description:
+          contactConfig?.successMessage ||
+          "Thank you for your message. We'll get back to you soon!",
       });
       setShowSuccess(true);
-    } else if (state.success === false && state.error) {
-       toast({
+    } else if (fetcher.data?.success === false && fetcher.data?.error) {
+      toast({
         title: "Error",
-        description: state.error || "Failed to send message. Please try again.",
+        description: fetcher.data.error || "Failed to send message. Please try again.",
         variant: "destructive",
       });
     }
-  }, [state, form, contactConfig, toast, setOptimisticSuccess]);
-
-
+  }, [fetcher.data, form, contactConfig, toast]);
 
   const onSubmit = (data: ContactFormData) => {
     if (data.honeypot) return; // Silent fail for bots
@@ -165,10 +167,6 @@ export default function Contact() {
     const preferredPlatform =
       data.platform === "Other" ? data.otherPlatform || null : data.platform;
 
-
-
-    // React 19: trigger Server Action via standard form submission (programmatic or declarative)
-    // We use programmatic here because we are integrating with RHF
     const formData = new FormData();
     formData.append("name", fullName);
     formData.append("email", data.email);
@@ -178,17 +176,9 @@ export default function Contact() {
     if (phone) formData.append("phone", phone);
     if (preferredPlatform) formData.append("preferredPlatform", preferredPlatform);
     if (data.honeypot) formData.append("honeypot", data.honeypot);
-    
-    // Trigger optimistic update immediately
-    setOptimisticSuccess(true);
-    
-    // Call Server Action
-    // Note: In a pure R19 flow we'd pass `formAction` to <form>, but with RHF handleSubmit we bridge it.
-    // We pass the formData to the startTransition wrapper provided by React or simple async call if not using transition explicitly? 
-    // Actually, useActionState returns a wrapped action that handles transition.
-    startTransition(() => {
-        formAction(formData);
-    });
+
+    // Call Action using useFetcher
+    fetcher.submit(formData, { method: "post" });
   };
 
   const filteredCountries = countries.filter((c) =>
@@ -506,11 +496,11 @@ export default function Contact() {
                         <Button
                           type="submit"
                           data-testid="button-submit"
-                          disabled={isPending || optimisticSuccess}
+                          disabled={isPending}
                           size="lg"
                           className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
                         >
-                          {isPending || optimisticSuccess
+                          {isPending
                             ? "Sending..."
                             : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
                         </Button>

@@ -73,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   if (categoryId && categoryId !== "all") {
     // Check if categoryId is a number
     const catIdNum = parseInt(categoryId, 10);
-    if (!isNaN(catIdNum)) {
+    if (!Number.isNaN(catIdNum)) {
       productFilters.push(eq(products.categoryId, catIdNum));
     }
   }

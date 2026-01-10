@@ -7,7 +7,7 @@ import {
   batchGetContent,
   batchOperations,
   cancelUpload,
-  clearAssetCache,
+  clearMediaCache,
   deleteMediaAsset,
   finalizeUpload,
   getActiveUploads,
@@ -172,7 +172,7 @@ router.get("/batch/content", batchGetContent);
 router.get("/analytics", getAnalytics);
 
 // Cache management
-router.post("/clear-cache/:id", authService.requireAdmin, clearAssetCache);
+router.post("/clear-cache/:id", authService.requireAdmin, clearMediaCache);
 
 // Content delivery - CRITICAL: Specific routes BEFORE generic parametric routes
 // Proxy routes (most specific first)

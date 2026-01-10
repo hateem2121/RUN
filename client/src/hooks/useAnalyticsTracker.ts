@@ -1,5 +1,3 @@
-import { useCallback } from "react";
-
 interface TrackingEvent {
   category: string;
   action: string;
@@ -31,7 +29,7 @@ interface ConversionFunnelStage {
 
 export function useAnalyticsTracker() {
   // Track page view
-  const trackPageView = useCallback((page: string) => {
+  const trackPageView = (page: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     analytics.pageViews = (analytics.pageViews || 0) + 1;
     analytics.lastPageView = {
@@ -39,18 +37,18 @@ export function useAnalyticsTracker() {
       timestamp: Date.now(),
     };
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Track product view
-  const trackProductView = useCallback((productName: string) => {
+  const trackProductView = (productName: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     if (!analytics.productViews) analytics.productViews = {};
     analytics.productViews[productName] = (analytics.productViews[productName] || 0) + 1;
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Track search
-  const trackSearch = useCallback((searchTerm: string) => {
+  const trackSearch = (searchTerm: string) => {
     if (!searchTerm.trim()) return;
 
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
@@ -68,10 +66,10 @@ export function useAnalyticsTracker() {
     analytics.searchTerms = analytics.searchTerms.slice(0, 10);
 
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Track filter usage
-  const trackFilterUsage = useCallback((filterType: string) => {
+  const trackFilterUsage = (filterType: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     if (!analytics.filterUsage) analytics.filterUsage = [];
 
@@ -83,10 +81,10 @@ export function useAnalyticsTracker() {
     }
 
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Track view mode
-  const trackViewMode = useCallback((mode: string) => {
+  const trackViewMode = (mode: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     if (!analytics.viewModeUsage) analytics.viewModeUsage = [];
 
@@ -107,10 +105,10 @@ export function useAnalyticsTracker() {
     });
 
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Track conversion funnel stage
-  const trackFunnelStage = useCallback((stage: string) => {
+  const trackFunnelStage = (stage: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     if (!analytics.conversionFunnel) {
       analytics.conversionFunnel = [
@@ -135,12 +133,12 @@ export function useAnalyticsTracker() {
     }
 
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
-  }, []);
+  };
 
   // Generic event tracking
-  const trackEvent = useCallback((_event: TrackingEvent) => {
+  const trackEvent = (_event: TrackingEvent) => {
     // In production, this would send to analytics service
-  }, []);
+  };
 
   return {
     trackPageView,

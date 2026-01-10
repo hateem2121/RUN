@@ -57,7 +57,7 @@ export const validateParams =
 export const validateQuery =
   (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
     try {
-        // Use parseAsync to handle both sync and async schemas uniformly
+      // Use parseAsync to handle both sync and async schemas uniformly
       const parsed = await schema.parseAsync(req.query);
 
       // Fix: req.query might be a getter-only property in some environments

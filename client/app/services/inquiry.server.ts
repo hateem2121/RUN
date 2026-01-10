@@ -31,9 +31,9 @@ export async function submitInquiryAction(_prevState: any, formData: FormData) {
     const result = await submitInquiry(data);
     return { success: true, data: result };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Submission failed" 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Submission failed",
     };
   }
 }

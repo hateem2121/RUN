@@ -1,3 +1,5 @@
+import type { ProblemDetails } from "@run-remix/shared";
+
 export class ApiError extends Error {
   status: number;
   retryAfter?: number;
@@ -10,15 +12,10 @@ export class ApiError extends Error {
 
   constructor(
     status: number,
-    data: {
-      message?: string; // fallback
-      title?: string;
-      detail?: string;
-      type?: string;
-      instance?: string;
-      requestId?: string;
-      "invalid-params"?: Record<string, string[]>;
+    data: Partial<ProblemDetails> & {
+      message?: string;
       retryAfter?: number;
+      "invalid-params"?: Record<string, string[]>;
     },
   ) {
     // Prefer 'detail' for the main error message, fallback to 'title' or generic 'message'
@@ -28,11 +25,15 @@ export class ApiError extends Error {
     this.status = status;
     this.name = "ApiError";
     this.retryAfter = data.retryAfter || 1000;
+
+    // Explicit mappings for ProblemDetails
     if (data.title) this.title = data.title;
     if (data.detail) this.detail = data.detail;
     if (data.type) this.type = data.type;
     if (data.instance) this.instance = data.instance;
     if (data.requestId) this.requestId = data.requestId;
+
+    // Handle extensions
     if (data["invalid-params"]) this.invalidParams = data["invalid-params"];
   }
 }
@@ -93,7 +94,10 @@ export async function apiRequest(
       const text = await res.text();
       if (text) {
         try {
-          if (contentType?.includes("application/problem+json") || contentType?.includes("application/json")) {
+          if (
+            contentType?.includes("application/problem+json") ||
+            contentType?.includes("application/json")
+          ) {
             errorData = JSON.parse(text);
           } else {
             errorData = { message: text };
@@ -113,7 +117,7 @@ export async function apiRequest(
 
     // Fallback: if 'error' key exists (legacy), lift it up
     if (errorData.error && typeof errorData.error === "object") {
-       errorData = { ...errorData, ...errorData.error };
+      errorData = { ...errorData, ...errorData.error };
     }
 
     throw new ApiError(res.status, errorData);
@@ -125,7 +129,10 @@ export async function apiRequest(
   }
 
   const contentType = res.headers.get("content-type");
-  if (contentType?.includes("application/json") || contentType?.includes("application/problem+json")) {
+  if (
+    contentType?.includes("application/json") ||
+    contentType?.includes("application/problem+json")
+  ) {
     return res.json();
   }
 

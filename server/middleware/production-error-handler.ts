@@ -1,7 +1,9 @@
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
+
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
+import type { ProblemDetails } from "@run-remix/shared";
 import type { NextFunction, Request, Response } from "express";
 import { getConfig } from "../config/production.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
@@ -156,63 +158,70 @@ function logError(error: unknown, details: ErrorDetails) {
 }
 
 // Generate user-friendly error responses
-function generateErrorResponse(error: unknown, details: ErrorDetails): Record<string, unknown> {
+export function generateErrorResponse(error: unknown, details: ErrorDetails): ProblemDetails {
   // Get request ID from correlation context
   const requestId = correlationContext.getStore() || details.id;
+  const isProd = config.app.environment === "production";
 
-  const baseResponse = {
-    error: true,
-    id: details.id,
+  // Base Problem Details
+  // RFC 7807 Standard
+  const problemDetails: any = {
+    type: "about:blank",
+    title: "Internal Server Error",
+    status: 500,
+    detail: "An unexpected error occurred",
+    instance: details.path,
     requestId: requestId,
     timestamp: details.timestamp,
-    type: details.type,
   };
 
-  // Production responses (minimal information)
-  if (config.app.environment === "production") {
+  if (isProd) {
     switch (details.type) {
       case "validation":
-        return {
-          ...baseResponse,
-          message: "Invalid request data",
-          status: 400,
-          issues: "issues" in (error as any) ? (error as any).issues : undefined,
-        };
+        problemDetails.type = "urn:problem:validation-error";
+        problemDetails.title = "Validation Failed";
+        problemDetails.status = 400;
+        problemDetails.detail = "The request parameters failed validation";
+        if ("issues" in (error as any)) {
+          problemDetails["invalid-params"] = (error as any).issues;
+        }
+        break;
       case "authentication":
-        return {
-          ...baseResponse,
-          message: "Authentication required",
-          status: 401,
-        };
+        problemDetails.type = "urn:problem:authentication-required";
+        problemDetails.title = "Authentication Required";
+        problemDetails.status = 401;
+        problemDetails.detail = "You must be logged in to access this resource";
+        break;
       case "authorization":
-        return {
-          ...baseResponse,
-          message: "Access denied",
-          status: 403,
-        };
+        problemDetails.type = "urn:problem:access-denied";
+        problemDetails.title = "Access Denied";
+        problemDetails.status = 403;
+        problemDetails.detail = "You do not have permission to access this resource";
+        break;
       case "not_found":
-        return {
-          ...baseResponse,
-          message: "Resource not found",
-          status: 404,
-        };
+        problemDetails.type = "urn:problem:not-found";
+        problemDetails.title = "Resource Not Found";
+        problemDetails.status = 404;
+        problemDetails.detail = "The requested resource could not be found";
+        break;
       case "rate_limit":
-        return {
-          ...baseResponse,
-          message: "Too many requests",
-          status: 429,
-        };
+        problemDetails.type = "urn:problem:rate-limit-exceeded";
+        problemDetails.title = "Rate Limit Exceeded";
+        problemDetails.status = 429;
+        problemDetails.detail = "Too many requests, please try again later";
+        break;
       default:
-        return {
-          ...baseResponse,
-          message: "Internal server error",
-          status: 500,
-        };
+        problemDetails.type = "urn:problem:internal-server-error";
+        problemDetails.title = "Internal Server Error";
+        problemDetails.status = 500;
+        problemDetails.detail = "An unexpected server error occurred";
     }
-  }
+  } else {
+    // Development/Staging - Detailed
+    problemDetails.type = `urn:problem:${details.type}`;
+    problemDetails.title = error instanceof Error ? error.name : "Error";
 
-  // Development/staging responses (more detailed)
-  else {
+    // Determine status from error object if possible
     const status =
       error && typeof error === "object" && ("status" in error || "statusCode" in error)
         ? (("status" in error
@@ -221,17 +230,17 @@ function generateErrorResponse(error: unknown, details: ErrorDetails): Record<st
               ? error.statusCode
               : 500) as number)
         : 500;
-    return {
-      ...baseResponse,
-      message: error instanceof Error ? error.message : "An error occurred",
-      status,
-      ...(config.app.enableDebugMode &&
-        error instanceof Error && {
-          stack: error.stack,
-          details: error,
-        }),
-    };
+
+    problemDetails.status = status;
+    problemDetails.detail = error instanceof Error ? error.message : String(error);
+
+    if (config.app.enableDebugMode && error instanceof Error) {
+      problemDetails.stack = error.stack;
+      problemDetails.details = error;
+    }
   }
+
+  return problemDetails;
 }
 
 // Main error handling middleware
@@ -294,11 +303,13 @@ export function notFoundHandler(req: Request, res: Response) {
   }
 
   res.status(404).json({
-    error: true,
-    id: errorDetails.id,
-    type: "not_found",
-    message:
+    type: "urn:problem:not-found",
+    title: "Resource Not Found",
+    status: 404,
+    detail:
       config.app.environment === "production" ? "Resource not found" : `Path ${req.path} not found`,
+    instance: req.path,
+    requestId: errorDetails.id,
     timestamp: errorDetails.timestamp,
   });
 }

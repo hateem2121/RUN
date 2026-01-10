@@ -63,130 +63,120 @@ import type { IStorage } from "../../storage.js";
 export function setupResourceRoutes(app: Application, storage: IStorage) {
   // Batch endpoint to fetch multiple resource types in one request
   app.get("/api/resources/batch", async (req: Request, res: Response) => {
-    try {
-      const types = req.query.types ? (req.query.types as string).split(",") : ["all"];
-      const activeOnly = req.query.active === "true";
+    const types = req.query.types ? (req.query.types as string).split(",") : ["all"];
+    const activeOnly = req.query.active === "true";
 
-      const result: Record<string, unknown[]> = {};
-      const promises: Promise<any>[] = [];
-      const typeMap: string[] = [];
+    const result: Record<string, unknown[]> = {};
+    const promises: Promise<any>[] = [];
+    const typeMap: string[] = [];
 
-      if (types.includes("all") || types.includes("certificate")) {
-        promises.push(storage.getCertificates());
-        typeMap.push("certificates");
-      }
-      if (types.includes("all") || types.includes("accessory")) {
-        promises.push(storage.getAccessories());
-        typeMap.push("accessories");
-      }
-      if (types.includes("all") || types.includes("sizechart")) {
-        promises.push(storage.getSizeCharts());
-        typeMap.push("sizeCharts");
-      }
-      if (types.includes("all") || types.includes("fabric")) {
-        promises.push(storage.getFabrics());
-        typeMap.push("fabrics");
-      }
-      if (types.includes("all") || types.includes("fiber")) {
-        promises.push(storage.getFibers());
-        typeMap.push("fibers");
-      }
-
-      const data = await Promise.all(promises);
-
-      typeMap.forEach((type, index) => {
-        let items = data[index] || [];
-        if (activeOnly) {
-          items = items.filter((item: { active?: boolean }) => item.active !== false);
-        }
-        result[type] = items;
-      });
-
-      return res.json(result);
-    } catch (error) {
-      logger.error("Batch fetch error:", error);
-      return res.status(500).json({ error: "Failed to fetch resources" });
+    if (types.includes("all") || types.includes("certificate")) {
+      promises.push(storage.getCertificates());
+      typeMap.push("certificates");
     }
+    if (types.includes("all") || types.includes("accessory")) {
+      promises.push(storage.getAccessories());
+      typeMap.push("accessories");
+    }
+    if (types.includes("all") || types.includes("sizechart")) {
+      promises.push(storage.getSizeCharts());
+      typeMap.push("sizeCharts");
+    }
+    if (types.includes("all") || types.includes("fabric")) {
+      promises.push(storage.getFabrics());
+      typeMap.push("fabrics");
+    }
+    if (types.includes("all") || types.includes("fiber")) {
+      promises.push(storage.getFibers());
+      typeMap.push("fibers");
+    }
+
+    const data = await Promise.all(promises);
+
+    typeMap.forEach((type, index) => {
+      let items = data[index] || [];
+      if (activeOnly) {
+        items = items.filter((item: { active?: boolean }) => item.active !== false);
+      }
+      result[type] = items;
+    });
+
+    return res.json(result);
   });
 
   // UNIFIED PAGINATION: Standardized search endpoint with consistent pagination
   app.get("/api/resources/search", async (req: Request, res: Response) => {
-    try {
-      const startTime = Date.now();
-      const params = searchSchema.parse(req.query);
-      const { q: search, type, active } = params;
+    const startTime = Date.now();
+    const params = searchSchema.parse(req.query);
+    const { q: search, type, active } = params;
 
-      if (!search || search.length < 2) {
-        return res.json({ success: true, data: [], total: 0 });
-      }
-
-      const searchTerm = search.toLowerCase();
-      const searchWords = searchTerm.split(/\s+/).filter((w) => w.length > 1);
-
-      // Fetch only required data based on type
-      const fetchPromises: Promise<any>[] = [];
-      const fetchTypes: string[] = [];
-
-      if (type === "all" || type === "certificate") {
-        fetchPromises.push(storage.getCertificates());
-        fetchTypes.push("certificates");
-      }
-      if (type === "all" || type === "accessory") {
-        fetchPromises.push(storage.getAccessories());
-        fetchTypes.push("accessories");
-      }
-      if (type === "all" || type === "sizechart") {
-        fetchPromises.push(storage.getSizeCharts());
-        fetchTypes.push("sizeCharts");
-      }
-      if (type === "all" || type === "fabric") {
-        fetchPromises.push(storage.getFabrics());
-        fetchTypes.push("fabrics");
-      }
-      if (type === "all" || type === "fiber") {
-        fetchPromises.push(storage.getFibers());
-        fetchTypes.push("fibers");
-      }
-
-      const fetchedData = await Promise.all(fetchPromises);
-      const results: Array<Record<string, unknown>> = [];
-
-      // Process each resource type
-      fetchTypes.forEach((dataType, index) => {
-        const items = fetchedData[index] || [];
-
-        items.forEach((item: Record<string, unknown>) => {
-          // Skip inactive items if active filter is set
-          if (active === true && item.active === false) return;
-          if (active === false && item.active !== false) return;
-
-          // Create searchable text
-          const searchableText = createSearchableText(item, dataType);
-
-          // Check if all search words are found
-          const matches = searchWords.every((word) => searchableText.includes(word));
-
-          if (matches) {
-            results.push({
-              ...item,
-              _type: dataType.slice(0, -1), // Remove 's' from plural
-              _score: calculateRelevanceScore(item, searchWords, dataType),
-            });
-          }
-        });
-      });
-
-      // Sort by relevance score
-      results.sort((a, b) => (b._score as number) - (a._score as number));
-
-      // PHASE 2B: Simplified response without pagination
-      const responseTime = Date.now() - startTime;
-      logger.debug(`[Resource Search] Found ${results.length} results in ${responseTime}ms`);
-      return res.json({ success: true, data: results, total: results.length });
-    } catch (error) {
-      logger.error("Search error:", error);
-      return res.status(500).json({ error: "Failed to search resources" });
+    if (!search || search.length < 2) {
+      return res.json({ success: true, data: [], total: 0 });
     }
+
+    const searchTerm = search.toLowerCase();
+    const searchWords = searchTerm.split(/\s+/).filter((w) => w.length > 1);
+
+    // Fetch only required data based on type
+    const fetchPromises: Promise<any>[] = [];
+    const fetchTypes: string[] = [];
+
+    if (type === "all" || type === "certificate") {
+      fetchPromises.push(storage.getCertificates());
+      fetchTypes.push("certificates");
+    }
+    if (type === "all" || type === "accessory") {
+      fetchPromises.push(storage.getAccessories());
+      fetchTypes.push("accessories");
+    }
+    if (type === "all" || type === "sizechart") {
+      fetchPromises.push(storage.getSizeCharts());
+      fetchTypes.push("sizeCharts");
+    }
+    if (type === "all" || type === "fabric") {
+      fetchPromises.push(storage.getFabrics());
+      fetchTypes.push("fabrics");
+    }
+    if (type === "all" || type === "fiber") {
+      fetchPromises.push(storage.getFibers());
+      fetchTypes.push("fibers");
+    }
+
+    const fetchedData = await Promise.all(fetchPromises);
+    const results: Array<Record<string, unknown>> = [];
+
+    // Process each resource type
+    fetchTypes.forEach((dataType, index) => {
+      const items = fetchedData[index] || [];
+
+      items.forEach((item: Record<string, unknown>) => {
+        // Skip inactive items if active filter is set
+        if (active === true && item.active === false) return;
+        if (active === false && item.active !== false) return;
+
+        // Create searchable text
+        const searchableText = createSearchableText(item, dataType);
+
+        // Check if all search words are found
+        const matches = searchWords.every((word) => searchableText.includes(word));
+
+        if (matches) {
+          results.push({
+            ...item,
+            _type: dataType.slice(0, -1), // Remove 's' from plural
+            _score: calculateRelevanceScore(item, searchWords, dataType),
+          });
+        }
+      });
+    });
+
+    // Sort by relevance score
+    results.sort((a, b) => (b._score as number) - (a._score as number));
+
+    // PHASE 2B: Simplified response without pagination
+    const responseTime = Date.now() - startTime;
+    logger.debug(`[Resource Search] Found ${results.length} results in ${responseTime}ms`);
+    return res.json({ success: true, data: results, total: results.length });
   });
 
   /**
@@ -196,26 +186,19 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
 
   // Get all current feature flags
   app.get("/api/feature-flags", (req: Request, res: Response) => {
-    try {
-      // Parse and validate pagination params (prevent negative values)
-      const parsedLimit = parseInt(req.query.limit as string, 10) || 20;
-      const parsedOffset = parseInt(req.query.offset as string, 10) || 0;
-      const limit = Math.min(Math.max(0, parsedLimit), 100);
-      const offset = Math.max(0, parsedOffset);
+    // Parse and validate pagination params (prevent negative values)
+    const parsedLimit = parseInt(req.query.limit as string, 10) || 20;
+    const parsedOffset = parseInt(req.query.offset as string, 10) || 0;
+    const limit = Math.min(Math.max(0, parsedLimit), 100);
+    const offset = Math.max(0, parsedOffset);
 
-      const result = featureFlags.getAllFlags({ limit, offset });
-      res.json({
-        success: true,
-        data: result.flags,
-        ...result.metadata,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (_error) {
-      res.status(500).json({
-        success: false,
-        error: "Failed to retrieve feature flags",
-      });
-    }
+    const result = featureFlags.getAllFlags({ limit, offset });
+    res.json({
+      success: true,
+      data: result.flags,
+      ...result.metadata,
+      timestamp: new Date().toISOString(),
+    });
   });
 
   // Emergency rollback endpoint
@@ -225,56 +208,42 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
     authService.requireAdmin,
     (_req: Request, res: Response) => {
       // security
-      try {
-        featureFlags.emergencyRollback();
+      featureFlags.emergencyRollback();
 
-        const result = featureFlags.getAllFlags();
-        res.json({
-          success: true,
-          message: "Emergency rollback activated - all experimental features disabled",
-          flags: result.flags,
-          timestamp: new Date().toISOString(),
-        });
+      const result = featureFlags.getAllFlags();
+      res.json({
+        success: true,
+        message: "Emergency rollback activated - all experimental features disabled",
+        flags: result.flags,
+        timestamp: new Date().toISOString(),
+      });
 
-        logger.error("[API] Emergency rollback activated via API endpoint");
-      } catch (_error) {
-        res.status(500).json({
-          success: false,
-          error: "Failed to execute emergency rollback",
-        });
-      }
+      logger.error("[API] Emergency rollback activated via API endpoint");
     },
   );
 
   // Runtime flag override (for testing)
   // prettier-ignore
   app.post("/api/feature-flags/:flag", authService.requireAdmin, (req: Request, res: Response) => {
-    try {
-      const { flag } = req.params as any;
-      const { enabled } = req.body;
+    const { flag } = req.params as any;
+    const { enabled } = req.body;
 
-      if (typeof enabled !== "boolean") {
-        return res.status(400).json({
-          success: false,
-          error: "enabled field must be a boolean",
-        });
-      }
-
-      featureFlags.setRuntimeOverride(flag!, enabled);
-
-      const result = featureFlags.getAllFlags();
-      return res.json({
-        success: true,
-        message: `Feature flag ${flag} set to ${enabled}`,
-        flags: result.flags,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (_error) {
-      return res.status(500).json({
+    if (typeof enabled !== "boolean") {
+      return res.status(400).json({
         success: false,
-        error: "Failed to update feature flag",
+        error: "enabled field must be a boolean",
       });
     }
+
+    featureFlags.setRuntimeOverride(flag!, enabled);
+
+    const result = featureFlags.getAllFlags();
+    return res.json({
+      success: true,
+      message: `Feature flag ${flag} set to ${enabled}`,
+      flags: result.flags,
+      timestamp: new Date().toISOString(),
+    });
   });
 }
 

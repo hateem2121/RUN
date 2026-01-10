@@ -9,7 +9,6 @@ import { z } from "zod";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { asyncHandler } from "../../middleware/async-handler.js";
 
 const router = express.Router();
 
@@ -20,164 +19,145 @@ const updateStatusSchema = z.object({
   adminNotes: z.string().max(1000).optional(),
 });
 
-router.get(
-  "/admin/inquiries",
-  asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page as string, 10) || 1;
-    const limit = parseInt(req.query.limit as string, 10) || 20;
-    const status = req.query.status as string | undefined;
-    const source = req.query.source as string | undefined;
-    const search = req.query.search as string | undefined;
+router.get("/admin/inquiries", async (req, res) => {
+  const page = parseInt(req.query.page as string, 10) || 1;
+  const limit = parseInt(req.query.limit as string, 10) || 20;
+  const status = req.query.status as string | undefined;
+  const source = req.query.source as string | undefined;
+  const search = req.query.search as string | undefined;
 
-    const storage = getStorage();
-    const result = await storage.listInquiries({
-      page,
-      limit,
-      status,
-      source,
-      search,
-    });
+  const storage = getStorage();
+  const result = await storage.listInquiries({
+    page,
+    limit,
+    status,
+    source,
+    search,
+  });
 
-    const response = {
-      inquiries: result.inquiries,
-      total: result.total,
-      page,
-      limit,
-      totalPages: Math.ceil(result.total / limit),
-    };
+  const response = {
+    inquiries: result.inquiries,
+    total: result.total,
+    page,
+    limit,
+    totalPages: Math.ceil(result.total / limit),
+  };
+  return res.json(response);
+});
 
-    return res.json(response);
-  }),
-);
+router.get("/admin/inquiries/stats", async (_req, res) => {
+  const cacheKey = "inquiries:stats";
 
-router.get(
-  "/admin/inquiries/stats",
-  asyncHandler(async (_req, res) => {
-    const cacheKey = "inquiries:stats";
+  const cached = await unifiedCache.get<{
+    byStatus: Record<string, number>;
+    bySource: Record<string, number>;
+    recentCount: number;
+  }>(cacheKey);
 
-    const cached = await unifiedCache.get<{
-      byStatus: Record<string, number>;
-      bySource: Record<string, number>;
-      recentCount: number;
-    }>(cacheKey);
+  if (cached) {
+    logger.debug("[Inquiries] Returning cached inquiry stats");
+    res.setHeader("X-Cache-Hit", "true");
+    return res.json(cached);
+  }
 
-    if (cached) {
-      logger.debug("[Inquiries] Returning cached inquiry stats");
-      res.setHeader("X-Cache-Hit", "true");
-      return res.json(cached);
-    }
+  const storage = getStorage();
+  const stats = await storage.getInquiryStats();
 
-    const storage = getStorage();
-    const stats = await storage.getInquiryStats();
+  await unifiedCache.set(cacheKey, stats, CACHE_TTL_INQUIRIES * 1000);
+  logger.debug(`[Inquiries] Inquiry stats cached for ${CACHE_TTL_INQUIRIES}s`);
+  return res.json(stats);
+});
 
-    await unifiedCache.set(cacheKey, stats, CACHE_TTL_INQUIRIES * 1000);
-    logger.debug(`[Inquiries] Inquiry stats cached for ${CACHE_TTL_INQUIRIES}s`);
+router.get("/admin/inquiries/:id", async (req, res) => {
+  const id = parseInt(req.params.id!, 10);
 
-    return res.json(stats);
-  }),
-);
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid inquiry ID" });
+  }
 
-router.get(
-  "/admin/inquiries/:id",
-  asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+  const cacheKey = `inquiries:detail:${id}`;
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: "Invalid inquiry ID" });
-    }
+  const cached = await unifiedCache.get<any>(cacheKey);
+  if (cached) {
+    logger.debug("[Inquiries] Returning cached inquiry detail");
+    res.setHeader("X-Cache-Hit", "true");
+    return res.json(cached);
+  }
 
-    const cacheKey = `inquiries:detail:${id}`;
+  const storage = getStorage();
+  const inquiry = await storage.getInquiryById(id);
 
-    const cached = await unifiedCache.get<any>(cacheKey);
-    if (cached) {
-      logger.debug("[Inquiries] Returning cached inquiry detail");
-      res.setHeader("X-Cache-Hit", "true");
-      return res.json(cached);
-    }
+  if (!inquiry) {
+    return res.status(404).json({ error: "Inquiry not found" });
+  }
 
-    const storage = getStorage();
-    const inquiry = await storage.getInquiryById(id);
-
-    if (!inquiry) {
-      return res.status(404).json({ error: "Inquiry not found" });
-    }
-
-    const cacheValue = inquiry as any;
-    await unifiedCache.set(cacheKey, cacheValue, CACHE_TTL_INQUIRIES * 1000);
-    logger.debug(`[Inquiries] Inquiry detail cached for ${CACHE_TTL_INQUIRIES}s`);
-
-    return res.json(inquiry);
-  }),
-);
+  const cacheValue = inquiry as any;
+  await unifiedCache.set(cacheKey, cacheValue, CACHE_TTL_INQUIRIES * 1000);
+  logger.debug(`[Inquiries] Inquiry detail cached for ${CACHE_TTL_INQUIRIES}s`);
+  return res.json(inquiry);
+});
 
 // prettier-ignore
-router.patch(
-  "/admin/inquiries/:id/status",
-  asyncHandler(async (req, res) => {
-    // security
-    const id = parseInt(req.params.id!, 10);
+router.patch("/admin/inquiries/:id/status", async (req, res) => {
+  // security
+  const id = parseInt(req.params.id!, 10);
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: "Invalid inquiry ID" });
-    }
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid inquiry ID" });
+  }
 
-    const validatedData = updateStatusSchema.parse(req.body);
+  const validatedData = updateStatusSchema.parse(req.body);
 
-    const storage = getStorage();
-    const updated = await storage.updateInquiryStatus(
-      id,
-      validatedData.status,
-      validatedData.adminNotes ?? undefined,
-    );
+  const storage = getStorage();
+  const updated = await storage.updateInquiryStatus(
+    id,
+    validatedData.status,
+    validatedData.adminNotes ?? undefined,
+  );
 
-    if (!updated) {
-      return res.status(404).json({ error: "Inquiry not found" });
-    }
+  if (!updated) {
+    return res.status(404).json({ error: "Inquiry not found" });
+  }
 
-    try {
-      await unifiedCache.delete("inquiries:stats");
-      await unifiedCache.delete(`inquiries:detail:${id}`);
-    } catch (error) {
-      logger.debug("[Inquiries] Failed to invalidate inquiry cache:", error);
-    }
+  try {
+    await unifiedCache.delete("inquiries:stats");
+    await unifiedCache.delete(`inquiries:detail:${id}`);
+  } catch (error) {
+    logger.debug("[Inquiries] Failed to invalidate inquiry cache:", error);
+  }
 
-    logger.info(`[Inquiries] Inquiry #${id} status updated to ${validatedData.status}`);
+  logger.info(`[Inquiries] Inquiry #${id} status updated to ${validatedData.status}`);
 
-    const result = updated as any;
-    return res.json(result);
-  }),
-);
+  const result = updated as any;
+  return res.json(result);
+});
 
 // prettier-ignore
-router.delete(
-  "/admin/inquiries/:id",
-  asyncHandler(async (req, res) => {
-    // security
-    const id = parseInt(req.params.id!, 10);
+router.delete("/admin/inquiries/:id", async (req, res) => {
+  // security
+  const id = parseInt(req.params.id!, 10);
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: "Invalid inquiry ID" });
-    }
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid inquiry ID" });
+  }
 
-    const storage = getStorage();
-    const deleted = await storage.deleteInquiry(id);
+  const storage = getStorage();
+  const deleted = await storage.deleteInquiry(id);
 
-    if (!deleted) {
-      return res.status(404).json({ error: "Inquiry not found" });
-    }
+  if (!deleted) {
+    return res.status(404).json({ error: "Inquiry not found" });
+  }
 
-    try {
-      await unifiedCache.delete("inquiries:stats");
-      await unifiedCache.delete(`inquiries:detail:${id}`);
-    } catch (error) {
-      logger.debug("[Inquiries] Failed to invalidate inquiry cache:", error);
-    }
+  try {
+    await unifiedCache.delete("inquiries:stats");
+    await unifiedCache.delete(`inquiries:detail:${id}`);
+  } catch (error) {
+    logger.debug("[Inquiries] Failed to invalidate inquiry cache:", error);
+  }
 
-    logger.info(`[Inquiries] Inquiry #${id} deleted`);
-
-    return res.json({ success: true, message: "Inquiry deleted successfully" });
-  }),
-);
+  logger.info(`[Inquiries] Inquiry #${id} deleted`);
+  return res.json({ success: true, message: "Inquiry deleted successfully" });
+});
 
 logger.debug("[Inquiry Admin Routes] ✅ Inquiry admin routes loaded (utilities/)");
 

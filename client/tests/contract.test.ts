@@ -1,6 +1,5 @@
 import * as schema from "@run-remix/shared";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
 
 describe("Shared Schema Contract", () => {
   it("exports user schema with required fields", () => {

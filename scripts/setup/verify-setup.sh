@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # VS Code Extensions Setup Verification Script
 # Run this after installing the recommended extensions
@@ -17,13 +18,28 @@ if ! command -v code &> /dev/null; then
     echo -e "${YELLOW}⚠️  VS Code 'code' command not found in PATH${NC}"
     echo "   To fix: Open VS Code -> Cmd+Shift+P -> 'Shell Command: Install code command in PATH'"
     echo ""
-    SKIP_EXTENSION_CHECK=true
+    # We continue but warn
+else
+    echo -e "${GREEN}✅ VS Code CLI found${NC}"
 fi
 
 # Check for extensions.json
 if [ -f ".vscode/extensions.json" ]; then
     echo -e "${GREEN}✅ .vscode/extensions.json found${NC}"
-    EXTENSION_COUNT=$(grep -c "\"" .vscode/extensions.json | head -1)
+    
+    # Use Node to count recommmended extensions reliably
+    EXTENSION_COUNT=$(node -e '
+      const fs = require("fs");
+      const content = fs.readFileSync(".vscode/extensions.json", "utf8");
+      const jsonContent = content.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+      try {
+        const json = JSON.parse(jsonContent);
+        console.log(json.recommendations ? json.recommendations.length : 0);
+      } catch (e) {
+        console.log("0");
+      }
+    ')
+    
     echo "   📦 $EXTENSION_COUNT extension recommendations configured"
 else
     echo -e "${RED}❌ .vscode/extensions.json not found${NC}"
@@ -34,6 +50,7 @@ if [ -f ".vscode/settings.json" ]; then
     echo -e "${GREEN}✅ .vscode/settings.json found${NC}"
     
     # Check for specific settings
+    # We use if/grep -q which is safe with set -e
     if grep -q "editor.formatOnSave" .vscode/settings.json; then
         echo "   ✓ Auto-format on save enabled"
     fi
@@ -56,9 +73,22 @@ echo ""
 echo "📋 Recommended Extensions List:"
 echo "─────────────────────────────────────"
 
-# Parse and display extensions
+# Parse and display extensions nicely
 if [ -f ".vscode/extensions.json" ]; then
-    grep '".*\\..*"' .vscode/extensions.json | grep -v '//' | sed 's/.*"\(.*\)".*/  • \1/' | head -20
+     node -e '
+      const fs = require("fs");
+      const content = fs.readFileSync(".vscode/extensions.json", "utf8");
+      const jsonContent = content.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+      try {
+        const json = JSON.parse(jsonContent);
+        if (json.recommendations) {
+          json.recommendations.slice(0, 20).forEach(ext => console.log(`  • ${ext}`));
+          if (json.recommendations.length > 20) console.log(`  ... and ${json.recommendations.length - 20} more`);
+        }
+      } catch (e) {
+        console.error("  Error parsing extensions list");
+      }
+    '
 fi
 
 echo ""
@@ -76,7 +106,7 @@ echo "  • Click cloud icon to install all"
 echo ""
 
 # Check if running in VS Code integrated terminal
-if [ -n "$TERM_PROGRAM" ] && [ "$TERM_PROGRAM" = "vscode" ]; then
+if [ -n "${TERM_PROGRAM:-}" ] && [ "$TERM_PROGRAM" = "vscode" ]; then
     echo -e "${GREEN}✅ Running in VS Code integrated terminal${NC}"
     echo "   Extensions notification should appear automatically"
 else

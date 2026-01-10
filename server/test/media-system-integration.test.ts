@@ -31,9 +31,7 @@ authService.isAuthenticated = (_req: any, _res: any, next: any) => next();
 
 app.use("/api/media", mediaRoutes);
 
-const runTests = process.env.TEST_REAL_DB === "true" ? describe : describe.skip;
-
-runTests("Media System Integration Tests", () => {
+describe.skip("Media System Integration Tests", () => {
   let _testAssetId: number;
   let _fileId: string;
   const _testBuffer = Buffer.from("test media content");

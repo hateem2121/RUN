@@ -7,7 +7,7 @@ import type {
   SizeChart,
 } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   type TransformContext,
   type TransformedProduct,
@@ -128,7 +128,7 @@ export function useProductsPageData({
   // Product Transformation
   // ─────────────────────────────────────────────────────────────────────────
 
-  const transformedProducts = useMemo(() => {
+  const transformedProducts = (() => {
     if (!products.length || !categories.length) return [];
 
     const context: TransformContext = {
@@ -140,13 +140,13 @@ export function useProductsPageData({
     };
 
     return transformProducts(products, context);
-  }, [products, categories, fabrics, certificates, mediaContentMap]);
+  })();
 
   // ─────────────────────────────────────────────────────────────────────────
   // Category Tabs & Tags
   // ─────────────────────────────────────────────────────────────────────────
 
-  const categoryTabs = useMemo(() => {
+  const categoryTabs = (() => {
     const tabs = [{ name: "ALL", label: "All Products" }];
     const activeCategories = categories.filter((c) => c.isActive);
     activeCategories.forEach((cat) => {
@@ -156,9 +156,9 @@ export function useProductsPageData({
       });
     });
     return tabs;
-  }, [categories]);
+  })();
 
-  const availableTags = useMemo(() => {
+  const availableTags = (() => {
     const tags = new Set<string>();
     products.forEach((product) => {
       if (Array.isArray(product.tags)) {
@@ -168,13 +168,13 @@ export function useProductsPageData({
       }
     });
     return Array.from(tags);
-  }, [products]);
+  })();
 
   // ─────────────────────────────────────────────────────────────────────────
   // Filtering & Search Logic
   // ─────────────────────────────────────────────────────────────────────────
 
-  const displayedProducts = useMemo(() => {
+  const displayedProducts = (() => {
     let filteredProducts = products;
 
     // Apply search filter
@@ -238,30 +238,16 @@ export function useProductsPageData({
     }
 
     return transformed;
-  }, [
-    activeTab,
-    products,
-    categories,
-    fabrics,
-    certificates,
-    mediaContentMap,
-    categoryTabs,
-    selectedFilters,
-    searchQuery,
-  ]);
+  })();
 
   // ─────────────────────────────────────────────────────────────────────────
   // Derived Product Lists
   // ─────────────────────────────────────────────────────────────────────────
 
-  const featuredProducts = useMemo(
-    () => transformedProducts.filter((p) => p.isFeatured).slice(0, 4),
-    [transformedProducts],
-  );
+  const featuredProducts = transformedProducts.filter((p) => p.isFeatured).slice(0, 4);
 
-  const gearProducts = useMemo(
-    () => transformedProducts.filter((p) => p.category?.toLowerCase().includes("gear")),
-    [transformedProducts],
+  const gearProducts = transformedProducts.filter((p) =>
+    p.category?.toLowerCase().includes("gear"),
   );
 
   const isLoading = productsLoading || categoriesLoading || isLoadingMedia;
