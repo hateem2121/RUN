@@ -47,3 +47,32 @@ export const cacheMissesTotal = new client.Counter({
   labelNames: ["cache_type"],
   registers: [register],
 });
+
+// Circuit Breaker Metrics
+export const circuitBreakerState = new client.Gauge({
+  name: "circuit_breaker_state",
+  help: "Circuit breaker state (0=closed, 1=half_open, 2=open)",
+  labelNames: ["service"],
+  registers: [register],
+});
+
+export const circuitBreakerFailures = new client.Gauge({
+  name: "circuit_breaker_failures",
+  help: "Number of failures tracked by the circuit breaker",
+  labelNames: ["service"],
+  registers: [register],
+});
+
+/**
+ * Update circuit breaker metrics
+ * Call this periodically or when circuit state changes
+ */
+export function updateCircuitBreakerMetrics(
+  service: string,
+  state: "CLOSED" | "HALF_OPEN" | "OPEN",
+  failures: number
+): void {
+  const stateValue = { CLOSED: 0, HALF_OPEN: 1, OPEN: 2 }[state] ?? -1;
+  circuitBreakerState.labels(service).set(stateValue);
+  circuitBreakerFailures.labels(service).set(failures);
+}

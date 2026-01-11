@@ -53,8 +53,8 @@ export class ConflictError extends AppError {
 }
 
 export class RateLimitError extends AppError {
-  constructor(message: string = "Too many requests", details?: Record<string, unknown>) {
-    super(message, 429, "RATE_LIMIT_EXCEEDED", true, details);
+  constructor(message: string = "Too many requests", retryAfterSecs: number = 60) {
+    super(message, 429, "RATE_LIMIT_EXCEEDED", true, { retryAfter: retryAfterSecs });
   }
 }
 

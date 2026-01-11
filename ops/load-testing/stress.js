@@ -1,69 +1,169 @@
 /**
- * k6 Stress Test Script
- * Phase 4: Multi-Region & Performance
- *
- * Tests system behavior under 2x expected load
- * Run with: k6 run ops/load-testing/stress.js
+ * Stress Test Configuration
+ * 
+ * Tests system behavior under heavy load
+ * Peak: 500 concurrent users
+ * Duration: 30 minutes total
  */
 
-import http from "k6/http";
-import { check, sleep } from "k6";
-import { Rate } from "k6/metrics";
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
 
-const errorRate = new Rate("errors");
+// Custom metrics
+const errorRate = new Rate('errors');
+const productLatency = new Trend('product_api_latency');
 
+// Configuration
 export const options = {
   stages: [
-    // Aggressive ramp-up to stress the system
-    { duration: "2m", target: 100 },   // Ramp to normal load
-    { duration: "3m", target: 100 },   // Hold normal load
-    { duration: "2m", target: 200 },   // Ramp to 2x load (STRESS)
-    { duration: "5m", target: 200 },   // Hold stress load
-    { duration: "2m", target: 300 },   // Push to 3x (BREAKING POINT)
-    { duration: "3m", target: 300 },   // Hold and observe
-    { duration: "3m", target: 0 },     // Recovery
+    // Ramp up to 100 users over 2 minutes
+    { duration: '2m', target: 100 },
+    // Ramp up to peak 500 users over 5 minutes
+    { duration: '5m', target: 500 },
+    // Hold at 500 users for 15 minutes
+    { duration: '15m', target: 500 },
+    // Ramp down to 100 users over 3 minutes
+    { duration: '3m', target: 100 },
+    // Ramp down to 0 over 5 minutes
+    { duration: '5m', target: 0 },
   ],
+  
   thresholds: {
-    // Relaxed thresholds for stress test (expect some degradation)
-    http_req_duration: ["p(95)<500", "p(99)<1000"],  // Allow higher latency
-    http_req_failed: ["rate<0.05"],                   // Allow up to 5% errors
-    errors: ["rate<0.05"],
+    // P95 latency should be under 500ms under stress
+    http_req_duration: ['p(95)<500', 'p(99)<1000'],
+    // Error rate should be under 2% under stress
+    http_req_failed: ['rate<0.02'],
+    // Custom product API latency
+    product_api_latency: ['p(95)<300'],
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "https://staging.runapparel.com";
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:5001';
+
+// Mix of realistic user scenarios
+const scenarios = [
+  { weight: 40, fn: browseProducts },
+  { weight: 25, fn: viewProduct },
+  { weight: 20, fn: browseCategories },
+  { weight: 10, fn: healthCheck },
+  { weight: 5, fn: searchProducts },
+];
 
 export default function () {
-  // Mixed workload simulating real traffic patterns
-  const scenario = Math.random();
+  // Select scenario based on weight
+  const rand = Math.random() * 100;
+  let cumulative = 0;
   
-  if (scenario < 0.4) {
-    // 40% - Homepage views
-    const res = http.get(`${BASE_URL}/`);
-    check(res, { "homepage OK": (r) => r.status === 200 });
-    errorRate.add(res.status !== 200);
-  } else if (scenario < 0.7) {
-    // 30% - Product browsing
-    const res = http.get(`${BASE_URL}/api/products`);
-    check(res, { "products OK": (r) => r.status === 200 });
-    errorRate.add(res.status !== 200);
-  } else if (scenario < 0.9) {
-    // 20% - Category browsing
-    const res = http.get(`${BASE_URL}/api/categories`);
-    check(res, { "categories OK": (r) => r.status === 200 });
-    errorRate.add(res.status !== 200);
-  } else {
-    // 10% - Health checks (simulating monitoring)
-    const res = http.get(`${BASE_URL}/api/health`);
-    check(res, { "health OK": (r) => r.status === 200 });
-    errorRate.add(res.status !== 200);
+  for (const scenario of scenarios) {
+    cumulative += scenario.weight;
+    if (rand <= cumulative) {
+      scenario.fn();
+      return;
+    }
   }
   
-  sleep(Math.random() * 0.5);  // Minimal sleep for high throughput
+  // Default fallback
+  browseProducts();
 }
 
+function browseProducts() {
+  const response = http.get(`${BASE_URL}/api/products`, {
+    tags: { name: 'GET /api/products' },
+  });
+  
+  const success = check(response, {
+    'products: status 200': (r) => r.status === 200,
+    'products: has data': (r) => {
+      try {
+        const body = JSON.parse(r.body);
+        return body.data && Array.isArray(body.data);
+      } catch {
+        return false;
+      }
+    },
+  });
+  
+  errorRate.add(!success);
+  productLatency.add(response.timings.duration);
+  
+  sleep(1 + Math.random() * 2);
+}
+
+function viewProduct() {
+  // First get product list
+  const listResponse = http.get(`${BASE_URL}/api/products?limit=10`, {
+    tags: { name: 'GET /api/products' },
+  });
+  
+  if (listResponse.status === 200) {
+    try {
+      const products = JSON.parse(listResponse.body).data;
+      if (products && products.length > 0) {
+        const productId = products[Math.floor(Math.random() * products.length)].id;
+        
+        const response = http.get(`${BASE_URL}/api/products/${productId}`, {
+          tags: { name: 'GET /api/products/:id' },
+        });
+        
+        const success = check(response, {
+          'product detail: status 200': (r) => r.status === 200,
+        });
+        
+        errorRate.add(!success);
+      }
+    } catch (e) {
+      errorRate.add(true);
+    }
+  }
+  
+  sleep(2 + Math.random() * 3);
+}
+
+function browseCategories() {
+  const response = http.get(`${BASE_URL}/api/categories`, {
+    tags: { name: 'GET /api/categories' },
+  });
+  
+  const success = check(response, {
+    'categories: status 200': (r) => r.status === 200,
+  });
+  
+  errorRate.add(!success);
+  sleep(1 + Math.random() * 2);
+}
+
+function healthCheck() {
+  const response = http.get(`${BASE_URL}/api/health`, {
+    tags: { name: 'GET /api/health' },
+  });
+  
+  check(response, {
+    'health: status 200': (r) => r.status === 200,
+  });
+  
+  sleep(0.5);
+}
+
+function searchProducts() {
+  const queries = ['running', 'athletic', 'sustainable', 'performance'];
+  const query = queries[Math.floor(Math.random() * queries.length)];
+  
+  const response = http.get(`${BASE_URL}/api/products?search=${query}`, {
+    tags: { name: 'GET /api/products?search' },
+  });
+  
+  const success = check(response, {
+    'search: status 200': (r) => r.status === 200,
+  });
+  
+  errorRate.add(!success);
+  sleep(1 + Math.random() * 2);
+}
+
+// Summary handler
 export function handleSummary(data) {
   return {
-    "stress-summary.json": JSON.stringify(data, null, 2),
+    'stress-summary.json': JSON.stringify(data, null, 2),
   };
 }

@@ -228,35 +228,36 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
     // Add standardized error code for frontend clients
     problemDetails.code = error.code;
 
-    // Type-specific overrides
+    // Type-specific overrides (RFC 9457 compliant URIs)
+    const ERROR_TYPE_BASE = "https://api.run-remix.com/errors";
     switch (details.type) {
       case "validation":
-        problemDetails.type = "urn:problem:validation-error";
+        problemDetails.type = `${ERROR_TYPE_BASE}/validation-failed`;
         problemDetails.title = "Validation Failed";
         break;
       case "authentication":
-        problemDetails.type = "urn:problem:authentication-required";
+        problemDetails.type = `${ERROR_TYPE_BASE}/unauthorized`;
         problemDetails.title = "Authentication Required";
         break;
       case "authorization":
-        problemDetails.type = "urn:problem:access-denied";
+        problemDetails.type = `${ERROR_TYPE_BASE}/forbidden`;
         problemDetails.title = "Access Denied";
         break;
       case "not_found":
-        problemDetails.type = "urn:problem:not-found";
+        problemDetails.type = `${ERROR_TYPE_BASE}/resource-not-found`;
         problemDetails.title = "Resource Not Found";
         break;
       case "rate_limit":
-        problemDetails.type = "urn:problem:rate-limit-exceeded";
+        problemDetails.type = `${ERROR_TYPE_BASE}/rate-limit-exceeded`;
         problemDetails.title = "Rate Limit Exceeded";
         break;
       case "conflict":
-        problemDetails.type = "urn:problem:conflict";
+        problemDetails.type = `${ERROR_TYPE_BASE}/conflict`;
         problemDetails.title = "Resource Conflict";
         break;
       case "database":
         // For database errors, we might want to hide details in prod
-        problemDetails.type = "urn:problem:database-error";
+        problemDetails.type = `${ERROR_TYPE_BASE}/service-unavailable`;
         problemDetails.title = "Service Unavailable";
         problemDetails.detail = isProd ? "Service temporarily unavailable" : error.message;
         break;
@@ -274,10 +275,13 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
   }
 
   // Fallback for non-AppErrors (Legacy Mode)
+  // RFC 9457 compliant error type URIs
+  const ERROR_TYPE_BASE = "https://api.run-remix.com/errors";
+  
   if (isProd) {
     switch (details.type) {
       case "validation":
-        problemDetails.type = "urn:problem:validation-error";
+        problemDetails.type = `${ERROR_TYPE_BASE}/validation-failed`;
         problemDetails.title = "Validation Failed";
         problemDetails.status = 400;
         problemDetails.detail = "The request parameters failed validation";
@@ -286,37 +290,37 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
         }
         break;
       case "authentication":
-        problemDetails.type = "urn:problem:authentication-required";
+        problemDetails.type = `${ERROR_TYPE_BASE}/unauthorized`;
         problemDetails.title = "Authentication Required";
         problemDetails.status = 401;
         problemDetails.detail = "You must be logged in to access this resource";
         break;
       case "authorization":
-        problemDetails.type = "urn:problem:access-denied";
+        problemDetails.type = `${ERROR_TYPE_BASE}/forbidden`;
         problemDetails.title = "Access Denied";
         problemDetails.status = 403;
         problemDetails.detail = "You do not have permission to access this resource";
         break;
       case "not_found":
-        problemDetails.type = "urn:problem:not-found";
+        problemDetails.type = `${ERROR_TYPE_BASE}/resource-not-found`;
         problemDetails.title = "Resource Not Found";
         problemDetails.status = 404;
         problemDetails.detail = "The requested resource could not be found";
         break;
       case "rate_limit":
-        problemDetails.type = "urn:problem:rate-limit-exceeded";
+        problemDetails.type = `${ERROR_TYPE_BASE}/rate-limit-exceeded`;
         problemDetails.title = "Rate Limit Exceeded";
         problemDetails.status = 429;
         problemDetails.detail = "Too many requests, please try again later";
         break;
       default:
         // Keep generic 500
-        problemDetails.type = "urn:problem:internal-server-error";
+        problemDetails.type = `${ERROR_TYPE_BASE}/internal-error`;
         break;
     }
   } else {
     // Development/Staging - Detailed
-    problemDetails.type = `urn:problem:${details.type}`;
+    problemDetails.type = `${ERROR_TYPE_BASE}/${details.type}`;
     problemDetails.title = error instanceof Error ? error.name : "Error";
 
     const status =
@@ -366,7 +370,7 @@ export function productionErrorHandler(
 
   // Handle Rate Limit Retry-After
   if (errorDetails.type === "rate_limit" && error instanceof AppError) {
-    // If we have a details.retryAfter in our RateLimitError, use it
+    // Check details for retryAfter value
     if (error.details?.retryAfter) {
       res.setHeader("Retry-After", String(error.details.retryAfter));
     }

@@ -1,4 +1,4 @@
-# 🔧 Extension Fixes Applied - December 3, 2025
+# 🔧 Extension Troubleshooting & CLI Setup
 
 ## ✅ Fixed Extension IDs
 
@@ -18,7 +18,7 @@ The following extensions had incorrect or deprecated IDs and have been fixed:
 
 ### 3. **Console Ninja** ✅
 - **ID**: `wallabyjs.console-ninja` (VERIFIED WORKING)
-- **Status**: Still actively maintained in 2025
+- **Status**: Still actively maintained
 - **Features**: Inline console.log output, runtime errors in editor
 
 ---
@@ -29,37 +29,32 @@ The following extensions had incorrect or deprecated IDs and have been fixed:
 |---|--------------|--------|----------|
 | 1 | rphlmr.drizzle-lab | ✅ FIXED | Database |
 | 2 | bradlc.vscode-tailwindcss | ✅ Working | Styling |
-| 3 | dbaeumer.vscode-eslint | ✅ Working | Linting |
-| 4 | esbenp.prettier-vscode | ✅ Working | Formatting |
-| 5 | usernamehw.errorlens | ✅ Working | Debugging |
-| 6 | ckolkman.vscode-postgres | ✅ Working | Database |
-| 7 | rangav.vscode-thunder-client | ✅ Working | API Testing |
-| 8 | googlecloudtools.cloudcode | ✅ Working | Cloud |
-| 9 | mattpocock.ts-error-translator | ✅ Working | TypeScript |
-| 10 | previewjs.previewjs | ✅ FIXED | React |
-| 11 | wallabyjs.console-ninja | ✅ Working | Debugging |
-| 12 | cesium.gltf-vscode | ✅ Working | 3D |
-| 13 | vitest.explorer | ✅ Working | Testing |
-| 14 | ryanluker.vscode-coverage-gutters | ✅ Working | Testing |
-| 15 | christian-kohler.path-intellisense | ✅ Working | Productivity |
-| 16 | formulahendry.auto-rename-tag | ✅ Working | Productivity |
-| 17 | wix.vscode-import-cost | ✅ Working | Productivity |
-| 18 | aaron-bond.better-comments | ✅ Working | Productivity |
-| 19 | mhutchie.git-graph | ✅ Working | Git |
-| 20 | mikestead.dotenv | ✅ Working | Config |
+| 3 | biomejs.biome | ✅ Working | Linting/Formatting |
+| 4 | usernamehw.errorlens | ✅ Working | Debugging |
+| 5 | ckolkman.vscode-postgres | ✅ Working | Database |
+| 6 | rangav.vscode-thunder-client | ✅ Working | API Testing |
+| 7 | googlecloudtools.cloudcode | ✅ Working | Cloud |
+| 8 | mattpocock.ts-error-translator | ✅ Working | TypeScript |
+| 9 | previewjs.previewjs | ✅ FIXED | React |
+| 10 | wallabyjs.console-ninja | ✅ Working | Debugging |
+| 11 | cesium.gltf-vscode | ✅ Working | 3D |
+| 12 | vitest.explorer | ✅ Working | Testing |
+| 13 | ryanluker.vscode-coverage-gutters | ✅ Working | Testing |
+| 14 | christian-kohler.path-intellisense | ✅ Working | Productivity |
+| 15 | formulahendry.auto-rename-tag | ✅ Working | Productivity |
+| 16 | wix.vscode-import-cost | ✅ Working | Productivity |
+| 17 | aaron-bond.better-comments | ✅ Working | Productivity |
+| 18 | mhutchie.git-graph | ✅ Working | Git |
+| 19 | mikestead.dotenv | ✅ Working | Config |
 
 ---
 
-## 🚀 Install Now (Updated)
-
-The `.vscode/extensions.json` file has been updated with all working IDs.
-
-**To install all working extensions:**
+## 🚀 Install Now
 
 ### Method 1: VS Code UI (Recommended)
 1. Close and reopen VS Code in this project
 2. Click "Install All" when prompted
-3. All 20 extensions should install successfully now
+3. All extensions should install successfully
 
 ### Method 2: Manual via Command Palette
 1. `Cmd+Shift+P`
@@ -68,51 +63,54 @@ The `.vscode/extensions.json` file has been updated with all working IDs.
 
 ### Method 3: CLI
 ```bash
-# If you have code CLI installed
-code --install-extension rphlmr.drizzle-lab
-code --install-extension previewjs.previewjs
-code --install-extension wallabyjs.console-ninja
-# ... (or use the install script)
+# Run the extension installer script
+./scripts/setup/install-extensions.sh
 ```
 
 ---
 
-## 📝 What Changed
+## 🎯 Installing VS Code CLI Command
 
-### Drizzle Lab (rphlmr.drizzle-lab)
-- **What it does**: Visualizes your Drizzle ORM schema
-- **Features**: 
-  - Interactive schema diagram
-  - Relationship visualization
-  - Quick navigation to schema files
-  
-### Preview.js (previewjs.previewjs)
-- **What it does**: Live preview React components
-- **Features**:
-  - Lightning-fast updates with Vite
-  - Works as you type (no save needed)
-  - Zero configuration
-  - Supports React, Vue, Svelte, and Solid
+The `code` command allows you to install extensions from the terminal.
+
+### Quick Setup (30 seconds)
+
+1. **Open VS Code**
+2. **Press**: `Cmd+Shift+P` (Command Palette)
+3. **Type**: `shell command`
+4. **Select**: `Shell Command: Install 'code' command in PATH`
+5. **Press**: Enter
+6. **Restart** your terminal
+
+### Verify Installation
+
+```bash
+which code
+# Should output: /usr/local/bin/code
+```
+
+### Alternative: Manual PATH Setup
+
+```bash
+# Add to PATH manually (if above doesn't work)
+cat <<EOF >> ~/.zshrc
+# VS Code
+export PATH="\$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+EOF
+
+source ~/.zshrc
+```
 
 ---
 
 ## ✅ Verification
 
-To verify all extensions install correctly:
-
 ```bash
 # Run the verification script
-./.vscode/verify-setup.sh
+./scripts/setup/verify-setup.sh
 ```
 
-You should now see **all 20 extensions install successfully** without errors!
-
 ---
 
-## 💡 Note
+*Last updated: January 2026*
 
-If you previously attempted to install and some extensions showed errors, those errors should be resolved now. The two problematic extensions (`drizzle-kit.drizzle-kit` and `zenclabs.reactpreview`) have been replaced with their correct, working equivalents.
-
----
-
-Ready to install! All extension IDs are now verified working as of December 3, 2025. 🎉

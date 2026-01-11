@@ -3,7 +3,7 @@
 **Status**: Active  
 **Version**: 1.0  
 **Last Updated**: January 2026  
-**Data Protection Officer**: [To be assigned]
+**Data Protection Officer**: dpo@runapparel.com *(Pending assignment - contact security@runapparel.com)*
 
 ---
 

@@ -1,6 +1,6 @@
 # System Error Codes
 
-> Auto-generated from source code. Do not edit manually.
+> Auto-generated error code table from source code. Runbooks maintained manually.
 
 | Error Code | Status | Class Name | Description |
 | :--- | :--- | :--- | :--- |
@@ -32,35 +32,99 @@ import { NotFoundError, ValidationError } from '../errors/AppError';
 
 ## Production Runbooks
 
+### INVALID_INPUT / BAD_REQUEST (400)
+
+**Symptoms:** User sees validation errors, API returns 400.
+
+**Diagnostic Steps:**
+1. Check `invalid-params` field in response body for field-level errors
+2. Review request payload against Zod schema in route
+3. Check `X-Request-ID` header and search logs for correlation
+
+**Resolution:**
+- Client-side: update form validation to match server schema
+- Server-side: if schema is too strict, update in `server/schemas/`
+- If field name mismatch: check Zod schema `transform` or `coerce` usage
+
+---
+
+### UNAUTHORIZED (401)
+
+**Symptoms:** User redirected to login, API returns 401.
+
+**Diagnostic Steps:**
+1. Check if `Authorization` header is present
+2. Verify token expiry via JWT debugger
+3. Check if session cookie is being sent
+
+**Resolution:**
+- 401 on expired token: prompt re-authentication
+- 401 on missing token: check auth middleware order
+- Ensure `credentials: include` in fetch requests
+
+---
+
+### FORBIDDEN (403)
+
+**Symptoms:** Authenticated user denied access, API returns 403.
+
+**Diagnostic Steps:**
+1. Get user ID from token
+2. Query user roles in database
+3. Check route's required roles in middleware
+
+**Resolution:**
+- If role missing: update user's role in database
+- If role check wrong: update middleware configuration
+- Log and alert if suspicious access patterns
+
+---
+
+### RESOURCE_NOT_FOUND (404)
+
+**Symptoms:** Page/API returns "not found".
+
+**Diagnostic Steps:**
+1. Verify resource exists in database
+2. Check if slug/ID format is correct
+3. Review route registration order (catch-all routes)
+
+**Resolution:**
+- If resource deleted: return appropriate message
+- If route shadowed: reorder routes in `boot/routes.ts`
+- If ID format wrong: update validation schema
+
+---
+
+### CONFLICT (409)
+
+**Symptoms:** Create/update fails with "already exists".
+
+**Diagnostic Steps:**
+1. Check `constraint` field in error details
+2. Query database for existing record with same unique field
+3. Review concurrent request patterns
+
+**Resolution:**
+- If duplicate entry: inform user to use different value
+- If race condition: implement idempotency key pattern
+- Add `Idempotency-Key` header for retryable operations
+
+---
+
 ### RATE_LIMIT_EXCEEDED (429)
 
 **Symptoms:** User sees "Too many requests", API returns 429.
 
 **Diagnostic Steps:**
-1. Check rate limiter health: `GET /api/media/rate-limiter/health`
+1. Check `Retry-After` header for wait time
 2. Review IP patterns in logs for abuse: `grep "429" /var/log/api.log`
-3. Check error aggregator: `GET /api/diagnostics/errors?type=rate_limit`
+3. Check rate limiter health: `GET /api/diagnostics/rate-limiter`
 
 **Resolution:**
-- If legitimate traffic spike: temporarily increase limits in `rate-limiter.ts`
+- If legitimate traffic spike: temporarily increase limits in `rateLimiter.ts`
 - If abuse: add IP to blocklist or enable stricter CAPTCHA
-- Consider adding Retry-After header check on client
-
----
-
-### DB_CONNECTION_ERROR (503)
-
-**Symptoms:** API returns "Service unavailable", health check shows DB unhealthy.
-
-**Diagnostic Steps:**
-1. Check detailed health: `GET /health/detailed` (requires `X-Health-Check-Key`)
-2. Verify Neon dashboard for connection pool exhaustion
-3. Check circuit breaker state in health endpoint
-
-**Resolution:**
-- If circuit is OPEN: wait for half-open transition (default 30s)
-- If connection limit hit: increase `NEON_POOL_SIZE` or reduce idle timeout
-- For cold start issues: enable connection pool warmup in startup
+- Client-side: respect `Retry-After` header before retrying
 
 ---
 
@@ -81,20 +145,19 @@ import { NotFoundError, ValidationError } from '../errors/AppError';
 
 ---
 
-### UNAUTHORIZED (401) vs FORBIDDEN (403)
+### DB_CONNECTION_ERROR (503)
 
-**When to investigate:**
-- 401 is expected for unauthenticated requests
-- 403 for missing permissions
+**Symptoms:** API returns "Service unavailable", health check shows DB unhealthy.
 
 **Diagnostic Steps:**
-1. Check if token is present in request headers
-2. Verify token expiry via JWT debugger
-3. Check user roles in database
+1. Check detailed health: `GET /health/detailed` (requires `X-Health-Check-Key`)
+2. Verify Neon dashboard for connection pool exhaustion
+3. Check circuit breaker state in health endpoint
 
 **Resolution:**
-- 401: prompt user to re-authenticate
-- 403: verify user has required role for resource
+- If circuit is OPEN: wait for half-open transition (default 30s)
+- If connection limit hit: increase `NEON_POOL_SIZE` or reduce idle timeout
+- For cold start issues: enable connection pool warmup in startup
 
 ---
 
@@ -127,4 +190,3 @@ import { NotFoundError, ValidationError } from '../errors/AppError';
 - Add appropriate indexes
 - Implement query pagination
 - Increase timeout for known slow operations
-

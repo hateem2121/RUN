@@ -1,0 +1,146 @@
+name: Load Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      test_type:
+        description: 'Type of load test'
+        required: true
+        default: 'baseline'
+        type: choice
+        options:
+          - baseline
+          - stress
+          - soak
+  push:
+    branches:
+      - main
+    paths:
+      - 'ops/load-testing/**'
+
+env:
+  STAGING_URL: https://staging.runapparel.com
+  PRODUCTION_URL: https://runapparel.com
+
+jobs:
+  load-test:
+    name: Run Load Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Set Target URL
+        id: target
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
+            echo "url=${{ env.PRODUCTION_URL }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ env.STAGING_URL }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Baseline Load Test
+        if: github.event.inputs.test_type == 'baseline' || github.event_name == 'push'
+        run: |
+          k6 run \
+            --env BASE_URL=${{ steps.target.outputs.url }} \
+            --out json=results.json \
+            ops/load-testing/baseline.js
+
+      - name: Run Stress Test
+        if: github.event.inputs.test_type == 'stress'
+        run: |
+          k6 run \
+            --env BASE_URL=${{ steps.target.outputs.url }} \
+            --out json=stress-results.json \
+            ops/load-testing/stress.js
+
+      - name: Run Soak Test
+        if: github.event.inputs.test_type == 'soak'
+        run: |
+          k6 run \
+            --env BASE_URL=${{ steps.target.outputs.url }} \
+            --out json=soak-results.json \
+            ops/load-testing/soak.js
+        timeout-minutes: 120
+
+      - name: Check Thresholds
+        run: |
+          if [ -f results.json ]; then
+            # Extract summary metrics
+            P95=$(jq -r '.metrics.http_req_duration.values["p(95)"] // 0' results.json)
+            ERROR_RATE=$(jq -r '.metrics.http_req_failed.values.rate // 0' results.json)
+            
+            echo "P95 Latency: ${P95}ms"
+            echo "Error Rate: ${ERROR_RATE}"
+            
+            # Check against SLO thresholds
+            if (( $(echo "$P95 > 200" | bc -l) )); then
+              echo "❌ P95 latency exceeds 200ms SLO threshold"
+              exit 1
+            fi
+            
+            if (( $(echo "$ERROR_RATE > 0.01" | bc -l) )); then
+              echo "❌ Error rate exceeds 1% SLO threshold"
+              exit 1
+            fi
+            
+            echo "✅ All SLO thresholds met"
+          fi
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-test-results-${{ github.run_number }}
+          path: |
+            results.json
+            stress-results.json
+            soak-results.json
+          retention-days: 30
+
+      - name: Post Summary
+        if: always()
+        run: |
+          echo "## Load Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value | SLO |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|-----|" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f results.json ]; then
+            P95=$(jq -r '.metrics.http_req_duration.values["p(95)"] // "N/A"' results.json)
+            P99=$(jq -r '.metrics.http_req_duration.values["p(99)"] // "N/A"' results.json)
+            RPS=$(jq -r '.metrics.http_reqs.values.rate // "N/A"' results.json)
+            
+            echo "| P95 Latency | ${P95}ms | <200ms |" >> $GITHUB_STEP_SUMMARY
+            echo "| P99 Latency | ${P99}ms | <500ms |" >> $GITHUB_STEP_SUMMARY
+            echo "| Requests/sec | ${RPS} | >100 |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  notify-failure:
+    name: Notify on Failure
+    needs: load-test
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Create Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Load Test Failed - SLO Breach',
+              body: `Load test failed on ${new Date().toISOString()}\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nPlease investigate performance degradation.`,
+              labels: ['performance', 'slo-breach']
+            })

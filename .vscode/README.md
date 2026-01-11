@@ -64,7 +64,7 @@ If notification doesn't appear:
 cd /Users/hateemjamshaid/Downloads/RUN-Remix
 
 # Run installer script
-./.vscode/install-extensions.sh
+./scripts/setup/install-extensions.sh
 ```
 
 ---
@@ -118,7 +118,7 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 
 ```bash
 # Run verification script
-./.vscode/verify-setup.sh
+./scripts/setup/verify-setup.sh
 ```
 
 ### 2. Configure PostgreSQL Extension
@@ -131,7 +131,7 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 
 - **Error Lens**: Open any .ts file - see inline errors
 - **TailwindCSS**: Type `className="` - see autocomplete
-- **Prettier**: Edit and save - auto-format works
+- **Biome**: Edit and save - auto-format works
 - **Thunder Client**: Test your API endpoints
 
 ---
@@ -185,13 +185,11 @@ After installation, verify:
 .vscode/
 ├── extensions.json           # 20 extension recommendations
 ├── settings.json             # Optimized editor settings
-├── README.md                 # Quick reference
-├── SETUP_GUIDE.md           # Detailed walkthrough
+├── README.md                 # Quick reference (this file)
 ├── MCP_SETUP_GUIDE.md       # AI assistant MCP servers
-├── INSTALL_CODE_CLI.md      # CLI installation guide
-├── install-extensions.sh    # Automated installer
-├── verify-setup.sh          # Verification script
-└── launch.json              # Existing debug config
+├── EXTENSION_FIXES.md       # Troubleshooting guide
+├── launch.json              # Debug configuration
+└── tasks.json               # VS Code tasks
 ```
 
 ---

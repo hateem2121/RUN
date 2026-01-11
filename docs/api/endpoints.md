@@ -22,7 +22,11 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/products/by-path](#get-apiproductsby-path)
 2. [Media Endpoints](#media-endpoints)
    - [GET /api/media](#get-apimedia)
-3. [Migration Guide](#migration-guide)
+3. [Privacy Endpoints](#privacy-endpoints) *(NEW)*
+   - [POST /api/privacy/data-export](#post-apiprivacydata-export)
+   - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
+   - [GET /api/privacy/request-status/:id](#get-apiprivacyrequest-statusid)
+4. [Migration Guide](#migration-guide)
 
 ---
 
@@ -313,6 +317,86 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
 - Payload size reduced by ~68%
 - Faster grid rendering with less data parsing
 - Reduced memory footprint for large media libraries
+
+---
+
+## Privacy Endpoints
+
+GDPR/CCPA compliant data subject request API. Requires authentication.
+
+### POST /api/privacy/data-export
+
+**Purpose**: Request export of all user data (GDPR Article 15, 20)
+
+**Request Body**:
+
+```json
+{
+  "format": "json" // or "csv"
+}
+```
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "exportDate": "2026-01-11T12:00:00Z",
+    "dataController": "RUN Apparel B2B Platform",
+    "user": { "id": "...", "email": "...", "createdAt": "..." }
+  }
+}
+```
+
+---
+
+### POST /api/privacy/deletion-request
+
+**Purpose**: Request account deletion (GDPR Article 17 - Right to Erasure)
+
+**Request Body**:
+
+```json
+{
+  "confirmEmail": "user@example.com",
+  "reason": "Optional reason"
+}
+```
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "requestId": "DEL-1736582400000",
+    "status": "PENDING",
+    "scheduledDeletion": "2026-02-10T12:00:00Z",
+    "message": "Account scheduled for deletion. Cancel within 30 days by logging in."
+  }
+}
+```
+
+---
+
+### GET /api/privacy/request-status/:id
+
+**Purpose**: Check status of a privacy request
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "requestId": "DEL-1736582400000",
+    "type": "DELETION",
+    "status": "PENDING",
+    "estimatedCompletion": "2026-02-10T12:00:00Z"
+  }
+}
+```
 
 ---
 

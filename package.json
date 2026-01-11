@@ -22,6 +22,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:ci": "vitest run --coverage --reporter=json --outputFile=test-results.json",
     "test:e2e": "playwright test",
     "test:integration": "vitest run tests/integration",
     "test:db:up": "docker-compose -f docker-compose.test.yml up -d",
@@ -42,6 +44,7 @@
     "ci:checks": "npm run verify:tech-integrity",
     "verify:build": "npm run build && npm run check:bundle",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
+    "lhci": "lhci autorun",
     "prepare": "husky"
   },
   "bundlesize": [
