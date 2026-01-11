@@ -69,7 +69,7 @@ npm ci
 │   │   ├── components/ui/        # Atomic Design System (shadcn/ui)
 │   │   ├── components/admin/     # Admin Domain
 │   │   └── lib/                  # Tokens & Utils
-│   └── vite.config.ts            # Vite 6 Config
+│   └── vite.config.ts            # Vite 7 Config
 │
 ├── server/ (@run-remix/server)   # Express 5 API
 │   ├── boot/                     # App Startup

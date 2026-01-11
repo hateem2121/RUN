@@ -1,4 +1,4 @@
-# ✅ FINAL INSTALLATION GUIDE - December 3, 2025
+# ✅ FINAL INSTALLATION GUIDE - January 2026
 
 ## 🎯 Best Practices & Latest Verified Extensions
 
@@ -141,7 +141,7 @@ cd /Users/hateemjamshaid/Downloads/RUN-Remix
 ### ✅ Editor Settings
 
 - Auto-format on save
-- ESLint auto-fix enabled
+- Biome format + lint enabled
 - Bracket pair colorization
 - Path auto-import updates
 

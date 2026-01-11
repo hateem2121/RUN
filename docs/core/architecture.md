@@ -209,5 +209,6 @@ Where to look when working on X:
 | **Performance** | 100% | Neon-HTTP driver + split vendor chunking + aggressive cache headers. |
 | **Scalability** | 100% | Cloud Run + Redis + Stateless Auth is infinite scale ready. |
 | **Reliability** | 100% | Standardized DB driver removes custom "unknowns". |
+| **Incident Response** | 100% | [Runbooks documented](../runbooks/README.md) for all critical scenarios. |
 
 _Use this map to orient yourself before diving into specific files._

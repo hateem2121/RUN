@@ -9,12 +9,16 @@ Console Logging Policy:
 - Development-only logging must be wrapped in:
   if (process.env.NODE_ENV === 'development') { console.log(...) }
 
-ESLint Configuration:
-Enforced via .eslintrc.json:
+Biome Configuration:
+Enforced via biome.json:
 {
-"rules": {
-"no-console": ["error", { "allow": ["warn", "error"] }]
-}
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noConsoleLog": "error"
+      }
+    }
+  }
 }
 
 Recent Cleanup:

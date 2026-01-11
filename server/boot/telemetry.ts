@@ -6,14 +6,14 @@
  * for distributed tracing across all services.
  */
 
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
-import { SimpleSpanProcessor, BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { TraceExporter } from "@google-cloud/opentelemetry-cloud-trace-exporter";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg";
-import { Resource } from "@opentelemetry/resources";
+import { BatchSpanProcessor, SimpleSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
+// import { Resource } from "@opentelemetry/resources";
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from "@opentelemetry/semantic-conventions";
 import { logger } from "../lib/monitoring/logger.js";
 
@@ -25,10 +25,11 @@ const isProduction = process.env.NODE_ENV === "production";
  */
 export function initTelemetry(): void {
   // Create resource identifying this service
+  const { Resource } = require("@opentelemetry/resources");
   const resource = new Resource({
     [ATTR_SERVICE_NAME]: "run-remix-api",
     [ATTR_SERVICE_VERSION]: process.env.npm_package_version || "1.0.0",
-    "environment": process.env.NODE_ENV || "development",
+    environment: process.env.NODE_ENV || "development",
     "cloud.provider": "gcp",
     "cloud.region": process.env.GOOGLE_CLOUD_REGION || "us-central1",
   });
@@ -46,24 +47,26 @@ export function initTelemetry(): void {
       });
 
       // Use BatchSpanProcessor for production (better performance)
-      provider.addSpanProcessor(new BatchSpanProcessor(exporter, {
-        maxQueueSize: 1000,
-        maxExportBatchSize: 100,
-        scheduledDelayMillis: 5000,
-      }));
+      (provider as any).addSpanProcessor(
+        new BatchSpanProcessor(exporter, {
+          maxQueueSize: 1000,
+          maxExportBatchSize: 100,
+          scheduledDelayMillis: 5000,
+        }),
+      );
 
       logger.info("[Telemetry] ✅ Cloud Trace exporter initialized");
     } catch (error) {
       logger.warn("[Telemetry] ⚠️ Cloud Trace exporter failed, using console", error);
       // Fallback to console exporter for debugging
       const { ConsoleSpanExporter } = require("@opentelemetry/sdk-trace-base");
-      provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+      (provider as any).addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
     }
   } else {
     // In development, optionally log traces to console
     if (process.env.TRACE_DEBUG === "true") {
       const { ConsoleSpanExporter } = require("@opentelemetry/sdk-trace-base");
-      provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+      (provider as any).addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
       logger.info("[Telemetry] 🔍 Console trace exporter enabled (dev mode)");
     } else {
       logger.info("[Telemetry] ⏸️ Tracing disabled in development (set TRACE_DEBUG=true to enable)");
@@ -85,13 +88,16 @@ export function initTelemetry(): void {
         },
         requestHook: (span, request) => {
           // Add custom attributes
-          span.setAttribute("http.request_id", request.headers?.["x-request-id"] || "unknown");
+          span.setAttribute(
+            "http.request_id",
+            (request as any).headers?.["x-request-id"] || "unknown",
+          );
         },
       }),
 
       // Express instrumentation for routes
       new ExpressInstrumentation({
-        ignoreLayersType: ["middleware"], // Reduce noise from middleware spans
+        ignoreLayersType: ["middleware" as any], // Reduce noise from middleware spans
       }),
 
       // PostgreSQL instrumentation for database queries
@@ -101,7 +107,9 @@ export function initTelemetry(): void {
     ],
   });
 
-  logger.info("[Telemetry] ✅ OpenTelemetry initialized with HTTP, Express, and pg instrumentations");
+  logger.info(
+    "[Telemetry] ✅ OpenTelemetry initialized with HTTP, Express, and pg instrumentations",
+  );
 }
 
 /**
@@ -137,7 +145,7 @@ export function createSpan(name: string): any {
 export async function withTrace<T>(
   name: string,
   fn: () => Promise<T>,
-  attributes?: Record<string, string | number | boolean>
+  attributes?: Record<string, string | number | boolean>,
 ): Promise<T> {
   const { trace, SpanStatusCode } = require("@opentelemetry/api");
   const tracer = trace.getTracer("run-remix-api");

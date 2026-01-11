@@ -236,7 +236,7 @@ npm run verify:tech-integrity # Full integrity check (build + audit)
 
 ### Performance Benchmarks
 
-_Post React 19 + Vite 6 + Tailwind v4 migration (Dec 2025)_
+_Post React 19 + Vite 7 + Tailwind v4 migration (Jan 2026)_
 
 | Metric                     | Value  | Target       |
 | -------------------------- | ------ | ------------ |
@@ -490,6 +490,18 @@ All components follow WCAG 2.1 AA:
 - Keyboard navigation
 - Reduced motion support via `motion-safe:` / `motion-reduce:`
 
+### Load Testing
+
+See [Load Testing Baseline](./docs/operations/load-testing-baseline.md) for performance thresholds and SLOs.
+
+```bash
+# Install k6
+brew install k6
+
+# Run baseline test
+k6 run --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+```
+
 ---
 
 ## Deployment
@@ -557,6 +569,21 @@ dist/
 | `docs/testing/testing-e2e-prod.md` | E2E testing guide          |
 | `docs/operations/`                 | Operational runbooks       |
 | `docs/core/ssr-invariants.md`      | SSR safety rules           |
+
+---
+
+## Operational Runbooks
+
+Incident response procedures for production issues:
+
+| Runbook | Trigger |
+| ------- | ------- |
+| [`incident-response.md`](./docs/runbooks/incident-response.md) | SEV-1/2 Incidents |
+| [`database-outage.md`](./docs/runbooks/database-outage.md) | DB Connection Failures |
+| [`deployment-rollback.md`](./docs/runbooks/deployment-rollback.md) | Failed Deployments |
+| [`circuit-breaker-trip.md`](./docs/runbooks/circuit-breaker-trip.md) | Service Degradation |
+| [`rate-limit-surge.md`](./docs/runbooks/rate-limit-surge.md) | Traffic Spikes |
+| [`sentry-alert-triage.md`](./docs/runbooks/sentry-alert-triage.md) | Error Alert Triage |
 
 ---
 

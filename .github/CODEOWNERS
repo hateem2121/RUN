@@ -7,7 +7,7 @@
 /client/src/index.css @frontend-team
 
 # SSR Handler - FOUC and Hydration Critical
-/server/lib/ssr-handler.ts @backend-team @frontend-team
+/server/lib/ssr/ssr-handler.ts @backend-team @frontend-team
 
 # Visual Regression Test Suite
 /e2e/visual-regression-audit.spec.ts @qa-team @frontend-team

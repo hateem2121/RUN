@@ -681,7 +681,7 @@ export default function MediaUploadEnhanced() {
                   // Add retry logic for network errors only (NOT HTTP errors like 413)
                   let retryCount = 0;
                   const maxRetries = 3;
-                  let result;
+                  let result: any;
 
                   while (retryCount <= maxRetries) {
                     try {
