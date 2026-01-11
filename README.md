@@ -80,7 +80,7 @@ Use this guide to orient yourself before diving into specific files.
 
 - Node.js 24 (LTS)
 - PostgreSQL database
-- npm (pnpm also supported)
+- npm
 
 ### Installation
 

@@ -2,10 +2,16 @@
 # Phase 3: Security & Compliance Hardening
 #
 # Runs OWASP ZAP against staging environment to detect vulnerabilities
+# Triggers: After staging deployment, weekly schedule, or manual dispatch
 
 name: DAST Security Scan
 
 on:
+  # Run after staging deployment
+  workflow_run:
+    workflows: ["Deploy to Staging"]
+    types:
+      - completed
   schedule:
     # Weekly scan on Sunday at 2 AM UTC
     - cron: "0 2 * * 0"

@@ -1,0 +1,126 @@
+name: Terraform Drift Detection
+
+# Weekly infrastructure drift detection
+# Aligned with ISO/IEC 42030 Infrastructure Management requirements
+
+on:
+  schedule:
+    # Run every Sunday at midnight UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to check (prod/staging)'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - prod
+          - staging
+
+env:
+  TF_VERSION: '1.7.0'
+  WORKING_DIR: './terraform'
+
+jobs:
+  drift-detection:
+    name: Detect Infrastructure Drift
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Terraform Init
+        id: init
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform init -backend=true
+
+      - name: Terraform Plan (Drift Detection)
+        id: plan
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform plan -detailed-exitcode -out=tfplan 2>&1 | tee plan_output.txt
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Check for Drift
+        id: drift
+        run: |
+          if [ "${{ steps.plan.outputs.exit_code }}" == "2" ]; then
+            echo "drift_detected=true" >> $GITHUB_OUTPUT
+            echo "::warning::Infrastructure drift detected!"
+          else
+            echo "drift_detected=false" >> $GITHUB_OUTPUT
+            echo "No infrastructure drift detected."
+          fi
+
+      - name: Create Issue on Drift
+        if: steps.drift.outputs.drift_detected == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('${{ env.WORKING_DIR }}/plan_output.txt', 'utf8');
+            
+            // Truncate if too long
+            const maxLength = 60000;
+            const truncatedOutput = planOutput.length > maxLength 
+              ? planOutput.substring(0, maxLength) + '\n\n... (truncated)'
+              : planOutput;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Infrastructure Drift Detected',
+              body: `## Terraform Drift Detection Report
+              
+              **Date:** ${new Date().toISOString()}
+              **Environment:** ${{ inputs.environment || 'prod' }}
+              
+              Infrastructure drift has been detected. Please review and reconcile.
+              
+              <details>
+              <summary>Terraform Plan Output</summary>
+              
+              \`\`\`
+              ${truncatedOutput}
+              \`\`\`
+              
+              </details>
+              
+              ### Recommended Actions
+              1. Review the drift details above
+              2. Determine if drift is intentional (manual changes)
+              3. Either apply Terraform to reconcile OR update Terraform code
+              4. Close this issue once resolved
+              
+              cc: @platform-team
+              `,
+              labels: ['infrastructure', 'drift', 'automated']
+            });
+
+      - name: Post Summary
+        run: |
+          echo "## Terraform Drift Detection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.drift.outputs.drift_detected }}" == "true" ]; then
+            echo "⚠️ **Drift Detected** - An issue has been created for review" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ **No Drift** - Infrastructure matches Terraform state" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -10,7 +10,20 @@ import {
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./common";
 
-// Performance Metrics
+/**
+ * Performance Metrics Table - Frontend Performance Tracking
+ * 
+ * @table performance_metrics
+ * @description Stores Core Web Vitals and custom performance metrics
+ * collected from frontend applications. Used for monitoring and optimization.
+ * 
+ * @metrics Supported metric types include:
+ * - LCP (Largest Contentful Paint)
+ * - FID (First Input Delay)
+ * - CLS (Cumulative Layout Shift)
+ * - TTFB (Time To First Byte)
+ * - Custom component-level metrics
+ */
 export const performanceMetrics = pgTable("performance_metrics", {
   id: serial("id").primaryKey(),
   metricType: varchar({ length: 100 }).notNull(),
@@ -120,7 +133,37 @@ export const storageChangeLogs = pgTable("storage_change_logs", {
   }).defaultNow(),
 });
 
-// Audit Logs for comprehensive change tracking
+/**
+ * Audit Logs Table - Comprehensive Change Tracking
+ * 
+ * @table audit_logs
+ * @description Enterprise-grade audit trail for all data mutations.
+ * Tracks CREATE, UPDATE, DELETE, RESTORE, and SOFT_DELETE operations.
+ * 
+ * @compliance
+ * - Supports GDPR, CCPA, and SOX compliance requirements
+ * - `complianceLevel` categorizes records (standard, high, critical)
+ * - `retentionPeriod` defines days to retain (default: 7 years)
+ * 
+ * @tracking Captures:
+ * - User attribution (userId, email, role)
+ * - Request context (IP, user agent, session)
+ * - Change delta (oldValues, newValues, changedFields)
+ * 
+ * @example
+ * ```typescript
+ * // Log a product update
+ * await db.insert(auditLogs).values({
+ *   action: 'UPDATE',
+ *   tableName: 'products',
+ *   recordId: productId.toString(),
+ *   userId: req.user.id,
+ *   oldValues: previousProduct,
+ *   newValues: updatedProduct,
+ *   changedFields: ['name', 'price'],
+ * });
+ * ```
+ */
 export const auditLogs = pgTable("audit_logs", {
   id: serial("id").primaryKey(),
 

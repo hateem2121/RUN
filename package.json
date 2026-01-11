@@ -29,6 +29,7 @@
     "test:db:up": "docker-compose -f docker-compose.test.yml up -d",
     "test:db:down": "docker-compose -f docker-compose.test.yml down",
     "test:integration:full": "npm run test:db:up && sleep 5 && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db npm run --workspace=@run-remix/server db:push -- --force && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db vitest run tests/integration && npm run test:db:down",
+    "test:mutation": "npx stryker run",
     "lint": "biome check .",
     "lint:html": "npm run --workspace=@run-remix/client lint:html",
     "check": "npm run typecheck && npm run lint",
@@ -60,6 +61,8 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@playwright/test": "^1.57.0",
+    "@stryker-mutator/core": "^9.4.0",
+    "@stryker-mutator/vitest-runner": "^9.4.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",

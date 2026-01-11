@@ -16,7 +16,41 @@ import { z } from "zod";
 import { pgTable } from "./common";
 import { mediaAssets } from "./media";
 
-// Categories with hierarchical self-reference
+/**
+ * Categories Table - Hierarchical Product Organization
+ * 
+ * @table categories
+ * @description Hierarchical category tree for organizing products.
+ * Supports unlimited nesting via self-referencing `parentId`.
+ * 
+ * @business Categories form the primary navigation structure for the B2B catalog.
+ * Products must belong to exactly one category. Categories can be featured on homepage.
+ * 
+ * @hierarchy
+ * - `parentId` → self-reference for parent category (nullable, set null on delete)
+ * - `level` indicates depth in hierarchy (0 = root, 1 = child, etc.)
+ * - `fullPath` stores computed path like "running/shoes/trail"
+ * 
+ * @relationships
+ * - `primaryImageId` → `mediaAssets.id` (optional, set null)
+ * - Parent categories are protected from deletion if children exist
+ * 
+ * @softDelete Uses `deletedAt` timestamp with unique constraint respecting soft-deletes
+ * 
+ * @concurrency `version` field for optimistic locking (Phase 2.3)
+ * 
+ * @example
+ * ```typescript
+ * // Get all active root categories
+ * const roots = await db.select()
+ *   .from(categories)
+ *   .where(and(
+ *     isNull(categories.parentId),
+ *     eq(categories.isActive, true),
+ *     isNull(categories.deletedAt)
+ *   ));
+ * ```
+ */
 export const categories = pgTable(
   "categories",
   {
