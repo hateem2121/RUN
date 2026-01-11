@@ -138,10 +138,10 @@ export function TechnologyResearchManagement({
     mutationFn: (data: ResearchFormData) =>
       apiRequest("/api/technology-research", {
         method: "POST",
-        body: {
+        body: JSON.stringify({
           ...data,
           position: research.length,
-        },
+        }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });
@@ -181,7 +181,7 @@ export function TechnologyResearchManagement({
     mutationFn: ({ id, data }: { id: number; data: Partial<ResearchFormData> }) =>
       apiRequest(`/api/technology-research/${id}`, {
         method: "PATCH",
-        body: data,
+        body: JSON.stringify(data),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });
@@ -209,7 +209,7 @@ export function TechnologyResearchManagement({
     mutationFn: (research: { id: number; position: number }[]) =>
       apiRequest("/api/technology-research/reorder", {
         method: "PATCH",
-        body: { research },
+        body: JSON.stringify({ research }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });

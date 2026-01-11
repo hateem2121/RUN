@@ -38,8 +38,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     queryFn: async () => {
       // We use apiRequest here to be consistent with other loaders,
       // assuming it handles the underlying fetch correctly.
-      const res = await apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
-      return res.json();
+      return apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
     },
   });
 
@@ -292,11 +291,11 @@ function ProductDetailContent() {
       // Wait, apiRequest throws on 4xx/5xx usually? If apiRequest wrapper throws on !ok, we catch it in react-query
       // The original code handled response.ok manually. apiRequest might not throw automatically depend on implementation?
       // Assuming apiRequest returns response
-      if (!response.ok) {
-        // Try fetching by slug directly if API supports it, or throw
-        throw new Error("Product not found");
-      }
-      return response.json();
+      // if (!response.ok) {
+      //   // Try fetching by slug directly if API supports it, or throw
+      //   throw new Error("Product not found");
+      // }
+      return response;
     },
     enabled: !!fullPath,
   });

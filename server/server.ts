@@ -1,3 +1,8 @@
+// IMPORTANT: OTel must be initialized first before any other imports
+// to properly instrument Express, HTTP, and Pino
+import { startOtel } from "./lib/monitoring/otel.js";
+startOtel();
+
 import { createServer } from "node:http";
 import express from "express";
 import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
@@ -5,6 +10,7 @@ import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
 import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
+import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 
 export const app = express();
 const config = getConfig();
@@ -54,21 +60,8 @@ serverReady = (async () => {
     httpServer.keepAliveTimeout = 65000;
     httpServer.headersTimeout = 66000;
 
-    // 11. Graceful Shutdown
-    const gracefulShutdown = (signal: string) => {
-      logger.info(`[${signal}] Shutting down...`);
-      httpServer.close(() => {
-        logger.info(`[${signal}] Server closed`);
-        process.exit(0);
-      });
-      setTimeout(() => {
-        logger.error(`[${signal}] Force shutdown after timeout`);
-        process.exit(1);
-      }, 10000);
-    };
-
-    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
-    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+    // 11. Graceful Shutdown (centralized)
+    setupGracefulShutdown(httpServer, 30000);
   } catch (error) {
     logger.error("Failed to boot server", error);
     process.exit(1); // Fatal error during startup

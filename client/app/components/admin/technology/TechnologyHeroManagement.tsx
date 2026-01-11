@@ -76,7 +76,7 @@ export function TechnologyHeroManagement({
 
   const updateHeroMutation = useMutation({
     mutationFn: (data: HeroFormData) =>
-      apiRequest("/api/technology-hero", { method: "PATCH", body: data }),
+      apiRequest("/api/technology-hero", { method: "PATCH", body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-hero"] });
       toast({

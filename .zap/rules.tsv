@@ -1,0 +1,47 @@
+# ZAP Scan Rules Configuration
+# Phase 3: Security & Compliance Hardening
+#
+# Format: <rule_id><tab><action><tab><optional_parameter>
+# Actions: IGNORE, WARN, FAIL
+#
+# Documentation: https://www.zaproxy.org/docs/docker/baseline-scan/
+
+# Informational alerts - ignore
+10021	IGNORE	# X-Content-Type-Options Header Missing (handled by Helmet)
+10036	IGNORE	# Server Leaks via X-Powered-By (not present in our config)
+10037	IGNORE	# Server Leaks via Server HTTP Response Header
+
+# Low severity - warn only
+10020	WARN	# X-Frame-Options Header Not Set (we use CSP frame-ancestors)
+10038	WARN	# Content Security Policy (CSP) Header Not Set (we set it)
+10098	WARN	# Cross-Domain Misconfiguration
+10109	WARN	# Modern Web Application
+
+# Medium severity - warn
+40025	WARN	# Proxy Disclosure
+90022	WARN	# Application Error Disclosure
+90033	WARN	# Loosely Scoped Cookie
+
+# High severity - fail the build
+40012	FAIL	# Cross Site Scripting (Reflected)
+40014	FAIL	# Cross Site Scripting (Persistent)
+40016	FAIL	# Cross Site Scripting (Persistent) - Prime
+40017	FAIL	# Cross Site Scripting (Persistent) - Spider
+90020	FAIL	# Remote OS Command Injection
+90021	FAIL	# Remote OS Command Injection (Blind)
+90023	FAIL	# XML External Entity Attack
+
+# SQL Injection - always fail
+40018	FAIL	# SQL Injection
+40019	FAIL	# SQL Injection - MySQL
+40020	FAIL	# SQL Injection - Hypersonic SQL
+40021	FAIL	# SQL Injection - Oracle
+40022	FAIL	# SQL Injection - PostgreSQL
+40024	FAIL	# SQL Injection - SQLite
+
+# Authentication issues - fail
+10010	FAIL	# Cookie No HttpOnly Flag (production)
+10011	FAIL	# Cookie Without Secure Flag (production)
+
+# Path traversal - fail
+6	FAIL	# Path Traversal

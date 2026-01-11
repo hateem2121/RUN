@@ -13,6 +13,7 @@ import {
 } from "react-router";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import BackToTop from "@/components/ui/back-to-top";
+import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
 import type { LoaderFunctionArgs } from "react-router";
@@ -46,6 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <FloatingDockHeader />
               {children}
               <BackToTop />
+              <OfflineIndicator />
             </HydrationBoundary>
           </QueryClientProvider>
         </HelmetProvider>

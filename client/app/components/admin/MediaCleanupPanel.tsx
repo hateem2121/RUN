@@ -46,10 +46,10 @@ export function MediaCleanupPanel() {
     setCleanupStatus("scanning");
 
     try {
-      const response = await apiRequest("/api/admin/cleanup/trigger", {
+      const response = (await apiRequest("/api/admin/cleanup/trigger", {
         method: "POST",
-        body: { autoClean: false },
-      });
+        body: JSON.stringify({ autoClean: false }),
+      })) as { success: boolean; report: CleanupReport };
 
       if (response.success) {
         setLastReport(response.report);
@@ -69,10 +69,10 @@ export function MediaCleanupPanel() {
     setCleanupStatus("cleaning");
 
     try {
-      const response = await apiRequest("/api/admin/cleanup/trigger", {
+      const response = (await apiRequest("/api/admin/cleanup/trigger", {
         method: "POST",
-        body: { autoClean: true },
-      });
+        body: JSON.stringify({ autoClean: true }),
+      })) as { success: boolean; report: CleanupReport };
 
       if (response.success) {
         setLastReport(response.report);

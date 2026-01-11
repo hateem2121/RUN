@@ -20,7 +20,6 @@
       "!attached_assets",
       "!**/.react-router",
       "!client/.react-router",
-      "!**/scripts/archive",
       "!**/playwright-report",
       "!**/test-results",
       "!**/openapi-spec.json"

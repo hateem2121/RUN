@@ -114,7 +114,7 @@ export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => Quer
         error.status === 401 &&
         unauthorizedBehavior === "returnNull"
       ) {
-        return null;
+        return null as any;
       }
       throw error;
     }

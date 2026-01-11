@@ -86,7 +86,7 @@ export function TechnologyGradientSettings({
     mutationFn: async (data: GradientFormData) => {
       return apiRequest("/api/technology-gradient-settings", {
         method: "POST",
-        body: data,
+        body: JSON.stringify(data),
       });
     },
     onSuccess: () => {

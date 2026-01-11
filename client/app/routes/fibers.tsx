@@ -17,10 +17,7 @@ export async function loader() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["/api/fibers"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/fibers");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/fibers"),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -43,10 +40,7 @@ export default function Fibers() {
 
   const { data: fibersResponse, isLoading } = useQuery<Fiber[]>({
     queryKey: ["/api/fibers"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/fibers");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/fibers"),
   });
 
   const fibers = Array.isArray(fibersResponse) ? fibersResponse : [];

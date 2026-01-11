@@ -61,14 +61,14 @@ export function TechnologyCtaManagement({
     mutationFn: (data: CtaFormData) =>
       apiRequest("/api/technology-cta", {
         method: "PATCH",
-        body: {
+        body: JSON.stringify({
           title: data.headline,
           content: data.content,
           ctaText: data.buttonText,
           ctaLink: data.buttonLink,
           benefits: data.benefits,
           isActive: data.isActive,
-        },
+        }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-cta"] });

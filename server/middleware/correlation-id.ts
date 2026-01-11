@@ -4,6 +4,7 @@
  */
 
 import { randomUUID } from "node:crypto";
+import { trace } from "@opentelemetry/api";
 import type { NextFunction, Request, Response } from "express";
 import { correlationContext } from "../lib/monitoring/logger.js";
 
@@ -22,6 +23,14 @@ export function correlationIdMiddleware(req: Request, res: Response, next: NextF
 
   // Add correlation ID to response headers for debugging
   res.setHeader("X-Correlation-ID", correlationId);
+
+  // Add W3C trace context if OpenTelemetry is active
+  const span = trace.getActiveSpan();
+  if (span) {
+    const ctx = span.spanContext();
+    const traceFlags = ctx.traceFlags.toString(16).padStart(2, "0");
+    res.setHeader("traceparent", `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`);
+  }
 
   // Run the request handler within AsyncLocalStorage context
   // This ensures correlation ID is isolated per request (no race conditions)

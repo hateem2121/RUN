@@ -19,10 +19,10 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 | Layer        | Component     | Version    | Role & verification                                          |
 | :----------- | :------------ | :--------- | :----------------------------------------------------------- |
 | **Frontend** | React         | **19.2.3** | Component Model & SSR hydration.                             |
-| **Build**    | Vite          | **6.0.0**  | Bundling, HMR, and SSR manifest generation.                  |
+| **Build**    | Vite          | **7.0.0**  | Bundling, HMR, and SSR manifest generation.                  |
 | **Styling**  | Tailwind CSS  | **4.0.0**  | Utility-first styling with `@theme` blocks (No config file). |
 | **Backend**  | Express       | **5.1.0**  | API routing, middleware, and dev-server orchestration.       |
-| **Runtime**  | Node.js       | **Wait, package.json says >=24.0.0, README says 24** | Server execution environment.                                |
+| **Runtime**  | Node.js       | **≥24.0.0** | Server execution environment.                                |
 | **Database** | PostgreSQL    | **16+**    | Primary persistence (Neon Serverless).                       |
 | **ORM**      | Drizzle ORM   | **Latest** | TypeScript-first query builder and migration runner.         |
 | **Cache**    | Upstash Redis | **Latest** | Rate limiting and L2 caching.                                |

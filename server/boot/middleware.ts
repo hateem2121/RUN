@@ -133,8 +133,8 @@ export function setupErrorHandling(app: Express) {
   // Production Error Handler
   app.use(productionErrorHandler);
 
-  // Final Fallback Error Handler
-  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  // Final Fallback Error Handler (RFC 9457 compliant)
+  app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
@@ -146,7 +146,17 @@ export function setupErrorHandling(app: Express) {
       });
     }
 
-    res.status(status).json({ message });
+    // RFC 9457 Problem Details response
+    res
+      .status(status)
+      .setHeader("Content-Type", "application/problem+json")
+      .json({
+        type: "about:blank",
+        title: status >= 500 ? "Internal Server Error" : "Error",
+        status,
+        detail: message,
+        instance: req.path,
+      });
   });
 }
 

@@ -13,6 +13,10 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   // API Routes
   await registerRoutes(app);
 
+  // Prometheus Metrics Endpoint
+  const metricsRouter = (await import("../routes/metrics.js")).default;
+  app.use("/metrics", metricsRouter);
+
   // API Documentation UI
   const { default: docsRouter } = await import("../routes/docs.js");
   app.use("/docs", docsRouter);

@@ -146,8 +146,8 @@ export function AboutStatisticsTab() {
     mutationFn: async (data: any) => {
       return apiRequest("/api/about-statistics", {
         method: "POST",
-        body: data,
-      });
+        body: JSON.stringify(data),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -174,8 +174,8 @@ export function AboutStatisticsTab() {
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
       return apiRequest(`/api/about-statistics/${id}`, {
         method: "PATCH",
-        body: data,
-      });
+        body: JSON.stringify(data),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -229,8 +229,8 @@ export function AboutStatisticsTab() {
     mutationFn: async (statistics: { id: number; position: number }[]) => {
       return apiRequest("/api/about-statistics/reorder", {
         method: "PATCH",
-        body: { statistics },
-      });
+        body: JSON.stringify({ statistics }),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

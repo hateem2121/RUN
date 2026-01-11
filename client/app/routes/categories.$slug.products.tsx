@@ -44,10 +44,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   // 1. Fetch categories
   await queryClient.prefetchQuery({
     queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/categories");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/categories"),
   });
 
   const categories = queryClient.getQueryData<Category[]>(["/api/categories"]) || [];
@@ -57,17 +54,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     await Promise.all([
       queryClient.prefetchQuery({
         queryKey: ["/api/products", "category", category.id],
-        queryFn: async () => {
-          const res = await apiRequest(`/api/products?category=${category.id}&active=true`);
-          return res.json();
-        },
+        queryFn: () => apiRequest(`/api/products?category=${category.id}&active=true`),
       }),
       queryClient.prefetchQuery({
         queryKey: MediaQueryKeys.list,
-        queryFn: async () => {
-          const res = await apiRequest("/api/media?all=true");
-          return res.json();
-        },
+        queryFn: () => apiRequest("/api/media?all=true"),
       }),
     ]);
   }
@@ -92,10 +83,7 @@ export default function CategoryProductsPage() {
   // Fetch category by slug
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/categories");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/categories"),
   });
 
   const category = categories.find((c) => c.slug === slug);
@@ -106,10 +94,7 @@ export default function CategoryProductsPage() {
   // Fetch media assets
   const { data: mediaData } = useQuery<{ data: MediaAsset[] }>({
     queryKey: MediaQueryKeys.list,
-    queryFn: async () => {
-      const res = await apiRequest("/api/media?all=true");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/media?all=true"),
   });
   const mediaAssets = mediaData?.data || [];
 
@@ -121,8 +106,7 @@ export default function CategoryProductsPage() {
     queryKey: ["/api/products", "category", category?.id],
     queryFn: async () => {
       if (!category?.id) return { data: [] };
-      const res = await apiRequest(`/api/products?category=${category.id}&active=true`);
-      return res.json();
+      return apiRequest(`/api/products?category=${category.id}&active=true`);
     },
     enabled: !!category?.id,
   });

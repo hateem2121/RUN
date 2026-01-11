@@ -26,10 +26,7 @@ export async function loader() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["/api/sustainability/batch"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/sustainability/batch");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/sustainability/batch"),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -55,12 +52,9 @@ export default function Sustainability() {
   const heroOpacity = useTransform(scrollY, [0, 300], [1, isMobile ? 1 : 0]);
 
   // Queries for unified sustainability data (Batch Request)
-  const { data: batchData } = useQuery({
+  const { data: batchData } = useQuery<any>({
     queryKey: ["/api/sustainability/batch"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/sustainability/batch");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/sustainability/batch"),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -133,7 +127,7 @@ export default function Sustainability() {
   // OPTIMIZED: Fetch specific background media only if ID exists
   const { data: backgroundMedia } = useQuery<MediaAsset>({
     queryKey: ["/api/media", hero?.backgroundImageId],
-    queryFn: () => apiRequest(`/api/media/${hero?.backgroundImageId}`).then((res) => res.json()),
+    queryFn: () => apiRequest(`/api/media/${hero?.backgroundImageId}`),
     enabled: !!hero?.backgroundImageId,
     staleTime: 10 * 60 * 1000,
   });

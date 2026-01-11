@@ -22,24 +22,15 @@ export async function loader() {
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: ["/api/fabrics"],
-      queryFn: async () => {
-        const res = await apiRequest("/api/fabrics");
-        return res.json();
-      },
+      queryFn: () => apiRequest("/api/fabrics"),
     }),
     queryClient.prefetchQuery({
       queryKey: ["/api/fibers"],
-      queryFn: async () => {
-        const res = await apiRequest("/api/fibers");
-        return res.json();
-      },
+      queryFn: () => apiRequest("/api/fibers"),
     }),
     queryClient.prefetchQuery({
       queryKey: ["/api/certificates"],
-      queryFn: async () => {
-        const res = await apiRequest("/api/certificates");
-        return res.json();
-      },
+      queryFn: () => apiRequest("/api/certificates"),
     }),
   ]);
   return { dehydratedState: dehydrate(queryClient) };
@@ -78,10 +69,7 @@ export default function Fabrics() {
     isPlaceholderData,
   } = useQuery<Fabric[]>({
     queryKey: ["/api/fabrics"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/fabrics");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/fabrics"),
     placeholderData: keepPreviousData,
   });
 
@@ -89,18 +77,12 @@ export default function Fabrics() {
 
   const { data: fibers = [] } = useQuery<Fiber[]>({
     queryKey: ["/api/fibers"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/fibers");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/fibers"),
   });
 
   const { data: certificates = [] } = useQuery<Certificate[]>({
     queryKey: ["/api/certificates"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/certificates");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/certificates"),
   });
 
   // Filter fabrics based on search

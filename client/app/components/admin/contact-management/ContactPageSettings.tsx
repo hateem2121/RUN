@@ -158,15 +158,15 @@ export function ContactPageSettings() {
       };
 
       if (config?.id) {
-        return await apiRequest("/api/contact-page-configuration", {
+        return apiRequest("/api/contact-page-configuration", {
           method: "PATCH",
-          body: sanitizedData,
-        });
+          body: JSON.stringify(sanitizedData),
+        }) as Promise<any>;
       } else {
-        return await apiRequest("/api/contact-page-configuration", {
+        return apiRequest("/api/contact-page-configuration", {
           method: "POST",
-          body: sanitizedData,
-        });
+          body: JSON.stringify(sanitizedData),
+        }) as Promise<any>;
       }
     },
     onSuccess: () => {

@@ -43,11 +43,16 @@ describe("RFC 7807 Compliance", () => {
       header: () => "params",
     } as unknown as Request;
 
+    // Create chainable mock response object
+    const jsonMock = vi.fn();
+    const setHeaderMock = vi.fn().mockReturnValue({ json: jsonMock });
+    const statusMock = vi.fn().mockReturnValue({ setHeader: setHeaderMock, json: jsonMock });
+
     const res = {
       headersSent: false,
-      setHeader: vi.fn(),
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn(),
+      setHeader: setHeaderMock,
+      status: statusMock,
+      json: jsonMock,
     } as unknown as Response;
 
     const next = vi.fn();
@@ -57,9 +62,8 @@ describe("RFC 7807 Compliance", () => {
 
     expect(res.status).toHaveBeenCalledWith(404);
 
-    // Verify Content-Type
-    // Note: In the implementation we need to set this header!
-    // expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "application/problem+json");
+    // Verify RFC 9457 Content-Type
+    expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "application/problem+json");
 
     const jsonCall = (res.json as any).mock.calls[0][0];
 

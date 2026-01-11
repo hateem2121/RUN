@@ -18,8 +18,8 @@
 ### Reproducing the Environment
 ```bash
 # 1. Install correct Node version
-nvm install 22
-nvm use 22
+nvm install 24
+nvm use 24
 
 # 2. Install dependencies
 npm ci
@@ -33,7 +33,7 @@ npm ci
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
 | **React** | `19.2.3` | UI Framework | `client/package.json` |
-| **Vite** | `6.0.0` | Build Tool / Bundler | `client/package.json` |
+| **Vite** | `7.0.0` | Build Tool / Bundler | `client/package.json` |
 | **React Router** | `7.11.0` | Routing (Client & SSR) | `client/package.json` |
 | **Tailwind CSS** | `4.0.0` | Styling Engine | `client/package.json` |
 | **TanStack Query** | `^5.90.12` | Server State Management | `client/package.json` |

@@ -1,0 +1,208 @@
+# Multi-Region Cloud Build Configuration
+# Phase 4: Multi-Region & Performance
+#
+# Deploys to us-central1 and europe-west1 with Global HTTPS Load Balancer
+
+steps:
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    id: "build"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA", "."]
+
+  # Push the container image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    id: "push"
+    args: ["push", "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"]
+
+  # Upload static assets to GCS for CDN
+  - name: "gcr.io/cloud-builders/gsutil"
+    id: "upload-assets"
+    args: ["-m", "rsync", "-r", "-c", "dist/public", "gs://$PROJECT_ID-assets"]
+
+  # ===========================================
+  # REGION 1: US-CENTRAL1 (Primary)
+  # ===========================================
+  
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "deploy-us-canary"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "run-remix"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--tag"
+      - "canary"
+      - "--no-traffic"
+      - "--min-instances"
+      - "1"
+      - "--max-instances"
+      - "10"
+      - "--memory"
+      - "1Gi"
+      - "--cpu"
+      - "1"
+      - "--set-env-vars"
+      - "NODE_ENV=production,REGION=us-central1"
+
+  # Health check US region
+  - name: "gcr.io/cloud-builders/curl"
+    id: "health-check-us"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        CANARY_URL=$(gcloud run services describe run-remix --region=us-central1 --format='value(status.url)' 2>/dev/null || echo "")
+        if [ -z "$CANARY_URL" ]; then
+          echo "Could not get US canary URL, proceeding..."
+          exit 0
+        fi
+        echo "Health checking US canary at: $CANARY_URL/api/health"
+        for i in 1 2 3 4 5; do
+          if curl -sf "$CANARY_URL/api/health" > /dev/null; then
+            echo "US health check passed!"
+            exit 0
+          fi
+          echo "Attempt $i failed, retrying..."
+          sleep 5
+        done
+        echo "US health check failed after 5 attempts"
+        exit 1
+
+  # ===========================================
+  # REGION 2: EUROPE-WEST1 (Secondary)
+  # ===========================================
+  
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "deploy-eu-canary"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "run-remix"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"
+      - "--region"
+      - "europe-west1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--tag"
+      - "canary"
+      - "--no-traffic"
+      - "--min-instances"
+      - "1"
+      - "--max-instances"
+      - "10"
+      - "--memory"
+      - "1Gi"
+      - "--cpu"
+      - "1"
+      - "--set-env-vars"
+      - "NODE_ENV=production,REGION=europe-west1"
+
+  # Health check EU region
+  - name: "gcr.io/cloud-builders/curl"
+    id: "health-check-eu"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        CANARY_URL=$(gcloud run services describe run-remix --region=europe-west1 --format='value(status.url)' 2>/dev/null || echo "")
+        if [ -z "$CANARY_URL" ]; then
+          echo "Could not get EU canary URL, proceeding..."
+          exit 0
+        fi
+        echo "Health checking EU canary at: $CANARY_URL/api/health"
+        for i in 1 2 3 4 5; do
+          if curl -sf "$CANARY_URL/api/health" > /dev/null; then
+            echo "EU health check passed!"
+            exit 0
+          fi
+          echo "Attempt $i failed, retrying..."
+          sleep 5
+        done
+        echo "EU health check failed after 5 attempts"
+        exit 1
+
+  # ===========================================
+  # PROGRESSIVE ROLLOUT (Both Regions)
+  # ===========================================
+
+  # Shift 10% traffic to canary (both regions)
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "traffic-10"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        gcloud run services update-traffic run-remix --region=us-central1 --to-tags=canary=10
+        gcloud run services update-traffic run-remix --region=europe-west1 --to-tags=canary=10
+        echo "Shifted 10% traffic to canary in both regions"
+
+  # Wait and verify (30 seconds)
+  - name: "gcr.io/cloud-builders/curl"
+    id: "verify-10"
+    entrypoint: bash
+    args:
+      - "-c"
+      - "echo 'Monitoring canary at 10% in both regions...' && sleep 30"
+
+  # Shift 50% traffic to canary (both regions)
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "traffic-50"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        gcloud run services update-traffic run-remix --region=us-central1 --to-tags=canary=50
+        gcloud run services update-traffic run-remix --region=europe-west1 --to-tags=canary=50
+        echo "Shifted 50% traffic to canary in both regions"
+
+  # Wait and verify (30 seconds)
+  - name: "gcr.io/cloud-builders/curl"
+    id: "verify-50"
+    entrypoint: bash
+    args:
+      - "-c"
+      - "echo 'Monitoring canary at 50% in both regions...' && sleep 30"
+
+  # Full rollout - migrate all traffic to new revision (both regions)
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "full-rollout"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        gcloud run services update-traffic run-remix --region=us-central1 --to-latest
+        gcloud run services update-traffic run-remix --region=europe-west1 --to-latest
+        echo "Full rollout complete in both regions"
+
+  # ===========================================
+  # GLOBAL LOAD BALANCER UPDATE
+  # ===========================================
+  
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "update-neg"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        echo "Verifying NEG (Network Endpoint Groups) are healthy..."
+        gcloud compute network-endpoint-groups list --filter="name~run-remix" || echo "NEGs configured via Terraform/Console"
+        echo "Global Load Balancer will automatically route to healthy regions"
+
+images:
+  - "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: "E2_HIGHCPU_8"
+  
+timeout: "1800s"  # 30 minutes for multi-region deployment

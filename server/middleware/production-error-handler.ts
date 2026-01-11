@@ -372,8 +372,11 @@ export function productionErrorHandler(
     }
   }
 
-  // Send error response
-  res.status(Number(errorResponse.status)).json(errorResponse);
+  // Send error response with RFC 9457 Content-Type
+  res
+    .status(Number(errorResponse.status))
+    .setHeader("Content-Type", "application/problem+json")
+    .json(errorResponse);
 }
 
 // 404 Handler

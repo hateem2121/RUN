@@ -30,10 +30,7 @@ export async function loader() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["/api/about-batch"],
-    queryFn: async () => {
-      const response = await apiRequest("/api/about-batch");
-      return response.json();
-    },
+    queryFn: () => apiRequest("/api/about-batch"),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -86,10 +83,7 @@ export default function About() {
     };
   }>({
     queryKey: ["/api/about-batch"],
-    queryFn: async () => {
-      const response = await apiRequest("/api/about-batch");
-      return response.json();
-    },
+    queryFn: () => apiRequest("/api/about-batch"),
   });
 
   // Extract data from batch response

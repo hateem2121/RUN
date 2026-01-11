@@ -44,7 +44,7 @@ export function useManufacturingMutations({
     mutationFn: (data: unknown) =>
       apiRequest(apiEndpoint, {
         method: "POST",
-        body: data as Record<string, any>,
+        body: JSON.stringify(data),
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
@@ -68,7 +68,7 @@ export function useManufacturingMutations({
     mutationFn: ({ id, data }: { id: number; data: unknown }) =>
       apiRequest(`${apiEndpoint}/${id}`, {
         method: "PATCH",
-        body: data as Record<string, any>,
+        body: JSON.stringify(data),
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
@@ -112,7 +112,7 @@ export function useManufacturingMutations({
     mutationFn: (items: { id: number; position: number }[]) =>
       apiRequest(`${apiEndpoint}/reorder`, {
         method: "PATCH",
-        body: { [entityTypePlural]: items },
+        body: JSON.stringify({ [entityTypePlural]: items }),
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);

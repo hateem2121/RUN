@@ -55,7 +55,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
   // Create folder mutation
   const createMutation = useMutation({
     mutationFn: (data: { name: string; description?: string | undefined; parentId?: number }) =>
-      apiRequest("/api/folders", { method: "POST", body: data }),
+      apiRequest("/api/folders", { method: "POST", body: JSON.stringify(data) }) as Promise<any>,
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
       toast({ title: "Folder created successfully" });
@@ -75,7 +75,7 @@ export default function FolderTree({ selectedFolderId, onFolderSelect, onDrop }:
   // Update folder mutation
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: { name: string; description?: string } }) =>
-      apiRequest(`/api/folders/${id}`, { method: "PATCH", body: data }),
+      apiRequest(`/api/folders/${id}`, { method: "PATCH", body: JSON.stringify(data) }) as Promise<any>,
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/folders/tree"] });
       toast({ title: "Folder updated successfully" });

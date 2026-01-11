@@ -8,8 +8,8 @@
 
 **Identity**: `run-remix-monorepo`
 **Core Stack**:
-- **Frontend**: React 19 (Stable), Vite 6, Tailwind CSS v4.
-- **Backend**: Express 5 (Stable), Node.js 22 (LTS).
+- **Frontend**: React 19 (Stable), Vite 7, Tailwind CSS v4.
+- **Backend**: Express 5 (Stable), Node.js 24.
 - **Data**: Neon Serverless Postgres (HTTP Driver via `drizzle-orm`).
 - **State**: TanStack Query v5 + Upstash Redis (L2 Cache).
 - **Architecture**: Monorepo using NPM Workspaces + TurboRepo.
@@ -34,7 +34,6 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 | **Start Dev** | `npm run dev` | Starts Backend (5001) + Frontend Proxy. |
 | **Typecheck** | `npm run typecheck` | Validates TypeScript across all workspaces. |
 | **Lint (Fix)** | `npm run check:apply` | Auto-fixes Biome linting issues. |
-| **Docs** | `npm run docs:generate` | Refreshes `docs/overview.md` (Manual). |
 | **DB Push** | `npm run db:push` | Syncs Drizzle schema to Neon DB. |
 
 ## 4. Architectural Rules (Strict Invariants)
@@ -54,7 +53,7 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 
 ## 5. Development Workflow
 
-1.  **Exploration**: Read `SYSTEM_ARCHITECTURE_REPORT.md` for high-level understanding.
+1.  **Exploration**: Read `docs/overview.md` for high-level understanding.
 2.  **Modification**:
     *   Edit files.
     *   Run `npm run check:apply` to format.

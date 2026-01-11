@@ -147,8 +147,8 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       apiRequest("/api/products", {
         method: "POST",
         body: JSON.stringify(data),
-      }),
-    onSuccess: (newProduct) => {
+      }) as Promise<Product>,
+    onSuccess: (newProduct: Product) => {
       try {
         logger.debug("Product created successfully", {
           productId: newProduct.id,
@@ -179,8 +179,8 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       apiRequest(`/api/products/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
-      }),
-    onSuccess: (updatedProduct) => {
+      }) as Promise<Product>,
+    onSuccess: (updatedProduct: Product) => {
       try {
         logger.debug("Product updated successfully", {
           productId: updatedProduct.id,

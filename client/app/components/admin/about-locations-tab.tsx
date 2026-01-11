@@ -41,7 +41,7 @@ export function AboutLocationsTab() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("/api/about-locations", { method: "POST", body: data });
+      return apiRequest("/api/about-locations", { method: "POST", body: JSON.stringify(data) }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -65,8 +65,8 @@ export function AboutLocationsTab() {
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
       return apiRequest(`/api/about-locations/${id}`, {
         method: "PATCH",
-        body: data,
-      });
+        body: JSON.stringify(data),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

@@ -159,7 +159,7 @@ export function AboutSectionsTab() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("/api/about-sections", { method: "POST", body: data });
+      return apiRequest("/api/about-sections", { method: "POST", body: JSON.stringify(data) }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -181,8 +181,8 @@ export function AboutSectionsTab() {
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
       return apiRequest(`/api/about-sections/${id}`, {
         method: "PATCH",
-        body: data,
-      });
+        body: JSON.stringify(data),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -223,8 +223,8 @@ export function AboutSectionsTab() {
     mutationFn: async (sections: { id: number; position: number }[]) => {
       return apiRequest("/api/about-sections/reorder", {
         method: "PATCH",
-        body: { sections },
-      });
+        body: JSON.stringify({ sections }),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

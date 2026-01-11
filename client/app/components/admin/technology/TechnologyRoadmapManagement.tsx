@@ -92,10 +92,10 @@ export function TechnologyRoadmapManagement({
     mutationFn: (data: RoadmapFormData) =>
       apiRequest("/api/technology-roadmap", {
         method: "POST",
-        body: {
+        body: JSON.stringify({
           ...data,
           position: roadmap.length,
-        },
+        }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
@@ -121,7 +121,7 @@ export function TechnologyRoadmapManagement({
     mutationFn: ({ id, data }: { id: number; data: Partial<RoadmapFormData> }) =>
       apiRequest(`/api/technology-roadmap/${id}`, {
         method: "PATCH",
-        body: data,
+        body: JSON.stringify(data),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });

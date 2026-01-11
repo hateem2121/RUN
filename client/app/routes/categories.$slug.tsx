@@ -25,10 +25,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   // 1. Fetch category by slug to get ID
   await queryClient.prefetchQuery({
     queryKey: [`/api/categories/by-slug/${slug}`],
-    queryFn: async () => {
-      const res = await apiRequest(`/api/categories/by-slug/${slug}`);
-      return res.json();
-    },
+    queryFn: () => apiRequest(`/api/categories/by-slug/${slug}`),
   });
 
   const category = queryClient.getQueryData<Category>([`/api/categories/by-slug/${slug}`]);
@@ -38,31 +35,19 @@ export async function loader({ params }: Route.LoaderArgs) {
     await Promise.all([
       queryClient.prefetchQuery({
         queryKey: ["/api/categories"],
-        queryFn: async () => {
-          const res = await apiRequest("/api/categories");
-          return res.json();
-        },
+        queryFn: () => apiRequest("/api/categories"),
       }),
       queryClient.prefetchQuery({
         queryKey: ["/api/products", { category: category.id }],
-        queryFn: async () => {
-          const res = await apiRequest(`/api/products?category=${category.id}`);
-          return res.json();
-        },
+        queryFn: () => apiRequest(`/api/products?category=${category.id}`),
       }),
       queryClient.prefetchQuery({
         queryKey: ["/api/fabrics"],
-        queryFn: async () => {
-          const res = await apiRequest("/api/fabrics");
-          return res.json();
-        },
+        queryFn: () => apiRequest("/api/fabrics"),
       }),
       queryClient.prefetchQuery({
         queryKey: ["/api/certificates"],
-        queryFn: async () => {
-          const res = await apiRequest("/api/certificates");
-          return res.json();
-        },
+        queryFn: () => apiRequest("/api/certificates"),
       }),
     ]);
   }
@@ -171,20 +156,14 @@ export default function CategoryDetail() {
     error: categoryError,
   } = useQuery<Category>({
     queryKey: [`/api/categories/by-slug/${slug}`],
-    queryFn: async () => {
-      const res = await apiRequest(`/api/categories/by-slug/${slug}`);
-      return res.json();
-    },
+    queryFn: () => apiRequest(`/api/categories/by-slug/${slug}`),
     enabled: !!slug,
   });
 
   // Fetch all categories for breadcrumbs
   const { data: allCategories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/categories");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/categories"),
   });
 
   // Fetch products for this category
@@ -194,8 +173,7 @@ export default function CategoryDetail() {
     queryKey: ["/api/products", { category: category?.id }],
     queryFn: async () => {
       if (!category?.id) return { data: [] };
-      const res = await apiRequest(`/api/products?category=${category.id}`);
-      return res.json();
+      return apiRequest(`/api/products?category=${category.id}`);
     },
     enabled: !!category?.id,
   });
@@ -203,18 +181,12 @@ export default function CategoryDetail() {
   // Fetch related data
   const { data: fabrics = [] } = useQuery<Fabric[]>({
     queryKey: ["/api/fabrics"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/fabrics");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/fabrics"),
   });
 
   const { data: certificates = [] } = useQuery<Certificate[]>({
     queryKey: ["/api/certificates"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/certificates");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/certificates"),
   });
 
   const products = Array.isArray(productsData?.data) ? productsData.data : [];

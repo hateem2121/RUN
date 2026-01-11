@@ -88,8 +88,8 @@ export function AboutTeamMessageTab() {
     mutationFn: async (data: Partial<AboutTeamMessage>) => {
       return apiRequest("/api/about-team-message", {
         method: "PATCH",
-        body: data,
-      });
+        body: JSON.stringify(data),
+      }) as Promise<any>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

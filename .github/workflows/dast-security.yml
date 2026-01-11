@@ -1,0 +1,129 @@
+# DAST (Dynamic Application Security Testing) Workflow
+# Phase 3: Security & Compliance Hardening
+#
+# Runs OWASP ZAP against staging environment to detect vulnerabilities
+
+name: DAST Security Scan
+
+on:
+  schedule:
+    # Weekly scan on Sunday at 2 AM UTC
+    - cron: "0 2 * * 0"
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "Target URL to scan"
+        required: false
+        default: "https://staging.runapparel.com"
+      scan_type:
+        description: "Scan type (baseline, full)"
+        required: false
+        default: "baseline"
+
+env:
+  DEFAULT_TARGET: "https://staging.runapparel.com"
+
+jobs:
+  dast-scan:
+    name: OWASP ZAP Scan
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set scan target
+        id: target
+        run: |
+          TARGET="${{ github.event.inputs.target_url || env.DEFAULT_TARGET }}"
+          echo "url=$TARGET" >> $GITHUB_OUTPUT
+          echo "Scanning target: $TARGET"
+
+      # Baseline scan - quick, passive only
+      - name: ZAP Baseline Scan
+        if: ${{ github.event.inputs.scan_type != 'full' }}
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: ${{ steps.target.outputs.url }}
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a -j -l WARN"
+          allow_issue_writing: true
+          issue_title: "[Security] DAST Baseline Scan Results"
+
+      # Full scan - active, more thorough
+      - name: ZAP Full Scan
+        if: ${{ github.event.inputs.scan_type == 'full' }}
+        uses: zaproxy/action-full-scan@v0.10.0
+        with:
+          target: ${{ steps.target.outputs.url }}
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a -j -l WARN"
+          allow_issue_writing: true
+          issue_title: "[Security] DAST Full Scan Results"
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-report-${{ github.run_number }}
+          path: report_html.html
+          retention-days: 30
+
+      - name: Check for Critical Findings
+        if: always()
+        run: |
+          # Parse ZAP results for critical/high findings
+          if [ -f "report_json.json" ]; then
+            CRITICAL=$(jq '[.site[].alerts[] | select(.riskcode == "3")] | length' report_json.json 2>/dev/null || echo "0")
+            HIGH=$(jq '[.site[].alerts[] | select(.riskcode == "2")] | length' report_json.json 2>/dev/null || echo "0")
+            
+            echo "Critical findings: $CRITICAL"
+            echo "High findings: $HIGH"
+            
+            if [ "$CRITICAL" -gt "0" ]; then
+              echo "::error::Critical vulnerabilities found! Review the ZAP report."
+              exit 1
+            fi
+            
+            if [ "$HIGH" -gt "5" ]; then
+              echo "::warning::Multiple high-severity findings detected."
+            fi
+          fi
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: report_sarif.json
+        continue-on-error: true
+
+  notify:
+    name: Notify on Findings
+    runs-on: ubuntu-latest
+    needs: dast-scan
+    if: failure()
+
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "⚠️ DAST Security Scan Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*DAST Security Scan Failed*\n\nCritical or high-severity vulnerabilities detected.\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Results>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        continue-on-error: true

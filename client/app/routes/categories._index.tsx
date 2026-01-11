@@ -31,10 +31,7 @@ export async function loader() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/categories");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/categories"),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -88,10 +85,7 @@ export default function CategoriesPage() {
   // Fetch all categories
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const res = await apiRequest("/api/categories");
-      return res.json();
-    },
+    queryFn: () => apiRequest("/api/categories"),
   });
 
   // Filter active categories with featured content

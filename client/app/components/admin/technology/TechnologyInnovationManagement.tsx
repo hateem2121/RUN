@@ -213,10 +213,10 @@ export function TechnologyInnovationManagement({
     mutationFn: (data: InnovationFormData) =>
       apiRequest("/api/technology-innovations", {
         method: "POST",
-        body: {
+        body: JSON.stringify({
           ...data,
           position: innovations.length,
-        },
+        }),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
@@ -249,7 +249,7 @@ export function TechnologyInnovationManagement({
     mutationFn: ({ id, data }: { id: number; data: Partial<InnovationFormData> }) =>
       apiRequest(`/api/technology-innovations/${id}`, {
         method: "PATCH",
-        body: data,
+        body: JSON.stringify(data),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
@@ -282,7 +282,7 @@ export function TechnologyInnovationManagement({
     mutationFn: (innovations: { id: number; position: number }[]) =>
       apiRequest("/api/technology-innovations/reorder", {
         method: "PATCH",
-        body: { innovations },
+        body: JSON.stringify({ innovations }),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({

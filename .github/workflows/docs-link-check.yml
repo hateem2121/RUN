@@ -1,0 +1,54 @@
+# Documentation Link Checker
+# Ensures all internal and external links in documentation are valid
+
+name: Docs Link Check
+
+on:
+  push:
+    paths:
+      - 'docs/**/*.md'
+      - '*.md'
+      - '.github/workflows/docs-link-check.yml'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - '*.md'
+  schedule:
+    # Weekly check for external link rot
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  link-check:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --accept 200,204,206,301,302,304,307,308
+            --exclude-path node_modules
+            --exclude-path .gemini
+            --exclude 'localhost'
+            --exclude '127.0.0.1'
+            --exclude 'example.com'
+            --exclude 'file:///'
+            --timeout 30
+            --max-retries 3
+            './**/*.md'
+          fail: true
+
+      - name: Upload Link Check Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: link-check-report
+          path: lychee/out.md
+          retention-days: 7

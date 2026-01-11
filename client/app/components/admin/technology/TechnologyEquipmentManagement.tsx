@@ -209,10 +209,10 @@ export function TechnologyEquipmentManagement({
     mutationFn: (data: EquipmentFormData) =>
       apiRequest("/api/technology-equipment", {
         method: "POST",
-        body: {
+        body: JSON.stringify({
           ...data,
           position: equipment.length,
-        },
+        }),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
@@ -246,7 +246,7 @@ export function TechnologyEquipmentManagement({
     mutationFn: ({ id, data }: { id: number; data: Partial<EquipmentFormData> }) =>
       apiRequest(`/api/technology-equipment/${id}`, {
         method: "PATCH",
-        body: data,
+        body: JSON.stringify(data),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
@@ -278,7 +278,7 @@ export function TechnologyEquipmentManagement({
     mutationFn: (equipment: { id: number; position: number }[]) =>
       apiRequest("/api/technology-equipment/reorder", {
         method: "PATCH",
-        body: { equipment },
+        body: JSON.stringify({ equipment }),
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({

@@ -16,10 +16,10 @@ export default defineConfig({
       reportsDirectory: "./coverage",
       exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/mocks/**"],
       thresholds: {
-        lines: 40,
-        functions: 30, // Functions are lower
-        branches: 25, // Branches are lower
-        statements: 40,
+        lines: 80,
+        functions: 70,
+        branches: 60,
+        statements: 80,
       },
     },
   },
