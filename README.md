@@ -9,7 +9,7 @@ A modern B2B e-commerce platform for athletic apparel manufacturing, built with 
 - [Overview](#overview)
 - [System Context](#system-context)
 - [Architecture Guide](#architecture-guide)
-- [Tech Stack](#tech-stack)
+- [Tech Stack](./docs/overview.md#2-stack--critical-versions)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Performance Metrics](#performance-metrics)
