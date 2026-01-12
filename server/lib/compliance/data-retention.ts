@@ -12,7 +12,7 @@
  */
 
 import { lt, sql } from "drizzle-orm";
-import { auditLogs, sessions } from "../../../shared/schema.js";
+import { sessions } from "../../../shared/schema.js";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 

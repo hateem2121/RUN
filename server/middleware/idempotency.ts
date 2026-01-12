@@ -1,6 +1,5 @@
 import { Redis } from "@upstash/redis";
 import type { NextFunction, Request, Response } from "express";
-import { AppError, ConflictError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 // Initialize Redis if available
@@ -8,7 +7,7 @@ let redis: Redis | undefined;
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
   try {
     redis = Redis.fromEnv();
-  } catch (error) {
+  } catch (_error) {
     logger.warn("[Idempotency] Failed to initialize Redis, idempotency disabled");
   }
 }

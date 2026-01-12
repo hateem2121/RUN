@@ -113,7 +113,7 @@ function truncateQuery(query: string, maxLength = 500): string {
   if (sanitized.length <= maxLength) {
     return sanitized;
   }
-  return sanitized.substring(0, maxLength) + "...";
+  return `${sanitized.substring(0, maxLength)}...`;
 }
 
 /**

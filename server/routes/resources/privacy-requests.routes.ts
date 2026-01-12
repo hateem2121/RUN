@@ -8,7 +8,7 @@
  */
 
 import { eq } from "drizzle-orm";
-import { type Request, type Response, Router } from "express";
+import { type Response, Router } from "express";
 import { z } from "zod";
 import { auditLogs, users } from "../../../shared/schema.js";
 import { db } from "../../db.js";
@@ -34,7 +34,7 @@ const DeletionRequestSchema = z.object({
 router.post(
   "/data-export",
   validateRequest({ body: DataExportRequestSchema }),
-  async (req, res): Promise<void | Response> => {
+  async (req, res): Promise<undefined | Response> => {
     try {
       const userId = req.user?.id;
 
@@ -110,7 +110,7 @@ router.post(
 router.post(
   "/deletion-request",
   validateRequest({ body: DeletionRequestSchema }),
-  async (req, res): Promise<void | Response> => {
+  async (req, res): Promise<undefined | Response> => {
     try {
       const userId = req.user?.id;
       const userEmail = req.user?.email;
@@ -185,7 +185,7 @@ router.post(
  * GET /api/privacy/request-status/:requestId
  * Check status of a privacy request
  */
-router.get("/request-status/:requestId", async (req, res): Promise<void | Response> => {
+router.get("/request-status/:requestId", async (req, res): Promise<undefined | Response> => {
   try {
     const userId = req.user?.id;
     const { requestId } = req.params;
@@ -223,7 +223,7 @@ router.get("/request-status/:requestId", async (req, res): Promise<void | Respon
  * POST /api/privacy/cancel-deletion
  * Cancel a pending deletion request
  */
-router.post("/cancel-deletion/:requestId", async (req, res): Promise<void | Response> => {
+router.post("/cancel-deletion/:requestId", async (req, res): Promise<undefined | Response> => {
   try {
     const userId = req.user?.id;
     const { requestId } = req.params;

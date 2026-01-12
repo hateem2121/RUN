@@ -112,7 +112,7 @@ function viewProduct() {
 
         errorRate.add(!success);
       }
-    } catch (e) {
+    } catch (_e) {
       errorRate.add(true);
     }
   }

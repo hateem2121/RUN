@@ -55,24 +55,18 @@ async function waitForHealthy(maxRetries: number): Promise<{ healthy: boolean; a
 
         if (health.overall === "healthy") {
           consecutiveHealthy++;
-          console.log(
-            `✓ Health check ${i + 1}: healthy (${consecutiveHealthy}/${CONFIG.healthyThreshold})`,
-          );
 
           if (consecutiveHealthy >= CONFIG.healthyThreshold) {
             return { healthy: true, attempts: i + 1 };
           }
         } else {
           consecutiveHealthy = 0;
-          console.log(`○ Health check ${i + 1}: ${health.overall}`);
         }
       } else {
         consecutiveHealthy = 0;
-        console.log(`✗ Health check ${i + 1}: HTTP ${response.status}`);
       }
-    } catch (error) {
+    } catch (_error) {
       consecutiveHealthy = 0;
-      console.log(`✗ Health check ${i + 1}: connection failed`);
     }
 
     await new Promise((r) => setTimeout(r, CONFIG.retryIntervalMs));
@@ -121,16 +115,8 @@ async function verifyLowErrorRate(): Promise<{ low: boolean; rate?: number }> {
  * Main recovery verification
  */
 async function verifyRecovery(): Promise<RecoveryReport> {
-  console.log("═══════════════════════════════════════════════════════");
-  console.log("  Recovery Verification");
-  console.log(`  Target: ${CONFIG.targetUrl}`);
-  console.log("═══════════════════════════════════════════════════════\n");
-
   const startTime = Date.now();
   const checks: RecoveryReport["checks"] = [];
-
-  // Check 1: Health endpoint stabilizes
-  console.log("📋 Check 1: Waiting for health to stabilize...");
   const healthResult = await waitForHealthy(CONFIG.maxRetries);
   checks.push({
     name: "Health Stabilization",
@@ -139,49 +125,23 @@ async function verifyRecovery(): Promise<RecoveryReport> {
       ? `Healthy after ${healthResult.attempts} checks`
       : `Failed to stabilize after ${healthResult.attempts} checks`,
   });
-
-  // Check 2: Circuit breaker closed
-  console.log("\n📋 Check 2: Verifying circuit breaker state...");
   const cbResult = await verifyCircuitBreakerClosed();
   checks.push({
     name: "Circuit Breaker State",
     passed: cbResult.closed,
     message: `State: ${cbResult.state}`,
   });
-  console.log(
-    cbResult.closed
-      ? `✓ Circuit breaker: ${cbResult.state}`
-      : `✗ Circuit breaker: ${cbResult.state}`,
-  );
-
-  // Check 3: Error rate low
-  console.log("\n📋 Check 3: Verifying error rate...");
   const errorResult = await verifyLowErrorRate();
   checks.push({
     name: "Error Rate",
     passed: errorResult.low,
     message: `Error rate: ${(errorResult.rate! * 100).toFixed(1)}%`,
   });
-  console.log(
-    errorResult.low
-      ? `✓ Error rate: ${(errorResult.rate! * 100).toFixed(1)}%`
-      : `✗ Error rate: ${(errorResult.rate! * 100).toFixed(1)}% (threshold: <10%)`,
-  );
 
   const duration = Date.now() - startTime;
   const success = checks.every((c) => c.passed);
-
-  // Summary
-  console.log("\n═══════════════════════════════════════════════════════");
-  console.log("  RECOVERY REPORT");
-  console.log("═══════════════════════════════════════════════════════");
-  console.log(`  Status: ${success ? "✅ PASSED" : "❌ FAILED"}`);
-  console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
-  console.log("───────────────────────────────────────────────────────");
-  for (const check of checks) {
-    console.log(`  ${check.passed ? "✓" : "✗"} ${check.name}: ${check.message}`);
+  for (const _check of checks) {
   }
-  console.log("═══════════════════════════════════════════════════════\n");
 
   return { success, checks, duration };
 }
@@ -192,8 +152,7 @@ if (process.argv[1]?.includes("recovery-verification")) {
     .then((report) => {
       process.exit(report.success ? 0 : 1);
     })
-    .catch((error) => {
-      console.error("Recovery verification failed:", error);
+    .catch((_error) => {
       process.exit(1);
     });
 }

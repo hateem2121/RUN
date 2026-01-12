@@ -37,7 +37,7 @@ router.get("/logout", (req, res, next) => {
 router.get(
   "/auth/user",
   authService.isAuthenticated,
-  async (req, res): Promise<void | Response> => {
+  async (req, res): Promise<undefined | Response> => {
     const user = req.user as SessionUser;
     const userId = user.claims.sub;
     const dbUser = await getStorage().getUser(userId);

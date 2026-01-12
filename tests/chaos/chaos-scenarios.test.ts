@@ -7,7 +7,7 @@
  * IMPORTANT: Only run against staging environments, never production.
  */
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 /**
  * Chaos test configuration
@@ -21,7 +21,7 @@ const CHAOS_CONFIG = {
 /**
  * Helper to wait for a condition with timeout
  */
-async function waitFor(
+async function _waitFor(
   condition: () => Promise<boolean>,
   timeoutMs: number = 10000,
   intervalMs: number = 500,
@@ -37,7 +37,7 @@ async function waitFor(
 /**
  * Check if service is healthy
  */
-async function isHealthy(): Promise<boolean> {
+async function _isHealthy(): Promise<boolean> {
   try {
     const response = await fetch(`${CHAOS_CONFIG.targetUrl}${CHAOS_CONFIG.healthEndpoint}`);
     return response.ok;

@@ -10,7 +10,7 @@
  * - Health monitoring
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Redis and OpenTelemetry
 vi.mock("../server/lib/cache/upstash-client.js", () => ({
@@ -35,7 +35,7 @@ vi.mock("../server/lib/monitoring/logger.js", () => ({
 }));
 
 vi.mock("../server/lib/resilience/circuit-breaker.js", () => ({
-  withCircuit: vi.fn((name, fn) => fn()),
+  withCircuit: vi.fn((_name, fn) => fn()),
   REDIS_CIRCUIT_OPTIONS: {},
 }));
 
@@ -116,7 +116,7 @@ describe("UnifiedCache", () => {
       const cache = UnifiedCache.getInstance();
 
       // Clear L1 by getting a new key
-      const result = await cache.get("redis-only-key");
+      const _result = await cache.get("redis-only-key");
 
       // Since the mock returns data, we should get the value
       expect(redis.get).toHaveBeenCalled();

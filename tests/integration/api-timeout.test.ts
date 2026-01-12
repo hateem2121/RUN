@@ -15,8 +15,8 @@ describe("apiRequest Timeout Hardening", () => {
 
   it("should timeout after default 15000ms if server hangs", async () => {
     // Mock fetch to hang but respect signal
-    (global.fetch as any).mockImplementation((url: string, options: any) => {
-      return new Promise((resolve, reject) => {
+    (global.fetch as any).mockImplementation((_url: string, options: any) => {
+      return new Promise((_resolve, reject) => {
         const signal = options?.signal;
         if (signal) {
           if (signal.aborted) {
@@ -46,8 +46,8 @@ describe("apiRequest Timeout Hardening", () => {
 
   it("should respect custom timeout", async () => {
     // Mock fetch to hang but respect signal
-    (global.fetch as any).mockImplementation((url: string, options: any) => {
-      return new Promise((resolve, reject) => {
+    (global.fetch as any).mockImplementation((_url: string, options: any) => {
+      return new Promise((_resolve, reject) => {
         const signal = options?.signal;
         if (signal) {
           if (signal.aborted) {

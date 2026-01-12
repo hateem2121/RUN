@@ -3,7 +3,7 @@ import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../../lib/errors.js";
+import { type AppError, DatabaseError, NotFoundError } from "../../lib/errors.js";
 
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
@@ -722,7 +722,7 @@ export async function batchCreateAssets(req: Request, res: Response, next: NextF
   }
 }
 
-export async function batchDeleteAssets(req: Request, res: Response, next: NextFunction) {
+export async function batchDeleteAssets(req: Request, res: Response, _next: NextFunction) {
   const { ids } = req.body;
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {

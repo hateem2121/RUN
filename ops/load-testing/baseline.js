@@ -118,8 +118,6 @@ export default function () {
 
 // Lifecycle hooks
 export function setup() {
-  console.log(`Running baseline load test against: ${BASE_URL}`);
-
   // Verify target is accessible
   const res = http.get(`${BASE_URL}/api/health`);
   if (res.status !== 200) {
@@ -129,9 +127,7 @@ export function setup() {
   return { startTime: new Date().toISOString() };
 }
 
-export function teardown(data) {
-  console.log(`Test completed. Started at: ${data.startTime}`);
-}
+export function teardown(_data) {}
 
 export function handleSummary(data) {
   return {
@@ -140,7 +136,7 @@ export function handleSummary(data) {
   };
 }
 
-function textSummary(data, options) {
+function textSummary(data, _options) {
   // Custom summary output
   const { metrics } = data;
 

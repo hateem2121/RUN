@@ -120,7 +120,7 @@ export async function apiRequest<T>(
 
     // Attempt to parse JSON
     const contentType = res.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    if (contentType?.includes("application/json")) {
       return await res.json();
     }
     return (await res.text()) as unknown as T;

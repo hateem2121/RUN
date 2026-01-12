@@ -60,7 +60,7 @@ registry.registerPath({
 
 // GET /api/products - List products with pagination and filtering
 // CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
-router.get("/products", async (req, res): Promise<void | Response> => {
+router.get("/products", async (req, res): Promise<undefined | Response> => {
   (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
@@ -173,7 +173,7 @@ router.get("/products", async (req, res): Promise<void | Response> => {
 });
 
 // GET /api/products/by-path - Get product by hierarchical URL path
-router.get("/products/by-path", async (req, res): Promise<void | Response> => {
+router.get("/products/by-path", async (req, res): Promise<undefined | Response> => {
   (req as any)._handled = true;
   try {
     const ProductByPathSchema = z.object({
@@ -230,7 +230,7 @@ router.get("/products/by-path", async (req, res): Promise<void | Response> => {
 });
 
 // PHASE 4: GET /api/products/:id/3d-model - Get 3D model metadata lazily
-router.get("/products/:id/3d-model", async (req, res): Promise<void | Response> => {
+router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Response> => {
   (req as any)._handled = true;
   try {
     const id = validateIdParam(req, res, "id", "product");
@@ -265,7 +265,7 @@ router.get("/products/:id/3d-model", async (req, res): Promise<void | Response> 
 });
 
 // GET /api/products/:id - Get single product
-router.get("/products/:id", async (req, res): Promise<void | Response> => {
+router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
   (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
@@ -302,53 +302,57 @@ router.get("/products/:id", async (req, res): Promise<void | Response> => {
 });
 
 // POST /api/products - Create new product
-router.post("/products", authService.requireAdmin, async (req, res): Promise<void | Response> => {
-  try {
-    // Rate limiting check
-    if (!checkRateLimit()) {
-      return res.status(429).json({
+router.post(
+  "/products",
+  authService.requireAdmin,
+  async (req, res): Promise<undefined | Response> => {
+    try {
+      // Rate limiting check
+      if (!checkRateLimit()) {
+        return res.status(429).json({
+          success: false,
+          error: { message: "Too many requests. Please try again later." },
+        });
+      }
+
+      // Enhanced input validation and sanitization
+      if (req.body.name) {
+        req.body.name = validateAndSanitizeInput(req.body.name);
+      }
+      if (req.body.description) {
+        req.body.description = validateAndSanitizeInput(req.body.description);
+      }
+
+      const validatedData = insertProductSchema.parse(req.body);
+      const product = await withTimeout(
+        retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
+          operationName: "Create product",
+        }),
+        10000,
+        "Create product",
+      );
+      return res.status(201).json(product);
+    } catch (error: unknown) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: "Validation error",
+            details: error.issues,
+          },
+        });
+      }
+      logger.error("CREATE PRODUCT error:", error);
+      return res.status(500).json({
         success: false,
-        error: { message: "Too many requests. Please try again later." },
+        error: { message: "Failed to create product" },
       });
     }
-
-    // Enhanced input validation and sanitization
-    if (req.body.name) {
-      req.body.name = validateAndSanitizeInput(req.body.name);
-    }
-    if (req.body.description) {
-      req.body.description = validateAndSanitizeInput(req.body.description);
-    }
-
-    const validatedData = insertProductSchema.parse(req.body);
-    const product = await withTimeout(
-      retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
-        operationName: "Create product",
-      }),
-      10000,
-      "Create product",
-    );
-    return res.status(201).json(product);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: "Validation error",
-          details: error.issues,
-        },
-      });
-    }
-    logger.error("CREATE PRODUCT error:", error);
-    return res.status(500).json({
-      success: false,
-      error: { message: "Failed to create product" },
-    });
-  }
-});
+  },
+);
 
 // Shared update handler for both PUT and PATCH
-const updateProductHandler = async (req: Request, res: Response): Promise<void | Response> => {
+const updateProductHandler = async (req: Request, res: Response): Promise<undefined | Response> => {
   try {
     const id = validateIdParam(req, res, "id", "product");
     if (id === null) return; // Error response already sent
@@ -401,7 +405,7 @@ router.patch("/products/:id", authService.requireAdmin, updateProductHandler);
 router.delete(
   "/products/:id",
   authService.requireAdmin,
-  async (req, res): Promise<void | Response> => {
+  async (req, res): Promise<undefined | Response> => {
     try {
       const id = validateIdParam(req, res, "id", "product");
       if (id === null) return; // Error response already sent

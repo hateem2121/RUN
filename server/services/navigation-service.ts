@@ -2,7 +2,7 @@ import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
-import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
+import { type AppError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { getStorage } from "../lib/storage-singleton.js";
