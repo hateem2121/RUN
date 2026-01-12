@@ -260,9 +260,9 @@ export default function CategoryList(props: CategoryListProps) {
           <div className="rounded-lg border-2 border-blue-300 bg-white p-2 opacity-90 shadow-lg">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
-                {(activeCategory as any).imageUrl ? (
+                {(activeCategory as Category & { imageUrl?: string }).imageUrl ? (
                   <img
-                    src={(activeCategory as any).imageUrl}
+                    src={(activeCategory as Category & { imageUrl?: string }).imageUrl}
                     alt=""
                     className="h-full w-full rounded object-cover"
                   />

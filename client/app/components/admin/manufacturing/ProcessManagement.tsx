@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -182,7 +183,7 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
     deleteMutation: deleteProcessMutation,
     reorderMutation: reorderProcessesMutation,
   } = useManufacturingMutations({
-    entity: "processes" as any,
+    entity: "processes",
     entityType: "Process",
     entityTypePlural: "processes",
     queryKey: "/api/manufacturing-processes",
@@ -271,9 +272,9 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
     setShowProcessDialog(true);
   };
 
-  const handleProcessDragEnd = (event: any) => {
+  const handleProcessDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = processes.findIndex((p) => p.id === active.id);
       const newIndex = processes.findIndex((p) => p.id === over.id);
       const newProcesses = arrayMove(processes, oldIndex, newIndex);

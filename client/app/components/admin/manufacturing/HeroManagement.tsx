@@ -60,7 +60,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
     queryKey: createMediaQueryKey.single(heroData.videoId || 0),
     queryFn: async (): Promise<MediaAsset> => {
       if (!heroData.videoId) throw new Error("No video ID");
-      const res = await apiRequest<any>(`/api/media/${heroData.videoId}`, {
+      const res = await apiRequest<{ data: MediaAsset }>(`/api/media/${heroData.videoId}`, {
         method: "GET",
       });
       return res.data;
@@ -75,7 +75,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
     queryKey: createMediaQueryKey.single(heroData.backgroundMediaId || 0),
     queryFn: async (): Promise<MediaAsset> => {
       if (!heroData.backgroundMediaId) throw new Error("No background media ID");
-      const res = await apiRequest<any>(`/api/media/${heroData.backgroundMediaId}`, {
+      const res = await apiRequest<{ data: MediaAsset }>(`/api/media/${heroData.backgroundMediaId}`, {
         method: "GET",
       });
       return res.data;
@@ -105,10 +105,10 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
 
   const updateHeroMutation = useMutation({
     mutationFn: (data: Partial<HeroFormData>) => {
-      return apiRequest("/api/manufacturing-hero", {
+      return apiRequest<ManufacturingHero>("/api/manufacturing-hero", {
         method: "PATCH",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      });
     },
     onSuccess: (response) => {
       // Update local state immediately with the server response

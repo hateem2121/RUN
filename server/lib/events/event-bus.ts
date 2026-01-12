@@ -50,10 +50,10 @@ export interface CacheInvalidateEvent extends BaseEvent<{ keys: string[] }> {
 
 export interface AuditEvent
   extends BaseEvent<{
-    userId?: string;
+    userId?: string | undefined;
     action: string;
     resource: string;
-    details?: Record<string, unknown>;
+    details?: Record<string, unknown> | undefined;
   }> {
   type: "audit.log";
 }

@@ -125,7 +125,7 @@ export class AuthService {
 
       const now = Date.now();
       // Cast session to any to avoid TS errors with custom property
-      const sess = req.session as any;
+      const sess = req.session;
       const currentUA = req.headers["user-agent"] || "";
 
       // P2 SECURITY: User Agent Binding - verify session wasn't stolen
@@ -166,15 +166,17 @@ export class AuthService {
             return next(err);
           }
           // Restore passport state, UA hash, and update rotation timestamp
-          (req.session as any).passport = passportState;
-          (req.session as any).uaHash = savedUaHash;
-          (req.session as any).lastRotated = now;
+          if (req.session) {
+            req.session.passport = passportState;
+            req.session.uaHash = savedUaHash;
+            req.session.lastRotated = now;
 
-          // Explicitly save to ensure the new SID is stored
-          req.session.save((err) => {
-            if (err) logger.error("[Auth] Failed to save regenerated session:", err);
-            next();
-          });
+            // Explicitly save to ensure the new SID is stored
+            req.session.save((err) => {
+              if (err) logger.error("[Auth] Failed to save regenerated session:", err);
+              next();
+            });
+          }
         });
       } else {
         next();

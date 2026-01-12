@@ -1,6 +1,8 @@
 import { closestCenter, DndContext } from "@dnd-kit/core";
+import type { SensorDescriptor } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { MediaAsset, SustainabilityInitiative } from "@shared/schema";
+import type { InsertSustainabilityInitiative, MediaAsset, SustainabilityInitiative } from "@shared/schema";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus, Upload } from "lucide-react";
 import { useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
@@ -56,12 +58,13 @@ interface InitiativeValidation {
 interface InitiativesTabContentProps {
   initiatives: SustainabilityInitiative[] | undefined;
   paginatedInitiatives: SustainabilityInitiative[];
+
   initiativesPage: number;
   initiativesTotalPages: number;
-  sensors: any;
-  createInitiativeMutation: any;
-  updateInitiativeMutation: any;
-  deleteInitiativeMutation: any;
+  sensors: SensorDescriptor<object>[];
+  createInitiativeMutation: UseMutationResult<unknown, unknown, InsertSustainabilityInitiative>;
+  updateInitiativeMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityInitiative }>;
+  deleteInitiativeMutation: UseMutationResult<unknown, unknown, number>;
   SortableInitiativeItem: React.ComponentType<{
     initiative: SustainabilityInitiative;
     onEdit: (initiative: SustainabilityInitiative) => void;

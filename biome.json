@@ -54,8 +54,8 @@
       "suspicious": {
         "noArrayIndexKey": "off",
         "noConsole": "error",
-        "noExplicitAny": "off",
-        "noImplicitAnyLet": "off"
+        "noExplicitAny": "warn",
+        "noImplicitAnyLet": "warn"
       },
       "style": {
         "noNonNullAssertion": "off"

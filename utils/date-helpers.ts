@@ -55,7 +55,7 @@ export const getCurrentISOString = (): string => {
 /**
  * Check if a value is a valid Date object
  */
-export const isValidDate = (date: any): date is Date => {
+export const isValidDate = (date: unknown): date is Date => {
   return date instanceof Date && !Number.isNaN(date.getTime());
 };
 

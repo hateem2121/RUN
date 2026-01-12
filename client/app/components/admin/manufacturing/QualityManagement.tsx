@@ -1,11 +1,13 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+
 import {
   arrayMove,
   SortableContext,
@@ -223,7 +225,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
     deleteMutation: deleteQualityMutation,
     reorderMutation: reorderQualityMutation,
   } = useManufacturingMutations({
-    entity: "qualities" as any,
+    entity: "qualities",
     entityType: "Quality Standard",
     entityTypePlural: "qualities",
     queryKey: ["/api/manufacturing-qualities"],
@@ -306,9 +308,9 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
     setShowQualityDialog(true);
   };
 
-  const handleQualityDragEnd = (event: any) => {
+  const handleQualityDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = qualityStandards.findIndex((q) => q.id === active.id);
       const newIndex = qualityStandards.findIndex((q) => q.id === over.id);
       const newQualities = arrayMove(qualityStandards, oldIndex, newIndex);

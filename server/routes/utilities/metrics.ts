@@ -18,6 +18,11 @@ import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
+import {
+  CacheInvalidationQuerySchema,
+  MetricsAlertsQuerySchema,
+  MetricsErrorsQuerySchema,
+} from "./schemas.js";
 
 // Validation schema for alert threshold updates
 const alertThresholdsUpdateSchema = z
@@ -427,7 +432,8 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/metrics/errors", (req, res) => {
     try {
-      const { type, severity, since, limit } = req.query as any;
+      const query = MetricsErrorsQuerySchema.parse(req.query);
+      const { type, severity, since, limit } = query;
 
       // Get aggregated metrics
       const metrics = errorAggregator.getMetrics();
@@ -437,10 +443,10 @@ export function registerMetricsRoutes(app: Express): void {
       if (type || severity || since || limit) {
         filtered = errorAggregator.getErrorsFiltered(
           removeUndefined({
-            type: type as string,
-            severity: severity as string,
-            since: since ? new Date(since as string) : undefined,
-            limit: limit ? parseInt(limit as string, 10) : undefined,
+            type,
+            severity,
+            since: since ? new Date(since) : undefined,
+            limit,
           }),
         );
       }
@@ -468,19 +474,13 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/metrics/alerts", (req, res) => {
     try {
-      const { type, limit } = req.query as any;
+      const query = MetricsAlertsQuerySchema.parse(req.query);
+      const { type, limit } = query;
 
       // Get alerts (optionally filtered by type)
-      const validAlertTypes = [
-        "slow_query",
-        "error_rate",
-        "http_error_rate",
-        "circuit_breaker",
-      ] as const;
-      const alerts =
-        type && validAlertTypes.includes(type as (typeof validAlertTypes)[number])
-          ? alertManager.getAlertsByType(type as (typeof validAlertTypes)[number])
-          : alertManager.getAlerts(limit ? parseInt(limit as string, 10) : undefined);
+      const alerts = type
+          ? alertManager.getAlertsByType(type)
+          : alertManager.getAlerts(limit);
 
       // Check current metrics and get any new alerts
       const newAlerts = alertManager.checkMetrics();
@@ -589,14 +589,7 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/cache/invalidation-time", async (req, res) => {
     try {
-      const pattern = req.query.pattern;
-
-      if (!pattern || typeof pattern !== "string") {
-        return res.status(400).json({
-          error: "Missing or invalid pattern query parameter",
-          message: "Please provide a valid cache pattern (e.g., ?pattern=media:)",
-        });
-      }
+      const { pattern } = CacheInvalidationQuerySchema.parse(req.query);
 
       const { getLatestInvalidationTime } = await import("../../lib/cache/cache-events.js");
       const timestamp = await getLatestInvalidationTime(pattern);

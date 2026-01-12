@@ -316,7 +316,7 @@ export default function MediaLibraryContainerEnhanced({
           {!selectionMode && (
             <div className="flex items-center gap-2">
               {/* Development controls */}
-              {(import.meta as any).env?.MODE === "development" && (
+              {(import.meta as unknown as { env: { MODE: string } }).env?.MODE === "development" && (
                 <>
                   <div className="hidden items-center gap-2 rounded-lg bg-muted/50 px-3 py-1 md:flex">
                     <Settings className="h-4 w-4 text-muted-foreground" />
@@ -391,7 +391,7 @@ function MediaLibraryMainContent({
 
   // Phase 3: Development-mode validation warnings
   useEffect(() => {
-    if ((import.meta as any).env?.MODE === "development") {
+    if ((import.meta as unknown as { env: { MODE: string } }).env?.MODE === "development") {
     }
   }, []);
 

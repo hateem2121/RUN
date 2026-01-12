@@ -1,6 +1,8 @@
 import { closestCenter, DndContext } from "@dnd-kit/core";
+import type { SensorDescriptor } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { SustainabilityGoal } from "@shared/schema";
+import type { InsertSustainabilityGoal, SustainabilityGoal } from "@shared/schema";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -58,12 +60,13 @@ interface GoalValidation {
 interface GoalsTabContentProps {
   goals: SustainabilityGoal[] | undefined;
   paginatedGoals: SustainabilityGoal[];
+
   goalsPage: number;
   goalsTotalPages: number;
-  sensors: any;
-  createGoalMutation: any;
-  updateGoalMutation: any;
-  deleteGoalMutation: any;
+  sensors: SensorDescriptor<object>[];
+  createGoalMutation: UseMutationResult<unknown, unknown, InsertSustainabilityGoal>;
+  updateGoalMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityGoal }>;
+  deleteGoalMutation: UseMutationResult<unknown, unknown, number>;
   SortableGoalItem: React.ComponentType<{
     goal: SustainabilityGoal;
     onEdit: (goal: SustainabilityGoal) => void;

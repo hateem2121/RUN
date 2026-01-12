@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { AboutHero, MediaAsset } from "@shared/schema";
+import type { AboutHero, InsertAboutHero, MediaAsset } from "@shared/schema";
 import { insertAboutHeroSchema } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Eye, Save, Trash2, Upload } from "lucide-react";
@@ -93,7 +93,7 @@ export function AboutHeroTab() {
         ...data,
         backgroundMediaId: data.backgroundMediaId ? Number(data.backgroundMediaId) : null,
       };
-      return apiRequest("/api/about-hero", { method: "PATCH", body: JSON.stringify(payload) }) as Promise<any>;
+      return apiRequest("/api/about-hero", { method: "PATCH", body: JSON.stringify(payload) }) as Promise<AboutHero>;
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/about-hero"] });
@@ -112,8 +112,8 @@ export function AboutHeroTab() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    updateMutation.mutate(data);
+  const onSubmit = (data: InsertAboutHero) => {
+    updateMutation.mutate(data as unknown as Record<string, unknown>);
   };
 
   const handleRemoveMedia = () => {

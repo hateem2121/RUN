@@ -77,7 +77,9 @@ export default function MediaFiltersPanel() {
           <Label htmlFor="filters-sort-by">Sort by</Label>
           <Select
             value={state.sortBy}
-            onValueChange={(value) => updateState("sortBy", value as any)}
+            onValueChange={(value) =>
+              updateState("sortBy", value as "uploadedAt" | "name" | "size" | "type")
+            }
           >
             <SelectTrigger id="filters-sort-by">
               <SelectValue />

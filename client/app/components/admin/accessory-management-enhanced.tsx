@@ -1,4 +1,4 @@
-import type { Accessory, MediaAsset } from "@shared/schema";
+import type { Accessory, InsertAccessory, MediaAsset } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Edit,
@@ -13,6 +13,7 @@ import {
   Tags,
   Wrench,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
@@ -31,7 +32,7 @@ import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getCategoryIcon = (category: string) => {
-  const icons: Record<string, any> = {
+  const icons: Record<string, LucideIcon> = {
     customization: Palette,
     hardware: Wrench,
     finishing: Scissors,
@@ -258,14 +259,14 @@ export default function AccessoryManagementEnhanced() {
   }, [accessories]);
 
   // Load media assets for display
-  const { data: allMediaAssets } = useQuery<MediaAsset[]>({
+  const { data: allMediaAssets } = useQuery<{ data: MediaAsset[] }, Error, MediaAsset[]>({
     queryKey: MediaQueryKeys.list,
     queryFn: async () => {
       const response = await fetch("/api/media");
       if (!response.ok) throw new Error("Failed to fetch media");
       return response.json();
     },
-    select: (data: any) => data?.data || [],
+    select: (data) => data?.data || [],
   });
 
   // Media handling functions
@@ -303,7 +304,7 @@ export default function AccessoryManagementEnhanced() {
   };
 
   const createAccessoryMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InsertAccessory) => {
       return await apiRequest("/api/accessories", {
         method: "POST",
         body: JSON.stringify(data),
@@ -318,7 +319,7 @@ export default function AccessoryManagementEnhanced() {
       });
       resetForm();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create accessory",
@@ -328,7 +329,7 @@ export default function AccessoryManagementEnhanced() {
   });
 
   const updateAccessoryMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAccessory> }) => {
       return await apiRequest(`/api/accessories/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
@@ -345,7 +346,7 @@ export default function AccessoryManagementEnhanced() {
       setEditingAccessory(null);
       resetForm();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update accessory",
@@ -367,7 +368,7 @@ export default function AccessoryManagementEnhanced() {
         description: "Accessory deleted successfully",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete accessory",

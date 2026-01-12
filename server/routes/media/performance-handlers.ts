@@ -58,14 +58,16 @@ export async function getSystemPerformance(_req: Request, res: Response) {
  * GET /api/media/performance/endpoint
  * Returns metrics for a specific endpoint
  */
+import { PerformanceQuerySchema } from "./schemas.js";
+
+// ...
+
 export async function getEndpointPerformance(req: Request, res: Response) {
   try {
-    const { path } = req.query as any;
+    const { path } = PerformanceQuerySchema.parse(req.query);
 
-    if (path && typeof path !== "string") {
-      return res.status(400).json(createErrorResponse("Invalid 'path' query parameter"));
-    }
-
+    // Validation handled by Zod above
+    
     // Since getEndpointMetrics doesn't exist, we return the general performance report
     // In a real implementation, we would filter the report by path if feasible
     const report = performanceMonitor.generatePerformanceReport();

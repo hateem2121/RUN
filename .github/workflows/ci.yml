@@ -171,6 +171,14 @@ jobs:
         run: npm run check:bundle
         continue-on-error: true
 
+      - name: Upload Source Maps to Sentry
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        run: |
+          npx @sentry/cli sourcemaps inject ./client/build
+          npx @sentry/cli sourcemaps upload ./client/build --org ${{ secrets.SENTRY_ORG }} --project ${{ secrets.SENTRY_PROJECT }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
   delete_neon_branch:
     name: Delete Neon Branch
     needs: setup

@@ -26,6 +26,7 @@ import {
   slugifyFilename,
   type UploadOptions,
 } from "./utils.js";
+import { MediaIdParamSchema, MediaListQuerySchema } from "./schemas.js";
 
 // Session cleanup - remove stale uploads after 1 hour
 setInterval(
@@ -75,7 +76,9 @@ async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
 
 export async function getMediaAssets(req: Request, res: Response, next: NextFunction) {
   res.locals._handled = true;
-  const { page = 1, limit = 50, type, search, folderId } = req.query as any;
+  
+  const query = MediaListQuerySchema.parse(req.query);
+  const { page, limit, type, search, folderId } = query;
 
   // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
   if (shouldBypassCache(req)) {
@@ -84,21 +87,19 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   }
 
-  const pageNum = parseInt(page as string, 10);
-  const limitNum = parseInt(limit as string, 10);
-  const offset = (pageNum - 1) * limitNum;
+  const offset = (page - 1) * limit;
 
   // NEON OPTIMIZATION: Use batch query to minimize active compute time
   // Runs both SELECT and COUNT in single transaction instead of 2 separate queries
   const storage = getStorage();
-  const filters = {
-    type: type as string | undefined,
-    search: search as string | undefined,
-    folderId: folderId ? parseInt(folderId as string, 10) : undefined,
-  };
+  // Create filters respecting exactOptionalPropertyTypes
+  const filters: { type?: string; search?: string; folderId?: number } = {};
+  if (type) filters.type = type;
+  if (search) filters.search = search;
+  if (folderId !== undefined) filters.folderId = folderId;
 
   // Fetch assets and total count in single batched transaction (reduces NEON active time)
-  const result = await safeQuery(storage.getMediaAssetsWithCount(limitNum, offset, filters as any));
+  const result = await safeQuery(storage.getMediaAssetsWithCount(limit, offset, filters));
 
   if (result.isErr()) {
     return next(result.error);
@@ -109,10 +110,10 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
   return res.json(
     safeSerialize(
       createPaginatedResponse(assets, {
-        page: pageNum,
-        limit: limitNum,
+        page,
+        limit,
         total,
-        pages: Math.ceil(total / limitNum),
+        pages: Math.ceil(total / limit),
       }),
     ),
   );
@@ -120,7 +121,7 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
 
 export async function getMediaAssetById(req: Request, res: Response, next: NextFunction) {
   res.locals._handled = true;
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
 
   // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
   if (shouldBypassCache(req)) {
@@ -130,7 +131,7 @@ export async function getMediaAssetById(req: Request, res: Response, next: NextF
   }
 
   const storage = getStorage();
-  const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
+  const result = await safeQuery(storage.getMediaAsset(id));
 
   if (result.isErr()) {
     return next(result.error);
@@ -146,18 +147,19 @@ export async function getMediaAssetById(req: Request, res: Response, next: NextF
 }
 
 export async function getMediaCount(req: Request, res: Response, next: NextFunction) {
-  const { type, folderId } = req.query as any;
+  const query = MediaListQuerySchema.partial().parse(req.query);
+  const { type, folderId } = query;
   const storage = getStorage();
 
   // Build filters object for database-level filtering
   const filters: { type?: string | undefined; folderId?: number } = {};
 
   if (type) {
-    filters.type = type as string;
+    filters.type = type;
   }
 
   if (folderId) {
-    filters.folderId = parseInt(folderId as string, 10);
+    filters.folderId = folderId;
   }
 
   // Use database-level COUNT with filtering - no need to load all records
@@ -169,7 +171,8 @@ export async function getMediaCount(req: Request, res: Response, next: NextFunct
 }
 
 export async function searchMediaAssets(req: Request, res: Response, next: NextFunction) {
-  const { query: searchQuery, type, limit = 20, folderId } = req.query as any;
+  const query = MediaListQuerySchema.parse(req.query);
+  const { search, type, limit, folderId } = query;
   const storage = getStorage();
 
   // Build filters object for database-level filtering
@@ -179,21 +182,21 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
     folderId?: number;
   } = {};
 
-  if (searchQuery) {
-    filters.search = searchQuery as string;
+  if (search) {
+    filters.search = search;
   }
 
   if (type) {
-    filters.type = type as string;
+    filters.type = type;
   }
 
-  if (folderId) {
-    filters.folderId = parseInt(folderId as string, 10);
+  if (folderId !== undefined) {
+    filters.folderId = folderId;
   }
 
   // Use database-level filtering with Drizzle's ilike() operator
   // This pushes filtering to PostgreSQL instead of loading all records into memory
-  const result = await safeQuery(storage.getMediaAssets(parseInt(limit as string, 10), 0, filters));
+  const result = await safeQuery(storage.getMediaAssets(limit, 0, filters));
 
   if (result.isErr()) return next(result.error);
 
@@ -205,10 +208,10 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
 // ============================================================================
 
 export async function updateMediaAsset(req: Request, res: Response, next: NextFunction) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
 
-  const result = await safeQuery(storage.updateMediaAsset(parseInt(id!, 10), req.body));
+  const result = await safeQuery(storage.updateMediaAsset(id, req.body));
 
   if (result.isErr()) return next(result.error);
 
@@ -222,8 +225,8 @@ export async function updateMediaAsset(req: Request, res: Response, next: NextFu
 }
 
 export async function deleteMediaAsset(req: Request, res: Response, next: NextFunction) {
-  const { id } = req.params as any;
-  const assetId = parseInt(id!, 10);
+  const { id } = MediaIdParamSchema.parse(req.params);
+  const assetId = id;
   const storage = getStorage();
 
   // Get asset metadata before deletion (needed for physical file cleanup)
@@ -566,9 +569,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
 // ============================================================================
 
 export async function getMediaContent(req: Request, res: Response, next: NextFunction) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
-  const result = await safeQuery(storage.getMediaAsset(parseInt(id!, 10)));
+  const result = await safeQuery(storage.getMediaAsset(id));
 
   if (result.isErr()) return next(result.error);
 
@@ -617,9 +620,9 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
 }
 
 export async function getThumbnail(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const asset = await storage.getMediaAsset(id);
 
   if (!asset) {
     return res.status(404).send("Media not found");

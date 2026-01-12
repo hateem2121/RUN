@@ -89,7 +89,7 @@ export function AboutTeamMessageTab() {
       return apiRequest("/api/about-team-message", {
         method: "PATCH",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      }) as Promise<AboutTeamMessage>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

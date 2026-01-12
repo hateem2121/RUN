@@ -1,6 +1,7 @@
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import { closestCenter, DndContext, type SensorDescriptor } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { SustainabilityMetric } from "@shared/schema";
+import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/schema";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -65,10 +66,10 @@ interface MetricsTabContentProps {
   paginatedMetrics: SustainabilityMetric[];
   metricsPage: number;
   metricsTotalPages: number;
-  sensors: any;
-  createMetricMutation: any;
-  updateMetricMutation: any;
-  deleteMetricMutation: any;
+  sensors: SensorDescriptor<object>[];
+  createMetricMutation: UseMutationResult<unknown, unknown, InsertSustainabilityMetric>;
+  updateMetricMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityMetric }>;
+  deleteMetricMutation: UseMutationResult<unknown, unknown, number>;
   SortableMetricItem: React.ComponentType<{
     metric: SustainabilityMetric;
     onEdit: (metric: SustainabilityMetric) => void;

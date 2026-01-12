@@ -3,7 +3,7 @@
  * Prevents schema drift by validating API responses against TypeScript interfaces
  */
 
-import { z } from "zod";
+import { type ZodIssue, z } from "zod";
 import type { MediaAsset } from "../shared/schema.js";
 import { parseApiDate } from "./date-helpers.js";
 import type { SchemaValidationResult } from "./types/validation.js";
@@ -26,7 +26,7 @@ const MediaAssetSchema = z.object({
   tags: z.array(z.string()).nullable(),
   altText: z.string().nullable(),
   caption: z.string().nullable(),
-  metadata: z.record(z.string(), z.any()),
+  metadata: z.record(z.string(), z.unknown()),
 
   uploadedAt: z.union([z.date(), z.string()]).transform((val) => {
     if (val instanceof Date) return val;
@@ -108,7 +108,7 @@ export const validateMediaAsset = (data: unknown): SchemaValidationResult => {
     const errors: string[] = [];
 
     if (error instanceof z.ZodError) {
-      errors.push(...error.issues.map((e: any) => `${e.path.join(".")}: ${e.message}`));
+      errors.push(...error.issues.map((e: ZodIssue) => `${e.path.join(".")}: ${e.message}`));
     } else {
       errors.push(error instanceof Error ? error.message : "Unknown validation error");
     }
@@ -188,7 +188,7 @@ export const filterValidMediaAssets = (assets: unknown[]): MediaAsset[] => {
  * Validate API response structure
  */
 export const validateApiResponse = (
-  response: any,
+  response: unknown,
 ): {
   isValid: boolean;
   hasData: boolean;
@@ -197,18 +197,25 @@ export const validateApiResponse = (
 } => {
   const errors: string[] = [];
 
-  if (!response || typeof response !== "object") {
+  if (!response || typeof response !== "object" || response === null) {
     errors.push("Response is not an object");
     return { isValid: false, hasData: false, hasPagination: false, errors };
   }
 
-  if (typeof response.success !== "boolean") {
+  const res = response as Record<string, unknown>;
+
+  if (typeof res.success !== "boolean") {
     errors.push("Response missing success field");
   }
 
-  const hasData = response.data && typeof response.data === "object";
+  const hasData = res.data !== null && typeof res.data === "object";
+  const data = res.data as { pagination?: unknown } | null;
   const hasPagination =
-    hasData && response.data.pagination && typeof response.data.pagination === "object";
+    hasData &&
+    data !== null &&
+    typeof data === "object" &&
+    data.pagination !== null &&
+    typeof data.pagination === "object";
 
   if (!hasData) {
     errors.push("Response missing data object");

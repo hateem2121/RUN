@@ -1,4 +1,4 @@
-import type { Certificate } from "@shared/schema";
+import type { Certificate, InsertCertificate, MediaAsset } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
@@ -455,8 +455,17 @@ const CertificateList = ({
   );
 };
 
+interface CertificateAnalyticsData {
+  total: number;
+  active: number;
+  expired: number;
+  expiringSoon: number;
+  typeDistribution: Record<string, number>;
+  issuingBodyDistribution: Record<string, number>;
+}
+
 interface CertificateInsightsProps {
-  analytics: any;
+  analytics: CertificateAnalyticsData | null;
   onCreate: () => void;
 }
 
@@ -578,7 +587,11 @@ const CertificateInsights = ({ analytics, onCreate }: CertificateInsightsProps) 
   );
 };
 
-const CertificateAnalytics = ({ analytics }: { analytics: any }) => {
+const CertificateAnalytics = ({
+  analytics,
+}: {
+  analytics: CertificateAnalyticsData | null;
+}) => {
   if (!analytics) return null;
 
   return (
@@ -724,7 +737,7 @@ export default function CertificateManagement() {
   });
 
   // Helper function to sanitize form data (convert empty strings to null)
-  const sanitizeCertificateData = (data: any) => {
+  const sanitizeCertificateData = (data: Partial<InsertCertificate>) => {
     return {
       ...data,
       documentUrl: data.documentUrl?.trim() || null,
@@ -737,7 +750,7 @@ export default function CertificateManagement() {
 
   // Mutations
   const createCertificateMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InsertCertificate) => {
       const sanitizedData = sanitizeCertificateData(data);
       return await apiRequest("/api/certificates", {
         method: "POST",
@@ -753,7 +766,7 @@ export default function CertificateManagement() {
       resetForm();
       setIsCreateDialogOpen(false);
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create certificate",
@@ -763,7 +776,7 @@ export default function CertificateManagement() {
   });
 
   const updateCertificateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertCertificate> }) => {
       const sanitizedData = sanitizeCertificateData(data);
       return await apiRequest(`/api/certificates/${id}`, {
         method: "PUT",
@@ -779,7 +792,7 @@ export default function CertificateManagement() {
       setIsEditDialogOpen(false);
       setEditingCertificate(null);
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update certificate",
@@ -799,7 +812,7 @@ export default function CertificateManagement() {
         description: "Certificate deleted successfully",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete certificate",
@@ -809,7 +822,13 @@ export default function CertificateManagement() {
   });
 
   const bulkUpdateMutation = useMutation({
-    mutationFn: async ({ ids, updates }: { ids: number[]; updates: any }) => {
+    mutationFn: async ({
+      ids,
+      updates,
+    }: {
+      ids: number[];
+      updates: Partial<InsertCertificate>;
+    }) => {
       return await Promise.all(
         ids.map((id) =>
           apiRequest(`/api/certificates/${id}`, {
@@ -827,7 +846,7 @@ export default function CertificateManagement() {
       });
       setSelectedCertificates([]);
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update certificates",
@@ -850,7 +869,7 @@ export default function CertificateManagement() {
       });
       setSelectedCertificates([]);
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete certificates",
@@ -1485,7 +1504,7 @@ export default function CertificateManagement() {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  handleSubmit(e as any);
+                  handleSubmit(e as unknown as React.FormEvent);
                 }}
                 disabled={createCertificateMutation.isPending}
               >
@@ -1641,7 +1660,7 @@ export default function CertificateManagement() {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  handleEditSubmit(e as any);
+                  handleEditSubmit(e as unknown as React.FormEvent);
                 }}
                 disabled={updateCertificateMutation.isPending}
               >
@@ -1657,7 +1676,7 @@ export default function CertificateManagement() {
           onClose={() => setIsMediaPickerOpen(false)}
           onSelect={(asset) => {
             // Fix: Use proper asset data structure with proper typing
-            const imageId = (asset as any).id || null;
+            const imageId = (asset as MediaAsset).id || null;
             setFormData((prev) => ({ ...prev, imageId }));
           }}
           title="Select Certificate Image"

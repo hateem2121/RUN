@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -14,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { AboutStatistic } from "@shared/schema";
+import type { AboutStatistic, InsertAboutStatistic } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Award,
@@ -22,6 +23,7 @@ import {
   Edit,
   Globe,
   GripVertical,
+  type LucideIcon,
   Package,
   Plus,
   Shield,
@@ -65,7 +67,7 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
   };
 
   const getIcon = (iconName: string) => {
-    const iconMap: Record<string, any> = {
+    const iconMap: Record<string, LucideIcon> = {
       BarChart3: BarChart3,
       TrendingUp: TrendingUp,
       Package: Package,
@@ -143,11 +145,11 @@ export function AboutStatisticsTab() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InsertAboutStatistic) => {
       return apiRequest("/api/about-statistics", {
         method: "POST",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      }) as Promise<AboutStatistic>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -171,11 +173,11 @@ export function AboutStatisticsTab() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAboutStatistic> }) => {
       return apiRequest(`/api/about-statistics/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      }) as Promise<AboutStatistic>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -230,7 +232,7 @@ export function AboutStatisticsTab() {
       return apiRequest("/api/about-statistics/reorder", {
         method: "PATCH",
         body: JSON.stringify({ statistics }),
-      }) as Promise<any>;
+      }) as Promise<AboutStatistic[]>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -241,8 +243,12 @@ export function AboutStatisticsTab() {
     },
   });
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+
+    if (!over) {
+      return;
+    }
 
     if (active.id !== over.id && Array.isArray(statistics)) {
       const oldIndex = statistics.findIndex((item: AboutStatistic) => item.id === active.id);

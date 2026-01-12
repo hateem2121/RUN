@@ -14,7 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { type FieldErrors, type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Accordion,
@@ -89,6 +89,7 @@ export function ContactPageSettings() {
   });
 
   const form = useForm<ContactContentForm>({
+    // biome-ignore lint/suspicious/noExplicitAny: zodResolver type mismatch with strict typescript settings
     resolver: zodResolver(contactContentSchema) as any,
     defaultValues: {
       heroTitle: "",
@@ -161,12 +162,12 @@ export function ContactPageSettings() {
         return apiRequest("/api/contact-page-configuration", {
           method: "PATCH",
           body: JSON.stringify(sanitizedData),
-        }) as Promise<any>;
+        });
       } else {
         return apiRequest("/api/contact-page-configuration", {
           method: "POST",
           body: JSON.stringify(sanitizedData),
-        }) as Promise<any>;
+        });
       }
     },
     onSuccess: () => {
@@ -179,7 +180,7 @@ export function ContactPageSettings() {
         description: "Contact page content updated successfully.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update contact page content.",
@@ -188,11 +189,11 @@ export function ContactPageSettings() {
     },
   });
 
-  const onSubmit = (data: ContactContentForm) => {
+  const onSubmit: SubmitHandler<ContactContentForm> = (data) => {
     saveMutation.mutate(data);
   };
 
-  const onInvalid = (_errors: any) => {
+  const onInvalid = (_errors: FieldErrors<ContactContentForm>) => {
     toast({
       title: "Validation Error",
       description: "Please check all required fields are filled correctly.",
@@ -249,7 +250,7 @@ export function ContactPageSettings() {
             Reset
           </Button>
           <Button
-            onClick={form.handleSubmit(onSubmit as any, onInvalid)}
+            onClick={form.handleSubmit(onSubmit, onInvalid)}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-save"
           >
@@ -269,7 +270,7 @@ export function ContactPageSettings() {
       </div>
 
       {/* Form */}
-      <form onSubmit={form.handleSubmit(onSubmit as any, onInvalid)}>
+      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
         <Accordion
           type="multiple"
           defaultValue={["hero", "location", "contact"]}
@@ -635,7 +636,7 @@ export function ContactPageSettings() {
               Cancel
             </Button>
             <Button
-              onClick={form.handleSubmit(onSubmit as any, onInvalid)}
+              onClick={form.handleSubmit(onSubmit, onInvalid)}
               disabled={!isDirty || saveMutation.isPending}
             >
               {saveMutation.isPending ? "Saving..." : "Save All Changes"}

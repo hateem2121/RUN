@@ -32,7 +32,7 @@ export declare const filterValidMediaAssets: (assets: unknown[]) => MediaAsset[]
 /**
  * Validate API response structure
  */
-export declare const validateApiResponse: (response: any) => {
+export declare const validateApiResponse: (response: unknown) => {
   isValid: boolean;
   hasData: boolean;
   hasPagination: boolean;

@@ -15,6 +15,11 @@ interface FeaturesTabContentProps {
   onSave: () => void;
 }
 
+interface Feature {
+  title: string;
+  description: string;
+}
+
 export function FeaturesTabContent({
   localForm,
   hasUnsavedChanges,
@@ -22,7 +27,7 @@ export function FeaturesTabContent({
   onLocalUpdate,
   onSave,
 }: FeaturesTabContentProps) {
-  const highlightedFeatures = (localForm.data?.highlightedFeatures as any[]) || [];
+  const highlightedFeatures = (localForm.data?.highlightedFeatures as Feature[]) || [];
 
   const addFeature = () => {
     const newFeature = {
@@ -39,7 +44,7 @@ export function FeaturesTabContent({
 
   const updateFeature = (index: number, field: string, value: string) => {
     const updatedFeatures = [...highlightedFeatures];
-    updatedFeatures[index] = { ...updatedFeatures[index], [field]: value };
+    updatedFeatures[index] = { ...updatedFeatures[index], [field]: value } as Feature;
     onLocalUpdate({
       data: {
         ...localForm.data,

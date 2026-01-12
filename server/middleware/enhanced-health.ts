@@ -359,19 +359,33 @@ async function checkIndexUsage(): Promise<HealthCheckResult> {
   };
 }
 
-// System Metrics Collection (memory monitoring disabled for performance)
+// System Metrics Collection with configurable memory monitoring
 async function getSystemMetrics(indexUsageCheck?: HealthCheckResult) {
-  // Memory monitoring disabled for performance optimization
-  // const memUsage = process.memoryUsage();
-  // const totalMem = memUsage.heapTotal;
-  // const usedMem = memUsage.heapUsed;
+  // Memory monitoring controlled by environment variable
+  // Default: enabled in development, configurable in production via ENABLE_MEMORY_METRICS
+  const enableMemoryMetrics = 
+    process.env.ENABLE_MEMORY_METRICS === "true" ||
+    (config.app.environment === "development" && process.env.ENABLE_MEMORY_METRICS !== "false");
+
+  let memoryMetrics = {
+    used: 0,
+    total: 0,
+    percentage: 0,
+  };
+
+  if (enableMemoryMetrics) {
+    const memUsage = process.memoryUsage();
+    const totalMem = memUsage.heapTotal;
+    const usedMem = memUsage.heapUsed;
+    memoryMetrics = {
+      used: Math.round(usedMem / 1024 / 1024), // MB
+      total: Math.round(totalMem / 1024 / 1024), // MB
+      percentage: Math.round((usedMem / totalMem) * 100),
+    };
+  }
 
   const baseMetrics = {
-    memory: {
-      used: 0, // Memory monitoring disabled
-      total: 0, // Memory monitoring disabled
-      percentage: 0, // Memory monitoring disabled
-    },
+    memory: memoryMetrics,
     cache: {
       hitRate: 0, // Will be populated by cache monitor
       size: 0, // Will be populated by cache monitor
@@ -536,7 +550,19 @@ export async function healthCheckHandler(req: Request, res: Response) {
   // P1 SECURITY: Protect detailed health info
   const secret = process.env.HEALTH_CHECK_SECRET;
   const providedSecret = req.headers["x-health-check-key"] || req.query.key;
+  const isProduction = config.app.environment === "production";
 
+  // In production, require secret to be configured (fail secure)
+  if (isProduction && !secret) {
+    logger.error("[Health] HEALTH_CHECK_SECRET not configured in production - rejecting request");
+    res.status(500).json({ 
+      error: "Health check misconfigured",
+      detail: "HEALTH_CHECK_SECRET must be set in production" 
+    });
+    return;
+  }
+
+  // Validate secret when configured
   if (secret && providedSecret !== secret) {
     logger.warn(`[Health] Unauthorized access attempt to /health/detailed from ${req.ip}`);
     res.status(401).json({ error: "Unauthorized" });

@@ -1,4 +1,4 @@
-import type { Category, MediaAsset } from "@shared/schema";
+import type { Category, InsertCategory, MediaAsset } from "@shared/schema";
 import { FileText, Search, Star } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ import { MediaUrlBuilder } from "@/lib/media-url-builder";
 interface CategoryFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: InsertCategory) => void;
   initialData?: Category | null;
   categories?: Category[];
   isLoading?: boolean | undefined;
@@ -142,11 +142,12 @@ export default function CategoryForm({
         parentId: initialData.parentId?.toString() || "none",
         sortOrder: initialData.sortOrder || 0,
         isActive: initialData.isActive !== false,
-        imageUrl: (initialData as any)?.imageUrl || "",
-        bannerUrl: (initialData as any)?.bannerUrl || "",
-        metaTitle: (initialData as any)?.metaTitle || "",
-        metaDescription: (initialData as any)?.metaDescription || "",
-        featuredContent: (initialData as any)?.featuredContent || {
+        imageUrl: (initialData as Category & { imageUrl?: string }).imageUrl || "",
+        bannerUrl: (initialData as Category & { bannerUrl?: string }).bannerUrl || "",
+        metaTitle: (initialData as Category & { metaTitle?: string }).metaTitle || "",
+        metaDescription: (initialData as Category & { metaDescription?: string }).metaDescription || "",
+        featuredContent:
+          ((initialData as Category & { featuredContent?: unknown }).featuredContent as FormData["featuredContent"]) || {
           card1: { title: "", description: "", mediaUrl: "", link: "" },
           card2: {
             title: "",

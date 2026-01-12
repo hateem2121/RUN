@@ -1,4 +1,11 @@
-import { AppError, BadRequestError, ConflictError, InternalError } from "../errors/AppError.js";
+import type { AppError } from "../lib/errors.js";
+import { 
+  BadRequestError, 
+  ConflictError, 
+  InternalError,
+  DatabaseDeadlockError,
+  DatabaseTimeoutError,
+} from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 interface PostgresError extends Error {
@@ -42,10 +49,10 @@ export function mapDrizzleError(err: unknown, context: string = "Database Operat
       case "40001": // Serialization failure (Deadlock)
         logger.warn(`[${context}] Deadlock detected`, { code: pgErr.code });
         // Can be retried by client or upstream logic
-        return new AppError("Database deadlock occurred, please retry", 409, "DB_DEADLOCK");
+        return new DatabaseDeadlockError("Database deadlock occurred, please retry");
 
       case "57014": // Query canceled
-        return new AppError("Database query timeout", 504, "DB_TIMEOUT");
+        return new DatabaseTimeoutError("Database query timeout");
     }
   }
 

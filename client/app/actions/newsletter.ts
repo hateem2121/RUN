@@ -1,7 +1,7 @@
 "use server";
 
 export async function subscribeToNewsletter(
-  _prevState: any,
+  _prevState: unknown,
   formData: FormData,
 ): Promise<{ status: "idle" | "success" | "error"; message: string }> {
   const email = formData.get("email");

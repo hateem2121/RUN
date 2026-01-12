@@ -1,4 +1,4 @@
-import type { AboutMapLocation } from "@shared/schema";
+import type { AboutMapLocation, InsertAboutMapLocation } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -40,8 +40,8 @@ export function AboutLocationsTab() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return apiRequest("/api/about-locations", { method: "POST", body: JSON.stringify(data) }) as Promise<any>;
+    mutationFn: async (data: InsertAboutMapLocation) => {
+      return apiRequest("/api/about-locations", { method: "POST", body: JSON.stringify(data) }) as Promise<AboutMapLocation>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -62,11 +62,11 @@ export function AboutLocationsTab() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAboutMapLocation> }) => {
       return apiRequest(`/api/about-locations/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      }) as Promise<AboutMapLocation>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -129,10 +129,16 @@ export function AboutLocationsTab() {
   };
 
   const handleSubmit = () => {
+    const payload = {
+      ...formData,
+      latitude: String(formData.latitude),
+      longitude: String(formData.longitude),
+    };
+
     if (editingLocation) {
-      updateMutation.mutate({ id: editingLocation.id, data: formData });
+      updateMutation.mutate({ id: editingLocation.id, data: payload });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(payload);
     }
   };
 
@@ -209,7 +215,7 @@ export function AboutLocationsTab() {
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "client" | "facility")}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="facility">
                 <Building2 className="mr-2 h-4 w-4" />

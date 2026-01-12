@@ -374,17 +374,19 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
       {/* Additional Information */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Specifications */}
-        {(formData as any).features?.length || Object.keys(formData.specifications || {}).length ? (
+        {(formData as { features?: string[] }).features?.length ||
+        Object.keys(formData.specifications || {}).length ? (
           <Card>
             <CardHeader>
               <CardTitle>Specifications</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {(formData as any).features?.length ? (
+              {(formData as { features?: string[] }).features?.length ? (
                 <div>
                   <h5 className="mb-2 font-medium text-sm">Features</h5>
                   <div className="space-y-1">
-                    {(formData as any).features.map((feature: string, index: number) => (
+                    {(formData as { features?: string[] }).features?.map(
+                      (feature: string, index: number) => (
                       <div key={index} className="text-foreground/80 text-sm">
                         • {feature}
                       </div>

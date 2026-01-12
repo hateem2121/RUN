@@ -9,6 +9,12 @@ import { z } from "zod";
 // PHASE 2B: Removed pagination imports - eliminated after pagination cleanup
 import { logger } from "../../lib/monitoring/logger.js";
 import { authService } from "../../services/auth-service.js";
+import {
+  FeatureFlagParamSchema,
+  FeatureFlagUpdateBodySchema,
+  FeatureFlagsQuerySchema,
+  ResourcesBatchQuerySchema,
+} from "./schemas.js";
 
 // Feature flags implementation - stubbed for now
 const featureFlags = {
@@ -63,8 +69,9 @@ import type { IStorage } from "../../storage.js";
 export function setupResourceRoutes(app: Application, storage: IStorage) {
   // Batch endpoint to fetch multiple resource types in one request
   app.get("/api/resources/batch", async (req: Request, res: Response) => {
-    const types = req.query.types ? (req.query.types as string).split(",") : ["all"];
-    const activeOnly = req.query.active === "true";
+    const query = ResourcesBatchQuerySchema.parse(req.query);
+    const types = query.types ? query.types.split(",") : ["all"];
+    const activeOnly = query.active === "true";
 
     const result: Record<string, unknown[]> = {};
     const promises: Promise<any>[] = [];
@@ -187,10 +194,7 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
   // Get all current feature flags
   app.get("/api/feature-flags", (req: Request, res: Response) => {
     // Parse and validate pagination params (prevent negative values)
-    const parsedLimit = parseInt(req.query.limit as string, 10) || 20;
-    const parsedOffset = parseInt(req.query.offset as string, 10) || 0;
-    const limit = Math.min(Math.max(0, parsedLimit), 100);
-    const offset = Math.max(0, parsedOffset);
+    const { limit, offset } = FeatureFlagsQuerySchema.parse(req.query);
 
     const result = featureFlags.getAllFlags({ limit, offset });
     res.json({
@@ -225,15 +229,8 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
   // Runtime flag override (for testing)
   // prettier-ignore
   app.post("/api/feature-flags/:flag", authService.requireAdmin, (req: Request, res: Response) => {
-    const { flag } = req.params as any;
-    const { enabled } = req.body;
-
-    if (typeof enabled !== "boolean") {
-      return res.status(400).json({
-        success: false,
-        error: "enabled field must be a boolean",
-      });
-    }
+    const { flag } = FeatureFlagParamSchema.parse(req.params);
+    const { enabled } = FeatureFlagUpdateBodySchema.parse(req.body);
 
     featureFlags.setRuntimeOverride(flag!, enabled);
 

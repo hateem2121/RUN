@@ -78,16 +78,18 @@ router.post(
 
       // Log the export request
       await db.insert(auditLogs).values({
-        userId,
         action: "DATA_EXPORT_REQUEST",
-        details: { format: req.body.format },
+        tableName: "users",
+        recordId: userId,
+        userId,
+        metadata: { format: req.body.format },
         ipAddress: req.ip,
         userAgent: req.headers["user-agent"],
       });
 
       logger.info("Data export request processed", { userId });
 
-      res.json({
+      return res.json({
         success: true,
         data: exportData,
         meta: {
@@ -97,7 +99,7 @@ router.post(
       });
     } catch (error) {
       logger.error("Data export failed", { error });
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: { code: "EXPORT_FAILED", message: "Failed to export data" },
       });
@@ -143,9 +145,11 @@ router.post(
       // For now: Log the request
 
       await db.insert(auditLogs).values({
-        userId,
         action: "DELETION_REQUEST",
-        details: {
+        tableName: "users",
+        recordId: userId,
+        userId,
+        metadata: {
           reason: req.body.reason,
           scheduledDeletion: deletionDate.toISOString(),
         },
@@ -158,7 +162,7 @@ router.post(
         scheduledDeletion: deletionDate,
       });
 
-      res.json({
+      return res.json({
         success: true,
         data: {
           requestId: `DEL-${Date.now()}`,
@@ -170,7 +174,7 @@ router.post(
       });
     } catch (error) {
       logger.error("Deletion request failed", { error });
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           code: "DELETION_FAILED",
@@ -200,7 +204,7 @@ router.get("/request-status/:requestId", async (req, res) => {
     // In production: Look up request in privacy_requests table
     // For now: Return mock status
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         requestId,
@@ -214,7 +218,7 @@ router.get("/request-status/:requestId", async (req, res) => {
     });
   } catch (error) {
     logger.error("Request status lookup failed", { error });
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: { code: "LOOKUP_FAILED", message: "Failed to retrieve status" },
     });
@@ -238,16 +242,18 @@ router.post("/cancel-deletion/:requestId", async (req, res) => {
     }
 
     await db.insert(auditLogs).values({
-      userId,
       action: "DELETION_CANCELLED",
-      details: { requestId },
+      tableName: "users",
+      recordId: userId,
+      userId,
+      metadata: { requestId },
       ipAddress: req.ip,
       userAgent: req.headers["user-agent"],
     });
 
     logger.info("Deletion request cancelled", { userId, requestId });
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         requestId,
@@ -257,7 +263,7 @@ router.post("/cancel-deletion/:requestId", async (req, res) => {
     });
   } catch (error) {
     logger.error("Cancellation failed", { error });
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: "CANCEL_FAILED",

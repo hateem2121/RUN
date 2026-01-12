@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -15,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
-import type { AboutSection, MediaAsset } from "@shared/schema";
+import type { AboutSection, InsertAboutSection, MediaAsset } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
@@ -158,8 +159,8 @@ export function AboutSectionsTab() {
   const mediaAssets = mediaResponse?.data?.data || [];
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return apiRequest("/api/about-sections", { method: "POST", body: JSON.stringify(data) }) as Promise<any>;
+    mutationFn: async (data: InsertAboutSection) => {
+      return apiRequest("/api/about-sections", { method: "POST", body: JSON.stringify(data) }) as Promise<AboutSection>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -178,11 +179,11 @@ export function AboutSectionsTab() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAboutSection> }) => {
       return apiRequest(`/api/about-sections/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
-      }) as Promise<any>;
+      }) as Promise<AboutSection>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -224,7 +225,7 @@ export function AboutSectionsTab() {
       return apiRequest("/api/about-sections/reorder", {
         method: "PATCH",
         body: JSON.stringify({ sections }),
-      }) as Promise<any>;
+      }) as Promise<AboutSection[]>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
@@ -233,8 +234,10 @@ export function AboutSectionsTab() {
     },
   });
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+
+    if (!over) return;
 
     if (active.id !== over.id) {
       const oldIndex = sections.findIndex((item) => item.id === active.id);

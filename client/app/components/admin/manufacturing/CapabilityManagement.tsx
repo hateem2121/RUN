@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -196,7 +197,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
     deleteMutation: deleteCapabilityMutation,
     reorderMutation: reorderCapabilitiesMutation,
   } = useManufacturingMutations({
-    entity: "capabilities" as any,
+    entity: "capabilities",
     entityType: "Capability",
     entityTypePlural: "capabilities",
     queryKey: "/api/manufacturing-capabilities",
@@ -288,9 +289,9 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
     setShowCapabilityDialog(true);
   };
 
-  const handleCapabilityDragEnd = (event: any) => {
+  const handleCapabilityDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = capabilities.findIndex((c) => c.id === active.id);
       const newIndex = capabilities.findIndex((c) => c.id === over.id);
       const newCapabilities = arrayMove(capabilities, oldIndex, newIndex);
@@ -347,7 +348,7 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
       sortOrder: editingCapability?.sortOrder || 0,
       ...capabilityForm,
       // Cast specifications to fulfill type definition while maintaining array structure for component
-      specifications: capabilityForm.specifications as unknown as Record<string, any>,
+      specifications: capabilityForm.specifications as unknown as Record<string, unknown>,
       name: capabilityForm.name || capabilityForm.title || "Untitled Capability",
     } as ManufacturingCapability;
   };

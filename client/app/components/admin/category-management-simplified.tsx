@@ -14,6 +14,7 @@ import {
   Trash2,
   TreePine,
 } from "lucide-react";
+import type { Category, InsertCategory } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,13 +68,13 @@ export default function CategoryManagementSimplified() {
   } = useCategoryOperationsConsolidated();
 
   // Data operations
-  const handleCreateCategory = async (data: any) => {
+  const handleCreateCategory = async (data: InsertCategory) => {
     try {
       await createCategory(data);
     } catch (_error) {}
   };
 
-  const handleUpdateCategory = async (data: any) => {
+  const handleUpdateCategory = async (data: Partial<InsertCategory>) => {
     if (!uiState.editingCategory) return;
     try {
       await updateCategory({ id: uiState.editingCategory.id, data });
@@ -105,7 +106,7 @@ export default function CategoryManagementSimplified() {
   const renderCategoryView = () => {
     return (
       <CategoryList
-        categories={filteredCategories as any[]}
+        categories={filteredCategories as Category[]}
         viewMode={uiState.viewMode === "list" ? "table" : uiState.viewMode}
         selectedCategories={uiState.selectedCategories}
         expandedCategories={uiState.expandedCategories || {}}
@@ -174,7 +175,7 @@ export default function CategoryManagementSimplified() {
             </div>
             <select
               value={uiState.filterStatus}
-              onChange={(e) => updateUIState({ filterStatus: e.target.value as any })}
+              onChange={(e) => updateUIState({ filterStatus: e.target.value as "all" | "active" | "inactive" })}
               className="rounded-md border border-input px-3 py-2"
             >
               <option value="all">All Categories</option>
@@ -307,7 +308,7 @@ export default function CategoryManagementSimplified() {
             modifiers={[restrictToVerticalAxis, restrictToParentElement]}
           >
             <SortableContext
-              items={filteredCategories.map((c: any) => c.id)}
+              items={(filteredCategories as Category[]).map((c) => c.id)}
               strategy={verticalListSortingStrategy}
             >
               {renderCategoryView()}
@@ -339,7 +340,7 @@ export default function CategoryManagementSimplified() {
                   Failed to load deleted categories
                 </p>
                 <p className="mt-2 text-muted-foreground text-sm">
-                  {(deletedCategoriesError as any)?.message ||
+                  {(deletedCategoriesError as Error)?.message ||
                     "An error occurred while fetching deleted categories"}
                 </p>
                 <div className="mt-4 flex justify-center gap-2">
@@ -370,7 +371,7 @@ export default function CategoryManagementSimplified() {
               <p className="py-8 text-center text-muted-foreground">No deleted categories</p>
             ) : (
               <div className="space-y-2">
-                {deletedCategories.map((category: any) => (
+                {(deletedCategories as Category[]).map((category) => (
                   <div
                     key={category.id}
                     className="flex items-center justify-between rounded-lg border border-red-200 bg-white p-4 dark:border-red-900 dark:bg-foreground"
@@ -423,9 +424,15 @@ export default function CategoryManagementSimplified() {
       <CategoryForm
         open={uiState.showCreateDialog || uiState.showEditDialog}
         onClose={closeDialogs}
-        onSubmit={uiState.editingCategory ? handleUpdateCategory : handleCreateCategory}
+        onSubmit={(data) => {
+          if (uiState.editingCategory) {
+            handleUpdateCategory(data);
+          } else {
+            handleCreateCategory(data as InsertCategory);
+          }
+        }}
         initialData={uiState.editingCategory}
-        categories={(categories || []) as any[]}
+        categories={(categories || []) as Category[]}
         isLoading={isLoading}
         mode={uiState.editingCategory ? "edit" : "create"}
       />

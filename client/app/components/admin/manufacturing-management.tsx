@@ -12,7 +12,7 @@ export default function ManufacturingManagement() {
   // OPTIMIZATION: Defer heavy media loading until editing mode is active (Refactor Phase 4)
   const { data: mediaResponse, isPending: isMediaLoading } = useQuery<{
     success: boolean;
-    data: { data: MediaAsset[]; pagination: any };
+    data: { data: MediaAsset[]; pagination: unknown };
   }>({
     queryKey: MediaQueryKeys.list,
     staleTime: 10 * 60 * 1000, // 10 minutes cache

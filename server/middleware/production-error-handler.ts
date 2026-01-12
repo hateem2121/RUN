@@ -12,6 +12,8 @@ import {
 } from "../lib/errors.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
+import { alertService } from "../lib/integrations/alert-service.js";
+import { getRunbookUrl, shouldIncludeRunbook } from "../lib/runbook-registry.js";
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 
@@ -376,9 +378,37 @@ export function productionErrorHandler(
     }
   }
 
+  // Free tier alerting for 5xx errors in production (Discord/Slack webhooks)
+  const statusCode = Number(errorResponse.status);
+  if (statusCode >= 500 && config.app.environment === "production") {
+    // Get runbook URL for the error code
+    const errorCode = error instanceof AppError ? error.code : "INTERNAL_ERROR";
+    const runbookUrl = getRunbookUrl(errorCode);
+    
+    // Fire-and-forget alert via Discord/Slack
+    const alertError = error instanceof Error ? error : new Error(String(error));
+    alertService.alertOnServerError(alertError, req.path, statusCode, runbookUrl).catch((alertErr: Error) => {
+      logger.warn("[ErrorHandler] Failed to send alert", alertErr);
+    });
+  }
+
+  // Add runbook link for high-severity operational errors (non-production only for security)
+  if (shouldIncludeRunbook(errorDetails.severity)) {
+    const errorCode = error instanceof AppError ? error.code : "INTERNAL_ERROR";
+    const runbookUrl = getRunbookUrl(errorCode);
+    if (runbookUrl) {
+      // In production, only include in internal logging, not response
+      if (config.app.environment !== "production") {
+        (errorResponse as any).runbook = runbookUrl;
+      }
+      // Always log the runbook URL for operators
+      logger.info("[ErrorHandler] Runbook available", { errorCode, runbookUrl });
+    }
+  }
+
   // Send error response with RFC 9457 Content-Type
   res
-    .status(Number(errorResponse.status))
+    .status(statusCode)
     .setHeader("Content-Type", "application/problem+json")
     .json(errorResponse);
 }

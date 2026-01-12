@@ -26,7 +26,7 @@ export default function AdminCMS() {
 
   const { data: mediaResponse } = useQuery<{
     success: boolean;
-    data: { data: MediaAsset[]; pagination: any };
+    data: { data: MediaAsset[]; pagination: unknown };
   }>({
     queryKey: MediaQueryKeys.list,
   });
