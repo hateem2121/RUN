@@ -5,12 +5,12 @@ import { NodeSDK } from "@opentelemetry/sdk-node";
 export function initTelemetry() {
   const isProduction = process.env.NODE_ENV === "production";
   const isExplicitlyDisabled = process.env.ENABLE_OTEL === "false";
-  
+
   // Enable by default in production (opt-out) but require opt-in elsewhere
   if (!isProduction && process.env.ENABLE_OTEL !== "true") {
     return;
   }
-  
+
   if (isExplicitlyDisabled) {
     return;
   }

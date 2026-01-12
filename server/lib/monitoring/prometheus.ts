@@ -70,7 +70,7 @@ export const circuitBreakerFailures = new client.Gauge({
 export function updateCircuitBreakerMetrics(
   service: string,
   state: "CLOSED" | "HALF_OPEN" | "OPEN",
-  failures: number
+  failures: number,
 ): void {
   const stateValue = { CLOSED: 0, HALF_OPEN: 1, OPEN: 2 }[state] ?? -1;
   circuitBreakerState.labels(service).set(stateValue);

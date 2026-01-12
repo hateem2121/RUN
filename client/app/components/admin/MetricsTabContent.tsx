@@ -68,7 +68,11 @@ interface MetricsTabContentProps {
   metricsTotalPages: number;
   sensors: SensorDescriptor<object>[];
   createMetricMutation: UseMutationResult<unknown, unknown, InsertSustainabilityMetric>;
-  updateMetricMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityMetric }>;
+  updateMetricMutation: UseMutationResult<
+    unknown,
+    unknown,
+    { id: number; data: InsertSustainabilityMetric }
+  >;
   deleteMetricMutation: UseMutationResult<unknown, unknown, number>;
   SortableMetricItem: React.ComponentType<{
     metric: SustainabilityMetric;

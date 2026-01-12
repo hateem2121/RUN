@@ -75,15 +75,13 @@ export class HttpError extends Error {
 export async function fetchWithTimeout(
   url: string | URL,
   options: RequestInit = {},
-  timeoutMs = DEFAULT_TIMEOUT_MS
+  timeoutMs = DEFAULT_TIMEOUT_MS,
 ): Promise<Response> {
   // Create timeout signal
   const timeoutSignal = AbortSignal.timeout(timeoutMs);
 
   // If caller provided their own signal, combine them
-  const signal = options.signal
-    ? AbortSignal.any([options.signal, timeoutSignal])
-    : timeoutSignal;
+  const signal = options.signal ? AbortSignal.any([options.signal, timeoutSignal]) : timeoutSignal;
 
   try {
     const response = await fetch(url, { ...options, signal });
@@ -92,7 +90,7 @@ export async function fetchWithTimeout(
     // Enhance timeout errors with more context
     if (error instanceof Error && error.name === "TimeoutError") {
       const enhancedError = new Error(
-        `Request to ${typeof url === "string" ? url : url.toString()} timed out after ${timeoutMs}ms`
+        `Request to ${typeof url === "string" ? url : url.toString()} timed out after ${timeoutMs}ms`,
       );
       enhancedError.name = "TimeoutError";
       throw enhancedError;
@@ -115,7 +113,7 @@ export async function fetchWithTimeout(
 export async function fetchWithTimeoutAndErrors(
   url: string | URL,
   options: RequestInit = {},
-  timeoutMs = DEFAULT_TIMEOUT_MS
+  timeoutMs = DEFAULT_TIMEOUT_MS,
 ): Promise<Response> {
   const response = await fetchWithTimeout(url, options, timeoutMs);
 
@@ -134,8 +132,7 @@ export async function fetchWithTimeoutAndErrors(
       }
     }
 
-    const message =
-      problemDetails?.detail || problemDetails?.title || `HTTP ${response.status}`;
+    const message = problemDetails?.detail || problemDetails?.title || `HTTP ${response.status}`;
 
     throw new HttpError(response.status, message, problemDetails);
   }
@@ -149,16 +146,20 @@ export async function fetchWithTimeoutAndErrors(
 export async function fetchJson<T>(
   url: string | URL,
   options: RequestInit = {},
-  timeoutMs = DEFAULT_TIMEOUT_MS
+  timeoutMs = DEFAULT_TIMEOUT_MS,
 ): Promise<T> {
-  const response = await fetchWithTimeoutAndErrors(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...options.headers,
+  const response = await fetchWithTimeoutAndErrors(
+    url,
+    {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        ...options.headers,
+      },
     },
-  }, timeoutMs);
+    timeoutMs,
+  );
   return response.json();
 }
 
@@ -169,13 +170,17 @@ export async function postJson<T, B = unknown>(
   url: string | URL,
   body: B,
   options: RequestInit = {},
-  timeoutMs = DEFAULT_TIMEOUT_MS
+  timeoutMs = DEFAULT_TIMEOUT_MS,
 ): Promise<T> {
-  return fetchJson<T>(url, {
-    ...options,
-    method: "POST",
-    body: JSON.stringify(body),
-  }, timeoutMs);
+  return fetchJson<T>(
+    url,
+    {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(body),
+    },
+    timeoutMs,
+  );
 }
 
 /**
@@ -189,10 +194,7 @@ export function isTimeoutError(error: unknown): boolean {
  * Check if an error is an abort error (user cancelled)
  */
 export function isAbortError(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    (error.name === "AbortError" || error.name === "DOMException")
-  );
+  return error instanceof Error && (error.name === "AbortError" || error.name === "DOMException");
 }
 
 /**

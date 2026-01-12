@@ -363,7 +363,7 @@ async function checkIndexUsage(): Promise<HealthCheckResult> {
 async function getSystemMetrics(indexUsageCheck?: HealthCheckResult) {
   // Memory monitoring controlled by environment variable
   // Default: enabled in development, configurable in production via ENABLE_MEMORY_METRICS
-  const enableMemoryMetrics = 
+  const enableMemoryMetrics =
     process.env.ENABLE_MEMORY_METRICS === "true" ||
     (config.app.environment === "development" && process.env.ENABLE_MEMORY_METRICS !== "false");
 
@@ -555,9 +555,9 @@ export async function healthCheckHandler(req: Request, res: Response) {
   // In production, require secret to be configured (fail secure)
   if (isProduction && !secret) {
     logger.error("[Health] HEALTH_CHECK_SECRET not configured in production - rejecting request");
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Health check misconfigured",
-      detail: "HEALTH_CHECK_SECRET must be set in production" 
+      detail: "HEALTH_CHECK_SECRET must be set in production",
     });
     return;
   }

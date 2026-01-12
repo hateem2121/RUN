@@ -13,6 +13,7 @@ import { getStorage } from "../../lib/storage-singleton.js";
 import { safeSerialize, shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import { backendUploadManager, uploadMetrics } from "./middleware.js";
+import { MediaIdParamSchema, MediaListQuerySchema } from "./schemas.js";
 import { enhancedUploadService, uploadSessions } from "./services.js";
 import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 import {
@@ -26,7 +27,6 @@ import {
   slugifyFilename,
   type UploadOptions,
 } from "./utils.js";
-import { MediaIdParamSchema, MediaListQuerySchema } from "./schemas.js";
 
 // Session cleanup - remove stale uploads after 1 hour
 setInterval(
@@ -76,7 +76,7 @@ async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
 
 export async function getMediaAssets(req: Request, res: Response, next: NextFunction) {
   res.locals._handled = true;
-  
+
   const query = MediaListQuerySchema.parse(req.query);
   const { page, limit, type, search, folderId } = query;
 

@@ -67,7 +67,7 @@ sql = ((strings: TemplateStringsArray | string, ...values: any[]) => {
   }
   const start = performance.now();
 
-  // @ts-ignore - Neon types are tricky with wrappers
+  // @ts-expect-error - Neon types are tricky with wrappers
   return internalSql(strings, ...values)
     .then((res) => {
       metrics.successfulQueries++;
@@ -79,7 +79,7 @@ sql = ((strings: TemplateStringsArray | string, ...values: any[]) => {
     })
     .finally(() => {
       metrics.currentConcurrentQueries--;
-      metrics.totalQueryTimeMs += (performance.now() - start);
+      metrics.totalQueryTimeMs += performance.now() - start;
     });
 }) as any;
 
@@ -146,9 +146,10 @@ export const getPoolMetrics = () => ({
   totalQueries: metrics.totalQueries,
   successfulQueries: metrics.successfulQueries,
   failedQueries: metrics.failedQueries,
-  averageQueryTime: metrics.successfulQueries > 0 
-    ? Math.round(metrics.totalQueryTimeMs / metrics.successfulQueries) 
-    : 0,
+  averageQueryTime:
+    metrics.successfulQueries > 0
+      ? Math.round(metrics.totalQueryTimeMs / metrics.successfulQueries)
+      : 0,
   peakConcurrentQueries: metrics.peakConcurrentQueries,
   currentConcurrentQueries: metrics.currentConcurrentQueries,
   lastHealthCheckAt: metrics.lastHealthCheckAt,
@@ -188,21 +189,17 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
 }
 
 // Import additional error types for transaction support
-import {
-  ConflictError,
-  DatabaseDeadlockError,
-  DatabaseTimeoutError,
-} from "./lib/errors.js";
+import { ConflictError, DatabaseDeadlockError, DatabaseTimeoutError } from "./lib/errors.js";
 
 /**
  * Safe Transaction Wrapper
  * Executes a callback within a database transaction with automatic rollback on error.
- * 
+ *
  * Features:
  * - Automatic rollback on any error
  * - Proper error classification (deadlock, timeout, constraint violations)
  * - Type-safe Result return type
- * 
+ *
  * @example
  * ```typescript
  * const result = await safeTransaction(async (tx) => {
@@ -210,7 +207,7 @@ import {
  *   await tx.insert(profiles).values({ userId: user[0].id, bio: "" });
  *   return user[0];
  * });
- * 
+ *
  * if (result.isOk()) {
  *   console.log("User created:", result.value);
  * } else {
@@ -220,7 +217,9 @@ import {
  */
 export async function safeTransaction<T>(
   callback: (tx: DbClient) => Promise<T>,
-): Promise<Result<T, DatabaseError | ConflictError | DatabaseDeadlockError | DatabaseTimeoutError>> {
+): Promise<
+  Result<T, DatabaseError | ConflictError | DatabaseDeadlockError | DatabaseTimeoutError>
+> {
   try {
     const result = await db.transaction(async (tx) => {
       return await callback(tx);

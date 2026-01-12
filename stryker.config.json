@@ -10,13 +10,7 @@
     "!**/*.spec.ts",
     "!**/node_modules/**"
   ],
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    "client",
-    "e2e",
-    "**/*.d.ts"
-  ],
+  "ignorePatterns": ["node_modules", "dist", "client", "e2e", "**/*.d.ts"],
   "thresholds": {
     "high": 80,
     "low": 60,
@@ -34,7 +28,5 @@
   "vitest": {
     "configFile": "vitest.config.ts"
   },
-  "plugins": [
-    "@stryker-mutator/vitest-runner"
-  ]
+  "plugins": ["@stryker-mutator/vitest-runner"]
 }

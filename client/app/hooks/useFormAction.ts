@@ -35,7 +35,7 @@ const INITIAL_STATE: FormState = { success: false };
  */
 export function useFormAction<T>(
   action: (prevState: FormState<T>, formData: FormData) => Promise<FormState<T>>,
-  initialState: FormState<T> = INITIAL_STATE as FormState<T>
+  initialState: FormState<T> = INITIAL_STATE as FormState<T>,
 ) {
   const [state, formAction, isPending] = React.useActionState(action, initialState);
 
@@ -43,21 +43,21 @@ export function useFormAction<T>(
     (field: string): boolean => {
       return !!state.errors?.[field]?.length;
     },
-    [state.errors]
+    [state.errors],
   );
 
   const getError = React.useCallback(
     (field: string): string | undefined => {
       return state.errors?.[field]?.[0];
     },
-    [state.errors]
+    [state.errors],
   );
 
   const getAllErrors = React.useCallback(
     (field: string): string[] => {
       return state.errors?.[field] || [];
     },
-    [state.errors]
+    [state.errors],
   );
 
   const hasAnyErrors = React.useMemo(() => {
@@ -91,7 +91,7 @@ export function createFormResponse<T>(
     data?: T;
     errors?: Record<string, string[]>;
     message?: string;
-  }
+  },
 ): FormState<T> {
   return {
     success,
@@ -104,7 +104,7 @@ export function createFormResponse<T>(
  */
 export function createValidationErrors<T>(
   errors: Record<string, string[]>,
-  message = "Please fix the errors below"
+  message = "Please fix the errors below",
 ): FormState<T> {
   return {
     success: false,
@@ -116,10 +116,7 @@ export function createValidationErrors<T>(
 /**
  * Helper to create success response
  */
-export function createSuccessResponse<T>(
-  data?: T,
-  message?: string
-): FormState<T> {
+export function createSuccessResponse<T>(data?: T, message?: string): FormState<T> {
   const response: FormState<T> = { success: true };
   if (data !== undefined) response.data = data;
   if (message !== undefined) response.message = message;

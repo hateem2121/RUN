@@ -52,22 +52,15 @@ Use this guide to orient yourself before diving into specific files.
 
 ---
 
-## Tech Stack
 
-> For exact version numbers, see [docs/overview.md](./docs/overview.md) (Single Source of Truth).
+> **Canonical Reference**: For the complete version matrix, exact package versions, and provenance, see the [System Overview & Architecture](./docs/overview.md#2-stack--critical-versions).
 
-| Layer             | Technology               |
-| ----------------- | ------------------------ |
-| **Frontend**      | React 19, Vite 7         |
-| **Styling**       | Tailwind CSS v4          |
-| **Server**        | Express 5, Node 24       |
-| **Database**      | PostgreSQL + Drizzle ORM |
-| **State**         | TanStack Query           |
-| **Routing**       | React Router 7           |
-| **Components**    | shadcn/ui + Radix        |
-| **Linting**       | Biome                    |
-| **Testing**       | Vitest, Playwright       |
-| **Observability** | Sentry, OpenTelemetry    |
+**Core Stack**:
+
+- **Frontend**: React 19, Vite 7, Tailwind CSS v4, React Router 7
+- **Backend**: Express 5, Node.js 24
+- **Data**: PostgreSQL, Drizzle ORM, Redis
+- **Infra**: Docker (Alpine), Cloud Run
 
 ---
 
@@ -81,7 +74,7 @@ Use this guide to orient yourself before diving into specific files.
 
 ### Installation
 
-````bash
+```bash
 # 1. Clone repository
 git clone <repository-url>
 cd RUN-Remix
@@ -92,9 +85,12 @@ npm install
 # 3. Environment Setup
 
 Create `.env` file from example:
+```
+
 ```bash
 cp .env.example .env
-````
+```
+
 
 > **Security Note:** In production, secrets are loaded automatically from Google Secret Manager. Ensure the Cloud Run service account has `Secret Accessor` role.
 
@@ -120,16 +116,14 @@ npm run verify:tech-integrity
 
 ### Environment Variables
 
-Create a root `.env` file following the structure in `.env.example`.
+See [System Overview > Environment Variables](./docs/overview.md#5-environment-variables) for the complete schema and required secrets.
 
-**Root (`.env`):**
-
+**Quick Setup (`.env`):**
 ```bash
-# Server Configuration
-PORT=5001 # 5001 for Local Dev, 5000 for Docker/Container
+PORT=5001
 NODE_ENV=development
-
-# ... (Rest of variables)
+DATABASE_URL=postgres://...
+# See .env.example for full list
 ```
 
 ---
@@ -184,48 +178,17 @@ RUN-Remix/
 
 ## npm Scripts
 
-### Development Scripts
+For a detailed breakdown of all operational commands, see [System Overview > Scripts](./docs/overview.md#4-scripts--operational-commands).
+
+**Common Commands**:
 
 ```bash
-npm run dev              # Start dev server (port 5001)
-npm run check            # Typecheck (tsc) + Biome lint
-npm run check:apply      # Biome lint + auto-fix
-npm run lint             # Biome lint only
-npm run lint:html        # HTML validation
+npm run dev              # Start development server
+npm run build            # Build for production
+npm run test             # Run unit tests
+npm run verify:tech-integrity # Run full health check
 ```
 
-### Build Scripts
-
-```bash
-npm run build            # Full production build (Required before start)
-npm run build:client     # Build client with SSR manifest
-npm run build:ssr        # Build SSR entry
-npm run build:server     # TypeScript compile + esbuild bundle
-npm run start            # Start production server (Delegates to @run-remix/server)
-```
-
-### Database Scripts
-
-```bash
-npm run db:push          # Push schema to database
-```
-
-### Testing Scripts
-
-```bash
-npm run test             # Unit tests (vitest)
-npm run test:integration # Integration tests (Server spawn)
-npm run test:e2e         # Playwright E2E (regression)
-npm run test:integration:full # Full integration tests with Docker DB
-```
-
-### Verification Scripts
-
-```bash
-npm run check:bundle     # Verify bundle limits
-npm run verify:ssr       # Verify SSR invariants (Test Suite)
-npm run verify:tech-integrity # Full integrity check (build + audit)
-```
 
 ---
 

@@ -1,7 +1,11 @@
-import { closestCenter, DndContext } from "@dnd-kit/core";
 import type { SensorDescriptor } from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { InsertSustainabilityInitiative, MediaAsset, SustainabilityInitiative } from "@shared/schema";
+import type {
+  InsertSustainabilityInitiative,
+  MediaAsset,
+  SustainabilityInitiative,
+} from "@shared/schema";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus, Upload } from "lucide-react";
 import { useState } from "react";
@@ -63,7 +67,11 @@ interface InitiativesTabContentProps {
   initiativesTotalPages: number;
   sensors: SensorDescriptor<object>[];
   createInitiativeMutation: UseMutationResult<unknown, unknown, InsertSustainabilityInitiative>;
-  updateInitiativeMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityInitiative }>;
+  updateInitiativeMutation: UseMutationResult<
+    unknown,
+    unknown,
+    { id: number; data: InsertSustainabilityInitiative }
+  >;
   deleteInitiativeMutation: UseMutationResult<unknown, unknown, number>;
   SortableInitiativeItem: React.ComponentType<{
     initiative: SustainabilityInitiative;

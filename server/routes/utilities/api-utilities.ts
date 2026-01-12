@@ -11,8 +11,8 @@ import { logger } from "../../lib/monitoring/logger.js";
 import { authService } from "../../services/auth-service.js";
 import {
   FeatureFlagParamSchema,
-  FeatureFlagUpdateBodySchema,
   FeatureFlagsQuerySchema,
+  FeatureFlagUpdateBodySchema,
   ResourcesBatchQuerySchema,
 } from "./schemas.js";
 

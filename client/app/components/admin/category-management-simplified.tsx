@@ -1,6 +1,7 @@
 import { closestCenter, DndContext } from "@dnd-kit/core";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import type { Category, InsertCategory } from "@shared/schema";
 import {
   BarChart3,
   Download,
@@ -14,7 +15,6 @@ import {
   Trash2,
   TreePine,
 } from "lucide-react";
-import type { Category, InsertCategory } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -175,7 +175,9 @@ export default function CategoryManagementSimplified() {
             </div>
             <select
               value={uiState.filterStatus}
-              onChange={(e) => updateUIState({ filterStatus: e.target.value as "all" | "active" | "inactive" })}
+              onChange={(e) =>
+                updateUIState({ filterStatus: e.target.value as "all" | "active" | "inactive" })
+              }
               className="rounded-md border border-input px-3 py-2"
             >
               <option value="all">All Categories</option>

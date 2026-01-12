@@ -1,13 +1,13 @@
 /**
  * Alert Service - Free Tier Implementation
- * 
+ *
  * Provides incident alerting using free services:
  * - Discord webhooks (primary, completely free)
  * - Slack webhooks (alternative, free tier)
  * - Console logging (fallback)
- * 
+ *
  * No paid services required!
- * 
+ *
  * @configuration
  * Environment variables:
  * - DISCORD_WEBHOOK_URL: Discord webhook for alerts
@@ -15,12 +15,12 @@
  * - ALERT_ENABLED: Set to 'true' to enable (default: true in production)
  */
 
-import { logger } from '../monitoring/logger.js';
+import { logger } from "../monitoring/logger.js";
 
 /**
  * Alert severity levels
  */
-export type AlertSeverity = 'critical' | 'error' | 'warning' | 'info';
+export type AlertSeverity = "critical" | "error" | "warning" | "info";
 
 /**
  * Alert payload
@@ -38,27 +38,27 @@ interface AlertPayload {
  * Discord embed colors by severity
  */
 const DISCORD_COLORS: Record<AlertSeverity, number> = {
-  critical: 0xFF0000, // Red
-  error: 0xFF6B6B,    // Light red
-  warning: 0xFFAA00,  // Orange
-  info: 0x00AAFF,     // Blue
+  critical: 0xff0000, // Red
+  error: 0xff6b6b, // Light red
+  warning: 0xffaa00, // Orange
+  info: 0x00aaff, // Blue
 };
 
 /**
  * Severity emoji mapping
  */
 const SEVERITY_EMOJI: Record<AlertSeverity, string> = {
-  critical: '🚨',
-  error: '❌',
-  warning: '⚠️',
-  info: 'ℹ️',
+  critical: "🚨",
+  error: "❌",
+  warning: "⚠️",
+  info: "ℹ️",
 };
 
 /**
  * Check if alerting is enabled
  */
 function isEnabled(): boolean {
-  const enabled = process.env.ALERT_ENABLED !== 'false';
+  const enabled = process.env.ALERT_ENABLED !== "false";
   const hasWebhook = !!(process.env.DISCORD_WEBHOOK_URL || process.env.SLACK_WEBHOOK_URL);
   return enabled && hasWebhook;
 }
@@ -78,7 +78,7 @@ async function sendDiscordAlert(payload: AlertPayload): Promise<boolean> {
       timestamp: payload.timestamp || new Date().toISOString(),
       fields: [] as Array<{ name: string; value: string; inline?: boolean }>,
       footer: {
-        text: 'RUN Apparel Platform',
+        text: "RUN Apparel Platform",
       },
     };
 
@@ -96,27 +96,27 @@ async function sendDiscordAlert(payload: AlertPayload): Promise<boolean> {
     // Add runbook link if available
     if (payload.runbookUrl) {
       embed.fields.push({
-        name: '📚 Runbook',
+        name: "📚 Runbook",
         value: `[View Runbook](${payload.runbookUrl})`,
         inline: false,
       });
     }
 
     const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ embeds: [embed] }),
     });
 
     if (!response.ok) {
-      logger.error('[Alert] Discord webhook failed', { status: response.status });
+      logger.error("[Alert] Discord webhook failed", { status: response.status });
       return false;
     }
 
-    logger.info('[Alert] Discord alert sent', { title: payload.title });
+    logger.info("[Alert] Discord alert sent", { title: payload.title });
     return true;
   } catch (error) {
-    logger.error('[Alert] Discord webhook error', error);
+    logger.error("[Alert] Discord webhook error", error);
     return false;
   }
 }
@@ -129,23 +129,27 @@ async function sendSlackAlert(payload: AlertPayload): Promise<boolean> {
   if (!webhookUrl) return false;
 
   try {
-    const color = payload.severity === 'critical' ? 'danger' 
-      : payload.severity === 'error' ? 'danger'
-      : payload.severity === 'warning' ? 'warning' 
-      : 'good';
+    const color =
+      payload.severity === "critical"
+        ? "danger"
+        : payload.severity === "error"
+          ? "danger"
+          : payload.severity === "warning"
+            ? "warning"
+            : "good";
 
     const blocks = [
       {
-        type: 'header',
+        type: "header",
         text: {
-          type: 'plain_text',
+          type: "plain_text",
           text: `${SEVERITY_EMOJI[payload.severity]} ${payload.title}`,
         },
       },
       {
-        type: 'section',
+        type: "section",
         text: {
-          type: 'mrkdwn',
+          type: "mrkdwn",
           text: payload.message,
         },
       },
@@ -154,34 +158,36 @@ async function sendSlackAlert(payload: AlertPayload): Promise<boolean> {
     // Add runbook button if available
     if (payload.runbookUrl) {
       blocks.push({
-        type: 'section',
+        type: "section",
         text: {
-          type: 'mrkdwn',
+          type: "mrkdwn",
           text: `📚 <${payload.runbookUrl}|View Runbook>`,
         },
       } as any);
     }
 
     const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        attachments: [{
-          color,
-          blocks,
-        }],
+        attachments: [
+          {
+            color,
+            blocks,
+          },
+        ],
       }),
     });
 
     if (!response.ok) {
-      logger.error('[Alert] Slack webhook failed', { status: response.status });
+      logger.error("[Alert] Slack webhook failed", { status: response.status });
       return false;
     }
 
-    logger.info('[Alert] Slack alert sent', { title: payload.title });
+    logger.info("[Alert] Slack alert sent", { title: payload.title });
     return true;
   } catch (error) {
-    logger.error('[Alert] Slack webhook error', error);
+    logger.error("[Alert] Slack webhook error", error);
     return false;
   }
 }
@@ -201,12 +207,12 @@ export class AlertService {
     const dedupeKey = `${payload.title}-${payload.severity}`;
     const lastSent = this.dedupeCache.get(dedupeKey);
     if (lastSent && Date.now() - lastSent < this.dedupeTtlMs) {
-      logger.debug('[Alert] Deduplicated alert', { title: payload.title });
+      logger.debug("[Alert] Deduplicated alert", { title: payload.title });
       return true;
     }
 
     if (!isEnabled()) {
-      logger.debug('[Alert] Alerting disabled or no webhook configured');
+      logger.debug("[Alert] Alerting disabled or no webhook configured");
       return false;
     }
 
@@ -221,7 +227,7 @@ export class AlertService {
     }
 
     // Always log the alert for record keeping
-    logger.warn('[Alert] Alert triggered', {
+    logger.warn("[Alert] Alert triggered", {
       severity: payload.severity,
       title: payload.title,
       message: payload.message,
@@ -238,20 +244,20 @@ export class AlertService {
     error: Error,
     requestPath: string,
     statusCode: number,
-    runbookUrl?: string
+    runbookUrl?: string,
   ): Promise<void> {
     if (statusCode < 500) return;
 
-    const severity: AlertSeverity = statusCode >= 500 ? 'error' : 'warning';
+    const severity: AlertSeverity = statusCode >= 500 ? "error" : "warning";
 
     await this.sendAlert({
       severity,
       title: `Server Error ${statusCode}`,
       message: error.message,
       details: {
-        'Error Type': error.name,
-        'Path': requestPath,
-        'Status': statusCode,
+        "Error Type": error.name,
+        Path: requestPath,
+        Status: statusCode,
       },
       runbookUrl,
     });
@@ -260,20 +266,16 @@ export class AlertService {
   /**
    * Alert on SLO breach
    */
-  async alertOnSLOBreach(
-    metric: string,
-    threshold: number,
-    actual: number
-  ): Promise<void> {
+  async alertOnSLOBreach(metric: string, threshold: number, actual: number): Promise<void> {
     await this.sendAlert({
-      severity: 'warning',
-      title: 'SLO Breach Detected',
+      severity: "warning",
+      title: "SLO Breach Detected",
       message: `${metric} exceeded threshold`,
       details: {
-        'Metric': metric,
-        'Threshold': threshold,
-        'Actual': actual,
-        'Breach %': `${((actual / threshold - 1) * 100).toFixed(1)}%`,
+        Metric: metric,
+        Threshold: threshold,
+        Actual: actual,
+        "Breach %": `${((actual / threshold - 1) * 100).toFixed(1)}%`,
       },
     });
   }

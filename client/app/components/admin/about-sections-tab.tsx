@@ -160,7 +160,10 @@ export function AboutSectionsTab() {
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertAboutSection) => {
-      return apiRequest("/api/about-sections", { method: "POST", body: JSON.stringify(data) }) as Promise<AboutSection>;
+      return apiRequest("/api/about-sections", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }) as Promise<AboutSection>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

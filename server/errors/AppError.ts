@@ -11,20 +11,19 @@
  */
 
 // Re-export all error classes from canonical source for backward compatibility
+// Legacy aliases for backward compatibility
 export {
   AppError,
-  ValidationError,
   AuthenticationError,
-  ForbiddenError,
-  NotFoundError,
-  ConflictError,
-  RateLimitError,
-  DatabaseError,
+  AuthenticationError as UnauthorizedError,
   BadRequestError,
-  InternalError,
-  DatabaseTimeoutError,
+  ConflictError,
   DatabaseDeadlockError,
+  DatabaseError,
+  DatabaseTimeoutError,
+  ForbiddenError,
+  InternalError,
+  NotFoundError,
+  RateLimitError,
+  ValidationError,
 } from "../lib/errors.js";
-
-// Legacy aliases for backward compatibility
-export { AuthenticationError as UnauthorizedError } from "../lib/errors.js";

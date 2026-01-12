@@ -55,12 +55,13 @@ export class ConflictError extends AppError {
 export class RateLimitError extends AppError {
   constructor(
     message: string = "Too many requests",
-    detailsOrRetryAfter: number | Record<string, unknown> = 60
+    detailsOrRetryAfter: number | Record<string, unknown> = 60,
   ) {
     // Support both old (number) and new (object) signatures
-    const details = typeof detailsOrRetryAfter === "number"
-      ? { retryAfter: detailsOrRetryAfter }
-      : detailsOrRetryAfter;
+    const details =
+      typeof detailsOrRetryAfter === "number"
+        ? { retryAfter: detailsOrRetryAfter }
+        : detailsOrRetryAfter;
     super(message, 429, "RATE_LIMIT_EXCEEDED", true, details);
   }
 }
@@ -107,7 +108,10 @@ export class DatabaseTimeoutError extends AppError {
  * Use for transaction deadlocks - these are retryable
  */
 export class DatabaseDeadlockError extends AppError {
-  constructor(message: string = "Transaction deadlock detected", details?: Record<string, unknown>) {
+  constructor(
+    message: string = "Transaction deadlock detected",
+    details?: Record<string, unknown>,
+  ) {
     super(message, 409, "DB_DEADLOCK", true, details);
   }
 }

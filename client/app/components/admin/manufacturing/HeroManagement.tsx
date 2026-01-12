@@ -75,9 +75,12 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
     queryKey: createMediaQueryKey.single(heroData.backgroundMediaId || 0),
     queryFn: async (): Promise<MediaAsset> => {
       if (!heroData.backgroundMediaId) throw new Error("No background media ID");
-      const res = await apiRequest<{ data: MediaAsset }>(`/api/media/${heroData.backgroundMediaId}`, {
-        method: "GET",
-      });
+      const res = await apiRequest<{ data: MediaAsset }>(
+        `/api/media/${heroData.backgroundMediaId}`,
+        {
+          method: "GET",
+        },
+      );
       return res.data;
     },
     enabled:

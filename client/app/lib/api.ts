@@ -57,7 +57,7 @@ interface RequestOptions extends RequestInit {
  */
 export async function apiRequest<T>(
   endpoint: string,
-  { timeout = 15000, ...options }: RequestOptions = {}
+  { timeout = 15000, ...options }: RequestOptions = {},
 ): Promise<T> {
   // SSR Support: Prepend localhost for relative URLs on server
   let url = endpoint;
@@ -108,7 +108,7 @@ export async function apiRequest<T>(
         type: "about:blank",
         title: res.statusText || "Unknown Error",
         status: res.status,
-        detail: typeof errorData === 'string' ? errorData : JSON.stringify(errorData),
+        detail: typeof errorData === "string" ? errorData : JSON.stringify(errorData),
       };
       throw new ApiError(res.status, fallbackError);
     }
@@ -124,7 +124,6 @@ export async function apiRequest<T>(
       return await res.json();
     }
     return (await res.text()) as unknown as T;
-
   } catch (error) {
     clearTimeout(id); // Ensure clear on error too
 
@@ -139,7 +138,7 @@ export async function apiRequest<T>(
         title: "Request Timeout",
         status: 408,
         detail: `The request timed out after ${timeout}ms`,
-        instance: url
+        instance: url,
       });
     }
 
@@ -149,7 +148,7 @@ export async function apiRequest<T>(
       title: "Network Error",
       status: 500,
       detail: error instanceof Error ? error.message : "Failed to connect to server",
-      instance: url
+      instance: url,
     });
   }
 }
@@ -157,7 +156,10 @@ export async function apiRequest<T>(
 async function extractErrorBody(res: Response): Promise<unknown> {
   try {
     const contentType = res.headers.get("content-type");
-    if (contentType && (contentType.includes("application/json") || contentType.includes("application/problem+json"))) {
+    if (
+      contentType &&
+      (contentType.includes("application/json") || contentType.includes("application/problem+json"))
+    ) {
       return await res.json();
     }
     return await res.text();

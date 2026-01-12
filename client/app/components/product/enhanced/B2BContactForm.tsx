@@ -17,9 +17,9 @@ import {
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { submitInquiryAction as submitInquiry } from "../../../../app/services/inquiry.server";
 import { useServerValidation } from "@/hooks/useServerValidation";
 import { ApiError } from "@/lib/api";
+import { submitInquiryAction as submitInquiry } from "../../../../app/services/inquiry.server";
 
 type ContactState = {
   status: "idle" | "success" | "error";

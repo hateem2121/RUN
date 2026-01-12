@@ -93,7 +93,10 @@ export function AboutHeroTab() {
         ...data,
         backgroundMediaId: data.backgroundMediaId ? Number(data.backgroundMediaId) : null,
       };
-      return apiRequest("/api/about-hero", { method: "PATCH", body: JSON.stringify(payload) }) as Promise<AboutHero>;
+      return apiRequest("/api/about-hero", {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      }) as Promise<AboutHero>;
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/about-hero"] });

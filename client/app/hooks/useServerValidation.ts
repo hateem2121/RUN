@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { UseFormReturn, FieldValues, Path } from "react-hook-form";
+import type { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { ApiError } from "../lib/api";
 
 interface UseServerValidationProps<T extends FieldValues> {
@@ -10,7 +10,7 @@ interface UseServerValidationProps<T extends FieldValues> {
 
 /**
  * Automatically maps RFC 9457 "invalid-params" to React Hook Form errors.
- * 
+ *
  * @example
  * useServerValidation({
  *   form,
@@ -20,7 +20,7 @@ interface UseServerValidationProps<T extends FieldValues> {
 export function useServerValidation<T extends FieldValues>({
   form,
   error,
-  onClientError
+  onClientError,
 }: UseServerValidationProps<T>) {
   const { setError } = form;
 
@@ -33,14 +33,14 @@ export function useServerValidation<T extends FieldValues>({
           // Cast field to Path<T> assuming server field names match client form fields
           // We take the first message as the primary error
           if (messages && messages.length > 0) {
-              setError(field as Path<T>, {
-                  type: "server",
-                  message: messages[0] || "Invalid value"
-              });
+            setError(field as Path<T>, {
+              type: "server",
+              message: messages[0] || "Invalid value",
+            });
           }
         });
       }
-      
+
       // Optional callback for non-validation API errors (e.g. 401, 500)
       if (onClientError) {
         onClientError(error);

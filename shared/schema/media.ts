@@ -14,16 +14,16 @@ import { pgTable } from "./common";
 
 /**
  * Folders Table - Media Organization Structure
- * 
+ *
  * @table folders
  * @description Hierarchical folder structure for organizing media assets.
  * Supports unlimited nesting via self-referencing `parentId`.
- * 
+ *
  * @hierarchy
  * - `parentId` → self-reference for parent folder (nullable)
  * - `level` indicates depth in hierarchy (0 = root)
  * - `path` stores computed path like "images/products/running"
- * 
+ *
  * @softDelete Uses `deletedAt` timestamp for soft delete support
  */
 export const folders = pgTable("folders", {
@@ -50,28 +50,28 @@ export const folders = pgTable("folders", {
 
 /**
  * Media Assets Table - Centralized Asset Library
- * 
+ *
  * @table media_assets
  * @description Primary table for all uploaded media files including images, videos,
  * 3D models, and documents. Integrates with Google Cloud Storage for file storage.
- * 
+ *
  * @business Media assets are referenced by products, categories, and other entities.
  * Supports responsive image variants (thumbnail, medium, large, original).
- * 
+ *
  * @storage
  * - `storagePath` and `bucketName` are REQUIRED (NOT NULL)
  * - `imageVariants` stores responsive image URLs for different sizes
  * - Thumbnails are auto-generated for images
- * 
+ *
  * @relationships
  * - `folderId` → `folders.id` (optional, set null on delete)
  * - Referenced by products, categories, and other entities
- * 
+ *
  * @performance Includes 9+ indexes for optimized query paths including:
  * - Type/active filtering, folder organization
  * - Timestamp sorting, mime type filtering
  * - GIN trigram indexes for ILIKE search (created via migrations)
- * 
+ *
  * @softDelete Uses `deletedAt` timestamp for soft delete support
  */
 export const mediaAssets = pgTable(

@@ -180,8 +180,8 @@ export async function submitInquiryAction(_prevState: any, formData: FormData) {
     if (error instanceof z.ZodError) {
       invalidParams = error.flatten().fieldErrors as Record<string, string[]>;
     } else if ((error as any)?.invalidParams) {
-        // AppError or similar
-        invalidParams = (error as any).invalidParams;
+      // AppError or similar
+      invalidParams = (error as any).invalidParams;
     }
 
     // Construct a pseudo-ApiError for the client
@@ -190,14 +190,14 @@ export async function submitInquiryAction(_prevState: any, formData: FormData) {
       title: "Submission Failed",
       message: error instanceof Error ? error.message : "Submission failed",
       "invalid-params": invalidParams,
-      isValidationError: !!invalidParams
+      isValidationError: !!invalidParams,
     };
 
     return {
       status: "error" as const,
       message: error instanceof Error ? error.message : "Submission failed",
       timestamp: Date.now(),
-      error: errorData // Pass this to useServerValidation
+      error: errorData, // Pass this to useServerValidation
     };
   }
 }

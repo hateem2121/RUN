@@ -1,37 +1,37 @@
 /**
  * PagerDuty Integration Service
- * 
+ *
  * @module pagerduty
  * @description Integrates with PagerDuty Events API v2 for incident management.
  * Triggers alerts on critical errors and enables automatic incident resolution.
- * 
+ *
  * @configuration
  * Required environment variables:
  * - PAGERDUTY_ROUTING_KEY: Integration key from PagerDuty service
  * - PAGERDUTY_ENABLED: Set to 'true' to enable alerting (default: false)
- * 
+ *
  * @documentation
  * - PagerDuty Events API v2: https://developer.pagerduty.com/docs/events-api-v2/overview/
  */
 
-import { logger } from '../monitoring/logger.js';
+import { logger } from "../monitoring/logger.js";
 
 /**
  * PagerDuty Events API v2 endpoint
  */
-const PAGERDUTY_EVENTS_URL = 'https://events.pagerduty.com/v2/enqueue';
+const PAGERDUTY_EVENTS_URL = "https://events.pagerduty.com/v2/enqueue";
 
 /**
  * Severity levels for PagerDuty alerts
  */
-export type PagerDutySeverity = 'critical' | 'error' | 'warning' | 'info';
+export type PagerDutySeverity = "critical" | "error" | "warning" | "info";
 
 /**
  * PagerDuty event payload structure
  */
 interface PagerDutyEvent {
   routing_key: string;
-  event_action: 'trigger' | 'acknowledge' | 'resolve';
+  event_action: "trigger" | "acknowledge" | "resolve";
   dedup_key?: string | undefined;
   payload?: {
     summary: string;
@@ -58,8 +58,7 @@ interface PagerDutyResponse {
  * Check if PagerDuty integration is enabled
  */
 function isEnabled(): boolean {
-  return process.env.PAGERDUTY_ENABLED === 'true' && 
-         !!process.env.PAGERDUTY_ROUTING_KEY;
+  return process.env.PAGERDUTY_ENABLED === "true" && !!process.env.PAGERDUTY_ROUTING_KEY;
 }
 
 /**
@@ -67,37 +66,37 @@ function isEnabled(): boolean {
  */
 async function sendEvent(event: PagerDutyEvent): Promise<PagerDutyResponse | null> {
   if (!isEnabled()) {
-    logger.debug('[PagerDuty] Integration disabled, skipping event');
+    logger.debug("[PagerDuty] Integration disabled, skipping event");
     return null;
   }
 
   try {
     const response = await fetch(PAGERDUTY_EVENTS_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(event),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      logger.error('[PagerDuty] API error', { status: response.status, error: errorText });
+      logger.error("[PagerDuty] API error", { status: response.status, error: errorText });
       return null;
     }
 
-    const result = await response.json() as PagerDutyResponse;
-    logger.info('[PagerDuty] Event sent successfully', { dedup_key: result.dedup_key });
+    const result = (await response.json()) as PagerDutyResponse;
+    logger.info("[PagerDuty] Event sent successfully", { dedup_key: result.dedup_key });
     return result;
   } catch (error) {
-    logger.error('[PagerDuty] Failed to send event', error);
+    logger.error("[PagerDuty] Failed to send event", error);
     return null;
   }
 }
 
 /**
  * PagerDuty Service
- * 
+ *
  * Provides methods for triggering, acknowledging, and resolving incidents.
  */
 export class PagerDutyService {
@@ -105,18 +104,18 @@ export class PagerDutyService {
   private source: string;
 
   constructor() {
-    this.routingKey = process.env.PAGERDUTY_ROUTING_KEY || '';
-    this.source = process.env.SERVICE_NAME || 'run-apparel-platform';
+    this.routingKey = process.env.PAGERDUTY_ROUTING_KEY || "";
+    this.source = process.env.SERVICE_NAME || "run-apparel-platform";
   }
 
   /**
    * Trigger a new incident
-   * 
+   *
    * @param severity - Incident severity (critical, error, warning, info)
    * @param summary - Brief description of the incident
    * @param details - Additional context for responders
    * @param dedupKey - Optional deduplication key (prevents duplicate incidents)
-   * 
+   *
    * @example
    * ```typescript
    * await pagerDuty.triggerIncident(
@@ -130,20 +129,20 @@ export class PagerDutyService {
     severity: PagerDutySeverity,
     summary: string,
     details?: Record<string, unknown>,
-    dedupKey?: string
+    dedupKey?: string,
   ): Promise<string | null> {
     const event: PagerDutyEvent = {
       routing_key: this.routingKey,
-      event_action: 'trigger',
+      event_action: "trigger",
       dedup_key: dedupKey,
       payload: {
         summary,
         severity,
         source: this.source,
         timestamp: new Date().toISOString(),
-        component: 'backend',
-        group: 'production',
-        class: 'application',
+        component: "backend",
+        group: "production",
+        class: "application",
         custom_details: details,
       },
     };
@@ -154,13 +153,13 @@ export class PagerDutyService {
 
   /**
    * Acknowledge an existing incident
-   * 
+   *
    * @param dedupKey - The deduplication key of the incident to acknowledge
    */
   async acknowledgeIncident(dedupKey: string): Promise<boolean> {
     const event: PagerDutyEvent = {
       routing_key: this.routingKey,
-      event_action: 'acknowledge',
+      event_action: "acknowledge",
       dedup_key: dedupKey,
     };
 
@@ -170,13 +169,13 @@ export class PagerDutyService {
 
   /**
    * Resolve an existing incident
-   * 
+   *
    * @param dedupKey - The deduplication key of the incident to resolve
    */
   async resolveIncident(dedupKey: string): Promise<boolean> {
     const event: PagerDutyEvent = {
       routing_key: this.routingKey,
-      event_action: 'resolve',
+      event_action: "resolve",
       dedup_key: dedupKey,
     };
 
@@ -188,16 +187,12 @@ export class PagerDutyService {
    * Trigger alert for 5xx errors
    * Called by error handler middleware
    */
-  async alertOnServerError(
-    error: Error,
-    requestPath: string,
-    statusCode: number
-  ): Promise<void> {
+  async alertOnServerError(error: Error, requestPath: string, statusCode: number): Promise<void> {
     // Only alert on 5xx errors
     if (statusCode < 500) return;
 
-    const severity: PagerDutySeverity = statusCode >= 500 ? 'error' : 'warning';
-    
+    const severity: PagerDutySeverity = statusCode >= 500 ? "error" : "warning";
+
     await this.triggerIncident(
       severity,
       `Server Error ${statusCode}: ${error.message}`,
@@ -206,9 +201,9 @@ export class PagerDutyService {
         errorMessage: error.message,
         requestPath,
         statusCode,
-        stack: error.stack?.split('\n').slice(0, 5).join('\n'),
+        stack: error.stack?.split("\n").slice(0, 5).join("\n"),
       },
-      `server-error-${requestPath}-${statusCode}` // Dedup by path and status
+      `server-error-${requestPath}-${statusCode}`, // Dedup by path and status
     );
   }
 

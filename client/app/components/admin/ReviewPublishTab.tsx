@@ -387,10 +387,11 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
                   <div className="space-y-1">
                     {(formData as { features?: string[] }).features?.map(
                       (feature: string, index: number) => (
-                      <div key={index} className="text-foreground/80 text-sm">
-                        • {feature}
-                      </div>
-                    ))}
+                        <div key={index} className="text-foreground/80 text-sm">
+                          • {feature}
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               ) : null}

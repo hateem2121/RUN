@@ -145,9 +145,10 @@ export default function CategoryForm({
         imageUrl: (initialData as Category & { imageUrl?: string }).imageUrl || "",
         bannerUrl: (initialData as Category & { bannerUrl?: string }).bannerUrl || "",
         metaTitle: (initialData as Category & { metaTitle?: string }).metaTitle || "",
-        metaDescription: (initialData as Category & { metaDescription?: string }).metaDescription || "",
-        featuredContent:
-          ((initialData as Category & { featuredContent?: unknown }).featuredContent as FormData["featuredContent"]) || {
+        metaDescription:
+          (initialData as Category & { metaDescription?: string }).metaDescription || "",
+        featuredContent: ((initialData as Category & { featuredContent?: unknown })
+          .featuredContent as FormData["featuredContent"]) || {
           card1: { title: "", description: "", mediaUrl: "", link: "" },
           card2: {
             title: "",

@@ -98,4 +98,3 @@ export interface TypedProblemDetails extends ProblemDetails {
 export function isRetryableError(code: ErrorCode): boolean {
   return ["RATE_LIMIT_EXCEEDED", "DB_DEADLOCK", "DB_CONNECTION_ERROR", "DB_TIMEOUT"].includes(code);
 }
-

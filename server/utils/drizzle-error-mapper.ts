@@ -1,10 +1,10 @@
 import type { AppError } from "../lib/errors.js";
-import { 
-  BadRequestError, 
-  ConflictError, 
-  InternalError,
+import {
+  BadRequestError,
+  ConflictError,
   DatabaseDeadlockError,
   DatabaseTimeoutError,
+  InternalError,
 } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 

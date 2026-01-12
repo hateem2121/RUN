@@ -37,7 +37,7 @@ export function useOnlineStatus(): boolean {
  */
 export function useOnlineStatusLegacy(): boolean {
   const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : true
+    typeof navigator !== "undefined" ? navigator.onLine : true,
   );
 
   useEffect(() => {

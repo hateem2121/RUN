@@ -41,7 +41,10 @@ export function AboutLocationsTab() {
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertAboutMapLocation) => {
-      return apiRequest("/api/about-locations", { method: "POST", body: JSON.stringify(data) }) as Promise<AboutMapLocation>;
+      return apiRequest("/api/about-locations", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }) as Promise<AboutMapLocation>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync

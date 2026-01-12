@@ -10,7 +10,7 @@
  * - Health monitoring
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Redis and OpenTelemetry
 vi.mock("../server/lib/cache/upstash-client.js", () => ({
@@ -247,12 +247,7 @@ describe("UnifiedCache", () => {
 
       const fetchFn = vi.fn().mockResolvedValue({ fresh: "data" });
 
-      const result = await unifiedCache.getSWR(
-        "swr-key",
-        fetchFn,
-        { ttl: 3600 },
-        "default"
-      );
+      const result = await unifiedCache.getSWR("swr-key", fetchFn, { ttl: 3600 }, "default");
 
       expect(fetchFn).toHaveBeenCalled();
       expect(result.data).toEqual({ fresh: "data" });
@@ -267,12 +262,7 @@ describe("UnifiedCache", () => {
 
       const fetchFn = vi.fn().mockResolvedValue({ fresh: "data" });
 
-      const result = await unifiedCache.getSWR(
-        "swr-cached-key",
-        fetchFn,
-        { ttl: 3600 },
-        "default"
-      );
+      const result = await unifiedCache.getSWR("swr-cached-key", fetchFn, { ttl: 3600 }, "default");
 
       expect(result.data).toEqual({ cached: true });
       expect(["memory", "swr_hit"]).toContain(result.source);

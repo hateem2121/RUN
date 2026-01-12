@@ -1,5 +1,5 @@
-import { closestCenter, DndContext } from "@dnd-kit/core";
 import type { SensorDescriptor } from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { InsertSustainabilityGoal, SustainabilityGoal } from "@shared/schema";
 import type { UseMutationResult } from "@tanstack/react-query";
@@ -65,7 +65,11 @@ interface GoalsTabContentProps {
   goalsTotalPages: number;
   sensors: SensorDescriptor<object>[];
   createGoalMutation: UseMutationResult<unknown, unknown, InsertSustainabilityGoal>;
-  updateGoalMutation: UseMutationResult<unknown, unknown, { id: number; data: InsertSustainabilityGoal }>;
+  updateGoalMutation: UseMutationResult<
+    unknown,
+    unknown,
+    { id: number; data: InsertSustainabilityGoal }
+  >;
   deleteGoalMutation: UseMutationResult<unknown, unknown, number>;
   SortableGoalItem: React.ComponentType<{
     goal: SustainabilityGoal;

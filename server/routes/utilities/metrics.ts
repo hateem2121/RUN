@@ -478,9 +478,7 @@ export function registerMetricsRoutes(app: Express): void {
       const { type, limit } = query;
 
       // Get alerts (optionally filtered by type)
-      const alerts = type
-          ? alertManager.getAlertsByType(type)
-          : alertManager.getAlerts(limit);
+      const alerts = type ? alertManager.getAlertsByType(type) : alertManager.getAlerts(limit);
 
       // Check current metrics and get any new alerts
       const newAlerts = alertManager.checkMetrics();

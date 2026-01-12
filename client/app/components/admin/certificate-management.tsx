@@ -587,11 +587,7 @@ const CertificateInsights = ({ analytics, onCreate }: CertificateInsightsProps) 
   );
 };
 
-const CertificateAnalytics = ({
-  analytics,
-}: {
-  analytics: CertificateAnalyticsData | null;
-}) => {
+const CertificateAnalytics = ({ analytics }: { analytics: CertificateAnalyticsData | null }) => {
   if (!analytics) return null;
 
   return (

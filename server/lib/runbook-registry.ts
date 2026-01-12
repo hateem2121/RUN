@@ -1,6 +1,6 @@
 /**
  * Runbook Registry
- * 
+ *
  * Maps error codes to runbook documentation URLs for operational guidance.
  * Used by error handler to include runbook links in responses (non-production)
  * and by PagerDuty alerts to link responders to relevant documentation.
@@ -10,42 +10,42 @@
  * Base URL for runbook documentation
  * In production, this should point to your documentation site
  */
-const RUNBOOK_BASE_URL = process.env.RUNBOOK_BASE_URL || 
-  "https://github.com/your-org/run-remix/blob/main/docs/runbooks";
+const RUNBOOK_BASE_URL =
+  process.env.RUNBOOK_BASE_URL || "https://github.com/your-org/run-remix/blob/main/docs/runbooks";
 
 /**
  * Mapping of error codes to runbook file paths
  */
 const RUNBOOK_PATHS: Record<string, string> = {
   // Database errors
-  "DB_CONNECTION_ERROR": "database-outage.md",
-  "DB_TIMEOUT": "database-outage.md",
-  "DB_DEADLOCK": "database-outage.md",
-  
+  DB_CONNECTION_ERROR: "database-outage.md",
+  DB_TIMEOUT: "database-outage.md",
+  DB_DEADLOCK: "database-outage.md",
+
   // Rate limiting
-  "RATE_LIMIT_EXCEEDED": "rate-limit-surge.md",
-  
+  RATE_LIMIT_EXCEEDED: "rate-limit-surge.md",
+
   // Circuit breaker
-  "CIRCUIT_BREAKER_OPEN": "circuit-breaker-trip.md",
-  "EXTERNAL_SERVICE_ERROR": "circuit-breaker-trip.md",
-  
+  CIRCUIT_BREAKER_OPEN: "circuit-breaker-trip.md",
+  EXTERNAL_SERVICE_ERROR: "circuit-breaker-trip.md",
+
   // Authentication/Authorization
-  "AUTH_INVALID_TOKEN": "incident-response.md",
-  "AUTH_FORBIDDEN": "incident-response.md",
-  
+  AUTH_INVALID_TOKEN: "incident-response.md",
+  AUTH_FORBIDDEN: "incident-response.md",
+
   // Internal errors
-  "INTERNAL_ERROR": "incident-response.md",
-  
+  INTERNAL_ERROR: "incident-response.md",
+
   // Deployment
-  "DEPLOYMENT_ERROR": "deployment-rollback.md",
+  DEPLOYMENT_ERROR: "deployment-rollback.md",
 };
 
 /**
  * Get the full runbook URL for an error code
- * 
+ *
  * @param errorCode - The error code (e.g., "DB_CONNECTION_ERROR")
  * @returns Full URL to the runbook, or undefined if no runbook exists
- * 
+ *
  * @example
  * ```typescript
  * getRunbookUrl("DB_CONNECTION_ERROR")

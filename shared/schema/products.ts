@@ -32,28 +32,28 @@ const ProductMetadataSchema = z.record(z.string(), z.any());
 
 /**
  * Products Table - Core Product Catalog
- * 
+ *
  * @table products
  * @description Primary table for athletic apparel products in the B2B catalog.
  * Stores product details, media references, specifications, and B2B-specific fields.
- * 
+ *
  * @business Products are the core business entity. All products must belong to a category
  * and have a unique SKU for inventory tracking.
- * 
+ *
  * @relationships
  * - `categoryId` → `categories.id` (required, restrict delete)
  * - `primaryImageId`, `primaryVideoId`, `modelFileId` → `mediaAssets.id` (optional, set null)
  * - `fabricId` → `fabrics.id` (optional, set null)
  * - `sizeChartId` → `sizeCharts.id` (optional, set null)
- * 
+ *
  * @performance Includes 12+ indexes for optimized query paths including:
  * - Category filtering, active/featured status
  * - SKU lookups, fabric relationships
  * - URL path resolution, hot query optimization
  * - GIN indexes for JSONB array containment (created via migrations)
- * 
+ *
  * @softDelete Uses `deletedAt` timestamp for soft delete support
- * 
+ *
  * @example
  * ```typescript
  * // Fetch active products in a category

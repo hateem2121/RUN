@@ -64,7 +64,7 @@ export function FormErrorDisplay({
         aria-live="polite"
         className={cn(
           "flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive",
-          className
+          className,
         )}
       >
         {shouldShowIcon && (
@@ -128,11 +128,6 @@ export function FieldError({ name, errors, className }: FieldErrorProps) {
   if (!errors?.length) return null;
 
   return (
-    <FormErrorDisplay
-      errors={errors}
-      variant="field"
-      fieldName={name}
-      className={className}
-    />
+    <FormErrorDisplay errors={errors} variant="field" fieldName={name} className={className} />
   );
 }

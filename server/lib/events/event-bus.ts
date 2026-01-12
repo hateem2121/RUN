@@ -58,12 +58,7 @@ export interface AuditEvent
   type: "audit.log";
 }
 
-type EventPayload =
-  | UserEvent
-  | ProductEvent
-  | CacheInvalidateEvent
-  | AuditEvent
-  | BaseEvent;
+type EventPayload = UserEvent | ProductEvent | CacheInvalidateEvent | AuditEvent | BaseEvent;
 
 // Event handler type
 type EventHandler<T extends EventPayload = EventPayload> = (event: T) => void | Promise<void>;
@@ -116,10 +111,7 @@ class EventBus {
   /**
    * Subscribe to events of a specific type
    */
-  subscribe<T extends EventPayload>(
-    type: EventType | "*",
-    handler: EventHandler<T>
-  ): () => void {
+  subscribe<T extends EventPayload>(type: EventType | "*", handler: EventHandler<T>): () => void {
     // Track handler for cleanup
     if (!this.handlers.has(type as EventType)) {
       this.handlers.set(type as EventType, new Set());
@@ -139,10 +131,7 @@ class EventBus {
   /**
    * Subscribe to an event type for one-time handling
    */
-  once<T extends EventPayload>(
-    type: EventType,
-    handler: EventHandler<T>
-  ): void {
+  once<T extends EventPayload>(type: EventType, handler: EventHandler<T>): void {
     this.emitter.once(type, handler);
   }
 
@@ -191,7 +180,7 @@ export const publish = <T extends EventPayload>(event: Omit<T, "timestamp">) =>
 
 export const subscribe = <T extends EventPayload>(
   type: EventType | "*",
-  handler: EventHandler<T>
+  handler: EventHandler<T>,
 ) => eventBus.subscribe(type, handler);
 
 // Pre-configured event publishers
@@ -253,7 +242,7 @@ export const events = {
       resource: string,
       userId?: string,
       details?: Record<string, unknown>,
-      source = "api"
+      source = "api",
     ) =>
       publish<AuditEvent>({
         type: "audit.log",

@@ -1,6 +1,7 @@
 // IMPORTANT: OTel must be initialized first before any other imports
 // to properly instrument Express, HTTP, and Pino
 import { startOtel } from "./lib/monitoring/otel.js";
+
 startOtel();
 
 import { createServer } from "node:http";

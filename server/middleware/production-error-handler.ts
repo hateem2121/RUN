@@ -10,9 +10,9 @@ import {
   RateLimitError,
   ValidationError,
 } from "../lib/errors.js";
+import { alertService } from "../lib/integrations/alert-service.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
-import { alertService } from "../lib/integrations/alert-service.js";
 import { getRunbookUrl, shouldIncludeRunbook } from "../lib/runbook-registry.js";
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
@@ -279,7 +279,7 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
   // Fallback for non-AppErrors (Legacy Mode)
   // RFC 9457 compliant error type URIs
   const ERROR_TYPE_BASE = "https://api.run-remix.com/errors";
-  
+
   if (isProd) {
     switch (details.type) {
       case "validation":
@@ -384,12 +384,14 @@ export function productionErrorHandler(
     // Get runbook URL for the error code
     const errorCode = error instanceof AppError ? error.code : "INTERNAL_ERROR";
     const runbookUrl = getRunbookUrl(errorCode);
-    
+
     // Fire-and-forget alert via Discord/Slack
     const alertError = error instanceof Error ? error : new Error(String(error));
-    alertService.alertOnServerError(alertError, req.path, statusCode, runbookUrl).catch((alertErr: Error) => {
-      logger.warn("[ErrorHandler] Failed to send alert", alertErr);
-    });
+    alertService
+      .alertOnServerError(alertError, req.path, statusCode, runbookUrl)
+      .catch((alertErr: Error) => {
+        logger.warn("[ErrorHandler] Failed to send alert", alertErr);
+      });
   }
 
   // Add runbook link for high-severity operational errors (non-production only for security)
@@ -407,10 +409,7 @@ export function productionErrorHandler(
   }
 
   // Send error response with RFC 9457 Content-Type
-  res
-    .status(statusCode)
-    .setHeader("Content-Type", "application/problem+json")
-    .json(errorResponse);
+  res.status(statusCode).setHeader("Content-Type", "application/problem+json").json(errorResponse);
 }
 
 // 404 Handler

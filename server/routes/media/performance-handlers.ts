@@ -67,7 +67,7 @@ export async function getEndpointPerformance(req: Request, res: Response) {
     const { path } = PerformanceQuerySchema.parse(req.query);
 
     // Validation handled by Zod above
-    
+
     // Since getEndpointMetrics doesn't exist, we return the general performance report
     // In a real implementation, we would filter the report by path if feasible
     const report = performanceMonitor.generatePerformanceReport();

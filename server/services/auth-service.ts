@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
+import type { Redis } from "@upstash/redis";
 
 import type { Express, RequestHandler } from "express";
 import session from "express-session";
@@ -15,6 +16,13 @@ export interface SessionUser extends User {
     email: string | null;
     sub: string;
   };
+}
+
+interface CustomSessionData {
+  passport?: any;
+  uaHash?: string;
+  lastRotated?: number;
+  [key: string]: any; // Allow other properties like cookie, id, etc.
 }
 
 export const AuthErrors = {
@@ -71,7 +79,7 @@ export class AuthService {
     const { redis } = await import("../lib/cache/upstash-client.js");
 
     const sessionStore = new RedisStore({
-      client: redis as any,
+      client: redis as Redis,
       prefix: "sess:",
       ttl: sessionTtl / 1000,
     });
@@ -124,8 +132,8 @@ export class AuthService {
       if (!req.session || !req.user) return next();
 
       const now = Date.now();
-      // Cast session to any to avoid TS errors with custom property
-      const sess = req.session;
+      // Cast session to CustomSessionData to avoid TS errors
+      const sess = req.session as unknown as CustomSessionData;
       const currentUA = req.headers["user-agent"] || "";
 
       // P2 SECURITY: User Agent Binding - verify session wasn't stolen

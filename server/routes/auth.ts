@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { type Response, Router } from "express";
 import passport from "passport";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { getStorage } from "../lib/storage-singleton.js";
@@ -34,21 +34,25 @@ router.get("/logout", (req, res, next) => {
 });
 
 // User info route
-router.get("/auth/user", authService.isAuthenticated, async (req, res) => {
-  const user = req.user as SessionUser;
-  const userId = user.claims.sub;
-  const dbUser = await getStorage().getUser(userId);
-  if (!dbUser) return res.status(404).json({ message: "User not found" });
+router.get(
+  "/auth/user",
+  authService.isAuthenticated,
+  async (req, res): Promise<void | Response> => {
+    const user = req.user as SessionUser;
+    const userId = user.claims.sub;
+    const dbUser = await getStorage().getUser(userId);
+    if (!dbUser) return res.status(404).json({ message: "User not found" });
 
-  return res.json({
-    id: dbUser.id,
-    email: dbUser.email,
-    firstName: dbUser.firstName,
-    lastName: dbUser.lastName,
-    profileImageUrl: dbUser.profileImageUrl,
-    isAdmin: dbUser.isAdmin,
-  });
-});
+    return res.json({
+      id: dbUser.id,
+      email: dbUser.email,
+      firstName: dbUser.firstName,
+      lastName: dbUser.lastName,
+      profileImageUrl: dbUser.profileImageUrl,
+      isAdmin: dbUser.isAdmin,
+    });
+  },
+);
 
 // Admin Cache Management
 router.post("/admin/cache/clear", authService.requireAdmin, (req, res) => {

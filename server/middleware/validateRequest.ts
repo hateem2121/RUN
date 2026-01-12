@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { type ZodError, type ZodSchema } from "zod";
+import type { ZodError, ZodSchema } from "zod";
 import { ValidationError } from "../lib/errors.js";
 
 /**
@@ -86,11 +86,7 @@ export function validateParams<T>(schema: ZodSchema<T>) {
  *   updateProduct
  * );
  */
-export function validateRequest<
-  TBody = unknown,
-  TQuery = unknown,
-  TParams = unknown,
->(schemas: {
+export function validateRequest<TBody = unknown, TQuery = unknown, TParams = unknown>(schemas: {
   body?: ZodSchema<TBody>;
   query?: ZodSchema<TQuery>;
   params?: ZodSchema<TParams>;

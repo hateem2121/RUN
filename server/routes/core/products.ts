@@ -60,7 +60,7 @@ registry.registerPath({
 
 // GET /api/products - List products with pagination and filtering
 // CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
-router.get("/products", async (req, res) => {
+router.get("/products", async (req, res): Promise<void | Response> => {
   (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
@@ -70,7 +70,18 @@ router.get("/products", async (req, res) => {
       res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     }
 
-    const { category, active, featured, tag, search, page, limit } = req.query as any;
+    const ProductsQuerySchema = z.object({
+      category: z.string().optional(),
+      active: z.string().optional(),
+      featured: z.string().optional(),
+      tag: z.string().optional(),
+      search: z.string().optional(),
+      page: z.string().optional(),
+      limit: z.string().optional(),
+    });
+
+    const query = ProductsQuerySchema.parse(req.query);
+    const { category, active, featured, tag, search, page, limit } = query;
 
     // Parse pagination parameters
     const pageNum = parseInt(page as string, 10) || 1;
@@ -162,10 +173,14 @@ router.get("/products", async (req, res) => {
 });
 
 // GET /api/products/by-path - Get product by hierarchical URL path
-router.get("/products/by-path", async (req, res) => {
+router.get("/products/by-path", async (req, res): Promise<void | Response> => {
   (req as any)._handled = true;
   try {
-    const { path } = req.query as any;
+    const ProductByPathSchema = z.object({
+      path: z.string(),
+    });
+
+    const { path } = ProductByPathSchema.parse(req.query);
 
     if (!path || typeof path !== "string") {
       logger.warn(`[URL Validation] ❌ Missing or invalid path parameter`);
@@ -215,7 +230,7 @@ router.get("/products/by-path", async (req, res) => {
 });
 
 // PHASE 4: GET /api/products/:id/3d-model - Get 3D model metadata lazily
-router.get("/products/:id/3d-model", async (req, res) => {
+router.get("/products/:id/3d-model", async (req, res): Promise<void | Response> => {
   (req as any)._handled = true;
   try {
     const id = validateIdParam(req, res, "id", "product");
@@ -250,7 +265,7 @@ router.get("/products/:id/3d-model", async (req, res) => {
 });
 
 // GET /api/products/:id - Get single product
-router.get("/products/:id", async (req, res) => {
+router.get("/products/:id", async (req, res): Promise<void | Response> => {
   (req as any)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
@@ -287,7 +302,7 @@ router.get("/products/:id", async (req, res) => {
 });
 
 // POST /api/products - Create new product
-router.post("/products", authService.requireAdmin, async (req, res) => {
+router.post("/products", authService.requireAdmin, async (req, res): Promise<void | Response> => {
   try {
     // Rate limiting check
     if (!checkRateLimit()) {
@@ -333,7 +348,7 @@ router.post("/products", authService.requireAdmin, async (req, res) => {
 });
 
 // Shared update handler for both PUT and PATCH
-const updateProductHandler = async (req: Request, res: Response) => {
+const updateProductHandler = async (req: Request, res: Response): Promise<void | Response> => {
   try {
     const id = validateIdParam(req, res, "id", "product");
     if (id === null) return; // Error response already sent
@@ -383,32 +398,36 @@ router.put("/products/:id", authService.requireAdmin, updateProductHandler);
 router.patch("/products/:id", authService.requireAdmin, updateProductHandler);
 
 // DELETE /api/products/:id - Delete product
-router.delete("/products/:id", authService.requireAdmin, async (req, res) => {
-  try {
-    const id = validateIdParam(req, res, "id", "product");
-    if (id === null) return; // Error response already sent
+router.delete(
+  "/products/:id",
+  authService.requireAdmin,
+  async (req, res): Promise<void | Response> => {
+    try {
+      const id = validateIdParam(req, res, "id", "product");
+      if (id === null) return; // Error response already sent
 
-    const deleted = await withTimeout(
-      retryDbOperation(() => getStorage().deleteProduct(id), {
-        operationName: "Delete product",
-      }),
-      10000,
-      "Delete product",
-    );
-    if (!deleted) {
-      return res.status(404).json({
+      const deleted = await withTimeout(
+        retryDbOperation(() => getStorage().deleteProduct(id), {
+          operationName: "Delete product",
+        }),
+        10000,
+        "Delete product",
+      );
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          error: { message: "Product not found" },
+        });
+      }
+      return res.status(204).send();
+    } catch (error: unknown) {
+      logger.error("Route: Error deleting product:", error);
+      return res.status(500).json({
         success: false,
-        error: { message: "Product not found" },
+        error: { message: "Failed to delete product" },
       });
     }
-    return res.status(204).send();
-  } catch (error: unknown) {
-    logger.error("Route: Error deleting product:", error);
-    return res.status(500).json({
-      success: false,
-      error: { message: "Failed to delete product" },
-    });
-  }
-});
+  },
+);
 
 export default router;

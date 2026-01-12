@@ -8,7 +8,7 @@
  * - Recovery after failures
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("Circuit Breaker Integration", () => {
   beforeEach(() => {
@@ -118,11 +118,7 @@ describe("Circuit Breaker Integration", () => {
         "../server/lib/resilience/circuit-breaker.js"
       );
 
-      const result = await withCircuit(
-        "redis-test",
-        async () => "success",
-        REDIS_CIRCUIT_OPTIONS
-      );
+      const result = await withCircuit("redis-test", async () => "success", REDIS_CIRCUIT_OPTIONS);
 
       expect(result).toBe("success");
     });
@@ -137,7 +133,7 @@ describe("Circuit Breaker Integration", () => {
         async () => {
           throw new Error("Redis connection failed");
         },
-        REDIS_CIRCUIT_OPTIONS
+        REDIS_CIRCUIT_OPTIONS,
       );
 
       await expect(failingCall).rejects.toThrow("Redis connection failed");

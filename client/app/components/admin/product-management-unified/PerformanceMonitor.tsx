@@ -51,9 +51,11 @@ export function PerformanceMonitor() {
     let memoryInterval: NodeJS.Timeout | null = null;
     if ("memory" in performance) {
       const updateMemory = () => {
-        const memoryInfo = (performance as unknown as {
-          memory: { usedJSHeapSize: number };
-        }).memory;
+        const memoryInfo = (
+          performance as unknown as {
+            memory: { usedJSHeapSize: number };
+          }
+        ).memory;
         if (memoryInfo) {
           const memoryMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
           setMetrics((prev) => ({ ...prev, memoryUsage: memoryMB }));

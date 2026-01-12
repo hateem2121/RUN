@@ -7,11 +7,11 @@
  * - Request status tracking
  */
 
-import { Router } from "express";
-import { z } from "zod";
-import { db } from "../../db.js";
-import { users, auditLogs } from "../../../shared/schema.js";
 import { eq } from "drizzle-orm";
+import { type Request, type Response, Router } from "express";
+import { z } from "zod";
+import { auditLogs, users } from "../../../shared/schema.js";
+import { db } from "../../db.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { validateRequest } from "../../middleware/validateRequest.js";
 
@@ -34,7 +34,7 @@ const DeletionRequestSchema = z.object({
 router.post(
   "/data-export",
   validateRequest({ body: DataExportRequestSchema }),
-  async (req, res) => {
+  async (req, res): Promise<void | Response> => {
     try {
       const userId = req.user?.id;
 
@@ -46,11 +46,7 @@ router.post(
       }
 
       // Fetch user data
-      const [userData] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .limit(1);
+      const [userData] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
       if (!userData) {
         return res.status(404).json({
@@ -104,7 +100,7 @@ router.post(
         error: { code: "EXPORT_FAILED", message: "Failed to export data" },
       });
     }
-  }
+  },
 );
 
 /**
@@ -114,7 +110,7 @@ router.post(
 router.post(
   "/deletion-request",
   validateRequest({ body: DeletionRequestSchema }),
-  async (req, res) => {
+  async (req, res): Promise<void | Response> => {
     try {
       const userId = req.user?.id;
       const userEmail = req.user?.email;
@@ -182,14 +178,14 @@ router.post(
         },
       });
     }
-  }
+  },
 );
 
 /**
  * GET /api/privacy/request-status/:requestId
  * Check status of a privacy request
  */
-router.get("/request-status/:requestId", async (req, res) => {
+router.get("/request-status/:requestId", async (req, res): Promise<void | Response> => {
   try {
     const userId = req.user?.id;
     const { requestId } = req.params;
@@ -211,9 +207,7 @@ router.get("/request-status/:requestId", async (req, res) => {
         type: requestId.startsWith("DEL-") ? "DELETION" : "EXPORT",
         status: "PENDING",
         createdAt: new Date().toISOString(),
-        estimatedCompletion: new Date(
-          Date.now() + 24 * 60 * 60 * 1000
-        ).toISOString(),
+        estimatedCompletion: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       },
     });
   } catch (error) {
@@ -229,7 +223,7 @@ router.get("/request-status/:requestId", async (req, res) => {
  * POST /api/privacy/cancel-deletion
  * Cancel a pending deletion request
  */
-router.post("/cancel-deletion/:requestId", async (req, res) => {
+router.post("/cancel-deletion/:requestId", async (req, res): Promise<void | Response> => {
   try {
     const userId = req.user?.id;
     const { requestId } = req.params;

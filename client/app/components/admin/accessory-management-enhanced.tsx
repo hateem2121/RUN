@@ -5,6 +5,7 @@ import {
   Eye,
   Image,
   Layers,
+  type LucideIcon,
   Package,
   Palette,
   Plus,
@@ -13,7 +14,6 @@ import {
   Tags,
   Wrench,
   X,
-  type LucideIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
