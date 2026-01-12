@@ -54,23 +54,20 @@ Use this guide to orient yourself before diving into specific files.
 
 ## Tech Stack
 
-| Layer             | Technology               | Version         |
-| ----------------- | ------------------------ | --------------- |
-| **Frontend**      | React                    | 19.2 (Stable)   |
-| **Build Tool**    | Vite                     | 7.0.0           |
-| **Styling**       | Tailwind CSS             | 4.0 (Stable)    |
-| **Server**        | Express                  | 5.1 (Stable)    |
-| **Database**      | PostgreSQL + Drizzle ORM | Latest          |
-| **State**         | TanStack Query           | 5.x             |
-| **Routing**       | React Router             | 7.x (Framework) |
-| **Components**    | shadcn/ui + Radix        | Latest          |
-| **Linting**       | Biome                    | 2.3+            |
-| **Runtime**       | Node.js                  | 24 (Krypton)    |
-| **E2E Testing**   | Playwright               | Latest          |
-| **Observability** | Sentry                   | Latest          |
-| **Caching**       | LRU + Upstash Redis (L2) | Latest          |
-| **Documentation** | OpenAPI / Swagger        | 3.0             |
-| **Testing**       | Vitest + Supertest       | Latest          |
+> For exact version numbers, see [docs/overview.md](./docs/overview.md) (Single Source of Truth).
+
+| Layer             | Technology               |
+| ----------------- | ------------------------ |
+| **Frontend**      | React 19, Vite 7         |
+| **Styling**       | Tailwind CSS v4          |
+| **Server**        | Express 5, Node 24       |
+| **Database**      | PostgreSQL + Drizzle ORM |
+| **State**         | TanStack Query           |
+| **Routing**       | React Router 7           |
+| **Components**    | shadcn/ui + Radix        |
+| **Linting**       | Biome                    |
+| **Testing**       | Vitest, Playwright       |
+| **Observability** | Sentry, OpenTelemetry    |
 
 ---
 
@@ -533,7 +530,7 @@ dist/
 
 ## Contributing
 
-1. Read `docs/development/contributing.md`
+1. Read [CONTRIBUTING.md](./CONTRIBUTING.md)
 2. Follow coding standards above
 3. Ensure all checks pass: `npm run ci:checks`
 4. Submit PR with description

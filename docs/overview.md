@@ -1,8 +1,12 @@
 # System Overview & Architecture
 
-**Scope:** Full Stack Audit
-**Repo:** `run-remix-monorepo`
+**Scope:** Full Stack Audit  
+**Repo:** `run-remix-monorepo`  
 **Status:** Canonical Source of Truth
+
+> [!IMPORTANT]
+> This document is the **Single Source of Truth** for version numbers.  
+> Other documentation should link here rather than duplicate version info.
 
 ---
 
@@ -10,7 +14,7 @@
 
 | Component | Policy / Version | Provenance |
 | :--- | :--- | :--- |
-| **OS** | Linux (Alpine) in Prod; Mac/Linux for Dev | `Dockerfile` (node:22-alpine), User Agent |
+| **OS** | Linux (Alpine) in Prod; Mac/Linux for Dev | `Dockerfile` (node:24-alpine), User Agent |
 | **Node.js** | **v24** (Strict) | `Dockerfile`, `AGENTS.md` |
 | **Package Manager** | **npm 10.9.2** | `package.json` (packageManager field) |
 | **Workspace Tool** | npm workspaces + Turbo Repo | `package.json`, `turbo.json` |

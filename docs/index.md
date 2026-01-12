@@ -8,7 +8,7 @@ Welcome to the RUN Apparel B2B Platform documentation.
 | :--- | :--- | :--- |
 | **Architecture** | [`/docs/core`](./core/architecture.md) | System maps, data flows, and tech stack details. |
 | **Operations** | [`/docs/operations`](./operations/environment.md) | Runbooks, environment setup, and deployment guides. |
-| **Development** | [`/docs/development`](./development/styling.md) | Styling architecture and coding patterns. |
+| **Development** | [`/docs/development`](./development/ide-setup.md) | IDE setup, styling architecture, and coding patterns. |
 | **Contributing** | [`CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributing guidelines and coding standards. |
 | **API** | [`/docs/api`](./api/endpoints.md) | API reference, error codes, and specs. |
 | **Testing** | [`/docs/testing`](./testing/testing-tiers.md) | Testing strategies, E2E guides, and tiers. |
