@@ -11,6 +11,8 @@ An Architecture Decision Record (ADR) is a document that captures an important a
 | ID | Title | Status | Date |
 |----|-------|--------|------|
 | [ADR-001](./adr-001-react-router-7.md) | Migration to React Router 7 | Accepted | Jan 2026 |
+| [ADR-002](./adr-002-error-handling.md) | Error Handling Architecture | Accepted | Jan 2026 |
+| [ADR-003](./adr-003-observability.md) | Observability Pipeline | Accepted | Jan 2026 |
 
 ## ADR Template
 

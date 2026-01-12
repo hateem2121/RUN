@@ -91,7 +91,7 @@ The codebase is split into three tightly coupled workspaces:
 - **Entry Point**: `node dist/index.js`
 - **Ports**:
   - `5001` (Local Dev)
-  - `5000` (Docker/Production)
+  - `5001` (Docker/Production)
 - **Health Checks**:
   - `/api/health` (Liveness)
   - `/api/health/db` (Readiness)

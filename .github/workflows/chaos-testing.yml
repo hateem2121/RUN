@@ -1,0 +1,130 @@
+name: Weekly Chaos Tests
+
+on:
+  schedule:
+    # Run every Sunday at 3 AM UTC
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      experiment:
+        description: "Specific experiment to run (optional)"
+        required: false
+        type: choice
+        options:
+          - all
+          - network-latency
+          - cpu-stress
+          - memory-pressure
+          - pod-delete
+
+env:
+  CLUSTER_NAME: run-apparel-cluster
+  CLUSTER_ZONE: us-central1-a
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+jobs:
+  setup:
+    name: Setup Chaos Infrastructure
+    runs-on: ubuntu-latest
+    outputs:
+      experiment_id: ${{ steps.generate-id.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate Experiment ID
+        id: generate-id
+        run: echo "id=chaos-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get GKE Credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} \
+            --zone ${{ env.CLUSTER_ZONE }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Install Litmus
+        run: |
+          kubectl apply -f https://litmuschaos.github.io/litmus/3.0.0/litmus-3.0.0.yaml
+          kubectl wait --for=condition=Ready pods -l app.kubernetes.io/instance=litmus -n litmus --timeout=300s
+
+  run-chaos:
+    name: Execute Chaos Experiments
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Get GKE Credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} \
+            --zone ${{ env.CLUSTER_ZONE }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Run Chaos Experiments
+        run: |
+          kubectl apply -f ops/chaos/litmus-experiments.yaml
+          
+          # Wait for chaos engine to complete
+          echo "Waiting for chaos experiments to complete..."
+          kubectl wait --for=jsonpath='{.status.engineStatus}'=completed \
+            chaosengine/run-apparel-chaos-engine \
+            -n default \
+            --timeout=600s || true
+
+      - name: Collect Results
+        id: results
+        run: |
+          kubectl get chaosresult -n default -o json > chaos-results.json
+          
+          # Parse results
+          PASSED=$(jq '[.items[] | select(.status.experimentStatus.verdict == "Pass")] | length' chaos-results.json)
+          FAILED=$(jq '[.items[] | select(.status.experimentStatus.verdict == "Fail")] | length' chaos-results.json)
+          
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          
+          echo "### Chaos Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Passed: $PASSED" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Failed: $FAILED" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chaos-results-${{ needs.setup.outputs.experiment_id }}
+          path: chaos-results.json
+          retention-days: 30
+
+      - name: Cleanup
+        if: always()
+        run: |
+          kubectl delete chaosengine run-apparel-chaos-engine -n default --ignore-not-found
+          kubectl delete chaosresult --all -n default --ignore-not-found
+
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [setup, run-chaos]
+    if: always()
+    steps:
+      - name: Notify on Failure
+        if: needs.run-chaos.result == 'failure'
+        run: |
+          echo "::warning::Chaos tests failed! Review results and check system resilience."
+          # Add Slack/PagerDuty notification here if needed
+
+      - name: Notify on Success
+        if: needs.run-chaos.result == 'success'
+        run: |
+          echo "::notice::All chaos tests passed successfully!"

@@ -1,0 +1,104 @@
+swagger: "2.0"
+info:
+  title: RUN Apparel API Gateway
+  description: API Gateway configuration for RUN Apparel B2B Platform
+  version: "1.0.0"
+host: "${backend_url}"
+schemes:
+  - https
+produces:
+  - application/json
+x-google-backend:
+  address: "${backend_url}"
+  protocol: h2
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: X-API-Key
+    in: header
+
+paths:
+  /api/health:
+    get:
+      summary: Health Check
+      operationId: healthCheck
+      responses:
+        200:
+          description: Healthy
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+
+  /api/v1/**:
+    get:
+      summary: API v1 GET endpoints
+      operationId: apiV1Get
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-quota:
+        metricCosts:
+          read-requests: 1
+    post:
+      summary: API v1 POST endpoints
+      operationId: apiV1Post
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-quota:
+        metricCosts:
+          write-requests: 1
+    put:
+      summary: API v1 PUT endpoints
+      operationId: apiV1Put
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+    delete:
+      summary: API v1 DELETE endpoints
+      operationId: apiV1Delete
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+
+  /api/admin/**:
+    get:
+      summary: Admin GET endpoints
+      operationId: adminGet
+      security:
+        - api_key: []
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+    post:
+      summary: Admin POST endpoints
+      operationId: adminPost
+      security:
+        - api_key: []
+      x-google-backend:
+        address: "${backend_url}"
+        path_translation: APPEND_PATH_TO_ADDRESS
+
+x-google-management:
+  metrics:
+    - name: read-requests
+      displayName: Read Requests
+      valueType: INT64
+      metricKind: DELTA
+    - name: write-requests
+      displayName: Write Requests
+      valueType: INT64
+      metricKind: DELTA
+  quota:
+    limits:
+      - name: read-requests-limit
+        metric: read-requests
+        unit: "1/min/{project}"
+        values:
+          STANDARD: 1000
+      - name: write-requests-limit
+        metric: write-requests
+        unit: "1/min/{project}"
+        values:
+          STANDARD: 100

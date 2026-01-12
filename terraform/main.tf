@@ -100,6 +100,12 @@ resource "google_cloud_run_v2_service" "app" {
       max_instance_count = var.max_instances
     }
 
+    # Warm instance pool for faster cold starts
+    annotations = {
+      "run.googleapis.com/cpu-throttling"    = "false"
+      "run.googleapis.com/startup-cpu-boost" = "true"
+    }
+
     containers {
       image = "gcr.io/${var.project_id}/run-remix:${var.image_tag}"
 

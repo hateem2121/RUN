@@ -1,0 +1,144 @@
+# Litmus Chaos Experiment Configuration
+# Automated resilience testing for RUN Apparel Platform
+
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: run-apparel-chaos-engine
+  namespace: default
+  labels:
+    app.kubernetes.io/name: run-apparel
+    app.kubernetes.io/component: chaos-testing
+spec:
+  appinfo:
+    appns: "default"
+    applabel: "app=run-remix"
+    appkind: "deployment"
+  
+  engineState: "active"
+  chaosServiceAccount: litmus-admin
+  
+  # Run experiments sequentially
+  jobCleanUpPolicy: "delete"
+  
+  experiments:
+    # Experiment 1: Network Latency
+    - name: pod-network-latency
+      spec:
+        components:
+          env:
+            - name: NETWORK_LATENCY
+              value: "200"
+            - name: TOTAL_CHAOS_DURATION
+              value: "60"
+            - name: TARGET_CONTAINER
+              value: "run-remix"
+            - name: NETWORK_INTERFACE
+              value: "eth0"
+        probe:
+          - name: http-probe
+            type: httpProbe
+            httpProbe/inputs:
+              url: "http://run-remix:5001/api/health"
+              method:
+                get:
+                  criteria: "=="
+                  responseCode: "200"
+            mode: Continuous
+            runProperties:
+              probeTimeout: 5
+              interval: 5
+              retry: 3
+
+    # Experiment 2: CPU Stress
+    - name: pod-cpu-hog
+      spec:
+        components:
+          env:
+            - name: CPU_CORES
+              value: "1"
+            - name: TOTAL_CHAOS_DURATION
+              value: "60"
+            - name: CPU_LOAD
+              value: "80"
+        probe:
+          - name: response-time-probe
+            type: httpProbe
+            httpProbe/inputs:
+              url: "http://run-remix:5001/api/health"
+              method:
+                get:
+                  criteria: "=="
+                  responseCode: "200"
+            mode: EOT
+            runProperties:
+              probeTimeout: 10
+              retry: 2
+
+    # Experiment 3: Memory Pressure
+    - name: pod-memory-hog
+      spec:
+        components:
+          env:
+            - name: MEMORY_CONSUMPTION
+              value: "500"
+            - name: TOTAL_CHAOS_DURATION
+              value: "60"
+            - name: NUMBER_OF_WORKERS
+              value: "2"
+
+    # Experiment 4: Pod Delete (Failover Test)
+    - name: pod-delete
+      spec:
+        components:
+          env:
+            - name: TOTAL_CHAOS_DURATION
+              value: "30"
+            - name: CHAOS_INTERVAL
+              value: "10"
+            - name: FORCE
+              value: "false"
+        probe:
+          - name: recovery-probe
+            type: httpProbe
+            httpProbe/inputs:
+              url: "http://run-remix:5001/api/health"
+              method:
+                get:
+                  criteria: "=="
+                  responseCode: "200"
+            mode: Edge
+            runProperties:
+              probeTimeout: 30
+              retry: 5
+              interval: 5
+
+---
+# Chaos Schedule for Weekly Runs
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosSchedule
+metadata:
+  name: run-apparel-weekly-chaos
+  namespace: default
+spec:
+  schedule:
+    now: false
+    repeat:
+      timeRange:
+        startTime: "2026-01-01T00:00:00Z"
+      schedule: "0 3 * * 0"  # Every Sunday at 3 AM UTC
+  engineTemplateSpec:
+    appinfo:
+      appns: "default"
+      applabel: "app=run-remix"
+    engineState: "active"
+    chaosServiceAccount: litmus-admin
+    experiments:
+      - name: pod-network-latency
+        spec:
+          components:
+            env:
+              - name: NETWORK_LATENCY
+                value: "100"
+              - name: TOTAL_CHAOS_DURATION
+                value: "60"
