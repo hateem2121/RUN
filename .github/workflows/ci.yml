@@ -139,6 +139,16 @@ jobs:
           path: coverage/
           retention-days: 7
 
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   build:
     name: Build
     needs: [lint, typecheck, test]

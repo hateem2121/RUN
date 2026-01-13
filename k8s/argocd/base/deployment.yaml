@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: run-remix
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: run-remix
+  template:
+    metadata:
+      labels:
+        app: run-remix
+    spec:
+      containers:
+        - name: run-remix
+          image: gcr.io/PROJECT_ID/run-remix:latest
+          ports:
+            - containerPort: 5001
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "5001"
+          envFrom:
+            - secretRef:
+                name: run-remix-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 10
