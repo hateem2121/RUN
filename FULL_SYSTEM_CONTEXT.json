@@ -8,7 +8,7 @@
   },
   "runtime": {
     "os": "Linux (Alpine)",
-    "node": "22",
+    "node": "24",
     "package_manager": {
       "name": "npm",
       "version": "10.9.2"
@@ -18,12 +18,12 @@
     "frontend": {
       "framework": "React 19.2.3",
       "router": "React Router 7.11.0",
-      "build": "Vite 6.0.0",
+      "build": "Vite 7.0.0",
       "style": "Tailwind CSS 4.0.0"
     },
     "backend": {
       "framework": "Express 5.1.0",
-      "runtime": "Node.js 22"
+      "runtime": "Node.js 24"
     },
     "db": {
       "driver": "pg (Neon)",
@@ -31,7 +31,7 @@
     },
     "orm": {
       "name": "Drizzle ORM",
-      "version": "0.44.5"
+      "version": "0.45.1"
     },
     "cache": {
       "l1": "In-Memory LRU",
@@ -144,9 +144,9 @@
   ],
   "browser_extensions": [],
   "mcp": {
-    "detected": false,
-    "servers": [],
-    "notes": "No MCP configuration found in repo."
+    "detected": true,
+    "servers": ["filesystem", "git", "postgres"],
+    "notes": "MCP configured via mcp.json in repo root."
   },
   "agent_tools": [
     {

@@ -1,4 +1,4 @@
-# ADR-0001: Error Handling Architecture
+# ADR 0013: Error Handling Architecture
 
 **Status**: Accepted  
 **Date**: 2026-01-12  

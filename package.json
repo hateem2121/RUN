@@ -42,6 +42,7 @@
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",
     "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
+    "verify:docs-versions": "tsx scripts/utils/verify-docs-versions.ts",
     "ci:checks": "npm run verify:tech-integrity",
     "verify:build": "npm run build && npm run check:bundle",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",

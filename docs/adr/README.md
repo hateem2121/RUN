@@ -22,6 +22,9 @@ An Architecture Decision Record captures an important architectural decision alo
 | [0010](0010-monorepo-structure.md) | Monorepo over Polyrepo | Accepted | 2026-01-13 |
 | [0011](0011-google-oauth.md) | Google OAuth over Auth0/Clerk | Accepted | 2026-01-13 |
 | [0012](0012-two-tier-caching.md) | Two-Tier Caching Strategy | Accepted | 2026-01-13 |
+| [0013](0013-error-handling-architecture.md) | Error Handling Architecture | Accepted | 2026-01-12 |
+| [0014](0014-observability-pipeline.md) | Observability Pipeline | Accepted | 2026-01-12 |
+| [0015](0015-react-router-7.md) | React Router 7 Adoption | Accepted | 2026-01-07 |
 
 ## Creating New ADRs
 

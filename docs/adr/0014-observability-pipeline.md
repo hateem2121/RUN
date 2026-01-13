@@ -1,4 +1,4 @@
-# ADR-0002: Observability Pipeline
+# ADR 0014: Observability Pipeline
 
 **Status**: Accepted  
 **Date**: 2026-01-12  
@@ -96,4 +96,4 @@ Traces export to configured OTLP endpoint or console in development.
 
 ## Related ADRs
 
-- [ADR-0001: Error Handling Architecture](./0001-error-handling-architecture.md)
+- [ADR 0013: Error Handling Architecture](./0013-error-handling-architecture.md)

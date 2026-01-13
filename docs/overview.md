@@ -48,7 +48,7 @@ npm ci
 | :--- | :--- | :--- | :--- |
 | **Express** | `^5.1.0` | Web Framework | `server/package.json` |
 | **Node.js** | `24` | Runtime | `Dockerfile` |
-| **Drizzle ORM** | `^0.44.5` | Database ORM | `server/package.json` |
+| **Drizzle ORM** | `^0.45.1` | Database ORM | `server/package.json` |
 | **PostgreSQL** | `pg` (Neon) | Database Driver | `server/package.json` |
 | **Redis** | `Upstash` | L2 Cache | `server/package.json` |
 | **Tini** | (Alpine Pkg) | Init Process | `Dockerfile` |
