@@ -1,9 +1,25 @@
 ---
 name: project-standards
-description: Detailed coding standards and patterns for the RUN Remix project, covering React 19, Express 5, Tailwind V4, and TypeScript.
+description: |
+  Project coding standards for RUN Remix. Triggers:
+  - "coding standards", "project patterns", "component structure"
+  - "how do I style", "Tailwind v4", "@utility"
+  - "Express route pattern", "API structure"
+  - "3D model", "GLB", "GLTF", "@google/model-viewer"
+  - "TypeScript strict", "no any"
+  Stack: React 19, Vite 7, Express 5, Tailwind V4, TypeScript strict.
 ---
 
 # Project Standards & Patterns
+
+## When to Use
+
+Use this skill when:
+- Creating new React components (UI or domain-specific)
+- Setting up Express API routes
+- Styling with Tailwind V4 `@utility` directives
+- Loading 3D models (GLB/GLTF files)
+- Configuring TypeScript strict mode compliance
 
 ## 1. Project Structure (Monorepo-style)
 
@@ -141,16 +157,46 @@ export default router;
 ```
 
 ## 4. 3D & Visualization Patterns
-- **Library**: `react-three/drei` and `@google/model-viewer` (specialized usage).
-- **Loading**:
-    - Use `UnifiedModelViewer` pattern for heavy assets.
-    - Implement `LoadingState` interfaces for fine-grained progress tracking.
-    - Lazy load with `IntersectionObserver`.
-    - Cache GLTF content using Blob URLs where possible.
-- **Error Handling**: Wrap 3D components in `ModelViewerErrorBoundary` or similar custom boundaries.
-- **Performance**: Use `useGLTF` from drei.
+
+> **Important**: This project uses `@google/model-viewer` as the primary 3D rendering solution, NOT `@react-three/drei` for GLTF loading.
+
+- **Primary Library**: `@google/model-viewer` (web component)
+- **React Wrapper**: `UnifiedModelViewer` component (`@/components/ui/UnifiedModelViewer.tsx`)
+- **Lazy Loading**: Use `LazyUnifiedModelViewer` for code-splitting
+- **Loading Patterns**:
+    - Initialize via `ensureModelViewerLoaded()` from `@/lib/model-viewer-loader`
+    - Implement `LoadingState` interfaces for progress tracking
+    - Lazy load with `IntersectionObserver`
+- **Error Handling**: Wrap in `ModelViewerErrorBoundary` (`@/components/ui/ModelViewerErrorBoundary.tsx`)
+- **Configuration**: Centralized in `@/lib/model-viewer-config.ts`
+
+#### 3D Component Usage Example
+```tsx
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
+
+<ModelViewerErrorBoundary>
+  <LazyUnifiedModelViewer
+    src="/models/product.glb"
+    alt="Product 3D Model"
+    autoRotate
+    cameraControls
+  />
+</ModelViewerErrorBoundary>
+```
 
 ## 5. Testing
 - **Runner**: Vitest.
 - **Location**: `tests/` directories or `*.test.tsx` colocated.
 - **Mocking**: extensively for heavy hooks/libraries.
+
+## 6. Constraints (Do Not)
+
+1. **Do NOT** use `any` type - use `unknown` or specific types instead.
+2. **Do NOT** use inline styles - always use Tailwind utilities.
+3. **Do NOT** use class components - only functional components.
+4. **Do NOT** use `@react-three/drei` `useGLTF` for GLTF loading - use `UnifiedModelViewer`.
+5. **Do NOT** skip TypeScript strict mode checks.
+6. **Do NOT** put business logic in route handlers - extract to `services/`.
+7. **Do NOT** use raw color values - use semantic tokens from theme.
+8. **Do NOT** create components without proper error boundaries for 3D content.

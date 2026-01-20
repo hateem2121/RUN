@@ -1,12 +1,25 @@
 ---
 name: react-express-typescript
-description: Enforce a strict B2B tech stack: React 19 (Vite), Express 5, Tailwind V4, and TypeScript.
+description: |
+  Tech stack enforcement for RUN Remix project. Triggers:
+  - "create component", "add route", "new feature"
+  - "React 19", "Express 5", "TypeScript strict"
+  - "3D model", "GLB", "GLTF", "model-viewer"
+  Stack: React 19 (Vite 7), Express 5, Tailwind V4, TypeScript strict, @google/model-viewer.
 ---
 
 # React Express TypeScript Skill
 
 ## Goal
 Enforce a strict B2B tech stack: React 19 (Vite), Express 5, Tailwind V4, and TypeScript.
+
+## When to Use
+
+Use this skill when:
+- Creating new React components
+- Adding Express API routes
+- Loading 3D models (GLB/GLTF files)
+- Enforcing TypeScript strict mode compliance
 
 ## Rules
 
@@ -18,39 +31,49 @@ Enforce a strict B2B tech stack: React 19 (Vite), Express 5, Tailwind V4, and Ty
 1. **Components**: All components must be functional components.
 2. **Interfaces**: Props must be defined using TypeScript interfaces.
 3. **Styling**: Must use Tailwind V4 utility classes. No inline styles or CSS modules allowed unless absolutely necessary for dynamic values that Tailwind cannot handle.
-4. **3D Features**: Use `react-three/drei` helpers. Use `useGLTF` for loading GLB/GLTF models.
+4. **3D Features**: Use `@google/model-viewer` via `UnifiedModelViewer` component. Do NOT use `useGLTF` from drei.
 
 ### Backend (Express 5)
-1. **Async/Await**: API routes must use `async/wait`.
+1. **Async/Await**: API routes must use `async/await`.
 2. **Error Handling**: Implement proper error handling blocks (try/catch) and middleware.
 
 ## Instructions & Examples
 
 ### React Component Example
 ```tsx
-import React from 'react';
+import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
-interface ButtonProps {
+const buttonVariants = cva(
+  "px-4 py-2 rounded-md font-semibold transition-colors duration-200",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+    },
+  }
+);
+
+interface ButtonProps extends VariantProps<typeof buttonVariants> {
   label: string;
   onClick: () => void;
-  variant?: 'primary' | 'secondary';
 }
 
-export const Button: React.FC<ButtonProps> = ({ label, onClick, variant = 'primary' }) => {
-  const baseStyles = 'px-4 py-2 rounded-md font-semibold transition-colors duration-200';
-  const variantStyles = variant === 'primary' 
-    ? 'bg-blue-600 text-white hover:bg-blue-700' 
-    : 'bg-gray-200 text-gray-800 hover:bg-gray-300';
-
+export function Button({ label, onClick, variant = "primary" }: Readonly<ButtonProps>) {
   return (
-    <button 
-      className={`${baseStyles} ${variantStyles}`}
+    <button
+      className={cn(buttonVariants({ variant }))}
       onClick={onClick}
     >
       {label}
     </button>
   );
-};
+}
 ```
 
 ### Express Route Example
@@ -91,27 +114,34 @@ export default router;
 
 ### 3D Model Loader Example
 ```tsx
-import React, { useRef } from 'react';
-import { useGLTF } from '@react-three/drei';
-import { Group } from 'three';
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
 
 interface ModelProps {
-  url: string;
-  position?: [number, number, number];
-  scale?: [number, number, number];
+  src: string;
+  alt: string;
 }
 
-export const ModelLoader: React.FC<ModelProps> = ({ url, position = [0, 0, 0], scale = [1, 1, 1] }) => {
-  const { scene } = useGLTF(url);
-  const groupRef = useRef<Group>(null);
-
+export function ModelLoader({ src, alt }: Readonly<ModelProps>) {
   return (
-    <group ref={groupRef} position={position} scale={scale} dispose={null}>
-      <primitive object={scene} />
-    </group>
+    <ModelViewerErrorBoundary>
+      <LazyUnifiedModelViewer
+        src={src}
+        alt={alt}
+        autoRotate
+        cameraControls
+        className="w-full h-[400px]"
+      />
+    </ModelViewerErrorBoundary>
   );
-};
-
-// Preload the model to avoid layout shifts
-useGLTF.preload('/path/to/model.glb');
+}
 ```
+
+## Constraints (Do Not)
+
+1. **Do NOT** use `any` type - strictly forbidden, use `unknown` or specific types.
+2. **Do NOT** use class components - only functional components allowed.
+3. **Do NOT** use inline styles - use Tailwind V4 utilities.
+4. **Do NOT** use `useGLTF` from `@react-three/drei` - use `UnifiedModelViewer` with `@google/model-viewer`.
+5. **Do NOT** skip error boundaries around 3D components.
+6. **Do NOT** put business logic in route handlers - extract to services.
