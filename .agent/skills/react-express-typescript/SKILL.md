@@ -35,7 +35,7 @@ Use this skill when:
 
 ### Backend (Express 5)
 1. **Async/Await**: API routes must use `async/await`.
-2. **Error Handling**: Implement proper error handling blocks (try/catch) and middleware.
+2. **Error Handling**: Express 5 handles rejected promises automatically. Use try/catch only for specific error types or custom error responses.
 
 ## Instructions & Examples
 
