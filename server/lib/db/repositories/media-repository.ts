@@ -704,3 +704,6 @@ export class MediaRepository {
     }
   }
 }
+
+// Singleton instance for direct import usage
+export const mediaRepository = new MediaRepository();

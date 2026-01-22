@@ -1,5 +1,8 @@
-// @ts-nocheck
 import type { MediaAsset } from "@shared/schema";
+import type {
+  ModelViewerElement,
+  ModelViewerErrorEvent,
+} from "@/types/model-viewer";
 import { AlertCircle, Box, Download, Loader2, Play, RefreshCw } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -17,15 +20,6 @@ import {
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { batchFetchMediaContent } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-
-// Type definitions for model-viewer and browser APIs
-type ModelViewerEvent = {
-  detail?: {
-    totalProgress?: number | undefined;
-    [key: string]: unknown;
-  };
-  [key: string]: unknown;
-};
 
 // Enhanced loading state for comprehensive tracking
 interface LoadingState {
@@ -96,7 +90,7 @@ export default function UnifiedModelViewer({
   const [optimizedModelUrl, setOptimizedModelUrl] = useState<string | null>(null);
 
   // Refs
-  const modelViewerRef = useRef<any>(null);
+  const modelViewerRef = useRef<ModelViewerElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -184,12 +178,18 @@ export default function UnifiedModelViewer({
 
   // Error handler with retry logic
   const handleError = useCallback(
-    (event: any, _context?: string) => {
-      const errorDetail = event.detail || {};
-      const errorMessage =
-        errorDetail.message ||
-        errorDetail.type ||
-        (event instanceof Error ? event.message : "Model loading failed");
+    (event: ModelViewerErrorEvent | Error, _context?: string) => {
+      let errorMessage: string;
+
+      if (event instanceof Error) {
+        errorMessage = event.message;
+      } else {
+        const errorDetail = event.detail;
+        errorMessage =
+          errorDetail?.message ||
+          errorDetail?.type ||
+          "Model loading failed";
+      }
 
       setLoadingState((prev) => ({
         ...prev,
@@ -204,8 +204,9 @@ export default function UnifiedModelViewer({
   );
 
   // Memoized event handlers to prevent unnecessary re-renders
-  const handleProgress = useCallback((event: ModelViewerEvent) => {
-    const progress = event.detail?.totalProgress || 0;
+  const handleProgress = useCallback((event: Event) => {
+    const customEvent = event as CustomEvent<{ totalProgress?: number }>;
+    const progress = customEvent.detail?.totalProgress || 0;
     setLoadingState((prev) => ({
       ...prev,
       status: "loading",
@@ -335,15 +336,16 @@ export default function UnifiedModelViewer({
     };
 
     // Loading error
-    const handleModelError = (event: ModelViewerEvent) => {
-      const errorDetail = event.detail;
+    const handleModelError = (event: Event) => {
+      const customEvent = event as CustomEvent<{ type?: string; message?: string } | string>;
+      const errorDetail = customEvent.detail;
       const errorMessage =
         typeof errorDetail === "string"
           ? errorDetail
           : typeof errorDetail === "object" && errorDetail
-            ? JSON.stringify(errorDetail)
+            ? (errorDetail.message || errorDetail.type || JSON.stringify(errorDetail))
             : "Model loading failed";
-      handleError(errorMessage, "Model Loading");
+      handleError(new Error(errorMessage), "Model Loading");
     };
 
     // WebGL context events

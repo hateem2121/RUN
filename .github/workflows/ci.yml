@@ -179,7 +179,6 @@ jobs:
 
       - name: Check Bundle Size
         run: npm run check:bundle
-        continue-on-error: true
 
       - name: Upload Source Maps to Sentry
         if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}

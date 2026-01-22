@@ -362,10 +362,9 @@ async function checkIndexUsage(): Promise<HealthCheckResult> {
 // System Metrics Collection with configurable memory monitoring
 async function getSystemMetrics(indexUsageCheck?: HealthCheckResult) {
   // Memory monitoring controlled by environment variable
-  // Default: enabled in development, configurable in production via ENABLE_MEMORY_METRICS
-  const enableMemoryMetrics =
-    process.env.ENABLE_MEMORY_METRICS === "true" ||
-    (config.app.environment === "development" && process.env.ENABLE_MEMORY_METRICS !== "false");
+  // PHASE 4: Default to enabled in ALL environments for better observability
+  // Can be explicitly disabled via ENABLE_MEMORY_METRICS=false if needed
+  const enableMemoryMetrics = process.env.ENABLE_MEMORY_METRICS !== "false";
 
   let memoryMetrics = {
     used: 0,

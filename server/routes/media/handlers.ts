@@ -611,13 +611,48 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
   // Generate signed URL with 5-minute expiry
   const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
 
-  // Redirect browser to CDN instead of proxying through Node.js
-  // This reduces Node.js bandwidth by 90%+ and improves LCP from 5-12s to <900ms
+  // CORS headers for cross-origin access (3D viewers, image loaders)
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.set("Cache-Control", "public, max-age=300");
+
+  // PHASE 3: CDN-optimized cache headers based on asset type
+  // 3D models (GLB/GLTF) are immutable after upload - cache for 1 year
+  // Other assets use shorter cache with stale-while-revalidate for freshness
+  const isModel = asset.type === "model" || 
+    asset.mimeType === "model/gltf-binary" || 
+    asset.mimeType === "model/gltf+json" ||
+    asset.storagePath?.endsWith(".glb") ||
+    asset.storagePath?.endsWith(".gltf");
+
+  // Generate version hash from updatedAt for cache busting
+  // Format: ?v=abc12345 (8 character hash)
+  const versionHash = asset.updatedAt 
+    ? Buffer.from(asset.updatedAt.toISOString()).toString('base64').slice(0, 8)
+    : Buffer.from(asset.createdAt?.toISOString() || '').toString('base64').slice(0, 8);
+
+  // Add ETag for conditional requests (304 Not Modified)
+  res.set("ETag", `"${id}-${versionHash}"`);
+
+  if (isModel) {
+    // 3D models: Immutable, cache for 1 year (31536000 seconds)
+    // These are static assets that don't change after upload
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    res.set("CDN-Cache-Control", "public, max-age=31536000, immutable");
+    res.set("Surrogate-Control", "public, max-age=31536000, immutable");
+    logger.debug(`Serving 3D model ${id} with immutable cache headers`);
+  } else if (asset.type === "image") {
+    // Images: Cache for 1 hour with stale-while-revalidate for smooth updates
+    res.set("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+  } else {
+    // Videos and other content: Cache for 5 minutes with stale-while-revalidate
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
+  }
+
+  // Redirect browser to CDN instead of proxying through Node.js
+  // This reduces Node.js bandwidth by 90%+ and improves LCP from 5-12s to <900ms
   return res.redirect(302, signedUrl);
 }
+
 
 export async function getThumbnail(req: Request, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);

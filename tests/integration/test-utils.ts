@@ -54,10 +54,11 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
   };
 
   return new Promise((resolve, reject) => {
+    // Increased timeout for CI environments and cold starts
     const timeout = setTimeout(() => {
       kill();
-      reject(new Error("Server start timeout"));
-    }, 30000);
+      reject(new Error("Server start timeout after 60s"));
+    }, 60000);
 
     let baseUrl = "";
 

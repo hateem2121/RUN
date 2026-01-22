@@ -1,5 +1,74 @@
 // Type declarations for @google/model-viewer web component
 
+/**
+ * ModelViewerElement interface for instance methods and properties
+ * Used when interacting with the model-viewer element via refs
+ */
+export interface ModelViewerElement extends HTMLElement {
+  // Source and loading
+  src: string;
+  alt: string;
+  poster: string;
+  loading: "auto" | "lazy" | "eager";
+  reveal: "auto" | "interaction" | "manual";
+
+  // Camera and interaction
+  cameraControls: boolean;
+  autoRotate: boolean;
+  cameraOrbit: string;
+  fieldOfView: string;
+  minCameraOrbit: string;
+  maxCameraOrbit: string;
+  minFieldOfView: string;
+  maxFieldOfView: string;
+  interactionPrompt: "auto" | "none";
+  interpolationDecay: number;
+
+  // AR
+  ar: boolean;
+  arModes: string;
+  iosSrc: string;
+
+  // Lighting
+  exposure: number;
+  shadowIntensity: number;
+  shadowSoftness: number;
+  environmentImage: string;
+
+  // Methods
+  dismissPoster(): void;
+  showPoster(): void;
+  getCameraOrbit(): { theta: number; phi: number; radius: number };
+  getCameraTarget(): { x: number; y: number; z: number };
+  getFieldOfView(): number;
+  jumpCameraToGoal(): void;
+  resetTurntableRotation(): void;
+  updateFraming(): Promise<void>;
+
+  // Shadow DOM access
+  readonly shadowRoot: ShadowRoot | null;
+}
+
+/**
+ * ModelViewer event types
+ */
+export interface ModelViewerProgressEvent extends Event {
+  detail: {
+    totalProgress: number;
+  };
+}
+
+export interface ModelViewerLoadEvent extends Event {
+  detail: Record<string, unknown>;
+}
+
+export interface ModelViewerErrorEvent extends Event {
+  detail: {
+    type?: string;
+    message?: string;
+  };
+}
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {

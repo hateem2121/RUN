@@ -90,7 +90,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // MOUNT API ROUTER (Versioning)
   // Support both /api (legacy) and /api/v1 (future-proof)
   app.use("/api/v1", apiRouter);
-  app.use("/api", apiRouter);
+  
+  // Legacy /api routes - add deprecation headers per RFC 8594
+  // Sunset date: June 1, 2026
+  app.use("/api", (req, res, next) => {
+    // Skip /api/v1 paths (already handled) and /api/docs
+    if (req.path.startsWith("/v1") || req.path.startsWith("/docs")) {
+      return next();
+    }
+    // Add RFC 8594 deprecation headers
+    res.setHeader("Deprecation", "true");
+    res.setHeader("Sunset", "Sat, 01 Jun 2026 00:00:00 GMT");
+    res.setHeader("Link", '</api/v1>; rel="successor-version"');
+    next();
+  }, apiRouter);
 
   // Documentation (Keep at /api/docs)
   app.use("/api/docs", docsRouter);

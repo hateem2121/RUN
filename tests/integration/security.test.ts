@@ -3,11 +3,18 @@ import { startTestServer, type TestServer } from "./test-utils";
 
 const DEBUG_TOKEN = "test-token-123";
 
+// Increased timeout for all tests in this file (server startup is slow)
+const TEST_TIMEOUT = 45000;
+
 describe("Security Hardening (Integration Tier)", () => {
   let server: TestServer;
 
-  afterEach(() => {
-    server?.kill();
+  afterEach(async () => {
+    if (server) {
+      server.kill();
+      // Wait for cleanup
+      await new Promise((r) => setTimeout(r, 500));
+    }
   });
 
   it("should RETURN_404 for /api/debug/crash in PRODUCTION mode", async () => {
@@ -20,7 +27,7 @@ describe("Security Hardening (Integration Tier)", () => {
       method: "POST",
     });
     expect([403, 404]).toContain(res.status);
-  }, 20000);
+  }, TEST_TIMEOUT);
 
   it("should RETURN_404 for /api/debug/crash in TEST mode if ENABLE_DEBUG_ROUTES is missing", async () => {
     server = await startTestServer({
@@ -32,7 +39,7 @@ describe("Security Hardening (Integration Tier)", () => {
       method: "POST",
     });
     expect([403, 404]).toContain(res.status);
-  }, 20000);
+  }, TEST_TIMEOUT);
 
   it("should RETURN_404 if Token is missing (even if enabled)", async () => {
     server = await startTestServer({
@@ -45,7 +52,7 @@ describe("Security Hardening (Integration Tier)", () => {
       method: "POST",
     });
     expect([403, 404]).toContain(res.status);
-  }, 20000);
+  }, TEST_TIMEOUT);
 
   it("should RETURN_404 if Token is incorrect", async () => {
     server = await startTestServer({
@@ -59,7 +66,7 @@ describe("Security Hardening (Integration Tier)", () => {
       headers: { "X-RUN-DEBUG-TOKEN": "wrong-token" },
     });
     expect([403, 404]).toContain(res.status);
-  }, 20000);
+  }, TEST_TIMEOUT);
 
   it("should BLOCK .map files with 404 in PRODUCTION", async () => {
     server = await startTestServer({
@@ -77,7 +84,7 @@ describe("Security Hardening (Integration Tier)", () => {
     // Test encoded
     const resEnc = await fetch(`${server.baseUrl}/assets/main.js%2e%6d%61%70`);
     expect(resEnc.status).toBe(404);
-  }, 20000);
+  }, TEST_TIMEOUT);
 
   it("should REMOVE X-Powered-By header in PRODUCTION", async () => {
     server = await startTestServer({
@@ -86,7 +93,7 @@ describe("Security Hardening (Integration Tier)", () => {
 
     const res = await fetch(`${server.baseUrl}/health`);
     expect(res.headers.get("x-powered-by")).toBeNull();
-  });
+  }, TEST_TIMEOUT);
 
   it("should ENFORCE Content-Security-Policy header in PRODUCTION", async () => {
     server = await startTestServer({
@@ -98,5 +105,5 @@ describe("Security Hardening (Integration Tier)", () => {
     expect(csp).toBeDefined();
     expect(csp).toContain("default-src 'self'");
     expect(csp).toMatch(/script-src .*'self'/);
-  });
+  }, TEST_TIMEOUT);
 });

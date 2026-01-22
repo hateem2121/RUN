@@ -33,8 +33,10 @@ import { responseTracker } from "../middleware/response-tracker.js";
 const config = getConfig();
 
 export function setupMiddleware(app: Express) {
-  // Trust Proxy (Must be first for IP rate limiting behind proxies)
-  app.set("trust proxy", true);
+  // Trust Proxy - use hop count of 1 for Cloud Run (single load balancer)
+  // This is more secure than `true` which trusts all X-Forwarded-* headers
+  // Cloud Run uses a single load balancer, so we only trust 1 proxy hop
+  app.set("trust proxy", 1);
 
   // Sentry Request Handler (Must be first middleware)
   // Only enable if SENTRY_DSN is configured
