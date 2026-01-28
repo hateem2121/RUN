@@ -3,6 +3,7 @@ import type { FallbackProps } from "react-error-boundary";
 import { Button } from "@/components/ui/button";
 
 export const AppErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+  // biome-ignore lint/suspicious/noExplicitAny: Vite env types mismatch
   const version = (import.meta as any).env?.VITE_APP_VERSION || "unknown";
 
   return (

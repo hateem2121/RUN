@@ -103,6 +103,10 @@
     "yargs": "^18.0.0"
   },
   "overrides": {
-    "axios": "^1.7.4"
+    "axios": "^1.7.4",
+    "react-helmet-async": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }

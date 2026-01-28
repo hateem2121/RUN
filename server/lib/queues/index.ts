@@ -4,10 +4,10 @@
  */
 
 export {
-  queueMediaProcessing,
-  queueMediaOperations,
   getQueueStats,
-  type MediaTaskPayload,
   type MediaOperation,
+  type MediaTaskPayload,
   type QueueResult,
+  queueMediaOperations,
+  queueMediaProcessing,
 } from "./media-queue.js";

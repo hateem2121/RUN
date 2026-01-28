@@ -9,8 +9,8 @@ export function auditStyles() {
           return Array.from(rules).some((r) => {
             if (r instanceof CSSStyleRule && r.cssText.includes("--tw-")) return true;
             // Tailwind v4: Check inside @layer blocks
-            if ("layerName" in r && (r as any).cssRules) {
-              return checkRules((r as any).cssRules);
+            if ("layerName" in r && "cssRules" in r) {
+              return checkRules((r as unknown as { cssRules: CSSRuleList }).cssRules);
             }
             return false;
           });

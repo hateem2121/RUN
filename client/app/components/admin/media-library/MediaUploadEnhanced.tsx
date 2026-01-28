@@ -478,8 +478,9 @@ export default function MediaUploadEnhanced() {
       {
         predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
       },
-      (oldData: any) => {
-        if (!oldData?.data?.data) return oldData;
+      (oldData: unknown) => {
+        const data = oldData as { data?: { data?: unknown[] } };
+        if (!data?.data?.data) return oldData;
 
         return {
           ...oldData,
@@ -681,7 +682,7 @@ export default function MediaUploadEnhanced() {
                   // Add retry logic for network errors only (NOT HTTP errors like 413)
                   let retryCount = 0;
                   const maxRetries = 3;
-                  let result: any;
+                  let result: unknown;
 
                   while (retryCount <= maxRetries) {
                     try {
@@ -700,7 +701,7 @@ export default function MediaUploadEnhanced() {
 
                       if (isHttpError) {
                         // HTTP errors (400, 413, 500, etc.) should NOT be retried
-                        const status = (error as any).status;
+                        const status = (error as { status?: number }).status;
                         if (status === 413) {
                           throw new Error(
                             `File too large: ${item.file.name} exceeds server size limits`,

@@ -18,7 +18,7 @@ interface WorkerResponse {
   percent?: number;
   bytesSent?: number;
   chunkIndex?: number;
-  serverResponse?: any;
+  serverResponse?: unknown;
   message?: string;
   error?: string;
 }
@@ -138,7 +138,7 @@ const uploadChunk = async (
 
   if (!response.ok) {
     // Enhanced error logging - capture full response for debugging
-    let responseBody;
+    let responseBody: string;
     try {
       responseBody = await response.text();
     } catch (_e) {
@@ -156,7 +156,7 @@ const uploadChunk = async (
 };
 
 // Finalize upload
-const finalizeUpload = async (uploadId: string): Promise<any> => {
+const finalizeUpload = async (uploadId: string): Promise<unknown> => {
   const response = await pristineFetch("/api/media/upload/finalize", {
     method: "POST",
     headers: {

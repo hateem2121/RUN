@@ -10,6 +10,7 @@ interface SearchParams {
 }
 
 interface SearchResponse {
+  // biome-ignore lint/suspicious/noExplicitAny: Generic search data type
   data: any[];
   total: number;
   limit: number;

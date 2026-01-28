@@ -4,11 +4,10 @@
  */
 
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
-import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import type { NeonHttpDatabase, NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
-import * as schema from "../../../shared/schema.js";
+import type * as schema from "../../../shared/schema.js";
 import {
   ConflictError,
   DatabaseDeadlockError,

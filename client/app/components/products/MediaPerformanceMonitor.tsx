@@ -28,6 +28,8 @@ export function useMediaPerformance() {
         const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
 
         // Measure memory if available
+        // Measure memory if available
+        // biome-ignore lint/suspicious/noExplicitAny: Non-standard performance.memory
         const memory = (performance as any).memory;
         const memoryUsage = memory ? Math.round(memory.usedJSHeapSize / 1048576) : 0;
 

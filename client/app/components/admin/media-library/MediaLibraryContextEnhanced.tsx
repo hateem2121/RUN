@@ -307,6 +307,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     const allAssets: MediaAsset[] = [];
 
     for (const [_queryKey, queryData] of allMediaQueries) {
+      // biome-ignore lint/suspicious/noExplicitAny: legacy query handling
       const data = queryData as any;
 
       // Handle standard paginated response format
@@ -363,6 +364,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
       const actionType = actionMap[key as keyof typeof actionMap];
       if (actionType) {
+        // biome-ignore lint/suspicious/noExplicitAny: dynamic dispatch
         dispatch({ type: actionType as any, payload: value });
       } else {
       }
@@ -781,7 +783,8 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     (
       params: URLSearchParams,
       currentState: MediaLibraryState,
-    ): Array<{ key: keyof MediaLibraryState; value: any }> => {
+    ): Array<{ key: keyof MediaLibraryState; value: unknown }> => {
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic value types
       const updates: Array<{ key: keyof MediaLibraryState; value: any }> = [];
 
       if (params.has("search")) {
@@ -842,11 +845,13 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
         });
       }
       if (params.has("sortBy")) {
+        // biome-ignore lint/suspicious/noExplicitAny: sort type
         updates.push({ key: "sortBy", value: params.get("sortBy") as any });
       }
       if (params.has("sortOrder")) {
         updates.push({
           key: "sortOrder",
+          // biome-ignore lint/suspicious/noExplicitAny: sort order type
           value: params.get("sortOrder") as any,
         });
       }
@@ -882,7 +887,8 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     if (updates.length > 0) {
       for (const { key, value } of updates) {
         if (ACTION_MAP[key]) {
-          dispatch({ type: ACTION_MAP[key] as any, payload: value });
+          // biome-ignore lint/suspicious/noExplicitAny: dynamic action dispatch
+          dispatch({ type: ACTION_MAP[key], payload: value } as any);
         }
       }
     }

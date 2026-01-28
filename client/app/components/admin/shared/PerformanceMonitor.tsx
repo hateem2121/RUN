@@ -34,7 +34,7 @@ export function PerformanceMonitor() {
     // Monitor performance metrics
     const interval = setInterval(() => {
       // Get memory usage if available
-      const memory = (performance as any).memory;
+      const memory = (performance as unknown as { memory: { usedJSHeapSize: number } }).memory;
       const memoryUsage = memory ? memory.usedJSHeapSize / 1024 / 1024 : 0;
 
       // Simulate cache hit rate calculation (would be real in production)

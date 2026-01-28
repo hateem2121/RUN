@@ -23,7 +23,7 @@ export declare const getCurrentISOString: () => string;
 /**
  * Check if a value is a valid Date object
  */
-export declare const isValidDate: (date: any) => date is Date;
+export declare const isValidDate: (date: unknown) => date is Date;
 /**
  * Safely convert any date-like value to Date object
  * Handles strings, Date objects, numbers (timestamps)

@@ -3,6 +3,7 @@ import lottie from "lottie-web/build/player/lottie_light";
 import { useEffect, useRef } from "react";
 
 interface LottieIconProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Lottie animation data
   animationData: any;
   size: number;
   type: "client" | "facility";

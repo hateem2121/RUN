@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { ResourceSkeleton } from "./ResourceSkeleton";
 
 interface LazyResourceLoaderProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Generic component type
   loader: () => Promise<{ default: React.ComponentType<any> }>;
   fallbackColumns?: 1 | 2 | 3 | 4;
 }

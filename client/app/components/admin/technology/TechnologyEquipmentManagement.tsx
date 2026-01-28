@@ -14,6 +14,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -59,8 +60,9 @@ interface EquipmentFormData {
   quantity: number;
   capacity: string;
   maintenanceSchedule: string;
-  certifications: string[];
   description: string;
+  certifications: string[];
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic specification values can be of any type
   specifications: Record<string, any>;
   imageId: number | null;
   installationDate: Date | null;
@@ -320,9 +322,9 @@ export function TechnologyEquipmentManagement({
     setShowEquipmentDialog(true);
   };
 
-  const handleEquipmentDragEnd = (event: any) => {
+  const handleEquipmentDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = equipment.findIndex((e) => e.id === active.id);
       const newIndex = equipment.findIndex((e) => e.id === over.id);
       const newEquipment = arrayMove(equipment, oldIndex, newIndex);

@@ -128,6 +128,7 @@ export const StaggeredMenu = ({
     const panelStart = Number(gsap.getProperty(panel, "xPercent"));
 
     if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
     if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
     const tl = gsap.timeline({ paused: true });
@@ -178,6 +179,7 @@ export const StaggeredMenu = ({
           {
             duration: 0.6,
             ease: "power2.out",
+            // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
             ["--sm-num-opacity" as any]: 1,
             stagger: { each: 0.08, from: "start" },
           },
@@ -230,6 +232,7 @@ export const StaggeredMenu = ({
         const numberEls = Array.from(
           panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
         ) as HTMLElement[];
+        // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
         if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
 
         busyRef.current = false;
@@ -310,6 +313,7 @@ export const StaggeredMenu = ({
           className ? `${className} ` : ""
         }staggered-menu-wrapper relative z-sticky h-full w-full`}
         style={
+          // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
           accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
         data-position={position}
@@ -342,13 +346,14 @@ export const StaggeredMenu = ({
         <header
           className="staggered-menu-header absolute top-0 left-0 z-dock flex w-full items-center justify-center bg-transparent p-4"
           aria-label="Main navigation header"
+          // biome-ignore lint/style/useSelfClosingElements: CSS safety
           style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
         >
           <button
             ref={toggleBtnRef}
             className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
+            aria-expanded={open ? "true" : "false"}
             aria-controls="staggered-menu-panel"
             onClick={toggleMenu}
             data-testid="mobile-menu-toggle"

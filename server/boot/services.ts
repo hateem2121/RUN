@@ -36,11 +36,11 @@ export async function startServices() {
   // 3. Storage Lifecycle
   try {
     const lifecycleScheduler = getLifecycleScheduler({
-      enabled: true,
+      enabled: false,
       interval: 60 * 60 * 1000,
       dryRun: false,
     });
-    lifecycleScheduler.start();
+    // lifecycleScheduler.start();
   } catch (e) {
     logger.warn("Failed to start storage lifecycle scheduler", e);
   }

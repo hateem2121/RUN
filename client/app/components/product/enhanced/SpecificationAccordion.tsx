@@ -126,7 +126,7 @@ export function SpecificationAccordion({
                 "transition-colors duration-200",
                 "hover:bg-background dark:hover:bg-muted",
               )}
-              aria-expanded={isExpanded}
+              aria-expanded={isExpanded ? "true" : "false"}
               aria-controls={`section-content-${section.id}`}
               onClick={() => toggleSection(section.id)}
               onKeyDown={(e) => handleKeyDown(e, section.id)}
@@ -156,7 +156,7 @@ export function SpecificationAccordion({
                 "overflow-hidden transition-all duration-300 ease-out",
                 isExpanded ? "max-h-96" : "max-h-0",
               )}
-              aria-hidden={!isExpanded}
+              aria-hidden={!isExpanded ? "true" : "false"}
             >
               <div className="border-border border-t px-6 pb-4 dark:border-border">
                 <div className="space-y-3 pt-4">
@@ -201,7 +201,9 @@ export function SpecificationAccordion({
 
 // Dynamic specification sections that sync with admin interface data
 export const createFabricSpecifications = (
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy fabric data
   fabricData: any,
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy product data type
   productData?: any,
 ): SpecificationSection => {
   const technicalSpecs = productData?.technicalSpecs || {};
@@ -260,6 +262,7 @@ export const createFabricSpecifications = (
   };
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: Legacy product data type
 export const createTechnologySpecifications = (productData?: any): SpecificationSection => {
   const technicalSpecs = productData?.technicalSpecs || {};
   const defaultItems = [
@@ -320,7 +323,7 @@ export const createTechnologySpecifications = (productData?: any): Specification
     items: defaultItems,
   };
 };
-
+// biome-ignore lint/suspicious/noExplicitAny: Legacy product data type
 export const createCustomizationSpecifications = (productData?: any): SpecificationSection => {
   const customizationOptions = productData?.customizationOptions || [];
 
@@ -361,7 +364,7 @@ export const createCustomizationSpecifications = (productData?: any): Specificat
     items: items,
   };
 };
-
+// biome-ignore lint/suspicious/noExplicitAny: Legacy product data type
 export const createSustainabilitySpecifications = (productData?: any): SpecificationSection => {
   const technicalSpecs = productData?.technicalSpecs || {};
   const certificates = productData?.certificates || [];
@@ -394,6 +397,7 @@ export const createSustainabilitySpecifications = (productData?: any): Specifica
   if (certificates.length > 0) {
     items.push({
       label: "Certifications",
+      // biome-ignore lint/suspicious/noExplicitAny: Certificate type dynamic
       value: certificates.map((cert: any) => cert.name || cert).join(", "),
     });
   }
@@ -424,6 +428,7 @@ export const createSustainabilitySpecifications = (productData?: any): Specifica
   };
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: Legacy product data type
 export const createCareSpecifications = (productData?: any): SpecificationSection => {
   const careInstructions = productData?.careInstructions || [];
   const technicalSpecs = productData?.technicalSpecs || {};

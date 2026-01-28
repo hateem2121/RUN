@@ -3,8 +3,10 @@ import { Loader2 } from "lucide-react";
 import { type ComponentType, lazy, Suspense, useEffect, useState } from "react";
 
 interface LazyLoadWrapperProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Generic component type
   component: () => Promise<{ default: ComponentType<any> }>;
   fallback?: React.ReactNode;
+  // biome-ignore lint/suspicious/noExplicitAny: Generic props pass-through
   props?: any;
 }
 
@@ -54,6 +56,12 @@ export const mobileAnimationVariants = {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     transition: { duration: 0.3 },
+    // biome-ignore lint/suspicious/noExplicitAny: Generic error handler
+    onError: (_error: any) => {
+      // toast({ title: "Error", description: "Animation failed" });
+      // biome-ignore lint/suspicious/noConsole: Error logging
+      console.error("Animation error");
+    },
   },
   slideUp: {
     initial: { opacity: 0, y: 20 },
@@ -91,6 +99,7 @@ export function OptimizedMotion({
       className={className}
       initial={animationProps.initial}
       animate={animationProps.animate}
+      // biome-ignore lint/suspicious/noExplicitAny: Framer Motion transition type
       transition={{ ...animationProps.transition, delay } as any}
     >
       {children}

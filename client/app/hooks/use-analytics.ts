@@ -10,7 +10,8 @@ import { analytics } from "../lib/google-analytics";
 interface UseAnalyticsOptions {
   trackPageViews?: boolean;
   trackPerformance?: boolean;
-  customDimensions?: Record<string, any>;
+  // biome-ignore lint/suspicious/noExplicitAny: Analytics dimensions can have any value
+  customDimensions?: Record<string, unknown>;
 }
 
 /**

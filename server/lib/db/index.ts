@@ -4,13 +4,13 @@
  */
 
 // Connection and core database instance
-export { 
-  db, 
-  sql, 
-  checkDatabaseConnection, 
-  wakeupDatabase, 
+export {
+  checkDatabaseConnection,
   closeDatabaseConnection,
-  type Database 
+  type Database,
+  db,
+  sql,
+  wakeupDatabase,
 } from "./connection.js";
 
 // Metrics
@@ -18,4 +18,4 @@ export { getPoolMetrics, updateHealthCheckTime } from "./metrics.js";
 
 // Safe wrappers
 export { safeQuery } from "./safe-query.js";
-export { safeTransaction, type DbClient } from "./transactions.js";
+export { type DbClient, safeTransaction } from "./transactions.js";

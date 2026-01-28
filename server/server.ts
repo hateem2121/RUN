@@ -49,11 +49,12 @@ serverReady = (async () => {
 
     // 9. Start Server
     const port = parseInt(process.env.PORT || "5001", 10);
-    httpServer.listen(port, "0.0.0.0", () => {
+    httpServer.listen(port, () => {
       const address = httpServer.address();
       const actualPort = typeof address === "object" && address ? address.port : port;
       logger.info(`Server running on port ${actualPort}`);
       logger.info(`Environment: ${config.app.environment}`);
+      logger.info(`👉 Access via IP: http://127.0.0.1:${actualPort} (Use this instead of localhost)`);
     });
 
     // 10. Server Configuration

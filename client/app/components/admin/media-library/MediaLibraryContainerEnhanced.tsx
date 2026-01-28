@@ -133,7 +133,7 @@ export default function MediaLibraryContainerEnhanced({
       clearTimeout(timeoutId);
 
       // Handle different response types
-      let result;
+      let result: unknown;
       try {
         result = await response.json();
       } catch (_jsonError) {

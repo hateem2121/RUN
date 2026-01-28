@@ -262,8 +262,8 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
     enabled: !!(isOpen && accordionStates.customization), // Only fetch when customization section is open
   });
   // Ensure allProducts is always an array, even during loading states
-  const allProducts = Array.isArray((productsResponse as any)?.data)
-    ? (productsResponse as any).data
+  const allProducts = Array.isArray((productsResponse as { data?: unknown })?.data)
+    ? (productsResponse as { data: Product[] }).data
     : [];
 
   const { data: mediaAssets = [] } = useQuery<MediaAsset[]>({
@@ -721,7 +721,8 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       sizeChartId: formData.sizeChartId,
       fiberComposition:
         formData.selectedFiberComposition && formData.selectedFiberComposition.length > 0
-          ? ({ selected: formData.selectedFiberComposition } as any)
+          ? // biome-ignore lint/suspicious/noExplicitAny: Data shape mismatch with schema requires loose typing for now
+            ({ selected: formData.selectedFiberComposition } as any)
           : undefined,
 
       // Media Assets - Using correct schema fields
@@ -849,7 +850,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
   };
 
   // Normalize specifications to clean up legacy data with array index prefixes
-  const normalizeSpecifications = (specs: string[] | Record<string, any> | undefined): string[] => {
+  const normalizeSpecifications = (
+    specs: string[] | Record<string, unknown> | undefined,
+  ): string[] => {
     if (!specs) return [];
 
     // Convert object to array if needed (legacy data compatibility)

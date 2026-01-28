@@ -2,8 +2,12 @@
 process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
 
 import path from "node:path";
+import dns from "node:dns";
 import { fileURLToPath } from "node:url";
 import { reactRouter } from "@react-router/dev/vite";
+
+dns.setDefaultResultOrder("ipv4first"); // CRITICAL: Fix localhost 504 errors on Node 17+
+
 import ReactScan from "@react-scan/vite-plugin-react-scan";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -47,6 +51,8 @@ export default defineConfig(
           "@shared": path.resolve(__dirname, "../shared"), // Sibling folder
           "@assets": path.resolve(__dirname, "../attached_assets"),
         },
+        // CRITICAL: Prevent multiple React instances during SSR
+        dedupe: ["react", "react-dom", "react-router", "react-router-dom"],
       },
       root: __dirname, // Current folder is client
       build: {
@@ -102,6 +108,7 @@ export default defineConfig(
       },
       server: {
         // FORENSIC: Dev server optimizations for faster module loading
+        host: true, // Listen on all addresses (0.0.0.0) to support localhost/127.0.0.1/LAN
 
         // Increase module graph size limit for admin pages
         hmr: {
@@ -112,9 +119,7 @@ export default defineConfig(
           strict: true,
           deny: ["**/.*"],
         },
-        headers: {
-          "Cache-Control": "public, max-age=31536000",
-        },
+
       },
     }) as any,
 );

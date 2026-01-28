@@ -44,6 +44,7 @@ const InputOTPSlot = ({
 }) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   if (!inputOTPContext.slots[index]) return null;
+  // biome-ignore lint/suspicious/noExplicitAny: OTP slot type cast
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index] as any;
 
   return (

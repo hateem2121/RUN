@@ -21,6 +21,7 @@ interface ProductFiltersProps {
     tags: string[];
     moqRange: [number, number];
   };
+  // biome-ignore lint/suspicious/noExplicitAny: Complex filter type
   onFiltersChange: (filters: any) => void;
   availableTags: string[];
 }

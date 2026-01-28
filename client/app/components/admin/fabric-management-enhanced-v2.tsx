@@ -319,7 +319,8 @@ export default function FabricManagementEnhancedV2() {
 
     // Sorting
     filtered.sort((a, b) => {
-      let aValue, bValue;
+      let aValue: string | number;
+      let bValue: string | number;
 
       switch (sortBy) {
         case "weight":
@@ -392,10 +393,11 @@ export default function FabricManagementEnhancedV2() {
     const topProperties = fabrics
       .filter((f) => f.properties)
       .flatMap((f) => Object.keys(f.properties || {}))
-      .reduce((acc: any, prop) => {
+      // biome-ignore lint/suspicious/noExplicitAny: Dynamic property accumulator
+      .reduce((acc: Record<string, number>, prop) => {
         acc[prop] = (acc[prop] || 0) + 1;
         return acc;
-      }, {});
+      }, {} as Record<string, number>);
 
     return {
       totalFabrics,
@@ -405,14 +407,14 @@ export default function FabricManagementEnhancedV2() {
       weightDistribution,
       avgSustainabilityScore,
       topProperties: Object.entries(topProperties)
-        .sort(([, a]: any, [, b]: any) => b - a)
+        .sort(([, a], [, b]) => (b as number) - (a as number))
         .slice(0, 5),
     };
   }, [fabrics, parseNumericValue]);
 
   // Mutations
   const createMutation = useMutation({
-    mutationFn: (data: any) =>
+    mutationFn: (data: Record<string, unknown>) =>
       apiRequest("/api/fabrics", {
         method: "POST",
         body: JSON.stringify(data),
@@ -423,7 +425,7 @@ export default function FabricManagementEnhancedV2() {
       resetForm();
       toast({ title: "Success", description: "Fabric created successfully" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create fabric",
@@ -433,7 +435,7 @@ export default function FabricManagementEnhancedV2() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: any }) =>
+    mutationFn: ({ id, data }: { id: number; data: Record<string, unknown> }) =>
       apiRequest(`/api/fabrics/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -445,7 +447,7 @@ export default function FabricManagementEnhancedV2() {
       resetForm();
       toast({ title: "Success", description: "Fabric updated successfully" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update fabric",
@@ -470,7 +472,7 @@ export default function FabricManagementEnhancedV2() {
       setFabricToDelete(null);
       toast({ title: "Success", description: "Fabric deleted successfully" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete fabric",
@@ -672,7 +674,7 @@ export default function FabricManagementEnhancedV2() {
     }
 
     // Helper function to convert empty strings to undefined for optional fields
-    const cleanEmptyStrings = (value: any) => {
+    const cleanEmptyStrings = (value: unknown) => {
       if (value === "" || value === null) return undefined;
       return value;
     };

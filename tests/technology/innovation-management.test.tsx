@@ -4,13 +4,18 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the component for testing isolation
+// biome-ignore lint/suspicious/noExplicitAny: Test mock component
 const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: any) => {
   const [innovationForm, setInnovationForm] = React.useState({
     title: "Smart Fabric Technology",
     category: "Fabric Technology",
     description: "Revolutionary smart fabric with embedded sensors",
     benefits: ["Energy Efficient", "Self-Monitoring"],
+    description: "Revolutionary smart fabric with embedded sensors",
+    benefits: ["Energy Efficient", "Self-Monitoring"],
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock data
     specifications: { Material: "Carbon Fiber", Weight: "50g/m²" } as Record<string, any>,
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock data
     impactMetrics: { "Energy Savings": "30%", Durability: "200%" } as Record<string, any>,
     imageId: null,
     videoId: null,

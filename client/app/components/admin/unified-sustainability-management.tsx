@@ -436,6 +436,7 @@ export function UnifiedSustainabilityManagement() {
       cleanedData.certificationIds = localForm.data.certificationIds;
 
     // JSONB data field - legacy/extra fields
+    // biome-ignore lint/suspicious/noExplicitAny: Legacy JSONB data structure is dynamic
     const dataFields: Record<string, any> = {};
     if (localForm.data?.highlightedFeatures !== undefined)
       dataFields.highlightedFeatures = localForm.data.highlightedFeatures;

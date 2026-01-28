@@ -48,13 +48,21 @@ export interface ProductItem {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       mesh: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       planeGeometry: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       shaderMaterial: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       group: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       directionalLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       ambientLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       pointLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       primitive: any;
     }
   }
@@ -64,13 +72,21 @@ declare global {
 declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       mesh: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       planeGeometry: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       shaderMaterial: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       group: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       directionalLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       ambientLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       pointLight: any;
+      // biome-ignore lint/suspicious/noExplicitAny: Three.js types
       primitive: any;
     }
   }

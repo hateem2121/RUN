@@ -52,6 +52,7 @@ const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
 
   // Clone the child to attach the ref directly to it
   // Cast children to ReactElement<any> to allow ref injection on generic elements
+  // biome-ignore lint/suspicious/noExplicitAny: Generic element cast required for legacy compatibility
   return React.cloneElement(children as React.ReactElement<any>, {
     ref: magnetRef,
   });

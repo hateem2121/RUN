@@ -55,6 +55,7 @@ const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   }, [strength]);
 
   // Clone the child to attach the ref directly to it
+  // biome-ignore lint/suspicious/noExplicitAny: Clone element ref attachment
   return React.cloneElement(children as React.ReactElement<any>, {
     ref: magnetRef,
   });

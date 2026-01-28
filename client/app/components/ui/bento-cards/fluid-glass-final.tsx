@@ -17,8 +17,11 @@ type Mode = "lens" | "bar" | "cube";
 
 interface FluidGlassProps {
   mode?: Mode;
+  // biome-ignore lint/suspicious/noExplicitAny: Three.js prop types
   lensProps?: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Three.js prop types
   barProps?: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Three.js prop types
   cubeProps?: any;
 }
 
@@ -213,7 +216,6 @@ const FluidGlass = memo(function FluidGlass({
   }, [initializeThreeJS]);
 
   return (
-    // biome-ignore lint: component requirement
     <div className="relative h-full w-full" style={{ minHeight: "400px" }}>
       {isLoading && (
         <div className="center-flex absolute inset-0 bg-linear-to-br from-purple-50 to-blue-50">

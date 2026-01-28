@@ -805,10 +805,10 @@ export default function MediaGrid({
   // PERFORMANCE FIX: Batch fetch media content to prevent connection exhaustion
   // This fetches signed URLs for all displayed assets in a single request
   const { data: batchContent } = useQuery({
-    queryKey: ["media-batch", displayAssets.map((a: any) => a.id).join(",")],
+    queryKey: ["media-batch", displayAssets.map((a: MediaAsset) => a.id).join(",")],
     queryFn: async () => {
       if (displayAssets.length === 0) return {};
-      const ids = displayAssets.map((a: any) => a.id);
+      const ids = displayAssets.map((a: MediaAsset) => a.id);
       const results = await batchFetchMediaContent(ids);
 
       // Create a map of ID -> Signed URL
@@ -1016,7 +1016,7 @@ export default function MediaGrid({
             {/* Page Numbers */}
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
-                let pageNum;
+                let pageNum = 0;
                 if (pagination.totalPages <= 5) {
                   pageNum = i + 1;
                 } else if (state.currentPage <= 3) {

@@ -107,6 +107,7 @@ export function MobileProductInfo({
             <ShoppingBag className="mr-2 h-5 w-5" />
             Request Quote
           </Button>
+          {/* biome-ignore lint/suspicious/noExplicitAny: Product type definition issue */}
           {(product as any).sampleAvailable && (
             <Button size="lg" variant="outline" className="flex-1" onClick={onRequestSample}>
               Request Sample

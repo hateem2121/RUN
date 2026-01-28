@@ -113,6 +113,7 @@ export class AnimationErrorBoundary extends Component<
     try {
       if (typeof window !== "undefined") {
         // Kill all GSAP timelines
+        // biome-ignore lint/suspicious/noExplicitAny: Accessing global GSAP instance
         const gsapInstance = (window as any).gsap as GSAPInstance | undefined;
         if (gsapInstance) {
           const timelines = gsapInstance.globalTimeline?.getChildren(true) || [];
@@ -130,6 +131,7 @@ export class AnimationErrorBoundary extends Component<
         }
 
         // Clear ScrollTrigger instances
+        // biome-ignore lint/suspicious/noExplicitAny: Accessing global ScrollTrigger instance
         const scrollTrigger = (window as any).ScrollTrigger as ScrollTriggerInstance | undefined;
         if (scrollTrigger) {
           scrollTrigger.getAll().forEach((trigger: GSAPScrollTrigger) => {

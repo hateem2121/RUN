@@ -98,6 +98,7 @@ export function TechnologyGradientSettings({
         queryKey: ["/api/technology-gradient-settings"],
       });
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
     onError: (error: any) => {
       toast({
         variant: "destructive",
@@ -164,6 +165,7 @@ export function TechnologyGradientSettings({
                         });
                       }}
                       className="h-10 w-16 cursor-pointer rounded border"
+                      aria-label="Color 1 picker"
                     />
                     <Input
                       type="text"
@@ -180,6 +182,7 @@ export function TechnologyGradientSettings({
                       }}
                       className="font-mono text-sm"
                       placeholder="#FF9FFC"
+                      aria-label="Color 1 hex code"
                     />
                   </div>
                 </div>
@@ -200,6 +203,7 @@ export function TechnologyGradientSettings({
                         });
                       }}
                       className="h-10 w-16 cursor-pointer rounded border"
+                      aria-label="Color 2 picker"
                     />
                     <Input
                       type="text"

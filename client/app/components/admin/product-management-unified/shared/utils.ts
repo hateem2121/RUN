@@ -75,7 +75,7 @@ export function validateMediaFile(file: File): {
     };
 
     reader.readAsArrayBuffer(file.slice(0, 4));
-  }) as any;
+  });
 }
 
 /**

@@ -618,17 +618,20 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
   // PHASE 3: CDN-optimized cache headers based on asset type
   // 3D models (GLB/GLTF) are immutable after upload - cache for 1 year
   // Other assets use shorter cache with stale-while-revalidate for freshness
-  const isModel = asset.type === "model" || 
-    asset.mimeType === "model/gltf-binary" || 
+  const isModel =
+    asset.type === "model" ||
+    asset.mimeType === "model/gltf-binary" ||
     asset.mimeType === "model/gltf+json" ||
     asset.storagePath?.endsWith(".glb") ||
     asset.storagePath?.endsWith(".gltf");
 
   // Generate version hash from updatedAt for cache busting
   // Format: ?v=abc12345 (8 character hash)
-  const versionHash = asset.updatedAt 
-    ? Buffer.from(asset.updatedAt.toISOString()).toString('base64').slice(0, 8)
-    : Buffer.from(asset.createdAt?.toISOString() || '').toString('base64').slice(0, 8);
+  const versionHash = asset.updatedAt
+    ? Buffer.from(asset.updatedAt.toISOString()).toString("base64").slice(0, 8)
+    : Buffer.from(asset.createdAt?.toISOString() || "")
+        .toString("base64")
+        .slice(0, 8);
 
   // Add ETag for conditional requests (304 Not Modified)
   res.set("ETag", `"${id}-${versionHash}"`);
@@ -652,7 +655,6 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
   // This reduces Node.js bandwidth by 90%+ and improves LCP from 5-12s to <900ms
   return res.redirect(302, signedUrl);
 }
-
 
 export async function getThumbnail(req: Request, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);

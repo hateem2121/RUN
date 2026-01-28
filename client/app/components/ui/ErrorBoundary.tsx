@@ -40,7 +40,9 @@ export class ErrorBoundary extends Component<Props, State> {
     this.props.onReset?.();
     this.setState({
       hasError: false,
+      // biome-ignore lint/suspicious/noExplicitAny: State reset
       error: null as any,
+      // biome-ignore lint/suspicious/noExplicitAny: State reset
       errorInfo: null as any,
     });
   };

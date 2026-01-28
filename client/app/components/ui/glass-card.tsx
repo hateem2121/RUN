@@ -115,7 +115,7 @@ const LiquidGlassCard = ({
   const rotateY = useTransform(x, [-100, 100], [-5, 5]);
 
   const shouldEnableDrag = isDraggable && !isTouchDevice;
-
+  // biome-ignore lint/suspicious/noExplicitAny: Drag event types
   const handleDragEnd = (_event: any, info: any) => {
     const threshold = 50;
     if (Math.abs(info.offset.x) < threshold && Math.abs(info.offset.y) < threshold) {
@@ -184,6 +184,7 @@ const LiquidGlassCard = ({
         height: currentHeight,
         ...(shouldEnableDrag ? { perspective: "1000px" } : {}),
         ...(shouldEnableDrag ? { transformStyle: "preserve-3d" } : {}),
+        // biome-ignore lint/suspicious/noExplicitAny: Style cast
         ...(style as any),
       }}
       animate={{

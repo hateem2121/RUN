@@ -92,7 +92,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
   setCursor,
   image,
 }) => {
-  const IconComponent = Icon as any;
+  const IconComponent = Icon;
 
   return (
     <Card

@@ -4,7 +4,7 @@ export function useAdminSustainabilityMutations() {
   const queryClient = useQueryClient();
 
   const updateConfig = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       // Mock implementation
       return data;
     },
@@ -14,7 +14,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createMetric = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -22,7 +22,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateMetric = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -38,7 +38,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const reorderMetrics = useMutation({
-    mutationFn: async (_updates: any[]) => {},
+    mutationFn: async (_updates: { id: number; displayOrder: number }[]) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -46,7 +46,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createInitiative = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -54,7 +54,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateInitiative = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -70,7 +70,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const reorderInitiatives = useMutation({
-    mutationFn: async (_updates: any[]) => {},
+    mutationFn: async (_updates: { id: number; displayOrder: number }[]) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -78,7 +78,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createGoal = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -86,7 +86,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateGoal = useMutation({
-    mutationFn: async (_data: any) => {},
+    mutationFn: async (_data: Record<string, unknown>) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],

@@ -144,6 +144,7 @@ export function UnifiedMediaTheater({
           return false;
         }
       })(),
+      // biome-ignore lint/suspicious/noExplicitAny: Navigator connection API
       connectionSpeed: (navigator as any).connection?.effectiveType || "unknown",
     }),
     [],
@@ -672,7 +673,9 @@ export function UnifiedMediaTheater({
                   <div className="relative h-full w-full">
                     {/* STEP 3 INTEGRATION: Replace complex manual model-viewer with UnifiedModelViewer */}
                     <LazyUnifiedModelViewer
+                      // biome-ignore lint/suspicious/noExplicitAny: Mock asset data
                       asset={modelAsset as any}
+                      // biome-ignore lint/suspicious/noExplicitAny: Mock config data
                       config={modelConfig as any}
                       onLoad={handleModelLoad}
                       onInteraction={handleModelInteraction}

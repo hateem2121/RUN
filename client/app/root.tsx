@@ -12,6 +12,7 @@ import {
   useRouteError,
 } from "react-router";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { getQueryClient } from "@/lib/queryClient";
@@ -41,16 +42,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
-            <HydrationBoundary state={loaderData?.dehydratedState}>
-              <FloatingDockHeader />
-              {children}
-              <BackToTop />
-              <OfflineIndicator />
-            </HydrationBoundary>
-          </QueryClientProvider>
-        </HelmetProvider>
+        <ThemeProvider>
+          <HelmetProvider>
+            <QueryClientProvider client={queryClient}>
+              <HydrationBoundary state={loaderData?.dehydratedState}>
+                <FloatingDockHeader />
+                {children}
+                <BackToTop />
+                <OfflineIndicator />
+              </HydrationBoundary>
+            </QueryClientProvider>
+          </HelmetProvider>
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts nonce={nonce} />
       </body>

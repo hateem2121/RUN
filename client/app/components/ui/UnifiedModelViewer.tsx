@@ -1,8 +1,4 @@
 import type { MediaAsset } from "@shared/schema";
-import type {
-  ModelViewerElement,
-  ModelViewerErrorEvent,
-} from "@/types/model-viewer";
 import { AlertCircle, Box, Download, Loader2, Play, RefreshCw } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -20,6 +16,7 @@ import {
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { batchFetchMediaContent } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+import type { ModelViewerElement, ModelViewerErrorEvent } from "@/types/model-viewer";
 
 // Enhanced loading state for comprehensive tracking
 interface LoadingState {
@@ -185,10 +182,7 @@ export default function UnifiedModelViewer({
         errorMessage = event.message;
       } else {
         const errorDetail = event.detail;
-        errorMessage =
-          errorDetail?.message ||
-          errorDetail?.type ||
-          "Model loading failed";
+        errorMessage = errorDetail?.message || errorDetail?.type || "Model loading failed";
       }
 
       setLoadingState((prev) => ({
@@ -343,7 +337,7 @@ export default function UnifiedModelViewer({
         typeof errorDetail === "string"
           ? errorDetail
           : typeof errorDetail === "object" && errorDetail
-            ? (errorDetail.message || errorDetail.type || JSON.stringify(errorDetail))
+            ? errorDetail.message || errorDetail.type || JSON.stringify(errorDetail)
             : "Model loading failed";
       handleError(new Error(errorMessage), "Model Loading");
     };
@@ -852,6 +846,7 @@ export default function UnifiedModelViewer({
         {/* Model Viewer - Stable attributes to prevent Lit element update conflicts */}
         {isVisible &&
           React.createElement("model-viewer", {
+            // biome-ignore lint/suspicious/noExplicitAny: Custom element ref
             ref: modelViewerRef as any,
             // src set programmatically in useEffect
             alt: asset.originalName || "3D Model",

@@ -159,6 +159,8 @@ export default router;
 ## 4. 3D & Visualization Patterns
 
 > **Important**: This project uses `@google/model-viewer` as the primary 3D rendering solution, NOT `@react-three/drei` for GLTF loading.
+>
+> **Note**: `@react-three/drei` IS installed (v10.7.7) but **only** for non-GLTF utilities like `PerspectiveCamera`. Do NOT import `useGLTF` from drei.
 
 - **Primary Library**: `@google/model-viewer` (web component)
 - **React Wrapper**: `UnifiedModelViewer` component (`@/components/ui/UnifiedModelViewer.tsx`)
@@ -200,3 +202,19 @@ import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBounda
 6. **Do NOT** put business logic in route handlers - extract to `services/`.
 7. **Do NOT** use raw color values - use semantic tokens from theme.
 8. **Do NOT** create components without proper error boundaries for 3D content.
+9. **Do NOT** run multiple `npm run dev` instances - use `/dev-server` workflow.
+
+## 7. Development Environment
+
+### Dev Server Management
+- **Single Instance Only**: Never run `npm run dev` in multiple terminals simultaneously.
+- **Starting**: `npm run dev -- --force` (the `predev` script auto-kills orphans).
+- **Stopping**: Press `Ctrl+C` in the terminal.
+- **Access URL**: Use `http://127.0.0.1:5001` (NOT `localhost` - avoids IPv6 caching issues).
+
+### Troubleshooting
+- **504 Vite Errors**: Clear browser cache for `localhost`, use `127.0.0.1`, or incognito mode.
+- **Port in use**: `npx kill-port 5001`
+- **Stuck processes**: `pkill -f 'tsx watch' && pkill -f 'turbo run dev'`
+
+See `/dev-server` workflow for complete instructions.

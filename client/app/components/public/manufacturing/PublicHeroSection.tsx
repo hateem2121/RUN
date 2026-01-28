@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface PublicHeroSectionProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
   mouseX: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
   mouseY: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
   rotateX: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
   rotateY: any;
   mediaAssets: MediaAsset[];
   hero: ManufacturingHero | undefined;
@@ -33,6 +37,7 @@ export function PublicHeroSection({
       : null;
 
   // Mechanical animation variants (industrial character)
+  // biome-ignore lint/suspicious/noExplicitAny: Complex animation variants
   const mechanicalVariants: any = {
     hidden: {
       x: -100,
@@ -55,6 +60,7 @@ export function PublicHeroSection({
 
   // Gear-like rotation for decorative elements (if added later)
   // Assembly line stagger effect
+  // biome-ignore lint/suspicious/noExplicitAny: Complex animation variants
   const containerVariants: any = {
     hidden: { opacity: 0 },
     visible: {

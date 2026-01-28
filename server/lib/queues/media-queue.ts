@@ -1,12 +1,12 @@
 /**
  * Media Processing Queue
  * Cloud Tasks integration for async media processing
- * 
+ *
  * This module provides queue functionality for deferring heavy media operations
  * like image optimization, thumbnail generation, and 3D model processing.
  */
 
-import { CloudTasksClient, protos } from "@google-cloud/tasks";
+import { CloudTasksClient, type protos } from "@google-cloud/tasks";
 import { logger } from "../monitoring/logger.js";
 
 // Environment configuration
@@ -28,13 +28,13 @@ function getClient(): CloudTasksClient {
 /**
  * Media processing operations
  */
-export type MediaOperation = 
-  | "optimize"      // Image optimization (resize, compress)
-  | "thumbnail"     // Generate thumbnails
-  | "webp"          // Convert to WebP
-  | "avif"          // Convert to AVIF
+export type MediaOperation =
+  | "optimize" // Image optimization (resize, compress)
+  | "thumbnail" // Generate thumbnails
+  | "webp" // Convert to WebP
+  | "avif" // Convert to AVIF
   | "gltf-optimize" // 3D model optimization
-  | "metadata";     // Extract metadata
+  | "metadata"; // Extract metadata
 
 /**
  * Task payload for media processing
@@ -64,7 +64,7 @@ export interface QueueResult {
 
 /**
  * Queue a media processing task
- * 
+ *
  * @example
  * ```typescript
  * const result = await queueMediaProcessing({
@@ -138,8 +138,8 @@ export async function queueMediaProcessing(
     return {
       success: true,
       taskName: response.name || undefined,
-      scheduledTime: task.scheduleTime 
-        ? new Date((task.scheduleTime.seconds as number) * 1000) 
+      scheduledTime: task.scheduleTime
+        ? new Date((task.scheduleTime.seconds as number) * 1000)
         : new Date(),
     };
   } catch (error) {
@@ -164,12 +164,12 @@ export async function queueMediaOperations(
   operations: MediaOperation[],
 ): Promise<QueueResult[]> {
   const results: QueueResult[] = [];
-  
+
   for (const operation of operations) {
     const result = await queueMediaProcessing({ mediaId, operation });
     results.push(result);
   }
-  
+
   return results;
 }
 
@@ -187,7 +187,7 @@ export async function getQueueStats(): Promise<{
     const client = getClient();
     const queuePath = client.queuePath(PROJECT_ID, LOCATION, QUEUE_NAME);
     const [queue] = await client.getQueue({ name: queuePath });
-    
+
     return {
       name: queue.name || QUEUE_NAME,
       state: queue.state?.toString() || "UNKNOWN",

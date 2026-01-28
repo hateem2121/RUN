@@ -176,7 +176,7 @@ export function ProgressiveImage({
   return (
     <div
       className={cn("bg-surface-subtle relative overflow-hidden", className)}
-      // biome-ignore lint: dynamic aspect ratio needed
+
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       {/* Placeholder / Loading state */}

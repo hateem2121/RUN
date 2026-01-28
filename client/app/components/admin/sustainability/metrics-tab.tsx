@@ -81,9 +81,13 @@ interface MetricsTabContentProps {
   paginatedMetrics: SustainabilityMetric[];
   metricsPage: number;
   metricsTotalPages: number;
+  // biome-ignore lint/suspicious/noExplicitAny: dnd-kit sensors type is complex
   sensors: any;
+  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
   createMetricMutation: any;
+  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
   updateMetricMutation: any;
+  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
   deleteMetricMutation: any;
   SortableMetricItem: React.ComponentType<{
     metric: SustainabilityMetric;
@@ -134,11 +138,14 @@ export function MetricsTabContent({
     description: { isValid: true, message: "" },
   });
 
+  // biome-ignore lint/suspicious/noExplicitAny: Generic value validation
   const validateMetricForm = (field?: string, value?: any): boolean => {
     try {
       if (field) {
         // Partial validation for single field
+        // biome-ignore lint/suspicious/noExplicitAny: Dynamic schema picking
         const pickSchema = metricSchema.pick({ [field]: true } as any);
+        // biome-ignore lint/suspicious/noExplicitAny: Dynamic form access
         const valueToValidate = value !== undefined ? value : (metricForm as any)[field];
         pickSchema.parse({ [field]: valueToValidate });
 

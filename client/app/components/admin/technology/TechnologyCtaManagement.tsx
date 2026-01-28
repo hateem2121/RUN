@@ -83,9 +83,12 @@ export function TechnologyCtaManagement({
   React.useEffect(() => {
     if (ctaData) {
       setCtaForm({
+        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
         headline: (ctaData as any).title || ctaData.headline || "",
         content: ctaData.content || "",
+        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
         buttonText: (ctaData as any).ctaText || ctaData.buttonText || "",
+        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
         buttonLink: (ctaData as any).ctaLink || ctaData.buttonLink || "",
         benefits: ctaData.benefits || [],
         isActive: ctaData.isActive ?? true,

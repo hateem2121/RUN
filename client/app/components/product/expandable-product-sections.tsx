@@ -13,7 +13,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface ProductSectionProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Product type is complex/legacy
   product: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Context type is legacy
   context: any;
   categoryColor?: string | undefined;
 }
@@ -347,6 +349,7 @@ export function ExpandableProductSections({
         >
           <div className="rounded-lg border bg-white p-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* biome-ignore lint/suspicious/noExplicitAny: Certificate type dynamic */}
               {context.certificates.map((cert: any) => (
                 <div
                   key={cert.id}

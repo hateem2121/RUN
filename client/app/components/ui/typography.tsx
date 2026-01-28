@@ -117,6 +117,7 @@ const Text = ({
   const Component = as;
   return (
     <Component
+      // biome-ignore lint/suspicious/noExplicitAny: Component ref cast
       ref={ref as any}
       className={cn(className, textVariants({ variant, color }))}
       {...props}

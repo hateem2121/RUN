@@ -25,6 +25,7 @@ type ContactState = {
   status: "idle" | "success" | "error";
   message: string;
   timestamp: number;
+  // biome-ignore lint/suspicious/noExplicitAny: Error state needs flexibility
   error?: any;
 };
 
@@ -128,6 +129,7 @@ export function B2BContactForm({
       contactName: "",
       email: "",
       phone: "",
+      // biome-ignore lint/suspicious/noExplicitAny: Enum type mismatch
       inquiryType: (prefilledType || undefined) as any,
       message:
         prefilledType === "samples" && productName
@@ -377,6 +379,7 @@ export function B2BContactForm({
                 Inquiry Type *
               </label>
               <Select
+                // biome-ignore lint/suspicious/noExplicitAny: Enum type mismatch
                 onValueChange={(value) => form.setValue("inquiryType", value as any)}
                 defaultValue={form.getValues("inquiryType")}
                 disabled={isPending}

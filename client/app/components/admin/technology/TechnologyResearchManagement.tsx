@@ -1,4 +1,11 @@
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, X } from "lucide-react";
@@ -251,9 +258,9 @@ export function TechnologyResearchManagement({
     setShowResearchDialog(true);
   };
 
-  const handleResearchDragEnd = (event: any) => {
+  const handleResearchDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = research.findIndex((r) => r.id === active.id);
       const newIndex = research.findIndex((r) => r.id === over.id);
       const newResearch = arrayMove(research, oldIndex, newIndex);
@@ -707,7 +714,9 @@ export function TechnologyResearchManagement({
                   />
                   <Select
                     value={newProject.status}
-                    onValueChange={(value: any) => setNewProject({ ...newProject, status: value })}
+                    onValueChange={(value: "Planning" | "In Progress" | "Testing" | "Completed") =>
+                      setNewProject({ ...newProject, status: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />

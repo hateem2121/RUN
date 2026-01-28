@@ -3,7 +3,7 @@ declare module "lenis/react" {
 
   export interface ReactLenisProps {
     root?: boolean;
-    options?: any;
+    options?: unknown;
     autoRaf?: boolean;
     rafPriority?: number;
     className?: string;
@@ -11,5 +11,5 @@ declare module "lenis/react" {
   }
 
   export const ReactLenis: React.FC<ReactLenisProps>;
-  export const useLenis: (callback?: (lenis: any) => void, deps?: any[]) => any;
+  export const useLenis: (callback?: (lenis: unknown) => void, deps?: unknown[]) => unknown;
 }

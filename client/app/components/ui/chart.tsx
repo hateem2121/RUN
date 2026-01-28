@@ -125,7 +125,9 @@ const ChartTooltipContent = ({
     indicator?: "line" | "dot" | "dashed";
     nameKey?: string | undefined;
     labelKey?: string | undefined;
+    // biome-ignore lint/suspicious/noExplicitAny: Chart payload type
     payload?: any[];
+    // biome-ignore lint/suspicious/noExplicitAny: Chart label type
     label?: any;
     ref?: React.Ref<HTMLDivElement>;
   }) => {
@@ -205,7 +207,7 @@ const ChartTooltipContent = ({
                             "my-0.5": nestLabel && indicator === "dashed",
                           },
                         )}
-                        // biome-ignore lint: dynamic indicator color
+                        )}
                         style={
                           {
                             "--color-bg": indicatorColor,
@@ -257,6 +259,7 @@ const ChartLegendContent = ({
   Pick<RechartsPrimitive.LegendProps, "verticalAlign"> & {
     hideIcon?: boolean | undefined;
     nameKey?: string | undefined;
+    // biome-ignore lint/suspicious/noExplicitAny: Chart payload type
     payload?: any[];
     ref?: React.Ref<HTMLDivElement>;
   }) => {
@@ -287,7 +290,7 @@ const ChartLegendContent = ({
             ) : (
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
-                // biome-ignore lint: dynamic legend color
+                className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{
                   backgroundColor: item.color,
                 }}

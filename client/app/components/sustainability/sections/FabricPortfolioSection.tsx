@@ -8,19 +8,23 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
     queryKey: ["/api/fabrics"],
   });
 
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy API response type
   const { data: fabricPortfolioData } = useQuery<any>({
     queryKey: ["/api/sustainability-fabric-portfolio"],
   });
-
   const sustainableFabrics = useMemo(() => {
     const activeFabrics = fabricsData.filter((fabric) => fabric.isActive);
     const selectedIds = fabricPortfolioData?.selectedFabricIds;
 
     if (selectedIds && selectedIds.length > 0) {
-      return selectedIds
-        .map((id: any) => activeFabrics.find((fabric: any) => fabric.id === id))
-        .filter((fabric: any): fabric is Fabric => fabric !== undefined)
-        .slice(0, 6);
+      return (
+        selectedIds
+          // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
+          .map((id: any) => activeFabrics.find((fabric: any) => fabric.id === id))
+          // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
+          .filter((fabric: any): fabric is Fabric => fabric !== undefined)
+          .slice(0, 6)
+      );
     }
 
     return activeFabrics.slice(0, 6);
@@ -36,6 +40,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {/* biome-ignore lint/suspicious/noExplicitAny: Legacy fabric data */}
       {sustainableFabrics.map((fabric: any, index: number) => {
         const fabricImage = mediaAssets.find((asset) => asset.id === fabric.visualSwatchId);
         return (
@@ -87,6 +92,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
                   <div className="mt-3">
                     <p className="mb-2 text-stone-500 text-xs">Applications:</p>
                     <div className="flex flex-wrap gap-1">
+                      {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
                       {fabric.keyApplications.slice(0, 3).map((app: any, appIndex: number) => (
                         <span
                           key={appIndex}

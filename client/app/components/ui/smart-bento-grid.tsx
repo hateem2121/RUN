@@ -16,6 +16,7 @@ interface GridSpan {
 }
 
 // Smart algorithm to determine grid span based on content richness
+// biome-ignore lint/suspicious/noExplicitAny: Content analysis item type
 export function analyzeContent(item: any): ContentAnalysis {
   const description = item.description || "";
   const hasMedia = Boolean(item.mediaIds?.length || item.imageId || item.mediaId);

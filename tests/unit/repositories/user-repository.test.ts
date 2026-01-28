@@ -47,6 +47,7 @@ describe("UserRepository", () => {
     it("should return user by ID", async () => {
       vi.mocked(db.select().from).mockReturnValue({
         where: vi.fn().mockResolvedValue([mockUser]),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.getUser("user-123");
@@ -57,6 +58,7 @@ describe("UserRepository", () => {
     it("should return undefined for non-existent user", async () => {
       vi.mocked(db.select().from).mockReturnValue({
         where: vi.fn().mockResolvedValue([]),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.getUser("non-existent");
@@ -69,6 +71,7 @@ describe("UserRepository", () => {
     it("should return user by email", async () => {
       vi.mocked(db.select().from).mockReturnValue({
         where: vi.fn().mockResolvedValue([mockUser]),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.getUserByEmail("test@example.com");
@@ -86,6 +89,7 @@ describe("UserRepository", () => {
             returning: mockReturning,
           }),
         }),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.upsertUser({
@@ -106,6 +110,7 @@ describe("UserRepository", () => {
             returning: mockReturning,
           }),
         }),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       await expect(
@@ -126,6 +131,7 @@ describe("UserRepository", () => {
             returning: vi.fn().mockResolvedValue([adminUser]),
           }),
         }),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.setAdminStatus("user-123", true);
@@ -142,6 +148,7 @@ describe("UserRepository", () => {
       ];
       vi.mocked(db.select().from).mockReturnValue({
         where: vi.fn().mockResolvedValue(adminUsers),
+        // biome-ignore lint/suspicious/noExplicitAny: Mocking drizzle chaining
       } as any);
 
       const result = await userRepository.getAdminUsers();

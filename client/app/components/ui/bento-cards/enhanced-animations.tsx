@@ -23,6 +23,11 @@ export const cardVariants = {
     transition: {
       duration: 0.2,
       ease: "easeOut",
+      scale: {
+        type: "spring",
+        damping: 20,
+        stiffness: 100,
+      },
     },
   },
   tap: {
@@ -31,6 +36,7 @@ export const cardVariants = {
       duration: 0.1,
     },
   },
+  // biome-ignore lint/suspicious/noExplicitAny: Animation variants cast
 } as any;
 
 export const staggerContainer = {

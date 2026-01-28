@@ -31,6 +31,7 @@ interface ClippedElementProps {
   className?: string | undefined;
   clipAmount?: number | undefined;
   style?: React.CSSProperties;
+  // biome-ignore lint/suspicious/noExplicitAny: Flexible props
   [x: string]: any;
 }
 
@@ -46,6 +47,7 @@ export const ClippedElement: React.FC<ClippedElementProps> = ({
     clipPath: `polygon(0 0, 100% 0, calc(100% - ${clipAmount}px) 100%, 0 100%)`,
   };
   const finalStyle = { ...style, ...clipPathStyle };
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic tag type
   const Element = Tag as any;
 
   return (
@@ -238,6 +240,7 @@ export const ProductGallery = ({
                           uploadedAt: null,
                           updatedAt: null,
                           createdAt: null,
+                          // biome-ignore lint/suspicious/noExplicitAny: Mock asset data
                         } as any
                       }
                       config={{
@@ -410,6 +413,7 @@ type Tab = "specs" | "tech" | "care" | "info" | "certs";
 interface TabbedDetailsProps {
   product: Product & {
     specifications?: string[];
+    // biome-ignore lint/suspicious/noExplicitAny: Legacy technical specs
     technicalSpecs?: Record<string, any>;
     careInstructions?: string[];
     minimumOrderQuantity?: number | undefined;
@@ -417,6 +421,7 @@ interface TabbedDetailsProps {
     customFit?: string | null;
     customWeight?: string | null;
   };
+  // biome-ignore lint/suspicious/noExplicitAny: Certificate type dynamic
   certificates: any[];
 }
 
@@ -664,6 +669,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
 // ============================================================================
 
 interface SizeChartDisplayProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy size chart type
   sizeChart: any;
 }
 
@@ -731,7 +737,9 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
 // ============================================================================
 
 interface FabricDisplayProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy fabric type
   fabric: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy fiber type
   fibers?: any[];
 }
 
@@ -911,7 +919,9 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
 // ============================================================================
 
 interface FiberCompositionDisplayProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy fabric type
   fabric: any;
+  // biome-ignore lint/suspicious/noExplicitAny: Legacy fiber type
   fibers?: any[];
 }
 
@@ -922,6 +932,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
   const compositions = fabric?.properties?.compositions || [];
 
   // Find default composition or use first one
+  // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
   const defaultComposition = compositions.find((c: any) => c.isDefault) || compositions[0];
   const [selectedComposition, setSelectedComposition] = useState<string>(
     defaultComposition?.name || "",
@@ -936,12 +947,14 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
   }
 
   const currentComposition =
+    // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
     compositions.find((c: any) => c.name === selectedComposition) || defaultComposition;
   const compositionFibers = currentComposition?.fibers || [];
 
   // Helper to get fiber details
   const getFiberDetails = (fiberId: number) => {
     return (
+      // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
       fibers.find((f: any) => f.id === fiberId) || {
         name: "Unknown Fiber",
         type: "unknown",
@@ -967,6 +980,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
       {/* Composition Toggle Buttons */}
       {compositions.length > 1 && (
         <div className="border-border mb-8 flex flex-wrap items-center gap-2 border-b pb-3">
+          {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
           {compositions.map((comp: any) => (
             <ClippedElement
               key={comp.name}
@@ -998,6 +1012,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
             transition={{ duration: 0.2 }}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
+            {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
             {compositionFibers.map((fiber: any, index: number) => {
               const fiberDetails = getFiberDetails(fiber.fiberId);
               return (

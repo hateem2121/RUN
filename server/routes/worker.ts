@@ -74,14 +74,14 @@ router.post(
 /**
  * Media Processing Worker
  * POST /api/worker/process-media
- * 
+ *
  * Handles async media processing tasks queued by the media-queue module.
  */
 router.post(
   "/process-media",
   asyncHandler(async (req, res) => {
     const startTime = performance.now();
-    
+
     // Verify Cloud Tasks header in production
     const queueName = req.header("X-CloudTasks-QueueName");
     const taskName = req.header("X-CloudTasks-TaskName");
@@ -114,8 +114,8 @@ router.post(
 
     try {
       // Process based on operation type
-      let success = true;
-      
+      const success = true;
+
       switch (payload.operation) {
         case "optimize":
           // TODO: Implement with Sharp when ready
@@ -126,9 +126,9 @@ router.post(
           break;
         case "webp":
         case "avif":
-          logger.info("[Worker:Media] Converting format", { 
-            mediaId: payload.mediaId, 
-            format: payload.operation 
+          logger.info("[Worker:Media] Converting format", {
+            mediaId: payload.mediaId,
+            format: payload.operation,
           });
           break;
         case "gltf-optimize":
@@ -147,9 +147,9 @@ router.post(
         durationMs: Math.round(duration),
       });
 
-      return res.status(200).json({ 
-        success: true, 
-        durationMs: Math.round(duration) 
+      return res.status(200).json({
+        success: true,
+        durationMs: Math.round(duration),
       });
     } catch (error) {
       const duration = performance.now() - startTime;
@@ -174,8 +174,8 @@ router.post(
  * GET /api/worker/health
  */
 router.get("/health", (_req, res) => {
-  res.status(200).json({ 
-    status: "healthy", 
+  res.status(200).json({
+    status: "healthy",
     workers: ["email", "media-processor"],
     timestamp: new Date().toISOString(),
   });

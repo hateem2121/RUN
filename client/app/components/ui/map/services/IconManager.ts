@@ -18,6 +18,7 @@ const loadClientDependencies = async () => {
     const reactDom = await import("react-dom/client");
     createRoot = reactDom.createRoot;
     const lottieModule = await import("../components/LottieIcon");
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic import type compatibility
     LottieIcon = lottieModule.LottieIcon as any;
   }
 };

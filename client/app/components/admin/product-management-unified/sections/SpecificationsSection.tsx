@@ -71,7 +71,7 @@ const SpecificationsSection = memo(function SpecificationsSection({
     }
     // Convert object to array if needed (backward compatibility)
     if (formData.specifications && typeof formData.specifications === "object") {
-      const values = Object.values(formData.specifications as Record<string, any>);
+      const values = Object.values(formData.specifications as Record<string, unknown>);
       return values.map((v) => (typeof v === "string" ? v : String(v)));
     }
     return [];

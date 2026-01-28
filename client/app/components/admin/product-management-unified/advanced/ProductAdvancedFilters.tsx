@@ -82,7 +82,8 @@ export function ProductAdvancedFilters({
 
     // Sorting
     filtered.sort((a, b) => {
-      let aValue, bValue;
+      let aValue: string | number = "",
+        bValue: string | number = "";
 
       switch (sortBy) {
         case "name":

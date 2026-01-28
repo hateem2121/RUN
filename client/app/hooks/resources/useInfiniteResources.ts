@@ -31,6 +31,7 @@ export function useInfiniteResources({
       if (!response.ok) throw new Error("Failed to search resources");
       return response.json();
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Implicit API response type
     getNextPageParam: (lastPage: any) => {
       const nextOffset = lastPage.offset + lastPage.limit;
       return nextOffset < lastPage.total ? nextOffset : undefined;

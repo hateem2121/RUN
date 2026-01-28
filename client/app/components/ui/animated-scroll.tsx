@@ -179,12 +179,10 @@ export default function AnimatedScroll({
             {/* Left Half */}
             <div
               className="duration-style1-slow absolute top-0 left-0 h-full w-1/2 transition-transform ease-out"
-              // biome-ignore lint: dynamic transform needed
               style={{ transform: leftTrans }}
             >
               <div
                 className="relative h-full w-full bg-cover bg-center bg-no-repeat"
-                // biome-ignore lint: dynamic background needed
                 style={{
                   backgroundImage: page.leftBgImage ? `url(${page.leftBgImage})` : undefined,
                   backgroundColor: !page.leftBgImage ? "hsl(240 10% 10%)" : undefined, // surface-dark
@@ -211,12 +209,10 @@ export default function AnimatedScroll({
             {/* Right Half */}
             <div
               className="duration-style1-slow absolute top-0 left-1/2 h-full w-1/2 transition-transform ease-out"
-              // biome-ignore lint: dynamic transform needed
               style={{ transform: rightTrans }}
             >
               <div
                 className="relative h-full w-full bg-cover bg-center bg-no-repeat"
-                // biome-ignore lint: dynamic background needed
                 style={{
                   backgroundImage: page.rightBgImage ? `url(${page.rightBgImage})` : undefined,
                   backgroundColor: !page.rightBgImage ? "hsl(240 10% 16%)" : undefined, // surface-dark variant

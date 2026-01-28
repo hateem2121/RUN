@@ -106,5 +106,3 @@ interface ModelViewerJSX {
   bounds?: "tight" | "legacy";
   "interpolation-decay"?: string | number;
 }
-
-export {};

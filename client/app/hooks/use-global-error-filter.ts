@@ -3,14 +3,15 @@ import { useEffect } from "react";
 /**
  * Checks if an error is an AbortError (fetch cancellation)
  */
-export const isAbortError = (reason: any): boolean => {
+// biome-ignore lint/suspicious/noExplicitAny: Error can be any type
+export const isAbortError = (reason: unknown): boolean => {
   return (
     // Standard Error objects
     (reason instanceof Error && reason.name === "AbortError") ||
     // DOMException objects
     (reason instanceof DOMException && reason.name === "AbortError") ||
     // Plain objects
-    (typeof reason === "object" && reason?.name === "AbortError") ||
+    (typeof reason === "object" && reason !== null && (reason as Record<string, unknown>)?.name === "AbortError") ||
     // String-based messages
     (typeof reason === "string" &&
       (reason.includes("abort") ||
@@ -22,9 +23,10 @@ export const isAbortError = (reason: any): boolean => {
 /**
  * Checks if an error is generic third-party extension noise
  */
-export const isExtensionNoise = (reason: any): boolean => {
+// biome-ignore lint/suspicious/noExplicitAny: Error can be any type
+export const isExtensionNoise = (reason: unknown): boolean => {
   if (!reason || typeof reason !== "object") return false;
-  const stack = reason.stack || "";
+  const stack = (reason as { stack?: string }).stack || "";
   return (
     stack.includes("eruda.js") ||
     stack.includes("__replco") ||

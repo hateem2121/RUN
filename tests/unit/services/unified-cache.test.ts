@@ -13,7 +13,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Redis and OpenTelemetry
-vi.mock("../server/lib/cache/upstash-client.js", () => ({
+vi.mock("../../../server/lib/cache/upstash-client.js", () => ({
   redis: {
     get: vi.fn(),
     set: vi.fn(),
@@ -25,7 +25,7 @@ vi.mock("../server/lib/cache/upstash-client.js", () => ({
   isRedisEnabled: true,
 }));
 
-vi.mock("../server/lib/monitoring/logger.js", () => ({
+vi.mock("../../../server/lib/monitoring/logger.js", () => ({
   logger: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -34,7 +34,7 @@ vi.mock("../server/lib/monitoring/logger.js", () => ({
   },
 }));
 
-vi.mock("../server/lib/resilience/circuit-breaker.js", () => ({
+vi.mock("../../../server/lib/resilience/circuit-breaker.js", () => ({
   withCircuit: vi.fn((_name, fn) => fn()),
   REDIS_CIRCUIT_OPTIONS: {},
 }));
@@ -42,6 +42,7 @@ vi.mock("../server/lib/resilience/circuit-breaker.js", () => ({
 vi.mock("@opentelemetry/api", () => ({
   trace: {
     getTracer: () => ({
+      // biome-ignore lint/suspicious/noExplicitAny: Mocking OpenTelemetry span
       startActiveSpan: (_name: string, fn: (span: any) => any) => {
         const mockSpan = {
           setAttribute: vi.fn(),
@@ -66,7 +67,7 @@ describe("UnifiedCache", () => {
 
   describe("TTL Presets", () => {
     it("should have correct TTL values", async () => {
-      const { UnifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { UnifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       expect(UnifiedCache.TTL_PRESETS.SHORT).toBe(300); // 5 minutes
       expect(UnifiedCache.TTL_PRESETS.MEDIUM).toBe(1800); // 30 minutes
@@ -78,7 +79,7 @@ describe("UnifiedCache", () => {
 
   describe("Singleton Pattern", () => {
     it("should return the same instance", async () => {
-      const { UnifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { UnifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const instance1 = UnifiedCache.getInstance();
       const instance2 = UnifiedCache.getInstance();
@@ -89,7 +90,7 @@ describe("UnifiedCache", () => {
 
   describe("get()", () => {
     it("should return cached value from L1", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       // Set a value first
       await unifiedCache.set("test-key", { data: "test" }, 3600);
@@ -101,7 +102,7 @@ describe("UnifiedCache", () => {
     });
 
     it("should return null for cache miss", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const result = await unifiedCache.get("non-existent-key");
 
@@ -109,10 +110,10 @@ describe("UnifiedCache", () => {
     });
 
     it("should check L2 on L1 miss", async () => {
-      const { redis } = await import("../server/lib/cache/upstash-client.js");
+      const { redis } = await import("../../../server/lib/cache/upstash-client.js");
       vi.mocked(redis.get).mockResolvedValue(JSON.stringify({ fromRedis: true }));
 
-      const { UnifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { UnifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
       const cache = UnifiedCache.getInstance();
 
       // Clear L1 by getting a new key
@@ -125,7 +126,7 @@ describe("UnifiedCache", () => {
 
   describe("set()", () => {
     it("should store value in L1 cache", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       await unifiedCache.set("new-key", { value: 123 }, 3600);
 
@@ -134,8 +135,8 @@ describe("UnifiedCache", () => {
     });
 
     it("should write to L2 (Redis) asynchronously", async () => {
-      const { redis } = await import("../server/lib/cache/upstash-client.js");
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { redis } = await import("../../../server/lib/cache/upstash-client.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       await unifiedCache.set("redis-key", { data: "for-redis" }, 3600);
 
@@ -149,7 +150,7 @@ describe("UnifiedCache", () => {
 
   describe("delete()", () => {
     it("should remove value from L1 cache", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       await unifiedCache.set("delete-key", { data: "to-delete" }, 3600);
       await unifiedCache.delete("delete-key");
@@ -161,7 +162,7 @@ describe("UnifiedCache", () => {
 
   describe("clear()", () => {
     it("should clear all items from L1 cache", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       await unifiedCache.set("key1", "value1", 3600);
       await unifiedCache.set("key2", "value2", 3600);
@@ -175,7 +176,7 @@ describe("UnifiedCache", () => {
 
   describe("getStats()", () => {
     it("should return cache statistics", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const stats = unifiedCache.getStats();
 
@@ -191,7 +192,7 @@ describe("UnifiedCache", () => {
     });
 
     it("should calculate hit rate correctly", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       // Perform some operations
       await unifiedCache.set("hit-rate-key", "value", 3600);
@@ -209,7 +210,7 @@ describe("UnifiedCache", () => {
 
   describe("getHealthStatus()", () => {
     it("should return health status object", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const health = await unifiedCache.getHealthStatus();
 
@@ -221,7 +222,7 @@ describe("UnifiedCache", () => {
     });
 
     it("should report healthy status when all checks pass", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const health = await unifiedCache.getHealthStatus();
 
@@ -232,7 +233,7 @@ describe("UnifiedCache", () => {
 
   describe("getHealthScore()", () => {
     it("should return a score between 0 and 100", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const score = unifiedCache.getHealthScore();
 
@@ -243,7 +244,7 @@ describe("UnifiedCache", () => {
 
   describe("SWR (Stale-While-Revalidate)", () => {
     it("should fetch fresh data on cache miss", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       const fetchFn = vi.fn().mockResolvedValue({ fresh: "data" });
 
@@ -255,7 +256,7 @@ describe("UnifiedCache", () => {
     });
 
     it("should return cached data on hit", async () => {
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       // Pre-populate cache
       await unifiedCache.set("swr-cached-key", { cached: true }, 3600);
@@ -271,8 +272,8 @@ describe("UnifiedCache", () => {
 
   describe("Compression", () => {
     it("should compress values larger than 1KB threshold", async () => {
-      const { redis } = await import("../server/lib/cache/upstash-client.js");
-      const { unifiedCache } = await import("../server/lib/cache/unified-cache.js");
+      const { redis } = await import("../../../server/lib/cache/upstash-client.js");
+      const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
 
       // Create a large value (> 1KB)
       const largeValue = { data: "x".repeat(2000) };

@@ -58,6 +58,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
 
       // If we reach here, the request succeeded
       setFormState("success");
+      // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
     } catch (error: any) {
       setErrorMessage(error?.message || "Failed to submit inquiry. Please try again.");
       setFormState("error");

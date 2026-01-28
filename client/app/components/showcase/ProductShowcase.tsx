@@ -85,6 +85,7 @@ const ProductShowcase = () => {
           <select
             className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 md:w-64"
             value={category}
+            aria-label="Filter by category"
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">All Categories</option>
@@ -150,6 +151,7 @@ const ProductShowcase = () => {
                       disabled={!addToQuote} // Disable until hydrated to prevent mismatch
                       onClick={() => {
                         if (addToQuote) {
+                          // biome-ignore lint/suspicious/noExplicitAny: Legacy quote handler
                           (addToQuote as any)({
                             id: product.id,
                             name: product.name,

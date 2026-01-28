@@ -160,7 +160,7 @@ function productFormReducer(state: ProductFormState, action: ProductFormAction):
                 typeof v === "number"
                   ? v
                   : typeof v === "object" && v && "id" in v
-                    ? (v as any).id
+                    ? (v as { id: number }).id
                     : 0,
               )
               .filter((id) => id !== 0)

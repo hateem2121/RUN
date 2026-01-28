@@ -37,7 +37,12 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     const vite = await createServer({
       server: {
         middlewareMode: true,
+        host: "127.0.0.1", // CRITICAL: Force IPv4 to match Express binding and avoid localhost resolution issues
+        origin: "http://127.0.0.1:5001", // CRITICAL: Tell Vite what URL to use for internal requests
         hmr: { ...(server ? { server: server as any } : {}) },
+      },
+      optimizeDeps: {
+        force: true, // Force re-bundling on every startup to avoid stale cache issues
       },
       appType: "custom",
       configFile: path.resolve(root, "client/vite.config.ts"),

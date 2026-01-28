@@ -48,40 +48,21 @@ if (isTestMode && !enableRealDb) {
   }
 } else {
   // Use standard Neon HTTP driver
+  // Removing custom fetchOptions to rely on defaults
   sql = neon(database.url, {
     fullResults: false,
-    fetchOptions: {
-      cache: "no-store",
-      keepalive: true,
-    },
   });
 }
 
 // Wrap SQL function to track metrics (for both real and mock modes)
 const internalSql = sql;
-sql = ((strings: TemplateStringsArray | string, ...values: any[]) => {
-  metrics.totalQueries++;
-  metrics.currentConcurrentQueries++;
-  if (metrics.currentConcurrentQueries > metrics.peakConcurrentQueries) {
-    metrics.peakConcurrentQueries = metrics.currentConcurrentQueries;
-  }
-  const start = performance.now();
-
-  // @ts-expect-error - Neon types are tricky with wrappers
-  return internalSql(strings, ...values)
-    .then((res) => {
-      metrics.successfulQueries++;
-      return res;
-    })
-    .catch((err) => {
-      metrics.failedQueries++;
-      throw err;
-    })
-    .finally(() => {
-      metrics.currentConcurrentQueries--;
-      metrics.totalQueryTimeMs += performance.now() - start;
-    });
-}) as any;
+// Metrics wrapper temporarily removed due to incompatibility with Neon serverless driver in this environment
+// TODO: Re-implement metrics wrapping compatible with NeonQueryFunction signature
+ 
+/**
+ * Standard Drizzle HTTP Database Instance
+ * No custom proxies or circuit breakers - relying on platform resilience
+ */
 
 /**
  * Standard Drizzle HTTP Database Instance

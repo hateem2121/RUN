@@ -145,3 +145,4 @@ export function ModelLoader({ src, alt }: Readonly<ModelProps>) {
 4. **Do NOT** use `useGLTF` from `@react-three/drei` - use `UnifiedModelViewer` with `@google/model-viewer`.
 5. **Do NOT** skip error boundaries around 3D components.
 6. **Do NOT** put business logic in route handlers - extract to services.
+7. **Do NOT** run multiple `npm run dev` instances - use `/dev-server` workflow.

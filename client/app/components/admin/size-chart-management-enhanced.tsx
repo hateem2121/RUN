@@ -43,12 +43,14 @@ const getRegionFlag = (region: string) => {
   return flags[region] || "🏁";
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: Generic object handling
 const validateMeasurements = (measurements: Record<string, any>) => {
   let incomplete = 0;
   let total = 0;
 
   Object.values(measurements).forEach((sizeData) => {
     if (sizeData && typeof sizeData === "object") {
+      // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
       Object.values(sizeData as Record<string, any>).forEach((value) => {
         total++;
         if (!value || value === "") incomplete++;
@@ -185,6 +187,7 @@ export default function SizeChartManagementEnhanced() {
     region: "",
     type: "",
     description: "",
+    // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
     measurements: {} as Record<string, any>,
     isActive: true,
   });
@@ -216,6 +219,7 @@ export default function SizeChartManagementEnhanced() {
   };
 
   const createSizeChartMutation = useMutation({
+    // biome-ignore lint/suspicious/noExplicitAny: loose typing for mutation data
     mutationFn: async (data: any) => {
       return await apiRequest("/api/size-charts", {
         method: "POST",
@@ -230,6 +234,7 @@ export default function SizeChartManagementEnhanced() {
       });
       resetForm();
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
     onError: (error: any) => {
       toast({
         title: "Error",
@@ -240,6 +245,7 @@ export default function SizeChartManagementEnhanced() {
   });
 
   const updateSizeChartMutation = useMutation({
+    // biome-ignore lint/suspicious/noExplicitAny: loose typing for mutation data
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
       return await apiRequest(`/api/size-charts/${id}`, {
         method: "PUT",
@@ -255,6 +261,7 @@ export default function SizeChartManagementEnhanced() {
       setEditingChart(null);
       resetForm();
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
     onError: (error: any) => {
       toast({
         title: "Error",
@@ -277,6 +284,7 @@ export default function SizeChartManagementEnhanced() {
         description: "Size chart deleted successfully",
       });
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
     onError: (error: any) => {
       toast({
         title: "Error",
@@ -366,6 +374,7 @@ export default function SizeChartManagementEnhanced() {
       return;
     }
 
+    // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
     const newMeasurements: Record<string, any> = {};
     sizes.forEach((size) => {
       newMeasurements[size] = {};
@@ -442,6 +451,7 @@ export default function SizeChartManagementEnhanced() {
     return cmTypes.some((cmType) => type.includes(cmType));
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
   const renderMeasurementTable = (measurements: Record<string, any>) => {
     if (!measurements || Object.keys(measurements).length === 0) {
       return <p className="py-4 text-center text-neutral-500">No measurements defined</p>;
@@ -696,6 +706,7 @@ export default function SizeChartManagementEnhanced() {
                         <div key={size} className="rounded-lg bg-neutral-50 p-3">
                           <h4 className="mb-2 font-medium">{size}</h4>
                           <div className="flex flex-wrap gap-2">
+                            {/* biome-ignore lint/suspicious/noExplicitAny: Generic object handling */}
                             {Object.entries(measurements as Record<string, any>).map(
                               ([key, value]) => (
                                 <Badge

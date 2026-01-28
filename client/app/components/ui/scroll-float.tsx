@@ -374,7 +374,7 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
     <h2
       ref={containerRef}
       className={`my-5 overflow-hidden ${containerClassName}`}
-      // biome-ignore lint: optimization flags needed
+
       style={{
         contain: "layout style paint",
         willChange: "transform, opacity",

@@ -14,6 +14,7 @@
 import {
   closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -65,6 +66,7 @@ interface InnovationFormData {
   shortDescription: string;
   iconName: string;
   status: string;
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic technical details
   technicalDetails: Record<string, any>;
   relatedProducts: string[];
   benefits: string[];
@@ -323,9 +325,9 @@ export function TechnologyInnovationManagement({
     setShowInnovationDialog(true);
   };
 
-  const handleInnovationDragEnd = (event: any) => {
+  const handleInnovationDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = innovations.findIndex((i) => i.id === active.id);
       const newIndex = innovations.findIndex((i) => i.id === over.id);
       const newInnovations = arrayMove(innovations, oldIndex, newIndex);

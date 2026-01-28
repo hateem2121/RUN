@@ -4,7 +4,7 @@
  */
 
 import { AlertTriangle, RefreshCw } from "lucide-react";
-import { Component, type ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { logger } from "./logger";
 
@@ -18,7 +18,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error | null;
-  errorInfo?: any;
+  errorInfo?: ErrorInfo;
 }
 
 export class AdminProductsErrorBoundary extends Component<Props, State> {
@@ -31,7 +31,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  override componentDidCatch(error: Error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.error(`Error in ${this.props.sectionName || "admin products section"}`, {
       error: error.message,
       stack: error.stack,

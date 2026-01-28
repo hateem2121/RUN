@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
 interface ModelViewerControlsProps {
+  // biome-ignore lint/suspicious/noExplicitAny: Third party ref type
   modelViewerRef: React.RefObject<any>;
   productName: string;
   cameraPositions?: Array<{
