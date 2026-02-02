@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const BASE_URL = process.env.E2E_BASE_URL || "http://localhost:5001";
+const BASE_URL = process.env.E2E_BASE_URL || "http://localhost:5002";
 
 test.describe("🔥 Smoke & Regression Guardrails", () => {
   test("P0/P1: SSR Critical Route & Hydration (Contact)", async ({ page }) => {

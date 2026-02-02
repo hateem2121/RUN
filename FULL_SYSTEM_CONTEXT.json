@@ -110,7 +110,7 @@
   "ports": [
     {
       "name": "Server",
-      "port": 5001,
+      "port": 5002,
       "where": "server/env.schema.ts"
     }
   ],

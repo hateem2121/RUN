@@ -74,7 +74,7 @@ const WaterRipple = () => {
 interface ValuesCardProps {
   title: string;
   subtitle: string;
-  icon: React.ElementType;
+  icon: any;
   colSpan?: string | undefined;
   withRipple?: boolean | undefined;
   isMobile: boolean;

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const BASE_URL = process.env.E2E_BASE_URL || "http://127.0.0.1:5001";
+const BASE_URL = process.env.E2E_BASE_URL || "http://127.0.0.1:5002";
 
 test.describe("🛒 Product Detail Verification", () => {
   test("Dynamic Product Detail Load", async ({ page, request }) => {

@@ -5,7 +5,7 @@ interface PageTransitionProps {
   children: React.ReactNode;
 }
 // ... variants ...
-const _pageVariants = {
+// const _pageVariants = {
   initial: {
     opacity: 0,
   },

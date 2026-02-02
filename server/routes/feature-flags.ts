@@ -158,7 +158,7 @@ router.get("/detailed", (_req: Request, res: Response) => {
 
 // POST /api/feature-flags/:key/toggle (admin only)
 router.post("/:key/toggle", (req: Request, res: Response) => {
-  const key = req.params.key;
+  const key = req.params.key as string;
   if (!key) {
     res.status(400).json({ error: "Key parameter is required" });
     return;
@@ -180,7 +180,7 @@ router.post("/:key/toggle", (req: Request, res: Response) => {
 
 // PUT /api/feature-flags/:key (admin only)
 router.put("/:key", (req: Request, res: Response) => {
-  const key = req.params.key;
+  const key = req.params.key as string;
   if (!key) {
     res.status(400).json({ error: "Key parameter is required" });
     return;

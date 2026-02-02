@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Phase 5: Forensic UI Proof", () => {
-  const BASE_URL = "http://localhost:5001";
+  const BASE_URL = "http://localhost:5002";
 
   test("P0: Contact Page Content & No Loading State", async ({ page }) => {
     await page.goto(`${BASE_URL}/contact`);

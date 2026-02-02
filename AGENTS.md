@@ -31,7 +31,7 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 | Action | Command | Expectation |
 | :--- | :--- | :--- |
 | **Verify** | `npm run verify:tech-integrity` | **MANDATORY** pre-commit check. |
-| **Start Dev** | `npm run dev` | Starts Backend (5001) + Frontend Proxy. |
+| **Start Dev** | `npm run dev` | Starts Backend (5002) + Frontend Proxy. |
 | **Typecheck** | `npm run typecheck` | Validates TypeScript across all workspaces. |
 | **Lint (Fix)** | `npm run check:apply` | Auto-fixes Biome linting issues. |
 | **DB Push** | `npm run db:push` | Syncs Drizzle schema to Neon DB. |
@@ -63,8 +63,8 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 
 ## 6. Common Pitfalls (AI Memory Bank)
 
-*   **Port Conflicts**: If port 5001 is busy, use `npm run kill:all` to clear zombie Node processes.
-*   **Vite HMR**: If HMR fails, ensure `client/vite.config.ts` has `server.hmr.clientPort` set to 5001.
+*   **Port Conflicts**: If port 5002 is busy, use `npm run kill:all` to clear zombie Node processes.
+*   **Vite HMR**: If HMR fails, ensure `client/vite.config.ts` has `server.hmr.clientPort` set to 5002.
 *   **Neon Cold Starts**: The DB sleeps after inactivity. The first request may take 3-5s. `server/db.ts` handles the wakeup via `wakeupDatabase()`.
 
 ---

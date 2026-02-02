@@ -37,10 +37,10 @@ sudo apt install k6
 k6 run --env BASE_URL=https://staging.runapparel.com ops/load-testing/baseline.js
 
 # Against local development
-k6 run --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+k6 run --env BASE_URL=http://localhost:5002 ops/load-testing/baseline.js
 
 # With JSON output for CI
-k6 run --out json=results.json --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+k6 run --out json=results.json --env BASE_URL=http://localhost:5002 ops/load-testing/baseline.js
 ```
 
 ---

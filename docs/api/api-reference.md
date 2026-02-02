@@ -10,7 +10,7 @@ The RUN Apparel B2B Platform API is documented via **OpenAPI 3.0** with auto-gen
 
 | Environment | Base URL |
 |-------------|----------|
-| Development | `http://localhost:5001/api` |
+| Development | `http://localhost:5002/api` |
 | Staging | `https://staging.runapparel.com/api` |
 | Production | `https://api.runapparel.com/api` |
 

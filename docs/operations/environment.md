@@ -84,7 +84,7 @@ See `.env.example` in the project root for a complete list of supported variable
 
 ```bash
 # Core
-PORT=5001
+PORT=5002
 NODE_ENV=development
 DATABASE_URL=postgresql://...
 

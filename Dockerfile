@@ -47,8 +47,8 @@ COPY --from=builder /app/dist ./dist
 # The build script outputs server to dist/index.js and frontend to dist/public (based on vite config)
 
 # Expose the port the app runs on
-ENV PORT=5001
-EXPOSE 5001
+ENV PORT=5002
+EXPOSE 5002
 
 # Start the server
 # P1 FIX: Healthcheck for container orchestration

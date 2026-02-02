@@ -48,7 +48,7 @@ serverReady = (async () => {
     await startServices();
 
     // 9. Start Server
-    const port = parseInt(process.env.PORT || "5001", 10);
+    const port = parseInt(process.env.PORT || "5002", 10);
     httpServer.listen(port, () => {
       const address = httpServer.address();
       const actualPort = typeof address === "object" && address ? address.port : port;

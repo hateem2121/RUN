@@ -62,7 +62,7 @@ export async function apiRequest<T>(
   // SSR Support: Prepend localhost for relative URLs on server
   let url = endpoint;
   if (typeof window === "undefined" && url.startsWith("/")) {
-    const port = process.env.PORT || 5001;
+    const port = parseInt(process.env.PORT || "5002");
     url = `http://localhost:${port}${url}`;
   }
 

@@ -13,14 +13,14 @@
 
 ### A. Zombie Process Prevention (Critical)
 
-Your `package.json` currently uses `npx kill-port 5001`. This is good, but sometimes fails to kill unrelated detached processes or zombie workers.
+Your `package.json` currently uses `npx kill-port 5002`. This is good, but sometimes fails to kill unrelated detached processes or zombie workers.
 
 **Recommendation:** Update `predev` to be more robust.
 
 ```json
 // server/package.json
 "scripts": {
-  "predev": "npx kill-port 5001 && pkill -f 'tsx watch' || true",
+  "predev": "npx kill-port 5002 && pkill -f 'tsx watch' || true",
 }
 ```
 

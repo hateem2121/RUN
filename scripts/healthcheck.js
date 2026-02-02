@@ -2,7 +2,7 @@ import http from "node:http";
 
 const options = {
   host: "localhost",
-  port: process.env.PORT || 5001,
+  port: process.env.PORT || 5002,
   path: "/api/health",
   timeout: 2000,
 };

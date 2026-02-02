@@ -95,7 +95,7 @@
   "scripts": {
     "test": "vitest run",
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js",
-    "predev": "npx kill-port 5001 2>/dev/null; pkill -f 'tsx watch.*index.ts' 2>/dev/null; pkill -f 'turbo.*run dev' 2>/dev/null; echo '✓ Clean dev environment ready'",
+    "predev": "npx kill-port 5002 2>/dev/null; pkill -f 'tsx watch.*index.ts' 2>/dev/null; pkill -f 'turbo.*run dev' 2>/dev/null; echo '✓ Clean dev environment ready'",
     "dev": "tsx watch --ignore '**/node_modules' --ignore '../client/node_modules' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",

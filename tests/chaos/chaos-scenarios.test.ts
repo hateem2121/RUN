@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
  * Chaos test configuration
  */
 const CHAOS_CONFIG = {
-  targetUrl: process.env.STAGING_URL || "http://localhost:5001",
+  targetUrl: process.env.STAGING_URL || "http://localhost:5002",
   healthEndpoint: "/api/health",
   timeoutMs: 30000,
 };

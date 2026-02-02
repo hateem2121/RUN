@@ -21,7 +21,7 @@ export const AppErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) =
         </p>
 
         <div className="max-h-48 overflow-auto rounded-lg bg-muted p-4 text-left">
-          <p className="break-all font-mono text-muted-foreground text-xs">{error.message}</p>
+          <p className="break-all font-mono text-muted-foreground text-xs">{(error as any).message}</p>
         </div>
 
         <div className="flex flex-col gap-3">

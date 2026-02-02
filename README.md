@@ -106,7 +106,7 @@ npm run db:push
 npm run dev
 ```
 
-The app will be available at `http://localhost:5001`. For Docker environments (via `docker-compose`), it also runs on `http://localhost:5001`.
+The app will be available at `http://localhost:5002`. For Docker environments (via `docker-compose`), it also runs on `http://localhost:5002`.
 
 ### 6. Verify Integrity
 
@@ -120,7 +120,7 @@ See [System Overview > Environment Variables](./docs/overview.md#5-environment-v
 
 **Quick Setup (`.env`):**
 ```bash
-PORT=5001
+PORT=5002
 NODE_ENV=development
 DATABASE_URL=postgres://...
 # See .env.example for full list
@@ -367,8 +367,8 @@ npm run verify:ssr           # Full SSR verification (Unit Tests)
 
 ### Base URL
 
-- **Development**: `http://localhost:5001/api`
-- **Docker/Container**: `http://localhost:5001/api`
+- **Development**: `http://localhost:5002/api`
+- **Docker/Container**: `http://localhost:5002/api`
 - **Production**: `https://api.runapparel.com/api`
 
 ### API Documentation (`/api/docs`)
@@ -376,7 +376,7 @@ npm run verify:ssr           # Full SSR verification (Unit Tests)
 The platform includes auto-generated OpenAPI 3.0 documentation.
 
 1. Start the server: `npm run dev`
-2. Visit: `http://localhost:5001/api/docs`
+2. Visit: `http://localhost:5002/api/docs`
 
 This provides an interactive Swagger UI to test all endpoints.
 
@@ -459,7 +459,7 @@ See [Load Testing Baseline](./docs/operations/load-testing-baseline.md) for perf
 brew install k6
 
 # Run baseline test
-k6 run --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+k6 run --env BASE_URL=http://localhost:5002 ops/load-testing/baseline.js
 ```
 
 ---
@@ -563,7 +563,7 @@ _Performance Score: 92/100_
 
 If you encounter "Address already in use" errors or find multiple node processes running:
 
-1. **Automatic Fix**: The `npm run dev` script now attempts to kill port 5001 automatically.
+1. **Automatic Fix**: The `npm run dev` script now attempts to kill port 5002 automatically.
 2. **Manual Cleanup**:
 
    ```bash
@@ -571,7 +571,7 @@ If you encounter "Address already in use" errors or find multiple node processes
    pkill -f node
 
    # Or kill specific port
-   npx kill-port 5001
+   npx kill-port 5002
    ```
 
 3. **Zombie Processes**: If the server restarts infinitely, ensure your `tsx watch` ignore patterns are correct (should ignore `dist`, `.cache`).

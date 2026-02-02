@@ -93,7 +93,7 @@ export function validateIdParam(
     userAgent: req.get("User-Agent"),
   };
 
-  const result = safeParseId(req.params[paramName], context, requestInfo);
+  const result = safeParseId(req.params[paramName] as string, context, requestInfo);
 
   if (!result.isValid) {
     const errorResponse = {

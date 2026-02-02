@@ -113,7 +113,7 @@ export default defineConfig(
         // Increase module graph size limit for admin pages
         hmr: {
           overlay: true,
-          clientPort: 5001, // Force HMR to use the same port as the server
+          clientPort: parseInt(process.env.PORT || "5002"), // Match server port
         },
         fs: {
           strict: true,

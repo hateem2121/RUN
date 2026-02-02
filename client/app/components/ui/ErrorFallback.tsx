@@ -11,7 +11,7 @@ export const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBounda
       </div>
       <h2 className="font-bold text-xl tracking-tight">Something went wrong</h2>
       <p className="max-w-md text-muted-foreground text-sm">
-        {error.message || "An unexpected error occurred while rendering this component."}
+        {(error as any).message || "An unexpected error occurred while rendering this component."}
       </p>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" onClick={resetErrorBoundary}>

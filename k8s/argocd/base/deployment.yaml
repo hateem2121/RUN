@@ -16,12 +16,12 @@ spec:
         - name: run-remix
           image: gcr.io/PROJECT_ID/run-remix:latest
           ports:
-            - containerPort: 5001
+            - containerPort: 5002
           env:
             - name: NODE_ENV
               value: production
             - name: PORT
-              value: "5001"
+              value: "5002"
           envFrom:
             - secretRef:
                 name: run-remix-secrets
@@ -35,12 +35,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/health
-              port: 5001
+              port: 5002
             initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /api/health
-              port: 5001
+              port: 5002
             initialDelaySeconds: 5
             periodSeconds: 10

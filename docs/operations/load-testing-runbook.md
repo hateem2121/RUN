@@ -13,7 +13,7 @@
 brew install k6
 
 # Run baseline test
-k6 run --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+k6 run --env BASE_URL=http://localhost:5002 ops/load-testing/baseline.js
 
 # Run with cloud output (Grafana Cloud)
 k6 cloud ops/load-testing/baseline.js
@@ -125,7 +125,7 @@ export const options = {
 
 | Environment | BASE_URL | Max VUs | Duration |
 |-------------|----------|---------|----------|
-| Local | `http://localhost:5001` | 50 | 5min |
+| Local | `http://localhost:5002` | 50 | 5min |
 | Staging | `https://staging.runapparel.com` | 200 | 15min |
 | Production | `https://runapparel.com` | 100 | 5min (off-peak only) |
 

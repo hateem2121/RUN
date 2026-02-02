@@ -29,7 +29,7 @@ sudo apt install k6  # Ubuntu
 k6 run --env BASE_URL=https://staging.runapparel.com ops/load-testing/baseline.js
 
 # Against local
-k6 run --env BASE_URL=http://localhost:5001 ops/load-testing/baseline.js
+k6 run --env BASE_URL=http://localhost:5002 ops/load-testing/baseline.js
 ```
 
 ### Stress Test (Manual execution)

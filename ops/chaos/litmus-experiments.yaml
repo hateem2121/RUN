@@ -39,7 +39,7 @@ spec:
           - name: http-probe
             type: httpProbe
             httpProbe/inputs:
-              url: "http://run-remix:5001/api/health"
+              url: "http://run-remix:5002/api/health"
               method:
                 get:
                   criteria: "=="
@@ -65,7 +65,7 @@ spec:
           - name: response-time-probe
             type: httpProbe
             httpProbe/inputs:
-              url: "http://run-remix:5001/api/health"
+              url: "http://run-remix:5002/api/health"
               method:
                 get:
                   criteria: "=="
@@ -102,7 +102,7 @@ spec:
           - name: recovery-probe
             type: httpProbe
             httpProbe/inputs:
-              url: "http://run-remix:5001/api/health"
+              url: "http://run-remix:5002/api/health"
               method:
                 get:
                   criteria: "=="

@@ -97,7 +97,7 @@ npm ci
 
 | Context | Command | Description | Ports/Vars |
 | :--- | :--- | :--- | :--- |
-| **Root** | `npm run dev` | Starts Turbo Dev Pipeline | Opens port 5001 |
+| **Root** | `npm run dev` | Starts Turbo Dev Pipeline | Opens port 5002 |
 | **Root** | `npm run build` | Builds Client & Server | Outs: `dist/` |
 | **Root** | `npm run verify:tech-integrity` | **CRITICAL**: Full check (Types, Lint, Audit) | |
 | **Root** | `npm test` | Runs Unit Tests (Vitest) | |
@@ -115,7 +115,7 @@ npm ci
 | Variable | Required | Format | Description |
 | :--- | :--- | :--- | :--- |
 | `NODE_ENV` | **Yes** | `dev`\|`prod`\|`test` | Runtime mode |
-| `PORT` | No | Number | Defaults to `5001` |
+| `PORT` | No | Number | Defaults to `5002` |
 | `DATABASE_URL` | **Yes** | Postgres URL | Must use `-pooler` endpoint for Neon |
 | `GOOGLE_CLIENT_ID` | **Yes** | String | OAuth Auth |
 | `GOOGLE_CLIENT_SECRET` | **Yes** | String | OAuth Secrets |

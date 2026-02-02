@@ -60,7 +60,7 @@ graph TB
         subgraph Instances ["Container Instances"]
             express["Node 24 Container"]
             health["Health Check (scripts/healthcheck.js)"]
-            express -- "Exposes 5001" --> health
+            express -- "Exposes 5002" --> health
         end
     end
 

@@ -213,7 +213,7 @@ router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, 
 
 // Update navigation item
 router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
-  const id = parseInt(req.params.id!, 10);
+  const id = parseInt(req.params.id as string, 10);
   const validatedData = insertNavigationItemSchema.partial().safeParse(req.body);
 
   if (!validatedData.success) {
@@ -230,7 +230,7 @@ router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res,
 
 // Delete navigation item
 router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
-  const id = parseInt(req.params.id!, 10);
+  const id = parseInt(req.params.id as string, 10);
   const result = await NavigationService.deleteItem(id);
 
   if (result.isErr()) {

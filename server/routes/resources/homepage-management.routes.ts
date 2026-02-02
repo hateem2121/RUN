@@ -186,7 +186,7 @@ router.get(
 router.get(
   "/homepage-slogans/:id",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const slogan = await getStorage().getHomepageSlogan(id);
     if (!slogan) {
       return res.status(404).json({ message: "Slogan not found" });
@@ -220,7 +220,7 @@ router.patch(
   "/homepage-slogans/:id",
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const validation = insertHomepageSloganSchema.partial().safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
@@ -240,7 +240,7 @@ router.delete(
   "/homepage-slogans/:id",
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const deleted = await getStorage().deleteHomepageSlogan(id);
     if (!deleted) {
       return res.status(404).json({ message: "Slogan not found" });
@@ -303,7 +303,7 @@ router.get(
 router.get(
   "/homepage-process-cards/:id",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const card = await getStorage().getHomepageProcessCard(id);
     if (!card) {
       return res.status(404).json({ message: "Process card not found" });
@@ -337,7 +337,7 @@ router.patch(
   "/homepage-process-cards/:id",
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const validation = insertHomepageProcessCardSchema.partial().safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
@@ -357,7 +357,7 @@ router.delete(
   "/homepage-process-cards/:id",
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const deleted = await getStorage().deleteHomepageProcessCard(id);
     if (!deleted) {
       return res.status(404).json({ message: "Process card not found" });
@@ -421,7 +421,7 @@ router.get(
 router.get(
   "/homepage-sections/:id",
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const section = await getStorage().getHomepageSectionById(id);
     if (!section) {
       return res.status(404).json({ message: "Section not found" });
@@ -439,7 +439,7 @@ router.patch(
   "/homepage-sections/:id",
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
-    const id = parseInt(req.params.id!, 10);
+    const id = parseInt(req.params.id as string, 10);
     const validation = insertHomepageSectionSchema.partial().safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });

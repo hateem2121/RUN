@@ -24,7 +24,7 @@ export default defineConfig({
   snapshotPathTemplate: "{snapshotDir}/{testFilePath}/{arg}{ext}",
   use: {
     actionTimeout: 10000,
-    baseURL: process.env.E2E_BASE_URL || "http://localhost:5001",
+    baseURL: process.env.E2E_BASE_URL || "http://localhost:5002",
     // Reliability: retain traces only on failure (keeps CI artifacts small)
     trace: "retain-on-failure",
     video: "retain-on-failure",

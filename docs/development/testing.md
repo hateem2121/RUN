@@ -6,7 +6,7 @@ This project uses **Playwright** for end-to-end testing and **Forensic Guardrail
 
 The test suite needs a running application server.
 
-- **Default**: `http://localhost:5001`
+- **Default**: `http://localhost:5002`
 - **Override**: Set `E2E_BASE_URL` and `PORT`.
 
 ```bash

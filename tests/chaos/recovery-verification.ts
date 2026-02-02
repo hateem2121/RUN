@@ -33,7 +33,7 @@ interface RecoveryReport {
 }
 
 const CONFIG = {
-  targetUrl: process.env.STAGING_URL || "http://localhost:5001",
+  targetUrl: process.env.STAGING_URL || "http://localhost:5002",
   healthEndpoint: "/api/health",
   maxRetries: 30,
   retryIntervalMs: 2000,

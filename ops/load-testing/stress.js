@@ -39,7 +39,7 @@ export const options = {
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:5001";
+const BASE_URL = __ENV.BASE_URL || "http://localhost:5002";
 
 // Mix of realistic user scenarios
 const scenarios = [
