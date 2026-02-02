@@ -55,9 +55,7 @@ if [ -f ".vscode/settings.json" ]; then
         echo "   ✓ Auto-format on save enabled"
     fi
     
-    if grep -q "tailwindCSS.experimental.classRegex" .vscode/settings.json; then
-        echo "   ✓ TailwindCSS class detection configured"
-    fi
+
 else
     echo -e "${RED}❌ .vscode/settings.json not found${NC}"
 fi

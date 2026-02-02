@@ -92,24 +92,31 @@ export interface ComponentProps
   extends React.ComponentProps<"button">,
     VariantProps<typeof componentVariants> {
   asChild?: boolean;
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
-const Component = React.forwardRef<HTMLButtonElement, ComponentProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        className={cn(componentVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
-Component.displayName = "Component";
+// React 19: ref is a standard prop, no forwardRef needed
+const Component = ({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ref,
+  ...props
+}: ComponentProps) => {
+  const Comp = asChild ? Slot : "button";
+  return (
+    <Comp
+      className={cn(componentVariants({ variant, size, className }))}
+      ref={ref}
+      {...props}
+    />
+  );
+};
 
 export { Component, componentVariants };
 ```
+
 
 ### Tailwind CSS V4
 - **Directives**: Use `@utility` for custom utility classes in CSS files.

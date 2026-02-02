@@ -503,16 +503,22 @@ The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was 
 
 ### API Versioning Policy
 
-**Current Status**: No API versioning implemented
+**Current Status**: Version 1.0 (Active)
 
-**Future Considerations**:
+- **Preferred Base URL**: `/api/v1`
+- **Legacy Base URL**: `/api` (Deprecated)
 
-- Current optimizations are **forward-compatible** (remove fields only)
-- Frontend already used subset of fields, so no breaking changes internally
-- External consumers may experience breaking changes (see Migration Steps above)
-- Future breaking changes may require versioned endpoints: `/api/v1/products`, `/api/v2/products`
+**Deprecation Notice**:
+The legacy root endpoints (`/api/*`) are deprecated and will be removed on **June 1, 2026**.
+All clients should migrate to `/api/v1/*`.
 
-**Recommendation**: Pin your integration to specific field sets in your code and add validation for required fields.
+**Deprecation Headers**:
+Responses from legacy endpoints include standard RFC 8594 headers:
+- `Deprecation: true`
+- `Sunset: Sat, 01 Jun 2026 00:00:00 GMT`
+- `Link: </api/v1>; rel="successor-version"`
+
+**Recommendation**: Update all client applications to use the `/api/v1` prefix.
 
 ---
 
