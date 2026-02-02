@@ -17,9 +17,13 @@ import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
-import type { LoaderFunctionArgs } from "react-router";
+import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 
 // Load CSP nonce from server context
+export const links: LinksFunction = () => [
+  { rel: "preload", href: "/fonts/NeueStance-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
+];
+
 export async function loader({ context }: LoaderFunctionArgs) {
   const { cspNonce } = context as { cspNonce: string };
   return { cspNonce, dehydratedState: null };

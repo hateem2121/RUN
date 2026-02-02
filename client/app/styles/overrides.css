@@ -41,7 +41,7 @@
   }
 
   model-viewer .ar-button:hover {
-    background-color: color-mix(in oklch, var(--color-primary), black 10%);
+    background-color: color-mix(in oklch, hsl(var(--color-primary)), black 10%);
   }
 
   model-viewer .hotspot {
@@ -71,5 +71,16 @@
   .webgl-background [role="button"],
   .webgl-background [tabindex]:not([tabindex="-1"]) {
     pointer-events: auto;
+  }
+
+  /* Technology Page Header Overrides (Fix Broken Logo) */
+  html.technology-page header h1 {
+    color: white !important;
+  }
+  html.technology-page header p {
+    color: #a1a1aa !important; /* zinc-400 */
+  }
+  html.technology-page header span.rounded-full {
+    background-color: rgba(255,255,255,0.2) !important;
   }
 }

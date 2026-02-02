@@ -9,7 +9,7 @@ import {
 } from "@run-remix/shared";
 import { and, desc, eq, isNull, like, or, type SQL } from "drizzle-orm";
 import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router";
 import { GlobalErrorBoundary } from "@/components/error-boundaries/GlobalErrorBoundary";
 import { ProductFilters } from "@/components/products/ProductFilters";
@@ -228,16 +228,16 @@ export default function ProductsPage() {
   });
 
   // --- Safe Parsing of Server Data ---
-  const categories = safeParseArray(CategorySchema, serverCategories);
-  const fabrics = safeParseArray(FabricSchema, serverFabrics);
-  const certificates = safeParseArray(CertificateSchema, serverCertificates);
-  const sizeCharts = safeParseArray(SizeChartSchema, serverSizeCharts);
-  const accessories = safeParseArray(AccessorySchema, serverAccessories);
-  const mediaAssets = safeParseArray(MediaAssetSchema, serverMediaAssets);
+  const categories = useMemo(() => safeParseArray(CategorySchema, serverCategories), [serverCategories]);
+  const fabrics = useMemo(() => safeParseArray(FabricSchema, serverFabrics), [serverFabrics]);
+  const certificates = useMemo(() => safeParseArray(CertificateSchema, serverCertificates), [serverCertificates]);
+  const sizeCharts = useMemo(() => safeParseArray(SizeChartSchema, serverSizeCharts), [serverSizeCharts]);
+  const accessories = useMemo(() => safeParseArray(AccessorySchema, serverAccessories), [serverAccessories]);
+  const mediaAssets = useMemo(() => safeParseArray(MediaAssetSchema, serverMediaAssets), [serverMediaAssets]);
 
   // Use server products by default.
   // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.
-  const products = safeParseArray(ProductSummarySchema, serverProducts);
+  const products = useMemo(() => safeParseArray(ProductSummarySchema, serverProducts), [serverProducts]);
 
   // Track page view on mount
   useEffect(() => {
@@ -285,72 +285,78 @@ export default function ProductsPage() {
   }, [searchTerm, selectedCategory, viewMode, sortBy, setSearchParams, searchParams]);
 
   // Extract unique tags from all products
-  const availableTags = [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))];
+  const availableTags = useMemo(
+    () => [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))],
+    [products]
+  );
 
   // Filter and sort products (Client-side refinement of server results)
-  const sortedProducts = (products || [])
-    .filter((product) => {
-      if (!product) return false;
-      // Advanced filters
-      if (
-        selectedFilters.fabrics.length > 0 &&
-        !selectedFilters.fabrics.includes(product.fabricId || 0)
-      ) {
-        return false;
-      }
-
-      if (selectedFilters.certificates.length > 0) {
-        const productCerts = product.certificateIds || [];
-        if (!selectedFilters.certificates.some((certId) => productCerts.includes(certId))) {
+  const sortedProducts = useMemo(() => {
+    return (products || [])
+      .filter((product) => {
+        if (!product) return false;
+        // Advanced filters
+        if (
+          selectedFilters.fabrics.length > 0 &&
+          !selectedFilters.fabrics.includes(product.fabricId || 0)
+        ) {
           return false;
         }
-      }
 
-      if (
-        selectedFilters.sizeCharts.length > 0 &&
-        !selectedFilters.sizeCharts.includes(product.sizeChartId || 0)
-      ) {
-        return false;
-      }
+        if (selectedFilters.certificates.length > 0) {
+          const productCerts = product.certificateIds || [];
+          if (!selectedFilters.certificates.some((certId) => productCerts.includes(certId))) {
+            return false;
+          }
+        }
 
-      if (selectedFilters.accessories.length > 0) {
-        const productAccs = product.accessoryIds || [];
-        if (!selectedFilters.accessories.some((accId) => productAccs.includes(accId))) {
+        if (
+          selectedFilters.sizeCharts.length > 0 &&
+          !selectedFilters.sizeCharts.includes(product.sizeChartId || 0)
+        ) {
           return false;
         }
-      }
 
-      if (selectedFilters.tags.length > 0) {
-        const productTags = product.tags || [];
-        if (!selectedFilters.tags.some((tag) => productTags.includes(tag))) {
+        if (selectedFilters.accessories.length > 0) {
+          const productAccs = product.accessoryIds || [];
+          if (!selectedFilters.accessories.some((accId) => productAccs.includes(accId))) {
+            return false;
+          }
+        }
+
+        if (selectedFilters.tags.length > 0) {
+          const productTags = product.tags || [];
+          if (!selectedFilters.tags.some((tag) => productTags.includes(tag))) {
+            return false;
+          }
+        }
+
+        // MOQ filter
+        const moq =
+          typeof product.minimumOrderQuantity === "string"
+            ? parseInt(product.minimumOrderQuantity, 10) || 0
+            : product.minimumOrderQuantity || 0;
+        if (moq < selectedFilters.moqRange[0] || moq > selectedFilters.moqRange[1]) {
           return false;
         }
-      }
 
-      // MOQ filter
-      const moq =
-        typeof product.minimumOrderQuantity === "string"
-          ? parseInt(product.minimumOrderQuantity, 10) || 0
-          : product.minimumOrderQuantity || 0;
-      if (moq < selectedFilters.moqRange[0] || moq > selectedFilters.moqRange[1]) {
-        return false;
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return (a?.name || "").localeCompare(b?.name || "");
-        case "newest":
-          // Date parsing
-          return new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime();
-        case "featured":
-          return (b?.isFeatured ? 1 : 0) - (a?.isFeatured ? 1 : 0);
-        default:
-          return 0;
-      }
-    });
+        return true;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "name":
+            return (a?.name || "").localeCompare(b?.name || "");
+          case "newest":
+            // Date parsing
+            // Use time value or 0 if invalid
+            return new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime();
+          case "featured":
+            return (b?.isFeatured ? 1 : 0) - (a?.isFeatured ? 1 : 0);
+          default:
+            return 0;
+        }
+      });
+  }, [products, selectedFilters, sortBy]);
 
   // Initialize displayed products when sortedProducts changes
   useEffect(() => {
@@ -375,7 +381,7 @@ export default function ProductsPage() {
           />
 
           {/* Header */}
-          <div className="z-modal-backdrop border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
+          <div className="z-sticky border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
                 <Typography.H1 className="text-2xl font-bold">Products</Typography.H1>

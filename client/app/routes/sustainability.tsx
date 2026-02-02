@@ -190,7 +190,7 @@ export default function Sustainability() {
               <Button
                 size="lg"
                 variant="outline"
-                className="group relative overflow-hidden border-stone-300 text-stone-900 hover:bg-stone-100 hover:text-stone-900"
+                className="group relative overflow-hidden border-stone-300 text-white hover:bg-stone-100 hover:text-stone-900"
                 asChild
               >
                 <Link to={hero?.ctaLink || "/contact"} className="z-modal-backdrop relative">

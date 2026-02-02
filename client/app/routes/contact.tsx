@@ -102,6 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Contact() {
   const loaderData = useLoaderData<typeof loader>();
+  const [mounted, setMounted] = useState(false);
   const { isMobile } = useMobileDetection();
   const { toast } = useToast();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -114,6 +115,10 @@ export default function Contact() {
     staleTime: 300000,
   });
 
+  // SSR-safe hydration check - prevents useRef null errors
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema) as any,
     defaultValues: {
@@ -194,6 +199,15 @@ export default function Contact() {
   ];
 
   if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-muted/30">
+        <div className="h-12 w-12 animate-spin rounded-full border-foreground border-b-2"></div>
+      </div>
+    );
+  }
+
+  // Prevent hydration mismatch by rendering only on client
+  if (!mounted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/30">
         <div className="h-12 w-12 animate-spin rounded-full border-foreground border-b-2"></div>

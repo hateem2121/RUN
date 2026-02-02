@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'Neue Stance';
+  src: url('/fonts/NeueStance-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Stance';
+  src: url('/fonts/NeueStance-Regular.ttf') format('truetype');
+  font-weight: 700; /* Map bold to regular if only one weight exists, or let browser fake it, but explicit is better */
+  font-style: normal;
+  font-display: swap;
+}

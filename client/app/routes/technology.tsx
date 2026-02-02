@@ -640,20 +640,6 @@ export default function Technology() {
     return mediaAssetsMap.get(mediaId) || null;
   };
 
-  // OPTIMIZED: Simplified loading state using batch query
-  if (batchLoading) {
-    return (
-      <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-black">
-        <div className="text-center text-white">
-          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
-          <Typography.P className="text-sm opacity-75">
-            Loading technology interface...
-          </Typography.P>
-        </div>
-      </div>
-    );
-  }
-
   // Map gradient settings with fallback defaults
   const safeGradientSettings = mapGradientSettings(gradientSettings ?? undefined);
 
@@ -662,9 +648,20 @@ export default function Technology() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
-        {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
-        <div className="-z-elevated fixed inset-0">
+      {/* OPTIMIZED: Simplified loading state using batch query */}
+      {batchLoading ? (
+        <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-black">
+          <div className="text-center text-white">
+            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
+            <Typography.P className="text-sm opacity-75">
+              Loading technology interface...
+            </Typography.P>
+          </div>
+        </div>
+      ) : (
+        <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
+          {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
+          <div className="-z-elevated fixed inset-0">
           {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
           <ClientOnly
             fallback={
@@ -789,6 +786,7 @@ export default function Technology() {
           </section>
         </div>
       </div>
+      )}
     </HydrationBoundary>
   );
 }

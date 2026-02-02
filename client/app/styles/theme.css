@@ -22,6 +22,7 @@
     --input: 240 5.9% 90%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
+    --background-alt: hsl(0 0% 98%);
   }
 
   .dark {
@@ -44,6 +45,7 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 263.4 70% 50.4%;
+    --background-alt: hsl(240 3.7% 15.9%);
   }
 }
 
@@ -52,6 +54,22 @@
      Design Tokens
      Phase 3.3: Design Token Consolidation
      ========================================= */
+
+  /* =========================================
+     Missing Tokens Added (Tailwind v4 Migration Fix)
+     ========================================= */
+
+  /* Font Families - Custom Brand Fonts */
+  --font-neue-stance: "Neue Stance", "Inter", system-ui, sans-serif;
+
+  /* Luxury Color Palette */
+  --color-luxury-charcoal: #1a1a2e;
+  --color-luxury-heading: #16213e;
+  --color-luxury-gold: #b8860b;
+
+  /* Glass Effects */
+  --color-glass: rgba(255, 255, 255, 0.1);
+  --color-glass-dark: rgba(0, 0, 0, 0.2);
 
   /* Brand Colors - DEPRECATED: Use Semantic Tokens */
   --color-brand-purple: var(--primary);
@@ -62,7 +80,7 @@
   --color-success: #ccff00;
   --color-brand-lime: #ccff00;
   --color-warning: #ffd700;
-  --color-background-alt: #fafafa;
+  --color-background-alt: var(--background-alt);
   --color-surface-black: #0a0a0a;
   --color-brand-accent: #3300ff;
 
@@ -294,9 +312,9 @@
     }
   }
 
-  @keyframes rotate {
+  @keyframes custom-rotate {
     from {
-      --rotate: -70;
+      --custom-rotate: -70;
       --glow-translate-y: -65;
     }
     25% {
@@ -313,7 +331,7 @@
       --glow-translate-y: -65;
     }
     to {
-      --rotate: calc(360 - 70);
+      --custom-rotate: calc(360 - 70);
       --glow-translate-y: -65;
     }
   }

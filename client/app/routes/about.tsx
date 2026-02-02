@@ -171,7 +171,7 @@ export default function About() {
                 mediaId={item.imageId}
                 alt={item.title}
                 quality={85}
-                className="h-40 w-full rounded-lg object-cover"
+                className="h-40 w-full rounded-lg object-cover bg-transparent"
               />
             </div>
           )}
@@ -246,7 +246,7 @@ export default function About() {
                             <OptimizedImage
                               mediaId={teamMessage.imageId}
                               alt="Team"
-                              className="h-64 w-full rounded-xl object-cover"
+                              className="h-64 w-full rounded-xl object-cover bg-transparent"
                               quality={90}
                               priority={false}
                             />

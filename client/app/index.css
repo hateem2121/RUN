@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
+@import "./styles/fonts.css";
 
 @import "./styles/overrides.css";
 
@@ -13,6 +14,10 @@
 
 @utility z-elevated {
   z-index: var(--z-index-elevated, 10);
+}
+
+@utility z-sticky {
+  z-index: var(--z-index-sticky, 200);
 }
 
 @utility transform-gpu {
@@ -31,13 +36,42 @@
   transform-origin: left;
 }
 
+/* =========================================
+   Missing Utilities (Tailwind v4 Migration Fix)
+   ========================================= */
+
+@utility size-icon-sm {
+  width: var(--width-icon-sm, 1.2rem);
+  height: var(--height-icon-sm, 1.2rem);
+}
+
+@utility border-glass {
+  border-color: var(--color-glass, rgba(255, 255, 255, 0.1));
+}
+
+@utility font-neue-stance {
+  font-family: var(--font-neue-stance, "Inter", system-ui, sans-serif);
+}
+
+@utility text-luxury-charcoal {
+  color: var(--color-luxury-charcoal, #1a1a2e);
+}
+
+@utility text-luxury-heading {
+  color: var(--color-luxury-heading, #16213e);
+}
+
+@utility bg-luxury-charcoal {
+  background-color: var(--color-luxury-charcoal, #1a1a2e);
+}
+
 /* Houdini Properties */
 @property --hue {
   syntax: "<number>";
   inherits: true;
   initial-value: 0;
 }
-@property --rotate {
+@property --custom-rotate {
   syntax: "<number>";
   inherits: true;
   initial-value: 0;

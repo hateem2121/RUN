@@ -284,7 +284,7 @@ const Hero: React.FC = () => {
         >
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="text-surface-dark dark:text-white text-[14vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply dark:mix-blend-normal will-change-transform md:text-[10vw] md:leading-[0.85]">
+              <h1 className="text-surface-dark dark:text-white text-[10vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply dark:mix-blend-normal will-change-transform md:text-[8vw] lg:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>
