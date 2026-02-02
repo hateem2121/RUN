@@ -8,7 +8,8 @@ import { KEY_STATS } from "./constants";
 const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   const [displayValue, setDisplayValue] = useState("000");
   const elementRef = useRef<HTMLSpanElement>(null);
-  const chars = "0123456789!@#$%^&*";
+  // Use only digits for clean number animation (removed !@#$%^&*)
+  const chars = "0123456789";
 
   useEffect(() => {
     if (!elementRef.current) return;

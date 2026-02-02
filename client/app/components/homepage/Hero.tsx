@@ -284,7 +284,7 @@ const Hero: React.FC = () => {
         >
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="text-surface-dark text-[14vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply will-change-transform md:text-[10vw] md:leading-[0.85]">
+              <h1 className="text-surface-dark dark:text-white text-[14vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply dark:mix-blend-normal will-change-transform md:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>
@@ -295,7 +295,7 @@ const Hero: React.FC = () => {
       {/* Scroll Indicator */}
       <div className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block">
         <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
-          <svg viewBox="0 0 100 100" className="h-full w-full fill-black">
+          <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <path
               id="curve"
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
@@ -306,7 +306,7 @@ const Hero: React.FC = () => {
             </text>
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-2 w-2 rounded-full bg-black" />
+            <div className="h-2 w-2 rounded-full bg-black dark:bg-white" />
           </div>
         </div>
       </div>

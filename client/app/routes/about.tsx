@@ -13,7 +13,7 @@ import { Award, Factory, Globe2, MessageSquare, Package, TrendingUp, Users } fro
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { ClientOnly } from "@/components/ui/ClientOnly";
+import { ClientOnly } from "@/components/shared/ClientOnly";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";

@@ -20,7 +20,10 @@ type Pages = {
   "/accessories": {
     params: {};
   };
-  "/:module": {
+  "/admin": {
+    params: {};
+  };
+  "/admin/:module": {
     params: {
       "module": string;
     };
@@ -88,7 +91,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/:module" | "/analytics" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/sustainability" | "/technology";
+    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module" | "/analytics" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/sustainability" | "/technology";
   };
   "routes/_index.tsx": {
     id: "routes/_index";
@@ -104,15 +107,15 @@ type RouteFiles = {
   };
   "routes/admin.tsx": {
     id: "routes/admin";
-    page: "/" | "/:module";
+    page: "/admin" | "/admin/:module";
   };
   "routes/admin._index.tsx": {
     id: "routes/admin._index";
-    page: "/";
+    page: "/admin";
   };
   "routes/admin.$module.tsx": {
     id: "routes/admin.$module";
-    page: "/:module";
+    page: "/admin/:module";
   };
   "routes/analytics.tsx": {
     id: "routes/analytics";

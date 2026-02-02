@@ -5,7 +5,7 @@ interface PageTransitionProps {
   children: React.ReactNode;
 }
 // ... variants ...
-// const _pageVariants = {
+const _pageVariants = {
   initial: {
     opacity: 0,
   },
@@ -27,22 +27,20 @@ const pageTransition = {
 export function PageTransition({ children }: PageTransitionProps) {
   const [location] = useConcurrentLocation();
 
-  // Assuming animationProps and delay are defined elsewhere or are placeholders for a larger refactor.
-  // For the purpose of this instruction, we are applying the provided snippet directly.
   const animationProps = {
     initial: "initial",
     animate: "in",
+    exit: "out",
+    variants: _pageVariants,
     transition: pageTransition,
   };
-  const delay = 0; // Placeholder for delay
+  const delay = 0; 
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={location}
-        initial={animationProps.initial}
-        animate={animationProps.animate}
-        // biome-ignore lint/suspicious/noExplicitAny: Animation transition props
+        {...animationProps}
         // biome-ignore lint/suspicious/noExplicitAny: Animation transition cast
         transition={{ ...animationProps.transition, delay } as any}
       >

@@ -1,5 +1,5 @@
 import { useMotionValue, useTransform } from "framer-motion";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   ManufacturingErrorBoundary,
   ManufacturingLoadingSkeleton,
@@ -69,14 +69,26 @@ export default function Manufacturing() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // Fix hydration mismatch: use consistent initial values, update client-side only
+  const [dimensions, setDimensions] = useState({ width: 1000, height: 1000 });
+  
+  useEffect(() => {
+    setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    const handleResize = () => {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const rotateX = useTransform(
     mouseY,
-    [0, typeof window !== "undefined" ? window.innerHeight : 1000],
+    [0, dimensions.height],
     [5, -5],
   );
   const rotateY = useTransform(
     mouseX,
-    [0, typeof window !== "undefined" ? window.innerWidth : 1000],
+    [0, dimensions.width],
     [-5, 5],
   );
 

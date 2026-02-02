@@ -187,6 +187,11 @@
 /* Root Variables moved to styles/theme.css */
 
 @layer base {
+  html {
+    /* Scroll padding for fixed navigation (dock height + buffer) */
+    scroll-padding-top: 100px;
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border;
   }

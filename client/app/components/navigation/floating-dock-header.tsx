@@ -10,11 +10,11 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
       <div className="fixed top-4 left-4 z-dock">
         <Link to="/" className="shrink-0">
           <div className="flex flex-col items-center gap-1 px-2 sm:flex-row sm:gap-3">
-            <h1 className="whitespace-nowrap font-bold font-neue-stance text-luxury-charcoal text-sm sm:text-base md:text-lg">
+            <h1 className="whitespace-nowrap font-bold font-neue-stance text-luxury-charcoal dark:text-white text-sm sm:text-base md:text-lg">
               RUN APPAREL
             </h1>
-            <span className="hidden h-1 w-1 rounded-full bg-luxury-charcoal/20 sm:inline" />
-            <p className="whitespace-nowrap font-neue-stance font-semibold text-micro text-zinc-600 sm:text-sm">
+            <span className="hidden h-1 w-1 rounded-full bg-luxury-charcoal/20 dark:bg-white/20 sm:inline" />
+            <p className="whitespace-nowrap font-neue-stance font-semibold text-micro text-zinc-600 dark:text-zinc-400 sm:text-sm">
               (PVT) LTD
             </p>
           </div>
