@@ -1,6 +1,6 @@
 # RUN Apparel B2B Platform
 
-A modern B2B e-commerce platform for athletic apparel manufacturing, built with **React 19 (Stable)**, **Express 5.1**, **Tailwind CSS v4 (Stable)**, and **React Router 7** (formerly Remix).
+A modern B2B e-commerce platform for athletic apparel manufacturing, built with **React 19 (Stable)**, **Express 5.1**, **Tailwind CSS v4 (Stable)**, and **React Router 7**.
 
 ---
 
@@ -130,10 +130,10 @@ DATABASE_URL=postgres://...
 
 ## Project Structure
 
-The project is structured as a **Monorepo** using NPM Workspaces:
+The project is structured as a **Monorepo** (internally named `run-remix-monorepo` for legacy reasons) using NPM Workspaces:
 
 ```text
-RUN-Remix/
+RUN-Apparel-Platform/
 ├── client/ (@run-remix/client) # Frontend application (React 19, Vite)
 │   ├── src/
 │   │   ├── components/

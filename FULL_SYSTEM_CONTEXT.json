@@ -16,7 +16,7 @@
   },
   "stack": {
     "frontend": {
-      "framework": "React 19.2.3",
+      "framework": "React 19.2.4",
       "router": "React Router 7.11.0",
       "build": "Vite 7.0.0",
       "style": "Tailwind CSS 4.0.0"

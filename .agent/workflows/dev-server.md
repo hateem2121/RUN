@@ -14,7 +14,7 @@ This workflow ensures you never have duplicate dev server instances running.
 npm run dev -- --force
 ```
 
-The `predev` script automatically kills orphaned processes on port 5001 before starting.
+The `predev` script automatically kills orphaned processes on port 5002 before starting.
 
 ## Stopping the Dev Server
 
@@ -24,7 +24,7 @@ The `predev` script automatically kills orphaned processes on port 5001 before s
 ```bash
 pkill -f 'tsx watch'
 pkill -f 'turbo run dev'
-npx kill-port 5001
+npx kill-port 5002
 ```
 
 ## Common Issues
@@ -35,9 +35,9 @@ If you see multiple `npm run dev` processes in your terminal list:
 2. Run the cleanup commands from step 3 above
 3. Start a single fresh instance
 
-### Port 5001 already in use
+### Port 5002 already in use
 ```bash
-npx kill-port 5001
+npx kill-port 5002
 ```
 
 ## Best Practices
@@ -45,4 +45,4 @@ npx kill-port 5001
 - **Never** run `npm run dev` in multiple terminals simultaneously
 - Use **one terminal** for the dev server; use VS Code's integrated terminal
 - If you need to restart, press `Ctrl+C` first, then start again
-- Use `127.0.0.1:5001` instead of `localhost:5001` for reliable browsing
+- Use `127.0.0.1:5002` instead of `localhost:5002` for reliable browsing

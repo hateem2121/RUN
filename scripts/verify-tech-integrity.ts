@@ -66,6 +66,12 @@ const steps = [
     args: ["run", "test", "tests/unit/ssr/invariants.test.ts"],
     critical: true,
   },
+  {
+    name: "DocStack Alignment",
+    command: "npm",
+    args: ["run", "verify:docs-versions"],
+    critical: true,
+  },
 ];
 
 // Add Audit separately as it might be flaky

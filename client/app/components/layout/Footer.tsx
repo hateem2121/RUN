@@ -178,8 +178,8 @@ const Footer: React.FC = () => {
         aria-hidden="true"
       />
 
-      <div className="container-centered z-elevated relative mb-20 grid grid-cols-1 gap-12 md:mb-32 md:grid-cols-4 md:gap-24">
-        <div className="md:col-span-2">
+      <div className="container-centered z-elevated relative mb-20 grid grid-cols-1 gap-8 md:mb-32 md:grid-cols-3 md:gap-12">
+        <div>
           <h2 className="mb-8 text-6xl leading-none font-bold tracking-tighter uppercase sm:text-7xl md:text-8xl lg:text-9xl">
             Start Your <br />
             Order

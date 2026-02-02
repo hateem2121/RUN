@@ -217,11 +217,11 @@ import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBounda
 - **Single Instance Only**: Never run `npm run dev` in multiple terminals simultaneously.
 - **Starting**: `npm run dev -- --force` (the `predev` script auto-kills orphans).
 - **Stopping**: Press `Ctrl+C` in the terminal.
-- **Access URL**: Use `http://127.0.0.1:5001` (NOT `localhost` - avoids IPv6 caching issues).
+- **Access URL**: Use `http://127.0.0.1:5002` (NOT `localhost` - avoids IPv6 caching issues).
 
 ### Troubleshooting
 - **504 Vite Errors**: Clear browser cache for `localhost`, use `127.0.0.1`, or incognito mode.
-- **Port in use**: `npx kill-port 5001`
+- **Port in use**: `npx kill-port 5002`
 - **Stuck processes**: `pkill -f 'tsx watch' && pkill -f 'turbo run dev'`
 
 See `/dev-server` workflow for complete instructions.

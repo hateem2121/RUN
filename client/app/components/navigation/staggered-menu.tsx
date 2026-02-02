@@ -307,7 +307,7 @@ export const StaggeredMenu = ({
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-modal h-screen w-screen overflow-hidden">
+    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-sticky h-screen w-screen overflow-hidden">
       <div
         className={`${
           className ? `${className} ` : ""
@@ -382,7 +382,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-default flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-dock flex h-full w-full flex-col overflow-y-auto bg-background/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
           style={{
             WebkitBackdropFilter: "blur(16px)",
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding

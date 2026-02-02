@@ -318,7 +318,6 @@ function IconContainer({
       {/* Permanent title label with improved contrast */}
       <div
         className="max-w-20 truncate whitespace-nowrap text-center font-medium text-foreground text-xs drop-shadow-sm md:max-w-24"
-        style={{ textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)" }} // Light mode glow for glass contrast
       >
         {title}
       </div>
