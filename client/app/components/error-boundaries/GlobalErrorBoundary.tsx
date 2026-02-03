@@ -36,7 +36,8 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
         Something went wrong
       </h2>
       <p className="text-muted-foreground dark:text-muted-foreground/70 mb-6 max-w-md text-sm">
-        {error.message || "An unexpected error occurred while loading this component."}
+        {(error instanceof Error ? error.message : String(error)) ||
+          "An unexpected error occurred while loading this component."}
       </p>
       <button
         type="button"
@@ -50,15 +51,16 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 export function GlobalErrorBoundary({ children }: { children: React.ReactNode }) {
-  const logError = (error: Error, info: { componentStack?: string | null }) => {
-    Sentry.captureException(error, {
+  const logError = (error: unknown, info: { componentStack?: string | null }) => {
+    const err = error instanceof Error ? error : new Error(String(error));
+    Sentry.captureException(err, {
       contexts: { react: { componentStack: info.componentStack || "unknown" } },
       tags: { boundary: "global" },
     });
 
     reportClientError({
-      message: error.message,
-      ...(error.stack ? { stack: error.stack } : {}),
+      message: err.message,
+      ...(err.stack ? { stack: err.stack } : {}),
       ...(info.componentStack ? { componentStack: info.componentStack } : {}),
       level: "error",
       context: { boundary: "global" },

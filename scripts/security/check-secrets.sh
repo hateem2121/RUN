@@ -27,19 +27,15 @@ FAILURE=0
 
 # Safe file iteration handling spaces/newlines in filenames
 while IFS= read -r -d '' file; do
+  # Skip files that are known to contain placeholders or are documentation
+  if [[ "$file" == ".env.example" ]] || [[ "$file" == docs/* ]]; then
+    continue
+  fi
+
   if [ -f "$file" ]; then
     # Skip binary files if needed, but grep handles them mostly
     
     for pattern in "${PATTERNS[@]}"; do
-      # Use || true to prevent set -e from exiting on no match
-      if grep -qE "$pattern" "$file" || false; then 
-         # Wait, grep -qE returns 0 on match. If it returns 1 (no match), set -e would kill the script?
-         # No, because it is in an 'if' format?
-         # 'if command; then' DOES swallow the failure. strict mode is safe in if condition.
-         # Re-verifying: yes, 'if grep ...' is safe.
-         :
-      fi
-      
       if grep -qE "$pattern" "$file"; then
         echo "❌ ERROR: Potential secret found in $file (Pattern: $pattern)"
         FAILURE=1

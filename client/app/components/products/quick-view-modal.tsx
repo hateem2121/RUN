@@ -4,17 +4,21 @@ import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./product-badges";
 
+import { ProductImageCarousel } from "./product-image-carousel";
+
 interface QuickViewModalProps {
-  product: TransformedProduct;
+  product: TransformedProduct | null;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-export const QuickViewModal = ({ product, onClose }: QuickViewModalProps) => {
+export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { addItem, isInCart } = useInquiryCart();
-  const alreadyInCart = isInCart(product.id);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
@@ -25,7 +29,11 @@ export const QuickViewModal = ({ product, onClose }: QuickViewModalProps) => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "auto";
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !product) return null;
+
+  const alreadyInCart = isInCart(product.id);
 
   return (
     <div
@@ -42,9 +50,14 @@ export const QuickViewModal = ({ product, onClose }: QuickViewModalProps) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Product Image */}
-        <div className="relative w-full bg-muted md:w-1/2">
-          <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
-          <div className="absolute top-4 right-4 flex flex-col gap-2">
+        <div className="relative w-full overflow-hidden bg-muted md:w-1/2">
+          <ProductImageCarousel
+            images={product.media.filter((m) => m.type === "image")}
+            primaryVideo={product.media.find((m) => m.type === "video") ?? null}
+            productName={product.name}
+            viewMode="large"
+          />
+          <div className="absolute top-4 right-4 z-elevated flex flex-col gap-2">
             {product.certifications.includes("GOTS") && <GotsIcon />}
             {product.certifications.includes("OEKO-TEX") && <OekoTexIcon />}
             {product.certifications.includes("RCS") && <RcsIcon />}

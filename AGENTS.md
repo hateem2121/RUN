@@ -8,7 +8,7 @@
 
 **Identity**: `run-remix-monorepo`
 **Core Stack**:
-- **Frontend**: React 19 (Stable), Vite 7, Tailwind CSS v4.
+- **Frontend**: React 19 (Stable), Vite 7, Tailwind CSS v4, React Router 7 (Convergence).
 - **Backend**: Express 5 (Stable), Node.js 24.
 - **Data**: Neon Serverless Postgres (HTTP Driver via `drizzle-orm`).
 - **State**: TanStack Query v5 + Upstash Redis (L2 Cache).
@@ -21,8 +21,29 @@
 | `client/` | **Frontend Application** | Use `cn()` for styles. No raw colors. |
 | `server/` | **Backend API** | Stateless interactions only. No sticky sessions. |
 | `shared/` | **Shared Library** | Zero dependencies. Pure types/schemas only. |
-| `docs/` | **Knowledge Base** | `docs/overview.md` is the Single Source of Truth. |
+| `docs/` | **Knowledge Base** | `docs/overview.md` is the **SSOT**. |
 | `scripts/` | **Automation** | Use `tsx` for execution. |
+
+## 2.1. Canonical Documentation Sources
+
+| Topic | Primary Source (SSOT) |
+| :--- | :--- |
+| **Versions / Stack** | `docs/overview.md` |
+| **Architecture** | `docs/core/architecture.md` |
+| **Styles / UI** | `docs/development/styling.md` |
+| **Testing** | `docs/development/testing.md` |
+| **API Endpoints** | `docs/api/endpoints.md` |
+| **3D Assets** | `docs/development/3d-pipeline.md` |
+| **Developer Workflow** | `docs/guides/developer-workflow.md` |
+
+## 2.2. Legacy Mapping (IGNORE THESE)
+
+| Legacy Path (DO NOT USE) | Modern Equivalent |
+| :--- | :--- |
+| `client/src/` | `client/app/` |
+| `server/scripts/*.ts` (Manual) | `server/scripts/legacy/` |
+| `scripts/testing/` | `tests/` (Vitest/Playwright) |
+| `docs/reports/docs-audit-2026-02-02.md` | `docs/reports/docs-audit-2026-02-03-formal.md` |
 
 ## 3. Operational Commands (The Tool Belt)
 

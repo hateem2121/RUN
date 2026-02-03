@@ -71,11 +71,30 @@ const OptimizedClothMaterial = () => {
     () => ({
       uTime: { value: 0 },
       uScroll: { value: 0 }, // New uniform for scroll reactivity
-      uColorStart: { value: new Color(colors.surfaceDark) }, // Deep Black
+      uColorStart: { value: new Color("#050505") }, // Fallback to dark
       uColorEnd: { value: new Color("#1a1a1a") }, // Soft Charcoal Highlight
     }),
     [],
   );
+
+  // Fix: Resolve CSS variables for Three.js (WebGL cannot parse "var(--...)")
+  useEffect(() => {
+    const resolveColor = (token: string): string => {
+      if (typeof window === "undefined") return "";
+      const varMatch = token.match(/var\(([^)]+)\)/);
+      if (varMatch && varMatch[1]) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varMatch[1]).trim();
+      }
+      return token;
+    };
+
+    const startColor = resolveColor(colors.surfaceDark as string);
+    
+    // Safety check - if resolution failed, keep fallback
+    if (startColor && materialRef.current?.uniforms?.uColorStart) {
+      materialRef.current.uniforms.uColorStart.value.set(startColor);
+    }
+  }, []);
 
   useFrame((state) => {
     if (materialRef.current?.uniforms?.uTime) {
@@ -265,7 +284,7 @@ const Hero: React.FC = () => {
       className="bg-background-alt relative h-screen w-full overflow-hidden"
     >
       {/* 3D Background - Frameloop conditional for performance */}
-      <div className="absolute inset-0 z-0 opacity-20" style={{ pointerEvents: "none" }}>
+      <div className="absolute inset-0 z-base opacity-20" style={{ pointerEvents: "none" }}>
         <Canvas
           frameloop={isInView ? "always" : "never"}
           dpr={dpr as [number, number]}
@@ -284,7 +303,7 @@ const Hero: React.FC = () => {
         >
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="text-foreground text-[10vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[8vw] lg:text-[10vw] md:leading-[0.85]">
+              <h1 className="text-foreground text-[8vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[6vw] lg:text-[7vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>

@@ -214,21 +214,10 @@ export const HARDCODED_COLORS_TO_MIGRATE = [
     files: ["GradientBlinds.tsx", "TechnologyGradientSettings.tsx"],
   },
   {
-    hex: "#3300FF",
-    replacement: "brandPurple",
-    files: ["homepage-v2/*.tsx", "CustomCursor.tsx"],
-  },
-  {
     hex: "#CCFF00",
     replacement: "--color-success (new)",
     files: ["Footer.tsx", "Categories.tsx"],
   },
-  {
-    hex: "#050505",
-    replacement: "--color-surface-dark (new)",
-    files: ["homepage-v2/*.tsx"],
-  },
-  { hex: "#FAFAFA", replacement: "background", files: ["homepage-v2/*.tsx"] },
   {
     hex: "#10b981",
     replacement: "success",

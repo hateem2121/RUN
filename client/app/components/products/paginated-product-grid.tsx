@@ -7,7 +7,7 @@ interface ProductGridProps {
   onQuickViewClick: (product: TransformedProduct) => void;
 }
 
-export const ProductGrid = ({ products, onQuickViewClick }: ProductGridProps) => {
+export const PaginatedProductGrid = ({ products, onQuickViewClick }: ProductGridProps) => {
   const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {

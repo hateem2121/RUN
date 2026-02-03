@@ -79,30 +79,39 @@ export const ProductSummarySchema = z.object({
   name: z.string(),
   slug: z.string(),
   sku: z.string(),
-  description: z.string().nullable().optional(),
+  description: z.string().nullable(),
 
   // Relationships
   categoryId: z.number(),
-  fabricId: z.number().nullable().optional(),
-  sizeChartId: z.number().nullable().optional(),
+  fabricId: z.number().nullable(),
+  sizeChartId: z.number().nullable(),
 
   // Media
-  primaryImageId: z.number().nullable().optional(),
-  primaryVideoId: z.number().nullable().optional(),
-  imageIds: z.array(z.number()).nullable().optional(),
-  videos: z.array(z.any()).nullable().optional(), // Strict typing for complex JSONB or keep any for flexibility
+  primaryImageId: z.number().nullable(),
+  primaryVideoId: z.number().nullable(),
+  imageIds: z.array(z.number()).nullable(),
+  videos: z.array(z.any()).nullable(),
 
   // Business Logic
-  isFeatured: z.boolean().optional().default(false),
-  isActive: z.boolean().optional().default(true),
-  minimumOrderQuantity: z.union([z.string(), z.number()]).nullable().optional(),
+  isFeatured: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  minimumOrderQuantity: z.number().nullable(),
+  leadTime: z.string().nullable(),
+
+  // Specifications
+  careInstructions: z.any().nullable(),
+  technicalSpecs: z.any().nullable(),
+  customFit: z.string().nullable(),
+  fiberComposition: z.any().nullable(),
+  specifications: z.any().nullable(),
 
   // Tags & Metadata
-  tags: z.array(z.string()).nullable().optional(),
-  certificateIds: z.array(z.number()).nullable().optional(),
-  accessoryIds: z.array(z.number()).nullable().optional(),
+  tags: z.array(z.string()).nullable(),
+  certificateIds: z.array(z.number()).nullable(),
+  accessoryIds: z.array(z.number()).nullable(),
+  urlPath: z.string().nullable(),
 
-  createdAt: z.union([z.string(), z.date()]).optional(),
+  createdAt: z.date().nullable(),
 });
 
 export type ProductSummary = z.infer<typeof ProductSummarySchema>;

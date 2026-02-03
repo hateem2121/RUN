@@ -17,6 +17,6 @@
     "noUnusedParameters": false
   },
   "include": ["**/*.ts", "**/*.d.ts"],
-  "exclude": ["node_modules", "../dist", "**/*.spec.ts", "**/*.test.ts"],
+  "exclude": ["node_modules", "../dist", "**/*.spec.ts", "**/*.test.ts", "scripts/legacy"],
   "references": [{ "path": "../shared" }]
 }

@@ -1,8 +1,11 @@
-# ADR 0002: React 19 + React Router over Next.js
+# ADR 0002: React Router 7 over Next.js
 
 **Status**: Accepted  
 **Date**: 2026-01-13  
 **Deciders**: Platform Team
+
+---
+> **Modernization Note (2026-02-03)**: Terminology standardized to **React Router 7** to align with canonical stack definitions.
 
 ## Context
 

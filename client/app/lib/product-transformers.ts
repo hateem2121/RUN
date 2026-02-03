@@ -33,6 +33,7 @@ export interface TransformedProduct {
   };
   isFeatured: boolean;
   detailUrl: string;
+  media: Array<{ id: number; type: "image" | "video"; url?: string }>;
 }
 
 export interface TransformContext {
@@ -213,6 +214,11 @@ export function transformProduct(
     specifications,
     isFeatured: product.isFeatured || false,
     detailUrl,
+    media: buildProductMediaItems(product as any).map((item) => ({
+      id: item.id,
+      type: item.type === "video" ? ("video" as const) : ("image" as const),
+      url: item.url,
+    })),
   };
 }
 

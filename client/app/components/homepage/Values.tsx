@@ -105,7 +105,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
       onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
     >
       {/* Background Image Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-base">
         <img
           src={image}
           alt={title}

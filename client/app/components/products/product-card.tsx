@@ -1,20 +1,25 @@
 import { ExternalLink, Search } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { GlassCard } from "@/components/ui/glass-card";
-import { OptimizedImage } from "@/components/ui/optimized-image";
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
+import { cn } from "@/lib/utils";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./product-badges";
+
+import { ProductImageCarousel } from "./product-image-carousel";
 
 interface ProductCardProps {
   product: TransformedProduct;
   onQuickViewClick: (product: TransformedProduct) => void;
+  viewMode?: "small" | "medium" | "large";
 }
 
-export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+export const ProductCard = ({
+  product,
+  onQuickViewClick,
+  viewMode = "medium",
+}: ProductCardProps) => {
   const { addItem, isInCart } = useInquiryCart();
   const alreadyInCart = isInCart(product.id);
 
@@ -23,84 +28,97 @@ export const ProductCard = ({ product, onQuickViewClick }: ProductCardProps) => 
     addItem(product);
   };
 
-  const showHoverImage = isHovered && (product.hoverImageId || product.hoverImageUrl);
-  const activeMediaId = showHoverImage ? product.hoverImageId : product.imageId;
-  const activeImageUrl = showHoverImage ? product.hoverImageUrl : product.imageUrl;
-
   return (
     <GlassCard
       className="group overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       aria-label={product.name}
       data-testid={`product-card-${product.id}`}
     >
       <CardContent className="p-0">
-        <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-muted/50">
-          {activeMediaId ? (
-            <OptimizedImage
-              mediaId={activeMediaId}
-              alt={product.name}
-              className="h-full w-full object-contain transition-all duration-300 group-hover:scale-105"
-              aspectRatio={4 / 3}
-              objectFit="contain"
-              quality={85}
-            />
-          ) : (
-            <img
-              src={activeImageUrl}
-              alt={product.name}
-              className="h-full w-full object-contain transition-all duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
+        <div
+          className={cn(
+            "relative flex items-center justify-center overflow-hidden bg-muted/50",
+            viewMode === "small" ? "aspect-3/4" : "aspect-4/3",
           )}
+        >
+          <ProductImageCarousel
+            images={product.media.filter((m) => m.type === "image")}
+            primaryVideo={product.media.find((m) => m.type === "video") ?? null}
+            productName={product.name}
+            viewMode={viewMode}
+          />
 
           {/* Certification badges */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100">
+          <div
+            className={cn(
+              "absolute top-3 right-3 z-elevated flex flex-col gap-2 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100",
+              viewMode === "small" && "top-2 right-2 scale-75",
+            )}
+          >
             {product.certifications.includes("GOTS") && <GotsIcon />}
             {product.certifications.includes("OEKO-TEX") && <OekoTexIcon />}
             {product.certifications.includes("RCS") && <RcsIcon />}
           </div>
 
           {/* Desktop hover overlay */}
-          <div className="absolute inset-0 hidden items-center justify-center bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
-            <button
-              onClick={() => onQuickViewClick(product)}
-              className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              data-testid={`quick-view-${product.id}`}
-            >
-              Quick View
-            </button>
-          </div>
+          {viewMode !== "small" && (
+            <div className="absolute inset-0 hidden items-center justify-center bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+              <button
+                onClick={() => onQuickViewClick(product)}
+                className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                data-testid={`quick-view-${product.id}`}
+              >
+                Quick View
+              </button>
+            </div>
+          )}
 
           {/* Mobile quick view button */}
           <button
             onClick={() => onQuickViewClick(product)}
-            className="absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2 md:hidden"
+            className={cn(
+              "absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2 md:hidden",
+              viewMode === "small" && "bottom-2 left-2 h-8 w-8 min-h-8 min-w-8",
+            )}
             data-testid={`quick-view-mobile-${product.id}`}
             aria-label="Quick view product"
           >
-            <Search className="h-5 w-5" />
+            <Search className={cn("h-5 w-5", viewMode === "small" && "h-4 w-4")} />
           </button>
         </div>
       </CardContent>
 
-      <CardFooter className="flex-col items-start p-4 text-center">
-        <h3 className="mb-2 w-full font-semibold text-foreground text-lg uppercase tracking-wide">
+      <CardFooter className={cn("flex-col items-start p-4 text-center", viewMode === "small" && "p-2")}>
+        <h3
+          className={cn(
+            "mb-2 w-full font-semibold text-foreground leading-tight uppercase tracking-wide",
+            viewMode === "small" ? "line-clamp-2 text-sm" : "text-lg",
+          )}
+        >
           {product.name}
         </h3>
-        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
-          <span>{product.fabric}</span>
-          <span>|</span>
-          <span>{product.weight.value} GSM</span>
-        </div>
-        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
-          <span>MOQ: {product.moq}</span>
-          <span>|</span>
-          <span>LEAD: {product.leadTime}</span>
-        </div>
 
-        <div className="mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
+        {viewMode !== "small" && (
+          <>
+            <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
+              <span>{product.fabric}</span>
+              <span>|</span>
+              <span>{product.weight.value} GSM</span>
+            </div>
+            <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
+              <span>MOQ: {product.moq}</span>
+              <span>|</span>
+              <span>LEAD: {product.leadTime}</span>
+            </div>
+          </>
+        )}
+
+        <div
+          className={cn(
+            "mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row",
+            viewMode === "small" && "mt-2",
+          )}
+        >
           <Link
             to={product.detailUrl}
             className="flex min-h-11 w-full items-center justify-center gap-2 border border-border bg-background px-4 py-3 text-foreground text-xs uppercase tracking-widest transition-colors hover:border-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2"

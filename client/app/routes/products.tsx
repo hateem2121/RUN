@@ -493,7 +493,6 @@ export default function ProductsPage() {
                 <div className="transition-opacity duration-200">
                   <ProductGrid
                     products={displayedProducts}
-                    mediaAssets={mediaAssets}
                     viewMode={viewMode}
                     categories={categories}
                   />

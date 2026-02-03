@@ -111,7 +111,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       </div>
 
       {/* Center Percentage */}
-      <div className="relative z-10 flex w-full flex-col items-center justify-center">
+      <div className="relative z-elevated flex w-full flex-col items-center justify-center">
         <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter text-white mix-blend-normal">
           {progress}
         </h1>
@@ -139,7 +139,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Background Grid */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-10"
+        className="pointer-events-none absolute inset-0 z-base opacity-10"
         style={{
           backgroundImage:
             "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",

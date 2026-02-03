@@ -8,8 +8,8 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 
 **Recent Updates (January 2026)**:
 
-- Product listings optimized from 25 fields → 20 fields (20% improvement)
-- Media listings select 24 fields (includes essential metadata)
+- Product listings optimized from 25 fields → 7 fields (72% improvement)
+- Media listings select 8 fields (includes essential metadata)
 - Product detail context endpoint remains unchanged (full data required)
 
 ---
@@ -96,7 +96,7 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 }
 ```
 
-**AFTER (20 fields)**:
+**AFTER (7 fields)**:
 
 ```typescript
 {
@@ -220,7 +220,7 @@ Product cards in catalog listings only display: image, name, description preview
 
 **Purpose**: Retrieve paginated list of media assets for admin media library
 
-**Optimization Applied**: Column selection defined via `MEDIA_DETAIL_COLUMNS` (24 fields)
+**Optimization Applied**: Column selection defined via `MEDIA_DETAIL_COLUMNS` (8 fields)
 
 #### Response Format
 

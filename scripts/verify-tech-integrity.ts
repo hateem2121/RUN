@@ -72,6 +72,15 @@ const steps = [
     args: ["run", "verify:docs-versions"],
     critical: true,
   },
+  {
+    name: "Documentation Freshness",
+    command: "node",
+    args: [
+      "-e",
+      "const fs = require('fs'); const stats = fs.statSync('docs/overview.md'); const diff = Date.now() - stats.mtimeMs; const days = diff / (1000 * 60 * 60 * 24); if (days > 90) { console.warn('⚠️ WARNING: docs/overview.md is over 90 days old (' + Math.round(days) + ' days). Please review for accuracy.'); } else { console.log('✅ Documentation is fresh (' + Math.round(days) + ' days old)'); }",
+    ],
+    critical: false,
+  },
 ];
 
 // Add Audit separately as it might be flaky

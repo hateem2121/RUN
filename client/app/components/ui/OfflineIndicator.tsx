@@ -15,7 +15,7 @@ export function OfflineIndicator() {
 
   return (
     <div
-      className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 transform"
+      className="fixed bottom-4 left-1/2 z-toast -translate-x-1/2 transform"
       role="alert"
       aria-live="polite"
     >

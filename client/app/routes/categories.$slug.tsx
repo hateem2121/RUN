@@ -1,19 +1,12 @@
 import type { Category, Certificate, Fabric, ProductSummary } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { AlertCircle, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";
+import { useMemo } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
-import { useInquiryCart } from "@/contexts/InquiryCartContext";
-import {
-  type TransformContext,
-  type TransformedProduct,
-  transformProducts,
-} from "@/lib/product-transformers";
-import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
+import { ProductGrid } from "@/components/products/ProductGrid";
+import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -55,87 +48,6 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-interface ProductCardProps {
-  product: TransformedProduct;
-}
-
-// NOTE: Moved ProductCard component inside or imported to avoid duplicate code if possible.
-// Providing locally for now as in original file.
-const ProductCard = ({ product }: ProductCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const { addItem, isInCart } = useInquiryCart();
-  const alreadyInCart = isInCart(product.id);
-
-  const handleRequestQuote = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem(product);
-  };
-
-  return (
-    <Card
-      className="group overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      aria-label={product.name}
-      data-testid={`product-card-${product.id}`}
-    >
-      <CardContent className="p-0">
-        <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-muted">
-          {product.imageId ? (
-            <OptimizedImage
-              mediaId={isHovered && product.hoverImageId ? product.hoverImageId : product.imageId}
-              alt={product.name}
-              className="h-full w-full object-contain transition-all duration-300 group-hover:scale-105"
-              aspectRatio={4 / 3}
-              objectFit="contain"
-              quality={85}
-            />
-          ) : (
-            <img
-              src={isHovered && product.hoverImageUrl ? product.hoverImageUrl : product.imageUrl}
-              alt={product.name}
-              className="h-full w-full object-contain transition-all duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="flex-col items-start p-4 text-center">
-        <Typography.H3 className="mb-2 w-full font-semibold text-lg uppercase tracking-wide">
-          {product.name}
-        </Typography.H3>
-        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
-          <span>{product.fabric}</span>
-          <span>|</span>
-          <span>{product.weight.value} GSM</span>
-        </div>
-        <div className="mt-1 w-full space-x-2 text-muted-foreground text-sm uppercase tracking-wide">
-          <span>MOQ: {product.moq}</span>
-          <span>|</span>
-          <span>LEAD: {product.leadTime}</span>
-        </div>
-        <div className="mt-4 flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
-          <Link
-            to={product.detailUrl} // Changed href to to for react-router
-            className="flex min-h-11 w-full items-center justify-center gap-2 border-2 border-black bg-white px-4 py-3 text-black text-xs uppercase tracking-widest transition-colors hover:bg-muted focus:ring-2 focus:ring-black focus:ring-offset-2"
-            data-testid={`view-details-${product.id}`}
-          >
-            <span>View Details</span>
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-          <button
-            onClick={handleRequestQuote}
-            disabled={alreadyInCart}
-            className="flex min-h-11 w-full items-center justify-center bg-black px-4 py-3 text-white text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
-            data-testid={`request-quote-${product.id}`}
-          >
-            {alreadyInCart ? "Added" : "Request Quote"}
-          </button>
-        </div>
-      </CardFooter>
-    </Card>
-  );
-};
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -147,9 +59,7 @@ export default function CategoryDetail() {
   const loaderData = useLoaderData<typeof loader>();
   const params = useParams();
   const slug = params.slug;
-  const [mediaContentMap, setMediaContentMap] = useState<Map<number, string>>(new Map());
 
-  // Fetch category by slug
   const {
     data: category,
     isLoading: categoryLoading,
@@ -190,52 +100,6 @@ export default function CategoryDetail() {
   });
 
   const products = Array.isArray(productsData?.data) ? productsData.data : [];
-
-  // Batch fetch media assets
-  useMemo(() => {
-    if (products.length === 0) return;
-
-    const mediaIds = new Set<number>();
-    products.forEach((product) => {
-      if (product.primaryImageId) mediaIds.add(product.primaryImageId);
-      if (Array.isArray(product.imageIds)) {
-        product.imageIds.forEach((id) => {
-          if (typeof id === "number") mediaIds.add(id);
-        });
-      }
-    });
-
-    const fetchMedia = async () => {
-      try {
-        const results = await batchFetchMediaContent(Array.from(mediaIds));
-        const mediaMap = new Map<number, string>();
-        results.forEach((result) => {
-          if (result.success) {
-            const mediaUrl = result.content || result.url || `/api/media/${result.id}/content`;
-            mediaMap.set(result.id, mediaUrl);
-          }
-        });
-        setMediaContentMap(mediaMap);
-      } catch (_error) {}
-    };
-
-    fetchMedia();
-  }, [products]);
-
-  // Transform products
-  const transformedProducts = useMemo(() => {
-    if (!products.length || !allCategories.length) return [];
-
-    const context: TransformContext = {
-      categories: allCategories,
-      fabrics,
-      certificates,
-      mediaAssets: [],
-      mediaContentMap,
-    };
-
-    return transformProducts(products, context);
-  }, [products, allCategories, fabrics, certificates, mediaContentMap]);
 
   // Build breadcrumbs
   const breadcrumbs = useMemo(() => {
@@ -347,7 +211,7 @@ export default function CategoryDetail() {
 
           {/* Products Grid */}
           <div className="mt-8">
-            {transformedProducts.length === 0 ? (
+            {products.length === 0 ? (
               <div className="px-4 py-20 text-center">
                 <Typography.P className="text-muted-foreground">
                   No products found in this category.
@@ -356,14 +220,16 @@ export default function CategoryDetail() {
             ) : (
               <>
                 <div className="mb-6 text-muted-foreground text-sm">
-                  Showing {transformedProducts.length} product
-                  {transformedProducts.length !== 1 ? "s" : ""}
+                  Showing {products.length} product
+                  {products.length !== 1 ? "s" : ""}
                 </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-                  {transformedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                <ProductGrid
+                  products={products}
+                  viewMode="medium"
+                  categories={allCategories}
+                  fabrics={fabrics}
+                  certificates={certificates}
+                />
               </>
             )}
           </div>

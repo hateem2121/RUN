@@ -13,6 +13,9 @@ The project required a modern, capable routing solution that supports both Clien
 - Data loading APIs (loaders/actions)
 - SSR support out of the box
 
+---
+> **Modernization Note (2026-02-03)**: Terminology standardized to **React Router 7** to align with canonical stack definitions.
+
 ## Decision
 
 We chose **React Router 7** as the core framework for the client application.

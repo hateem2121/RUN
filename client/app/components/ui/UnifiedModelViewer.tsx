@@ -741,7 +741,7 @@ export default function UnifiedModelViewer({
         />
 
         {/* Overlay Content */}
-        <div className="z-10 text-center">
+        <div className="z-elevated text-center">
           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
             <Box className="text-foreground/80 h-8 w-8 dark:text-white" />
           </div>

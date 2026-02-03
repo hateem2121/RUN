@@ -127,7 +127,7 @@ const Stats: React.FC = () => {
       className="relative flex min-h-screen w-full flex-col border-white/10 border-t bg-surface-dark md:min-h-[150vh] md:flex-row"
     >
       {/* Sticky Background Image */}
-      <div className="pointer-events-none absolute inset-0 z-0">
+      <div className="pointer-events-none absolute inset-0 z-base">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1590644365607-1c5a29d250c4?q=80&w=2070&auto=format&fit=crop"
@@ -142,9 +142,9 @@ const Stats: React.FC = () => {
       {/* Left Side */}
       <div
         ref={leftRef}
-        className="relative z-10 flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-6 text-white backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
+        className="relative z-elevated flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-6 text-white backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
       >
-        <div className="relative z-10 flex flex-col justify-center pt-12 md:pt-0">
+        <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
           <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
             The Evolution of <br />
             <span className="animate-gradient bg-300% bg-linear-to-r from-blue-500 to-white bg-clip-text text-transparent">
@@ -159,7 +159,7 @@ const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="relative z-10 flex w-full flex-col text-white md:w-1/2">
+      <div ref={rightRef} className="relative z-elevated flex w-full flex-col text-white md:w-1/2">
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
