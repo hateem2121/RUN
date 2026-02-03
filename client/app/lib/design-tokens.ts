@@ -18,7 +18,7 @@ export const colors = {
   secondaryForeground: "var(--color-secondary-foreground)",
 
   // Brand Accent (Purple)
-  brandPurple: "var(--color-brand-purple)",
+  brandPurple: "var(--color-primary)",
   brandPurpleLight: "var(--color-brand-purple-light)",
   surfaceDark: "var(--color-surface-dark)",
 

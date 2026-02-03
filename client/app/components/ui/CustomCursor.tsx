@@ -79,7 +79,7 @@ const CustomCursor: React.FC = () => {
         width: 80,
         height: 80,
         opacity: 1,
-        backgroundColor: "var(--color-brand-purple)",
+        backgroundColor: "var(--color-primary)",
         mixBlendMode: "exclusion",
         borderWidth: 0,
         borderColor: "transparent",

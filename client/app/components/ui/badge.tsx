@@ -24,7 +24,7 @@ const badgeVariants = cva(
         "status-info":
           "border-transparent bg-status-info-muted text-status-info dark:bg-status-info/20",
         "status-purple":
-          "border-transparent bg-status-purple-muted text-status-purple dark:bg-status-purple/20",
+          "border-transparent bg-status-purple-muted text-primary dark:bg-primary/20",
       },
     },
     defaultVariants: {

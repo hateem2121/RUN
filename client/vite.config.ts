@@ -55,6 +55,7 @@ export default defineConfig(
         dedupe: ["react", "react-dom", "react-router", "react-router-dom"],
       },
       root: __dirname, // Current folder is client
+      envDir: path.resolve(__dirname, ".."), // Load .env from root
       build: {
         sourcemap: true, // Enable source maps for Sentry upload (plugin handles security/deletion if configured)
         outDir: isSsrBuild

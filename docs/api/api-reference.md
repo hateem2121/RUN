@@ -268,7 +268,7 @@ The API currently uses URL path versioning for major changes:
 ## SDK & Postman Collection
 
 - **TypeScript SDK**: Generated from OpenAPI spec
-- **Postman Collection**: [Download](./postman-collection.json)
+- Postman Collection (Coming Soon)
 - **OpenAPI Spec**: Available at `/api/docs/openapi.json`
 
 ---

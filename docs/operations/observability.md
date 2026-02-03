@@ -22,5 +22,5 @@
 ## Production
 
 - **Tracing:** Sent to Google Cloud Trace via OTel Collector.
-- **Logging:** JSON logs to Cloud Logging.
+- **Logging:**- [SLO Definitions](./slos.md)
 - **Errors:** Sentry.

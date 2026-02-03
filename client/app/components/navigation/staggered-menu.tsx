@@ -27,14 +27,14 @@ export interface StaggeredMenuProps {
 
 export const StaggeredMenu = ({
   position = "right",
-  colors = ["var(--color-brand-lavender)", "var(--color-brand-purple)"],
+  colors = ["var(--color-brand-lavender)", "var(--color-primary)"],
   items = [],
   displayItemNumbering = true,
   className,
   menuButtonColor = "var(--color-foreground)",
   openMenuButtonColor = "var(--color-foreground)",
   changeMenuColorOnOpen = true,
-  accentColor = "var(--color-brand-purple)",
+  accentColor = "var(--color-primary)",
   onMenuOpen,
   onMenuClose,
 }: StaggeredMenuProps) => {
@@ -443,7 +443,7 @@ export const StaggeredMenu = ({
   top: 0;
   font-size: 0.35em;
   font-weight: 500;
-  color: var(--sm-accent, var(--color-brand-purple));
+  color: var(--sm-accent, var(--color-primary));
   opacity: var(--sm-num-opacity, 0);
   pointer-events: none;
   user-select: none;

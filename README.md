@@ -526,6 +526,7 @@ dist/
 | `CHANGELOG.md`                     | Version history            |
 | `docs/development/styling.md`      | CSS architecture & Styling |
 | `docs/api/endpoints.md`            | API documentation          |
+| `docs/development/3d-pipeline.md`  | 3D Asset Pipeline & Visualization |
 | `docs/testing/testing-e2e-prod.md` | E2E testing guide          |
 | `docs/operations/`                 | Operational runbooks       |
 | `docs/core/ssr-invariants.md`      | SSR safety rules           |

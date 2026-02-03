@@ -69,7 +69,7 @@ npm ci
 ```
 /
 ├── client/ (@run-remix/client)   # React 19 SPA/SSR Application
-│   ├── src/
+│   ├── app/                      # Source Code (Remix Standard)
 │   │   ├── components/ui/        # Atomic Design System (shadcn/ui)
 │   │   ├── components/admin/     # Admin Domain
 │   │   └── lib/                  # Tokens & Utils

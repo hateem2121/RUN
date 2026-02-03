@@ -193,10 +193,10 @@ Where to look when working on X:
 | ------------------ | -------------------------------------- | -------------------------- | ------------------------------ |
 | **CMS/Admin**      | `client/app/routes/admin.tsx`          | `server/routes/admin.ts`   | `users`, `audit_logs`          |
 | **Products**       | `client/app/routes/products.tsx`       | `server/routes/core`       | `products`, `product_variants` |
-| **Media**          | `client/src/components/admin/media`    | `server/services/media.ts` | `media_items`                  |
+| **Media**          | `client/app/components/admin/media`    | `server/services/media.ts` | `media_items`                  |
 | **Contact**        | `client/app/routes/contact.tsx`        | `server/routes/contact.ts` | `inquiries`                    |
 | **Sustainability** | `client/app/routes/sustainability.tsx` | `server/routes/core`       | `sustainability_metrics`       |
-| **Theming**        | `client/src/index.css`                 | N/A                        | N/A                            |
+| **Theming**        | `client/app/index.css`                 | N/A                        | N/A                            |
 
 ---
 

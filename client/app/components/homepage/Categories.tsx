@@ -13,14 +13,14 @@ const Categories: React.FC = () => {
   return (
     <section
       id="catalogue"
-      className="relative w-full overflow-hidden bg-white py-32"
+      className="relative w-full overflow-hidden bg-background py-32"
       aria-label="Product Categories"
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
-        <div className="animate-marquee flex whitespace-nowrap will-change-transform">
+        <div role="list" className="animate-marquee flex whitespace-nowrap will-change-transform">
           {/* Main Content */}
           {CATEGORIES.map((cat, index) => {
             const isHovered = hoveredIndex === index;
@@ -40,7 +40,7 @@ const Categories: React.FC = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
                   {cat.name}{" "}
                   <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
                 </h2>
@@ -68,7 +68,7 @@ const Categories: React.FC = () => {
                     setCursor(CursorVariant.DEFAULT);
                   }}
                 >
-                  <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                  <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
                     {cat.name}{" "}
                     <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
                   </h2>
@@ -102,7 +102,7 @@ const Categories: React.FC = () => {
                   setCursor(CursorVariant.DEFAULT);
                 }}
               >
-                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-black md:text-[10vw]">
+                <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
                   {cat.name}{" "}
                   <span className="text-success inline-block align-top text-[2vw]">●</span>
                 </h2>
@@ -114,7 +114,7 @@ const Categories: React.FC = () => {
 
       <style>{`
         .stroke-text {
-          -webkit-text-stroke: 1px var(--color-surface-dark);
+          -webkit-text-stroke: 1px currentColor;
         }
         @keyframes marquee {
           0% { transform: translateX(0); }

@@ -93,5 +93,5 @@ unsubscribe();
 
 ## Related
 
-- [ADR-002: Event-Driven Architecture](./adr/adr-002-event-driven.md) (planned)
+- ADR-002: Event-Driven Architecture (planned)
 - [Caching Strategy](../core/architecture.md#caching)

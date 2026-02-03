@@ -74,5 +74,5 @@ terraform apply -var="project_id=YOUR_PROJECT_ID"
 ## Related Documentation
 
 - [Deployment Guide](../docs/operations/environment.md)
-- [SLO Definitions](../docs/operations/slo-definitions.md)
+- [SLO Definitions](../docs/operations/slos.md)
 - [Horizontal Scaling](../docs/core/HORIZONTAL_SCALING.md)

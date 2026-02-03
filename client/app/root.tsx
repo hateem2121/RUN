@@ -24,9 +24,31 @@ export const links: LinksFunction = () => [
   { rel: "preload", href: "/fonts/NeueStance-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
 ];
 
+import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { MediaQueryKeys } from "@/lib/media-query-keys";
+
 export async function loader({ context }: LoaderFunctionArgs) {
   const { cspNonce } = context as { cspNonce: string };
-  return { cspNonce, dehydratedState: null };
+  const queryClient = new QueryClient();
+  const baseUrl = "http://127.0.0.1:5002";
+
+  try {
+    // Prefetch navigation items
+    await queryClient.prefetchQuery({
+      queryKey: ["/api/navigation-items"],
+      queryFn: () => fetch(`${baseUrl}/api/navigation-items`).then((res) => res.json()),
+    });
+
+    // Prefetch media items
+    await queryClient.prefetchQuery({
+      queryKey: MediaQueryKeys.list,
+      queryFn: () => fetch(`${baseUrl}/api/media`).then((res) => res.json()), // Fallback to list if specific endpoint not found
+    });
+  } catch (error) {
+    console.error("Failed to prefetch data in root loader:", error);
+  }
+
+  return { cspNonce, dehydratedState: dehydrate(queryClient) };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

@@ -33,7 +33,7 @@ const footerInputVariants = cva(
     variants: {
       hasError: {
         true: "border-destructive text-destructive placeholder:text-destructive/50",
-        false: "border-border text-foreground placeholder:text-muted-foreground",
+        false: "border-foreground/30 text-foreground placeholder:text-muted-foreground",
       },
     },
     defaultVariants: { hasError: false },

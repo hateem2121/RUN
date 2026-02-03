@@ -142,7 +142,7 @@ const Stats: React.FC = () => {
       {/* Left Side */}
       <div
         ref={leftRef}
-        className="relative z-10 flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-6 text-foreground backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
+        className="relative z-10 flex w-full flex-col justify-center border-white/10 border-b bg-black/20 p-6 text-white backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
       >
         <div className="relative z-10 flex flex-col justify-center pt-12 md:pt-0">
           <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
@@ -151,7 +151,7 @@ const Stats: React.FC = () => {
               Athletic Craftsmanship
             </span>
           </h2>
-          <p className="max-w-md font-light text-muted-foreground/50 text-sm leading-relaxed md:text-xl">
+          <p className="max-w-md font-light text-white/60 text-sm leading-relaxed md:text-xl">
             Blending century-old artisanal techniques with cutting-edge robotic precision. We don't
             just manufacture; we engineer performance.
           </p>
@@ -159,7 +159,7 @@ const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="relative z-10 flex w-full flex-col text-foreground md:w-1/2">
+      <div ref={rightRef} className="relative z-10 flex w-full flex-col text-white md:w-1/2">
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
@@ -170,7 +170,7 @@ const Stats: React.FC = () => {
             </h3>
             <div className="my-4 h-[1px] w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
             <h4 className="mb-2 font-bold text-xl uppercase md:text-2xl">{stat.label}</h4>
-            <p className="text-muted-foreground/70 text-sm md:text-base">{stat.description}</p>
+            <p className="text-white/60 text-sm md:text-base">{stat.description}</p>
           </div>
         ))}
       </div>

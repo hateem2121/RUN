@@ -53,7 +53,7 @@ const FeaturedProducts: React.FC = () => {
   return (
     <section ref={containerRef} className="bg-background-alt w-full px-4 py-32 md:px-8">
       <div className="max-w-container-2xl mx-auto">
-        <div className="mb-16 flex items-end justify-between border-b border-black/10 pb-8">
+        <div className="mb-16 flex items-end justify-between border-b border-foreground/10 pb-8">
           <h2 className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]">
             Archive <br /> 24/25
           </h2>
@@ -87,7 +87,7 @@ const FeaturedProducts: React.FC = () => {
                 <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />
               </div>
 
-              <div className="flex items-start justify-between border-t border-black/10 pt-6">
+              <div className="flex items-start justify-between border-t border-foreground/10 pt-6">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-xl leading-tight font-bold uppercase md:text-2xl">
                     {product.name}
@@ -96,7 +96,7 @@ const FeaturedProducts: React.FC = () => {
                     {product.category}
                   </p>
                 </div>
-                <span className="ml-4 rounded-full border border-black/20 px-3 py-1 font-mono text-xs whitespace-nowrap">
+                <span className="ml-4 rounded-full border border-foreground/20 px-3 py-1 font-mono text-xs whitespace-nowrap">
                   {product.price}
                 </span>
               </div>
@@ -107,7 +107,7 @@ const FeaturedProducts: React.FC = () => {
         <div className="mt-24 text-center">
           <button
             onClick={handleCatalogueClick}
-            className="hover:border-brand-accent hover:text-brand-accent border-b border-black pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
+            className="hover:border-brand-accent hover:text-brand-accent border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
             onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
             onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
           >

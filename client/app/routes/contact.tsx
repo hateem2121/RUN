@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import { type Country, countries } from "@/data/countries";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/contact";
@@ -103,7 +103,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Contact() {
   const loaderData = useLoaderData<typeof loader>();
   const [mounted, setMounted] = useState(false);
-  const { isMobile } = useMobileDetection();
+  const isMobile = useIsMobile();
   const { toast } = useToast();
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
@@ -552,7 +552,7 @@ export default function Contact() {
             {/* Right Column: Info Boxes */}
             <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
               {/* Location Box */}
-              <ContactInfoCard isMobile={isMobile}>
+              <ContactInfoCard isMobile={isMobile ?? false}>
                 <MapPin className="mb-4 h-6 w-6 text-foreground/90" />
                 <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   LOCATION
@@ -568,7 +568,7 @@ export default function Contact() {
               </ContactInfoCard>
 
               {/* Contact Box */}
-              <ContactInfoCard isMobile={isMobile}>
+              <ContactInfoCard isMobile={isMobile ?? false}>
                 <Mail className="mb-4 h-6 w-6 text-foreground/90" />
                 <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   CONTACT
@@ -596,7 +596,7 @@ export default function Contact() {
               </ContactInfoCard>
 
               {/* Trading Hours Box */}
-              <ContactInfoCard isMobile={isMobile}>
+              <ContactInfoCard isMobile={isMobile ?? false}>
                 <Clock className="mb-4 h-6 w-6 text-foreground/90" />
                 <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   TRADING HOURS
@@ -625,7 +625,7 @@ export default function Contact() {
               </ContactInfoCard>
 
               {/* Social Links Box */}
-              <ContactInfoCard isMobile={isMobile}>
+              <ContactInfoCard isMobile={isMobile ?? false}>
                 <Share2 className="mb-4 h-6 w-6 text-foreground/90" />
                 <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
                   FOLLOW US

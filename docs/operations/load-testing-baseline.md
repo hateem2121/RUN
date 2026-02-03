@@ -105,7 +105,7 @@ Or add as Cloud Build step:
 ## Related Documentation
 
 - [k6 Scripts](../../ops/load-testing/README.md)
-- [SLO Definitions](./slo-definitions.md)
+- [SLO Definitions](./slos.md)
 - [Incident Response](../runbooks/incident-response.md)
 
 ---

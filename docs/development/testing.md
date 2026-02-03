@@ -59,7 +59,7 @@ npm run test:e2e
 Use design tokens (`z-modal`, `z-dock`) instead of arbitrary values (`z-[999]`).
 
 - **Enforcement**: Biome linting (`npm run lint`)
-- **Tokens**: Defined in `client/src/index.css` (`@theme` block)
+- **Tokens**: Defined in `client/app/index.css` (`@theme` block)
 
 ### SSR Hydration Check
 

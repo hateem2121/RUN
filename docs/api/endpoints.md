@@ -36,7 +36,7 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
 
 **Purpose**: Retrieve paginated list of products for catalog listings
 
-**Optimization Applied**: Column selection reduced from 25 → 20 fields
+**Optimization Applied**: Column selection reduced from 25 → 7 fields
 
 #### Response Format
 
@@ -484,11 +484,11 @@ Update your integration documentation to reflect:
 **Verification**:
 The internal React frontend was already using only the 7 fields now returned by `/api/products`:
 
-- Product cards in `client/src/pages/products-new.tsx`
-- Category listings in `client/src/pages/category-products.tsx`
+- Product cards in `client/app/pages/products-new.tsx`
+- Category listings in `client/app/pages/category-products.tsx`
 - Search results display
 
-The media grid in `client/src/components/admin/media-library/MediaGrid.tsx` was already using only the 8 fields now returned by `/api/media`.
+The media grid in `client/app/components/admin/media-library/MediaGrid.tsx` was already using only the 8 fields now returned by `/api/media`.
 
 **Testing Performed**:
 

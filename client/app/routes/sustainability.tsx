@@ -16,7 +16,7 @@ import {
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { Button } from "@/components/ui/button";
 import { headingVariants, Typography } from "@/components/ui/typography";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { fadeInUp, springTransition } from "@/lib/animations";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
@@ -45,7 +45,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Sustainability() {
   const loaderData = useLoaderData<typeof loader>();
   const { scrollY } = useScroll();
-  const { isMobile } = useMobileDetection();
+  const isMobile = useIsMobile();
 
   // Parallax transforms - disabled opacity fade on mobile to prevent invisible background
   const heroY = useTransform(scrollY, [0, 500], [0, isMobile ? -50 : -150]);

@@ -21,7 +21,7 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 - **[System Context](./core/architecture.md)**: High-level technical reference.
 - **[README](../README.md)**: Project onboarding and quick start.
-- **[SLO Definitions](./operations/slo-definitions.md)**: Service level objectives and error budgets.
+- **[SLO Definitions](./operations/slos.md)**: Service level objectives and error budgets.
 
 ## 🧠 For AI Agents
 

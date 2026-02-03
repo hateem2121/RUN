@@ -23,7 +23,7 @@ We utilize Tailwind v4's native CSS configuration engine, moving away from JavaS
 ### File Structure
 
 ```text
-client/src/
+client/app/
 ├── index.css                    # 700+ lines. THE SINGLE SOURCE OF TRUTH.
 │   ├── @import "tailwindcss"    # v4 Framework
 │   ├── @theme { ... }           # Design System Tokens
@@ -38,7 +38,7 @@ client/src/
 └── components/ui/               # shadcn/ui library
 ```
 
-> **Note:** The `client/src/styles/` directory contains theme and override styles imported by `index.css`.
+> **Note:** The `client/app/styles/` directory contains theme and override styles imported by `index.css`.
 
 ---
 
@@ -172,7 +172,7 @@ Avoid excessively long class strings. If a string exceeds ~80-100 chars, conside
 ## 5. Adding New Tokens
 
 1. **Define in CSS:**
-   Edit `client/src/index.css` inside the `@theme` block.
+   Edit `client/app/index.css` inside the `@theme` block.
 
    ```css
    @theme {
@@ -189,7 +189,7 @@ Avoid excessively long class strings. If a string exceeds ~80-100 chars, conside
    ```
 
 3. **Export for JS (Optional):**
-   Update `client/src/lib/design-tokens.ts` if you need to access it in specific JS logic (rare).
+   Update `client/app/lib/design-tokens.ts` if you need to access it in specific JS logic (rare).
 
 ---
 

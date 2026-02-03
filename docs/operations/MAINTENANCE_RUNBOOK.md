@@ -207,6 +207,6 @@ npm run check:bundle
 
 ## References
 
-- [SLO Definition](./SLO_DEFINITION.md)
+- [SLO Definitions](./slos.md)
 - [Horizontal Scaling](../core/HORIZONTAL_SCALING.md)
 - [Visual Governance / Styling](../development/styling.md)

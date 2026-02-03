@@ -199,4 +199,4 @@ try {
 
 - [PostgreSQL Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)
 - [Neon Connection Pooling](https://neon.tech/docs/connect/connection-pooling)
-- [Idempotency Keys RFC](https://datatracker.ietf.org/doc/draft-ietf-httpbis-idempotency/)
+- [IETF Idempotency-Key Header Draft](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/)

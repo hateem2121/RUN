@@ -105,7 +105,7 @@ const Process: React.FC = () => {
   }, []);
 
   return (
-    <section className="overflow-hidden bg-surface-dark text-foreground">
+    <section className="overflow-hidden bg-surface-dark text-white">
       <div
         ref={triggerRef}
         className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
@@ -166,7 +166,7 @@ const Process: React.FC = () => {
                   <h2 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
                     {step.title}
                   </h2>
-                  <p className="mb-8 max-w-md font-light text-base text-muted-foreground/70 leading-relaxed md:text-xl">
+                  <p className="mb-8 max-w-md font-light text-base text-white/60 leading-relaxed md:text-xl">
                     {step.description}
                   </p>
                   <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white transition-all duration-300 hover:bg-white hover:text-black md:h-16 md:w-16">

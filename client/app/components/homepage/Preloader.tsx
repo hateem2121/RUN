@@ -98,7 +98,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-max flex cursor-wait flex-col justify-between overflow-hidden bg-surface-dark text-foreground"
+      className="fixed inset-0 z-max flex cursor-wait flex-col justify-between overflow-hidden bg-black text-white"
     >
       {/* Top Bar */}
       <div className="flex w-full items-start justify-between p-8 md:p-12">
@@ -112,7 +112,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Center Percentage */}
       <div className="relative z-10 flex w-full flex-col items-center justify-center">
-        <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter mix-blend-difference">
+        <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter text-white mix-blend-normal">
           {progress}
         </h1>
       </div>

@@ -140,7 +140,7 @@ neon branches delete restore-test-q1-2026 --project-id $NEON_PROJECT_ID
 
 - [Incident Response Runbook](../runbooks/incident-response.md)
 - [Database Outage Runbook](../runbooks/database-outage.md)
-- [SLO Definitions](./slo-definitions.md)
+- [SLO Definitions](./slos.md)
 - [Neon Documentation](https://neon.tech/docs)
 
 ---

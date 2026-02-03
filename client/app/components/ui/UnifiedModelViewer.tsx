@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useModelViewerErrorRecovery } from "@/hooks/use-model-viewer-error-recovery";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import {
@@ -56,7 +56,7 @@ export default function UnifiedModelViewer({
   const { errorBoundaryKey } = useModelViewerErrorRecovery();
 
   // Mobile detection for performance optimization
-  const { isMobile } = useMobileDetection();
+  const isMobile = useIsMobile();
 
   // Central configuration system
   const finalConfig = getModelViewerConfig(config);

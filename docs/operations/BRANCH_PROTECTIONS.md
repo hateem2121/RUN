@@ -35,7 +35,7 @@ The `.github/CODEOWNERS` file requires review from designated teams for:
 
 | File Pattern                           | Required Reviewers            |
 | :------------------------------------- | :---------------------------- |
-| `/client/src/index.css`                | @frontend-team                |
+| `/client/app/index.css`                | @frontend-team                |
 | `/server/lib/ssr-handler.ts`           | @backend-team, @frontend-team |
 | `/e2e/visual-regression-audit.spec.ts` | @qa-team                      |
 | `/.github/workflows/`                  | @devops-team                  |

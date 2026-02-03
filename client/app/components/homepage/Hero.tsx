@@ -284,7 +284,7 @@ const Hero: React.FC = () => {
         >
           {HERO_TEXT.map((line, i) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="text-surface-dark dark:text-white text-[10vw] leading-[0.9] font-bold tracking-tighter mix-blend-multiply dark:mix-blend-normal will-change-transform md:text-[8vw] lg:text-[10vw] md:leading-[0.85]">
+              <h1 className="text-foreground text-[10vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[8vw] lg:text-[10vw] md:leading-[0.85]">
                 {line}
               </h1>
             </div>
@@ -293,7 +293,7 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block">
+      <div className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block" aria-hidden="true">
         <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <path

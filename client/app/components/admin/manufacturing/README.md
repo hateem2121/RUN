@@ -2,15 +2,22 @@
 
 ## Code Quality Standards
 
-Console Logging Policy:
+### Console Logging Policy
 
-- NO console.log statements in production code
+- **NO** `console.log` statements in production code
 - Use proper error boundaries for error handling
 - Development-only logging must be wrapped in:
-  if (process.env.NODE_ENV === 'development') { console.log(...) }
+  ```tsx
+  if (process.env.NODE_ENV === 'development') {
+    console.log(...);
+  }
+  ```
 
-Biome Configuration:
-Enforced via biome.json:
+### Biome Enforcement
+
+Console logs are enforced via `biome.json`:
+
+```json
 {
   "linter": {
     "rules": {
@@ -20,33 +27,15 @@ Enforced via biome.json:
     }
   }
 }
+```
 
-Recent Cleanup:
-2025-12-09: Removed 5 console.log statements from HeroManagement.tsx (P2 Code Cleanup)
+Run `npm run lint` to verify compliance.
 
-## Component Status
+## Components
 
-HeroManagement.tsx:
-
-- Status: Clean ✓
-- Console logs: Removed
-- Error handling: Proper error boundaries
-- Last audit: 2025-12-09
-
-ProcessManagement.tsx:
-
-- Status: Clean ✓
-- Console logs: None found
-- Last audit: 2025-12-09
-
-CapabilityManagement.tsx:
-
-- Status: Clean ✓
-- Console logs: None found
-- Last audit: 2025-12-09
-
-QualityManagement.tsx:
-
-- Status: Clean ✓
-- Console logs: None found
-- Last audit: 2025-12-09
+| Component | Status |
+|-----------|--------|
+| `HeroManagement.tsx` | ✅ Clean |
+| `ProcessManagement.tsx` | ✅ Clean |
+| `CapabilityManagement.tsx` | ✅ Clean |
+| `QualityManagement.tsx` | ✅ Clean |

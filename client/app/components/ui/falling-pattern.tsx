@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import type React from "react";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
 type FallingPatternProps = React.ComponentProps<"div"> & {
@@ -26,7 +26,7 @@ export function FallingPattern({
   density = 1,
   className,
 }: FallingPatternProps) {
-  const { isMobile } = useMobileDetection();
+  const isMobile = useIsMobile();
   // Generate background image style with customizable color
   const generateBackgroundImage = () => {
     const patterns = [

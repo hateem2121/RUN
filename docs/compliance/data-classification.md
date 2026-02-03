@@ -211,6 +211,6 @@ All access to PII is logged with:
 
 ## Related Documents
 
-- [Threat Model](./threat-model.md)
-- [Encryption at Rest](./encryption-at-rest.md)
+- [Threat Model](../security/threat-model.md)
+- [Encryption at Rest](../security/encryption-at-rest.md)
 - [Incident Response Runbook](../runbooks/incident-response.md)
