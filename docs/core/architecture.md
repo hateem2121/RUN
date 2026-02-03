@@ -79,11 +79,11 @@ The project uses **NPM Workspaces** to manage dependencies across packages.
 
 | Directory                 | Purpose                                                        | Key Patterns                                        |
 | ------------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
-| `src/components/ui`       | **Atomic UI Library**. Contains reusable shadcn/ui components. | Use `cva` for variants, `cn` for merging.           |
-| `src/components/admin`    | **Admin Domain**. Components specific to the CMS/Dashboard.    | Complex forms, data tables, storage managers.       |
-| `src/components/products` | **Product Domain**. Public-facing product displays.            | 3D viewers, interactive galleries, specs.           |
-| `src/pages`               | **Route Pages**. Top-level page components.                    | `useEffect` for page title, data fetching.          |
-| `src/lib`                 | **Core Utilities**. Helper functions and constants.            | `design-tokens.ts` (CSS vars), `utils.ts` (merger). |
+| `app/components/ui`       | **Atomic UI Library**. Contains reusable shadcn/ui components. | Use `cva` for variants, `cn` for merging.           |
+| `app/components/admin`    | **Admin Domain**. Components specific to the CMS/Dashboard.    | Complex forms, data tables, storage managers.       |
+| `app/components/products` | **Product Domain**. Public-facing product displays.            | 3D viewers, interactive galleries, specs.           |
+| `app/routes`              | **Route Pages**. Top-level page components.                    | `useEffect` for page title, data fetching.          |
+| `app/lib`                 | **Core Utilities**. Helper functions and constants.            | `design-tokens.ts` (CSS vars), `utils.ts` (merger). |
 
 ### `server/` (`@run-remix/server`)
 

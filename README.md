@@ -135,13 +135,13 @@ The project is structured as a **Monorepo** (internally named `run-remix-monorep
 ```text
 RUN-Apparel-Platform/
 ├── client/ (@run-remix/client) # Frontend application (React 19, Vite)
-│   ├── src/
+│   ├── app/
 │   │   ├── components/
 │   │   │   ├── ui/
 │   │   │   ├── admin/
 │   │   │   ├── homepage/
 │   │   │   └── products/
-│   │   ├── pages/
+│   │   ├── routes/
 │   │   ├── lib/
 │   │   ├── hooks/
 │   │   └── index.css
@@ -233,7 +233,7 @@ _Post React 19 + Vite 7 + Tailwind v4 migration (Jan 2026)_
 ### File Organization
 
 ```text
-client/src/
+client/app/
 ├── index.css              # Single source of truth (931 lines)
 │   ├── @theme { }         # 116 design tokens
 │   ├── @layer base { }    # Resets & variables
@@ -314,7 +314,7 @@ export function Component({ className, ...props }) {
 
 - **React Scan**: Dev tool for visualizing re-renders
 - **WhyDidYouRender**: Auto-enabled in dev mode, check browser console
-- **Configuration**: `client/src/wdyr.ts` (excluded from production)
+- **Configuration**: `client/app/wdyr.ts` (excluded from production)
 
 ---
 

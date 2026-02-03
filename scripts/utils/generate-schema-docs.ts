@@ -12,16 +12,19 @@ function parseTableFile(filePath: string) {
   let output = '';
   
   for (const match of tableMatches) {
-    const [_, variableName, tableName, columnsContent] = match;
+    const [_, _variableName, tableName, columnsContentStr] = match;
     output += `### Table: ${tableName}\n\n`;
     output += `| Column | Drizzle Type | Constraints |\n`;
     output += `| :--- | :--- | :--- |\n`;
     
+    // Ensure columnsContent is a string before splitting
+    const columnsContent = columnsContentStr || '';
     const columnLines = columnsContent.split('\n');
     columnLines.forEach(line => {
       const colMatch = line.match(/^\s*(\w+):\s*(\w+)\((.*?)\)/);
       if (colMatch) {
-        const [__, colName, type, details] = colMatch;
+         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [__, colName, type, _details] = colMatch;
         const isNotNull = line.includes('.notNull()') ? 'NOT NULL' : '';
         const isPrimary = line.includes('.primaryKey()') ? 'PRIMARY KEY' : '';
         const isUnique = line.includes('.unique()') ? 'UNIQUE' : '';
