@@ -22,11 +22,15 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/products/by-path](#get-apiproductsby-path)
 2. [Media Endpoints](#media-endpoints)
    - [GET /api/media](#get-apimedia)
-3. [Privacy Endpoints](#privacy-endpoints) *(NEW)*
+3. [Contact Endpoints](#contact-endpoints)
+   - [GET /api/contact-info](#get-apicontact-info)
+   - [GET /api/locations](#get-apilocations)
+   - [POST /contact](#post-contact)
+4. [Privacy Endpoints](#privacy-endpoints)
    - [POST /api/privacy/data-export](#post-apiprivacydata-export)
    - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
    - [GET /api/privacy/request-status/:id](#get-apiprivacyrequest-statusid)
-4. [Migration Guide](#migration-guide)
+5. [Migration Guide](#migration-guide)
 
 ---
 
@@ -317,6 +321,70 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
 - Payload size reduced by ~68%
 - Faster grid rendering with less data parsing
 - Reduced memory footprint for large media libraries
+
+---
+
+## Contact Endpoints
+
+### GET /api/contact-info
+
+**Purpose**: Retrieve dynamic configuration for the Contact page (hero text, working hours, social links).
+
+**Response Format**:
+
+```json
+{
+  "heroTitle": "Get in Touch",
+  "description": "We are here to help...",
+  "tradingHours": [
+    { "label": "Mon-Fri", "value": "9am - 5pm" }
+  ],
+  "socialLinks": { "linkedin": "..." }
+}
+```
+
+### GET /api/locations
+
+**Purpose**: Retrieve list of physical office locations with coordinates for map display.
+
+**Response Format**:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Headquarters",
+    "address": "123 Apparel St",
+    "lat": 6.9271,
+    "lng": 79.8612
+  }
+]
+```
+
+### POST /contact
+
+**Purpose**: Submit a user inquiry. Supports both JSON and Multipart forms.
+
+**Request Body**:
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "message": "Inquiry about...",
+  "country": "LK"
+}
+```
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "submissionId": 123,
+  "message": "Thank you for contacting us."
+}
+```
 
 ---
 
