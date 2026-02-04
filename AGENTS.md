@@ -91,3 +91,9 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 ---
 
 **End of Context**
+
+## Version Compatibility
+- **Last Updated**: 2026-02-04
+- **Applies to**: `run-remix-monorepo` v4.1.0+
+- **Agent Protocol**: v1.5
+
