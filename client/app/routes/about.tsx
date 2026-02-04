@@ -10,12 +10,11 @@ import type {
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Award, Factory, Globe2, MessageSquare, Package, TrendingUp, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+
 import { useLoaderData } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ClientOnly } from "@/components/shared/ClientOnly";
-import { Card, CardContent } from "@/components/ui/card";
-import { GlassCard } from "@/components/ui/glass-card";
+import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
 import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -46,21 +45,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 // Hook to detect mobile devices
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
-}
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function About() {
   const loaderData = useLoaderData<typeof loader>();
@@ -148,20 +133,16 @@ export default function About() {
   const timelineData = sortedTimeline.map((item) => ({
     title: item.year.toString(),
     content: (
-      <GlassCard className="group p-6 shadow-inner-sm">
-        {/* Gradient overlay for depth */}
-        <div className="pointer-events-none absolute inset-0 rounded-xl bg-linear-to-br from-white/10 via-transparent to-black/10" />
-
-        {/* Inner glow */}
-        <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
+      <Card variant="glass-premium" className="group p-6 shadow-inner-sm">
+        <GlassCardDecorations showShimmer={!isMobile} />
 
         {/* Content */}
         <div className="relative z-elevated">
-          <Typography.H3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
+          <Typography.H3 className="mb-3 font-bold text-foreground text-xl">
             {item.title}
           </Typography.H3>
           {item.description && (
-            <Typography.P className="mb-4 text-neutral-700 dark:text-neutral-300">
+            <Typography.P className="mb-4 text-muted-foreground">
               {item.description}
             </Typography.P>
           )}
@@ -183,7 +164,7 @@ export default function About() {
             <div className="shimmer-overlay" />
           </div>
         )}
-      </GlassCard>
+      </Card>
     ),
   }));
 
@@ -224,19 +205,8 @@ export default function About() {
                 transition={{ duration: 0.8 }}
                 className="mx-auto max-w-4xl"
               >
-                <Card className="group relative overflow-hidden border border-border/60 bg-background/10 shadow-glow-lg shadow-inner-sm backdrop-blur-md dark:border-border/70 dark:bg-background/5">
-                  {/* Gradient overlay for depth */}
-                  <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
-
-                  {/* Inner glow */}
-                  <div className="card-border-overlay rounded-[calc(0.5rem-1px)]" />
-
-                  {/* Hover shimmer effect - disabled on mobile for performance */}
-                  {!isMobile && (
-                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                      <div className="shimmer-overlay" />
-                    </div>
-                  )}
+                <Card variant="glass-premium" className="group">
+                  <GlassCardDecorations showShimmer={!isMobile} />
 
                   <CardContent className="relative z-elevated p-8 md:p-12">
                     <div className="grid items-center gap-8 md:grid-cols-2">

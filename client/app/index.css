@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
 @import "./styles/fonts.css";
-@import "./styles/utilities.css";
-
 @import "./styles/overrides.css";
 
 /* =========================
@@ -252,6 +250,94 @@
 }
 @utility min-h-process-card {
   min-height: var(--min-height-process-card);
+}
+
+/* =========================
+   Core Layout Utilities
+   ========================= */
+
+@utility center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility inline-center-flex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   Dock Width Utilities
+   ========================= */
+
+@utility min-w-dock-item {
+  min-width: var(--width-dock-item, 140px);
+}
+
+/* =========================
+   Glow Shadow Utilities
+   ========================= */
+
+@utility shadow-glow-sm {
+  box-shadow: 0 0 10px 2px rgba(139, 92, 246, 0.15);
+}
+
+@utility shadow-glow-md {
+  box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.2);
+}
+
+@utility shadow-glow-lg {
+  box-shadow: 0 0 30px 8px rgba(139, 92, 246, 0.25);
+}
+
+@utility shadow-glow-lg-desktop {
+  box-shadow: 0 0 40px 12px rgba(139, 92, 246, 0.3);
+}
+
+@utility shadow-glow-primary {
+  box-shadow: 0 0 20px 4px hsl(var(--primary) / 0.3);
+}
+
+@utility shadow-glow-orange {
+  box-shadow: 0 0 20px 4px rgba(251, 146, 60, 0.3);
+}
+
+/* =========================
+   Luxury Shadow Utilities
+   ========================= */
+
+@utility shadow-luxury-sm {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@utility shadow-luxury-md {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+@utility shadow-luxury-lg {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   Luxury Border Utilities
+   ========================= */
+
+@utility border-luxury-light {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* =========================
+   Luxury Text Utilities
+   ========================= */
+
+@utility text-luxury-gray-600 {
+  color: #4b5563;
+}
+
+@utility stroke-text {
+  -webkit-text-stroke: 1px currentColor;
 }
 
 @utility w-sidebar-collapsed {

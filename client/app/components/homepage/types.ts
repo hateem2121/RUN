@@ -44,6 +44,21 @@ export interface ProductItem {
   image: string;
 }
 
+// Batch API Data Wrappers
+export interface DataWithTimestamp<T> {
+  result: T;
+  timestamp: string;
+}
+
+export interface HomepageBatchResponse {
+  hero: DataWithTimestamp<any>;
+  slogans: DataWithTimestamp<any[]>;
+  sections: DataWithTimestamp<any[]>;
+  featuredProductsSettings: DataWithTimestamp<any>;
+  products: DataWithTimestamp<any[]>;
+  categories: DataWithTimestamp<any[]>;
+}
+
 // Global augmentation for React Three Fiber elements
 declare global {
   namespace JSX {

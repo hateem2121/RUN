@@ -1,6 +1,6 @@
 import { type MotionProps, motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { glassCardVariants } from "@/components/ui/glass-card";
+import { cardVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface SmoothTransitionProps extends MotionProps {
@@ -150,9 +150,9 @@ export function GlassEffect({
   interactive = true,
 }: GlassEffectProps) {
   const baseClasses = {
-    light: glassCardVariants({ variant: "glass-subtle" }),
-    card: glassCardVariants({ variant: "glass-premium" }),
-    elevated: cn(glassCardVariants({ variant: "glass-premium" }), "shadow-sm-luxury-elevated"),
+    light: cardVariants({ variant: "glass-subtle" }),
+    card: cardVariants({ variant: "glass-premium" }),
+    elevated: cn(cardVariants({ variant: "glass-premium" }), "shadow-sm-luxury-elevated"),
   };
 
   const interactiveClasses = interactive ? "" : ""; // glassCardVariants handles styling, interactive behaviors can be added via framer properties or additional classes if needed.
@@ -193,10 +193,10 @@ export function LuxuryButton({
 
   const variantClasses = {
     primary: cn(
-      glassCardVariants({ variant: "glass-premium" }),
+      cardVariants({ variant: "glass-premium" }),
       "luxury-text-light border-luxury-light font-medium",
     ),
-    secondary: cn(glassCardVariants({ variant: "glass-subtle" }), "luxury-text-light font-normal"),
+    secondary: cn(cardVariants({ variant: "glass-subtle" }), "luxury-text-light font-normal"),
     ghost: "luxury-text-light font-light hover:bg-white/10",
   };
 

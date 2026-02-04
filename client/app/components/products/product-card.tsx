@@ -1,7 +1,6 @@
 import { ExternalLink, Search } from "lucide-react";
 import { Link } from "react-router";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { GlassCard } from "@/components/ui/glass-card";
+import { Card, CardContent, CardFooter, GlassCardDecorations } from "@/components/ui/card";
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { cn } from "@/lib/utils";
@@ -29,11 +28,13 @@ export const ProductCard = ({
   };
 
   return (
-    <GlassCard
+    <Card
+      variant="glass-premium"
       className="group overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl"
       aria-label={product.name}
       data-testid={`product-card-${product.id}`}
     >
+      <GlassCardDecorations />
       <CardContent className="p-0">
         <div
           className={cn(
@@ -137,6 +138,6 @@ export const ProductCard = ({
           </button>
         </div>
       </CardFooter>
-    </GlassCard>
+    </Card>
   );
 };

@@ -142,12 +142,12 @@ const Stats: React.FC = () => {
       {/* Left Side */}
       <div
         ref={leftRef}
-        className="relative z-elevated flex w-full flex-col justify-center border-border border-b bg-surface/20 p-6 text-foreground backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:backdrop-blur-none"
+        className="relative z-elevated flex w-full flex-col justify-center border-border border-b bg-surface/20 p-6 text-foreground backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:pt-28 md:backdrop-blur-none"
       >
         <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
           <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
             The Evolution of <br />
-            <span className="animate-gradient bg-300% bg-linear-to-r from-blue-500 to-white bg-clip-text text-transparent">
+            <span className="animate-gradient bg-300% bg-linear-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent dark:from-blue-500 dark:to-white">
               Athletic Craftsmanship
             </span>
           </h2>

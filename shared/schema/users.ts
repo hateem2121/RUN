@@ -1,4 +1,4 @@
-import { boolean, index, jsonb, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "./common";
 
 // =============================================================================
@@ -7,25 +7,6 @@ import { pgTable } from "./common";
 // Cost Optimization: https://neon.tech/docs/guides/node
 // ✓ CHECKPOINT: PHASE-1-SCHEMA-ADDED
 // =============================================================================
-
-/**
- * Session storage table (REQUIRED by connect-pg-simple)
- * Stores encrypted session data with automatic expiration cleanup
- * TTL: 7 days (604800000ms) managed by connect-pg-simple
- */
-export const sessions = pgTable(
-  "sessions",
-  {
-    sid: varchar({ length: 255 }).primaryKey(),
-    sess: jsonb().notNull(),
-    expire: timestamp({ mode: "date", precision: 3 }).notNull(),
-  },
-  (table) => [
-    // PERFORMANCE: Index for session cleanup queries (DELETE WHERE expire < NOW())
-    // Prevents full table scans during automatic session cleanup
-    index("IDX_session_expire").on(table.expire),
-  ],
-);
 
 /**
  * Users table (REQUIRED by Replit Auth)

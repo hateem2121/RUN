@@ -20,6 +20,7 @@
 | **Workspace Tool** | npm workspaces + Turbo Repo | `package.json`, `turbo.json` |
 
 ### Reproducing the Environment
+
 ```bash
 # 1. Install correct Node version
 nvm install 24
@@ -34,9 +35,10 @@ npm ci
 ## 2. Stack & Critical Versions
 
 ### Frontend (`@run-remix/client`)
+
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
-| **React** | `19.2.3` | UI Framework | `client/package.json` |
+| **React** | `19.2.4` | UI Framework | `client/package.json` |
 | **Vite** | `7.0.0` | Build Tool / Bundler | `client/package.json` |
 | **React Router** | `7.11.0` | Routing (Client & SSR) | `client/package.json` |
 | **Tailwind CSS** | `4.0.0` | Styling Engine | `client/package.json` |
@@ -44,16 +46,18 @@ npm ci
 | **Three.js** | `^0.181.0` | 3D Visualization | `client/package.json` |
 
 ### Backend (`@run-remix/server`)
+
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
 | **Express** | `^5.1.0` | Web Framework | `server/package.json` |
 | **Node.js** | `24` | Runtime | `Dockerfile` |
 | **Drizzle ORM** | `^0.45.1` | Database ORM | `server/package.json` |
 | **PostgreSQL** | `pg` (Neon) | Database Driver | `server/package.json` |
-| **Redis** | `Upstash` | L2 Cache | `server/package.json` |
+| **Redis** | `Upstash` | Session & L2 Cache | `server/package.json` |
 | **Tini** | (Alpine Pkg) | Init Process | `Dockerfile` |
 
 ### Operations & Tooling
+
 | Tool | Version | Config Source |
 | :--- | :--- | :--- |
 | **Biome** | `2.3.10` | `biome.json` (Lint/Format) |
@@ -66,7 +70,8 @@ npm ci
 ## 3. Architecture & Boundaries
 
 ### Repo Map
-```
+
+```text
 /
 ├── client/ (@run-remix/client)   # React 19 SPA/SSR Application
 │   ├── app/                      # Source Code (Remix Standard)
@@ -86,10 +91,11 @@ npm ci
 ```
 
 ### Dependency Rules
-*   **Client** depends on **Shared**.
-*   **Server** depends on **Shared**.
-*   **Client** does NOT depend on Server (loose coupling via API).
-*   **Shared** is a pure library (no side effects).
+
+- **Client** depends on **Shared**.
+- **Server** depends on **Shared**.
+- **Client** does NOT depend on Server (loose coupling via API).
+- **Shared** is a pure library (no side effects).
 
 ---
 
@@ -143,13 +149,16 @@ npm ci
 ## 7. Extensions & AI Context
 
 ### IDE Extensions (VS Code)
+
 **Source:** `.vscode/extensions.json`
-*   **Essential**: `biomejs.biome` (Linting), `bradlc.vscode-tailwindcss` (Styles).
-*   **Database**: `rphlmr.drizzle-lab`, `ckolkman.vscode-postgres`.
-*   **React**: `dsznajder.es7-react-js-snippets`, `mattpocock.ts-error-translator`.
+
+- **Essential**: `biomejs.biome` (Linting), `bradlc.vscode-tailwindcss` (Styles).
+- **Database**: `rphlmr.drizzle-lab`, `ckolkman.vscode-postgres`.
+- **React**: `dsznajder.es7-react-js-snippets`, `mattpocock.ts-error-translator`.
 
 ### MCP (Model Context Protocol)
-**Status:** ✅ **ACTIVE**
+
+**Status:** ✅ **ACTIVE**  
 **Source:** `mcp.json`
 
 | Server | Type | Description |
@@ -159,6 +168,7 @@ npm ci
 | `postgres` | `@modelcontextprotocol/server-postgres` | Direct Neon DB context |
 
 ### AI Agent Tools
-*   **Operational Map:** See `AGENTS.md`.
-*   **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
-*   **Context:** `docs/core/architecture.md` provides definitions for AI decision making.
+
+- **Operational Map:** See `AGENTS.md`.
+- **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
+- **Context:** `docs/core/architecture.md` provides definitions for AI decision making.

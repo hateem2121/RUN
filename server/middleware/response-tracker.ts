@@ -15,6 +15,13 @@ export function responseTracker(_req: Request, res: Response, next: NextFunction
   // Initialize the flag
   res.locals._handled = false;
 
+  // Skip for static assets to avoid stream interference
+  if (
+    /\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf|ico)$/i.test(_req.path)
+  ) {
+    return next();
+  }
+
   // Monkey-patch res.json
   const originalJson = res.json;
   res.json = function (body) {

@@ -12,22 +12,7 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-// Hook to detect mobile devices
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
-}
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export const DraggableCardBody = ({
   className,

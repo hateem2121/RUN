@@ -2,11 +2,16 @@ import gsap from "gsap";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { FEATURED_PRODUCTS } from "./constants";
 import { useStore } from "./store";
-import { CursorVariant } from "./types";
+import { CursorVariant, type ProductItem } from "./types";
 
-const FeaturedProducts: React.FC = () => {
+interface FeaturedProductsProps {
+  products: ProductItem[] | undefined;
+}
+
+const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const setCursor = useStore((state) => state.setCursor);
 
@@ -67,8 +72,8 @@ const FeaturedProducts: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
-          {FEATURED_PRODUCTS.map((product, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {(products || FEATURED_PRODUCTS).map((product, index) => (
             <div
               key={product.id}
               className={`product-card group relative ${index === 1 ? "md:mt-24" : ""}`}
@@ -76,12 +81,13 @@ const FeaturedProducts: React.FC = () => {
               onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
             >
               <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">
-                <img
+                <ImageWithSkeleton
                   src={product.image}
                   alt={product.name}
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover grayscale transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:grayscale-0"
+                  containerClassName="h-full w-full"
                 />
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-transparent" />

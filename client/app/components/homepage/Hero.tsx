@@ -4,9 +4,11 @@ import gsap from "gsap";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Color, DoubleSide, MathUtils, type Mesh, type ShaderMaterial } from "three";
+import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useHomepageData } from "@/hooks/use-homepage-data";
 import { colors } from "@/lib/design-tokens";
-import { HERO_TEXT } from "./constants";
+import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
 
 // Shader definitions moved outside component for performance
 const vertexShader = `
@@ -78,6 +80,8 @@ const OptimizedClothMaterial = () => {
   );
 
   // Fix: Resolve CSS variables for Three.js (WebGL cannot parse "var(--...)")
+  const { resolvedTheme } = useTheme();
+
   useEffect(() => {
     const resolveColor = (token: string): string => {
       if (typeof window === "undefined") return "";
@@ -88,24 +92,34 @@ const OptimizedClothMaterial = () => {
       return token;
     };
 
-    const startColor = resolveColor(colors.surfaceDark as string);
+    // Dark mode: Deep black to Dark Charcoal
+    // Light mode: Pure white to Light Gray
+    const isDark = resolvedTheme === "dark";
+    const startColorToken = isDark ? colors.surfaceDark : "#ffffff";
+    const endColorToken = isDark ? "#1a1a1a" : "#f5f5f5";
+
+    const startColor = resolveColor(startColorToken as string);
+    const endColor = resolveColor(endColorToken as string);
     
-    // Safety check - if resolution failed, keep fallback
-    if (startColor && materialRef.current?.uniforms?.uColorStart) {
-      materialRef.current.uniforms.uColorStart.value.set(startColor);
+    const uniforms = materialRef.current?.uniforms;
+    if (uniforms) {
+      if (startColor && uniforms.uColorStart) uniforms.uColorStart.value.set(startColor);
+      if (endColor && uniforms.uColorEnd) uniforms.uColorEnd.value.set(endColor);
     }
-  }, []);
+  }, [resolvedTheme]);
 
   useFrame((state) => {
-    if (materialRef.current?.uniforms?.uTime) {
-      materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
-    }
-    if (materialRef.current?.uniforms?.uScroll) {
-      materialRef.current.uniforms.uScroll.value = MathUtils.lerp(
-        materialRef.current.uniforms.uScroll.value,
-        window.scrollY,
-        0.1,
-      );
+    if (materialRef.current?.uniforms) {
+      if (materialRef.current.uniforms.uTime) {
+        materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
+      }
+      if (materialRef.current.uniforms.uScroll) {
+        materialRef.current.uniforms.uScroll.value = MathUtils.lerp(
+          materialRef.current.uniforms.uScroll.value,
+          window.scrollY,
+          0.1,
+        );
+      }
     }
   });
 
@@ -173,6 +187,17 @@ const Hero: React.FC = () => {
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [dpr, setDpr] = useState([1, 1.5]);
   const [isInView, setIsInView] = useState(true);
+
+  const { data: homepageData } = useHomepageData();
+  const heroData = homepageData?.hero?.result;
+
+  // Split title by | or use fallback
+  const heroLines = useMemo(() => {
+    if (heroData?.title) {
+      return heroData.title.split("|").map((t: string) => t.trim());
+    }
+    return FALLBACK_HERO_TEXT;
+  }, [heroData]);
 
   // Performance: Detect if Hero is in view to pause WebGL
   useEffect(() => {
@@ -301,7 +326,7 @@ const Hero: React.FC = () => {
           ref={textContainerRef}
           className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px]"
         >
-          {HERO_TEXT.map((line, i) => (
+          {heroLines.map((line: string, i: number) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
               <h1 className="text-foreground text-[8vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[6vw] lg:text-[7vw] md:leading-[0.85]">
                 {line}

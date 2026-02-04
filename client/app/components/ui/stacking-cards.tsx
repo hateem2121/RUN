@@ -1,6 +1,6 @@
 import type { AboutSection, MediaAsset } from "@shared/schema";
 import { type MotionValue, motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
@@ -44,22 +44,7 @@ const getSectionColor = (sectionType: string): string => {
   return colors[sectionType] || "var(--color-primary)";
 };
 
-// Hook to detect mobile devices
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
-}
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export const Card: React.FC<CardProps> = ({
   i,

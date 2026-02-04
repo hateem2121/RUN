@@ -22,7 +22,7 @@ import { useLoaderData } from "react-router";
 import { ClientOnly } from "@/components/shared/ClientOnly";
 
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
-import { LiquidGlassCard } from "@/components/ui/glass-card";
+import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 // useMobileDetection import removed as unused
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
@@ -710,11 +710,11 @@ export default function Technology() {
             <div className="flex flex-col items-center gap-8 lg:grid lg:grid-cols-2 lg:gap-12">
               {/* Hero Content - Column 1 - Content First on All Devices */}
               <div className="hero-content order-1 w-full max-w-2xl">
-                <LiquidGlassCard
-                  blurIntensity="md"
-                  glowIntensity="sm"
+                <Card
+                  variant="glass-premium"
                   className="block w-full cursor-default p-8"
                 >
+                  <GlassCardDecorations />
                   {batchLoading ? (
                     <LoadingSkeleton type="text" className="text-center lg:text-left" />
                   ) : (
@@ -760,7 +760,7 @@ export default function Technology() {
                       <div className="from-primary to-accent mx-auto h-1 w-24 rounded-full bg-linear-to-r lg:mx-0"></div>
                     </div>
                   )}
-                </LiquidGlassCard>
+                </Card>
               </div>
 
               {/* Dedicated 3D Model - Column 2 - Media Second on All Devices */}

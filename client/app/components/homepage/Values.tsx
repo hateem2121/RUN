@@ -1,10 +1,12 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Color, type Mesh, type ShaderMaterial } from "three";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
@@ -106,13 +108,13 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
     >
       {/* Background Image Layer */}
       <div className="absolute inset-0 z-base">
-        <img
+        <ImageWithSkeleton
           src={image}
           alt={title}
           decoding="async"
           className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
+          containerClassName="h-full w-full"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
       </div>
 
       {/* Ripple Layer - Only rendered on desktop for performance */}
@@ -123,6 +125,9 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
           </Canvas>
         </div>
       )}
+
+      {/* Gradient Overlay - Placed after ripple to ensure text contrast */}
+      <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
 
       <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
         <div className="flex w-full justify-end">
@@ -148,14 +153,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
 
 const Values: React.FC = () => {
   const setCursor = useStore((state) => state.setCursor);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <section className="w-full bg-background-alt px-4 py-32 md:px-8">
@@ -170,7 +168,7 @@ const Values: React.FC = () => {
             subtitle="135 Years of textile engineering mastery."
             icon={ShieldCheck}
             colSpan="md:col-span-2"
-            isMobile={isMobile}
+            isMobile={!!isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1598967990158-b12e3e9d8995?q=80&w=2070&auto=format&fit=crop"
           />
@@ -179,7 +177,7 @@ const Values: React.FC = () => {
             subtitle="40% Water reduction in dyeing processes."
             icon={Leaf}
             withRipple={true}
-            isMobile={isMobile}
+            isMobile={!!isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1976&auto=format&fit=crop"
           />
@@ -187,7 +185,7 @@ const Values: React.FC = () => {
             title="Global Reach"
             subtitle="Distribution centers in 12 countries."
             icon={Globe}
-            isMobile={isMobile}
+            isMobile={!!isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
           />
@@ -196,7 +194,7 @@ const Values: React.FC = () => {
             subtitle="Concept to sample in 72 hours."
             icon={Zap}
             colSpan="md:col-span-2"
-            isMobile={isMobile}
+            isMobile={!!isMobile}
             setCursor={setCursor}
             image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
           />

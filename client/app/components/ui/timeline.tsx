@@ -69,12 +69,12 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   }, []);
 
   return (
-    <div className="w-full bg-white font-sans md:px-10 dark:bg-neutral-950" ref={containerRef}>
+    <div className="w-full bg-background font-sans md:px-10" ref={containerRef}>
       <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
-        <h2 className="mb-4 max-w-4xl text-black text-lg md:text-4xl dark:text-white">
+        <h2 className="mb-4 max-w-4xl text-foreground text-lg md:text-4xl">
           Our Journey Through Time
         </h2>
-        <p className="max-w-sm text-neutral-700 text-sm md:text-base dark:text-neutral-300">
+        <p className="max-w-sm text-muted-foreground text-sm md:text-base">
           From our founding in 1889 to today, discover the milestones that shaped RUN APPAREL into a
           leading B2B sportswear manufacturer.
         </p>
@@ -84,16 +84,16 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         {data.map((item, index) => (
           <div key={index} className="flex justify-start pt-10 md:gap-10 md:pt-40">
             <div className="sticky top-40 z-sticky flex max-w-xs flex-col items-center self-start md:w-full md:flex-row lg:max-w-sm">
-              <div className="absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-white md:left-3 dark:bg-black">
-                <div className="h-4 w-4 rounded-full border border-neutral-300 bg-neutral-200 p-2 dark:border-neutral-700 dark:bg-neutral-800" />
+              <div className="absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-background md:left-3">
+                <div className="h-4 w-4 rounded-full border border-border bg-muted p-2" />
               </div>
-              <h3 className="hidden font-bold text-neutral-500 text-xl md:block md:pl-20 md:text-5xl dark:text-neutral-500">
+              <h3 className="hidden font-bold text-muted-foreground text-xl md:block md:pl-20 md:text-5xl">
                 {item.title}
               </h3>
             </div>
 
             <div className="relative w-full pr-4 pl-20 md:pl-4">
-              <h3 className="mb-4 block text-left font-bold text-2xl text-neutral-500 md:hidden dark:text-neutral-500">
+              <h3 className="mb-4 block text-left font-bold text-2xl text-muted-foreground md:hidden">
                 {item.title}
               </h3>
               {item.content}{" "}

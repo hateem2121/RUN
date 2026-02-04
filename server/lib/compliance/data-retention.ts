@@ -12,7 +12,6 @@
  */
 
 import { lt, sql } from "drizzle-orm";
-import { sessions } from "../../../shared/schema.js";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 
@@ -28,11 +27,6 @@ export const retentionPolicies = {
     retentionDays: 2555, // 7 years for SOX compliance
     archiveAfter: 365,
     complianceLevel: "high" as const,
-  },
-  sessions: {
-    retentionDays: 30,
-    archiveAfter: null,
-    complianceLevel: "standard" as const,
   },
   mediaItems: {
     retentionDays: null, // Permanent - business content
@@ -72,19 +66,6 @@ export interface RetentionReport {
 }
 
 /**
- * Enforce session cleanup
- * Sessions expire automatically via connect-pg-simple, but this ensures cleanup
- */
-async function cleanupSessions(): Promise<number> {
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - retentionPolicies.sessions.retentionDays);
-
-  const result = await db.delete(sessions).where(lt(sessions.expire, cutoffDate));
-
-  return result.rowCount ?? 0;
-}
-
-/**
  * Cleanup old performance metrics
  */
 async function cleanupPerformanceMetrics(): Promise<number> {
@@ -111,30 +92,6 @@ export async function enforceRetention(): Promise<RetentionReport[]> {
   nextRun.setDate(nextRun.getDate() + 1);
 
   logger.info("[Retention] Starting data retention enforcement");
-
-  // Sessions cleanup
-  try {
-    const deletedSessions = await cleanupSessions();
-    reports.push({
-      dataType: "sessions",
-      deletedCount: deletedSessions,
-      archivedCount: 0,
-      executedAt,
-      nextRun,
-      errors: [],
-    });
-    logger.info(`[Retention] Cleaned up ${deletedSessions} expired sessions`);
-  } catch (error) {
-    reports.push({
-      dataType: "sessions",
-      deletedCount: 0,
-      archivedCount: 0,
-      executedAt,
-      nextRun,
-      errors: [error instanceof Error ? error.message : String(error)],
-    });
-    logger.error("[Retention] Failed to cleanup sessions", error);
-  }
 
   // Performance metrics cleanup
   try {

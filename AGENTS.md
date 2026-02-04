@@ -41,9 +41,7 @@
 | Legacy Path (DO NOT USE) | Modern Equivalent |
 | :--- | :--- |
 | `client/src/` | `client/app/` |
-| `server/scripts/*.ts` (Manual) | `server/scripts/legacy/` |
 | `scripts/testing/` | `tests/` (Vitest/Playwright) |
-| `docs/reports/docs-audit-2026-02-02.md` | `docs/reports/docs-audit-2026-02-03-formal.md` |
 
 ## 3. Operational Commands (The Tool Belt)
 

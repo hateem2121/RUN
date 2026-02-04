@@ -66,9 +66,9 @@ const Footer: React.FC = () => {
       if (textRef.current) {
         gsap.fromTo(
           textRef.current,
-          { y: -100 },
+          { yPercent: -20 },
           {
-            y: 0,
+            yPercent: 20,
             ease: "none",
             scrollTrigger: {
               trigger: scope,
@@ -279,7 +279,7 @@ const Footer: React.FC = () => {
                 ref={btnRef}
                 type="submit"
                 disabled={isSubmitting || isSent}
-                aria-busy={isSubmitting ? "true" : "false"}
+                aria-busy={isSubmitting}
                 className={cn(
                   "relative mt-8 overflow-hidden border px-12 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300",
                   isSent
@@ -354,10 +354,10 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Massive Parallax Logotype */}
-      <div className="z-elevated relative w-full translate-y-[20%] text-center">
+      <div className="z-elevated relative w-full text-center" aria-hidden="true">
         <h1
           ref={textRef}
-          className="text-foreground text-[22vw] leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none sm:text-[18vw] dark:opacity-20"
+          className="text-foreground text-[22vw] leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform sm:text-[18vw] dark:opacity-20"
         >
           RUN APPAREL
         </h1>

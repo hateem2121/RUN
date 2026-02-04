@@ -9,7 +9,7 @@ const cardVariants = cva("rounded-xl transition-all duration-300", {
       default: "border border-border bg-card text-card-foreground shadow-card",
       // Premium glass effect with glow (migrated from glass-card)
       "glass-premium":
-        "relative overflow-hidden border border-white/10 bg-(--glass-premium) text-white shadow-glass shadow-glow-lg backdrop-blur-md md:shadow-glow-lg-desktop dark:border-white/5",
+        "relative overflow-hidden border border-white/10 bg-(--glass-premium) text-foreground shadow-glass shadow-glow-lg backdrop-blur-md md:shadow-glow-lg-desktop dark:border-white/5",
       // Subtle glass for lighter use cases
       "glass-subtle": "border border-white/5 bg-white/5 text-white shadow-none backdrop-blur-sm",
       // Elevated with stronger shadow
@@ -75,4 +75,29 @@ const CardFooter = React.memo(({ className, ref, ...props }: React.ComponentProp
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, cardVariants };
+const GlassCardDecorations = React.memo(({ showShimmer = true }: { showShimmer?: boolean }) => (
+  <>
+    {/* Gradient overlay for depth */}
+    <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
+    {/* Inner glow */}
+    <div className="card-border-overlay rounded-[calc(var(--radius,0.75rem)-1px)]" />
+    {/* Hover shimmer effect */}
+    {showShimmer && (
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <div className="shimmer-overlay" />
+      </div>
+    )}
+  </>
+));
+GlassCardDecorations.displayName = "GlassCardDecorations";
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  cardVariants,
+  GlassCardDecorations,
+};

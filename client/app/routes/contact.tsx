@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { GlassCard, GlassCardDecorations } from "@/components/ui/glass-card";
+import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -221,7 +221,7 @@ export default function Contact() {
         <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
             {/* Left Column: Contact Form */}
-            <GlassCard className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
+            <Card variant="glass-premium" className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
               <GlassCardDecorations showShimmer={!isMobile} />
               <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
@@ -547,7 +547,7 @@ export default function Contact() {
                   </div>
                 )}
               </div>
-            </GlassCard>
+      </Card>
 
             {/* Right Column: Info Boxes */}
             <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
@@ -691,8 +691,8 @@ const ContactInfoCard = ({
   children: React.ReactNode;
   isMobile: boolean;
 }) => (
-  <GlassCard className="p-6 lg:p-8">
+  <Card variant="glass-premium" className="p-6 lg:p-8">
     <GlassCardDecorations showShimmer={!isMobile} />
     <div className="relative z-elevated">{children}</div>
-  </GlassCard>
+  </Card>
 );

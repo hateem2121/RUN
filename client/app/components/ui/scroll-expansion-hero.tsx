@@ -293,7 +293,10 @@ const ScrollExpandMedia = ({
   );
 
   return (
-    <div ref={sectionRef} className="overflow-x-hidden transition-colors duration-700 ease-in-out">
+    <div
+      ref={sectionRef}
+      className="overflow-x-hidden transition-colors duration-700 ease-in-out bg-neutral-900"
+    >
       <section className="relative flex min-h-screen flex-col items-center justify-start">
         <div className="relative flex min-h-screen w-full flex-col items-center">
           <motion.div

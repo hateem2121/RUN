@@ -3,21 +3,17 @@ import { useEffect, useState } from "react";
 const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile() {
-  // Initialize as undefined to indicate "learning" state during hydration
-  // or use false if a specific default is safer, but undefined forces consumers to handle the loading state
-  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     
     const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+      setIsMobile(mql.matches);
     };
 
     mql.addEventListener("change", onChange);
-    
-    // Set initial client-side value
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    setIsMobile(mql.matches);
 
     return () => mql.removeEventListener("change", onChange);
   }, []);

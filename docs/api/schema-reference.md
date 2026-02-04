@@ -199,14 +199,3 @@
 | `isActive` | `boolean` | - |
 | `isFeatured` | `boolean` | - |
 | `deletedAt` | `timestamp` | - |
-
-## Module: users.ts
-
-### Table: sessions
-
-| Column | Drizzle Type | Constraints |
-| :--- | :--- | :--- |
-| `sid` | `varchar` | PRIMARY KEY |
-| `sess` | `jsonb` | NOT NULL |
-| `expire` | `timestamp` | NOT NULL |
-

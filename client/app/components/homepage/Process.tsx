@@ -178,11 +178,6 @@ const Process: React.FC = () => {
           ))}
         </div>
       </div>
-      <style>{`
-        .stroke-text-white {
-          -webkit-text-stroke: 2px #FFFFFF;
-        }
-      `}</style>
     </section>
   );
 };

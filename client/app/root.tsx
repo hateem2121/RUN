@@ -66,6 +66,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var storageKey = 'theme';
+                  var activeTheme = localStorage.getItem(storageKey);
+                  var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  
+                  if (!activeTheme) {
+                    activeTheme = 'dark'; // Default to dark instead of system
+                  }
+                  
+                  if (activeTheme === 'system') {
+                    activeTheme = systemTheme;
+                  }
+                  
+                  document.documentElement.classList.add(activeTheme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body>
         <ThemeProvider>

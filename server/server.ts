@@ -13,6 +13,8 @@ import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 
+import path from "node:path";
+
 export const app = express();
 const config = getConfig();
 
@@ -22,6 +24,14 @@ serverReady = (async () => {
   try {
     // 2. Create HTTP Server (Required for Vite HMR / SSR)
     const httpServer = createServer(app);
+
+    // 2.5. Serve Static Assets (Dev) - Bypass all middleware for performance/stability
+    // 2.5. Serve Static Assets (Dev) - Bypass all middleware for performance/stability
+    if (process.env.NODE_ENV !== "production") {
+      // Fixes ERR_EMPTY_RESPONSE for fonts/icons by serving them before any other logic
+      // Note: process.cwd() is the 'server' directory, so we need to go up one level
+      app.use(express.static(path.resolve(process.cwd(), "../client/public")));
+    }
 
     // 3. Setup Global Middleware
     setupMiddleware(app);

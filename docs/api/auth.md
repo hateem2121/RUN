@@ -1,7 +1,7 @@
 # API Authentication
 
 > **Strategy:** Google OAuth 2.0 + Sliding Sessions  
-> **Session Store:** PostgreSQL (`connect-pg-simple`)
+> **Session Store:** Upstash Redis (Serverless)
 
 ## Authentication Flow
 
@@ -12,7 +12,7 @@
 2. **Callback**
    - GET `/api/auth/google/callback`
    - Exchanges code for tokens
-   - Creates session `sess:{id}` in PostgreSQL `sessions` table
+   - Creates session `sess:{id}` in Upstash Redis
    - Sets `connect.sid` cookie
 
 3. **Session Security**

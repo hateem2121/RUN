@@ -38,6 +38,7 @@ const CACHE_TTL_NAVIGATION = 7200; // 120 minutes - for batch/navigation data
 // ============================================================================
 
 // About batch API - optimized endpoint for all about page data
+// Force restart for response-tracker middleware update
 router.get("/about-batch", async (_req, res) => {
   const startTime = performance.now();
   try {

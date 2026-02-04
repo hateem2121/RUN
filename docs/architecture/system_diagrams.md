@@ -21,7 +21,7 @@ C4Context
     Rel(web_app, api, "API Calls", "JSON/HTTPS")
     Rel(web_app, auth_provider, "Redirects", "OIDC")
     Rel(api, db_neon, "Reads/Writes", "Postgres Protocol")
-    Rel(api, redis_upstash, "Caches", "REST/HTTP")
+    Rel(api, redis_upstash, "Session & Cache", "REST/HTTP")
     Rel(api, cdn, "Uploads/Serves", "HTTPS")
     Rel(api, sentry, "Reports Errors", "HTTPS")
 ```
@@ -170,15 +170,10 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    users ||--o{ sessions : "has"
+    users ||--o{ orders : "has"
     users {
         varchar id PK
         varchar email UK
         boolean is_admin
-    }
-    sessions {
-        varchar sid PK
-        jsonb sess
-        timestamp expire
     }
 ```

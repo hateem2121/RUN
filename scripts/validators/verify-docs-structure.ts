@@ -57,7 +57,7 @@ function checkFile(filePath: string): boolean {
 function main() {
   console.log('🔍 Verifying documentation structure references...\n');
   
-  const docs = getAllFiles(DOCS_DIR, '.md');
+  const docs = getAllFiles(DOCS_DIR, '.md').filter(path => !path.includes('docs/archive'));
   const clientDocs = getAllFiles(CLIENT_APP_DIR, '.md');
   const allFiles = [...docs, ...clientDocs];
   

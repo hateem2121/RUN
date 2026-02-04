@@ -1,16 +1,19 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { useEffect, useRef, useState } from "react";
-import Categories from "@/components/homepage/Categories";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import CustomCursor from "@/components/homepage/CustomCursor";
-import FeaturedProducts from "@/components/homepage/FeaturedProducts";
-import Hero from "@/components/homepage/Hero";
 import Preloader from "@/components/homepage/Preloader";
-import Process from "@/components/homepage/Process";
-import Stats from "@/components/homepage/Stats";
-import Values from "@/components/homepage/Values";
-import Footer from "@/components/layout/Footer";
+import { useHomepageData } from "@/hooks/use-homepage-data";
+
+// Lazy Load Heavy Components
+const Categories = lazy(() => import("@/components/homepage/Categories"));
+const FeaturedProducts = lazy(() => import("@/components/homepage/FeaturedProducts"));
+const Hero = lazy(() => import("@/components/homepage/Hero"));
+const Process = lazy(() => import("@/components/homepage/Process"));
+const Stats = lazy(() => import("@/components/homepage/Stats"));
+const Values = lazy(() => import("@/components/homepage/Values"));
+const Footer = lazy(() => import("@/components/layout/Footer"));
 
 // Register Plugin Globally
 gsap.registerPlugin(ScrollTrigger);
@@ -27,6 +30,7 @@ export function meta() {
 
 export default function Index() {
   const [preloaderFinished, setPreloaderFinished] = useState(false);
+  const { data: homepageData } = useHomepageData();
 
   // Stable refs for skewable sections to avoid ref callback churn
   const heroRef = useRef<HTMLDivElement>(null);
@@ -119,28 +123,30 @@ export default function Index() {
       <CustomCursor />
 
       <main className="w-full bg-background-alt">
-        {/* GROUP 1: Skewable Top Section */}
-        <div ref={heroRef} className="origin-top will-change-transform">
-          <Hero />
-        </div>
+        <Suspense fallback={null}>
+          {/* GROUP 1: Skewable Top Section */}
+          <div ref={heroRef} className="origin-top will-change-transform">
+            <Hero />
+          </div>
 
-        {/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
-        <Stats />
+          {/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
+          <Stats />
 
-        {/* GROUP 2: Skewable Middle Content */}
-        <div ref={contentRef} className="origin-top will-change-transform">
-          <Categories />
-          <FeaturedProducts />
-          <Values />
-        </div>
+          {/* GROUP 2: Skewable Middle Content */}
+          <div ref={contentRef} className="origin-top will-change-transform">
+            <Categories data={homepageData?.categories?.result} />
+            <FeaturedProducts products={homepageData?.products?.result} />
+            <Values />
+          </div>
 
-        {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
-        <Process />
+          {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
+          <Process />
 
-        {/* GROUP 3: Skewable Footer */}
-        <div ref={footerRef} className="origin-top will-change-transform">
-          <Footer />
-        </div>
+          {/* GROUP 3: Skewable Footer */}
+          <div ref={footerRef} className="origin-top will-change-transform">
+            <Footer />
+          </div>
+        </Suspense>
       </main>
     </>
   );

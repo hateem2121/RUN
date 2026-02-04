@@ -3,9 +3,13 @@ import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { CATEGORIES } from "./constants";
 import { useStore } from "./store";
-import { CursorVariant } from "./types";
+import { type CategoryItem, CursorVariant } from "./types";
 
-const Categories: React.FC = () => {
+interface CategoriesProps {
+  data: CategoryItem[] | undefined;
+}
+
+const Categories: React.FC<CategoriesProps> = ({ data }) => {
   const setCursor = useStore((state) => state.setCursor);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const isMobile = useIsMobile();
@@ -20,9 +24,9 @@ const Categories: React.FC = () => {
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
-        <div role="list" className="animate-marquee flex whitespace-nowrap will-change-transform">
+        <div role="list" className="animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused]">
           {/* Main Content */}
-          {CATEGORIES.map((cat, index) => {
+          {(data || CATEGORIES).map((cat, index) => {
             const isHovered = hoveredIndex === index;
             const isAnyHovered = hoveredIndex !== null;
             const isBlurred = isAnyHovered && !isHovered;
@@ -49,7 +53,7 @@ const Categories: React.FC = () => {
           })}
           {/* Duplicate Content for Marquee - Hidden from SR */}
           <div aria-hidden="true" className="flex">
-            {CATEGORIES.map((cat, index) => {
+            {(data || CATEGORIES).map((cat, index) => {
               // Offset index for logic
               const virtualIndex = index + 50;
               const isHovered = hoveredIndex === virtualIndex;
@@ -83,7 +87,7 @@ const Categories: React.FC = () => {
           className="animate-marquee-reverse mt-[-2vw] flex whitespace-nowrap will-change-transform"
           aria-hidden="true"
         >
-          {[...CATEGORIES, ...CATEGORIES].reverse().map((cat, index) => {
+          {[...(data || CATEGORIES), ...(data || CATEGORIES)].reverse().map((cat, index) => {
             // Offset index to avoid conflict with top row state
             const uniqueIndex = index + 100;
             const isHovered = hoveredIndex === uniqueIndex;
@@ -111,35 +115,6 @@ const Categories: React.FC = () => {
           })}
         </div>
       </div>
-
-      <style>{`
-        .stroke-text {
-          -webkit-text-stroke: 1px currentColor;
-        }
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes marquee-reverse {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-        .animate-marquee-reverse {
-          animation: marquee-reverse 30s linear infinite;
-        }
-        /* Pause on hover for easier reading */
-        .flex:hover .animate-marquee, .flex:hover .animate-marquee-reverse {
-            animation-play-state: paused;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .animate-marquee, .animate-marquee-reverse {
-            animation-play-state: paused;
-          }
-        }
-      `}</style>
     </section>
   );
 };
