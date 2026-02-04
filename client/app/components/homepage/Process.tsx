@@ -105,13 +105,13 @@ const Process: React.FC = () => {
   }, []);
 
   return (
-    <section className="overflow-hidden bg-surface-dark text-white">
+    <section className="overflow-hidden bg-background text-foreground">
       <div
         ref={triggerRef}
         className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
         <div className="absolute top-8 left-8 z-elevated">
-          <h3 className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl">
+          <h3 className="rounded-full border border-border bg-surface/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl">
             Production Pipeline
           </h3>
         </div>
@@ -141,9 +141,9 @@ const Process: React.FC = () => {
           {PROCESS_STEPS.map((step, index) => (
             <div
               key={index}
-              className="process-card relative z-default flex min-h-loading-center w-full flex-shrink-0 items-center justify-center border-white/10 border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
+              className="process-card relative z-default flex min-h-loading-center w-full flex-shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
             >
-              <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-white/5 bg-surface-dark/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
+              <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-border/50 bg-surface/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}
                 <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
@@ -153,10 +153,10 @@ const Process: React.FC = () => {
                     decoding="async"
                     className="h-full w-full object-cover grayscale transition-transform duration-700 ease-out group-hover:scale-110 group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 bg-black/20 transition-all duration-500 group-hover:bg-transparent" />
+                  <div className="absolute inset-0 bg-surface/20 transition-all duration-500 group-hover:bg-transparent" />
 
                   {/* Big Number Overlay */}
-                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-white leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
+                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-foreground leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
                     {step.id}
                   </span>
                 </div>
@@ -166,10 +166,10 @@ const Process: React.FC = () => {
                   <h2 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
                     {step.title}
                   </h2>
-                  <p className="mb-8 max-w-md font-light text-base text-white/60 leading-relaxed md:text-xl">
+                  <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">
                     {step.description}
                   </p>
-                  <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white transition-all duration-300 hover:bg-white hover:text-black md:h-16 md:w-16">
+                  <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background md:h-16 md:w-16">
                     <ArrowRight className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6" />
                   </div>
                 </div>

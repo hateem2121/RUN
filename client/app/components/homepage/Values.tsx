@@ -98,7 +98,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
     <Card
       className={cn(
         colSpan,
-        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-white/10 p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
+        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
       )}
       variant="glass-premium"
       onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
@@ -112,7 +112,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
           decoding="async"
           className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
       </div>
 
       {/* Ripple Layer - Only rendered on desktop for performance */}
@@ -136,7 +136,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
           )}
         </div>
         <div>
-          <h3 className="mb-2 font-bold text-2xl text-white uppercase">{title}</h3>
+          <h3 className="mb-2 font-bold text-2xl text-foreground uppercase">{title}</h3>
           <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
             {subtitle}
           </p>
@@ -203,7 +203,7 @@ const Values: React.FC = () => {
         </div>
 
         {/* Scrolling Ticker */}
-        <div className="mt-24 w-full overflow-hidden border-black border-y py-6" aria-hidden="true">
+        <div className="mt-24 w-full overflow-hidden border-foreground border-y py-6" aria-hidden="true">
           <div className="flex animate-marquee whitespace-nowrap">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")

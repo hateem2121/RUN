@@ -2,6 +2,7 @@
   "recommendations": [
     // === Essential Development ===
     "biomejs.biome", // FOSS Linter & Formatter (Replaces ESLint)
+    "EditorConfig.EditorConfig", // EditorConfig Support
     "rphlmr.drizzle-lab", // Drizzle Visualizer
     "bradlc.vscode-tailwindcss", // TailwindCSS IntelliSense
     "usernamehw.errorlens", // Inline Errors

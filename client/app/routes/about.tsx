@@ -156,7 +156,7 @@ export default function About() {
         <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
         {/* Content */}
-        <div className="relative z-default">
+        <div className="relative z-elevated">
           <Typography.H3 className="mb-3 font-bold text-neutral-900 text-xl dark:text-neutral-100">
             {item.title}
           </Typography.H3>
@@ -238,7 +238,7 @@ export default function About() {
                     </div>
                   )}
 
-                  <CardContent className="relative z-default p-8 md:p-12">
+                  <CardContent className="relative z-elevated p-8 md:p-12">
                     <div className="grid items-center gap-8 md:grid-cols-2">
                       <div>
                         {teamMessage.imageId && getAsset(teamMessage.imageId) && (

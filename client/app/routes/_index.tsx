@@ -41,6 +41,16 @@ export default function Index() {
 
   // Initialize Lenis Smooth Scroll with Skew Effect
   useEffect(() => {
+    // Respect user preference for reduced motion
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // Skip smooth scroll and skew effects for users who prefer reduced motion
+    if (prefersReducedMotion) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),

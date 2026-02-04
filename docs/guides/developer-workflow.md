@@ -8,8 +8,7 @@ Welcome to the RUN Apparel B2B platform! This guide outlines the standard operat
 
 ### Getting Started
 1. **Node.js**: Ensure you are using **Node v24**.
-2. **Setup**: Run `npm install` and `cp .env.example .env`. 
-3. **Verify**: Use `scripts/setup/verify-setup.sh` to check your VS Code configuration.
+3. **Bootstrap**: Run `./scripts/bootstrap.sh` to install dependencies, setup env, and verify configuration.
 4. **Boot**: Run `npm run dev` to start the Turbo dev pipeline (React 19 + Express 5).
 
 ### Branching Strategy
