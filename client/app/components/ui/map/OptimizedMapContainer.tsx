@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Loader2, Map as MapIcon, Satellite } from "lucide-react";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { MapErrorBoundary } from "./components/MapErrorBoundary";
 import type { MapLocation } from "./hooks/useMapMarkers";
 import { useMapState } from "./hooks/useMapState";
@@ -26,6 +26,30 @@ interface OptimizedMapContainerProps {
 
 export function OptimizedMapContainer({ locations, className = "" }: OptimizedMapContainerProps) {
   const { activeLayer, toggleLayer, mapConfig, tileLayerConfig } = useMapState();
+  
+  // Use ref to track the container and ensure cleanup
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [mapKey] = useState(() => `map-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+  
+  useEffect(() => {
+    // Clean up any existing Leaflet instance on the container
+    if (containerRef.current) {
+      const existingMap = (containerRef.current as HTMLDivElement & { _leaflet_id?: number })._leaflet_id;
+      if (existingMap) {
+        // Remove Leaflet classes to allow re-initialization
+        containerRef.current.classList.remove('leaflet-container');
+        delete (containerRef.current as HTMLDivElement & { _leaflet_id?: number })._leaflet_id;
+      }
+    }
+    
+    // Delay to ensure DOM is stable after hydration
+    const timer = setTimeout(() => setIsReady(true), 200);
+    return () => {
+      clearTimeout(timer);
+      setIsReady(false);
+    };
+  }, []);
 
   const clientLocations = locations.filter((l) => l.type === "client" && l.isActive);
   const facilityLocations = locations.filter((l) => l.type === "facility" && l.isActive);
@@ -67,31 +91,38 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
         </motion.div>
 
         <MapErrorBoundary>
-          <Suspense
-            fallback={
-              <div className="bg-muted/20 flex h-full w-full items-center justify-center">
-                <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
-              </div>
-            }
-          >
-            <MapContainer
-              center={mapConfig.center}
-              zoom={mapConfig.zoom}
-              style={{ height: "100%", width: "100%" }}
-              zoomControl={mapConfig.zoomControl}
-              scrollWheelZoom={mapConfig.scrollWheelZoom}
+          {isReady ? (
+            <Suspense
+              fallback={
+                <div className="bg-muted/20 flex h-full w-full items-center justify-center">
+                  <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+                </div>
+              }
             >
-              {/* Dynamic Tile Layer */}
-              <TileLayer
-                key={activeLayer}
-                attribution={tileLayerConfig.attribution}
-                url={tileLayerConfig.url}
-              />
+              <MapContainer
+                key={mapKey}
+                center={mapConfig.center}
+                zoom={mapConfig.zoom}
+                style={{ height: "100%", width: "100%" }}
+                zoomControl={mapConfig.zoomControl}
+                scrollWheelZoom={mapConfig.scrollWheelZoom}
+              >
+                {/* Dynamic Tile Layer */}
+                <TileLayer
+                  key={activeLayer}
+                  attribution={tileLayerConfig.attribution}
+                  url={tileLayerConfig.url}
+                />
 
-              {/* Optimized Markers */}
-              <MapMarkers locations={locations} />
-            </MapContainer>
-          </Suspense>
+                {/* Optimized Markers */}
+                <MapMarkers locations={locations} />
+              </MapContainer>
+            </Suspense>
+          ) : (
+            <div className="bg-muted/20 flex h-full w-full items-center justify-center">
+              <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+            </div>
+          )}
         </MapErrorBoundary>
       </div>
 

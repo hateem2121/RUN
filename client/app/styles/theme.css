@@ -22,6 +22,13 @@
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
     --background-alt: hsl(0 0% 98%);
+    
+    /* Stacking Card Section Colors - Light Mode */
+    --color-card-manufacturing: 210 20% 96%;
+    --color-card-innovation: 215 25% 94%;
+    --color-card-sustainability: 142 25% 94%;
+    --color-card-quality: 270 20% 95%;
+    --color-card-global: 262 20% 95%;
   }
 
   .dark {
@@ -45,6 +52,13 @@
     --input: 240 3.7% 15.9%;
     --ring: 263.4 70% 50.4%;
     --background-alt: hsl(240 3.7% 15.9%);
+    
+    /* Stacking Card Section Colors - Dark Mode */
+    --color-card-manufacturing: 220 13% 18%;
+    --color-card-innovation: 222 47% 11%;
+    --color-card-sustainability: 143 64% 15%;
+    --color-card-quality: 270 40% 15%;
+    --color-card-global: 262 40% 18%;
   }
 }
 

@@ -262,6 +262,37 @@
   justify-content: center;
 }
 
+@utility stacking-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  height: 500px;
+  padding: 2rem;
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--muted)) 100%
+  );
+  isolation: isolate;
+  contain: layout style paint;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.dark .stacking-card {
+  background: linear-gradient(
+    135deg,
+    hsl(220 13% 18%) 0%,
+    hsl(215 20% 12%) 100%
+  );
+}
+
 @utility inline-center-flex {
   display: inline-flex;
   align-items: center;

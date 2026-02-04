@@ -13,10 +13,9 @@ import { Award, Factory, Globe2, MessageSquare, Package, TrendingUp, Users } fro
 
 import { useLoaderData } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { ClientOnly } from "@/components/shared/ClientOnly";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
-import { type MapLocation, OptimizedMapContainer } from "@/components/ui/map";
+import { type MapLocation, ClientOnlyMap } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import StackingCards from "@/components/ui/stacking-cards";
 import { Timeline } from "@/components/ui/timeline";
@@ -98,13 +97,14 @@ export default function About() {
   // Transform locations to match the optimized map interface
   const mapLocations: MapLocation[] = locations.map((location) => ({
     id: location.id,
-    type: location.type as "client" | "facility",
+    // Map locationType to client/facility - headquarters and office are facilities, everything else is distribution/client
+    type: (location.locationType === "headquarters" || location.locationType === "office" || location.locationType === "distribution") ? "facility" : "client",
     name: location.name,
     latitude: parseFloat(location.latitude), // Convert decimal string to number
     longitude: parseFloat(location.longitude), // Convert decimal string to number
-    city: location.city || "",
-    country: location.country || "", // Handle null country values
-    details: location.details || "",
+    city: location.city || location.address?.split(",")[1]?.trim() || "",
+    country: location.country || location.address?.split(",").pop()?.trim() || "", // Handle null country values
+    details: location.details || location.description || "",
     isActive: location.isActive ?? true,
   }));
 
@@ -150,7 +150,7 @@ export default function About() {
             <div className="mt-4">
               <OptimizedImage
                 mediaId={item.imageId}
-                alt={item.title}
+                alt={`Historical milestone: ${item.title}`}
                 quality={85}
                 className="h-40 w-full rounded-lg object-cover bg-transparent"
               />
@@ -177,7 +177,7 @@ export default function About() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="min-h-screen bg-background">
+      <div id="main-content" className="min-h-screen bg-background">
         {/* Unified Scroll Expansion Hero Section with Overlay Content */}
         <HeroSection
           heroData={heroData || {}}
@@ -235,13 +235,13 @@ export default function About() {
                             {teamMessage.message}
                           </Typography.P>
                         )}
-                        {teamMessage.signature && (
+                        {(teamMessage.signature || teamMessage.name) && (
                           <div className="border-t pt-4">
                             <Typography.P className="font-semibold text-foreground">
-                              {teamMessage.signature}
+                              {teamMessage.signature || teamMessage.name}
                             </Typography.P>
                             <Typography.P className="text-muted-foreground text-sm">
-                              Executive Team
+                              {teamMessage.position || "Executive Team"}
                             </Typography.P>
                           </div>
                         )}
@@ -348,15 +348,7 @@ export default function About() {
                 </Typography.P>
               </motion.div>
 
-              <ClientOnly
-                fallback={
-                  <div className="flex h-modal-sm w-full animate-pulse items-center justify-center rounded-2xl bg-muted">
-                    Loading map...
-                  </div>
-                }
-              >
-                <OptimizedMapContainer locations={mapLocations} />
-              </ClientOnly>
+              <ClientOnlyMap locations={mapLocations} />
             </div>
           </section>
         )}

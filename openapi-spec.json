@@ -21,6 +21,159 @@
           }
         }
       }
+    },
+    "/api/contact-info": {
+      "get": {
+        "summary": "Get Contact Page Configuration",
+        "description": "Retrieves the dynamic configuration for the contact page, including Hero title, contact details, working hours, and social links.",
+        "responses": {
+          "200": {
+            "description": "Contact configuration object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactPageConfiguration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Configuration not found"
+          }
+        }
+      }
+    },
+    "/api/locations": {
+      "get": {
+        "summary": "Get Business Locations",
+        "description": "Retrieves a list of business office locations including coordinates.",
+        "responses": {
+          "200": {
+            "description": "List of locations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "summary": "Submit Contact Form",
+        "description": "Submits a contact inquiry via the contact page form.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactSubmission"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactSubmission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Submission success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "submissionId": { "type": "number" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request or Validation Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ContactPageConfiguration": {
+        "type": "object",
+        "properties": {
+          "heroTitle": { "type": "string" },
+          "description": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" },
+          "locationLine1": { "type": "string" },
+          "locationLine2": { "type": "string" },
+          "locationButtonText": { "type": "string" },
+          "tradingHours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "string" }
+              }
+            }
+          },
+          "socialLinks": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "platformOptions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "formButtonText": { "type": "string" },
+          "formPrivacyText": { "type": "string" },
+          "successHeading": { "type": "string" },
+          "successMessage": { "type": "string" },
+          "mapCoordinates": {
+            "type": "object",
+            "properties": {
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
+            }
+          }
+        }
+      },
+      "BusinessLocation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" }
+        }
+      },
+      "ContactSubmission": {
+        "type": "object",
+        "required": ["name", "email", "message", "country"],
+        "properties": {
+          "name": { "type": "string", "description": "Full name" },
+          "email": { "type": "string", "format": "email" },
+          "message": { "type": "string" },
+          "company": { "type": "string" },
+          "phone": { "type": "string" },
+          "country": { "type": "string" },
+          "preferredPlatform": { "type": "string", "description": "Platform or 'Other'" },
+          "honeypot": { "type": "string", "description": "Should be empty for humans" },
+          "recaptchaToken": { "type": "string" }
+        }
+      }
     }
   }
 }

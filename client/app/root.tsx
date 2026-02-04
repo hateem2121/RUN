@@ -90,11 +90,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           <HelmetProvider>
             <QueryClientProvider client={queryClient}>
               <HydrationBoundary state={loaderData?.dehydratedState}>
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground"
+                >
+                  Skip to main content
+                </a>
                 <FloatingDockHeader />
                 {children}
                 <BackToTop />

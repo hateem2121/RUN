@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { CheckCircle2, Clock, Mail, MapPin, Share2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CheckCircle2 } from "lucide-react";
+import { useEffect, useState, useMemo, Suspense, lazy } from "react";
 import { useForm } from "react-hook-form";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { CustomSelect } from "@/components/ui/custom-select";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,8 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/contact";
+
+const ContactInfoCards = lazy(() => import("@/components/contact/contact-info-cards"));
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -44,22 +46,7 @@ interface ContactConfig {
   successMessage?: string;
 }
 
-const contactFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  jobTitle: z.string().optional(),
-  companyName: z.string().optional(),
-  email: z.string().email("Invalid email address"),
-  country: z.string().min(1, "Country is required"),
-  platform: z.string().default("Phone Call"),
-  contactNumber: z.string().optional(),
-  otherPlatform: z.string().optional(),
-  message: z.string().min(1, "Message is required"),
-  contactPreference: z.enum(["email", "platform"]).default("email"),
-  honeypot: z.string().optional(),
-});
-
-type ContactFormData = z.infer<typeof contactFormSchema>;
+import { contactFormSchema, type ContactFormData } from "@shared/validation/contact";
 
 export async function loader() {
   const queryClient = getQueryClient();
@@ -103,22 +90,23 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Contact() {
   const loaderData = useLoaderData<typeof loader>();
   const [mounted, setMounted] = useState(false);
-  const isMobile = useIsMobile();
   const { toast } = useToast();
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [showPlatformDropdown, setShowPlatformDropdown] = useState(false);
-  const [countrySearch, setCountrySearch] = useState("");
+  // Removed internal dropdown state as CustomSelect handles it
+
+  // SSR-safe hydration check - prevents useRef null errors and hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // SSR-safe: only call hooks that use window/refs after mount
+  const isMobile = mounted ? useIsMobile() : false;
+
   const { data: contactConfig, isLoading } = useQuery<ContactConfig>({
     queryKey: ["/api/contact-info"],
     staleTime: 300000,
   });
-
-  // SSR-safe hydration check - prevents useRef null errors
-  useEffect(() => {
-    setMounted(true);
-  }, []);
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema) as any,
     defaultValues: {
@@ -186,9 +174,9 @@ export default function Contact() {
     fetcher.submit(formData, { method: "post" });
   };
 
-  const filteredCountries = countries.filter((c) =>
-    c.name.toLowerCase().includes(countrySearch.toLowerCase()),
-  );
+  const countryOptions = useMemo(() => {
+    return [...countries].sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
 
   const platforms = contactConfig?.platformOptions || [
     "Phone Call",
@@ -253,7 +241,7 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.firstName && (
-                            <Typography.P className="mt-2 text-red-500 text-sm">
+                            <Typography.P className="mt-2 text-destructive text-sm">
                               {form.formState.errors.firstName.message}
                             </Typography.P>
                           )}
@@ -269,7 +257,7 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.lastName && (
-                            <Typography.P className="mt-2 text-red-500 text-sm">
+                            <Typography.P className="mt-2 text-destructive text-sm">
                               {form.formState.errors.lastName.message}
                             </Typography.P>
                           )}
@@ -316,74 +304,42 @@ export default function Contact() {
                             className={INPUT_CLASSES}
                           />
                           {form.formState.errors.email && (
-                            <Typography.P className="mt-2 text-red-500 text-sm">
+                            <Typography.P className="mt-2 text-destructive text-sm">
                               {form.formState.errors.email.message}
                             </Typography.P>
                           )}
                         </div>
                         <div>
                           <Label className={LABEL_CLASSES}>
-                            Country <span className="text-red-500">*</span>
+                            Country <span className="text-destructive">*</span>
                           </Label>
                           <div className="relative">
-                            <button
-                              type="button"
-                              data-testid="button-country-dropdown"
-                              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                              className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
-                            >
-                              <span className="flex items-center">
-                                {selectedCountry && (
-                                  <img
-                                    src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`}
-                                    alt={`${selectedCountry.name} flag`}
-                                    className="mr-3 h-4"
+                            <CustomSelect
+                              value={selectedCountry}
+                              options={countryOptions}
+                              onChange={(country) => {
+                                setSelectedCountry(country);
+                                form.setValue("country", country.name);
+                              }}
+                              getLabel={(c) => c.name}
+                              getKey={(c) => c.code}
+                              renderOption={(c) => (
+                                <div className="flex items-center">
+                                  <img 
+                                    src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} 
+                                    alt="" 
+                                    className="mr-3 h-4" 
                                   />
-                                )}
-                                <span className="block truncate">
-                                  {selectedCountry ? selectedCountry.name : "Select Country"}
-                                </span>
-                              </span>
-                            </button>
-                            {showCountryDropdown && (
-                              <div className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
-                                <div className="p-2">
-                                  <Input
-                                    type="text"
-                                    placeholder="Search for a country..."
-                                    value={countrySearch}
-                                    onChange={(e) => setCountrySearch(e.target.value)}
-                                    className="w-full rounded-md p-2 text-sm"
-                                  />
+                                  <span>{c.name}</span>
                                 </div>
-                                <ul className="max-h-40 overflow-y-auto">
-                                  {filteredCountries.map((country) => (
-                                    <li
-                                      key={country.code}
-                                      onClick={() => {
-                                        setSelectedCountry(country);
-                                        form.setValue("country", country.name);
-                                        setShowCountryDropdown(false);
-                                        setCountrySearch("");
-                                      }}
-                                      className="cursor-pointer select-none py-2 pr-9 pl-3 text-foreground hover:bg-primary hover:text-primary-foreground"
-                                    >
-                                      <div className="flex items-center">
-                                        <img
-                                          src={`https://flagcdn.com/w20/${country.code.toLowerCase()}.png`}
-                                          alt={`${country.name} flag`}
-                                          className="mr-3 h-4"
-                                        />
-                                        <span className="block truncate">{country.name}</span>
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                              )}
+                              placeholder="Select Country"
+                              searchable
+                              data-testid="button-country-dropdown"
+                            />
                           </div>
                           {form.formState.errors.country && (
-                            <Typography.P className="mt-2 text-red-500 text-sm">
+                            <Typography.P className="mt-2 text-destructive text-sm">
                               {form.formState.errors.country.message}
                             </Typography.P>
                           )}
@@ -395,30 +351,15 @@ export default function Contact() {
                         <div>
                           <Label className={LABEL_CLASSES}>Preferred Platform</Label>
                           <div className="relative">
-                            <button
-                              type="button"
+                            <CustomSelect
+                              value={selectedPlatform || null}
+                              options={platforms}
+                              onChange={(p) => form.setValue("platform", p)}
+                              getLabel={(p) => p}
+                              getKey={(p) => p}
+                              placeholder="Select Platform"
                               data-testid="button-platform-dropdown"
-                              onClick={() => setShowPlatformDropdown(!showPlatformDropdown)}
-                              className="relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm-xs transition-colors hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm"
-                            >
-                              <span className="block truncate">{selectedPlatform}</span>
-                            </button>
-                            {showPlatformDropdown && (
-                              <ul className="absolute z-dock mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-background py-1 text-base shadow-xl sm:text-sm">
-                                {platforms.map((platform) => (
-                                  <li
-                                    key={platform}
-                                    onClick={() => {
-                                      form.setValue("platform", platform);
-                                      setShowPlatformDropdown(false);
-                                    }}
-                                    className="cursor-pointer select-none px-3 py-2 text-foreground hover:bg-primary hover:text-primary-foreground"
-                                  >
-                                    {platform}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
+                            />
                           </div>
                         </div>
                         <div>
@@ -527,8 +468,8 @@ export default function Contact() {
                   </div>
                 ) : (
                   <div className="py-12 text-center">
-                    <div className="mb-6 inline-block rounded-full bg-green-100 p-4">
-                      <CheckCircle2 className="h-12 w-12 text-green-600" />
+                    <div className="mb-6 inline-block rounded-full bg-status-success-muted p-4">
+                      <CheckCircle2 className="h-12 w-12 text-status-success" />
                     </div>
                     <Typography.H2 className="mb-3 font-bold text-3xl text-foreground/90">
                       {contactConfig?.successHeading || "Thank you!"}
@@ -539,7 +480,7 @@ export default function Contact() {
                     </Typography.P>
                     <Button
                       onClick={() => setShowSuccess(false)}
-                      className="focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                      className="focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
                       data-testid="button-send-another"
                     >
                       Send Another Message
@@ -550,129 +491,9 @@ export default function Contact() {
       </Card>
 
             {/* Right Column: Info Boxes */}
-            <div className="col-span-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-1 md:grid-cols-1 lg:col-span-2 lg:grid-cols-1">
-              {/* Location Box */}
-              <ContactInfoCard isMobile={isMobile ?? false}>
-                <MapPin className="mb-4 h-6 w-6 text-foreground/90" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  LOCATION
-                </Typography.H2>
-                <Typography.P className="mb-6 text-muted-foreground">
-                  {contactConfig?.locationLine1 || "123 Main Street,"}
-                  <br />
-                  {contactConfig?.locationLine2 || "Anytown, USA 12345"}
-                </Typography.P>
-                <Button variant="outline" data-testid="button-get-directions" className="w-full">
-                  {contactConfig?.locationButtonText || "GET DIRECTIONS"}
-                </Button>
-              </ContactInfoCard>
-
-              {/* Contact Box */}
-              <ContactInfoCard isMobile={isMobile ?? false}>
-                <Mail className="mb-4 h-6 w-6 text-foreground/90" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  CONTACT
-                </Typography.H2>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li>
-                    <a
-                      href={`mailto:${contactConfig?.email || "info@example.com"}`}
-                      className="hover:underline"
-                      data-testid="link-email"
-                    >
-                      {contactConfig?.email || "info@example.com"}
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={`tel:${contactConfig?.phone || "+1234567890"}`}
-                      className="hover:underline"
-                      data-testid="link-phone"
-                    >
-                      {contactConfig?.phone || "(123) 456-7890"}
-                    </a>
-                  </li>
-                </ul>
-              </ContactInfoCard>
-
-              {/* Trading Hours Box */}
-              <ContactInfoCard isMobile={isMobile ?? false}>
-                <Clock className="mb-4 h-6 w-6 text-foreground/90" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  TRADING HOURS
-                </Typography.H2>
-                <div className="space-y-1 text-muted-foreground">
-                  {contactConfig?.tradingHours && contactConfig.tradingHours.length > 0 ? (
-                    contactConfig.tradingHours.map((hours, index) => (
-                      <Typography.P key={index}>
-                        <strong>{hours.label}:</strong> <span>{hours.value}</span>
-                      </Typography.P>
-                    ))
-                  ) : (
-                    <>
-                      <Typography.P>
-                        <strong>Monday - Friday:</strong> <span>9:00 AM to 5:00 PM</span>
-                      </Typography.P>
-                      <Typography.P>
-                        <strong>Saturdays:</strong> <span>10:00 AM to 2:00 PM</span>
-                      </Typography.P>
-                      <Typography.P>
-                        <strong>Sundays:</strong> <span className="font-semibold">Closed</span>
-                      </Typography.P>
-                    </>
-                  )}
-                </div>
-              </ContactInfoCard>
-
-              {/* Social Links Box */}
-              <ContactInfoCard isMobile={isMobile ?? false}>
-                <Share2 className="mb-4 h-6 w-6 text-foreground/90" />
-                <Typography.H2 className="mb-4 font-bold text-xl tracking-tight">
-                  FOLLOW US
-                </Typography.H2>
-                <ul className="space-y-2 text-muted-foreground">
-                  {contactConfig?.socialLinks &&
-                  Object.keys(contactConfig.socialLinks).length > 0 ? (
-                    Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
-                      <li key={platform}>
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="capitalize hover:underline"
-                          data-testid={`link-social-${platform.toLowerCase()}`}
-                        >
-                          {platform}
-                        </a>
-                      </li>
-                    ))
-                  ) : (
-                    <>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-facebook">
-                          Facebook
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-instagram">
-                          Instagram
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-twitter">
-                          Twitter
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="hover:underline" data-testid="link-social-linkedin">
-                          LinkedIn
-                        </a>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </ContactInfoCard>
-            </div>
+            <Suspense fallback={<div className="col-span-1 h-96 animate-pulse rounded-xl bg-muted/20" />}>
+              <ContactInfoCards contactConfig={contactConfig} />
+            </Suspense>
           </div>
         </div>
       </div>
@@ -684,15 +505,3 @@ const INPUT_CLASSES =
   "block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary";
 const LABEL_CLASSES = "mb-2 block font-medium text-foreground/80 text-sm";
 
-const ContactInfoCard = ({
-  children,
-  isMobile,
-}: {
-  children: React.ReactNode;
-  isMobile: boolean;
-}) => (
-  <Card variant="glass-premium" className="p-6 lg:p-8">
-    <GlassCardDecorations showShimmer={!isMobile} />
-    <div className="relative z-elevated">{children}</div>
-  </Card>
-);

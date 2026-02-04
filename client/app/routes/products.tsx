@@ -33,7 +33,6 @@ import {
   CategorySchema,
   CertificateSchema,
   FabricSchema,
-  MediaAssetSchema,
   type ProductSummary,
   ProductSummarySchema,
   SizeChartSchema,
@@ -192,7 +191,6 @@ export default function ProductsPage() {
     certificates: serverCertificates,
     sizeCharts: serverSizeCharts,
     accessories: serverAccessories,
-    mediaAssets: serverMediaAssets,
     products: serverProducts,
   } = useLoaderData<typeof loader>();
 
@@ -233,7 +231,7 @@ export default function ProductsPage() {
   const certificates = useMemo(() => safeParseArray(CertificateSchema, serverCertificates), [serverCertificates]);
   const sizeCharts = useMemo(() => safeParseArray(SizeChartSchema, serverSizeCharts), [serverSizeCharts]);
   const accessories = useMemo(() => safeParseArray(AccessorySchema, serverAccessories), [serverAccessories]);
-  const mediaAssets = useMemo(() => safeParseArray(MediaAssetSchema, serverMediaAssets), [serverMediaAssets]);
+
 
   // Use server products by default.
   // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.

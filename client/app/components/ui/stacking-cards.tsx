@@ -3,6 +3,7 @@ import { type MotionValue, motion, useScroll, useTransform } from "framer-motion
 import { useRef } from "react";
 import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StackingCard {
   title: string;
@@ -71,12 +72,13 @@ export const Card: React.FC<CardProps> = ({
   const mediaAsset = mediaId ? getAsset(mediaId) : null;
   const isMobile = useIsMobile();
 
+
   return (
-    <div ref={container} className="center-flex sticky top-0 h-screen">
+    <div ref={container} className={`center-flex sticky top-0 ${isMobile ? 'h-auto py-8' : 'h-screen'} isolate`}>
       <motion.div
         style={{
           scale,
-          top: `calc(-5vh + ${i * 25}px)`,
+          top: isMobile ? 20 : `calc(-5vh + ${i * 25}px)`,
           pointerEvents: "auto",
         }}
         className="stacking-card group"
@@ -106,15 +108,15 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Content */}
         <div className="relative z-elevated flex h-full flex-col">
-          <h2 className="mb-4 shrink-0 text-center font-bold text-2xl text-white md:text-3xl">
+          <h2 className="mb-4 shrink-0 text-center font-bold text-2xl text-foreground dark:text-white md:text-3xl">
             {title}
           </h2>
           <div className={`flex flex-1 flex-col items-stretch gap-6 md:flex-row md:gap-8`}>
             <div className={`flex min-h-0 w-full flex-col justify-center md:w-2/5`}>
-              <p className="mb-6 flex-1 text-sm text-white/90 leading-relaxed md:text-base">
+              <p className="mb-6 flex-1 text-sm text-muted-foreground dark:text-white/90 leading-relaxed md:text-base">
                 {description}
               </p>
-              <div className="flex shrink-0 items-center gap-2 text-white/80">
+              <div className="flex shrink-0 items-center gap-2 text-muted-foreground dark:text-white/80">
                 <button
                   type="button"
                   className="cursor-pointer rounded-sm text-sm underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -133,7 +135,7 @@ export const Card: React.FC<CardProps> = ({
             </div>
 
             <div
-              className={`relative min-h-72 w-full overflow-hidden rounded-lg bg-white/10 md:min-h-80 md:w-3/5`}
+              className={`relative min-h-48 w-full overflow-hidden rounded-lg bg-white/10 md:min-h-80 md:w-3/5`}
             >
               {imageUrl && mediaAsset ? (
                 <motion.div
@@ -159,25 +161,8 @@ export const Card: React.FC<CardProps> = ({
                   )}
                 </motion.div>
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-white/5">
-                  <div className="text-center text-white/60">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
-                      <svg
-                        className="h-8 w-8"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Visual coming soon</p>
-                  </div>
+                <div className="flex h-full w-full items-center justify-center bg-muted/20">
+                    <Skeleton className="h-full w-full rounded-lg" />
                 </div>
               )}
             </div>
@@ -223,7 +208,7 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
   }
 
   return (
-    <section ref={container} className="bg-slate-950 text-white">
+    <section ref={container} className="bg-muted text-foreground dark:bg-slate-950 dark:text-white">
       {/* Header Section */}
       <div className="py-20">
         <div className="container mx-auto px-4 text-center md:px-6">
@@ -236,7 +221,7 @@ export default function StackingCards({ sections, getAssetUrl, getAsset }: Stack
               ease: [0.25, 0.25, 0.25, 0.75],
             }}
           >
-            <h2 className="mb-6 font-bold text-4xl text-white tracking-tight md:text-5xl lg:text-6xl">
+            <h2 className="mb-6 font-bold text-4xl text-foreground dark:text-white tracking-tight md:text-5xl lg:text-6xl">
               Our Manufacturing
               <br />
               <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
