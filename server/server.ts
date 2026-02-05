@@ -5,6 +5,7 @@ import { startOtel } from "./lib/monitoring/otel.js";
 startOtel();
 
 import { createServer } from "node:http";
+import path from "node:path";
 import express from "express";
 import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
 import { setupRoutes } from "./boot/routes.js";
@@ -12,8 +13,6 @@ import { startServices } from "./boot/services.js";
 import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
-
-import path from "node:path";
 
 export const app = express();
 const config = getConfig();
@@ -64,7 +63,9 @@ serverReady = (async () => {
       const actualPort = typeof address === "object" && address ? address.port : port;
       logger.info(`Server running on port ${actualPort}`);
       logger.info(`Environment: ${config.app.environment}`);
-      logger.info(`👉 Access via IP: http://127.0.0.1:${actualPort} (Use this instead of localhost)`);
+      logger.info(
+        `👉 Access via IP: http://127.0.0.1:${actualPort} (Use this instead of localhost)`,
+      );
     });
 
     // 10. Server Configuration

@@ -394,10 +394,13 @@ export default function FabricManagementEnhancedV2() {
       .filter((f) => f.properties)
       .flatMap((f) => Object.keys(f.properties || {}))
       // biome-ignore lint/suspicious/noExplicitAny: Dynamic property accumulator
-      .reduce((acc: Record<string, number>, prop) => {
-        acc[prop] = (acc[prop] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc: Record<string, number>, prop) => {
+          acc[prop] = (acc[prop] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
     return {
       totalFabrics,

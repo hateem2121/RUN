@@ -159,7 +159,10 @@ const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="relative z-elevated flex w-full flex-col text-foreground md:w-1/2">
+      <div
+        ref={rightRef}
+        className="relative z-elevated flex w-full flex-col text-foreground md:w-1/2"
+      >
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}

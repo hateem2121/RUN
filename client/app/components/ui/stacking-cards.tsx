@@ -72,9 +72,11 @@ export const Card: React.FC<CardProps> = ({
   const mediaAsset = mediaId ? getAsset(mediaId) : null;
   const isMobile = useIsMobile();
 
-
   return (
-    <div ref={container} className={`center-flex sticky top-0 ${isMobile ? 'h-auto py-8' : 'h-screen'} isolate`}>
+    <div
+      ref={container}
+      className={`center-flex sticky top-0 ${isMobile ? "h-auto py-8" : "h-screen"} isolate`}
+    >
       <motion.div
         style={{
           scale,
@@ -162,7 +164,7 @@ export const Card: React.FC<CardProps> = ({
                 </motion.div>
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-muted/20">
-                    <Skeleton className="h-full w-full rounded-lg" />
+                  <Skeleton className="h-full w-full rounded-lg" />
                 </div>
               )}
             </div>

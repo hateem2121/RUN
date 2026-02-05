@@ -24,7 +24,10 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Forward Marquee */}
-        <div role="list" className="animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused]">
+        <div
+          role="list"
+          className="animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused]"
+        >
           {/* Main Content */}
           {(data || CATEGORIES).map((cat, index) => {
             const isHovered = hoveredIndex === index;

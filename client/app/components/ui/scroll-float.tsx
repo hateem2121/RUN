@@ -374,7 +374,6 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
     <h2
       ref={containerRef}
       className={`my-5 overflow-hidden ${containerClassName}`}
-
       style={{
         contain: "layout style paint",
         willChange: "transform, opacity",

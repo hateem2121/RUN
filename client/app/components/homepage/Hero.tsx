@@ -1,12 +1,12 @@
 import { PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
+import { useTheme } from "next-themes";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Color, DoubleSide, MathUtils, type Mesh, type ShaderMaterial } from "three";
-import { useTheme } from "next-themes";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useHomepageData } from "@/hooks/use-homepage-data";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { colors } from "@/lib/design-tokens";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
 
@@ -100,7 +100,7 @@ const OptimizedClothMaterial = () => {
 
     const startColor = resolveColor(startColorToken as string);
     const endColor = resolveColor(endColorToken as string);
-    
+
     const uniforms = materialRef.current?.uniforms;
     if (uniforms) {
       if (startColor && uniforms.uColorStart) uniforms.uColorStart.value.set(startColor);
@@ -186,7 +186,7 @@ const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [dpr, setDpr] = useState([1, 1.5]);
-  const [isInView, setIsInView] = useState(true);
+  const [isInView, setIsInView] = useState(false);
 
   const { data: homepageData } = useHomepageData();
   const heroData = homepageData?.hero?.result;
@@ -337,7 +337,10 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block" aria-hidden="true">
+      <div
+        className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block"
+        aria-hidden="true"
+      >
         <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <path

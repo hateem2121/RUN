@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface CustomSelectProps<T> {
@@ -12,6 +12,7 @@ interface CustomSelectProps<T> {
   searchable?: boolean;
   className?: string;
   "data-testid"?: string;
+  "aria-describedby"?: string | undefined;
 }
 
 export function CustomSelect<T>({
@@ -25,6 +26,7 @@ export function CustomSelect<T>({
   searchable = false,
   className,
   "data-testid": testId,
+  "aria-describedby": ariaDescribedBy,
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -37,38 +39,41 @@ export function CustomSelect<T>({
     : options;
 
   // Keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (!open) {
-      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
-        e.preventDefault();
-        setOpen(true);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!open) {
+        if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+          e.preventDefault();
+          setOpen(true);
+        }
+        return;
       }
-      return;
-    }
 
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setHighlightedIndex((i) => Math.min(i + 1, filtered.length - 1));
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setHighlightedIndex((i) => Math.max(i - 1, 0));
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (filtered[highlightedIndex]) {
-          onChange(filtered[highlightedIndex]);
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setHighlightedIndex((i) => Math.min(i + 1, filtered.length - 1));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setHighlightedIndex((i) => Math.max(i - 1, 0));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (filtered[highlightedIndex]) {
+            onChange(filtered[highlightedIndex]);
+            setOpen(false);
+            setSearch("");
+          }
+          break;
+        case "Escape":
           setOpen(false);
           setSearch("");
-        }
-        break;
-      case "Escape":
-        setOpen(false);
-        setSearch("");
-        break;
-    }
-  }, [open, filtered, highlightedIndex, onChange]);
+          break;
+      }
+    },
+    [open, filtered, highlightedIndex, onChange],
+  );
 
   // Close on outside click
   useEffect(() => {
@@ -98,15 +103,14 @@ export function CustomSelect<T>({
         onClick={() => setOpen(!open)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-describedby={ariaDescribedBy}
         className={cn(
           "relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm transition-colors",
           "hover:border-border/80 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary sm:text-sm",
-          className
+          className,
         )}
       >
-        <span className="block truncate">
-          {value ? getLabel(value) : placeholder}
-        </span>
+        <span className="block truncate">{value ? getLabel(value) : placeholder}</span>
       </button>
 
       {open && (
@@ -123,11 +127,7 @@ export function CustomSelect<T>({
               />
             </div>
           )}
-          <ul
-            ref={listRef}
-            role="listbox"
-            className="max-h-40 overflow-y-auto py-1"
-          >
+          <ul ref={listRef} role="listbox" className="max-h-40 overflow-y-auto py-1">
             {filtered.map((option, index) => (
               <li
                 key={getKey(option)}
@@ -141,7 +141,7 @@ export function CustomSelect<T>({
                 className={cn(
                   "cursor-pointer select-none px-3 py-2 text-foreground",
                   index === highlightedIndex && "bg-primary text-primary-foreground",
-                  value === option && index !== highlightedIndex && "bg-muted"
+                  value === option && index !== highlightedIndex && "bg-muted",
                 )}
               >
                 {renderOption ? renderOption(option) : getLabel(option)}

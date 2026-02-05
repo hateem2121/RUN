@@ -1,4 +1,3 @@
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -22,7 +21,7 @@
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
     --background-alt: hsl(0 0% 98%);
-    
+
     /* Stacking Card Section Colors - Light Mode */
     --color-card-manufacturing: 210 20% 96%;
     --color-card-innovation: 215 25% 94%;
@@ -52,7 +51,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 263.4 70% 50.4%;
     --background-alt: hsl(240 3.7% 15.9%);
-    
+
     /* Stacking Card Section Colors - Dark Mode */
     --color-card-manufacturing: 220 13% 18%;
     --color-card-innovation: 222 47% 11%;
@@ -83,8 +82,6 @@
   /* Glass Effects */
   --color-glass: rgba(255, 255, 255, 0.1);
   --color-glass-dark: rgba(0, 0, 0, 0.2);
-
-
 
   /* Semantic Colors */
   --color-success: #ccff00;
@@ -124,6 +121,13 @@
   --color-status-inactive-muted: hsl(240 5% 92%);
 
   --color-status-purple-muted: hsl(270 60% 90%);
+
+  /* Neutral Color Scale (for mobile menu and general UI) */
+  --color-neutral-100: hsl(240 5% 96%);
+  --color-neutral-200: hsl(240 5% 90%);
+  --color-neutral-300: hsl(240 5% 84%);
+  --color-neutral-400: hsl(240 5% 65%);
+  --color-neutral-500: hsl(240 5% 46%);
 
   /* Shadcn/UI Mappings (Linked to CSS Variables) */
   --color-background: var(--background);
@@ -364,12 +368,20 @@
   --animate-marquee-reverse: marquee-reverse 30s linear infinite;
 
   @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   @keyframes marquee-reverse {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
 }

@@ -10,9 +10,8 @@ import {
 } from "framer-motion";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { cn } from "@/lib/utils";
 
 export const DraggableCardBody = ({
   className,

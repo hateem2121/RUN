@@ -18,7 +18,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error | null;
-  errorInfo?: ErrorInfo;
+  errorInfo?: ErrorInfo | null;
 }
 
 export class AdminProductsErrorBoundary extends Component<Props, State> {
@@ -45,7 +45,7 @@ export class AdminProductsErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null, errorInfo: undefined });
+    this.setState({ hasError: false, error: null, errorInfo: null });
   };
 
   override render() {

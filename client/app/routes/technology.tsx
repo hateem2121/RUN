@@ -662,132 +662,128 @@ export default function Technology() {
         <div className="technology-page-root relative isolate min-h-screen overflow-hidden">
           {/* UNIFIED INITIALIZATION: Direct admin settings - zero fallbacks, zero flicker */}
           <div className="-z-elevated fixed inset-0">
-          {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
-          <ClientOnly
-            fallback={
-              <div
-                className="fixed inset-0 bg-[image:var(--gradient-bg)]"
-                // biome-ignore lint: dynamic background needed
-                style={
-                  {
-                    "--gradient-bg": `linear-gradient(${safeGradientSettings.angle}deg, ${safeGradientSettings.gradientColors.join(", ")})`,
-                  } as React.CSSProperties
-                }
-              />
-            }
-          >
-            <ErrorBoundary fallback={<div className="bg-background fixed inset-0" />}>
-              <React.Suspense fallback={<div className="bg-background fixed inset-0" />}>
-                <GradientBlinds
-                  gradientColors={safeGradientSettings.gradientColors}
-                  angle={safeGradientSettings.angle}
-                  noise={safeGradientSettings.noise}
-                  blindCount={safeGradientSettings.blindCount}
-                  blindMinWidth={safeGradientSettings.blindMinWidth}
-                  spotlightRadius={safeGradientSettings.spotlightRadius}
-                  spotlightSoftness={safeGradientSettings.spotlightSoftness}
-                  spotlightOpacity={safeGradientSettings.spotlightOpacity}
-                  mouseDampening={safeGradientSettings.mouseDampening}
-                  mirrorGradient={safeGradientSettings.mirrorGradient}
-                  distortAmount={safeGradientSettings.distortAmount}
-                  shineDirection={safeGradientSettings.shineDirection as "left" | "right"}
-                  mixBlendMode={safeGradientSettings.mixBlendMode}
-                  paused={safeGradientSettings.paused}
-                  onWebGLReady={() => setWebglInitialized(true)}
+            {/* PHASE C: Suspense wrapper for lazy-loaded GradientBlinds */}
+            <ClientOnly
+              fallback={
+                <div
+                  className="fixed inset-0 bg-[image:var(--gradient-bg)]"
+                  // biome-ignore lint: dynamic background needed
+                  style={
+                    {
+                      "--gradient-bg": `linear-gradient(${safeGradientSettings.angle}deg, ${safeGradientSettings.gradientColors.join(", ")})`,
+                    } as React.CSSProperties
+                  }
                 />
-              </React.Suspense>
-            </ErrorBoundary>
-          </ClientOnly>
-        </div>
+              }
+            >
+              <ErrorBoundary fallback={<div className="bg-background fixed inset-0" />}>
+                <React.Suspense fallback={<div className="bg-background fixed inset-0" />}>
+                  <GradientBlinds
+                    gradientColors={safeGradientSettings.gradientColors}
+                    angle={safeGradientSettings.angle}
+                    noise={safeGradientSettings.noise}
+                    blindCount={safeGradientSettings.blindCount}
+                    blindMinWidth={safeGradientSettings.blindMinWidth}
+                    spotlightRadius={safeGradientSettings.spotlightRadius}
+                    spotlightSoftness={safeGradientSettings.spotlightSoftness}
+                    spotlightOpacity={safeGradientSettings.spotlightOpacity}
+                    mouseDampening={safeGradientSettings.mouseDampening}
+                    mirrorGradient={safeGradientSettings.mirrorGradient}
+                    distortAmount={safeGradientSettings.distortAmount}
+                    shineDirection={safeGradientSettings.shineDirection as "left" | "right"}
+                    mixBlendMode={safeGradientSettings.mixBlendMode}
+                    paused={safeGradientSettings.paused}
+                    onWebGLReady={() => setWebglInitialized(true)}
+                  />
+                </React.Suspense>
+              </ErrorBoundary>
+            </ClientOnly>
+          </div>
 
-        {/* Content with backdrop blur-sm for readability - Allow pointer events to pass through to WebGL */}
-        <div className="container mx-auto px-4 pt-20 pb-6 sm:pt-24 sm:pb-12">
-          {" "}
-          {/* Extra top padding for nav bar clearance */}
-          {/* 2025-08-25: Hero section architecture refactored for simplicity, clarity, and best-practice UX. */}
-          <section className="hero-section mb-16">
-            {/* Mobile: flex-col stack, Desktop: grid-cols-2 side-by-side */}
-            <div className="flex flex-col items-center gap-8 lg:grid lg:grid-cols-2 lg:gap-12">
-              {/* Hero Content - Column 1 - Content First on All Devices */}
-              <div className="hero-content order-1 w-full max-w-2xl">
-                <Card
-                  variant="glass-premium"
-                  className="block w-full cursor-default p-8"
-                >
-                  <GlassCardDecorations />
-                  {batchLoading ? (
-                    <LoadingSkeleton type="text" className="text-center lg:text-left" />
+          {/* Content with backdrop blur-sm for readability - Allow pointer events to pass through to WebGL */}
+          <div className="container mx-auto px-4 pt-20 pb-6 sm:pt-24 sm:pb-12">
+            {" "}
+            {/* Extra top padding for nav bar clearance */}
+            {/* 2025-08-25: Hero section architecture refactored for simplicity, clarity, and best-practice UX. */}
+            <section className="hero-section mb-16">
+              {/* Mobile: flex-col stack, Desktop: grid-cols-2 side-by-side */}
+              <div className="flex flex-col items-center gap-8 lg:grid lg:grid-cols-2 lg:gap-12">
+                {/* Hero Content - Column 1 - Content First on All Devices */}
+                <div className="hero-content order-1 w-full max-w-2xl">
+                  <Card variant="glass-premium" className="block w-full cursor-default p-8">
+                    <GlassCardDecorations />
+                    {batchLoading ? (
+                      <LoadingSkeleton type="text" className="text-center lg:text-left" />
+                    ) : (
+                      <div className="text-center lg:text-left">
+                        <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+                          {vm.hero?.title || "Technology & Innovation"}
+                        </Typography.H1>
+                        <Typography.H2 className="mb-6 text-lg leading-relaxed font-medium text-white/90 drop-shadow-sm lg:text-xl">
+                          {vm.hero?.subtitle ||
+                            "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
+                        </Typography.H2>
+
+                        {/* Clean interaction hint */}
+                        {backgroundMedia?.type === "3d_model" && (
+                          <Typography.P className="mb-6 flex justify-center text-sm text-white/70 lg:justify-start">
+                            Drag to rotate • Scroll to zoom • Touch to explore
+                          </Typography.P>
+                        )}
+
+                        {/* CTA Buttons */}
+                        {(vm.hero?.primaryCtaText || vm.hero?.secondaryCtaText) && (
+                          <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
+                            {vm.hero?.primaryCtaText && (
+                              <a
+                                href={vm.hero?.primaryCtaLink || "#"}
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring rounded-lg px-8 py-3 text-center font-semibold transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+                              >
+                                {vm.hero.primaryCtaText}
+                              </a>
+                            )}
+                            {vm.hero?.secondaryCtaText && (
+                              <a
+                                href={vm.hero?.secondaryCtaLink || "#"}
+                                className="font-medium text-white/90 underline transition-colors duration-200 hover:text-white"
+                              >
+                                {vm.hero.secondaryCtaText}
+                              </a>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Decorative Divider */}
+                        <div className="from-primary to-accent mx-auto h-1 w-24 rounded-full bg-linear-to-r lg:mx-0"></div>
+                      </div>
+                    )}
+                  </Card>
+                </div>
+
+                {/* Dedicated 3D Model - Column 2 - Media Second on All Devices */}
+                <div className="hero-3d order-2 w-full">
+                  {backgroundMedia ? (
+                    <div className="bg-transparent">
+                      <OptimizedTechnologyHero media={backgroundMedia} />
+                    </div>
                   ) : (
-                    <div className="text-center lg:text-left">
-                      <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
-                        {vm.hero?.title || "Technology & Innovation"}
-                      </Typography.H1>
-                      <Typography.H2 className="mb-6 text-lg leading-relaxed font-medium text-white/90 drop-shadow-sm lg:text-xl">
-                        {vm.hero?.subtitle ||
-                          "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
-                      </Typography.H2>
-
-                      {/* Clean interaction hint */}
-                      {backgroundMedia?.type === "3d_model" && (
-                        <Typography.P className="mb-6 flex justify-center text-sm text-white/70 lg:justify-start">
-                          Drag to rotate • Scroll to zoom • Touch to explore
-                        </Typography.P>
-                      )}
-
-                      {/* CTA Buttons */}
-                      {(vm.hero?.primaryCtaText || vm.hero?.secondaryCtaText) && (
-                        <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row lg:items-start">
-                          {vm.hero?.primaryCtaText && (
-                            <a
-                              href={vm.hero?.primaryCtaLink || "#"}
-                              className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring rounded-lg px-8 py-3 text-center font-semibold transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
-                            >
-                              {vm.hero.primaryCtaText}
-                            </a>
-                          )}
-                          {vm.hero?.secondaryCtaText && (
-                            <a
-                              href={vm.hero?.secondaryCtaLink || "#"}
-                              className="font-medium text-white/90 underline transition-colors duration-200 hover:text-white"
-                            >
-                              {vm.hero.secondaryCtaText}
-                            </a>
-                          )}
+                    <div className="border-glass flex aspect-4/3 items-center justify-center rounded-2xl border bg-white/5 backdrop-blur-sm">
+                      <div className="text-center text-white/40">
+                        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 transition-transform duration-500 hover:scale-110">
+                          <Box className="h-8 w-8 text-white/30" />
                         </div>
-                      )}
-
-                      {/* Decorative Divider */}
-                      <div className="from-primary to-accent mx-auto h-1 w-24 rounded-full bg-linear-to-r lg:mx-0"></div>
+                        <Typography.P className="font-medium text-white/50">
+                          Visual Preview Unavailable
+                        </Typography.P>
+                      </div>
                     </div>
                   )}
-                </Card>
+                </div>
               </div>
-
-              {/* Dedicated 3D Model - Column 2 - Media Second on All Devices */}
-              <div className="hero-3d order-2 w-full">
-                {backgroundMedia ? (
-                  <div className="bg-transparent">
-                    <OptimizedTechnologyHero media={backgroundMedia} />
-                  </div>
-                ) : (
-                  <div className="border-glass flex aspect-4/3 items-center justify-center rounded-2xl border bg-white/5 backdrop-blur-sm">
-                    <div className="text-center text-white/40">
-                      <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 transition-transform duration-500 hover:scale-110">
-                        <Box className="h-8 w-8 text-white/30" />
-                      </div>
-                      <Typography.P className="font-medium text-white/50">
-                        Visual Preview Unavailable
-                      </Typography.P>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
-      </div>
       )}
     </HydrationBoundary>
   );
 }
-

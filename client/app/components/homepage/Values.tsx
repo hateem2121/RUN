@@ -4,9 +4,9 @@ import type React from "react";
 import { useMemo, useRef } from "react";
 import { Color, type Mesh, type ShaderMaterial } from "three";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { cn } from "@/lib/utils";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
 
@@ -201,7 +201,10 @@ const Values: React.FC = () => {
         </div>
 
         {/* Scrolling Ticker */}
-        <div className="mt-24 w-full overflow-hidden border-foreground border-y py-6" aria-hidden="true">
+        <div
+          className="mt-24 w-full overflow-hidden border-foreground border-y py-6"
+          aria-hidden="true"
+        >
           <div className="flex animate-marquee whitespace-nowrap">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")

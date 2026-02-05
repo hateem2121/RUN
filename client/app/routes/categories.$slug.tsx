@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
-import { Typography } from "@/components/ui/typography";
 import { ProductGrid } from "@/components/products/ProductGrid";
+import { Typography } from "@/components/ui/typography";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug";
 
@@ -47,7 +47,6 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   return { dehydratedState: dehydrate(queryClient) };
 }
-
 
 export function meta({}: Route.MetaArgs) {
   return [

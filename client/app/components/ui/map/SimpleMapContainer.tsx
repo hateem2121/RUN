@@ -43,11 +43,12 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
       const L = await import("leaflet");
       await import("leaflet/dist/leaflet.css");
 
-      // Fix default icon issue  
+      // Fix default icon issue
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconRetinaUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
         iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
       });
@@ -65,17 +66,17 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        }
+        },
       ).addTo(map);
 
       // Add markers
       const markers: LeafletMarker[] = [];
-      
+
       locations.forEach((location) => {
         if (!location.isActive) return;
-        
+
         const color = location.type === "facility" ? "#16a34a" : "#2563eb";
-        
+
         const icon = L.divIcon({
           className: "custom-map-marker",
           html: `<div style="
@@ -137,12 +138,13 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
 
     const L = await import("leaflet");
     const { map, tileLayer } = mapInstanceRef.current;
-    
+
     tileLayer.remove();
 
-    const newUrl = activeLayer === "roadmap"
-      ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-      : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+    const newUrl =
+      activeLayer === "roadmap"
+        ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
     const newTileLayer = L.tileLayer(newUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -189,10 +191,7 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
           </div>
 
           {/* Map Container */}
-          <div
-            ref={containerRef}
-            className="h-full w-full bg-[#1a1a2e]"
-          />
+          <div ref={containerRef} className="h-full w-full bg-[#1a1a2e]" />
 
           {/* Loading Overlay */}
           {!isLoaded && (

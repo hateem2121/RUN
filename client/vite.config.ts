@@ -1,8 +1,8 @@
 // Limit Node.js internal thread pool to avoid system overload
 process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
 
-import path from "node:path";
 import dns from "node:dns";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { reactRouter } from "@react-router/dev/vite";
 
@@ -120,7 +120,6 @@ export default defineConfig(
           strict: true,
           deny: ["**/.*"],
         },
-
       },
     }) as any,
 );

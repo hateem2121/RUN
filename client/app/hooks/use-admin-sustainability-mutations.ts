@@ -1,10 +1,16 @@
+import type {
+  InsertSustainabilityGoal,
+  InsertSustainabilityInitiative,
+  InsertSustainabilityMetric,
+  InsertUnifiedSustainability,
+} from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useAdminSustainabilityMutations() {
   const queryClient = useQueryClient();
 
   const updateConfig = useMutation({
-    mutationFn: async (data: Record<string, unknown>) => {
+    mutationFn: async (data: Partial<InsertUnifiedSustainability>) => {
       // Mock implementation
       return data;
     },
@@ -14,7 +20,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createMetric = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: InsertSustainabilityMetric) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -22,7 +28,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateMetric = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityMetric> }) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -38,7 +44,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const reorderMetrics = useMutation({
-    mutationFn: async (_updates: { id: number; displayOrder: number }[]) => {},
+    mutationFn: async (_updates: { id: number; sortOrder: number }[]) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -46,7 +52,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createInitiative = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: InsertSustainabilityInitiative) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -54,7 +60,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateInitiative = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityInitiative> }) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -70,7 +76,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const reorderInitiatives = useMutation({
-    mutationFn: async (_updates: { id: number; displayOrder: number }[]) => {},
+    mutationFn: async (_updates: { id: number; sortOrder: number }[]) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -78,7 +84,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const createGoal = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: InsertSustainabilityGoal) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],
@@ -86,7 +92,7 @@ export function useAdminSustainabilityMutations() {
   });
 
   const updateGoal = useMutation({
-    mutationFn: async (_data: Record<string, unknown>) => {},
+    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityGoal> }) => {},
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["/api/sustainability/batch"],

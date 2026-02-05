@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Loader2, Map as MapIcon, Satellite } from "lucide-react";
-import { lazy, Suspense, useState, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { MapErrorBoundary } from "./components/MapErrorBoundary";
 import type { MapLocation } from "./hooks/useMapMarkers";
 import { useMapState } from "./hooks/useMapState";
@@ -26,23 +26,24 @@ interface OptimizedMapContainerProps {
 
 export function OptimizedMapContainer({ locations, className = "" }: OptimizedMapContainerProps) {
   const { activeLayer, toggleLayer, mapConfig, tileLayerConfig } = useMapState();
-  
+
   // Use ref to track the container and ensure cleanup
   const containerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
   const [mapKey] = useState(() => `map-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
-  
+
   useEffect(() => {
     // Clean up any existing Leaflet instance on the container
     if (containerRef.current) {
-      const existingMap = (containerRef.current as HTMLDivElement & { _leaflet_id?: number })._leaflet_id;
+      const existingMap = (containerRef.current as HTMLDivElement & { _leaflet_id?: number })
+        ._leaflet_id;
       if (existingMap) {
         // Remove Leaflet classes to allow re-initialization
-        containerRef.current.classList.remove('leaflet-container');
+        containerRef.current.classList.remove("leaflet-container");
         delete (containerRef.current as HTMLDivElement & { _leaflet_id?: number })._leaflet_id;
       }
     }
-    
+
     // Delay to ensure DOM is stable after hydration
     const timer = setTimeout(() => setIsReady(true), 200);
     return () => {

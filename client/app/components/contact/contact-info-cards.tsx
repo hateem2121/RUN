@@ -1,6 +1,6 @@
+import { Clock, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import { MapPin, Phone, Mail, Clock, Share2 } from "lucide-react";
 
 interface ContactInfoCardsProps {
   contactConfig?: any;
@@ -8,7 +8,7 @@ interface ContactInfoCardsProps {
 
 export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
   return (
-    <div className="col-span-1 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1">
+    <div className="col-span-1 lg:col-span-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1">
       {/* Social Connect Card - Mobile First */}
       <Card
         variant="glass-premium"

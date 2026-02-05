@@ -58,7 +58,7 @@ if (isTestMode && !enableRealDb) {
 const internalSql = sql;
 // Metrics wrapper temporarily removed due to incompatibility with Neon serverless driver in this environment
 // TODO: Re-implement metrics wrapping compatible with NeonQueryFunction signature
- 
+
 /**
  * Standard Drizzle HTTP Database Instance
  * No custom proxies or circuit breakers - relying on platform resilience

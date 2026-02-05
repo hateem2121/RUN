@@ -1,12 +1,12 @@
+import type { Certificate, Fabric, ProductSummary } from "@shared/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import type { TransformedProduct } from "@/lib/product-transformers";
+import { transformProducts } from "@/lib/product-transformers";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-import type { Certificate, Fabric, ProductSummary } from "@shared/schema";
-import { transformProducts } from "@/lib/product-transformers";
 import { ProductCard } from "./product-card";
 import { QuickViewModal } from "./quick-view-modal";
-import type { TransformedProduct } from "@/lib/product-transformers";
 
 interface ProductGridProps {
   products: ProductSummary[];

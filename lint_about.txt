@@ -1,0 +1,192 @@
+client/app/routes/about.tsx:1:1 assist/source/organizeImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × The imports and exports are not sorted.
+  
+   > 1 │ import type {
+       │ ^^^^^^^^^^^^^
+   > 2 │   AboutHero,
+   > 3 │   AboutMapLocation,
+   > 4 │   AboutSection,
+        ...
+   > 8 │   MediaAsset,
+   > 9 │ } from "@shared/schema";
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^
+    10 │ import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+    11 │ import { motion } from "framer-motion";
+  
+  i Safe fix: Organize Imports (Biome)
+  
+     16  16 │   import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
+     17  17 │   import { GlowingShadow } from "@/components/ui/glowing-shadow";
+     18     │ - import·{·type·MapLocation,·ClientOnlyMap·}·from·"@/components/ui/map";
+         18 │ + import·{·ClientOnlyMap,·type·MapLocation·}·from·"@/components/ui/map";
+     19  19 │   import { OptimizedImage } from "@/components/ui/optimized-image";
+     20  20 │   import StackingCards from "@/components/ui/stacking-cards";
+  
+
+client/app/routes/about.tsx format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    100 100 │       id: location.id,
+    101 101 │       // Map locationType to client/facility - headquarters and office are facilities, everything else is distribution/client
+    102     │ - ····type:·(location.locationType·===·"headquarters"·||·location.locationType·===·"office"·||·location.locationType·===·"distribution")·?·"facility"·:·"client",
+        102 │ + ····type:
+        103 │ + ······location.locationType·===·"headquarters"·||
+        104 │ + ······location.locationType·===·"office"·||
+        105 │ + ······location.locationType·===·"distribution"
+        106 │ + ········?·"facility"
+        107 │ + ········:·"client",
+    103 108 │       name: location.name,
+    104 109 │       latitude: parseFloat(location.latitude), // Convert decimal string to number
+    ······· │ 
+    127 132 │             </Typography.H3>
+    128 133 │             {item.description && (
+    129     │ - ············<Typography.P·className="mb-4·text-muted-foreground">
+    130     │ - ··············{item.description}
+    131     │ - ············</Typography.P>
+        134 │ + ············<Typography.P·className="mb-4·text-muted-foreground">{item.description}</Typography.P>
+    132 135 │             )}
+    133 136 │             {item.imageId && getAsset(item.imageId) && (
+    ······· │ 
+    176 179 │         ) : (
+    177 180 │           <div id="main-content" className="min-h-screen bg-background">
+    178     │ - ········{/*·Unified·Scroll·Expansion·Hero·Section·with·Overlay·Content·*/}
+    179     │ - ········<HeroSection
+    180     │ - ··········heroData={heroData·||·{}}
+    181     │ - ··········mediaUrl={heroBackgroundUrl}
+    182     │ - ··········mediaType={heroBackgroundAsset?.type·===·"video"·?·"video"·:·"image"}
+    183     │ - ········/>
+        181 │ + ··········{/*·Unified·Scroll·Expansion·Hero·Section·with·Overlay·Content·*/}
+        182 │ + ··········<HeroSection
+        183 │ + ············heroData={heroData·||·{}}
+        184 │ + ············mediaUrl={heroBackgroundUrl}
+        185 │ + ············mediaType={heroBackgroundAsset?.type·===·"video"·?·"video"·:·"image"}
+        186 │ + ··········/>
+    184 187 │   
+    185     │ - ········{/*·Modern·Timeline·Section·*/}
+    186     │ - ········{timelineData.length·>·0·&&·(
+    187     │ - ··········<section·className="py-20">
+    188     │ - ············<div·className="container·mx-auto·px-4·md:px-6">
+    189     │ - ··············<Timeline·data={timelineData}·/>
+    190     │ - ············</div>
+    191     │ - ··········</section>
+    192     │ - ········)}
+        188 │ + ··········{/*·Modern·Timeline·Section·*/}
+        189 │ + ··········{timelineData.length·>·0·&&·(
+        190 │ + ············<section·className="py-20">
+        191 │ + ··············<div·className="container·mx-auto·px-4·md:px-6">
+        192 │ + ················<Timeline·data={timelineData}·/>
+        193 │ + ··············</div>
+        194 │ + ············</section>
+        195 │ + ··········)}
+    193 196 │   
+    194     │ - ········{/*·Executive·Team·Message·-·Providing·Context·*/}
+    195     │ - ········{teamMessage·&&·(
+    196     │ - ··········<section·className="bg-muted/20·py-20">
+    197     │ - ············<div·className="container·mx-auto·px-4·md:px-6">
+    198     │ - ··············<motion.div
+    199     │ - ················initial={{·opacity:·0,·y:·30·}}
+    200     │ - ················whileInView={{·opacity:·1,·y:·0·}}
+    201     │ - ················viewport={{·once:·true·}}
+    202     │ - ················transition={{·duration:·0.8·}}
+    203     │ - ················className="mx-auto·max-w-4xl"
+    204     │ - ··············>
+    205     │ - ················<Card·variant="glass-premium"·className="group">
+    206     │ - ··················<GlassCardDecorations·showShimmer={!isMobile}·/>
+        197 │ + ··········{/*·Executive·Team·Message·-·Providing·Context·*/}
+        198 │ + ··········{teamMessage·&&·(
+        199 │ + ············<section·className="bg-muted/20·py-20">
+        200 │ + ··············<div·className="container·mx-auto·px-4·md:px-6">
+        201 │ + ················<motion.div
+        202 │ + ··················initial={{·opacity:·0,·y:·30·}}
+        203 │ + ··················whileInView={{·opacity:·1,·y:·0·}}
+        204 │ + ··················viewport={{·once:·true·}}
+        205 │ + ··················transition={{·duration:·0.8·}}
+        206 │ + ··················className="mx-auto·max-w-4xl"
+        207 │ + ················>
+        208 │ + ··················<Card·variant="glass-premium"·className="group">
+        209 │ + ····················<GlassCardDecorations·showShimmer={!isMobile}·/>
+    207 210 │   
+    208     │ - ··················<CardContent·className="relative·z-elevated·p-8·md:p-12">
+    209     │ - ····················<div·className="grid·items-center·gap-8·md:grid-cols-2">
+    210     │ - ······················<div>
+    211     │ - ························{teamMessage.imageId·&&·getAsset(teamMessage.imageId)·&&·(
+    212     │ - ··························<div·className="mb-6">
+    213     │ - ····························<OptimizedImage
+    214     │ - ······························mediaId={teamMessage.imageId}
+    215     │ - ······························alt="Team"
+    216     │ - ······························className="h-64·w-full·rounded-xl·object-cover·bg-transparent"
+    217     │ - ······························quality={90}
+    218     │ - ······························priority={false}
+    219     │ - ····························/>
+    220     │ - ··························</div>
+    221     │ - ························)}
+    222     │ - ······················</div>
+    223     │ - ······················<div>
+    224     │ - ························<MessageSquare·className="mb-4·h-8·w-8·text-primary"·/>
+    225     │ - ························{teamMessage.title·&&·(
+    226     │ - ··························<Typography.H3·className="mb-4·font-bold·text-2xl">
+    227     │ - ····························{teamMessage.title}
+    228     │ - ··························</Typography.H3>
+    229     │ - ························)}
+    230     │ - ························{teamMessage.message·&&·(
+    231     │ - ··························<Typography.P·className="mb-6·text-muted-foreground·leading-relaxed">
+    232     │ - ····························{teamMessage.message}
+    233     │ - ··························</Typography.P>
+    234     │ - ························)}
+    235     │ - ························{(teamMessage.signature·||·teamMessage.name)·&&·(
+    236     │ - ··························<div·className="border-t·pt-4">
+    237     │ - ····························<Typography.P·className="font-semibold·text-foreground">
+    238     │ - ······························{teamMessage.signature·||·teamMessage.name}
+    239     │ - ····························</Typography.P>
+    240     │ - ····························<Typography.P·className="text-muted-foreground·text-sm">
+    241     │ - ······························{teamMessage.position·||·"Executive·Team"}
+    242     │ - ····························</Typography.P>
+    243     │ - ··························</div>
+    244     │ - ························)}
+    245     │ - ······················</div>
+    246     │ - ····················</div>
+    247     │ - ··················</CardContent>
+    248     │ - ················</Card>
+    249     │ - ··············</motion.div>
+    250     │ - ············</div>
+    251     │ - ··········</section>
+    252     │ - ········)}
+        211 │ + ····················<CardContent·className="relative·z-elevated·p-8·md:p-12">
+        212 │ + ······················<div·className="grid·items-center·gap-8·md:grid-cols-2">
+        213 │ + ························<div>
+        214 │ + ··························{teamMessage.imageId·&&·getAsset(teamMessage.imageId)·&&·(
+        215 │ + ····························<div·className="mb-6">
+        216 │ + ······························<OptimizedImage
+        217 │ + ································mediaId={teamMessage.imageId}
+        218 │ + ································alt="Team"
+        219 │ + ································className="h-64·w-full·rounded-xl·object-cover·bg-transparent"
+        220 │ + ································quality={90}
+        221 │ + ································priority={false}
+        222 │ + ······························/>
+        223 │ + ····························</div>
+        224 │ + ··························)}
+        225 │ + ························</div>
+        226 │ + ························<div>
+        227 │ + ··························<MessageSquare·className="mb-4·h-8·w-8·text-primary"·/>
+        228 │ + ··························{teamMessage.title·&&·(
+        229 │ + ····························<Typography.H3·className="mb-4·font-bold·text-2xl">
+        230 │ + ······························{teamMessage.title}
+        231 │ + ····························</Typography.H3>
+        232 │ + ··························)}
+        233 │ + ··························{teamMessage.message·&&·(
+        234 │ + ····························<Typography.P·className="mb-6·text-muted-foreground·leading-relaxed">
+        235 │ + ······························{teamMessage.message}
+        236 │ + ····························</Typography.P>
+        237 │ + ··························)}
+  233 more lines truncated
+  
+
+Checked 1 file in 61ms. No fixes applied.
+Found 2 errors.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+

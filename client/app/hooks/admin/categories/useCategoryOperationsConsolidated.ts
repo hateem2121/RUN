@@ -1,3 +1,4 @@
+import type { Category } from "@shared/schema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -20,14 +21,10 @@ export interface CategoryUIState {
   showDeleteDialog: boolean;
   showRestoreDialog: boolean;
   showHardDeleteDialog: boolean;
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object from API
-  editingCategory: unknown;
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object from API
-  deletingCategory: unknown;
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object from API
-  restoringCategory: unknown;
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object from API
-  hardDeletingCategory: unknown;
+  editingCategory: Category | null;
+  deletingCategory: Category | null;
+  restoringCategory: Category | null;
+  hardDeletingCategory: Category | null;
 }
 
 export default function useCategoryOperationsConsolidated() {
@@ -212,9 +209,11 @@ export default function useCategoryOperationsConsolidated() {
 
   // Exported wrappers
   // biome-ignore lint/suspicious/noExplicitAny: Wrapper passes through to mutation
-  const createCategory = (data: Record<string, unknown>) => createCategoryMutation.mutateAsync(data);
+  const createCategory = (data: Record<string, unknown>) =>
+    createCategoryMutation.mutateAsync(data);
   // biome-ignore lint/suspicious/noExplicitAny: Wrapper passes through to mutation
-  const updateCategory = (data: { id: number; data: Record<string, unknown> }) => updateCategoryMutation.mutateAsync(data);
+  const updateCategory = (data: { id: number; data: Record<string, unknown> }) =>
+    updateCategoryMutation.mutateAsync(data);
   const deleteCategory = (id: number) => deleteCategoryMutation.mutateAsync(id);
 
   const restoreCategory = async (_id: number) => {

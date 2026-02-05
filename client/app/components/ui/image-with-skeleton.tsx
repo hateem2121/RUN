@@ -16,16 +16,14 @@ export function ImageWithSkeleton({
 
   return (
     <div className={cn("relative overflow-hidden", containerClassName)}>
-      {isLoading && (
-        <Skeleton className="absolute inset-0 h-full w-full animate-pulse bg-muted" />
-      )}
+      {isLoading && <Skeleton className="absolute inset-0 h-full w-full animate-pulse bg-muted" />}
       <img
         {...props}
         alt={alt}
         className={cn(
           "transition-opacity duration-500 ease-in-out",
           isLoading ? "opacity-0" : "opacity-100",
-          className
+          className,
         )}
         onLoad={() => setIsLoading(false)}
       />

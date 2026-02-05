@@ -226,16 +226,30 @@ export default function ProductsPage() {
   });
 
   // --- Safe Parsing of Server Data ---
-  const categories = useMemo(() => safeParseArray(CategorySchema, serverCategories), [serverCategories]);
+  const categories = useMemo(
+    () => safeParseArray(CategorySchema, serverCategories),
+    [serverCategories],
+  );
   const fabrics = useMemo(() => safeParseArray(FabricSchema, serverFabrics), [serverFabrics]);
-  const certificates = useMemo(() => safeParseArray(CertificateSchema, serverCertificates), [serverCertificates]);
-  const sizeCharts = useMemo(() => safeParseArray(SizeChartSchema, serverSizeCharts), [serverSizeCharts]);
-  const accessories = useMemo(() => safeParseArray(AccessorySchema, serverAccessories), [serverAccessories]);
-
+  const certificates = useMemo(
+    () => safeParseArray(CertificateSchema, serverCertificates),
+    [serverCertificates],
+  );
+  const sizeCharts = useMemo(
+    () => safeParseArray(SizeChartSchema, serverSizeCharts),
+    [serverSizeCharts],
+  );
+  const accessories = useMemo(
+    () => safeParseArray(AccessorySchema, serverAccessories),
+    [serverAccessories],
+  );
 
   // Use server products by default.
   // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.
-  const products = useMemo(() => safeParseArray(ProductSummarySchema, serverProducts), [serverProducts]);
+  const products = useMemo(
+    () => safeParseArray(ProductSummarySchema, serverProducts),
+    [serverProducts],
+  );
 
   // Track page view on mount
   useEffect(() => {
@@ -285,7 +299,7 @@ export default function ProductsPage() {
   // Extract unique tags from all products
   const availableTags = useMemo(
     () => [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))],
-    [products]
+    [products],
   );
 
   // Filter and sort products (Client-side refinement of server results)

@@ -89,7 +89,9 @@ export const ProductCard = ({
         </div>
       </CardContent>
 
-      <CardFooter className={cn("flex-col items-start p-4 text-center", viewMode === "small" && "p-2")}>
+      <CardFooter
+        className={cn("flex-col items-start p-4 text-center", viewMode === "small" && "p-2")}
+      >
         <h3
           className={cn(
             "mb-2 w-full font-semibold text-foreground leading-tight uppercase tracking-wide",

@@ -16,9 +16,7 @@ export function responseTracker(_req: Request, res: Response, next: NextFunction
   res.locals._handled = false;
 
   // Skip for static assets to avoid stream interference
-  if (
-    /\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf|ico)$/i.test(_req.path)
-  ) {
+  if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf|ico)$/i.test(_req.path)) {
     return next();
   }
 

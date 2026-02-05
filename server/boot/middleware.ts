@@ -180,9 +180,7 @@ function configureCompression(app: Express) {
 
         // Optimize: explicitly skip heavy binary formats that are already compressed
         // This saves CPU cycles on the server
-        if (
-          /\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf)$/i.test(req.path)
-        ) {
+        if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf)$/i.test(req.path)) {
           return false;
         }
 

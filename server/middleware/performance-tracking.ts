@@ -44,11 +44,9 @@ export interface PerformanceStats {
 export function performanceTrackingMiddleware(req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now();
   const startHrTime = process.hrtime.bigint();
-  
+
   // Skip for static assets to avoid stream interference
-  if (
-    /\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf|ico)$/i.test(req.path)
-  ) {
+  if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf|ico)$/i.test(req.path)) {
     return next();
   }
 

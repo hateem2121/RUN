@@ -18,11 +18,18 @@ import { Separator } from "@/components/ui/separator";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { cn } from "@/lib/utils";
 
+// Define types for the cleanup response
+interface CleanupResult {
+  totalCleaned?: number;
+  details?: Record<string, unknown>;
+  message?: string;
+  error?: string;
+}
+
 // Phase 2: Enhanced Container with Error Boundaries & Performance Monitoring
-function ErrorFallback({
-  error,
-  resetErrorBoundary,
-}: Readonly<{ error: Error; resetErrorBoundary: () => void }>) {
+import type { FallbackProps } from "react-error-boundary";
+
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
     <Card className="border-red-200 bg-red-50">
       <CardHeader>
@@ -35,7 +42,9 @@ function ErrorFallback({
         <div className="space-y-4">
           <div className="text-red-700 text-sm">
             <p className="mb-2 font-medium">Something went wrong:</p>
-            <p className="rounded-md bg-red-100 p-3 font-mono text-xs">{error.message}</p>
+            <p className="rounded-md bg-red-100 p-3 font-mono text-xs">
+              {error instanceof Error ? error.message : String(error)}
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -133,9 +142,9 @@ export default function MediaLibraryContainerEnhanced({
       clearTimeout(timeoutId);
 
       // Handle different response types
-      let result: unknown;
+      let result: CleanupResult;
       try {
-        result = await response.json();
+        result = (await response.json()) as CleanupResult;
       } catch (_jsonError) {
         throw new Error(`Invalid response format: ${response.status} ${response.statusText}`);
       }

@@ -1,20 +1,9 @@
 import type { Category, MediaAsset, Product } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import {
-  ChevronRight,
-  Grid2X2,
-  Grid3X3,
-  LayoutGrid,
-  Loader2,
-  Search,
-} from "lucide-react";
+import { ChevronRight, Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
 import { useState } from "react";
-import {
-  Link,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from "react-router";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router";
+import { ProductGrid } from "@/components/products/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +18,6 @@ import { Typography } from "@/components/ui/typography";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { ProductGrid } from "@/components/products/ProductGrid";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug.products";
 
@@ -170,7 +158,6 @@ export default function CategoryProductsPage() {
     const optimizedSrc = urls?.large || urls?.medium || fallbackUrl;
     return <img src={optimizedSrc} alt={alt} className="h-full w-full object-cover" />;
   };
-
 
   if (!category) {
     return (
@@ -351,11 +338,7 @@ export default function CategoryProductsPage() {
               </Typography.P>
             </div>
           ) : (
-            <ProductGrid
-              products={sortedProducts}
-              viewMode={viewMode}
-              categories={categories}
-            />
+            <ProductGrid products={sortedProducts} viewMode={viewMode} categories={categories} />
           )}
         </div>
       </div>

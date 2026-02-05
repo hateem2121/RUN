@@ -36,10 +36,10 @@ export function extractMediaIds(mediaAssets: MediaAsset[]): number[] {
 /**
  * Validate media file for security
  */
-export function validateMediaFile(file: File): {
+export function validateMediaFile(file: File): Promise<{
   valid: boolean;
   error?: string;
-} {
+}> {
   // Check for malicious file signatures (magic bytes)
   const maliciousSignatures = [
     "PK\x03\x04", // ZIP-based malware

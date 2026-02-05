@@ -316,9 +316,7 @@ function IconContainer({
       </motion.div>
 
       {/* Permanent title label with improved contrast */}
-      <div
-        className="max-w-20 truncate whitespace-nowrap text-center font-medium text-foreground text-xs drop-shadow-sm md:max-w-24"
-      >
+      <div className="max-w-20 truncate whitespace-nowrap text-center font-medium text-foreground text-xs drop-shadow-sm md:max-w-24">
         {title}
       </div>
     </a>

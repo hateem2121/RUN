@@ -514,21 +514,7 @@ export function UnifiedSustainabilityManagement() {
       const reorderedMetrics = arrayMove(metrics, oldIndex, newIndex);
       const updates = reorderedMetrics.map((metric, index) => ({
         id: metric.id,
-        name: metric.name,
-        description: metric.description,
-        isActive: metric.isActive,
         sortOrder: index,
-        createdAt: metric.createdAt,
-        updatedAt: metric.updatedAt,
-        value: metric.value,
-        iconName: metric.iconName,
-        category: metric.category,
-        unit: metric.unit,
-        icon: metric.iconName,
-        metric: metric.name,
-        currentValue: metric.value,
-        targetValue: metric.value,
-        targetYear: null,
       }));
       reorderMetricsMutation.mutate(updates);
     }
@@ -547,7 +533,7 @@ export function UnifiedSustainabilityManagement() {
       // Map all initiatives with their new zero-based positions
       const updates = reorderedInitiatives.map((initiative, index) => ({
         id: initiative.id,
-        position: index,
+        sortOrder: index,
       }));
       reorderInitiativesMutation.mutate(updates);
     }

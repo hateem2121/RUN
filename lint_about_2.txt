@@ -1,0 +1,50 @@
+client/app/routes/about.tsx:1:1 assist/source/organizeImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × The imports and exports are not sorted.
+  
+   > 1 │ import type {
+       │ ^^^^^^^^^^^^^
+   > 2 │   AboutHero,
+   > 3 │   AboutMapLocation,
+   > 4 │   AboutSection,
+        ...
+   > 8 │   MediaAsset,
+   > 9 │ } from "@shared/schema";
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^
+    10 │ import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+    11 │ import { motion } from "framer-motion";
+  
+  i Safe fix: Organize Imports (Biome)
+  
+     16  16 │   import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
+     17  17 │   import { GlowingShadow } from "@/components/ui/glowing-shadow";
+     18     │ - import·{·ClientOnlyMap,·type·MapLocation·}·from·"@/components/ui/map";
+     19     │ - import·{·LoadingState·}·from·"@/components/ui/loading-state";
+         18 │ + import·{·LoadingState·}·from·"@/components/ui/loading-state";
+         19 │ + import·{·ClientOnlyMap,·type·MapLocation·}·from·"@/components/ui/map";
+     20  20 │   import { OptimizedImage } from "@/components/ui/optimized-image";
+     21  21 │   import StackingCards from "@/components/ui/stacking-cards";
+  
+
+client/app/routes/about.tsx format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    168 168 │       <HydrationBoundary state={loaderData?.dehydratedState}>
+    169 169 │         {!heroData || !isDataReady ? (
+    170     │ - ········<LoadingState·fullScreen·text={batchLoading·?·"Loading·about·page·data..."·:·"Loading·about·page..."}·/>
+        170 │ + ········<LoadingState
+        171 │ + ··········fullScreen
+        172 │ + ··········text={batchLoading·?·"Loading·about·page·data..."·:·"Loading·about·page..."}
+        173 │ + ········/>
+    171 174 │         ) : (
+    172 175 │           <div id="main-content" className="min-h-screen bg-background">
+  
+
+Checked 1 file in 54ms. No fixes applied.
+Found 2 errors.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+

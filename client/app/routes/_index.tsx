@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import CustomCursor from "@/components/homepage/CustomCursor";
 import Preloader from "@/components/homepage/Preloader";
 import { useHomepageData } from "@/hooks/use-homepage-data";
@@ -46,9 +46,7 @@ export default function Index() {
   // Initialize Lenis Smooth Scroll with Skew Effect
   useEffect(() => {
     // Respect user preference for reduced motion
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Skip smooth scroll and skew effects for users who prefer reduced motion
     if (prefersReducedMotion) {

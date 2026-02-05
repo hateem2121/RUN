@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
-import { useEffect, useState, useMemo, Suspense, lazy } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
 import { Button } from "@/components/ui/button";
-import { CustomSelect } from "@/components/ui/custom-select";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
+import { CustomSelect } from "@/components/ui/custom-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -46,7 +46,7 @@ interface ContactConfig {
   successMessage?: string;
 }
 
-import { contactFormSchema, type ContactFormData } from "@shared/validation/contact";
+import { type ContactFormData, contactFormSchema } from "@shared/validation/contact";
 
 export async function loader() {
   const queryClient = getQueryClient();
@@ -209,7 +209,10 @@ export default function Contact() {
         <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
             {/* Left Column: Contact Form */}
-            <Card variant="glass-premium" className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12">
+            <Card
+              variant="glass-premium"
+              className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12"
+            >
               <GlassCardDecorations showShimmer={!isMobile} />
               <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
 
@@ -231,33 +234,51 @@ export default function Contact() {
                       {/* Name Fields */}
                       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <div>
-                          <Label htmlFor="firstName" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="firstName"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             First Name <span className="text-red-500">*</span>
                           </Label>
                           <Input
                             id="firstName"
                             data-testid="input-first-name"
+                            size="lg"
+                            aria-describedby={
+                              form.formState.errors.firstName ? "firstName-error" : undefined
+                            }
                             {...form.register("firstName")}
-                            className={INPUT_CLASSES}
                           />
                           {form.formState.errors.firstName && (
-                            <Typography.P className="mt-2 text-destructive text-sm">
+                            <Typography.P
+                              id="firstName-error"
+                              className="mt-2 text-destructive text-sm"
+                            >
                               {form.formState.errors.firstName.message}
                             </Typography.P>
                           )}
                         </div>
                         <div>
-                          <Label htmlFor="lastName" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="lastName"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Last Name <span className="text-red-500">*</span>
                           </Label>
                           <Input
                             id="lastName"
                             data-testid="input-last-name"
+                            size="lg"
+                            aria-describedby={
+                              form.formState.errors.lastName ? "lastName-error" : undefined
+                            }
                             {...form.register("lastName")}
-                            className={INPUT_CLASSES}
                           />
                           {form.formState.errors.lastName && (
-                            <Typography.P className="mt-2 text-destructive text-sm">
+                            <Typography.P
+                              id="lastName-error"
+                              className="mt-2 text-destructive text-sm"
+                            >
                               {form.formState.errors.lastName.message}
                             </Typography.P>
                           )}
@@ -267,25 +288,31 @@ export default function Contact() {
                       {/* Work Information */}
                       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <div>
-                          <Label htmlFor="jobTitle" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="jobTitle"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Job Title
                           </Label>
                           <Input
                             id="jobTitle"
                             data-testid="input-job-title"
+                            size="lg"
                             {...form.register("jobTitle")}
-                            className={INPUT_CLASSES}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="companyName" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="companyName"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Company Name
                           </Label>
                           <Input
                             id="companyName"
                             data-testid="input-company-name"
+                            size="lg"
                             {...form.register("companyName")}
-                            className={INPUT_CLASSES}
                           />
                         </div>
                       </div>
@@ -293,24 +320,33 @@ export default function Contact() {
                       {/* Email and Country */}
                       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <div>
-                          <Label htmlFor="email" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="email"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Email Address <span className="text-red-500">*</span>
                           </Label>
                           <Input
                             id="email"
                             type="email"
                             data-testid="input-email"
+                            size="lg"
+                            aria-describedby={
+                              form.formState.errors.email ? "email-error" : undefined
+                            }
                             {...form.register("email")}
-                            className={INPUT_CLASSES}
                           />
                           {form.formState.errors.email && (
-                            <Typography.P className="mt-2 text-destructive text-sm">
+                            <Typography.P
+                              id="email-error"
+                              className="mt-2 text-destructive text-sm"
+                            >
                               {form.formState.errors.email.message}
                             </Typography.P>
                           )}
                         </div>
                         <div>
-                          <Label className={LABEL_CLASSES}>
+                          <Label className="mb-2 block font-medium text-foreground/80 text-sm">
                             Country <span className="text-destructive">*</span>
                           </Label>
                           <div className="relative">
@@ -325,10 +361,10 @@ export default function Contact() {
                               getKey={(c) => c.code}
                               renderOption={(c) => (
                                 <div className="flex items-center">
-                                  <img 
-                                    src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} 
-                                    alt="" 
-                                    className="mr-3 h-4" 
+                                  <img
+                                    src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`}
+                                    alt=""
+                                    className="mr-3 h-4"
                                   />
                                   <span>{c.name}</span>
                                 </div>
@@ -336,10 +372,16 @@ export default function Contact() {
                               placeholder="Select Country"
                               searchable
                               data-testid="button-country-dropdown"
+                              aria-describedby={
+                                form.formState.errors.country ? "country-error" : undefined
+                              }
                             />
                           </div>
                           {form.formState.errors.country && (
-                            <Typography.P className="mt-2 text-destructive text-sm">
+                            <Typography.P
+                              id="country-error"
+                              className="mt-2 text-destructive text-sm"
+                            >
                               {form.formState.errors.country.message}
                             </Typography.P>
                           )}
@@ -349,7 +391,9 @@ export default function Contact() {
                       {/* Platform and Contact Number */}
                       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <div>
-                          <Label className={LABEL_CLASSES}>Preferred Platform</Label>
+                          <Label className="mb-2 block font-medium text-foreground/80 text-sm">
+                            Preferred Platform
+                          </Label>
                           <div className="relative">
                             <CustomSelect
                               value={selectedPlatform || null}
@@ -363,18 +407,22 @@ export default function Contact() {
                           </div>
                         </div>
                         <div>
-                          <Label htmlFor="contactNumber" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="contactNumber"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Contact Number / Handle
                           </Label>
-                          <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary">
-                            <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm">
+                          <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary h-12">
+                            <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm h-full">
                               {selectedCountry ? `+${selectedCountry.phone}` : "--"}
                             </span>
                             <Input
                               id="contactNumber"
                               data-testid="input-contact-number"
                               {...form.register("contactNumber")}
-                              className="flex-1 border-0 bg-transparent p-3"
+                              variant="ghost"
+                              className="flex-1 border-0 bg-transparent p-3 h-full"
                             />
                           </div>
                         </div>
@@ -383,32 +431,41 @@ export default function Contact() {
                       {/* Other Platform */}
                       {showOtherPlatform && (
                         <div>
-                          <Label htmlFor="otherPlatform" className={LABEL_CLASSES}>
+                          <Label
+                            htmlFor="otherPlatform"
+                            className="mb-2 block font-medium text-foreground/80 text-sm"
+                          >
                             Please specify platform
                           </Label>
                           <Input
                             id="otherPlatform"
                             data-testid="input-other-platform"
+                            size="lg"
                             {...form.register("otherPlatform")}
-                            className={INPUT_CLASSES}
                           />
                         </div>
                       )}
 
                       {/* Message */}
                       <div>
-                        <Label htmlFor="message" className={LABEL_CLASSES}>
+                        <Label
+                          htmlFor="message"
+                          className="mb-2 block font-medium text-foreground/80 text-sm"
+                        >
                           Message <span className="text-red-500">*</span>
                         </Label>
                         <Textarea
                           id="message"
                           data-testid="textarea-message"
                           rows={5}
+                          aria-describedby={
+                            form.formState.errors.message ? "message-error" : undefined
+                          }
                           {...form.register("message")}
-                          className={INPUT_CLASSES}
+                          className="block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
                         />
                         {form.formState.errors.message && (
-                          <Typography.P className="mt-2 text-red-500 text-sm">
+                          <Typography.P id="message-error" className="mt-2 text-red-500 text-sm">
                             {form.formState.errors.message.message}
                           </Typography.P>
                         )}
@@ -416,7 +473,9 @@ export default function Contact() {
 
                       {/* Contact Preference */}
                       <div>
-                        <Label className={LABEL_CLASSES}>How should we contact you?</Label>
+                        <Label className="mb-2 block font-medium text-foreground/80 text-sm">
+                          How should we contact you?
+                        </Label>
                         <RadioGroup
                           defaultValue="email"
                           onValueChange={(value) =>
@@ -488,10 +547,12 @@ export default function Contact() {
                   </div>
                 )}
               </div>
-      </Card>
+            </Card>
 
             {/* Right Column: Info Boxes */}
-            <Suspense fallback={<div className="col-span-1 h-96 animate-pulse rounded-xl bg-muted/20" />}>
+            <Suspense
+              fallback={<div className="col-span-1 h-96 animate-pulse rounded-xl bg-muted/20" />}
+            >
               <ContactInfoCards contactConfig={contactConfig} />
             </Suspense>
           </div>
@@ -500,8 +561,3 @@ export default function Contact() {
     </HydrationBoundary>
   );
 }
-
-const INPUT_CLASSES =
-  "block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary";
-const LABEL_CLASSES = "mb-2 block font-medium text-foreground/80 text-sm";
-

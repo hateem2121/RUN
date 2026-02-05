@@ -71,7 +71,7 @@ export default function Manufacturing() {
 
   // Fix hydration mismatch: use consistent initial values, update client-side only
   const [dimensions, setDimensions] = useState({ width: 1000, height: 1000 });
-  
+
   useEffect(() => {
     setDimensions({ width: window.innerWidth, height: window.innerHeight });
     const handleResize = () => {
@@ -81,16 +81,8 @@ export default function Manufacturing() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const rotateX = useTransform(
-    mouseY,
-    [0, dimensions.height],
-    [5, -5],
-  );
-  const rotateY = useTransform(
-    mouseX,
-    [0, dimensions.width],
-    [-5, 5],
-  );
+  const rotateX = useTransform(mouseY, [0, dimensions.height], [5, -5]);
+  const rotateY = useTransform(mouseX, [0, dimensions.width], [-5, 5]);
 
   // Standardized data fetching using optimized hooks
   // Note: These will now hit the hydrated cache immediately

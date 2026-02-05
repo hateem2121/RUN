@@ -200,33 +200,16 @@ export class ProductRepository {
           id: number;
           name: string;
           slug: string;
-          sku: string;
-          categoryId: number;
-          fabricId: number | null;
+          description: string | null;
           primaryImageId: number | null;
-          imageIds: number[] | null;
-          minimumOrderQuantity: number | null;
-          leadTime: string | null;
-          careInstructions: string[] | null;
-          technicalSpecs: any;
-          customFit: string | null;
-          fiberComposition: any;
-          specifications: string[] | null;
-          tags: string[] | null;
-          certificateIds: number[] | null;
-          isActive: boolean | null;
+          categoryId: number;
           isFeatured: boolean | null;
-          urlPath: string | null;
         }>(sql`
           SELECT 
-            id, name, slug, sku, category_id as "categoryId", fabric_id as "fabricId",
-            primary_image_id as "primaryImageId", image_ids as "imageIds",
-            minimum_order_quantity as "minimumOrderQuantity", lead_time as "leadTime",
-            care_instructions as "careInstructions", technical_specs as "technicalSpecs",
-            custom_fit as "customFit", fiber_composition as "fiberComposition",
-            specifications, tags, certificate_ids as "certificateIds",
-            is_active as "isActive", is_featured as "isFeatured",
-            url_path as "urlPath"
+            id, name, slug, description,
+            primary_image_id as "primaryImageId",
+            category_id as "categoryId",
+            is_featured as "isFeatured"
           FROM products
           WHERE is_active = true AND deleted_at IS NULL
           ORDER BY created_at DESC

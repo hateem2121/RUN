@@ -1,12 +1,12 @@
-import { lazy, Suspense, useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import type { MapLocation } from "./hooks/useMapMarkers";
 
 // Completely lazy-load the simple map container to prevent any SSR evaluation
 const LazySimpleMapContainer = lazy(() =>
   import("./SimpleMapContainer").then((mod) => ({
     default: mod.SimpleMapContainer,
-  }))
+  })),
 );
 
 interface ClientOnlyMapProps {
@@ -44,9 +44,7 @@ export function ClientOnlyMap({ locations, className }: ClientOnlyMapProps) {
         <div className="bg-muted/20 flex h-128 w-full items-center justify-center rounded-3xl">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
-            <span className="text-muted-foreground text-sm">
-              Initializing map...
-            </span>
+            <span className="text-muted-foreground text-sm">Initializing map...</span>
           </div>
         </div>
       }
@@ -55,4 +53,3 @@ export function ClientOnlyMap({ locations, className }: ClientOnlyMapProps) {
     </Suspense>
   );
 }
-

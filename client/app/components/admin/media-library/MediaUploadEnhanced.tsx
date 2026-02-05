@@ -479,15 +479,18 @@ export default function MediaUploadEnhanced() {
         predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "apimedia",
       },
       (oldData: unknown) => {
-        const data = oldData as { data?: { data?: unknown[] } };
-        if (!data?.data?.data) return oldData;
+        // Safe cast for spread operation
+        const currentData = (oldData as { data?: { data?: unknown[]; total: number } }) || {
+          data: { data: [], total: 0 },
+        };
+        if (!currentData?.data?.data) return oldData;
 
         return {
-          ...oldData,
+          ...currentData,
           data: {
-            ...oldData.data,
-            data: [...optimisticEntries, ...oldData.data.data],
-            total: oldData.data.total + optimisticEntries.length,
+            ...currentData.data,
+            data: [...optimisticEntries, ...currentData.data.data],
+            total: (currentData.data.total || 0) + optimisticEntries.length,
           },
         };
       },
@@ -682,7 +685,8 @@ export default function MediaUploadEnhanced() {
                   // Add retry logic for network errors only (NOT HTTP errors like 413)
                   let retryCount = 0;
                   const maxRetries = 3;
-                  let result: unknown;
+                  // Explicitly type result to avoid ts explicit unknown error
+                  let result: { data?: MediaAsset[] } | any;
 
                   while (retryCount <= maxRetries) {
                     try {

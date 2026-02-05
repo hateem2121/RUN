@@ -1,4 +1,5 @@
 import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
+import { MotionConfig } from "framer-motion";
 import { useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import {
@@ -21,7 +22,13 @@ import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
-  { rel: "preload", href: "/fonts/NeueStance-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Regular.ttf",
+    as: "font",
+    type: "font/ttf",
+    crossOrigin: "anonymous",
+  },
 ];
 
 import { dehydrate, QueryClient } from "@tanstack/react-query";
@@ -64,8 +71,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
+        {/* Theme script MUST be first to prevent FOUC - applies .dark before CSS loads */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -89,25 +95,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
             `,
           }}
         />
+        <Meta />
+        <Links />
       </head>
       <body suppressHydrationWarning>
         <ThemeProvider>
-          <HelmetProvider>
-            <QueryClientProvider client={queryClient}>
-              <HydrationBoundary state={loaderData?.dehydratedState}>
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground"
-                >
-                  Skip to main content
-                </a>
-                <FloatingDockHeader />
-                {children}
-                <BackToTop />
-                <OfflineIndicator />
-              </HydrationBoundary>
-            </QueryClientProvider>
-          </HelmetProvider>
+          <MotionConfig reducedMotion="user">
+            <HelmetProvider>
+              <QueryClientProvider client={queryClient}>
+                <HydrationBoundary state={loaderData?.dehydratedState}>
+                  <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground"
+                  >
+                    Skip to main content
+                  </a>
+                  <FloatingDockHeader />
+                  {children}
+                  <BackToTop />
+                  <OfflineIndicator />
+                </HydrationBoundary>
+              </QueryClientProvider>
+            </HelmetProvider>
+          </MotionConfig>
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts nonce={nonce} />

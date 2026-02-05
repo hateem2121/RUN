@@ -70,7 +70,7 @@ interface InitiativesTabContentProps {
   updateInitiativeMutation: UseMutationResult<
     unknown,
     unknown,
-    { id: number; data: InsertSustainabilityInitiative }
+    { id: number; data: Partial<InsertSustainabilityInitiative> }
   >;
   deleteInitiativeMutation: UseMutationResult<unknown, unknown, number>;
   SortableInitiativeItem: React.ComponentType<{

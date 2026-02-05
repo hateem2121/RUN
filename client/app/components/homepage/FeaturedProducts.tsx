@@ -1,8 +1,8 @@
 import gsap from "gsap";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { FEATURED_PRODUCTS } from "./constants";
 import { useStore } from "./store";
 import { CursorVariant, type ProductItem } from "./types";

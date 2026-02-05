@@ -34,7 +34,7 @@ export function PageTransition({ children }: PageTransitionProps) {
     variants: _pageVariants,
     transition: pageTransition,
   };
-  const delay = 0; 
+  const delay = 0;
 
   return (
     <AnimatePresence mode="wait">

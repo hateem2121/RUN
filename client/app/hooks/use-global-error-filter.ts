@@ -11,7 +11,9 @@ export const isAbortError = (reason: unknown): boolean => {
     // DOMException objects
     (reason instanceof DOMException && reason.name === "AbortError") ||
     // Plain objects
-    (typeof reason === "object" && reason !== null && (reason as Record<string, unknown>)?.name === "AbortError") ||
+    (typeof reason === "object" &&
+      reason !== null &&
+      (reason as Record<string, unknown>)?.name === "AbortError") ||
     // String-based messages
     (typeof reason === "string" &&
       (reason.includes("abort") ||
