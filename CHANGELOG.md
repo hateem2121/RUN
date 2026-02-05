@@ -1,6 +1,14 @@
 # Changelog
 
-### [v4.1.0] - Jan 5, 2026 (System Improvements)
+## [v4.1.1] - Feb 5, 2026 (Documentation Cleanup)
+
+- **Docs:** Completed comprehensive audit of all documentation and scripts.
+- **Docs:** Modernized `README.md` and `overview.md` with current `/api/v1` base URLs.
+- **Docs:** Updated `upgrade-playbook.md` with React Router 7 and semantic z-index standards.
+- **Refactor:** Removed transient log files and obsolete component documentation.
+- **Style:** Standardized category dot colors and optimized Hero section for mobile responsiveness.
+
+## [v4.1.0] - Jan 5, 2026 (System Improvements)
 
 **Phase 1: Quick Wins (+8 points)**
 

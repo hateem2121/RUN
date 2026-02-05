@@ -133,7 +133,25 @@ npm ci
 
 ---
 
-## 6. Infrastructure & Deployment
+## 6. Testing Strategy
+
+**Source Guide:** `docs/development/testing.md`
+
+| Layer | Tool | Command | Scope |
+| :--- | :--- | :--- | :--- |
+| **Unit** | Vitest | `npm run test` | Pure functions, components |
+| **Integration** | Vitest | `npm run test:integration` | API handlers, DB services |
+| **E2E** | Playwright | `npm run test:e2e` | Critical user flows |
+| **Visual** | Playwright | `npm run test:e2e:visual` | Regression guardrails |
+
+### Core Invariants
+- **SSR Hydration**: Verified via `tests/unit/ssr/invariants.test.ts`.
+- **Z-Index Tokens**: Enforced by Biome and visual regression.
+- **Router Purity**: Verified by `npm run check:router`.
+
+---
+
+## 7. Infrastructure & Deployment
 
 | Feature | Strategy | Provenance |
 | :--- | :--- | :--- |

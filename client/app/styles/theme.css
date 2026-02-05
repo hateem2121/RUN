@@ -28,6 +28,12 @@
     --color-card-sustainability: 142 25% 94%;
     --color-card-quality: 270 20% 95%;
     --color-card-global: 262 20% 95%;
+
+    /* Standardized Surface & Brand Colors */
+    --color-surface-light: #ffffff;
+    --color-surface-gray: #f5f5f5;
+    --color-brand-purple-light: #FF9FFC;
+    --color-brand-lime: #CCFF00;
   }
 
   .dark {
@@ -58,6 +64,10 @@
     --color-card-sustainability: 143 64% 15%;
     --color-card-quality: 270 40% 15%;
     --color-card-global: 262 40% 18%;
+
+    /* Standardized Surface & Brand Colors */
+    --color-surface-light: #050505;
+    --color-surface-gray: #1a1a1a;
   }
 }
 

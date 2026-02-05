@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Color, DoubleSide, MathUtils, type Mesh, type ShaderMaterial } from "three";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { colors } from "@/lib/design-tokens";
+import { colors, getCssVar } from "@/lib/design-tokens";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
 
 // Shader definitions moved outside component for performance
@@ -83,28 +83,17 @@ const OptimizedClothMaterial = () => {
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    const resolveColor = (token: string): string => {
-      if (typeof window === "undefined") return "";
-      const varMatch = token.match(/var\(([^)]+)\)/);
-      if (varMatch && varMatch[1]) {
-        return getComputedStyle(document.documentElement).getPropertyValue(varMatch[1]).trim();
-      }
-      return token;
-    };
-
-    // Dark mode: Deep black to Dark Charcoal
-    // Light mode: Pure white to Light Gray
-    const isDark = resolvedTheme === "dark";
-    const startColorToken = isDark ? colors.surfaceDark : "#ffffff";
-    const endColorToken = isDark ? "#1a1a1a" : "#f5f5f5";
-
-    const startColor = resolveColor(startColorToken as string);
-    const endColor = resolveColor(endColorToken as string);
+    const startColor = getCssVar(colors.surfaceLight);
+    const endColor = getCssVar(colors.surfaceGray);
 
     const uniforms = materialRef.current?.uniforms;
     if (uniforms) {
-      if (startColor && uniforms.uColorStart) uniforms.uColorStart.value.set(startColor);
-      if (endColor && uniforms.uColorEnd) uniforms.uColorEnd.value.set(endColor);
+      if (startColor && uniforms.uColorStart) {
+        uniforms.uColorStart.value.set(new Color(startColor));
+      }
+      if (endColor && uniforms.uColorEnd) {
+        uniforms.uColorEnd.value.set(new Color(endColor));
+      }
     }
   }, [resolvedTheme]);
 
@@ -321,14 +310,14 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center">
+      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center md:pt-0 pt-32">
         <div
           ref={textContainerRef}
-          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px]"
+          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
         >
           {heroLines.map((line: string, i: number) => (
             <div key={i} className="hero-line -my-2 overflow-visible py-2 will-change-transform">
-              <h1 className="text-foreground text-[8vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[6vw] lg:text-[7vw] md:leading-[0.85]">
+              <h1 className="text-foreground text-[10vw] leading-[0.9] font-bold tracking-tighter will-change-transform md:text-[6vw] lg:text-[7vw] md:leading-[0.85] xs:text-[9vw] tiny:text-[8vw]">
                 {line}
               </h1>
             </div>

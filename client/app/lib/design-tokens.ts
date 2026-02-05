@@ -21,6 +21,8 @@ export const colors = {
   brandPurple: "var(--color-primary)",
   brandPurpleLight: "var(--color-brand-purple-light)",
   surfaceDark: "var(--color-surface-dark)",
+  surfaceLight: "var(--color-surface-light)",
+  surfaceGray: "var(--color-surface-gray)",
 
   // Accent Colors
   accent: "var(--color-accent)",
@@ -45,6 +47,9 @@ export const colors = {
   border: "var(--color-border)",
   input: "var(--color-input)",
   ring: "var(--color-ring)",
+
+  // Brand Accents
+  brandLime: "var(--color-brand-lime)",
 } as const;
 
 /**
@@ -189,11 +194,13 @@ export type FontSizeToken = keyof typeof fontSizes;
 export type ShadowToken = keyof typeof shadows;
 
 /**
- * Helper to get CSS variable value at runtime
+ * Helper to get CSS variable value at runtime.
+ * Handles both plain variable names (--color-primary) and var() wrappers.
  */
 export function getCssVar(name: string): string {
   if (typeof window === "undefined") return "";
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const cleanName = name.replace(/^var\(/, "").replace(/\)$/, "").trim();
+  return getComputedStyle(document.documentElement).getPropertyValue(cleanName).trim();
 }
 
 /**
@@ -215,7 +222,7 @@ export const HARDCODED_COLORS_TO_MIGRATE = [
   },
   {
     hex: "#CCFF00",
-    replacement: "--color-success (new)",
+    replacement: "brandLime",
     files: ["Footer.tsx", "Categories.tsx"],
   },
   {

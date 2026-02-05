@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import CustomCursor from "@/components/homepage/CustomCursor";
 import Preloader from "@/components/homepage/Preloader";
 import { useHomepageData } from "@/hooks/use-homepage-data";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 // Lazy Load Heavy Components
 const Categories = lazy(() => import("@/components/homepage/Categories"));
@@ -31,6 +32,7 @@ export function meta() {
 export default function Index() {
   const [preloaderFinished, setPreloaderFinished] = useState(false);
   const { data: homepageData } = useHomepageData();
+  const isMobile = useIsMobile();
 
   // Stable refs for skewable sections to avoid ref callback churn
   const heroRef = useRef<HTMLDivElement>(null);
@@ -48,8 +50,8 @@ export default function Index() {
     // Respect user preference for reduced motion
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Skip smooth scroll and skew effects for users who prefer reduced motion
-    if (prefersReducedMotion) {
+    // Skip smooth scroll and skew effects for users who prefer reduced motion or on mobile devices
+    if (prefersReducedMotion || isMobile) {
       return;
     }
 
@@ -113,7 +115,7 @@ export default function Index() {
       gsap.ticker.remove(lenis.raf);
       gsap.ticker.remove(handleTicker);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <>

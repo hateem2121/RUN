@@ -49,7 +49,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
               >
                 <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="inline-block align-top text-[2vw] text-blue-600">●</span>
+                  <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
                 </h2>
               </div>
             );
@@ -111,7 +111,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
               >
                 <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
                   {cat.name}{" "}
-                  <span className="text-success inline-block align-top text-[2vw]">●</span>
+                  <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
                 </h2>
               </div>
             );

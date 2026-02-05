@@ -6,19 +6,19 @@ This project uses strict guardrails to prevent regression of specific known issu
 
 ### 1. Visual Regression (Playwright)
 
-- **Scope:** Header sticking, Modal stacking (z-1050), Dropdown layering (z-1000).
+- **Scope:** Header sticking, Modal stacking (`z-modal`), Dropdown layering (`z-dropdown`).
 - **Update Policy:** Only update snapshots (`--update-snapshots`) if the UI change is intentional and verified correct manually.
 - **CI vs Local:** Tests run against `dist/index.js` (Production Mode) in both environments to ensure parity.
 
-### 2. Router Purity
+### 2. Router Integrity
 
-- **Constraint:** `wouter` is the only allowed router.
-- **Fail:** `npm run check:router` grep searches for `@tanstack/react-router` imports.
-- **Fix:** Replace any accidental imports with `wouter` equivalents.
+- **Constraint:** **React Router 7** is the primary routing engine.
+- **Fail:** `npm run check:router` verifies that all routes are registered via the centralized Remix/RR7 config.
+- **Legacy check:** Deprecated `wouter` usages are blocked.
 
 ### 3. Duplicate React
 
-- **Constraint:** Single instance of `react` and `react-dom` to preserve Context and Hooks.
+- **Constraint:** Single instance of `react` and `react-dom` (React 19 Stable).
 - **Fail:** `npm ls react` returns non-zero code or duplicates found.
 - **Fix:** `npm dedupe` or use `overrides` in `package.json`.
 

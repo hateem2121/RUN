@@ -360,9 +360,9 @@ npm run verify:ssr           # Full SSR verification (Unit Tests)
 
 ### Base URL
 
-- **Development**: `http://localhost:5002/api`
-- **Docker/Container**: `http://localhost:5002/api`
-- **Production**: `https://api.runapparel.com/api`
+- **Development**: `http://localhost:5002/api/v1` (Legacy: `/api`)
+- **Docker/Container**: `http://localhost:5002/api/v1`
+- **Production**: `https://api.runapparel.com/api/v1`
 
 ### API Documentation (`/api/docs`)
 
@@ -383,15 +383,15 @@ All routes are secured via centralized `AuthService`.
 
 ### Key Endpoints
 
-| Endpoint            | Method   | Description        |
-| ------------------- | -------- | ------------------ |
-| `/api/products`     | GET      | List all products  |
-| `/api/products/:id` | GET      | Get single product |
-| `/api/categories`   | GET      | List categories    |
-| `/api/media`        | GET/POST | Media library      |
-| `/api/contact`      | POST     | Contact form       |
-| `/api/health`       | GET      | Health check       |
-| `/api/health/db`    | GET      | Database health    |
+| Endpoint               | Method   | Description        |
+| ---------------------- | -------- | ------------------ |
+| `/api/v1/products`     | GET      | List all products  |
+| `/api/v1/products/:id` | GET      | Get single product |
+| `/api/v1/categories`   | GET      | List categories    |
+| `/api/v1/media`        | GET/POST | Media library      |
+| `/api/v1/contact`      | POST     | Contact form       |
+| `/api/v1/health`       | GET      | Health check       |
+| `/api/v1/health/db`    | GET      | Database health    |
 
 See `docs/api/endpoints.md` for full documentation.
 
