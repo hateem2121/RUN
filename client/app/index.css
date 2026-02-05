@@ -8,7 +8,7 @@
    ========================= */
 
 @utility z-dock {
-  z-index: var(--z-index-dock, 300);
+  z-index: var(--z-index-dock, 1100);
 }
 
 @utility z-elevated {
@@ -16,7 +16,7 @@
 }
 
 @utility z-sticky {
-  z-index: var(--z-index-sticky, 200);
+  z-index: var(--z-index-sticky, 1050);
 }
 
 @utility z-behind {
@@ -32,31 +32,31 @@
 }
 
 @utility z-dropdown {
-  z-index: var(--z-index-dropdown, 100);
+  z-index: var(--z-index-dropdown, 1000);
 }
 
 @utility z-modal-backdrop {
-  z-index: var(--z-index-modal-backdrop, 400);
+  z-index: var(--z-index-modal-backdrop, 1200);
 }
 
 @utility z-modal {
-  z-index: var(--z-index-modal, 500);
+  z-index: var(--z-index-modal, 1300);
 }
 
 @utility z-popover {
-  z-index: var(--z-index-popover, 600);
+  z-index: var(--z-index-popover, 1400);
 }
 
 @utility z-tooltip {
-  z-index: var(--z-index-tooltip, 600);
+  z-index: var(--z-index-tooltip, 1450);
 }
 
 @utility z-toast {
-  z-index: var(--z-index-toast, 700);
+  z-index: var(--z-index-toast, 1500);
 }
 
 @utility z-cursor {
-  z-index: var(--z-index-cursor, 800);
+  z-index: var(--z-index-cursor, 1600);
 }
 
 @utility z-max {

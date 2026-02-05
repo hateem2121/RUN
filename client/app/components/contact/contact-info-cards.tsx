@@ -1,9 +1,10 @@
 import { Clock, Mail, MapPin, Phone, Share2 } from "lucide-react";
+import { type ContactConfig } from "@/components/contact/contact-form";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 
 interface ContactInfoCardsProps {
-  contactConfig?: any;
+  contactConfig?: ContactConfig | undefined;
 }
 
 export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
@@ -113,7 +114,7 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
           <Typography.H3 className="mb-4 font-bold text-lg">Business Hours</Typography.H3>
           <div className="w-full space-y-3">
             {contactConfig?.tradingHours ? (
-              contactConfig.tradingHours.map((hour: any, index: number) => (
+              contactConfig.tradingHours.map((hour, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between border-b border-border/50 pb-2 text-sm last:border-0 last:pb-0"
