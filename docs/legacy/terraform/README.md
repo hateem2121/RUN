@@ -1,5 +1,8 @@
 # Terraform Infrastructure
 
+> [!WARNING]
+> **DEPRECATED**: This configuration is legacy and no longer used. The platform is currently deployed using Cloud Run and Docker (see `cloudbuild.yaml`).
+
 Multi-region Cloud Run deployment configuration for the RUN Apparel B2B Platform.
 
 ## Overview

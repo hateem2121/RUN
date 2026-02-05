@@ -236,8 +236,8 @@ Product cards in catalog listings only display: image, name, description preview
       "filename": "performance-tee-front.jpg",
       "type": "image",
       "mimeType": "image/jpeg",
-      "url": "https://cdn.replit.app/...",
-      "thumbnailUrl": "https://cdn.replit.app/.../thumb",
+      "url": "https://cdn.runapparel.com/...",
+      "thumbnailUrl": "https://cdn.runapparel.com/.../thumb",
       "fileSize": 245680,
       "createdAt": "2024-11-01T10:30:00Z"
     }

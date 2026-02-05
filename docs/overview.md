@@ -110,7 +110,7 @@ npm ci
 | **Server** | `npm run db:migrate` | Runs Drizzle Migrations | Needs `DATABASE_URL` |
 | **Server** | `npm run db:push` | Pushes schema to DB (Dev only) | Needs `DATABASE_URL` |
 
-> **Note**: The client workspace deliberately lacks a `dev` script. The Express server handles Vite middleware in development.
+> **Note**: The client workspace uses `vite` directly for development. The root `turbo run dev` command coordinates both client and server.
 
 ---
 
