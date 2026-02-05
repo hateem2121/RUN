@@ -64,7 +64,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@playwright/test": "^1.57.0",
-    "@stryker-mutator/core": "^9.4.0",
+    "@stryker-mutator/core": "^9.5.1",
     "@stryker-mutator/vitest-runner": "^9.4.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -109,6 +109,9 @@
     "react-helmet-async": {
       "react": "$react",
       "react-dom": "$react-dom"
-    }
+    },
+    "fast-xml-parser": "^5.3.4",
+    "lodash-es": "^4.17.21",
+    "esbuild": "^0.25.0"
   }
 }

@@ -85,28 +85,15 @@ Use this guide to orient yourself before diving into specific files.
 git clone <repository-url>
 cd RUN-Remix
 
-# 2. Install dependencies
-npm install
+# 2. Bootstrap Project
+# (Installs dependencies, sets up .env, and verifies environment)
+./scripts/bootstrap.sh
 
-# 3. Environment Setup
-
-Create `.env` file from example:
-```
-
-```bash
-cp .env.example .env
-```
-
-
-> **Security Note:** In production, secrets are loaded automatically from Google Secret Manager. Ensure the Cloud Run service account has `Secret Accessor` role.
-
-### 4. Push database schema
-
-```bash
+# 3. Push database schema
 npm run db:push
 ```
 
-### 5. Start development server
+### 4. Start development server
 
 ```bash
 npm run dev
@@ -114,7 +101,7 @@ npm run dev
 
 The app will be available at `http://localhost:5002`. For Docker environments (via `docker-compose`), it also runs on `http://localhost:5002`.
 
-### 6. Verify Integrity
+### 5. Verify Integrity
 
 ```bash
 npm run verify:tech-integrity
