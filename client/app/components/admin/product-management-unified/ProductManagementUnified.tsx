@@ -56,69 +56,67 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
       {/* Performance Monitor - Development Only */}
       {process.env.NODE_ENV === "development" && <PerformanceMonitor />}
 
-      <div className="container mx-auto px-4 py-8">
-        <ErrorBoundary
-          fallback={
-            <div className="py-12 text-center">
-              <p className="text-red-600">
-                Something went wrong loading the product management system.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  // Force re-render by changing location
-                  const currentLocation = window.location.pathname;
-                  window.history.replaceState(null, "", "/temp");
-                  window.history.replaceState(null, "", currentLocation);
-                  window.dispatchEvent(new PopStateEvent("popstate"));
-                }}
-                className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Reload Page
-              </button>
-            </div>
-          }
-        >
-          <div className="flex gap-6">
-            {/* Main Product Grid */}
-            <div className={`transition-all duration-300 ${showDetailsPanel ? "w-2/3" : "w-full"}`}>
-              <ProductErrorBoundary>
-                <ProductGrid
-                  onProductSelect={handleProductSelect}
-                  onProductEdit={handleProductEdit}
-                  onProductCreate={handleProductCreate}
-                />
-              </ProductErrorBoundary>
-            </div>
-
-            {/* Details Panel */}
-            {showDetailsPanel && selectedProduct && (
-              <div className="border-border w-1/3 border-l pl-6">
-                <Suspense fallback={<ModuleLoader />}>
-                  <ProductDetailsPanel
-                    product={selectedProduct}
-                    onClose={handleCloseDetails}
-                    onEdit={() => handleProductEdit(selectedProduct)}
-                  />
-                </Suspense>
-              </div>
-            )}
+      <ErrorBoundary
+        fallback={
+          <div className="py-12 text-center">
+            <p className="text-red-600">
+              Something went wrong loading the product management system.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                // Force re-render by changing location
+                const currentLocation = window.location.pathname;
+                window.history.replaceState(null, "", "/temp");
+                window.history.replaceState(null, "", currentLocation);
+                window.dispatchEvent(new PopStateEvent("popstate"));
+              }}
+              className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              Reload Page
+            </button>
+          </div>
+        }
+      >
+        <div className="flex gap-6">
+          {/* Main Product Grid */}
+          <div className={`transition-all duration-300 ${showDetailsPanel ? "w-2/3" : "w-full"}`}>
+            <ProductErrorBoundary>
+              <ProductGrid
+                onProductSelect={handleProductSelect}
+                onProductEdit={handleProductEdit}
+                onProductCreate={handleProductCreate}
+              />
+            </ProductErrorBoundary>
           </div>
 
-          {/* Create/Edit Modal */}
-          {(isCreating || editingProduct) && (
-            <ProductErrorBoundary>
+          {/* Details Panel */}
+          {showDetailsPanel && selectedProduct && (
+            <div className="border-border w-1/3 border-l pl-6">
               <Suspense fallback={<ModuleLoader />}>
-                <ProductCreateEditModal
-                  product={editingProduct}
-                  isOpen={true}
-                  onClose={handleCloseEdit}
+                <ProductDetailsPanel
+                  product={selectedProduct}
+                  onClose={handleCloseDetails}
+                  onEdit={() => handleProductEdit(selectedProduct)}
                 />
               </Suspense>
-            </ProductErrorBoundary>
+            </div>
           )}
-        </ErrorBoundary>
-      </div>
+        </div>
+
+        {/* Create/Edit Modal */}
+        {(isCreating || editingProduct) && (
+          <ProductErrorBoundary>
+            <Suspense fallback={<ModuleLoader />}>
+              <ProductCreateEditModal
+                product={editingProduct}
+                isOpen={true}
+                onClose={handleCloseEdit}
+              />
+            </Suspense>
+          </ProductErrorBoundary>
+        )}
+      </ErrorBoundary>
     </div>
   );
 }

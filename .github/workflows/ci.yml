@@ -22,6 +22,20 @@ jobs:
         id: branch_name
         uses: tj-actions/branch-names@v8
 
+  verify_port:
+    name: Verify Port (Strict 5002)
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+      - run: npm ci
+      - name: Verify Port 5002 Compliance
+        run: npm run verify-port
+
   # Parallel quality checks for faster feedback
   lint:
     name: Lint (Biome)

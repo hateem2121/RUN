@@ -159,12 +159,12 @@ export function ContactPageSettings() {
       };
 
       if (config?.id) {
-        return apiRequest("/api/contact-page-configuration", {
+        return apiRequest("/api/admin/contact-page-configuration", {
           method: "PATCH",
           body: JSON.stringify(sanitizedData),
         });
       } else {
-        return apiRequest("/api/contact-page-configuration", {
+        return apiRequest("/api/admin/contact-page-configuration", {
           method: "POST",
           body: JSON.stringify(sanitizedData),
         });

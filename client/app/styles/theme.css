@@ -220,8 +220,8 @@
   --min-height-process-card: 60vh;
 
   /* Width Tokens (for arbitrary value replacement) */
-  --width-sidebar-collapsed: 80px;
-  --width-sidebar-expanded: 280px;
+  --width-sidebar-collapsed: 60px;
+  --width-sidebar-expanded: 300px;
   --width-sheet-sm: 320px;
   --width-sheet-md: 400px;
   --width-sheet-lg: 540px;

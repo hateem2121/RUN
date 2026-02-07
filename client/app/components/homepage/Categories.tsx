@@ -17,7 +17,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
   return (
     <section
       id="catalogue"
-      className="relative w-full overflow-hidden bg-background py-32"
+      className="relative w-full overflow-hidden bg-background px-4 py-32 md:px-8"
       aria-label="Product Categories"
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />

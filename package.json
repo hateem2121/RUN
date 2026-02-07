@@ -13,13 +13,13 @@
     "shared"
   ],
   "scripts": {
-    "dev:server": "npm run --workspace=@run-remix/server dev",
-    "start": "npm run --workspace=@run-remix/server start",
+    "dev:server": "PORT=5002 npm run --workspace=@run-remix/server dev",
+    "start": "PORT=5002 npm run --workspace=@run-remix/server start",
     "build:client": "npm run build --workspace=@run-remix/client",
     "build:server": "npm run build --workspace=@run-remix/server",
     "migrate:deploy": "npm run --workspace=@run-remix/server db:migrate",
     "db:push": "npm run --workspace=@run-remix/server db:push",
-    "dev": "turbo run dev",
+    "dev": "PORT=5002 turbo run dev",
     "build": "turbo run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -47,6 +47,7 @@
     "verify:docs-structure": "tsx scripts/validators/verify-docs-structure.ts",
     "ci:checks": "npm run verify:tech-integrity && npm run verify:docs-structure",
     "verify:build": "npm run build && npm run check:bundle",
+    "verify-port": "node scripts/verify-port-5002.js",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
     "lhci": "lhci autorun",
     "prepare": "husky"

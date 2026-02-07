@@ -56,7 +56,7 @@ router.get("/contact-page-configuration", async (_req, res, next) => {
 
 // prettier-ignore
 // prettier-ignore
-router.post("/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
+router.post("/admin/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
   const validation = insertContactPageConfigurationSchema.safeParse(req.body);
   if (!validation.success) {
     return next(
@@ -90,7 +90,7 @@ router.post("/contact-page-configuration", authService.requireAdmin, async (req,
 
 // prettier-ignore
 // prettier-ignore
-router.patch("/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
+router.patch("/admin/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
   const validation = insertContactPageConfigurationSchema.safeParse(req.body);
   if (!validation.success) {
     return next(
@@ -172,7 +172,7 @@ router.get("/navigation-items/:id", async (req, res, next) => {
 });
 
 // Create navigation item
-router.post("/navigation-items", authService.requireAdmin, async (req, res, next) => {
+router.post("/admin/navigation-items", authService.requireAdmin, async (req, res, next) => {
   const validatedData = insertNavigationItemSchema.safeParse(req.body);
   if (!validatedData.success) {
     return next(
@@ -192,7 +192,7 @@ router.post("/navigation-items", authService.requireAdmin, async (req, res, next
 });
 
 // Bulk reorder navigation items
-router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, res, next) => {
+router.patch("/admin/navigation-items/reorder", authService.requireAdmin, async (req, res, next) => {
   const { items } = req.body;
   const reorderSchema = z.object({
     items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
@@ -212,7 +212,7 @@ router.patch("/navigation-items/reorder", authService.requireAdmin, async (req, 
 });
 
 // Update navigation item
-router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
+router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id as string, 10);
   const validatedData = insertNavigationItemSchema.partial().safeParse(req.body);
 
@@ -229,7 +229,7 @@ router.patch("/navigation-items/:id", authService.requireAdmin, async (req, res,
 });
 
 // Delete navigation item
-router.delete("/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
+router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await NavigationService.deleteItem(id);
 
@@ -251,7 +251,7 @@ router.get("/navigation-glassmorphism-settings", async (_req, res, next) => {
 
 // Update glassmorphism settings
 router.patch(
-  "/navigation-glassmorphism-settings",
+  "/admin/navigation-glassmorphism-settings",
   authService.requireAdmin,
   async (req, res, next) => {
     const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
@@ -295,7 +295,7 @@ router.get("/logo-animation-settings", async (_req, res, next) => {
 });
 
 // prettier-ignore
-router.patch("/logo-animation-settings", authService.requireAdmin, async (req, res, next) => {
+router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (req, res, next) => {
   const validation = insertLogoAnimationSettingsSchema.safeParse(req.body);
   if (!validation.success) {
     return next(new ValidationError("Invalid logo settings", { issues: validation.error.issues }));

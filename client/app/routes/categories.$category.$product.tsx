@@ -3,6 +3,8 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
+import type { MediaAsset } from "@shared/schema/media";
+import type { Product } from "@shared/schema/products";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
@@ -19,6 +21,7 @@ import { Link, useLoaderData, useParams } from "react-router";
 import { ProductBreadcrumbs } from "@/components/product/product-breadcrumbs";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
+import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/categories.$category.$product";
@@ -36,8 +39,6 @@ export async function loader({ params }: Route.LoaderArgs) {
   await queryClient.prefetchQuery({
     queryKey: ["/api/products/by-path", fullPath],
     queryFn: async () => {
-      // We use apiRequest here to be consistent with other loaders,
-      // assuming it handles the underlying fetch correctly.
       return apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
     },
   });
@@ -77,7 +78,12 @@ export const useCart = () => useContext(CartContext);
 
 // --- Components ---
 
-function Gallery({ media, name }: { media: any[]; name: string }) {
+interface GalleryProps {
+  media: MediaAsset[];
+  name: string;
+}
+
+function Gallery({ media, name }: GalleryProps) {
   const [activeindex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -106,12 +112,23 @@ function Gallery({ media, name }: { media: any[]; name: string }) {
       >
         {media.map((item, idx) => (
           <div key={idx} className="relative w-full shrink-0 snap-center">
-            <OptimizedImage
-              src={item.src || item.url}
-              alt={`${name} - View ${idx + 1}`}
-              className="h-full w-full object-cover"
-              priority={idx === 0}
-            />
+            {item.type === "model" ||
+            item.mimeType?.includes("glb") ||
+            item.mimeType?.includes("gltf") ? (
+              <UnifiedModelViewer
+                asset={item}
+                className="h-full w-full"
+                showControls={true}
+                showLoadingProgress={true}
+              />
+            ) : (
+              <OptimizedImage
+                src={item.url}
+                alt={`${name} - View ${idx + 1}`}
+                className="h-full w-full object-cover"
+                priority={idx === 0}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -140,7 +157,13 @@ function Gallery({ media, name }: { media: any[]; name: string }) {
   );
 }
 
-function ProductSpecs({ specs }: { specs: any[] }) {
+// Todo: Fix schema mismatch. DB says string[], UI expects object with name/value.
+// For now allowing any[], but commonly we should use TechnicalSpecs generic.
+interface ProductSpecsProps {
+  specs: any[];
+}
+
+function ProductSpecs({ specs }: ProductSpecsProps) {
   if (!specs || specs.length === 0) return null;
 
   return (
@@ -182,12 +205,15 @@ function ProductSpecs({ specs }: { specs: any[] }) {
   );
 }
 
-function AddToCartSection({ product }: { product: any }) {
+interface AddToCartSectionProps {
+  product: Product;
+}
+
+function AddToCartSection({ product }: AddToCartSectionProps) {
   const { addToCart } = useCart();
   const [isPending, startTransition] = useTransition();
 
   // React 19: useOptimistic
-  // We optimistically show the "Added" state immediately upon click
   const [optimisticState, addOptimisticState] = useOptimistic(
     { status: "idle", count: 0 },
     (state, newStatus: string) => ({
@@ -227,7 +253,7 @@ function AddToCartSection({ product }: { product: any }) {
 
       <button
         onClick={handleAddToCart}
-        disabled={isPending && optimisticState.status !== "added"} // Don't disable if optimized, keep interactive feel
+        disabled={isPending && optimisticState.status !== "added"}
         className={cn(
           "flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 font-bold text-lg tracking-wide transition-all duration-300",
           optimisticState.status === "added"
@@ -251,20 +277,17 @@ function AddToCartSection({ product }: { product: any }) {
   );
 }
 
+interface ProductData {
+  product: Product;
+  context: any; // Schema for this not strictly defined in generic shared types yet
+  media: MediaAsset[];
+}
+
 function ProductDetailContent() {
   const params = useParams();
-  // Construct path logic similar to original but adapted for fixed route parameters if needed.
-  // Original logic:
-  // const pathSegments = [params['category'], params['subcategory'], params['subsubcategory'], params['product']].filter(Boolean);
-  // const fullPath = `/categories/${pathSegments.join("/")}`;
-
-  // New logic using RR7 params:
   const categoryParam = params.category;
   const productParam = params.product;
   const fullPath = `/categories/${categoryParam}/${productParam}`;
-
-  // Note: If subcategories are involved, this might need duplicate routes or a splat route.
-  // For now, assuming flat depth as per previous migration steps.
 
   // Image Preloading (React 19 / Browser Native)
   useEffect(() => {
@@ -272,35 +295,25 @@ function ProductDetailContent() {
     const link = document.createElement("link");
     link.rel = "preload";
     link.as = "image";
-    // Placeholder logic - real URL would come from data
-    // In a real generic component, we might not know the URL until data fetches,
-    // so we rely on the <OptimizedImage priority> prop mostly.
+    // Real deployment would set this href correctly
   }, []);
 
   const {
     data: productData,
-    status,
+    isPending,
     error,
-  } = useQuery<any>({
+  } = useQuery<ProductData>({
     queryKey: ["/api/products/by-path", fullPath],
     queryFn: async () => {
       const response = await apiRequest(
         `/api/products/by-path?path=${encodeURIComponent(fullPath)}`,
       );
-      // Fallback for flat structure if by-path fails or isn't set up for this specific URL structure
-      // Wait, apiRequest throws on 4xx/5xx usually? If apiRequest wrapper throws on !ok, we catch it in react-query
-      // The original code handled response.ok manually. apiRequest might not throw automatically depend on implementation?
-      // Assuming apiRequest returns response
-      // if (!response.ok) {
-      //   // Try fetching by slug directly if API supports it, or throw
-      //   throw new Error("Product not found");
-      // }
-      return response;
+      return response as ProductData;
     },
     enabled: !!fullPath,
   });
 
-  if (status === "pending") {
+  if (isPending) {
     return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
   }
 
@@ -317,11 +330,11 @@ function ProductDetailContent() {
   }
 
   const { product, context, media } = productData;
-  const galleryMedia = media.length ? media : [{ url: "https://via.placeholder.com/800" }];
+  const galleryMedia = media && media.length ? media : [{ url: "https://via.placeholder.com/800", type: "image", mimeType: "image/jpeg" } as MediaAsset];
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      <div className="container mx-auto max-w-7xl px-4 pt-24 lg:pt-32">
+      <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">
         {/* Breadcrumb */}
         <div className="mb-8">
           <ProductBreadcrumbs items={context.breadcrumb || []} />
@@ -390,9 +403,18 @@ function ProductDetailContent() {
                 Select Color
               </label>
               <div className="flex gap-3">
-                <button className="h-10 w-10 rounded-full border-2 border-transparent bg-black ring-1 ring-transparent ring-offset-2 transition-transform hover:scale-110 focus:ring-black"></button>
-                <button className="h-10 w-10 rounded-full border-2 border-transparent bg-blue-600 transition-transform hover:scale-110"></button>
-                <button className="h-10 w-10 rounded-full border-2 border-transparent bg-stone-300 transition-transform hover:scale-110"></button>
+                <button
+                  aria-label="Select Black"
+                  className="h-10 w-10 rounded-full border-2 border-transparent bg-black ring-1 ring-transparent ring-offset-2 transition-transform hover:scale-110 focus:ring-black"
+                ></button>
+                <button
+                  aria-label="Select Blue"
+                  className="h-10 w-10 rounded-full border-2 border-transparent bg-blue-600 transition-transform hover:scale-110"
+                ></button>
+                <button
+                  aria-label="Select Stone"
+                  className="h-10 w-10 rounded-full border-2 border-transparent bg-stone-300 transition-transform hover:scale-110"
+                ></button>
               </div>
             </div>
 

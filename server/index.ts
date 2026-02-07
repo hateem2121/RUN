@@ -7,6 +7,7 @@ import { injectSecretsToEnv, loadSecrets } from "./lib/secrets/secret-manager.js
 import "dotenv/config";
 export let app: any;
 export let serverReady: Promise<void>;
+// Port 5002 configuration is strictly enforced in server.ts
 
 serverReady = (async () => {
   try {

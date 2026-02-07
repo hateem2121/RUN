@@ -394,9 +394,22 @@ export default function ProductsPage() {
 
           {/* Header */}
           <div className="z-sticky border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
-            <div className="container mx-auto px-4 py-4">
+            <div className="container mx-auto max-w-7xl px-4 md:px-8 py-4">
+              {/* Breadcrumbs Integration */}
+              <div className="mb-4 flex justify-start">
+                <nav className="flex items-center space-x-2 text-luxury-gray-400 text-[10px] uppercase tracking-widest">
+                  <a href="/" className="hover:text-luxury-charcoal transition-colors">
+                    Home
+                  </a>
+                  <span className="text-luxury-gray-300">/</span>
+                  <span className="text-luxury-charcoal font-medium">Products</span>
+                </nav>
+              </div>
+
               <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-                <Typography.H1 className="text-2xl font-bold">Products</Typography.H1>
+                <Typography.H1 className="font-neue-stance text-2xl font-bold tracking-tight">
+                  Products
+                </Typography.H1>
 
                 <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
                   {/* Search */}
@@ -482,7 +495,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Results count */}
-            <div className="text-muted-foreground mt-2 text-sm container mx-auto px-4 pb-2">
+            <div className="text-muted-foreground mt-2 text-sm container mx-auto max-w-7xl px-4 md:px-8 pb-2">
               Showing {sortedProducts.length} products
               {searchTerm && ` for "${searchTerm}"`}
               {selectedCategory &&
@@ -494,7 +507,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Products Grid */}
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto max-w-7xl px-4 md:px-8 py-8">
             {/* No isLoading state needed as loader suspense handles it */}
             {sortedProducts.length === 0 ? (
               <div className="py-12 text-center">

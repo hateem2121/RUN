@@ -132,33 +132,11 @@ export function setupErrorHandling(app: Express) {
     app.use(sentryErrorHandler);
   }
 
-  // Production Error Handler
-  app.use(productionErrorHandler);
-
-  // Final Fallback Error Handler (RFC 9457 compliant)
-  app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    // Log all 500 errors (or if status is missing)
-    if (status >= 500) {
-      // Dynamic import to avoid circular dependency issues during boot
-      import("../lib/monitoring/logger.js").then(({ logger }) => {
-        logger.error(`[GlobalErrorHandler] Uncaught error: ${message}`, err);
-      });
-    }
-
-    // RFC 9457 Problem Details response
-    res
-      .status(status)
-      .setHeader("Content-Type", "application/problem+json")
-      .json({
-        type: "about:blank",
-        title: status >= 500 ? "Internal Server Error" : "Error",
-        status,
-        detail: message,
-        instance: req.path,
-      });
+  // Final Global Error Handler (Project Rule #3)
+  app.use(async (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    // Dynamic import to avoid circular dependencies during boot
+    const { errorHandler } = await import("../middleware/errorHandler.js");
+    errorHandler(err, req, res, next);
   });
 }
 

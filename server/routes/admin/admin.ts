@@ -161,8 +161,8 @@ router.post("/admin/fix-corrupted-media", async (req, res) => {
   });
 });
 
-// GET /api/enterprise/audit-config - Audit configuration retrieval
-router.get("/enterprise/audit-config", async (_req, res) => {
+// GET /api/admin/enterprise/audit-config - Audit configuration retrieval
+router.get("/admin/enterprise/audit-config", async (_req, res) => {
   return res.json({
     enabled: true,
     trackedTables: [
@@ -181,9 +181,9 @@ router.get("/enterprise/audit-config", async (_req, res) => {
   });
 });
 
-// POST /api/enterprise/audit-config - Audit configuration update
+// POST /api/admin/enterprise/audit-config - Audit configuration update
 // prettier-ignore
-router.post("/enterprise/audit-config", async (req, res) => {
+router.post("/admin/enterprise/audit-config", async (req, res) => {
   // security
   const validatedData = auditConfigSchema.parse(req.body);
   const { enabled, trackedTables } = validatedData;
@@ -194,7 +194,7 @@ router.post("/enterprise/audit-config", async (req, res) => {
 
 // Restore endpoints
 // prettier-ignore
-router.post("/categories/:id/restore", async (req, res) => {
+router.post("/admin/categories/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "category");
@@ -205,7 +205,7 @@ router.post("/categories/:id/restore", async (req, res) => {
 });
 
 // prettier-ignore
-router.post("/products/:id/restore", async (req, res) => {
+router.post("/admin/products/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "product");
@@ -216,7 +216,7 @@ router.post("/products/:id/restore", async (req, res) => {
 });
 
 // prettier-ignore
-router.post("/media-assets/:id/restore", async (req, res) => {
+router.post("/admin/media-assets/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "media asset");

@@ -8,7 +8,7 @@ export default [
   // Admin Layout & Routes
   route("admin", "routes/admin.tsx", [
     index("routes/admin._index.tsx"),
-    route(":module", "routes/admin.$module.tsx"),
+    route(":module*", "routes/admin.$module.tsx"),
   ]),
 
   route("analytics", "routes/analytics.tsx"),

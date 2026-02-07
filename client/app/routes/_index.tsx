@@ -7,10 +7,12 @@ import Preloader from "@/components/homepage/Preloader";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
-// Lazy Load Heavy Components
+import Hero from "@/components/homepage/Hero";
+
+// Lazy Load Heavy Components (Below Fold)
 const Categories = lazy(() => import("@/components/homepage/Categories"));
 const FeaturedProducts = lazy(() => import("@/components/homepage/FeaturedProducts"));
-const Hero = lazy(() => import("@/components/homepage/Hero"));
+// Hero moved to static import
 const Process = lazy(() => import("@/components/homepage/Process"));
 const Stats = lazy(() => import("@/components/homepage/Stats"));
 const Values = lazy(() => import("@/components/homepage/Values"));

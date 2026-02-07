@@ -117,9 +117,15 @@ export default defineConfig(
       server: {
         // FORENSIC: Dev server optimizations for faster module loading
         host: true, // Listen on all addresses (0.0.0.0) to support localhost/127.0.0.1/LAN
+        port: 5002, // MUST be 5002
+        strictPort: true, // Fail if port 5002 is unavailable
         proxy: {
           "/api": {
-            target: "http://localhost:3001",
+            target: "http://localhost:5002",
+            changeOrigin: true,
+          },
+          "/admin/api": {
+            target: "http://localhost:5002",
             changeOrigin: true,
           },
         },
@@ -127,7 +133,7 @@ export default defineConfig(
         // Increase module graph size limit for admin pages
         hmr: {
           overlay: true,
-          clientPort: parseInt(process.env.PORT || "5002"), // Match server port
+          clientPort: 5002, // Match server port
         },
         fs: {
           strict: true,

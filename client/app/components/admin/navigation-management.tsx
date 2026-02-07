@@ -55,7 +55,7 @@ export default function NavigationManagement() {
 
   const createMutation = useMutation({
     mutationFn: (data: InsertNavigationItem) =>
-      apiRequest("/api/navigation-items", {
+      apiRequest("/api/admin/navigation-items", {
         method: "POST",
         body: JSON.stringify(data),
       }),
@@ -76,7 +76,7 @@ export default function NavigationManagement() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<InsertNavigationItem> }) =>
-      apiRequest(`/api/navigation-items/${id}`, {
+      apiRequest(`/api/admin/navigation-items/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
       }),
@@ -97,7 +97,7 @@ export default function NavigationManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/navigation-items/${id}`, { method: "DELETE" }),
+    mutationFn: (id: number) => apiRequest(`/api/admin/navigation-items/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
         queryKey: ["/api/navigation-items"],
@@ -114,7 +114,7 @@ export default function NavigationManagement() {
 
   const reorderMutation = useMutation({
     mutationFn: (items: { id: number; sortOrder: number }[]) =>
-      apiRequest("/api/navigation-items/reorder", {
+      apiRequest("/api/admin/navigation-items/reorder", {
         method: "PATCH",
         body: JSON.stringify({ items }),
       }),

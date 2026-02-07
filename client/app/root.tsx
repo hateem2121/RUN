@@ -19,7 +19,7 @@ import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
-import type { LinksFunction, LoaderFunctionArgs } from "react-router";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
@@ -30,7 +30,22 @@ export const links: LinksFunction = () => [
     type: "font/ttf",
     crossOrigin: "anonymous",
   },
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Bold.ttf",
+    as: "font",
+    type: "font/ttf",
+    crossOrigin: "anonymous",
+  },
 ];
+
+export const meta: MetaFunction = () => {
+  return [
+    { name: "theme-color", content: "#000000" },
+    { name: "mobile-web-app-capable", content: "yes" },
+    { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+  ];
+};
 
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
@@ -51,6 +66,12 @@ export async function loader({ context }: LoaderFunctionArgs) {
     await queryClient.prefetchQuery({
       queryKey: MediaQueryKeys.list,
       queryFn: () => fetch(`${baseUrl}/api/media`).then((res) => res.json()), // Fallback to list if specific endpoint not found
+    });
+
+    // Prefetch homepage batch data (Critical for Hero LCP)
+    await queryClient.prefetchQuery({
+      queryKey: ["homepage", "batch"],
+      queryFn: () => fetch(`${baseUrl}/api/homepage-batch`).then((res) => res.json()),
     });
   } catch (error) {
     console.error("Failed to prefetch data in root loader:", error);

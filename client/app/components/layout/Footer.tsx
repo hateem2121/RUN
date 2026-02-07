@@ -3,9 +3,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Magnetic from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
+import type { ContactPageConfiguration } from "@shared/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,6 +57,11 @@ const Footer: React.FC = () => {
   const textRef = useRef<HTMLHeadingElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Data Fetching
+  const { data: contactConfig } = useQuery<ContactPageConfiguration>({
+    queryKey: ["/api/contact-info"],
+  });
 
   useEffect(() => {
     if (!footerRef.current || !textRef.current) return;
@@ -162,8 +169,6 @@ const Footer: React.FC = () => {
     }
   };
 
-  // Dynamic input styles based on error state
-
   return (
     <footer
       ref={footerRef}
@@ -171,15 +176,12 @@ const Footer: React.FC = () => {
     >
       {/* Blueprint Grid Background */}
       <div
-        className="bg-size-[24px_24px] pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
-        }}
+        className="bg-size-[24px_24px] pointer-events-none absolute inset-0 opacity-[0.03] bg-[image:radial-gradient(circle,currentColor_1px,transparent_1px)]"
         aria-hidden="true"
       />
 
-      <div className="container-centered z-elevated relative mb-20 grid grid-cols-1 gap-8 md:mb-32 md:grid-cols-3 md:gap-12">
-        <div>
+      <div className="container-centered z-elevated relative mb-20 grid grid-cols-1 gap-8 md:mb-32 md:grid-cols-3 lg:grid-cols-4 md:gap-12">
+        <div className="md:col-span-1 lg:col-span-2">
           <h2 className="mb-8 text-6xl leading-none font-bold tracking-tighter uppercase sm:text-7xl md:text-8xl lg:text-9xl">
             Start Your <br />
             Order
@@ -195,7 +197,7 @@ const Footer: React.FC = () => {
             <div className="border-brand-lime/30 bg-brand-lime/5 flex items-center gap-3 border p-4">
               <div className="bg-brand-lime shadow-glow-primary h-2 w-2 animate-pulse rounded-full" />
               <p className="text-brand-lime font-mono text-sm tracking-widest">
-                SUBMISSION CONFIRMED! {/* PROTOCOL INITIATED. */}
+                SUBMISSION CONFIRMED!
               </p>
             </div>
           </div>
@@ -207,14 +209,14 @@ const Footer: React.FC = () => {
                 className="text-muted-foreground group-focus-within:text-primary mb-2 block pl-4 font-mono text-xs tracking-widest uppercase transition-colors"
               >
                 <span className="hidden sm:inline">01 </span>
-                {/* Company Name */}
+                COMPANY NAME
               </label>
               <input
                 id="company"
                 type="text"
                 name="company"
                 autoComplete="organization"
-                required
+                aria-label="Company Name"
                 disabled={isSubmitting || isSent}
                 className={footerInputVariants({ hasError: false })}
                 placeholder="ENTER CORPORATION"
@@ -229,7 +231,7 @@ const Footer: React.FC = () => {
                   }`}
                 >
                   <span className="hidden sm:inline">02 </span>
-                  {/* Email Protocol */}
+                  EMAIL ADDRESS
                 </label>
                 {errors.email && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">
@@ -242,6 +244,7 @@ const Footer: React.FC = () => {
                 type="email"
                 name="email"
                 autoComplete="email"
+                aria-label="Email Address"
                 required
                 disabled={isSubmitting || isSent}
                 className={footerInputVariants({ hasError: !!errors.email })}
@@ -258,7 +261,7 @@ const Footer: React.FC = () => {
                   }`}
                 >
                   <span className="hidden sm:inline">03 </span>
-                  {/* Project Specifications */}
+                  PROJECT SPECIFICATIONS
                 </label>
                 {errors.specs && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">
@@ -270,6 +273,7 @@ const Footer: React.FC = () => {
                 id="specs"
                 name="specs"
                 rows={3}
+                aria-label="Project Specifications"
                 disabled={isSubmitting || isSent}
                 className={cn(footerInputVariants({ hasError: !!errors.specs }), "resize-none")}
                 placeholder="FABRIC / QUANTITY / TIMELINE"
@@ -282,7 +286,7 @@ const Footer: React.FC = () => {
                 ref={btnRef}
                 type="submit"
                 disabled={isSubmitting || isSent}
-                aria-busy={isSubmitting}
+                aria-busy={isSubmitting ? "true" : "false"}
                 className={cn(
                   "relative mt-8 overflow-hidden border px-12 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300",
                   isSent
@@ -303,23 +307,35 @@ const Footer: React.FC = () => {
             <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ HQ COORDINATES ]
             </h4>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              142 Industrial Ave,
-              <br />
-              Zurich, Switzerland
-              <br />
-              8005
-            </p>
+            <div className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
+              {contactConfig?.locationLine1 ? (
+                 <>
+                   {contactConfig.locationLine1}
+                   <br/>
+                   {contactConfig.locationLine2}
+                 </>
+              ) : contactConfig?.address ? (
+                contactConfig.address
+              ) : (
+                <>
+                  142 Industrial Ave,
+                  <br />
+                  Zurich, Switzerland
+                  <br />
+                  8005
+                </>
+              )}
+            </div>
           </div>
           <div className="mt-12">
             <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ DIRECT LINE ]
             </h4>
-            <a href="mailto:hello@runapparel.com" className={footerLinkVariants()}>
-              hello@runapparel.com
+            <a href={`mailto:${contactConfig?.email || "hello@runapparel.com"}`} className={footerLinkVariants()}>
+              {contactConfig?.email || "hello@runapparel.com"}
             </a>
-            <a href="tel:+41441234567" className={footerLinkVariants()}>
-              +41 44 123 45 67
+            <a href={`tel:${contactConfig?.phone || "+41441234567"}`} className={footerLinkVariants()}>
+              {contactConfig?.phone || "+41 44 123 45 67"}
             </a>
           </div>
         </div>
@@ -330,13 +346,23 @@ const Footer: React.FC = () => {
               [ NETWORK ]
             </h4>
             <ul className="space-y-2">
-              {["Instagram", "LinkedIn", "Behance"].map((item) => (
-                <li key={item}>
-                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
-                    {item}
-                  </a>
-                </li>
-              ))}
+              {contactConfig?.socialLinks && Object.keys(contactConfig.socialLinks).length > 0 ? (
+                Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
+                  <li key={platform}>
+                    <a href={String(url)} target="_blank" rel="noopener noreferrer" className={footerLinkVariants({ display: "inline" })}>
+                      {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                ["Instagram", "LinkedIn", "Behance"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className={footerLinkVariants({ display: "inline" })}>
+                      {item}
+                    </a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
           <div className="mt-12">
@@ -344,13 +370,16 @@ const Footer: React.FC = () => {
               [ PROTOCOLS ]
             </h4>
             <ul className="text-muted-foreground space-y-2 text-sm">
-              {["Privacy Policy", "Terms of Service"].map((item) => (
-                <li key={item}>
-                  <a href="#" className={footerLinkVariants({ display: "inline" })}>
-                    {item}
+              <li>
+                  <a href="/privacy" className={footerLinkVariants({ display: "inline" })}>
+                    Privacy Policy
                   </a>
-                </li>
-              ))}
+              </li>
+              <li>
+                  <a href="/terms" className={footerLinkVariants({ display: "inline" })}>
+                     Terms of Service
+                  </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -364,10 +393,10 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Massive Parallax Logotype */}
-      <div className="z-elevated relative w-full text-center" aria-hidden="true">
+      <div className="z-elevated relative w-full text-center overflow-hidden" aria-hidden="true">
         <h1
           ref={textRef}
-          className="text-foreground text-[22vw] leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform sm:text-[18vw] dark:opacity-20"
+          className="text-foreground leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-[length:clamp(3rem,18vw,20rem)]"
         >
           RUN APPAREL
         </h1>

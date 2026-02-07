@@ -129,7 +129,7 @@ const updateSchema = insertFooterConfigurationSchema.partial();
 
 // PUBLIC endpoint for footer configuration
 router.get(
-  "/api/footer",
+  "/footer",
   asyncHandler(async (_req, res) => {
     const cacheKey = CacheKeys.footer.config();
 
@@ -148,7 +148,7 @@ router.get(
 
 // ADMIN endpoint for footer configuration
 router.get(
-  "/api/admin/footer",
+  "/admin/footer",
   asyncHandler(async (_req, res) => {
     // Shared cache key with public endpoint
     const cacheKey = CacheKeys.footer.config();
@@ -167,7 +167,7 @@ router.get(
 
 // prettier-ignore
 router.patch(
-  "/api/admin/footer",
+  "/admin/footer",
   asyncHandler(async (req, res) => {
     // security
     // 1. Validate payload

@@ -2,6 +2,8 @@
 @import "./styles/theme.css";
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
+@import "./styles/animations.css";
+@import "./components/ui/map/map-styles.css";
 
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;

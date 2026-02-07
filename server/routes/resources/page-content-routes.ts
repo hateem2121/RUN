@@ -137,7 +137,7 @@ router.get("/sustainability-hero", async (_req, res) => {
   }
 });
 
-router.patch("/sustainability-hero", authService.requireAdmin, async (req, res) => {
+router.patch("/admin/sustainability-hero", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertSustainabilityHeroSchema.partial().safeParse(req.body);
     if (!validation.success) {
@@ -261,7 +261,7 @@ router.get("/technology-hero", async (_req, res) => {
   }
 });
 
-router.patch("/technology-hero", authService.requireAdmin, async (req, res) => {
+router.patch("/admin/technology-hero", authService.requireAdmin, async (req, res) => {
   try {
     const validation = insertTechnologyHeroSchema.partial().safeParse(req.body);
     if (!validation.success) {

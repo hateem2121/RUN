@@ -29,8 +29,12 @@ const SizeChartManagementEnhanced = lazy(
 );
 const AccessoryManagement = lazy(() => import("@/components/admin/accessory-management-enhanced"));
 const NavigationManagement = lazy(() => import("@/components/admin/navigation-management"));
-const HomepageManagement = () => <PlaceholderModule moduleName="Homepage Management" />;
+const HomepageManagement = lazy(() => import("@/components/admin/homepage-management"));
+const CategoryManagementSimplified = lazy(
+  () => import("@/components/admin/category-management-simplified"),
+);
 const AboutManagement = () => <PlaceholderModule moduleName="About Management" />;
+const BlogManagement = () => <PlaceholderModule moduleName="Blog Management" />;
 
 const UnifiedSustainabilityManagement = lazy(() =>
   import("@/components/admin/unified-sustainability-management").then((m) => ({
@@ -78,6 +82,8 @@ export default function AdminModule() {
     switch (module) {
       case "products":
         return <ProductManagementUnified />;
+      case "categories":
+        return <CategoryManagementSimplified />;
       case "media":
         return <AdminMediaPage />;
       case "fabrics":
@@ -110,6 +116,8 @@ export default function AdminModule() {
         return <MediaTestRunner />;
       case "inquiries":
         return <InquiryManagement />;
+      case "blog":
+        return <BlogManagement />;
       case "dashboard":
         // Should be handled by _index but just in case
         return null;

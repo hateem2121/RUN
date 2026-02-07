@@ -102,6 +102,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: <IconInbox className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
+      label: "Blog",
+      href: "/admin/blog",
+      icon: <IconFileFilled className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
       label: "Homepage",
       href: "/admin/homepage",
       icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
@@ -161,8 +166,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="ml-[60px] bg-white pt-16 md:pt-0 lg:ml-[300px] dark:bg-neutral-900">
-        <div className="border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="ml-[var(--width-sidebar-collapsed)] bg-white pt-16 md:pt-0 lg:ml-[var(--width-sidebar-expanded)] dark:bg-neutral-900 transition-[margin] duration-300 ease-in-out">
+        <div className="border border-neutral-200 bg-white p-8 dark:border-neutral-700 dark:bg-neutral-900">
           <AdminBreadcrumb />
           <div className="mt-4">{children}</div>
         </div>

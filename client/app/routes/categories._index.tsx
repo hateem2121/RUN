@@ -45,6 +45,29 @@ import { GeometricDivider } from "@/components/ui/geometric-divider";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import type { Route } from "./+types/categories._index";
 
+// --- Types ---
+interface BentoCardContent {
+  title?: string;
+  description?: string;
+  mediaUrl?: string; // ID or URL string
+  link?: string;
+  // SvgMask specific
+  maskSvgUrl?: string;
+  contentMediaUrl?: string;
+  // Expandable specific
+  expandedContent?: Array<{ title: string; text: string }>;
+  // Flip specific
+  subtitle?: string;
+  features?: string[];
+}
+
+interface FeaturedContent {
+  card1?: BentoCardContent;
+  card2?: BentoCardContent;
+  card3?: BentoCardContent;
+  card4?: BentoCardContent;
+}
+
 // Error boundary for FluidGlass component
 class FluidGlassErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -92,10 +115,10 @@ export default function CategoriesPage() {
   const activeCategories = categories.filter((cat) => cat.isActive);
 
   // Type guard for featured content access
-  const getFeaturedContent = useCallback((category: Category) => {
+  const getFeaturedContent = useCallback((category: Category): FeaturedContent => {
     const content = category.featuredContent;
     if (content && typeof content === "object" && content !== null) {
-      return content as Record<string, any>;
+      return content as unknown as FeaturedContent;
     }
     return {};
   }, []);
@@ -107,17 +130,19 @@ export default function CategoriesPage() {
       const content = getFeaturedContent(category);
 
       // Extract media IDs from all card types
-      [content.card1, content.card2, content.card3, content.card4].forEach((card: any) => {
-        if (card?.maskSvgUrl && !Number.isNaN(parseInt(card.maskSvgUrl, 10))) {
-          ids.push(parseInt(card.maskSvgUrl, 10));
-        }
-        if (card?.contentMediaUrl && !Number.isNaN(parseInt(card.contentMediaUrl, 10))) {
-          ids.push(parseInt(card.contentMediaUrl, 10));
-        }
-        if (card?.mediaUrl && !Number.isNaN(parseInt(card.mediaUrl, 10))) {
-          ids.push(parseInt(card.mediaUrl, 10));
-        }
-      });
+      [content.card1, content.card2, content.card3, content.card4].forEach(
+        (card: BentoCardContent | undefined) => {
+          if (card?.maskSvgUrl && !Number.isNaN(parseInt(card.maskSvgUrl, 10))) {
+            ids.push(parseInt(card.maskSvgUrl, 10));
+          }
+          if (card?.contentMediaUrl && !Number.isNaN(parseInt(card.contentMediaUrl, 10))) {
+            ids.push(parseInt(card.contentMediaUrl, 10));
+          }
+          if (card?.mediaUrl && !Number.isNaN(parseInt(card.mediaUrl, 10))) {
+            ids.push(parseInt(card.mediaUrl, 10));
+          }
+        },
+      );
     });
 
     // Remove duplicates and invalid IDs
@@ -238,7 +263,18 @@ export default function CategoriesPage() {
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <div className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
         {/* Hero Section */}
-        <div className="container mx-auto mt-0 mb-0 px-4 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
+        <div className="container mx-auto max-w-7xl px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
+          {/* Breadcrumbs Integration */}
+          <div className="mb-8 flex justify-center">
+            <nav className="flex items-center space-x-2 text-luxury-gray-400 text-xs uppercase tracking-widest">
+              <a href="/" className="hover:text-luxury-charcoal transition-colors">
+                Home
+              </a>
+              <span className="text-luxury-gray-300">/</span>
+              <span className="text-luxury-charcoal font-medium">Categories</span>
+            </nav>
+          </div>
+
           <motion.h1
             className={cn(
               headingVariants({ variant: "h1" }),
@@ -260,7 +296,7 @@ export default function CategoriesPage() {
           </motion.p>
         </div>
         {/* Categories with Bento Cards */}
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto max-w-7xl px-4 md:px-8">
           {activeCategories.length > 0 ? (
             <div className="space-y-0">
               {activeCategories.map((category, categoryIndex) => {
@@ -364,126 +400,132 @@ export default function CategoriesPage() {
 
                           {/* Card 2 - Expandable */}
                           <div className={cn("bento-card", getResponsiveSpanClasses("card2"))}>
-                            <ExpandableCard
-                              title={featuredContent.card2?.title || "Expandable Content"}
-                              description={
-                                featuredContent.card2?.description ||
-                                "Click to explore more details"
-                              }
-                              mediaUrl={getMediaUrl(featuredContent.card2?.mediaUrl)}
-                              link={featuredContent.card2?.link}
-                              expandedContent={featuredContent.card2?.expandedContent}
-                              cardId={`card2-${category.id}`}
-                            />
+                            {featuredContent.card2 && (
+                              <ExpandableCard
+                                title={featuredContent.card2.title || "Expandable Content"}
+                                description={
+                                  featuredContent.card2.description ||
+                                  "Click to explore more details"
+                                }
+                                mediaUrl={getMediaUrl(featuredContent.card2.mediaUrl)}
+                                link={featuredContent.card2.link}
+                                expandedContent={featuredContent.card2.expandedContent || []}
+                                cardId={`card2-${category.id}`}
+                              />
+                            )}
                           </div>
 
                           {/* Card 3 - Flip */}
                           <div className={cn("bento-card", getResponsiveSpanClasses("card3"))}>
-                            <FlipCard
-                              title={featuredContent.card3?.title || "Interactive Card"}
-                              description={
-                                featuredContent.card3?.description || "Flip to discover more"
-                              }
-                              subtitle={featuredContent.card3?.subtitle}
-                              features={featuredContent.card3?.features}
-                              mediaUrl={getMediaUrl(featuredContent.card3?.mediaUrl)}
-                              link={featuredContent.card3?.link}
-                            />
+                            {featuredContent.card3 && (
+                              <FlipCard
+                                title={featuredContent.card3.title || "Interactive Card"}
+                                description={
+                                  featuredContent.card3.description || "Flip to discover more"
+                                }
+                                subtitle={featuredContent.card3.subtitle}
+                                features={featuredContent.card3.features || []}
+                                mediaUrl={getMediaUrl(featuredContent.card3.mediaUrl)}
+                                link={featuredContent.card3.link}
+                              />
+                            )}
                           </div>
 
                           {/* Card 4 - Fluid Glass Lens with 3D Model or Image Background */}
                           <div className={cn("bento-card", getResponsiveSpanClasses("card4"))}>
-                            <div className="max-h-modal-md relative h-auto min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
-                              {/* Media Background - 3D Model or Image */}
-                              {getMediaUrl(featuredContent.card4?.mediaUrl) &&
-                                (() => {
-                                  const resolvedUrl = getMediaUrl(featuredContent.card4.mediaUrl)!;
-                                  const mediaId = extractMediaId(featuredContent.card4.mediaUrl);
-                                  const mimeType = mediaId
-                                    ? mediaMimeTypes.get(mediaId)
-                                    : undefined;
-                                  const isModel = isModelUrl(resolvedUrl, mimeType);
+                            {featuredContent.card4 && (
+                              <div className="max-h-modal-md relative h-auto min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+                                {/* Media Background - 3D Model or Image */}
+                                {getMediaUrl(featuredContent.card4.mediaUrl) &&
+                                  (() => {
+                                    const resolvedUrl = getMediaUrl(featuredContent.card4!.mediaUrl)!;
+                                    const mediaId = extractMediaId(featuredContent.card4!.mediaUrl);
+                                    const mimeType = mediaId
+                                      ? mediaMimeTypes.get(mediaId)
+                                      : undefined;
+                                    const isModel = isModelUrl(resolvedUrl, mimeType);
 
-                                  return (
-                                    <div className="z-base absolute inset-0">
-                                      {isModel ? (
-                                        // 3D Model Viewer for GLB/GLTF files
-                                        <LazyUnifiedModelViewer
-                                          asset={{
-                                            id: mediaId || 0,
-                                            filename: featuredContent.card4.title || "model.glb",
-                                            originalName: null,
-                                            fileSize: null,
-                                            size: null,
-                                            mimeType: mimeType || "model/gltf-binary",
-                                            type: "model",
-                                            url: resolvedUrl,
-                                            thumbnailUrl: null,
-                                            thumbnailFilename: null,
-                                            thumbnailStoragePath: null,
-                                            imageVariants: null,
-                                            storagePath: resolvedUrl,
-                                            bucketName: "default",
-                                            folderId: null,
-                                            tags: null,
-                                            altText: null,
-                                            caption: null,
-                                            metadata: {},
+                                    return (
+                                      <div className="z-base absolute inset-0">
+                                        {isModel ? (
+                                          // 3D Model Viewer for GLB/GLTF files
+                                          <LazyUnifiedModelViewer
+                                            asset={{
+                                              id: mediaId || 0,
+                                              filename: featuredContent.card4!.title || "model.glb",
+                                              originalName: null,
+                                              fileSize: null,
+                                              size: null,
+                                              mimeType: mimeType || "model/gltf-binary",
+                                              type: "model",
+                                              url: resolvedUrl,
+                                              thumbnailUrl: null,
+                                              thumbnailFilename: null,
+                                              thumbnailStoragePath: null,
+                                              imageVariants: null,
+                                              storagePath: resolvedUrl,
+                                              bucketName: "default",
+                                              folderId: null,
+                                              tags: null,
+                                              altText: null,
+                                              caption: null,
+                                              metadata: {},
 
-                                            uploadedAt: null,
-                                            isActive: true,
-                                            createdAt: null,
-                                            updatedAt: null,
-                                            deletedAt: null,
-                                          }}
-                                          className="h-full w-full"
-                                          config={{
-                                            autoRotate: true,
-                                            cameraControls: true,
-                                          }}
-                                          showControls={false}
-                                          showLoadingProgress={true}
-                                        />
-                                      ) : (
-                                        // Standard image for non-3D media
-                                        <img
-                                          src={resolvedUrl}
-                                          alt={featuredContent.card4?.title || "Glass Effect"}
-                                          className="h-full w-full object-cover"
-                                        />
-                                      )}
+                                              uploadedAt: null,
+                                              isActive: true,
+                                              createdAt: null,
+                                              updatedAt: null,
+                                              deletedAt: null,
+                                            }}
+                                            className="h-full w-full"
+                                            config={{
+                                              autoRotate: true,
+                                              cameraControls: true,
+                                            }}
+                                            showControls={false}
+                                            showLoadingProgress={true}
+                                          />
+                                        ) : (
+                                          // Standard image for non-3D media
+                                          <img
+                                            src={resolvedUrl}
+                                            alt={featuredContent.card4?.title || "Glass Effect"}
+                                            className="h-full w-full object-cover"
+                                          />
+                                        )}
+                                      </div>
+                                    );
+                                  })()}
+                                {/* Three.js Glass Lens Overlay - CHUNK 6: Lazy-loaded to defer three.js */}
+                                <FluidGlassErrorBoundary>
+                                  <Suspense
+                                    fallback={
+                                      <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+                                    }
+                                  >
+                                    <div className="z-modal-backdrop pointer-events-none absolute inset-0">
+                                      <FluidGlass mode="lens" />
                                     </div>
-                                  );
-                                })()}
-                              {/* Three.js Glass Lens Overlay - CHUNK 6: Lazy-loaded to defer three.js */}
-                              <FluidGlassErrorBoundary>
-                                <Suspense
-                                  fallback={
-                                    <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
-                                  }
-                                >
-                                  <div className="z-modal-backdrop pointer-events-none absolute inset-0">
-                                    <FluidGlass mode="lens" />
+                                  </Suspense>
+                                </FluidGlassErrorBoundary>
+                                {/* Text Content from Admin Console */}
+                                {(featuredContent.card4.title ||
+                                  featuredContent.card4.description) && (
+                                  <div className="z-modal pointer-events-none absolute right-0 bottom-0 left-0 p-6">
+                                    {featuredContent.card4.title && (
+                                      <Typography.H3 className="font-neue-stance mb-2 text-xl font-bold text-white drop-shadow-lg">
+                                        {featuredContent.card4.title}
+                                      </Typography.H3>
+                                    )}
+                                    {featuredContent.card4.description && (
+                                      <Typography.P className="text-sm text-white/90 drop-shadow-lg">
+                                        {featuredContent.card4.description}
+                                      </Typography.P>
+                                    )}
                                   </div>
-                                </Suspense>
-                              </FluidGlassErrorBoundary>
-                              {/* Text Content from Admin Console */}
-                              {(featuredContent.card4?.title ||
-                                featuredContent.card4?.description) && (
-                                <div className="z-modal pointer-events-none absolute right-0 bottom-0 left-0 p-6">
-                                  {featuredContent.card4?.title && (
-                                    <Typography.H3 className="font-neue-stance mb-2 text-xl font-bold text-white drop-shadow-lg">
-                                      {featuredContent.card4.title}
-                                    </Typography.H3>
-                                  )}
-                                  {featuredContent.card4?.description && (
-                                    <Typography.P className="text-sm text-white/90 drop-shadow-lg">
-                                      {featuredContent.card4.description}
-                                    </Typography.P>
-                                  )}
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </BentoCardContainer>
                       </motion.section>

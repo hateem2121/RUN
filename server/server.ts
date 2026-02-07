@@ -58,15 +58,15 @@ serverReady = (async () => {
     await startServices();
 
     // 9. Start Server
-    const port = parseInt(process.env.PORT || "5002", 10);
-    httpServer.listen(port, () => {
-      const address = httpServer.address();
-      const actualPort = typeof address === "object" && address ? address.port : port;
-      logger.info(`Server running on port ${actualPort}`);
+    // 9. Start Server
+    const PORT = 5002; // HARDCODED - No environment variables
+    
+    httpServer.listen(PORT, () => {
+      // logger.info(`Server running on port ${PORT}`);
+      console.log(`✓ Server running on http://localhost:${PORT}`);
+      console.log(`✓ Admin panel: http://localhost:${PORT}/admin`);
+      console.log(`✓ API base: http://localhost:${PORT}/api`);
       logger.info(`Environment: ${config.app.environment}`);
-      logger.info(
-        `👉 Access via IP: http://127.0.0.1:${actualPort} (Use this instead of localhost)`,
-      );
     });
 
     // 10. Server Configuration

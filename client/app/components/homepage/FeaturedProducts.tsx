@@ -72,11 +72,11 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {(products || FEATURED_PRODUCTS).map((product, index) => (
             <div
               key={product.id}
-              className={`product-card group relative ${index === 1 ? "md:mt-24" : ""}`}
+              className={`product-card group relative ${index === 1 ? "sm:mt-24" : ""}`}
               onMouseEnter={() => !isMobile && setCursor(CursorVariant.VIEW, "VIEW SPECS")}
               onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
             >
