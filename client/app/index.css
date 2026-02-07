@@ -3,12 +3,22 @@
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
 
+
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
 /* =========================
     Performance Utilities
    ========================= */
 
 @utility z-dock {
   z-index: var(--z-index-dock, 1100);
+}
+
+@utility border-glass-themed {
+  border-color: color-mix(in oklab, var(--color-foreground) 30%, transparent);
 }
 
 @utility z-elevated {
@@ -122,9 +132,7 @@
   border-color: var(--color-glass, rgba(255, 255, 255, 0.1));
 }
 
-@utility font-neue-stance {
-  font-family: var(--font-neue-stance, "Inter", system-ui, sans-serif);
-}
+
 
 @utility text-luxury-charcoal {
   color: var(--color-luxury-charcoal, #1a1a2e);
@@ -420,7 +428,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground pb-24;
+    @apply bg-background text-foreground;
     font-feature-settings:
       "rlig" 1,
       "calt" 1;

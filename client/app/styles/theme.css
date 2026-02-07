@@ -32,8 +32,12 @@
     /* Standardized Surface & Brand Colors */
     --color-surface-light: #ffffff;
     --color-surface-gray: #f5f5f5;
-    --color-brand-purple-light: #FF9FFC;
-    --color-brand-lime: #CCFF00;
+    --color-brand-purple-light: #ff9ffc;
+    --color-brand-lime: #ccff00;
+
+    /* Glass Tokens - Light Mode */
+    --glass-bg-start: rgba(255, 255, 255, 0.7);
+    --glass-bg-end: rgba(255, 255, 255, 0.4);
   }
 
   .dark {
@@ -68,6 +72,13 @@
     /* Standardized Surface & Brand Colors */
     --color-surface-light: #050505;
     --color-surface-gray: #1a1a1a;
+    
+    /* Glass Tokens - Dark Mode */
+    --glass-bg-start: rgba(255, 255, 255, 0.1);
+    --glass-bg-end: rgba(255, 255, 255, 0.05);
+
+    /* Feature Gradients - Dark Mode */
+    --gradient-manufacturing-hero: linear-gradient(to bottom right, #0a0a0a, #1a1a2e);
   }
 }
 
@@ -105,6 +116,9 @@
   --color-brand-purple-light: #ff9ffc;
   --color-surface-dark: #050505;
 
+  /* Feature-Specific Gradients */
+  --gradient-manufacturing-hero: linear-gradient(to bottom right, #f8f9fa, #e9ecef); /* Light Mode default */
+
   /* =========================================
      Surface & Text Scale (Phase 1 Token Foundation)
      Semantic replacements for raw gray-* colors
@@ -140,33 +154,33 @@
   --color-neutral-500: hsl(240 5% 46%);
 
   /* Shadcn/UI Mappings (Linked to CSS Variables) */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
 
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
 
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
 
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
 
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
 
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
 
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
 
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
 
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
 
   /* Typography */
   --font-sans: "Inter", system-ui, sans-serif;
@@ -200,6 +214,7 @@
   --height-loading-content: 50vh;
   --min-height-value-card: 400px;
   --min-height-process-card: 60vh;
+
 
   /* Width Tokens (for arbitrary value replacement) */
   --width-sidebar-collapsed: 80px;
@@ -239,25 +254,25 @@
   --z-index-base: 0;
   --z-index-default: 1;
   --z-index-elevated: 10;
-  --z-index-dropdown: 100;
-  --z-index-sticky: 200;
-  --z-index-dock: 300;
-  --z-index-modal-backdrop: 400;
-  --z-index-modal: 500;
-  --z-index-modal-nested: 550;
-  --z-index-modal-nested-2: 560;
-  --z-index-modal-nested-3: 570;
-  --z-index-modal-overlay-1: 410;
-  --z-index-modal-overlay-2: 420;
-  --z-index-modal-overlay-3: 430;
-  --z-index-popover: 600;
-  --z-index-tooltip: 600;
-  --z-index-toast: 700;
-  --z-index-cursor: 800;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1050;
+  --z-index-dock: 1100; /* Must be > Leaflet controls (1000) */
+  --z-index-modal-backdrop: 1200;
+  --z-index-modal: 1300;
+  --z-index-modal-nested: 1350;
+  --z-index-modal-nested-2: 1360;
+  --z-index-modal-nested-3: 1370;
+  --z-index-modal-overlay-1: 1210;
+  --z-index-modal-overlay-2: 1220;
+  --z-index-modal-overlay-3: 1230;
+  --z-index-popover: 1400;
+  --z-index-tooltip: 1450;
+  --z-index-toast: 1500;
+  --z-index-cursor: 1600;
   --z-index-max: 9999;
 
-  /* Glass Effects */
-  --glass-premium: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    /* Glass Effects */
+    --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
 
   /* Animations */
   --animate-marker-bounce: markerBounce 0.6s ease-in-out;
@@ -394,4 +409,12 @@
       transform: translateX(0);
     }
   }
+}
+
+/* Utilities */
+@utility min-h-process-card {
+  min-height: var(--min-height-process-card);
+}
+@utility h-hero-mobile {
+  height: 70vh;
 }

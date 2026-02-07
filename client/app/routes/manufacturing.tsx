@@ -89,7 +89,6 @@ export default function Manufacturing() {
   const {
     data: heroData,
     isPending: isHeroLoading,
-    error: heroError,
   } = useQuery<ManufacturingHero>({
     queryKey: ["/api/manufacturing-hero"],
     staleTime: 5 * 60 * 1000,
@@ -98,7 +97,6 @@ export default function Manufacturing() {
   const {
     data: processesData,
     isPending: isProcessesLoading,
-    error: processesError,
   } = useQuery<ManufacturingProcess[]>({
     queryKey: ["/api/manufacturing-processes"],
     staleTime: 5 * 60 * 1000,
@@ -107,7 +105,6 @@ export default function Manufacturing() {
   const {
     data: capabilitiesData,
     isPending: isCapabilitiesLoading,
-    error: capabilitiesError,
   } = useQuery<ManufacturingCapability[]>({
     queryKey: ["/api/manufacturing-capabilities"],
     staleTime: 5 * 60 * 1000,
@@ -116,7 +113,6 @@ export default function Manufacturing() {
   const {
     data: qualitiesData,
     isPending: isQualitiesLoading,
-    error: qualitiesError,
   } = useQuery<ManufacturingQuality[]>({
     queryKey: ["/api/manufacturing-qualities"],
     staleTime: 5 * 60 * 1000,
@@ -124,21 +120,14 @@ export default function Manufacturing() {
 
   const isPending =
     isHeroLoading || isProcessesLoading || isCapabilitiesLoading || isQualitiesLoading;
-  const error = heroError || processesError || capabilitiesError || qualitiesError;
 
+  // Global loading state for initial content
   if (isPending) {
     return <ManufacturingLoadingSkeleton />;
   }
 
-  if (error) {
-    // throw error; // Let ErrorBoundary handle it
-    // Fallback UI or boundary should handle this.
-    // Throwing here might break if hydrated error is present?
-    // RR7 might handle it via route error boundary.
-  }
-
   // Safely cast data with fallbacks
-  const hero = heroData!;
+  const hero = heroData;
   const processes = processesData || [];
   const capabilities = capabilitiesData || [];
   const qualityItems = qualitiesData || [];
@@ -146,33 +135,41 @@ export default function Manufacturing() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ManufacturingErrorBoundary>
-        <div className="min-h-screen bg-white">
-          {/* Hero Section */}
+      <div className="min-h-screen pt-24">
+        {/* Hero Section */}
+        <ManufacturingErrorBoundary>
           <PublicHeroSection
             mouseX={mouseX}
             mouseY={mouseY}
             rotateX={rotateX}
             rotateY={rotateY}
-            mediaAssets={mediaAssets} // Note: Empty array in new pattern
+            mediaAssets={mediaAssets}
             hero={hero}
           />
+        </ManufacturingErrorBoundary>
 
-          {/* Processes Section */}
+        {/* Processes Section */}
+        <ManufacturingErrorBoundary>
           <PublicProcessSection mediaAssets={mediaAssets} processes={processes} />
+        </ManufacturingErrorBoundary>
 
-          {/* Capabilities Section */}
+        {/* Capabilities Section */}
+        <ManufacturingErrorBoundary>
           <PublicCapabilitySection mediaAssets={mediaAssets} capabilities={capabilities} />
+        </ManufacturingErrorBoundary>
 
-          {/* Quality Section */}
+        {/* Quality Section */}
+        <ManufacturingErrorBoundary>
           <PublicQualitySection mediaAssets={mediaAssets} qualities={qualityItems} />
+        </ManufacturingErrorBoundary>
 
-          {/* Call to Action - CHUNK 6: Lazy-loaded to defer lottie-web */}
+        {/* Call to Action - CHUNK 6: Lazy-loaded to defer lottie-web */}
+        <ManufacturingErrorBoundary>
           <Suspense fallback={<div className="h-24" />}>
             <CallToAction hero={hero} />
           </Suspense>
-        </div>
-      </ManufacturingErrorBoundary>
+        </ManufacturingErrorBoundary>
+      </div>
     </HydrationBoundary>
   );
 }

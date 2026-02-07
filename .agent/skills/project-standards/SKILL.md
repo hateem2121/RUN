@@ -222,6 +222,11 @@ import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBounda
 ### Troubleshooting
 - **504 Vite Errors**: Clear browser cache for `localhost`, use `127.0.0.1`, or incognito mode.
 - **Port in use**: `npx kill-port 5002`
-- **Stuck processes**: `pkill -f 'tsx watch' && pkill -f 'turbo run dev'`
+- **Port in use**: `npx kill-port 5002`
+- **Stuck processes**: `npm run kill:all` (or `pkill -f 'RUN-Remix'`)
+- **High CPU**: Ensure `ENABLE_PERFORMANCE_MONITORING=false` and `ENABLE_REACT_SCAN=false` in `.env`.
+
+    *   Use `VITE_ANALYZE=true npm run dev` to generate bundle stats.
+    *   Use `VITE_INSPECT=true npm run dev` to debug Vite plugins.
 
 See `/dev-server` workflow for complete instructions.

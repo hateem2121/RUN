@@ -1,77 +1,11 @@
-import { Canvas, useFrame } from "@react-three/fiber";
 import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
 import type React from "react";
-import { useMemo, useRef } from "react";
-import { Color, type Mesh, type ShaderMaterial } from "three";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { useStore } from "./store";
 import { CursorVariant } from "./types";
-
-// Shaders moved outside for performance
-const vertexShader = `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`;
-
-const fragmentShader = `
-  uniform float uTime;
-  uniform vec3 uColor1;
-  uniform vec3 uColor2;
-  varying vec2 vUv;
-
-  void main() {
-    vec2 center = vec2(0.5, 0.5);
-    float dist = distance(vUv, center);
-    
-    // Create ripple effect
-    float sinWave = sin(dist * 20.0 - uTime * 1.5);
-    float distort = sinWave * 0.1;
-    
-    // Mix colors based on wave
-    vec3 color = mix(uColor1, uColor2, 0.5 + distort);
-    
-    gl_FragColor = vec4(color, 1.0);
-  }
-`;
-
-const WaterRipple = () => {
-  const mesh = useRef<Mesh>(null);
-
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uColor1: { value: new Color("#FFFFFF") },
-      uColor2: { value: new Color("#E0F2FE") }, // Light blue tint
-    }),
-    [],
-  );
-
-  useFrame((state) => {
-    const material = mesh.current?.material as ShaderMaterial;
-    if (material?.uniforms?.uTime) {
-      material.uniforms.uTime.value = state.clock.getElapsedTime();
-    }
-  });
-
-  return (
-    <mesh ref={mesh}>
-      <planeGeometry args={[10, 10]} />
-      <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-        transparent={true}
-        opacity={0.5}
-      />
-    </mesh>
-  );
-};
 
 interface ValuesCardProps {
   title: string;
@@ -89,7 +23,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
   subtitle,
   icon: Icon,
   colSpan = "col-span-1",
-  withRipple = false,
+  withRipple = false, // Kept in prop interface but unused
   isMobile,
   setCursor,
   image,
@@ -117,17 +51,18 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
         />
       </div>
 
-      {/* Ripple Layer - Only rendered on desktop for performance */}
-      {withRipple && !isMobile && (
-        <div className="pointer-events-none absolute inset-0 z-base opacity-60 mix-blend-soft-light">
-          <Canvas camera={{ position: [0, 0, 2] }} gl={{ alpha: true }}>
-            <WaterRipple />
-          </Canvas>
-        </div>
-      )}
-
-      {/* Gradient Overlay - Placed after ripple to ensure text contrast */}
+      {/* Gradient Overlay */}
       <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
+      
+      {/* 
+        Hover Ripple Effect Replacement 
+        Simple CSS radial gradient overlay on hover instead of WebGL 
+      */}
+      {withRipple && (
+         <div className="absolute inset-0 z-base opacity-0 transition-opacity duration-700 group-hover:opacity-30 pointer-events-none" 
+              style={{ background: "radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 70%)" }}
+         />
+      )}
 
       <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
         <div className="flex w-full justify-end">

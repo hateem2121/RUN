@@ -1,0 +1,210 @@
+FilePath,Category,RiskScore,LastModified,FileSize_KB,LineCount,Recommendation,ImpactLevel,Justification
+CODE_OF_CONDUCT.md,CRITICAL,0,2026-01-12 12:05:55 +0500,2.45,61,Keep,High,Core file
+codecov.yml,CRITICAL,0,2026-01-13 13:07:54 +0500,0.64,41,Keep,High,Core file
+openapi-spec.json,CRITICAL,0,2026-02-04 17:49:04 +0500,73.65,2267,Keep,High,Core file
+docker-compose.observability.yml,CRITICAL,0,2026-01-05 14:01:56 +0500,1.14,53,Keep,High,Core file
+bundlesize.config.json,CRITICAL,0,2026-01-05 14:01:56 +0500,0.16,10,Keep,High,Core file
+CHANGELOG.md,CRITICAL,0,2026-02-05 23:25:04 +0500,2.11,49,Keep,High,Core file
+renovate.json,CRITICAL,0,2026-01-01 14:45:37 +0500,0.55,21,Keep,High,Core file
+tsconfig.base.json,CRITICAL,0,2026-01-09 19:02:30 +0500,1.17,48,Keep,High,Core file
+.pre-commit-config.yaml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.1,5,Keep,High,Core file
+stryker.config.json,CRITICAL,0,2026-01-12 15:34:43 +0500,0.76,32,Keep,High,Core file
+FULL_SYSTEM_CONTEXT.json,CRITICAL,0,2026-02-02 19:21:44 +0500,4.12,179,Keep,High,Core file
+.markdown-link-check.json,CRITICAL,0,2026-01-11 01:05:18 +0500,0.28,18,Keep,High,Core file
+cloudbuild.yaml,CRITICAL,0,2026-01-04 23:51:09 +0500,3.21,128,Keep,High,Core file
+turbo.json,CRITICAL,0,2026-01-05 14:01:56 +0500,0.58,31,Keep,High,Core file
+.lighthouserc.json,CRITICAL,0,2026-01-05 14:01:56 +0500,0.52,20,Keep,High,Core file
+README.md,CRITICAL,0,2026-02-05 23:25:04 +0500,15.56,590,Keep,High,Core file
+package.json,CRITICAL,0,2026-02-05 17:42:09 +0500,4.25,117,Keep,High,Core file
+CONTRIBUTING.md,CRITICAL,0,2026-01-11 13:44:06 +0500,2.94,109,Keep,High,Core file
+.audit-ci.json,CRITICAL,0,2026-01-07 17:09:49 +0500,0.17,10,Keep,High,Core file
+components.json,CRITICAL,0,2026-02-04 15:13:29 +0500,0.38,19,Keep,High,Core file
+tsconfig.json,CRITICAL,0,2025-12-29 23:11:28 +0500,0.34,16,Keep,High,Core file
+cloudbuild-staging.yaml,CRITICAL,0,2026-01-08 00:27:46 +0500,1.12,42,Keep,High,Core file
+docker-compose.test.yml,CRITICAL,0,2026-01-05 18:30:08 +0500,0.47,22,Keep,High,Core file
+.env.example,CRITICAL,0,2026-02-02 13:17:48 +0500,0.65,23,Keep,High,Core file
+AGENTS.md,CRITICAL,0,2026-02-04 15:13:29 +0500,4.52,102,Keep,High,Core file
+biome.json,CRITICAL,0,2026-01-12 14:28:41 +0500,1.54,75,Keep,High,Core file
+cloudbuild-multiregion.yaml,CRITICAL,0,2026-01-11 13:44:06 +0500,6.19,208,Keep,High,Core file
+.markdownlint.json,CRITICAL,0,2026-01-11 13:44:06 +0500,0.18,13,Keep,High,Core file
+mcp.json,CRITICAL,0,2026-01-07 22:18:36 +0500,0.5,20,Keep,High,Core file
+.config/configstore/update-notifier-npm-check-updates.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.06,4,Keep,High,Core file
+.config/configstore/update-notifier-npm-check.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.06,4,Keep,High,Core file
+.config/.semgrep/semgrep_rules.json,OUTDATED,5,2025-12-15 23:14:54 +0500,1736.71,51879,Update,Medium,Contains references to outdated tools (webpack/heroku)
+.config/.semgrep/settings.yml,CRITICAL,0,2025-12-15 23:14:54 +0500,0.09,2,Keep,High,Core file
+.config/replit/.semgrep/semgrep_rules.json,OUTDATED,5,2025-12-15 23:14:54 +0500,1736.71,51879,Update,Medium,Contains references to outdated tools (webpack/heroku)
+.husky/_/husky.sh,CRITICAL,0,unknown,0.16,9,Keep,High,Core file
+artifacts/data/CACHE_PERFORMANCE_ANALYSIS_REPORT.json,CRITICAL,0,2025-12-25 21:19:32 +0500,3.52,106,Keep,High,Core file
+artifacts/data/CHUNK_2_FRONTEND_DISPLAY_VERIFICATION.json,CRITICAL,0,2025-12-25 21:19:32 +0500,18.56,451,Keep,High,Core file
+artifacts/data/CHUNK_5_SHARED_CONTENT_CONSISTENCY.json,CRITICAL,0,2025-12-25 21:19:32 +0500,16.33,402,Keep,High,Core file
+artifacts/data/module-check.json,CRITICAL,0,2025-12-25 21:19:32 +0500,113.65,3902,Keep,High,Core file
+artifacts/data/CHUNK_4_DATABASE_CACHE_FRONTEND_PIPELINE.json,CRITICAL,0,2025-12-25 21:19:32 +0500,18.71,461,Keep,High,Core file
+artifacts/data/media_response.json,CRITICAL,0,2025-12-25 21:19:32 +0500,28.23,1018,Keep,High,Core file
+artifacts/data/CHUNK_1_ADMIN_PANEL_INVENTORY.json,CRITICAL,0,2025-12-25 21:19:32 +0500,14.73,477,Keep,High,Core file
+artifacts/data/CHUNK_3_MEDIA_INTEGRITY_STORAGE_AUDIT.json,CRITICAL,0,2025-12-25 21:19:32 +0500,17.83,447,Keep,High,Core file
+k8s/argocd/application.yaml,CRITICAL,0,2026-01-13 13:07:54 +0500,0.92,44,Keep,High,Core file
+k8s/argocd/base/deployment.yaml,CRITICAL,0,2026-02-02 13:17:48 +0500,1.05,46,Keep,High,Core file
+k8s/argocd/base/kustomization.yaml,CRITICAL,0,2026-01-13 13:07:54 +0500,0.18,11,Keep,High,Core file
+k8s/argocd/base/service.yaml,CRITICAL,0,2026-02-02 13:17:48 +0500,0.17,12,Keep,High,Core file
+k8s/argocd/base/configmap.yaml,CRITICAL,0,2026-01-13 13:07:54 +0500,0.11,7,Keep,High,Core file
+server/gcs-service-account-key.json,CRITICAL,0,unknown,2.23,12,Keep,High,Core file
+server/package.json,CRITICAL,0,2026-02-04 15:13:29 +0500,3.52,104,Keep,High,Core file
+server/tsconfig.json,CRITICAL,0,2026-02-03 18:07:40 +0500,0.61,22,Keep,High,Core file
+server/.env.example,CRITICAL,0,2026-02-04 17:49:04 +0500,1.03,31,Keep,High,Core file
+server/migrations/meta/0000_snapshot.json,CRITICAL,0,2025-12-29 23:11:28 +0500,138.05,5365,Keep,High,Core file
+server/migrations/meta/_journal.json,CRITICAL,0,2025-12-29 23:11:28 +0500,0.49,27,Keep,High,Core file
+server/migrations/meta/0001_snapshot.json,CRITICAL,0,2025-12-29 23:11:28 +0500,208.78,7959,Keep,High,Core file
+server/migrations/meta/0002_snapshot.json,CRITICAL,0,2025-12-29 23:11:28 +0500,208.07,7936,Keep,High,Core file
+server/migrations/optimizations/README.md,CRITICAL,0,2025-12-29 23:11:28 +0500,4.81,177,Keep,High,Core file
+server/config/storage-lifecycle-policy.yaml,CRITICAL,0,2025-12-15 23:14:54 +0500,6.56,216,Keep,High,Core file
+server/config/storage-lifecycle-policy.json,CRITICAL,0,2026-01-05 18:30:08 +0500,4.89,173,Keep,High,Core file
+utils/tsconfig.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.57,21,Keep,High,Core file
+shared/package.json,CRITICAL,0,2026-01-08 23:33:45 +0500,0.34,19,Keep,High,Core file
+shared/tsconfig.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.37,15,Keep,High,Core file
+docs/overview.md,CRITICAL,0,2026-02-05 23:25:04 +0500,6.84,192,Keep,High,Core file
+docs/index.md,CRITICAL,0,2026-02-03 14:08:48 +0500,1.66,29,Keep,High,Core file
+docs/docs-audit-report.md,CRITICAL,0,unknown,3.69,76,Keep,High,Core file
+docs/adr/0011-google-oauth.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.36,47,Keep,High,Core file
+docs/adr/0009-biome-over-eslint.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.29,47,Keep,High,Core file
+docs/adr/0015-react-router-7.md,CRITICAL,0,2026-02-03 18:07:40 +0500,1.33,40,Keep,High,Core file
+docs/adr/0003-neon-serverless-database.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.54,47,Keep,High,Core file
+docs/adr/0006-tailwind-v4.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.43,46,Keep,High,Core file
+docs/adr/0010-monorepo-structure.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.49,55,Keep,High,Core file
+docs/adr/0012-two-tier-caching.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.78,61,Keep,High,Core file
+docs/adr/0007-cloud-run-deployment.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.31,47,Keep,High,Core file
+docs/adr/0004-express-5-framework.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.44,46,Keep,High,Core file
+docs/adr/0001-adr-template.md,CRITICAL,0,2026-01-13 13:07:54 +0500,0.97,53,Keep,High,Core file
+docs/adr/0008-upstash-redis.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.32,47,Keep,High,Core file
+docs/adr/0002-react-19-over-nextjs.md,CRITICAL,0,2026-02-03 18:07:40 +0500,1.66,49,Keep,High,Core file
+docs/adr/README.md,CRITICAL,0,2026-01-13 23:03:59 +0500,1.82,34,Keep,High,Core file
+docs/adr/0005-drizzle-orm.md,CRITICAL,0,2026-01-13 13:07:54 +0500,1.42,47,Keep,High,Core file
+docs/adr/0014-observability-pipeline.md,CRITICAL,0,2026-01-13 23:03:59 +0500,2.68,99,Keep,High,Core file
+docs/adr/0013-error-handling-architecture.md,CRITICAL,0,2026-01-13 23:03:59 +0500,2.69,87,Keep,High,Core file
+docs/core/architecture.md,CRITICAL,0,2026-02-03 18:33:43 +0500,8.13,214,Keep,High,Core file
+docs/core/ssr-invariants.md,CRITICAL,0,2026-01-11 01:05:18 +0500,3.57,92,Keep,High,Core file
+docs/core/VISUAL_GOVERNANCE.md,CRITICAL,0,2026-01-07 17:09:49 +0500,1.46,34,Keep,High,Core file
+docs/core/HORIZONTAL_SCALING.md,CRITICAL,0,2026-01-07 17:09:49 +0500,6.73,216,Keep,High,Core file
+docs/core/tech-stack.md,CRITICAL,0,2026-02-02 13:17:48 +0500,3.92,113,Keep,High,Core file
+docs/archive/reports/tailwind-v4-audit-report.md,CRITICAL,0,unknown,4.55,88,Keep,High,Core file
+docs/security/encryption-at-rest.md,CRITICAL,0,2026-01-11 13:44:06 +0500,4.58,182,Keep,High,Core file
+docs/security/threat-model.md,CRITICAL,0,2026-01-11 13:44:06 +0500,4.96,165,Keep,High,Core file
+docs/security/penetration-testing-policy.md,CRITICAL,0,2026-01-11 23:19:42 +0500,4.09,155,Keep,High,Core file
+docs/development/testing.md,CRITICAL,0,2026-02-03 14:08:48 +0500,1.51,74,Keep,High,Core file
+docs/development/3d-pipeline.md,CRITICAL,0,2026-02-03 14:08:48 +0500,3.89,121,Keep,High,Core file
+docs/development/ide-setup.md,CRITICAL,0,2026-01-12 12:05:55 +0500,5.11,206,Keep,High,Core file
+docs/development/styling.md,CRITICAL,0,2026-02-03 14:08:48 +0500,5.35,207,Keep,High,Core file
+docs/resources/content/sportswear_fibers_guide.md,CRITICAL,0,2026-02-02 18:25:06 +0500,17.5,225,Keep,High,Core file
+docs/runbooks/sentry-alert-triage.md,CRITICAL,0,2026-01-11 13:44:06 +0500,1.94,75,Keep,High,Core file
+docs/runbooks/incident-response.md,CRITICAL,0,2026-01-11 01:05:18 +0500,3.7,93,Keep,High,Core file
+docs/runbooks/database-outage.md,CRITICAL,0,2026-01-11 13:44:06 +0500,1.84,72,Keep,High,Core file
+docs/runbooks/README.md,CRITICAL,0,2026-01-11 13:44:06 +0500,1.35,40,Keep,High,Core file
+docs/runbooks/circuit-breaker-trip.md,CRITICAL,0,2026-01-11 13:44:06 +0500,2.02,67,Keep,High,Core file
+docs/runbooks/rate-limit-surge.md,CRITICAL,0,2026-01-11 13:44:06 +0500,1.85,70,Keep,High,Core file
+docs/runbooks/deployment-rollback.md,CRITICAL,0,2026-01-11 13:44:06 +0500,2.17,104,Keep,High,Core file
+docs/release/upgrade-playbook.md,CRITICAL,0,2026-02-05 23:25:04 +0500,1.53,41,Keep,High,Core file
+docs/observability/LOCAL_STACK.md,CRITICAL,0,2025-12-22 20:58:04 +0500,1.31,47,Keep,High,Core file
+docs/observability/observability-and-errors.md,CRITICAL,0,2026-01-07 17:09:49 +0500,3.41,95,Keep,High,Core file
+docs/compliance/data-classification.md,CRITICAL,0,2026-02-03 14:08:48 +0500,5.63,216,Keep,High,Core file
+docs/compliance/gdpr-ccpa.md,CRITICAL,0,2026-01-11 23:19:42 +0500,5.98,197,Keep,High,Core file
+docs/operations/scaling-policies.md,CRITICAL,0,2026-01-12 00:33:58 +0500,3.7,170,Keep,High,Core file
+docs/operations/environment.md,CRITICAL,0,2026-02-02 13:17:48 +0500,2.64,99,Keep,High,Core file
+docs/operations/slos.md,CRITICAL,0,2026-02-02 19:21:44 +0500,5.58,219,Keep,High,Core file
+docs/operations/MAINTENANCE_RUNBOOK.md,CRITICAL,0,2026-02-03 14:08:48 +0500,4.12,212,Keep,High,Core file
+docs/operations/database-recovery.md,CRITICAL,0,2026-02-03 14:08:48 +0500,4.05,148,Keep,High,Core file
+docs/operations/database-replicas.md,CRITICAL,0,2026-01-13 13:07:54 +0500,3.22,137,Keep,High,Core file
+docs/operations/BRANCH_PROTECTIONS.md,CRITICAL,0,2026-02-03 14:08:48 +0500,2.33,64,Keep,High,Core file
+docs/operations/load-testing-baseline.md,CRITICAL,0,2026-02-03 14:08:48 +0500,2.61,119,Keep,High,Core file
+docs/operations/observability.md,CRITICAL,0,2026-02-03 14:08:48 +0500,0.64,26,Keep,High,Core file
+docs/operations/local-development-optimization.md,CRITICAL,0,2026-02-02 13:17:48 +0500,2.64,75,Keep,High,Core file
+docs/operations/load-testing-runbook.md,CRITICAL,0,2026-02-02 13:17:48 +0500,3.38,141,Keep,High,Core file
+docs/testing/testing-tiers.md,CRITICAL,0,2026-01-07 17:09:49 +0500,2.64,84,Keep,High,Core file
+docs/testing/testing-e2e-prod.md,CRITICAL,0,2026-01-07 17:09:49 +0500,1.79,49,Keep,High,Core file
+docs/architecture/system_diagrams.md,CRITICAL,0,2026-02-04 15:13:29 +0500,5.4,179,Keep,High,Core file
+docs/architecture/event-bus.md,CRITICAL,0,2026-02-03 14:08:48 +0500,3.1,97,Keep,High,Core file
+docs/audit/contact-page-tailwind-v4.md,CRITICAL,0,unknown,9.22,175,Keep,High,Core file
+docs/guides/TRANSACTION_SAFETY.md,CRITICAL,0,2026-02-03 14:08:48 +0500,5.15,202,Keep,High,Core file
+docs/guides/developer-workflow.md,CRITICAL,0,2026-02-04 12:23:38 +0500,2.75,81,Keep,High,Core file
+docs/api/API_ERROR_SPEC.md,CRITICAL,0,2026-01-09 19:02:30 +0500,2.51,75,Keep,High,Core file
+docs/api/ERROR_CODES.md,CRITICAL,0,2026-01-11 23:19:42 +0500,5.51,192,Keep,High,Core file
+docs/api/endpoints.md,CRITICAL,0,2026-02-05 21:37:26 +0500,14.34,624,Keep,High,Core file
+docs/api/auth.md,CRITICAL,0,2026-02-04 15:13:29 +0500,0.73,27,Keep,High,Core file
+docs/api/schema-reference.md,CRITICAL,0,2026-02-04 15:13:29 +0500,5.54,201,Keep,High,Core file
+.turbo/preferences/tui.json,CRITICAL,0,unknown,0.06,4,Keep,High,Core file
+.turbo/cache/8d2d3ccc89a29f6c-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/17eb5b5821d82c48-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/67c63b1186428b4f-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/86b2dd8bc8d5a750-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/31f72f81d5c333e6-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/87b7a25ab6c85308-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/f8f436286dd08264-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/0c4c67c86064ab32-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/de7b3309af52a3e6-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/2e880acc3efacbe4-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/bb92d7ceff54e7f0-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/b30c569c79b16b88-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/727f855d4cde2889-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/9a87f98472e0394c-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/94f293b1fa893539-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/8e2563e3aa928127-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/a0348f76974640ac-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+.turbo/cache/c4b97ee7d32da96a-meta.json,CRITICAL,0,unknown,0.04,1,Keep,High,Core file
+public/placeholder-3d-model.json,CRITICAL,0,2025-12-25 21:19:32 +0500,1.22,66,Keep,High,Core file
+scripts/bootstrap.sh,CRITICAL,0,2026-02-04 12:23:38 +0500,0.65,26,Keep,High,Core file
+scripts/tsconfig.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.58,27,Keep,High,Core file
+scripts/security/check-secrets.sh,CRITICAL,0,2026-02-03 18:07:40 +0500,1.46,54,Keep,High,Core file
+scripts/setup/verify-setup.sh,CRITICAL,0,2026-02-02 18:25:06 +0500,3.81,116,Keep,High,Core file
+scripts/setup/install-extensions.sh,CRITICAL,0,2026-01-10 11:10:38 +0500,3.78,119,Keep,High,Core file
+packages/api-collection/bruno.json,CRITICAL,0,2026-01-07 17:09:49 +0500,0.07,5,Keep,High,Core file
+.github/PULL_REQUEST_TEMPLATE.md,CRITICAL,0,2026-01-11 23:19:42 +0500,1.59,53,Keep,High,Core file
+.github/dependabot.yml,CRITICAL,0,2026-01-12 00:33:58 +0500,2.03,93,Keep,High,Core file
+.github/workflows/docs-link-check.yml,CRITICAL,0,2026-01-11 13:44:06 +0500,1.25,54,Keep,High,Core file
+.github/workflows/docs-check.yml,CRITICAL,0,2026-02-03 18:07:40 +0500,0.62,31,Keep,High,Core file
+.github/workflows/quality-gate.yml,CRITICAL,0,2026-01-04 13:32:10 +0500,2.06,73,Keep,High,Core file
+.github/workflows/neon_workflow.yml,CRITICAL,0,2025-12-15 23:14:54 +0500,3.71,94,Keep,High,Core file
+.github/workflows/update-baselines.yml,CRITICAL,0,2025-12-24 18:14:56 +0500,2.72,92,Keep,High,Core file
+.github/workflows/security-scanning.yml,CRITICAL,0,2026-01-12 23:34:55 +0500,3.32,138,Keep,High,Core file
+.github/workflows/synthetic-monitoring.yml,CRITICAL,0,2026-01-07 17:09:49 +0500,2.61,80,Keep,High,Core file
+.github/workflows/chaos-testing.yml,CRITICAL,0,2026-01-12 23:34:55 +0500,4.07,130,Keep,High,Core file
+.github/workflows/deploy.yml,CRITICAL,0,2026-01-01 11:12:59 +0500,1.08,47,Keep,High,Core file
+.github/workflows/docs-lint.yml,CRITICAL,0,2026-01-12 00:33:58 +0500,0.49,28,Keep,High,Core file
+.github/workflows/load-testing.yml,CRITICAL,0,2026-01-11 23:19:42 +0500,4.57,146,Keep,High,Core file
+.github/workflows/visual-safeguards.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,1.1,50,Keep,High,Core file
+.github/workflows/drift-detection.yaml,CRITICAL,0,2026-01-12 00:33:58 +0500,4.06,126,Keep,High,Core file
+.github/workflows/visual-regression.yml,CRITICAL,0,2025-12-24 18:14:56 +0500,3.36,134,Keep,High,Core file
+.github/workflows/e2e.yml,CRITICAL,0,2026-01-07 17:09:49 +0500,1.3,55,Keep,High,Core file
+.github/workflows/ci.yml,CRITICAL,0,2026-01-22 12:43:23 +0500,5.56,202,Keep,High,Core file
+.github/workflows/dast-scan.yml,CRITICAL,0,2026-01-13 13:07:54 +0500,2.65,86,Keep,High,Core file
+.github/workflows/secret-scanning.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.34,18,Keep,High,Core file
+.agent/workflows/dev-server.md,CRITICAL,0,2026-02-02 19:21:44 +0500,1.48,64,Keep (Agent Context),High,Core file
+.agent/scripts/check-vite-config.sh,CRITICAL,0,2025-12-15 23:14:54 +0500,0.34,12,Keep (Agent Context),High,Core file
+.agent/skills/project-standards/SKILL.md,CRITICAL,0,2026-02-02 19:21:44 +0500,7.59,232,Keep (Agent Context),High,Core file
+.agent/skills/react-express-typescript/SKILL.md,CRITICAL,0,2026-01-28 12:02:50 +0500,4.53,150,Keep (Agent Context),High,Core file
+.agent/reports/homepage_audit_2025.md,CRITICAL,0,2026-02-04 15:13:29 +0500,3.52,46,Keep (Agent Context),High,Core file
+ops/otel-collector-config.yaml,CRITICAL,0,2026-01-05 14:01:56 +0500,0.46,29,Keep,High,Core file
+ops/grafana/provisioning/datasources/datasources.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.24,15,Keep,High,Core file
+ops/grafana/provisioning/dashboards/dashboards.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.22,12,Keep,High,Core file
+ops/observability/docker-compose.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,2.02,78,Keep,High,Core file
+ops/observability/alertmanager/alertmanager.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.36,15,Keep,High,Core file
+ops/observability/promtail/promtail-config.yml,OUTDATED,6,2025-12-22 20:58:04 +0500,0.54,27,Update,Medium,
+ops/observability/grafana/provisioning/datasources/datasources.yaml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.87,38,Keep,High,Core file
+ops/observability/grafana/provisioning/dashboards/dashboards.yaml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.19,11,Keep,High,Core file
+ops/observability/tempo/tempo.yaml,CRITICAL,0,2025-12-22 20:58:04 +0500,0.31,24,Keep,High,Core file
+ops/observability/prometheus/alert_rules.yml,CRITICAL,0,2025-12-22 20:58:04 +0500,1.28,38,Keep,High,Core file
+ops/observability/prometheus/prometheus.yml,OUTDATED,6,2026-02-02 13:17:48 +0500,0.43,22,Update,Medium,
+ops/alerts/slo-alerts.yaml,CRITICAL,0,2026-01-11 13:44:06 +0500,4.73,159,Keep,High,Core file
+ops/dashboards/request-tracing.json,CRITICAL,0,2026-01-05 14:01:56 +0500,1.07,41,Keep,High,Core file
+ops/dashboards/run-remix.json,CRITICAL,0,2026-01-22 12:43:23 +0500,12.72,417,Keep,High,Core file
+ops/dashboards/nodejs-app.json,CRITICAL,0,2025-12-25 21:19:32 +0500,2.51,122,Keep,High,Core file
+ops/load-testing/README.md,CRITICAL,0,2026-02-02 13:17:48 +0500,1.63,80,Keep,High,Core file
+ops/prometheus/prometheus.yml,OUTDATED,6,2025-12-22 20:58:04 +0500,0.22,10,Update,Medium,
+ops/chaos/litmus-experiments.yaml,CRITICAL,0,2026-02-02 13:17:48 +0500,3.64,144,Keep,High,Core file
+.vscode/settings.json,CRITICAL,0,2026-01-07 17:09:49 +0500,1.58,65,Keep,High,Core file
+.vscode/extensions.json,CRITICAL,0,2026-02-04 12:23:38 +0500,1.13,38,Keep,High,Core file
+.vscode/launch.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.58,25,Keep,High,Core file
+.vscode/tasks.json,CRITICAL,0,2025-12-25 21:19:32 +0500,0.46,22,Keep,High,Core file
+client/babel.config.json,CRITICAL,0,2026-01-10 11:10:38 +0500,0.05,3,Keep,High,Core file
+client/README.md,CRITICAL,0,2026-02-04 17:30:03 +0500,0.68,21,Keep,High,Core file
+client/package.json,CRITICAL,0,2026-02-05 17:42:09 +0500,4.08,125,Keep,High,Core file
+client/tsconfig.json,CRITICAL,0,2026-01-10 21:10:31 +0500,0.84,33,Keep,High,Core file
+client/.htmlvalidate.json,CRITICAL,0,2026-01-07 00:51:48 +0500,0.14,8,Keep,High,Core file
+client/app/components/admin/manufacturing/README.md,CRITICAL,0,2026-02-03 14:08:48 +0500,0.76,41,Keep,High,Core file

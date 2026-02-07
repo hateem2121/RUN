@@ -370,6 +370,7 @@ const ScrollExpandMedia = ({
                     </div>
                   )
                 ) : (
+                  mediaSrc ? (
                   <div className="relative h-full w-full">
                     <OptimizedImage
                       mediaId={MediaUrlBuilder.extractAssetId(mediaSrc) || 0}
@@ -377,9 +378,19 @@ const ScrollExpandMedia = ({
                       className="h-full w-full rounded-xl object-cover"
                       quality={90}
                     />
-
                     <div className="absolute inset-0 rounded-xl bg-black/50" />
                   </div>
+                  ) : (
+                    /* Fallback Pattern for Missing Media */
+                    <div className="relative h-full w-full overflow-hidden rounded-xl bg-neutral-900">
+                      <div className="absolute inset-0 opacity-20" 
+                           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }}>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white/20 font-neue-stance text-xl tracking-widest">RUN APPAREL</span>
+                      </div>
+                    </div>
+                  )
                 )}
 
                 <div className="relative z-elevated mt-4 flex flex-col items-center text-center">
@@ -406,7 +417,7 @@ const ScrollExpandMedia = ({
                 {headline ? (
                   <div className="space-y-4">
                     <motion.h1
-                      className="font-bold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
+                      className="font-bold text-3xl text-white transition-none md:text-4xl lg:text-6xl xl:text-7xl"
                       style={{
                         transform: `translate3d(-${textTranslateX * 0.5}vw, 0, 0)`,
                         willChange: "transform",
@@ -451,7 +462,7 @@ const ScrollExpandMedia = ({
                   titleLines.map((line, index) => (
                     <motion.h2
                       key={index}
-                      className="px-0 py-1 font-semibold text-4xl text-white transition-none md:text-5xl lg:text-6xl"
+                      className="px-0 py-1 font-semibold text-3xl text-white transition-none md:text-4xl lg:text-6xl xl:text-7xl"
                       style={{
                         transform: getLineTransform(index),
                         willChange: "transform",

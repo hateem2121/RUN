@@ -7,7 +7,7 @@ import { TechnologyResearchManagement } from "@/components/admin/technology/Tech
 import { TechnologyRoadmapManagement } from "@/components/admin/technology/TechnologyRoadmapManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTechnologyFeatureFlags } from "@/hooks/useTechnologyFeatureFlags";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
+import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
 
 /**
  * PHASE 4.1: TECHNOLOGY MANAGEMENT - COMPLETE MONOLITH DECOMPOSITION

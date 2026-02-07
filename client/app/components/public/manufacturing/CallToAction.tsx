@@ -1,49 +1,13 @@
 import type { ManufacturingHero } from "@shared/schema";
 import { motion } from "framer-motion";
-import type { AnimationItem } from "lottie-web";
-import lottie from "lottie-web/build/player/lottie_light";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ctaBackgroundAnimation } from "./lottie-animations";
 
 interface CallToActionProps {
-  hero?: ManufacturingHero | null;
+  hero?: ManufacturingHero | null | undefined;
 }
 
 export function CallToAction({ hero }: CallToActionProps) {
-  const lottieContainerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<AnimationItem | null>(null);
-
-  useEffect(() => {
-    if (!lottieContainerRef.current) return;
-
-    // Clean up previous animation
-    if (animationRef.current) {
-      animationRef.current.destroy();
-    }
-
-    try {
-      animationRef.current = lottie.loadAnimation({
-        container: lottieContainerRef.current,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        animationData: ctaBackgroundAnimation,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice",
-        },
-      });
-    } catch (_error) {}
-
-    return () => {
-      if (animationRef.current) {
-        animationRef.current.destroy();
-        animationRef.current = null;
-      }
-    };
-  }, []);
-
   const title = hero?.bottomCtaTitle || "Experience Precision Manufacturing";
   const description =
     hero?.bottomCtaDescription ||
@@ -52,9 +16,15 @@ export function CallToAction({ hero }: CallToActionProps) {
   const buttonLink = hero?.bottomCtaLink || "/contact";
 
   return (
-    <section className="relative overflow-hidden py-20 text-white">
-      {/* Lottie Background Animation */}
-      <div ref={lottieContainerRef} className="absolute inset-0 h-full w-full" />
+    <section 
+      className="relative overflow-hidden py-24"
+      data-testid="manufacturing-cta-section"
+    >
+      {/* Background Gradient - Performance Optimized (Replaces Lottie) */}
+      <div className="absolute inset-0 h-full w-full bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950" />
+
+      {/* Subtle animated overlay using CSS only */}
+      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 to-transparent" />
 
       <div className="container relative z-default mx-auto px-4 text-center">
         <motion.div
@@ -63,13 +33,24 @@ export function CallToAction({ hero }: CallToActionProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="mb-4 font-bold text-4xl">{title}</h2>
-          <p className="mx-auto mb-8 max-w-2xl text-white text-xl drop-shadow-lg">{description}</p>
+          <h2 
+            className="mb-6 font-bold text-4xl text-white md:text-5xl"
+            data-testid="cta-title"
+          >
+            {title}
+          </h2>
+          <p 
+            className="mx-auto mb-10 max-w-2xl text-blue-50 text-xl md:text-2xl drop-shadow-sm"
+            data-testid="cta-description"
+          >
+            {description}
+          </p>
           <Button
             size="lg"
             variant="secondary"
-            className="bg-white text-blue-600 hover:bg-blue-50"
+            className="h-14 px-8 text-lg font-semibold bg-white text-blue-700 hover:bg-blue-50 border-none shadow-xl transition-transform hover:scale-105"
             asChild
+            data-testid="cta-button"
           >
             <a href={buttonLink}>
               {buttonText}

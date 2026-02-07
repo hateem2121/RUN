@@ -72,8 +72,10 @@ export function calculateGridSpan(analysis: ContentAnalysis, index: number): Gri
     rowSpan = 1;
   }
 
-  // Generate className
-  const className = `col-span-${colSpan} row-span-${rowSpan}`;
+  // Generate className with responsive prefixes
+  // Mobile: Always full width (col-span-2)
+  // LG+: Use calculated spans
+  const className = `col-span-2 row-span-1 lg:col-span-${colSpan} lg:row-span-${rowSpan}`;
 
   return { colSpan, rowSpan, className };
 }

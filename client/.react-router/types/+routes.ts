@@ -31,6 +31,12 @@ type Pages = {
   "/analytics": {
     params: {};
   };
+  "/api/media": {
+    params: {};
+  };
+  "/api/navigation-items": {
+    params: {};
+  };
   "/categories": {
     params: {};
   };
@@ -91,7 +97,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module" | "/analytics" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/sustainability" | "/technology";
+    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module" | "/analytics" | "/api/media" | "/api/navigation-items" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/sustainability" | "/technology";
   };
   "routes/_index.tsx": {
     id: "routes/_index";
@@ -120,6 +126,14 @@ type RouteFiles = {
   "routes/analytics.tsx": {
     id: "routes/analytics";
     page: "/analytics";
+  };
+  "routes/api.media.tsx": {
+    id: "routes/api.media";
+    page: "/api/media";
+  };
+  "routes/api.navigation-items.tsx": {
+    id: "routes/api.navigation-items";
+    page: "/api/navigation-items";
   };
   "routes/categories._index.tsx": {
     id: "routes/categories._index";
@@ -196,6 +210,8 @@ type RouteModules = {
   "routes/admin._index": typeof import("./app/routes/admin._index.tsx");
   "routes/admin.$module": typeof import("./app/routes/admin.$module.tsx");
   "routes/analytics": typeof import("./app/routes/analytics.tsx");
+  "routes/api.media": typeof import("./app/routes/api.media.tsx");
+  "routes/api.navigation-items": typeof import("./app/routes/api.navigation-items.tsx");
   "routes/categories._index": typeof import("./app/routes/categories._index.tsx");
   "routes/categories.$slug": typeof import("./app/routes/categories.$slug.tsx");
   "routes/categories.$slug.products": typeof import("./app/routes/categories.$slug.products.tsx");

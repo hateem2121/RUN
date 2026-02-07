@@ -14,7 +14,6 @@ const Hero = lazy(() => import("@/components/homepage/Hero"));
 const Process = lazy(() => import("@/components/homepage/Process"));
 const Stats = lazy(() => import("@/components/homepage/Stats"));
 const Values = lazy(() => import("@/components/homepage/Values"));
-const Footer = lazy(() => import("@/components/layout/Footer"));
 
 // Register Plugin Globally
 gsap.registerPlugin(ScrollTrigger);
@@ -37,7 +36,6 @@ export default function Index() {
   // Stable refs for skewable sections to avoid ref callback churn
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLDivElement>(null);
 
   // Proxy object to hold animation values - avoids quickTo strictness warnings
   const skewProxy = useRef({ val: 0 });
@@ -87,7 +85,7 @@ export default function Index() {
       const val = skewProxy.current.val;
 
       // Apply to explicit refs
-      const targets = [heroRef.current, contentRef.current, footerRef.current];
+      const targets = [heroRef.current, contentRef.current];
 
       targets.forEach((el) => {
         if (el) {
@@ -142,10 +140,8 @@ export default function Index() {
           {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
           <Process />
 
-          {/* GROUP 3: Skewable Footer */}
-          <div ref={footerRef} className="origin-top will-change-transform">
-            <Footer />
-          </div>
+          {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
+          <Process />
         </Suspense>
       </main>
     </>

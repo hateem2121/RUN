@@ -13,6 +13,10 @@ export default [
 
   route("analytics", "routes/analytics.tsx"),
 
+  // API Routes
+  route("api/media", "routes/api.media.tsx"),
+  route("api/navigation-items", "routes/api.navigation-items.tsx"),
+
   // Categories
   route("categories", "routes/categories._index.tsx"),
   route("categories/:slug", "routes/categories.$slug.tsx"),

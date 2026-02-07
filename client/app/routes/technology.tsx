@@ -29,7 +29,12 @@ import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 import { getQueryClient } from "@/lib/queryClient";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-constants";
+import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
+import { InnovationsSection } from "@/components/technology/InnovationsSection";
+import { EquipmentSection } from "@/components/technology/EquipmentSection";
+import { ResearchSection } from "@/components/technology/ResearchSection";
+import { RoadmapSection } from "@/components/technology/RoadmapSection";
+import TechnologyCta from "@/components/homepage/TechnologyCta";
 import type { Route } from "./+types/technology";
 
 export async function loader() {
@@ -712,14 +717,16 @@ export default function Technology() {
                 <div className="hero-content order-1 w-full max-w-2xl">
                   <Card variant="glass-premium" className="block w-full cursor-default p-8">
                     <GlassCardDecorations />
+                    {/* Dark overlay for guaranteed text contrast */}
+                    <div className="pointer-events-none absolute inset-0 rounded-xl bg-black/20" />
                     {batchLoading ? (
                       <LoadingSkeleton type="text" className="text-center lg:text-left" />
                     ) : (
                       <div className="text-center lg:text-left">
-                        <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+                        <Typography.H1 className="mb-6 text-3xl leading-tight font-bold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] sm:text-4xl lg:text-5xl">
                           {vm.hero?.title || "Technology & Innovation"}
                         </Typography.H1>
-                        <Typography.H2 className="mb-6 text-lg leading-relaxed font-medium text-white/90 drop-shadow-sm lg:text-xl">
+                        <Typography.H2 className="mb-6 text-lg leading-relaxed font-medium text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] lg:text-xl">
                           {vm.hero?.subtitle ||
                             "Pioneering the future of sportswear manufacturing with cutting-edge technology"}
                         </Typography.H2>
@@ -782,6 +789,30 @@ export default function Technology() {
               </div>
             </section>
           </div>
+
+          {/* Innovations Section */}
+          <InnovationsSection innovations={vm.innovations} />
+
+          {/* Equipment Section */}
+          <EquipmentSection equipment={vm.equipment} />
+
+          {/* Research Section */}
+          <ResearchSection research={vm.research} />
+
+          {/* Roadmap Section */}
+          <RoadmapSection roadmap={vm.roadmap} />
+
+          {/* CTA Section */}
+          {vm.cta && (
+            <section className="container mx-auto px-4 mb-24">
+              <TechnologyCta
+                headline={vm.cta.headline}
+                content={vm.cta.subheadline}
+                buttonLabel={vm.cta.primaryText}
+                buttonUrl="/contact"
+              />
+            </section>
+          )}
         </div>
       )}
     </HydrationBoundary>

@@ -55,6 +55,56 @@
   model-viewer .hotspot:hover {
     @apply scale-125;
   }
+
+  /* Manufacturing Specific Overrides */
+  .manufacturing-title-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .manufacturing-title-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: hsl(var(--primary));
+    transition: width 0.3s ease;
+  }
+
+  .group:hover .manufacturing-title-underline::after {
+    width: 100%;
+  }
+
+  .manufacturing-card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .manufacturing-card-hover:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.2);
+    z-index: 10;
+  }
+
+  .manufacturing-focus-glow:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
+  }
+
+  .manufacturing-media-hover {
+    overflow: hidden;
+  }
+
+  .manufacturing-media-hover img,
+  .manufacturing-media-hover video {
+    transition: transform 0.5s ease;
+  }
+
+  .group:hover .manufacturing-media-hover img,
+  .group:hover .manufacturing-media-hover video {
+    transform: scale(1.05);
+  }
 }
 
 @layer utilities {

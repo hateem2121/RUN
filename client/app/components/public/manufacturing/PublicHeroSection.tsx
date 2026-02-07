@@ -1,5 +1,5 @@
 import type { ManufacturingHero, MediaAsset } from "@shared/schema";
-import { domAnimation, LazyMotion, m } from "framer-motion";
+import { domAnimation, LazyMotion, m, type MotionValue } from "framer-motion";
 import { ArrowDown, Factory } from "lucide-react";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
@@ -8,14 +8,10 @@ import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface PublicHeroSectionProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
-  mouseX: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
-  mouseY: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
-  rotateX: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Motion value types
-  rotateY: any;
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+  rotateX: MotionValue<number>;
+  rotateY: MotionValue<number>;
   mediaAssets: MediaAsset[];
   hero: ManufacturingHero | undefined;
 }
@@ -35,28 +31,6 @@ export function PublicHeroSection({
     Array.isArray(mediaAssets) && hero?.backgroundMediaId
       ? mediaAssets.find((asset) => asset.id === hero.backgroundMediaId)
       : null;
-
-  // Mechanical animation variants (industrial character)
-  // biome-ignore lint/suspicious/noExplicitAny: Complex animation variants
-  const mechanicalVariants: any = {
-    hidden: {
-      x: -100,
-      opacity: 0,
-      rotateY: -15,
-    },
-    visible: {
-      x: 0,
-      opacity: 1,
-      rotateY: 0,
-      transition: {
-        type: "spring",
-        stiffness: 50, // Heavy, deliberate motion
-        damping: 20, // Industrial resistance
-        mass: 1.5, // Weight feeling
-        duration: 1.2, // Longer duration for mechanical feel
-      },
-    },
-  };
 
   // Gear-like rotation for decorative elements (if added later)
   // Assembly line stagger effect
@@ -91,55 +65,75 @@ export function PublicHeroSection({
       <LazyMotion features={domAnimation}>
         <m.section
           ref={heroRef}
-          className="center-flex relative min-h-screen overflow-hidden bg-(--gradient-manufacturing-hero)"
+          style={{ perspective: 2000 }}
+          className="center-flex relative min-h-[90vh] w-full overflow-hidden py-24 md:py-32"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
           onMouseMove={(e) => {
+            // Simple optimization: Direct set is usually fast, but we can guard against excessive updates
+            // Framer Motion values are optimized, but we'll ensure we don't trigger layout thrashing
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
           }}
         >
-          {/* Background Media */}
-          {heroBackgroundAsset && (
-            <div className="z-base absolute inset-0">
+          {/* Background Elements */}
+          <div className="absolute inset-0 z-0">
+            {heroBackgroundAsset ? (
               <OptimizedImage
                 mediaId={heroBackgroundAsset.id}
                 alt="Manufacturing Background"
-                className="h-full w-full"
+                className="h-full w-full object-cover opacity-20 dark:opacity-40"
                 priority={true}
               />
-            </div>
-          )}
+            ) : (
+              <div className="bg-muted/10 h-full w-full" />
+            )}
+            <div className="from-background via-background/80 to-background absolute inset-0 bg-gradient-to-b" />
+          </div>
 
-          {/* Fallback gradient background - Now handled by parent section class */}
-          {!heroBackgroundAsset && <div className="absolute inset-0 bg-transparent" />}
-
-          {/* Content */}
+          {/* Content Container */}
           <m.div
             style={{ rotateX, rotateY }}
-            className="z-default relative mx-auto max-w-4xl px-4 text-center text-white"
+            className="z-default relative mx-auto max-w-5xl px-6 text-center"
           >
-            <m.div variants={mechanicalVariants} className="mb-8">
-              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
-                {hero.headline || "Precision Manufacturing"}
-              </h1>
-              <p className="mx-auto mb-8 max-w-3xl text-xl text-white drop-shadow-lg md:text-2xl">
-                {hero.subheadline ||
-                  "Where innovation meets excellence in every stitch, every detail, every product"}
-              </p>
+            <m.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <Factory className="mx-auto mb-8 size-20 text-primary md:size-24" />
             </m.div>
+
+            <m.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-foreground mb-6 text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl"
+            >
+              {hero.headline}
+            </m.h1>
+
+            <m.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl"
+            >
+              {hero.subheadline}
+            </m.p>
 
             {hero.ctaText && hero.ctaLink && (
               <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.8 }} // Adjusted delay
+                className="mt-10" // Added margin top
               >
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="text-manufacturing-primary bg-white px-8 py-4 text-lg hover:bg-blue-50"
+                  className="bg-primary text-primary-foreground px-8 py-4 text-lg hover:bg-primary/90"
                   asChild
                 >
                   <a href={hero.ctaLink}>{hero.ctaText}</a>

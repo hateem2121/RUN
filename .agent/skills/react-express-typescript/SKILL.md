@@ -146,3 +146,5 @@ export function ModelLoader({ src, alt }: Readonly<ModelProps>) {
 5. **Do NOT** skip error boundaries around 3D components.
 6. **Do NOT** put business logic in route handlers - extract to services.
 7. **Do NOT** run multiple `npm run dev` instances - use `/dev-server` workflow.
+8. **Do NOT** enable `ENABLE_PERFORMANCE_MONITORING` or `ENABLE_REACT_SCAN` in local `.env` unless debugging performance.
+9. **Do NOT** remove `../client` from `server/package.json` ignore list (causes restart loops).

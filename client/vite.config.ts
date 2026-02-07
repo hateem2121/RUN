@@ -24,18 +24,20 @@ export default defineConfig(
       plugins: [
         reactRouter(),
         tailwindcss(),
-        // FORENSIC: Bundle analysis to identify large chunks
-        visualizer({
-          filename: "../dist/stats.html", // Relative to client root
-          open: false,
-          gzipSize: true,
-          brotliSize: true,
-        }),
+        // FORENSIC: Bundle analysis (Opt-in via VITE_ANALYZE=true)
+        process.env.VITE_ANALYZE === "true" &&
+          visualizer({
+            filename: "../dist/stats.html",
+            open: false,
+            gzipSize: true,
+            brotliSize: true,
+          }),
         ReactScan({
-          enable: mode === "development",
+          enable: process.env.ENABLE_REACT_SCAN === "true", // P1 OPTIMIZATION: Opt-in only to save CPU
         }),
         // DEBUG: Inspect Vite transformation pipeline (localhost:5173/__inspect)
-        Inspect(),
+        // DEBUG: Inspect Vite pipeline (Opt-in via VITE_INSPECT=true)
+        process.env.VITE_INSPECT === "true" && Inspect(),
         // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
         sentryVitePlugin({
           ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
@@ -63,6 +65,11 @@ export default defineConfig(
           : path.resolve(__dirname, "../dist/public"),
         emptyOutDir: !isSsrBuild, // Only empty for client build
         rollupOptions: {
+          onwarn(warning: any, warn: any) {
+            // Suppress "Can't resolve original location of error" source map warnings
+            if (warning.code === "SOURCEMAP_ERROR") return;
+            warn(warning);
+          },
           output: {
             manualChunks: isSsrBuild
               ? undefined
@@ -110,6 +117,12 @@ export default defineConfig(
       server: {
         // FORENSIC: Dev server optimizations for faster module loading
         host: true, // Listen on all addresses (0.0.0.0) to support localhost/127.0.0.1/LAN
+        proxy: {
+          "/api": {
+            target: "http://localhost:3001",
+            changeOrigin: true,
+          },
+        },
 
         // Increase module graph size limit for admin pages
         hmr: {
@@ -119,6 +132,17 @@ export default defineConfig(
         fs: {
           strict: true,
           deny: ["**/.*"],
+        },
+        watch: {
+          ignored: [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/dist/**",
+            "**/coverage/**",
+            "**/.idea/**",
+            "**/.vscode/**",
+            "**/check-secrets.sh", // Ignore scripts
+          ],
         },
       },
     }) as any,

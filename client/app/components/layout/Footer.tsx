@@ -17,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
  * - GSAP submit animation
  */
 const footerLinkVariants = cva(
-  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105",
+  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
   {
     variants: {
       size: { default: "text-lg", sm: "text-sm", base: "text-base" },
@@ -28,7 +28,7 @@ const footerLinkVariants = cva(
 );
 
 const footerInputVariants = cva(
-  "focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground w-full rounded-none border-b bg-transparent py-4 pl-4 font-mono text-xl transition-all duration-300 ease-out outline-none disabled:opacity-50",
+  "focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full rounded-none border-b bg-transparent py-4 pl-4 font-mono text-xl transition-all duration-300 ease-out outline-none disabled:opacity-50",
   {
     variants: {
       hasError: {
@@ -206,7 +206,7 @@ const Footer: React.FC = () => {
                 htmlFor="company"
                 className="text-muted-foreground group-focus-within:text-primary mb-2 block pl-4 font-mono text-xs tracking-widest uppercase transition-colors"
               >
-                01 {/* Company Name */}
+                <span className="hidden sm:inline">01 </span>{/* Company Name */}
               </label>
               <input
                 id="company"
@@ -227,7 +227,7 @@ const Footer: React.FC = () => {
                     errors.email ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
-                  02 {/* Email Protocol */}
+                  <span className="hidden sm:inline">02 </span>{/* Email Protocol */}
                 </label>
                 {errors.email && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">
@@ -255,7 +255,7 @@ const Footer: React.FC = () => {
                     errors.specs ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
-                  03 {/* Project Specifications */}
+                  <span className="hidden sm:inline">03 </span>{/* Project Specifications */}
                 </label>
                 {errors.specs && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">
@@ -284,7 +284,7 @@ const Footer: React.FC = () => {
                   "relative mt-8 overflow-hidden border px-12 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300",
                   isSent
                     ? "border-brand-lime text-brand-lime cursor-default"
-                    : "hover:border-foreground hover:bg-foreground hover:text-background border-white/30",
+                    : "hover:border-foreground hover:bg-foreground hover:text-background border-foreground/30",
                 )}
                 onMouseEnter={() => !isSent && setCursor("button")}
                 onMouseLeave={() => resetCursor()}
@@ -351,6 +351,13 @@ const Footer: React.FC = () => {
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* Copyright Bar */}
+      <div className="container-centered mt-16 border-t border-foreground/10 py-6 text-center">
+        <p className="text-muted-foreground font-mono text-xs tracking-widest">
+          © {new Date().getFullYear()} RUN APPAREL (PVT) LTD. ALL RIGHTS RESERVED.
+        </p>
       </div>
 
       {/* Massive Parallax Logotype */}

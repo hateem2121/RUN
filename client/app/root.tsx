@@ -13,6 +13,7 @@ import {
   useRouteError,
 } from "react-router";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
+import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
@@ -112,6 +113,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </a>
                   <FloatingDockHeader />
                   {children}
+                  <Footer />
                   <BackToTop />
                   <OfflineIndicator />
                 </HydrationBoundary>

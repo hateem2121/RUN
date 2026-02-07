@@ -2,7 +2,7 @@ import type { MediaAsset } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, isRouteErrorResponse, useRouteError } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 
 import { MetricCard } from "@/components/sustainability/cards";
@@ -156,7 +156,7 @@ export default function Sustainability() {
 
         {/* Hero Section with Parallax */}
         <motion.section
-          className="relative flex h-[70vh] items-center justify-center overflow-hidden text-white md:h-screen"
+          className="relative flex h-hero-mobile items-center justify-center overflow-hidden bg-stone-900 text-white md:h-screen"
           style={{ y: heroY, opacity: heroOpacity }}
           role="banner"
           aria-label="Sustainability hero section with interactive water ripple effects"
@@ -190,7 +190,7 @@ export default function Sustainability() {
               <Button
                 size="lg"
                 variant="outline"
-                className="group relative overflow-hidden border-stone-300 text-white hover:bg-stone-100 hover:text-stone-900"
+                className="group relative overflow-hidden border-2 border-white text-white hover:bg-white hover:text-stone-900"
                 asChild
               >
                 <Link to={hero?.ctaLink || "/contact"} className="z-modal-backdrop relative">
@@ -362,5 +362,28 @@ export default function Sustainability() {
         </section>
       </div>
     </HydrationBoundary>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  let message = "Oops! Something went wrong.";
+  let details = "An unexpected error occurred while loading this page.";
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "Content Not Found" : "Error";
+    details = error.statusText || details;
+  }
+
+  return (
+    <div className="flex bg-stone-950 text-white min-h-[50vh] items-center justify-center p-4 text-center">
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">{message}</h1>
+        <p className="text-stone-400">{details}</p>
+        <Button asChild variant="outline" className="text-white border-white hover:bg-white hover:text-black">
+          <Link to="/">Return Home</Link>
+        </Button>
+      </div>
+    </div>
   );
 }

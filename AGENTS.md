@@ -79,6 +79,11 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
     *   Run `npm run typecheck` to verify safety.
 3.  **Verification**:
     *   Always run `npm run verify:tech-integrity` before declaring task complete.
+4.  **Performance**:
+    *   Do NOT revert `tsconfig.base.json` watcher to `dynamicprioritypolling` (causes high CPU). Keep `useFsEvents`.
+    *   Use `VITE_INSPECT=true` only when actively debugging build pipelines.
+    *   **System Load**: `ENABLE_PERFORMANCE_MONITORING`, `ENABLE_CACHE_WARMING`, and `ENABLE_REACT_SCAN` should be `false` in `.env` for local development.
+    *   **Watch Scope**: Ensure `server/package.json` ignores `../client` to prevent cross-workspace restart loops.
 
 ## 6. Common Pitfalls (AI Memory Bank)
 

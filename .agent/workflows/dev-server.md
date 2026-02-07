@@ -6,6 +6,22 @@ description: How to start and stop the development server safely
 
 This workflow ensures you never have duplicate dev server instances running.
 
+## Parallel Start (Recommended for Exit Code 137)
+
+If `npm run dev` fails with exit code 137, start client and server separately:
+
+// turbo
+```bash
+# Terminal 1 - Client only
+npm run --workspace=@run-remix/client dev
+```
+
+// turbo
+```bash
+# Terminal 2 - Server only
+npm run dev:server
+```
+
 ## Starting the Dev Server
 
 // turbo

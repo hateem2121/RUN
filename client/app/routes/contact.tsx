@@ -1,14 +1,14 @@
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
 import { ContactInfoCardsSkeleton } from "@/components/contact/contact-info-skeleton";
 import { ContactForm, type ContactConfig } from "@/components/contact/contact-form";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/contact";
 
 const ContactInfoCards = lazy(() => import("@/components/contact/contact-info-cards"));
-const Footer = lazy(() => import("@/components/layout/Footer"));
+
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -20,13 +20,35 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+// Mock Contact Configuration (previously fetched from /api/contact-info)
+const CONTACT_CONFIG: ContactConfig = {
+  heroTitle: "DROP US A MESSAGE",
+  email: "hello@runapparel.co",
+  phone: "+1 (555) 123-4567",
+  locationLine1: "123 Innovation Drive",
+  locationLine2: "Tech Valley, CA 94043",
+  locationButtonText: "GET DIRECTIONS",
+  mapCoordinates: { lat: 37.422, lng: -122.084 },
+  socialLinks: {
+    instagram: "https://instagram.com/runapparel",
+    twitter: "https://twitter.com/runapparel",
+    linkedin: "https://linkedin.com/company/runapparel"
+  },
+  tradingHours: [
+    { label: "Mon - Fri", value: "9:00 AM - 6:00 PM" },
+    { label: "Sat - Sun", value: "Closed" }
+  ]
+};
+
 export async function loader() {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/contact-info"],
-    queryFn: () => apiRequest("/api/contact-info"),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+  // We can still hydrate other potential queries here if needed, 
+  // but for contact-info we return it directly.
+  
+  return { 
+    dehydratedState: dehydrate(queryClient),
+    contactConfig: CONTACT_CONFIG
+  };
 }
 
 import { submitContactInquiry } from "../services/inquiry.server";
@@ -59,33 +81,22 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Contact() {
-  const loaderData = useLoaderData<typeof loader>();
-  // SSR-safe: hook matches hydration by defaulting to false (or true based on device hint if available)
-  // We remove the conditional check to fix the "Rendered more hooks" crash
+  const { dehydratedState, contactConfig } = useLoaderData<typeof loader>();
+  
+  // SSR-safe: hook matches hydration by defaulting to false
   const isMobile = useIsMobile();
 
-  const { data: contactConfig, isLoading } = useQuery<ContactConfig>({
-    queryKey: ["/api/contact-info"],
-    staleTime: 300000,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30">
-        <div className="h-12 w-12 animate-spin rounded-full border-foreground border-b-2"></div>
-      </div>
-    );
-  }
+  // Previously client-side query
+  // const { data: contactConfig, isLoading } = useQuery<ContactConfig>({ ... });
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
       <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
         <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5">
+          {/* Main Grid Layout */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5 relative z-10">
             {/* Left Column: Contact Form */}
             <ContactForm contactConfig={contactConfig} isMobile={isMobile} />
-
-
 
             {/* Right Column: Info Boxes */}
             <Suspense fallback={<ContactInfoCardsSkeleton />}>
@@ -93,9 +104,6 @@ export default function Contact() {
             </Suspense>
           </div>
         </div>
-        <Suspense fallback={null}>
-          <Footer />
-        </Suspense>
       </div>
     </HydrationBoundary>
   );

@@ -42,7 +42,7 @@
       "**/documentation"
     ],
     "excludeFiles": ["**/*.spec.ts", "**/*.test.ts", "**/*.log", "**/*.map"],
-    "watchDirectory": "dynamicprioritypolling",
-    "fallbackPolling": "dynamicpriority"
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority"
   }
 }

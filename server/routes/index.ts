@@ -28,6 +28,7 @@ import v1AdminRouter from "./v1/admin.js";
 // V1 Modular Routers
 import v1CoreRouter from "./v1/core.js";
 import v1MediaRouter from "./v1/media.js";
+import resourcesRouter from "./resources/index.js";
 import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -36,8 +37,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // CRITICAL MIDDLEWARE & AUTH
   // ============================================================================
-  await authService.setup(app);
-  logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
+  // await authService.setup(app);
+  // logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
 
   // ============================================================================
   // DEV TOOLS (Development only)
@@ -77,6 +78,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 1. Auth & Worker (Root Level)
   apiRouter.use(authRouter);
   apiRouter.use(workerRouter);
+
+  // 1.5 Resources (Public Page Content - Must be before Admin/Core to avoid conflicts)
+  apiRouter.use(resourcesRouter);
 
   // 2. Core Business Domains
   apiRouter.use(v1CoreRouter);

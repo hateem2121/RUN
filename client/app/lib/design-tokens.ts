@@ -199,7 +199,10 @@ export type ShadowToken = keyof typeof shadows;
  */
 export function getCssVar(name: string): string {
   if (typeof window === "undefined") return "";
-  const cleanName = name.replace(/^var\(/, "").replace(/\)$/, "").trim();
+  const cleanName = name
+    .replace(/^var\(/, "")
+    .replace(/\)$/, "")
+    .trim();
   return getComputedStyle(document.documentElement).getPropertyValue(cleanName).trim();
 }
 

@@ -99,6 +99,21 @@ npm run db:push
 npm run dev
 ```
 
+### 5. Performance Tuning (Optional)
+
+To enable advanced debugging tools (CPU intensive), use environment variables:
+
+```bash
+# Enable React Scan (Visualizes re-renders)
+ENABLE_REACT_SCAN=true npm run dev
+
+# Enable Vite Inspector (Localhost:5002/__inspect)
+VITE_INSPECT=true npm run dev
+
+# Enable Bundle Visualizer (Generates stats.html)
+VITE_ANALYZE=true npm run dev
+```
+
 The app will be available at `http://localhost:5002`. For Docker environments (via `docker-compose`), it also runs on `http://localhost:5002`.
 
 ### 5. Verify Integrity
@@ -568,4 +583,8 @@ If you encounter "Address already in use" errors or find multiple node processes
    npx kill-port 5002
    ```
 
-3. **Zombie Processes**: If the server restarts infinitely, ensure your `tsx watch` ignore patterns are correct (should ignore `dist`, `.cache`).
+3. **Zombie Processes**: If the server restarts infinitely, ensure your `tsx watch` ignore patterns are correct (should ignore `dist`, `.cache`, `../client`).
+4. **High System Load**:
+   - The project uses `tsx watch` for the backend and `vite` for the frontend.
+   - To reduce load, `ENABLE_PERFORMANCE_MONITORING` and `ENABLE_CACHE_WARMING` are disabled by default in `.env`.
+   - The backend `dev` script in `server/package.json` explicitly ignores `../client` to prevent unnecessary restarts.

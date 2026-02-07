@@ -29,7 +29,7 @@ trivy
 
 # Client Build Artifacts
 client/build
-client/.react-router*.log
+client/.react-router/
 
 # Debug/Test Artifacts (prevent accidental commits)
 *.log
