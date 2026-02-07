@@ -1,5 +1,5 @@
 import { Clock, Mail, MapPin, Phone, Share2 } from "lucide-react";
-import { type ContactConfig } from "@/components/contact/contact-form";
+import type { ContactConfig } from "@/components/contact/contact-form";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 

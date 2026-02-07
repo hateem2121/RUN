@@ -12,8 +12,8 @@ import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
-import { HeroSection } from "@/components/sections/HeroSection";
 import Footer from "@/components/layout/Footer";
+import { HeroSection } from "@/components/sections/HeroSection";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
 import { LoadingState } from "@/components/ui/loading-state";

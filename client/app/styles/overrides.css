@@ -63,7 +63,7 @@
   }
 
   .manufacturing-title-underline::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -2px;
     left: 0;
@@ -89,7 +89,9 @@
 
   .manufacturing-focus-glow:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 0 4px hsl(var(--primary));
   }
 
   .manufacturing-media-hover {

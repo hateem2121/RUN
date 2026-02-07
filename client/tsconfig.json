@@ -22,7 +22,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["app/**/*", "../utils/**/*", "vite.config.ts"],
+  "include": ["app/**/*", "src/types/**/*", "../utils/**/*", "vite.config.ts"],
 
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts", "../server/**/*"],
   "references": [

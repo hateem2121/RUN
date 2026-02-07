@@ -14,7 +14,6 @@ import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 
-
 export const app = express();
 const config = getConfig();
 
@@ -22,7 +21,6 @@ export let serverReady: Promise<void>;
 
 serverReady = (async () => {
   try {
-
     // 2. Create HTTP Server (Required for Vite HMR / SSR)
     const httpServer = createServer(app);
 

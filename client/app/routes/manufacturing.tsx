@@ -86,34 +86,24 @@ export default function Manufacturing() {
 
   // Standardized data fetching using optimized hooks
   // Note: These will now hit the hydrated cache immediately
-  const {
-    data: heroData,
-    isPending: isHeroLoading,
-  } = useQuery<ManufacturingHero>({
+  const { data: heroData, isPending: isHeroLoading } = useQuery<ManufacturingHero>({
     queryKey: ["/api/manufacturing-hero"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const {
-    data: processesData,
-    isPending: isProcessesLoading,
-  } = useQuery<ManufacturingProcess[]>({
+  const { data: processesData, isPending: isProcessesLoading } = useQuery<ManufacturingProcess[]>({
     queryKey: ["/api/manufacturing-processes"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const {
-    data: capabilitiesData,
-    isPending: isCapabilitiesLoading,
-  } = useQuery<ManufacturingCapability[]>({
+  const { data: capabilitiesData, isPending: isCapabilitiesLoading } = useQuery<
+    ManufacturingCapability[]
+  >({
     queryKey: ["/api/manufacturing-capabilities"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const {
-    data: qualitiesData,
-    isPending: isQualitiesLoading,
-  } = useQuery<ManufacturingQuality[]>({
+  const { data: qualitiesData, isPending: isQualitiesLoading } = useQuery<ManufacturingQuality[]>({
     queryKey: ["/api/manufacturing-qualities"],
     staleTime: 5 * 60 * 1000,
   });

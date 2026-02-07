@@ -2,7 +2,7 @@ import type { MediaAsset } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link, useLoaderData, isRouteErrorResponse, useRouteError } from "react-router";
+import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 
 import { MetricCard } from "@/components/sustainability/cards";
@@ -380,7 +380,11 @@ export function ErrorBoundary() {
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">{message}</h1>
         <p className="text-stone-400">{details}</p>
-        <Button asChild variant="outline" className="text-white border-white hover:bg-white hover:text-black">
+        <Button
+          asChild
+          variant="outline"
+          className="text-white border-white hover:bg-white hover:text-black"
+        >
           <Link to="/">Return Home</Link>
         </Button>
       </div>

@@ -18,9 +18,13 @@ import type {
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Box, Loader2 } from "lucide-react";
 import { useLoaderData } from "react-router";
+import TechnologyCta from "@/components/homepage/TechnologyCta";
 // webgl-pointer-events functionality is now handled by global index.css utilities
 import { ClientOnly } from "@/components/shared/ClientOnly";
-
+import { EquipmentSection } from "@/components/technology/EquipmentSection";
+import { InnovationsSection } from "@/components/technology/InnovationsSection";
+import { ResearchSection } from "@/components/technology/ResearchSection";
+import { RoadmapSection } from "@/components/technology/RoadmapSection";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
@@ -30,11 +34,6 @@ import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 import { getQueryClient } from "@/lib/queryClient";
 import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
-import { InnovationsSection } from "@/components/technology/InnovationsSection";
-import { EquipmentSection } from "@/components/technology/EquipmentSection";
-import { ResearchSection } from "@/components/technology/ResearchSection";
-import { RoadmapSection } from "@/components/technology/RoadmapSection";
-import TechnologyCta from "@/components/homepage/TechnologyCta";
 import type { Route } from "./+types/technology";
 
 export async function loader() {

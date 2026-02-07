@@ -17,6 +17,7 @@ import { authService } from "../services/auth-service.js";
 import authRouter from "./auth.js";
 import debugRouter from "./debug.js";
 import docsRouter from "./docs.js";
+import resourcesRouter from "./resources/index.js";
 // Utilities / Populators
 import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
 import { registerDataCreationRoutes } from "./utilities/data-creation.js";
@@ -28,7 +29,6 @@ import v1AdminRouter from "./v1/admin.js";
 // V1 Modular Routers
 import v1CoreRouter from "./v1/core.js";
 import v1MediaRouter from "./v1/media.js";
-import resourcesRouter from "./resources/index.js";
 import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {

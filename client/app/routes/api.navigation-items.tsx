@@ -1,5 +1,3 @@
-
-
 // Mock navigation data matching the shared schema
 const MOCK_NAVIGATION_ITEMS = [
   {

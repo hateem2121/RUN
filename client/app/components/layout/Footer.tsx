@@ -206,7 +206,8 @@ const Footer: React.FC = () => {
                 htmlFor="company"
                 className="text-muted-foreground group-focus-within:text-primary mb-2 block pl-4 font-mono text-xs tracking-widest uppercase transition-colors"
               >
-                <span className="hidden sm:inline">01 </span>{/* Company Name */}
+                <span className="hidden sm:inline">01 </span>
+                {/* Company Name */}
               </label>
               <input
                 id="company"
@@ -227,7 +228,8 @@ const Footer: React.FC = () => {
                     errors.email ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
-                  <span className="hidden sm:inline">02 </span>{/* Email Protocol */}
+                  <span className="hidden sm:inline">02 </span>
+                  {/* Email Protocol */}
                 </label>
                 {errors.email && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">
@@ -255,7 +257,8 @@ const Footer: React.FC = () => {
                     errors.specs ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
-                  <span className="hidden sm:inline">03 </span>{/* Project Specifications */}
+                  <span className="hidden sm:inline">03 </span>
+                  {/* Project Specifications */}
                 </label>
                 {errors.specs && (
                   <span role="alert" className="text-destructive text-micro animate-pulse">

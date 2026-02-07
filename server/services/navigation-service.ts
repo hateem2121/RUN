@@ -175,16 +175,11 @@ export class NavigationService {
   ): Promise<Result<any[], AppError>> {
     const storage = getStorage();
 
-    // Sequential update
-    for (const item of items) {
-      const result = await safeQuery(
-        storage.updateNavigationItem(item.id, { sortOrder: item.sortOrder }),
-      );
+    const result = await safeQuery(
+      withTimeout(storage.reorderNavigationItems(items), 5000, "Reorder navigation items"),
+    );
 
-      if (result.isErr()) return err(result.error);
-      if (!result.value)
-        return err(new NotFoundError(`Navigation item ${item.id} not found during reorder`));
-    }
+    if (result.isErr()) return err(result.error);
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),

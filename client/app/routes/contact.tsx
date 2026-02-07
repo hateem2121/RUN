@@ -1,14 +1,13 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { type ActionFunctionArgs, useLoaderData } from "react-router";
+import { type ContactConfig, ContactForm } from "@/components/contact/contact-form";
 import { ContactInfoCardsSkeleton } from "@/components/contact/contact-info-skeleton";
-import { ContactForm, type ContactConfig } from "@/components/contact/contact-form";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/contact";
 
 const ContactInfoCards = lazy(() => import("@/components/contact/contact-info-cards"));
-
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -32,22 +31,22 @@ const CONTACT_CONFIG: ContactConfig = {
   socialLinks: {
     instagram: "https://instagram.com/runapparel",
     twitter: "https://twitter.com/runapparel",
-    linkedin: "https://linkedin.com/company/runapparel"
+    linkedin: "https://linkedin.com/company/runapparel",
   },
   tradingHours: [
     { label: "Mon - Fri", value: "9:00 AM - 6:00 PM" },
-    { label: "Sat - Sun", value: "Closed" }
-  ]
+    { label: "Sat - Sun", value: "Closed" },
+  ],
 };
 
 export async function loader() {
   const queryClient = getQueryClient();
-  // We can still hydrate other potential queries here if needed, 
+  // We can still hydrate other potential queries here if needed,
   // but for contact-info we return it directly.
-  
-  return { 
+
+  return {
     dehydratedState: dehydrate(queryClient),
-    contactConfig: CONTACT_CONFIG
+    contactConfig: CONTACT_CONFIG,
   };
 }
 
@@ -82,7 +81,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Contact() {
   const { dehydratedState, contactConfig } = useLoaderData<typeof loader>();
-  
+
   // SSR-safe: hook matches hydration by defaulting to false
   const isMobile = useIsMobile();
 

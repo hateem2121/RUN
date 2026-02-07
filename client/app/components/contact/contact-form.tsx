@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type ContactFormData, contactFormSchema } from "@shared/validation/contact";
 import { CheckCircle2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,7 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import { type Country, countries } from "@/data/countries";
 import { useToast } from "@/hooks/use-toast";
-import { type ContactFormData, contactFormSchema } from "@shared/validation/contact";
 
 export interface ContactConfig {
   heroTitle?: string;
@@ -163,10 +163,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     {...form.register("firstName")}
                   />
                   {form.formState.errors.firstName && (
-                    <Typography.P
-                      id="firstName-error"
-                      className="mt-2 text-destructive text-sm"
-                    >
+                    <Typography.P id="firstName-error" className="mt-2 text-destructive text-sm">
                       {form.formState.errors.firstName.message}
                     </Typography.P>
                   )}
@@ -182,16 +179,11 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     id="lastName"
                     data-testid="input-last-name"
                     size="lg"
-                    aria-describedby={
-                      form.formState.errors.lastName ? "lastName-error" : undefined
-                    }
+                    aria-describedby={form.formState.errors.lastName ? "lastName-error" : undefined}
                     {...form.register("lastName")}
                   />
                   {form.formState.errors.lastName && (
-                    <Typography.P
-                      id="lastName-error"
-                      className="mt-2 text-destructive text-sm"
-                    >
+                    <Typography.P id="lastName-error" className="mt-2 text-destructive text-sm">
                       {form.formState.errors.lastName.message}
                     </Typography.P>
                   )}
@@ -244,16 +236,11 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     type="email"
                     data-testid="input-email"
                     size="lg"
-                    aria-describedby={
-                      form.formState.errors.email ? "email-error" : undefined
-                    }
+                    aria-describedby={form.formState.errors.email ? "email-error" : undefined}
                     {...form.register("email")}
                   />
                   {form.formState.errors.email && (
-                    <Typography.P
-                      id="email-error"
-                      className="mt-2 text-destructive text-sm"
-                    >
+                    <Typography.P id="email-error" className="mt-2 text-destructive text-sm">
                       {form.formState.errors.email.message}
                     </Typography.P>
                   )}
@@ -285,16 +272,11 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                       placeholder="Select Country"
                       searchable
                       data-testid="button-country-dropdown"
-                      aria-describedby={
-                        form.formState.errors.country ? "country-error" : undefined
-                      }
+                      aria-describedby={form.formState.errors.country ? "country-error" : undefined}
                     />
                   </div>
                   {form.formState.errors.country && (
-                    <Typography.P
-                      id="country-error"
-                      className="mt-2 text-destructive text-sm"
-                    >
+                    <Typography.P id="country-error" className="mt-2 text-destructive text-sm">
                       {form.formState.errors.country.message}
                     </Typography.P>
                   )}
@@ -371,9 +353,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                   id="message"
                   data-testid="textarea-message"
                   rows={5}
-                  aria-describedby={
-                    form.formState.errors.message ? "message-error" : undefined
-                  }
+                  aria-describedby={form.formState.errors.message ? "message-error" : undefined}
                   {...form.register("message")}
                   className="block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
                 />

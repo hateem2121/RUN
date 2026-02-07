@@ -36,7 +36,6 @@ export const FloatingDock = ({
   );
 };
 
-
 const FloatingDockDesktop = ({
   items,
   className,

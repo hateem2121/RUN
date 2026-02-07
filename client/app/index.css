@@ -3,8 +3,6 @@
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
 
-
-
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
 }
@@ -131,8 +129,6 @@
 @utility border-glass {
   border-color: var(--color-glass, rgba(255, 255, 255, 0.1));
 }
-
-
 
 @utility text-luxury-charcoal {
   color: var(--color-luxury-charcoal, #1a1a2e);

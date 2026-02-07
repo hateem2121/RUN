@@ -860,6 +860,23 @@ export class MiscRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async reorderNavigationItems(items: { id: number; sortOrder: number }[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (const item of items) {
+        await tx
+          .update(navigationItems)
+          .set({ sortOrder: item.sortOrder })
+          .where(eq(navigationItems.id, item.id));
+      }
+    });
+
+    try {
+      await emitCacheInvalidation("navigation:", "update");
+    } catch (error) {
+      logger.debug("[Cache] Failed to emit invalidation event:", error);
+    }
+  }
+
   async getNavigationGlassmorphismSettings(): Promise<NavigationGlassmorphismSettings | undefined> {
     const [settings] = await db.select().from(navigationGlassmorphismSettings).limit(1);
     return settings;

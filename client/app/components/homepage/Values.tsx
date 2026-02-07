@@ -53,15 +53,19 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
-      
+
       {/* 
         Hover Ripple Effect Replacement 
         Simple CSS radial gradient overlay on hover instead of WebGL 
       */}
       {withRipple && (
-         <div className="absolute inset-0 z-base opacity-0 transition-opacity duration-700 group-hover:opacity-30 pointer-events-none" 
-              style={{ background: "radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 70%)" }}
-         />
+        <div
+          className="absolute inset-0 z-base opacity-0 transition-opacity duration-700 group-hover:opacity-30 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 70%)",
+          }}
+        />
       )}
 
       <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">

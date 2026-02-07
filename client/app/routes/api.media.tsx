@@ -1,5 +1,3 @@
-
-
 export async function loader() {
   return {
     success: true,

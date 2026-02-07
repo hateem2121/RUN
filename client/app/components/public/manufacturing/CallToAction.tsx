@@ -16,10 +16,7 @@ export function CallToAction({ hero }: CallToActionProps) {
   const buttonLink = hero?.bottomCtaLink || "/contact";
 
   return (
-    <section 
-      className="relative overflow-hidden py-24"
-      data-testid="manufacturing-cta-section"
-    >
+    <section className="relative overflow-hidden py-24" data-testid="manufacturing-cta-section">
       {/* Background Gradient - Performance Optimized (Replaces Lottie) */}
       <div className="absolute inset-0 h-full w-full bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950" />
 
@@ -33,13 +30,10 @@ export function CallToAction({ hero }: CallToActionProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 
-            className="mb-6 font-bold text-4xl text-white md:text-5xl"
-            data-testid="cta-title"
-          >
+          <h2 className="mb-6 font-bold text-4xl text-white md:text-5xl" data-testid="cta-title">
             {title}
           </h2>
-          <p 
+          <p
             className="mx-auto mb-10 max-w-2xl text-blue-50 text-xl md:text-2xl drop-shadow-sm"
             data-testid="cta-description"
           >

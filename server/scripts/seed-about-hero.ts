@@ -1,16 +1,20 @@
-
-import { db } from "../db.js";
-import { aboutHero, mediaAssets } from "../../shared/schema.js";
 import { eq } from "drizzle-orm";
+import { aboutHero, mediaAssets } from "../../shared/schema.js";
+import { db } from "../db.js";
 
 async function seedAboutHero() {
   console.log("Seeding About Hero...");
 
   // 1. Create a dummy media asset record to satisfy the foreign key constraint
-  const placeholderUrl = "https://images.unsplash.com/photo-1552674605-4694559e5bc7?q=80&w=2669&auto=format&fit=crop";
-  
+  const placeholderUrl =
+    "https://images.unsplash.com/photo-1552674605-4694559e5bc7?q=80&w=2669&auto=format&fit=crop";
+
   // Check if this specific asset already exists to avoid duplicates
-  const existingAsset = await db.select().from(mediaAssets).where(eq(mediaAssets.filename, "hero-placeholder.jpg")).limit(1);
+  const existingAsset = await db
+    .select()
+    .from(mediaAssets)
+    .where(eq(mediaAssets.filename, "hero-placeholder.jpg"))
+    .limit(1);
 
   let mediaId: number;
 
@@ -19,20 +23,23 @@ async function seedAboutHero() {
     console.log(`Using existing media asset ID: ${mediaId}`);
   } else {
     // Create new asset
-    const result = await db.insert(mediaAssets).values({
-      filename: "hero-placeholder.jpg",
-      originalName: "hero-placeholder.jpg",
-      mimeType: "image/jpeg",
-      type: "image",
-      url: placeholderUrl,
-      storagePath: "placeholders/hero.jpg", // Mock path
-      bucketName: "placeholder-bucket", // Mock bucket
-      isActive: true,
-      metadata: {},
-    }).returning();
-    
+    const result = await db
+      .insert(mediaAssets)
+      .values({
+        filename: "hero-placeholder.jpg",
+        originalName: "hero-placeholder.jpg",
+        mimeType: "image/jpeg",
+        type: "image",
+        url: placeholderUrl,
+        storagePath: "placeholders/hero.jpg", // Mock path
+        bucketName: "placeholder-bucket", // Mock bucket
+        isActive: true,
+        metadata: {},
+      })
+      .returning();
+
     if (!result[0]) {
-        throw new Error("Failed to create media asset");
+      throw new Error("Failed to create media asset");
     }
     mediaId = result[0].id;
     console.log(`Created new media asset ID: ${mediaId}`);

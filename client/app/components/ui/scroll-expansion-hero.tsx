@@ -369,8 +369,7 @@ const ScrollExpandMedia = ({
                       <div className="absolute inset-0 rounded-xl bg-black/40" />
                     </div>
                   )
-                ) : (
-                  mediaSrc ? (
+                ) : mediaSrc ? (
                   <div className="relative h-full w-full">
                     <OptimizedImage
                       mediaId={MediaUrlBuilder.extractAssetId(mediaSrc) || 0}
@@ -380,17 +379,23 @@ const ScrollExpandMedia = ({
                     />
                     <div className="absolute inset-0 rounded-xl bg-black/50" />
                   </div>
-                  ) : (
-                    /* Fallback Pattern for Missing Media */
-                    <div className="relative h-full w-full overflow-hidden rounded-xl bg-neutral-900">
-                      <div className="absolute inset-0 opacity-20" 
-                           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }}>
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white/20 font-neue-stance text-xl tracking-widest">RUN APPAREL</span>
-                      </div>
+                ) : (
+                  /* Fallback Pattern for Missing Media */
+                  <div className="relative h-full w-full overflow-hidden rounded-xl bg-neutral-900">
+                    <div
+                      className="absolute inset-0 opacity-20"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)",
+                        backgroundSize: "24px 24px",
+                      }}
+                    ></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-white/20 font-neue-stance text-xl tracking-widest">
+                        RUN APPAREL
+                      </span>
                     </div>
-                  )
+                  </div>
                 )}
 
                 <div className="relative z-elevated mt-4 flex flex-col items-center text-center">

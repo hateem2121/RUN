@@ -72,7 +72,7 @@
     /* Standardized Surface & Brand Colors */
     --color-surface-light: #050505;
     --color-surface-gray: #1a1a1a;
-    
+
     /* Glass Tokens - Dark Mode */
     --glass-bg-start: rgba(255, 255, 255, 0.1);
     --glass-bg-end: rgba(255, 255, 255, 0.05);
@@ -117,7 +117,11 @@
   --color-surface-dark: #050505;
 
   /* Feature-Specific Gradients */
-  --gradient-manufacturing-hero: linear-gradient(to bottom right, #f8f9fa, #e9ecef); /* Light Mode default */
+  --gradient-manufacturing-hero: linear-gradient(
+    to bottom right,
+    #f8f9fa,
+    #e9ecef
+  ); /* Light Mode default */
 
   /* =========================================
      Surface & Text Scale (Phase 1 Token Foundation)
@@ -215,7 +219,6 @@
   --min-height-value-card: 400px;
   --min-height-process-card: 60vh;
 
-
   /* Width Tokens (for arbitrary value replacement) */
   --width-sidebar-collapsed: 80px;
   --width-sidebar-expanded: 280px;
@@ -271,8 +274,8 @@
   --z-index-cursor: 1600;
   --z-index-max: 9999;
 
-    /* Glass Effects */
-    --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
+  /* Glass Effects */
+  --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
 
   /* Animations */
   --animate-marker-bounce: markerBounce 0.6s ease-in-out;

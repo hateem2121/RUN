@@ -213,6 +213,7 @@ export interface IStorage {
     id: number,
     navigationItem: Partial<InsertNavigationItem>,
   ): Promise<NavigationItem | undefined>;
+  reorderNavigationItems(items: { id: number; sortOrder: number }[]): Promise<void>;
   deleteNavigationItem(id: number): Promise<boolean>;
   getNavigationGlassmorphismSettings(): Promise<NavigationGlassmorphismSettings | undefined>;
   updateNavigationGlassmorphismSettings(

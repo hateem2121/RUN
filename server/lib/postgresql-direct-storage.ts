@@ -758,6 +758,10 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.miscRepository.updateNavigationItem(id, item);
   }
 
+  async reorderNavigationItems(items: { id: number; sortOrder: number }[]): Promise<void> {
+    return await this.miscRepository.reorderNavigationItems(items);
+  }
+
   async deleteNavigationItem(id: number): Promise<boolean> {
     return await this.miscRepository.deleteNavigationItem(id);
   }

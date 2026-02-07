@@ -1,5 +1,5 @@
 import type { ManufacturingHero, MediaAsset } from "@shared/schema";
-import { domAnimation, LazyMotion, m, type MotionValue } from "framer-motion";
+import { domAnimation, LazyMotion, type MotionValue, m } from "framer-motion";
 import { ArrowDown, Factory } from "lucide-react";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";

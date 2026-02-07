@@ -124,17 +124,19 @@ const Hero: React.FC = () => {
         Uses a mesh-like gradient effect.
       */}
       <div className="absolute inset-0 z-base overflow-hidden bg-black">
-        <div 
+        <div
           className="absolute inset-[-50%] opacity-40 blur-[100px] animate-[spin_20s_linear_infinite]"
           style={{
-            background: "conic-gradient(from 0deg at 50% 50%, #000000 0deg, #1a1a1a 120deg, #333333 240deg, #000000 360deg)"
+            background:
+              "conic-gradient(from 0deg at 50% 50%, #000000 0deg, #1a1a1a 120deg, #333333 240deg, #000000 360deg)",
           }}
         />
-        <div 
-          className="absolute inset-0 opacity-30" 
+        <div
+          className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px)",
-            backgroundSize: "40px 40px"
+            backgroundImage:
+              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
           }}
         />
       </div>
@@ -146,7 +148,10 @@ const Hero: React.FC = () => {
           className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
         >
           {heroLines.map((line: string, i: number) => (
-            <div key={i} className="hero-line my-0 md:-my-2 overflow-visible py-2 will-change-transform">
+            <div
+              key={i}
+              className="hero-line my-0 md:-my-2 overflow-visible py-2 will-change-transform"
+            >
               <h1 className="text-foreground text-[10vw] leading-none font-bold tracking-tighter will-change-transform md:text-[6vw] lg:text-[7vw] md:leading-[0.85] xs:text-[9vw] tiny:text-[8vw]">
                 {line}
               </h1>
