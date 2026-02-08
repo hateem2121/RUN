@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import CustomCursor from "@/components/homepage/CustomCursor";
+import CustomCursor from "@/components/ui/CustomCursor";
 import Preloader from "@/components/homepage/Preloader";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -138,9 +138,6 @@ export default function Index() {
             <FeaturedProducts products={homepageData?.products?.result} />
             <Values />
           </div>
-
-          {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
-          <Process />
 
           {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
           <Process />

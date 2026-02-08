@@ -47,7 +47,7 @@ const Hero: React.FC = () => {
 
     const ctx = gsap.context(() => {
       // Intro Animation
-      const titles = scope.querySelectorAll("h1");
+      const titles = scope.querySelectorAll(".hero-line");
 
       if (titles.length > 0) {
         gsap.fromTo(
@@ -66,10 +66,9 @@ const Hero: React.FC = () => {
             scale: 1,
             rotateX: 0,
             filter: "blur(0px)",
-            duration: 2.4,
-            stagger: 0.15,
-            ease: "expo.out",
-            delay: 0.5, // Reduced delay as we don't need to wait for 3D load
+            duration: 1.8, // Adjusted duration
+            stagger: 0.1, // Adjusted stagger
+            ease: "power3.out", // Refined ease
             force3D: true,
           },
         );
@@ -116,7 +115,7 @@ const Hero: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-background-alt relative h-screen w-full overflow-hidden"
+      className="bg-background-alt relative h-screen w-full overflow-hidden dark"
     >
       {/* 
         CSS Gradient Background 
@@ -143,21 +142,19 @@ const Hero: React.FC = () => {
 
       {/* Hero Content */}
       <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center md:pt-0 pt-24">
-        <div
-          ref={textContainerRef}
-          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
-        >
-          {heroLines.map((line: string, i: number) => (
-            <div
-              key={i}
-              className="hero-line my-0 md:-my-2 overflow-visible py-2 will-change-transform"
-            >
-              <h1 className="text-foreground font-bold tracking-tighter will-change-transform leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]">
+          <h1
+            ref={textContainerRef}
+            className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
+          >
+            {heroLines.map((line: string, i: number) => (
+              <span
+                key={i}
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+              >
                 {line}
-              </h1>
-            </div>
-          ))}
-        </div>
+              </span>
+            ))}
+          </h1>
       </div>
 
       {/* Scroll Indicator */}

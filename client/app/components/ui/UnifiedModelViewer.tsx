@@ -346,10 +346,17 @@ export default function UnifiedModelViewer({
     const handleContextLost = (event: Event) => {
       event.preventDefault();
       setWebglLost(true);
+      setLoadingState((prev) => ({
+        ...prev,
+        status: "error",
+        errorMessage: "Graphics context lost. Attempting to recover...",
+      }));
     };
 
     const handleContextRestored = () => {
       setWebglLost(false);
+      // Predictive Recovery: Automatically trigger recovery when context is back
+      handleWebGLRecovery();
     };
 
     // Add event listeners using memoized handlers

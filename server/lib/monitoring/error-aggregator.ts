@@ -21,6 +21,7 @@ interface ErrorEntry {
   ip?: string | undefined;
   userAgent?: string | undefined;
   stack?: string | undefined;
+  causeStack?: string | undefined;
 }
 
 interface ErrorMetrics {

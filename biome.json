@@ -49,16 +49,19 @@
         "recommended": false
       },
       "correctness": {
-        "noEmptyPattern": "off"
+        "noEmptyPattern": "off",
+        "useExhaustiveDependencies": "warn"
       },
       "suspicious": {
         "noArrayIndexKey": "off",
         "noConsole": "error",
-        "noExplicitAny": "warn",
-        "noImplicitAnyLet": "warn"
+        "noExplicitAny": "error",
+        "noImplicitAnyLet": "warn",
+        "useAwait": "error"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useBlockStatements": "warn"
       }
     }
   },

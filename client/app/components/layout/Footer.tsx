@@ -172,11 +172,11 @@ const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-background text-foreground relative w-full overflow-hidden px-4 pt-32 pb-0 md:px-8"
+      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8"
     >
       {/* Blueprint Grid Background */}
       <div
-        className="bg-size-[24px_24px] pointer-events-none absolute inset-0 opacity-[0.03] bg-[image:radial-gradient(circle,currentColor_1px,transparent_1px)]"
+        className="bg-footer-grid pointer-events-none absolute inset-0 opacity-[0.03]"
         aria-hidden="true"
       />
 
@@ -396,7 +396,7 @@ const Footer: React.FC = () => {
       <div className="z-elevated relative w-full text-center overflow-hidden" aria-hidden="true">
         <h1
           ref={textRef}
-          className="text-foreground leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-[length:clamp(3rem,18vw,20rem)]"
+          className="text-foreground leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-(--font-size-footer-display)"
         >
           RUN APPAREL
         </h1>

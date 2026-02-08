@@ -12,8 +12,8 @@ export function HeroSection({ heroData, mediaUrl, mediaType = "image" }: HeroSec
   return (
     <ScrollExpandMedia
       mediaType={mediaType}
-      mediaSrc={mediaUrl || ""}
-      bgImageSrc={mediaUrl || ""}
+      mediaSrc={mediaUrl || "https://images.unsplash.com/photo-1558444479-c8f0105307ca?q=80&w=2070&auto=format&fit=crop"}
+      bgImageSrc={mediaUrl || "https://images.unsplash.com/photo-1558350849-d798f6583504?q=80&w=2070&auto=format&fit=crop"}
       title={heroData.title || "About RUN APPAREL"}
       scrollToExpand="Scroll to explore our journey"
       textBlend={false}

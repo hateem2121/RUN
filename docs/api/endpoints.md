@@ -26,7 +26,10 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/contact-info](#get-apicontact-info)
    - [GET /api/locations](#get-apilocations)
    - [POST /contact](#post-contact)
-4. [Privacy Endpoints](#privacy-endpoints)
+4. [Navigation Endpoints](#navigation-endpoints)
+   - [GET /api/navigation-items](#get-apinavigation-items)
+   - [GET /api/navigation-settings](#get-apinavigation-settings)
+5. [Privacy Endpoints](#privacy-endpoints)
    - [POST /api/privacy/data-export](#post-apiprivacydata-export)
    - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
    - [GET /api/privacy/request-status/:id](#get-apiprivacyrequest-statusid)
@@ -383,6 +386,43 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
   "success": true,
   "submissionId": 123,
   "message": "Thank you for contacting us."
+}
+```
+
+---
+
+## Navigation Endpoints
+
+### GET /api/navigation-items
+
+**Purpose**: Retrieve all active navigation items for the site header and mobile menu.
+
+**Response Format**:
+
+```json
+[
+  {
+    "id": 1,
+    "label": "Collection",
+    "href": "/collection",
+    "sortOrder": 1,
+    "isActive": true
+  }
+]
+```
+
+### GET /api/navigation-settings
+
+**Purpose**: Retrieve navigation UI settings like glassmorphism effects.
+
+**Response Format**:
+
+```json
+{
+  "id": 1,
+  "glassmorphismEnabled": true,
+  "blurAmount": 10,
+  "transparency": 0.8
 }
 ```
 

@@ -54,9 +54,33 @@ The codebase is split into three tightly coupled workspaces:
 - **Prod Flow**: Request -> Express -> Imports `dist/server/entry-server.js` -> Renders Stream.
 - **Hydration**: React 19 partial hydration capabilities are enabled.
 
+### 3.3. Navigation Architecture
+- **Source**: `/api/navigation-items` (Required for Header/Footer).
+- **Format**: JSON array of `NavigationItem` with optional `mediaIcon` relation.
+- **Cache**: Prefetched in `root.tsx` via TanStack Query for LCP optimization.
+
 ---
 
-## 4. Data Layer Architecture
+## 4. React 19 Coding Standards (Ref Pattern)
+
+> [!IMPORTANT]
+> React 19 deprecates `forwardRef`. Always use the `ref` prop directly.
+
+```tsx
+// ✅ CORRECT (React 19)
+export function CustomInput({ ref, ...props }: { ref?: React.Ref<HTMLInputElement> }) {
+  return <input ref={ref} {...props} />;
+}
+
+// ❌ WRONG (Legacy)
+export const CustomInput = forwardRef((props, ref) => {
+  return <input ref={ref} {...props} />;
+});
+```
+
+---
+
+## 5. Data Layer Architecture
 
 ### 4.1. Schema Authority
 

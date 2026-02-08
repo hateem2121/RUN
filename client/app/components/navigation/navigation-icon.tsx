@@ -20,19 +20,25 @@ const IconMail = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconMail.
 const IconPhone = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconPhone.mjs"));
 const IconMapPin = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconMapPin.mjs"));
 const IconCalendar = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconCalendar.mjs"));
-const IconSearch = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconSearch.mjs"));
-const IconMenu2 = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconMenu2.mjs"));
-const IconX = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconX.mjs"));
-const IconChevronDown = lazy(
-  () => import("@tabler/icons-react/dist/esm/icons/IconChevronDown.mjs"),
-);
-const IconChevronRight = lazy(
-  () => import("@tabler/icons-react/dist/esm/icons/IconChevronRight.mjs"),
-);
 const IconLogout = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconLogout.mjs"));
 const IconLogin = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconLogin.mjs"));
 const IconInfoCircle = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconInfoCircle.mjs"));
 const IconHelp = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconHelp.mjs"));
+const IconSearch = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconSearch.mjs"));
+const IconMenu2 = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconMenu2.mjs"));
+const IconX = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconX.mjs"));
+const IconBuildingFactory2 = lazy(
+  () => import("@tabler/icons-react/dist/esm/icons/IconBuildingFactory2.mjs"),
+);
+const IconRecycle = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconRecycle.mjs"));
+const IconCpu = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconCpu.mjs"));
+const IconAward = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconAward.mjs"));
+const IconGlobe = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconGlobe.mjs"));
+const IconMessage = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconMessage.mjs"));
+const IconShirt = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconShirt.mjs"));
+const IconLeaf = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconLeaf.mjs"));
+const IconFlask = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconFlask.mjs"));
+const IconTimeline = lazy(() => import("@tabler/icons-react/dist/esm/icons/IconTimeline.mjs"));
 
 // Map icon names to lazy components
 const ICON_MAP: Record<
@@ -56,13 +62,22 @@ const ICON_MAP: Record<
   IconSearch,
   IconMenu2,
   IconX,
-  IconChevronDown,
-  IconChevronRight,
   IconLogout,
   IconLogin,
   IconInfoCircle,
   IconHelp,
-  // Common aliases (case-insensitive handling logic to be added if needed, but strict for now)
+  IconBuildingFactory2,
+  IconRecycle,
+  IconCpu,
+  IconAward,
+  IconGlobe,
+  IconMessage,
+  IconShirt,
+  IconLeaf,
+  IconFlask,
+  IconTimeline,
+
+  // Common aliases
   home: IconHome,
   user: IconUser,
   users: IconUsers,
@@ -71,11 +86,13 @@ const ICON_MAP: Record<
   box: IconBox,
   package: IconPackage,
   cart: IconShoppingCart,
+  shoppingcart: IconShoppingCart,
   chart: IconChartBar,
   file: IconFileText,
   mail: IconMail,
   phone: IconPhone,
   map: IconMapPin,
+  mappin: IconMapPin,
   calendar: IconCalendar,
   search: IconSearch,
   menu: IconMenu2,
@@ -84,6 +101,25 @@ const ICON_MAP: Record<
   login: IconLogin,
   info: IconInfoCircle,
   help: IconHelp,
+  factory: IconBuildingFactory2,
+  manufacturing: IconBuildingFactory2,
+  recycle: IconRecycle,
+  technology: IconCpu,
+  cpu: IconCpu,
+  award: IconAward,
+  certifications: IconAward,
+  globe: IconGlobe,
+  global: IconGlobe,
+  contact: IconMessage,
+  message: IconMessage,
+  products: IconShirt,
+  shirt: IconShirt,
+  about: IconInfoCircle,
+  sustainability: IconLeaf,
+  leaf: IconLeaf,
+  rd: IconFlask,
+  innovation: IconFlask,
+  timeline: IconTimeline,
 };
 
 interface NavigationIconProps {
@@ -153,19 +189,34 @@ export const NavigationIcon = memo(function NavigationIcon({
   );
 
   // Determine which icon component to use
-  let SelectedIcon = IconHome; // Default fallback
+  let SelectedIcon: React.LazyExoticComponent<React.ComponentType<{ className?: string }>> = IconHome;
 
   if (iconType === "fallback" && fallbackIcon) {
-    // Try to find exact match or alias match
-    const exactMatch = ICON_MAP[fallbackIcon];
-    if (exactMatch) {
-      SelectedIcon = exactMatch;
+    const normalizedInput = fallbackIcon.toLowerCase().trim();
+
+    // 1. Try direct map (exact or alias)
+    const iconByInput = ICON_MAP[normalizedInput];
+    if (iconByInput) {
+      SelectedIcon = iconByInput;
     }
-    // If exact name "IconXxx" wasn't found, try looking it up directly
+    // 2. Try prefixing with 'Icon'
     else {
-      const aliasMatch = ICON_MAP[`Icon${fallbackIcon}`];
-      if (aliasMatch) {
-        SelectedIcon = aliasMatch;
+      const iconByPrefix = ICON_MAP[`Icon${fallbackIcon}`];
+      if (iconByPrefix) {
+        SelectedIcon = iconByPrefix;
+      }
+      // 3. Try key lookup in ICON_MAP (case-insensitive)
+      else {
+        const foundKey = Object.keys(ICON_MAP).find(
+          (key) =>
+            key.toLowerCase() === normalizedInput || key.toLowerCase() === `icon${normalizedInput}`,
+        );
+        if (foundKey) {
+          const iconByFoundKey = ICON_MAP[foundKey];
+          if (iconByFoundKey) {
+            SelectedIcon = iconByFoundKey;
+          }
+        }
       }
     }
   }

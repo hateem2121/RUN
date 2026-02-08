@@ -231,8 +231,8 @@ export const navigationGlassmorphismSettings = pgTable("navigation_glassmorphism
   blur: integer().default(10),
   borderRadius: integer().default(12),
   backdropFilter: varchar({ length: 100 }).default("blur(10px)"),
-  backgroundColor: varchar({ length: 20 }).default("rgba(255,255,255,0.1)"),
-  borderColor: varchar({ length: 20 }).default("rgba(255,255,255,0.2)"),
+  backgroundColor: varchar({ length: 50 }).default("rgba(255,255,255,0.1)"),
+  borderColor: varchar({ length: 50 }).default("rgba(255,255,255,0.2)"),
 
   // Admin UI Advanced Glassmorphism Controls
   backgroundOpacity: decimal({

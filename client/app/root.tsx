@@ -50,10 +50,13 @@ export const meta: MetaFunction = () => {
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
   const { cspNonce } = context as { cspNonce: string };
   const queryClient = new QueryClient();
-  const baseUrl = "http://127.0.0.1:5002";
+  
+  // Use protocol and host from request to build a dynamic base URL
+  const url = new URL(request.url);
+  const baseUrl = `${url.protocol}//${url.host}`;
 
   try {
     // Prefetch navigation items
@@ -100,18 +103,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
               (function() {
                 try {
                   var storageKey = 'theme';
-                  var activeTheme = localStorage.getItem(storageKey);
-                  var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                  
-                  if (!activeTheme) {
-                    activeTheme = 'dark'; // Default to dark instead of system
-                  }
-                  
-                  if (activeTheme === 'system') {
-                    activeTheme = systemTheme;
-                  }
-                  
-                  document.documentElement.classList.add(activeTheme);
+                  var theme = localStorage.getItem(storageKey);
+                  var supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var resolvedTheme = theme === 'dark' || (theme !== 'light' && supportDarkMode) ? 'dark' : 'light';
+                  document.documentElement.classList.toggle('dark', resolvedTheme === 'dark');
+                  document.documentElement.setAttribute('data-theme', resolvedTheme);
                 } catch (e) {}
               })();
             `,

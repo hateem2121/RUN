@@ -33,6 +33,8 @@ export default [
   route("resources", "routes/resources.tsx"),
   route("services", "routes/services.tsx"),
   route("size-charts", "routes/size-charts.tsx"),
+  route("privacy", "routes/privacy.tsx"),
   route("sustainability", "routes/sustainability.tsx"),
   route("technology", "routes/technology.tsx"),
+  route("terms", "routes/terms.tsx"),
 ] satisfies RouteConfig;

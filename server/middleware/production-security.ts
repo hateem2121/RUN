@@ -11,6 +11,9 @@ const config = getConfig();
 import helmet from "helmet";
 
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+  if (res.headersSent) {
+    return next();
+  }
   if (config.security.headers.enableSecurity) {
     // Use pre-generated Nonce from middleware
     const nonce = res.locals.cspNonce;

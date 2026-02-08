@@ -7,50 +7,9 @@
  */
 
 import type { TypedProblemDetails } from "@run-remix/shared";
+import { ApiError } from "./api";
 
 export const DEFAULT_TIMEOUT_MS = 30000;
-
-/**
- * Error thrown for HTTP error responses
- * Contains parsed Problem Details if available
- */
-export class HttpError extends Error {
-  public readonly status: number;
-  public readonly problemDetails?: TypedProblemDetails | undefined;
-  public readonly retryAfter?: number;
-
-  constructor(status: number, message: string, problemDetails?: TypedProblemDetails | undefined) {
-    super(message);
-    this.name = "HttpError";
-    this.status = status;
-    this.problemDetails = problemDetails;
-
-    // Extract Retry-After if present (for 429 responses)
-    if (problemDetails?.code === "RATE_LIMIT_EXCEEDED") {
-      const retryAfter = (problemDetails as any)?.retryAfter;
-      if (typeof retryAfter === "number") {
-        this.retryAfter = retryAfter;
-      }
-    }
-  }
-
-  /**
-   * Check if this error is retryable
-   */
-  isRetryable(): boolean {
-    return [429, 503, 504].includes(this.status);
-  }
-
-  /**
-   * Get field errors if this is a validation error
-   */
-  getFieldErrors(): Record<string, string[]> | undefined {
-    if (this.status === 400 && this.problemDetails) {
-      return (this.problemDetails as any)["invalid-params"];
-    }
-    return undefined;
-  }
-}
 
 /**
  * Fetch with automatic timeout.
@@ -134,7 +93,10 @@ export async function fetchWithTimeoutAndErrors(
 
     const message = problemDetails?.detail || problemDetails?.title || `HTTP ${response.status}`;
 
-    throw new HttpError(response.status, message, problemDetails);
+    throw new ApiError(response.status, {
+      ...problemDetails,
+      message,
+    });
   }
 
   return response;
@@ -200,6 +162,6 @@ export function isAbortError(error: unknown): boolean {
 /**
  * Check if an error is an HTTP error
  */
-export function isHttpError(error: unknown): error is HttpError {
-  return error instanceof HttpError;
+export function isHttpError(error: unknown): error is ApiError {
+  return error instanceof ApiError;
 }

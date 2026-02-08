@@ -51,8 +51,18 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function About() {
   const loaderData = useLoaderData<typeof loader>();
+  
+  return (
+    <HydrationBoundary state={loaderData?.dehydratedState}>
+      <AboutPageContent />
+    </HydrationBoundary>
+  );
+}
+
+function AboutPageContent() {
   const isMobile = useIsMobile();
   // Fetch all about data in one optimized batch call
+  // This will now correctly find data in the cache from the HydrationBoundary
   const { data: batchData, isLoading: batchLoading } = useQuery<{
     hero: AboutHero | null;
     timeline: AboutTimelineEntry[];
@@ -74,6 +84,7 @@ export default function About() {
     retry: 3,
     staleTime: 1000 * 60 * 10, // 10 minutes
   });
+
   // Extract data from batch response
   const heroData = batchData?.hero;
   const timeline = batchData?.timeline || [];
@@ -101,7 +112,6 @@ export default function About() {
   // Transform locations to match the optimized map interface
   const mapLocations: MapLocation[] = locations.map((location) => ({
     id: location.id,
-    // Map locationType to client/facility - headquarters and office are facilities, everything else is distribution/client
     type:
       location.locationType === "headquarters" ||
       location.locationType === "office" ||
@@ -109,15 +119,14 @@ export default function About() {
         ? "facility"
         : "client",
     name: location.name,
-    latitude: parseFloat(location.latitude), // Convert decimal string to number
-    longitude: parseFloat(location.longitude), // Convert decimal string to number
+    latitude: parseFloat(location.latitude), 
+    longitude: parseFloat(location.longitude), 
     city: location.city || location.address?.split(",")[1]?.trim() || "",
-    country: location.country || location.address?.split(",").pop()?.trim() || "", // Handle null country values
+    country: location.country || location.address?.split(",").pop()?.trim() || "", 
     details: location.details || location.description || "",
     isActive: location.isActive ?? true,
   }));
 
-  // Filter locations by type for legend counts
   const clientLocations = mapLocations.filter((l) => l.type === "client" && l.isActive);
   const facilityLocations = mapLocations.filter((l) => l.type === "facility" && l.isActive);
 
@@ -127,8 +136,6 @@ export default function About() {
     content: (
       <Card variant="glass-premium" className="group p-6 shadow-inner-sm">
         <GlassCardDecorations showShimmer={!isMobile} />
-
-        {/* Content */}
         <div className="relative z-elevated">
           <Typography.H3 className="mb-3 font-bold text-foreground text-xl">
             {item.title}
@@ -147,8 +154,6 @@ export default function About() {
             </div>
           )}
         </div>
-
-        {/* Hover shimmer effect - disabled on mobile for performance */}
         {!isMobile && (
           <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             <div className="shimmer-overlay" />
@@ -158,194 +163,185 @@ export default function About() {
     ),
   }));
 
-  // Calculate hero media properties with proper null checks
   const heroBackgroundMediaId = heroData?.backgroundMediaId ?? undefined;
   const heroBackgroundAsset = heroBackgroundMediaId ? getAsset(heroBackgroundMediaId) : null;
   const heroBackgroundUrl =
     (heroBackgroundAsset && heroBackgroundMediaId ? getAssetUrl(heroBackgroundMediaId) : null) ??
     "";
 
+  if (!heroData || !isDataReady) {
+    return (
+      <LoadingState
+        fullScreen
+        text={batchLoading ? "Loading about page data..." : "Loading about page..."}
+      />
+    );
+  }
+
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      {!heroData || !isDataReady ? (
-        <LoadingState
-          fullScreen
-          text={batchLoading ? "Loading about page data..." : "Loading about page..."}
-        />
-      ) : (
-        <div id="main-content" className="min-h-screen bg-background">
-          {/* Unified Scroll Expansion Hero Section with Overlay Content */}
-          <HeroSection
-            heroData={heroData || {}}
-            mediaUrl={heroBackgroundUrl}
-            mediaType={heroBackgroundAsset?.type === "video" ? "video" : "image"}
+    <div id="main-content" className="min-h-screen bg-background">
+      <HeroSection
+        heroData={heroData || {}}
+        mediaUrl={heroBackgroundUrl}
+        mediaType={heroBackgroundAsset?.type === "video" ? "video" : "image"}
+      />
+
+      {timelineData.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <Timeline data={timelineData} />
+          </div>
+        </section>
+      )}
+
+      {teamMessage && (
+        <section className="bg-muted/20 py-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative mx-auto max-w-4xl"
+            >
+              <Card variant="glass-premium" className="group">
+                <GlassCardDecorations showShimmer={!isMobile} />
+                <CardContent className="relative z-elevated p-8 md:p-12">
+                  <div className="grid items-center gap-8 md:grid-cols-2">
+                    <div>
+                      {teamMessage.imageId && getAsset(teamMessage.imageId) && (
+                        <div className="mb-6">
+                          <OptimizedImage
+                            mediaId={teamMessage.imageId}
+                            alt="Team"
+                            className="h-64 w-full rounded-xl object-cover bg-transparent"
+                            quality={90}
+                            priority={false}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <MessageSquare className="mb-4 h-8 w-8 text-primary" />
+                      {teamMessage.title && (
+                        <Typography.H3 className="mb-4 font-bold text-2xl">
+                          {teamMessage.title}
+                        </Typography.H3>
+                      )}
+                      {teamMessage.message && (
+                        <Typography.P className="mb-6 text-muted-foreground leading-relaxed">
+                          {teamMessage.message}
+                        </Typography.P>
+                      )}
+                      {(teamMessage.signature || teamMessage.name) && (
+                        <div className="border-t pt-4">
+                          <Typography.P className="font-semibold text-foreground">
+                            {teamMessage.signature || teamMessage.name}
+                          </Typography.P>
+                          <Typography.P className="text-muted-foreground text-sm">
+                            {teamMessage.position || "Executive Team"}
+                          </Typography.P>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {sortedSections.length > 0 && (
+        <div className="relative">
+          <StackingCards
+            sections={sortedSections}
+            getAssetUrl={getAssetUrl}
+            getAsset={getAsset}
           />
-
-          {/* Modern Timeline Section */}
-          {timelineData.length > 0 && (
-            <section className="py-20">
-              <div className="container mx-auto px-4 md:px-6">
-                <Timeline data={timelineData} />
-              </div>
-            </section>
-          )}
-
-          {/* Executive Team Message - Providing Context */}
-          {teamMessage && (
-            <section className="bg-muted/20 py-20">
-              <div className="container mx-auto px-4 md:px-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className="mx-auto max-w-4xl"
-                >
-                  <Card variant="glass-premium" className="group">
-                    <GlassCardDecorations showShimmer={!isMobile} />
-
-                    <CardContent className="relative z-elevated p-8 md:p-12">
-                      <div className="grid items-center gap-8 md:grid-cols-2">
-                        <div>
-                          {teamMessage.imageId && getAsset(teamMessage.imageId) && (
-                            <div className="mb-6">
-                              <OptimizedImage
-                                mediaId={teamMessage.imageId}
-                                alt="Team"
-                                className="h-64 w-full rounded-xl object-cover bg-transparent"
-                                quality={90}
-                                priority={false}
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <MessageSquare className="mb-4 h-8 w-8 text-primary" />
-                          {teamMessage.title && (
-                            <Typography.H3 className="mb-4 font-bold text-2xl">
-                              {teamMessage.title}
-                            </Typography.H3>
-                          )}
-                          {teamMessage.message && (
-                            <Typography.P className="mb-6 text-muted-foreground leading-relaxed">
-                              {teamMessage.message}
-                            </Typography.P>
-                          )}
-                          {(teamMessage.signature || teamMessage.name) && (
-                            <div className="border-t pt-4">
-                              <Typography.P className="font-semibold text-foreground">
-                                {teamMessage.signature || teamMessage.name}
-                              </Typography.P>
-                              <Typography.P className="text-muted-foreground text-sm">
-                                {teamMessage.position || "Executive Team"}
-                              </Typography.P>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </div>
-            </section>
-          )}
-
-          {/* Manufacturing Capabilities - Stacking Cards Effect */}
-          {sortedSections.length > 0 && (
-            <StackingCards
-              sections={sortedSections}
-              getAssetUrl={getAssetUrl}
-              getAsset={getAsset}
-            />
-          )}
-
-          {/* Key Statistics Section */}
-          {sortedStatistics.length > 0 && (
-            <section className="bg-background py-20">
-              <div className="container mx-auto px-4 md:px-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className="mb-16 text-center"
-                >
-                  <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
-                    Key Statistics
-                  </Typography.H2>
-                  <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
-                    Our impact and achievements in numbers
-                  </Typography.P>
-                </motion.div>
-
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-                  {sortedStatistics.map((stat, index) => {
-                    const IconComponent = resolveIcon(stat.icon);
-
-                    return (
-                      <motion.div
-                        key={stat.id}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                        className="h-full"
-                      >
-                        <GlowingShadow>
-                          <div className="flex h-full flex-col items-center justify-center">
-                            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                              <IconComponent className="h-8 w-8 text-primary" />
-                            </div>
-                            <Typography.H3 className="mb-2 font-bold text-3xl text-foreground">
-                              {stat.value}
-                              {stat.unit && (
-                                <span className="ml-1 text-lg text-muted-foreground">
-                                  {stat.unit}
-                                </span>
-                              )}
-                            </Typography.H3>
-                            <Typography.P className="font-medium text-muted-foreground">
-                              {stat.label}
-                            </Typography.P>
-                          </div>
-                        </GlowingShadow>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Global Presence Map Section */}
-          {(clientLocations.length > 0 || facilityLocations.length > 0) && (
-            <section className="bg-muted/20 py-20">
-              <div className="container mx-auto px-4 md:px-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className="mb-16 text-center"
-                >
-                  <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
-                    Global Presence
-                  </Typography.H2>
-                  <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
-                    Our manufacturing facilities and client partnerships span across continents
-                  </Typography.P>
-                </motion.div>
-
-                <ClientOnlyMap locations={mapLocations} />
-              </div>
-            </section>
-          )}
-
-          {/* Site Footer */}
-          <Footer />
         </div>
       )}
-    </HydrationBoundary>
+
+      {sortedStatistics.length > 0 && (
+        <section className="bg-background py-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mb-16 text-center"
+            >
+              <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
+                Key Statistics
+              </Typography.H2>
+              <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
+                Our impact and achievements in numbers
+              </Typography.P>
+            </motion.div>
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {sortedStatistics.map((stat, index) => {
+                const IconComponent = resolveIcon(stat.icon);
+                return (
+                  <motion.div
+                    key={stat.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    className="h-full"
+                  >
+                    <GlowingShadow>
+                      <div className="flex h-full flex-col items-center justify-center">
+                        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                          <IconComponent className="h-8 w-8 text-primary" />
+                        </div>
+                        <Typography.H3 className="mb-2 font-bold text-3xl text-foreground">
+                          {stat.value}
+                          {stat.unit && (
+                            <span className="ml-1 text-lg text-muted-foreground">
+                              {stat.unit}
+                            </span>
+                          )}
+                        </Typography.H3>
+                        <Typography.P className="font-medium text-muted-foreground">
+                          {stat.label}
+                        </Typography.P>
+                      </div>
+                    </GlowingShadow>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {(clientLocations.length > 0 || facilityLocations.length > 0) && (
+        <section className="bg-muted/20 py-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mb-16 text-center"
+            >
+              <Typography.H2 className="mb-4 font-bold text-3xl tracking-tighter sm:text-4xl md:text-5xl">
+                Global Presence
+              </Typography.H2>
+              <Typography.P className="mx-auto max-w-reading text-muted-foreground md:text-xl">
+                Our manufacturing facilities and client partnerships span across continents
+              </Typography.P>
+            </motion.div>
+            <ClientOnlyMap locations={mapLocations} />
+          </div>
+        </section>
+      )}
+
+      <Footer />
+    </div>
   );
 }
 

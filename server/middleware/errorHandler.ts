@@ -8,6 +8,10 @@ interface AppError extends Error {
 }
 
 export function errorHandler(err: AppError, req: Request, res: Response, next: NextFunction) {
+  if (res.headersSent) {
+    return next(err);
+  }
+
   const statusCode = err.statusCode || err.status || 500;
   const message = err.message || "Internal Server Error";
 

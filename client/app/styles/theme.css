@@ -78,9 +78,10 @@
     --glass-bg-end: rgba(255, 255, 255, 0.05);
 
     /* Feature Gradients - Dark Mode */
-    --gradient-manufacturing-hero: linear-gradient(to bottom right, #0a0a0a, #1a1a2e);
   }
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* =========================================
@@ -252,6 +253,19 @@
   --shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.15);
   --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12);
 
+  /* Glow Shadows */
+  --shadow-glow-sm: 0 0 10px 2px rgba(139, 92, 246, 0.15);
+  --shadow-glow-md: 0 0 20px 4px rgba(139, 92, 246, 0.2);
+  --shadow-glow-lg: 0 0 30px 8px rgba(139, 92, 246, 0.25);
+  --shadow-glow-lg-desktop: 0 0 40px 12px rgba(139, 92, 246, 0.3);
+  --shadow-glow-primary: 0 0 20px 4px hsl(var(--primary) / 0.3);
+  --shadow-glow-orange: 0 0 20px 4px rgba(251, 146, 60, 0.3);
+
+  /* Luxury Shadows */
+  --shadow-luxury-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-luxury-md: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-luxury-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+
   /* Z-Index Layers (v4 convention: --z-index-*) */
   --z-index-behind: -1;
   --z-index-base: 0;
@@ -415,9 +429,6 @@
 }
 
 /* Utilities */
-@utility min-h-process-card {
-  min-height: var(--min-height-process-card);
-}
 @utility h-hero-mobile {
   height: 70vh;
 }

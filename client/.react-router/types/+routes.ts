@@ -86,10 +86,16 @@ type Pages = {
   "/size-charts": {
     params: {};
   };
+  "/privacy": {
+    params: {};
+  };
   "/sustainability": {
     params: {};
   };
   "/technology": {
+    params: {};
+  };
+  "/terms": {
     params: {};
   };
 };
@@ -97,7 +103,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module*" | "/analytics" | "/api/media" | "/api/navigation-items" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/sustainability" | "/technology";
+    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module*" | "/analytics" | "/api/media" | "/api/navigation-items" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms";
   };
   "routes/_index.tsx": {
     id: "routes/_index";
@@ -191,6 +197,10 @@ type RouteFiles = {
     id: "routes/size-charts";
     page: "/size-charts";
   };
+  "routes/privacy.tsx": {
+    id: "routes/privacy";
+    page: "/privacy";
+  };
   "routes/sustainability.tsx": {
     id: "routes/sustainability";
     page: "/sustainability";
@@ -198,6 +208,10 @@ type RouteFiles = {
   "routes/technology.tsx": {
     id: "routes/technology";
     page: "/technology";
+  };
+  "routes/terms.tsx": {
+    id: "routes/terms";
+    page: "/terms";
   };
 };
 
@@ -226,6 +240,8 @@ type RouteModules = {
   "routes/resources": typeof import("./app/routes/resources.tsx");
   "routes/services": typeof import("./app/routes/services.tsx");
   "routes/size-charts": typeof import("./app/routes/size-charts.tsx");
+  "routes/privacy": typeof import("./app/routes/privacy.tsx");
   "routes/sustainability": typeof import("./app/routes/sustainability.tsx");
   "routes/technology": typeof import("./app/routes/technology.tsx");
+  "routes/terms": typeof import("./app/routes/terms.tsx");
 };

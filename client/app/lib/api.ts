@@ -43,6 +43,20 @@ export class ApiError extends Error {
     // Handle extensions
     if (data["invalid-params"]) this.invalidParams = data["invalid-params"];
   }
+
+  /**
+   * Check if this error is retryable (429 Rate Limit, 503 Service Unavailable, 504 Gateway Timeout)
+   */
+  isRetryable(): boolean {
+    return [429, 503, 504].includes(this.status);
+  }
+
+  /**
+   * Get field errors if this is a validation error (RFC 7807 extension)
+   */
+  getFieldErrors(): Record<string, string[]> | undefined {
+    return this.invalidParams;
+  }
 }
 
 interface RequestOptions extends RequestInit {

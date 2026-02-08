@@ -48,6 +48,7 @@ import technologyGradientSettingsRouter from "./technology-gradient-settings.rou
 import technologyInnovationsRouter from "./technology-innovations.routes.js";
 import technologyResearchRouter from "./technology-research.routes.js";
 import technologyRoadmapRouter from "./technology-roadmap.routes.js";
+import navigationRouter from "./navigation.routes.js";
 
 const router = Router();
 
@@ -102,5 +103,10 @@ router.use("/technology-gradient-settings", technologyGradientSettingsRouter);
 import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 
 router.use("/", manufacturingHeroRouter); // Mounts /manufacturing-hero
+
+// ============================================================================
+// NAVIGATION RESOURCES
+// ============================================================================
+router.use("/", navigationRouter); // Mounts /navigation-items, /navigation-settings
 
 export default router;

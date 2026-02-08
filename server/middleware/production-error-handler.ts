@@ -161,6 +161,10 @@ function logError(error: unknown, details: ErrorDetails) {
     ip: details.ip,
     userAgent: details.userAgent,
     stack: config.app.enableDebugMode && error instanceof Error ? error.stack : undefined,
+    causeStack:
+      config.app.enableDebugMode && error instanceof Error && error.cause instanceof Error
+        ? error.cause.stack
+        : undefined,
   });
 
   const correlationId = correlationContext.getStore();

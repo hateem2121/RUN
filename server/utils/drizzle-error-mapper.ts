@@ -29,6 +29,8 @@ export function mapDrizzleError(err: unknown, context: string = "Database Operat
       case "23505": // Unique violation
         return new ConflictError(
           `Resource already exists${pgErr.detail ? `: ${pgErr.detail}` : ""}`,
+          undefined,
+          { cause: pgErr },
         );
 
       case "23503": // Foreign key violation
@@ -36,27 +38,35 @@ export function mapDrizzleError(err: unknown, context: string = "Database Operat
           `Referenced resource not found or invalid relationship${
             pgErr.detail ? `: ${pgErr.detail}` : ""
           }`,
+          undefined,
+          { cause: pgErr },
         );
 
       case "23502": // Not null violation
         return new BadRequestError(
           `Missing required field${pgErr.column ? `: ${pgErr.column}` : ""}`,
+          undefined,
+          { cause: pgErr },
         );
 
       case "22P02": // Invalid text representation (UUID format, etc)
-        return new BadRequestError("Invalid input format for database field");
+        return new BadRequestError("Invalid input format for database field", undefined, {
+          cause: pgErr,
+        });
 
       case "40001": // Serialization failure (Deadlock)
         logger.warn(`[${context}] Deadlock detected`, { code: pgErr.code });
         // Can be retried by client or upstream logic
-        return new DatabaseDeadlockError("Database deadlock occurred, please retry");
+        return new DatabaseDeadlockError("Database deadlock occurred, please retry", undefined, {
+          cause: pgErr,
+        });
 
       case "57014": // Query canceled
-        return new DatabaseTimeoutError("Database query timeout");
+        return new DatabaseTimeoutError("Database query timeout", undefined, { cause: pgErr });
     }
   }
 
   // Fallback for unhandled DB errors
   logger.error(`[${context}] Unhandled Database Error`, pgErr);
-  return new InternalError("Database operation failed");
+  return new InternalError("Database operation failed", undefined, { cause: pgErr });
 }

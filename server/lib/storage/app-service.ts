@@ -286,12 +286,20 @@ export class AppStorageService {
           return url;
         } catch (error) {
           // Fallback for local development or when credentials are missing
+          const errorMessage = (error as Error).message || "";
+          
           if (
-            (error as Error).message.includes("Cannot sign data") ||
-            (error as Error).message.includes("Could not load the default credentials")
+            errorMessage.includes("Cannot sign data") ||
+            errorMessage.includes("Could not load the default credentials") ||
+            errorMessage.includes("Service account") ||
+            !this.bucketName
           ) {
-            logger.warn(`⚠️ GCS Signing failed, falling back to public URL for ${key}`);
-            return `https://storage.googleapis.com/${this.bucketName}/${key}`;
+            const fallbackUrl = `https://storage.googleapis.com/${this.bucketName || "run-dev-assets"}/${key}`;
+            logger.warn(`⚠️ GCS Signing failed, falling back to public URL for ${key}`, {
+              error: errorMessage,
+              fallbackUrl
+            });
+            return fallbackUrl;
           }
           throw error;
         }

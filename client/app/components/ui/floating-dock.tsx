@@ -56,14 +56,14 @@ const FloatingDockDesktop = ({
   return (
     <Card
       variant="glass-premium"
-      className={cn("z-dock mx-auto hidden items-center gap-3 px-16 py-6 md:flex", className)}
+      className={cn("mx-auto hidden items-center gap-3 px-16 py-6 md:flex border-(--color-border)/50", className)}
     >
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         role="navigation"
         aria-label="Desktop navigation dock"
-        className="isolate flex w-full transform-gpu items-center gap-3"
+        className="flex w-full transform-gpu items-center gap-3"
       >
         {items.map((item) => (
           <IconContainer
@@ -162,7 +162,7 @@ function IconContainer({
       <motion.div
         ref={ref}
         style={{ width, height }}
-        className="center-flex relative overflow-hidden rounded-full border border-border/60 bg-white/10 shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-border/70 dark:bg-white/5"
+        className="center-flex relative overflow-hidden rounded-full border border-(--color-border)/60 bg-(--color-glass) shadow-glow-lg backdrop-blur-md transition-transform duration-150 group-active:scale-95 dark:border-(--color-border)/70 dark:bg-(--color-glass-dark)"
       >
         {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 rounded-full bg-linear-to-br from-white/10 via-transparent to-black/10" />
@@ -177,14 +177,14 @@ function IconContainer({
 
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="center-flex relative z-elevated"
+          className="center-flex relative z-(--z-index-elevated)"
         >
           {icon}
         </motion.div>
       </motion.div>
 
       {/* Permanent title label with improved contrast */}
-      <div className="max-w-20 truncate whitespace-nowrap text-center font-medium text-foreground text-xs drop-shadow-sm md:max-w-24">
+      <div className="max-w-20 truncate rounded-full bg-white/5 px-2 py-0.5 whitespace-nowrap text-center font-medium text-foreground text-[10px] backdrop-blur-md drop-shadow-sm md:max-w-24 md:text-xs dark:bg-black/20">
         {title}
       </div>
     </a>

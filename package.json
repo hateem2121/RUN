@@ -19,7 +19,7 @@
     "build:server": "npm run build --workspace=@run-remix/server",
     "migrate:deploy": "npm run --workspace=@run-remix/server db:migrate",
     "db:push": "npm run --workspace=@run-remix/server db:push",
-    "dev": "PORT=5002 turbo run dev",
+    "dev": "npm run dev:server",
     "build": "turbo run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
