@@ -7,8 +7,12 @@
  * Handles null/undefined values safely
  */
 export const parseApiDate = (dateString) => {
-  if (!dateString) return null;
-  if (dateString === "null" || dateString === "undefined") return null;
+  if (!dateString) {
+    return null;
+  }
+  if (dateString === "null" || dateString === "undefined") {
+    return null;
+  }
   try {
     const date = new Date(dateString);
     // Check if the date is valid
@@ -25,8 +29,12 @@ export const parseApiDate = (dateString) => {
  * Handles null/undefined values safely
  */
 export const formatApiDate = (date) => {
-  if (!date) return null;
-  if (!(date instanceof Date)) return null;
+  if (!date) {
+    return null;
+  }
+  if (!(date instanceof Date)) {
+    return null;
+  }
   try {
     return date.toISOString();
   } catch (_error) {
@@ -56,7 +64,9 @@ export const isValidDate = (date) => {
  * Handles strings, Date objects, numbers (timestamps)
  */
 export const toDate = (value) => {
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
   if (value instanceof Date) {
     return isValidDate(value) ? value : null;
   }
@@ -78,7 +88,9 @@ export const toDate = (value) => {
  */
 export const formatDisplayDate = (date) => {
   const dateObj = toDate(date);
-  if (!dateObj) return "Unknown";
+  if (!dateObj) {
+    return "Unknown";
+  }
   try {
     return dateObj.toLocaleDateString("en-US", {
       year: "numeric",
@@ -96,16 +108,26 @@ export const formatDisplayDate = (date) => {
  */
 export const getRelativeTime = (date) => {
   const dateObj = toDate(date);
-  if (!dateObj) return "Unknown";
+  if (!dateObj) {
+    return "Unknown";
+  }
   const now = new Date();
   const diffMs = now.getTime() - dateObj.getTime();
   const diffSeconds = Math.floor(diffMs / 1000);
   const diffMinutes = Math.floor(diffSeconds / 60);
   const diffHours = Math.floor(diffMinutes / 60);
   const diffDays = Math.floor(diffHours / 24);
-  if (diffSeconds < 60) return "Just now";
-  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
-  if (diffDays < 30) return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
+  if (diffSeconds < 60) {
+    return "Just now";
+  }
+  if (diffMinutes < 60) {
+    return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} ago`;
+  }
+  if (diffHours < 24) {
+    return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
+  }
+  if (diffDays < 30) {
+    return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
+  }
   return formatDisplayDate(dateObj);
 };

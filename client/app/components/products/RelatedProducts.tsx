@@ -36,13 +36,19 @@ export function RelatedProducts({
   const getRelevanceScore = useCallback(
     (product: Product) => {
       let score = 0;
-      if (categoryId && product.categoryId === categoryId) score += 10;
-      if (fabricId && product.fabricId === fabricId) score += 5;
+      if (categoryId && product.categoryId === categoryId) {
+        score += 10;
+      }
+      if (fabricId && product.fabricId === fabricId) {
+        score += 5;
+      }
       if (tags.length > 0 && product.tags) {
         const sharedTags = tags.filter((tag) => product.tags?.includes(tag));
         score += sharedTags.length * 2;
       }
-      if (product.isFeatured) score += 1;
+      if (product.isFeatured) {
+        score += 1;
+      }
       return score;
     },
     [categoryId, fabricId, tags],
@@ -60,8 +66,12 @@ export function RelatedProducts({
 
     const ids: number[] = [];
     relatedProducts.forEach((product) => {
-      if (product.primaryImageId) ids.push(product.primaryImageId);
-      if (product.primaryVideoId) ids.push(product.primaryVideoId);
+      if (product.primaryImageId) {
+        ids.push(product.primaryImageId);
+      }
+      if (product.primaryVideoId) {
+        ids.push(product.primaryVideoId);
+      }
       if (product.imageIds && Array.isArray(product.imageIds)) {
         ids.push(...product.imageIds.filter((id) => typeof id === "number"));
       }
@@ -77,7 +87,9 @@ export function RelatedProducts({
   const [batchedProductMedia, setBatchedProductMedia] = useState<Map<number, string>>(new Map());
 
   useEffect(() => {
-    if (relatedProductMediaIds.length === 0) return;
+    if (relatedProductMediaIds.length === 0) {
+      return;
+    }
 
     const fetchBatchedMedia = async () => {
       try {
@@ -117,7 +129,9 @@ export function RelatedProducts({
 
   // PHASE 1A: Batch-first media URL resolver - eliminates individual requests
   const getMediaUrl = (mediaId: number | null | undefined) => {
-    if (!mediaId) return null;
+    if (!mediaId) {
+      return null;
+    }
 
     // PHASE 1A: Use batched media first - eliminates individual requests
     if (batchedProductMedia.has(mediaId)) {
@@ -135,7 +149,9 @@ export function RelatedProducts({
       product.primaryVideoId ||
       product.imageIds?.[0] ||
       product.videos?.[0];
-    if (!primaryId || typeof primaryId !== "number") return null;
+    if (!primaryId || typeof primaryId !== "number") {
+      return null;
+    }
 
     // Return media info for LazyMediaEnhanced component
     return {

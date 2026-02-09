@@ -2,19 +2,11 @@ import { aboutSections, aboutTeamMessages } from "../../shared/schema/content/ab
 import { db } from "../db.js";
 
 async function checkAboutData() {
-  console.log("🔍 Checking About Page data in DB...");
-
   try {
-    const teamMessages = await db.select().from(aboutTeamMessages);
-    console.log(`Team Messages Count: ${teamMessages.length}`);
-    console.log("Team Messages Data:", JSON.stringify(teamMessages, null, 2));
+    const _teamMessages = await db.select().from(aboutTeamMessages);
 
-    const sections = await db.select().from(aboutSections);
-    console.log(`Sections Count: ${sections.length}`);
-    console.log("Sections Data:", JSON.stringify(sections, null, 2));
-  } catch (error) {
-    console.error("❌ Check failed:", error);
-  }
+    const _sections = await db.select().from(aboutSections);
+  } catch (_error) {}
   process.exit(0);
 }
 

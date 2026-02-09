@@ -43,9 +43,15 @@ export interface QueryAnalysis {
  * Classify query performance based on duration
  */
 export function classifyPerformance(durationMs: number): QueryPerformance {
-  if (durationMs < QueryThresholds.FAST) return "fast";
-  if (durationMs < QueryThresholds.SLOW) return "normal";
-  if (durationMs < QueryThresholds.CRITICAL) return "slow";
+  if (durationMs < QueryThresholds.FAST) {
+    return "fast";
+  }
+  if (durationMs < QueryThresholds.SLOW) {
+    return "normal";
+  }
+  if (durationMs < QueryThresholds.CRITICAL) {
+    return "slow";
+  }
   return "critical";
 }
 

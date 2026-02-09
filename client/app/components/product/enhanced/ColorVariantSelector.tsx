@@ -39,7 +39,9 @@ export function ColorVariantSelector({
 
   const handleVariantClick = useCallback(
     (variant: ColorVariant) => {
-      if (disabled || !variant.available) return;
+      if (disabled || !variant.available) {
+        return;
+      }
 
       onVariantChange(variant.id);
 

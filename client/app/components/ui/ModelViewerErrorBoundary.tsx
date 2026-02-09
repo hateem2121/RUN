@@ -224,7 +224,9 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     const { error, retryCount, isRecovering } = this.state;
     const { asset } = this.props;
 
-    if (!error) return null;
+    if (!error) {
+      return null;
+    }
 
     const errorDetails = this.getErrorType(error);
     const IconComponent = errorDetails.icon;

@@ -28,7 +28,9 @@ router.get(
 // Logout route
 router.get("/logout", (req, res, next) => {
   req.logout((err) => {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     res.redirect("/");
   });
 });
@@ -41,7 +43,9 @@ router.get(
     const user = req.user as SessionUser;
     const userId = user.claims.sub;
     const dbUser = await getStorage().getUser(userId);
-    if (!dbUser) return res.status(404).json({ message: "User not found" });
+    if (!dbUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     return res.json({
       id: dbUser.id,

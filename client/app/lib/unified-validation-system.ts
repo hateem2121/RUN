@@ -150,16 +150,25 @@ export class UnifiedValidationSystem {
     if (context === "media") {
       switch (field) {
         case "filename":
-          if (!value || typeof value !== "string") return "Filename is required";
-          if (value.length > 255) return "Filename too long";
+          if (!value || typeof value !== "string") {
+            return "Filename is required";
+          }
+          if (value.length > 255) {
+            return "Filename too long";
+          }
           return null;
         case "type":
-          if (!value) return "File type is required";
+          if (!value) {
+            return "File type is required";
+          }
           return null;
         case "size":
-          if (!value || typeof value !== "number" || value <= 0)
+          if (!value || typeof value !== "number" || value <= 0) {
             return "File size must be positive";
-          if (value > 10 * 1024 * 1024) return "File size cannot exceed 10MB";
+          }
+          if (value > 10 * 1024 * 1024) {
+            return "File size cannot exceed 10MB";
+          }
           return null;
       }
     }
@@ -168,17 +177,26 @@ export class UnifiedValidationSystem {
     if (context === "product") {
       switch (field) {
         case "name":
-          if (!value || typeof value !== "string" || value.trim().length === 0)
+          if (!value || typeof value !== "string" || value.trim().length === 0) {
             return "Product name is required";
-          if (value.length < 3) return "Product name must be at least 3 characters";
-          if (value.length > 100) return "Product name must be less than 100 characters";
+          }
+          if (value.length < 3) {
+            return "Product name must be at least 3 characters";
+          }
+          if (value.length > 100) {
+            return "Product name must be less than 100 characters";
+          }
           return null;
         case "sku":
-          if (!value || typeof value !== "string" || value.trim().length === 0)
+          if (!value || typeof value !== "string" || value.trim().length === 0) {
             return "SKU is required";
-          if (!/^[A-Z0-9_-]+$/i.test(value))
+          }
+          if (!/^[A-Z0-9_-]+$/i.test(value)) {
             return "SKU can only contain letters, numbers, hyphens and underscores";
-          if (value.length > 50) return "SKU must be less than 50 characters";
+          }
+          if (value.length > 50) {
+            return "SKU must be less than 50 characters";
+          }
           return null;
       }
     }
@@ -187,10 +205,14 @@ export class UnifiedValidationSystem {
     if (context === "cache") {
       switch (field) {
         case "queryKey":
-          if (!value || typeof value !== "string") return "Query key is required";
+          if (!value || typeof value !== "string") {
+            return "Query key is required";
+          }
           return null;
         case "data":
-          if (value === undefined) return "Data cannot be undefined";
+          if (value === undefined) {
+            return "Data cannot be undefined";
+          }
           return null;
       }
     }

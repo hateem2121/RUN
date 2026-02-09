@@ -12,7 +12,9 @@ const Process: React.FC = () => {
 
   useEffect(() => {
     // Strict null checks
-    if (!sectionRef.current || !triggerRef.current || !pathRef.current) return;
+    if (!sectionRef.current || !triggerRef.current || !pathRef.current) {
+      return;
+    }
 
     // Capture refs for cleanup usage
     const triggerEl = triggerRef.current;
@@ -23,7 +25,9 @@ const Process: React.FC = () => {
       const sections = gsap.utils.toArray<HTMLElement>(triggerEl.querySelectorAll(".process-card"));
 
       // Prevent GSAP target null warning if empty
-      if (sections.length === 0) return;
+      if (sections.length === 0) {
+        return;
+      }
 
       // Initial set for SVG line
       if (pathEl) {

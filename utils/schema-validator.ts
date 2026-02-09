@@ -29,7 +29,9 @@ const MediaAssetSchema = z.object({
   metadata: z.record(z.string(), z.unknown()),
 
   uploadedAt: z.union([z.date(), z.string()]).transform((val) => {
-    if (val instanceof Date) return val;
+    if (val instanceof Date) {
+      return val;
+    }
     if (typeof val === "string") {
       const parsed = parseApiDate(val);
       return parsed || new Date();
@@ -38,7 +40,9 @@ const MediaAssetSchema = z.object({
   }),
   isActive: z.boolean().default(true),
   createdAt: z.union([z.date(), z.string()]).transform((val) => {
-    if (val instanceof Date) return val;
+    if (val instanceof Date) {
+      return val;
+    }
     if (typeof val === "string") {
       const parsed = parseApiDate(val);
       return parsed || new Date();
@@ -46,7 +50,9 @@ const MediaAssetSchema = z.object({
     return new Date();
   }),
   updatedAt: z.union([z.date(), z.string()]).transform((val) => {
-    if (val instanceof Date) return val;
+    if (val instanceof Date) {
+      return val;
+    }
     if (typeof val === "string") {
       const parsed = parseApiDate(val);
       return parsed || new Date();
@@ -57,9 +63,15 @@ const MediaAssetSchema = z.object({
     .union([z.date(), z.string(), z.null()])
     .nullable()
     .transform((val) => {
-      if (!val) return null;
-      if (val instanceof Date) return val;
-      if (typeof val === "string") return parseApiDate(val);
+      if (!val) {
+        return null;
+      }
+      if (val instanceof Date) {
+        return val;
+      }
+      if (typeof val === "string") {
+        return parseApiDate(val);
+      }
       return null;
     }),
   imageVariants: z

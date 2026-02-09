@@ -87,7 +87,9 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
   }, [fetcher.data, form, contactConfig, toast]);
 
   const onSubmit = (data: ContactFormData) => {
-    if (data.honeypot) return; // Silent fail for bots
+    if (data.honeypot) {
+      return; // Silent fail for bots
+    }
 
     const fullName = `${data.firstName} ${data.lastName}`.trim();
     const company = data.companyName || null;
@@ -100,10 +102,18 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
     formData.append("email", data.email);
     formData.append("country", data.country);
     formData.append("message", data.message);
-    if (company) formData.append("company", company);
-    if (phone) formData.append("phone", phone);
-    if (preferredPlatform) formData.append("preferredPlatform", preferredPlatform);
-    if (data.honeypot) formData.append("honeypot", data.honeypot);
+    if (company) {
+      formData.append("company", company);
+    }
+    if (phone) {
+      formData.append("phone", phone);
+    }
+    if (preferredPlatform) {
+      formData.append("preferredPlatform", preferredPlatform);
+    }
+    if (data.honeypot) {
+      formData.append("honeypot", data.honeypot);
+    }
 
     // Call Action using useFetcher
     fetcher.submit(formData, { method: "post" });

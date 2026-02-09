@@ -20,41 +20,8 @@ type Pages = {
   "/accessories": {
     params: {};
   };
-  "/admin": {
-    params: {};
-  };
-  "/admin/:module*": {
-    params: {
-      "module": string;
-    };
-  };
   "/analytics": {
     params: {};
-  };
-  "/api/media": {
-    params: {};
-  };
-  "/api/navigation-items": {
-    params: {};
-  };
-  "/categories": {
-    params: {};
-  };
-  "/categories/:slug": {
-    params: {
-      "slug": string;
-    };
-  };
-  "/categories/:slug/products": {
-    params: {
-      "slug": string;
-    };
-  };
-  "/categories/:category/:product": {
-    params: {
-      "category": string;
-      "product": string;
-    };
   };
   "/certifications": {
     params: {};
@@ -98,12 +65,49 @@ type Pages = {
   "/terms": {
     params: {};
   };
+  "/categories": {
+    params: {};
+  };
+  "/categories/:slug": {
+    params: {
+      "slug": string;
+    };
+  };
+  "/categories/:slug/products": {
+    params: {
+      "slug": string;
+    };
+  };
+  "/categories/:category/:product": {
+    params: {
+      "category": string;
+      "product": string;
+    };
+  };
+  "/admin": {
+    params: {};
+  };
+  "/admin/:module*": {
+    params: {
+      "module": string;
+    };
+  };
+  "/api/media": {
+    params: {};
+  };
+  "/api/navigation-items": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/admin" | "/admin/:module*" | "/analytics" | "/api/media" | "/api/navigation-items" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module*" | "/api/media" | "/api/navigation-items";
+  };
+  "routes/_public.tsx": {
+    id: "routes/_public";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product";
   };
   "routes/_index.tsx": {
     id: "routes/_index";
@@ -117,45 +121,9 @@ type RouteFiles = {
     id: "routes/accessories";
     page: "/accessories";
   };
-  "routes/admin.tsx": {
-    id: "routes/admin";
-    page: "/admin" | "/admin/:module*";
-  };
-  "routes/admin._index.tsx": {
-    id: "routes/admin._index";
-    page: "/admin";
-  };
-  "routes/admin.$module.tsx": {
-    id: "routes/admin.$module";
-    page: "/admin/:module*";
-  };
   "routes/analytics.tsx": {
     id: "routes/analytics";
     page: "/analytics";
-  };
-  "routes/api.media.tsx": {
-    id: "routes/api.media";
-    page: "/api/media";
-  };
-  "routes/api.navigation-items.tsx": {
-    id: "routes/api.navigation-items";
-    page: "/api/navigation-items";
-  };
-  "routes/categories._index.tsx": {
-    id: "routes/categories._index";
-    page: "/categories";
-  };
-  "routes/categories.$slug.tsx": {
-    id: "routes/categories.$slug";
-    page: "/categories/:slug";
-  };
-  "routes/categories.$slug.products.tsx": {
-    id: "routes/categories.$slug.products";
-    page: "/categories/:slug/products";
-  };
-  "routes/categories.$category.$product.tsx": {
-    id: "routes/categories.$category.$product";
-    page: "/categories/:category/:product";
   };
   "routes/certifications.tsx": {
     id: "routes/certifications";
@@ -213,23 +181,51 @@ type RouteFiles = {
     id: "routes/terms";
     page: "/terms";
   };
+  "routes/categories._index.tsx": {
+    id: "routes/categories._index";
+    page: "/categories";
+  };
+  "routes/categories.$slug.tsx": {
+    id: "routes/categories.$slug";
+    page: "/categories/:slug";
+  };
+  "routes/categories.$slug.products.tsx": {
+    id: "routes/categories.$slug.products";
+    page: "/categories/:slug/products";
+  };
+  "routes/categories.$category.$product.tsx": {
+    id: "routes/categories.$category.$product";
+    page: "/categories/:category/:product";
+  };
+  "routes/admin.tsx": {
+    id: "routes/admin";
+    page: "/admin" | "/admin/:module*";
+  };
+  "routes/admin._index.tsx": {
+    id: "routes/admin._index";
+    page: "/admin";
+  };
+  "routes/admin.$module.tsx": {
+    id: "routes/admin.$module";
+    page: "/admin/:module*";
+  };
+  "routes/api.media.tsx": {
+    id: "routes/api.media";
+    page: "/api/media";
+  };
+  "routes/api.navigation-items.tsx": {
+    id: "routes/api.navigation-items";
+    page: "/api/navigation-items";
+  };
 };
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
+  "routes/_public": typeof import("./app/routes/_public.tsx");
   "routes/_index": typeof import("./app/routes/_index.tsx");
   "routes/about": typeof import("./app/routes/about.tsx");
   "routes/accessories": typeof import("./app/routes/accessories.tsx");
-  "routes/admin": typeof import("./app/routes/admin.tsx");
-  "routes/admin._index": typeof import("./app/routes/admin._index.tsx");
-  "routes/admin.$module": typeof import("./app/routes/admin.$module.tsx");
   "routes/analytics": typeof import("./app/routes/analytics.tsx");
-  "routes/api.media": typeof import("./app/routes/api.media.tsx");
-  "routes/api.navigation-items": typeof import("./app/routes/api.navigation-items.tsx");
-  "routes/categories._index": typeof import("./app/routes/categories._index.tsx");
-  "routes/categories.$slug": typeof import("./app/routes/categories.$slug.tsx");
-  "routes/categories.$slug.products": typeof import("./app/routes/categories.$slug.products.tsx");
-  "routes/categories.$category.$product": typeof import("./app/routes/categories.$category.$product.tsx");
   "routes/certifications": typeof import("./app/routes/certifications.tsx");
   "routes/contact": typeof import("./app/routes/contact.tsx");
   "routes/dashboard": typeof import("./app/routes/dashboard.tsx");
@@ -244,4 +240,13 @@ type RouteModules = {
   "routes/sustainability": typeof import("./app/routes/sustainability.tsx");
   "routes/technology": typeof import("./app/routes/technology.tsx");
   "routes/terms": typeof import("./app/routes/terms.tsx");
+  "routes/categories._index": typeof import("./app/routes/categories._index.tsx");
+  "routes/categories.$slug": typeof import("./app/routes/categories.$slug.tsx");
+  "routes/categories.$slug.products": typeof import("./app/routes/categories.$slug.products.tsx");
+  "routes/categories.$category.$product": typeof import("./app/routes/categories.$category.$product.tsx");
+  "routes/admin": typeof import("./app/routes/admin.tsx");
+  "routes/admin._index": typeof import("./app/routes/admin._index.tsx");
+  "routes/admin.$module": typeof import("./app/routes/admin.$module.tsx");
+  "routes/api.media": typeof import("./app/routes/api.media.tsx");
+  "routes/api.navigation-items": typeof import("./app/routes/api.navigation-items.tsx");
 };

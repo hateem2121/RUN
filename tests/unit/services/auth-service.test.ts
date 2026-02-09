@@ -22,7 +22,9 @@ vi.mock("../../../server/lib/monitoring/logger.js", () => ({
 
 vi.mock("../../../server/lib/secrets/secret-manager.js", () => ({
   getSecret: vi.fn((key: string) => {
-    if (key === "SESSION_SECRET") return "test-session-secret-at-least-32-chars";
+    if (key === "SESSION_SECRET") {
+      return "test-session-secret-at-least-32-chars";
+    }
     return undefined;
   }),
 }));

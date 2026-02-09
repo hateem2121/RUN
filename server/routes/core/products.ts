@@ -234,7 +234,9 @@ router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Respo
   (req as any)._handled = true;
   try {
     const id = validateIdParam(req, res, "id", "product");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     const modelMetadata = await withTimeout(
       retryDbOperation(() => getStorage().get3DModelMetadata(id), {
@@ -276,7 +278,9 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
     }
 
     const id = validateIdParam(req, res, "id", "product");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     const product = await withTimeout(
       retryDbOperation(() => getStorage().getProduct(id), {
@@ -355,7 +359,9 @@ router.post(
 const updateProductHandler = async (req: Request, res: Response): Promise<undefined | Response> => {
   try {
     const id = validateIdParam(req, res, "id", "product");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     const validatedData = insertProductSchema.partial().parse(req.body);
     const product = await withTimeout(
@@ -408,7 +414,9 @@ router.delete(
   async (req, res): Promise<undefined | Response> => {
     try {
       const id = validateIdParam(req, res, "id", "product");
-      if (id === null) return; // Error response already sent
+      if (id === null) {
+        return; // Error response already sent
+      }
 
       const deleted = await withTimeout(
         retryDbOperation(() => getStorage().deleteProduct(id), {

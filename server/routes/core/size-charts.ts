@@ -61,7 +61,9 @@ router.post("/size-charts", authService.requireAdmin, async (req, res) => {
 router.put("/size-charts/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "size chart");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validatedData = insertSizeChartSchema.partial().parse(req.body);
     const sizeChart = await withTimeout(
       getStorage().updateSizeChart(id, removeUndefined(validatedData)),
@@ -94,7 +96,9 @@ router.put("/size-charts/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/size-charts/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "size chart");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
 
     const success = await withTimeout(getStorage().deleteSizeChart(id), 10000, "Delete size chart");
 

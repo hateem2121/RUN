@@ -75,7 +75,9 @@ export function transformProduct(
     const fabricWeight: string = fabric?.weight ?? "";
     if (fabricWeight) {
       const match = fabricWeight.match(/(\d+)/);
-      if (match?.[1]) weightValue = parseInt(match[1], 10);
+      if (match?.[1]) {
+        weightValue = parseInt(match[1], 10);
+      }
     }
   }
 
@@ -104,10 +106,13 @@ export function transformProduct(
       const cert = context.certificates.find((c) => c.id === certId);
       if (cert) {
         const certName = cert.name.toUpperCase();
-        if (certName.includes("GOTS")) certifications.push("GOTS");
-        else if (certName.includes("OEKO") || certName.includes("TEX"))
+        if (certName.includes("GOTS")) {
+          certifications.push("GOTS");
+        } else if (certName.includes("OEKO") || certName.includes("TEX")) {
           certifications.push("OEKO-TEX");
-        else if (certName.includes("RCS")) certifications.push("RCS");
+        } else if (certName.includes("RCS")) {
+          certifications.push("RCS");
+        }
       }
     });
   }
@@ -171,7 +176,9 @@ export function transformProduct(
     const visitedIds = new Set<number>();
 
     while (currentCat) {
-      if (visitedIds.has(currentCat.id)) break;
+      if (visitedIds.has(currentCat.id)) {
+        break;
+      }
       visitedIds.add(currentCat.id);
 
       if (currentCat.slug) {

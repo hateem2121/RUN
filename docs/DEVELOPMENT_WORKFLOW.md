@@ -34,7 +34,7 @@ npm run dev
 ```
 ✓ Server running on http://localhost:5002
 ✓ Admin panel: http://localhost:5002/admin
-✓ API base: http://localhost:5002/api
+✓ API base: http://localhost:5002/api/v1/v1
 ```
 
 If you see a different port, **STOP** and fix the configuration.
@@ -294,7 +294,7 @@ cat > implementation_plan.md << 'EOF'
 Create team member showcase page with admin management interface
 
 ## Port 5002 Verification
-- All endpoints: http://localhost:5002/api/team
+- All endpoints: http://localhost:5002/api/v1/team
 - No new port configs
 
 ## Frontend-Admin Mapping
@@ -562,7 +562,7 @@ pm2 logs cms-app --lines 50
 PORT=5002 pm2 restart cms-app
 
 # Verify
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 ```
 
 #### Step 5: Update Configuration

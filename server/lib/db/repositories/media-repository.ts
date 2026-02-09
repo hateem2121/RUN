@@ -72,7 +72,9 @@ function normalizeFilters(filters?: {
   search?: string | undefined;
   folderId?: number;
 }): string {
-  if (!filters || Object.keys(filters).length === 0) return "{}";
+  if (!filters || Object.keys(filters).length === 0) {
+    return "{}";
+  }
 
   // Sort keys alphabetically for consistent cache keys
   const sortedKeys = Object.keys(filters).sort();
@@ -99,7 +101,9 @@ export class MediaRepository {
     const cacheKey = `media:asset:${id}`;
     try {
       const cached = await unifiedCache.get<MediaAsset>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug(`[MediaRepo] Failed to get media asset ${id} from cache:`, error);
     }
@@ -459,7 +463,9 @@ export class MediaRepository {
   }
 
   async updateMediaAssetsFolder(ids: number[], folderId: number | null): Promise<number> {
-    if (ids.length === 0) return 0;
+    if (ids.length === 0) {
+      return 0;
+    }
 
     const result = await db
       .update(mediaAssets)
@@ -474,7 +480,9 @@ export class MediaRepository {
   }
 
   async updateMediaAssetsTags(updates: Array<{ id: number; tags: string[] }>): Promise<number> {
-    if (updates.length === 0) return 0;
+    if (updates.length === 0) {
+      return 0;
+    }
 
     let updatedCount = 0;
 

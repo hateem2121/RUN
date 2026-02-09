@@ -25,7 +25,9 @@ export function useFocusTrap<T extends HTMLElement>({
   const previousFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     // 1. Capture previously focused element
     previousFocus.current = document.activeElement as HTMLElement;
@@ -33,7 +35,9 @@ export function useFocusTrap<T extends HTMLElement>({
     // 2. Focus the container or first focusable element
     // internal helper to find focusables
     const getFocusables = () => {
-      if (!containerRef.current) return [];
+      if (!containerRef.current) {
+        return [];
+      }
       return Array.from(
         containerRef.current.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',

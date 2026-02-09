@@ -32,7 +32,9 @@ const EXTENSION_ATTRIBUTES = [
  * Should be called synchronously before React hydration.
  */
 export function sanitizeExtensionAttributes(): void {
-  if (typeof document === "undefined") return;
+  if (typeof document === "undefined") {
+    return;
+  }
 
   EXTENSION_ATTRIBUTES.forEach((attr) => {
     try {
@@ -51,7 +53,9 @@ export function sanitizeExtensionAttributes(): void {
  * Useful for conditional logging or telemetry.
  */
 export function hasExtensionAttributes(): boolean {
-  if (typeof document === "undefined") return false;
+  if (typeof document === "undefined") {
+    return false;
+  }
 
   return EXTENSION_ATTRIBUTES.some((attr) => document.querySelector(`[${attr}]`) !== null);
 }

@@ -23,8 +23,11 @@ async function runOptimization() {
   while (hasMore) {
     const batch = await storage.getMediaAssets(pageSize, offset);
     allAssets.push(...batch);
-    if (batch.length < pageSize) hasMore = false;
-    else offset += pageSize;
+    if (batch.length < pageSize) {
+      hasMore = false;
+    } else {
+      offset += pageSize;
+    }
   }
 
   logger.info(`Found ${allAssets.length} total assets. Scanning for unoptimized images...`);

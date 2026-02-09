@@ -10,7 +10,9 @@ vi.mock("../../server/lib/storage-singleton.js", () => ({
       totalCount: 0,
     }),
     getProduct: vi.fn().mockImplementation(async (id: any) => {
-      if (id === "999999" || id === 999999) return null;
+      if (id === "999999" || id === 999999) {
+        return null;
+      }
       return { id: 1, name: "Test Product", slug: "test-product" };
     }),
     createProduct: vi.fn().mockResolvedValue({

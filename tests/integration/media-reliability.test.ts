@@ -23,7 +23,9 @@ describe("Media Reliability & Error Standardization", () => {
   });
 
   afterAll(() => {
-    if (server) server.kill();
+    if (server) {
+      server.kill();
+    }
   });
 
   it("GET /api/media should return standardized error context when DB fails (or 200 if DB up)", async () => {

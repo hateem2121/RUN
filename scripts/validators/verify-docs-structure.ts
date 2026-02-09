@@ -6,7 +6,7 @@
  * Scans docs/ and Markdown files in client/app/.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "../../");
 const DOCS_DIR = join(ROOT, "docs");
@@ -23,7 +23,7 @@ function getAllFiles(dir: string, extension: string): string[] {
     for (const file of list) {
       const fullPath = join(dir, file);
       const stat = statSync(fullPath);
-      if (stat && stat.isDirectory()) {
+      if (stat?.isDirectory()) {
         results = results.concat(getAllFiles(fullPath, extension));
       } else {
         if (file.endsWith(extension)) {
@@ -31,8 +31,8 @@ function getAllFiles(dir: string, extension: string): string[] {
         }
       }
     }
-  } catch (e) {
-    // Directory might not exist or be accessible
+  } catch {
+    // Error suppressed
   }
   return results;
 }
@@ -42,11 +42,9 @@ function checkFile(filePath: string): boolean {
   let hasError = false;
   const lines = content.split("\n");
 
-  lines.forEach((line, index) => {
-    for (const { pattern, message } of INVALID_PATTERNS) {
+  lines.forEach((line, _index) => {
+    for (const { pattern } of INVALID_PATTERNS) {
       if (pattern.test(line)) {
-        console.error(`❌ ${relative(ROOT, filePath)}:${index + 1}: ${message}`);
-        console.error(`   ${line.trim()}`);
         hasError = true;
       }
     }
@@ -55,13 +53,9 @@ function checkFile(filePath: string): boolean {
 }
 
 function main() {
-  console.log("🔍 Verifying documentation structure references...\n");
-
   const docs = getAllFiles(DOCS_DIR, ".md").filter((path) => !path.includes("docs/archive"));
   const clientDocs = getAllFiles(CLIENT_APP_DIR, ".md");
   const allFiles = [...docs, ...clientDocs];
-
-  console.log(`Checking ${allFiles.length} files...`);
 
   let failed = false;
   for (const doc of allFiles) {
@@ -71,10 +65,8 @@ function main() {
   }
 
   if (failed) {
-    console.error("\n⚠️  Documentation structure issues found.");
     process.exit(1);
   } else {
-    console.log("\n✅ All documentation path references valid.");
     process.exit(0);
   }
 }

@@ -1,8 +1,6 @@
-
 import "dotenv/config";
-import { getStorage } from "./lib/storage-singleton.js";
 import { logger } from "./lib/monitoring/logger.js";
-
+import { getStorage } from "./lib/storage-singleton.js";
 
 async function main() {
   try {
@@ -31,11 +29,10 @@ async function main() {
     logger.info("Featured Settings:", featuredProductsSettings ? "Found" : "Null");
     logger.info("Products count:", products.length);
     logger.info("Categories count:", categories.length);
-
   } catch (error) {
     logger.error("Error fetching batch data:", error);
     if (error instanceof Error) {
-        logger.error("Stack:", error.stack);
+      logger.error("Stack:", error.stack);
     }
   }
 }

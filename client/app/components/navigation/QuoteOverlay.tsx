@@ -10,12 +10,16 @@ export function QuoteOverlay() {
   const closeDrawer = useQuoteStore((state) => state.closeDrawer);
 
   // Don't render until hydrated to ensure SSR/client parity
-  if (items === undefined) return null;
+  if (items === undefined) {
+    return null;
+  }
 
   // biome-ignore lint/suspicious/noExplicitAny: Store items typing
   const count = (items as any[])?.length ?? 0;
 
-  if (count === 0 && !isDrawerOpen) return null;
+  if (count === 0 && !isDrawerOpen) {
+    return null;
+  }
 
   return (
     <>

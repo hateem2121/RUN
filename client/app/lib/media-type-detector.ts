@@ -24,7 +24,9 @@ const VIDEO_MIME_TYPES = ["video/mp4", "video/webm", "video/ogg", "video/quickti
  * Detects media type from URL file extension
  */
 export function detectMediaTypeFromUrl(url: string | null | undefined): MediaType {
-  if (!url) return "unknown";
+  if (!url) {
+    return "unknown";
+  }
 
   const urlLower = url.toLowerCase();
 
@@ -47,7 +49,9 @@ export function detectMediaTypeFromUrl(url: string | null | undefined): MediaTyp
  * Detects media type from MIME type
  */
 export function detectMediaTypeFromMime(mimeType: string | null | undefined): MediaType {
-  if (!mimeType) return "unknown";
+  if (!mimeType) {
+    return "unknown";
+  }
 
   const mimeLower = mimeType.toLowerCase();
 

@@ -36,7 +36,9 @@ export function ManufacturingMediaDisplay({
 
   // Get relevant media assets with null safety
   const relevantMedia = React.useMemo(() => {
-    if (!Array.isArray(mediaAssets)) return [];
+    if (!Array.isArray(mediaAssets)) {
+      return [];
+    }
 
     if (mediaId && mediaId !== null) {
       const asset = mediaAssets.find((asset) => asset.id === mediaId);

@@ -44,9 +44,15 @@ interface CategoryDisplayProps {
 
 // Helper functions
 const getProductCountColor = (count: number) => {
-  if (count === 0) return "bg-muted text-muted-foreground";
-  if (count <= 10) return "bg-blue-100 text-blue-700";
-  if (count <= 50) return "bg-green-100 text-green-700";
+  if (count === 0) {
+    return "bg-muted text-muted-foreground";
+  }
+  if (count <= 10) {
+    return "bg-blue-100 text-blue-700";
+  }
+  if (count <= 50) {
+    return "bg-green-100 text-green-700";
+  }
   return "bg-purple-100 text-purple-700";
 };
 

@@ -204,7 +204,9 @@ type TechnologyBatchResponse = {
 
 // Schema normalization adapters to handle type mismatches
 function resolveHeroBackgroundId(hero: TechnologyHero | undefined): number | null {
-  if (!hero) return null;
+  if (!hero) {
+    return null;
+  }
   // STRICT: Only use backgroundMediaId as per schema definition
   return hero.backgroundMediaId || null;
 }
@@ -226,7 +228,9 @@ function collectMediaIds(item: MediaEntity): {
 }
 
 function mapGradientSettings(settings: TechnologyGradientSettings | undefined) {
-  if (!settings) return TECHNOLOGY_DEFAULTS.gradientSettings;
+  if (!settings) {
+    return TECHNOLOGY_DEFAULTS.gradientSettings;
+  }
 
   const config = settings.settings as GradientSettingsConfig | undefined;
 
@@ -256,7 +260,9 @@ function mapGradientSettings(settings: TechnologyGradientSettings | undefined) {
 
 // View Model normalizers
 function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
-  if (!h) return null;
+  if (!h) {
+    return null;
+  }
 
   // Schema stores legacy JSON with headline/subheadline/CTA keys - access safely with type guards
   const heroData = h as Record<string, unknown>;
@@ -356,7 +362,9 @@ function normalizeRoadmap(r: TechnologyRoadmap): RoadmapVM {
 }
 
 function normalizeCta(c: TechnologyCtaType | undefined): CtaVM | null {
-  if (!c) return null;
+  if (!c) {
+    return null;
+  }
   return {
     headline: c.title || "Ready to innovate?",
     subheadline: c.content || "",
@@ -640,7 +648,9 @@ export default function Technology() {
 
   // Reliable media asset getter with fallback handling
   const getMediaAsset = (mediaId: number | null): MediaAsset | null => {
-    if (!mediaId) return null;
+    if (!mediaId) {
+      return null;
+    }
     return mediaAssetsMap.get(mediaId) || null;
   };
 

@@ -214,7 +214,7 @@ I'll add a loading spinner to the products page.
 
 Testing:
 ✓ Page accessible at http://localhost:5002/products
-✓ API calls to http://localhost:5002/api/products work correctly
+✓ API calls to http://localhost:5002/api/v1/products work correctly
 ✓ Spinner shows during loading
 
 ✅ Feature complete
@@ -325,7 +325,7 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Wrong port
 
 **Environment file (.env):**
 ```bash
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
 ```
 
 ---
@@ -483,7 +483,7 @@ I'll create [page name] with full frontend-to-admin connectivity.
 **Architecture:**
 - Public route: http://localhost:5002/[route]
 - Admin route: http://localhost:5002/admin/[route]
-- Public API: http://localhost:5002/api/[endpoint]
+- Public API: http://localhost:5002/api/v1/[endpoint]
 - Admin API: http://localhost:5002/admin/api/[endpoint]
 
 **Files to create:**
@@ -584,7 +584,7 @@ const PORT = 5002;
 **Solution:**
 ```typescript
 // Fix API base URL in .env
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
 
 // Fix API client code
 const API_BASE_URL = 'http://localhost:5002/api';
@@ -651,7 +651,7 @@ cat shared/constants/routeMapping.ts
 npm run dev
 
 # 5. Test port 5002
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 ```
 
 **Now you're ready to implement tasks!**

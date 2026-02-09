@@ -11,8 +11,6 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: any) => {
     category: "Fabric Technology",
     description: "Revolutionary smart fabric with embedded sensors",
     benefits: ["Energy Efficient", "Self-Monitoring"],
-    description: "Revolutionary smart fabric with embedded sensors",
-    benefits: ["Energy Efficient", "Self-Monitoring"],
     // biome-ignore lint/suspicious/noExplicitAny: Test mock data
     specifications: { Material: "Carbon Fiber", Weight: "50g/m²" } as Record<string, any>,
     // biome-ignore lint/suspicious/noExplicitAny: Test mock data

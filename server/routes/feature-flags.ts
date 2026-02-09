@@ -96,8 +96,12 @@ const router = Router();
  */
 export function isFeatureEnabled(flagKey: string, userId?: string): boolean {
   const flag = featureFlags.get(flagKey);
-  if (!flag) return false;
-  if (!flag.enabled) return false;
+  if (!flag) {
+    return false;
+  }
+  if (!flag.enabled) {
+    return false;
+  }
 
   // Check user whitelist
   if (userId && flag.userWhitelist?.includes(userId)) {
@@ -203,10 +207,18 @@ router.put("/:key", authService.requireAdmin, (req: Request, res: Response) => {
     };
   } else {
     // Update existing
-    if (enabled !== undefined) flag.enabled = enabled;
-    if (percentage !== undefined) flag.percentage = percentage;
-    if (userWhitelist !== undefined) flag.userWhitelist = userWhitelist;
-    if (description !== undefined) flag.description = description;
+    if (enabled !== undefined) {
+      flag.enabled = enabled;
+    }
+    if (percentage !== undefined) {
+      flag.percentage = percentage;
+    }
+    if (userWhitelist !== undefined) {
+      flag.userWhitelist = userWhitelist;
+    }
+    if (description !== undefined) {
+      flag.description = description;
+    }
     flag.updatedAt = new Date();
   }
 

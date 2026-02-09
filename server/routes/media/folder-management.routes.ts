@@ -66,7 +66,9 @@ router.get("/folders/tree", async (_req, res) => {
 // GET /api/folders/:id - Get specific folder
 router.get("/folders/:id", async (req, res) => {
   const id = validateIdParam(req, res, "id", "folder");
-  if (id === null) return;
+  if (id === null) {
+    return;
+  }
 
   const folder = await withTimeout(getStorage().getFolder(id), 5000, "Get folder by ID");
 
@@ -91,7 +93,9 @@ router.post("/folders", authService.requireAdmin, async (req, res) => {
 // PUT /api/folders/:id - Update folder
 router.put("/folders/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "folder");
-  if (id === null) return;
+  if (id === null) {
+    return;
+  }
 
   const validatedData = insertFolderSchema.partial().parse(req.body);
   const folder = await withTimeout(
@@ -110,7 +114,9 @@ router.put("/folders/:id", authService.requireAdmin, async (req, res) => {
 // DELETE /api/folders/:id - Delete folder
 router.delete("/folders/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "folder");
-  if (id === null) return;
+  if (id === null) {
+    return;
+  }
 
   // Check if folder has children
   const children = await withTimeout(
@@ -136,7 +142,9 @@ router.delete("/folders/:id", authService.requireAdmin, async (req, res) => {
 // GET /api/folders/:id/children - Get folder children
 router.get("/folders/:id/children", async (req, res) => {
   const id = validateIdParam(req, res, "id", "folder");
-  if (id === null) return;
+  if (id === null) {
+    return;
+  }
 
   const children = await withTimeout(
     getStorage().getFolderChildren(id),
@@ -149,7 +157,9 @@ router.get("/folders/:id/children", async (req, res) => {
 // GET /api/folders/:id/media - Get media assets in folder
 router.get("/folders/:id/media", async (req, res) => {
   const id = validateIdParam(req, res, "id", "folder");
-  if (id === null) return;
+  if (id === null) {
+    return;
+  }
 
   const assets = await withTimeout(
     getStorage().getMediaAssetsByFolder(id),
@@ -162,7 +172,9 @@ router.get("/folders/:id/media", async (req, res) => {
 // POST /api/folders/:id/move-media - Move media asset to folder
 router.post("/folders/:id/move-media", authService.requireAdmin, async (req, res) => {
   const folderId = validateIdParam(req, res, "id", "folder");
-  if (folderId === null) return;
+  if (folderId === null) {
+    return;
+  }
   const { mediaAssetId } = req.body;
 
   if (!mediaAssetId) {

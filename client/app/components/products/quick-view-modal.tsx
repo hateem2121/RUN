@@ -17,10 +17,14 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
   const { addItem, isInCart } = useInquiryCart();
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onClose();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     document.body.style.overflow = "hidden";
@@ -31,7 +35,9 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen || !product) return null;
+  if (!isOpen || !product) {
+    return null;
+  }
 
   const alreadyInCart = isInCart(product.id);
 

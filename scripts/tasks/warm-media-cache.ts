@@ -46,7 +46,9 @@ async function warmMediaCache() {
 
   for (const asset of targetAssets) {
     try {
-      if (!asset.storagePath) continue;
+      if (!asset.storagePath) {
+        continue;
+      }
 
       logger.info(`🔥 Warming asset ${asset.id}: ${asset.filename}...`);
 

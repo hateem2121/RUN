@@ -11,7 +11,9 @@ export function useApiCache<T>() {
 
   const get = useCallback((key: string): T | null => {
     const entry = cache.current.get(key);
-    if (!entry) return null;
+    if (!entry) {
+      return null;
+    }
 
     const now = Date.now();
     if (now - entry.timestamp > entry.ttl) {

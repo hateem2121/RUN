@@ -314,7 +314,9 @@ export default function UnifiedModelViewer({
   // Model viewer event handlers
   const setupModelViewerEvents = useCallback(() => {
     const modelViewer = modelViewerRef.current;
-    if (!modelViewer) return;
+    if (!modelViewer) {
+      return;
+    }
 
     // Model loaded successfully
     const handleModelLoaded = () => {
@@ -413,7 +415,15 @@ export default function UnifiedModelViewer({
         currentCanvas.removeEventListener("webglcontextrestored", handleContextRestored);
       }
     };
-  }, [asset.id, asset, handleError, handleProgress, onInteraction, onLoad]);
+  }, [
+    asset.id,
+    asset,
+    handleError,
+    handleProgress,
+    onInteraction,
+    onLoad, // Predictive Recovery: Automatically trigger recovery when context is back
+    handleWebGLRecovery,
+  ]);
 
   // Enhanced GLTF initialization with intelligent caching
   useEffect(() => {
@@ -674,7 +684,9 @@ export default function UnifiedModelViewer({
 
   // Handle download
   const handleDownload = useCallback(async () => {
-    if (!asset.id) return;
+    if (!asset.id) {
+      return;
+    }
 
     try {
       onInteraction?.("download-start", { asset });

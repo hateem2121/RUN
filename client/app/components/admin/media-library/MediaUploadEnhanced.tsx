@@ -35,7 +35,9 @@ import type { UploadMessage, WorkerResponse } from "@/workers/uploader";
 
 let uploadWorker: Worker | null = null;
 const getUploadWorker = (): Worker => {
-  if (uploadWorker) return uploadWorker;
+  if (uploadWorker) {
+    return uploadWorker;
+  }
 
   uploadWorker = new Worker(new URL("@/workers/uploader.ts?ver=20250916", import.meta.url), {
     type: "module",
@@ -155,7 +157,9 @@ class UploadQueueManager {
 
   // CRITICAL FIX: Pure peek function for render - no mutation
   peekNextInQueue(): UploadQueueItem | null {
-    if (this.pendingQueue.length === 0) return null;
+    if (this.pendingQueue.length === 0) {
+      return null;
+    }
 
     // Create a sorted copy without mutating the original queue
     const sortedQueue = [...this.pendingQueue].sort((a, b) => {
@@ -252,15 +256,23 @@ const trackPerformance = async <T,>(operation: string, fn: () => Promise<T>): Pr
 
 // UPLOAD OPTIMIZATION: Format upload speed for display
 const formatUploadSpeed = (bytesPerSecond: number): string => {
-  if (bytesPerSecond < 1024) return `${bytesPerSecond} B/s`;
-  if (bytesPerSecond < 1024 * 1024) return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
+  if (bytesPerSecond < 1024) {
+    return `${bytesPerSecond} B/s`;
+  }
+  if (bytesPerSecond < 1024 * 1024) {
+    return `${(bytesPerSecond / 1024).toFixed(1)} KB/s`;
+  }
   return `${(bytesPerSecond / (1024 * 1024)).toFixed(1)} MB/s`;
 };
 
 // UPLOAD OPTIMIZATION: Format time remaining for display
 const formatTimeRemaining = (seconds: number): string => {
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+  if (seconds < 60) {
+    return `${seconds}s`;
+  }
+  if (seconds < 3600) {
+    return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+  }
   return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
 };
 // PHASE 2.2: Removed complex error boundary - using simple try-catch instead
@@ -284,8 +296,12 @@ interface UploadQueueItem {
 
 // File type icon mapping
 const getFileTypeIcon = (type: string) => {
-  if (type.startsWith("image/")) return FileImage;
-  if (type.startsWith("video/")) return FileVideo;
+  if (type.startsWith("image/")) {
+    return FileImage;
+  }
+  if (type.startsWith("video/")) {
+    return FileVideo;
+  }
   return FileText;
 };
 
@@ -328,7 +344,9 @@ const UploadItem = React.memo(
     };
 
     const formatFileSize = (bytes: number) => {
-      if (bytes === 0) return "0 Bytes";
+      if (bytes === 0) {
+        return "0 Bytes";
+      }
       const k = 1024;
       const sizes = ["Bytes", "KB", "MB", "GB"];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -483,7 +501,9 @@ export default function MediaUploadEnhanced() {
         const currentData = (oldData as { data?: { data?: unknown[]; total: number } }) || {
           data: { data: [], total: 0 },
         };
-        if (!currentData?.data?.data) return oldData;
+        if (!currentData?.data?.data) {
+          return oldData;
+        }
 
         return {
           ...currentData,
@@ -529,7 +549,9 @@ export default function MediaUploadEnhanced() {
             const { type, fileId, percent, message } = event.data;
 
             // Only handle messages for this specific file
-            if (fileId !== item.id) return;
+            if (fileId !== item.id) {
+              return;
+            }
 
             switch (type) {
               case "init":
@@ -632,10 +654,14 @@ export default function MediaUploadEnhanced() {
 
   // Process upload queue
   const processUploadQueue = useCallback(async () => {
-    if (isUploading) return;
+    if (isUploading) {
+      return;
+    }
 
     const pendingItems = uploadQueue.filter((item) => item.status === "pending");
-    if (pendingItems.length === 0) return;
+    if (pendingItems.length === 0) {
+      return;
+    }
 
     setIsUploading(true);
     setSyncStatus("syncing");
@@ -822,7 +848,9 @@ export default function MediaUploadEnhanced() {
   // Handle file selection with optimistic updates
   const handleFileSelect = useCallback(
     async (files: FileList): Promise<void> => {
-      if (files.length === 0) return;
+      if (files.length === 0) {
+        return;
+      }
 
       const newQueueItems: UploadQueueItem[] = [];
 

@@ -54,7 +54,9 @@ const RUNBOOK_PATHS: Record<string, string> = {
  */
 export function getRunbookUrl(errorCode: string): string | undefined {
   const path = RUNBOOK_PATHS[errorCode];
-  if (!path) return undefined;
+  if (!path) {
+    return undefined;
+  }
   return `${RUNBOOK_BASE_URL}/${path}`;
 }
 

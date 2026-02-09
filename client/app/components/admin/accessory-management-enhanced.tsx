@@ -263,7 +263,9 @@ export default function AccessoryManagementEnhanced() {
     queryKey: MediaQueryKeys.list,
     queryFn: async () => {
       const response = await fetch("/api/media");
-      if (!response.ok) throw new Error("Failed to fetch media");
+      if (!response.ok) {
+        throw new Error("Failed to fetch media");
+      }
       return response.json();
     },
     select: (data) => data?.data || [],
@@ -272,7 +274,9 @@ export default function AccessoryManagementEnhanced() {
   // Media handling functions
   const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
 
     setFormData((prev) => ({
       ...prev,

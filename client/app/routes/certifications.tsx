@@ -31,7 +31,9 @@ export default function Certifications() {
 
   // Filter certificates based on search
   const filteredCertificates = useMemo(() => {
-    if (!debouncedSearchTerm) return certificates;
+    if (!debouncedSearchTerm) {
+      return certificates;
+    }
 
     const term = debouncedSearchTerm.toLowerCase();
     return certificates.filter(

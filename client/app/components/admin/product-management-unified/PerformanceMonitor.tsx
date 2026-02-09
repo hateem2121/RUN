@@ -67,11 +67,15 @@ export function PerformanceMonitor() {
 
     return () => {
       observer.disconnect();
-      if (memoryInterval) clearInterval(memoryInterval);
+      if (memoryInterval) {
+        clearInterval(memoryInterval);
+      }
     };
   }, []);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   // Calculate performance score
   const score = Math.max(

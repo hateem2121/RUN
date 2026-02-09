@@ -77,7 +77,9 @@ router.post("/fabrics", authService.requireAdmin, async (req, res) => {
 router.put("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fabric");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, validatedData as any), {
@@ -121,7 +123,9 @@ router.put("/fabrics/:id", authService.requireAdmin, async (req, res) => {
 router.patch("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fabric");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const partialData = insertFabricSchema.partial().parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(() => getStorage().updateFabric(id, partialData as any), {
@@ -165,7 +169,9 @@ router.patch("/fabrics/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/fabrics/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fabric");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const success = await withTimeout(
       retryDbOperation(() => getStorage().deleteFabric(id), {
         operationName: `Delete fabric ${id}`,

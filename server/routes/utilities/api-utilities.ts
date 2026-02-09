@@ -158,8 +158,12 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
 
       items.forEach((item: Record<string, unknown>) => {
         // Skip inactive items if active filter is set
-        if (active === true && item.active === false) return;
-        if (active === false && item.active !== false) return;
+        if (active === true && item.active === false) {
+          return;
+        }
+        if (active === false && item.active !== false) {
+          return;
+        }
 
         // Create searchable text
         const searchableText = createSearchableText(item, dataType);
@@ -253,44 +257,69 @@ function createSearchableText(item: Record<string, unknown>, type: string): stri
   const parts: string[] = [];
 
   // Common fields
-  if (item.name) parts.push(String(item.name));
-  if (item.type) parts.push(String(item.type));
-  if (item.description) parts.push(String(item.description));
+  if (item.name) {
+    parts.push(String(item.name));
+  }
+  if (item.type) {
+    parts.push(String(item.type));
+  }
+  if (item.description) {
+    parts.push(String(item.description));
+  }
 
   // Type-specific fields
   switch (type) {
     case "certificates":
-      if (item.issuingBody) parts.push(String(item.issuingBody));
+      if (item.issuingBody) {
+        parts.push(String(item.issuingBody));
+      }
       break;
     case "accessories":
-      if (item.category) parts.push(String(item.category));
+      if (item.category) {
+        parts.push(String(item.category));
+      }
       if (item.specifications && Array.isArray(item.specifications)) {
         parts.push(...item.specifications.map(String));
       }
       break;
     case "sizeCharts":
-      if (item.region) parts.push(String(item.region));
+      if (item.region) {
+        parts.push(String(item.region));
+      }
       if (item.categories && Array.isArray(item.categories)) {
         parts.push(...item.categories.map(String));
       }
       break;
     case "fabrics":
-      if (item.weight) parts.push(String(item.weight));
-      if (item.weaveType) parts.push(String(item.weaveType));
-      if (item.finishTreatment) parts.push(String(item.finishTreatment));
+      if (item.weight) {
+        parts.push(String(item.weight));
+      }
+      if (item.weaveType) {
+        parts.push(String(item.weaveType));
+      }
+      if (item.finishTreatment) {
+        parts.push(String(item.finishTreatment));
+      }
       if (item.compositions) {
         (item.compositions as Array<Record<string, unknown>>)?.forEach((comp) => {
-          if (comp.name) parts.push(String(comp.name));
+          if (comp.name) {
+            parts.push(String(comp.name));
+          }
           (comp.fibers as Array<Record<string, unknown>>)?.forEach((fiber) => {
-            if (fiber.fiberName) parts.push(String(fiber.fiberName));
+            if (fiber.fiberName) {
+              parts.push(String(fiber.fiberName));
+            }
           });
         });
       }
       break;
     case "fibers":
-      if (item.properties) parts.push(String(item.properties));
-      if (item.sustainabilityScore)
+      if (item.properties) {
+        parts.push(String(item.properties));
+      }
+      if (item.sustainabilityScore) {
         parts.push(`sustainability-${String(item.sustainabilityScore)}`);
+      }
       break;
   }
 
@@ -318,12 +347,16 @@ function calculateRelevanceScore(
   if (item.type) {
     const typeLower = String(item.type).toLowerCase();
     searchWords.forEach((word) => {
-      if (typeLower.includes(word)) score += 3;
+      if (typeLower.includes(word)) {
+        score += 3;
+      }
     });
   }
 
   // Active items get a bonus
-  if (item.active !== false) score += 1;
+  if (item.active !== false) {
+    score += 1;
+  }
 
   return score;
 }

@@ -270,14 +270,20 @@ export default function ProductsPage() {
     let changed = false;
 
     if (searchTerm !== currentSearch) {
-      if (searchTerm) params.set("search", searchTerm);
-      else params.delete("search");
+      if (searchTerm) {
+        params.set("search", searchTerm);
+      } else {
+        params.delete("search");
+      }
       changed = true;
     }
 
     if (selectedCategory !== currentCategory) {
-      if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
-      else params.delete("category");
+      if (selectedCategory && selectedCategory !== "all") {
+        params.set("category", selectedCategory);
+      } else {
+        params.delete("category");
+      }
       changed = true;
     }
 
@@ -306,7 +312,9 @@ export default function ProductsPage() {
   const sortedProducts = useMemo(() => {
     return (products || [])
       .filter((product) => {
-        if (!product) return false;
+        if (!product) {
+          return false;
+        }
         // Advanced filters
         if (
           selectedFilters.fabrics.length > 0 &&

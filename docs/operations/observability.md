@@ -16,7 +16,7 @@
    - **Prometheus:** <http://localhost:9090>
 
 3. **Verify Traces:**
-   - Make a request: `curl http://localhost:5002/api/health`
+   - Make a request: `curl http://localhost:5002/api/v1/health`
    - Check Jaeger for trace ending in `/api/health`
 
 ## Production

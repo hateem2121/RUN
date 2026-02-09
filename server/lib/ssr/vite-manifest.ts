@@ -62,15 +62,22 @@ export class ViteAssetManager {
    * Heuristic: Look for 'index.html', then specific entry files, then any chunk marked isEntry.
    */
   private getEntryChunk(): ManifestChunk | undefined {
-    if (!this.manifest) return undefined;
+    if (!this.manifest) {
+      return undefined;
+    }
 
     // 1. Standard Vite Entry Key
-    if (this.manifest["index.html"]) return this.manifest["index.html"];
+    if (this.manifest["index.html"]) {
+      return this.manifest["index.html"];
+    }
 
     // 2. Client Entry Source Key
-    if (this.manifest["client/src/entry-client.tsx"])
+    if (this.manifest["client/src/entry-client.tsx"]) {
       return this.manifest["client/src/entry-client.tsx"];
-    if (this.manifest["src/entry-client.tsx"]) return this.manifest["src/entry-client.tsx"];
+    }
+    if (this.manifest["src/entry-client.tsx"]) {
+      return this.manifest["src/entry-client.tsx"];
+    }
 
     // 3. Search for isEntry flag
     return Object.values(this.manifest).find((chunk) => chunk.isEntry === true);
@@ -85,7 +92,9 @@ export class ViteAssetManager {
     const seen = new Set<string>();
 
     const entry = this.getEntryChunk();
-    if (!entry || !this.manifest) return assets;
+    if (!entry || !this.manifest) {
+      return assets;
+    }
 
     const collectRecursive = (chunkName: string) => {
       // In manifest, keys are file paths (src/...) or names
@@ -94,16 +103,22 @@ export class ViteAssetManager {
 
       // If passing a chunk OBJECT directly creates recursion issues, we assume key driven
       const chunk = this.manifest?.[chunkName];
-      if (!chunk) return;
+      if (!chunk) {
+        return;
+      }
 
       // Avoid cycles
-      if (seen.has(chunk.file)) return;
+      if (seen.has(chunk.file)) {
+        return;
+      }
       seen.add(chunk.file);
 
       // Collect CSS
       if (chunk.css) {
         chunk.css.forEach((cssFile) => {
-          if (!assets.css.includes(cssFile)) assets.css.push(cssFile);
+          if (!assets.css.includes(cssFile)) {
+            assets.css.push(cssFile);
+          }
         });
       }
 
@@ -128,7 +143,9 @@ export class ViteAssetManager {
     // We already have the entry Object. Let's process it manually first, then its imports.
     if (entry.css) {
       entry.css.forEach((css) => {
-        if (!assets.css.includes(css)) assets.css.push(css);
+        if (!assets.css.includes(css)) {
+          assets.css.push(css);
+        }
       });
     }
 

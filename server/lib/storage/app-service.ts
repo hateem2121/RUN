@@ -287,7 +287,7 @@ export class AppStorageService {
         } catch (error) {
           // Fallback for local development or when credentials are missing
           const errorMessage = (error as Error).message || "";
-          
+
           if (
             errorMessage.includes("Cannot sign data") ||
             errorMessage.includes("Could not load the default credentials") ||
@@ -297,7 +297,7 @@ export class AppStorageService {
             const fallbackUrl = `https://storage.googleapis.com/${this.bucketName || "run-dev-assets"}/${key}`;
             logger.warn(`⚠️ GCS Signing failed, falling back to public URL for ${key}`, {
               error: errorMessage,
-              fallbackUrl
+              fallbackUrl,
             });
             return fallbackUrl;
           }

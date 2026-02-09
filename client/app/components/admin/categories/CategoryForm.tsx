@@ -332,7 +332,9 @@ export default function CategoryForm({
 
   const handleStandardMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
 
     const mediaUrl = MediaUrlBuilder.buildContentUrl(asset.id);
     if (mediaUrl) {

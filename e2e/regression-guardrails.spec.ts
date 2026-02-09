@@ -12,7 +12,9 @@ test.describe("Critical Route Regression Guardrails", () => {
     // Check for no console errors of type 'error' (excluding known noise if needed)
     const errors: string[] = [];
     page.on("console", (msg) => {
-      if (msg.type() === "error") errors.push(msg.text());
+      if (msg.type() === "error") {
+        errors.push(msg.text());
+      }
     });
 
     // Allow for hydration

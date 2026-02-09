@@ -142,7 +142,9 @@ function checkSLOs(): void {
  * Calculate percentile from array of values
  */
 function calculatePercentile(values: number[], percentile: number): number {
-  if (values.length === 0) return 0;
+  if (values.length === 0) {
+    return 0;
+  }
 
   const sorted = [...values].sort((a, b) => a - b);
   const index = Math.ceil((percentile / 100) * sorted.length) - 1;

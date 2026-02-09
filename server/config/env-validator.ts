@@ -26,8 +26,12 @@ export function validateEnv() {
     const parsed = envSchema.parse(process.env);
 
     // Assign defaults back to process.env if needed, though usually just validation is enough
-    if (!process.env.PORT) process.env.PORT = parsed.PORT;
-    if (!process.env.NODE_ENV) process.env.NODE_ENV = parsed.NODE_ENV;
+    if (!process.env.PORT) {
+      process.env.PORT = parsed.PORT;
+    }
+    if (!process.env.NODE_ENV) {
+      process.env.NODE_ENV = parsed.NODE_ENV;
+    }
 
     logger.info("[Config] ✅ Environment variables validated successfully");
   } catch (error) {

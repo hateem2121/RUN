@@ -69,7 +69,9 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
     },
   });
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>

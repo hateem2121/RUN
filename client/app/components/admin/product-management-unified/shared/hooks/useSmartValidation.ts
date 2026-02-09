@@ -33,18 +33,27 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
       // Basic validation from unified system (sync version)
       switch (field) {
         case "name":
-          if (typeof value !== "string" || !value || value.trim().length === 0)
+          if (typeof value !== "string" || !value || value.trim().length === 0) {
             return "Product name is required";
-          if (value.length < 3) return "Product name must be at least 3 characters";
-          if (value.length > 100) return "Product name must be less than 100 characters";
+          }
+          if (value.length < 3) {
+            return "Product name must be at least 3 characters";
+          }
+          if (value.length > 100) {
+            return "Product name must be less than 100 characters";
+          }
           return null;
 
         case "sku":
-          if (typeof value !== "string" || !value || value.trim().length === 0)
+          if (typeof value !== "string" || !value || value.trim().length === 0) {
             return "SKU is required";
-          if (!/^[A-Z0-9_-]+$/i.test(value))
+          }
+          if (!/^[A-Z0-9_-]+$/i.test(value)) {
             return "SKU can only contain letters, numbers, hyphens and underscores";
-          if (value.length > 50) return "SKU must be less than 50 characters";
+          }
+          if (value.length > 50) {
+            return "SKU must be less than 50 characters";
+          }
           return null;
 
         default:
@@ -59,8 +68,9 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
     (field: string, value: ProductFormFieldValue): string | null => {
       switch (field) {
         case "description":
-          if (typeof value === "string" && value.length > 5000)
+          if (typeof value === "string" && value.length > 5000) {
             return "Description must be less than 5000 characters";
+          }
           return null;
 
         case "minimumOrderQuantity":
@@ -68,23 +78,27 @@ export function useSmartValidation(config: Partial<ValidationConfig> = {}) {
             typeof value === "string" &&
             value &&
             (Number.isNaN(Number(value)) || parseInt(value, 10) < 1)
-          )
+          ) {
             return "MOQ must be a positive number";
+          }
           return null;
 
         case "leadTime":
-          if (typeof value === "string" && value.length > 100)
+          if (typeof value === "string" && value.length > 100) {
             return "Lead time must be less than 100 characters";
+          }
           return null;
 
         case "metaTitle":
-          if (typeof value === "string" && value.length > 60)
+          if (typeof value === "string" && value.length > 60) {
             return "Meta title should be less than 60 characters for SEO";
+          }
           return null;
 
         case "metaDescription":
-          if (typeof value === "string" && value.length > 160)
+          if (typeof value === "string" && value.length > 160) {
             return "Meta description should be less than 160 characters for SEO";
+          }
           return null;
 
         default:

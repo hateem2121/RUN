@@ -36,7 +36,9 @@ export function useNestedModalFocus({
 
   // Get all focusable elements within the modal
   const getFocusableElements = useCallback((): HTMLElement[] => {
-    if (!contentRef.current) return [];
+    if (!contentRef.current) {
+      return [];
+    }
 
     const focusableSelectors = [
       "button:not([disabled])",
@@ -85,7 +87,9 @@ export function useNestedModalFocus({
   // Handle keyboard navigation
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (!shouldTrapFocus || !contentRef.current) return;
+      if (!shouldTrapFocus || !contentRef.current) {
+        return;
+      }
 
       const focusableElements = getFocusableElements();
       const currentFocusIndex = focusableElements.indexOf(document.activeElement as HTMLElement);

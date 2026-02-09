@@ -41,7 +41,9 @@ const Hero: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!textContainerRef.current) return;
+    if (!textContainerRef.current) {
+      return;
+    }
 
     const scope = textContainerRef.current;
 
@@ -88,7 +90,9 @@ const Hero: React.FC = () => {
       });
 
       const handleMouseMove = (e: MouseEvent) => {
-        if (!isInView) return;
+        if (!isInView) {
+          return;
+        }
 
         const xPos = (e.clientX / window.innerWidth - 0.5) * 2;
         const yPos = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -142,19 +146,19 @@ const Hero: React.FC = () => {
 
       {/* Hero Content */}
       <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center md:pt-0 pt-24">
-          <h1
-            ref={textContainerRef}
-            className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
-          >
-            {heroLines.map((line: string, i: number) => (
-              <span
-                key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
-              >
-                {line}
-              </span>
-            ))}
-          </h1>
+        <h1
+          ref={textContainerRef}
+          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
+        >
+          {heroLines.map((line: string, i: number) => (
+            <span
+              key={i}
+              className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+            >
+              {line}
+            </span>
+          ))}
+        </h1>
       </div>
 
       {/* Scroll Indicator */}

@@ -136,7 +136,9 @@ const ScrollExpandMedia = ({
 
     const handleTouchMove = (e: Event) => {
       const touchEvent = e as unknown as TouchEvent;
-      if (!touchStartYRef.current || !touchEvent.touches || !touchEvent.touches[0]) return;
+      if (!touchStartYRef.current || !touchEvent.touches || !touchEvent.touches[0]) {
+        return;
+      }
 
       const touchY = touchEvent.touches[0].clientY;
       const deltaY = touchStartYRef.current - touchY;
@@ -228,7 +230,9 @@ const ScrollExpandMedia = ({
 
   // Split title into specific sentences for natural reading
   const titleLines = useMemo(() => {
-    if (!title) return [];
+    if (!title) {
+      return [];
+    }
 
     // Remove em dashes and clean up the title
     const cleanTitle = title

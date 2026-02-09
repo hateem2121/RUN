@@ -181,8 +181,12 @@ export function B2BContactForm({
         });
 
         // Add context
-        if (productName) formData.append("productName", productName);
-        if (productId) formData.append("productId", productId);
+        if (productName) {
+          formData.append("productName", productName);
+        }
+        if (productId) {
+          formData.append("productId", productId);
+        }
         formData.append("timestamp", new Date().toISOString());
 
         action(formData);

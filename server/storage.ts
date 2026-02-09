@@ -14,6 +14,7 @@ import type {
   Fabric,
   Fiber,
   Folder,
+  FooterConfiguration,
   HomepageHero,
   HomepageProcessCard,
   HomepageSection,
@@ -94,7 +95,11 @@ import type {
   User,
 } from "../shared/schema.js";
 import type { RepositoryCacheOptions } from "./lib/cache/cache-strategies.js";
-import type { ProductDetail, ProductSummary } from "./lib/db/repositories/product-repository.js";
+import type {
+  ProductDetail,
+  ProductDetailWithContext,
+  ProductSummary,
+} from "./lib/db/repositories/product-repository.js";
 import { getStorage } from "./lib/storage-singleton.js";
 
 export interface IStorage {
@@ -172,7 +177,7 @@ export interface IStorage {
     id: number,
     mediaAsset: Partial<InsertMediaAsset>,
   ): Promise<MediaAsset | undefined>;
-  get3DModelMetadata(id: number): Promise<any>;
+  get3DModelMetadata(id: number): Promise<MediaAsset | null>;
   deleteMediaAsset(id: number): Promise<boolean>;
   getMediaAssetsByFolder(folderId: number | null): Promise<MediaAsset[]>;
   moveMediaAsset(id: number, targetFolderId: number | null): Promise<MediaAsset | undefined>;
@@ -205,7 +210,7 @@ export interface IStorage {
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: number): Promise<boolean>;
-  getProductByPath(path: string): Promise<any>;
+  getProductByPath(path: string): Promise<ProductDetailWithContext | null>;
   getNavigationItems(): Promise<NavigationItem[]>;
   getNavigationItem(id: number): Promise<NavigationItem | undefined>;
   createNavigationItem(navigationItem: InsertNavigationItem): Promise<NavigationItem>;
@@ -617,6 +622,7 @@ export interface IStorage {
     updates: Partial<MediaAsset>,
   ): Promise<MediaAsset | undefined>;
   getFooterSections(): Promise<any[]>;
+  getFooterConfiguration(): Promise<FooterConfiguration | undefined>;
   createFooterLink(link: any): Promise<any>;
   checkDatabaseHealth(): Promise<{
     healthy: boolean;

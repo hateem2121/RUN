@@ -35,6 +35,7 @@ import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
+import navigationRouter from "./navigation.routes.js";
 import sustainabilityRouter from "./sustainability.routes.js";
 // Sustainability Page Resources
 import sustainabilityBatchRouter from "./sustainability-batch.routes.js";
@@ -48,7 +49,6 @@ import technologyGradientSettingsRouter from "./technology-gradient-settings.rou
 import technologyInnovationsRouter from "./technology-innovations.routes.js";
 import technologyResearchRouter from "./technology-research.routes.js";
 import technologyRoadmapRouter from "./technology-roadmap.routes.js";
-import navigationRouter from "./navigation.routes.js";
 
 const router = Router();
 

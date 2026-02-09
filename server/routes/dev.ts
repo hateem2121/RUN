@@ -25,7 +25,9 @@ devRouter.get("/login", async (req, res) => {
 
     // Pass full User object (adminUser matches Express.User type augmentation)
     return req.login(adminUser, (err) => {
-      if (err) return res.status(500).json({ error: "Login failed" });
+      if (err) {
+        return res.status(500).json({ error: "Login failed" });
+      }
       logger.info(`[Dev] Logged in as admin: ${adminUser.email}`);
       return res.json({ success: true, message: "Logged in as admin", user });
     });

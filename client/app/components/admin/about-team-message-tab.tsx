@@ -40,7 +40,9 @@ export function AboutTeamMessageTab() {
       const response = await fetch(
         `/api/media?${buildMediaApiParams(ADMIN_MEDIA_QUERIES.RECENT_ADMIN)}`,
       );
-      if (!response.ok) throw new Error("Failed to fetch media");
+      if (!response.ok) {
+        throw new Error("Failed to fetch media");
+      }
       return response.json();
     },
   });

@@ -37,18 +37,28 @@ export function extractMediaIds(data: any): Set<number> {
 
   // Handle Objects
   // Check known fields directly for performance (faster than iterating all keys)
-  if ("imageId" in data && typeof data.imageId === "number") mediaIds.add(data.imageId);
-  if ("videoId" in data && typeof data.videoId === "number") mediaIds.add(data.videoId);
-  if ("backgroundMediaId" in data && typeof data.backgroundMediaId === "number")
+  if ("imageId" in data && typeof data.imageId === "number") {
+    mediaIds.add(data.imageId);
+  }
+  if ("videoId" in data && typeof data.videoId === "number") {
+    mediaIds.add(data.videoId);
+  }
+  if ("backgroundMediaId" in data && typeof data.backgroundMediaId === "number") {
     mediaIds.add(data.backgroundMediaId);
-  if ("backgroundImageId" in data && typeof data.backgroundImageId === "number")
+  }
+  if ("backgroundImageId" in data && typeof data.backgroundImageId === "number") {
     mediaIds.add(data.backgroundImageId);
-  if ("iconMediaId" in data && typeof data.iconMediaId === "number") mediaIds.add(data.iconMediaId);
+  }
+  if ("iconMediaId" in data && typeof data.iconMediaId === "number") {
+    mediaIds.add(data.iconMediaId);
+  }
 
   // Check for arrays of IDs
   if ("mediaIds" in data && Array.isArray(data.mediaIds)) {
     data.mediaIds.forEach((id: any) => {
-      if (typeof id === "number") mediaIds.add(id);
+      if (typeof id === "number") {
+        mediaIds.add(id);
+      }
     });
   }
 

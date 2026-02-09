@@ -298,7 +298,9 @@ export function getOptimizedMediaUrl(
   asset: MediaAsset | null | undefined,
   lazy = false,
 ): string | null {
-  if (!asset) return null;
+  if (!asset) {
+    return null;
+  }
 
   // Use existing proxy URL
   const baseUrl = `/api/media/${asset.id}/content`;
@@ -348,8 +350,12 @@ export function prioritizeAssets(
 
     // Secondary sort: Videos after images for faster initial load
     if (a.type !== b.type) {
-      if (a.type === "image" && b.type === "video") return -1;
-      if (a.type === "video" && b.type === "image") return 1;
+      if (a.type === "image" && b.type === "video") {
+        return -1;
+      }
+      if (a.type === "video" && b.type === "image") {
+        return 1;
+      }
     }
 
     // Tertiary sort: Smaller files first

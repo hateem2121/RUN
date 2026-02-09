@@ -33,10 +33,11 @@ test.describe("Phase 5: Forensic UI Proof", () => {
     page.on("console", (_msg) => {});
     // Check if we are stuck on Loading
     const isLoading = await page.getByText("Loading...").isVisible();
-    if (isLoading)
+    if (isLoading) {
       await page.waitForSelector('[data-testid="hydration-status"]', {
         state: "attached",
       });
+    }
     try {
       await expect(page.getByTestId("hydration-status")).toHaveText("HYDRATED", { timeout: 30000 });
     } catch (e) {
@@ -64,7 +65,9 @@ test.describe("Phase 5: Forensic UI Proof", () => {
     const isLogoClickable = await page.evaluate(() => {
       const logo = document.querySelector('[data-testid="mock-header-logo"]');
       const overlay = document.querySelector('[role="alertdialog"]');
-      if (!logo || !overlay) return false;
+      if (!logo || !overlay) {
+        return false;
+      }
 
       // Element From Point check
       const rect = logo.getBoundingClientRect();

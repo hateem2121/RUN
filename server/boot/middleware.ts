@@ -18,7 +18,6 @@ import { nonceMiddleware } from "../middleware/nonce.js";
 import { performanceTrackingMiddleware } from "../middleware/performance-tracking.js";
 import {
   notFoundHandler,
-  productionErrorHandler,
   setupGlobalErrorHandlers,
 } from "../middleware/production-error-handler.js";
 import {
@@ -133,11 +132,13 @@ export function setupErrorHandling(app: Express) {
   }
 
   // Final Global Error Handler (Project Rule #3)
-  app.use(async (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    // Dynamic import to avoid circular dependencies during boot
-    const { errorHandler } = await import("../middleware/errorHandler.js");
-    errorHandler(err, req, res, next);
-  });
+  app.use(
+    async (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      // Dynamic import to avoid circular dependencies during boot
+      const { errorHandler } = await import("../middleware/errorHandler.js");
+      errorHandler(err, req, res, next);
+    },
+  );
 }
 
 export function setupHealthChecks(app: Express) {

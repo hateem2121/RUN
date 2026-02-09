@@ -20,7 +20,9 @@ export function useGridDimensions(viewMode: "grid" | "list") {
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current) {
+        return;
+      }
 
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();

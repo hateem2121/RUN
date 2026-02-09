@@ -97,10 +97,14 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
   // Phase 2: Touch Event Handlers for Mobile Animation Control
   const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (!isTouchDevice.current || !containerRef.current) return;
+    if (!isTouchDevice.current || !containerRef.current) {
+      return;
+    }
 
     const touch = e.touches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
     touchStart.current = {
       y: touch.clientY,
       time: Date.now(),
@@ -114,10 +118,14 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
-      if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
+      if (!isTouchDevice.current || !touchStart.current || !containerRef.current) {
+        return;
+      }
 
       const touch = e.touches[0];
-      if (!touch) return;
+      if (!touch) {
+        return;
+      }
       const deltaY = touchStart.current.y - touch.clientY;
       const deltaTime = Date.now() - touchStart.current.time;
 
@@ -159,7 +167,9 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
   );
 
   const handleTouchEnd = useCallback(() => {
-    if (!isTouchDevice.current || !touchStart.current || !containerRef.current) return;
+    if (!isTouchDevice.current || !touchStart.current || !containerRef.current) {
+      return;
+    }
 
     // const touchEndTime = Date.now();
 
@@ -233,7 +243,9 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     // TIMING COORDINATION: Wait for trigger condition if specified
     if (waitForTrigger && !triggerCondition) {
@@ -352,7 +364,9 @@ const ScrollFloatComponent: React.FC<ScrollFloatProps> = ({
 
   // Phase 2: Touch Event Listeners for Mobile Gesture Support
   useEffect(() => {
-    if (!isTouchDevice.current || !containerRef.current) return;
+    if (!isTouchDevice.current || !containerRef.current) {
+      return;
+    }
 
     const element = containerRef.current;
 

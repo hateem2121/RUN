@@ -91,7 +91,9 @@ const LightRays: React.FC<LightRaysProps> = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -114,7 +116,9 @@ const LightRays: React.FC<LightRaysProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!isVisible || !containerRef.current) return;
+    if (!isVisible || !containerRef.current) {
+      return;
+    }
 
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current();
@@ -122,11 +126,15 @@ const LightRays: React.FC<LightRaysProps> = ({
     }
 
     const initializeWebGL = async () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current) {
+        return;
+      }
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      if (!containerRef.current) return;
+      if (!containerRef.current) {
+        return;
+      }
 
       const renderer = new Renderer({
         dpr: Math.min(window.devicePixelRatio, 2),
@@ -276,7 +284,9 @@ void main() {
       meshRef.current = mesh;
 
       const updatePlacement = () => {
-        if (!containerRef.current || !renderer) return;
+        if (!containerRef.current || !renderer) {
+          return;
+        }
 
         renderer.dpr = Math.min(window.devicePixelRatio, 2);
 
@@ -377,7 +387,9 @@ void main() {
   ]);
 
   useEffect(() => {
-    if (!uniformsRef.current || !containerRef.current || !rendererRef.current) return;
+    if (!uniformsRef.current || !containerRef.current || !rendererRef.current) {
+      return;
+    }
 
     const u = uniformsRef.current;
     const renderer = rendererRef.current;
@@ -414,7 +426,9 @@ void main() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !rendererRef.current) return undefined;
+      if (!containerRef.current || !rendererRef.current) {
+        return undefined;
+      }
       const rect = containerRef.current.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;

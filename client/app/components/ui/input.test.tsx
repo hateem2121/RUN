@@ -5,7 +5,7 @@ import { Input } from "./input";
 describe("Input", () => {
   it("renders correctly", () => {
     render(<Input placeholder="Search..." />);
-    expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search...")).toBeTruthy();
   });
 
   it("handles value changes", () => {
@@ -18,6 +18,6 @@ describe("Input", () => {
 
   it("can be disabled", () => {
     render(<Input disabled />);
-    expect(screen.getByRole("textbox")).toBeDisabled();
+    expect((screen.getByRole("textbox") as HTMLInputElement).disabled).toBe(true);
   });
 });

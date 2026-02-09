@@ -3,8 +3,6 @@ import { aboutHero, mediaAssets } from "../../shared/schema.js";
 import { db } from "../db.js";
 
 async function seedAboutHero() {
-  console.log("Seeding About Hero...");
-
   // 1. Create a dummy media asset record to satisfy the foreign key constraint
   const placeholderUrl =
     "https://images.unsplash.com/photo-1552674605-4694559e5bc7?q=80&w=2669&auto=format&fit=crop";
@@ -20,7 +18,6 @@ async function seedAboutHero() {
 
   if (existingAsset.length > 0 && existingAsset[0]) {
     mediaId = existingAsset[0].id;
-    console.log(`Using existing media asset ID: ${mediaId}`);
   } else {
     // Create new asset
     const result = await db
@@ -42,14 +39,12 @@ async function seedAboutHero() {
       throw new Error("Failed to create media asset");
     }
     mediaId = result[0].id;
-    console.log(`Created new media asset ID: ${mediaId}`);
   }
 
   // 2. Update the About Hero record to point to this media asset
   const existingHero = await db.select().from(aboutHero).limit(1);
 
   if (existingHero.length > 0 && existingHero[0]) {
-    console.log("Updating existing hero...");
     await db
       .update(aboutHero)
       .set({
@@ -59,7 +54,6 @@ async function seedAboutHero() {
       })
       .where(eq(aboutHero.id, existingHero[0].id));
   } else {
-    console.log("No hero record found! Creating one...");
     await db.insert(aboutHero).values({
       title: "Crafting Athletic Excellence",
       subtitle: "Since 2003",
@@ -68,12 +62,9 @@ async function seedAboutHero() {
       isActive: true,
     });
   }
-
-  console.log("Seeding complete.");
   process.exit(0);
 }
 
-seedAboutHero().catch((err) => {
-  console.error("Error seeding hero:", err);
+seedAboutHero().catch((_err) => {
   process.exit(1);
 });

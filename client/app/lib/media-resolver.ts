@@ -66,7 +66,9 @@ export class MediaResolver {
   }
 
   static validateAssetExists(id?: number): boolean {
-    if (!id || !MediaResolver.isInitialized || !MediaResolver.assets) return false;
+    if (!id || !MediaResolver.isInitialized || !MediaResolver.assets) {
+      return false;
+    }
     return MediaResolver.assets.some((asset) => asset.id === id);
   }
 
@@ -80,15 +82,21 @@ export class MediaResolver {
   }
 
   static getAssetsByType(type: string): MediaAsset[] {
-    if (!MediaResolver.isInitialized || !MediaResolver.assets) return [];
+    if (!MediaResolver.isInitialized || !MediaResolver.assets) {
+      return [];
+    }
     return MediaResolver.assets.filter((asset) => asset.type === type);
   }
 
   static getRandomAssetId(type?: string): number | null {
-    if (!MediaResolver.isInitialized || !MediaResolver.assets) return null;
+    if (!MediaResolver.isInitialized || !MediaResolver.assets) {
+      return null;
+    }
 
     const filteredAssets = type ? MediaResolver.getAssetsByType(type) : MediaResolver.assets;
-    if (filteredAssets.length === 0) return null;
+    if (filteredAssets.length === 0) {
+      return null;
+    }
 
     const randomIndex = Math.floor(Math.random() * filteredAssets.length);
     const asset = filteredAssets[randomIndex];

@@ -21,7 +21,9 @@ interface ResearchSectionProps {
 }
 
 export function ResearchSection({ research }: ResearchSectionProps) {
-  if (!research?.length) return null;
+  if (!research?.length) {
+    return null;
+  }
 
   return (
     <section className="py-24 relative">

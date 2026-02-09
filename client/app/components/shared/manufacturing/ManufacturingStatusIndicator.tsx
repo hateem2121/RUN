@@ -35,7 +35,9 @@ export function ManufacturingStatusIndicator({
   const [displayValue, setDisplayValue] = useState(animate ? 0 : value);
 
   useEffect(() => {
-    if (!animate) return;
+    if (!animate) {
+      return;
+    }
 
     const timer = setTimeout(() => {
       setDisplayValue(value);

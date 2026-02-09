@@ -34,10 +34,14 @@ const ProductShowcase = () => {
         const url = new URL("/api/products", window.location.origin);
         url.searchParams.set("cursor", String(pageParam));
         url.searchParams.set("limit", "12");
-        if (category) url.searchParams.set("category", category);
+        if (category) {
+          url.searchParams.set("category", category);
+        }
 
         const res = await fetch(url.toString());
-        if (!res.ok) throw new Error("Network response was not ok");
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
         return res.json();
       },
       initialPageParam: 0,

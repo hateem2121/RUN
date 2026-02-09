@@ -25,7 +25,9 @@ export function useServerValidation<T extends FieldValues>({
   const { setError } = form;
 
   useEffect(() => {
-    if (!error) return;
+    if (!error) {
+      return;
+    }
 
     if (error instanceof ApiError) {
       if (error.invalidParams) {

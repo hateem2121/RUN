@@ -105,11 +105,17 @@ export default function Fabrics() {
       let category = "Other";
       const weight = parseInt(fabric.weight || "0", 10);
 
-      if (weight < 150) category = "Lightweight (< 150 GSM)";
-      else if (weight >= 150 && weight <= 300) category = "Medium Weight (150-300 GSM)";
-      else if (weight > 300) category = "Heavyweight (> 300 GSM)";
+      if (weight < 150) {
+        category = "Lightweight (< 150 GSM)";
+      } else if (weight >= 150 && weight <= 300) {
+        category = "Medium Weight (150-300 GSM)";
+      } else if (weight > 300) {
+        category = "Heavyweight (> 300 GSM)";
+      }
 
-      if (!acc[category]) acc[category] = [];
+      if (!acc[category]) {
+        acc[category] = [];
+      }
       acc[category]?.push(fabric);
       return acc;
     },
@@ -129,9 +135,15 @@ export default function Fabrics() {
   };
 
   const getCategoryIcon = (category: string) => {
-    if (category.includes("Lightweight")) return Wind;
-    if (category.includes("Medium")) return Layers;
-    if (category.includes("Heavy")) return Shirt;
+    if (category.includes("Lightweight")) {
+      return Wind;
+    }
+    if (category.includes("Medium")) {
+      return Layers;
+    }
+    if (category.includes("Heavy")) {
+      return Shirt;
+    }
     return Layers;
   };
 

@@ -44,13 +44,27 @@ export const buildMediaApiParams = (options: {
 }): string => {
   const params = new URLSearchParams();
 
-  if (options.page) params.set("page", options.page.toString());
-  if (options.limit) params.set("limit", options.limit.toString());
-  if (options.sortBy) params.set("sortBy", options.sortBy);
-  if (options.sortOrder) params.set("sortOrder", options.sortOrder);
-  if (options.search) params.set("search", options.search);
-  if (options.type && options.type !== "all") params.set("type", options.type);
-  if (options.all) params.set("all", "true");
+  if (options.page) {
+    params.set("page", options.page.toString());
+  }
+  if (options.limit) {
+    params.set("limit", options.limit.toString());
+  }
+  if (options.sortBy) {
+    params.set("sortBy", options.sortBy);
+  }
+  if (options.sortOrder) {
+    params.set("sortOrder", options.sortOrder);
+  }
+  if (options.search) {
+    params.set("search", options.search);
+  }
+  if (options.type && options.type !== "all") {
+    params.set("type", options.type);
+  }
+  if (options.all) {
+    params.set("all", "true");
+  }
 
   return params.toString();
 };

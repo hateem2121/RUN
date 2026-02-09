@@ -91,7 +91,9 @@ export class QueryPlanValidator {
     let indexScans = 0;
 
     const traversePlan = (node: any) => {
-      if (!node) return;
+      if (!node) {
+        return;
+      }
 
       const nodeType = node["Node Type"];
 
@@ -131,7 +133,9 @@ export class QueryPlanValidator {
     let totalRows = 0;
 
     const traversePlan = (node: any) => {
-      if (!node) return;
+      if (!node) {
+        return;
+      }
 
       if (node["Actual Rows"]) {
         totalRows += node["Actual Rows"];

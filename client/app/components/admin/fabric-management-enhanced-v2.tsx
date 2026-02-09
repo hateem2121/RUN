@@ -219,11 +219,17 @@ export default function FabricManagementEnhancedV2() {
 
   // Helper function to convert string values to numbers for comparison
   const parseNumericValue = useCallback((value: string | number | null): number | null => {
-    if (value === null || value === undefined) return null;
-    if (typeof value === "number") return value;
+    if (value === null || value === undefined) {
+      return null;
+    }
+    if (typeof value === "number") {
+      return value;
+    }
     if (typeof value === "string") {
       // Handle empty strings
-      if (value.trim() === "") return null;
+      if (value.trim() === "") {
+        return null;
+      }
       // Try to extract the first number from the string (handles ranges like "180-220")
       const match = value.match(/(\d+(?:\.\d+)?)/);
       return match?.[1] ? parseFloat(match[1]) : null;
@@ -263,7 +269,9 @@ export default function FabricManagementEnhancedV2() {
     queryKey: MediaQueryKeys.list,
     queryFn: async () => {
       const response = await fetch("/api/media");
-      if (!response.ok) throw new Error("Failed to fetch media");
+      if (!response.ok) {
+        throw new Error("Failed to fetch media");
+      }
       return response.json();
     },
   });
@@ -279,39 +287,63 @@ export default function FabricManagementEnhancedV2() {
           fabric.fabricType?.toLowerCase().includes(searchLower) ||
           (fabric.properties &&
             JSON.stringify(fabric.properties).toLowerCase().includes(searchLower));
-        if (!matchesSearch) return false;
+        if (!matchesSearch) {
+          return false;
+        }
       }
 
       // Status filter
       if (filters.status !== "all") {
-        if (filters.status === "active" && !fabric.isActive) return false;
-        if (filters.status === "inactive" && fabric.isActive) return false;
+        if (filters.status === "active" && !fabric.isActive) {
+          return false;
+        }
+        if (filters.status === "inactive" && fabric.isActive) {
+          return false;
+        }
       }
 
       // Weight category filter
       if (filters.weightCategory !== "all" && fabric.weight) {
         const weight = parseNumericValue(fabric.weight);
         if (weight !== null) {
-          if (filters.weightCategory === "light" && weight >= 150) return false;
-          if (filters.weightCategory === "medium" && (weight < 150 || weight > 300)) return false;
-          if (filters.weightCategory === "heavy" && weight <= 300) return false;
+          if (filters.weightCategory === "light" && weight >= 150) {
+            return false;
+          }
+          if (filters.weightCategory === "medium" && (weight < 150 || weight > 300)) {
+            return false;
+          }
+          if (filters.weightCategory === "heavy" && weight <= 300) {
+            return false;
+          }
         }
       }
 
       // Sustainability filter
       if (filters.sustainability !== "all") {
         const score = parseNumericValue(fabric.sustainabilityScore || "");
-        if (filters.sustainability === "highSustainability" && (!score || score < 4)) return false;
-        if (filters.sustainability === "mediumSustainability" && score !== 3) return false;
-        if (filters.sustainability === "lowSustainability" && (!score || score > 2)) return false;
-        if (filters.sustainability === "unrated" && score) return false;
+        if (filters.sustainability === "highSustainability" && (!score || score < 4)) {
+          return false;
+        }
+        if (filters.sustainability === "mediumSustainability" && score !== 3) {
+          return false;
+        }
+        if (filters.sustainability === "lowSustainability" && (!score || score > 2)) {
+          return false;
+        }
+        if (filters.sustainability === "unrated" && score) {
+          return false;
+        }
       }
 
       // Certification filter
       if (filters.certification !== "all") {
         const hasCerts = fabric.certifications && fabric.certifications.length > 0;
-        if (filters.certification === "certified" && !hasCerts) return false;
-        if (filters.certification === "uncertified" && hasCerts) return false;
+        if (filters.certification === "certified" && !hasCerts) {
+          return false;
+        }
+        if (filters.certification === "uncertified" && hasCerts) {
+          return false;
+        }
       }
 
       return true;
@@ -515,7 +547,9 @@ export default function FabricManagementEnhancedV2() {
   // Media picker handlers
   const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
     const selectedAsset = Array.isArray(assets) ? assets[0] : assets;
-    if (!selectedAsset) return;
+    if (!selectedAsset) {
+      return;
+    }
 
     if (selectedAsset?.id) {
       setFormData((prev) => ({
@@ -659,11 +693,15 @@ export default function FabricManagementEnhancedV2() {
     // Validate compositions - ensure all fibers have valid fiberIds
     for (let i = 0; i < formData.compositions.length; i++) {
       const composition = formData.compositions[i];
-      if (!composition) continue;
+      if (!composition) {
+        continue;
+      }
 
       for (let j = 0; j < composition.fibers.length; j++) {
         const fiber = composition.fibers[j];
-        if (!fiber) continue;
+        if (!fiber) {
+          continue;
+        }
 
         if (!fiber.fiberId) {
           toast({
@@ -678,7 +716,9 @@ export default function FabricManagementEnhancedV2() {
 
     // Helper function to convert empty strings to undefined for optional fields
     const cleanEmptyStrings = (value: unknown) => {
-      if (value === "" || value === null) return undefined;
+      if (value === "" || value === null) {
+        return undefined;
+      }
       return value;
     };
 
@@ -1105,7 +1145,9 @@ export default function FabricManagementEnhancedV2() {
                                 <Badge
                                   variant={(() => {
                                     const weight = parseNumericValue(fabric.weight);
-                                    if (!weight) return "default";
+                                    if (!weight) {
+                                      return "default";
+                                    }
                                     return weight < 150
                                       ? "secondary"
                                       : weight < 300

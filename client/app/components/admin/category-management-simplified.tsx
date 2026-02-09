@@ -75,28 +75,36 @@ export default function CategoryManagementSimplified() {
   };
 
   const handleUpdateCategory = async (data: Partial<InsertCategory>) => {
-    if (!uiState.editingCategory) return;
+    if (!uiState.editingCategory) {
+      return;
+    }
     try {
       await updateCategory({ id: uiState.editingCategory.id, data });
     } catch (_error) {}
   };
 
   const handleDeleteCategory = async () => {
-    if (!uiState.deletingCategory) return;
+    if (!uiState.deletingCategory) {
+      return;
+    }
     try {
       await deleteCategory(uiState.deletingCategory.id);
     } catch (_error) {}
   };
 
   const handleRestoreCategory = async () => {
-    if (!uiState.restoringCategory) return;
+    if (!uiState.restoringCategory) {
+      return;
+    }
     try {
       await restoreCategory(uiState.restoringCategory.id);
     } catch (_error) {}
   };
 
   const handleHardDeleteCategory = async () => {
-    if (!uiState.hardDeletingCategory) return;
+    if (!uiState.hardDeletingCategory) {
+      return;
+    }
     try {
       await hardDeleteCategory(uiState.hardDeletingCategory.id);
     } catch (_error) {}

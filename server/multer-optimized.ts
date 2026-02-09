@@ -19,7 +19,9 @@ const MAGIC_NUMBERS = {
 } as const;
 
 function matchesMagicNumber(buffer: Buffer, signature: readonly number[]): boolean {
-  if (buffer.length < signature.length) return false;
+  if (buffer.length < signature.length) {
+    return false;
+  }
   return signature.every((byte, index) => buffer[index] === byte);
 }
 

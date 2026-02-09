@@ -5,12 +5,18 @@
 
 import { and, asc, desc, eq, inArray, isNull, like, ne, or, sql } from "drizzle-orm";
 import type {
+  Accessory,
   Category,
+  Certificate,
+  Fabric,
+  Fiber,
   InsertCategory,
   InsertProduct,
+  MediaAsset,
   Product,
   ProductDetail,
   ProductSummary,
+  SizeChart,
 } from "../../../../shared/schema.js";
 import {
   accessories,
@@ -35,6 +41,28 @@ const miscRepo = new MiscRepository();
 
 // Re-export ProductSummary and ProductDetail for callers
 export type { ProductSummary, ProductDetail };
+
+export interface ProductDetailWithContext {
+  product: ProductDetail & { canonicalUrl: string | null };
+  context: {
+    category: Category | null;
+    subcategory: Category | null;
+    categoryTree: Category[];
+    breadcrumb: Array<{ id: number; name: string; url: string }>;
+    fabric: Fabric | null;
+    certificates: Certificate[];
+    sizeChart: SizeChart | null;
+    accessories: Accessory[];
+    fibers: Fiber[];
+  };
+  media: any[];
+  relatedProducts: ProductSummary[];
+  categoryProducts: ProductSummary[];
+  navigation: {
+    previousProduct: ProductSummary | null;
+    nextProduct: ProductSummary | null;
+  };
+}
 
 // CHUNK 34: Cache TTL optimized by data volatility - products change moderately
 const PRODUCT_CACHE_TTL = 60 * 60 * 1000; // 60 minutes - Extended for better cache hit rates (900s)
@@ -276,7 +304,9 @@ export class ProductRepository {
   async getProductCount(): Promise<number> {
     const cacheKey = CacheKeys.products.totalCount();
     const cached = await unifiedCache.get<number>(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
 
     const result = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -299,7 +329,9 @@ export class ProductRepository {
   async getProductsByCategoryCount(categoryId: number): Promise<number> {
     const cacheKey = `products:count:category:${categoryId}`;
     const cached = await unifiedCache.get<number>(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
 
     const result = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -320,7 +352,9 @@ export class ProductRepository {
   async getProductsByTagCount(tag: string): Promise<number> {
     const cacheKey = `products:count:tag:${tag}`;
     const cached = await unifiedCache.get<number>(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
 
     const result = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -341,7 +375,9 @@ export class ProductRepository {
   async searchProductsCount(query: string): Promise<number> {
     const cacheKey = `products:count:search:${query}`;
     const cached = await unifiedCache.get<number>(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
 
     const result = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -399,21 +435,23 @@ export class ProductRepository {
     return product;
   }
 
-  async getProductByPath(urlPath: string): Promise<any> {
+  async getProductByPath(urlPath: string): Promise<ProductDetailWithContext | null> {
     const cacheKey = `product:by-path:${urlPath}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getProductByPath");
 
-    const cached = await unifiedCache.get<any>(cacheKey);
+    const cached = await unifiedCache.get<ProductDetailWithContext | { __notFound: true }>(
+      cacheKey,
+    );
     if (cached) {
       // Check if this is a cached 404 (negative cache)
-      if ((cached as any).__notFound === true) {
+      if ("__notFound" in cached && cached.__notFound === true) {
         logger.info(`[ProductRepo] ✅ Cache HIT (404) for product path: ${urlPath}`);
         perfTracker.setCacheHit(true).complete();
         return null;
       }
       logger.info(`[ProductRepo] ✅ Cache HIT for product path: ${urlPath}`);
       perfTracker.setCacheHit(true).complete();
-      return cached;
+      return cached as ProductDetailWithContext;
     }
     logger.info(`[ProductRepo] ❌ Cache MISS for product path: ${urlPath} - querying database`);
 
@@ -602,13 +640,15 @@ export class ProductRepository {
       const accessoriesData = accessoriesResult || [];
 
       // Build category tree and breadcrumb
-      const categoryTree: any[] = [];
+      const categoryTree: Category[] = [];
       if (category) {
         categoryTree.push(category);
-        if (subcategory) categoryTree.unshift(subcategory);
+        if (subcategory) {
+          categoryTree.unshift(subcategory);
+        }
       }
 
-      const breadcrumb = categoryTree.map((cat: any) => ({
+      const breadcrumb = categoryTree.map((cat) => ({
         id: cat.id,
         name: cat.name,
         url: `/categories/${cat.slug || cat.name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -623,10 +663,11 @@ export class ProductRepository {
       // Navigation: Find current product in batch (might be -1 if product not in top 12)
       const currentIndex = allCategoryProductsResult.findIndex((p) => p.id === product.id);
       // Guard: Only set navigation if current product found in batch
-      const previousProduct = currentIndex > 0 ? allCategoryProductsResult[currentIndex - 1] : null;
+      const previousProduct =
+        currentIndex > 0 ? allCategoryProductsResult[currentIndex - 1] || null : null;
       const nextProduct =
         currentIndex >= 0 && currentIndex < allCategoryProductsResult.length - 1
-          ? allCategoryProductsResult[currentIndex + 1]
+          ? allCategoryProductsResult[currentIndex + 1] || null
           : null;
 
       return {
@@ -715,7 +756,9 @@ export class ProductRepository {
       .where(eq(products.id, productId))
       .limit(1);
 
-    if (!sourceProduct.length || !sourceProduct[0]?.categoryId) return [];
+    if (!sourceProduct.length || !sourceProduct[0]?.categoryId) {
+      return [];
+    }
 
     return await db
       .select(PRODUCT_SUMMARY_COLUMNS)
@@ -755,7 +798,7 @@ export class ProductRepository {
       ...row,
       category: row.categoryName ? { name: row.categoryName } : null,
       primaryImage: row.primaryImageUrl ? { url: row.primaryImageUrl } : null,
-    })) as any;
+    })) as unknown as ProductSummary[];
   }
 
   async searchProducts(
@@ -788,7 +831,9 @@ export class ProductRepository {
         const dbInstance = tx || db;
         const [created] = await dbInstance.insert(products).values(product).returning();
 
-        if (!created) throw new Error("Failed to create product");
+        if (!created) {
+          throw new Error("Failed to create product");
+        }
 
         if (!tx) {
           await this.invalidateProductCache();
@@ -909,14 +954,14 @@ export class ProductRepository {
       }
     }
 
-    const result = (await query) as any[];
+    const result = (await query) as Category[];
 
     try {
       await unifiedCache.set(cacheKey, result, CATEGORY_CACHE_TTL, "data");
     } catch (error) {
       logger.debug("[Cache] Failed to set cache:", error);
     }
-    return result as Category[];
+    return result;
   }
 
   async getCategory(id: number): Promise<Category | undefined> {
@@ -1014,7 +1059,9 @@ export class ProductRepository {
   async getCategoriesCount(): Promise<number> {
     const cacheKey = "categories:count";
     const cached = await unifiedCache.get<number>(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
 
     const result = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -1180,12 +1227,12 @@ export class ProductRepository {
    * PHASE 4: Fetch 3D model metadata ONLY when user activates the viewer
    * This reduces NEON database queries by 90% (only fetched for viewers)
    */
-  async get3DModelMetadata(productId: number): Promise<any | null> {
+  async get3DModelMetadata(productId: number): Promise<MediaAsset | null> {
     const cacheKey = `product:${productId}:3d-model`;
     const perfTracker = queryPerformanceMonitor.startQuery("get3DModelMetadata");
 
     // Check cache first
-    const cached = await unifiedCache.get<any>(cacheKey);
+    const cached = await unifiedCache.get<MediaAsset>(cacheKey);
     if (cached) {
       perfTracker.setCacheHit(true).complete();
       return cached;

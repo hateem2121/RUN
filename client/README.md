@@ -4,7 +4,7 @@ This directory contains the frontend application code for the RUN Apparel B2B Pl
 
 ## ⚠️ Important Note
 
-**Please refer to the [Root README](../../README.md) for all documentation, including:**
+**Please refer to the [Root README](../README.md) for all documentation, including:**
 
 -   **Installation & Setup**
 -   **Development Scripts** (`npm run dev`)
@@ -16,6 +16,6 @@ This project is a monorepo managed by TurboRepo. All operational commands should
 
 ## Quick Links
 
--   [System Overview](../../docs/overview.md)
--   [Styling Guide](../../docs/development/styling.md)
--   [Component Library](../../client/app/components/ui/)
+-   [System Overview](../docs/overview.md)
+-   [Styling Guide](../docs/development/styling.md)
+-   [Component Library](../client/app/components/ui/)

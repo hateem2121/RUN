@@ -440,10 +440,13 @@ export const enhancedUploadService = {
 
     // Determine file type from MIME type
     let type = "document";
-    if (session.mimeType.startsWith("image/")) type = "image";
-    else if (session.mimeType.startsWith("video/")) type = "video";
-    else if (session.mimeType.includes("gltf") || session.mimeType.startsWith("model/"))
+    if (session.mimeType.startsWith("image/")) {
+      type = "image";
+    } else if (session.mimeType.startsWith("video/")) {
+      type = "video";
+    } else if (session.mimeType.includes("gltf") || session.mimeType.startsWith("model/")) {
       type = "model";
+    }
 
     // Generate organized storage path with automatic slugification
     // Format: {partition}/media/{type}/{yyyy}/{mm}/{timestamp}-{slugified-filename}.{ext}

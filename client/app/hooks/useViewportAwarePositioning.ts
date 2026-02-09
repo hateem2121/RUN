@@ -54,7 +54,9 @@ export function useViewportAwarePositioning() {
 
   // Debounced viewport update to prevent excessive recalculations
   const updateViewport = useCallback(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     const newViewport: ViewportDimensions = {
       width: window.outerWidth,
@@ -78,7 +80,9 @@ export function useViewportAwarePositioning() {
 
   // Optimized event listeners with passive options for better performance
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     let timeoutId: NodeJS.Timeout;
 
@@ -120,15 +124,23 @@ export function useViewportAwarePositioning() {
   const deviceType = useMemo(() => {
     const { innerWidth } = viewport;
 
-    if (innerWidth <= 480) return "mobile";
-    if (innerWidth <= 768) return "tablet";
-    if (innerWidth <= 1024) return "laptop";
+    if (innerWidth <= 480) {
+      return "mobile";
+    }
+    if (innerWidth <= 768) {
+      return "tablet";
+    }
+    if (innerWidth <= 1024) {
+      return "laptop";
+    }
     return "desktop";
   }, [viewport]);
 
   // Optimized safe area calculation for modern devices
   const safeArea = useMemo(() => {
-    if (typeof window === "undefined") return { top: 0, right: 0, bottom: 0, left: 0 };
+    if (typeof window === "undefined") {
+      return { top: 0, right: 0, bottom: 0, left: 0 };
+    }
 
     const computedStyle = getComputedStyle(document.documentElement);
 
@@ -344,7 +356,9 @@ export function useViewportAwarePositioning() {
    * Check if device supports advanced positioning features
    */
   const supportsAdvancedPositioning = useMemo(() => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined") {
+      return false;
+    }
 
     return {
       visualViewport: "visualViewport" in window,

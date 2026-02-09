@@ -14,7 +14,9 @@ const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   const magnetRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!magnetRef.current) return;
+    if (!magnetRef.current) {
+      return;
+    }
 
     const magnet = magnetRef.current;
 

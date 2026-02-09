@@ -155,7 +155,9 @@ export default function CategoriesPage() {
   const [, setMediaBatchLoading] = useState(false);
 
   useEffect(() => {
-    if (allMediaIds.length === 0) return;
+    if (allMediaIds.length === 0) {
+      return;
+    }
 
     const fetchBatchedMedia = async () => {
       setMediaBatchLoading(true);
@@ -189,11 +191,15 @@ export default function CategoriesPage() {
 
   // Helper: Extract numeric media ID from either numeric string or /api/media/:id/content URL
   const extractMediaId = (mediaUrl: string | null | undefined): number | null => {
-    if (!mediaUrl) return null;
+    if (!mediaUrl) {
+      return null;
+    }
 
     // Try direct numeric parse first
     const directId = parseInt(mediaUrl, 10);
-    if (!Number.isNaN(directId)) return directId;
+    if (!Number.isNaN(directId)) {
+      return directId;
+    }
 
     // Extract from /api/media/:id/content or /api/media/:id/ pattern
     const match = mediaUrl.match(/\/api\/media\/(\d+)/);
@@ -438,7 +444,9 @@ export default function CategoriesPage() {
                                 {/* Media Background - 3D Model or Image */}
                                 {getMediaUrl(featuredContent.card4.mediaUrl) &&
                                   (() => {
-                                    const resolvedUrl = getMediaUrl(featuredContent.card4!.mediaUrl)!;
+                                    const resolvedUrl = getMediaUrl(
+                                      featuredContent.card4!.mediaUrl,
+                                    )!;
                                     const mediaId = extractMediaId(featuredContent.card4!.mediaUrl);
                                     const mimeType = mediaId
                                       ? mediaMimeTypes.get(mediaId)

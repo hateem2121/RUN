@@ -198,9 +198,13 @@ export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
   const { data: specificProcessMedia } = useQuery({
     queryKey: [`/api/media/bulk`, processForm.mediaIds],
     queryFn: async () => {
-      if (!processForm.mediaIds.length) return [];
+      if (!processForm.mediaIds.length) {
+        return [];
+      }
       const response = await fetch(`/api/media?ids=${processForm.mediaIds.join(",")}`);
-      if (!response.ok) return [];
+      if (!response.ok) {
+        return [];
+      }
       const result = await response.json();
       return result.success ? result.data.data : [];
     },

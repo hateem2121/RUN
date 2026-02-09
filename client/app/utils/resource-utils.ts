@@ -7,7 +7,9 @@ export function groupByCategory<T extends { category?: string; type?: string }>(
   return items.reduce(
     (acc, item) => {
       const groupKey = item[key] || "Other";
-      if (!acc[groupKey]) acc[groupKey] = [];
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
+      }
       acc[groupKey].push(item);
       return acc;
     },
@@ -38,6 +40,8 @@ export function filterByActiveStatus<T extends { active?: boolean }>(
   items: T[],
   activeOnly: boolean = false,
 ): T[] {
-  if (!activeOnly) return items;
+  if (!activeOnly) {
+    return items;
+  }
   return items.filter((item) => item.active !== false);
 }

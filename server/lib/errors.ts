@@ -50,11 +50,7 @@ export class ForbiddenError extends AppError {
 }
 
 export class NotFoundError extends AppError {
-  constructor(
-    resource: string,
-    details?: Record<string, unknown>,
-    options?: { cause?: unknown },
-  ) {
+  constructor(resource: string, details?: Record<string, unknown>, options?: { cause?: unknown }) {
     super(`${resource} not found`, 404, "RESOURCE_NOT_FOUND", true, details, options);
   }
 }

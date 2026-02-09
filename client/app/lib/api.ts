@@ -30,18 +30,32 @@ export class ApiError extends Error {
     this.retryAfter = data.retryAfter || 1000;
 
     // Explicit mappings for ProblemDetails
-    if (data.title) this.title = data.title;
-    if (data.detail) this.detail = data.detail;
-    if (data.type) this.type = data.type;
-    if (data.instance) this.instance = data.instance;
-    if (data.requestId) this.requestId = data.requestId;
+    if (data.title) {
+      this.title = data.title;
+    }
+    if (data.detail) {
+      this.detail = data.detail;
+    }
+    if (data.type) {
+      this.type = data.type;
+    }
+    if (data.instance) {
+      this.instance = data.instance;
+    }
+    if (data.requestId) {
+      this.requestId = data.requestId;
+    }
 
     // Map AppError code (support flattened or nested)
     const code = data.code || data.error?.code;
-    if (code) this.code = code;
+    if (code) {
+      this.code = code;
+    }
 
     // Handle extensions
-    if (data["invalid-params"]) this.invalidParams = data["invalid-params"];
+    if (data["invalid-params"]) {
+      this.invalidParams = data["invalid-params"];
+    }
   }
 
   /**
@@ -76,7 +90,7 @@ export async function apiRequest<T>(
   // SSR Support: Prepend localhost for relative URLs on server
   let url = endpoint;
   if (typeof window === "undefined" && url.startsWith("/")) {
-    const port = parseInt(process.env.PORT || "5002");
+    const port = parseInt(process.env.PORT || "5002", 10);
     url = `http://localhost:${port}${url}`;
   }
 

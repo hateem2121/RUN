@@ -35,7 +35,9 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
 
   // Initialize map on mount
   const initializeMap = useCallback(async () => {
-    if (!containerRef.current || mapInstanceRef.current) return;
+    if (!containerRef.current || mapInstanceRef.current) {
+      return;
+    }
 
     try {
       // Dynamically import Leaflet
@@ -72,7 +74,9 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
       const markers: LeafletMarker[] = [];
 
       locations.forEach((location) => {
-        if (!location.isActive) return;
+        if (!location.isActive) {
+          return;
+        }
 
         const color = location.type === "facility" ? "#16a34a" : "#2563eb";
 
@@ -110,7 +114,6 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
       mapInstanceRef.current = { map, markers, tileLayer };
       setIsLoaded(true);
     } catch (err) {
-      console.error("Failed to initialize map:", err);
       setError(err instanceof Error ? err.message : "Failed to load map");
     }
   }, [locations]);
@@ -133,7 +136,9 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
 
   // Handle layer toggle
   const toggleLayer = useCallback(async () => {
-    if (!mapInstanceRef.current) return;
+    if (!mapInstanceRef.current) {
+      return;
+    }
 
     const L = await import("leaflet");
     const { map, tileLayer } = mapInstanceRef.current;

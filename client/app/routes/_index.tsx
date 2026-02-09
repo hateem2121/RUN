@@ -2,12 +2,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import CustomCursor from "@/components/ui/CustomCursor";
+import Hero from "@/components/homepage/Hero";
 import Preloader from "@/components/homepage/Preloader";
+import CustomCursor from "@/components/ui/CustomCursor";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-
-import Hero from "@/components/homepage/Hero";
 
 // Lazy Load Heavy Components (Below Fold)
 const Categories = lazy(() => import("@/components/homepage/Categories"));

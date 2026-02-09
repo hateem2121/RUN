@@ -5,7 +5,6 @@
 
 import express from "express";
 import { z } from "zod";
-import { insertInquirySchema } from "../../shared/schema.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
@@ -38,7 +37,7 @@ router.post("/inquiries", async (req, res) => {
       // Optional defaults
       phone: null,
       country: null,
-      preferredPlatform: null
+      preferredPlatform: null,
     };
 
     const inquiry = await storage.createInquiry(inquiryData);

@@ -11,7 +11,9 @@ interface AnimatedScrollProps {
 
 // Helper function to get media URL
 const getMediaUrl = (mediaId: number | undefined, mediaAssets: MediaAsset[]): string | null => {
-  if (!mediaId) return null;
+  if (!mediaId) {
+    return null;
+  }
   const asset = mediaAssets.find((a) => a.id === mediaId);
   return MediaUrlBuilder.buildContentUrl(asset?.id);
 };
@@ -77,16 +79,22 @@ export default function AnimatedScroll({
   const finalNumOfPages = pages.length;
 
   const navigateUp = useCallback(() => {
-    if (currentPage > 1) setCurrentPage((p) => p - 1);
+    if (currentPage > 1) {
+      setCurrentPage((p) => p - 1);
+    }
   }, [currentPage]);
 
   const navigateDown = useCallback(() => {
-    if (currentPage < finalNumOfPages) setCurrentPage((p) => p + 1);
+    if (currentPage < finalNumOfPages) {
+      setCurrentPage((p) => p + 1);
+    }
   }, [currentPage, finalNumOfPages]);
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
-      if (scrolling.current) return;
+      if (scrolling.current) {
+        return;
+      }
       scrolling.current = true;
       e.deltaY > 0 ? navigateDown() : navigateUp();
       setTimeout(() => {
@@ -98,7 +106,9 @@ export default function AnimatedScroll({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (scrolling.current) return;
+      if (scrolling.current) {
+        return;
+      }
       if (e.key === "ArrowUp") {
         scrolling.current = true;
         navigateUp();

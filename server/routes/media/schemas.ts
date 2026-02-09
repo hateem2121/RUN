@@ -30,7 +30,16 @@ export const FolderCreateSchema = z.object({
 
 export const FolderUpdateSchema = z.object({
   name: z.string().min(1).max(255).optional(),
-  parentId: z.coerce.number().optional(),
+  parentId: z.coerce.number().optional().nullable(),
+});
+
+export const MediaUpdateSchema = z.object({
+  filename: z.string().optional(),
+  altText: z.string().optional().nullable(),
+  caption: z.string().optional().nullable(),
+  folderId: z.coerce.number().optional().nullable(),
+  isPublic: z.boolean().optional(),
+  metadata: z.any().optional(),
 });
 
 export const PerformanceQuerySchema = z.object({

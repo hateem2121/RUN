@@ -53,7 +53,9 @@ export class GoogleAnalytics {
    * Initialize Google Analytics 4
    */
   private initialize(): void {
-    if (this.isInitialized || typeof window === "undefined") return;
+    if (this.isInitialized || typeof window === "undefined") {
+      return;
+    }
 
     try {
       // Initialize dataLayer
@@ -103,7 +105,9 @@ export class GoogleAnalytics {
     title?: string,
     customParams?: GAPageView["custom_parameters"],
   ): void {
-    if (!this.isEnabled || !this.isInitialized) return;
+    if (!this.isEnabled || !this.isInitialized) {
+      return;
+    }
 
     const pageData: GAPageView = {
       page_path: path || window.location.pathname,
@@ -127,7 +131,9 @@ export class GoogleAnalytics {
    * Track custom events
    */
   public trackEvent(eventData: GAEvent): void {
-    if (!this.isEnabled || !this.isInitialized) return;
+    if (!this.isEnabled || !this.isInitialized) {
+      return;
+    }
 
     window.gtag("event", eventData.action, {
       event_category: eventData.category,
@@ -144,7 +150,9 @@ export class GoogleAnalytics {
    * Track performance metrics (Core Web Vitals)
    */
   public trackPagePerformance(): void {
-    if (!this.isEnabled || typeof window === "undefined") return;
+    if (!this.isEnabled || typeof window === "undefined") {
+      return;
+    }
 
     // Track Core Web Vitals
     const trackWebVital = (name: string, value: number, id: string) => {

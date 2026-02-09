@@ -378,70 +378,107 @@ export function UnifiedSustainabilityManagement() {
     const cleanedData: Partial<UnifiedSustainability> = {};
 
     // Core fields (database columns)
-    if (localForm.title !== undefined) cleanedData.title = localForm.title;
-    if (localForm.content !== undefined) cleanedData.content = localForm.content;
-    if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
+    if (localForm.title !== undefined) {
+      cleanedData.title = localForm.title;
+    }
+    if (localForm.content !== undefined) {
+      cleanedData.content = localForm.content;
+    }
+    if (localForm.isActive !== undefined) {
+      cleanedData.isActive = localForm.isActive;
+    }
 
     // Hero section fields (database columns at top-level, not in data JSONB)
     // These are stored in localForm.data['']* by UI but need to go to top-level columns
-    if (localForm.data?.headline !== undefined) cleanedData.headline = localForm.data.headline;
-    if (localForm.data?.subheadline !== undefined)
+    if (localForm.data?.headline !== undefined) {
+      cleanedData.headline = localForm.data.headline;
+    }
+    if (localForm.data?.subheadline !== undefined) {
       cleanedData.subheadline = localForm.data.subheadline;
-    if (localForm.data?.backgroundMediaId !== undefined)
+    }
+    if (localForm.data?.backgroundMediaId !== undefined) {
       cleanedData.backgroundImageId = localForm.data.backgroundMediaId;
-    if (localForm.data?.ctaText !== undefined) cleanedData.ctaText = localForm.data.ctaText;
-    if (localForm.data?.ctaLink !== undefined) cleanedData.ctaLink = localForm.data.ctaLink;
+    }
+    if (localForm.data?.ctaText !== undefined) {
+      cleanedData.ctaText = localForm.data.ctaText;
+    }
+    if (localForm.data?.ctaLink !== undefined) {
+      cleanedData.ctaLink = localForm.data.ctaLink;
+    }
 
     // Features Section
-    if (localForm.featuresTitle !== undefined) cleanedData.featuresTitle = localForm.featuresTitle;
-    if (localForm.featuresDescription !== undefined)
+    if (localForm.featuresTitle !== undefined) {
+      cleanedData.featuresTitle = localForm.featuresTitle;
+    }
+    if (localForm.featuresDescription !== undefined) {
       cleanedData.featuresDescription = localForm.featuresDescription;
+    }
 
     // Fabric Portfolio Section
-    if (localForm.fabricPortfolioTitle !== undefined)
+    if (localForm.fabricPortfolioTitle !== undefined) {
       cleanedData.fabricPortfolioTitle = localForm.fabricPortfolioTitle;
-    if (localForm.fabricPortfolioDescription !== undefined)
+    }
+    if (localForm.fabricPortfolioDescription !== undefined) {
       cleanedData.fabricPortfolioDescription = localForm.fabricPortfolioDescription;
+    }
 
     // Call To Action Section
-    if (localForm.callToActionTitle !== undefined)
+    if (localForm.callToActionTitle !== undefined) {
       cleanedData.callToActionTitle = localForm.callToActionTitle;
-    if (localForm.callToActionDescription !== undefined)
+    }
+    if (localForm.callToActionDescription !== undefined) {
       cleanedData.callToActionDescription = localForm.callToActionDescription;
-    if (localForm.callToActionButtonText !== undefined)
+    }
+    if (localForm.callToActionButtonText !== undefined) {
       cleanedData.callToActionButtonText = localForm.callToActionButtonText;
-    if (localForm.callToActionButtonLink !== undefined)
+    }
+    if (localForm.callToActionButtonLink !== undefined) {
       cleanedData.callToActionButtonLink = localForm.callToActionButtonLink;
+    }
 
     // Section Headers
-    if (localForm.metricsTitle !== undefined) cleanedData.metricsTitle = localForm.metricsTitle;
-    if (localForm.metricsDescription !== undefined)
+    if (localForm.metricsTitle !== undefined) {
+      cleanedData.metricsTitle = localForm.metricsTitle;
+    }
+    if (localForm.metricsDescription !== undefined) {
       cleanedData.metricsDescription = localForm.metricsDescription;
-    if (localForm.certificationsTitle !== undefined)
+    }
+    if (localForm.certificationsTitle !== undefined) {
       cleanedData.certificationsTitle = localForm.certificationsTitle;
-    if (localForm.certificationsDescription !== undefined)
+    }
+    if (localForm.certificationsDescription !== undefined) {
       cleanedData.certificationsDescription = localForm.certificationsDescription;
-    if (localForm.certificationsFooterNote !== undefined)
+    }
+    if (localForm.certificationsFooterNote !== undefined) {
       cleanedData.certificationsFooterNote = localForm.certificationsFooterNote;
-    if (localForm.initiativesTitle !== undefined)
+    }
+    if (localForm.initiativesTitle !== undefined) {
       cleanedData.initiativesTitle = localForm.initiativesTitle;
-    if (localForm.initiativesDescription !== undefined)
+    }
+    if (localForm.initiativesDescription !== undefined) {
       cleanedData.initiativesDescription = localForm.initiativesDescription;
-    if (localForm.goalsTitle !== undefined) cleanedData.goalsTitle = localForm.goalsTitle;
-    if (localForm.goalsDescription !== undefined)
+    }
+    if (localForm.goalsTitle !== undefined) {
+      cleanedData.goalsTitle = localForm.goalsTitle;
+    }
+    if (localForm.goalsDescription !== undefined) {
       cleanedData.goalsDescription = localForm.goalsDescription;
+    }
 
     // Certification IDs (database column, JSONB array)
-    if (localForm.data?.certificationIds !== undefined)
+    if (localForm.data?.certificationIds !== undefined) {
       cleanedData.certificationIds = localForm.data.certificationIds;
+    }
 
     // JSONB data field - legacy/extra fields
     // biome-ignore lint/suspicious/noExplicitAny: Legacy JSONB data structure is dynamic
     const dataFields: Record<string, any> = {};
-    if (localForm.data?.highlightedFeatures !== undefined)
+    if (localForm.data?.highlightedFeatures !== undefined) {
       dataFields.highlightedFeatures = localForm.data.highlightedFeatures;
-    if (localForm.data?.statistics !== undefined && localForm.data.statistics !== null)
+    }
+    if (localForm.data?.statistics !== undefined && localForm.data.statistics !== null) {
       dataFields.statistics = localForm.data.statistics;
+    }
     if (
       localForm.data?.impactMetrics &&
       typeof localForm.data.impactMetrics === "object" &&
@@ -449,10 +486,12 @@ export function UnifiedSustainabilityManagement() {
     ) {
       dataFields.impactMetrics = localForm.data.impactMetrics;
     }
-    if (localForm.data?.initiatives !== undefined && localForm.data.initiatives !== null)
+    if (localForm.data?.initiatives !== undefined && localForm.data.initiatives !== null) {
       dataFields.initiatives = localForm.data.initiatives;
-    if (localForm.data?.goals !== undefined && localForm.data.goals !== null)
+    }
+    if (localForm.data?.goals !== undefined && localForm.data.goals !== null) {
       dataFields.goals = localForm.data.goals;
+    }
 
     if (Object.keys(dataFields).length > 0) {
       cleanedData.data = dataFields;

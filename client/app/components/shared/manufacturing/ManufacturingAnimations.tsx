@@ -77,10 +77,14 @@ export function ConveyorBelt() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
 
     canvas.width = window.innerWidth;
     canvas.height = 100;
@@ -89,7 +93,9 @@ export function ConveyorBelt() {
     let animationId: number;
 
     function drawBelt() {
-      if (!ctx || !canvas) return;
+      if (!ctx || !canvas) {
+        return;
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = "hsl(217 91% 60%)"; // matches --color-status-info
@@ -104,7 +110,9 @@ export function ConveyorBelt() {
       }
 
       offset += 2;
-      if (offset > 50) offset = 0;
+      if (offset > 50) {
+        offset = 0;
+      }
 
       animationId = requestAnimationFrame(drawBelt);
     }

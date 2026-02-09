@@ -187,7 +187,9 @@ const toRGB = (color: string): [number, number, number] => {
     const varName = c.match(/var\(([^)]+)\)/)?.[1];
     if (varName) {
       const resolved = getCssVar(varName);
-      if (resolved) c = resolved;
+      if (resolved) {
+        c = resolved;
+      }
     }
   }
 
@@ -226,14 +228,20 @@ const prepStops = (stops: string[]) => {
   const base = stops.slice(0, MAX_COLORS);
 
   // Ensure at least 2 colors for gradient
-  if (base.length === 1) base.push(base[0]!);
+  if (base.length === 1) {
+    base.push(base[0]!);
+  }
 
   // Pad array to MAX_COLORS for consistent shader uniforms
-  while (base.length < MAX_COLORS) base.push(base[base.length - 1]!);
+  while (base.length < MAX_COLORS) {
+    base.push(base[base.length - 1]!);
+  }
 
   // Convert to RGB arrays for WebGL
   const arr: [number, number, number][] = [];
-  for (let i = 0; i < MAX_COLORS; i++) arr.push(toRGB(base[i] || "#000000"));
+  for (let i = 0; i < MAX_COLORS; i++) {
+    arr.push(toRGB(base[i] || "#000000"));
+  }
 
   const count = Math.max(2, Math.min(MAX_COLORS, stops.length));
   return { arr, count };
@@ -316,13 +324,19 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
   // OPTIMIZED: Separate WebGL context creation from uniform updates
   // This prevents full rebuilds on every prop change
   useEffect(() => {
-    if (!webglSupport?.supported) return undefined;
+    if (!webglSupport?.supported) {
+      return undefined;
+    }
 
     const container = containerRef.current;
-    if (!container) return undefined;
+    if (!container) {
+      return undefined;
+    }
 
     try {
-      if (!container) return undefined;
+      if (!container) {
+        return undefined;
+      }
 
       const renderer = new Renderer({
         canvas: canvasRef.current!, // P1 FIX: Use React-managed canvas
@@ -549,7 +563,9 @@ void main() {
       ro.observe(container);
 
       const onPointerMove = (e: PointerEvent) => {
-        if (!canvasRef.current) return;
+        if (!canvasRef.current) {
+          return;
+        }
         const rect = canvasRef.current.getBoundingClientRect();
         const scale = (renderer as unknown as { dpr?: number }).dpr || 1;
         const x = (e.clientX - rect.left) * scale;
@@ -566,12 +582,16 @@ void main() {
         rafRef.current = requestAnimationFrame(loop);
         uniforms.iTime.value = t * 0.001;
         if (mouseDampening > 0) {
-          if (!lastTimeRef.current) lastTimeRef.current = t;
+          if (!lastTimeRef.current) {
+            lastTimeRef.current = t;
+          }
           const dt = (t - lastTimeRef.current) / 1000;
           lastTimeRef.current = t;
           const tau = Math.max(1e-4, mouseDampening);
           let factor = 1 - Math.exp(-dt / tau);
-          if (factor > 1) factor = 1;
+          if (factor > 1) {
+            factor = 1;
+          }
           const target = mouseTargetRef.current;
           const cur = uniforms.iMouse.value;
           cur[0] += (target[0] - cur[0]) * factor;
@@ -597,7 +617,9 @@ void main() {
       rafRef.current = requestAnimationFrame(loop);
 
       return () => {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current);
+        }
         if (canvasRef.current) {
           canvasRef.current.removeEventListener("pointermove", onPointerMove);
         }
@@ -644,7 +666,9 @@ void main() {
 
   // Separate effect for updating uniforms without rebuilding WebGL context
   useEffect(() => {
-    if (!webglSupport?.supported || !programRef.current) return;
+    if (!webglSupport?.supported || !programRef.current) {
+      return;
+    }
 
     const program = programRef.current;
 

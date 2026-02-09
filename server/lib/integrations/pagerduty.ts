@@ -189,7 +189,9 @@ export class PagerDutyService {
    */
   async alertOnServerError(error: Error, requestPath: string, statusCode: number): Promise<void> {
     // Only alert on 5xx errors
-    if (statusCode < 500) return;
+    if (statusCode < 500) {
+      return;
+    }
 
     const severity: PagerDutySeverity = statusCode >= 500 ? "error" : "warning";
 

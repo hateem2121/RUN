@@ -64,7 +64,7 @@ Instead of separating services by port, we use route prefixes:
 
 ```
 http://localhost:5002/          → Public frontend
-http://localhost:5002/api/      → Public API
+http://localhost:5002/api/v1/v1/      → Public API
 http://localhost:5002/admin/    → Admin panel
 http://localhost:5002/admin/api/→ Admin API
 ```
@@ -627,7 +627,7 @@ router.get('/health', (req, res) => {
 **Usage:**
 ```bash
 # Local health check
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/v1/health
 
 # Production health check (via Nginx)
 curl https://example.com/api/health
@@ -721,7 +721,7 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 export default function () {
-  const res = http.get('http://localhost:5002/api/products');
+  const res = http.get('http://localhost:5002/api/v1/v1/products');
   check(res, {
     'status is 200': (r) => r.status === 200,
     'response time < 500ms': (r) => r.timings.duration < 500,

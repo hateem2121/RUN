@@ -42,7 +42,9 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const goToNext = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isNavigating || totalItems <= 1) return;
+    if (isNavigating || totalItems <= 1) {
+      return;
+    }
 
     setCurrentImageIndex((prev) => (prev + 1) % totalItems);
     setIsNavigating(true);
@@ -52,7 +54,9 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const goToPrevious = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isNavigating || totalItems <= 1) return;
+    if (isNavigating || totalItems <= 1) {
+      return;
+    }
 
     setCurrentImageIndex((prev) => (prev - 1 + totalItems) % totalItems);
     setIsNavigating(true);
@@ -62,7 +66,9 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const goToIndex = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isNavigating || index === currentImageIndex) return;
+    if (isNavigating || index === currentImageIndex) {
+      return;
+    }
 
     setCurrentImageIndex(index);
     setIsNavigating(true);

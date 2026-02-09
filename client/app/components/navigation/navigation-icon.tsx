@@ -189,7 +189,8 @@ export const NavigationIcon = memo(function NavigationIcon({
   );
 
   // Determine which icon component to use
-  let SelectedIcon: React.LazyExoticComponent<React.ComponentType<{ className?: string }>> = IconHome;
+  let SelectedIcon: React.LazyExoticComponent<React.ComponentType<{ className?: string }>> =
+    IconHome;
 
   if (iconType === "fallback" && fallbackIcon) {
     const normalizedInput = fallbackIcon.toLowerCase().trim();

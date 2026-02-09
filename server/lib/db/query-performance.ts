@@ -386,7 +386,9 @@ export class QueryPerformanceMonitor {
     }) as any;
 
     const alertableCount = alertableMetrics.length;
-    if (alertableCount === 0) return false; // No alertable queries, system is healthy
+    if (alertableCount === 0) {
+      return false; // No alertable queries, system is healthy
+    }
 
     return stats.slowQueries / alertableCount > 0.1; // >10% of alertable queries are slow
   }
@@ -423,7 +425,9 @@ export class QueryPerformanceMonitor {
    */
   private async persistMetrics(): Promise<void> {
     const cache = this.getCache();
-    if (!cache) return; // Cache not available yet
+    if (!cache) {
+      return; // Cache not available yet
+    }
 
     try {
       const stats = this.getPerformanceStats();
@@ -442,7 +446,9 @@ export class QueryPerformanceMonitor {
    */
   private async storeAlert(alert: Record<string, unknown>): Promise<void> {
     const cache = this.getCache();
-    if (!cache) return; // Cache not available yet
+    if (!cache) {
+      return; // Cache not available yet
+    }
 
     try {
       const alertKey = `performance:alert:${Date.now()}`;

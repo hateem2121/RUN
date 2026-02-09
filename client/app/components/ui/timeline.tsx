@@ -23,10 +23,14 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
   // Optimized scroll progress using Intersection Observer instead of Framer Motion
   useEffect(() => {
-    if (!containerRef.current || !progressLineRef.current) return;
+    if (!containerRef.current || !progressLineRef.current) {
+      return;
+    }
 
     const updateProgress = () => {
-      if (!containerRef.current || !progressLineRef.current) return;
+      if (!containerRef.current || !progressLineRef.current) {
+        return;
+      }
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;

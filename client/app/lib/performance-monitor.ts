@@ -39,7 +39,9 @@ class PerformanceMonitor {
   }
 
   private initializeObservers() {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     // Core Web Vitals Observer
     if ("PerformanceObserver" in window) {
@@ -104,7 +106,9 @@ class PerformanceMonitor {
   }
 
   private measureRenderTime() {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     const startTime = performance.now();
 
@@ -116,7 +120,9 @@ class PerformanceMonitor {
   }
 
   private measureMemoryUsage() {
-    if (typeof window === "undefined" || typeof performance === "undefined") return;
+    if (typeof window === "undefined" || typeof performance === "undefined") {
+      return;
+    }
 
     if ("memory" in performance) {
       const memory = (performance as Performance & { memory: { usedJSHeapSize: number } }).memory;
@@ -176,26 +182,38 @@ class PerformanceMonitor {
 
     // FCP scoring (0-2s = good, 2-4s = needs improvement, 4s+ = poor)
     if (fcp) {
-      if (fcp > 4000) score -= 25;
-      else if (fcp > 2000) score -= 10;
+      if (fcp > 4000) {
+        score -= 25;
+      } else if (fcp > 2000) {
+        score -= 10;
+      }
     }
 
     // LCP scoring (0-2.5s = good, 2.5-4s = needs improvement, 4s+ = poor)
     if (lcp) {
-      if (lcp > 4000) score -= 25;
-      else if (lcp > 2500) score -= 15;
+      if (lcp > 4000) {
+        score -= 25;
+      } else if (lcp > 2500) {
+        score -= 15;
+      }
     }
 
     // FID scoring (0-100ms = good, 100-300ms = needs improvement, 300ms+ = poor)
     if (fid) {
-      if (fid > 300) score -= 20;
-      else if (fid > 100) score -= 10;
+      if (fid > 300) {
+        score -= 20;
+      } else if (fid > 100) {
+        score -= 10;
+      }
     }
 
     // CLS scoring (0-0.1 = good, 0.1-0.25 = needs improvement, 0.25+ = poor)
     if (cls) {
-      if (cls > 0.25) score -= 20;
-      else if (cls > 0.1) score -= 10;
+      if (cls > 0.25) {
+        score -= 20;
+      } else if (cls > 0.1) {
+        score -= 10;
+      }
     }
 
     return Math.max(0, score);

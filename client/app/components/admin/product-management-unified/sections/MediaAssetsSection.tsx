@@ -69,7 +69,9 @@ function SimpleMediaGrid({
   };
 
   const isPrimary = (asset: MediaAsset) => {
-    if (!asset || typeof asset.id !== "number") return false;
+    if (!asset || typeof asset.id !== "number") {
+      return false;
+    }
     return asset.type === "image" ? asset.id === primaryImageId : asset.id === primaryVideoId;
   };
 
@@ -182,7 +184,9 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
   };
 
   const handleMediaSelect = (value: MediaAsset | MediaAsset[] | number | number[] | undefined) => {
-    if (!currentMediaField || value === undefined) return;
+    if (!currentMediaField || value === undefined) {
+      return;
+    }
 
     // Extract IDs from MediaAsset objects or use numbers directly
     let ids: number[] = [];

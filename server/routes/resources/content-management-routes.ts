@@ -56,71 +56,79 @@ router.get("/contact-page-configuration", async (_req, res, next) => {
 
 // prettier-ignore
 // prettier-ignore
-router.post("/admin/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
-  const validation = insertContactPageConfigurationSchema.safeParse(req.body);
-  if (!validation.success) {
-    return next(
-      new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+router.post(
+  "/admin/contact-page-configuration",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+    if (!validation.success) {
+      return next(
+        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+      );
+    }
+
+    const result = await safeQuery(
+      withTimeout(
+        getStorage().createContactPageConfiguration(validation.data),
+        5000,
+        "Create contact page config",
+      ),
     );
-  }
 
-  const result = await safeQuery(
-    withTimeout(
-      getStorage().createContactPageConfiguration(validation.data),
-      5000,
-      "Create contact page config",
-    ),
-  );
+    if (result.isErr()) {
+      return next(result.error);
+    }
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+    // Invalidate contact page cache after successful creation
+    try {
+      await CacheOperations.invalidateContact();
+      logger.info("[Contact] ✅ Cache invalidated after contact page configuration creation");
+    } catch (err) {
+      logger.error("[Contact] ❌ Cache invalidation failed:", err);
+      // Don't throw - cache failure should not block DB mutation
+    }
 
-  // Invalidate contact page cache after successful creation
-  try {
-    await CacheOperations.invalidateContact();
-    logger.info("[Contact] ✅ Cache invalidated after contact page configuration creation");
-  } catch (err) {
-    logger.error("[Contact] ❌ Cache invalidation failed:", err);
-    // Don't throw - cache failure should not block DB mutation
-  }
-
-  return res.json(result.value);
-});
+    return res.json(result.value);
+  },
+);
 
 // prettier-ignore
 // prettier-ignore
-router.patch("/admin/contact-page-configuration", authService.requireAdmin, async (req, res, next) => {
-  const validation = insertContactPageConfigurationSchema.safeParse(req.body);
-  if (!validation.success) {
-    return next(
-      new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+router.patch(
+  "/admin/contact-page-configuration",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+    if (!validation.success) {
+      return next(
+        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+      );
+    }
+    // Contact page configuration is a singleton - always use ID 1
+    const result = await safeQuery(
+      withTimeout(
+        getStorage().updateContactPageConfiguration(1, validation.data),
+        5000,
+        "Update contact page config",
+      ),
     );
-  }
-  // Contact page configuration is a singleton - always use ID 1
-  const result = await safeQuery(
-    withTimeout(
-      getStorage().updateContactPageConfiguration(1, validation.data),
-      5000,
-      "Update contact page config",
-    ),
-  );
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+    if (result.isErr()) {
+      return next(result.error);
+    }
 
-  // CHUNK 2: Invalidate contact page cache after successful update
-  try {
-    await CacheOperations.invalidateContact();
-    logger.info("[Contact] ✅ Cache invalidated after contact page configuration update");
-  } catch (err) {
-    logger.error("[Contact] ❌ Cache invalidation failed:", err);
-    // Don't throw - cache failure should not block DB mutation
-  }
+    // CHUNK 2: Invalidate contact page cache after successful update
+    try {
+      await CacheOperations.invalidateContact();
+      logger.info("[Contact] ✅ Cache invalidated after contact page configuration update");
+    } catch (err) {
+      logger.error("[Contact] ❌ Cache invalidation failed:", err);
+      // Don't throw - cache failure should not block DB mutation
+    }
 
-  return res.json(result.value);
-});
+    return res.json(result.value);
+  },
+);
 
 // ============================================================================
 // NAVIGATION MANAGEMENT ROUTES
@@ -155,7 +163,9 @@ router.get("/navigation-items", async (req, res, next) => {
 
   res.setHeader("X-Cache-Hit", String(data.metadata.cacheHit));
   res.setHeader("X-Response-Time", String(data.metadata.responseTime));
-  if (bypassCache) res.setHeader("X-Admin-Request", "true");
+  if (bypassCache) {
+    res.setHeader("X-Admin-Request", "true");
+  }
 
   return res.json(data.data);
 });
@@ -192,24 +202,28 @@ router.post("/admin/navigation-items", authService.requireAdmin, async (req, res
 });
 
 // Bulk reorder navigation items
-router.patch("/admin/navigation-items/reorder", authService.requireAdmin, async (req, res, next) => {
-  const { items } = req.body;
-  const reorderSchema = z.object({
-    items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
-  });
-  const validation = reorderSchema.safeParse({ items });
+router.patch(
+  "/admin/navigation-items/reorder",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const { items } = req.body;
+    const reorderSchema = z.object({
+      items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
+    });
+    const validation = reorderSchema.safeParse({ items });
 
-  if (!validation.success) {
-    return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));
-  }
+    if (!validation.success) {
+      return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));
+    }
 
-  const result = await NavigationService.reorderItems(validation.data.items);
+    const result = await NavigationService.reorderItems(validation.data.items);
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
-  return res.json(result.value);
-});
+    if (result.isErr()) {
+      return next(result.error);
+    }
+    return res.json(result.value);
+  },
+);
 
 // Update navigation item
 router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {

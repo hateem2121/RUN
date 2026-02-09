@@ -214,7 +214,7 @@ VITE_API_BASE_URL=http://localhost:3000/api
 **Solution:**
 ```bash
 # .env
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 ```
 
@@ -298,7 +298,7 @@ EXPOSE 5002
 **Diagnosis:**
 ```bash
 # Check if server is running
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 
 # Check admin API
 curl http://localhost:5002/admin/api/auth/me
@@ -810,10 +810,10 @@ cat .env | grep VITE_
 **1. Variables must have VITE_ prefix:**
 ```bash
 # ❌ WRONG
-API_BASE_URL=http://localhost:5002/api
+API_BASE_URL=http://localhost:5002/api/v1/v1
 
 # ✅ CORRECT
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
 ```
 
 **2. Restart dev server:**

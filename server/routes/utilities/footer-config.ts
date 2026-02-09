@@ -90,7 +90,9 @@ async function getFooterConfig() {
       // Map results preserving order of certificateIds
       const certificatesWithNulls = certIds.map((certId) => {
         const cert = certificateMap.get(certId);
-        if (!cert) return null;
+        if (!cert) {
+          return null;
+        }
 
         let imageUrl = cert.imageUrl || "";
         if (cert.imageId) {

@@ -18,13 +18,11 @@ export default function PrivacyPolicy() {
           [ PROTOCOL: DATA_PROTECTION ]
         </p>
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-          Our privacy policy is currently being updated to reflect the latest international standards in data protection. 
-          Please check back soon for the full version.
+          Our privacy policy is currently being updated to reflect the latest international
+          standards in data protection. Please check back soon for the full version.
         </p>
         <div className="mt-12 border-t border-border pt-8">
-          <p className="text-sm text-muted-foreground italic">
-            Last Updated: February 2026
-          </p>
+          <p className="text-sm text-muted-foreground italic">Last Updated: February 2026</p>
         </div>
       </div>
     </main>

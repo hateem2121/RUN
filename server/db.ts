@@ -55,7 +55,7 @@ if (isTestMode && !enableRealDb) {
 }
 
 // Wrap SQL function to track metrics (for both real and mock modes)
-const internalSql = sql;
+const _internalSql = sql;
 // Metrics wrapper temporarily removed due to incompatibility with Neon serverless driver in this environment
 // TODO: Re-implement metrics wrapping compatible with NeonQueryFunction signature
 

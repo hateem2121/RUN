@@ -11,9 +11,9 @@
 import type { IStorage } from "../../storage.js";
 import { CacheKeys } from "./cache-keys.js";
 
-export type CacheWarmupTask = {
+export type CacheWarmupTask<T = any> = {
   key: string;
-  loader: (storage: IStorage) => Promise<any>;
+  loader: (storage: IStorage) => Promise<T>;
   ttl: number;
   category?: "media" | "data" | "static";
   /**
@@ -113,16 +113,10 @@ export const CacheWarmupRegistry = {
   productsSummary: (storage: IStorage): CacheWarmupTask => ({
     key: CacheKeys.products.summary(100, 0),
     loader: async () => {
-      if (
-        "getProductsSummary" in storage &&
-        typeof (storage as any).getProductsSummary === "function"
-      ) {
-        // Force DB fetch and cache write during warmup
-        return await (storage as any).getProductsSummary(100, 0, {
-          cacheStrategy: "rebuild",
-        });
-      }
-      return null;
+      // Force DB fetch and cache write during warmup
+      return await storage.getProductsSummary(100, 0, {
+        cacheStrategy: "rebuild",
+      });
     },
     ttl: 10 * 60 * 1000,
     category: "data",
@@ -134,10 +128,7 @@ export const CacheWarmupRegistry = {
   productCount: (storage: IStorage): CacheWarmupTask => ({
     key: CacheKeys.products.totalCount(),
     loader: async () => {
-      if ("getProductCount" in storage && typeof (storage as any).getProductCount === "function") {
-        return await (storage as any).getProductCount();
-      }
-      return null;
+      return await storage.getProductsCount();
     },
     ttl: 60 * 60 * 1000, // 1 hour - matches getProductCount() TTL
     category: "data",
@@ -170,7 +161,7 @@ export const CacheWarmupRegistry = {
   // Media assets - metadata only
   mediaAssets: (storage: IStorage): CacheWarmupTask => ({
     key: CacheKeys.media.paginated(20, 0),
-    loader: () => storage.getMediaAssets(20, 0),
+    loader: () => storage.getMediaAssetsWithCount(20, 0),
     ttl: 6 * 60 * 60 * 1000, // 6 hours - media rarely changes
     category: "media",
   }),
@@ -180,12 +171,10 @@ export const CacheWarmupRegistry = {
   mediaBatchContent: (storage: IStorage): CacheWarmupTask => ({
     key: "media-batch-content-warmup",
     loader: async () => {
-      // Get top 20 media assets (most likely to be shown on homepage/products)
-      const mediaAssets = await storage.getMediaAssets(20, 0);
-      const mediaArray = Array.isArray(mediaAssets)
-        ? mediaAssets
-        : (mediaAssets as any).assets || [];
-      const mediaIds = mediaArray.map((m: any) => m.id).filter((id: any) => id != null);
+      // Pre-generate signed URLs for batch content (this warms the batch endpoint cache)
+      const mediaResult = await storage.getMediaAssetsWithCount(20, 0);
+      const mediaArray = mediaResult.assets || [];
+      const mediaIds = mediaArray.map((m) => m.id).filter((id) => id != null);
 
       if (mediaIds.length === 0) {
         return { warmed: 0, total: 0 };
@@ -292,7 +281,7 @@ export const CacheWarmupRegistry = {
   // Footer configuration
   footerConfig: (storage: IStorage): CacheWarmupTask => ({
     key: CacheKeys.footer.config(),
-    loader: () => (storage as any).getFooterConfiguration(),
+    loader: () => storage.getFooterConfiguration(),
     ttl: 60 * 60 * 1000, // 1 hour cache
     category: "data",
   }),
@@ -343,18 +332,16 @@ export const CacheWarmupRegistry = {
       const _featuredProductIds = featuredSettings?.featuredProductIds || [];
 
       // Also get first page of active products to warm popular ones
-      const productsResult = await storage.getProducts(10); // Top 10 products
-      const productsArray = Array.isArray(productsResult)
-        ? productsResult
-        : (productsResult as any).data || [];
-      const popularProductIds = productsArray.map((p: any) => p.id).filter((id: any) => id != null);
+      const productsResult = await storage.getProductsSummary(10, 0); // Top 10 products
+      const productsArray = productsResult.products || [];
+      const popularProductIds = productsArray.map((p) => p.id).filter((id) => id != null);
 
       // Combine and deduplicate
       const allIds = [
         ...(Array.isArray(["featuredProductIds"]) ? ["featuredProductIds"] : []),
         ...(Array.isArray(popularProductIds) ? popularProductIds : []),
       ];
-      const productIdsToWarm = Array.from(new Set(allIds.filter((id) => id != null)));
+      const productIdsToWarm = Array.from(new Set(allIds.filter((id) => id != null))) as number[];
 
       let warmedCount = 0;
 

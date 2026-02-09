@@ -1,11 +1,10 @@
-import { createServer } from "http";
+import { createServer } from "node:http";
 
-const server = createServer((req, res) => {
+const server = createServer((_req, res) => {
   res.writeHead(200);
   res.end("ok");
 });
 
 server.listen(5002, () => {
-  const addr = server.address();
-  console.log("Bound to:", addr);
+  const _addr = server.address();
 });

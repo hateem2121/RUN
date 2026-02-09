@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
 test.describe("Homepage Forensic Baseline", () => {
   test("Capture Baseline - Light Mode", async ({ page }) => {
@@ -6,23 +6,20 @@ test.describe("Homepage Forensic Baseline", () => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.waitForTimeout(2000); // Wait for preloader/animations
     await page.screenshot({ path: "artifacts/hp-light.png", fullPage: true });
-    
+
     const consoleLogs: string[] = [];
-    page.on("console", msg => consoleLogs.push(`[${msg.type()}] ${msg.text()}`));
-    
+    page.on("console", (msg) => consoleLogs.push(`[${msg.type()}] ${msg.text()}`));
+
     await page.reload();
     await page.waitForTimeout(2000);
 
-    const domSnapshot = await page.evaluate(() => {
+    const _domSnapshot = await page.evaluate(() => {
       return {
         htmlClasses: document.documentElement.className,
         bodyStyles: window.getComputedStyle(document.body).cssText,
         mainStyles: window.getComputedStyle(document.querySelector("main")!).cssText,
       };
     });
-
-    console.log("DOM Snapshot:", JSON.stringify(domSnapshot, null, 2));
-    console.log("Console Logs:", JSON.stringify(consoleLogs, null, 2));
   });
 
   test("Capture Baseline - Dark Mode", async ({ page }) => {

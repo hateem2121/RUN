@@ -12,7 +12,6 @@ import {
   useLoaderData,
   useRouteError,
 } from "react-router";
-import Footer from "@/components/layout/Footer";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import BackToTop from "@/components/ui/back-to-top";
@@ -53,7 +52,7 @@ import { MediaQueryKeys } from "@/lib/media-query-keys";
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { cspNonce } = context as { cspNonce: string };
   const queryClient = new QueryClient();
-  
+
   // Use protocol and host from request to build a dynamic base URL
   const url = new URL(request.url);
   const baseUrl = `${url.protocol}//${url.host}`;
@@ -76,9 +75,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       queryKey: ["homepage", "batch"],
       queryFn: () => fetch(`${baseUrl}/api/homepage-batch`).then((res) => res.json()),
     });
-  } catch (error) {
-    console.error("Failed to prefetch data in root loader:", error);
-  }
+  } catch (_error) {}
 
   return { cspNonce, dehydratedState: dehydrate(queryClient) };
 }
@@ -130,7 +127,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </a>
                   <FloatingDockHeader />
                   {children}
-                  <Footer />
                   <BackToTop />
                   <OfflineIndicator />
                 </HydrationBoundary>

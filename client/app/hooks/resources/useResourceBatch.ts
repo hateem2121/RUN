@@ -17,7 +17,9 @@ export function useResourceBatch(types: ResourceType[] | "all", activeOnly: bool
   // Build URL with query parameters
   const params = new URLSearchParams();
   params.set("types", typeString);
-  if (activeOnly) params.set("active", "true");
+  if (activeOnly) {
+    params.set("active", "true");
+  }
   const apiUrl = `/api/resources/batch?${params}`;
 
   const { data, status, error } = useQuery<BatchResponse>({

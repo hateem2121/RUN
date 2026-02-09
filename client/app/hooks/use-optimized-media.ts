@@ -131,7 +131,9 @@ export function useProgressiveImageLoading(
   const { urls, loading } = useOptimizedMedia(mediaId, options);
 
   useEffect(() => {
-    if (!urls) return;
+    if (!urls) {
+      return;
+    }
 
     // Start with thumbnail for instant loading
     setCurrentSrc(urls.thumbnail);
@@ -163,7 +165,9 @@ export function useImagePreloader(mediaIds: number[]) {
       const { getMediaSrc } = await import("@/lib/queryClient");
 
       for (const mediaId of Array.from(mediaIds)) {
-        if (preloadedIds.has(mediaId)) continue;
+        if (preloadedIds.has(mediaId)) {
+          continue;
+        }
 
         try {
           // Preload using batch system

@@ -14,7 +14,9 @@ export function LottieIcon({ animationData, size, type }: LottieIconProps) {
   const animationRef = useRef<AnimationItem | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !animationData) return;
+    if (!containerRef.current || !animationData) {
+      return;
+    }
 
     // Clean up previous animation
     if (animationRef.current) {

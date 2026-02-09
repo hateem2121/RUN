@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
+// @ts-ignore
 import { hideBin } from "yargs/helpers";
+// @ts-ignore
 import yargs from "yargs/yargs";
 
 /**
@@ -50,7 +52,7 @@ const steps = [
   {
     name: "Link Integrity",
     command: "npx",
-    args: ["markdown-link-check", "README.md", "AGENTS.md"],
+    args: ["markdown-link-check", "-c", ".markdown-link-check.json", "README.md", "AGENTS.md"],
     critical: true,
   },
   {
@@ -133,7 +135,9 @@ async function main() {
     const result = await runCommand(step);
     if (!result) {
       success = false;
-      if (argv.ci) break; // Fail fast in CI
+      if (argv.ci) {
+        break; // Fail fast in CI
+      }
     }
   }
   if (success) {

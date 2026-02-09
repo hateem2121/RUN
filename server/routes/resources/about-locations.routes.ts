@@ -148,8 +148,12 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const data: any = { ...validation.data };
-    if (data.latitude !== undefined) data.latitude = String(data.latitude);
-    if (data.longitude !== undefined) data.longitude = String(data.longitude);
+    if (data.latitude !== undefined) {
+      data.latitude = String(data.latitude);
+    }
+    if (data.longitude !== undefined) {
+      data.longitude = String(data.longitude);
+    }
 
     const updatedLocation = await withTimeout(
       aboutService.updateLocation(id, data),

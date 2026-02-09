@@ -89,9 +89,15 @@ class ErrorAggregator {
       errorsByPath[pathKey] = (errorsByPath[pathKey] || 0) + 1;
 
       // Time window counts
-      if (timestamp >= fiveMinAgo) last5Min++;
-      if (timestamp >= fifteenMinAgo) last15Min++;
-      if (timestamp >= oneHourAgo) last1Hour++;
+      if (timestamp >= fiveMinAgo) {
+        last5Min++;
+      }
+      if (timestamp >= fifteenMinAgo) {
+        last15Min++;
+      }
+      if (timestamp >= oneHourAgo) {
+        last1Hour++;
+      }
     }
 
     // Compute top 10 error paths from current buffer (not stale counts)

@@ -42,7 +42,9 @@ export const routeManifest: Record<string, string> = {
 // Helper for fuzzy matching (simplified for SSR)
 export const getComponentForPath = (pathName: string): string | undefined => {
   const cleanPath = pathName.split("?")[0];
-  if (!cleanPath) return undefined;
+  if (!cleanPath) {
+    return undefined;
+  }
 
   // Exact Match
   if (Object.hasOwn(routeManifest, cleanPath)) {

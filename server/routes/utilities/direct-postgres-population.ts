@@ -53,7 +53,9 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
         for (const cat of categoryData) {
           const [created] = await tx.insert(categories).values(cat).returning();
-          if (!created) throw new Error("Failed to create category");
+          if (!created) {
+            throw new Error("Failed to create category");
+          }
           txResults.categories.push(created);
           logger.debug(
             `[Direct PostgreSQL] ✅ Created category: ${created.name} ID: ${created.id}`,
@@ -102,7 +104,9 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
         for (const fabric of fabricData) {
           const [created] = await tx.insert(fabrics).values(fabric).returning();
-          if (!created) throw new Error("Failed to create fabric");
+          if (!created) {
+            throw new Error("Failed to create fabric");
+          }
           txResults.fabrics.push(created);
           logger.debug(`[Direct PostgreSQL] ✅ Created fabric: ${created.name} ID: ${created.id}`);
         }
@@ -190,7 +194,9 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
         for (const fiber of fiberData) {
           const [created] = await tx.insert(fibers).values(fiber).returning();
-          if (!created) throw new Error("Failed to create fiber");
+          if (!created) {
+            throw new Error("Failed to create fiber");
+          }
           txResults.fibers.push(created);
           logger.debug(
             `[Direct PostgreSQL] ✅ Created fiber: ${created.name} Score: ${created.sustainabilityScore}`,
@@ -280,7 +286,9 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
         for (const cert of certificateData) {
           const [created] = await tx.insert(certificates).values(cert).returning();
-          if (!created) throw new Error("Failed to create certificate");
+          if (!created) {
+            throw new Error("Failed to create certificate");
+          }
           txResults.certificates.push(created);
           logger.debug(`[Direct PostgreSQL] ✅ Created certificate: ${created.name}`);
         }
@@ -386,7 +394,9 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
         for (const accessory of accessoryData) {
           const [created] = await tx.insert(accessories).values(accessory).returning();
-          if (!created) throw new Error("Failed to create accessory");
+          if (!created) {
+            throw new Error("Failed to create accessory");
+          }
           txResults.accessories.push(created);
           logger.debug(`[Direct PostgreSQL] ✅ Created accessory: ${created.name}`);
         }

@@ -45,17 +45,27 @@ router.get("/admin/products/initial-data", async (_req, res) => {
 
   const referencedMediaIds = new Set<number>();
   const enhancedProducts = products.map((product: Product) => {
-    if (product.primaryImageId) referencedMediaIds.add(product.primaryImageId);
-    if (product.primaryVideoId) referencedMediaIds.add(product.primaryVideoId);
-    if (product.modelFileId) referencedMediaIds.add(product.modelFileId);
+    if (product.primaryImageId) {
+      referencedMediaIds.add(product.primaryImageId);
+    }
+    if (product.primaryVideoId) {
+      referencedMediaIds.add(product.primaryVideoId);
+    }
+    if (product.modelFileId) {
+      referencedMediaIds.add(product.modelFileId);
+    }
     if (Array.isArray(product.imageIds)) {
       product.imageIds.forEach((id) => {
-        if (typeof id === "number") referencedMediaIds.add(id);
+        if (typeof id === "number") {
+          referencedMediaIds.add(id);
+        }
       });
     }
     if (Array.isArray(product.videos)) {
       product.videos.forEach((id) => {
-        if (typeof id === "number") referencedMediaIds.add(id);
+        if (typeof id === "number") {
+          referencedMediaIds.add(id);
+        }
       });
     }
 
@@ -187,8 +197,12 @@ router.post("/admin/enterprise/audit-config", async (req, res) => {
   // security
   const validatedData = auditConfigSchema.parse(req.body);
   const { enabled, trackedTables } = validatedData;
-  if (typeof enabled === "boolean") getStorage().setAuditTrailEnabled(enabled);
-  if (Array.isArray(trackedTables)) getStorage().configureTrackedTables(trackedTables);
+  if (typeof enabled === "boolean") {
+    getStorage().setAuditTrailEnabled(enabled);
+  }
+  if (Array.isArray(trackedTables)) {
+    getStorage().configureTrackedTables(trackedTables);
+  }
   return res.json({ success: true, message: "Audit configuration updated" });
 });
 
@@ -198,7 +212,9 @@ router.post("/admin/categories/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "category");
-  if (id === null) return; // Error response already sent
+  if (id === null) {
+    return; // Error response already sent
+  }
 
   const result = await withTimeout(getStorage().restoreCategory(id), 5000, "Restore category");
   return res.json({ success: result });
@@ -209,7 +225,9 @@ router.post("/admin/products/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "product");
-  if (id === null) return; // Error response already sent
+  if (id === null) {
+    return; // Error response already sent
+  }
 
   const result = await withTimeout(getStorage().restoreProduct(id), 5000, "Restore product");
   return res.json({ success: result });
@@ -220,7 +238,9 @@ router.post("/admin/media-assets/:id/restore", async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "media asset");
-  if (id === null) return; // Error response already sent
+  if (id === null) {
+    return; // Error response already sent
+  }
 
   const result = await withTimeout(getStorage().restoreMediaAsset(id), 5000, "Restore media asset");
   return res.json({ success: result });

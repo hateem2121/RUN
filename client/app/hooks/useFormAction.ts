@@ -118,7 +118,11 @@ export function createValidationErrors<T>(
  */
 export function createSuccessResponse<T>(data?: T, message?: string): FormState<T> {
   const response: FormState<T> = { success: true };
-  if (data !== undefined) response.data = data;
-  if (message !== undefined) response.message = message;
+  if (data !== undefined) {
+    response.data = data;
+  }
+  if (message !== undefined) {
+    response.message = message;
+  }
   return response;
 }

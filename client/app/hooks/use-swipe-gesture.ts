@@ -30,7 +30,9 @@ export function useSwipeGesture(handlers: SwipeHandlers, config: SwipeConfig = {
     }
 
     const touch = e.touches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
 
     setTouchStart({
       x: touch.clientX,
@@ -41,10 +43,14 @@ export function useSwipeGesture(handlers: SwipeHandlers, config: SwipeConfig = {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStart || !swiping) return;
+    if (!touchStart || !swiping) {
+      return;
+    }
 
     const touch = e.touches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
 
     setTouchEnd({
       x: touch.clientX,
@@ -53,10 +59,14 @@ export function useSwipeGesture(handlers: SwipeHandlers, config: SwipeConfig = {
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStart) return;
+    if (!touchStart) {
+      return;
+    }
 
     const touch = e.changedTouches[0];
-    if (!touch) return;
+    if (!touch) {
+      return;
+    }
 
     const endPoint = {
       x: touch.clientX,

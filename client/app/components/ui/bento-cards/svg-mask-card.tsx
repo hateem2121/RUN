@@ -43,14 +43,20 @@ const SvgMaskCard = memo(function SvgMaskCard({
 
   // HTTP-driven content type detection
   useEffect(() => {
-    if (!actualContentMediaUrl) return;
+    if (!actualContentMediaUrl) {
+      return;
+    }
 
     fetch(actualContentMediaUrl, { method: "HEAD" })
       .then((r) => {
         const ct = r.headers.get("content-type");
-        if (ct?.startsWith("video")) setContentType("video");
-        else if (ct?.startsWith("image")) setContentType("image");
-        else setContentType("unknown");
+        if (ct?.startsWith("video")) {
+          setContentType("video");
+        } else if (ct?.startsWith("image")) {
+          setContentType("image");
+        } else {
+          setContentType("unknown");
+        }
       })
       .catch(() => setContentType("unknown"));
   }, [actualContentMediaUrl]);
@@ -153,7 +159,9 @@ const SvgMaskCard = memo(function SvgMaskCard({
 
   // PARALLEL CONTENT MEDIA PRELOADING for enhanced performance
   useEffect(() => {
-    if (!actualContentMediaUrl) return;
+    if (!actualContentMediaUrl) {
+      return;
+    }
 
     const preloadContentMedia = async () => {
       try {

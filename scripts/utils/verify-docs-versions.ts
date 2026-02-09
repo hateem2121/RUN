@@ -34,8 +34,6 @@ function extractVersion(version: string): string {
 }
 
 function main(): void {
-  console.log("🔍 Verifying documentation version consistency...\n");
-
   const context = readJson("FULL_SYSTEM_CONTEXT.json") as {
     runtime: { node: string };
     stack: {
@@ -71,7 +69,9 @@ function main(): void {
 
   // React version
   const reactVersion = clientPkg.dependencies.react;
-  if (!reactVersion) throw new Error("React not found in client/package.json");
+  if (!reactVersion) {
+    throw new Error("React not found in client/package.json");
+  }
   const reactActual = extractVersion(reactVersion);
   const reactDoc = context.stack.frontend.framework.replace("React ", "");
   checks.push({
@@ -83,7 +83,9 @@ function main(): void {
 
   // Vite version
   const viteVersion = clientPkg.devDependencies.vite;
-  if (!viteVersion) throw new Error("Vite not found in client/package.json");
+  if (!viteVersion) {
+    throw new Error("Vite not found in client/package.json");
+  }
   const viteActual = extractVersion(viteVersion);
   const viteDoc = context.stack.frontend.build.replace("Vite ", "");
   checks.push({
@@ -95,7 +97,9 @@ function main(): void {
 
   // Tailwind version
   const tailwindVersion = clientPkg.dependencies.tailwindcss;
-  if (!tailwindVersion) throw new Error("Tailwind not found in client/package.json");
+  if (!tailwindVersion) {
+    throw new Error("Tailwind not found in client/package.json");
+  }
   const tailwindActual = extractVersion(tailwindVersion);
   const tailwindDoc = context.stack.frontend.style.replace("Tailwind CSS ", "");
   checks.push({
@@ -107,7 +111,9 @@ function main(): void {
 
   // Express version
   const expressVersion = serverPkg.dependencies.express;
-  if (!expressVersion) throw new Error("Express not found in server/package.json");
+  if (!expressVersion) {
+    throw new Error("Express not found in server/package.json");
+  }
   const expressActual = extractVersion(expressVersion);
   const expressDoc = context.stack.backend.framework.replace("Express ", "");
   checks.push({
@@ -119,7 +125,9 @@ function main(): void {
 
   // Drizzle ORM version
   const drizzleVersion = serverPkg.dependencies["drizzle-orm"];
-  if (!drizzleVersion) throw new Error("Drizzle ORM not found in server/package.json");
+  if (!drizzleVersion) {
+    throw new Error("Drizzle ORM not found in server/package.json");
+  }
   const drizzleActual = extractVersion(drizzleVersion);
   const drizzleDoc = context.stack.orm.version;
   checks.push({
@@ -129,27 +137,16 @@ function main(): void {
     match: drizzleActual === drizzleDoc,
   });
 
-  // Print results
-  console.log("Version Consistency Report:");
-  console.log("═".repeat(60));
-
   let hasErrors = false;
   for (const check of checks) {
-    const status = check.match ? "✅" : "❌";
-    if (!check.match) hasErrors = true;
-
-    console.log(
-      `${status} ${check.name.padEnd(15)} Doc: ${check.documented.padEnd(10)} Actual: ${check.actual}`,
-    );
+    if (!check.match) {
+      hasErrors = true;
+    }
   }
 
-  console.log("═".repeat(60));
-
   if (hasErrors) {
-    console.log("\n⚠️  Version drift detected! Update FULL_SYSTEM_CONTEXT.json");
     process.exit(1);
   } else {
-    console.log("\n✅ All documented versions match actual package versions.");
     process.exit(0);
   }
 }

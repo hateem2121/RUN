@@ -1,17 +1,12 @@
-import { eq } from "drizzle-orm";
 import { technologyEquipment, technologyResearch } from "../../shared/schema/content/technology.js";
 import { db } from "../db.js";
 
 async function seedTechnologyData() {
-  console.log("🌱 Seeding Technology Page data...");
-
   try {
     // 1. Seed Equipment
     const existingEquipment = await db.select().from(technologyEquipment).limit(1);
 
     if (existingEquipment.length === 0) {
-      console.log("Creating default Technology Equipment...");
-
       await db.insert(technologyEquipment).values([
         {
           name: "Automatic Cutting Machine",
@@ -54,15 +49,12 @@ async function seedTechnologyData() {
         },
       ]);
     } else {
-      console.log("Technology Equipment already exists, skipping.");
     }
 
     // 2. Seed Research
     const existingResearch = await db.select().from(technologyResearch).limit(1);
 
     if (existingResearch.length === 0) {
-      console.log("Creating default Technology Research data...");
-
       await db.insert(technologyResearch).values([
         {
           title: "Biodegradable Elastane Replacement",
@@ -107,13 +99,9 @@ async function seedTechnologyData() {
         },
       ]);
     } else {
-      console.log("Technology Research already exists, skipping.");
     }
-
-    console.log("✅ Seeding completed successfully!");
     process.exit(0);
-  } catch (error) {
-    console.error("❌ Seeding failed:", error);
+  } catch (_error) {
     process.exit(1);
   }
 }

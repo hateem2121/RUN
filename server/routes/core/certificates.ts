@@ -84,7 +84,9 @@ router.post("/certificates", authService.requireAdmin, async (req, res) => {
 router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "certificate");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validation = insertCertificateSchema.partial().parse(req.body);
 
     // Transform string dates to Date objects if present
@@ -134,7 +136,9 @@ router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/certificates/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "certificate");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const success = await withTimeout(
       getStorage().deleteCertificate(id),
       10000,

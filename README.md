@@ -14,7 +14,7 @@
 ✓ Server:      http://localhost:5002
 ✓ Admin Panel: http://localhost:5002/admin
 ✓ Public Site: http://localhost:5002
-✓ API:         http://localhost:5002/api
+- **API**:         http://localhost:5002/api/v1
 ```
 
 **If you see any other port, that's a bug.**
@@ -55,7 +55,7 @@ Open your browser to:
 
 - **Public Site:** http://localhost:5002
 - **Admin Panel:** http://localhost:5002/admin
-- **API Health:** http://localhost:5002/api/health
+- **API Health:** http://localhost:5002/api/v1/health
 
 **If any URL fails, check port configuration.**
 
@@ -172,7 +172,7 @@ app.listen(PORT, () => {
 #### .env
 ```bash
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 ```
 
@@ -296,7 +296,7 @@ npm run preview
 
 ## 🔌 API Endpoints
 
-### Public API (http://localhost:5002/api)
+### Public API (http://localhost:5002/api/v1)
 
 Returns only published content.
 
@@ -502,7 +502,7 @@ npm run dev
 1. **Verify base URL:**
    ```bash
    echo $VITE_API_BASE_URL
-   # Should be: http://localhost:5002/api
+   # Should be: http://localhost:5002/api/v1
    ```
 
 2. **Check CORS configuration:**
@@ -512,7 +512,7 @@ npm run dev
 
 3. **Test endpoint directly:**
    ```bash
-   curl http://localhost:5002/api/health
+   curl http://localhost:5002/api/v1/health
    ```
 
 ### Port Verification Fails
@@ -711,7 +711,7 @@ npm run start
 pm2 start dist/server/index.js --name cms-app
 
 # Verify
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 ```
 
 ### Docker Deployment

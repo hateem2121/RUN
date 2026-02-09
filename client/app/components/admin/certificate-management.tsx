@@ -59,7 +59,9 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getCertificateTypeIcon = (type: string | undefined) => {
-  if (!type) return <FileText className="h-4 w-4" />;
+  if (!type) {
+    return <FileText className="h-4 w-4" />;
+  }
 
   switch (type.toLowerCase()) {
     case "sustainability":
@@ -470,7 +472,9 @@ interface CertificateInsightsProps {
 }
 
 const CertificateInsights = ({ analytics, onCreate }: CertificateInsightsProps) => {
-  if (!analytics) return null;
+  if (!analytics) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -588,7 +592,9 @@ const CertificateInsights = ({ analytics, onCreate }: CertificateInsightsProps) 
 };
 
 const CertificateAnalytics = ({ analytics }: { analytics: CertificateAnalyticsData | null }) => {
-  if (!analytics) return null;
+  if (!analytics) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -913,7 +919,9 @@ export default function CertificateManagement() {
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingCertificate) return;
+    if (!editingCertificate) {
+      return;
+    }
     updateCertificateMutation.mutate({
       id: editingCertificate.id,
       data: formData,
@@ -954,7 +962,9 @@ export default function CertificateManagement() {
   };
 
   const exportCertificates = () => {
-    if (!certificates) return;
+    if (!certificates) {
+      return;
+    }
 
     const dataStr = JSON.stringify(certificates, null, 2);
     const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
@@ -971,7 +981,9 @@ export default function CertificateManagement() {
 
   // Filtering and sorting logic
   const filteredAndSortedCertificates = useMemo(() => {
-    if (!certificates) return [];
+    if (!certificates) {
+      return [];
+    }
 
     const filtered = certificates.filter((cert) => {
       // Search filter
@@ -982,13 +994,19 @@ export default function CertificateManagement() {
           cert.type?.toLowerCase().includes(query) ||
           cert.description?.toLowerCase().includes(query) ||
           cert.issuingOrganization?.toLowerCase().includes(query);
-        if (!matchesSearch) return false;
+        if (!matchesSearch) {
+          return false;
+        }
       }
 
       // Status filter
       if (statusFilter !== "all") {
-        if (statusFilter === "active" && !cert.isActive) return false;
-        if (statusFilter === "inactive" && cert.isActive) return false;
+        if (statusFilter === "active" && !cert.isActive) {
+          return false;
+        }
+        if (statusFilter === "inactive" && cert.isActive) {
+          return false;
+        }
       }
 
       // Type filter (partial match for custom types)
@@ -996,8 +1014,9 @@ export default function CertificateManagement() {
         typeFilter !== "all" &&
         typeFilter !== "" &&
         !cert.type?.toLowerCase().includes(typeFilter.toLowerCase())
-      )
+      ) {
         return false;
+      }
 
       return true;
     });
@@ -1032,7 +1051,9 @@ export default function CertificateManagement() {
 
   // Analytics calculations
   const analytics = useMemo(() => {
-    if (!certificates) return null;
+    if (!certificates) {
+      return null;
+    }
 
     const now = new Date();
     const threeMonthsFromNow = new Date();
@@ -1043,13 +1064,17 @@ export default function CertificateManagement() {
 
     // Calculate expired and expiring soon based on expiryDate
     const expired = certificates.filter((cert) => {
-      if (!cert.expiryDate) return false;
+      if (!cert.expiryDate) {
+        return false;
+      }
       const expiryDate = new Date(cert.expiryDate);
       return expiryDate < now;
     }).length;
 
     const expiringSoon = certificates.filter((cert) => {
-      if (!cert.expiryDate) return false;
+      if (!cert.expiryDate) {
+        return false;
+      }
       const expiryDate = new Date(cert.expiryDate);
       return expiryDate >= now && expiryDate <= threeMonthsFromNow;
     }).length;

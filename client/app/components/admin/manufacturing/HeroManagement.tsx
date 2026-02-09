@@ -59,7 +59,9 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
   const { data: specificVideo } = useQuery<MediaAsset>({
     queryKey: createMediaQueryKey.single(heroData.videoId || 0),
     queryFn: async (): Promise<MediaAsset> => {
-      if (!heroData.videoId) throw new Error("No video ID");
+      if (!heroData.videoId) {
+        throw new Error("No video ID");
+      }
       const res = await apiRequest<{ data: MediaAsset }>(`/api/media/${heroData.videoId}`, {
         method: "GET",
       });
@@ -74,7 +76,9 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
   const { data: specificBackground } = useQuery<MediaAsset>({
     queryKey: createMediaQueryKey.single(heroData.backgroundMediaId || 0),
     queryFn: async (): Promise<MediaAsset> => {
-      if (!heroData.backgroundMediaId) throw new Error("No background media ID");
+      if (!heroData.backgroundMediaId) {
+        throw new Error("No background media ID");
+      }
       const res = await apiRequest<{ data: MediaAsset }>(
         `/api/media/${heroData.backgroundMediaId}`,
         {
@@ -167,14 +171,18 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
 
   const handleBackgroundSelect = (assets: MediaAsset[] | MediaAsset) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
     setHeroData({ ...heroData, backgroundMediaId: asset.id });
     setShowBackgroundPicker(false);
   };
 
   const handleVideoSelect = (assets: MediaAsset[] | MediaAsset) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
     setHeroData({ ...heroData, videoId: asset.id });
     setShowVideoPicker(false);
   };

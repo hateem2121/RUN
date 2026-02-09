@@ -25,7 +25,9 @@ export function useResourceSearch(
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const searchResults = useMemo(() => {
-    if (!debouncedSearchTerm) return [];
+    if (!debouncedSearchTerm) {
+      return [];
+    }
 
     const results: SearchResult[] = [];
     const term = debouncedSearchTerm.toLowerCase();

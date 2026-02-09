@@ -55,7 +55,9 @@ export class MediaUrlBuilder {
    * Supports legacy and new consolidated formats
    */
   static extractAssetId(url: string): number | null {
-    if (!url) return null;
+    if (!url) {
+      return null;
+    }
 
     // New unified format: /api/media/{id}/content (preferred)
     if (url.includes("/content")) {
@@ -315,7 +317,9 @@ export class MediaUrlBuilder {
    * ARCHITECT FEEDBACK FIX: Endpoint validation with timeout
    */
   private static async validateEndpoint(url: string, signal?: AbortSignal): Promise<void> {
-    if (typeof window === "undefined") return; // Skip in SSR
+    if (typeof window === "undefined") {
+      return; // Skip in SSR
+    }
 
     try {
       const response = await fetch(url, {
@@ -341,7 +345,9 @@ export class MediaUrlBuilder {
   private static createAlternativeAsset(
     asset?: MediaAssetWithMetadata,
   ): MediaAssetWithMetadata | undefined {
-    if (!asset) return asset;
+    if (!asset) {
+      return asset;
+    }
 
     // Try switching between GLB and GLTF for failover
     const currentMime = asset.mimeType;
@@ -402,12 +408,24 @@ export class MediaUrlBuilder {
    * PHASE 5 FIX: Enhanced URL validation with ImageBitmapLoader compatibility checks
    */
   static isValidUrl(url: string | null | undefined): boolean {
-    if (!url) return false;
-    if (url === "undefined" || url === "null") return false;
-    if (url.includes("undefined") || url.includes("null")) return false;
-    if (url === "/api/media/proxy/undefined") return false;
-    if (url === "/api/media/fast/undefined") return false;
-    if (url === "/api/media/undefined") return false;
+    if (!url) {
+      return false;
+    }
+    if (url === "undefined" || url === "null") {
+      return false;
+    }
+    if (url.includes("undefined") || url.includes("null")) {
+      return false;
+    }
+    if (url === "/api/media/proxy/undefined") {
+      return false;
+    }
+    if (url === "/api/media/fast/undefined") {
+      return false;
+    }
+    if (url === "/api/media/undefined") {
+      return false;
+    }
 
     // PHASE 5 FIX: Additional validation for ImageBitmapLoader compatibility
 
@@ -416,7 +434,9 @@ export class MediaUrlBuilder {
       if (url.startsWith("data:")) {
         // Validate data URLs
         const mimeMatch = url.match(/^data:([^;]+)/);
-        if (!mimeMatch || !mimeMatch[1]) return false;
+        if (!mimeMatch || !mimeMatch[1]) {
+          return false;
+        }
 
         const mimeType = mimeMatch[1];
         // Ensure ImageBitmapLoader-compatible MIME types
@@ -457,7 +477,9 @@ export class MediaUrlBuilder {
    * Mirrors server-side asset URL generation logic
    */
   static generateAssetUrl(asset: MediaAssetBasic): string | null {
-    if (!asset) return null;
+    if (!asset) {
+      return null;
+    }
 
     // Prefer ID-based URL generation for consistency
     if (asset.id) {

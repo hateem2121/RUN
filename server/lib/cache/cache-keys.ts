@@ -85,11 +85,21 @@ export const CacheKeys = {
   inquiries: {
     list: (page?: number, limit?: number, status?: string, source?: string, search?: string) => {
       const params: string[] = [];
-      if (page !== undefined) params.push(`page=${page}`);
-      if (limit !== undefined) params.push(`limit=${limit}`);
-      if (status !== undefined && status !== "") params.push(`status=${status}`);
-      if (source !== undefined && source !== "") params.push(`source=${source}`);
-      if (search !== undefined && search !== "") params.push(`search=${search}`);
+      if (page !== undefined) {
+        params.push(`page=${page}`);
+      }
+      if (limit !== undefined) {
+        params.push(`limit=${limit}`);
+      }
+      if (status !== undefined && status !== "") {
+        params.push(`status=${status}`);
+      }
+      if (source !== undefined && source !== "") {
+        params.push(`source=${source}`);
+      }
+      if (search !== undefined && search !== "") {
+        params.push(`search=${search}`);
+      }
       return `inquiries:list${params.length > 0 ? `:${params.join(":")}` : ""}`;
     },
     detail: (id: number) => `inquiries:detail:${id}`,

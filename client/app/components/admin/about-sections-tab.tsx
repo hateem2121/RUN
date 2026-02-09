@@ -151,7 +151,9 @@ export function AboutSectionsTab() {
       const response = await fetch(
         `/api/media?${buildMediaApiParams(ADMIN_MEDIA_QUERIES.RECENT_ADMIN)}`,
       );
-      if (!response.ok) throw new Error("Failed to fetch media");
+      if (!response.ok) {
+        throw new Error("Failed to fetch media");
+      }
       return response.json();
     },
   });
@@ -240,7 +242,9 @@ export function AboutSectionsTab() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (!over) return;
+    if (!over) {
+      return;
+    }
 
     if (active.id !== over.id) {
       const oldIndex = sections.findIndex((item) => item.id === active.id);

@@ -12,7 +12,9 @@ export const adminNotifier = {
    * Uses a dedicated PG connection because LISTEN/NOTIFY requires it.
    */
   async start() {
-    if (!process.env.DATABASE_URL) return;
+    if (!process.env.DATABASE_URL) {
+      return;
+    }
 
     const connect = async () => {
       try {
@@ -56,7 +58,9 @@ export const adminNotifier = {
     };
 
     const scheduleReconnect = () => {
-      if (reconnectTimer) return;
+      if (reconnectTimer) {
+        return;
+      }
       reconnectTimer = setTimeout(() => {
         reconnectTimer = null;
         if (process.env.NODE_ENV !== "production") {
@@ -76,7 +80,9 @@ export const adminNotifier = {
    * @param userId specific user ID or undefined for all
    */
   async notify(userId?: string) {
-    if (!process.env.DATABASE_URL) return;
+    if (!process.env.DATABASE_URL) {
+      return;
+    }
 
     // We can use a separate ephemeral client or the app's pool.
     // Ideally use the app's main db pool, but to avoid circular deps with db.ts,

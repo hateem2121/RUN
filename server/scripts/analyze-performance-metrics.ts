@@ -86,10 +86,18 @@ async function analyzePerformanceMetrics() {
   };
 
   const _assessPerformance = (avgMs: number): string => {
-    if (avgMs < benchmarks.excellent) return "🟢 EXCELLENT";
-    if (avgMs < benchmarks.good) return "🟢 GOOD";
-    if (avgMs < benchmarks.acceptable) return "🟡 ACCEPTABLE";
-    if (avgMs < benchmarks.slow) return "🟠 SLOW";
+    if (avgMs < benchmarks.excellent) {
+      return "🟢 EXCELLENT";
+    }
+    if (avgMs < benchmarks.good) {
+      return "🟢 GOOD";
+    }
+    if (avgMs < benchmarks.acceptable) {
+      return "🟡 ACCEPTABLE";
+    }
+    if (avgMs < benchmarks.slow) {
+      return "🟠 SLOW";
+    }
     return "🔴 CRITICAL";
   };
 

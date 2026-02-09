@@ -187,10 +187,14 @@ export async function findEcoFriendlyProductsKeyValue(
   const ecoFriendlyProducts = [];
 
   for (const product of categoryProducts) {
-    if (!product.fabricId) continue;
+    if (!product.fabricId) {
+      continue;
+    }
 
     const fabric = allFabrics.find((f: any) => f.id === product.fabricId);
-    if (!fabric || !fabric.isActive) continue;
+    if (!fabric || !fabric.isActive) {
+      continue;
+    }
 
     // Check fabric compositions for eco-friendly fibers
     if ((fabric as any).composition && Array.isArray((fabric as any).composition)) {

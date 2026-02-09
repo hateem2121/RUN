@@ -14,27 +14,30 @@ interface SustainabilityScore {
 }
 
 function getSustainabilityLevel(score: number): SustainabilityScore {
-  if (score >= 4)
+  if (score >= 4) {
     return {
       score,
       label: "Excellent",
       color: "text-green-700",
       bgColor: "bg-green-100",
     };
-  if (score >= 3)
+  }
+  if (score >= 3) {
     return {
       score,
       label: "Good",
       color: "text-yellow-700",
       bgColor: "bg-yellow-100",
     };
-  if (score >= 2)
+  }
+  if (score >= 2) {
     return {
       score,
       label: "Fair",
       color: "text-orange-700",
       bgColor: "bg-orange-100",
     };
+  }
   return {
     score,
     label: "Needs Improvement",
@@ -50,7 +53,9 @@ export function SustainabilityFabricIntegration() {
 
   // Helper function to extract numeric score from various formats
   const parseScore = (scoreString: string): number => {
-    if (!scoreString) return 0;
+    if (!scoreString) {
+      return 0;
+    }
 
     // Handle star format: "⭐⭐⭐ (3/5 stars)"
     const starMatch = scoreString.match(/\((\d+)\/\d+\s*stars?\)/i);

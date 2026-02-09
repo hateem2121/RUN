@@ -174,7 +174,7 @@ grep -n "port:" vite.config.ts
 ```bash
 # Port Configuration (MANDATORY)
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 
 # Database
@@ -188,7 +188,7 @@ SESSION_SECRET=your-secret-key
 
 ```bash
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 DATABASE_URL=
 SESSION_SECRET=
@@ -574,7 +574,7 @@ npm run dev
 # Should see: "Server running on http://localhost:5002"
 
 # Verify endpoints
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 curl http://localhost:5002/admin/api/health
 ```
 
@@ -584,7 +584,7 @@ npm run build
 npm run start
 
 # Check production server
-curl http://localhost:5002/api/health
+curl http://localhost:5002/api/v1/health
 ```
 
 ---
@@ -730,7 +730,7 @@ npm run verify-port
 # Check environment variables
 cat .env | grep VITE_API_BASE_URL
 
-# Should be: http://localhost:5002/api
+# Should be: http://localhost:5002/api/v1
 
 # Restart dev server to load new env
 npm run dev

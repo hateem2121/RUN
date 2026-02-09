@@ -30,7 +30,9 @@ export class CompositionMapper {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {
+      return;
+    }
     const fibers = await this.storage.getFibers();
 
     // Create mapping from fiber names to IDs

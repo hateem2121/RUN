@@ -4,10 +4,9 @@
  */
 
 import express from "express";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import { getStorage } from "../../lib/storage-singleton.js";
 
 const router = express.Router();
 
@@ -20,7 +19,7 @@ const CACHE_TTL = 7200;
  */
 router.get("/navigation-items", async (req, res) => {
   const cacheKey = "navigation:items:public";
-  
+
   try {
     const cached = await unifiedCache.get<any[]>(cacheKey);
     if (cached && !req.query.nocache) {
@@ -29,10 +28,10 @@ router.get("/navigation-items", async (req, res) => {
 
     const storage = getStorage();
     const items = await storage.getNavigationItems();
-    
+
     // In current implementation, getNavigationItems handles sorting and activity filtering
     await unifiedCache.set(cacheKey, items, CACHE_TTL * 1000);
-    
+
     return res.json(items);
   } catch (error) {
     logger.error("[Navigation] Failed to fetch navigation items:", error);
@@ -55,9 +54,9 @@ router.get("/navigation-settings", async (req, res) => {
 
     const storage = getStorage();
     const settings = await storage.getNavigationGlassmorphismSettings();
-    
+
     await unifiedCache.set(cacheKey, settings, CACHE_TTL * 1000);
-    
+
     return res.json(settings);
   } catch (error) {
     logger.error("[Navigation] Failed to fetch navigation settings:", error);

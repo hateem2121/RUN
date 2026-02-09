@@ -124,7 +124,9 @@ async function analyzeStorageUsage() {
 
   for (let i = 0; i < sortedBySize.length; i++) {
     const file = sortedBySize[i];
-    if (!file) continue;
+    if (!file) {
+      continue;
+    }
     const _dbInfo = file.hasDBRecord ? `DB ID: ${file.dbId}` : "No DB record";
   }
 
@@ -147,7 +149,9 @@ async function analyzeStorageUsage() {
 }
 
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) {
+    return "0 Bytes";
+  }
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));

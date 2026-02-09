@@ -16,7 +16,9 @@ export function ManufacturingProcessFlow() {
     .sort((a, b) => (a.position || 0) - (b.position || 0));
 
   useEffect(() => {
-    if (!containerRef.current || activeProcesses.length === 0) return;
+    if (!containerRef.current || activeProcesses.length === 0) {
+      return;
+    }
 
     const ctx = gsap.context(() => {
       // Animate process flow dots

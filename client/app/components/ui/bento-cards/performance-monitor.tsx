@@ -34,7 +34,9 @@ export function usePerformanceMonitor() {
   const startTime = useRef(Date.now());
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     // Core Web Vitals monitoring
     const observeMetrics = () => {
@@ -127,20 +129,32 @@ export function usePerformanceMonitor() {
       let score = 100;
 
       // CLS penalty (40% weight)
-      if (metrics.cls > 0.25) score -= 40;
-      else if (metrics.cls > 0.1) score -= 20;
+      if (metrics.cls > 0.25) {
+        score -= 40;
+      } else if (metrics.cls > 0.1) {
+        score -= 20;
+      }
 
       // LCP penalty (30% weight)
-      if (metrics.lcp > 4000) score -= 30;
-      else if (metrics.lcp > 2500) score -= 15;
+      if (metrics.lcp > 4000) {
+        score -= 30;
+      } else if (metrics.lcp > 2500) {
+        score -= 15;
+      }
 
       // FID penalty (20% weight)
-      if (metrics.fid > 300) score -= 20;
-      else if (metrics.fid > 100) score -= 10;
+      if (metrics.fid > 300) {
+        score -= 20;
+      } else if (metrics.fid > 100) {
+        score -= 10;
+      }
 
       // Memory penalty (10% weight)
-      if (metrics.memory > 100) score -= 10;
-      else if (metrics.memory > 50) score -= 5;
+      if (metrics.memory > 100) {
+        score -= 10;
+      } else if (metrics.memory > 50) {
+        score -= 5;
+      }
 
       return Math.max(0, Math.min(100, score));
     };
@@ -200,14 +214,22 @@ export function PerformanceMonitor({ isVisible, onClose }: PerformanceMonitorPro
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-green-500";
-    if (score >= 70) return "text-yellow-500";
+    if (score >= 90) {
+      return "text-green-500";
+    }
+    if (score >= 70) {
+      return "text-yellow-500";
+    }
     return "text-red-500";
   };
 
   const getMetricStatus = (value: number, warning: number, critical: number) => {
-    if (value > critical) return "critical";
-    if (value > warning) return "warning";
+    if (value > critical) {
+      return "critical";
+    }
+    if (value > warning) {
+      return "warning";
+    }
     return "good";
   };
 

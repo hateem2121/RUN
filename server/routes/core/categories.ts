@@ -254,7 +254,9 @@ router.get("/categories/by-slug/:slug", async (req, res) => {
 router.get("/categories/:id", async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
@@ -391,7 +393,9 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
 router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = (await withTimeout(
@@ -405,9 +409,13 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
     // Prevent circular references
     if (removeUndefined(validatedData).parentId) {
       const isCircular = (categoryId: number, parentId: number): boolean => {
-        if (categoryId === parentId) return true;
+        if (categoryId === parentId) {
+          return true;
+        }
         const parent = allCategories.find((c: Category) => c.id === parentId);
-        if (!parent || !parent.parentId) return false;
+        if (!parent || !parent.parentId) {
+          return false;
+        }
         return isCircular(categoryId, parent.parentId);
       };
 
@@ -485,7 +493,9 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
 router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const allCategories = (await withTimeout(
@@ -499,9 +509,13 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
     // Prevent circular references
     if (removeUndefined(validatedData).parentId) {
       const isCircular = (categoryId: number, parentId: number): boolean => {
-        if (categoryId === parentId) return true;
+        if (categoryId === parentId) {
+          return true;
+        }
         const parent = allCategories.find((c: Category) => c.id === parentId);
-        if (!parent || !parent.parentId) return false;
+        if (!parent || !parent.parentId) {
+          return false;
+        }
         return isCircular(categoryId, parent.parentId);
       };
 
@@ -579,7 +593,9 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const deleted = await withTimeout(
       retryDbOperation(() => getStorage().deleteCategory(id), {
         operationName: `Delete category ${id}`,
@@ -634,7 +650,9 @@ router.get("/categories/deleted", async (_req, res) => {
 router.post("/categories/:id/restore", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const restored = await withTimeout(
       retryDbOperation(() => getStorage().restoreCategory(id), {
         operationName: `Restore category ${id}`,
@@ -675,7 +693,9 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
 router.delete("/categories/:id/hard-delete", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "category");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const hardDeleted = await withTimeout(
       retryDbOperation(() => getStorage().permanentlyDeleteCategory(id), {
         operationName: `Hard delete category ${id}`,

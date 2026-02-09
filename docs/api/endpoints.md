@@ -27,8 +27,8 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/locations](#get-apilocations)
    - [POST /contact](#post-contact)
 4. [Navigation Endpoints](#navigation-endpoints)
-   - [GET /api/navigation-items](#get-apinavigation-items)
-   - [GET /api/navigation-settings](#get-apinavigation-settings)
+   - [GET /api/v1/resources/navigation-items](#get-apiv1resourcesnavigation-items)
+   - [GET /api/v1/resources/navigation-settings](#get-apiv1resourcesnavigation-settings)
 5. [Privacy Endpoints](#privacy-endpoints)
    - [POST /api/privacy/data-export](#post-apiprivacydata-export)
    - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
@@ -393,11 +393,14 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
 
 ## Navigation Endpoints
 
-### GET /api/navigation-items
+These endpoints provide the structure and configuration for the site's layout navigation.
 
-**Purpose**: Retrieve all active navigation items for the site header and mobile menu.
+### GET /api/v1/resources/navigation-items
 
-**Response Format**:
+**Purpose**: Retrieve all active navigation items for the site header and mobile menu.  
+**Registration**: `server/routes/resources/content-management-routes.ts`
+
+#### Response Format (JSON)
 
 ```json
 [
@@ -406,25 +409,35 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
     "label": "Collection",
     "href": "/collection",
     "sortOrder": 1,
-    "isActive": true
+    "isActive": true,
+    "parentId": null,
+    "icon": "Package"
   }
 ]
 ```
 
-### GET /api/navigation-settings
+#### Query Parameters
+- `activeOnly` (default: true): If false, includes disabled items (Admin only).
 
-**Purpose**: Retrieve navigation UI settings like glassmorphism effects.
+### GET /api/v1/resources/navigation-settings
 
-**Response Format**:
+**Purpose**: Retrieve global navigation UI settings like glassmorphism effects and branding.  
+**Registration**: `server/routes/resources/navigation.routes.ts`
+
+#### Response Format (JSON)
 
 ```json
 {
   "id": 1,
   "glassmorphismEnabled": true,
-  "blurAmount": 10,
-  "transparency": 0.8
+  "blurAmount": "12px",
+  "transparency": 0.85,
+  "stickyHeader": true,
+  "logoUrl": "/assets/branding/logo-dark.svg"
 }
 ```
+
+---
 
 ---
 

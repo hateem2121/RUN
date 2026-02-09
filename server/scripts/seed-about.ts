@@ -1,15 +1,11 @@
-import { eq } from "drizzle-orm";
 import { aboutSections, aboutTeamMessages } from "../../shared/schema/content/about.js";
 import { db } from "../db.js";
 
 async function seedAboutData() {
-  console.log("🌱 Seeding About Page data...");
-
   try {
     // 1. Seed Team Message
     const existingTeamMessages = await db.select().from(aboutTeamMessages).limit(1);
     if (existingTeamMessages.length === 0) {
-      console.log("Creating default Team Message...");
       await db.insert(aboutTeamMessages).values({
         name: "Alex Runner",
         position: "Founder & CEO",
@@ -18,15 +14,12 @@ async function seedAboutData() {
         isActive: true,
       });
     } else {
-      console.log("Team Message already exists, skipping.");
     }
 
     // 2. Seed Sections (Manufacturing & Capabilities)
     const existingSections = await db.select().from(aboutSections).limit(1);
     // We expect at least one section. If none, we seed a set.
     if (existingSections.length === 0) {
-      console.log("Creating default About Sections (Stacking Cards)...");
-
       const sectionsData = [
         {
           title: "Precision Manufacturing",
@@ -62,12 +55,8 @@ async function seedAboutData() {
 
       await db.insert(aboutSections).values(sectionsData);
     } else {
-      console.log("About Sections already exist, skipping.");
     }
-
-    console.log("✅ Seeding completed successfully!");
-  } catch (error) {
-    console.error("❌ Seeding failed:", error);
+  } catch (_error) {
     process.exit(1);
   }
 }

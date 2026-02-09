@@ -5,7 +5,9 @@ import type { RequestHandler } from "express";
  * redirects non-primary domains to the configured PRIMARY_HOST.
  */
 export const canonicalMiddleware: RequestHandler = (req, res, next) => {
-  if (process.env.NODE_ENV !== "production") return next();
+  if (process.env.NODE_ENV !== "production") {
+    return next();
+  }
 
   const host = req.get("host");
   const primaryHost = process.env.PRIMARY_HOST || "app.wear-run.com";

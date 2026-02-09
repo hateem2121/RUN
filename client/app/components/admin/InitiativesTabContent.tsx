@@ -214,7 +214,9 @@ export function InitiativesTabContent({
 
   const handleInitiativeSubmit = () => {
     const isValidForm = validateInitiativeForm();
-    if (!isValidForm) return;
+    if (!isValidForm) {
+      return;
+    }
 
     if (editingInitiative) {
       updateInitiativeMutation.mutate(

@@ -212,9 +212,13 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
   const { data: specificCapabilityImage } = useQuery({
     queryKey: [`/api/media/${capabilityForm.imageId}`, capabilityForm.imageId],
     queryFn: async () => {
-      if (!capabilityForm.imageId) return null;
+      if (!capabilityForm.imageId) {
+        return null;
+      }
       const response = await fetch(`/api/media/${capabilityForm.imageId}`);
-      if (!response.ok) return null;
+      if (!response.ok) {
+        return null;
+      }
       const result = await response.json();
       return result.success ? result.data : null;
     },
@@ -335,7 +339,9 @@ export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps)
 
   const handleCapabilityImageSelect = (assets: MediaAsset[] | MediaAsset) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
     setCapabilityForm({ ...capabilityForm, imageId: asset.id });
     setShowCapabilityImagePicker(false);
   };

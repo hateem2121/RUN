@@ -95,19 +95,25 @@ export const ReviewPublishTab: React.FC<ReviewPublishTabProps> = ({
 
   // Helper functions
   const getCategoryName = (id: number | null): string => {
-    if (!id) return "";
+    if (!id) {
+      return "";
+    }
     const category = categories.find((c) => c.id === id);
     return category ? category.name : "Unknown";
   };
 
   const getFabricName = (id: number | null): string => {
-    if (!id) return "";
+    if (!id) {
+      return "";
+    }
     const fabric = fabrics.find((f) => f.id === id);
     return fabric ? fabric.name : "Unknown";
   };
 
   const getSizeChartName = (id: number | null): string => {
-    if (!id) return "";
+    if (!id) {
+      return "";
+    }
     const chart = sizeCharts.find((s) => s.id === id);
     return chart ? `${chart.name}${chart.category ? ` (${chart.category})` : ""}` : "Unknown";
   };

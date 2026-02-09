@@ -72,7 +72,9 @@ export const iconMap: Record<string, LucideIcon> = {
 };
 
 export const resolveIcon = (iconName: string | undefined | null): LucideIcon => {
-  if (!iconName) return Globe;
+  if (!iconName) {
+    return Globe;
+  }
 
   const normalizedName = iconName.toLowerCase().trim();
   return iconMap[normalizedName] || Globe;

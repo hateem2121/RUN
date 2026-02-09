@@ -40,7 +40,9 @@ class PerformanceTracker {
   }
 
   private initializeTracking() {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     // Track Core Web Vitals using PerformanceObserver
     this.trackWebVitals();
@@ -131,7 +133,9 @@ class PerformanceTracker {
   }
 
   private trackPageLoad() {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     window.addEventListener("load", () => {
       const navigation = performance.getEntriesByType(
@@ -194,8 +198,12 @@ class PerformanceTracker {
     };
 
     const threshold = thresholds[metricName];
-    if (value <= threshold.good) return "good";
-    if (value <= threshold.poor) return "needs-improvement";
+    if (value <= threshold.good) {
+      return "good";
+    }
+    if (value <= threshold.poor) {
+      return "needs-improvement";
+    }
     return "poor";
   }
 
@@ -248,7 +256,9 @@ export const performanceTracker = new PerformanceTracker();
  */
 export function usePerformanceTracking(enabled = true) {
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      return;
+    }
 
     // Performance tracking is initialized automatically
     // This hook just provides access to the tracker

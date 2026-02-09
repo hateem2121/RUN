@@ -18,8 +18,12 @@
  * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
  */
 export const escapeHtml = (str: string | null | undefined): string => {
-  if (str == null) return "";
-  if (typeof str !== "string") return String(str);
+  if (str == null) {
+    return "";
+  }
+  if (typeof str !== "string") {
+    return String(str);
+  }
 
   return str
     .replace(/&/g, "&amp;")
@@ -73,8 +77,12 @@ export const sanitizeStructuredData = <T extends Record<string, any>>(obj: T): T
  * @returns Safe CSS value
  */
 export const sanitizeCssValue = (cssValue: string | null | undefined): string => {
-  if (cssValue == null) return "";
-  if (typeof cssValue !== "string") return "";
+  if (cssValue == null) {
+    return "";
+  }
+  if (typeof cssValue !== "string") {
+    return "";
+  }
 
   // Allow common CSS patterns: colors, units, calc(), rgb(), etc.
   // Remove anything that could break out of CSS context
@@ -89,7 +97,9 @@ export const sanitizeCssValue = (cssValue: string | null | undefined): string =>
  * @returns Safe CSS variable name
  */
 export const sanitizeCssVariableName = (varName: string): string => {
-  if (!varName) return "";
+  if (!varName) {
+    return "";
+  }
 
   // CSS custom properties must start with -- and contain only alphanumeric, -, _
   return varName.replace(/[^a-zA-Z0-9\-_]/g, "");

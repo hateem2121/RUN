@@ -1,14 +1,22 @@
-
+import type {
+  HomepageFeaturedProductsSettings,
+  InsertHomepageFeaturedProductsSettings,
+} from "@shared/schema";
 import { useEffect, useState } from "react";
-import { type HomepageFeaturedProductsSettings, type InsertHomepageFeaturedProductsSettings } from "@shared/schema";
-import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TabsContent } from "@/components/ui/tabs";
+import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 
 interface HomepageFeaturedTabProps {
   settings: HomepageFeaturedProductsSettings | undefined;
@@ -48,7 +56,9 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
       <Card>
         <CardHeader>
           <CardTitle>Featured Products</CardTitle>
-          <CardDescription>Configure how featured products are displayed on the homepage.</CardDescription>
+          <CardDescription>
+            Configure how featured products are displayed on the homepage.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center space-x-2">
@@ -77,11 +87,11 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   id="maxProducts"
                   type="number"
                   value={formData.maxProducts ?? 8}
-                  onChange={(e) => handleChange("maxProducts", parseInt(e.target.value) || 0)}
+                  onChange={(e) => handleChange("maxProducts", parseInt(e.target.value, 10) || 0)}
                 />
               </div>
 
-               <div className="grid gap-2">
+              <div className="grid gap-2">
                 <Label htmlFor="sortBy">Sort By</Label>
                 <Select
                   value={formData.sortBy || "featured"}
@@ -107,17 +117,14 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
               <Label htmlFor="autoSelect">Auto-select products (based on sorting)</Label>
             </div>
             {!formData.autoSelect && (
-                <div className="text-sm text-amber-600">
-                    Manual selection is not yet implemented in this UI. Please use auto-select for now.
-                </div>
+              <div className="text-sm text-amber-600">
+                Manual selection is not yet implemented in this UI. Please use auto-select for now.
+              </div>
             )}
           </div>
         </CardContent>
         <div className="flex justify-end border-t p-4">
-          <Button 
-            onClick={handleSave} 
-            disabled={!isDirty || updateFeaturedSettings.isPending}
-          >
+          <Button onClick={handleSave} disabled={!isDirty || updateFeaturedSettings.isPending}>
             {updateFeaturedSettings.isPending ? "Saving..." : "Save Settings"}
           </Button>
         </div>

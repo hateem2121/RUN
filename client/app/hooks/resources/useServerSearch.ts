@@ -30,14 +30,20 @@ export function useServerSearch({
     queryKey: ["/api/resources/search", debouncedSearch, type, limit, offset, active],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (debouncedSearch) params.set("q", debouncedSearch);
+      if (debouncedSearch) {
+        params.set("q", debouncedSearch);
+      }
       params.set("type", type);
       params.set("limit", limit.toString());
       params.set("offset", offset.toString());
-      if (active !== undefined) params.set("active", active.toString());
+      if (active !== undefined) {
+        params.set("active", active.toString());
+      }
 
       const response = await fetch(`/api/resources/search?${params}`);
-      if (!response.ok) throw new Error("Failed to search resources");
+      if (!response.ok) {
+        throw new Error("Failed to search resources");
+      }
       return response.json();
     },
     enabled: debouncedSearch.length >= 2, // Only search with 2+ characters

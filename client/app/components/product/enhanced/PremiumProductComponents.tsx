@@ -74,7 +74,9 @@ export type MediaType = (typeof MediaType)[keyof typeof MediaType];
  * Handles variants like 'model', '3d_model', '3d-model', etc.
  */
 export function normalizeMediaType(type: string | undefined | null): MediaType {
-  if (!type) return MediaType.Image;
+  if (!type) {
+    return MediaType.Image;
+  }
 
   const normalizedType = type.toLowerCase().trim();
 
@@ -154,7 +156,9 @@ export const ProductGallery = ({
 
   const renderMedia = () => {
     const item = media[activeIndex];
-    if (!item) return null;
+    if (!item) {
+      return null;
+    }
 
     return (
       <AnimatePresence mode="wait">
@@ -346,7 +350,9 @@ const ThumbnailButton = ({
 
   // Get badge for media type indicator (small overlay on thumbnail)
   const getMediaTypeBadge = () => {
-    if (item.type === MediaType.Image) return null;
+    if (item.type === MediaType.Image) {
+      return null;
+    }
 
     return (
       <div className="absolute top-0.5 right-0.5 rounded-full bg-black/70 p-0.5">

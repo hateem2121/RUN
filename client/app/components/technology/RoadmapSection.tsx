@@ -14,7 +14,9 @@ interface RoadmapSectionProps {
 }
 
 export function RoadmapSection({ roadmap }: RoadmapSectionProps) {
-  if (!roadmap?.length) return null;
+  if (!roadmap?.length) {
+    return null;
+  }
 
   return (
     <section className="py-24 relative">

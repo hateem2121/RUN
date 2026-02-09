@@ -219,7 +219,9 @@ class CacheHitRateValidator {
     for (const log of this.requestLog) {
       const stats = routeStats.get(log.route) || { hits: 0, total: 0 };
       stats.total++;
-      if (log.cacheHit) stats.hits++;
+      if (log.cacheHit) {
+        stats.hits++;
+      }
       routeStats.set(log.route, stats);
     }
 

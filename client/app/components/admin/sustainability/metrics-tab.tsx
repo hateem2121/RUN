@@ -178,7 +178,9 @@ export function MetricsTabContent({
               isValid: false,
               message: err.message,
             };
-            if (!field) isFormValid = false;
+            if (!field) {
+              isFormValid = false;
+            }
           }
         });
 
@@ -227,7 +229,9 @@ export function MetricsTabContent({
 
   const handleMetricSubmit = () => {
     const isValidForm = validateMetricForm();
-    if (!isValidForm) return;
+    if (!isValidForm) {
+      return;
+    }
 
     const transformedData = {
       name: metricForm.metric,

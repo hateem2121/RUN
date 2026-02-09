@@ -53,7 +53,9 @@ vi.mock("../server/lib/storage-singleton.js", () => {
         breadcrumbs: [],
       }),
       getProduct: vi.fn().mockImplementation((id) => {
-        if (id === 99999) return Promise.resolve(null);
+        if (id === 99999) {
+          return Promise.resolve(null);
+        }
         return Promise.resolve({
           id: id === 1 ? 1 : id,
           name: "Test Product",

@@ -39,7 +39,9 @@ export class NavigationService {
         withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
       );
 
-      if (result.isErr()) return err(result.error);
+      if (result.isErr()) {
+        return err(result.error);
+      }
 
       return ok({
         data: NavigationService.normalizeItems(result.value),
@@ -72,7 +74,9 @@ export class NavigationService {
       withTimeout(storage.getNavigationItems(), 5000, "Get navigation items"),
     );
 
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      return err(result.error);
+    }
 
     const normalized = NavigationService.normalizeItems(result.value);
     await unifiedCache.set(cacheKey, normalized, CACHE_TTL_NAVIGATION * 1000);
@@ -92,8 +96,12 @@ export class NavigationService {
       withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item"),
     );
 
-    if (result.isErr()) return err(result.error);
-    if (!result.value) return err(new NotFoundError(`Navigation item ${id} not found`));
+    if (result.isErr()) {
+      return err(result.error);
+    }
+    if (!result.value) {
+      return err(new NotFoundError(`Navigation item ${id} not found`));
+    }
 
     return ok(result.value);
   }
@@ -119,7 +127,9 @@ export class NavigationService {
       withTimeout(getStorage().createNavigationItem(itemData), 5000, "Create navigation item"),
     );
 
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      return err(result.error);
+    }
 
     // Invalidate cache
     await CacheOperations.invalidateNavigation().catch((err) =>
@@ -145,8 +155,12 @@ export class NavigationService {
       ),
     );
 
-    if (result.isErr()) return err(result.error);
-    if (!result.value) return err(new NotFoundError(`Navigation item ${id} not found`));
+    if (result.isErr()) {
+      return err(result.error);
+    }
+    if (!result.value) {
+      return err(new NotFoundError(`Navigation item ${id} not found`));
+    }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),
@@ -160,8 +174,12 @@ export class NavigationService {
       withTimeout(getStorage().deleteNavigationItem(id), 5000, "Delete navigation item"),
     );
 
-    if (result.isErr()) return err(result.error);
-    if (!result.value) return err(new NotFoundError(`Navigation item ${id} not found`));
+    if (result.isErr()) {
+      return err(result.error);
+    }
+    if (!result.value) {
+      return err(new NotFoundError(`Navigation item ${id} not found`));
+    }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),
@@ -179,7 +197,9 @@ export class NavigationService {
       withTimeout(storage.reorderNavigationItems(items), 5000, "Reorder navigation items"),
     );
 
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      return err(result.error);
+    }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
       logger.error("[Navigation] Cache invalidation failed:", err),
@@ -187,7 +207,9 @@ export class NavigationService {
 
     // Return updated list - recursive call to getItems needs error handling
     const getResult = await NavigationService.getItems(true);
-    if (getResult.isErr()) return err(getResult.error);
+    if (getResult.isErr()) {
+      return err(getResult.error);
+    }
 
     return ok(getResult.value.data);
   }
@@ -195,7 +217,9 @@ export class NavigationService {
   static async getGlassmorphismSettings(): Promise<Result<any, AppError>> {
     const cacheKey = "navigation-glassmorphism-settings";
     const cached = await unifiedCache.get(cacheKey);
-    if (cached) return ok(cached);
+    if (cached) {
+      return ok(cached);
+    }
 
     const result = await safeQuery(
       withTimeout(
@@ -205,7 +229,9 @@ export class NavigationService {
       ),
     );
 
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      return err(result.error);
+    }
 
     const settings = result.value || {
       enabled: true,
@@ -237,7 +263,9 @@ export class NavigationService {
       ),
     );
 
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      return err(result.error);
+    }
 
     await unifiedCache.delete("navigation-glassmorphism-settings");
     return ok(result.value);

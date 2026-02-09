@@ -25,7 +25,9 @@ describe("Process Crash Integrity (Integration Tier)", () => {
         method: "POST",
         headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
       });
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        throw new Error("Request failed");
+      }
     } catch (_e: any) {
       // Expected connection reset
     }

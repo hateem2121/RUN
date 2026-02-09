@@ -146,7 +146,9 @@ async function cleanupTempUploads(
       const pathParts = filePath.split("/");
       if (pathParts.length >= 4 && pathParts[2] === "uploads") {
         const uploadId = pathParts[3];
-        if (!uploadId) continue;
+        if (!uploadId) {
+          continue;
+        }
 
         // Upload IDs start with timestamp (see services.ts:initializeChunkedUpload)
         // Format: {timestamp}{random}

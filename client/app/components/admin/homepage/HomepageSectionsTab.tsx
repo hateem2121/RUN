@@ -1,14 +1,8 @@
-
+import type { HomepageSection } from "@shared/schema";
+import { Edit } from "lucide-react";
 import { useState } from "react";
-import { type HomepageSection } from "@shared/schema";
-import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Edit } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 
 interface HomepageSectionsTabProps {
   sections: HomepageSection[];
@@ -56,15 +54,17 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 mr-4">
-                        <Switch
-                            checked={section.isActive ?? true}
-                            onCheckedChange={(checked) => 
-                                updateSection.mutate({ id: section.id, data: { isActive: checked } })
-                            }
-                        />
-                        <span className="text-sm text-muted-foreground">{section.isActive ? "Active" : "Inactive"}</span>
-                    </div>
+                  <div className="flex items-center gap-2 mr-4">
+                    <Switch
+                      checked={section.isActive ?? true}
+                      onCheckedChange={(checked) =>
+                        updateSection.mutate({ id: section.id, data: { isActive: checked } })
+                      }
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {section.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </div>
                   <Button variant="outline" size="sm" onClick={() => setEditingSection(section)}>
                     <Edit className="mr-2 h-4 w-4" /> Edit Content
                   </Button>
@@ -72,9 +72,9 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
               </div>
             ))}
             {sections.length === 0 && (
-                <div className="text-center text-muted-foreground py-8">
-                    No sections found. Sections are typically pre-seeded.
-                </div>
+              <div className="text-center text-muted-foreground py-8">
+                No sections found. Sections are typically pre-seeded.
+              </div>
             )}
           </div>
         </CardContent>
@@ -86,26 +86,29 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Edit {getFriendlyName(editingSection.name)}</DialogTitle>
-              <DialogDescription>
-                Update the content for this section.
-              </DialogDescription>
+              <DialogDescription>Update the content for this section.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-content">Content</Label>
-                  <Textarea
-                    id="edit-content"
-                    className="min-h-[200px]"
-                    value={editingSection.content || ""}
-                    onChange={(e) => setEditingSection({ ...editingSection, content: e.target.value })}
-                  />
-                </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-content">Content</Label>
+                <Textarea
+                  id="edit-content"
+                  className="min-h-[200px]"
+                  value={editingSection.content || ""}
+                  onChange={(e) =>
+                    setEditingSection({ ...editingSection, content: e.target.value })
+                  }
+                />
+              </div>
             </div>
             <DialogFooter>
-              <Button 
+              <Button
                 onClick={() => {
-                   updateSection.mutate({ id: editingSection.id, data: { content: editingSection.content } });
-                   setEditingSection(null);
+                  updateSection.mutate({
+                    id: editingSection.id,
+                    data: { content: editingSection.content },
+                  });
+                  setEditingSection(null);
                 }}
                 disabled={updateSection.isPending}
               >

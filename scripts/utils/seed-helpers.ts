@@ -129,7 +129,9 @@ export function generateDescription(minWords: number = 10, maxWords: number = 30
 
   for (let i = 0; i < wordCount; i++) {
     const word = words[Math.floor(Math.random() * words.length)];
-    if (word) selectedWords.push(word);
+    if (word) {
+      selectedWords.push(word);
+    }
   }
 
   return `${selectedWords.join(" ")}.`;
@@ -175,8 +177,12 @@ export function randomBoolean(trueProbability: number = 0.5): boolean {
  * Format duration in milliseconds to readable string
  */
 export function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms.toFixed(0)}ms`;
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+  if (ms < 1000) {
+    return `${ms.toFixed(0)}ms`;
+  }
+  if (ms < 60000) {
+    return `${(ms / 1000).toFixed(1)}s`;
+  }
   return `${(ms / 60000).toFixed(1)}m`;
 }
 

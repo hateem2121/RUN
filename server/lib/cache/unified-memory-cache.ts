@@ -195,15 +195,18 @@ export class UnifiedMemoryCache {
 
   private recordHitTime(time: number) {
     this.responseTimesHit.push(time);
-    if (this.responseTimesHit.length > this.MAX_RESPONSE_BUFFER) this.responseTimesHit.shift();
+    if (this.responseTimesHit.length > this.MAX_RESPONSE_BUFFER) {
+      this.responseTimesHit.shift();
+    }
     this.metrics.avgHitTime =
       this.responseTimesHit.reduce((a, b) => a + b, 0) / this.responseTimesHit.length;
   }
 
   private recordLoaderTime(time: number) {
     this.responseTimesLoader.push(time);
-    if (this.responseTimesLoader.length > this.MAX_RESPONSE_BUFFER)
+    if (this.responseTimesLoader.length > this.MAX_RESPONSE_BUFFER) {
       this.responseTimesLoader.shift();
+    }
     this.metrics.avgLoaderTime =
       this.responseTimesLoader.reduce((a, b) => a + b, 0) / this.responseTimesLoader.length;
   }

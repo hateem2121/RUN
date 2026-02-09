@@ -18,12 +18,11 @@ export default function TermsOfService() {
           [ PROTOCOL: SERVICE_TERMS ]
         </p>
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-          Our terms of service are currently being finalized. We appreciate your patience while we document our protocols.
+          Our terms of service are currently being finalized. We appreciate your patience while we
+          document our protocols.
         </p>
         <div className="mt-12 border-t border-border pt-8">
-          <p className="text-sm text-muted-foreground italic">
-            Last Updated: February 2026
-          </p>
+          <p className="text-sm text-muted-foreground italic">Last Updated: February 2026</p>
         </div>
       </div>
     </main>

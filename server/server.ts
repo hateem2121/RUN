@@ -60,24 +60,19 @@ serverReady = (async () => {
     // 9. Start Server
     // 9. Start Server
     // PORT 5002 is strictly enforced for dev/prod, but can be overridden in tests to avoid EADDRINUSE
-    const PORT = ((process.env.NODE_ENV === "test" || process.env.VITEST === "true") && process.env.PORT !== undefined) 
-      ? parseInt(process.env.PORT) 
-      : 5002;
-    
+    const PORT =
+      (process.env.NODE_ENV === "test" || process.env.VITEST === "true") &&
+      process.env.PORT !== undefined
+        ? parseInt(process.env.PORT, 10)
+        : 5002;
+
     // Only listen if we are not in a test environment, or if specifically forced (integration tests)
     const shouldListen = process.env.NODE_ENV !== "test" || process.env.FORCE_LISTEN === "true";
-    
+
     if (shouldListen) {
       httpServer.listen(PORT, () => {
         const address = httpServer.address();
-        const actualPort = typeof address === "string" ? PORT : address?.port || PORT;
-        
-        // DO NOT REMOVE: Test runner depends on this exact string format to capture dynamic ports
-        console.log(`Server running on port ${actualPort}`);
-        
-        console.log(`✓ Server running on http://localhost:${actualPort}`);
-        console.log(`✓ Admin panel: http://localhost:${actualPort}/admin`);
-        console.log(`✓ API base: http://localhost:${actualPort}/api`);
+        const _actualPort = typeof address === "string" ? PORT : address?.port || PORT;
         logger.info(`Environment: ${config.app.environment}`);
       });
     }

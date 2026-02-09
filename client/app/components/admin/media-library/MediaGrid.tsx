@@ -373,7 +373,9 @@ const MediaBulkOperations = React.memo(() => {
         },
         (oldData: unknown) => {
           const dataRecord = oldData as Record<string, unknown>;
-          if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) return oldData;
+          if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) {
+            return oldData;
+          }
 
           // Filter out deleted items
           const filteredData = dataRecord.data.filter(
@@ -477,19 +479,25 @@ const MediaBulkOperations = React.memo(() => {
   });
 
   const handleBulkDownload = async () => {
-    if (!hasSelection) return;
+    if (!hasSelection) {
+      return;
+    }
     const ids = Array.from(state.selectedAssets);
     bulkDownloadMutation.mutate(ids);
   };
 
   const handleBulkDelete = () => {
-    if (!hasSelection) return;
+    if (!hasSelection) {
+      return;
+    }
 
     const ids = Array.from(state.selectedAssets);
     bulkDeleteMutation.mutate(ids);
   };
 
-  if (!hasSelection) return null;
+  if (!hasSelection) {
+    return null;
+  }
 
   return (
     <div className="flex items-center gap-2">
@@ -555,9 +563,12 @@ export default function MediaGrid({
   // Build query parameters - PAGINATION FIX: Always use pagination (both standalone & modal)
   const buildQueryParams = () => {
     const params = new URLSearchParams();
-    if (state.searchTerm) params.append("search", state.searchTerm);
-    if (state.selectedType && state.selectedType !== "all")
+    if (state.searchTerm) {
+      params.append("search", state.searchTerm);
+    }
+    if (state.selectedType && state.selectedType !== "all") {
       params.append("type", state.selectedType);
+    }
     params.append("sortBy", state.sortBy);
     params.append("sortOrder", state.sortOrder);
 
@@ -585,7 +596,7 @@ export default function MediaGrid({
 
   // 🔍 PAGINATION SYNC MONITOR: Track frontend-backend pagination alignment
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint: legacy disable replacement react-hooks/exhaustive-deps
   }, []);
 
   // Traditional pagination media query with proper timeout and selective retry
@@ -646,7 +657,9 @@ export default function MediaGrid({
 
       // Filter out deletedAt items as safety net against stale backend cache
       const filteredAssets = dataRecord.data.filter((asset: unknown) => {
-        if (typeof asset !== "object" || asset === null) return true;
+        if (typeof asset !== "object" || asset === null) {
+          return true;
+        }
         const assetObj = asset as Record<string, unknown>;
         return !assetObj.deletedAt; // Exclude items with deletedAt set
       });
@@ -676,17 +689,24 @@ export default function MediaGrid({
         err?.message?.includes("cancelled") ||
         err?.code === "ABORT_ERR";
 
-      if (isAbortError) return false; // Never retry cancelled requests
+      if (isAbortError) {
+        return false; // Never retry cancelled requests
+      }
 
       // 429 Rate Limit: Retry with exponential backoff (max 3 attempts)
       if (err?.message?.includes("429")) {
         return failureCount < 3;
       }
 
-      if (err?.message?.includes("Failed to fetch media: 4")) return false; // Don't retry 4xx errors
-      if (error instanceof TypeError && error.message === "Failed to fetch")
+      if (err?.message?.includes("Failed to fetch media: 4")) {
+        return false; // Don't retry 4xx errors
+      }
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
         return failureCount < 2; // Network errors: 2 retries
-      if (err?.message?.includes("Failed to fetch media: 5")) return failureCount < 2; // 5xx errors: 2 retries
+      }
+      if (err?.message?.includes("Failed to fetch media: 5")) {
+        return failureCount < 2; // 5xx errors: 2 retries
+      }
       return false; // Don't retry other errors
     },
     retryDelay: (attemptIndex, error) => {
@@ -778,7 +798,7 @@ export default function MediaGrid({
       if (!pageMatch || !limitMatch || !frontendMatch) {
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint: legacy disable replacement react-hooks/exhaustive-deps
   }, [mediaResponse, status, state.currentPage, pagination.limit, pagination.page, params.get]);
 
   // Data validation logic retained without console output
@@ -807,7 +827,9 @@ export default function MediaGrid({
   const { data: batchContent } = useQuery({
     queryKey: ["media-batch", displayAssets.map((a: MediaAsset) => a.id).join(",")],
     queryFn: async () => {
-      if (displayAssets.length === 0) return {};
+      if (displayAssets.length === 0) {
+        return {};
+      }
       const ids = displayAssets.map((a: MediaAsset) => a.id);
       const results = await batchFetchMediaContent(ids);
 
@@ -827,7 +849,9 @@ export default function MediaGrid({
     refetchOnMount: true, // Ensure fresh data on component mount
   });
   const formatFileSize = useCallback((bytes: number): string => {
-    if (bytes === 0) return "0 B";
+    if (bytes === 0) {
+      return "0 B";
+    }
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

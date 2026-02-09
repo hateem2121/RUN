@@ -181,10 +181,18 @@ export function getConfig(): ProductionConfig {
 export function validateConfig(config: ProductionConfig): boolean {
   try {
     // Validate required configuration values
-    if (!config.app.environment) return false;
-    if (config.cache.defaultTTL <= 0) return false;
-    if (config.security.rateLimiting.maxRequests <= 0) return false;
-    if (config.monitoring.alertThresholds.responseTime <= 0) return false;
+    if (!config.app.environment) {
+      return false;
+    }
+    if (config.cache.defaultTTL <= 0) {
+      return false;
+    }
+    if (config.security.rateLimiting.maxRequests <= 0) {
+      return false;
+    }
+    if (config.monitoring.alertThresholds.responseTime <= 0) {
+      return false;
+    }
 
     return true;
   } catch (_error) {

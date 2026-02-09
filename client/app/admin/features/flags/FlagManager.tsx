@@ -25,7 +25,9 @@ export default function FlagManager() {
   const fetchFlags = useCallback(async () => {
     try {
       const res = await fetch("/api/v1/feature-flags/detailed");
-      if (!res.ok) throw new Error("Failed to load flags");
+      if (!res.ok) {
+        throw new Error("Failed to load flags");
+      }
       const data = await res.json();
       setFlags(data.flags);
     } catch (_err) {
@@ -48,7 +50,9 @@ export default function FlagManager() {
         method: "POST",
       });
 
-      if (!res.ok) throw new Error("Failed to toggle");
+      if (!res.ok) {
+        throw new Error("Failed to toggle");
+      }
       toast.success(`Flag ${key} ${!currentState ? "enabled" : "disabled"}`);
     } catch (_err) {
       // Revert
@@ -58,7 +62,9 @@ export default function FlagManager() {
   };
 
   const createFlag = async () => {
-    if (!newFlagKey) return;
+    if (!newFlagKey) {
+      return;
+    }
     try {
       const res = await fetch(`/api/v1/feature-flags/${newFlagKey}`, {
         method: "PUT",
@@ -69,7 +75,9 @@ export default function FlagManager() {
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to create flag");
+      if (!res.ok) {
+        throw new Error("Failed to create flag");
+      }
 
       toast.success("Flag created");
       setNewFlagKey("");
@@ -80,12 +88,13 @@ export default function FlagManager() {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex justify-center p-8">
         <Loader2 className="animate-spin" />
       </div>
     );
+  }
 
   return (
     <div className="space-y-6">

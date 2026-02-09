@@ -5,7 +5,7 @@ import { Button } from "./button";
 describe("Button", () => {
   it("renders correctly", () => {
     render(<Button>Click me</Button>);
-    expect(screen.getByRole("button", { name: "Click me" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Click me" })).toBeTruthy();
   });
 
   it("handles click events", () => {
@@ -17,6 +17,6 @@ describe("Button", () => {
 
   it("can be disabled", () => {
     render(<Button disabled>Disabled</Button>);
-    expect(screen.getByRole("button")).toBeDisabled();
+    expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(true);
   });
 });

@@ -27,7 +27,9 @@ class BundleOptimizer {
   }
 
   private async analyzeCurrentBundle() {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     // Analyze JavaScript chunks
     await this.analyzeScripts();
@@ -102,7 +104,9 @@ class BundleOptimizer {
       const response = await fetch(url, { method: "HEAD" });
       const size = parseInt(response.headers.get("content-length") || "0", 10);
 
-      if (size === 0) return null;
+      if (size === 0) {
+        return null;
+      }
 
       const name = url.split("/").pop()?.split("?")[0] || "unknown";
       const gzippedSize = this.estimateGzippedSize(size, type);
@@ -202,19 +206,26 @@ class BundleOptimizer {
     let score = 100;
 
     // Deduct points for large bundles
-    if (totalGzippedSize > 2 * 1024 * 1024)
+    if (totalGzippedSize > 2 * 1024 * 1024) {
       score -= 30; // 2MB
-    else if (totalGzippedSize > 1 * 1024 * 1024)
+    } else if (totalGzippedSize > 1 * 1024 * 1024) {
       score -= 20; // 1MB
-    else if (totalGzippedSize > 500 * 1024) score -= 10; // 500KB
+    } else if (totalGzippedSize > 500 * 1024) {
+      score -= 10; // 500KB
+    }
 
     // Deduct points for number of chunks
-    if (this.chunks.length > 10) score -= 15;
-    else if (this.chunks.length > 5) score -= 5;
+    if (this.chunks.length > 10) {
+      score -= 15;
+    } else if (this.chunks.length > 5) {
+      score -= 5;
+    }
 
     // Deduct points for sync scripts
     const syncScripts = this.chunks.filter((c) => c.type === "js" && !c.isAsync);
-    if (syncScripts.length > 3) score -= 10;
+    if (syncScripts.length > 3) {
+      score -= 10;
+    }
 
     return {
       totalSize,
@@ -247,7 +258,9 @@ Chunk Breakdown:
     // Group chunks by type
     const chunksByType = chunks.reduce(
       (acc, chunk) => {
-        if (!acc[chunk.type]) acc[chunk.type] = [];
+        if (!acc[chunk.type]) {
+          acc[chunk.type] = [];
+        }
         acc[chunk.type]?.push(chunk);
         return acc;
       },
@@ -293,7 +306,9 @@ Performance Impact:
   }
 
   private formatSize(bytes: number): string {
-    if (bytes === 0) return "0 B";
+    if (bytes === 0) {
+      return "0 B";
+    }
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -369,7 +384,9 @@ export const BundleUtils = {
     const report = bundleOptimizer.generateReport();
     const breakdown = report.chunks.reduce(
       (acc, chunk) => {
-        if (!acc[chunk.type]) acc[chunk.type] = 0;
+        if (!acc[chunk.type]) {
+          acc[chunk.type] = 0;
+        }
         acc[chunk.type]! += chunk.gzippedSize;
         return acc;
       },

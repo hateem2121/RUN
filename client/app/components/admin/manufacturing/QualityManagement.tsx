@@ -240,9 +240,13 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
   const { data: specificQualityImage } = useQuery({
     queryKey: [`/api/media/${qualityForm.imageId}`, qualityForm.imageId],
     queryFn: async () => {
-      if (!qualityForm.imageId) return null;
+      if (!qualityForm.imageId) {
+        return null;
+      }
       const response = await fetch(`/api/media/${qualityForm.imageId}`);
-      if (!response.ok) return null;
+      if (!response.ok) {
+        return null;
+      }
       const result = await response.json();
       return result.success ? result.data : null;
     },
@@ -354,7 +358,9 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
 
   const handleQualityImageSelect = (assets: MediaAsset[] | MediaAsset) => {
     const asset = Array.isArray(assets) ? assets[0] : assets;
-    if (!asset) return;
+    if (!asset) {
+      return;
+    }
     setQualityForm({ ...qualityForm, imageId: asset.id });
     setShowQualityImagePicker(false);
   };

@@ -36,7 +36,9 @@ function getContentCategory(
   contentType: string | undefined,
   path: string,
 ): keyof typeof CDN_CACHE_CONFIG {
-  if (!contentType) return "html";
+  if (!contentType) {
+    return "html";
+  }
 
   if (
     contentType.includes("image/") ||

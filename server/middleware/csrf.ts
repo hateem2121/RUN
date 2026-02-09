@@ -117,7 +117,9 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
  */
 export function csrfProtection(req: Request, res: Response, next: NextFunction): void {
   csrfTokenGenerator(req, res, (err) => {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     csrfValidator(req, res, next);
   });
 }

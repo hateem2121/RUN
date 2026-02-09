@@ -80,7 +80,9 @@ export default function Accessories() {
 
   // Filter accessories based on search
   const filteredAccessories = useMemo(() => {
-    if (!debouncedSearchTerm) return accessories;
+    if (!debouncedSearchTerm) {
+      return accessories;
+    }
 
     const term = debouncedSearchTerm.toLowerCase();
     return accessories.filter(

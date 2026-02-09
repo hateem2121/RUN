@@ -78,7 +78,9 @@ test.describe("Forensic UI Audit", () => {
 
   for (const route of TARGET_ROUTES) {
     for (const viewport of VIEWPORTS) {
-      if (route.skipMobile && viewport.name === "mobile") continue;
+      if (route.skipMobile && viewport.name === "mobile") {
+        continue;
+      }
 
       // We limit Full Matrix to Blocker/High to save time, Medium gets Desktop/Light only
       // UNLESS we want full coverage. Let's do Full Coverage for Blocker, Desktop Only for others for now to be efficient,
@@ -88,12 +90,15 @@ test.describe("Forensic UI Audit", () => {
 
       const shouldRunMobile =
         viewport.name === "mobile" ? ["Blocker", "High"].includes(route.criticality) : true;
-      if (!shouldRunMobile) continue;
+      if (!shouldRunMobile) {
+        continue;
+      }
 
       for (const scheme of COLOR_SCHEMES) {
         // Mobile Dark mode only for Blockers
-        if (viewport.name === "mobile" && scheme === "dark" && route.criticality !== "Blocker")
+        if (viewport.name === "mobile" && scheme === "dark" && route.criticality !== "Blocker") {
           continue;
+        }
 
         test(`Forensic Snapshot: ${route.name} [${viewport.name}] [${scheme}]`, async ({
           page,
@@ -109,7 +114,9 @@ test.describe("Forensic UI Audit", () => {
           // Capture Console Errors
           const consoleErrors: string[] = [];
           page.on("console", (msg) => {
-            if (msg.type() === "error") consoleErrors.push(msg.text());
+            if (msg.type() === "error") {
+              consoleErrors.push(msg.text());
+            }
           });
 
           // Navigate

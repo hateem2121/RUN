@@ -42,8 +42,6 @@ function parseTableFile(filePath: string) {
 }
 
 function main() {
-  console.log("🏗️ Generating Schema Reference Documentation...");
-
   let fullDoc = "# Database Schema Reference\n\n";
   fullDoc += `> **Generated on:** ${new Date().toISOString().split("T")[0]}\n`;
   fullDoc += `> **Source:** \`shared/schema/\`\n\n`;
@@ -54,7 +52,6 @@ function main() {
   );
 
   for (const file of files) {
-    console.log(`  Processing ${file}...`);
     const tableDoc = parseTableFile(join(SCHEMA_DIR, file));
     if (tableDoc) {
       fullDoc += `## Module: ${file}\n\n${tableDoc}`;
@@ -62,7 +59,6 @@ function main() {
   }
 
   writeFileSync(OUTPUT_FILE, fullDoc);
-  console.log(`\n✅ Schema documentation generated at: ${OUTPUT_FILE}`);
 }
 
 main();

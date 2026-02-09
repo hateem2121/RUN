@@ -225,7 +225,9 @@ export function MetricsTabContent({
 
   const handleMetricSubmit = () => {
     const isValidForm = validateMetricForm();
-    if (!isValidForm) return;
+    if (!isValidForm) {
+      return;
+    }
 
     const transformedData = {
       name: metricForm.metric,

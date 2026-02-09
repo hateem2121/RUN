@@ -7,7 +7,9 @@
  * Used across fiber and fabric components to normalize property data
  */
 export const getPropertiesArray = (properties: unknown): string[] => {
-  if (!properties) return [];
+  if (!properties) {
+    return [];
+  }
   if (typeof properties === "string") {
     return properties.split(",").filter((p: string) => p.trim());
   }

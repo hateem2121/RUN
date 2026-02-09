@@ -26,7 +26,9 @@ export function useElementSize<T extends HTMLElement = HTMLDivElement>(): [
   }, [ref?.offsetHeight, ref?.offsetWidth]);
 
   useLayoutEffect(() => {
-    if (!ref) return;
+    if (!ref) {
+      return;
+    }
 
     handleSize();
 

@@ -164,7 +164,9 @@ interface ProductSpecsProps {
 }
 
 function ProductSpecs({ specs }: ProductSpecsProps) {
-  if (!specs || specs.length === 0) return null;
+  if (!specs || specs.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-12">
@@ -330,7 +332,15 @@ function ProductDetailContent() {
   }
 
   const { product, context, media } = productData;
-  const galleryMedia = media && media.length ? media : [{ url: "https://via.placeholder.com/800", type: "image", mimeType: "image/jpeg" } as MediaAsset];
+  const galleryMedia = media?.length
+    ? media
+    : [
+        {
+          url: "https://via.placeholder.com/800",
+          type: "image",
+          mimeType: "image/jpeg",
+        } as MediaAsset,
+      ];
 
   return (
     <div className="min-h-screen bg-white pb-24">

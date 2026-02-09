@@ -79,7 +79,9 @@ export default function useCategoryOperationsConsolidated() {
 
   // Derived State (Filtering)
   const filteredCategories = useMemo(() => {
-    if (!categories) return [];
+    if (!categories) {
+      return [];
+    }
     let result = [...categories];
 
     // Search

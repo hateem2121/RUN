@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import ResponsiveNavigation from "./responsive-navigation";
 import { FloatingDockSkeleton } from "./floating-dock-skeleton";
+import ResponsiveNavigation from "./responsive-navigation";
 
 const FloatingDockHeader = memo(function FloatingDockHeader() {
   const [mounted, setMounted] = useState(false);
@@ -14,7 +14,7 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
   if (!mounted) {
     return (
       <header className="fixed top-0 left-0 w-full z-(--z-index-dock) pointer-events-none">
-         <FloatingDockSkeleton />
+        <FloatingDockSkeleton />
       </header>
     );
   }

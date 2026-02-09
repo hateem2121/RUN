@@ -35,7 +35,9 @@ export function useMediaOperations(): MediaOperations {
 
   // Get media URL with fallback using unified content endpoint
   const getMediaUrl = useCallback((asset: MediaAsset): string => {
-    if (!asset) return "";
+    if (!asset) {
+      return "";
+    }
 
     // Use unified content URL if available
     if (asset.url?.startsWith("/api/media/") && asset.url.includes("/content")) {
@@ -54,9 +56,15 @@ export function useMediaOperations(): MediaOperations {
 
   // Validate media asset
   const validateMediaAsset = useCallback((asset: MediaAsset): boolean => {
-    if (!asset || !asset.id) return false;
-    if (!asset.filename || asset.filename.trim() === "") return false;
-    if (!asset.type || asset.type.trim() === "") return false;
+    if (!asset || !asset.id) {
+      return false;
+    }
+    if (!asset.filename || asset.filename.trim() === "") {
+      return false;
+    }
+    if (!asset.type || asset.type.trim() === "") {
+      return false;
+    }
 
     return true;
   }, []);
@@ -77,7 +85,9 @@ export function useMediaOperations(): MediaOperations {
 
   // Format file size in human readable format
   const formatFileSize = useCallback((bytes: number): string => {
-    if (bytes === 0) return "0 B";
+    if (bytes === 0) {
+      return "0 B";
+    }
 
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];

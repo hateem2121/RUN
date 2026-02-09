@@ -101,7 +101,9 @@ router.post("/accessories", authService.requireAdmin, async (req, res) => {
 router.put("/accessories/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "accessory");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
     const validatedData = insertAccessorySchema.partial().parse(req.body);
 
     // Convert price to string if it's a number (database expects string for decimal)
@@ -141,7 +143,9 @@ router.put("/accessories/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/accessories/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "accessory");
-    if (id === null) return;
+    if (id === null) {
+      return;
+    }
 
     const success = await withTimeout(
       accessoryRepository.deleteAccessory(id),

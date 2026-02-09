@@ -34,14 +34,22 @@ export function PerformanceStatus({
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-green-400";
-    if (score >= 70) return "text-yellow-400";
+    if (score >= 90) {
+      return "text-green-400";
+    }
+    if (score >= 70) {
+      return "text-yellow-400";
+    }
     return "text-red-400";
   };
 
   const getScoreIcon = (score: number) => {
-    if (score >= 90) return <CheckCircle className="h-4 w-4" />;
-    if (score >= 70) return <TrendingUp className="h-4 w-4" />;
+    if (score >= 90) {
+      return <CheckCircle className="h-4 w-4" />;
+    }
+    if (score >= 70) {
+      return <TrendingUp className="h-4 w-4" />;
+    }
     return <Activity className="h-4 w-4" />;
   };
 

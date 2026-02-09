@@ -39,7 +39,9 @@ export function ManufacturingCard({
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!enableAnimations || !cardRef.current) return;
+    if (!enableAnimations || !cardRef.current) {
+      return;
+    }
 
     if (variant === "public") {
       // Public variant: scroll-triggered animations

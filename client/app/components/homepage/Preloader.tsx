@@ -22,7 +22,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
 
     // Explicitly use .current
     const scope = containerRef.current;
@@ -53,7 +55,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       // Text Cycling Logic with Fade
       const cycleText = (index: number) => {
-        if (!textRef.current) return;
+        if (!textRef.current) {
+          return;
+        }
 
         const nextIndex = (index + 1) % LOADING_TEXTS.length;
         const nextText = LOADING_TEXTS[nextIndex];

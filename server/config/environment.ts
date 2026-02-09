@@ -199,8 +199,12 @@ export const database = {
 
 // CORS origin allowlist builder
 const corsOrigins: string[] = (() => {
-  if (env.CORS_ALLOWED_ORIGINS === "*") return ["*"];
-  if (!env.CORS_ALLOWED_ORIGINS) return [];
+  if (env.CORS_ALLOWED_ORIGINS === "*") {
+    return ["*"];
+  }
+  if (!env.CORS_ALLOWED_ORIGINS) {
+    return [];
+  }
   return env.CORS_ALLOWED_ORIGINS.split(",").map((origin: string) => origin.trim());
 })();
 

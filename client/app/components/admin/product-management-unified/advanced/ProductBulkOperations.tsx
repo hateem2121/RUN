@@ -135,7 +135,9 @@ export function ProductBulkOperations({
   };
 
   const handleBulkAction = () => {
-    if (!bulkAction || selectedProductIds.length === 0) return;
+    if (!bulkAction || selectedProductIds.length === 0) {
+      return;
+    }
 
     // Show confirmation dialog for destructive actions
     if (bulkAction === "delete" || bulkAction === "deactivate") {

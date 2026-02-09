@@ -67,7 +67,9 @@ export default defineConfig(
         rollupOptions: {
           onwarn(warning: any, warn: any) {
             // Suppress "Can't resolve original location of error" source map warnings
-            if (warning.code === "SOURCEMAP_ERROR") return;
+            if (warning.code === "SOURCEMAP_ERROR") {
+              return;
+            }
             warn(warning);
           },
           output: {

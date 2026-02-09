@@ -127,7 +127,9 @@ export default function MediaViewerModal() {
         },
         (oldData: unknown) => {
           // Handle different data shapes robustly
-          if (!oldData) return oldData;
+          if (!oldData) {
+            return oldData;
+          }
 
           // Handle direct array response
           if (Array.isArray(oldData)) {
@@ -281,7 +283,9 @@ export default function MediaViewerModal() {
         },
         (oldData: unknown) => {
           // Handle different data shapes robustly
-          if (!oldData) return oldData;
+          if (!oldData) {
+            return oldData;
+          }
 
           // Handle direct array response
           if (Array.isArray(oldData)) {
@@ -378,7 +382,9 @@ export default function MediaViewerModal() {
   });
 
   const handleSaveEdit = () => {
-    if (!selectedAsset?.id) return;
+    if (!selectedAsset?.id) {
+      return;
+    }
 
     const tagsArray = editForm.tags
       .split(",")
@@ -431,7 +437,9 @@ export default function MediaViewerModal() {
   };
 
   const handleDownload = async () => {
-    if (!selectedAsset) return;
+    if (!selectedAsset) {
+      return;
+    }
 
     try {
       const response = await fetch(`/api/media/${selectedAsset.id}/download`);

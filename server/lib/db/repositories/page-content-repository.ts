@@ -102,7 +102,9 @@ export class PageContentRepository {
     const cacheKey = "homepage:hero";
     try {
       const cached = await unifiedCache.get<HomepageHero>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get homepage hero from cache:", error);
     }
@@ -181,7 +183,9 @@ export class PageContentRepository {
     const cacheKey = "homepage:slogans";
     try {
       const cached = await unifiedCache.get<HomepageSlogan[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get homepage slogans from cache:", error);
     }
@@ -458,7 +462,9 @@ export class PageContentRepository {
     const cacheKey = includeInactive ? "homepage:sections:all" : "homepage:sections";
     try {
       const cached = await unifiedCache.get<HomepageSection[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get homepage sections from cache:", error);
     }
@@ -611,7 +617,9 @@ export class PageContentRepository {
     const cacheKey = "homepage:featured_products_settings";
     try {
       const cached = await unifiedCache.get(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get homepage featured products settings from cache:", error);
     }
@@ -688,7 +696,9 @@ export class PageContentRepository {
     const cacheKey = "about:hero";
     try {
       const cached = await unifiedCache.get<AboutHero>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get about hero from cache:", error);
     }
@@ -1120,7 +1130,9 @@ export class PageContentRepository {
     const cacheKey = "sustainability:metrics";
     try {
       const cached = await unifiedCache.get<SustainabilityMetric[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get sustainability metrics from cache:", error);
     }
@@ -1440,7 +1452,9 @@ export class PageContentRepository {
 
   async migrateLegacySustainabilityData(): Promise<UnifiedSustainability> {
     const existing = await this.getUnifiedSustainability();
-    if (existing) return existing;
+    if (existing) {
+      return existing;
+    }
 
     return await this.updateUnifiedSustainability({
       title: "Sustainability",
@@ -1505,7 +1519,9 @@ export class PageContentRepository {
     const cacheKey = "manufacturing:processes";
     try {
       const cached = await unifiedCache.get<ManufacturingProcess[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get manufacturing processes from cache:", error);
     }
@@ -1920,7 +1936,9 @@ export class PageContentRepository {
     const cacheKey = "technology:innovations";
     try {
       const cached = await unifiedCache.get<TechnologyInnovation[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology innovations from cache:", error);
     }
@@ -2014,7 +2032,9 @@ export class PageContentRepository {
   async reorderTechnologyInnovations(
     innovations: { id: number; position: number }[],
   ): Promise<void> {
-    if (innovations.length === 0) return;
+    if (innovations.length === 0) {
+      return;
+    }
 
     const caseWhenPairs = innovations.flatMap((i) => [sql`WHEN ${i.id}`, sql`THEN ${i.position}`]);
     const ids = innovations.map((i) => i.id);
@@ -2042,7 +2062,9 @@ export class PageContentRepository {
     const cacheKey = "technology:equipment";
     try {
       const cached = await unifiedCache.get<TechnologyEquipment[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology equipment from cache:", error);
     }
@@ -2134,7 +2156,9 @@ export class PageContentRepository {
   }
 
   async reorderTechnologyEquipment(equipment: { id: number; position: number }[]): Promise<void> {
-    if (equipment.length === 0) return;
+    if (equipment.length === 0) {
+      return;
+    }
 
     const caseWhenPairs = equipment.flatMap((e) => [sql`WHEN ${e.id}`, sql`THEN ${e.position}`]);
     const ids = equipment.map((e) => e.id);
@@ -2162,7 +2186,9 @@ export class PageContentRepository {
     const cacheKey = "technology:research";
     try {
       const cached = await unifiedCache.get<TechnologyResearch[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology research from cache:", error);
     }
@@ -2280,7 +2306,9 @@ export class PageContentRepository {
     const cacheKey = "technology:roadmap";
     try {
       const cached = await unifiedCache.get<TechnologyRoadmap[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology roadmap from cache:", error);
     }
@@ -2370,7 +2398,9 @@ export class PageContentRepository {
     items: { id: number; position: number }[],
     tx?: DbClient,
   ): Promise<void> {
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      return;
+    }
 
     const dbConn = tx || db;
     const caseWhenPairs = items.flatMap((i) => [sql`WHEN ${i.id}`, sql`THEN ${i.position}`]);
@@ -2399,7 +2429,9 @@ export class PageContentRepository {
     const cacheKey = "technology:gradient_settings";
     try {
       const cached = await unifiedCache.get<TechnologyGradientSettings>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology gradient settings from cache:", error);
     }
@@ -2461,7 +2493,9 @@ export class PageContentRepository {
     const cacheKey = "technology:cta";
     try {
       const cached = await unifiedCache.get<TechnologyCta>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get technology CTA from cache:", error);
     }

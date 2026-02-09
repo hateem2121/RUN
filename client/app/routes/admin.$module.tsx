@@ -33,6 +33,9 @@ const HomepageManagement = lazy(() => import("@/components/admin/homepage-manage
 const CategoryManagementSimplified = lazy(
   () => import("@/components/admin/category-management-simplified"),
 );
+const LazyFooterManagement = lazy(
+  () => import("@/components/admin/footer-management/FooterManagement"),
+);
 const AboutManagement = () => <PlaceholderModule moduleName="About Management" />;
 const BlogManagement = () => <PlaceholderModule moduleName="Blog Management" />;
 
@@ -112,6 +115,8 @@ export default function AdminModule() {
         return <StorageOptimization />;
       case "contact":
         return <ContactManagement />;
+      case "footer":
+        return <LazyFooterManagement />;
       case "test-runner":
         return <MediaTestRunner />;
       case "inquiries":

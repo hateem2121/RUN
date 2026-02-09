@@ -1,22 +1,15 @@
-
-import { useAdminHomepageData } from "@/hooks/use-admin-homepage-data";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAdminHomepageData } from "@/hooks/use-admin-homepage-data";
+import { HomepageFeaturedTab } from "./homepage/HomepageFeaturedTab";
 import { HomepageHeroTab } from "./homepage/HomepageHeroTab";
-import { HomepageSlogansTab } from "./homepage/HomepageSlogansTab";
 import { HomepageProcessCardsTab } from "./homepage/HomepageProcessCardsTab";
 import { HomepageSectionsTab } from "./homepage/HomepageSectionsTab";
-import { HomepageFeaturedTab } from "./homepage/HomepageFeaturedTab";
+import { HomepageSlogansTab } from "./homepage/HomepageSlogansTab";
 
 export default function HomepageManagement() {
-  const { 
-    isLoading, 
-    hero, 
-    slogans, 
-    sections, 
-    featuredSettings, 
-    processCards, 
-  } = useAdminHomepageData();
+  const { isLoading, hero, slogans, sections, featuredSettings, processCards } =
+    useAdminHomepageData();
 
   if (isLoading) {
     return (
@@ -45,7 +38,7 @@ export default function HomepageManagement() {
           <TabsTrigger value="sections">Sections</TabsTrigger>
           <TabsTrigger value="featured">Featured Products</TabsTrigger>
         </TabsList>
-        
+
         <HomepageHeroTab hero={hero} />
         <HomepageSlogansTab slogans={slogans} />
         <HomepageProcessCardsTab cards={processCards} />

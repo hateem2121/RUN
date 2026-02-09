@@ -198,7 +198,9 @@ export type ShadowToken = keyof typeof shadows;
  * Handles both plain variable names (--color-primary) and var() wrappers.
  */
 export function getCssVar(name: string): string {
-  if (typeof window === "undefined") return "";
+  if (typeof window === "undefined") {
+    return "";
+  }
   const cleanName = name
     .replace(/^var\(/, "")
     .replace(/\)$/, "")

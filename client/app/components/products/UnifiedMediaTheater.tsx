@@ -106,10 +106,18 @@ export function UnifiedMediaTheater({
   // Sort media to prioritize primary items and ensure consistent URL patterns
   const sortedMedia = [...media]
     .sort((a, b) => {
-      if (a.id === primaryImageId || a.id === primaryVideoId) return -1;
-      if (b.id === primaryImageId || b.id === primaryVideoId) return 1;
-      if (a.type === "image" && b.type !== "image") return -1;
-      if (b.type === "image" && a.type !== "image") return 1;
+      if (a.id === primaryImageId || a.id === primaryVideoId) {
+        return -1;
+      }
+      if (b.id === primaryImageId || b.id === primaryVideoId) {
+        return 1;
+      }
+      if (a.type === "image" && b.type !== "image") {
+        return -1;
+      }
+      if (b.type === "image" && a.type !== "image") {
+        return 1;
+      }
       return 0;
     })
     .map((asset) => ({
@@ -201,7 +209,9 @@ export function UnifiedMediaTheater({
 
   // Enhanced video loading with progress tracking
   useEffect(() => {
-    if (!videoRef.current || !isVideo) return;
+    if (!videoRef.current || !isVideo) {
+      return;
+    }
 
     const video = videoRef.current;
     const { preload } = getOptimalVideoSettings();
@@ -298,13 +308,19 @@ export function UnifiedMediaTheater({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") handlePrevious();
-    if (e.key === "ArrowRight") handleNext();
+    if (e.key === "ArrowLeft") {
+      handlePrevious();
+    }
+    if (e.key === "ArrowRight") {
+      handleNext();
+    }
     if (e.key === " " && isVideo) {
       e.preventDefault();
       setIsPlaying(!isPlaying);
     }
-    if (e.key === "f") toggleFullscreen();
+    if (e.key === "f") {
+      toggleFullscreen();
+    }
     if (e.key === "Escape" && isFullscreen) {
       setIsFullscreen(false);
     }
@@ -328,7 +344,9 @@ export function UnifiedMediaTheater({
 
   // Picture-in-Picture support for videos
   const togglePiP = async () => {
-    if (!videoRef.current || !("pictureInPictureEnabled" in document)) return;
+    if (!videoRef.current || !("pictureInPictureEnabled" in document)) {
+      return;
+    }
 
     try {
       if (isPiPActive) {
@@ -343,7 +361,9 @@ export function UnifiedMediaTheater({
 
   // Share functionality
   const handleShare = async () => {
-    if (!currentMedia || !navigator.share) return;
+    if (!currentMedia || !navigator.share) {
+      return;
+    }
 
     try {
       await navigator.share({

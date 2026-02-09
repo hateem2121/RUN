@@ -19,7 +19,9 @@ interface EquipmentSectionProps {
 }
 
 export function EquipmentSection({ equipment }: EquipmentSectionProps) {
-  if (!equipment?.length) return null;
+  if (!equipment?.length) {
+    return null;
+  }
 
   return (
     <section className="py-24 bg-white/5 relative">

@@ -3,17 +3,17 @@ import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { BadRequestError, type AppError, DatabaseError, NotFoundError } from "../../lib/errors.js";
+import { type AppError, BadRequestError, DatabaseError, NotFoundError } from "../../lib/errors.js";
 
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { safeSerialize, shouldBypassCache } from "../../utils.js";
+import { removeUndefined, safeSerialize, shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import { backendUploadManager, uploadMetrics } from "./middleware.js";
-import { MediaIdParamSchema, MediaListQuerySchema } from "./schemas.js";
+import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
 import { enhancedUploadService, uploadSessions } from "./services.js";
 import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 import {
@@ -53,7 +53,9 @@ async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
   try {
     while (hasMore) {
       const batchResult = await safeQuery(storage.getMediaAssets(pageSize, offset));
-      if (batchResult.isErr()) return err(batchResult.error);
+      if (batchResult.isErr()) {
+        return err(batchResult.error);
+      }
 
       const batch = batchResult.value;
       allAssets.push(...batch);
@@ -65,8 +67,10 @@ async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
       }
     }
     return ok(allAssets);
-  } catch (error) {
-    return err(new DatabaseError("Failed to fetch all media assets", { originalError: error }));
+  } catch (error: unknown) {
+    return err(
+      new DatabaseError("Failed to fetch all media assets", { originalError: error as Error }),
+    );
   }
 }
 
@@ -94,9 +98,15 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
   const storage = getStorage();
   // Create filters respecting exactOptionalPropertyTypes
   const filters: { type?: string; search?: string; folderId?: number } = {};
-  if (type) filters.type = type;
-  if (search) filters.search = search;
-  if (folderId !== undefined) filters.folderId = folderId;
+  if (type) {
+    filters.type = type;
+  }
+  if (search) {
+    filters.search = search;
+  }
+  if (folderId !== undefined) {
+    filters.folderId = folderId;
+  }
 
   // Fetch assets and total count in single batched transaction (reduces NEON active time)
   const result = await safeQuery(storage.getMediaAssetsWithCount(limit, offset, filters));
@@ -165,7 +175,9 @@ export async function getMediaCount(req: Request, res: Response, next: NextFunct
   // Use database-level COUNT with filtering - no need to load all records
   const result = await safeQuery(storage.getMediaAssetsCount(filters));
 
-  if (result.isErr()) return next(result.error);
+  if (result.isErr()) {
+    return next(result.error);
+  }
 
   return res.json(createSuccessResponse({ count: result.value }));
 }
@@ -198,7 +210,9 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
   // This pushes filtering to PostgreSQL instead of loading all records into memory
   const result = await safeQuery(storage.getMediaAssets(limit, 0, filters));
 
-  if (result.isErr()) return next(result.error);
+  if (result.isErr()) {
+    return next(result.error);
+  }
 
   return res.json(createSuccessResponse(result.value));
 }
@@ -209,11 +223,14 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
 
 export async function updateMediaAsset(req: Request, res: Response, next: NextFunction) {
   const { id } = MediaIdParamSchema.parse(req.params);
+  const data = removeUndefined(MediaUpdateSchema.parse(req.body));
   const storage = getStorage();
 
-  const result = await safeQuery(storage.updateMediaAsset(id, req.body));
+  const result = await safeQuery(storage.updateMediaAsset(id, data as any));
 
-  if (result.isErr()) return next(result.error);
+  if (result.isErr()) {
+    return next(result.error);
+  }
 
   const updated = result.value;
 
@@ -231,7 +248,9 @@ export async function deleteMediaAsset(req: Request, res: Response, next: NextFu
 
   // Get asset metadata before deletion (needed for physical file cleanup)
   const assetResult = await safeQuery(storage.getMediaAsset(assetId));
-  if (assetResult.isErr()) return next(assetResult.error);
+  if (assetResult.isErr()) {
+    return next(assetResult.error);
+  }
 
   const asset = assetResult.value;
 
@@ -242,7 +261,9 @@ export async function deleteMediaAsset(req: Request, res: Response, next: NextFu
   // ATOMIC OPERATION: Both DB soft delete AND cache invalidation succeed or both rollback
   // Transaction ensures cache is cleared BEFORE response is sent (fixes race condition)
   const deleteResult = await safeQuery(storage.deleteMediaAsset(assetId));
-  if (deleteResult.isErr()) return next(deleteResult.error);
+  if (deleteResult.isErr()) {
+    return next(deleteResult.error);
+  }
 
   // Physical file cleanup: Async, non-blocking, best-effort
   // Run after successful DB+cache delete to avoid blocking response
@@ -392,9 +413,13 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
 
       // Determine file type (use session.mimeType for accurate detection)
       let fileType = "document";
-      if (isImageFile(session.mimeType)) fileType = "image";
-      else if (session.mimeType.startsWith("video/")) fileType = "video";
-      else if (isGLTFFile(session.mimeType, session.filename)) fileType = "model";
+      if (isImageFile(session.mimeType)) {
+        fileType = "image";
+      } else if (session.mimeType.startsWith("video/")) {
+        fileType = "video";
+      } else if (isGLTFFile(session.mimeType, session.filename)) {
+        fileType = "model";
+      }
 
       // STANDARDIZED NAMING: Use slugified filename to match storage path
       const slugifiedFilename = slugifyFilename(session.filename);
@@ -414,7 +439,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
       const createResult = await safeQuery(
         storage.createMediaAsset(buildInsertMediaAsset(metadata)),
       );
-      if (createResult.isErr()) throw createResult.error;
+      if (createResult.isErr()) {
+        throw createResult.error;
+      }
       const asset = createResult.value;
 
       // FIX: Update URL to use asset ID instead of storagePath
@@ -423,7 +450,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
           url: `/api/media/${asset.id}/content`,
         }),
       );
-      if (urlUpdateResult.isErr()) throw urlUpdateResult.error;
+      if (urlUpdateResult.isErr()) {
+        throw urlUpdateResult.error;
+      }
 
       // Process metadata based on file type
       if (fileType === "image") {
@@ -465,7 +494,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
               imageVariants: imageVariants || undefined,
             }),
           );
-          if (updateImageResult.isErr()) throw updateImageResult.error;
+          if (updateImageResult.isErr()) {
+            throw updateImageResult.error;
+          }
 
           logger.info("Image metadata extracted (chunked upload)", {
             assetId: asset.id,
@@ -491,7 +522,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
               metadata: videoMetadata,
             }),
           );
-          if (updateVideoResult.isErr()) throw updateVideoResult.error;
+          if (updateVideoResult.isErr()) {
+            throw updateVideoResult.error;
+          }
 
           logger.info("Video metadata placeholder created (chunked upload)", {
             assetId: asset.id,
@@ -519,7 +552,9 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
                 metadata: gltfMetadata,
               }),
             );
-            if (updateGltfResult.isErr()) throw updateGltfResult.error;
+            if (updateGltfResult.isErr()) {
+              throw updateGltfResult.error;
+            }
 
             logger.info("GLTF metadata extracted (chunked upload)", {
               assetId: asset.id,
@@ -537,21 +572,23 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
 
       // Fetch the updated asset with metadata
       const finalAssetResult = await safeQuery(storage.getMediaAsset(asset.id));
-      if (finalAssetResult.isErr()) throw finalAssetResult.error;
+      if (finalAssetResult.isErr()) {
+        throw finalAssetResult.error;
+      }
 
       const updatedAsset = finalAssetResult.value;
       return res.status(201).json(createSuccessResponse(updatedAsset || asset));
-    } catch (error) {
+    } catch (error: unknown) {
       // Compensating delete: Remove assembled file if DB insert fails
       if (finalStorageKey) {
-        await appStorageService.deleteAsset(finalStorageKey).catch((cleanupError) =>
+        await appStorageService.deleteAsset(finalStorageKey).catch((cleanupError: unknown) =>
           logger.error("Failed to cleanup assembled file:", {
             finalStorageKey,
-            error: serializeError(cleanupError),
+            error: serializeError(cleanupError as Error),
           }),
         );
       }
-      return next(error); // Re-throw to outer handler
+      return next(error as Error); // Re-throw to outer handler
     }
   } finally {
     // Always cleanup temp chunks and session, regardless of success or failure
@@ -574,7 +611,9 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
     const storage = getStorage();
     const result = await safeQuery(storage.getMediaAsset(id));
 
-    if (result.isErr()) return next(result.error);
+    if (result.isErr()) {
+      return next(result.error);
+    }
 
     const asset = result.value;
 
@@ -616,7 +655,7 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
     res.set("Access-Control-Allow-Origin", "*");
 
     return res.redirect(302, signedUrl);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in getMediaContent:", error);
     // REMEDIATION: Return a placeholder instead of 500 for a better UX
     return res.redirect("https://placehold.co/600x400/1a1a1a/ffffff?text=Media+Error");
@@ -745,7 +784,9 @@ export async function batchDeleteAssets(req: Request, res: Response, _next: Next
   const results = await Promise.allSettled(
     ids.map(async (id) => {
       const result = await safeQuery(storage.deleteMediaAsset(parseInt(id, 10)));
-      if (result.isErr()) throw result.error;
+      if (result.isErr()) {
+        throw result.error;
+      }
       return result.value;
     }),
   );
@@ -866,7 +907,9 @@ export async function batchGetContent(req: Request, res: Response, next: NextFun
   let assetsMap = new Map<number, any>();
 
   const result = await safeQuery(storage.getMediaAssetsByIds(idList.map(String)));
-  if (result.isErr()) return next(result.error);
+  if (result.isErr()) {
+    return next(result.error);
+  }
 
   const allAssets = result.value;
   assetsMap = new Map(allAssets.map((asset) => [asset.id, asset]));

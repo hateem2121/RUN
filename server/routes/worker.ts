@@ -114,7 +114,7 @@ router.post(
 
     try {
       // Process based on operation type
-      const success = true;
+      const _success = true;
 
       switch (payload.operation) {
         case "optimize":

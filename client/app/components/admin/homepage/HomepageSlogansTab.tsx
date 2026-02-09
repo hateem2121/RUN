@@ -1,13 +1,8 @@
-
+import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/schema";
+import { Edit, GripVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type HomepageSlogan, type InsertHomepageSlogan } from "@shared/schema";
-import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
-import { Plus, Trash2, GripVertical, Edit } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Sortable, SortableItem, SortableItemHandle } from "@/components/ui/sortable";
+import { Switch } from "@/components/ui/switch";
+import { TabsContent } from "@/components/ui/tabs";
+import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 
 interface HomepageSlogansTabProps {
   slogans: HomepageSlogan[];
@@ -28,7 +27,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   const { createSlogan, updateSlogan, deleteSlogan, reorderSlogans } = useAdminHomepageMutations();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingSlogan, setEditingSlogan] = useState<HomepageSlogan | null>(null);
-  
+
   // Local state for drag and drop
   const [orderedSlogans, setOrderedSlogans] = useState<HomepageSlogan[]>(slogans);
 
@@ -61,13 +60,13 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
 
   const handleReorder = (newOrder: HomepageSlogan[]) => {
     setOrderedSlogans(newOrder); // Immediate UI update
-    
+
     // Create updates array for API
     const updates = newOrder.map((slogan, index) => ({
       id: slogan.id,
       position: index, // New position based on array index
     }));
-    
+
     reorderSlogans.mutate(updates);
   };
 
@@ -77,7 +76,9 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Homepage Slogans</CardTitle>
-            <CardDescription>Manage the animated slogans on the homepage. Drag to reorder.</CardDescription>
+            <CardDescription>
+              Manage the animated slogans on the homepage. Drag to reorder.
+            </CardDescription>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
@@ -132,26 +133,18 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                           <div className="font-medium">{slogan.text}</div>
                           <div className="text-muted-foreground text-sm">
                             {slogan.isActive ? (
-                                <span className="text-green-600 dark:text-green-400">Active</span>
+                              <span className="text-green-600 dark:text-green-400">Active</span>
                             ) : (
-                                <span className="text-muted-foreground">Inactive</span>
+                              <span className="text-muted-foreground">Inactive</span>
                             )}
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setEditingSlogan(slogan)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => setEditingSlogan(slogan)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(slogan.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(slogan.id)}>
                           <Trash2 className="text-destructive h-4 w-4" />
                         </Button>
                       </div>
@@ -172,28 +165,30 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
               <DialogTitle>Edit Slogan</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-text">Text</Label>
-                  <Input
-                    id="edit-text"
-                    value={editingSlogan.text}
-                    onChange={(e) => setEditingSlogan({ ...editingSlogan, text: e.target.value })}
-                  />
-                </div>
-                 <div className="flex items-center space-x-2">
-                    <Switch 
-                        id="edit-isActive"
-                        checked={editingSlogan.isActive ?? true}
-                        onCheckedChange={(checked) => setEditingSlogan({ ...editingSlogan, isActive: checked })}
-                    />
-                    <Label htmlFor="edit-isActive">Active</Label>
-                </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-text">Text</Label>
+                <Input
+                  id="edit-text"
+                  value={editingSlogan.text}
+                  onChange={(e) => setEditingSlogan({ ...editingSlogan, text: e.target.value })}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="edit-isActive"
+                  checked={editingSlogan.isActive ?? true}
+                  onCheckedChange={(checked) =>
+                    setEditingSlogan({ ...editingSlogan, isActive: checked })
+                  }
+                />
+                <Label htmlFor="edit-isActive">Active</Label>
+              </div>
             </div>
             <DialogFooter>
-              <Button 
+              <Button
                 onClick={() => {
-                   updateSlogan.mutate({ id: editingSlogan.id, data: editingSlogan });
-                   setEditingSlogan(null);
+                  updateSlogan.mutate({ id: editingSlogan.id, data: editingSlogan });
+                  setEditingSlogan(null);
                 }}
                 disabled={updateSlogan.isPending}
               >

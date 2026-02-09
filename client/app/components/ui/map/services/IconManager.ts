@@ -56,7 +56,9 @@ class IconManagerService {
   }
 
   private createFallbackIcon(config: IconConfig): DivIconType | null {
-    if (!DivIcon) return null;
+    if (!DivIcon) {
+      return null;
+    }
 
     const key = this.createIconKey(config);
 
@@ -98,7 +100,9 @@ class IconManagerService {
   }
 
   private createLottieIcon(config: IconConfig, animationData: unknown): ExtendedDivIcon | null {
-    if (!DivIcon || !createRoot || !LottieIcon) return null;
+    if (!DivIcon || !createRoot || !LottieIcon) {
+      return null;
+    }
 
     const { size, type } = config;
 

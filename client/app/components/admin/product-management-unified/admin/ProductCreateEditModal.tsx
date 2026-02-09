@@ -853,7 +853,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
   const normalizeSpecifications = (
     specs: string[] | Record<string, unknown> | undefined,
   ): string[] => {
-    if (!specs) return [];
+    if (!specs) {
+      return [];
+    }
 
     // Convert object to array if needed (legacy data compatibility)
     let specsArray: string[];
@@ -868,7 +870,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
     // Clean up array index prefixes from each specification string
     return specsArray.map((spec) => {
-      if (typeof spec !== "string") return String(spec);
+      if (typeof spec !== "string") {
+        return String(spec);
+      }
 
       // Remove array index prefixes like "0: ", "1: ", "2: " etc.
       // Match digit(s) followed by colon and optional space at the start

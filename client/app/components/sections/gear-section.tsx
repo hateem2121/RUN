@@ -12,7 +12,9 @@ export const GearSection = ({ gearProducts, onProductClick }: GearSectionProps) 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Guard clause for empty data
-  if (!gearProducts.length) return null;
+  if (!gearProducts.length) {
+    return null;
+  }
 
   const handlePrev = () => setCurrentIndex((p) => (p === 0 ? gearProducts.length - 1 : p - 1));
   const handleNext = () => setCurrentIndex((p) => (p === gearProducts.length - 1 ? 0 : p + 1));

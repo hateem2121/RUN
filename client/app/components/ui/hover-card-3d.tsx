@@ -13,7 +13,9 @@ export function HoverCard3D({ children, className = "", maxRotation = 15 }: Hove
   const [rotateY, setRotateY] = useState(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current) {
+      return;
+    }
 
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;

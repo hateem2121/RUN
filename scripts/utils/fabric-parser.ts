@@ -45,7 +45,9 @@ export class FabricParser {
     const sections = content.split(/(?=\d+\.\s+[A-Z])/);
 
     for (const section of sections) {
-      if (section.trim().length < 100) continue; // Skip small sections
+      if (section.trim().length < 100) {
+        continue; // Skip small sections
+      }
 
       const fabric = this.parseSection(section);
       if (fabric) {
@@ -60,7 +62,9 @@ export class FabricParser {
     try {
       // Extract fabric name (after number and dot, until newline)
       const nameMatch = section.match(/^\d+\.\s+([A-Za-z\s]+?)(?=\n|$)/);
-      if (!nameMatch) return null;
+      if (!nameMatch) {
+        return null;
+      }
 
       const name = nameMatch[1]?.trim();
 
@@ -164,7 +168,9 @@ export class FabricParser {
 
   private extractListField(section: string, fieldName: string, pattern: string): string[] {
     const value = this.extractField(section, fieldName, pattern);
-    if (!value) return [];
+    if (!value) {
+      return [];
+    }
 
     // Split by comma, semicolon, or "and"
     return value
@@ -177,7 +183,9 @@ export class FabricParser {
     const startIndex = section.indexOf(startMarker);
     const endIndex = section.indexOf(endMarker);
 
-    if (startIndex === -1 || endIndex === -1) return [];
+    if (startIndex === -1 || endIndex === -1) {
+      return [];
+    }
 
     const listSection = section.substring(startIndex + startMarker.length, endIndex);
 
@@ -259,8 +267,12 @@ export class FabricParser {
     const startIndex = section.indexOf(startMarker);
     const endIndex = section.indexOf(endMarker);
 
-    if (startIndex === -1) return "";
-    if (endIndex === -1) return section.substring(startIndex + startMarker.length);
+    if (startIndex === -1) {
+      return "";
+    }
+    if (endIndex === -1) {
+      return section.substring(startIndex + startMarker.length);
+    }
 
     return section.substring(startIndex + startMarker.length, endIndex);
   }

@@ -159,7 +159,9 @@ export const createQueryClient = () =>
         // If it we already handled a 429, we might want to skip the generic error or show both?
         // Requirement says "Instead of a crash, show a Sonner/Shadcn Toast"
         // If we handled it above, we might not want to show another toast.
-        if (error instanceof ApiError && error.status === 429) return;
+        if (error instanceof ApiError && error.status === 429) {
+          return;
+        }
 
         let errorMessage = "Save failed. Please try again.";
         if (error instanceof Error) {
@@ -190,9 +192,13 @@ export const createQueryClient = () =>
         retry: (failureCount, error) => {
           // Stop retries immediately for Rate Limits (429) or Conflicts (409)
           if (error instanceof ApiError) {
-            if (error.status === 429 || error.status === 409) return false;
+            if (error.status === 429 || error.status === 409) {
+              return false;
+            }
             // Don't retry client errors (4xx)
-            if (error.status >= 400 && error.status < 500) return false;
+            if (error.status >= 400 && error.status < 500) {
+              return false;
+            }
           }
 
           if (error instanceof Error && error.message.includes("non-JSON response")) {
@@ -223,7 +229,9 @@ export function getQueryClient() {
     return makeQueryClient();
   } else {
     // Browser: make a singleton client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient();
+    }
     return browserQueryClient;
   }
 }
@@ -273,7 +281,9 @@ interface BatchMediaResponse {
 import { requestManager } from "./request-manager";
 
 export const batchFetchMediaContent = async (assetIds: number[]): Promise<BatchMediaResult[]> => {
-  if (assetIds.length === 0) return [];
+  if (assetIds.length === 0) {
+    return [];
+  }
 
   try {
     const idsString = assetIds.join(",");
@@ -335,14 +345,18 @@ class MediaBatchScheduler {
       this.callbacks.get(assetId)?.push(resolve);
 
       // Schedule batch processing
-      if (this.timeoutId) clearTimeout(this.timeoutId);
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+      }
       this.timeoutId = setTimeout(() => this.processBatch(), 50); // 50ms debounce
     });
   }
 
   private async processBatch() {
     const assetIds = Array.from(this.pending);
-    if (assetIds.length === 0) return;
+    if (assetIds.length === 0) {
+      return;
+    }
 
     this.pending.clear();
     this.timeoutId = null;
@@ -773,7 +787,9 @@ export const forceResetMediaCache = async () => {
               cache: "no-cache",
               headers: { "Cache-Control": "no-cache" },
             });
-            if (!response.ok) throw new Error("Failed to fetch media");
+            if (!response.ok) {
+              throw new Error("Failed to fetch media");
+            }
             return response.json();
           },
           staleTime: 0,

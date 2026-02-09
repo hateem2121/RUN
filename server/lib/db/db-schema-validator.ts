@@ -190,7 +190,9 @@ async function validateTableColumns(
       (table: any) => table && table[Symbol.for("drizzle:Name")] === tableName,
     ) as any;
 
-    if (!drizzleTable) return;
+    if (!drizzleTable) {
+      return;
+    }
 
     // Get column definitions from Drizzle
     const drizzleColumns = Object.keys(drizzleTable).filter((key) => {
@@ -344,14 +346,30 @@ function getDrizzleColumnType(colDef: any): string {
   // Fallback: try to infer from constructor name
   if (colDef.constructor?.name) {
     const typeName = colDef.constructor.name.toLowerCase();
-    if (typeName.includes("serial")) return "serial";
-    if (typeName.includes("varchar")) return "varchar";
-    if (typeName.includes("text")) return "text";
-    if (typeName.includes("integer")) return "integer";
-    if (typeName.includes("boolean")) return "boolean";
-    if (typeName.includes("timestamp")) return "timestamp";
-    if (typeName.includes("jsonb")) return "jsonb";
-    if (typeName.includes("decimal")) return "numeric";
+    if (typeName.includes("serial")) {
+      return "serial";
+    }
+    if (typeName.includes("varchar")) {
+      return "varchar";
+    }
+    if (typeName.includes("text")) {
+      return "text";
+    }
+    if (typeName.includes("integer")) {
+      return "integer";
+    }
+    if (typeName.includes("boolean")) {
+      return "boolean";
+    }
+    if (typeName.includes("timestamp")) {
+      return "timestamp";
+    }
+    if (typeName.includes("jsonb")) {
+      return "jsonb";
+    }
+    if (typeName.includes("decimal")) {
+      return "numeric";
+    }
   }
 
   return "unknown";
@@ -376,7 +394,9 @@ function typesMatch(drizzleType: string, dbType: string): boolean {
   const normalizedDb = dbType.toLowerCase();
 
   // Direct match
-  if (normalizedDrizzle === normalizedDb) return true;
+  if (normalizedDrizzle === normalizedDb) {
+    return true;
+  }
 
   // Check type map
   if (typeMap[normalizedDrizzle]) {

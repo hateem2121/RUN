@@ -68,7 +68,9 @@ export function CertificateSelectionDialog({
     return certificates
       .filter((cert) => cert.isActive !== false)
       .filter((cert) => {
-        if (!searchQuery) return true;
+        if (!searchQuery) {
+          return true;
+        }
         const query = searchQuery.toLowerCase();
         return (
           cert.name.toLowerCase().includes(query) ||
@@ -96,7 +98,9 @@ export function CertificateSelectionDialog({
 
   const handleConfirm = () => {
     const selected = certificates.filter((cert) => selectedIds.includes(cert.id));
-    if (selected.length === 0) return;
+    if (selected.length === 0) {
+      return;
+    }
 
     if (selectionMode === "single" && selected[0]) {
       onSelect(selected[0]);

@@ -30,7 +30,7 @@ const tracer = trace.getTracer("unified-cache", "1.0.0");
 
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
-  private memoryCache: LRUCache<string, any>;
+  private memoryCache: LRUCache<string, {}>;
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {
@@ -57,7 +57,7 @@ export class UnifiedCache {
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
       maxSize: 100 * 1024 * 1024, // Max 100MB (approx)
-      sizeCalculation: (value: any, key: string) => {
+      sizeCalculation: (value: {}, key: string) => {
         // Rough size estimation
         return JSON.stringify(value).length + key.length;
       },
@@ -143,7 +143,12 @@ export class UnifiedCache {
   /**
    * Set value in cache with OpenTelemetry tracing
    */
-  async set(key: string, value: any, ttlSeconds: number = 3600, _category?: string): Promise<void> {
+  async set<T>(
+    key: string,
+    value: T,
+    ttlSeconds: number = 3600,
+    _category?: string,
+  ): Promise<void> {
     return tracer.startActiveSpan("cache.set", async (span) => {
       span.setAttribute("cache.key", key);
       span.setAttribute("cache.operation", "set");
@@ -151,7 +156,9 @@ export class UnifiedCache {
 
       try {
         // Set in L1 Memory Cache
-        this.memoryCache.set(key, value, { ttl: ttlSeconds * 1000 });
+        if (value !== null && value !== undefined) {
+          this.memoryCache.set(key, value as {}, { ttl: ttlSeconds * 1000 });
+        }
         span.setAttribute("cache.l1", true);
 
         // P2 OPTIMIZATION: Fire-and-forget L2 write (Parallelize)
@@ -177,7 +184,7 @@ export class UnifiedCache {
 
   // P2 OPTIMIZATION: Separate L2 write method for compression logic
   // Protected by circuit breaker to prevent cascade failures
-  private async writeL2(key: string, value: any, ttlSeconds: number): Promise<void> {
+  private async writeL2<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
     let payload = JSON.stringify(value);
 
     // Compress if large
@@ -205,7 +212,9 @@ export class UnifiedCache {
         async () => redis.get<string>(key),
         REDIS_CIRCUIT_OPTIONS,
       );
-      if (!data) return null;
+      if (!data) {
+        return null;
+      }
 
       // Check for compression prefix
       if (typeof data === "string" && data.startsWith("gz:")) {
@@ -234,7 +243,7 @@ export class UnifiedCache {
     this.memoryCache.delete(key);
 
     if (isRedisEnabled) {
-      redis.del(key).catch((err: any) => {
+      redis.del(key).catch((err: unknown) => {
         logger.error(`[Cache] L2 Delete failed for ${key}:`, err);
       });
     }
@@ -298,7 +307,7 @@ export class UnifiedCache {
             await redis.del(...keys);
           }
         } while (cursor !== "0");
-      } catch (error: any) {
+      } catch (error: unknown) {
         logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
       }
     }
@@ -307,14 +316,18 @@ export class UnifiedCache {
   /**
    * Warm the cache
    */
-  async warm(tasks?: any[]): Promise<void> {
+  async warm(
+    tasks?: { loader: () => Promise<unknown>; key: string; options?: any }[],
+  ): Promise<void> {
     if (tasks && tasks.length > 0) {
       logger.info(`[Cache] Processing ${tasks.length} warmup tasks...`);
       for (const task of tasks) {
         try {
           const data = await task.loader();
-          await this.set(task.key, data, task.options?.ttl, task.options?.category);
-        } catch (err: any) {
+          if (data !== null && data !== undefined) {
+            await this.set(task.key, data, task.options?.ttl, task.options?.category);
+          }
+        } catch (err: unknown) {
           logger.warn(`[Cache] Warmup failed for ${task.key}`, err);
         }
       }
@@ -413,7 +426,11 @@ export class UnifiedCache {
   ): Promise<{
     data: T;
     source: "memory" | "kv" | "stale_memory" | "stale_kv" | "loader" | "swr_hit";
-    timings: any;
+    timings: {
+      totalTime: number;
+      cacheTime?: number;
+      loaderTime?: number;
+    };
   }> {
     const start = performance.now();
     const cached = await this.get<T>(key); // Note: get() updates L1 stats
@@ -481,10 +498,10 @@ export class UnifiedCache {
   /**
    * SWR Set (Wrapper for set)
    */
-  async setSWR(
+  async setSWR<T>(
     key: string,
-    value: any,
-    config: any,
+    value: T,
+    config: { ttl?: number },
     _namespace: string = "default",
   ): Promise<void> {
     await this.set(key, value, config.ttl || 3600);

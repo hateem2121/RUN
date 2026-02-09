@@ -383,9 +383,13 @@ const SortableItem = ({
   });
 
   const composedRef = useComposedRefs(forwardedRef, (node) => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
     setNodeRef(node);
-    if (asHandle) setActivatorNodeRef(node);
+    if (asHandle) {
+      setActivatorNodeRef(node);
+    }
   });
 
   const composedStyle = React.useMemo<React.CSSProperties>(() => {
@@ -462,7 +466,9 @@ const SortableItemHandle = ({
   const isDisabled = disabled ?? itemContext.disabled;
 
   const composedRef = useComposedRefs(forwardedRef, (node) => {
-    if (isDisabled) return;
+    if (isDisabled) {
+      return;
+    }
     itemContext.setActivatorNodeRef(node);
   });
 
@@ -513,7 +519,9 @@ function SortableOverlay(props: SortableOverlayProps) {
 
   const container = containerProp ?? (mounted ? globalThis.document?.body : null);
 
-  if (!container) return null;
+  if (!container) {
+    return null;
+  }
 
   return ReactDOM.createPortal(
     <DragOverlay

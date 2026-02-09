@@ -47,7 +47,9 @@ export const StaggeredMenu = ({
     isOpen: open,
     onClose: () => {
       // Only trigger close if open
-      if (openRef.current) toggleMenu();
+      if (openRef.current) {
+        toggleMenu();
+      }
     },
     restoreFocus: true,
   });
@@ -84,7 +86,9 @@ export const StaggeredMenu = ({
       const bottom = hamburgerBottomRef.current;
       const icon = iconRef.current;
 
-      if (!panel || !top || !middle || !bottom || !icon) return;
+      if (!panel || !top || !middle || !bottom || !icon) {
+        return;
+      }
 
       let preLayers: HTMLElement[] = [];
       if (preContainer) {
@@ -99,7 +103,9 @@ export const StaggeredMenu = ({
       gsap.set(middle, { opacity: 1 });
       gsap.set(bottom, { y: 0, rotation: 0 });
 
-      if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      if (toggleBtnRef.current) {
+        gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      }
     });
     return () => ctx.revert();
   }, [menuButtonColor, position, panelRef.current]);
@@ -107,7 +113,9 @@ export const StaggeredMenu = ({
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
-    if (!panel) return null;
+    if (!panel) {
+      return null;
+    }
 
     openTlRef.current?.kill();
     if (closeTweenRef.current) {
@@ -127,9 +135,13 @@ export const StaggeredMenu = ({
     }));
     const panelStart = Number(gsap.getProperty(panel, "xPercent"));
 
-    if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+    if (itemEls.length) {
+      gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+    }
     // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
-    if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+    if (numberEls.length) {
+      gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+    }
 
     const tl = gsap.timeline({ paused: true });
 
@@ -193,7 +205,9 @@ export const StaggeredMenu = ({
   }, [panelRef.current, shouldReduceMotion]);
 
   const playOpen = useCallback(() => {
-    if (busyRef.current) return;
+    if (busyRef.current) {
+      return;
+    }
     busyRef.current = true;
     const tl = buildOpenTimeline();
     if (tl) {
@@ -213,7 +227,9 @@ export const StaggeredMenu = ({
 
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
-    if (!panel) return;
+    if (!panel) {
+      return;
+    }
 
     const all: HTMLElement[] = [...layers, panel];
     closeTweenRef.current?.kill();
@@ -227,13 +243,17 @@ export const StaggeredMenu = ({
       overwrite: "auto",
       onComplete: () => {
         const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
-        if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+        if (itemEls.length) {
+          gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+        }
 
         const numberEls = Array.from(
           panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
         ) as HTMLElement[];
         // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
-        if (numberEls.length) gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+        if (numberEls.length) {
+          gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
+        }
 
         busyRef.current = false;
       },
@@ -244,7 +264,9 @@ export const StaggeredMenu = ({
     const top = hamburgerTopRef.current;
     const middle = hamburgerMiddleRef.current;
     const bottom = hamburgerBottomRef.current;
-    if (!top || !middle || !bottom) return;
+    if (!top || !middle || !bottom) {
+      return;
+    }
 
     hamburgerAnimRef.current?.kill();
 
@@ -268,7 +290,9 @@ export const StaggeredMenu = ({
   const animateColor = useCallback(
     (opening: boolean) => {
       const btn = toggleBtnRef.current;
-      if (!btn) return;
+      if (!btn) {
+        return;
+      }
       colorTweenRef.current?.kill();
       if (changeMenuColorOnOpen) {
         const targetColor = opening ? openMenuButtonColor : menuButtonColor;

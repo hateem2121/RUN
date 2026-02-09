@@ -172,13 +172,27 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
   useEffect(() => {
     const params = new URLSearchParams();
 
-    if (searchQuery) params.set("search", searchQuery);
-    if (categoryFilter !== "all") params.set("category", categoryFilter);
-    if (statusFilter !== "all") params.set("status", statusFilter);
-    if (viewMode !== "grid") params.set("view", viewMode);
-    if (currentPage > 1) params.set("page", currentPage.toString());
-    if (pageSize !== 20) params.set("limit", pageSize.toString());
-    if (showAdvancedFilters) params.set("advanced", "true");
+    if (searchQuery) {
+      params.set("search", searchQuery);
+    }
+    if (categoryFilter !== "all") {
+      params.set("category", categoryFilter);
+    }
+    if (statusFilter !== "all") {
+      params.set("status", statusFilter);
+    }
+    if (viewMode !== "grid") {
+      params.set("view", viewMode);
+    }
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    }
+    if (pageSize !== 20) {
+      params.set("limit", pageSize.toString());
+    }
+    if (showAdvancedFilters) {
+      params.set("advanced", "true");
+    }
 
     setSearchParams(params, { replace: true });
   }, [
@@ -210,7 +224,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
     queryKey: ["/api/admin/products/initial-data"],
     queryFn: async () => {
       const response = await fetch("/api/admin/products/initial-data");
-      if (!response.ok) throw new Error("Failed to fetch initial data");
+      if (!response.ok) {
+        throw new Error("Failed to fetch initial data");
+      }
       return response.json();
     },
     staleTime: staticOptions.staleTime,
@@ -242,7 +258,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
     queryKey: ["/api/products", currentPage, pageSize],
     queryFn: async () => {
       const response = await fetch(`/api/products?page=${currentPage}&limit=${pageSize}`);
-      if (!response.ok) throw new Error("Failed to fetch products");
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
       return response.json();
     },
     enabled: currentPage > 1, // Only fetch if not on first page

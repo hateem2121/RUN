@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
-import Footer from "@/components/layout/Footer";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
@@ -51,7 +50,7 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function About() {
   const loaderData = useLoaderData<typeof loader>();
-  
+
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <AboutPageContent />
@@ -119,10 +118,10 @@ function AboutPageContent() {
         ? "facility"
         : "client",
     name: location.name,
-    latitude: parseFloat(location.latitude), 
-    longitude: parseFloat(location.longitude), 
+    latitude: parseFloat(location.latitude),
+    longitude: parseFloat(location.longitude),
     city: location.city || location.address?.split(",")[1]?.trim() || "",
-    country: location.country || location.address?.split(",").pop()?.trim() || "", 
+    country: location.country || location.address?.split(",").pop()?.trim() || "",
     details: location.details || location.description || "",
     isActive: location.isActive ?? true,
   }));
@@ -254,11 +253,7 @@ function AboutPageContent() {
 
       {sortedSections.length > 0 && (
         <div className="relative">
-          <StackingCards
-            sections={sortedSections}
-            getAssetUrl={getAssetUrl}
-            getAsset={getAsset}
-          />
+          <StackingCards sections={sortedSections} getAssetUrl={getAssetUrl} getAsset={getAsset} />
         </div>
       )}
 
@@ -300,9 +295,7 @@ function AboutPageContent() {
                         <Typography.H3 className="mb-2 font-bold text-3xl text-foreground">
                           {stat.value}
                           {stat.unit && (
-                            <span className="ml-1 text-lg text-muted-foreground">
-                              {stat.unit}
-                            </span>
+                            <span className="ml-1 text-lg text-muted-foreground">{stat.unit}</span>
                           )}
                         </Typography.H3>
                         <Typography.P className="font-medium text-muted-foreground">
@@ -340,7 +333,7 @@ function AboutPageContent() {
         </section>
       )}
 
-      <Footer />
+      {/* Footer removed here, now handled by _public.tsx layout wrapper */}
     </div>
   );
 }

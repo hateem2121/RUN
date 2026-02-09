@@ -173,6 +173,7 @@ export type MediaAssetDetail = Pick<
   | "url"
   | "thumbnailUrl"
   | "thumbnailFilename"
+  | "thumbnailStoragePath"
   | "imageVariants"
   | "storagePath"
   | "bucketName"

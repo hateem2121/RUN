@@ -36,6 +36,8 @@ export const LazyAccessoryManagement = lazy(() => import("./accessory-management
 
 export const LazyCategoryManagement = lazy(() => import("./category-management-simplified"));
 
+export const LazyFooterManagement = lazy(() => import("./footer-management/FooterManagement"));
+
 // Note: LazyComponentWrapper was removed as it's not used anywhere in the codebase.
 // All lazy components are rendered directly with Suspense in admin.tsx.
 // Future lazy component usage should wrap components directly with Suspense
@@ -51,6 +53,7 @@ export const preloadAdminModules = {
   sizeChartManagement: () => import("./size-chart-management-enhanced"),
   accessoryManagement: () => import("./accessory-management-enhanced"),
   categoryManagement: () => import("./category-management-simplified"),
+  footerManagement: () => import("./footer-management/FooterManagement"),
 };
 
 // Preload on hover for better UX

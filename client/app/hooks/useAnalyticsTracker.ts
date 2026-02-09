@@ -42,17 +42,23 @@ export function useAnalyticsTracker() {
   // Track product view
   const trackProductView = (productName: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
-    if (!analytics.productViews) analytics.productViews = {};
+    if (!analytics.productViews) {
+      analytics.productViews = {};
+    }
     analytics.productViews[productName] = (analytics.productViews[productName] || 0) + 1;
     localStorage.setItem("productAnalytics", JSON.stringify(analytics));
   };
 
   // Track search
   const trackSearch = (searchTerm: string) => {
-    if (!searchTerm.trim()) return;
+    if (!searchTerm.trim()) {
+      return;
+    }
 
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
-    if (!analytics.searchTerms) analytics.searchTerms = [];
+    if (!analytics.searchTerms) {
+      analytics.searchTerms = [];
+    }
 
     const existing = analytics.searchTerms.find((item: SearchTerm) => item.term === searchTerm);
     if (existing) {
@@ -71,7 +77,9 @@ export function useAnalyticsTracker() {
   // Track filter usage
   const trackFilterUsage = (filterType: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
-    if (!analytics.filterUsage) analytics.filterUsage = [];
+    if (!analytics.filterUsage) {
+      analytics.filterUsage = [];
+    }
 
     const existing = analytics.filterUsage.find((item: FilterUsage) => item.filter === filterType);
     if (existing) {
@@ -86,7 +94,9 @@ export function useAnalyticsTracker() {
   // Track view mode
   const trackViewMode = (mode: string) => {
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
-    if (!analytics.viewModeUsage) analytics.viewModeUsage = [];
+    if (!analytics.viewModeUsage) {
+      analytics.viewModeUsage = [];
+    }
 
     // Update view mode usage
     const total =

@@ -27,7 +27,9 @@ export const isAbortError = (reason: unknown): boolean => {
  */
 // biome-ignore lint/suspicious/noExplicitAny: Error can be any type
 export const isExtensionNoise = (reason: unknown): boolean => {
-  if (!reason || typeof reason !== "object") return false;
+  if (!reason || typeof reason !== "object") {
+    return false;
+  }
   const stack = (reason as { stack?: string }).stack || "";
   return (
     stack.includes("eruda.js") ||

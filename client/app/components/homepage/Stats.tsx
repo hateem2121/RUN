@@ -12,7 +12,9 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   const chars = "0123456789";
 
   useEffect(() => {
-    if (!elementRef.current) return;
+    if (!elementRef.current) {
+      return;
+    }
 
     let st: ScrollTrigger | null = null;
     let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -24,14 +26,18 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
           prev
             .split("")
             .map((_letter, index) => {
-              if (index < iterations) return value[index];
+              if (index < iterations) {
+                return value[index];
+              }
               return chars[Math.floor(Math.random() * chars.length)];
             })
             .join(""),
         );
 
         if (iterations >= value.length) {
-          if (intervalId) clearInterval(intervalId);
+          if (intervalId) {
+            clearInterval(intervalId);
+          }
           setDisplayValue(value);
         }
         iterations += 1 / 3;
@@ -47,8 +53,12 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
     });
 
     return () => {
-      if (st) st.kill();
-      if (intervalId) clearInterval(intervalId);
+      if (st) {
+        st.kill();
+      }
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
   }, [value]);
 
@@ -68,14 +78,18 @@ const Stats: React.FC = () => {
   const leftRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !rightRef.current || !leftRef.current) return;
+    if (!containerRef.current || !rightRef.current || !leftRef.current) {
+      return;
+    }
 
     // Explicitly use .current
     const scope = containerRef.current;
 
     const ctx = gsap.context(() => {
       // Defensive check inside context
-      if (!leftRef.current || !rightRef.current) return;
+      if (!leftRef.current || !rightRef.current) {
+        return;
+      }
 
       ScrollTrigger.matchMedia({
         // Desktop

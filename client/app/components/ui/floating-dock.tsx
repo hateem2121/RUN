@@ -29,11 +29,7 @@ export const FloatingDock = ({
   iconSize?: "small" | "medium" | "large";
   disableMobile?: boolean | undefined;
 }) => {
-  return (
-    <>
-      <FloatingDockDesktop items={items} className={desktopClassName} iconSize={iconSize} />
-    </>
-  );
+  return <FloatingDockDesktop items={items} className={desktopClassName} iconSize={iconSize} />;
 };
 
 const FloatingDockDesktop = ({
@@ -56,7 +52,10 @@ const FloatingDockDesktop = ({
   return (
     <Card
       variant="glass-premium"
-      className={cn("mx-auto hidden items-center gap-3 px-16 py-6 md:flex border-(--color-border)/50", className)}
+      className={cn(
+        "mx-auto hidden items-center gap-3 px-16 py-6 md:flex border-(--color-border)/50",
+        className,
+      )}
     >
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}

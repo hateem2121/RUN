@@ -17,7 +17,9 @@ export const validateBody =
         const errors = (error as any).errors || [];
         errors.forEach((err: any) => {
           const key = err.path.join(".");
-          if (!details[key]) details[key] = [];
+          if (!details[key]) {
+            details[key] = [];
+          }
           details[key].push(err.message);
         });
         next(new ValidationError("Validation Failed", details));

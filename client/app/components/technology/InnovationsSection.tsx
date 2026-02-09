@@ -23,7 +23,9 @@ interface InnovationsSectionProps {
 }
 
 export function InnovationsSection({ innovations }: InnovationsSectionProps) {
-  if (!innovations?.length) return null;
+  if (!innovations?.length) {
+    return null;
+  }
 
   return (
     <section className="py-24 relative overflow-hidden">

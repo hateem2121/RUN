@@ -121,7 +121,9 @@ const CertificationsSection = memo(function CertificationsSection({
           ) : (
             certificationTypes.map((type) => {
               const typeCerts = getCertificatesByType(type);
-              if (typeCerts.length === 0) return null;
+              if (typeCerts.length === 0) {
+                return null;
+              }
 
               return (
                 <div key={type} className="mb-6">

@@ -23,7 +23,9 @@ export class CertificationMapper {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {
+      return;
+    }
     const certificates = await this.storage.getCertificates();
 
     // Create mapping from certification names to IDs

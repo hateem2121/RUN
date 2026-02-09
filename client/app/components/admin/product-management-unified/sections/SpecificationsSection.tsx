@@ -53,7 +53,9 @@ const SpecificationsSection = memo(function SpecificationsSection({
   ];
   const completedFields = recommendedFields.filter((field) => {
     const value = formData[field as keyof typeof formData];
-    if (Array.isArray(value)) return value.length > 0;
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
     return typeof value === "string" ? value.trim().length > 0 : !!value;
   });
   const completionRate = (completedFields.length / recommendedFields.length) * 100;
@@ -63,8 +65,12 @@ const SpecificationsSection = memo(function SpecificationsSection({
     if (Array.isArray(formData.specifications)) {
       // Ensure each element is a string
       return formData.specifications.map((spec) => {
-        if (typeof spec === "string") return spec;
-        if (spec === null || spec === undefined) return "";
+        if (typeof spec === "string") {
+          return spec;
+        }
+        if (spec === null || spec === undefined) {
+          return "";
+        }
         // Convert any non-string to string (defensive)
         return String(spec);
       });

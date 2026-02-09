@@ -23,7 +23,9 @@ export function useIntersectionObserver(options: IntersectionObserverInit = { th
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
-    if (!ref) return;
+    if (!ref) {
+      return;
+    }
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0]) {
@@ -42,7 +44,9 @@ export function useAnimationFrame(callback: (deltaTime: number) => void) {
   const [isRunning, setIsRunning] = useState(true);
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning) {
+      return;
+    }
 
     let lastTime = 0;
     let animationId: number;

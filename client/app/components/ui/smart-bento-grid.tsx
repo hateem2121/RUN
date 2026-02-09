@@ -41,16 +41,26 @@ export function calculateGridSpan(analysis: ContentAnalysis, index: number): Gri
   let contentScore = 0;
 
   // Text content scoring
-  if (analysis.textLength > 200) contentScore += 2;
-  else if (analysis.textLength > 100) contentScore += 1;
+  if (analysis.textLength > 200) {
+    contentScore += 2;
+  } else if (analysis.textLength > 100) {
+    contentScore += 1;
+  }
 
   // Media scoring
-  if (analysis.mediaCount > 1) contentScore += 2;
-  else if (analysis.hasMedia) contentScore += 1;
+  if (analysis.mediaCount > 1) {
+    contentScore += 2;
+  } else if (analysis.hasMedia) {
+    contentScore += 1;
+  }
 
   // Additional content scoring
-  if (analysis.hasSpecs) contentScore += 1;
-  if (analysis.hasExtras) contentScore += 1;
+  if (analysis.hasSpecs) {
+    contentScore += 1;
+  }
+  if (analysis.hasExtras) {
+    contentScore += 1;
+  }
 
   // Determine spans based on score and position
   if (contentScore >= 4) {
@@ -128,7 +138,9 @@ export function NaturalMedia({ src, alt, className, cardSpan }: NaturalMediaProp
 
   // Dynamic sizing based on card span
   const getMediaSize = () => {
-    if (!cardSpan) return { maxHeight: "200px" };
+    if (!cardSpan) {
+      return { maxHeight: "200px" };
+    }
 
     if (cardSpan.colSpan >= 2 && cardSpan.rowSpan >= 2) {
       // Large cards get bigger media

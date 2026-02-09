@@ -46,8 +46,12 @@ export function FormErrorDisplay({
 }: FormErrorDisplayProps) {
   // Normalize errors to array
   const errorMessages: string[] = [];
-  if (error) errorMessages.push(error);
-  if (errors) errorMessages.push(...errors);
+  if (error) {
+    errorMessages.push(error);
+  }
+  if (errors) {
+    errorMessages.push(...errors);
+  }
 
   if (errorMessages.length === 0) {
     return null;
@@ -125,7 +129,9 @@ export interface FieldErrorProps {
 }
 
 export function FieldError({ name, errors, className }: FieldErrorProps) {
-  if (!errors?.length) return null;
+  if (!errors?.length) {
+    return null;
+  }
 
   return (
     <FormErrorDisplay errors={errors} variant="field" fieldName={name} className={className} />

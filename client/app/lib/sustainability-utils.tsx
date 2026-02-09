@@ -41,7 +41,9 @@ export function calculateGoalProgress(
   currentValue: string | null,
   targetValue: string | null,
 ): number {
-  if (!currentValue || !targetValue) return 0;
+  if (!currentValue || !targetValue) {
+    return 0;
+  }
 
   const currentNum = parseFloat(currentValue);
   const targetNum = parseFloat(targetValue);

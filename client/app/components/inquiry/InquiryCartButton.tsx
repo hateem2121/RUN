@@ -92,7 +92,9 @@ export function InquiryCartButton() {
     submitInquiry.mutate(data);
   };
 
-  if (itemCount === 0) return null;
+  if (itemCount === 0) {
+    return null;
+  }
 
   return (
     <>

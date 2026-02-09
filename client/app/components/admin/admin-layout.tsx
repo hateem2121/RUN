@@ -97,6 +97,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: <IconMail className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
+      label: "Footer",
+      href: "/admin/footer",
+      icon: <IconForms className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
       label: "Inquiries",
       href: "/admin/inquiries",
       icon: <IconInbox className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,

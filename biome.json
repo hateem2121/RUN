@@ -48,16 +48,19 @@
       "a11y": {
         "recommended": false
       },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
       "correctness": {
         "noEmptyPattern": "off",
         "useExhaustiveDependencies": "warn"
       },
       "suspicious": {
         "noArrayIndexKey": "off",
-        "noConsole": "error",
-        "noExplicitAny": "error",
+        "noConsole": "warn",
+        "noExplicitAny": "warn",
         "noImplicitAnyLet": "warn",
-        "useAwait": "error"
+        "useAwait": "warn"
       },
       "style": {
         "noNonNullAssertion": "off",

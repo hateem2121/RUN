@@ -72,7 +72,9 @@ export function AboutHeroTab() {
     queryKey: ["/api/media", mediaIdToFetch],
     queryFn: async () => {
       const res = await fetch(`/api/media/${mediaIdToFetch}`);
-      if (!res.ok) return null;
+      if (!res.ok) {
+        return null;
+      }
       return res.json();
     },
     enabled: !!mediaIdToFetch,
@@ -124,7 +126,9 @@ export function AboutHeroTab() {
     setSelectedMedia(null);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">

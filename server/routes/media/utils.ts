@@ -206,10 +206,15 @@ export function generateThumbnailCachePath(assetId: number): string {
  * @returns Media type category
  */
 export function detectMediaType(mimeType: string): "images" | "videos" | "models" | "documents" {
-  if (mimeType.startsWith("image/")) return "images";
-  if (mimeType.startsWith("video/")) return "videos";
-  if (mimeType.includes("gltf") || mimeType.includes("glb") || mimeType.startsWith("model/"))
+  if (mimeType.startsWith("image/")) {
+    return "images";
+  }
+  if (mimeType.startsWith("video/")) {
+    return "videos";
+  }
+  if (mimeType.includes("gltf") || mimeType.includes("glb") || mimeType.startsWith("model/")) {
     return "models";
+  }
 
   // All other files (PDFs, docs, etc.) go to documents
   return "documents";
@@ -243,9 +248,15 @@ export const createSuccessResponse = <T>(data: T) => ({ success: true, data });
 // ============================================================================
 
 export function toBuffer(x: unknown): Buffer | null {
-  if (Buffer.isBuffer(x)) return x;
-  if (ArrayBuffer.isView(x)) return Buffer.from(x.buffer, x.byteOffset, x.byteLength);
-  if (x instanceof ArrayBuffer) return Buffer.from(x);
+  if (Buffer.isBuffer(x)) {
+    return x;
+  }
+  if (ArrayBuffer.isView(x)) {
+    return Buffer.from(x.buffer, x.byteOffset, x.byteLength);
+  }
+  if (x instanceof ArrayBuffer) {
+    return Buffer.from(x);
+  }
   if (
     typeof x === "object" &&
     x !== null &&
@@ -253,14 +264,21 @@ export function toBuffer(x: unknown): Buffer | null {
     x.type === "Buffer" &&
     "data" in x &&
     Array.isArray(x.data)
-  )
+  ) {
     return Buffer.from(x.data);
+  }
   if (Array.isArray(x)) {
-    if (x.length === 1 && Buffer.isBuffer(x[0])) return x[0];
-    if (x.every((n) => typeof n === "number")) return Buffer.from(x);
+    if (x.length === 1 && Buffer.isBuffer(x[0])) {
+      return x[0];
+    }
+    if (x.every((n) => typeof n === "number")) {
+      return Buffer.from(x);
+    }
     return null;
   }
-  if (typeof x === "string") return Buffer.from(x, "utf8");
+  if (typeof x === "string") {
+    return Buffer.from(x, "utf8");
+  }
   return null;
 }
 
@@ -270,7 +288,9 @@ export function toBuffer(x: unknown): Buffer | null {
 
 export const MediaUrlResolver = {
   generateConsistentUrl: (asset: Partial<MediaAsset>) => {
-    if (!asset || !asset.url) return null;
+    if (!asset || !asset.url) {
+      return null;
+    }
     try {
       const cleanUrl = asset.url.replace(/\/+/g, "/").replace(/:\/([^/])/, "://$1");
       return cleanUrl;
@@ -286,7 +306,9 @@ export const MediaUrlResolver = {
 
 export const enhancedValidation = {
   validateFilename: (filename: string) => {
-    if (!filename || filename.length < 1 || filename.length > 255) return false;
+    if (!filename || filename.length < 1 || filename.length > 255) {
+      return false;
+    }
     // biome-ignore lint/suspicious/noControlCharactersInRegex: validating dangerous chars
     const dangerousChars = /[/\\:*?"<>|\x00-\x1f]/;
     return !dangerousChars.test(filename);
@@ -298,7 +320,9 @@ export const enhancedValidation = {
   },
 
   validateFileSize: (size: number, type?: string) => {
-    if (size <= 0) return false;
+    if (size <= 0) {
+      return false;
+    }
     const limits = UPLOAD_CONFIG.fileSizeLimits;
 
     switch (type) {
@@ -316,7 +340,9 @@ export const enhancedValidation = {
   },
 
   validateMimeType: (mimeType: string, filename: string) => {
-    if (!mimeType) return false;
+    if (!mimeType) {
+      return false;
+    }
 
     const allowedMimes = UPLOAD_CONFIG.allowedMimeTypes.regular;
     const isAllowedMime = allowedMimes.includes(mimeType);
@@ -429,9 +455,13 @@ export async function processUploadedFile(
 
     // Determine file type (use correctedMime for accurate detection)
     let fileType = "document";
-    if (isImageFile(correctedMime)) fileType = "image";
-    else if (correctedMime.startsWith("video/")) fileType = "video";
-    else if (isGLTFFile(correctedMime, file.originalname)) fileType = "model";
+    if (isImageFile(correctedMime)) {
+      fileType = "image";
+    } else if (correctedMime.startsWith("video/")) {
+      fileType = "video";
+    } else if (isGLTFFile(correctedMime, file.originalname)) {
+      fileType = "model";
+    }
 
     // Log upload initiation
     logger.info("File upload initiated", {

@@ -129,7 +129,9 @@ export class AuthService {
     // P1 SECURITY: Force Session ID Rotation every 15 minutes
     // This effectively implements "Short-lived Access Token" behavior with Cookies
     app.use((req, res, next) => {
-      if (!req.session || !req.user) return next();
+      if (!req.session || !req.user) {
+        return next();
+      }
 
       const now = Date.now();
       // Cast session to CustomSessionData to avoid TS errors
@@ -151,7 +153,9 @@ export class AuthService {
         });
 
         return req.session.destroy((err) => {
-          if (err) logger.error("[Auth] Failed to destroy hijacked session:", err);
+          if (err) {
+            logger.error("[Auth] Failed to destroy hijacked session:", err);
+          }
           res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
         });
       }
@@ -181,7 +185,9 @@ export class AuthService {
 
             // Explicitly save to ensure the new SID is stored
             req.session.save((err) => {
-              if (err) logger.error("[Auth] Failed to save regenerated session:", err);
+              if (err) {
+                logger.error("[Auth] Failed to save regenerated session:", err);
+              }
               next();
             });
           }
@@ -238,7 +244,9 @@ export class AuthService {
    */
   private async upsertUser(profile: any): Promise<User> {
     const email = profile.emails?.[0]?.value;
-    if (!email) throw new Error("No email provided by Google");
+    if (!email) {
+      throw new Error("No email provided by Google");
+    }
 
     const user = await getStorage().upsertUser({
       id: profile.id,
@@ -262,7 +270,9 @@ export class AuthService {
    * Middleware: Require authenticated user
    */
   public isAuthenticated: RequestHandler = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
+    if (req.isAuthenticated()) {
+      return next();
+    }
     res.status(401).json({ message: "Unauthorized" });
   };
 
@@ -283,7 +293,9 @@ export class AuthService {
     const cachedAdminStatus = adminCacheManager.get(userId);
 
     if (cachedAdminStatus !== null) {
-      if (cachedAdminStatus) return next();
+      if (cachedAdminStatus) {
+        return next();
+      }
       return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
         error: AuthErrors.ADMIN_REQUIRED,
       });
@@ -300,7 +312,9 @@ export class AuthService {
       const isAdmin = dbUser.isAdmin ?? false;
       adminCacheManager.set(userId, isAdmin);
 
-      if (isAdmin) return next();
+      if (isAdmin) {
+        return next();
+      }
       return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
         error: AuthErrors.ADMIN_REQUIRED,
       });

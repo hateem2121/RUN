@@ -37,7 +37,9 @@ export function useReducedMotion() {
 
   useEffect(() => {
     // SSR Check happens safely inside effect (only runs on client)
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setMatches(mediaQuery.matches);

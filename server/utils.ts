@@ -132,8 +132,12 @@ export function validateIdParam(
 // ============================================================================
 
 export function transformNullToUndefined<T>(obj: T): T {
-  if (obj === null) return undefined as T;
-  if (Array.isArray(obj)) return obj.map((item) => transformNullToUndefined(item)) as T;
+  if (obj === null) {
+    return undefined as T;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => transformNullToUndefined(item)) as T;
+  }
   if (typeof obj === "object" && obj !== null) {
     const transformed: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -149,18 +153,26 @@ export function prepareForValidation<T>(obj: T): T {
 }
 
 export function cleanApiData<T>(obj: unknown): Partial<T> {
-  if (!obj || typeof obj !== "object") return obj as Partial<T>;
+  if (!obj || typeof obj !== "object") {
+    return obj as Partial<T>;
+  }
   const cleaned: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (value === null || value === undefined) continue;
+    if (value === null || value === undefined) {
+      continue;
+    }
     if (Array.isArray(value)) {
       const cleanedArray = value
         .filter((item) => item !== null && item !== undefined)
         .map((item) => (typeof item === "object" ? cleanApiData(item) : item));
-      if (cleanedArray.length > 0) cleaned[key] = cleanedArray;
+      if (cleanedArray.length > 0) {
+        cleaned[key] = cleanedArray;
+      }
     } else if (typeof value === "object") {
       const cleanedObject = cleanApiData(value);
-      if (Object.keys(cleanedObject).length > 0) cleaned[key] = cleanedObject;
+      if (Object.keys(cleanedObject).length > 0) {
+        cleaned[key] = cleanedObject;
+      }
     } else {
       cleaned[key] = value;
     }
@@ -252,9 +264,15 @@ export class MediaUrlBuilder {
   }
 
   static isValidUrl(url: string | null | undefined): boolean {
-    if (!url) return false;
-    if (url === "undefined" || url === "null") return false;
-    if (url.includes("undefined") || url.includes("null")) return false;
+    if (!url) {
+      return false;
+    }
+    if (url === "undefined" || url === "null") {
+      return false;
+    }
+    if (url.includes("undefined") || url.includes("null")) {
+      return false;
+    }
     return true;
   }
 
@@ -334,7 +352,9 @@ export class RetryManager {
       try {
         return await operation();
       } catch (error) {
-        if (attempt === maxRetries) throw error;
+        if (attempt === maxRetries) {
+          throw error;
+        }
         await new Promise((resolve) => setTimeout(resolve, delay * attempt));
       }
     }
@@ -365,7 +385,9 @@ export const migrationService = {
 // Enhanced MediaValidator for compatibility
 export const MediaValidator = {
   validateFilename: (filename: string): boolean => {
-    if (!filename || typeof filename !== "string") return false;
+    if (!filename || typeof filename !== "string") {
+      return false;
+    }
     const allowedExtensions = [
       ".jpg",
       ".jpeg",
@@ -457,7 +479,9 @@ export default {
 export function removeUndefined<T extends object>(
   obj: T,
 ): { [K in keyof T]: Exclude<T[K], undefined> } {
-  if (!obj) return obj as any;
+  if (!obj) {
+    return obj as any;
+  }
   const result: any = { ...obj };
   Object.keys(result).forEach((key) => {
     if (result[key] === undefined) {

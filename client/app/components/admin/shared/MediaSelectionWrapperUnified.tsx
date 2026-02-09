@@ -17,10 +17,18 @@ interface UnifiedMediaSelectionProps {
 
 // Simplified filter mapping
 const getAutoFilterType = (target: string): string => {
-  if (target.includes("video")) return "video";
-  if (target.includes("image")) return "image";
-  if (target.includes("3d") || target.includes("model")) return "model";
-  if (target.includes("document")) return "document";
+  if (target.includes("video")) {
+    return "video";
+  }
+  if (target.includes("image")) {
+    return "image";
+  }
+  if (target.includes("3d") || target.includes("model")) {
+    return "model";
+  }
+  if (target.includes("document")) {
+    return "document";
+  }
   return "all";
 };
 
@@ -177,7 +185,9 @@ export function MediaSelectionWrapperUnified({
             missingIds.map((id) =>
               fetch(`/api/media/${id}`)
                 .then((res) => {
-                  if (!res.ok) throw new Error(`Failed to fetch asset ${id}`);
+                  if (!res.ok) {
+                    throw new Error(`Failed to fetch asset ${id}`);
+                  }
                   return res.json();
                 })
                 .catch((_err) => {
@@ -221,7 +231,9 @@ export function MediaSelectionWrapperUnified({
       .map((id) => {
         // Try cache first (multi-page selections)
         const cachedAsset = selectedAssetsCache.get(id);
-        if (cachedAsset) return cachedAsset;
+        if (cachedAsset) {
+          return cachedAsset;
+        }
 
         // Fallback to current page assets
         return assets.find((asset: MediaAsset) => asset.id === id);

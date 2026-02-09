@@ -117,19 +117,33 @@ export class AdminErrorBoundary extends Component<Props, State> {
   private getErrorSeverity = (error: Error): "low" | "medium" | "high" | "critical" => {
     const message = error.message.toLowerCase();
 
-    if (message.includes("network") || message.includes("fetch")) return "high";
-    if (message.includes("permission") || message.includes("auth")) return "critical";
-    if (message.includes("validation") || message.includes("parse")) return "medium";
+    if (message.includes("network") || message.includes("fetch")) {
+      return "high";
+    }
+    if (message.includes("permission") || message.includes("auth")) {
+      return "critical";
+    }
+    if (message.includes("validation") || message.includes("parse")) {
+      return "medium";
+    }
     return "low";
   };
 
   private getErrorCategory = (error: Error): string => {
     const message = error.message.toLowerCase();
 
-    if (message.includes("network") || message.includes("fetch")) return "Network Error";
-    if (message.includes("permission") || message.includes("auth")) return "Authentication Error";
-    if (message.includes("validation")) return "Validation Error";
-    if (message.includes("parse") || message.includes("json")) return "Data Format Error";
+    if (message.includes("network") || message.includes("fetch")) {
+      return "Network Error";
+    }
+    if (message.includes("permission") || message.includes("auth")) {
+      return "Authentication Error";
+    }
+    if (message.includes("validation")) {
+      return "Validation Error";
+    }
+    if (message.includes("parse") || message.includes("json")) {
+      return "Data Format Error";
+    }
     return "Application Error";
   };
 

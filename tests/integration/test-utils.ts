@@ -36,7 +36,9 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
 
   let killed = false;
   const kill = () => {
-    if (killed) return;
+    if (killed) {
+      return;
+    }
     killed = true;
     if (serverProcess.pid) {
       serverProcess.kill("SIGTERM");

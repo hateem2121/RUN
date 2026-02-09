@@ -362,10 +362,18 @@ class IntegrationTestSuite {
 
       // Check individual components
       const issues = [];
-      if (!health.cache.healthy) issues.push("cache");
-      if (!health.database.healthy) issues.push("database");
-      if (!health.http.healthy) issues.push("http");
-      if (!health.system.healthy) issues.push("system");
+      if (!health.cache.healthy) {
+        issues.push("cache");
+      }
+      if (!health.database.healthy) {
+        issues.push("database");
+      }
+      if (!health.http.healthy) {
+        issues.push("http");
+      }
+      if (!health.system.healthy) {
+        issues.push("system");
+      }
 
       if (issues.length > 0) {
         throw new Error(`Unhealthy components: ${issues.join(", ")}`);

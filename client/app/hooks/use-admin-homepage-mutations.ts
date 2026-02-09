@@ -1,5 +1,3 @@
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   InsertHomepageFeaturedProductsSettings,
   InsertHomepageHero,
@@ -7,6 +5,7 @@ import type {
   InsertHomepageSection,
   InsertHomepageSlogan,
 } from "@shared/schema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 export function useAdminHomepageMutations() {
@@ -26,7 +25,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update homepage hero");
+      if (!response.ok) {
+        throw new Error("Failed to update homepage hero");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -46,7 +47,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to create slogan");
+      if (!response.ok) {
+        throw new Error("Failed to create slogan");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -65,7 +68,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update slogan");
+      if (!response.ok) {
+        throw new Error("Failed to update slogan");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -82,7 +87,9 @@ export function useAdminHomepageMutations() {
       const response = await fetch(`/api/homepage-slogans/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete slogan");
+      if (!response.ok) {
+        throw new Error("Failed to delete slogan");
+      }
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -93,14 +100,16 @@ export function useAdminHomepageMutations() {
     },
   });
 
-    const reorderSlogans = useMutation({
+  const reorderSlogans = useMutation({
     mutationFn: async (slogans: { id: number; position: number }[]) => {
       const response = await fetch("/api/homepage-slogans/reorder", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slogans }),
       });
-      if (!response.ok) throw new Error("Failed to reorder slogans");
+      if (!response.ok) {
+        throw new Error("Failed to reorder slogans");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -108,8 +117,8 @@ export function useAdminHomepageMutations() {
       // No toast for reordering to avoid spam
     },
     onError: (error) => {
-        toast({ title: "Error", description: error.message, variant: "destructive" });
-    }
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
   });
 
   // Process Card Mutations
@@ -120,7 +129,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to create process card");
+      if (!response.ok) {
+        throw new Error("Failed to create process card");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -139,7 +150,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update process card");
+      if (!response.ok) {
+        throw new Error("Failed to update process card");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -156,7 +169,9 @@ export function useAdminHomepageMutations() {
       const response = await fetch(`/api/homepage-process-cards/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete process card");
+      if (!response.ok) {
+        throw new Error("Failed to delete process card");
+      }
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -168,24 +183,25 @@ export function useAdminHomepageMutations() {
   });
 
   const reorderProcessCards = useMutation({
-      mutationFn: async (cards: { id: number; position: number }[]) => {
-        const response = await fetch("/api/homepage-process-cards/reorder", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cards }),
-        });
-        if (!response.ok) throw new Error("Failed to reorder process cards");
-        return response.json();
-      },
-      onSuccess: () => {
-        invalidateHomepageQueries();
-        // No toast for reordering
-      },
-      onError: (error) => {
-          toast({ title: "Error", description: error.message, variant: "destructive" });
+    mutationFn: async (cards: { id: number; position: number }[]) => {
+      const response = await fetch("/api/homepage-process-cards/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cards }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to reorder process cards");
       }
-    });
-
+      return response.json();
+    },
+    onSuccess: () => {
+      invalidateHomepageQueries();
+      // No toast for reordering
+    },
+    onError: (error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
 
   // Section Mutations
   const updateSection = useMutation({
@@ -195,7 +211,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update section");
+      if (!response.ok) {
+        throw new Error("Failed to update section");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -215,7 +233,9 @@ export function useAdminHomepageMutations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update featured settings");
+      if (!response.ok) {
+        throw new Error("Failed to update featured settings");
+      }
       return response.json();
     },
     onSuccess: () => {

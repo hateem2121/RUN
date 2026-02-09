@@ -265,11 +265,17 @@ export class HttpMetricsTracker {
 
     recentMetrics.forEach((m) => {
       const code = m.statusCode;
-      if (code >= 200 && code < 300) categories["2xx"] = (categories["2xx"] || 0) + 1;
-      else if (code >= 300 && code < 400) categories["3xx"] = (categories["3xx"] || 0) + 1;
-      else if (code >= 400 && code < 500) categories["4xx"] = (categories["4xx"] || 0) + 1;
-      else if (code >= 500 && code < 600) categories["5xx"] = (categories["5xx"] || 0) + 1;
-      else categories.other = (categories.other || 0) + 1;
+      if (code >= 200 && code < 300) {
+        categories["2xx"] = (categories["2xx"] || 0) + 1;
+      } else if (code >= 300 && code < 400) {
+        categories["3xx"] = (categories["3xx"] || 0) + 1;
+      } else if (code >= 400 && code < 500) {
+        categories["4xx"] = (categories["4xx"] || 0) + 1;
+      } else if (code >= 500 && code < 600) {
+        categories["5xx"] = (categories["5xx"] || 0) + 1;
+      } else {
+        categories.other = (categories.other || 0) + 1;
+      }
     });
 
     return categories;
@@ -280,7 +286,9 @@ export class HttpMetricsTracker {
    */
   isHealthy(): boolean {
     const recentMetrics = this.getRecentMetrics();
-    if (recentMetrics.length < 10) return true; // Not enough data
+    if (recentMetrics.length < 10) {
+      return true; // Not enough data
+    }
 
     const errorRequests = recentMetrics.filter((m) => m.statusCode >= 500).length;
     const errorRate = (errorRequests / recentMetrics.length) * 100;

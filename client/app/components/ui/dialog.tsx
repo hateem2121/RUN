@@ -287,7 +287,9 @@ const DialogContent = ({
 
   // Device-optimized classes for enhanced styling
   const deviceClasses = React.useMemo(() => {
-    if (!isReady) return [];
+    if (!isReady) {
+      return [];
+    }
     return getDeviceOptimizedClasses();
   }, [isReady, getDeviceOptimizedClasses]);
 

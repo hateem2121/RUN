@@ -88,14 +88,20 @@ export function useProductsPageData({
   // ─────────────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (products.length === 0) return;
+    if (products.length === 0) {
+      return;
+    }
 
     const mediaIds = new Set<number>();
     products.forEach((product) => {
-      if (product.primaryImageId) mediaIds.add(product.primaryImageId);
+      if (product.primaryImageId) {
+        mediaIds.add(product.primaryImageId);
+      }
       if (Array.isArray(product.imageIds)) {
         product.imageIds.forEach((id) => {
-          if (typeof id === "number") mediaIds.add(id);
+          if (typeof id === "number") {
+            mediaIds.add(id);
+          }
         });
       }
     });
@@ -129,7 +135,9 @@ export function useProductsPageData({
   // ─────────────────────────────────────────────────────────────────────────
 
   const transformedProducts = (() => {
-    if (!products.length || !categories.length) return [];
+    if (!products.length || !categories.length) {
+      return [];
+    }
 
     const context: TransformContext = {
       categories,

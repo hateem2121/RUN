@@ -34,7 +34,9 @@ interface CategoryListProps {
 
 // Helper to get parent category name
 const getParentName = (category: Category, allCategories: Category[]) => {
-  if (!category.parentId) return undefined;
+  if (!category.parentId) {
+    return undefined;
+  }
   const parent = allCategories.find((c) => c.id === category.parentId);
   return parent?.name;
 };

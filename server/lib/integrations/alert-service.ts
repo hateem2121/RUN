@@ -68,7 +68,9 @@ function isEnabled(): boolean {
  */
 async function sendDiscordAlert(payload: AlertPayload): Promise<boolean> {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-  if (!webhookUrl) return false;
+  if (!webhookUrl) {
+    return false;
+  }
 
   try {
     const embed = {
@@ -126,7 +128,9 @@ async function sendDiscordAlert(payload: AlertPayload): Promise<boolean> {
  */
 async function sendSlackAlert(payload: AlertPayload): Promise<boolean> {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-  if (!webhookUrl) return false;
+  if (!webhookUrl) {
+    return false;
+  }
 
   try {
     const color =
@@ -246,7 +250,9 @@ export class AlertService {
     statusCode: number,
     runbookUrl?: string,
   ): Promise<void> {
-    if (statusCode < 500) return;
+    if (statusCode < 500) {
+      return;
+    }
 
     const severity: AlertSeverity = statusCode >= 500 ? "error" : "warning";
 

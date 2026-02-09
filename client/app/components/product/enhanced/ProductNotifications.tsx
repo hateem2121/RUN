@@ -102,7 +102,9 @@ export function NotificationProvider({
 function NotificationContainer() {
   const { notifications } = useNotifications();
 
-  if (notifications.length === 0) return null;
+  if (notifications.length === 0) {
+    return null;
+  }
 
   return (
     <div

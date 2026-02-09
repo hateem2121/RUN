@@ -17,7 +17,9 @@ const CustomCursor: React.FC = () => {
     const cursor = cursorRef.current;
     const follower = followerRef.current;
 
-    if (!cursor || !follower) return;
+    if (!cursor || !follower) {
+      return;
+    }
 
     // Initialize for quickTo optimization safety
     gsap.set(cursor, { xPercent: -50, yPercent: -50, x: 0, y: 0 });
@@ -57,7 +59,9 @@ const CustomCursor: React.FC = () => {
   useEffect(() => {
     const follower = followerRef.current;
     const cursor = cursorRef.current;
-    if (!follower || !cursor) return;
+    if (!follower || !cursor) {
+      return;
+    }
 
     if (cursorVariant === "view" && cursorImage) {
       // VIEW State: Scale up and fade slightly

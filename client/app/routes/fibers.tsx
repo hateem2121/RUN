@@ -47,7 +47,9 @@ export default function Fibers() {
 
   // Filter fibers based on search
   const filteredFibers = useMemo(() => {
-    if (!searchTerm) return fibers;
+    if (!searchTerm) {
+      return fibers;
+    }
 
     const term = searchTerm.toLowerCase();
     return fibers.filter(
@@ -63,7 +65,9 @@ export default function Fibers() {
   const groupedFibers = filteredFibers.reduce(
     (acc, fiber) => {
       const type = fiber.type || "Other";
-      if (!acc[type]) acc[type] = [];
+      if (!acc[type]) {
+        acc[type] = [];
+      }
       acc[type].push(fiber);
       return acc;
     },
@@ -94,7 +98,9 @@ export default function Fibers() {
   };
 
   const getSustainabilityBadge = (score: number | null | undefined) => {
-    if (!score) return null;
+    if (!score) {
+      return null;
+    }
 
     if (score >= 4) {
       return (

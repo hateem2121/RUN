@@ -111,7 +111,9 @@ export function SizeGuideModal({
     setActiveChartIndex((prev) => (prev - 1 + sizeCharts.length) % sizeCharts.length);
   }, [sizeCharts.length]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div

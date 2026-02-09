@@ -1,13 +1,13 @@
+import type { ContactPageConfiguration } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import Magnetic from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
-import type { ContactPageConfiguration } from "@shared/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,7 +64,9 @@ const Footer: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!footerRef.current || !textRef.current) return;
+    if (!footerRef.current || !textRef.current) {
+      return;
+    }
 
     const scope = footerRef.current;
 
@@ -153,7 +155,9 @@ const Footer: React.FC = () => {
         setIsSubmitting(false);
         setIsSent(true);
         setShowSuccess(true);
-        if (formRef.current) formRef.current.reset();
+        if (formRef.current) {
+          formRef.current.reset();
+        }
 
         // Hide message after 5 seconds
         setTimeout(() => {
@@ -309,11 +313,11 @@ const Footer: React.FC = () => {
             </h4>
             <div className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
               {contactConfig?.locationLine1 ? (
-                 <>
-                   {contactConfig.locationLine1}
-                   <br/>
-                   {contactConfig.locationLine2}
-                 </>
+                <>
+                  {contactConfig.locationLine1}
+                  <br />
+                  {contactConfig.locationLine2}
+                </>
               ) : contactConfig?.address ? (
                 contactConfig.address
               ) : (
@@ -331,10 +335,16 @@ const Footer: React.FC = () => {
             <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ DIRECT LINE ]
             </h4>
-            <a href={`mailto:${contactConfig?.email || "hello@runapparel.com"}`} className={footerLinkVariants()}>
+            <a
+              href={`mailto:${contactConfig?.email || "hello@runapparel.com"}`}
+              className={footerLinkVariants()}
+            >
               {contactConfig?.email || "hello@runapparel.com"}
             </a>
-            <a href={`tel:${contactConfig?.phone || "+41441234567"}`} className={footerLinkVariants()}>
+            <a
+              href={`tel:${contactConfig?.phone || "+41441234567"}`}
+              className={footerLinkVariants()}
+            >
               {contactConfig?.phone || "+41 44 123 45 67"}
             </a>
           </div>
@@ -346,23 +356,26 @@ const Footer: React.FC = () => {
               [ NETWORK ]
             </h4>
             <ul className="space-y-2">
-              {contactConfig?.socialLinks && Object.keys(contactConfig.socialLinks).length > 0 ? (
-                Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
-                  <li key={platform}>
-                    <a href={String(url)} target="_blank" rel="noopener noreferrer" className={footerLinkVariants({ display: "inline" })}>
-                      {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                    </a>
-                  </li>
-                ))
-              ) : (
-                ["Instagram", "LinkedIn", "Behance"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className={footerLinkVariants({ display: "inline" })}>
-                      {item}
-                    </a>
-                  </li>
-                ))
-              )}
+              {contactConfig?.socialLinks && Object.keys(contactConfig.socialLinks).length > 0
+                ? Object.entries(contactConfig.socialLinks).map(([platform, url]) => (
+                    <li key={platform}>
+                      <a
+                        href={String(url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={footerLinkVariants({ display: "inline" })}
+                      >
+                        {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                      </a>
+                    </li>
+                  ))
+                : ["Instagram", "LinkedIn", "Behance"].map((item) => (
+                    <li key={item}>
+                      <a href="#" className={footerLinkVariants({ display: "inline" })}>
+                        {item}
+                      </a>
+                    </li>
+                  ))}
             </ul>
           </div>
           <div className="mt-12">
@@ -371,14 +384,14 @@ const Footer: React.FC = () => {
             </h4>
             <ul className="text-muted-foreground space-y-2 text-sm">
               <li>
-                  <a href="/privacy" className={footerLinkVariants({ display: "inline" })}>
-                    Privacy Policy
-                  </a>
+                <a href="/privacy" className={footerLinkVariants({ display: "inline" })}>
+                  Privacy Policy
+                </a>
               </li>
               <li>
-                  <a href="/terms" className={footerLinkVariants({ display: "inline" })}>
-                     Terms of Service
-                  </a>
+                <a href="/terms" className={footerLinkVariants({ display: "inline" })}>
+                  Terms of Service
+                </a>
               </li>
             </ul>
           </div>

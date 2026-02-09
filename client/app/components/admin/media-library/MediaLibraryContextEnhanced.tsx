@@ -446,26 +446,54 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (state.searchTerm) count++;
-    if (state.selectedType !== "all") count++;
-    if (state.folderFilter) count++;
-    if (state.tagFilters.length > 0) count++;
-    if (state.dateRange.from || state.dateRange.to) count++;
-    if (state.sizeRange.min !== undefined || state.sizeRange.max !== undefined) count++;
+    if (state.searchTerm) {
+      count++;
+    }
+    if (state.selectedType !== "all") {
+      count++;
+    }
+    if (state.folderFilter) {
+      count++;
+    }
+    if (state.tagFilters.length > 0) {
+      count++;
+    }
+    if (state.dateRange.from || state.dateRange.to) {
+      count++;
+    }
+    if (state.sizeRange.min !== undefined || state.sizeRange.max !== undefined) {
+      count++;
+    }
     return count;
   }, [state]);
 
   const getQueryParams = useMemo(() => {
     const params = new URLSearchParams();
 
-    if (debouncedSearch) params.set("search", debouncedSearch);
-    if (state.selectedType !== "all") params.set("type", state.selectedType);
-    if (state.folderFilter) params.set("folder", state.folderFilter);
-    if (state.tagFilters.length > 0) params.set("tags", state.tagFilters.join(","));
-    if (state.dateRange.from) params.set("dateFrom", state.dateRange.from.toISOString());
-    if (state.dateRange.to) params.set("dateTo", state.dateRange.to.toISOString());
-    if (state.sizeRange.min !== undefined) params.set("sizeMin", state.sizeRange.min.toString());
-    if (state.sizeRange.max !== undefined) params.set("sizeMax", state.sizeRange.max.toString());
+    if (debouncedSearch) {
+      params.set("search", debouncedSearch);
+    }
+    if (state.selectedType !== "all") {
+      params.set("type", state.selectedType);
+    }
+    if (state.folderFilter) {
+      params.set("folder", state.folderFilter);
+    }
+    if (state.tagFilters.length > 0) {
+      params.set("tags", state.tagFilters.join(","));
+    }
+    if (state.dateRange.from) {
+      params.set("dateFrom", state.dateRange.from.toISOString());
+    }
+    if (state.dateRange.to) {
+      params.set("dateTo", state.dateRange.to.toISOString());
+    }
+    if (state.sizeRange.min !== undefined) {
+      params.set("sizeMin", state.sizeRange.min.toString());
+    }
+    if (state.sizeRange.max !== undefined) {
+      params.set("sizeMax", state.sizeRange.max.toString());
+    }
     params.set("sortBy", state.sortBy);
     params.set("sortOrder", state.sortOrder);
 
@@ -593,7 +621,9 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
   const uploadFiles = useCallback(
     async (files: FileList | File[]): Promise<void> => {
-      if (files.length === 0) return;
+      if (files.length === 0) {
+        return;
+      }
 
       dispatch({ type: "SET_IS_UPLOADING", payload: true });
       const fileArray = Array.from(files);
@@ -898,21 +928,45 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
   // Sync state to URL
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized) {
+      return;
+    }
 
     const params = new URLSearchParams();
 
-    if (state.searchTerm) params.set("search", state.searchTerm);
-    if (state.selectedType !== "all") params.set("type", state.selectedType);
-    if (state.folderFilter) params.set("folder", state.folderFilter);
-    if (state.tagFilters.length > 0) params.set("tags", state.tagFilters.join(","));
-    if (state.dateRange.from) params.set("dateFrom", state.dateRange.from.toISOString());
-    if (state.dateRange.to) params.set("dateTo", state.dateRange.to.toISOString());
-    if (state.sizeRange.min !== undefined) params.set("sizeMin", state.sizeRange.min.toString());
-    if (state.sizeRange.max !== undefined) params.set("sizeMax", state.sizeRange.max.toString());
-    if (state.sortBy !== "uploadedAt") params.set("sortBy", state.sortBy);
-    if (state.sortOrder !== "desc") params.set("sortOrder", state.sortOrder);
-    if (state.currentPage > 1) params.set("page", state.currentPage.toString());
+    if (state.searchTerm) {
+      params.set("search", state.searchTerm);
+    }
+    if (state.selectedType !== "all") {
+      params.set("type", state.selectedType);
+    }
+    if (state.folderFilter) {
+      params.set("folder", state.folderFilter);
+    }
+    if (state.tagFilters.length > 0) {
+      params.set("tags", state.tagFilters.join(","));
+    }
+    if (state.dateRange.from) {
+      params.set("dateFrom", state.dateRange.from.toISOString());
+    }
+    if (state.dateRange.to) {
+      params.set("dateTo", state.dateRange.to.toISOString());
+    }
+    if (state.sizeRange.min !== undefined) {
+      params.set("sizeMin", state.sizeRange.min.toString());
+    }
+    if (state.sizeRange.max !== undefined) {
+      params.set("sizeMax", state.sizeRange.max.toString());
+    }
+    if (state.sortBy !== "uploadedAt") {
+      params.set("sortBy", state.sortBy);
+    }
+    if (state.sortOrder !== "desc") {
+      params.set("sortOrder", state.sortOrder);
+    }
+    if (state.currentPage > 1) {
+      params.set("page", state.currentPage.toString());
+    }
 
     const newSearch = params.toString();
     const currentSearch = searchParams.toString();

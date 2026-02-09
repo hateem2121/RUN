@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import FloatingDockHeader from "./floating-dock-header";
+import { describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import FloatingDockHeader from "./floating-dock-header";
 
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
@@ -46,15 +46,15 @@ describe("FloatingDockHeader", () => {
             <FloatingDockHeader />
           </ThemeProvider>
         </QueryClientProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Wait for mounting
     const header = await screen.findByRole("banner");
-    expect(header).toBeInTheDocument();
-    expect(screen.getByText("RUN APPAREL")).toBeInTheDocument();
-    expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
-    expect(screen.getByTestId("responsive-navigation")).toBeInTheDocument();
+    expect(header).toBeTruthy();
+    expect(screen.getByText("RUN APPAREL")).toBeTruthy();
+    expect(screen.getByTestId("theme-toggle")).toBeTruthy();
+    expect(screen.getByTestId("responsive-navigation")).toBeTruthy();
   });
 
   it("applies correct z-index class", async () => {
@@ -65,10 +65,10 @@ describe("FloatingDockHeader", () => {
             <FloatingDockHeader />
           </ThemeProvider>
         </QueryClientProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const header = await screen.findByRole("banner");
-    expect(header).toHaveClass("z-(--z-index-dock)");
+    expect(header.classList.contains("z-(--z-index-dock)")).toBe(true);
   });
 });

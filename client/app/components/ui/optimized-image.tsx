@@ -112,7 +112,9 @@ const LegacyImage: React.FC<OptimizedImageProps> = ({
   objectFit = "cover",
   ...props
 }) => {
-  if (mediaId === undefined) return null;
+  if (mediaId === undefined) {
+    return null;
+  }
 
   // Use the legacy MediaUrlBuilder
   const src = MediaUrlBuilder.buildUrlSafe(mediaId);

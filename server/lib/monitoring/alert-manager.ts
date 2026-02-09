@@ -93,26 +93,38 @@ class AlertManager {
 
     // Check slow query threshold
     const slowQueryAlert = this.checkSlowQueries();
-    if (slowQueryAlert) newAlerts.push(slowQueryAlert);
+    if (slowQueryAlert) {
+      newAlerts.push(slowQueryAlert);
+    }
 
     // Check error rate threshold
     const errorRateAlert = this.checkErrorRate();
-    if (errorRateAlert) newAlerts.push(errorRateAlert);
+    if (errorRateAlert) {
+      newAlerts.push(errorRateAlert);
+    }
 
     // Check HTTP error rate threshold
     const httpErrorAlert = this.checkHttpErrorRate();
-    if (httpErrorAlert) newAlerts.push(httpErrorAlert);
+    if (httpErrorAlert) {
+      newAlerts.push(httpErrorAlert);
+    }
 
     // Check circuit breaker status
     const circuitAlert = this.checkCircuitBreaker();
-    if (circuitAlert) newAlerts.push(circuitAlert);
+    if (circuitAlert) {
+      newAlerts.push(circuitAlert);
+    }
 
     // CHUNK 8: Memory and DB connection monitoring
     const memoryAlert = this.checkMemoryUsage();
-    if (memoryAlert) newAlerts.push(memoryAlert);
+    if (memoryAlert) {
+      newAlerts.push(memoryAlert);
+    }
 
     const dbConnectionAlert = this.checkDbConnection();
-    if (dbConnectionAlert) newAlerts.push(dbConnectionAlert);
+    if (dbConnectionAlert) {
+      newAlerts.push(dbConnectionAlert);
+    }
 
     // Record new alerts
     for (const alert of newAlerts) {
@@ -126,7 +138,9 @@ class AlertManager {
    * Check for slow query violations
    */
   private checkSlowQueries(): Alert | null {
-    if (!this.canAlert("slow_query")) return null;
+    if (!this.canAlert("slow_query")) {
+      return null;
+    }
 
     const stats = queryPerformanceMonitor.getPerformanceStats();
 
@@ -162,7 +176,9 @@ class AlertManager {
    * Check for error rate violations
    */
   private checkErrorRate(): Alert | null {
-    if (!this.canAlert("error_rate")) return null;
+    if (!this.canAlert("error_rate")) {
+      return null;
+    }
 
     const errorMetrics = errorAggregator.getMetrics();
     const timeWindowKey =
@@ -207,7 +223,9 @@ class AlertManager {
    * Check for HTTP 5xx error rate violations
    */
   private checkHttpErrorRate(): Alert | null {
-    if (!this.canAlert("http_error_rate")) return null;
+    if (!this.canAlert("http_error_rate")) {
+      return null;
+    }
 
     const stats = httpMetricsTracker.getStats();
     const categories = httpMetricsTracker.getStatusCodeCategories();
@@ -244,7 +262,9 @@ class AlertManager {
     const status = appStorageService.getCircuitStatus();
 
     if (status.state === "OPEN" && this.thresholds.circuitBreaker.alertOnOpen) {
-      if (!this.canAlert("circuit_breaker")) return null;
+      if (!this.canAlert("circuit_breaker")) {
+        return null;
+      }
 
       return {
         id: `alert_${Date.now()}_circuit_breaker`,
@@ -263,7 +283,9 @@ class AlertManager {
     }
 
     if (status.state === "HALF_OPEN" && this.thresholds.circuitBreaker.alertOnHalfOpen) {
-      if (!this.canAlert("circuit_breaker")) return null;
+      if (!this.canAlert("circuit_breaker")) {
+        return null;
+      }
 
       const successRate =
         status.successCount + status.failureCount > 0
@@ -330,7 +352,9 @@ class AlertManager {
    * Phase 1 Task 4: Added heap snapshot trigger when memory alert fires
    */
   private checkMemoryUsage(): Alert | null {
-    if (!this.canAlert("memory")) return null;
+    if (!this.canAlert("memory")) {
+      return null;
+    }
 
     try {
       const used = process.memoryUsage();
@@ -371,14 +395,18 @@ class AlertManager {
    * Monitors database metrics for connection failures and timeouts
    */
   private checkDbConnection(): Alert | null {
-    if (!this.canAlert("db_connection")) return null;
+    if (!this.canAlert("db_connection")) {
+      return null;
+    }
 
     try {
       // Import database metrics if available
       const { dbMetricsTracker } = require("./database-metrics-tracker.js");
       const metrics = dbMetricsTracker?.getMetrics();
 
-      if (!metrics) return null;
+      if (!metrics) {
+        return null;
+      }
 
       // Check for connection errors
       if (this.thresholds.dbConnection.alertOnError && metrics.connectionErrors > 0) {
@@ -432,7 +460,9 @@ class AlertManager {
    */
   private canAlert(type: string): boolean {
     const lastAlert = this.alertCooldown.get(type);
-    if (!lastAlert) return true;
+    if (!lastAlert) {
+      return true;
+    }
 
     const now = Date.now();
     if (now - lastAlert >= this.cooldownMs) {

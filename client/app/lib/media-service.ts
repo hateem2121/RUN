@@ -24,11 +24,15 @@ export class MediaService {
     asset: MediaAsset | null | undefined,
     options: ResponsiveImageOptions = {},
   ): string | null {
-    if (!asset || asset.type !== "image") return MediaService.getSafeUrl(asset);
+    if (!asset || asset.type !== "image") {
+      return MediaService.getSafeUrl(asset);
+    }
 
     const { width = 800, format = "auto", quality = 85 } = options;
     const baseUrl = MediaService.getSafeUrl(asset);
-    if (!baseUrl) return null;
+    if (!baseUrl) {
+      return null;
+    }
 
     // Check if browser supports WebP (for format=auto)
     const supportsWebP = MediaService.supportsWebP();
@@ -47,7 +51,9 @@ export class MediaService {
    * Generate thumbnail URL for image assets
    */
   static getThumbnailUrl(asset: MediaAsset | null | undefined, size: number = 150): string | null {
-    if (!asset) return null;
+    if (!asset) {
+      return null;
+    }
 
     // Use responsive image system for thumbnails
     return MediaService.getResponsiveImageUrl(asset, {
@@ -57,7 +63,9 @@ export class MediaService {
   }
 
   static getSafeUrl(asset: MediaAsset | null | undefined): string | null {
-    if (!asset) return null;
+    if (!asset) {
+      return null;
+    }
 
     try {
       // Prefer API-provided URL first (ID-based proxy URLs)
@@ -113,7 +121,9 @@ export class MediaService {
    * Validate media asset has required fields
    */
   static isValidAsset(asset: unknown): asset is MediaAsset {
-    if (!asset || typeof asset !== "object") return false;
+    if (!asset || typeof asset !== "object") {
+      return false;
+    }
 
     const obj = asset as Record<string, any>;
     return (
@@ -131,7 +141,9 @@ export class MediaService {
    * Get video thumbnail URL (placeholder for future video thumbnail generation)
    */
   static getVideoThumbnailUrl(asset: MediaAsset): string | null {
-    if (asset.type !== "video") return MediaService.getSafeUrl(asset);
+    if (asset.type !== "video") {
+      return MediaService.getSafeUrl(asset);
+    }
 
     // For video assets, check if thumbnailFilename exists (actual property)
     if (asset.thumbnailFilename && asset.thumbnailFilename.length > 0) {
@@ -146,7 +158,9 @@ export class MediaService {
    * Get display-ready filename (remove timestamp prefix)
    */
   static getDisplayName(asset: MediaAsset): string {
-    if (!asset.originalName) return asset.filename || "Unknown";
+    if (!asset.originalName) {
+      return asset.filename || "Unknown";
+    }
     return asset.originalName;
   }
 
@@ -154,7 +168,9 @@ export class MediaService {
    * Format file size for display
    */
   static formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) {
+      return "0 Bytes";
+    }
 
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -193,7 +209,9 @@ export class MediaService {
    * PHASE 3: Check if browser supports WebP
    */
   private static supportsWebP(): boolean {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined") {
+      return false;
+    }
 
     try {
       const canvas = document.createElement("canvas");
@@ -227,10 +245,14 @@ export class MediaService {
    * PHASE 3: Generate srcset for responsive images
    */
   static generateSrcSet(asset: MediaAsset | null | undefined): string {
-    if (!asset || asset.type !== "image") return "";
+    if (!asset || asset.type !== "image") {
+      return "";
+    }
 
     const baseUrl = MediaService.getSafeUrl(asset);
-    if (!baseUrl) return "";
+    if (!baseUrl) {
+      return "";
+    }
 
     const sizes = [480, 768, 1200];
     const srcset = sizes
@@ -250,9 +272,15 @@ export class MediaService {
    * PHASE 3: Check if image should be optimized
    */
   static shouldOptimize(asset: MediaAsset): boolean {
-    if (asset.type !== "image") return false;
-    if (!asset.size) return false;
-    if (asset.filename?.toLowerCase().endsWith(".svg")) return false;
+    if (asset.type !== "image") {
+      return false;
+    }
+    if (!asset.size) {
+      return false;
+    }
+    if (asset.filename?.toLowerCase().endsWith(".svg")) {
+      return false;
+    }
 
     // Only optimize files larger than 1MB
     return asset.size > 1024 * 1024;

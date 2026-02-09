@@ -41,7 +41,9 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
                 className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                 onMouseEnter={() => {
                   setHoveredIndex(index);
-                  if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
+                  if (!isMobile) {
+                    setCursor(CursorVariant.VIEW, "", cat.image);
+                  }
                 }}
                 onMouseLeave={() => {
                   setCursor(CursorVariant.DEFAULT);
@@ -69,7 +71,9 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
                   className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                   onMouseEnter={() => {
                     setHoveredIndex(virtualIndex);
-                    if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
+                    if (!isMobile) {
+                      setCursor(CursorVariant.VIEW, "", cat.image);
+                    }
                   }}
                   onMouseLeave={() => {
                     setCursor(CursorVariant.DEFAULT);
@@ -103,7 +107,9 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
                 className={`group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16 ${isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100"}`}
                 onMouseEnter={() => {
                   setHoveredIndex(uniqueIndex);
-                  if (!isMobile) setCursor(CursorVariant.VIEW, "", cat.image);
+                  if (!isMobile) {
+                    setCursor(CursorVariant.VIEW, "", cat.image);
+                  }
                 }}
                 onMouseLeave={() => {
                   setCursor(CursorVariant.DEFAULT);

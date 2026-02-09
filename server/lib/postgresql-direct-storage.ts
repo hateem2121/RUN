@@ -33,6 +33,7 @@ import { MiscRepository } from "./db/repositories/misc-repository.js";
 import { PageContentRepository } from "./db/repositories/page-content-repository.js";
 import {
   type ProductDetail,
+  type ProductDetailWithContext,
   ProductRepository,
   type ProductSummary,
 } from "./db/repositories/product-repository.js";
@@ -293,7 +294,7 @@ export class DirectPostgreSQLStorage implements IStorage {
       folderId?: number;
     },
   ): Promise<MediaAsset[]> {
-    return (await this.mediaRepository.getMediaAssets(limit, offset, filters)) as any;
+    return await this.mediaRepository.getMediaAssets(limit, offset, filters);
   }
 
   async getMediaAssetsCount(filters?: {
@@ -313,7 +314,7 @@ export class DirectPostgreSQLStorage implements IStorage {
       folderId?: number;
     },
   ): Promise<{ assets: MediaAsset[]; total: number }> {
-    return (await this.mediaRepository.getMediaAssetsWithCount(limit, offset, filters)) as any;
+    return await this.mediaRepository.getMediaAssetsWithCount(limit, offset, filters);
   }
 
   async createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset> {
@@ -332,7 +333,7 @@ export class DirectPostgreSQLStorage implements IStorage {
   }
 
   async getMediaAssetsByFolder(folderId: number | null): Promise<MediaAsset[]> {
-    return (await this.mediaRepository.getMediaAssetsByFolder(folderId)) as any;
+    return await this.mediaRepository.getMediaAssetsByFolder(folderId);
   }
 
   async moveMediaAsset(id: number, targetFolderId: number | null): Promise<MediaAsset | undefined> {
@@ -401,6 +402,18 @@ export class DirectPostgreSQLStorage implements IStorage {
   // =============================================================================
   // FIBER METHODS - DELEGATED TO MiscRepository
   // =============================================================================
+
+  async getFooterConfiguration(): Promise<FooterConfiguration | undefined> {
+    return await this.miscRepository.getFooterConfiguration();
+  }
+
+  async getFooterSections(): Promise<any[]> {
+    return await this.miscRepository.getFooterSections();
+  }
+
+  async createFooterLink(link: any): Promise<any> {
+    return await this.miscRepository.createFooterLink(link);
+  }
 
   async getFibers(): Promise<Fiber[]> {
     return await this.miscRepository.getFibers();
@@ -663,7 +676,7 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.productRepository.getProduct(id);
   }
 
-  async getProductByPath(urlPath: string): Promise<any> {
+  async getProductByPath(urlPath: string): Promise<ProductDetailWithContext | null> {
     return await this.productRepository.getProductByPath(urlPath);
   }
 
@@ -731,7 +744,7 @@ export class DirectPostgreSQLStorage implements IStorage {
     );
   }
 
-  async get3DModelMetadata(productId: number): Promise<any | null> {
+  async get3DModelMetadata(productId: number): Promise<MediaAsset | null> {
     return await this.productRepository.get3DModelMetadata(productId);
   }
 
@@ -842,10 +855,6 @@ export class DirectPostgreSQLStorage implements IStorage {
   // =============================================================================
   // FOOTER CONFIGURATION METHODS - DELEGATED TO MiscRepository
   // =============================================================================
-
-  async getFooterConfiguration(): Promise<FooterConfiguration | undefined> {
-    return await this.miscRepository.getFooterConfiguration();
-  }
 
   async updateFooterConfiguration(
     config: Partial<InsertFooterConfiguration>,
@@ -2279,17 +2288,6 @@ export class DirectPostgreSQLStorage implements IStorage {
       default:
         throw new Error(`Unsupported type: ${type}`);
     }
-  }
-
-  // Footer methods (stub implementations)
-  async getFooterSections(): Promise<any[]> {
-    // TODO: Implement footer sections when needed
-    return [];
-  }
-
-  async createFooterLink(link: any): Promise<any> {
-    // TODO: Implement footer link creation when needed
-    return link;
   }
 
   // CHUNK 8: Database health check method

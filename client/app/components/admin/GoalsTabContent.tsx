@@ -257,7 +257,9 @@ export function GoalsTabContent({
 
   const handleGoalSubmit = () => {
     const isValidForm = validateGoalForm();
-    if (!isValidForm) return;
+    if (!isValidForm) {
+      return;
+    }
 
     const transformedGoalData = {
       title: goalForm.title,

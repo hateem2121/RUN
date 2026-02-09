@@ -127,12 +127,12 @@
 
   /* Technology Page Header Overrides (Fix Broken Logo) */
   html.technology-page header h1 {
-    color: white !important;
+    color: white;
   }
   html.technology-page header p {
-    color: #a1a1aa !important; /* zinc-400 */
+    color: #a1a1aa; /* zinc-400 */
   }
   html.technology-page header span.rounded-full {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 }

@@ -12,8 +12,6 @@ import { type Express, Router } from "express";
 import shrinkRay from "shrink-ray-current"; // Brotli support
 import { logger } from "../lib/monitoring/logger.js";
 import { diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
-// Static Imports (Safe thanks to bootstrap.ts secret loading)
-import { authService } from "../services/auth-service.js";
 import authRouter from "./auth.js";
 import debugRouter from "./debug.js";
 import docsRouter from "./docs.js";
@@ -55,8 +53,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       },
       threshold: 1024,
       filter: (_req, res) => {
-        if (res.get("Content-Type")?.includes("application/json")) return true;
-        if (res.get("Content-Type")?.includes("text/")) return true;
+        if (res.get("Content-Type")?.includes("application/json")) {
+          return true;
+        }
+        if (res.get("Content-Type")?.includes("text/")) {
+          return true;
+        }
         return false;
       },
     }),
@@ -73,6 +75,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use((req, _res, next) => {
     logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
     next();
+  });
+
+  apiRouter.get("/", (_req, res) => {
+    res.json({
+      status: "ok",
+      version: "v1",
+      docs: "/api/docs",
+    });
   });
 
   // 1. Auth & Worker (Root Level)

@@ -138,7 +138,9 @@ export class FabricValidator {
   private validateWeight(weight: string): boolean {
     // Match patterns like "120-200 GSM" or "180 GSM"
     const gsmMatch = weight.match(/(\d+)(?:-(\d+))?\s*GSM/i);
-    if (!gsmMatch) return false;
+    if (!gsmMatch) {
+      return false;
+    }
 
     const minWeight = parseInt(gsmMatch[1]!, 10);
     const maxWeight = gsmMatch[2] ? parseInt(gsmMatch[2], 10) : minWeight;
@@ -154,7 +156,9 @@ export class FabricValidator {
   private validateStretchPercentage(stretch: string): boolean {
     // Match patterns like "15-25%" or "30%"
     const stretchMatch = stretch.match(/(\d+)(?:-(\d+))?%/);
-    if (!stretchMatch) return false;
+    if (!stretchMatch) {
+      return false;
+    }
 
     const minStretch = parseInt(stretchMatch[1]!, 10);
     const maxStretch = stretchMatch[2] ? parseInt(stretchMatch[2], 10) : minStretch;
@@ -165,7 +169,9 @@ export class FabricValidator {
   private validateAirPermeability(airPerm: string): boolean {
     // Match patterns like "150-300 L/m²/s"
     const airMatch = airPerm.match(/(\d+)(?:-(\d+))?\s*L\/m²\/s/i);
-    if (!airMatch) return false;
+    if (!airMatch) {
+      return false;
+    }
 
     const minAir = parseInt(airMatch[1]!, 10);
     const maxAir = airMatch[2] ? parseInt(airMatch[2], 10) : minAir;
@@ -176,7 +182,9 @@ export class FabricValidator {
   private validateWaterColumn(water: string): boolean {
     // Match patterns like "0-5 mm" or "0 mm"
     const waterMatch = water.match(/(\d+)(?:-(\d+))?\s*mm/i);
-    if (!waterMatch) return false;
+    if (!waterMatch) {
+      return false;
+    }
 
     const minWater = parseInt(waterMatch[1]!, 10);
     const maxWater = waterMatch[2] ? parseInt(waterMatch[2], 10) : minWater;
@@ -187,7 +195,9 @@ export class FabricValidator {
   private validateMoistureManagement(moisture: string): boolean {
     // Match patterns like "3-4/5" or "4/5"
     const moistureMatch = moisture.match(/(\d+)(?:-(\d+))?\/5/);
-    if (!moistureMatch) return false;
+    if (!moistureMatch) {
+      return false;
+    }
 
     const minMoisture = parseInt(moistureMatch[1]!, 10);
     const maxMoisture = moistureMatch[2] ? parseInt(moistureMatch[2], 10) : minMoisture;
@@ -198,7 +208,9 @@ export class FabricValidator {
   private validateWickingRate(wicking: string): boolean {
     // Match patterns like "120-180 mm/hr"
     const wickingMatch = wicking.match(/(\d+)(?:-(\d+))?\s*mm\/hr/i);
-    if (!wickingMatch) return false;
+    if (!wickingMatch) {
+      return false;
+    }
 
     const minWicking = parseInt(wickingMatch[1]!, 10);
     const maxWicking = wickingMatch[2] ? parseInt(wickingMatch[2], 10) : minWicking;
@@ -209,7 +221,9 @@ export class FabricValidator {
   private validateDryingTime(drying: string): boolean {
     // Match patterns like "45-75 minutes"
     const dryingMatch = drying.match(/(\d+)(?:-(\d+))?\s*minutes?/i);
-    if (!dryingMatch) return false;
+    if (!dryingMatch) {
+      return false;
+    }
 
     const minDrying = parseInt(dryingMatch[1]!, 10);
     const maxDrying = dryingMatch[2] ? parseInt(dryingMatch[2], 10) : minDrying;
@@ -220,7 +234,9 @@ export class FabricValidator {
   private validateAbrasionResistance(abrasion: string): boolean {
     // Match patterns like "3/5" or "3-4/5"
     const abrasionMatch = abrasion.match(/(\d+)(?:-(\d+))?\/5/);
-    if (!abrasionMatch) return false;
+    if (!abrasionMatch) {
+      return false;
+    }
 
     const minAbrasion = parseInt(abrasionMatch[1]!, 10);
     const maxAbrasion = abrasionMatch[2] ? parseInt(abrasionMatch[2], 10) : minAbrasion;
@@ -231,7 +247,9 @@ export class FabricValidator {
   private validatePillingGrade(pilling: string): boolean {
     // Match patterns like "3-4" or "4"
     const pillingMatch = pilling.match(/(\d+)(?:-(\d+))?/);
-    if (!pillingMatch) return false;
+    if (!pillingMatch) {
+      return false;
+    }
 
     const minPilling = parseInt(pillingMatch[1]!, 10);
     const maxPilling = pillingMatch[2] ? parseInt(pillingMatch[2], 10) : minPilling;
@@ -242,7 +260,9 @@ export class FabricValidator {
   private validateShrinkageTolerance(shrinkage: string): boolean {
     // Match patterns like "3-5%" or "4%"
     const shrinkageMatch = shrinkage.match(/(\d+)(?:-(\d+))?%/);
-    if (!shrinkageMatch) return false;
+    if (!shrinkageMatch) {
+      return false;
+    }
 
     const minShrinkage = parseInt(shrinkageMatch[1]!, 10);
     const maxShrinkage = shrinkageMatch[2] ? parseInt(shrinkageMatch[2], 10) : minShrinkage;
@@ -253,7 +273,9 @@ export class FabricValidator {
   private validateWashTemperature(temp: string): boolean {
     // Match patterns like "30-60°C" or "40°C"
     const tempMatch = temp.match(/(\d+)(?:-(\d+))?°C/);
-    if (!tempMatch) return false;
+    if (!tempMatch) {
+      return false;
+    }
 
     const minTemp = parseInt(tempMatch[1]!, 10);
     const maxTemp = tempMatch[2] ? parseInt(tempMatch[2], 10) : minTemp;

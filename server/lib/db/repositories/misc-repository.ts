@@ -165,7 +165,9 @@ export class MiscRepository {
     const cacheKey = "fabrics:all";
     try {
       const cached = await unifiedCache.get<Fabric[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get fabrics from cache:", error);
     }
@@ -341,41 +343,87 @@ export class MiscRepository {
     };
 
     // Pack all technical specification fields into properties
-    if (compositions !== undefined) technicalProperties.compositions = compositions;
-    if (stretchDirection !== undefined) technicalProperties.stretchDirection = stretchDirection;
-    if (stretchPercentage !== undefined) technicalProperties.stretchPercentage = stretchPercentage;
-    if (breathability !== undefined) technicalProperties.breathability = breathability;
-    if (moistureManagement !== undefined)
+    if (compositions !== undefined) {
+      technicalProperties.compositions = compositions;
+    }
+    if (stretchDirection !== undefined) {
+      technicalProperties.stretchDirection = stretchDirection;
+    }
+    if (stretchPercentage !== undefined) {
+      technicalProperties.stretchPercentage = stretchPercentage;
+    }
+    if (breathability !== undefined) {
+      technicalProperties.breathability = breathability;
+    }
+    if (moistureManagement !== undefined) {
       technicalProperties.moistureManagement = moistureManagement;
-    if (enhancedMoistureManagement !== undefined)
+    }
+    if (enhancedMoistureManagement !== undefined) {
       technicalProperties.enhancedMoistureManagement = enhancedMoistureManagement;
-    if (wickingRate !== undefined) technicalProperties.wickingRate = wickingRate;
-    if (dryingTime !== undefined) technicalProperties.dryingTime = dryingTime;
-    if (airPermeability !== undefined) technicalProperties.airPermeability = airPermeability;
-    if (waterColumn !== undefined) technicalProperties.waterColumn = waterColumn;
-    if (performanceFeatures !== undefined)
+    }
+    if (wickingRate !== undefined) {
+      technicalProperties.wickingRate = wickingRate;
+    }
+    if (dryingTime !== undefined) {
+      technicalProperties.dryingTime = dryingTime;
+    }
+    if (airPermeability !== undefined) {
+      technicalProperties.airPermeability = airPermeability;
+    }
+    if (waterColumn !== undefined) {
+      technicalProperties.waterColumn = waterColumn;
+    }
+    if (performanceFeatures !== undefined) {
       technicalProperties.performanceFeatures = performanceFeatures;
-    if (yarnCountConstruction !== undefined)
+    }
+    if (yarnCountConstruction !== undefined) {
       technicalProperties.yarnCountConstruction = yarnCountConstruction;
-    if (colorfastness !== undefined) technicalProperties.colorfastness = colorfastness;
-    if (tensileStrength !== undefined) technicalProperties.tensileStrength = tensileStrength;
-    if (tearStrength !== undefined) technicalProperties.tearStrength = tearStrength;
-    if (abrasionResistance !== undefined)
+    }
+    if (colorfastness !== undefined) {
+      technicalProperties.colorfastness = colorfastness;
+    }
+    if (tensileStrength !== undefined) {
+      technicalProperties.tensileStrength = tensileStrength;
+    }
+    if (tearStrength !== undefined) {
+      technicalProperties.tearStrength = tearStrength;
+    }
+    if (abrasionResistance !== undefined) {
       technicalProperties.abrasionResistance = abrasionResistance;
-    if (pillingGrade !== undefined) technicalProperties.pillingGrade = pillingGrade;
-    if (shrinkageTolerancePercentage !== undefined)
+    }
+    if (pillingGrade !== undefined) {
+      technicalProperties.pillingGrade = pillingGrade;
+    }
+    if (shrinkageTolerancePercentage !== undefined) {
       technicalProperties.shrinkageTolerancePercentage = shrinkageTolerancePercentage;
-    if (washTemperature !== undefined) technicalProperties.washTemperature = washTemperature;
-    if (certificationTags !== undefined) technicalProperties.certificationTags = certificationTags;
-    if (certificationIds !== undefined) technicalProperties.certificationIds = certificationIds;
-    if (endOfLifeOptions !== undefined) technicalProperties.endOfLifeOptions = endOfLifeOptions;
-    if (recyclabilityNotes !== undefined)
+    }
+    if (washTemperature !== undefined) {
+      technicalProperties.washTemperature = washTemperature;
+    }
+    if (certificationTags !== undefined) {
+      technicalProperties.certificationTags = certificationTags;
+    }
+    if (certificationIds !== undefined) {
+      technicalProperties.certificationIds = certificationIds;
+    }
+    if (endOfLifeOptions !== undefined) {
+      technicalProperties.endOfLifeOptions = endOfLifeOptions;
+    }
+    if (recyclabilityNotes !== undefined) {
       technicalProperties.recyclabilityNotes = recyclabilityNotes;
-    if (useCases !== undefined) technicalProperties.useCases = useCases;
-    if (finishTreatments !== undefined) technicalProperties.finishTreatments = finishTreatments;
-    if (washCareInstructions !== undefined)
+    }
+    if (useCases !== undefined) {
+      technicalProperties.useCases = useCases;
+    }
+    if (finishTreatments !== undefined) {
+      technicalProperties.finishTreatments = finishTreatments;
+    }
+    if (washCareInstructions !== undefined) {
       technicalProperties.washCareInstructions = washCareInstructions;
-    if (finish !== undefined) technicalProperties.finish = finish;
+    }
+    if (finish !== undefined) {
+      technicalProperties.finish = finish;
+    }
 
     // Convert sustainabilityScore to number if it's a string
     let scoreParsed: number | undefined;
@@ -396,25 +444,61 @@ export class MiscRepository {
     };
 
     // Add defined database columns
-    if (name !== undefined) result.name = name;
-    if (description !== undefined) result.description = description;
-    if (fabricType !== undefined) result.fabricType = fabricType;
-    if (weight !== undefined) result.weight = weight;
-    if (weave !== undefined) result.weave = weave;
-    if (weaveType !== undefined) result.weaveType = weaveType;
-    if (weaveTypes !== undefined) result.weaveTypes = weaveTypes;
-    if (stretch !== undefined) result.stretch = stretch;
-    if (finishTreatment !== undefined) result.finishTreatment = finishTreatment;
-    if (careInstructions !== undefined) result.careInstructions = careInstructions;
-    if (scoreParsed !== undefined) result.sustainabilityScore = scoreParsed;
-    if (certifications !== undefined) result.certifications = certifications;
-    if (visualSwatchId !== undefined) result.visualSwatchId = visualSwatchId;
-    if (keyApplications !== undefined) result.keyApplications = keyApplications;
-    if (isActive !== undefined) result.isActive = isActive;
+    if (name !== undefined) {
+      result.name = name;
+    }
+    if (description !== undefined) {
+      result.description = description;
+    }
+    if (fabricType !== undefined) {
+      result.fabricType = fabricType;
+    }
+    if (weight !== undefined) {
+      result.weight = weight;
+    }
+    if (weave !== undefined) {
+      result.weave = weave;
+    }
+    if (weaveType !== undefined) {
+      result.weaveType = weaveType;
+    }
+    if (weaveTypes !== undefined) {
+      result.weaveTypes = weaveTypes;
+    }
+    if (stretch !== undefined) {
+      result.stretch = stretch;
+    }
+    if (finishTreatment !== undefined) {
+      result.finishTreatment = finishTreatment;
+    }
+    if (careInstructions !== undefined) {
+      result.careInstructions = careInstructions;
+    }
+    if (scoreParsed !== undefined) {
+      result.sustainabilityScore = scoreParsed;
+    }
+    if (certifications !== undefined) {
+      result.certifications = certifications;
+    }
+    if (visualSwatchId !== undefined) {
+      result.visualSwatchId = visualSwatchId;
+    }
+    if (keyApplications !== undefined) {
+      result.keyApplications = keyApplications;
+    }
+    if (isActive !== undefined) {
+      result.isActive = isActive;
+    }
     // B2B Core Fields
-    if (sport !== undefined) result.sport = sport;
-    if (marketSegment !== undefined) result.marketSegment = marketSegment;
-    if (seasonality !== undefined) result.seasonality = seasonality;
+    if (sport !== undefined) {
+      result.sport = sport;
+    }
+    if (marketSegment !== undefined) {
+      result.marketSegment = marketSegment;
+    }
+    if (seasonality !== undefined) {
+      result.seasonality = seasonality;
+    }
 
     // Add properties with all technical specifications
     // Only assign if there are actual properties to preserve/update
@@ -458,7 +542,9 @@ export class MiscRepository {
   async getCertificates(): Promise<Certificate[]> {
     try {
       const cached = await unifiedCache.get<Certificate[]>(this.CERTIFICATES_CACHE_KEY, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get certificates from cache:", error);
     }
@@ -507,7 +593,9 @@ export class MiscRepository {
         .leftJoin(mediaAssets, eq(certificates.imageId, mediaAssets.id))
         .where(and(eq(certificates.id, id), isNull(certificates.deletedAt)));
 
-      if (!result[0]) return undefined;
+      if (!result[0]) {
+        return undefined;
+      }
 
       const { mediaUrl, ...certData } = result[0];
       return {
@@ -597,7 +685,9 @@ export class MiscRepository {
     const cacheKey = "size-charts:active";
     try {
       const cached = await unifiedCache.get<SizeChart[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get size charts from cache:", error);
     }
@@ -704,7 +794,9 @@ export class MiscRepository {
     const cacheKey = "accessories:active";
     try {
       const cached = await unifiedCache.get<Accessory[]>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get accessories from cache:", error);
     }
@@ -963,7 +1055,9 @@ export class MiscRepository {
     const cacheKey = "footer:config";
     try {
       const cached = await unifiedCache.get<FooterConfiguration>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get footer config from cache:", error);
     }
@@ -979,6 +1073,30 @@ export class MiscRepository {
     }
 
     return config;
+  }
+
+  async getFooterSections(): Promise<any[]> {
+    const config = await this.getFooterConfiguration();
+    return (config as any)?.navigationColumns || [];
+  }
+
+  async createFooterLink(link: any): Promise<any> {
+    const config = await this.getFooterConfiguration();
+    if (!config) {
+      return null;
+    }
+
+    const nav = (config as any).navigationColumns || [];
+    // Basic implementation: add to first column or create one
+    if (nav.length === 0) {
+      nav.push({ title: "General", links: [link] });
+    } else {
+      nav[0].links.push(link);
+    }
+
+    return await this.updateFooterConfiguration({
+      navigationColumns: nav,
+    });
   }
 
   async updateFooterConfiguration(
@@ -1165,7 +1283,9 @@ export class MiscRepository {
         bySource: Record<string, number>;
         recentCount: number;
       }>(cacheKey, "data");
-      if (cached) return cached;
+      if (cached) {
+        return cached;
+      }
     } catch (error) {
       logger.debug("[Cache] Failed to get inquiry stats from cache:", error);
     }

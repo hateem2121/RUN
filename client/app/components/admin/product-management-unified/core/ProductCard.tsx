@@ -88,7 +88,9 @@ export const ProductCard = memo(function ProductCard({
       const response = await fetch(`/api/products/${product.id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete product");
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
       return response;
     },
     onSuccess: () => {

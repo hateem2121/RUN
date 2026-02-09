@@ -8,11 +8,15 @@ vi.mock("../services/auth-service.js", () => ({
   authService: {
     setup: vi.fn(),
     isAuthenticated: (req: any, res: any, next: any) => {
-      if (req.headers.authorization === "good") return next();
+      if (req.headers.authorization === "good") {
+        return next();
+      }
       res.status(401).json({ message: "Unauthorized" });
     },
     requireAdmin: (req: any, res: any, next: any) => {
-      if (req.headers.authorization === "admin") return next();
+      if (req.headers.authorization === "admin") {
+        return next();
+      }
       res.status(403).json({ message: "Forbidden" });
     },
   },

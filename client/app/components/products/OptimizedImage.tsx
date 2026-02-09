@@ -28,7 +28,9 @@ export function OptimizedImage({
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (priority || isLoaded) return;
+    if (priority || isLoaded) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {

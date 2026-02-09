@@ -11,7 +11,7 @@
  * - SOX: Audit trail retention requirements
  */
 
-import { lt, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 

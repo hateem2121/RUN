@@ -13,7 +13,9 @@ export async function loader({ params }: Route.LoaderArgs) {
   const queryClient = getQueryClient();
   const slug = params.slug;
 
-  if (!slug) throw new Response("Not Found", { status: 404 });
+  if (!slug) {
+    throw new Response("Not Found", { status: 404 });
+  }
 
   // 1. Fetch category by slug to get ID
   await queryClient.prefetchQuery({
@@ -81,7 +83,9 @@ export default function CategoryDetail() {
   }>({
     queryKey: ["/api/products", { category: category?.id }],
     queryFn: async () => {
-      if (!category?.id) return { data: [] };
+      if (!category?.id) {
+        return { data: [] };
+      }
       return apiRequest(`/api/products?category=${category.id}`);
     },
     enabled: !!category?.id,
@@ -102,7 +106,9 @@ export default function CategoryDetail() {
 
   // Build breadcrumbs
   const breadcrumbs = useMemo(() => {
-    if (!category) return [];
+    if (!category) {
+      return [];
+    }
 
     const crumbs = [
       { name: "Home", url: "/" },

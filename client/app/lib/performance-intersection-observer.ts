@@ -223,7 +223,9 @@ export function useBatchIntersectionObserver<T extends Element>(
 
     refs.forEach((ref) => {
       const element = ref.current;
-      if (!element) return;
+      if (!element) {
+        return;
+      }
 
       const handleIntersection = (entry: IntersectionObserverEntry) => {
         setResults((prev) => {
@@ -271,7 +273,9 @@ export function useSmartAnimationScheduler(
   const [animationIndex, setAnimationIndex] = useState(0);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible) {
+      return;
+    }
 
     const baseDelay = priority === "high" ? 0 : priority === "medium" ? 50 : 100;
     const totalDelay = baseDelay + animationIndex * staggerDelay;

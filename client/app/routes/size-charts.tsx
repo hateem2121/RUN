@@ -44,7 +44,9 @@ export default function SizeCharts() {
 
   // Filter size charts based on search
   const filteredCharts = useMemo(() => {
-    if (!debouncedSearchTerm) return sizeCharts;
+    if (!debouncedSearchTerm) {
+      return sizeCharts;
+    }
 
     const term = debouncedSearchTerm.toLowerCase();
     return sizeCharts.filter(
@@ -85,17 +87,25 @@ export default function SizeCharts() {
     // Parse measurements data
     const measurements = chart.measurements as Record<string, Record<string, string>> | null;
 
-    if (!measurements) return null;
+    if (!measurements) {
+      return null;
+    }
 
     // Get all sizes (columns) and measurement points (rows)
     const sizes = Object.keys(measurements);
-    if (sizes.length === 0) return null;
+    if (sizes.length === 0) {
+      return null;
+    }
     const firstSize = sizes[0];
-    if (!firstSize) return null;
+    if (!firstSize) {
+      return null;
+    }
 
     // Get measurement points from the first size entry
     const firstMeasurement = measurements[firstSize];
-    if (!firstMeasurement) return null;
+    if (!firstMeasurement) {
+      return null;
+    }
     const points = Object.keys(firstMeasurement);
 
     return (

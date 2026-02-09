@@ -1,4 +1,3 @@
-import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
 // Mock Replit database (Vitest 4.0 syntax)

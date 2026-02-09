@@ -54,11 +54,17 @@ export function ProgressiveImage({
 
   // Optimize srcSet generation
   const getOptimizedSrcSet = useCallback(() => {
-    if (srcSet) return srcSet;
-    if (!src) return "";
+    if (srcSet) {
+      return srcSet;
+    }
+    if (!src) {
+      return "";
+    }
 
     const urlParts = src.match(/(.+?)(\.[^.]+)?$/);
-    if (!urlParts) return "";
+    if (!urlParts) {
+      return "";
+    }
 
     const baseUrl = urlParts[1];
     const ext = urlParts[2] || "";
@@ -69,7 +75,9 @@ export function ProgressiveImage({
 
   // Load image progressively
   useEffect(() => {
-    if (!src) return;
+    if (!src) {
+      return;
+    }
 
     const loadMainImage = () => {
       const img = new Image();
@@ -142,7 +150,9 @@ export function ProgressiveImage({
 
   // Render blurhash placeholder if available
   const renderBlurhash = () => {
-    if (!blurhash) return null;
+    if (!blurhash) {
+      return null;
+    }
 
     // This would use a blurhash library in production
     return (

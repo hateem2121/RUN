@@ -10,10 +10,7 @@ import { registerRoutes } from "../routes/index.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function setupRoutes(app: Express, httpServer: Server) {
-  // API Routes
-  console.log("👉 [Boot] Starting registerRoutes...");
   await registerRoutes(app);
-  console.log("👉 [Boot] Finished registerRoutes");
 
   // Prometheus Metrics Endpoint
   const metricsRouter = (await import("../routes/metrics.js")).default;

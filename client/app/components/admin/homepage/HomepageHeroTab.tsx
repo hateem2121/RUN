@@ -1,15 +1,14 @@
-
+import type { HomepageHero, InsertHomepageHero } from "@shared/schema";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type HomepageHero, type InsertHomepageHero } from "@shared/schema";
-import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Switch } from "@/components/ui/switch"; // Assuming Switch exists
+import { TabsContent } from "@/components/ui/tabs";
+import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 
 interface HomepageHeroTabProps {
   hero: HomepageHero | undefined;
@@ -47,7 +46,8 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
     });
   };
 
-  const handleMediaSelect = (assets: any | any[]) => { // Using explicit 'any' until I import MediaAsset correctly
+  const handleMediaSelect = (assets: any | any[]) => {
+    // Using explicit 'any' until I import MediaAsset correctly
     const media = Array.isArray(assets) ? assets[0] : assets;
     if (media) {
       handleChange("backgroundImageId", media.id);
@@ -82,27 +82,27 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 placeholder="Enter hero subtitle"
               />
             </div>
-            
+
             <div>
-            <Label>Background Image</Label>
-            <div className="mt-2">
-              {formData.backgroundImageId ? (
-                <div className="flex items-center gap-3">
-                  <div className="text-muted-foreground text-sm">
-                    Media ID: {formData.backgroundImageId}
+              <Label>Background Image</Label>
+              <div className="mt-2">
+                {formData.backgroundImageId ? (
+                  <div className="flex items-center gap-3">
+                    <div className="text-muted-foreground text-sm">
+                      Media ID: {formData.backgroundImageId}
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setIsMediaPickerOpen(true)}>
+                      Change Image
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => setIsMediaPickerOpen(true)}>
-                    Change Image
+                ) : (
+                  <Button variant="outline" onClick={() => setIsMediaPickerOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Select Background Image
                   </Button>
-                </div>
-              ) : (
-                <Button variant="outline" onClick={() => setIsMediaPickerOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Select Background Image
-                </Button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
@@ -126,21 +126,17 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
             </div>
 
             <div className="flex items-center space-x-2">
-                <Switch 
-                    id="isActive"
-                    checked={formData.isActive ?? true}
-                    onCheckedChange={(checked) => handleChange("isActive", checked)}
-                />
-                <Label htmlFor="isActive">Active</Label>
+              <Switch
+                id="isActive"
+                checked={formData.isActive ?? true}
+                onCheckedChange={(checked) => handleChange("isActive", checked)}
+              />
+              <Label htmlFor="isActive">Active</Label>
             </div>
-
           </div>
         </CardContent>
         <div className="flex justify-end border-t p-4">
-          <Button 
-            onClick={handleSave} 
-            disabled={!isDirty || updateHomepageHero.isPending}
-          >
+          <Button onClick={handleSave} disabled={!isDirty || updateHomepageHero.isPending}>
             {updateHomepageHero.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>

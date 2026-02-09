@@ -47,7 +47,9 @@ const contactContentSchema = z.object({
     .optional()
     .default([]),
   socialLinks: z.preprocess((val) => {
-    if (typeof val !== "object" || val === null) return {};
+    if (typeof val !== "object" || val === null) {
+      return {};
+    }
     const result: Record<string, string> = {};
     for (const [key, value] of Object.entries(val)) {
       result[key] = typeof value === "string" ? value : "";

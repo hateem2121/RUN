@@ -45,7 +45,9 @@ const FluidGlass = memo(function FluidGlass({
 
   // Memoized initialization to prevent unnecessary re-renders
   const initializeThreeJS = useCallback(() => {
-    if (!mountRef.current) return;
+    if (!mountRef.current) {
+      return;
+    }
 
     // Prevent multiple Three.js instances - CRITICAL FIX
     if (sceneRef.current || rendererRef.current) {
@@ -141,7 +143,9 @@ const FluidGlass = memo(function FluidGlass({
 
     // Handle resize
     const handleResize = () => {
-      if (!mountRef.current || !camera || !renderer) return;
+      if (!mountRef.current || !camera || !renderer) {
+        return;
+      }
       camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);

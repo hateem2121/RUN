@@ -149,7 +149,9 @@ async function testPerformanceVerification() {
 
   window.onresize = () => {
     resizeCallCount++;
-    if (originalHandler) originalHandler();
+    if (originalHandler) {
+      originalHandler();
+    }
   };
 
   // Trigger multiple resize events quickly
@@ -197,7 +199,9 @@ async function testFocusManagement() {
   // Test Escape key handling setup
   let _escapeHandled = false;
   const escapeHandler = (e) => {
-    if (e.key === "Escape") _escapeHandled = true;
+    if (e.key === "Escape") {
+      _escapeHandled = true;
+    }
   };
 
   document.addEventListener("keydown", escapeHandler);

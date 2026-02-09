@@ -53,7 +53,9 @@ const validateMeasurements = (measurements: Record<string, any>) => {
       // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
       Object.values(sizeData as Record<string, any>).forEach((value) => {
         total++;
-        if (!value || value === "") incomplete++;
+        if (!value || value === "") {
+          incomplete++;
+        }
       });
     }
   });
@@ -325,7 +327,9 @@ export default function SizeChartManagementEnhanced() {
   };
 
   const addMeasurement = () => {
-    if (!measurementSize || !measurementKey || !measurementValue) return;
+    if (!measurementSize || !measurementKey || !measurementValue) {
+      return;
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -446,7 +450,9 @@ export default function SizeChartManagementEnhanced() {
       "back",
     ];
     // Don't add cm to size numbers (EU Size, UK Size, US Size, etc.)
-    if (type.includes("size")) return false;
+    if (type.includes("size")) {
+      return false;
+    }
     // Check if it matches any cm measurement type
     return cmTypes.some((cmType) => type.includes(cmType));
   };

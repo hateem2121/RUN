@@ -16,7 +16,9 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products }) => {
   const setCursor = useStore((state) => state.setCursor);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
 
     // Explicitly use .current
     const scope = containerRef.current;

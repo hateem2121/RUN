@@ -69,20 +69,32 @@ const getFiberTypeColor = (type: string) => {
 };
 
 const getSustainabilityColor = (score: number) => {
-  if (score >= 4) return "bg-emerald-50 text-emerald-700 border-emerald-200";
-  if (score >= 3) return "bg-yellow-50 text-yellow-700 border-yellow-200";
+  if (score >= 4) {
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  }
+  if (score >= 3) {
+    return "bg-yellow-50 text-yellow-700 border-yellow-200";
+  }
   return "bg-orange-50 text-orange-700 border-orange-200";
 };
 
 const getSustainabilityLabel = (score: number) => {
-  if (score >= 4) return "High Impact";
-  if (score >= 3) return "Moderate Impact";
+  if (score >= 4) {
+    return "High Impact";
+  }
+  if (score >= 3) {
+    return "Moderate Impact";
+  }
   return "Low Impact";
 };
 
 const getSustainabilityBadgeColor = (score: number) => {
-  if (score >= 4) return "bg-emerald-100 text-emerald-800 border-emerald-300";
-  if (score >= 3) return "bg-yellow-100 text-yellow-800 border-yellow-300";
+  if (score >= 4) {
+    return "bg-emerald-100 text-emerald-800 border-emerald-300";
+  }
+  if (score >= 3) {
+    return "bg-yellow-100 text-yellow-800 border-yellow-300";
+  }
   return "bg-orange-100 text-orange-800 border-orange-300";
 };
 
@@ -598,7 +610,9 @@ export default function FiberManagement() {
 
   // Check for duplicate names
   const checkDuplicateName = (name: string, excludeId?: number) => {
-    if (!fibers) return false;
+    if (!fibers) {
+      return false;
+    }
     return fibers.some(
       (fiber) => fiber.name.toLowerCase() === name.toLowerCase() && fiber.id !== excludeId,
     );
@@ -814,7 +828,9 @@ export default function FiberManagement() {
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingFiber) return;
+    if (!editingFiber) {
+      return;
+    }
 
     // Validate name for duplicates (excluding current fiber)
     if (checkDuplicateName(formData.name, editingFiber.id)) {
@@ -871,7 +887,9 @@ export default function FiberManagement() {
 
   const handleNameChange = (value: string) => {
     setFormData((prev) => ({ ...prev, name: value }));
-    if (nameError) setNameError("");
+    if (nameError) {
+      setNameError("");
+    }
   };
 
   // Bulk operations handlers
@@ -1061,7 +1079,9 @@ export default function FiberManagement() {
 
   // Sustainability Analytics
   const sustainabilityStats = useMemo(() => {
-    if (!fibers) return null;
+    if (!fibers) {
+      return null;
+    }
 
     const ratedFibers = fibers.filter((f) => f.sustainabilityScore);
     const totalFibers = fibers.length;

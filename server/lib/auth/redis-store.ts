@@ -22,7 +22,9 @@ export class UpstashRedisStore extends Store {
   public async get(sid: string, callback: (err: any, session?: any) => void): Promise<void> {
     try {
       const data = await this.client.get<any>(this.prefix + sid);
-      if (!data) return callback(null, null);
+      if (!data) {
+        return callback(null, null);
+      }
       callback(null, data);
     } catch (err) {
       logger.error("[RedisStore] GET error:", err);
@@ -35,20 +37,28 @@ export class UpstashRedisStore extends Store {
       // Use the maxAge from session cookie if available, or default TTL
       const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;
       await this.client.set(this.prefix + sid, session, { ex: ttl });
-      if (callback) callback();
+      if (callback) {
+        callback();
+      }
     } catch (err) {
       logger.error("[RedisStore] SET error:", err);
-      if (callback) callback(err);
+      if (callback) {
+        callback(err);
+      }
     }
   }
 
   public async destroy(sid: string, callback?: (err?: any) => void): Promise<void> {
     try {
       await this.client.del(this.prefix + sid);
-      if (callback) callback();
+      if (callback) {
+        callback();
+      }
     } catch (err) {
       logger.error("[RedisStore] DESTROY error:", err);
-      if (callback) callback(err);
+      if (callback) {
+        callback(err);
+      }
     }
   }
 
@@ -60,10 +70,14 @@ export class UpstashRedisStore extends Store {
     try {
       const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;
       await this.client.expire(this.prefix + sid, ttl);
-      if (callback) callback();
+      if (callback) {
+        callback();
+      }
     } catch (err) {
       logger.error("[RedisStore] TOUCH error:", err);
-      if (callback) callback(err);
+      if (callback) {
+        callback(err);
+      }
     }
   }
 }

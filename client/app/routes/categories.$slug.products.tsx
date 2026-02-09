@@ -89,7 +89,9 @@ export default function CategoryProductsPage() {
   }>({
     queryKey: ["/api/products", "category", category?.id],
     queryFn: async () => {
-      if (!category?.id) return { data: [] };
+      if (!category?.id) {
+        return { data: [] };
+      }
       return apiRequest(`/api/products?category=${category.id}&active=true`);
     },
     enabled: !!category?.id,
@@ -99,7 +101,9 @@ export default function CategoryProductsPage() {
 
   // Filter products based on search
   const filteredProducts = products.filter((product) => {
-    if (!searchTerm) return true;
+    if (!searchTerm) {
+      return true;
+    }
     const searchLower = searchTerm.toLowerCase();
     return (
       product.name.toLowerCase().includes(searchLower) ||
@@ -124,7 +128,9 @@ export default function CategoryProductsPage() {
 
   // Get optimized media URL with robust fallback mechanism
   const getOptimizedMediaUrl = (mediaId: number | null | undefined) => {
-    if (!mediaId) return undefined;
+    if (!mediaId) {
+      return undefined;
+    }
 
     // Always provide a fallback URL, even when mediaAssets isn't loaded yet
     const fallbackUrl = MediaUrlBuilder.buildUrlSafe(mediaId);

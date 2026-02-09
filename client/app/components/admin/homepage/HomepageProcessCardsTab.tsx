@@ -1,14 +1,9 @@
-
+import type { HomepageProcessCard, InsertHomepageProcessCard } from "@shared/schema";
+import { Edit, GripVertical, Image as ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type HomepageProcessCard, type InsertHomepageProcessCard } from "@shared/schema";
-import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Edit, Image as ImageIcon, GripVertical } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,16 +13,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Sortable, SortableItem, SortableItemHandle } from "@/components/ui/sortable";
+import { Switch } from "@/components/ui/switch";
+import { TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useAdminHomepageMutations } from "@/hooks/use-admin-homepage-mutations";
 
 interface HomepageProcessCardsTabProps {
   cards: HomepageProcessCard[];
 }
 
 export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps) {
-  const { createProcessCard, updateProcessCard, deleteProcessCard, reorderProcessCards } = useAdminHomepageMutations();
+  const { createProcessCard, updateProcessCard, deleteProcessCard, reorderProcessCards } =
+    useAdminHomepageMutations();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<HomepageProcessCard | null>(null);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
@@ -65,11 +65,11 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
 
   const handleReorder = (newOrder: HomepageProcessCard[]) => {
     setOrderedCards(newOrder);
-    
+
     const updates = newOrder.map((card, index) => ({
-        id: card.id,
-        position: index,
-        step: index + 1 // Also update step number logically
+      id: card.id,
+      position: index,
+      step: index + 1, // Also update step number logically
     }));
 
     reorderProcessCards.mutate(updates);
@@ -98,7 +98,9 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Process Cards</CardTitle>
-            <CardDescription>Manage the manufacturing process steps displayed on the homepage. Drag to reorder.</CardDescription>
+            <CardDescription>
+              Manage the manufacturing process steps displayed on the homepage. Drag to reorder.
+            </CardDescription>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
@@ -109,29 +111,29 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Add New Process Card</DialogTitle>
-                <DialogDescription>
-                  Create a new step in the process flow.
-                </DialogDescription>
+                <DialogDescription>Create a new step in the process flow.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
+                  <div className="grid gap-2">
                     <Label htmlFor="title">Title</Label>
                     <Input
-                        id="title"
-                        value={newCard.title}
-                        onChange={(e) => setNewCard({ ...newCard, title: e.target.value })}
+                      id="title"
+                      value={newCard.title}
+                      onChange={(e) => setNewCard({ ...newCard, title: e.target.value })}
                     />
-                    </div>
-                    <div className="grid gap-2">
+                  </div>
+                  <div className="grid gap-2">
                     <Label htmlFor="step">Step Number</Label>
                     <Input
-                        id="step"
-                        type="number"
-                        value={newCard.step}
-                        onChange={(e) => setNewCard({ ...newCard, step: parseInt(e.target.value) || 0 })}
+                      id="step"
+                      type="number"
+                      value={newCard.step}
+                      onChange={(e) =>
+                        setNewCard({ ...newCard, step: parseInt(e.target.value, 10) || 0 })
+                      }
                     />
-                    </div>
+                  </div>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="description">Description</Label>
@@ -142,15 +144,17 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   />
                 </div>
                 <div>
-                    <Label>Image</Label>
-                    <div className="mt-2 flex items-center gap-4">
-                        {newCard.imageId ? (
-                            <span className="text-sm">Image Selected (ID: {newCard.imageId})</span>
-                        ) : <span className="text-sm text-muted-foreground">No image selected</span>}
-                        <Button variant="outline" size="sm" onClick={() => openMediaPicker("create")}>
-                            Select Image
-                        </Button>
-                    </div>
+                  <Label>Image</Label>
+                  <div className="mt-2 flex items-center gap-4">
+                    {newCard.imageId ? (
+                      <span className="text-sm">Image Selected (ID: {newCard.imageId})</span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">No image selected</span>
+                    )}
+                    <Button variant="outline" size="sm" onClick={() => openMediaPicker("create")}>
+                      Select Image
+                    </Button>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -163,51 +167,69 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
         </CardHeader>
         <CardContent>
           <Sortable
-              value={orderedCards}
-              onValueChange={handleReorder}
-              getItemValue={(item) => item.id}
-              orientation="mixed" // Grid layout
+            value={orderedCards}
+            onValueChange={handleReorder}
+            getItemValue={(item) => item.id}
+            orientation="mixed" // Grid layout
           >
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {orderedCards.map((card) => (
+              {orderedCards.map((card) => (
                 <SortableItem key={card.id} value={card.id} asChild>
-                    <Card className="relative overflow-hidden group">
-                        <div className="absolute top-2 left-2 z-10">
-                            <SortableItemHandle asChild>
-                                <Button variant="secondary" size="icon" className="h-8 w-8 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <GripVertical className="h-4 w-4" />
-                                </Button>
-                            </SortableItemHandle>
+                  <Card className="relative overflow-hidden group">
+                    <div className="absolute top-2 left-2 z-10">
+                      <SortableItemHandle asChild>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-8 w-8 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <GripVertical className="h-4 w-4" />
+                        </Button>
+                      </SortableItemHandle>
+                    </div>
+                    <div className="absolute top-2 right-2 z-10 flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setEditingCard(card)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleDelete(card.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="aspect-video bg-muted flex items-center justify-center">
+                      {card.imageId ? (
+                        <div className="flex flex-col items-center">
+                          <ImageIcon className="h-8 w-8 opacity-50 mb-2" />
+                          <span className="text-xs text-muted-foreground">ID: {card.imageId}</span>
                         </div>
-                        <div className="absolute top-2 right-2 z-10 flex gap-2">
-                            <Button variant="secondary" size="icon" className="h-8 w-8" onClick={() => setEditingCard(card)}>
-                                <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => handleDelete(card.id)}>
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                        </div>
-                        <div className="aspect-video bg-muted flex items-center justify-center">
-                            {card.imageId ? (
-                                <div className="flex flex-col items-center">
-                                    <ImageIcon className="h-8 w-8 opacity-50 mb-2"/>
-                                    <span className="text-xs text-muted-foreground">ID: {card.imageId}</span>
-                                </div>
-                            ) : (
-                                <ImageIcon className="h-10 w-10 opacity-20" />
-                            )}
-                        </div>
-                        <CardHeader>
-                            <div className="flex justify-between items-center">
-                                <CardTitle className="text-base">Step {card.step}: {card.title}</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground line-clamp-3">{card.description}</p>
-                        </CardContent>
-                    </Card>
+                      ) : (
+                        <ImageIcon className="h-10 w-10 opacity-20" />
+                      )}
+                    </div>
+                    <CardHeader>
+                      <div className="flex justify-between items-center">
+                        <CardTitle className="text-base">
+                          Step {card.step}: {card.title}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {card.description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </SortableItem>
-                ))}
+              ))}
             </div>
           </Sortable>
         </CardContent>
@@ -221,58 +243,64 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
               <DialogTitle>Edit Process Card</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                    <Label htmlFor="edit-title">Title</Label>
-                    <Input
-                        id="edit-title"
-                        value={editingCard.title}
-                        onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
-                    />
-                    </div>
-                    <div className="grid gap-2">
-                    <Label htmlFor="edit-step">Step Number</Label>
-                    <Input
-                        id="edit-step"
-                        type="number"
-                        value={editingCard.step}
-                        onChange={(e) => setEditingCard({ ...editingCard, step: parseInt(e.target.value) || 0 })}
-                    />
-                    </div>
-                </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-description">Description</Label>
-                  <Textarea
-                    id="edit-description"
-                    value={editingCard.description || ""}
-                    onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
+                  <Label htmlFor="edit-title">Title</Label>
+                  <Input
+                    id="edit-title"
+                    value={editingCard.title}
+                    onChange={(e) => setEditingCard({ ...editingCard, title: e.target.value })}
                   />
                 </div>
-                 <div>
-                    <Label>Image</Label>
-                    <div className="mt-2 flex items-center gap-4">
-                        {editingCard.imageId ? (
-                            <span className="text-sm">Image Selected (ID: {editingCard.imageId})</span>
-                        ) : <span className="text-sm text-muted-foreground">No image selected</span>}
-                        <Button variant="outline" size="sm" onClick={() => openMediaPicker("edit")}>
-                            Change Image
-                        </Button>
-                    </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-step">Step Number</Label>
+                  <Input
+                    id="edit-step"
+                    type="number"
+                    value={editingCard.step}
+                    onChange={(e) =>
+                      setEditingCard({ ...editingCard, step: parseInt(e.target.value, 10) || 0 })
+                    }
+                  />
                 </div>
-                 <div className="flex items-center space-x-2">
-                    <Switch 
-                        id="edit-isActive"
-                        checked={editingCard.isActive ?? true}
-                        onCheckedChange={(checked) => setEditingCard({ ...editingCard, isActive: checked })}
-                    />
-                    <Label htmlFor="edit-isActive">Active</Label>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-description">Description</Label>
+                <Textarea
+                  id="edit-description"
+                  value={editingCard.description || ""}
+                  onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Image</Label>
+                <div className="mt-2 flex items-center gap-4">
+                  {editingCard.imageId ? (
+                    <span className="text-sm">Image Selected (ID: {editingCard.imageId})</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No image selected</span>
+                  )}
+                  <Button variant="outline" size="sm" onClick={() => openMediaPicker("edit")}>
+                    Change Image
+                  </Button>
                 </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="edit-isActive"
+                  checked={editingCard.isActive ?? true}
+                  onCheckedChange={(checked) =>
+                    setEditingCard({ ...editingCard, isActive: checked })
+                  }
+                />
+                <Label htmlFor="edit-isActive">Active</Label>
+              </div>
             </div>
             <DialogFooter>
-              <Button 
+              <Button
                 onClick={() => {
-                   updateProcessCard.mutate({ id: editingCard.id, data: editingCard });
-                   setEditingCard(null);
+                  updateProcessCard.mutate({ id: editingCard.id, data: editingCard });
+                  setEditingCard(null);
                 }}
                 disabled={updateProcessCard.isPending}
               >

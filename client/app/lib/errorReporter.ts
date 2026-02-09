@@ -95,7 +95,9 @@ export async function reportClientError(error: ClientError): Promise<void> {
 export async function processErrorQueue(): Promise<void> {
   const queue = getErrorQueue();
 
-  if (queue.length === 0) return;
+  if (queue.length === 0) {
+    return;
+  }
 
   // Process in order, stop on first failure
   for (const error of queue) {
@@ -128,7 +130,9 @@ export async function processErrorQueue(): Promise<void> {
  * Sets up listeners for online events to process queued errors
  */
 export function initErrorReporter(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   // Process queue on page load
   processErrorQueue();

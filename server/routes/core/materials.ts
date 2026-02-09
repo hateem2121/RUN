@@ -60,7 +60,9 @@ router.post("/fibers", authService.requireAdmin, async (req, res) => {
 router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fiber");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     const validatedData = insertFiberSchema.partial().parse(req.body);
     const fiber = await withTimeout(
@@ -85,7 +87,9 @@ router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   try {
     const id = validateIdParam(req, res, "id", "fiber");
-    if (id === null) return; // Error response already sent
+    if (id === null) {
+      return; // Error response already sent
+    }
 
     const deleted = await withTimeout(
       retryDbOperation(() => getStorage().deleteFiber(id), {

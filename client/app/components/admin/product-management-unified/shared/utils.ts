@@ -16,7 +16,9 @@ export function mapMediaIdsToAssets(
 
   return mediaIds
     .map((id) => {
-      if (typeof id !== "number") return undefined;
+      if (typeof id !== "number") {
+        return undefined;
+      }
       try {
         return getMediaAsset(id);
       } catch {
@@ -82,6 +84,8 @@ export function validateMediaFile(file: File): Promise<{
  * Get media URL with proxy fallback
  */
 export function getMediaUrl(asset: MediaAsset): string | undefined {
-  if (asset.url) return asset.url;
+  if (asset.url) {
+    return asset.url;
+  }
   return asset.id && asset.id < 1000000000000 ? `/api/media/${asset.id}/content` : undefined;
 }

@@ -117,13 +117,17 @@ export function InteractiveImageGallery({
   );
 
   const zoomIn = useCallback(() => {
-    if (!showZoom) return;
+    if (!showZoom) {
+      return;
+    }
     setZoomLevel((prev) => Math.min(prev + 0.5, 3));
     setIsZoomed(true);
   }, [showZoom]);
 
   const zoomOut = useCallback(() => {
-    if (!showZoom) return;
+    if (!showZoom) {
+      return;
+    }
     setZoomLevel((prev) => {
       const newLevel = Math.max(prev - 0.5, 1);
       if (newLevel === 1) {
@@ -134,7 +138,9 @@ export function InteractiveImageGallery({
   }, [showZoom]);
 
   const toggleFullscreen = useCallback(() => {
-    if (!showFullscreen) return;
+    if (!showFullscreen) {
+      return;
+    }
     setIsFullscreen(!isFullscreen);
     setIsZoomed(false);
     setZoomLevel(1);
@@ -170,7 +176,9 @@ export function InteractiveImageGallery({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!galleryRef.current?.contains(document.activeElement)) return;
+      if (!galleryRef.current?.contains(document.activeElement)) {
+        return;
+      }
 
       switch (e.key) {
         case "ArrowLeft":

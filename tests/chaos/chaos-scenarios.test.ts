@@ -28,7 +28,9 @@ async function _waitFor(
 ): Promise<boolean> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
-    if (await condition()) return true;
+    if (await condition()) {
+      return true;
+    }
     await new Promise((r) => setTimeout(r, intervalMs));
   }
   return false;

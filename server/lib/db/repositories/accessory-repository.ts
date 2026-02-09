@@ -25,7 +25,9 @@ const ACCESSORY_CACHE_TTL = 86400 * 1000; // 24 hours (accessories change infreq
  * Sorts object keys alphabetically before serialization to prevent cache misses from key order differences
  */
 function normalizeFilters(filters?: { category?: string | undefined; search?: string }): string {
-  if (!filters || Object.keys(filters).length === 0) return "{}";
+  if (!filters || Object.keys(filters).length === 0) {
+    return "{}";
+  }
 
   // Sort keys alphabetically for consistent cache keys
   const sortedKeys = Object.keys(filters).sort();

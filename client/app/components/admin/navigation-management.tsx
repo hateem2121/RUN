@@ -97,7 +97,8 @@ export default function NavigationManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/navigation-items/${id}`, { method: "DELETE" }),
+    mutationFn: (id: number) =>
+      apiRequest(`/api/admin/navigation-items/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({
         queryKey: ["/api/navigation-items"],

@@ -181,7 +181,9 @@ export async function getQueueStats(): Promise<{
   state: string;
   tasksCount?: number;
 } | null> {
-  if (!PROJECT_ID) return null;
+  if (!PROJECT_ID) {
+    return null;
+  }
 
   try {
     const client = getClient();
