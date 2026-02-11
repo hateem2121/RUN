@@ -217,7 +217,7 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
 
   // Base Problem Details
   // RFC 7807 Standard
-  const problemDetails: any = {
+  const problemDetails: ProblemDetails & Record<string, unknown> = {
     type: "about:blank",
     title: "Internal Server Error",
     status: 500,
@@ -291,8 +291,8 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
         problemDetails.title = "Validation Failed";
         problemDetails.status = 400;
         problemDetails.detail = "The request parameters failed validation";
-        if ("issues" in (error as any)) {
-          problemDetails["invalid-params"] = (error as any).issues;
+        if (error && typeof error === "object" && "issues" in error) {
+          problemDetails["invalid-params"] = (error as { issues: unknown[] }).issues;
         }
         break;
       case "authentication":
@@ -405,7 +405,7 @@ export function productionErrorHandler(
     if (runbookUrl) {
       // In production, only include in internal logging, not response
       if (config.app.environment !== "production") {
-        (errorResponse as any).runbook = runbookUrl;
+        (errorResponse as ProblemDetails & { runbook?: string }).runbook = runbookUrl;
       }
       // Always log the runbook URL for operators
       logger.info("[ErrorHandler] Runbook available", { errorCode, runbookUrl });

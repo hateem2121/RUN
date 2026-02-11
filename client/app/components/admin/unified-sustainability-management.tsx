@@ -492,6 +492,9 @@ export function UnifiedSustainabilityManagement() {
     if (localForm.data?.goals !== undefined && localForm.data.goals !== null) {
       dataFields.goals = localForm.data.goals;
     }
+    if (localForm.data?.selectedFabricIds !== undefined) {
+      dataFields.selectedFabricIds = localForm.data.selectedFabricIds;
+    }
 
     if (Object.keys(dataFields).length > 0) {
       cleanedData.data = dataFields;
@@ -553,7 +556,7 @@ export function UnifiedSustainabilityManagement() {
       const reorderedMetrics = arrayMove(metrics, oldIndex, newIndex);
       const updates = reorderedMetrics.map((metric, index) => ({
         id: metric.id,
-        sortOrder: index,
+        position: index,
       }));
       reorderMetricsMutation.mutate(updates);
     }
@@ -572,7 +575,7 @@ export function UnifiedSustainabilityManagement() {
       // Map all initiatives with their new zero-based positions
       const updates = reorderedInitiatives.map((initiative, index) => ({
         id: initiative.id,
-        sortOrder: index,
+        position: index,
       }));
       reorderInitiativesMutation.mutate(updates);
     }
@@ -634,7 +637,7 @@ export function UnifiedSustainabilityManagement() {
 
       {unifiedData ? (
         <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="mb-6 grid w-full grid-cols-5">
+          <TabsList className="mb-6 flex w-full flex-wrap h-auto gap-2">
             <TabsTrigger value="hero">Hero</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="metrics">Metrics</TabsTrigger>

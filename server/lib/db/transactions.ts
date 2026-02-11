@@ -51,8 +51,9 @@ export async function safeTransaction<T>(
       return await callback(tx);
     });
     return ok(result);
-  } catch (error: any) {
-    const pgCode = error?.code;
+  } catch (error: unknown) {
+    const pgError = error as { code?: string; constraint?: string; detail?: string };
+    const pgCode = pgError?.code;
     const errorMessage = error instanceof Error ? error.message : String(error);
 
     // Unique constraint violation (23505)
@@ -60,8 +61,8 @@ export async function safeTransaction<T>(
       return err(
         new ConflictError("Resource already exists", {
           code: pgCode,
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }
@@ -71,8 +72,8 @@ export async function safeTransaction<T>(
       return err(
         new ConflictError("Referenced resource does not exist", {
           code: pgCode,
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }

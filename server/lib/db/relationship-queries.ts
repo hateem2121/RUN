@@ -15,6 +15,8 @@ import { getStorage } from "../storage-singleton.js";
 
 const storage = getStorage();
 
+type KeyValueItem = Record<string, unknown>;
+
 // =============================================================================
 // COMPARISON 1: Get Product with All Related Data
 // =============================================================================
@@ -84,23 +86,23 @@ export async function getProductWithRelatedDataKeyValue(productId: number) {
   }
 
   // Query 5-N: Get certificates (multiple queries)
-  let certificates: any[] = [];
+  let certificates: KeyValueItem[] = [];
   if (product.certificateIds && product.certificateIds.length > 0) {
     certificates = await Promise.all(
       product.certificateIds.map(async (certId: number) => {
         _queryCount++;
-        return await storage.getCertificate(certId);
+        return (await storage.getCertificate(certId)) as KeyValueItem;
       }),
     );
   }
 
   // Query N+1-M: Get images (multiple queries)
-  let images: any[] = [];
+  let images: KeyValueItem[] = [];
   if (product.imageIds && product.imageIds.length > 0) {
     images = await Promise.all(
       product.imageIds.map(async (imageId: number) => {
         _queryCount++;
-        return await storage.getMediaAsset(imageId);
+        return (await storage.getMediaAsset(imageId)) as KeyValueItem;
       }),
     );
   }
@@ -159,28 +161,26 @@ export async function findEcoFriendlyProductsKeyValue(
   let _queryCount = 0;
 
   // Query 1: Get all categories to find the one with matching slug
-  const allCategories = await storage.getCategories();
+  const allCategories = (await storage.getCategories()) as KeyValueItem[];
   _queryCount++;
 
-  const category = allCategories.find((cat: any) => cat.slug === categorySlug);
+  const category = allCategories.find((cat) => cat.slug === categorySlug);
   if (!category) {
     return [];
   }
 
   // Query 2: Get all products to filter by category
-  const allProducts = await storage.getProducts();
+  const allProducts = (await storage.getProducts()) as KeyValueItem[];
   _queryCount++;
 
-  const categoryProducts = allProducts.filter(
-    (p: any) => p.categoryId === category.id && p.isActive,
-  );
+  const categoryProducts = allProducts.filter((p) => p.categoryId === category.id && p.isActive);
 
   // Query 3: Get all fabrics
-  const allFabrics = await storage.getFabrics();
+  const allFabrics = (await storage.getFabrics()) as KeyValueItem[];
   _queryCount++;
 
   // Query 4: Get all fibers
-  const allFibers = await storage.getFibers();
+  const allFibers = (await storage.getFibers()) as KeyValueItem[];
   _queryCount++;
 
   // Manual filtering and relationship building
@@ -191,17 +191,17 @@ export async function findEcoFriendlyProductsKeyValue(
       continue;
     }
 
-    const fabric = allFabrics.find((f: any) => f.id === product.fabricId);
+    const fabric = allFabrics.find((f) => f.id === product.fabricId);
     if (!fabric || !fabric.isActive) {
       continue;
     }
 
     // Check fabric compositions for eco-friendly fibers
-    if ((fabric as any).composition && Array.isArray((fabric as any).composition)) {
-      const hasEcoFiber = (fabric as any).composition.some((comp: any) =>
-        comp.fibers.some((fiberRef: any) => {
-          const fiber = allFibers.find((f: any) => f.id === fiberRef.fiberId);
-          return fiber && (fiber.sustainabilityScore ?? 0) >= minSustainability;
+    if (fabric.composition && Array.isArray(fabric.composition)) {
+      const hasEcoFiber = (fabric.composition as KeyValueItem[]).some((comp) =>
+        (comp.fibers as KeyValueItem[]).some((fiberRef) => {
+          const fiber = allFibers.find((f) => f.id === fiberRef.fiberId);
+          return fiber && ((fiber.sustainabilityScore as number) ?? 0) >= minSustainability;
         }),
       );
 
@@ -249,8 +249,8 @@ export async function tryDeleteCategoryWithProductsKeyValue(categoryId: number) 
 
     if (success) {
       // Check for orphaned products
-      const allProducts = await storage.getProducts();
-      const orphanedProducts = allProducts.filter((p: any) => p.categoryId === categoryId);
+      const allProducts = (await storage.getProducts()) as KeyValueItem[];
+      const orphanedProducts = allProducts.filter((p) => p.categoryId === categoryId);
       return {
         success: true,
         message: "Category deleted",
@@ -313,19 +313,19 @@ export async function getAllProductsWithRelationshipsKeyValue() {
   let _queryCount = 0;
 
   // Query 1: Get all products
-  const allProducts = await storage.getProducts();
+  const allProducts = (await storage.getProducts()) as KeyValueItem[];
   _queryCount++;
 
   // Query 2: Get all categories
-  const allCategories = await storage.getCategories();
+  const allCategories = (await storage.getCategories()) as KeyValueItem[];
   _queryCount++;
 
   // Query 3: Get all fabrics
-  const allFabrics = await storage.getFabrics();
+  const allFabrics = (await storage.getFabrics()) as KeyValueItem[];
   _queryCount++;
 
   // Query 4: Get all media assets
-  const allMediaAssets = await storage.getMediaAssets();
+  const allMediaAssets = (await storage.getMediaAssets()) as KeyValueItem[];
   _queryCount++;
 
   // Manual relationship building
@@ -336,12 +336,10 @@ export async function getAllProductsWithRelationshipsKeyValue() {
         ? allCategories.find((c) => c.id === product.categoryId)
         : null;
 
-      const fabric = product.fabricId
-        ? allFabrics.find((f: any) => f.id === product.fabricId)
-        : null;
+      const fabric = product.fabricId ? allFabrics.find((f) => f.id === product.fabricId) : null;
 
       const primaryImage = product.primaryImageId
-        ? allMediaAssets.find((m: any) => m.id === product.primaryImageId)
+        ? allMediaAssets.find((m) => m.id === product.primaryImageId)
         : null;
 
       return {
@@ -369,12 +367,14 @@ export async function getAllProductsWithRelationshipsKeyValue() {
           : null,
       };
     })
-    .sort((a: any, b: any) => {
+    .sort((a, b) => {
+      const prodA = a.product as KeyValueItem;
+      const prodB = b.product as KeyValueItem;
       // Manual sorting by featured status and name
-      if (a.product.isFeatured !== b.product.isFeatured) {
-        return b.product.isFeatured ? 1 : -1;
+      if (prodA.isFeatured !== prodB.isFeatured) {
+        return prodB.isFeatured ? 1 : -1;
       }
-      return a.product.name.localeCompare(b.product.name);
+      return (prodA.name as string).localeCompare(prodB.name as string);
     });
 
   const _duration = performance.now() - startTime;

@@ -87,9 +87,10 @@ type Pages = {
   "/admin": {
     params: {};
   };
-  "/admin/:module*": {
+  "/admin/:module/*": {
     params: {
       "module": string;
+      "*": string;
     };
   };
   "/api/media": {
@@ -103,7 +104,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module*" | "/api/media" | "/api/navigation-items";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module/*" | "/api/media" | "/api/navigation-items";
   };
   "routes/_public.tsx": {
     id: "routes/_public";
@@ -199,7 +200,7 @@ type RouteFiles = {
   };
   "routes/admin.tsx": {
     id: "routes/admin";
-    page: "/admin" | "/admin/:module*";
+    page: "/admin" | "/admin/:module/*";
   };
   "routes/admin._index.tsx": {
     id: "routes/admin._index";
@@ -207,7 +208,7 @@ type RouteFiles = {
   };
   "routes/admin.$module.tsx": {
     id: "routes/admin.$module";
-    page: "/admin/:module*";
+    page: "/admin/:module/*";
   };
   "routes/api.media.tsx": {
     id: "routes/api.media";

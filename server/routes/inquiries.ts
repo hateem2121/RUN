@@ -10,12 +10,15 @@ import { getStorage } from "../lib/storage-singleton.js";
 
 const router = express.Router();
 
-// Schema matching the frontend payload from Footer.tsx
-const footerInquirySchema = z.object({
+// Schema for inquiry submissions
+const inquirySchema = z.object({
   contact: z.object({
+    name: z.string().optional(),
     company: z.string().optional(),
     email: z.string().email(),
-    projectDescription: z.string(),
+    phone: z.string().optional(),
+    projectDescription: z.string().optional(),
+    message: z.string().optional(),
   }),
   items: z.array(z.any()).optional(),
   source: z.string().optional(),
@@ -23,26 +26,27 @@ const footerInquirySchema = z.object({
 
 router.post("/inquiries", async (req, res) => {
   try {
-    const payload = footerInquirySchema.parse(req.body);
+    const payload = inquirySchema.parse(req.body);
     const storage = getStorage();
 
     // Transform payload to match InsertInquiry schema
     const inquiryData = {
-      name: payload.contact.company || "Footer Inquiry", // Fallback for required name
+      name: payload.contact.name || payload.contact.company || "Inquiry",
       email: payload.contact.email,
-      company: payload.contact.company,
-      message: payload.contact.projectDescription,
-      source: payload.source || "footer_form",
+      company: payload.contact.company || null,
+      message: payload.contact.projectDescription || payload.contact.message || "",
+      source: payload.source || "form_submission",
       status: "new",
-      // Optional defaults
-      phone: null,
+      phone: payload.contact.phone || null,
       country: null,
       preferredPlatform: null,
     };
 
     const inquiry = await storage.createInquiry(inquiryData);
 
-    logger.info(`[Inquiries] Created new inquiry #${inquiry.id} from ${inquiry.email}`);
+    logger.info(
+      `[Inquiries] Created new inquiry #${inquiry.id} from ${inquiry.email} (Source: ${inquiryData.source})`,
+    );
 
     res.json({ success: true, inquiryId: inquiry.id });
   } catch (error) {

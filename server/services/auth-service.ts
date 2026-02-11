@@ -19,10 +19,10 @@ export interface SessionUser extends User {
 }
 
 interface CustomSessionData {
-  passport?: any;
+  passport?: { user: unknown };
   uaHash?: string;
   lastRotated?: number;
-  [key: string]: any; // Allow other properties like cookie, id, etc.
+  [key: string]: unknown; // Allow other properties like cookie, id, etc.
 }
 
 export const AuthErrors = {
@@ -101,7 +101,7 @@ export class AuthService {
 
     return session({
       secret: secrets,
-      store: sessionStore as any,
+      store: sessionStore as session.Store,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -213,8 +213,8 @@ export class AuthService {
         async (
           _accessToken: string,
           _refreshToken: string,
-          profile: any, // profile type from passport-google-oauth20 is complex
-          done: (err: any, user?: SessionUser) => void,
+          profile: passport.Profile,
+          done: (err: unknown, user?: SessionUser) => void,
         ) => {
           try {
             const user = await this.upsertUser(profile);
@@ -231,8 +231,10 @@ export class AuthService {
       ),
     );
 
-    passport.serializeUser((user: any, cb: (err: any, id?: any) => void) => cb(null, user));
-    passport.deserializeUser((user: SessionUser, cb: (err: any, user?: SessionUser) => void) =>
+    passport.serializeUser((user: Express.User, cb: (err: unknown, id?: Express.User) => void) =>
+      cb(null, user),
+    );
+    passport.deserializeUser((user: SessionUser, cb: (err: unknown, user?: SessionUser) => void) =>
       cb(null, user),
     );
 
@@ -242,7 +244,7 @@ export class AuthService {
   /**
    * Upsert user in database
    */
-  private async upsertUser(profile: any): Promise<User> {
+  private async upsertUser(profile: passport.Profile): Promise<User> {
     const email = profile.emails?.[0]?.value;
     if (!email) {
       throw new Error("No email provided by Google");

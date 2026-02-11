@@ -610,7 +610,7 @@ export interface IStorage {
   }>;
   cleanupAllCorruptEntries(): Promise<{
     totalCleaned: number;
-    results: Record<string, any>;
+    results: Record<string, unknown>;
   }>;
   getAssetsNeedingThumbnails(): Promise<MediaAsset[]>;
   downloadAssetBuffer(id: number): Promise<Buffer | null>;
@@ -621,9 +621,9 @@ export interface IStorage {
     id: number,
     updates: Partial<MediaAsset>,
   ): Promise<MediaAsset | undefined>;
-  getFooterSections(): Promise<any[]>;
+  getFooterSections(): Promise<unknown[]>;
   getFooterConfiguration(): Promise<FooterConfiguration | undefined>;
-  createFooterLink(link: any): Promise<any>;
+  createFooterLink(link: unknown): Promise<unknown>;
   checkDatabaseHealth(): Promise<{
     healthy: boolean;
     latency: number;

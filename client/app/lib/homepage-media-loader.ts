@@ -187,7 +187,7 @@ export function useHomepageMediaLoader(
 
   // Load additional batches when needed
   const loadMoreAssets = useCallback(async () => {
-    if (isLoadingMore || hasReachedEnd || !(initialBatch as any)?.hasMore) {
+    if (isLoadingMore || hasReachedEnd || !initialBatch?.hasMore) {
       return;
     }
 
@@ -224,11 +224,11 @@ export function useHomepageMediaLoader(
   }, [currentPage, isLoadingMore, hasReachedEnd, options.additionalBatchSize, initialBatch]);
 
   // Combine initial batch with additionally loaded assets
-  const allAssets = [...((initialBatch as any)?.data || []), ...allLoadedAssets];
+  const allAssets = [...(initialBatch?.data || []), ...allLoadedAssets];
 
   // Initialize with first batch
   useEffect(() => {
-    if ((initialBatch as any)?.data && allLoadedAssets.length === 0) {
+    if (initialBatch?.data && allLoadedAssets.length === 0) {
       // Assets are managed in initialBatch, no need to duplicate in allLoadedAssets
     }
   }, [allLoadedAssets.length, initialBatch]);
@@ -237,8 +237,8 @@ export function useHomepageMediaLoader(
     assets: allAssets,
     isInitialLoading,
     isLoadingMore,
-    hasMore: !hasReachedEnd && (initialBatch as any)?.hasMore !== false,
-    totalCount: (initialBatch as any)?.totalCount || 0,
+    hasMore: !hasReachedEnd && initialBatch?.hasMore !== false,
+    totalCount: initialBatch?.totalCount || 0,
     loadMoreAssets,
 
     // Helper functions

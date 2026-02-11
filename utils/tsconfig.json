@@ -17,5 +17,5 @@
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts", "node_modules", "../dist"],
-  "references": [{ "path": "../shared" }, { "path": "../server" }]
+  "references": [{ "path": "../shared" }]
 }

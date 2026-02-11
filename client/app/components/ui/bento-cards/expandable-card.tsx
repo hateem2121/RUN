@@ -65,7 +65,7 @@ const ExpandableCard = memo(function ExpandableCard({
           className={cn(
             "relative h-full w-full cursor-pointer overflow-hidden rounded-2xl",
             "border border-luxury-light",
-            "shadow-sm-luxury-lg transition-all duration-300 hover:shadow-sm-luxury-xl",
+            "shadow-luxury-lg transition-all duration-300 hover:shadow-luxury-xl",
             "flex flex-col",
             "contain-layout",
           )}
@@ -169,7 +169,7 @@ const ExpandableCard = memo(function ExpandableCard({
           createPortal(
             <AnimatePresence>
               <motion.div
-                className="fixed inset-0 z-max bg-black/80"
+                className="fixed inset-0 z-modal bg-black/80"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

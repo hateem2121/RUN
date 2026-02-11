@@ -104,7 +104,7 @@ export class UnifiedValidationSystem {
       if (!schemaResult.success) {
         result.success = false;
         result.errors.push("Schema validation failed");
-        schemaResult.error.issues.forEach((error: any) => {
+        schemaResult.error.issues.forEach((error) => {
           const fieldPath = error.path.join(".");
           result.fieldErrors![fieldPath] = error.message;
         });

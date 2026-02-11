@@ -1,6 +1,12 @@
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  type SensorDescriptor,
+  type SensorOptions,
+} from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { SustainabilityMetric } from "@shared/schema";
+import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/schema";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
@@ -81,14 +87,14 @@ interface MetricsTabContentProps {
   paginatedMetrics: SustainabilityMetric[];
   metricsPage: number;
   metricsTotalPages: number;
-  // biome-ignore lint/suspicious/noExplicitAny: dnd-kit sensors type is complex
-  sensors: any;
-  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
-  createMetricMutation: any;
-  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
-  updateMetricMutation: any;
-  // biome-ignore lint/suspicious/noExplicitAny: React Query mutation types are complex
-  deleteMetricMutation: any;
+  sensors: SensorDescriptor<SensorOptions>[];
+  createMetricMutation: UseMutationResult<SustainabilityMetric, Error, InsertSustainabilityMetric>;
+  updateMetricMutation: UseMutationResult<
+    SustainabilityMetric,
+    Error,
+    { id: number; data: Partial<InsertSustainabilityMetric> }
+  >;
+  deleteMetricMutation: UseMutationResult<unknown, Error, number>;
   SortableMetricItem: React.ComponentType<{
     metric: SustainabilityMetric;
     onEdit: (metric: SustainabilityMetric) => void;
@@ -138,15 +144,14 @@ export function MetricsTabContent({
     description: { isValid: true, message: "" },
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Generic value validation
-  const validateMetricForm = (field?: string, value?: any): boolean => {
+  const validateMetricForm = (field?: keyof MetricFormData, value?: unknown): boolean => {
     try {
       if (field) {
         // Partial validation for single field
-        // biome-ignore lint/suspicious/noExplicitAny: Dynamic schema picking
-        const pickSchema = metricSchema.pick({ [field]: true } as any);
-        // biome-ignore lint/suspicious/noExplicitAny: Dynamic form access
-        const valueToValidate = value !== undefined ? value : (metricForm as any)[field];
+        const pickSchema = metricSchema.pick({
+          [field]: true,
+        } as unknown as Record<keyof MetricFormData, true>); // Type assertion needed for dynamic pick
+        const valueToValidate = value !== undefined ? value : metricForm[field];
         pickSchema.parse({ [field]: valueToValidate });
 
         setMetricValidation((prev) => ({

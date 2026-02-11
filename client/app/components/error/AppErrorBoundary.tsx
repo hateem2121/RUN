@@ -22,7 +22,7 @@ export const AppErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) =
 
         <div className="max-h-48 overflow-auto rounded-lg bg-muted p-4 text-left">
           <p className="break-all font-mono text-muted-foreground text-xs">
-            {(error as any).message}
+            {error instanceof Error ? error.message : String(error)}
           </p>
         </div>
 

@@ -55,7 +55,7 @@ export function ProductBulkOperations({
 
   // Phase 3: Advanced Features - Bulk Operations System
   const bulkOperationMutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       action,
       productIds,
       data,

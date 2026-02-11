@@ -1,6 +1,17 @@
 import { sql } from "drizzle-orm";
+import { beforeAll, describe, expect, test, vi } from "vitest";
+
+// Mock startup dependencies to prevent process.exit(1)
+vi.mock("../server/lib/secrets/secret-manager.js", () => ({
+  loadSecrets: vi.fn().mockResolvedValue({}),
+  injectSecretsToEnv: vi.fn(),
+}));
+
+vi.mock("../server/env.schema.js", () => ({
+  validateEnv: vi.fn(),
+}));
+
 import request from "supertest";
-import { beforeAll, describe, expect, test } from "vitest";
 import { db } from "../server/db.js";
 import { app, serverReady } from "../server/index.js";
 

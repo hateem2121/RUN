@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--ssr-styles-->
+    <script>
+      (() => {
+        try {
+          let storageKey = "theme";
+          let className = "dark";
+          let d = document.documentElement;
+          let localStorageTheme = localStorage.getItem(storageKey);
+          let systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          
+          if (localStorageTheme === "dark" || (!localStorageTheme && systemTheme)) {
+            d.classList.add(className);
+          } else {
+            d.classList.remove(className);
+          }
+        } catch (_e) {}
+      })();
+    </script>
     <!--app-head-->
     <title>Run Apparel</title>
   </head>

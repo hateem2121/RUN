@@ -23,7 +23,7 @@ vi.mock("../../server/lib/smart-logger", () => ({
 // if we mock the `neon` import.
 
 describe("Slow Query Logging Verification", () => {
-  it("should log a warning if query takes > 1000ms", async () => {
+  it("should log a warning if query takes > 1000ms", () => {
     // This is a placeholder. Real verification of the Middleware logic requires
     // importing the proxy logic.
     // Given complexity, I will create a focused test that verifies `logger.warn` is called

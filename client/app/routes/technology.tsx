@@ -80,82 +80,15 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-// Technology View Model types for UI consistency
-type HeroVM = {
-  title: string;
-  subtitle: string;
-  primaryCtaText: string;
-  secondaryCtaText: string;
-  primaryCtaLink: string;
-  secondaryCtaLink: string;
-  backgroundImageId: number | null;
-};
-
-type InnovationVM = {
-  id: number;
-  name: string;
-  description: string;
-  shortDescription?: string | undefined;
-  iconName?: string | undefined;
-  status?: string | undefined;
-  technicalDetails?: Record<string, any> | undefined;
-  relatedProducts?: string[];
-  category: string;
-  benefits: string[];
-  imageId?: number | undefined;
-  videoId?: number | undefined;
-  developmentYear?: string | undefined;
-};
-
-type EquipmentVM = {
-  id: number;
-  name: string;
-  brand: string;
-  model: string;
-  category?: string | undefined;
-  quantity?: number | undefined;
-  capacity?: string | undefined;
-  maintenanceSchedule?: string | undefined;
-  certifications?: string[];
-  capabilities: string[];
-  specs: Record<string, unknown> | null;
-  imageId?: number | undefined;
-  installationDate?: string | undefined;
-};
-
-type ResearchVM = {
-  id: number;
-  name: string;
-  description: string;
-  researchArea?: string | undefined;
-  status?: string | undefined;
-  startDate?: string | undefined;
-  expectedCompletion?: string | undefined;
-  funding?: number | undefined;
-  teamMembers?: string[];
-  objectives?: string[];
-  partners?: string[];
-  outcomes?: string[];
-  publications?: string[];
-  imageId?: number | undefined;
-  videoId?: number | undefined;
-};
-
-type RoadmapVM = {
-  id: number;
-  name: string;
-  description: string;
-  timeline: string;
-  imageId?: number | undefined;
-  videoId?: number | undefined;
-};
-
-type CtaVM = {
-  headline: string;
-  subheadline: string;
-  primaryText: string;
-  secondaryText: string;
-};
+// Import shared ViewModels
+import type {
+  CtaVM,
+  EquipmentVM,
+  HeroVM,
+  InnovationVM,
+  ResearchVM,
+  RoadmapVM,
+} from "@shared/viewmodels";
 
 type TechnologyVM = {
   hero: HeroVM | null;

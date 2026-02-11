@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import mermaid from "mermaid";
 import { memo, useEffect, useRef, useState } from "react";
 
@@ -17,7 +18,7 @@ const Mermaid = memo(({ chart, className = "", theme = "default" }: MermaidProps
     mermaid.initialize({
       startOnLoad: false,
       theme: theme,
-      securityLevel: "loose", // Often needed for click interactions, though standard is 'strict'
+      securityLevel: "strict", // SEC-006: Prevent script execution in diagrams
     });
 
     let isMounted = true;
@@ -67,8 +68,11 @@ const Mermaid = memo(({ chart, className = "", theme = "default" }: MermaidProps
     <div
       ref={containerRef}
       className={`mermaid-chart ${className}`}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid svg rendering
-      dangerouslySetInnerHTML={{ __html: svgContent }}
+      // SEC-006: Sanitize SVG output before injecting
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized content
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(svgContent, { USE_PROFILES: { svg: true, svgFilters: true } }),
+      }}
     />
   );
 });

@@ -87,7 +87,7 @@ export function AboutTeamMessageTab() {
   }, [isDirty]);
 
   const updateMutation = useMutation({
-    mutationFn: async (data: Partial<AboutTeamMessage>) => {
+    mutationFn: (data: Partial<AboutTeamMessage>) => {
       return apiRequest("/api/about-team-message", {
         method: "PATCH",
         body: JSON.stringify(data),

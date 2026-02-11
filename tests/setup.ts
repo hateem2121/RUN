@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
 
 // Mock Replit database (Vitest 4.0 syntax)
 vi.mock("@replit/database", () => {

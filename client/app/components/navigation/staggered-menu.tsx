@@ -138,8 +138,8 @@ export const StaggeredMenu = ({
     if (itemEls.length) {
       gsap.set(itemEls, { yPercent: 140, rotate: 10 });
     }
-    // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
     if (numberEls.length) {
+      // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
       gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
     }
 
@@ -250,8 +250,8 @@ export const StaggeredMenu = ({
         const numberEls = Array.from(
           panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
         ) as HTMLElement[];
-        // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
         if (numberEls.length) {
+          // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
           gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
         }
 
@@ -360,24 +360,25 @@ export const StaggeredMenu = ({
             return arr.map((c, i) => (
               <div
                 key={i}
-                className="sm-prelayer absolute top-0 right-0 h-full w-full translate-x-0"
-                style={{ background: c }}
+                className="sm-prelayer absolute top-0 right-0 h-full w-full bg-(--bg) translate-x-0"
+                // biome-ignore lint/style/noInlineStyles: Dynamic pre-layer background
+                style={{ "--bg": c } as React.CSSProperties}
               />
             ));
           })()}
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 z-(--z-index-dock) flex w-full items-center justify-center bg-transparent p-4"
+          className="staggered-menu-header absolute top-0 left-0 z-(--z-index-dock) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
           aria-label="Main navigation header"
-          // biome-ignore lint/style/useSelfClosingElements: CSS safety
-          style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
+          // biome-ignore lint/style/noInlineStyles: Safe-area padding calculation
+          style={{ "--pt": "max(1rem, env(safe-area-inset-top))" } as React.CSSProperties}
         >
           <button
             ref={toggleBtnRef}
             className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open ? "true" : "false"}
+            aria-expanded={open}
             aria-controls="staggered-menu-panel"
             onClick={toggleMenu}
             data-testid="mobile-menu-toggle"
@@ -406,13 +407,14 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pt-20 pb-8 shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pb-(--pb) pt-(--pt) shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
+          // biome-ignore lint/style/noInlineStyles: Dynamic layout/blur via CSS variables
           style={{
+            "--pb": "max(2rem, env(safe-area-inset-bottom))",
+            "--pt": "max(5rem, env(safe-area-inset-top))",
             WebkitBackdropFilter: "blur(16px)",
-            paddingBottom: "max(2rem, env(safe-area-inset-bottom))", // Safe area + base padding
-            paddingTop: "max(5rem, env(safe-area-inset-top))",
-          }}
-          aria-hidden={!open}
+          } as React.CSSProperties}
+          aria-hidden={!open ? "true" : "false"}
           tabIndex={-1} // Allow programmatic focus
         >
           <div className="sm-panel-inner flex flex-1 flex-col">

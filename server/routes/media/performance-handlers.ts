@@ -82,7 +82,9 @@ export async function getEndpointPerformance(req: Request, res: Response) {
 /**
  * Helper: Generate cache recommendations based on health status
  */
-function generateCacheRecommendations(healthStatus: any): string[] {
+function generateCacheRecommendations(
+  healthStatus: Awaited<ReturnType<typeof unifiedCache.getHealthStatus>>,
+): string[] {
   const recommendations: string[] = [];
 
   if (healthStatus.stats.hitRate < 50 && healthStatus.stats.totalOperations > 100) {

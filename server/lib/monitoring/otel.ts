@@ -22,9 +22,10 @@ const sdk = new NodeSDK({
   instrumentations: [
     getNodeAutoInstrumentations(),
     new PinoInstrumentation({
-      logHook: (span: any, record: any) => {
-        record.trace_id = span.traceId;
-        record.span_id = span.spanId;
+      logHook: (span, record: Record<string, unknown>) => {
+        const ctx = span.spanContext();
+        record.trace_id = ctx.traceId;
+        record.span_id = ctx.spanId;
         record["service.name"] = "api-server";
       },
     }),
@@ -39,7 +40,7 @@ export const startOtel = () => {
       sdk
         .shutdown()
         .then(() => {})
-        .catch((_error: any) => {})
+        .catch((_error: unknown) => {})
         .finally(() => process.exit(0));
     });
   }

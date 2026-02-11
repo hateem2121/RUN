@@ -2,6 +2,11 @@ import type { NextFunction, Request, Response } from "express";
 import { ZodError, type z } from "zod";
 import { ValidationError } from "../errors/AppError.js";
 
+interface HttpValidationError extends Error {
+  statusCode: number;
+  details: Array<{ field: string; message: string }>;
+}
+
 // Validation wrapper for Request Body
 export const validateBody =
   (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
@@ -14,13 +19,12 @@ export const validateBody =
     } catch (error) {
       if (error instanceof ZodError) {
         const details: Record<string, string[]> = {};
-        const errors = (error as any).errors || [];
-        errors.forEach((err: any) => {
-          const key = err.path.join(".");
+        error.issues.forEach((issue) => {
+          const key = issue.path.join(".");
           if (!details[key]) {
             details[key] = [];
           }
-          details[key].push(err.message);
+          details[key].push(issue.message);
         });
         next(new ValidationError("Validation Failed", details));
       } else {
@@ -42,8 +46,8 @@ export const validateParams =
         });
 
         if (!result.success) {
-          const errorMessages = (result.error as any).errors.map(
-            (err: any) => `${err.path.join(".")}: ${err.message}`,
+          const errorMessages = result.error.issues.map(
+            (issue) => `${issue.path.join(".")}: ${issue.message}`,
           );
           throw new Error(`Validation failed: ${errorMessages.join(", ")}`);
         }
@@ -64,7 +68,7 @@ export const validateQuery =
 
       // Fix: req.query might be a getter-only property in some environments
       try {
-        req.query = parsed as any;
+        req.query = parsed as Record<string, string>;
       } catch (_e) {
         Object.defineProperty(req, "query", {
           value: parsed,
@@ -75,17 +79,14 @@ export const validateQuery =
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const zodError = error as any;
-        const errorMessages = zodError.errors
-          ? zodError.errors.map((err: any) => ({
-              field: err.path.join("."),
-              message: err.message,
-            }))
-          : [{ message: zodError.message }];
+        const errorMessages = error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
 
-        const validationError = new Error("Validation Failed");
-        (validationError as any).statusCode = 400;
-        (validationError as any).details = errorMessages;
+        const validationError = new Error("Validation Failed") as HttpValidationError;
+        validationError.statusCode = 400;
+        validationError.details = errorMessages;
         next(validationError);
       } else {
         next(error);

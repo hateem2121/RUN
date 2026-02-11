@@ -41,6 +41,19 @@ const MOCK_NAVIGATION_ITEMS = [
   },
   {
     id: 4,
+    label: "Sustainability",
+    title: "Sustainability",
+    url: "/sustainability",
+    href: "/sustainability",
+    iconType: "fallback",
+    fallbackIcon: "IconLeaf",
+    showOnDesktop: true,
+    showOnMobile: true,
+    isActive: true,
+    sortOrder: 4,
+  },
+  {
+    id: 5,
     label: "Contact",
     title: "Contact",
     url: "/contact",
@@ -50,7 +63,7 @@ const MOCK_NAVIGATION_ITEMS = [
     showOnDesktop: true,
     showOnMobile: true,
     isActive: true,
-    sortOrder: 4,
+    sortOrder: 5,
   },
 ];
 

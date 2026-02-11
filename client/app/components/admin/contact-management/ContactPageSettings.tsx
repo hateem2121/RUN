@@ -14,7 +14,13 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect } from "react";
-import { type FieldErrors, type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  type FieldErrors,
+  type Resolver,
+  type SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { z } from "zod";
 import {
   Accordion,
@@ -31,12 +37,12 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const contactContentSchema = z.object({
-  heroTitle: z.string().optional().default(""),
-  email: z.string().optional().default(""),
-  phone: z.string().optional().default(""),
-  locationLine1: z.string().optional().default(""),
-  locationLine2: z.string().optional().default(""),
-  locationButtonText: z.string().optional().default(""),
+  heroTitle: z.string().min(1, "Hero title is required").default("DROP US A MESSAGE"),
+  email: z.string().email("Invalid email address").default("hello@runapparel.co"),
+  phone: z.string().min(1, "Phone number is required").default("+1 (555) 123-4567"),
+  locationLine1: z.string().min(1, "Address line 1 is required").default("123 Innovation Drive"),
+  locationLine2: z.string().min(1, "Address line 2 is required").default("Tech Valley, CA 94043"),
+  locationButtonText: z.string().default("GET DIRECTIONS"),
   tradingHours: z
     .array(
       z.object({
@@ -56,11 +62,16 @@ const contactContentSchema = z.object({
     }
     return result;
   }, z.record(z.string(), z.string()).optional().default({})),
-  platformOptions: z.array(z.string()).optional().default([]),
-  formButtonText: z.string().optional().default(""),
-  formPrivacyText: z.string().optional().default(""),
-  successHeading: z.string().optional().default(""),
-  successMessage: z.string().optional().default(""),
+  platformOptions: z
+    .array(z.string())
+    .optional()
+    .default(["Phone Call", "WhatsApp", "WeChat", "Telegram", "Other"]),
+  formButtonText: z.string().default("Get a Response Within 24 Hours"),
+  formPrivacyText: z
+    .string()
+    .default("We value your privacy and will never share your information."),
+  successHeading: z.string().default("Thank you!"),
+  successMessage: z.string().default("We've received your message and will be in touch shortly."),
 });
 
 type ContactContentForm = z.infer<typeof contactContentSchema>;
@@ -91,8 +102,7 @@ export function ContactPageSettings() {
   });
 
   const form = useForm<ContactContentForm>({
-    // biome-ignore lint/suspicious/noExplicitAny: zodResolver type mismatch with strict typescript settings
-    resolver: zodResolver(contactContentSchema) as any,
+    resolver: zodResolver(contactContentSchema) as Resolver<ContactContentForm>,
     defaultValues: {
       heroTitle: "",
       email: "",
@@ -151,7 +161,7 @@ export function ContactPageSettings() {
   }, [config, form]);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: ContactContentForm) => {
+    mutationFn: (data: ContactContentForm) => {
       const sanitizedData = {
         ...data,
         socialLinks: Object.fromEntries(

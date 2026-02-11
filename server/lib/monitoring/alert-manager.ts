@@ -25,7 +25,7 @@ interface Alert {
   severity: "warning" | "critical";
   message: string;
   timestamp: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 // PHASE 2: GC Metrics tracking
@@ -573,7 +573,7 @@ class AlertManager {
 
         for (const entry of entries) {
           if (entry.entryType === "gc") {
-            const gcEntry = entry as any; // GC performance entry type
+            const gcEntry = entry as { duration: number; kind?: string }; // GC performance entry type
             const duration = gcEntry.duration;
             const kind = gcEntry.kind || "unknown";
 

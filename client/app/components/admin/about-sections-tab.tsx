@@ -161,7 +161,7 @@ export function AboutSectionsTab() {
   const mediaAssets = mediaResponse?.data?.data || [];
 
   const createMutation = useMutation({
-    mutationFn: async (data: InsertAboutSection) => {
+    mutationFn: (data: InsertAboutSection) => {
       return apiRequest("/api/about-sections", {
         method: "POST",
         body: JSON.stringify(data),
@@ -184,7 +184,7 @@ export function AboutSectionsTab() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAboutSection> }) => {
+    mutationFn: ({ id, data }: { id: number; data: Partial<InsertAboutSection> }) => {
       return apiRequest(`/api/about-sections/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -207,7 +207,7 @@ export function AboutSectionsTab() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: (id: number) => {
       return apiRequest(`/api/about-sections/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
@@ -226,7 +226,7 @@ export function AboutSectionsTab() {
   });
 
   const reorderMutation = useMutation({
-    mutationFn: async (sections: { id: number; position: number }[]) => {
+    mutationFn: (sections: { id: number; position: number }[]) => {
       return apiRequest("/api/about-sections/reorder", {
         method: "PATCH",
         body: JSON.stringify({ sections }),

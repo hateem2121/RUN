@@ -29,6 +29,7 @@ import {
   type NavigationItem,
   navigationGlassmorphismSettings,
   navigationItems,
+  newsletterSubscribers,
   type SizeChart,
   sizeCharts,
 } from "../../../../shared/schema.js";
@@ -321,7 +322,7 @@ export class MiscRepository {
       washCareInstructions,
       finish,
       ...otherFields
-    } = fabric as any;
+    } = fabric as Record<string, unknown>;
 
     // DEPRECATED FIELD MONITORING: Track usage of legacy composition field
     if (composition !== undefined) {
@@ -1077,20 +1078,24 @@ export class MiscRepository {
 
   async getFooterSections(): Promise<any[]> {
     const config = await this.getFooterConfiguration();
-    return (config as any)?.navigationColumns || [];
+    return config?.navigationColumns || [];
   }
 
-  async createFooterLink(link: any): Promise<any> {
+  async createFooterLink(link: {
+    label: string;
+    href: string;
+    external?: boolean;
+  }): Promise<FooterConfiguration> {
     const config = await this.getFooterConfiguration();
     if (!config) {
-      return null;
+      throw new Error("Footer configuration not found");
     }
 
-    const nav = (config as any).navigationColumns || [];
+    const nav = config.navigationColumns || [];
     // Basic implementation: add to first column or create one
     if (nav.length === 0) {
       nav.push({ title: "General", links: [link] });
-    } else {
+    } else if (nav[0]) {
       nav[0].links.push(link);
     }
 
@@ -1113,7 +1118,7 @@ export class MiscRepository {
 
     // Filter out metadata fields to prevent database errors
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, createdAt, updatedAt, ...safeConfig } = config as any;
+    const { id, createdAt, updatedAt, ...safeConfig } = config as Record<string, unknown>;
 
     let result;
     if (existing.length === 0) {
@@ -1337,5 +1342,21 @@ export class MiscRepository {
     }
 
     return stats;
+  }
+  /**
+   * Subscribe an email to the newsletter
+   */
+  async subscribeToNewsletter(email: string): Promise<boolean> {
+    try {
+      const result = await db
+        .insert(newsletterSubscribers)
+        .values({ email })
+        .onConflictDoNothing()
+        .returning();
+      return result.length > 0;
+    } catch (error) {
+      logger.error("Failed to subscribe to newsletter", { email, error });
+      return false;
+    }
   }
 }

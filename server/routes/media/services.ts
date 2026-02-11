@@ -1,5 +1,4 @@
 import type { MediaAsset } from "@shared/schema.js";
-import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
@@ -248,11 +247,11 @@ export const enhancedUploadService = {
         // Use shared CHUNK_STORAGE_BASE constant - MUST match upload path exactly
         const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
         batchPromises.push(
-          (unifiedCache as any).getOrFetchMediaContent(chunkKey).then((result: any) => {
-            if (!result?.buffer) {
+          appStorageService.downloadAsset(chunkKey).then((buffer) => {
+            if (!buffer) {
               throw new Error(`Chunk ${i} missing or corrupted - cannot assemble file`);
             }
-            return { index: i, chunk: result.buffer };
+            return { index: i, chunk: buffer };
           }),
         );
       }

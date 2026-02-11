@@ -7,6 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useRef } from "react";
+import { Link } from "react-router";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -153,8 +154,8 @@ function IconContainer({
   });
 
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       aria-label={title}
       className="group flex min-h-11 flex-col items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
@@ -186,6 +187,6 @@ function IconContainer({
       <div className="max-w-20 truncate rounded-full bg-white/5 px-2 py-0.5 whitespace-nowrap text-center font-medium text-foreground text-[10px] backdrop-blur-md drop-shadow-sm md:max-w-24 md:text-xs dark:bg-black/20">
         {title}
       </div>
-    </a>
+    </Link>
   );
 }

@@ -8,7 +8,7 @@
 
 import { TraceExporter } from "@google-cloud/opentelemetry-cloud-trace-exporter";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { ExpressInstrumentation, ExpressLayerType } from "@opentelemetry/instrumentation-express";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg";
 import { BatchSpanProcessor, SimpleSpanProcessor } from "@opentelemetry/sdk-trace-base";
@@ -47,7 +47,7 @@ export function initTelemetry(): void {
       });
 
       // Use BatchSpanProcessor for production (better performance)
-      (provider as any).addSpanProcessor(
+      (provider as unknown as { addSpanProcessor: (processor: unknown) => void }).addSpanProcessor(
         new BatchSpanProcessor(exporter, {
           maxQueueSize: 1000,
           maxExportBatchSize: 100,
@@ -60,13 +60,17 @@ export function initTelemetry(): void {
       logger.warn("[Telemetry] ⚠️ Cloud Trace exporter failed, using console", error);
       // Fallback to console exporter for debugging
       const { ConsoleSpanExporter } = require("@opentelemetry/sdk-trace-base");
-      (provider as any).addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+      (provider as unknown as { addSpanProcessor: (processor: unknown) => void }).addSpanProcessor(
+        new SimpleSpanProcessor(new ConsoleSpanExporter()),
+      );
     }
   } else {
     // In development, optionally log traces to console
     if (process.env.TRACE_DEBUG === "true") {
       const { ConsoleSpanExporter } = require("@opentelemetry/sdk-trace-base");
-      (provider as any).addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+      (provider as unknown as { addSpanProcessor: (processor: unknown) => void }).addSpanProcessor(
+        new SimpleSpanProcessor(new ConsoleSpanExporter()),
+      );
       logger.info("[Telemetry] 🔍 Console trace exporter enabled (dev mode)");
     } else {
       logger.info("[Telemetry] ⏸️ Tracing disabled in development (set TRACE_DEBUG=true to enable)");
@@ -90,14 +94,16 @@ export function initTelemetry(): void {
           // Add custom attributes
           span.setAttribute(
             "http.request_id",
-            (request as any).headers?.["x-request-id"] || "unknown",
+            (request as unknown as { headers?: Record<string, string> }).headers?.[
+              "x-request-id"
+            ] || "unknown",
           );
         },
       }),
 
       // Express instrumentation for routes
       new ExpressInstrumentation({
-        ignoreLayersType: ["middleware" as any], // Reduce noise from middleware spans
+        ignoreLayersType: [ExpressLayerType.MIDDLEWARE], // Reduce noise from middleware spans
       }),
 
       // PostgreSQL instrumentation for database queries
@@ -133,7 +139,7 @@ export function getTraceContext(): { traceId: string; spanId: string } | null {
 /**
  * Create a custom span for business operations
  */
-export function createSpan(name: string): any {
+export function createSpan(name: string): unknown {
   const { trace } = require("@opentelemetry/api");
   const tracer = trace.getTracer("run-remix-api");
   return tracer.startSpan(name);
@@ -150,24 +156,35 @@ export async function withTrace<T>(
   const { trace, SpanStatusCode } = require("@opentelemetry/api");
   const tracer = trace.getTracer("run-remix-api");
 
-  return tracer.startActiveSpan(name, async (span: any) => {
-    try {
-      // Add custom attributes
-      if (attributes) {
-        for (const [key, value] of Object.entries(attributes)) {
-          span.setAttribute(key, value);
+  return tracer.startActiveSpan(
+    name,
+    async (span: {
+      setAttribute: (key: string, value: string | number | boolean) => void;
+      setStatus: (status: { code: unknown; message?: string }) => void;
+      recordException: (error: unknown) => void;
+      end: () => void;
+    }) => {
+      try {
+        // Add custom attributes
+        if (attributes) {
+          for (const [key, value] of Object.entries(attributes)) {
+            span.setAttribute(key, value);
+          }
         }
-      }
 
-      const result = await fn();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.recordException(error);
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+        const result = await fn();
+        span.setStatus({ code: SpanStatusCode.OK });
+        return result;
+      } catch (error: unknown) {
+        span.recordException(error);
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        throw error;
+      } finally {
+        span.end();
+      }
+    },
+  );
 }

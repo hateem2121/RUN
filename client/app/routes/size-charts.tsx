@@ -38,8 +38,6 @@ export default function SizeCharts() {
   const [expandedCharts, setExpandedCharts] = useState<Set<number>>(new Set());
 
   const { sizeCharts, isLoading } = useResourceBatch(["sizechart"]);
-  // biome-ignore lint/suspicious/noConsole: debugging
-  console.log("SizeCharts data:", sizeCharts);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Filter size charts based on search

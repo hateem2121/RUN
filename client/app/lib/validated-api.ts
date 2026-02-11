@@ -28,7 +28,7 @@ export class ResponseValidationError extends Error {
 export async function validatedApiRequest<T>(
   url: string,
   schema: z.ZodType<T>,
-  options?: { method?: string; body?: any; headers?: Record<string, string> },
+  options?: { method?: string; body?: BodyInit | null; headers?: Record<string, string> },
 ): Promise<T> {
   // 1. Fetch data (throws ApiError on non-2xx)
   const response = await apiRequest(url, options);

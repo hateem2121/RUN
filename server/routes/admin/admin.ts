@@ -7,12 +7,25 @@
 import { Router } from "express";
 import { z } from "zod";
 import type { MediaAsset, Product } from "../../../shared/schema.js";
+import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
+import { adminService } from "../../services/admin-service.js";
 import { validateIdParam } from "../../utils.js";
 
 const router = Router();
+
+// GET /api/media-assets - List all media assets (admin only)
+router.get("/media-assets", authService.requireAdmin, async (_req, res) => {
+  const mediaAssets = await withTimeout(
+    getStorage().getMediaAssets(),
+    5000,
+    "Fetch all media assets",
+  );
+  return res.json(mediaAssets || []);
+});
 
 // Zod validation schemas for admin routes
 const auditConfigSchema = z.object({
@@ -22,157 +35,42 @@ const auditConfigSchema = z.object({
 
 const emptyBodySchema = z.strictObject({}); // For routes that should not accept any body data
 
-// GET /api/admin/products/initial-data - Admin products batch data
-router.get("/admin/products/initial-data", async (_req, res) => {
-  const [allProducts, categories, fabrics, mediaAssets] = await withTimeout(
-    Promise.all([
-      getStorage().getProductsIncludingDeleted(),
-      getStorage().getCategories(),
-      getStorage().getFabrics(),
-      getStorage().getMediaAssets(),
-    ]),
-    15000,
-    "Fetch admin initial data",
-  );
-
-  // Filter for active products only (admin endpoint should show all active products)
-  const products = allProducts.filter((p: Product) => p.isActive && !p.deletedAt);
-
-  const validMediaAssets = mediaAssets.filter(
-    (asset): asset is MediaAsset =>
-      typeof asset.filename === "string" && asset.filename !== "undefined",
-  );
-
-  const referencedMediaIds = new Set<number>();
-  const enhancedProducts = products.map((product: Product) => {
-    if (product.primaryImageId) {
-      referencedMediaIds.add(product.primaryImageId);
-    }
-    if (product.primaryVideoId) {
-      referencedMediaIds.add(product.primaryVideoId);
-    }
-    if (product.modelFileId) {
-      referencedMediaIds.add(product.modelFileId);
-    }
-    if (Array.isArray(product.imageIds)) {
-      product.imageIds.forEach((id) => {
-        if (typeof id === "number") {
-          referencedMediaIds.add(id);
-        }
-      });
-    }
-    if (Array.isArray(product.videos)) {
-      product.videos.forEach((id) => {
-        if (typeof id === "number") {
-          referencedMediaIds.add(id);
-        }
-      });
-    }
-
-    return {
-      ...product,
-      urlPath: product.urlPath || product.slug,
-      canonicalUrl: product.urlPath
-        ? `/categories/${product.urlPath}`
-        : `/products/${product.slug}`,
-      primaryModelId: product.modelFileId || null,
-    };
-  });
-
-  const relevantMediaAssets = validMediaAssets.filter((asset: MediaAsset) =>
-    referencedMediaIds.has(asset.id),
-  );
-  const additionalMedia = validMediaAssets
-    .filter((asset: MediaAsset) => !referencedMediaIds.has(asset.id))
-    .slice(0, 50);
-  const allMediaToSend = [...relevantMediaAssets, ...additionalMedia].map((asset) => ({
-    id: asset.id,
-    filename: asset.filename,
-    type: asset.type,
-    url: asset.url || `/api/media/${asset.id}/content`,
-    originalName: asset.originalName,
-  }));
-
-  return res.json({
-    products: enhancedProducts,
-    categories,
-    fabrics,
-    mediaAssets: allMediaToSend,
-    meta: {
-      totalProducts: products.length,
-      totalCategories: categories.length,
-      totalFabrics: fabrics.length,
-      totalMediaAssets: validMediaAssets.length,
-      timestamp: Date.now(),
-    },
-  });
+// GET /products/initial-data - Admin products batch data
+router.get("/products/initial-data", authService.requireAdmin, async (_req, res) => {
+  const data = await adminService.getInitialProductsData();
+  return res.json(data);
 });
 
-// GET /api/admin/test - API routing test endpoint
-router.get("/admin/test", (_req, res) => {
+// GET /test - API routing test endpoint
+router.get("/test", authService.requireAdmin, (_req, res) => {
   return res.json({ message: "API routing works", timestamp: new Date() });
 });
 
-// POST /api/admin/fix-corrupted-media - Fix corrupted media URLs
+// POST /fix-corrupted-media - Fix corrupted media URLs
 // prettier-ignore
-router.post("/admin/fix-corrupted-media", async (req, res) => {
+router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) => {
   // security
-  emptyBodySchema.parse(req.body); // Validate no body data expected
-  logger.debug("Route: Starting cleanup of corrupted media URLs");
-  const categories = await withTimeout(getStorage().getCategories(), 10000, "Get categories");
-  logger.debug(`Route: Found ${categories.length} categories to check`);
-
-  let fixedCount = 0;
-  const fixedCategories: string[] = [];
-
-  for (const category of categories) {
-    if (category.featuredContent) {
-      let needsUpdate = false;
-      const updatedFeaturedContent = { ...category.featuredContent };
-
-      for (const cardKey of ["card1", "card2", "card3", "card4"] as const) {
-        const card = updatedFeaturedContent[cardKey as keyof typeof updatedFeaturedContent];
-        if (card && "mediaUrl" in card && card.mediaUrl) {
-          const mediaUrl = card.mediaUrl;
-          if (mediaUrl.includes("undefined") || mediaUrl === "/api/media/undefined/content") {
-            logger.debug(`Route: FOUND CORRUPTION: ${category.name} - ${cardKey}: ${mediaUrl}`);
-            const cardToUpdate =
-              updatedFeaturedContent[cardKey as keyof typeof updatedFeaturedContent];
-            if (cardToUpdate && "mediaUrl" in cardToUpdate) {
-              cardToUpdate.mediaUrl = "";
-            }
-            needsUpdate = true;
-          }
-        }
-      }
-
-      if (needsUpdate) {
-        const updateResult = await withTimeout(
-          getStorage().updateCategory(category.id, {
-            featuredContent: updatedFeaturedContent,
-          }),
-          5000,
-          `Update category ${category.id}`,
-        );
-        if (updateResult) {
-          fixedCount++;
-          fixedCategories.push(category.name);
-        }
-      }
-    }
-  }
-
+  emptyBodySchema.parse(req.body);
+  const result = await adminService.fixCorruptedMedia();
+  
   return res.json({
     success: true,
-    message: `Corrupted media cleanup completed: ${fixedCount} categories fixed`,
-    fixedCount,
-    fixedCategories,
+    message: `Corrupted media cleanup completed: ${result.fixedCount} categories fixed`,
+    ...result,
     timestamp: Date.now(),
   });
 });
 
-// GET /api/admin/enterprise/audit-config - Audit configuration retrieval
-router.get("/admin/enterprise/audit-config", async (_req, res) => {
+// POST /api/admin/cleanup/trigger - Trigger storage cleanup
+router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
+  const { autoClean } = req.body;
+  const report = await adminService.triggerCleanup(autoClean === true);
+  res.json({ success: true, report });
+});
+
+
+// GET /enterprise/audit-config - Audit configuration retrieval
+router.get("/enterprise/audit-config", authService.requireAdmin, async (_req, res) => {
   return res.json({
     enabled: true,
     trackedTables: [
@@ -191,9 +89,9 @@ router.get("/admin/enterprise/audit-config", async (_req, res) => {
   });
 });
 
-// POST /api/admin/enterprise/audit-config - Audit configuration update
+// POST /enterprise/audit-config - Audit configuration update
 // prettier-ignore
-router.post("/admin/enterprise/audit-config", async (req, res) => {
+router.post("/enterprise/audit-config", authService.requireAdmin, async (req, res) => {
   // security
   const validatedData = auditConfigSchema.parse(req.body);
   const { enabled, trackedTables } = validatedData;
@@ -208,7 +106,7 @@ router.post("/admin/enterprise/audit-config", async (req, res) => {
 
 // Restore endpoints
 // prettier-ignore
-router.post("/admin/categories/:id/restore", async (req, res) => {
+router.post("/categories/:id/restore", authService.requireAdmin, async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "category");
@@ -221,7 +119,7 @@ router.post("/admin/categories/:id/restore", async (req, res) => {
 });
 
 // prettier-ignore
-router.post("/admin/products/:id/restore", async (req, res) => {
+router.post("/products/:id/restore", authService.requireAdmin, async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "product");
@@ -234,7 +132,7 @@ router.post("/admin/products/:id/restore", async (req, res) => {
 });
 
 // prettier-ignore
-router.post("/admin/media-assets/:id/restore", async (req, res) => {
+router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, res) => {
   // security
   emptyBodySchema.parse(req.body); // Validate no body data expected
   const id = validateIdParam(req, res, "id", "media asset");

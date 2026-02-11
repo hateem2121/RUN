@@ -4,19 +4,19 @@ import type { Response } from "express";
  * Standardized API Response Structure
  * P2 ARCHITECTURE: Consistent API Contract
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: {
     message: string;
     code?: string;
-    details?: any;
+    details?: unknown;
   };
   meta?: {
     page?: number;
     limit?: number;
     total?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -29,7 +29,7 @@ export const apiResponse = {
     } as ApiResponse<T>);
   },
 
-  error: (res: Response, message: string, statusCode = 500, code?: string, details?: any) => {
+  error: (res: Response, message: string, statusCode = 500, code?: string, details?: unknown) => {
     return res.status(statusCode).json({
       success: false,
       error: {

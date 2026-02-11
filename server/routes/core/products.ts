@@ -61,7 +61,7 @@ registry.registerPath({
 // GET /api/products - List products with pagination and filtering
 // CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
 router.get("/products", async (req, res): Promise<undefined | Response> => {
-  (req as any)._handled = true;
+  (req as unknown as Record<string, boolean>)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {
@@ -174,7 +174,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
 
 // GET /api/products/by-path - Get product by hierarchical URL path
 router.get("/products/by-path", async (req, res): Promise<undefined | Response> => {
-  (req as any)._handled = true;
+  (req as unknown as Record<string, boolean>)._handled = true;
   try {
     const ProductByPathSchema = z.object({
       path: z.string(),
@@ -231,7 +231,7 @@ router.get("/products/by-path", async (req, res): Promise<undefined | Response> 
 
 // PHASE 4: GET /api/products/:id/3d-model - Get 3D model metadata lazily
 router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Response> => {
-  (req as any)._handled = true;
+  (req as unknown as Record<string, boolean>)._handled = true;
   try {
     const id = validateIdParam(req, res, "id", "product");
     if (id === null) {
@@ -268,7 +268,7 @@ router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Respo
 
 // GET /api/products/:id - Get single product
 router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
-  (req as any)._handled = true;
+  (req as unknown as Record<string, boolean>)._handled = true;
   try {
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {

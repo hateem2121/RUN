@@ -1,7 +1,7 @@
 import type { Category, InsertCategory, MediaAsset } from "@shared/schema";
 import { FileText, Search, Star } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useHotkeys } from "@/hooks/use-hotkeys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 
 interface CategoryFormProps {
@@ -235,80 +236,85 @@ export default function CategoryForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Basic validation
-    if (!formData.name.trim() || !formData.slug.trim()) {
-      return;
-    }
+      // Basic validation
+      if (!formData.name.trim() || !formData.slug.trim()) {
+        return;
+      }
 
-    // Convert parentId to number or null and clean up data
-    const submitData = {
-      ...formData,
-      parentId:
-        formData.parentId && formData.parentId !== "none" ? parseInt(formData.parentId, 10) : null,
-      // Ensure featuredContent is properly structured with validation
-      featuredContent: {
-        card1: {
-          title: (formData.featuredContent.card1.title || "").trim(),
-          description: (formData.featuredContent.card1.description || "").trim(),
-          mediaUrl:
-            formData.featuredContent.card1.mediaUrl &&
-            formData.featuredContent.card1.mediaUrl !== "undefined"
-              ? formData.featuredContent.card1.mediaUrl.trim()
-              : "",
-          link: (formData.featuredContent.card1.link || "").trim(),
-          // Enhanced Card 1 dual media fields
-          maskSvgUrl:
-            formData.featuredContent.card1.maskSvgUrl &&
-            formData.featuredContent.card1.maskSvgUrl !== "undefined"
-              ? formData.featuredContent.card1.maskSvgUrl.trim()
-              : "",
-          contentMediaUrl:
-            formData.featuredContent.card1.contentMediaUrl &&
-            formData.featuredContent.card1.contentMediaUrl !== "undefined"
-              ? formData.featuredContent.card1.contentMediaUrl.trim()
-              : "",
+      // Convert parentId to number or null and clean up data
+      const submitData = {
+        ...formData,
+        parentId:
+          formData.parentId && formData.parentId !== "none"
+            ? parseInt(formData.parentId, 10)
+            : null,
+        // Ensure featuredContent is properly structured with validation
+        featuredContent: {
+          card1: {
+            title: (formData.featuredContent.card1.title || "").trim(),
+            description: (formData.featuredContent.card1.description || "").trim(),
+            mediaUrl:
+              formData.featuredContent.card1.mediaUrl &&
+              formData.featuredContent.card1.mediaUrl !== "undefined"
+                ? formData.featuredContent.card1.mediaUrl.trim()
+                : "",
+            link: (formData.featuredContent.card1.link || "").trim(),
+            // Enhanced Card 1 dual media fields
+            maskSvgUrl:
+              formData.featuredContent.card1.maskSvgUrl &&
+              formData.featuredContent.card1.maskSvgUrl !== "undefined"
+                ? formData.featuredContent.card1.maskSvgUrl.trim()
+                : "",
+            contentMediaUrl:
+              formData.featuredContent.card1.contentMediaUrl &&
+              formData.featuredContent.card1.contentMediaUrl !== "undefined"
+                ? formData.featuredContent.card1.contentMediaUrl.trim()
+                : "",
+          },
+          card2: {
+            title: (formData.featuredContent.card2.title || "").trim(),
+            description: (formData.featuredContent.card2.description || "").trim(),
+            mediaUrl:
+              formData.featuredContent.card2.mediaUrl &&
+              formData.featuredContent.card2.mediaUrl !== "undefined"
+                ? formData.featuredContent.card2.mediaUrl.trim()
+                : "",
+            link: (formData.featuredContent.card2.link || "").trim(),
+            expandedContent: formData.featuredContent.card2.expandedContent || [],
+          },
+          card3: {
+            title: (formData.featuredContent.card3.title || "").trim(),
+            description: (formData.featuredContent.card3.description || "").trim(),
+            mediaUrl:
+              formData.featuredContent.card3.mediaUrl &&
+              formData.featuredContent.card3.mediaUrl !== "undefined"
+                ? formData.featuredContent.card3.mediaUrl.trim()
+                : "",
+            link: (formData.featuredContent.card3.link || "").trim(),
+            subtitle: (formData.featuredContent.card3.subtitle || "").trim(),
+            features: formData.featuredContent.card3.features || [],
+          },
+          card4: {
+            title: (formData.featuredContent.card4.title || "").trim(),
+            description: (formData.featuredContent.card4.description || "").trim(),
+            mediaUrl:
+              formData.featuredContent.card4.mediaUrl &&
+              formData.featuredContent.card4.mediaUrl !== "undefined"
+                ? formData.featuredContent.card4.mediaUrl.trim()
+                : "",
+            link: (formData.featuredContent.card4.link || "").trim(),
+          },
         },
-        card2: {
-          title: (formData.featuredContent.card2.title || "").trim(),
-          description: (formData.featuredContent.card2.description || "").trim(),
-          mediaUrl:
-            formData.featuredContent.card2.mediaUrl &&
-            formData.featuredContent.card2.mediaUrl !== "undefined"
-              ? formData.featuredContent.card2.mediaUrl.trim()
-              : "",
-          link: (formData.featuredContent.card2.link || "").trim(),
-          expandedContent: formData.featuredContent.card2.expandedContent || [],
-        },
-        card3: {
-          title: (formData.featuredContent.card3.title || "").trim(),
-          description: (formData.featuredContent.card3.description || "").trim(),
-          mediaUrl:
-            formData.featuredContent.card3.mediaUrl &&
-            formData.featuredContent.card3.mediaUrl !== "undefined"
-              ? formData.featuredContent.card3.mediaUrl.trim()
-              : "",
-          link: (formData.featuredContent.card3.link || "").trim(),
-          subtitle: (formData.featuredContent.card3.subtitle || "").trim(),
-          features: formData.featuredContent.card3.features || [],
-        },
-        card4: {
-          title: (formData.featuredContent.card4.title || "").trim(),
-          description: (formData.featuredContent.card4.description || "").trim(),
-          mediaUrl:
-            formData.featuredContent.card4.mediaUrl &&
-            formData.featuredContent.card4.mediaUrl !== "undefined"
-              ? formData.featuredContent.card4.mediaUrl.trim()
-              : "",
-          link: (formData.featuredContent.card4.link || "").trim(),
-        },
-      },
-    };
+      };
 
-    onSubmit(submitData);
-  };
+      onSubmit(submitData);
+    },
+    [formData, onSubmit],
+  );
 
   const handleMediaSelect = (mediaUrl: string) => {
     if (mediaUrl && mediaPickerTarget) {
@@ -360,6 +366,15 @@ export default function CategoryForm({
 
   const isValid = formData.name.trim() !== "" && formData.slug.trim() !== "";
 
+  const handleManualSubmit = useCallback(() => {
+    if (isValid) {
+      const e = { preventDefault: () => {} } as React.FormEvent;
+      handleSubmit(e);
+    }
+  }, [isValid, handleSubmit]);
+
+  useHotkeys("s", handleManualSubmit, { enabled: open });
+
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
@@ -402,6 +417,10 @@ export default function CategoryForm({
                             onChange={(e) => updateFormData({ name: e.target.value })}
                             placeholder="Category name"
                             required
+                            aria-required="true"
+                            aria-invalid={
+                              formData.name.trim() === "" && mode === "edit" ? "true" : "false"
+                            }
                           />
                         </div>
                         <div>
@@ -412,6 +431,10 @@ export default function CategoryForm({
                             onChange={(e) => updateFormData({ slug: e.target.value })}
                             placeholder="category-slug"
                             required
+                            aria-required="true"
+                            aria-invalid={
+                              formData.slug.trim() === "" && mode === "edit" ? "true" : "false"
+                            }
                           />
                         </div>
                       </div>

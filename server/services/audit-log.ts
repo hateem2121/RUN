@@ -12,7 +12,7 @@ interface AuditLogParams {
     id: string;
     name?: string;
   };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**

@@ -15,7 +15,7 @@ import {
   Type,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { type Control, type UseFormRegister, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,9 +30,33 @@ export default function FooterManagement() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("general");
 
-  const { data: footerConfig, isLoading } = useQuery<FooterConfiguration>({
+  const { data: footerConfig, isLoading } = useQuery<
+    FooterConfiguration,
+    Error,
+    FooterConfiguration | undefined
+  >({
     queryKey: ["/api/footer"],
-    select: (data) => (Array.isArray(data) ? data[0] : (data as any)?.data?.[0] || data),
+    select: (data: unknown) => {
+      // Handle different API response structures with a discriminated type approach
+      type FooterApiResponse =
+        | FooterConfiguration
+        | FooterConfiguration[]
+        | { data: FooterConfiguration[] };
+      const response = data as FooterApiResponse;
+
+      if (Array.isArray(response)) {
+        return response[0];
+      }
+      if (
+        response &&
+        typeof response === "object" &&
+        "data" in response &&
+        Array.isArray(response.data)
+      ) {
+        return response.data[0];
+      }
+      return response as FooterConfiguration;
+    },
   });
 
   const { register, control, handleSubmit, reset, watch } = useForm<FooterConfiguration>({
@@ -108,7 +132,7 @@ export default function FooterManagement() {
 
   const onSubmit = (data: FooterConfiguration) => {
     // Clean up IDs before saving to avoid primary key issues
-    const { id, createdAt, updatedAt, ...payload } = data as any;
+    const { id, createdAt, updatedAt, ...payload } = data;
     updateMutation.mutate(payload);
   };
 
@@ -408,7 +432,13 @@ export default function FooterManagement() {
 }
 
 // Sub-component for dynamic links within a column
-function NavigationLinksEditor({ control, index, register }: any) {
+interface NavigationLinksEditorProps {
+  control: Control<FooterConfiguration>;
+  index: number;
+  register: UseFormRegister<FooterConfiguration>;
+}
+
+function NavigationLinksEditor({ control, index, register }: NavigationLinksEditorProps) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `navigationColumns.${index}.links`,

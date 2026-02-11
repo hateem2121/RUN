@@ -12,7 +12,15 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
     try {
       logger.debug("[API Population] 🚀 Creating all 47 business items via APIs...");
 
-      const results: any = {
+      interface PopulationResults {
+        categories: unknown[];
+        fabrics: unknown[];
+        fibers: unknown[];
+        certificates: unknown[];
+        accessories: unknown[];
+      }
+
+      const results: PopulationResults = {
         categories: [],
         fabrics: [],
         fibers: [],

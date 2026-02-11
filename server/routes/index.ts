@@ -23,6 +23,7 @@ import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postg
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
+import { registerNewsletterRoutes } from "./utilities/newsletter.js";
 import v1AdminRouter from "./v1/admin.js";
 // V1 Modular Routers
 import v1CoreRouter from "./v1/core.js";
@@ -32,11 +33,7 @@ import workerRouter from "./worker.js";
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
-  // ============================================================================
-  // CRITICAL MIDDLEWARE & AUTH
-  // ============================================================================
-  // await authService.setup(app);
-  // logger.info("[Auth] ✅ AuthService initialized (OIDC + Redis/PostgreSQL sessions)");
+  // Auth is initialized in boot/middleware.ts
 
   // ============================================================================
   // DEV TOOLS (Development only)
@@ -72,10 +69,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const apiRouter = Router();
 
-  apiRouter.use((req, _res, next) => {
-    logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
-    next();
-  });
+  // Debug logging — development only to avoid production log noise
+  if (process.env.NODE_ENV !== "production") {
+    apiRouter.use((req, _res, next) => {
+      logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
+      next();
+    });
+  }
 
   apiRouter.get("/", (_req, res) => {
     res.json({
@@ -101,27 +101,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 4. Admin & Resources
   apiRouter.use(v1AdminRouter);
 
-  // MOUNT API ROUTER (Versioning)
-  // Support both /api (legacy) and /api/v1 (future-proof)
-  app.use("/api/v1", apiRouter);
+  // ARCH-001 FIX: Single canonical API mount
+  app.use("/api", apiRouter);
 
-  // Legacy /api routes - add deprecation headers per RFC 8594
-  // Sunset date: June 1, 2026
-  app.use(
-    "/api",
-    (req, res, next) => {
-      // Skip /api/v1 paths (already handled) and /api/docs
-      if (req.path.startsWith("/v1") || req.path.startsWith("/docs")) {
-        return next();
-      }
-      // Add RFC 8594 deprecation headers
-      res.setHeader("Deprecation", "true");
-      res.setHeader("Sunset", "Sat, 01 Jun 2026 00:00:00 GMT");
-      res.setHeader("Link", '</api/v1>; rel="successor-version"');
-      next();
-    },
-    apiRouter,
-  );
+  // Legacy v1 redirect for backward compatibility
+  app.use("/api/v1", (req, res) => {
+    const newUrl = req.originalUrl.replace("/api/v1", "/api");
+    res.redirect(301, newUrl);
+  });
 
   // Documentation (Keep at /api/docs)
   app.use("/api/docs", docsRouter);
@@ -140,6 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDataCreationRoutes(app);
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
+  registerNewsletterRoutes(app);
 
   logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 

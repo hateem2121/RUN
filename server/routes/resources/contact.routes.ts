@@ -6,14 +6,21 @@
 
 import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
-import express, { type Request } from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import { z } from "zod";
-import type { ContactPageConfiguration } from "../../../shared/schema.js";
-import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import {
+  insertContactPageConfigurationSchema,
+  type ContactPageConfiguration,
+} from "../../../shared/schema.js";
+import { safeQuery } from "../../db.js";
+import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { ValidationError } from "../../lib/errors.js";
 import { emailService } from "../../lib/integrations/email-service.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { authService } from "../../services/auth-service.js";
 
 // Initialize Google Cloud Clients
 const tasksClient = new CloudTasksClient();
@@ -286,6 +293,95 @@ router.get("/locations", async (req, res) => {
 
   return res.json(locations);
 });
+
+// ============================================================================
+// ADMIN CONTACT ROUTES
+// ============================================================================
+
+// Contact page configuration
+router.get("/contact-page-configuration", async (_req, res, next) => {
+  const result = await safeQuery(
+    withTimeout(getStorage().getContactPageConfiguration(), 5000, "Get contact page config"),
+  );
+
+  if (result.isErr()) {
+    return next(result.error);
+  }
+
+  return res.json(result.value || {});
+});
+
+router.post(
+  "/admin/contact-page-configuration",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+    if (!validation.success) {
+      return next(
+        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+      );
+    }
+
+    const result = await safeQuery(
+      withTimeout(
+        getStorage().createContactPageConfiguration(validation.data),
+        5000,
+        "Create contact page config",
+      ),
+    );
+
+    if (result.isErr()) {
+      return next(result.error);
+    }
+
+    // Invalidate contact page cache after successful creation
+    try {
+      await CacheOperations.invalidateContact();
+      logger.info("[Contact] ✅ Cache invalidated after contact page configuration creation");
+    } catch (err) {
+      logger.error("[Contact] ❌ Cache invalidation failed:", err);
+      // Don't throw - cache failure should not block DB mutation
+    }
+
+    return res.json(result.value);
+  },
+);
+
+router.patch(
+  "/admin/contact-page-configuration",
+  authService.requireAdmin,
+  async (req, res, next) => {
+    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+    if (!validation.success) {
+      return next(
+        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
+      );
+    }
+    // Contact page configuration is a singleton - always use ID 1
+    const result = await safeQuery(
+      withTimeout(
+        getStorage().updateContactPageConfiguration(1, validation.data),
+        5000,
+        "Update contact page config",
+      ),
+    );
+
+    if (result.isErr()) {
+      return next(result.error);
+    }
+
+    // Invalidate contact page cache after successful update
+    try {
+      await CacheOperations.invalidateContact();
+      logger.info("[Contact] ✅ Cache invalidated after contact page configuration update");
+    } catch (err) {
+      logger.error("[Contact] ❌ Cache invalidation failed:", err);
+      // Don't throw - cache failure should not block DB mutation
+    }
+
+    return res.json(result.value);
+  },
+);
 
 logger.debug("[Contact Routes] ✅ Contact routes loaded (resources/)");
 

@@ -1,6 +1,7 @@
 import express from "express";
 import { z } from "zod";
 import { logger } from "../lib/monitoring/logger.js";
+import type { RequestWithCorrelation } from "../middleware/correlation-id.js";
 import { createRateLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
@@ -32,7 +33,7 @@ router.post("/error", errorReportLimiter, async (req, res) => {
     logger.error(`[Client ${errorData.level}] ${errorData.message}`, {
       type: "client_error",
       ...errorData,
-      correlationId: (req as any).correlationId,
+      correlationId: (req as RequestWithCorrelation).correlationId,
     });
 
     res.status(204).send();

@@ -7,8 +7,10 @@ import { z } from "zod";
  */
 export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
   if (!Array.isArray(data)) {
-    // biome-ignore lint/suspicious/noConsole: debugging
-    console.warn("safeParseArray: Input is not an array", data);
+    if (import.meta.env.DEV) {
+      // biome-ignore lint/suspicious/noConsole: debugging
+      console.warn("safeParseArray: Input is not an array", data);
+    }
     return [];
   }
 

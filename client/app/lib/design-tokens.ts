@@ -50,6 +50,40 @@ export const colors = {
 
   // Brand Accents
   brandLime: "var(--color-brand-lime)",
+
+  // Luxury Tokens
+  luxuryCharcoal: "var(--color-luxury-charcoal)",
+  luxuryHeading: "var(--color-luxury-heading)",
+  luxuryGold: "var(--color-luxury-gold)",
+
+  // Status Tokens
+  statusSuccess: "var(--color-status-success)",
+  statusWarning: "var(--color-status-warning)",
+  statusInfo: "var(--color-status-info)",
+  statusInactive: "var(--color-status-inactive)",
+
+  // Surface Scale
+  surfaceSubtle: "var(--color-surface-subtle)",
+  surfaceMuted: "var(--color-surface-muted)",
+  surfaceEmphasis: "var(--color-surface-emphasis)",
+
+  // Text Scale
+  textSubtle: "var(--color-text-subtle)",
+  textMuted: "var(--color-text-muted)",
+  textDisabled: "var(--color-text-disabled)",
+
+  // Status Muted Variants
+  statusSuccessMuted: "var(--color-status-success-muted)",
+  statusWarningMuted: "var(--color-status-warning-muted)",
+  statusInfoMuted: "var(--color-status-info-muted)",
+  statusInactiveMuted: "var(--color-status-inactive-muted)",
+
+  // Neutral Scale
+  neutral100: "var(--color-neutral-100)",
+  neutral200: "var(--color-neutral-200)",
+  neutral300: "var(--color-neutral-300)",
+  neutral400: "var(--color-neutral-400)",
+  neutral500: "var(--color-neutral-500)",
 } as const;
 
 /**
@@ -161,6 +195,11 @@ export const shadows = {
   card: "var(--shadow-card)",
   popup: "var(--shadow-popup)",
   glass: "var(--shadow-glass)",
+
+  // Luxury Shadows
+  luxurySm: "var(--shadow-luxury-sm)",
+  luxuryMd: "var(--shadow-luxury-md)",
+  luxuryLg: "var(--shadow-luxury-lg)",
 } as const;
 
 /**

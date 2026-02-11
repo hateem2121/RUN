@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ContactFormData, contactFormSchema } from "@shared/validation/contact";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFetcher } from "react-router";
@@ -14,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import { type Country, countries } from "@/data/countries";
 import { useToast } from "@/hooks/use-toast";
+import { useServerValidation } from "@/hooks/useServerValidation";
+import { ApiError } from "@/lib/api";
 
 export interface ContactConfig {
   heroTitle?: string;
@@ -37,12 +39,26 @@ interface ContactFormProps {
   isMobile: boolean;
 }
 
+// Reuse the types from the server response structure
+type ActionState = {
+  status: "idle" | "success" | "error";
+  message: string;
+  timestamp: number;
+  data?: unknown;
+  error?: unknown;
+};
+
 export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
   const { toast } = useToast();
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
+  const fetcher = useFetcher<ActionState>();
+  const isPending = fetcher.state !== "idle";
+  const state = fetcher.data || { status: "idle", message: "", timestamp: Date.now() };
+
   const form = useForm<ContactFormData>({
+    // biome-ignore lint/suspicious/noExplicitAny: Zod resolver type issue
     resolver: zodResolver(contactFormSchema) as any,
     defaultValues: {
       firstName: "",
@@ -60,31 +76,42 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
     },
   });
 
+  // Calculate API error for useServerValidation
+  const apiError = useMemo(() => {
+    if (state.status === "error" && state.error) {
+      // Destructure to handle exactOptionalPropertyTypes if needed, though 'as any' is safest for utility boundary
+      // biome-ignore lint/suspicious/noExplicitAny: Error handling boundary
+      return new ApiError((state.error as any).status || 500, state.error as any);
+    }
+    return null;
+  }, [state]);
+
+  // Hook to map server validation errors to form fields
+  useServerValidation({ form, error: apiError });
+
   const selectedPlatform = form.watch("platform");
   const showOtherPlatform = selectedPlatform === "Other";
 
-  const fetcher = useFetcher<{ success: boolean; error?: string }>();
-  const isPending = fetcher.state === "submitting" || fetcher.state === "loading";
-
-  // Sync state
+  // Sync state & Toast
   useEffect(() => {
-    if (fetcher.data?.success) {
+    if (state.status === "success") {
       form.reset();
+      setShowSuccess(true);
       toast({
         title: "Success!",
         description:
           contactConfig?.successMessage ||
+          state.message ||
           "Thank you for your message. We'll get back to you soon!",
       });
-      setShowSuccess(true);
-    } else if (fetcher.data?.success === false && fetcher.data?.error) {
+    } else if (state.status === "error") {
       toast({
         title: "Error",
-        description: fetcher.data.error || "Failed to send message. Please try again.",
+        description: state.message || "Failed to send message. Please try again.",
         variant: "destructive",
       });
     }
-  }, [fetcher.data, form, contactConfig, toast]);
+  }, [state, form, contactConfig, toast]);
 
   const onSubmit = (data: ContactFormData) => {
     if (data.honeypot) {
@@ -92,10 +119,9 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
     }
 
     const fullName = `${data.firstName} ${data.lastName}`.trim();
-    const company = data.companyName || null;
-    const phone = data.contactNumber || null;
-    const preferredPlatform =
-      data.platform === "Other" ? data.otherPlatform || null : data.platform;
+    const company = data.companyName || "";
+    const phone = data.contactNumber || "";
+    const preferredPlatform = data.platform === "Other" ? data.otherPlatform || "" : data.platform;
 
     const formData = new FormData();
     formData.append("name", fullName);
@@ -115,8 +141,16 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
       formData.append("honeypot", data.honeypot);
     }
 
-    // Call Action using useFetcher
-    fetcher.submit(formData, { method: "post" });
+    // Add CSRF token for validation
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1];
+    if (csrfToken) {
+      formData.append("csrf_token", csrfToken);
+    }
+
+    fetcher.submit(formData, { method: "post", action: "/contact" });
   };
 
   const countryOptions = useMemo(() => {
@@ -171,6 +205,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                       form.formState.errors.firstName ? "firstName-error" : undefined
                     }
                     {...form.register("firstName")}
+                    disabled={isPending}
                   />
                   {form.formState.errors.firstName && (
                     <Typography.P id="firstName-error" className="mt-2 text-destructive text-sm">
@@ -191,6 +226,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     size="lg"
                     aria-describedby={form.formState.errors.lastName ? "lastName-error" : undefined}
                     {...form.register("lastName")}
+                    disabled={isPending}
                   />
                   {form.formState.errors.lastName && (
                     <Typography.P id="lastName-error" className="mt-2 text-destructive text-sm">
@@ -214,6 +250,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     data-testid="input-job-title"
                     size="lg"
                     {...form.register("jobTitle")}
+                    disabled={isPending}
                   />
                 </div>
                 <div>
@@ -228,6 +265,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     data-testid="input-company-name"
                     size="lg"
                     {...form.register("companyName")}
+                    disabled={isPending}
                   />
                 </div>
               </div>
@@ -248,6 +286,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     size="lg"
                     aria-describedby={form.formState.errors.email ? "email-error" : undefined}
                     {...form.register("email")}
+                    disabled={isPending}
                   />
                   {form.formState.errors.email && (
                     <Typography.P id="email-error" className="mt-2 text-destructive text-sm">
@@ -283,6 +322,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                       searchable
                       data-testid="button-country-dropdown"
                       aria-describedby={form.formState.errors.country ? "country-error" : undefined}
+                      // disabled={isPending} // Removed as not supported
                     />
                   </div>
                   {form.formState.errors.country && (
@@ -308,6 +348,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                       getKey={(p) => p}
                       placeholder="Select Platform"
                       data-testid="button-platform-dropdown"
+                      // disabled={isPending} // Removed as not supported
                     />
                   </div>
                 </div>
@@ -318,7 +359,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                   >
                     Contact Number / Handle
                   </Label>
-                  <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm-xs transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary h-12">
+                  <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary h-12">
                     <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm h-full">
                       {selectedCountry ? `+${selectedCountry.phone}` : "--"}
                     </span>
@@ -328,6 +369,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                       {...form.register("contactNumber")}
                       variant="ghost"
                       className="flex-1 border-0 bg-transparent p-3 h-full"
+                      disabled={isPending}
                     />
                   </div>
                 </div>
@@ -347,6 +389,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                     data-testid="input-other-platform"
                     size="lg"
                     {...form.register("otherPlatform")}
+                    disabled={isPending}
                   />
                 </div>
               )}
@@ -365,7 +408,8 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                   rows={5}
                   aria-describedby={form.formState.errors.message ? "message-error" : undefined}
                   {...form.register("message")}
-                  className="block w-full rounded-lg border-border p-3 shadow-sm-xs transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
+                  className="block w-full rounded-lg border-border p-3 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
+                  disabled={isPending}
                 />
                 {form.formState.errors.message && (
                   <Typography.P id="message-error" className="mt-2 text-red-500 text-sm">
@@ -384,6 +428,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                   onValueChange={(value) =>
                     form.setValue("contactPreference", value as "email" | "platform")
                   }
+                  disabled={isPending}
                 >
                   <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2">
@@ -417,9 +462,14 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
                   size="lg"
                   className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
                 >
-                  {isPending
-                    ? "Sending..."
-                    : contactConfig?.formButtonText || "Get a Response Within 24 Hours"}
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    contactConfig?.formButtonText || "Get a Response Within 24 Hours"
+                  )}
                 </Button>
                 <Typography.P className="mt-4 text-center text-muted-foreground text-xs">
                   {contactConfig?.formPrivacyText ||

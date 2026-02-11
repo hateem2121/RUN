@@ -1,9 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-// import { getMediaSrc } from "@/lib/technology-constants"; // Unused for now
 
-// Re-using types from the route or defining compatible ones
 export interface Innovation {
   id: number;
   name: string;
@@ -11,15 +9,13 @@ export interface Innovation {
   shortDescription?: string | undefined;
   category: string;
   status?: string | undefined;
-  technicalDetails?: any;
-  benefits: string[];
+  technicalDetails?: Record<string, unknown> | undefined;
+  benefits: string[] | null;
   imageId?: number | undefined;
-  // Allow extra properties from VM
-  [key: string]: any;
 }
 
 interface InnovationsSectionProps {
-  innovations: Innovation[] | any[];
+  innovations: Innovation[];
 }
 
 export function InnovationsSection({ innovations }: InnovationsSectionProps) {
@@ -43,10 +39,10 @@ export function InnovationsSection({ innovations }: InnovationsSectionProps) {
               <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-start mb-4">
                   <Badge variant="outline" className="border-primary/50 text-primary">
-                    {item.category}
+                    {item.category || "General"}
                   </Badge>
                   <Badge variant="secondary" className="bg-white/10 text-white text-xs">
-                    {item.status}
+                    {item.status || "Active"}
                   </Badge>
                 </div>
 
@@ -55,7 +51,7 @@ export function InnovationsSection({ innovations }: InnovationsSectionProps) {
                   {item.shortDescription || item.description}
                 </p>
 
-                {item.benefits.length > 0 && (
+                {item.benefits && item.benefits.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-white/50 uppercase tracking-wider">
                       Key Benefits

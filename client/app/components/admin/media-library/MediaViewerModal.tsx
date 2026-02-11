@@ -347,7 +347,7 @@ export default function MediaViewerModal() {
       return { previousData, prevSelectedAsset };
     },
 
-    onSuccess: async () => {
+    onSuccess: () => {
       toast({
         title: "Asset updated",
         description: "Media asset has been updated successfully",

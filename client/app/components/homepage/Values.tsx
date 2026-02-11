@@ -10,7 +10,7 @@ import { CursorVariant } from "./types";
 interface ValuesCardProps {
   title: string;
   subtitle: string;
-  icon: any;
+  icon: React.ElementType;
   colSpan?: string | undefined;
   withRipple?: boolean | undefined;
   isMobile: boolean;
@@ -59,13 +59,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
         Simple CSS radial gradient overlay on hover instead of WebGL 
       */}
       {withRipple && (
-        <div
-          className="absolute inset-0 z-base opacity-0 transition-opacity duration-700 group-hover:opacity-30 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 70%)",
-          }}
-        />
+        <div className="absolute inset-0 z-base bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3)_0%,transparent_70%)] opacity-0 transition-opacity duration-700 pointer-events-none group-hover:opacity-30" />
       )}
 
       <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">

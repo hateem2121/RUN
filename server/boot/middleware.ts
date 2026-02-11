@@ -28,10 +28,11 @@ import {
 } from "../middleware/production-security.js";
 import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
 import { responseTracker } from "../middleware/response-tracker.js";
+import { authService } from "../services/auth-service.js";
 
 const config = getConfig();
 
-export function setupMiddleware(app: Express) {
+export async function setupMiddleware(app: Express) {
   // Trust Proxy - use hop count of 1 for Cloud Run (single load balancer)
   // This is more secure than `true` which trusts all X-Forwarded-* headers
   // Cloud Run uses a single load balancer, so we only trust 1 proxy hop
@@ -51,8 +52,11 @@ export function setupMiddleware(app: Express) {
   // Global Error Handlers Setup
   setupGlobalErrorHandlers();
 
-  // Cookie Parser (Required for CSRF)
+  // Cookie Parser (Required for CSRF and sessions)
   app.use(cookieParser());
+
+  // Initialize Passport + Google OAuth strategy (requires cookie parser first)
+  await authService.setup(app);
 
   // Basic Security & Identity
   app.use(createCorsMiddleware());
@@ -109,7 +113,10 @@ export function setupMiddleware(app: Express) {
       import("../services/audit-log.js")
         .then(({ logAuditAction }) => {
           logAuditAction({
-            actor: (req.user as any) || { id: "anonymous", email: "unknown" },
+            actor: (req.user as { id: string; email?: string } | undefined) || {
+              id: "anonymous",
+              email: "unknown",
+            },
             action: req.method,
             target: { type: "API_ROUTE", id: req.path },
             metadata: { body_keys: Object.keys(req.body || {}) },
@@ -133,7 +140,7 @@ export function setupErrorHandling(app: Express) {
 
   // Final Global Error Handler (Project Rule #3)
   app.use(
-    async (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    async (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
       // Dynamic import to avoid circular dependencies during boot
       const { errorHandler } = await import("../middleware/errorHandler.js");
       errorHandler(err, req, res, next);

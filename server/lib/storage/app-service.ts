@@ -61,23 +61,24 @@ export class AppStorageService {
         }
 
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         const isLastAttempt = attempt === this.MAX_RETRIES;
         const duration = Date.now() - startTime;
+        const err = error as Error & { code?: string | number };
 
         // Only retry on timeout or transient errors
         const isRetryable =
-          error.message?.includes("timeout") ||
-          error.code === "ECONNRESET" ||
-          error.code === "ETIMEDOUT" ||
-          error.code === 503;
+          err.message?.includes("timeout") ||
+          err.code === "ECONNRESET" ||
+          err.code === "ETIMEDOUT" ||
+          err.code === 503;
 
         if (!isRetryable || isLastAttempt) {
           logger.error(
             `❌ GCS ${operationName} failed after ${attempt + 1} attempts (${duration}ms):`,
             {
-              error: error.message,
-              code: error.code,
+              error: err.message,
+              code: err.code,
             },
           );
           throw error;
@@ -106,9 +107,9 @@ export class AppStorageService {
       const bucket = this.storage.bucket(this.bucketName);
       const file = bucket.file(key);
 
-      const options: any = {
+      const options = {
         metadata: {
-          contentType: metadata?.contentType,
+          ...(metadata?.contentType ? { contentType: metadata.contentType } : {}),
         },
         resumable: false,
       };
@@ -152,9 +153,10 @@ export class AppStorageService {
       await file.delete();
       logger.info(`✅ Deleted asset from GCS: ${key}`);
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // If file doesn't exist, consider it deleted
-      if (error.code === 404) {
+      const err = error as { code?: number };
+      if (err.code === 404) {
         return true;
       }
       logger.error(`❌ Delete failed for ${key}:`, serializeError(error));
@@ -168,9 +170,9 @@ export class AppStorageService {
   async listAssets(prefix?: string): Promise<string[]> {
     try {
       const bucket = this.storage.bucket(this.bucketName);
-      const [files] = (await bucket.getFiles({ ...(prefix ? { prefix } : {}) } as any)) as any;
+      const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
 
-      const keys = files.map((file: any) => file.name);
+      const keys = files.map((file) => file.name);
       logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
       return keys;
     } catch (error) {

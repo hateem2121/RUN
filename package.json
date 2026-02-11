@@ -105,10 +105,10 @@
     "yargs": "^18.0.0"
   },
   "overrides": {
-    "axios": "^1.7.4",
+    "axios": "^1.13.5",
     "react-helmet-async": {
-      "react": "$react",
-      "react-dom": "$react-dom"
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
     },
     "fast-xml-parser": "^5.3.4",
     "lodash-es": "^4.17.21",

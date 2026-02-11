@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
+@import "./styles/z-index.css";
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
 @import "./styles/animations.css";
@@ -70,8 +71,25 @@
   z-index: var(--z-index-cursor, 1600);
 }
 
+@utility z-modal-backdrop {
+  z-index: var(--z-index-modal-backdrop, 1200);
+}
+
+@utility z-modal {
+  z-index: var(--z-index-modal, 1300);
+}
+
 @utility z-max {
   z-index: var(--z-index-max, 9999);
+}
+
+@utility container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--spacing-container, 1280px);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 @utility container-centered {
@@ -224,7 +242,10 @@
 
 /* Semantic Text Utilities (from typography.css) */
 @utility text-micro {
-  @apply font-mono font-bold tracking-widest uppercase;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   font-size: var(--font-size-xxs, 10px);
 }
 
@@ -334,8 +355,38 @@
 }
 
 /* =========================
-   Luxury Shadow Tokens (Migrated to theme.css)
+   Luxury Shadow Utilities (Tailwind v4 Migration Fix)
    ========================= */
+
+@utility shadow-luxury-sm {
+  box-shadow: var(--shadow-luxury-sm);
+}
+
+@utility shadow-luxury-md {
+  box-shadow: var(--shadow-luxury-md);
+}
+
+@utility shadow-luxury-lg {
+  box-shadow: var(--shadow-luxury-lg);
+}
+
+@utility shadow-sm-luxury-sm {
+  box-shadow: var(--shadow-luxury-sm);
+}
+
+@utility shadow-sm-luxury-md {
+  box-shadow: var(--shadow-luxury-md);
+}
+
+@utility shadow-sm-luxury-lg {
+  box-shadow: var(--shadow-luxury-lg);
+}
+
+@utility shadow-sm-luxury-xl {
+  box-shadow:
+    var(--shadow-luxury-lg),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
 
 /* =========================
    Luxury Border Utilities

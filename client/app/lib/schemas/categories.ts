@@ -13,23 +13,23 @@ export const categorySchema = insertCategorySchema.extend({
     .string()
     .or(z.date())
     .transform((val) => new Date(val)),
-  description: z.string().nullable().optional(),
-  parentId: z.number().nullable().optional(),
-  primaryImageId: z.number().nullable().optional(),
+  description: z.string().nullable().default(null),
+  parentId: z.number().nullable().default(null),
+  primaryImageId: z.number().nullable().default(null),
 
   // Missing fields for full compatibility with Shared Schema
   level: z.number().default(0),
   sortOrder: z.number().default(0),
   isActive: z.boolean().default(true),
-  fullPath: z.string().nullable().optional(),
-  metaTitle: z.string().nullable().optional(),
-  metaDescription: z.string().nullable().optional(),
+  fullPath: z.string().nullable().default(null),
+  metaTitle: z.string().nullable().default(null),
+  metaDescription: z.string().nullable().default(null),
   featuredOnHomepage: z.boolean().default(false),
   gridPosition: z.number().default(0),
   displayOrder: z.number().default(0),
-  featuredContent: z.record(z.string(), z.any()).nullable().optional(),
-  bannerUrl: z.string().nullable().optional(),
-  imageUrl: z.string().nullable().optional(),
+  featuredContent: z.record(z.string(), z.any()).nullable().default(null),
+  bannerUrl: z.string().nullable().default(null),
+  imageUrl: z.string().nullable().default(null),
   deletedAt: z
     .string()
     .or(z.date())

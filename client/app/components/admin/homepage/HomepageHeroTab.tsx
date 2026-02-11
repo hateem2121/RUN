@@ -1,4 +1,4 @@
-import type { HomepageHero, InsertHomepageHero } from "@shared/schema";
+import type { HomepageHero, InsertHomepageHero, MediaAsset } from "@shared/schema";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
@@ -35,7 +35,10 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
     }
   }, [hero]);
 
-  const handleChange = (field: keyof InsertHomepageHero, value: any) => {
+  const handleChange = <K extends keyof InsertHomepageHero>(
+    field: K,
+    value: InsertHomepageHero[K],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setIsDirty(true);
   };
@@ -46,7 +49,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
     });
   };
 
-  const handleMediaSelect = (assets: any | any[]) => {
+  const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
     // Using explicit 'any' until I import MediaAsset correctly
     const media = Array.isArray(assets) ? assets[0] : assets;
     if (media) {

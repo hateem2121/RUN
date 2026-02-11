@@ -251,7 +251,7 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     expect(screen.getByTestId("spec-Material")).toHaveTextContent("Material: Carbon Fiber");
   });
 
-  it("should handle CRUD operations via API", async () => {
+  it("should handle CRUD operations via API", () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true, data: {} }),

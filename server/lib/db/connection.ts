@@ -24,9 +24,9 @@ if (isTestMode && !enableRealDb) {
 
   if (process.env.TEST_MOCK_ERROR === "true") {
     logger.info("[Database] Mock Error Mode Enabled");
-    sql = (() => Promise.reject(new Error("Mock Database Error"))) as any;
+    sql = (() => Promise.reject(new Error("Mock Database Error"))) as unknown as typeof sql;
   } else {
-    sql = (() => Promise.resolve([])) as any;
+    sql = (() => Promise.resolve([])) as unknown as typeof sql;
   }
 } else {
   sql = neon(database.url, {

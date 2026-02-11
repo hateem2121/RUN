@@ -50,13 +50,20 @@ export interface DataWithTimestamp<T> {
   timestamp: string;
 }
 
+export interface HeroData {
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+}
+
 export interface HomepageBatchResponse {
-  hero: DataWithTimestamp<any>;
-  slogans: DataWithTimestamp<any[]>;
-  sections: DataWithTimestamp<any[]>;
-  featuredProductsSettings: DataWithTimestamp<any>;
-  products: DataWithTimestamp<any[]>;
-  categories: DataWithTimestamp<any[]>;
+  hero: DataWithTimestamp<HeroData>;
+  slogans: DataWithTimestamp<string[]>;
+  sections: DataWithTimestamp<unknown[]>;
+  featuredProductsSettings: DataWithTimestamp<unknown>;
+  products: DataWithTimestamp<ProductItem[]>;
+  categories: DataWithTimestamp<CategoryItem[]>;
 }
 
 // Global augmentation for React Three Fiber elements

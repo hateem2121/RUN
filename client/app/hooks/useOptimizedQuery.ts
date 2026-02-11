@@ -1,7 +1,7 @@
 import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 interface OptimizedQueryOptions<T> extends Omit<UseQueryOptions<T>, "queryFn"> {
-  queryKey: [string, ...any[]];
+  queryKey: [string, ...unknown[]];
   staleTime?: number;
   gcTime?: number;
   refetchOnWindowFocus?: boolean;

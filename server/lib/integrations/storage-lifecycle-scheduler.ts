@@ -91,6 +91,19 @@ const metrics: CleanupMetrics = {
   runsInProgress: 0,
 };
 
+// Report interface for API responses
+interface CleanupReport {
+  timestamp: string;
+  orphanedFiles: string[]; // Files found but not deleted (if dryRun)
+  brokenReferences: number[]; // Not implemented yet, placeholder
+  cleanedFiles: string[]; // Files actually deleted
+  cleanedReferences: number[]; // Not implemented yet, placeholder
+  totalFilesScanned: number;
+  totalReferencesChecked: number;
+  spaceSaved: number;
+  errors: string[];
+}
+
 // ============================================================================
 // CLEANUP OPERATIONS
 // ============================================================================
@@ -112,7 +125,7 @@ async function cleanupTempUploads(
   batchSize: number,
   maxDeletions: number,
   dryRun: boolean,
-): Promise<{ deleted: number; freed: number; errors: number }> {
+): Promise<{ deleted: number; freed: number; errors: number; filePaths: string[] }> {
   const PREFIX = "private/temp/uploads/";
   const maxAgeMs = maxAgeHours * 60 * 60 * 1000;
   const cutoffTime = Date.now() - maxAgeMs;
@@ -131,7 +144,7 @@ async function cleanupTempUploads(
 
     if (allFiles.length === 0) {
       logger.info(`[Lifecycle] No temp upload files found`);
-      return { deleted, freed, errors };
+      return { deleted, freed, errors, filePaths: [] };
     }
 
     logger.info(`[Lifecycle] Found ${allFiles.length} temp upload files to check`);
@@ -168,7 +181,7 @@ async function cleanupTempUploads(
 
     if (filesToDelete.length === 0) {
       logger.info(`[Lifecycle] No temp files older than ${maxAgeHours}h found`);
-      return { deleted, freed, errors };
+      return { deleted, freed, errors, filePaths: [] };
     }
 
     logger.info(`[Lifecycle] ${filesToDelete.length} temp files eligible for deletion`);
@@ -194,16 +207,12 @@ async function cleanupTempUploads(
       }
     }
 
-    const freedMB = (freed / (1024 * 1024)).toFixed(2);
-    logger.info(
-      `[Lifecycle] Temp uploads cleanup complete: ${deleted} deleted, ~${freedMB}MB freed, ${errors} errors`,
-    );
-
-    return { deleted, freed, errors };
+    const _freedMB = (freed / (1024 * 1024)).toFixed(2);
+    return { deleted, freed, errors, filePaths: filesToDelete };
   } catch (error) {
     logger.error(`[Lifecycle] Temp uploads cleanup failed:`, serializeError(error));
     errors++;
-    return { deleted, freed, errors };
+    return { deleted, freed, errors, filePaths: [] };
   }
 }
 
@@ -232,6 +241,7 @@ async function cleanupOrphanedFiles(
   freed: number;
   errors: number;
   checked: number;
+  orphanedFiles: string[];
 }> {
   logger.info(
     `[Lifecycle] Starting orphaned files cleanup (directories: ${directories.join(", ")}, dryRun: ${dryRun})`,
@@ -241,6 +251,7 @@ async function cleanupOrphanedFiles(
   let freed = 0;
   let errors = 0;
   let checked = 0;
+  const orphanedFiles: string[] = [];
 
   try {
     // Import database access
@@ -270,7 +281,8 @@ async function cleanupOrphanedFiles(
 
           // Check if this file has a corresponding database record
           if (!dbStoragePaths.has(filePath)) {
-            // Found an orphaned file - delete it immediately
+            // Found an orphaned file
+            orphanedFiles.push(filePath);
             try {
               if (dryRun) {
                 logger.info(`[Lifecycle] [DRY RUN] Would delete orphaned file: ${filePath}`);
@@ -318,16 +330,12 @@ async function cleanupOrphanedFiles(
       }
     }
 
-    const freedMB = (freed / (1024 * 1024)).toFixed(2);
-    logger.info(
-      `[Lifecycle] Orphaned files cleanup complete: ${deleted} deleted, ~${freedMB}MB freed, ${errors} errors, ${checked} files checked`,
-    );
-
-    return { deleted, freed, errors, checked };
+    const _freedMB = (freed / (1024 * 1024)).toFixed(2);
+    return { deleted, freed, errors, checked, orphanedFiles };
   } catch (error) {
     logger.error(`[Lifecycle] Orphaned files cleanup failed:`, serializeError(error));
     errors++;
-    return { deleted, freed, errors, checked };
+    return { deleted, freed, errors, checked, orphanedFiles: [] };
   }
 }
 
@@ -422,18 +430,41 @@ class StorageLifecycleScheduler {
   /**
    * Run cleanup tasks immediately
    */
-  async runCleanup(): Promise<void> {
+  async runCleanup(overrideDryRun?: boolean): Promise<CleanupReport> {
     if (this.isRunning) {
       logger.warn(`[Lifecycle] Cleanup already in progress, skipping run`);
-      return;
+      return {
+        timestamp: new Date().toISOString(),
+        orphanedFiles: [],
+        brokenReferences: [],
+        cleanedFiles: [],
+        cleanedReferences: [],
+        totalFilesScanned: 0,
+        totalReferencesChecked: 0,
+        spaceSaved: 0,
+        errors: ["Cleanup already in progress"],
+      };
     }
 
     this.isRunning = true;
     metrics.runsInProgress++;
     const startTime = Date.now();
+    const dryRun = overrideDryRun !== undefined ? overrideDryRun : this.config.dryRun;
+
+    const report: CleanupReport = {
+      timestamp: new Date().toISOString(),
+      orphanedFiles: [],
+      brokenReferences: [],
+      cleanedFiles: [],
+      cleanedReferences: [],
+      totalFilesScanned: 0,
+      totalReferencesChecked: 0,
+      spaceSaved: 0,
+      errors: [],
+    };
 
     try {
-      logger.info(`[Lifecycle] Starting cleanup run #${metrics.totalRuns + 1}`);
+      logger.info(`[Lifecycle] Starting cleanup run #${metrics.totalRuns + 1} (dryRun: ${dryRun})`);
 
       // Rule 1: Clean up temp uploads older than 24 hours
       if (this.config.rules.tempUploadsCleanup.enabled) {
@@ -441,12 +472,19 @@ class StorageLifecycleScheduler {
           this.config.rules.tempUploadsCleanup.maxAgeHours,
           this.config.batchSize,
           this.config.maxDeletionsPerRun,
-          this.config.dryRun,
+          dryRun,
         );
 
-        metrics.totalFilesDeleted += result.deleted;
-        metrics.totalStorageFreed += result.freed;
+        metrics.totalFilesDeleted += dryRun ? 0 : result.deleted;
+        metrics.totalStorageFreed += dryRun ? 0 : result.freed;
         metrics.errors += result.errors;
+
+        if (dryRun) {
+          report.orphanedFiles.push(...result.filePaths);
+        } else {
+          report.cleanedFiles.push(...result.filePaths);
+          report.spaceSaved += result.freed;
+        }
       }
 
       // Rule 2: Clean up orphaned files (files in storage without database records)
@@ -454,12 +492,20 @@ class StorageLifecycleScheduler {
         const result = await cleanupOrphanedFiles(
           this.config.rules.orphanedFilesCleanup.mediaDirectories,
           this.config.maxDeletionsPerRun,
-          this.config.dryRun,
+          dryRun,
         );
 
-        metrics.totalFilesDeleted += result.deleted;
-        metrics.totalStorageFreed += result.freed;
+        metrics.totalFilesDeleted += dryRun ? 0 : result.deleted;
+        metrics.totalStorageFreed += dryRun ? 0 : result.freed;
         metrics.errors += result.errors;
+
+        report.totalFilesScanned += result.checked;
+        if (dryRun) {
+          report.orphanedFiles.push(...result.orphanedFiles);
+        } else {
+          report.cleanedFiles.push(...result.orphanedFiles);
+          report.spaceSaved += result.freed;
+        }
       }
 
       // Clean up orphaned session metadata
@@ -472,12 +518,17 @@ class StorageLifecycleScheduler {
 
       logger.info(`[Lifecycle] Cleanup run complete`, {
         duration: `${metrics.lastRunDuration}ms`,
-        totalFilesDeleted: metrics.totalFilesDeleted,
+        totalFilesDeleted: dryRun ? 0 : metrics.totalFilesDeleted,
         totalStorageFreedMB: (metrics.totalStorageFreed / (1024 * 1024)).toFixed(2),
       });
+
+      return report;
     } catch (error) {
       metrics.errors++;
+      const errorMsg = error instanceof Error ? error.message : String(error);
       logger.error(`[Lifecycle] Cleanup run failed:`, serializeError(error));
+      report.errors.push(errorMsg);
+      return report;
     } finally {
       this.isRunning = false;
       metrics.runsInProgress--;
@@ -521,5 +572,5 @@ export function getLifecycleScheduler(
   return schedulerInstance;
 }
 
-export type { LifecycleConfig, CleanupMetrics };
+export type { LifecycleConfig, CleanupMetrics, CleanupReport };
 export { StorageLifecycleScheduler };

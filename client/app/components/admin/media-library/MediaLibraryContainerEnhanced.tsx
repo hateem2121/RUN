@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useToast } from "@/hooks/use-toast";
 import { getQueryClient } from "@/lib/queryClient";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { MediaLibraryProvider, useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 const MediaGrid = React.lazy(() => import("./MediaGrid"));
 const MediaFiltersPanel = React.lazy(() => import("./MediaFiltersPanel"));
@@ -378,10 +378,12 @@ export default function MediaLibraryContainerEnhanced({
   };
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <AutoFilterInitializer />
-      {content}
-    </ErrorBoundary>
+    <MediaLibraryProvider>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <AutoFilterInitializer />
+        {content}
+      </ErrorBoundary>
+    </MediaLibraryProvider>
   );
 }
 

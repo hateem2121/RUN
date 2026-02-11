@@ -8,6 +8,10 @@ import { trace } from "@opentelemetry/api";
 import type { NextFunction, Request, Response } from "express";
 import { correlationContext } from "../lib/monitoring/logger.js";
 
+export interface RequestWithCorrelation extends Request {
+  correlationId?: string;
+}
+
 /**
  * Generate unique correlation ID for each request
  * Enables tracing across distributed systems and log aggregation
@@ -19,7 +23,7 @@ export function correlationIdMiddleware(req: Request, res: Response, next: NextF
   const correlationId = existingId || randomUUID();
 
   // Store correlation ID in request object for downstream access
-  (req as any).correlationId = correlationId;
+  (req as RequestWithCorrelation).correlationId = correlationId;
 
   // Add correlation ID to response headers for debugging
   res.setHeader("X-Correlation-ID", correlationId);

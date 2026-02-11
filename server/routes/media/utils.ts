@@ -3,6 +3,12 @@
  * Business logic, data processing, and helper functions for media operations
  */
 
+import { execFile } from "node:child_process";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { promisify } from "node:util";
+import ffprobe from "ffprobe-static";
 import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
 import { isImageFile, processImage } from "../../image-processor.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
@@ -12,6 +18,8 @@ import { getStorage } from "../../lib/storage-singleton.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { correctMimeType } from "../../utils.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
+
+const execFilePromise = promisify(execFile);
 
 // ============================================================================
 // STORAGE PATH UTILITIES (CDN-Ready Architecture)
@@ -428,6 +436,57 @@ export function buildInsertMediaAsset(metadata: MediaMetadata): InsertMediaAsset
   };
 }
 
+/**
+ * Extracts metadata from a video file using ffprobe
+ *
+ * @param buffer - Video file buffer
+ * @returns Object containing duration, codec, and resolution
+ */
+export async function getVideoMetadata(buffer: Buffer): Promise<{
+  duration: number | null;
+  codec: string | null;
+  resolution: string | null;
+}> {
+  const tempPath = path.join(os.tmpdir(), `video-metadata-${Date.now()}.tmp`);
+
+  try {
+    // Write buffer to temporary file for ffprobe to read
+    await fs.writeFile(tempPath, buffer);
+
+    const { stdout } = await execFilePromise(ffprobe.path, [
+      "-v",
+      "quiet",
+      "-print_format",
+      "json",
+      "-show_streams",
+      "-show_format",
+      tempPath,
+    ]);
+
+    const data = JSON.parse(stdout);
+    const videoStream = data.streams?.find((s: any) => s.codec_type === "video");
+    const format = data.format;
+
+    return {
+      duration: videoStream?.duration
+        ? parseFloat(videoStream.duration)
+        : format?.duration
+          ? parseFloat(format.duration)
+          : null,
+      codec: videoStream?.codec_name || null,
+      resolution: videoStream ? `${videoStream.width}x${videoStream.height}` : null,
+    };
+  } catch (error) {
+    logger.error("Video metadata extraction failed:", serializeError(error));
+    return { duration: null, codec: null, resolution: null };
+  } finally {
+    // Cleanup temporary file
+    await fs.unlink(tempPath).catch((err) => {
+      logger.warn("Failed to cleanup temporary video file:", serializeError(err));
+    });
+  }
+}
+
 // ============================================================================
 // FILE PROCESSING
 // ============================================================================
@@ -555,29 +614,22 @@ export async function processUploadedFile(
       }
     }
 
-    // Process video metadata placeholder
+    // Process video metadata
     if (fileType === "video") {
       try {
-        // Placeholder: Future video analysis goes here
-        // TODO: Implement video analysis with ffprobe or similar
-        // Libraries: fluent-ffmpeg, @ffprobe-installer/ffprobe
-        const videoMetadata = {
-          duration: null, // TODO: Extract using ffprobe
-          codec: null, // TODO: Extract from container
-          resolution: null, // TODO: Parse video dimensions
-        };
+        const videoMetadata = await getVideoMetadata(file.buffer);
 
         await storage.updateMediaAsset(asset.id, {
           thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
           metadata: videoMetadata,
         });
 
-        logger.info("Video metadata placeholder created", {
+        logger.info("Video metadata extracted successfully", {
           assetId: asset.id,
           metadata: videoMetadata,
         });
       } catch (error) {
-        logger.error("Video metadata creation failed:", serializeError(error));
+        logger.error("Video metadata extraction aborted:", serializeError(error));
         // Upload succeeds even if metadata extraction fails
       }
     }

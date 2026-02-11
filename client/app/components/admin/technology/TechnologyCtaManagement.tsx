@@ -30,6 +30,14 @@ interface TechnologyCta {
   isActive?: boolean | undefined;
 }
 
+interface LegacyTechnologyCta {
+  title?: string;
+  ctaText?: string;
+  ctaLink?: string;
+}
+
+type ExtendedTechnologyCta = TechnologyCta & LegacyTechnologyCta;
+
 interface TechnologyCtaManagementProps {
   isLoading?: boolean | undefined;
 }
@@ -82,14 +90,12 @@ export function TechnologyCtaManagement({
   // Set initial data when CTA loads
   React.useEffect(() => {
     if (ctaData) {
+      const legacyData = ctaData as ExtendedTechnologyCta;
       setCtaForm({
-        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
-        headline: (ctaData as any).title || ctaData.headline || "",
+        headline: legacyData.title || ctaData.headline || "",
         content: ctaData.content || "",
-        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
-        buttonText: (ctaData as any).ctaText || ctaData.buttonText || "",
-        // biome-ignore lint/suspicious/noExplicitAny: Handling legacy data shape mismatch
-        buttonLink: (ctaData as any).ctaLink || ctaData.buttonLink || "",
+        buttonText: legacyData.ctaText || ctaData.buttonText || "",
+        buttonLink: legacyData.ctaLink || ctaData.buttonLink || "",
         benefits: ctaData.benefits || [],
         isActive: ctaData.isActive ?? true,
       });

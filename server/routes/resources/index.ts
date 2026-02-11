@@ -32,9 +32,11 @@ import contactRouter from "./contact.routes.js";
 import homepageBatchRouter from "./homepage-batch.routes.js";
 import homepageManagementRouter from "./homepage-management.routes.js";
 import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes.js";
+import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
+import logoSettingsRouter from "./logo-settings.routes.js";
 import navigationRouter from "./navigation.routes.js";
 import sustainabilityRouter from "./sustainability.routes.js";
 // Sustainability Page Resources
@@ -100,13 +102,12 @@ router.use("/technology-cta", technologyCTARouter);
 router.use("/technology-gradient-settings", technologyGradientSettingsRouter);
 
 // Manufacturing Hero (Relocated from page-content-routes.ts)
-import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
-
 router.use("/", manufacturingHeroRouter); // Mounts /manufacturing-hero
 
 // ============================================================================
 // NAVIGATION RESOURCES
 // ============================================================================
 router.use("/", navigationRouter); // Mounts /navigation-items, /navigation-settings
+router.use("/", logoSettingsRouter); // Mounts /logo-animation-settings
 
 export default router;

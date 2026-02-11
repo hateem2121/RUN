@@ -88,8 +88,7 @@ export default function useCategoryOperationsConsolidated() {
     if (uiState.searchTerm) {
       const term = uiState.searchTerm.toLowerCase();
       result = result.filter(
-        // biome-ignore lint/suspicious/noExplicitAny: Category type from API response
-        (c: any) =>
+        (c: Category) =>
           c.name.toLowerCase().includes(term) || c.description?.toLowerCase().includes(term),
       );
     }
@@ -127,8 +126,7 @@ export default function useCategoryOperationsConsolidated() {
 
   const selectAll = () => {
     const newSelection: Record<string, boolean> = {};
-    // biome-ignore lint/suspicious/noExplicitAny: Category type from API response
-    filteredCategories.forEach((c: any) => {
+    filteredCategories.forEach((c: Category) => {
       newSelection[c.id] = true;
     });
     updateUIState({ selectedCategories: newSelection });
@@ -136,17 +134,13 @@ export default function useCategoryOperationsConsolidated() {
 
   // Dialog Handlers
   const openCreateDialog = () => updateUIState({ showCreateDialog: true, editingCategory: null });
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object
-  const openEditDialog = (category: any) =>
+  const openEditDialog = (category: Category) =>
     updateUIState({ showEditDialog: true, editingCategory: category });
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object
-  const openDeleteDialog = (category: any) =>
+  const openDeleteDialog = (category: Category) =>
     updateUIState({ showDeleteDialog: true, deletingCategory: category });
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object
-  const openRestoreDialog = (category: any) =>
+  const openRestoreDialog = (category: Category) =>
     updateUIState({ showRestoreDialog: true, restoringCategory: category });
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic category object
-  const openHardDeleteDialog = (category: any) =>
+  const openHardDeleteDialog = (category: Category) =>
     updateUIState({
       showHardDeleteDialog: true,
       hardDeletingCategory: category,

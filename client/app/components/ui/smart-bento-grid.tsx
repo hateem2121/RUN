@@ -15,9 +15,22 @@ interface GridSpan {
   className: string;
 }
 
+interface BentoItemSource {
+  description?: string | null;
+  mediaIds?: unknown[] | null;
+  imageId?: string | number | null;
+  mediaId?: string | null;
+  specifications?: Record<string, any> | unknown[] | null;
+  standards?: unknown[] | null;
+  equipment?: unknown | null;
+  frequency?: unknown | null;
+  duration?: unknown | null;
+  efficiency?: unknown | null;
+  capacity?: unknown | null;
+}
+
 // Smart algorithm to determine grid span based on content richness
-// biome-ignore lint/suspicious/noExplicitAny: Content analysis item type
-export function analyzeContent(item: any): ContentAnalysis {
+export function analyzeContent(item: BentoItemSource): ContentAnalysis {
   const description = item.description || "";
   const hasMedia = Boolean(item.mediaIds?.length || item.imageId || item.mediaId);
   const hasSpecs = Boolean(item.specifications?.length || item.standards?.length || item.equipment);
@@ -162,10 +175,14 @@ export function NaturalMedia({ src, alt, className, cardSpan }: NaturalMediaProp
         src={src}
         alt={alt}
         className={cn(
-          "h-auto w-full rounded object-cover",
+          "h-auto w-full rounded object-cover min-h-(--min-h) max-h-(--max-h)",
           cardSpan && cardSpan.colSpan >= 2 ? "object-center" : "object-cover",
         )}
-        style={mediaSize}
+        // biome-ignore lint/style/noInlineStyles: Dynamic media sizing via CSS variables
+        style={{
+          "--max-h": mediaSize.maxHeight,
+          "--min-h": mediaSize.minHeight,
+        } as React.CSSProperties}
         loading="lazy"
       />
     </div>

@@ -23,6 +23,7 @@ import type React from "react";
 import { useState } from "react";
 
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
+import { ModuleSearch } from "@/components/admin/ModuleSearch";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 
 interface AdminLayoutProps {
@@ -153,8 +154,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex flex-1 flex-col">
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
-              {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
+              {links.map((link) => (
+                <SidebarLink key={link.href} link={link} />
               ))}
             </div>
           </div>
@@ -173,7 +174,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </Sidebar>
       <div className="ml-[var(--width-sidebar-collapsed)] bg-white pt-16 md:pt-0 lg:ml-[var(--width-sidebar-expanded)] dark:bg-neutral-900 transition-[margin] duration-300 ease-in-out">
         <div className="border border-neutral-200 bg-white p-8 dark:border-neutral-700 dark:bg-neutral-900">
-          <AdminBreadcrumb />
+          <div className="mb-6 flex items-center justify-between">
+            <AdminBreadcrumb />
+            <ModuleSearch links={links.filter((l) => l.href !== "/")} />
+          </div>
           <div className="mt-4">{children}</div>
         </div>
       </div>

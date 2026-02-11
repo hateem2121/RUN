@@ -113,7 +113,7 @@ export function AnimatedCardWrapper({
 // Smooth loading state animation
 export const LoadingSpinner = ({ size = 24, className = "" }) => (
   <motion.div
-    className={`inline-block rounded-full border-2 border-luxury-gray-300 border-t-luxury-gold ${className}`}
+    className={`inline-block rounded-full border-2 border-surface-muted border-t-luxury-gold ${className}`}
     style={{ width: size, height: size }}
     animate={{ rotate: 360 }}
     transition={{

@@ -26,9 +26,11 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/contact-info](#get-apicontact-info)
    - [GET /api/locations](#get-apilocations)
    - [POST /contact](#post-contact)
-4. [Navigation Endpoints](#navigation-endpoints)
-   - [GET /api/v1/resources/navigation-items](#get-apiv1resourcesnavigation-items)
-   - [GET /api/v1/resources/navigation-settings](#get-apiv1resourcesnavigation-settings)
+4. [Navigation & UI Endpoints](#navigation--ui-endpoints)
+   - [GET /api/navigation-items](#get-apinavigation-items)
+   - [GET /api/navigation-settings](#get-apinavigation-settings)
+   - [GET /api/logo-animation-settings](#get-apilogo-animation-settings)
+   - [ADMIN /api/admin/*](#admin-navigation--settings)
 5. [Privacy Endpoints](#privacy-endpoints)
    - [POST /api/privacy/data-export](#post-apiprivacydata-export)
    - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
@@ -391,14 +393,14 @@ Media grid displays: thumbnail, filename, file type icon, size, and upload date.
 
 ---
 
-## Navigation Endpoints
+## Navigation & UI Endpoints
 
-These endpoints provide the structure and configuration for the site's layout navigation.
+These endpoints provide the structure and configuration for the site's layout navigation and global UI settings.
 
-### GET /api/v1/resources/navigation-items
+### GET /api/navigation-items
 
 **Purpose**: Retrieve all active navigation items for the site header and mobile menu.  
-**Registration**: `server/routes/resources/content-management-routes.ts`
+**Registration**: `server/routes/resources/navigation.routes.ts`
 
 #### Response Format (JSON)
 
@@ -416,26 +418,52 @@ These endpoints provide the structure and configuration for the site's layout na
 ]
 ```
 
-#### Query Parameters
-- `activeOnly` (default: true): If false, includes disabled items (Admin only).
+### GET /api/navigation-settings
 
-### GET /api/v1/resources/navigation-settings
-
-**Purpose**: Retrieve global navigation UI settings like glassmorphism effects and branding.  
+**Purpose**: Retrieve global navigation UI settings like glassmorphism effects.  
 **Registration**: `server/routes/resources/navigation.routes.ts`
 
 #### Response Format (JSON)
 
 ```json
 {
-  "id": 1,
-  "glassmorphismEnabled": true,
-  "blurAmount": "12px",
-  "transparency": 0.85,
-  "stickyHeader": true,
-  "logoUrl": "/assets/branding/logo-dark.svg"
+  "enabled": true,
+  "backgroundOpacity": "15",
+  "blurStrength": 5,
+  "borderOpacity": "30",
+  "borderRadius": 20
 }
 ```
+
+### GET /api/logo-animation-settings
+
+**Purpose**: Retrieve settings for the brand logo animations.  
+**Registration**: `server/routes/resources/logo-settings.routes.ts`
+
+#### Response Format (JSON)
+
+```json
+{
+  "animationType": "float",
+  "duration": 2000,
+  "intensity": "medium"
+}
+```
+
+### ADMIN Navigation & Settings
+
+All Admin endpoints require `admin` role authentication via session cookie.
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/admin/navigation-items` | Create new navigation item |
+| `PATCH` | `/api/admin/navigation-items/:id` | Update navigation item |
+| `DELETE` | `/api/admin/navigation-items/:id` | Delete navigation item |
+| `PATCH` | `/api/admin/navigation-items/reorder` | Bulk reorder items |
+| `PATCH` | `/api/admin/navigation-glassmorphism-settings` | Update navigation UI settings |
+| `PATCH` | `/api/admin/logo-animation-settings` | Update logo animation settings |
+| `POST` | `/api/admin/contact-page-configuration` | Create contact config |
+| `PATCH` | `/api/admin/contact-page-configuration` | Update contact config |
 
 ---
 

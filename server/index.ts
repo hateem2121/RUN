@@ -5,7 +5,8 @@ initTelemetry();
 
 import { injectSecretsToEnv, loadSecrets } from "./lib/secrets/secret-manager.js";
 import "dotenv/config";
-export let app: any;
+import type express from "express";
+export let app: express.Express;
 export let serverReady: Promise<void>;
 // Port 5002 configuration is strictly enforced in server.ts
 

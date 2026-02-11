@@ -283,7 +283,7 @@ const MediaGridItem = React.memo(
                 size="sm"
                 variant="secondary"
                 className="h-10 w-10 rounded-full bg-white/90 p-0 text-black shadow-lg transition-transform hover:scale-110 hover:bg-white"
-                onClick={async (e) => {
+                onClick={(e) => {
                   e.stopPropagation();
                   // Simple download trigger
                   const link = document.createElement("a");
@@ -346,7 +346,7 @@ const MediaBulkOperations = React.memo(() => {
   const bulkDeleteMutation = useMutation({
     mutationKey: ["media", "bulk-delete"], // Enables concurrent mutation tracking
 
-    mutationFn: async (ids: number[]) => {
+    mutationFn: (ids: number[]) => {
       return apiRequest("/api/media/batch", {
         method: "POST",
         body: JSON.stringify({ operation: "delete", ids }),
@@ -403,7 +403,7 @@ const MediaBulkOperations = React.memo(() => {
       return { previousData };
     },
 
-    onSuccess: async (_, deletedIds) => {
+    onSuccess: (_, deletedIds) => {
       // Clear selection after successful delete
       clearSelection();
 
@@ -478,7 +478,7 @@ const MediaBulkOperations = React.memo(() => {
     },
   });
 
-  const handleBulkDownload = async () => {
+  const handleBulkDownload = () => {
     if (!hasSelection) {
       return;
     }
@@ -595,9 +595,7 @@ export default function MediaGrid({
   });
 
   // 🔍 PAGINATION SYNC MONITOR: Track frontend-backend pagination alignment
-  useEffect(() => {
-    // biome-ignore lint: legacy disable replacement react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {}, []);
 
   // Traditional pagination media query with proper timeout and selective retry
   const {
@@ -798,7 +796,6 @@ export default function MediaGrid({
       if (!pageMatch || !limitMatch || !frontendMatch) {
       }
     }
-    // biome-ignore lint: legacy disable replacement react-hooks/exhaustive-deps
   }, [mediaResponse, status, state.currentPage, pagination.limit, pagination.page, params.get]);
 
   // Data validation logic retained without console output

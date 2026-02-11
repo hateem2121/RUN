@@ -712,7 +712,7 @@ export default function MediaUploadEnhanced() {
                   let retryCount = 0;
                   const maxRetries = 3;
                   // Explicitly type result to avoid ts explicit unknown error
-                  let result: { data?: MediaAsset[] } | any;
+                  let result: { data?: MediaAsset[] } | unknown;
 
                   while (retryCount <= maxRetries) {
                     try {
@@ -759,12 +759,13 @@ export default function MediaUploadEnhanced() {
                   }
 
                   // Schema validation on upload response
-                  if (result.data && Array.isArray(result.data)) {
-                    const validatedAssets = filterValidMediaAssets(result.data);
-                    if (validatedAssets.length !== result.data.length) {
+                  const uploadResult = result as { data?: MediaAsset[] };
+                  if (uploadResult.data && Array.isArray(uploadResult.data)) {
+                    const validatedAssets = filterValidMediaAssets(uploadResult.data);
+                    if (validatedAssets.length !== uploadResult.data.length) {
                       logTypeError(
                         new Error(
-                          `Upload validation failed: ${result.data.length - validatedAssets.length} invalid assets`,
+                          `Upload validation failed: ${uploadResult.data.length - validatedAssets.length} invalid assets`,
                         ),
                         `Upload Response Validation - ${item.file.name}`,
                       );

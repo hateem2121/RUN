@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
       "sustainability:batch",
       async () => {
         // Fetch all sustainability data in parallel to minimize NEON connection time
-        const [hero, metrics, initiatives, goals, certificates] = await Promise.all([
+        const [hero, metrics, initiatives, goals, certificates, fabrics] = await Promise.all([
           withTimeout(getStorage().getUnifiedSustainability(), 10000, "Get unified sustainability"),
           withTimeout(getStorage().getSustainabilityMetrics(), 10000, "Get sustainability metrics"),
           withTimeout(
@@ -46,6 +46,7 @@ router.get("/", async (req, res) => {
           ),
           withTimeout(getStorage().getSustainabilityGoals(), 10000, "Get sustainability goals"),
           withTimeout(getStorage().getCertificates(), 10000, "Get certificates"),
+          withTimeout(getStorage().getFabrics(), 10000, "Get fabrics"),
         ]);
 
         // Construct batch response
@@ -55,6 +56,7 @@ router.get("/", async (req, res) => {
           initiatives: initiatives || [],
           goals: goals || [],
           certificates: certificates || [],
+          fabrics: fabrics || [],
         };
       },
       {

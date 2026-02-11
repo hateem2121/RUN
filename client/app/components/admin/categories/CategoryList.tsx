@@ -166,7 +166,9 @@ const CategoryTreeView = memo(
     const hierarchy = buildHierarchy(categories);
 
     return (
-      <div className="space-y-1">{hierarchy.flatMap((category) => renderTreeItem(category))}</div>
+      <div className="space-y-1" role="list">
+        {hierarchy.flatMap((category) => renderTreeItem(category))}
+      </div>
     );
   },
 );

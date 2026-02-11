@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router"; // RR7 uses useParams from react-router
 import PlaceholderModule from "@/components/admin/PlaceholderModule";
-import { ProductsErrorFallback } from "@/components/admin/ProductsErrorFallback";
+import { ApiErrorFallback } from "@/components/admin/shared/ApiErrorFallback";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Typography } from "@/components/ui/typography";
 import type { Route } from "./+types/admin.$module";
@@ -36,7 +36,7 @@ const CategoryManagementSimplified = lazy(
 const LazyFooterManagement = lazy(
   () => import("@/components/admin/footer-management/FooterManagement"),
 );
-const AboutManagement = () => <PlaceholderModule moduleName="About Management" />;
+const AboutManagement = lazy(() => import("@/components/admin/AboutManagement"));
 const BlogManagement = () => <PlaceholderModule moduleName="Blog Management" />;
 
 const UnifiedSustainabilityManagement = lazy(() =>
@@ -51,11 +51,7 @@ const TechnologyManagement = lazy(() =>
   })),
 );
 const StorageOptimization = () => <PlaceholderModule moduleName="Storage Optimization" />;
-const ContactManagement = lazy(() =>
-  import("@/components/admin/contact-management").then((m) => ({
-    default: m.ContactPageSettings,
-  })),
-);
+const ContactManagement = lazy(() => import("@/components/admin/contact-management"));
 const MediaTestRunner = () => <PlaceholderModule moduleName="Media Test Runner" />;
 const InquiryManagement = () => <PlaceholderModule moduleName="Inquiry Management" />;
 
@@ -138,8 +134,13 @@ export default function AdminModule() {
     }
   };
 
+  const moduleName = module ? module.charAt(0).toUpperCase() + module.slice(1) : "Module";
+
   return (
-    <ErrorBoundary fallback={<ProductsErrorFallback />}>
+    <ErrorBoundary
+      key={module} // Reset error boundary when switching modules
+      fallback={<ApiErrorFallback moduleName={moduleName} />}
+    >
       <Suspense fallback={<ModuleLoader />}>{renderModule()}</Suspense>
     </ErrorBoundary>
   );

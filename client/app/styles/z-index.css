@@ -1,0 +1,46 @@
+@layer base {
+  :root {
+    /* Z-Index Layers (Canonical Scale) */
+    --z-base: 0;
+    --z-elevated: 10;
+    --z-dropdown: 1000;
+    --z-sticky: 1100;
+    --z-dock: 1100;
+    --z-modal-backdrop: 1200;
+    --z-modal: 1300;
+    --z-popover: 1400;
+    --z-tooltip: 1500;
+    --z-max: 9999;
+  }
+}
+
+@utility z-base {
+  z-index: var(--z-base);
+}
+@utility z-elevated {
+  z-index: var(--z-elevated);
+}
+@utility z-dropdown {
+  z-index: var(--z-dropdown);
+}
+@utility z-sticky {
+  z-index: var(--z-sticky);
+}
+@utility z-dock {
+  z-index: var(--z-dock);
+}
+@utility z-modal-backdrop {
+  z-index: var(--z-modal-backdrop);
+}
+@utility z-modal {
+  z-index: var(--z-modal);
+}
+@utility z-popover {
+  z-index: var(--z-popover);
+}
+@utility z-tooltip {
+  z-index: var(--z-tooltip);
+}
+@utility z-max {
+  z-index: var(--z-max);
+}

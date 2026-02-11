@@ -9,15 +9,14 @@ interface SearchParams {
   active?: boolean;
 }
 
-interface SearchResponse {
-  // biome-ignore lint/suspicious/noExplicitAny: Generic search data type
-  data: any[];
+export interface SearchResponse<T = unknown> {
+  data: T[];
   total: number;
   limit: number;
   offset: number;
 }
 
-export function useServerSearch({
+export function useServerSearch<T = unknown>({
   search,
   type = "all",
   limit = 20,
@@ -26,7 +25,7 @@ export function useServerSearch({
 }: SearchParams) {
   const debouncedSearch = useDebounce(search, 300);
 
-  const { data, isLoading, error } = useQuery<SearchResponse>({
+  const { data, isLoading, error } = useQuery<SearchResponse<T>>({
     queryKey: ["/api/resources/search", debouncedSearch, type, limit, offset, active],
     queryFn: async () => {
       const params = new URLSearchParams();

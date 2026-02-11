@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -12,7 +12,10 @@ export type ManufacturingEntity =
   | "qualities";
 
 // Simple fallback cache invalidation
-const invalidateManufacturingCache = async (queryClient: any, _entity: ManufacturingEntity) => {
+const invalidateManufacturingCache = async (
+  queryClient: QueryClient,
+  _entity: ManufacturingEntity,
+) => {
   return queryClient.invalidateQueries({ queryKey: ["/api/manufacturing"] });
 };
 

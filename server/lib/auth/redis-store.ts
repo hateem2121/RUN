@@ -1,4 +1,5 @@
 import type { Redis } from "@upstash/redis";
+import type session from "express-session";
 import { Store } from "express-session";
 import { logger } from "../monitoring/logger.js";
 
@@ -19,9 +20,12 @@ export class UpstashRedisStore extends Store {
     this.ttl = options.ttl || 86400; // Default 1 day
   }
 
-  public async get(sid: string, callback: (err: any, session?: any) => void): Promise<void> {
+  public async get(
+    sid: string,
+    callback: (err: unknown, session?: session.SessionData | null) => void,
+  ): Promise<void> {
     try {
-      const data = await this.client.get<any>(this.prefix + sid);
+      const data = await this.client.get<session.SessionData>(this.prefix + sid);
       if (!data) {
         return callback(null, null);
       }
@@ -32,7 +36,11 @@ export class UpstashRedisStore extends Store {
     }
   }
 
-  public async set(sid: string, session: any, callback?: (err?: any) => void): Promise<void> {
+  public async set(
+    sid: string,
+    session: session.SessionData,
+    callback?: (err?: unknown) => void,
+  ): Promise<void> {
     try {
       // Use the maxAge from session cookie if available, or default TTL
       const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;
@@ -48,7 +56,7 @@ export class UpstashRedisStore extends Store {
     }
   }
 
-  public async destroy(sid: string, callback?: (err?: any) => void): Promise<void> {
+  public async destroy(sid: string, callback?: (err?: unknown) => void): Promise<void> {
     try {
       await this.client.del(this.prefix + sid);
       if (callback) {
@@ -64,8 +72,8 @@ export class UpstashRedisStore extends Store {
 
   public override async touch(
     sid: string,
-    session: any,
-    callback?: (err?: any) => void,
+    session: session.SessionData,
+    callback?: (err?: unknown) => void,
   ): Promise<void> {
     try {
       const ttl = session.cookie?.maxAge ? Math.floor(session.cookie.maxAge / 1000) : this.ttl;

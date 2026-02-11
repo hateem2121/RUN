@@ -14,6 +14,8 @@ This document defines the 1:1 relationship between public frontend pages and adm
 | `/about` | `/admin/pages/about` | `/api/pages/about` | About page / editor |
 | `/contact` | `/admin/settings/contact` | `/api/settings/contact` | Contact page / settings |
 | `/gallery` | `/admin/media/gallery` | `/api/media` | Image gallery / media manager |
+| N/A (Global) | `/admin/settings/navigation` | `/api/navigation-items` | Navigation menu management |
+| N/A (Global) | `/admin/settings/ui` | `/api/logo-animation-settings` | Global UI & Logo settings |
 
 ## Implementation Notes
 

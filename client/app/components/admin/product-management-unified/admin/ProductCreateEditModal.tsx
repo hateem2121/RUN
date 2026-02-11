@@ -721,8 +721,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
       sizeChartId: formData.sizeChartId,
       fiberComposition:
         formData.selectedFiberComposition && formData.selectedFiberComposition.length > 0
-          ? // biome-ignore lint/suspicious/noExplicitAny: Data shape mismatch with schema requires loose typing for now
-            ({ selected: formData.selectedFiberComposition } as any)
+          ? { selected: formData.selectedFiberComposition }
           : undefined,
 
       // Media Assets - Using correct schema fields

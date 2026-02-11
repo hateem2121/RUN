@@ -12,8 +12,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { pgTable } from "../common";
-import { mediaAssets } from "../media";
+import { pgTable } from "../common.js";
+import { mediaAssets } from "../media.js";
 
 // Navigation Items - Enhanced for floating dock navigation
 export const navigationItems = pgTable("navigation_items", {

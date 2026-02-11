@@ -78,7 +78,7 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
     }
 
     // biome-ignore lint/suspicious/noConsole: tracking
-    console.log(`[Inquiry] Created inquiry #${result.id} via Server Action`);
+    // console.log(`[Inquiry] Created inquiry #${result.id} via Server Action`);
 
     // 4. Mock Email
     await mockSendEmail(result);
@@ -97,19 +97,19 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
  */
 export async function submitQuoteRequest(data: QuoteSubmissionData) {
   // 1. Validation
-  const validated = QuoteSubmissionSchema.parse(data);
+  QuoteSubmissionSchema.parse(data);
 
   try {
     // 2. Logic: Log to DB (Still Mocked)
     // biome-ignore lint/suspicious/noConsole: Log payload
-    console.log("[Quote Request Received]", {
-      timestamp: new Date().toISOString(),
-      ...validated,
-    });
+    // console.log("[Quote Request Received]", {
+    //   timestamp: new Date().toISOString(),
+    //   ...validated,
+    // });
 
     // 3. Mock Email Send
     // biome-ignore lint/suspicious/noConsole: Mock email
-    console.log(`[Email Mock] Sending quote confirmation to ${validated.contact.email}`);
+    // console.log(`[Email Mock] Sending quote confirmation to ${validated.contact.email}`);
 
     // In the future: Insert into inquiries table (needs schema migration for items)
     /*
@@ -140,32 +140,38 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 
 // --- Internal ---
 
-async function mockSendEmail(inquiry: any) {
+async function mockSendEmail(_inquiry: any) {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 100));
   // biome-ignore lint/suspicious/noConsole: mock email
-  console.log(`[Email Mock] Sending confirmation to ${inquiry.email}`);
+  // console.log(`[Email Mock] Sending confirmation to ${inquiry.email}`);
   // biome-ignore lint/suspicious/noConsole: mock email
-  console.log(`[Email Mock] Sending admin notification for inquiry #${inquiry.id}`);
+  // console.log(`[Email Mock] Sending admin notification for inquiry #${inquiry.id}`);
 }
 
 // React 19 Server Action Adapter for useActionState
 export async function submitInquiryAction(_prevState: any, formData: FormData) {
   const data = {
-    name: formData.get("name") as string,
+    name: (formData.get("name") || formData.get("contactName")) as string,
     email: formData.get("email") as string,
     message: formData.get("message") as string,
-    company: formData.get("companyName") as string, // B2B form uses companyName
+    company: (formData.get("company") || formData.get("companyName")) as string,
     phone: formData.get("phone") as string,
+    country: formData.get("country") as string,
+    preferredPlatform: (formData.get("preferredPlatform") || formData.get("platform")) as string,
+    honeypot: formData.get("honeypot") as string,
     // Add other fields from B2B form if needed
   };
 
   try {
     const result = await submitContactInquiry({
       ...data,
-      country: null,
-      preferredPlatform: null,
-      honeypot: undefined,
+      // Ensure nulls for optional fields if they are empty strings or undefined
+      company: data.company || null,
+      phone: data.phone || null,
+      country: data.country || null,
+      preferredPlatform: data.preferredPlatform || null,
+      honeypot: data.honeypot || undefined,
     });
 
     return {

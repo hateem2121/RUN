@@ -55,7 +55,7 @@ export interface ProductDetailWithContext {
     accessories: Accessory[];
     fibers: Fiber[];
   };
-  media: any[];
+  media: MediaAsset[];
   relatedProducts: ProductSummary[];
   categoryProducts: ProductSummary[];
   navigation: {

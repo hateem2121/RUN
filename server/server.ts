@@ -10,9 +10,13 @@ import express from "express";
 import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
 import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
+import { validateEnv } from "./config/env-validation.js";
 import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
+
+// SEC-002: Validate environment variables before any initialization
+validateEnv();
 
 export const app = express();
 const config = getConfig();
@@ -32,8 +36,8 @@ serverReady = (async () => {
       app.use(express.static(path.resolve(process.cwd(), "../client/public")));
     }
 
-    // 3. Setup Global Middleware
-    setupMiddleware(app);
+    // 3. Setup Global Middleware (now async for Passport/session init)
+    await setupMiddleware(app);
 
     // 4. Setup Health Checks (Must be before Routes/SSR to avoid shadowing)
 

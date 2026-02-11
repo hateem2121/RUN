@@ -8,9 +8,13 @@
  * 3. Return clear validation errors
  */
 
-import type { RequestHandler } from "express";
+import type { Request, RequestHandler } from "express";
 import { z } from "zod";
 import { logger } from "../lib/monitoring/logger.js";
+
+interface ValidatedRequest extends Request {
+  __bodyValidated?: boolean;
+}
 
 /**
  * Middleware to detect and block admin routes without proper validation
@@ -41,7 +45,7 @@ export const enforceValidation: RequestHandler = (req, _res, next) => {
   // This can be set by:
   // 1. New validateBody middleware
   // 2. Existing routes that set the flag manually
-  if ((req as any).__bodyValidated) {
+  if ((req as ValidatedRequest).__bodyValidated) {
     return next();
   }
 
@@ -100,7 +104,7 @@ export function validateBody<T extends z.ZodType>(
       // Check for empty body
       if (!req.body || Object.keys(req.body).length === 0) {
         if (allowEmpty) {
-          (req as any).__bodyValidated = true;
+          (req as ValidatedRequest).__bodyValidated = true;
           return next();
         }
 
@@ -122,7 +126,7 @@ export function validateBody<T extends z.ZodType>(
       req.body = validated;
 
       // Mark as validated for enforceValidation middleware
-      (req as any).__bodyValidated = true;
+      (req as ValidatedRequest).__bodyValidated = true;
 
       logger.debug(`[Validation] ✅ Request body validated`, {
         method: req.method,

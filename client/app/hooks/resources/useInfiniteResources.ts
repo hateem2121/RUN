@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/use-debounce";
+import type { SearchResponse } from "./useServerSearch";
 
 interface ResourceSearchParams {
   search?: string;
@@ -37,8 +38,7 @@ export function useInfiniteResources({
       }
       return response.json();
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Implicit API response type
-    getNextPageParam: (lastPage: any) => {
+    getNextPageParam: (lastPage: SearchResponse) => {
       const nextOffset = lastPage.offset + lastPage.limit;
       return nextOffset < lastPage.total ? nextOffset : undefined;
     },

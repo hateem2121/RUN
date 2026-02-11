@@ -36,8 +36,10 @@ export interface TransformedProduct {
   media: Array<{ id: number; type: "image" | "video"; url?: string }>;
 }
 
+export type MinimalCategory = Pick<Category, "id" | "name" | "slug"> & { parentId?: number | null | undefined };
+
 export interface TransformContext {
-  categories: Category[];
+  categories: MinimalCategory[];
   fabrics: Fabric[];
   certificates: Certificate[];
   mediaAssets: MediaAsset[];
@@ -61,11 +63,12 @@ export function transformProduct(
 
   // Extract weight (GSM) - prioritize product's customWeight over fabric weight
   let weightValue = 150; // default
-  const productAnyForWeight = product as any;
+  // Cast to Partial<Product> to safely access fields that might exist at runtime (e.g. if passed a full Product)
+  const fullProduct = product as Partial<Product>;
 
   // First check if product has customWeight
-  if (productAnyForWeight.customWeight) {
-    const match = productAnyForWeight.customWeight.match(/(\d+)/);
+  if (fullProduct.customWeight) {
+    const match = fullProduct.customWeight.match(/(\d+)/);
     if (match?.[1]) {
       weightValue = parseInt(match[1], 10);
     }
@@ -118,40 +121,53 @@ export function transformProduct(
   }
 
   // Build specifications object
-  const productAny = product as any;
-
   // Extract fit
-  const fit = productAny.customFit || productAny.technicalSpecs?.fit || "Standard Fit";
+  const rawFit = fullProduct.customFit || fullProduct.technicalSpecs?.fit;
+  const fit = typeof rawFit === "string" ? rawFit : "Standard Fit";
 
   // Extract care instructions from the careInstructions array
   const careInstructions =
-    Array.isArray(productAny.careInstructions) && productAny.careInstructions.length > 0
-      ? productAny.careInstructions.join(". ")
+    Array.isArray(fullProduct.careInstructions) && fullProduct.careInstructions.length > 0
+      ? fullProduct.careInstructions.join(". ")
       : "Machine wash cold, tumble dry low.";
 
   // Extract fabric composition
   let fabricComposition = "See product details";
-  if (productAny.fiberComposition) {
+  if (fullProduct.fiberComposition) {
     // Try to format fiberComposition object
-    fabricComposition = Object.entries(productAny.fiberComposition)
+    fabricComposition = Object.entries(fullProduct.fiberComposition)
       .map(([fiber, percentage]) => `${percentage}% ${fiber}`)
       .join(", ");
   } else if (fabric?.properties?.compositions && Array.isArray(fabric.properties.compositions)) {
+    // Define interfaces for fabric properties
+    interface FabricFiber {
+      fiberId?: number | null;
+      name?: string;
+      percentage: string | number;
+    }
+
+    interface FabricComposition {
+      name: string;
+      isDefault: boolean;
+      fibers: FabricFiber[];
+    }
+
     // Fallback to fabric compositions
     const composition =
-      fabric.properties.compositions.find((c: any) => c.isDefault) ||
-      fabric.properties.compositions[0];
+      (fabric.properties.compositions as FabricComposition[]).find((c) => c.isDefault) ||
+      (fabric.properties.compositions as FabricComposition[])[0];
+
     if (composition?.fibers && Array.isArray(composition.fibers)) {
-      fabricComposition = composition.fibers
-        .map((f: any) => `${f.percentage}% ${f.name}`)
+      fabricComposition = (composition.fibers as FabricFiber[])
+        .map((f) => `${f.percentage}% ${f.name || "Unknown Fiber"}`)
         .join(", ");
     }
   }
 
   // Extract features from specifications or tags
   const features =
-    Array.isArray(productAny.specifications) && productAny.specifications.length > 0
-      ? productAny.specifications
+    Array.isArray(fullProduct.specifications) && fullProduct.specifications.length > 0
+      ? fullProduct.specifications
       : Array.isArray(product.tags)
         ? product.tags
         : [];
@@ -166,13 +182,13 @@ export function transformProduct(
   // Build product detail URL
   // PRIORITY 1: Use canonical urlPath from database (prevents 404s)
   let detailUrl = product.urlPath || "";
-  const productSlug = productAny.slug;
+  const productSlug = product.slug;
 
   // PRIORITY 2: Construct from category path if no canonical URL
   if (!detailUrl && category && productSlug) {
     // Build category path by traversing up the category tree
     const categoryPath: string[] = [];
-    let currentCat: Category | undefined = category;
+    let currentCat: MinimalCategory | undefined = category;
     const visitedIds = new Set<number>();
 
     while (currentCat) {
@@ -216,12 +232,12 @@ export function transformProduct(
     fabric: fabricName,
     weight: { value: weightValue, unit: "GSM" },
     moq: product.minimumOrderQuantity || 100,
-    leadTime: (product as any).leadTime || "30-45 days",
+    leadTime: fullProduct.leadTime || "30-45 days",
     certifications,
     specifications,
     isFeatured: product.isFeatured || false,
     detailUrl,
-    media: buildProductMediaItems(product as any).map((item) => ({
+    media: buildProductMediaItems(fullProduct as Product).map((item) => ({
       id: item.id,
       type: item.type === "video" ? ("video" as const) : ("image" as const),
       url: item.url,
@@ -262,7 +278,7 @@ export function groupProductsByCategory(
  * Build hierarchical product URL from category path and product slug
  * Handles nested categories and prevents circular reference loops
  */
-export function buildProductUrl(product: Product, categories: Category[]): string {
+export function buildProductUrl(product: Product, categories: MinimalCategory[]): string {
   // PRIORITY 1: Use canonical urlPath if available
   if (product.urlPath) {
     return product.urlPath;
@@ -276,7 +292,7 @@ export function buildProductUrl(product: Product, categories: Category[]): strin
 
   // Build category path (handle hierarchical categories)
   const categoryPath: string[] = [];
-  let currentCat: Category | undefined = category;
+  let currentCat: MinimalCategory | undefined = category;
   const visitedIds = new Set<number>(); // Prevent infinite loops from circular references
 
   // Traverse up the category tree to build the full path

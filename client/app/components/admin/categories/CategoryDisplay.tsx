@@ -105,8 +105,9 @@ const CategoryActions = memo(
         <DropdownMenuItem
           onClick={() => onDelete(category)}
           className="text-red-600 focus:text-red-600"
+          aria-label={`Delete ${category.name} category`}
         >
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -143,6 +144,7 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
       ref={setNodeRef}
       style={style}
       className={`group transition-colors hover:bg-background ${isSelected ? "bg-blue-50" : ""} ${isDragging ? "border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""} `}
+      aria-roledescription="sortable list item"
     >
       <td className="w-12 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -152,8 +154,9 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
               {...attributes}
               {...listeners}
               title="Drag to reorder"
+              aria-label={`Drag ${category.name} to reorder`}
             >
-              <GripVertical className="h-4 w-4" />
+              <GripVertical className="h-4 w-4" aria-hidden="true" />
             </button>
           )}
           <Checkbox
@@ -225,6 +228,7 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
       className={`group transition-all hover:shadow-md ${
         isSelected ? "bg-blue-50 ring-2 ring-ring" : ""
       } ${isDragging ? "scale-105 opacity-50 shadow-lg ring-2 ring-blue-300 ring-dashed" : ""} `}
+      aria-roledescription="sortable list item"
     >
       <CardContent className="p-4">
         <div className="space-y-3">
@@ -241,8 +245,9 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
                   {...attributes}
                   {...listeners}
                   title="Drag to reorder"
+                  aria-label={`Drag ${category.name} to reorder`}
                 >
-                  <GripVertical className="h-4 w-4" />
+                  <GripVertical className="h-4 w-4" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -322,6 +327,8 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
         isDragging ? "scale-105 border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""
       } `}
       data-depth={depth}
+      role="listitem"
+      aria-roledescription="sortable list item"
     >
       {/* Expand/collapse button */}
       {hasChildren && onToggleExpanded ? (
@@ -345,8 +352,9 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
             {...attributes}
             {...listeners}
             title="Drag to reorder"
+            aria-label={`Drag ${category.name} to reorder`}
           >
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-4 w-4" aria-hidden="true" />
           </button>
         )}
         <Checkbox

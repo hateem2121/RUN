@@ -36,10 +36,10 @@ export function responseTracker(_req: Request, res: Response, next: NextFunction
 
   // Monkey-patch res.end
   const originalEnd = res.end;
-  res.end = function (chunk?: any, encoding?: BufferEncoding | (() => void), cb?: () => void) {
+  res.end = function (this: Response, ...args: unknown[]) {
     res.locals._handled = true;
-    return originalEnd.call(this, chunk, encoding as any, cb);
-  };
+    return originalEnd.apply(this, args as [any, BufferEncoding, (() => void) | undefined]);
+  } as unknown as typeof res.end;
 
   next();
 }

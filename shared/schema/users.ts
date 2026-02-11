@@ -1,5 +1,5 @@
 import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core";
-import { pgTable } from "./common";
+import { pgTable } from "./common.js";
 
 // =============================================================================
 // REPLIT AUTH TABLES

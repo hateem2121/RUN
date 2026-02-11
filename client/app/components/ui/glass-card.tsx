@@ -3,7 +3,7 @@
  * This component remains for backward compatibility but should not be used in new code.
  */
 import type { VariantProps } from "class-variance-authority";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, type PanInfo, useMotionValue, useTransform } from "framer-motion";
 import type * as React from "react";
 import { useEffect, useState } from "react";
 
@@ -115,8 +115,8 @@ const LiquidGlassCard = ({
   const rotateY = useTransform(x, [-100, 100], [-5, 5]);
 
   const shouldEnableDrag = isDraggable && !isTouchDevice;
-  // biome-ignore lint/suspicious/noExplicitAny: Drag event types
-  const handleDragEnd = (_event: any, info: any) => {
+
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 50;
     if (Math.abs(info.offset.x) < threshold && Math.abs(info.offset.y) < threshold) {
       x.set(0);
@@ -148,6 +148,7 @@ const LiquidGlassCard = ({
           "inline-block", // Maintain inline-block for LiquidGlassCard
           className,
         )}
+        // biome-ignore lint/style/noInlineStyles: Dynamic layout props required
         style={{
           borderRadius,
           width: width || "auto",
@@ -159,6 +160,7 @@ const LiquidGlassCard = ({
         {/* Static gradient background matching main render */}
         <div
           className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
+          // biome-ignore lint/style/noInlineStyles: Dynamic border radius
           style={{ borderRadius }}
         />
         <div className="relative z-elevated h-full">{children}</div>
@@ -174,6 +176,7 @@ const LiquidGlassCard = ({
       {...(shouldEnableDrag ? { dragElastic: 0.1 } : {})}
       {...(shouldEnableDrag ? { dragTransition: { bounceStiffness: 600, bounceDamping: 20 } } : {})}
       {...(shouldEnableDrag ? { onDragEnd: handleDragEnd } : {})}
+      // biome-ignore lint/style/noInlineStyles: Animation values require inline styles
       style={{
         ...(shouldEnableDrag ? { x } : {}),
         ...(shouldEnableDrag ? { y } : {}),
@@ -184,7 +187,7 @@ const LiquidGlassCard = ({
         height: currentHeight,
         ...(shouldEnableDrag ? { perspective: "1000px" } : {}),
         ...(shouldEnableDrag ? { transformStyle: "preserve-3d" } : {}),
-        // biome-ignore lint/suspicious/noExplicitAny: Style cast
+        // biome-ignore lint/suspicious/noExplicitAny: Style cast for compatibility
         ...(style as any),
       }}
       animate={{
@@ -215,11 +218,13 @@ const LiquidGlassCard = ({
     >
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
+        // biome-ignore lint/style/noInlineStyles: Dynamic border radius
         style={{ borderRadius }}
       />
 
       <div
         className="card-border-overlay rounded-[calc(var(--radius)-1px)]"
+        // biome-ignore lint/style/noInlineStyles: Dynamic border radius calc
         style={{ borderRadius: `calc(${borderRadius} - 1px)` }}
       />
 
@@ -227,6 +232,7 @@ const LiquidGlassCard = ({
 
       <div
         className="pointer-events-none absolute inset-0 hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block"
+        // biome-ignore lint/style/noInlineStyles: Dynamic border radius
         style={{ borderRadius }}
       >
         <div className="shimmer-overlay z-elevated" />

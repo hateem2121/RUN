@@ -15,14 +15,21 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
   try {
     const data = await promise;
     return ok(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Check for unique constraint violation (Postgres error 23505)
-    if (error?.code === "23505") {
+    // We use a safe check for the 'code' property
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: unknown }).code === "23505"
+    ) {
+      const pgError = error as { constraint?: string; detail?: string };
       return err(
         new DatabaseError("Duplicate entry violates unique constraint", {
           code: "23505",
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }

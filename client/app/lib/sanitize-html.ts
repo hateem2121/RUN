@@ -41,31 +41,31 @@ export const escapeHtml = (str: string | null | undefined): string => {
  * @param obj - Object to sanitize
  * @returns Sanitized object safe for JSON.stringify
  */
-export const sanitizeStructuredData = <T extends Record<string, any>>(obj: T): T => {
+export const sanitizeStructuredData = <T extends Record<string, unknown> | unknown>(obj: T): T => {
   if (obj === null || obj === undefined) {
     return obj;
   }
 
   if (typeof obj !== "object") {
-    return typeof obj === "string" ? (escapeHtml(obj) as any) : obj;
+    return typeof obj === "string" ? (escapeHtml(obj) as T) : obj;
   }
 
   if (Array.isArray(obj)) {
-    return obj.map((item) => sanitizeStructuredData(item)) as any;
+    return obj.map((item) => sanitizeStructuredData(item)) as T;
   }
 
-  const sanitized = {} as T;
+  const sanitized = {} as Record<string, unknown>;
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === "string") {
-      sanitized[key as keyof T] = escapeHtml(value) as any;
+      sanitized[key] = escapeHtml(value);
     } else if (typeof value === "object" && value !== null) {
-      sanitized[key as keyof T] = sanitizeStructuredData(value);
+      sanitized[key] = sanitizeStructuredData(value);
     } else {
-      sanitized[key as keyof T] = value;
+      sanitized[key] = value;
     }
   }
 
-  return sanitized;
+  return sanitized as T;
 };
 
 /**

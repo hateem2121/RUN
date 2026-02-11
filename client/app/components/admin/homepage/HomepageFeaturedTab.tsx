@@ -40,7 +40,10 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
     }
   }, [settings]);
 
-  const handleChange = (field: keyof InsertHomepageFeaturedProductsSettings, value: any) => {
+  const handleChange = <K extends keyof InsertHomepageFeaturedProductsSettings>(
+    field: K,
+    value: InsertHomepageFeaturedProductsSettings[K],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setIsDirty(true);
   };

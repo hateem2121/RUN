@@ -82,12 +82,15 @@ const Stats: React.FC = () => {
       return;
     }
 
-    // Explicitly use .current
     const scope = containerRef.current;
+    if (!scope) {
+      return;
+    }
 
     const ctx = gsap.context(() => {
-      // Defensive check inside context
-      if (!leftRef.current || !rightRef.current) {
+      const left = leftRef.current;
+      const right = rightRef.current;
+      if (!left || !right) {
         return;
       }
 
@@ -99,7 +102,7 @@ const Stats: React.FC = () => {
             trigger: scope,
             start: "top top",
             end: "bottom bottom",
-            pin: leftRef.current,
+            pin: left,
             pinSpacing: false,
             invalidateOnRefresh: true,
             anticipatePin: 1,
@@ -108,7 +111,7 @@ const Stats: React.FC = () => {
       });
 
       // Animate content fade in
-      const stats = rightRef.current.querySelectorAll(".stat-item");
+      const stats = right.querySelectorAll(".stat-item");
       if (stats.length > 0) {
         stats.forEach((stat) => {
           gsap.fromTo(

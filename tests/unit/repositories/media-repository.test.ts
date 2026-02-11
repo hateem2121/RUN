@@ -234,7 +234,7 @@ describe("MediaRepository", () => {
         vi.mocked(db.select).mockReturnValue({
           from: vi.fn().mockReturnValue({
             where: vi.fn().mockReturnValue({
-              returning: vi.fn().mockResolvedValue([mockFolder]),
+              orderBy: vi.fn().mockResolvedValue([mockFolder]),
             }),
           }),
           // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
@@ -250,7 +250,7 @@ describe("MediaRepository", () => {
     describe("createFolder", () => {
       it("should create a new folder", async () => {
         vi.mocked(db.insert).mockReturnValue({
-          returning: vi.fn().mockReturnValue({
+          values: vi.fn().mockReturnValue({
             returning: vi.fn().mockResolvedValue([mockFolder]),
           }),
           // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type

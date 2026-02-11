@@ -83,7 +83,7 @@ export function TechnologyGradientSettings({
 
   // Update gradient settings mutation
   const updateGradientMutation = useMutation({
-    mutationFn: async (data: GradientFormData) => {
+    mutationFn: (data: GradientFormData) => {
       return apiRequest("/api/technology-gradient-settings", {
         method: "POST",
         body: JSON.stringify(data),
@@ -98,8 +98,7 @@ export function TechnologyGradientSettings({
         queryKey: ["/api/technology-gradient-settings"],
       });
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         variant: "destructive",
         title: "Error updating gradient settings",
@@ -245,6 +244,7 @@ export function TechnologyGradientSettings({
                   })
                 }
                 className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                aria-label="Gradient Angle"
               />
               <div className="flex justify-between text-muted-foreground/70 text-xs">
                 <span>0° (Horizontal)</span>
@@ -275,6 +275,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Background Texture Noise"
                 />
               </div>
 
@@ -314,6 +315,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Blind Count"
                 />
               </div>
 
@@ -337,6 +339,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Blind Width"
                 />
               </div>
             </div>
@@ -381,6 +384,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Spotlight Size"
                 />
               </div>
             </div>
@@ -407,6 +411,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Mouse Response Dampening"
                 />
               </div>
 
@@ -430,6 +435,7 @@ export function TechnologyGradientSettings({
                     })
                   }
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                  aria-label="Motion Distortion Amount"
                 />
               </div>
             </div>
@@ -480,6 +486,7 @@ export function TechnologyGradientSettings({
                         })
                       }
                       className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                      aria-label="Spotlight Edge Sharpness"
                     />
                     <div className="flex justify-between text-muted-foreground/70 text-xs">
                       <span>Soft</span>
@@ -507,6 +514,7 @@ export function TechnologyGradientSettings({
                         })
                       }
                       className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted/20"
+                      aria-label="Spotlight Intensity"
                     />
                   </div>
                 </div>

@@ -30,8 +30,13 @@ export function createCorsMiddleware() {
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, postman)
+      // SEC-005: In production, require Origin header for API security
       if (!origin) {
+        if (config.app.environment === "production") {
+          logger.warn("[CORS] Blocked request with no Origin header in production");
+          return callback(new Error("CORS policy: Origin header required"));
+        }
+        // Allow in development for Postman/curl/mobile
         return callback(null, true);
       }
 
@@ -79,6 +84,7 @@ export function createCorsMiddleware() {
       "Authorization",
       "X-Requested-With",
       "X-Correlation-ID",
+      "x-csrf-token",
       "Sentry-Trace",
       "Baggage",
     ],

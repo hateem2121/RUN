@@ -306,16 +306,14 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
     const allAssets: MediaAsset[] = [];
 
+    // Valid response shapes from the API
+    type MediaApiResponse = { data: MediaAsset[] } | { success: boolean; data: MediaAsset[] };
+
     for (const [_queryKey, queryData] of allMediaQueries) {
-      // biome-ignore lint/suspicious/noExplicitAny: legacy query handling
-      const data = queryData as any;
+      const data = queryData as MediaApiResponse;
 
       // Handle standard paginated response format
-      if (data?.data && Array.isArray(data.data)) {
-        allAssets.push(...data.data);
-      }
-      // Handle alternative format
-      else if (data?.success && Array.isArray(data.data)) {
+      if (data && "data" in data && Array.isArray(data.data)) {
         allAssets.push(...data.data);
       }
     }
@@ -364,8 +362,9 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
 
       const actionType = actionMap[key as keyof typeof actionMap];
       if (actionType) {
-        // biome-ignore lint/suspicious/noExplicitAny: dynamic dispatch
-        dispatch({ type: actionType as any, payload: value });
+        // We can safely cast here because the key aligns with the value type in MediaLibraryState
+        // and our action definitions match this structure
+        dispatch({ type: actionType, payload: value } as MediaLibraryAction);
       } else {
       }
     },
@@ -814,8 +813,7 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
       params: URLSearchParams,
       currentState: MediaLibraryState,
     ): Array<{ key: keyof MediaLibraryState; value: unknown }> => {
-      // biome-ignore lint/suspicious/noExplicitAny: dynamic value types
-      const updates: Array<{ key: keyof MediaLibraryState; value: any }> = [];
+      const updates: Array<{ key: keyof MediaLibraryState; value: unknown }> = [];
 
       if (params.has("search")) {
         updates.push({ key: "searchTerm", value: params.get("search") || "" });
@@ -875,15 +873,19 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
         });
       }
       if (params.has("sortBy")) {
-        // biome-ignore lint/suspicious/noExplicitAny: sort type
-        updates.push({ key: "sortBy", value: params.get("sortBy") as any });
+        const sortBy = params.get("sortBy");
+        if (["name", "size", "uploadedAt", "type"].includes(sortBy as string)) {
+          updates.push({ key: "sortBy", value: sortBy });
+        }
       }
       if (params.has("sortOrder")) {
-        updates.push({
-          key: "sortOrder",
-          // biome-ignore lint/suspicious/noExplicitAny: sort order type
-          value: params.get("sortOrder") as any,
-        });
+        const sortOrder = params.get("sortOrder");
+        if (["asc", "desc"].includes(sortOrder as string)) {
+          updates.push({
+            key: "sortOrder",
+            value: sortOrder,
+          });
+        }
       }
       if (params.has("page")) {
         updates.push({ key: "currentPage", value: Number(params.get("page")) });
@@ -917,8 +919,10 @@ export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNod
     if (updates.length > 0) {
       for (const { key, value } of updates) {
         if (ACTION_MAP[key]) {
-          // biome-ignore lint/suspicious/noExplicitAny: dynamic action dispatch
-          dispatch({ type: ACTION_MAP[key], payload: value } as any);
+          // We cast to MediaLibraryAction assuming the value type matches key expectations
+          // logic in parseUrlParamsToUpdates ensures value types are correct for keys
+          const type = ACTION_MAP[key];
+          dispatch({ type, payload: value } as MediaLibraryAction);
         }
       }
     }

@@ -58,14 +58,14 @@ const FlipCard = memo(function FlipCard({
                   "absolute inset-0 h-full w-full",
                   "backface-hidden rotate-y-0",
                   "overflow-hidden rounded-2xl",
-                  "bg-white",
-                  "border border-luxury-light",
-                  "shadow-sm-luxury-sm",
-                  "transition-shadow-sm duration-700",
-                  "group-hover:shadow-sm-luxury-lg",
+                  "bg-white dark:bg-zinc-950",
+                  "border border-border",
+                  "shadow-luxury-sm",
+                  "transition-shadow duration-700",
+                  "group-hover:shadow-luxury-lg",
                 )}
               >
-                <div className="relative h-full overflow-hidden bg-linear-to-b from-luxury-gray-50 to-white">
+                <div className="relative h-full overflow-hidden bg-linear-to-b from-surface-subtle to-white dark:from-zinc-900 dark:to-zinc-950">
                   {/* Media Background */}
                   {mediaUrl && !hasError ? (
                     <div className="absolute inset-0">
@@ -179,10 +179,10 @@ const FlipCard = memo(function FlipCard({
                       "flex items-center justify-between",
                       "rounded-lg p-3",
                       "transition-all duration-300",
-                      "bg-linear-to-r from-zinc-100 via-zinc-100 to-zinc-100",
-                      "dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800",
-                      "hover:from-0% hover:from-orange-500/10 hover:via-100% hover:via-orange-500/5 hover:to-100% hover:to-transparent",
-                      "dark:hover:from-0% dark:hover:from-orange-500/20 dark:hover:via-100% dark:hover:via-orange-500/10 dark:hover:to-100% dark:hover:to-transparent",
+                      "bg-linear-to-r from-surface-muted via-surface-subtle to-white",
+                      "dark:from-luxury-charcoal dark:via-luxury-charcoal dark:to-surface-black",
+                      "hover:from-0% hover:from-primary/10 hover:via-100% hover:via-primary/5 hover:to-100% hover:to-transparent",
+                      "dark:hover:from-0% dark:hover:from-primary/20 dark:hover:via-100% dark:hover:via-primary/10 dark:hover:to-100% dark:hover:to-transparent",
                       "hover:scale-[1.02] hover:cursor-pointer",
                     )}
                     onClick={() => link && window.open(link, "_blank")}

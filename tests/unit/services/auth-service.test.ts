@@ -215,10 +215,9 @@ describe("AuthService", () => {
 
       await authService.requireAdmin(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(AuthErrors.AUTH_SERVER_ERROR.status);
+      expect(res.status).toHaveBeenCalledWith(AuthErrors.ADMIN_REQUIRED.status);
       expect(res.json).toHaveBeenCalledWith({
-        error: AuthErrors.AUTH_SERVER_ERROR,
-        redirectTo: "/api/login",
+        error: AuthErrors.ADMIN_REQUIRED,
       });
     });
   });

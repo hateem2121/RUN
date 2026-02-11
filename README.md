@@ -14,7 +14,8 @@
 ✓ Server:      http://localhost:5002
 ✓ Admin Panel: http://localhost:5002/admin
 ✓ Public Site: http://localhost:5002
-- **API**:         http://localhost:5002/api/v1
+- **API**:         http://localhost:5002/api
+- **Admin API**:   http://localhost:5002/api/admin
 ```
 
 **If you see any other port, that's a bug.**
@@ -82,10 +83,8 @@ cms-system/
 │
 ├── server/                  # Backend (Express 5 + Node.js)
 │   ├── routes/
-│   │   ├── api/
-│   │   │   ├── public.ts   # Public API endpoints
-│   │   │   └── admin.ts    # Admin API endpoints
-│   │   └── index.ts
+│   │   ├── resources/      # Modular resource routers (canonical)
+│   │   └── index.ts        # Master router
 │   ├── services/           # Business logic
 │   ├── middleware/
 │   ├── models/
@@ -296,19 +295,18 @@ npm run preview
 
 ## 🔌 API Endpoints
 
-### Public API (http://localhost:5002/api/v1)
+### Public API (http://localhost:5002/api)
 
-Returns only published content.
+Returns only published content. Optimized for 2026 standards.
 
 ```bash
 GET  /api/products              # List published products
-GET  /api/products/:id          # Get product details
-GET  /api/blog/posts            # List published blog posts
-GET  /api/blog/posts/:slug      # Get post by slug
-GET  /api/pages/:id             # Get page content
+GET  /api/navigation-items       # Header/Menu items
+GET  /api/contact-info           # Business contact data
+GET  /api/homepage-hero          # Hero section content
 ```
 
-### Admin API (http://localhost:5002/admin/api)
+### Admin API (http://localhost:5002/api/admin)
 
 **Requires authentication.** Returns all content (published + drafts).
 

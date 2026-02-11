@@ -100,6 +100,8 @@ export const DesktopSidebar = ({
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      role="navigation"
+      aria-label="Desktop Sidebar"
       {...props}
     >
       {children}
@@ -114,6 +116,8 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
       className={cn(
         "fixed top-0 right-0 left-0 z-modal flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
       )}
+      role="navigation"
+      aria-label="Mobile Sidebar"
       {...props}
     >
       <div className="flex w-full justify-end">
@@ -170,6 +174,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
           : "rounded-md hover:bg-neutral-100 hover:px-2 dark:hover:bg-neutral-800",
         className,
       )}
+      aria-current={isActive ? "page" : undefined}
       {...props}
     >
       <div

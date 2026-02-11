@@ -18,7 +18,14 @@ export function registerDirectPostgresPopulationRoutes(app: Express): void {
 
       // Wrap ALL table inserts in a transaction for atomicity (all-or-nothing)
       const results = await db.transaction(async (tx) => {
-        const txResults: any = {
+        interface PopulationResults {
+          categories: unknown[];
+          fabrics: unknown[];
+          fibers: unknown[];
+          certificates: unknown[];
+          accessories: unknown[];
+        }
+        const txResults: PopulationResults = {
           categories: [],
           fabrics: [],
           fibers: [],

@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import type { NextFunction, Request, Response } from "express";
 import { logging } from "../../config/environment.js";
 import { logger } from "./logger.js";
 
@@ -36,15 +37,20 @@ export function initSentry() {
 }
 
 // Manual middleware implementation for Sentry v10 compatibility
-export const sentryRequestHandler = (_req: any, _res: any, next: any) => {
+export const sentryRequestHandler = (_req: Request, _res: Response, next: NextFunction) => {
   return next();
 };
 
-export const sentryTracingHandler = (_req: any, _res: any, next: any) => {
+export const sentryTracingHandler = (_req: Request, _res: Response, next: NextFunction) => {
   return next();
 };
 
-export const sentryErrorHandler = (err: any, req: any, _res: any, next: any) => {
+export const sentryErrorHandler = (
+  err: Error,
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
   if (logging.sentry.dsn) {
     Sentry.withScope((scope) => {
       scope.setSDKProcessingMetadata({ request: req });

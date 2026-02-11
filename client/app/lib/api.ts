@@ -1,5 +1,21 @@
 import type { ProblemDetails } from "@run-remix/shared";
 
+/**
+ * Extract CSRF token from cookies for Double-Submit Cookie pattern.
+ * The server sets csrf_token as a non-httpOnly cookie readable by JS.
+ */
+function getCsrfToken(): string | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  return (
+    document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1] ?? null
+  );
+}
+
 export class ApiError extends Error {
   status: number;
   retryAfter?: number;
@@ -104,11 +120,23 @@ export async function apiRequest<T>(
     }
   }
 
+  // SEC-003: Inject CSRF token on all state-changing requests
+  const method = (options.method || "GET").toUpperCase();
+  const needsCsrf = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
+  const csrfHeaders: Record<string, string> = {};
+  if (needsCsrf) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      csrfHeaders["x-csrf-token"] = csrfToken;
+    }
+  }
+
   const config: RequestInit = {
     ...options,
     signal: controller.signal,
     headers: {
       "Content-Type": "application/json",
+      ...csrfHeaders,
       ...options.headers,
     },
   };
@@ -118,9 +146,9 @@ export async function apiRequest<T>(
     clearTimeout(id); // Clear timeout on success
 
     if (!res.ok) {
-      const errorData = (await extractErrorBody(res)) as any;
+      const errorData = await extractErrorBody(res);
 
-      if (res.status === 429 && typeof errorData === "object" && errorData !== null) {
+      if (res.status === 429 && isErrorObject(errorData)) {
         const retryHeader = res.headers.get("Retry-After");
         if (retryHeader) {
           errorData.retryAfter = parseInt(retryHeader, 10);
@@ -132,11 +160,12 @@ export async function apiRequest<T>(
       }
 
       // Fallback for non-standard error bodies
-      const fallbackError: any = {
+      const fallbackError: Partial<ProblemDetails> & { message: string } = {
         type: "about:blank",
         title: res.statusText || "Unknown Error",
         status: res.status,
         detail: typeof errorData === "string" ? errorData : JSON.stringify(errorData),
+        message: typeof errorData === "string" ? errorData : "Unknown Error", // Ensure message exists
       };
       throw new ApiError(res.status, fallbackError);
     }
@@ -155,7 +184,11 @@ export async function apiRequest<T>(
   } catch (error) {
     clearTimeout(id); // Ensure clear on error too
 
-    if (error instanceof ApiError || (error as any)?.name === "ApiError") {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof ApiError ||
+      (typeof errObj === "object" && errObj !== null && errObj.name === "ApiError")
+    ) {
       throw error;
     }
 
@@ -196,10 +229,15 @@ async function extractErrorBody(res: Response): Promise<unknown> {
   }
 }
 
-function isProblemDetails(data: any): data is ProblemDetails {
+function isProblemDetails(data: unknown): data is ProblemDetails {
+  const d = data as Record<string, unknown>;
   return (
     typeof data === "object" &&
     data !== null &&
-    (typeof data.title === "string" || typeof data.detail === "string")
+    (typeof d.title === "string" || typeof d.detail === "string")
   );
+}
+
+function isErrorObject(data: unknown): data is Record<string, unknown> {
+  return typeof data === "object" && data !== null;
 }

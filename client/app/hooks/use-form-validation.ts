@@ -5,7 +5,6 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  // biome-ignore lint/suspicious/noExplicitAny: Custom validator accepts any value type
   custom?: (value: unknown) => boolean;
   message: string;
 }
@@ -33,7 +32,6 @@ export function useFormValidation(schema: ValidationSchema) {
   });
 
   const validateField = useCallback(
-    // biome-ignore lint/suspicious/noExplicitAny: Field value can be any type
     (field: string, value: unknown): ValidationState => {
       const rules = schema[field];
       if (!rules) {
@@ -87,7 +85,6 @@ export function useFormValidation(schema: ValidationSchema) {
   );
 
   const validate = useCallback(
-    // biome-ignore lint/suspicious/noExplicitAny: Field value can be any type
     (field: string, value: unknown) => {
       const result = validateField(field, value);
       setErrors((prev) => ({
@@ -100,7 +97,6 @@ export function useFormValidation(schema: ValidationSchema) {
   );
 
   const validateAll = useCallback(
-    // biome-ignore lint/suspicious/noExplicitAny: Form values are generic
     (values: Record<string, unknown>): boolean => {
       const newErrors: ValidationErrors = {};
       let isFormValid = true;

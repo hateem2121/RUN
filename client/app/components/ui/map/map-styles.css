@@ -1,4 +1,5 @@
-@import "../../../styles/theme.css";
+/* @import "../../../styles/theme.css"; */
+/* Theme variables are available globally via index.css */
 
 @layer components {
   /* =========================

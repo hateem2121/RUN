@@ -17,7 +17,15 @@ export function registerDataCreationRoutes(app: Express): void {
         logger.debug("[Data Creation] 🚀 Creating all 47 structured business items...");
 
         const storage = getStorage();
-        const results: any = {
+        interface DataCreationResults {
+          categories: unknown[];
+          fabrics: unknown[];
+          fibers: unknown[];
+          certificates: unknown[];
+          accessories: unknown[];
+        }
+
+        const results: DataCreationResults = {
           categories: [],
           fabrics: [],
           fibers: [],

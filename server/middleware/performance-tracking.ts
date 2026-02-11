@@ -10,6 +10,11 @@
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 
+interface TrackedRequest extends Request {
+  dbTime?: number;
+  cacheHit?: boolean;
+}
+
 // Performance metrics storage (in-memory, last 1000 requests)
 const MAX_METRICS = 1000;
 const recentMetrics: PerformanceMetric[] = [];
@@ -56,14 +61,21 @@ export function performanceTrackingMiddleware(req: Request, res: Response, next:
   const originalEnd = res.end;
 
   // Intercept first write to track TTFB
-  res.write = function (this: Response) {
+  res.write = function (this: Response, ...args: any[]) {
     ttfb ??= Date.now() - startTime;
     // eslint-disable-next-line prefer-rest-params, prefer-spread
-    return originalWrite.apply(this, arguments as any);
-  } as any as typeof res.write;
+    return originalWrite.apply(
+      this,
+      args as unknown as [
+        any,
+        BufferEncoding,
+        ((error: Error | null | undefined) => void) | undefined,
+      ],
+    );
+  } as unknown as typeof res.write;
 
   // Track total duration on response end
-  res.end = function (this: Response) {
+  res.end = function (this: Response, ...args: any[]) {
     const endTime = Date.now();
     const duration = endTime - startTime;
     const endHrTime = process.hrtime.bigint();
@@ -80,8 +92,8 @@ export function performanceTrackingMiddleware(req: Request, res: Response, next:
       statusCode: res.statusCode,
       duration: precisionDuration,
       ttfb,
-      dbTime: (req as any).dbTime,
-      cacheHit: (req as any).cacheHit,
+      dbTime: (req as TrackedRequest).dbTime,
+      cacheHit: (req as TrackedRequest).cacheHit,
       userAgent: req.get("user-agent"),
     };
 
@@ -111,8 +123,11 @@ export function performanceTrackingMiddleware(req: Request, res: Response, next:
     }
 
     // eslint-disable-next-line prefer-rest-params, prefer-spread
-    return originalEnd.apply(this, arguments as any);
-  } as any as typeof res.end;
+    return originalEnd.apply(
+      this,
+      args as unknown as [any, BufferEncoding, (() => void) | undefined],
+    );
+  } as unknown as typeof res.end;
 
   next();
 }

@@ -3,8 +3,12 @@ import type {
   InsertSustainabilityInitiative,
   InsertSustainabilityMetric,
   InsertUnifiedSustainability,
+  SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
 } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function useAdminSustainabilityMutations() {
   const queryClient = useQueryClient();
@@ -19,92 +23,153 @@ export function useAdminSustainabilityMutations() {
     },
   });
 
+  // Metrics Mutations
   const createMetric = useMutation({
-    mutationFn: async (_data: InsertSustainabilityMetric) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (data: InsertSustainabilityMetric) => {
+      return apiRequest("/api/v1/sustainability-metrics", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityMetric>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-metrics"] });
+    },
   });
 
   const updateMetric = useMutation({
-    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityMetric> }) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertSustainabilityMetric> }) => {
+      return apiRequest(`/api/v1/sustainability-metrics/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityMetric>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-metrics"] });
+    },
   });
 
   const deleteMetric = useMutation({
-    mutationFn: async (_id: number) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/v1/sustainability-metrics/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-metrics"] });
+    },
   });
 
   const reorderMetrics = useMutation({
-    mutationFn: async (_updates: { id: number; sortOrder: number }[]) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (metrics: { id: number; position: number }[]) => {
+      return apiRequest("/api/v1/sustainability-metrics/reorder", {
+        method: "PATCH",
+        body: JSON.stringify({ metrics }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-metrics"] });
+    },
   });
 
+  // Initiatives Mutations
   const createInitiative = useMutation({
-    mutationFn: async (_data: InsertSustainabilityInitiative) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (data: InsertSustainabilityInitiative) => {
+      return apiRequest("/api/v1/sustainability-initiatives", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityInitiative>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-initiatives"] });
+    },
   });
 
   const updateInitiative = useMutation({
-    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityInitiative> }) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: Partial<InsertSustainabilityInitiative>;
+    }) => {
+      return apiRequest(`/api/v1/sustainability-initiatives/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityInitiative>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-initiatives"] });
+    },
   });
 
   const deleteInitiative = useMutation({
-    mutationFn: async (_id: number) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/v1/sustainability-initiatives/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-initiatives"] });
+    },
   });
 
   const reorderInitiatives = useMutation({
-    mutationFn: async (_updates: { id: number; sortOrder: number }[]) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (initiatives: { id: number; position: number }[]) => {
+      return apiRequest("/api/v1/sustainability-initiatives/reorder", {
+        method: "PATCH",
+        body: JSON.stringify({ initiatives }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-initiatives"] });
+    },
   });
 
+  // Goals Mutations
   const createGoal = useMutation({
-    mutationFn: async (_data: InsertSustainabilityGoal) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (data: InsertSustainabilityGoal) => {
+      return apiRequest("/api/v1/sustainability-goals", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityGoal>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-goals"] });
+    },
   });
 
   const updateGoal = useMutation({
-    mutationFn: async (_data: { id: number; data: Partial<InsertSustainabilityGoal> }) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertSustainabilityGoal> }) => {
+      return apiRequest(`/api/v1/sustainability-goals/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }) as Promise<SustainabilityGoal>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-goals"] });
+    },
   });
 
   const deleteGoal = useMutation({
-    mutationFn: async (_id: number) => {},
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["/api/sustainability/batch"],
-      }),
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/v1/sustainability-goals/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/sustainability-goals"] });
+    },
   });
 
   return {

@@ -2,33 +2,44 @@ import type { Fabric, MediaAsset } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { apiRequest } from "@/lib/queryClient";
 
-export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: MediaAsset[] }) {
-  const { data: fabricsData = [] } = useQuery<Fabric[]>({
+interface FabricPortfolioSectionProps {
+  mediaAssets?: MediaAsset[];
+  selectedFabricIds?: number[];
+  fabrics?: Fabric[];
+}
+
+export function FabricPortfolioSection({
+  mediaAssets = [],
+  selectedFabricIds = [],
+  fabrics: initialFabrics,
+}: FabricPortfolioSectionProps) {
+  const { data: fabricsData = initialFabrics || [] } = useQuery<Fabric[]>({
     queryKey: ["/api/fabrics"],
+    queryFn: () => apiRequest("/api/fabrics"),
+    enabled: !initialFabrics || initialFabrics.length === 0,
+    staleTime: 5 * 60 * 1000,
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy API response type
-  const { data: fabricPortfolioData } = useQuery<any>({
-    queryKey: ["/api/sustainability-fabric-portfolio"],
-  });
   const sustainableFabrics = useMemo(() => {
+    // Filter by active fabrics first
     const activeFabrics = fabricsData.filter((fabric) => fabric.isActive);
-    const selectedIds = fabricPortfolioData?.selectedFabricIds;
 
-    if (selectedIds && selectedIds.length > 0) {
+    // If specific IDs are selected, filter by those
+    if (selectedFabricIds && selectedFabricIds.length > 0) {
       return (
-        selectedIds
-          // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
-          .map((id: any) => activeFabrics.find((fabric: any) => fabric.id === id))
-          // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
-          .filter((fabric: any): fabric is Fabric => fabric !== undefined)
+        selectedFabricIds
+          .map((id) => activeFabrics.find((fabric) => fabric.id === id))
+          .filter((fabric): fabric is Fabric => fabric !== undefined)
+          // Keep the order of selection or just slice
           .slice(0, 6)
       );
     }
 
+    // Default fallback: show first 6 active fabrics
     return activeFabrics.slice(0, 6);
-  }, [fabricsData, fabricPortfolioData?.selectedFabricIds]);
+  }, [fabricsData, selectedFabricIds]);
 
   if (sustainableFabrics.length === 0) {
     return (
@@ -40,8 +51,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {/* biome-ignore lint/suspicious/noExplicitAny: Legacy fabric data */}
-      {sustainableFabrics.map((fabric: any, index: number) => {
+      {sustainableFabrics.map((fabric: Fabric, index: number) => {
         const fabricImage = mediaAssets.find((asset) => asset.id === fabric.visualSwatchId);
         return (
           <motion.div
@@ -50,7 +60,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg transition-shadow-sm duration-300 hover:shadow-xl"
+            className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
           >
             {fabricImage && (
               <div className="h-48 overflow-hidden">
@@ -92,8 +102,7 @@ export function FabricPortfolioSection({ mediaAssets = [] }: { mediaAssets?: Med
                   <div className="mt-3">
                     <p className="mb-2 text-stone-500 text-xs">Applications:</p>
                     <div className="flex flex-wrap gap-1">
-                      {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
-                      {fabric.keyApplications.slice(0, 3).map((app: any, appIndex: number) => (
+                      {fabric.keyApplications.slice(0, 3).map((app: string, appIndex: number) => (
                         <span
                           key={appIndex}
                           className="rounded-full bg-stone-100 px-2 py-1 text-stone-700 text-xs"

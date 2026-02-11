@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { submitQuoteRequest } from "../../../app/services/inquiry.server";
+import { apiRequest } from "../../lib/queryClient";
 import { useHydratedStore } from "../../lib/useHydratedStore";
 import { useQuoteStore } from "../../stores/useQuoteStore";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -55,9 +55,14 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
         })),
       };
 
-      // REACT 19 / SERVER ACTION MIGRATION
-      // Directly call server service instead of API endpoint
-      return await submitQuoteRequest(payload);
+      // Submit via API endpoint to avoid local server-only module imports in client
+      return await apiRequest("/api/inquiries", {
+        method: "POST",
+        body: JSON.stringify({
+          ...payload,
+          source: "quote_drawer",
+        }),
+      });
     },
     onSuccess: () => {
       setSuccess(true);

@@ -142,11 +142,17 @@ const parseEnvironment = () => {
       const issues = error.issues || [];
 
       const missingVars = issues
-        .filter((err) => err.code === "invalid_type" && (err as any).received === "undefined")
+        .filter(
+          (err) =>
+            err.code === "invalid_type" && (err as { received?: string }).received === "undefined",
+        )
         .map((err) => err.path.join("."));
 
       const invalidVars = issues
-        .filter((err) => err.code !== "invalid_type" || (err as any).received !== "undefined")
+        .filter(
+          (err) =>
+            err.code !== "invalid_type" || (err as { received?: string }).received !== "undefined",
+        )
         .map((err) => `${err.path.join(".")}: ${err.message}`);
 
       let errorMessage = "❌ Environment Configuration Error:\n";
@@ -174,7 +180,7 @@ const parseEnvironment = () => {
 };
 
 // Validated environment configuration
-export let env: any;
+export let env: z.infer<typeof environmentSchema>;
 try {
   env = parseEnvironment();
 } catch (e) {

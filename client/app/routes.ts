@@ -32,7 +32,7 @@ export default [
   // Admin Layout & Routes (Not wrapped in public footer)
   route("admin", "routes/admin.tsx", [
     index("routes/admin._index.tsx"),
-    route(":module*", "routes/admin.$module.tsx"),
+    route(":module/*", "routes/admin.$module.tsx"),
   ]),
 
   // API Routes

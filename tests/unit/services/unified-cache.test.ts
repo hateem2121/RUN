@@ -15,10 +15,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // Mock Redis and OpenTelemetry
 vi.mock("../../../server/lib/cache/upstash-client.js", () => ({
   redis: {
-    get: vi.fn(),
-    set: vi.fn(),
-    del: vi.fn(),
-    flushdb: vi.fn(),
+    get: vi.fn().mockResolvedValue(null),
+    set: vi.fn().mockResolvedValue("OK"),
+    del: vi.fn().mockResolvedValue(1),
+    flushdb: vi.fn().mockResolvedValue("OK"),
     scan: vi.fn().mockResolvedValue(["0", []]),
     ping: vi.fn().mockResolvedValue("PONG"),
   },
@@ -60,9 +60,21 @@ vi.mock("@opentelemetry/api", () => ({
   },
 }));
 
+// Import redis to mock it in beforeEach
+import { redis } from "../../../server/lib/cache/upstash-client.js";
+
 describe("UnifiedCache", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Reset default mock implementations
+    vi.mocked(redis.get).mockResolvedValue(null);
+    vi.mocked(redis.set).mockResolvedValue("OK");
+    vi.mocked(redis.del).mockResolvedValue(1);
+    vi.mocked(redis.flushdb).mockResolvedValue("OK");
+
+    const { unifiedCache } = await import("../../../server/lib/cache/unified-cache.js");
+    await unifiedCache.clear();
   });
 
   describe("TTL Presets", () => {

@@ -145,7 +145,7 @@ export function AboutStatisticsTab() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: InsertAboutStatistic) => {
+    mutationFn: (data: InsertAboutStatistic) => {
       return apiRequest("/api/about-statistics", {
         method: "POST",
         body: JSON.stringify(data),
@@ -173,7 +173,7 @@ export function AboutStatisticsTab() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertAboutStatistic> }) => {
+    mutationFn: ({ id, data }: { id: number; data: Partial<InsertAboutStatistic> }) => {
       return apiRequest(`/api/about-statistics/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -228,7 +228,7 @@ export function AboutStatisticsTab() {
   });
 
   const reorderMutation = useMutation({
-    mutationFn: async (statistics: { id: number; position: number }[]) => {
+    mutationFn: (statistics: { id: number; position: number }[]) => {
       return apiRequest("/api/about-statistics/reorder", {
         method: "PATCH",
         body: JSON.stringify({ statistics }),

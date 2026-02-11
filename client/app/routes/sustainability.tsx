@@ -2,6 +2,7 @@ import type { MediaAsset } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useMemo } from "react";
 import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 
@@ -18,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { headingVariants, Typography } from "@/components/ui/typography";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { fadeInUp, springTransition } from "@/lib/animations";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/sustainability";
 
@@ -74,11 +75,11 @@ export default function Sustainability() {
       }
     : null;
 
-  // Extract fabric portfolio data from unified model
   const fabricPortfolioData = unifiedData?.fabricPortfolioTitle
     ? {
         title: unifiedData.fabricPortfolioTitle,
         description: unifiedData.fabricPortfolioDescription || "",
+        selectedFabricIds: (unifiedData.data?.selectedFabricIds as number[]) || [],
       }
     : null;
 
@@ -132,12 +133,66 @@ export default function Sustainability() {
     staleTime: 10 * 60 * 1000,
   });
 
-  // NOTE: For other sections that need media, we should ideally resolve them on the backend
-  // or use the media resolver utility. For now, we rely on passed props or separate optimized queries.
-  // The original code fetched ALL media which is performance suicide.
-  // Passing empty array for mediaAssets to children for now, unless they strictly need it.
-  // If children need specific media, they should fetch it by ID or we should include relevant media in batch response.
-  const mediaAssets: MediaAsset[] = [];
+  // PHASE 4 REMEDIATION: Correctly populate media assets for the page
+  const requiredMediaIds = useMemo(() => {
+    const ids = new Set<number>();
+
+    // Add background ID
+    if (hero?.backgroundImageId) {
+      ids.add(hero.backgroundImageId);
+    }
+
+    // Add IDs from initiatives
+    activeInitiatives.forEach((initiative: any) => {
+      if (initiative.imageId) {
+        ids.add(initiative.imageId);
+      }
+    });
+
+    // Add IDs from fabrics (now available in batchData)
+    const fabricsToCollect = batchData?.fabrics || [];
+    fabricsToCollect.forEach((fabric: any) => {
+      if (fabric.visualSwatchId) {
+        ids.add(fabric.visualSwatchId);
+      }
+    });
+
+    return Array.from(ids);
+  }, [hero?.backgroundImageId, activeInitiatives, batchData?.fabrics]);
+
+  const { data: fetchedMediaAssets = [] } = useQuery<MediaAsset[]>({
+    queryKey: ["/api/media", "batch", requiredMediaIds],
+    queryFn: async () => {
+      if (requiredMediaIds.length === 0) {
+        return [];
+      }
+      const results = await batchFetchMediaContent(requiredMediaIds);
+      // Map BatchMediaResult to MediaAsset shape
+      return results.map((r) => ({
+        id: r.id,
+        url: r.url || "",
+        mimeType: r.mimeType || "image/jpeg",
+        filename: r.filename || "",
+        type: r.type || "image",
+        storagePath: "", // Required by type
+        bucketName: "", // Required by type
+        metadata: {}, // Required by type
+      })) as MediaAsset[];
+    },
+    enabled: requiredMediaIds.length > 0,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Combine fetched media with any individually fetched ones if necessary
+  const mediaAssets = useMemo(() => {
+    const combined = [...fetchedMediaAssets];
+    if (backgroundMedia) {
+      if (!combined.find((m) => m.id === backgroundMedia.id)) {
+        combined.push(backgroundMedia);
+      }
+    }
+    return combined;
+  }, [fetchedMediaAssets, backgroundMedia]);
 
   // Filter certificates based on selected certificationIds from unified data
   const certificates = unifiedData?.certificationIds
@@ -165,7 +220,7 @@ export default function Sustainability() {
           {backgroundMedia && <OptimizedSustainabilityHero media={backgroundMedia} />}
 
           {/* Hero Content */}
-          <div className="z-modal relative mx-auto max-w-4xl px-4 text-center">
+          <div className="z-elevated relative mx-auto max-w-4xl px-4 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -193,7 +248,7 @@ export default function Sustainability() {
                 className="group relative overflow-hidden border-2 border-white text-white hover:bg-white hover:text-stone-900"
                 asChild
               >
-                <Link to={hero?.ctaLink || "/contact"} className="z-modal-backdrop relative">
+                <Link to={hero?.ctaLink || "/contact"} className="relative">
                   <span className="absolute inset-0 -top-2 -bottom-2 -translate-x-full -skew-x-12 transform bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"></span>
                   {hero?.ctaText || "Learn More"}
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -326,7 +381,11 @@ export default function Sustainability() {
                 )}
               </motion.div>
 
-              <FabricPortfolioSection mediaAssets={mediaAssets} />
+              <FabricPortfolioSection
+                mediaAssets={mediaAssets}
+                selectedFabricIds={fabricPortfolioData.selectedFabricIds}
+                fabrics={batchData?.fabrics}
+              />
             </div>
           </section>
         )}
@@ -338,7 +397,7 @@ export default function Sustainability() {
             <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-stone-700" />
           </div>
 
-          <div className="z-modal-backdrop relative container mx-auto px-4 text-center">
+          <div className="z-elevated relative container mx-auto px-4 text-center">
             <motion.div {...fadeInUp}>
               <Typography.H2 className="font-neue-stance mb-4 text-3xl font-bold text-stone-100">
                 {callToActionTitle}

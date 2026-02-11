@@ -3,7 +3,8 @@
  * Eliminates hybrid complexity - pure NEON PostgreSQL with Drizzle ORM
  * Leverages existing infrastructure for maximum reliability
  *
- * PHASE 1A FIX: Complete interface implementation with proper type safety
+ * @deprecated Use repositories from server/lib/db/repositories/ instead.
+ * This class is a legacy wrapper that delegates to modular repositories.
  */
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";

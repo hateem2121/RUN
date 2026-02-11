@@ -32,7 +32,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
 
   // Default SVG mask to prevent undefined errors
   const getDefaultSvgMask = () => {
-    return "url(\"data:image/svg+xml,%3Csvg width='221' height='122' viewBox='0 0 221 122' fill='none' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid slice'%3E%3Cpath fillRule='evenodd' clipRule='evenodd' d='M183 4C183 1.79086 184.791 0 187 0H217C219.209 0 221 1.79086 221 4V14V28V99C221 101.209 219.209 103 217 103H182C179.791 103 178 104.791 178 107V118C178 120.209 176.209 122 174 122H28C25.7909 122 24 120.209 24 118V103V94V46C24 43.7909 22.2091 42 20 42H4C1.79086 42 0 40.2091 0 38V18C0 15.7909 1.79086 14 4 14H24H43H179C181.209 14 183 12.2091 183 10V4Z' fill='%23D9D9D9'/%3E%3C/svg%3E%0A\")";
+    return "url('/assets/default-mask.svg')";
   };
 
   // Initialize svgMaskDataUri with default mask to prevent undefined errors
@@ -150,7 +150,8 @@ const SvgMaskCard = memo(function SvgMaskCard({
           }),
         );
         setIsLoadingMask(false);
-        setHasError(true);
+        // We don't setHasError(true) here because we have a default mask fallback
+        // This prevents the entire card from showing an error overlay just because a mask failed to load
       }
     };
 
@@ -163,7 +164,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
       return;
     }
 
-    const preloadContentMedia = async () => {
+    const preloadContentMedia = () => {
       try {
         if (contentType === "video") {
           // Preload video metadata with enhanced error handling
@@ -204,8 +205,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
   if (isLoadingMask) {
     return (
       <section
-        className="relative w-full bg-surface-subtle"
-        style={{ minHeight: "300px", height: "auto", maxHeight: "600px" }}
+        className="relative h-auto min-h-300 w-full max-h-600 bg-surface-subtle"
       >
         <div className="flex h-full w-full items-center justify-center">
           <div className="text-center text-text-muted">
@@ -221,26 +221,17 @@ const SvgMaskCard = memo(function SvgMaskCard({
 
   return (
     <section
-      className="relative flex w-full flex-col"
+      className="relative flex h-auto min-h-300 w-full max-h-600 flex-col bg-(--bg) [mask-image:var(--mask-uri)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+      // biome-ignore lint/style/noInlineStyles: Dynamic masking logic
       style={{
-        minHeight: "300px",
-        height: "auto",
-        maxHeight: "600px",
-        backgroundColor:
+        "--bg":
           hasError || contentLoadError
-            ? "#f3f4f6"
+            ? "var(--color-surface-subtle)"
             : actualContentMediaUrl
               ? "transparent"
               : "transparent",
-        maskImage: svgMaskDataUri,
-        WebkitMaskImage: svgMaskDataUri,
-        maskRepeat: "no-repeat",
-        WebkitMaskRepeat: "no-repeat",
-        maskSize: "contain",
-        WebkitMaskSize: "contain",
-        maskPosition: "center",
-        WebkitMaskPosition: "center",
-      }}
+        "--mask-uri": svgMaskDataUri,
+      } as React.CSSProperties}
       aria-label={`Masked media: ${title || "Category content"}`}
     >
       {/* Error state */}
@@ -271,8 +262,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
             muted
             loop
             playsInline
-            className="h-full w-full object-cover"
-            style={{ minHeight: "300px", height: "auto", maxHeight: "600px" }}
+            className="h-auto min-h-300 w-full max-h-600 object-cover"
             onError={handleContentError}
             // onLoadStart={() => setIsContentLoaded(true)}
             // onLoadedData={() => setIsContentLoaded(true)}
@@ -289,8 +279,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
         <img
           src={actualContentMediaUrl}
           alt={title || "Category content"}
-          className="h-full w-full object-cover"
-          style={{ minHeight: "300px", height: "auto", maxHeight: "600px" }}
+          className="h-auto min-h-300 w-full max-h-600 object-cover"
           onError={handleContentError}
         />
       )}

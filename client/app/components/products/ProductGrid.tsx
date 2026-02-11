@@ -1,4 +1,4 @@
-import type { Certificate, Fabric, ProductSummary } from "@shared/schema";
+import type { Category, Certificate, Fabric, ProductSummary } from "@shared/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { TransformedProduct } from "@/lib/product-transformers";
@@ -11,7 +11,7 @@ import { QuickViewModal } from "./quick-view-modal";
 interface ProductGridProps {
   products: ProductSummary[];
   viewMode: "small" | "medium" | "large";
-  categories: any[];
+  categories: (Pick<Category, "id" | "name" | "slug" | "isActive" | "sortOrder"> & { description?: string | null | undefined; parentId?: number | null | undefined })[];
   fabrics?: Fabric[];
   certificates?: Certificate[];
 }

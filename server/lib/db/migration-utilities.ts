@@ -12,8 +12,57 @@ import {
   homepageSections,
   products,
 } from "../../../shared/schema.js";
-import { db } from "../../db.js";
+import { type DbClient, db } from "../../db.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+
+interface KVCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  parentId?: number;
+  sortOrder?: number;
+  isActive?: boolean;
+  level?: number;
+  createdAt?: string | Date;
+}
+
+interface KVProduct {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  categoryId: number;
+  sku: string;
+  price?: string | number;
+  primaryImageId?: number;
+  minimumOrderQuantity?: number;
+  leadTime?: string;
+  isFeatured?: boolean;
+  isActive?: boolean;
+  createdAt?: string | Date;
+}
+
+interface KVHomepageHero {
+  id?: number;
+  title?: string;
+  subtitle?: string;
+  backgroundImageId?: number;
+  ctaText?: string;
+  ctaLink?: string;
+  isActive?: boolean;
+  createdAt?: string | Date;
+}
+
+interface KVHomepageSection {
+  name?: string;
+  sectionType?: string;
+  title?: string;
+  content?: string;
+  data?: Record<string, unknown>;
+  sortOrder?: number;
+  isActive?: boolean;
+}
 
 export class MigrationUtilities {
   private kvStorage = getStorage();
@@ -61,7 +110,7 @@ export class MigrationUtilities {
       }
 
       // Transform and validate data to match PostgreSQL schema
-      const transformedData = this.transformToPostgreSQL(kvCategories, (cat: any) => ({
+      const transformedData = this.transformToPostgreSQL(kvCategories as KVCategory[], (cat) => ({
         id: cat.id,
         name: cat.name,
         slug: cat.slug,
@@ -78,7 +127,7 @@ export class MigrationUtilities {
       const validData = this.validateData(transformedData, "categories");
 
       // Bulk insert with transaction
-      await db.transaction(async (tx: any) => {
+      await db.transaction(async (tx: DbClient) => {
         for (const category of validData) {
           try {
             await tx.insert(categories).values(category);
@@ -117,7 +166,7 @@ export class MigrationUtilities {
       }
 
       // Transform products for PostgreSQL schema
-      const transformedData = this.transformToPostgreSQL(kvProducts, (product: any) => {
+      const transformedData = this.transformToPostgreSQL(kvProducts as KVProduct[], (product) => {
         // Validate required fields - skip invalid products
         if (!product.categoryId) {
           errors.push(`Product ${product.name || product.id}: Missing required categoryId`);
@@ -137,7 +186,7 @@ export class MigrationUtilities {
           primaryImageId: product.primaryImageId || null,
           // mediaGallery field not in PostgreSQL schema - handled via relations
           sku: product.sku, // Required field - validated above
-          price: (product as any).price || "0.00", // Required field - default to 0
+          price: product.price ? String(product.price) : "0.00", // Required field - default to 0
           minimumOrderQuantity: product.minimumOrderQuantity || null,
           leadTime: product.leadTime || null,
           // sampleAvailable field not in PostgreSQL schema - skipping
@@ -152,7 +201,7 @@ export class MigrationUtilities {
       const validData = this.validateData(transformedData, "products");
 
       // Bulk insert with transaction
-      await db.transaction(async (tx: any) => {
+      await db.transaction(async (tx: DbClient) => {
         for (const product of validData) {
           try {
             await tx.insert(products).values(product);
@@ -188,7 +237,8 @@ export class MigrationUtilities {
       // Migrate Homepage Hero
       const homepageHeroData = await this.kvStorage.getHomepageHero();
       if (homepageHeroData && Array.isArray(homepageHeroData) && homepageHeroData.length > 0) {
-        for (const hero of homepageHeroData) {
+        for (const heroItem of homepageHeroData) {
+          const hero = heroItem as KVHomepageHero;
           try {
             await db.insert(homepageHero).values({
               id: hero.id || migrated + 1,
@@ -217,7 +267,8 @@ export class MigrationUtilities {
         Array.isArray(homepageSectionsData) &&
         homepageSectionsData.length > 0
       ) {
-        for (const section of homepageSectionsData) {
+        for (const sectionItem of homepageSectionsData) {
+          const section = sectionItem as KVHomepageSection;
           try {
             await db.insert(homepageSections).values({
               // Remove ID - let PostgreSQL auto-generate
@@ -299,10 +350,10 @@ export class MigrationUtilities {
   async verifyMigration(): Promise<{
     success: boolean;
     checks: Record<string, boolean>;
-    details: Record<string, any>;
+    details: Record<string, unknown>;
   }> {
     const checks: Record<string, boolean> = {};
-    const details: Record<string, any> = {};
+    const details: Record<string, unknown> = {};
 
     try {
       // Check Categories

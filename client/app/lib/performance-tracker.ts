@@ -23,6 +23,35 @@ interface PerformanceMetrics {
   timestamp: number;
 }
 
+// Interfaces for Web Vitals which are not yet in standard lib
+interface LargestContentfulPaint extends PerformanceEntry {
+  renderTime: number;
+  loadTime: number;
+  size: number;
+  id: string;
+  url: string;
+  element?: Element;
+}
+
+interface PerformanceEventTiming extends PerformanceEntry {
+  processingStart: number;
+  processingEnd: number;
+  duration: number;
+  cancelable?: boolean;
+  target?: Node | null;
+}
+
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+  lastInputTime: number;
+  sources: Array<{
+    node?: Node;
+    previousRect: DOMRectReadOnly;
+    currentRect: DOMRectReadOnly;
+  }>;
+}
+
 class PerformanceTracker {
   private metrics: PerformanceMetrics = {
     webVitals: [],
@@ -56,7 +85,7 @@ class PerformanceTracker {
       // Largest Contentful Paint (LCP)
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as any;
+        const lastEntry = entries[entries.length - 1] as LargestContentfulPaint;
 
         this.recordMetric({
           name: "LCP",
@@ -74,14 +103,15 @@ class PerformanceTracker {
       // First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry) => {
+          const fidEntry = entry as PerformanceEventTiming;
           this.recordMetric({
             name: "FID",
-            value: entry.processingStart - entry.startTime,
-            delta: entry.processingStart - entry.startTime,
+            value: fidEntry.processingStart - fidEntry.startTime,
+            delta: fidEntry.processingStart - fidEntry.startTime,
             id: `fid-${Date.now()}`,
             navigationType: "navigate",
-            rating: this.getRating("FID", entry.processingStart - entry.startTime),
+            rating: this.getRating("FID", fidEntry.processingStart - fidEntry.startTime),
           });
         });
       });
@@ -93,9 +123,10 @@ class PerformanceTracker {
       let clsValue = 0;
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+        entries.forEach((entry) => {
+          const clsEntry = entry as LayoutShift;
+          if (!clsEntry.hadRecentInput) {
+            clsValue += clsEntry.value;
           }
         });
 
@@ -115,7 +146,7 @@ class PerformanceTracker {
       // First Contentful Paint (FCP)
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry) => {
           this.recordMetric({
             name: "FCP",
             value: entry.startTime,

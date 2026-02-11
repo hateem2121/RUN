@@ -1,4 +1,4 @@
-import type { SizeChart } from "@shared/schema";
+import type { InsertSizeChart, SizeChart } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Edit, Eye, Flag, Plus, RotateCcw, Ruler, X } from "lucide-react";
 import { useState } from "react";
@@ -43,15 +43,13 @@ const getRegionFlag = (region: string) => {
   return flags[region] || "🏁";
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: Generic object handling
-const validateMeasurements = (measurements: Record<string, any>) => {
+const validateMeasurements = (measurements: Record<string, unknown>) => {
   let incomplete = 0;
   let total = 0;
 
-  Object.values(measurements).forEach((sizeData) => {
+  Object.values(measurements).forEach((sizeData: unknown) => {
     if (sizeData && typeof sizeData === "object") {
-      // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
-      Object.values(sizeData as Record<string, any>).forEach((value) => {
+      Object.values(sizeData as Record<string, unknown>).forEach((value) => {
         total++;
         if (!value || value === "") {
           incomplete++;
@@ -221,8 +219,7 @@ export default function SizeChartManagementEnhanced() {
   };
 
   const createSizeChartMutation = useMutation({
-    // biome-ignore lint/suspicious/noExplicitAny: loose typing for mutation data
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InsertSizeChart) => {
       return await apiRequest("/api/size-charts", {
         method: "POST",
         body: JSON.stringify(data),
@@ -236,8 +233,8 @@ export default function SizeChartManagementEnhanced() {
       });
       resetForm();
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
-    onError: (error: any) => {
+
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create size chart",
@@ -247,8 +244,7 @@ export default function SizeChartManagementEnhanced() {
   });
 
   const updateSizeChartMutation = useMutation({
-    // biome-ignore lint/suspicious/noExplicitAny: loose typing for mutation data
-    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertSizeChart> }) => {
       return await apiRequest(`/api/size-charts/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
@@ -263,8 +259,8 @@ export default function SizeChartManagementEnhanced() {
       setEditingChart(null);
       resetForm();
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
-    onError: (error: any) => {
+
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update size chart",
@@ -286,8 +282,8 @@ export default function SizeChartManagementEnhanced() {
         description: "Size chart deleted successfully",
       });
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Generic error handling
-    onError: (error: any) => {
+
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete size chart",

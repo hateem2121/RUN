@@ -135,7 +135,7 @@ router.get(
   asyncHandler(async (_req, res) => {
     const cacheKey = CacheKeys.footer.config();
 
-    const cached = await unifiedCache.get<any>(cacheKey);
+    const cached = await unifiedCache.get<unknown>(cacheKey);
     if (cached) {
       res.setHeader("X-Cache-Hit", "true");
       return res.json(cached);
@@ -154,7 +154,7 @@ router.get(
   asyncHandler(async (_req, res) => {
     // Shared cache key with public endpoint
     const cacheKey = CacheKeys.footer.config();
-    const cached = await unifiedCache.get<any>(cacheKey);
+    const cached = await unifiedCache.get<unknown>(cacheKey);
 
     if (cached) {
       res.setHeader("X-Cache-Hit", "true");
@@ -183,33 +183,33 @@ router.patch(
        Note: The frontend currently sends `url` / `platform` sometimes.
        We map them to `href` / `name` to match our strict schema.
     */
-    const normalizedData: any = { ...validatedData };
+    const normalizedData: Record<string, unknown> = { ...validatedData };
 
     if (validatedData.navigationColumns) {
-      normalizedData.navigationColumns = validatedData.navigationColumns.map((col: any) => ({
+      normalizedData.navigationColumns = validatedData.navigationColumns.map((col) => ({
         title: col.title,
         links:
-          col.links?.map((link: any) => ({
+          col.links?.map((link) => ({
             label: link.label,
-            href: link.href || link.url,
+            href: link.href || ((link as Record<string, unknown>).url as string),
             external: link.external,
           })) || [],
       }));
     }
 
     if (validatedData.socialLinks) {
-      normalizedData.socialLinks = validatedData.socialLinks.map((social: any) => ({
-        name: social.name || social.platform,
+      normalizedData.socialLinks = validatedData.socialLinks.map((social) => ({
+        name: social.name || ((social as Record<string, unknown>).platform as string),
         icon: social.icon,
-        href: social.href || social.url,
+        href: social.href || ((social as Record<string, unknown>).url as string),
         hoverColor: social.hoverColor,
       }));
     }
 
     if (validatedData.legalLinks) {
-      normalizedData.legalLinks = validatedData.legalLinks.map((link: any) => ({
+      normalizedData.legalLinks = validatedData.legalLinks.map((link) => ({
         label: link.label,
-        href: link.href || link.url,
+        href: link.href || ((link as Record<string, unknown>).url as string),
       }));
     }
 

@@ -10,18 +10,21 @@ import {
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { sizeCharts } from "./catalog";
-import { categories } from "./categories";
-import { pgTable } from "./common";
-import { fabrics } from "./materials";
-import { mediaAssets } from "./media";
+import { sizeCharts } from "./catalog.js";
+import { categories } from "./categories.js";
+import { pgTable } from "./common.js";
+import { fabrics } from "./materials.js";
+import { mediaAssets } from "./media.js";
 
 // Schemas for JSONB columns
 const ProductTechnicalSpecsSchema = z.record(
   z.string(),
   z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
 );
-const ProductFiberCompositionSchema = z.record(z.string(), z.union([z.string(), z.number()]));
+const ProductFiberCompositionSchema = z.record(
+  z.string(),
+  z.union([z.string(), z.number(), z.array(z.number())]),
+);
 const ProductVideoSchema = z.object({
   url: z.string(),
   title: z.string().optional(),

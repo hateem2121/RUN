@@ -21,6 +21,7 @@ interface MediaOptimizationOptions {
   quality?: number;
   format?: "webp" | "jpg" | "png";
   priority?: boolean;
+  [key: string]: unknown;
 }
 
 interface OptimizedMediaUrls {

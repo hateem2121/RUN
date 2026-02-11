@@ -32,19 +32,14 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
           scriptSrc:
             config.app.environment === "development"
               ? ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"]
-              : [
-                  "'strict-dynamic'", // Modern browsers ignore whitelist if nonce/strict-dynamic is present
-                  `'nonce-${nonce}'`, // Secured with Nonce in Production
-                  "'self'", // Required for standard CSP validation and older browsers
-                  "https:", // Fallback for specific allowlisted domains if strict-dynamic not supported
-                ],
+              : ["'strict-dynamic'", `'nonce-${nonce}'`, "'self'"],
           styleSrc: [
             "'self'",
             "'unsafe-inline'", // Styles often need inline for critical CSS, acceptable trade-off if scripts are locked
             "https://fonts.googleapis.com",
             "https://cdnjs.cloudflare.com",
           ],
-          fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
           imgSrc: ["'self'", "data:", "blob:", "https:"],
           objectSrc: ["'none'"], // Strict security: Block all plugins
           baseUri: ["'self'"], // Prevent injection of base tags
@@ -112,8 +107,11 @@ export function requestValidation(req: Request, res: Response, next: NextFunctio
     // CRITICAL FIX: Allow application/octet-stream for chunk uploads
     const isChunkUpload = req.path === "/api/media/upload/chunk-raw";
 
-    // DEBUG: Log path checking for chunk uploads
-    if (req.path.includes("chunk") || req.path.includes("upload")) {
+    // DEBUG: Log path checking for chunk uploads (development only)
+    if (
+      process.env.NODE_ENV !== "production" &&
+      (req.path.includes("chunk") || req.path.includes("upload"))
+    ) {
       logger.info(
         `[Security Middleware] Path check: "${req.path}" === "/api/media/upload/chunk-raw" ? ${isChunkUpload}`,
       );

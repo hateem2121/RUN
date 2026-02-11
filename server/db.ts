@@ -4,6 +4,7 @@
  */
 
 import { type NeonQueryFunction, neon } from "@neondatabase/serverless";
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
 import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
 import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
@@ -11,8 +12,15 @@ import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
-import { DatabaseError } from "./lib/errors.js";
+import {
+  ConflictError,
+  DatabaseDeadlockError,
+  DatabaseError,
+  DatabaseTimeoutError,
+} from "./lib/errors.js";
 import { logger } from "./lib/monitoring/logger.js";
+
+const tracer = trace.getTracer("db");
 
 // Validate connection string presence
 if (!database.url && process.env.NODE_ENV !== "test") {
@@ -40,11 +48,11 @@ if (isTestMode && !enableRealDb) {
 
   if (process.env.TEST_MOCK_ERROR === "true") {
     logger.info("[Database] Mock Error Mode Enabled");
-    sql = (() => Promise.reject(new Error("Mock Database Error"))) as any;
+    sql = (() => Promise.reject(new Error("Mock Database Error"))) as unknown as typeof sql;
   } else {
     // Create a no-op SQL function for tests
     // Return empty array to simulate empty result set
-    sql = (() => Promise.resolve([])) as any;
+    sql = (() => Promise.resolve([])) as unknown as typeof sql;
   }
 } else {
   // Use standard Neon HTTP driver
@@ -54,10 +62,48 @@ if (isTestMode && !enableRealDb) {
   });
 }
 
+/**
+ * Metrics wrapping compatible with NeonQueryFunction signature
+ * Adds OpenTelemetry tracing and tracks internal query statistics
+ */
+function wrapSql(
+  queryFn: NeonQueryFunction<boolean, boolean>,
+): NeonQueryFunction<boolean, boolean> {
+  return (async (stringsOrQuery: any, ...params: any[]) => {
+    metrics.totalQueries++;
+    metrics.currentConcurrentQueries++;
+    if (metrics.currentConcurrentQueries > metrics.peakConcurrentQueries) {
+      metrics.peakConcurrentQueries = metrics.currentConcurrentQueries;
+    }
+
+    const startTime = performance.now();
+
+    return tracer.startActiveSpan("db.query", async (span) => {
+      try {
+        const result = await (queryFn as any)(stringsOrQuery, ...params);
+        metrics.successfulQueries++;
+        span.setAttribute("db.rows", Array.isArray(result) ? result.length : 0);
+        span.setStatus({ code: SpanStatusCode.OK });
+        return result;
+      } catch (error) {
+        metrics.failedQueries++;
+        span.recordException(error as Error);
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: error instanceof Error ? error.message : "Database query failed",
+        });
+        throw error;
+      } finally {
+        metrics.currentConcurrentQueries--;
+        metrics.totalQueryTimeMs += performance.now() - startTime;
+        span.end();
+      }
+    });
+  }) as unknown as NeonQueryFunction<boolean, boolean>;
+}
+
 // Wrap SQL function to track metrics (for both real and mock modes)
-const _internalSql = sql;
-// Metrics wrapper temporarily removed due to incompatibility with Neon serverless driver in this environment
-// TODO: Re-implement metrics wrapping compatible with NeonQueryFunction signature
+sql = wrapSql(sql);
 
 /**
  * Standard Drizzle HTTP Database Instance
@@ -147,15 +193,16 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
   try {
     const data = await promise;
     return ok(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Check for unique constraint violation (Postgres error 23505)
-    if (error?.code === "23505") {
+    const pgError = error as { code?: string; constraint?: string; detail?: string };
+    if (pgError?.code === "23505") {
       // We might want a ConflictError, but for now wrap in DatabaseError with details
       return err(
         new DatabaseError("Duplicate entry violates unique constraint", {
           code: "23505",
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }
@@ -168,9 +215,6 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
     );
   }
 }
-
-// Import additional error types for transaction support
-import { ConflictError, DatabaseDeadlockError, DatabaseTimeoutError } from "./lib/errors.js";
 
 /**
  * Safe Transaction Wrapper
@@ -206,8 +250,9 @@ export async function safeTransaction<T>(
       return await callback(tx);
     });
     return ok(result);
-  } catch (error: any) {
-    const pgCode = error?.code;
+  } catch (error: unknown) {
+    const pgError = error as { code?: string; constraint?: string; detail?: string };
+    const pgCode = pgError?.code;
     const errorMessage = error instanceof Error ? error.message : String(error);
 
     // Unique constraint violation (23505)
@@ -215,8 +260,8 @@ export async function safeTransaction<T>(
       return err(
         new ConflictError("Resource already exists", {
           code: pgCode,
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }
@@ -226,8 +271,8 @@ export async function safeTransaction<T>(
       return err(
         new ConflictError("Referenced resource does not exist", {
           code: pgCode,
-          constraint: error.constraint,
-          detail: error.detail,
+          constraint: pgError.constraint,
+          detail: pgError.detail,
         }),
       );
     }

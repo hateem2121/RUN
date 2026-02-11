@@ -31,7 +31,7 @@ describe("Circuit Breaker", () => {
     });
 
     it("should execute function successfully", async () => {
-      const fn = async (x: number) => x * 2;
+      const fn = async (x: any) => x * 2;
       const circuit = createCircuit("test-exec", fn);
 
       const result = await circuit.fire(5);
@@ -61,7 +61,7 @@ describe("Circuit Breaker", () => {
     });
 
     it("should track failed calls", async () => {
-      const fn = async () => {
+      const fn = () => {
         throw new Error("fail");
       };
       const circuit = createCircuit("test-failures", fn, {

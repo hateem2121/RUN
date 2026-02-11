@@ -1,5 +1,5 @@
 import type { ManufacturingHero, MediaAsset } from "@shared/schema";
-import { domAnimation, LazyMotion, type MotionValue, m } from "framer-motion";
+import { domAnimation, LazyMotion, type MotionValue, m, type Variants } from "framer-motion";
 import { ArrowDown, Factory } from "lucide-react";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
@@ -34,8 +34,8 @@ export function PublicHeroSection({
 
   // Gear-like rotation for decorative elements (if added later)
   // Assembly line stagger effect
-  // biome-ignore lint/suspicious/noExplicitAny: Complex animation variants
-  const containerVariants: any = {
+
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,

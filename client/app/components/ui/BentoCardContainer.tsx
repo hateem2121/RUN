@@ -17,20 +17,8 @@ export function BentoCardContainer({
   return (
     <div
       className={cn(
-        // Enhanced Responsive CSS Grid with improved proportions
-        "grid gap-6",
-        // Mobile: 1 column (full width stacked)
-        "grid-cols-1",
-        // Tablet: 2 columns (side-by-side pairs)
-        "md:grid-cols-2",
-        // Desktop: 3 columns (optimized bento layout)
-        "lg:grid-cols-3",
-        // Ensure all cards stretch to fill grid areas
-        "items-stretch",
-        // Responsive auto rows (CSS-first, no FOIL)
+        "grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch bento-grid-container",
         "auto-rows-[minmax(280px,auto)] md:auto-rows-[minmax(320px,auto)]",
-        // Add performance optimizations
-        "bento-grid-container",
         className,
       )}
       style={{

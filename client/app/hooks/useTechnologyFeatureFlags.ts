@@ -10,12 +10,12 @@
 import { useEffect, useState } from "react";
 
 // Development-only logging
-const warnLog = (_message: string, ..._args: any[]) => {
+const warnLog = (_message: string, ..._args: unknown[]) => {
   if (import.meta.env.DEV) {
   }
 };
 
-const errorLog = (_message: string, ..._args: any[]) => {
+const errorLog = (_message: string, ..._args: unknown[]) => {
   if (import.meta.env.DEV) {
   }
 };

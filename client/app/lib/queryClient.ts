@@ -82,14 +82,14 @@ import { ApiError, apiRequest } from "./api";
 export { apiRequest };
 
 export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
+  <T>({ on401: unauthorizedBehavior }: { on401: "returnNull" | "throw" }) =>
   async ({ queryKey }) => {
     try {
       const url = queryKey[0] as string;
       // Check if options object exists in queryKey
       const options =
         queryKey.length > 1 && typeof queryKey[1] === "object"
-          ? (queryKey[1] as Record<string, any>)
+          ? (queryKey[1] as Record<string, unknown>)
           : undefined;
 
       // Construct URL with query params if they exist in options
@@ -107,14 +107,14 @@ export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => Quer
         }
       }
 
-      return await apiRequest(finalUrl);
+      return await apiRequest<T>(finalUrl);
     } catch (error) {
       if (
         error instanceof ApiError &&
         error.status === 401 &&
         unauthorizedBehavior === "returnNull"
       ) {
-        return null as any;
+        return null as T;
       }
       throw error;
     }
@@ -742,10 +742,10 @@ export const forceResetMediaCache = async () => {
     logCacheState();
 
     // PRIORITY 4 FIX: Add timeout wrapper for cache operations
-    const timeoutPromise = (promise: Promise<any>, timeoutMs: number) => {
+    const timeoutPromise = <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
       return Promise.race([
         promise,
-        new Promise((_, reject) =>
+        new Promise<T>((_, reject) =>
           setTimeout(
             () => reject(new Error(`Operation timed out after ${timeoutMs}ms`)),
             timeoutMs,
@@ -800,11 +800,7 @@ export const forceResetMediaCache = async () => {
 
       // Strategy 3: PHASE 1.2 FIX - Use unified cache invalidation
       async () => {
-        return invalidateMediaQueries(
-          getQueryClient() as {
-            invalidateQueries: (options: unknown) => Promise<void>;
-          },
-        );
+        return invalidateMediaQueries(getQueryClient());
       },
     ];
 

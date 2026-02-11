@@ -83,12 +83,18 @@ export async function checkSchemaConsistency(): Promise<SchemaValidationResult> 
 
   try {
     // Get all table names from Drizzle schema
+    const schemaRecord = schema as Record<string, unknown>;
     const drizzleTableNames = Object.keys(schema)
       .filter((key) => {
-        const table = (schema as any)[key];
+        const table = schemaRecord[key] as unknown as Record<string | symbol, unknown> | null;
         return table && typeof table === "object" && table[Symbol.for("drizzle:Name")];
       })
-      .map((key) => (schema as any)[key][Symbol.for("drizzle:Name")] as string);
+      .map(
+        (key) =>
+          (schemaRecord[key] as unknown as Record<string | symbol, unknown>)[
+            Symbol.for("drizzle:Name")
+          ] as string,
+      );
 
     logger.info(`[Schema Validator] Found ${drizzleTableNames.length} tables in Drizzle schema`);
     summary.totalTables = drizzleTableNames.length;
@@ -170,7 +176,7 @@ async function validateTableColumns(
   tableName: string,
   errors: string[],
   warnings: string[],
-  summary: any,
+  summary: SchemaValidationResult["summary"],
 ): Promise<void> {
   try {
     // Query database columns
@@ -187,8 +193,12 @@ async function validateTableColumns(
 
     // Get Drizzle table definition
     const drizzleTable = Object.values(schema).find(
-      (table: any) => table && table[Symbol.for("drizzle:Name")] === tableName,
-    ) as any;
+      (table) =>
+        table &&
+        typeof table === "object" &&
+        (table as unknown as Record<string | symbol, unknown>)[Symbol.for("drizzle:Name")] ===
+          tableName,
+    ) as Record<string, Record<string, unknown>> | undefined;
 
     if (!drizzleTable) {
       return;
@@ -203,7 +213,10 @@ async function validateTableColumns(
     // Check for missing columns
     for (const colKey of drizzleColumns) {
       const colDef = drizzleTable[colKey];
-      const colName = colDef.name;
+      if (!colDef) {
+        continue;
+      }
+      const colName = colDef.name as string;
       const dbColumn = dbColumns.find((c) => c.column_name === colName);
 
       if (!dbColumn) {
@@ -237,7 +250,7 @@ async function validateTableColumns(
 
     // Check for extra columns in database
     for (const dbCol of dbColumns) {
-      const exists = drizzleColumns.some((key) => drizzleTable[key].name === dbCol.column_name);
+      const exists = drizzleColumns.some((key) => drizzleTable?.[key]?.name === dbCol.column_name);
       if (!exists) {
         warnings.push(
           `Extra column: "${tableName}"."${dbCol.column_name}" exists in database but not in Drizzle schema`,
@@ -256,7 +269,7 @@ async function validateTableIndexes(
   tableName: string,
   _errors: string[],
   warnings: string[],
-  summary: any,
+  summary: SchemaValidationResult["summary"],
 ): Promise<void> {
   try {
     // Query database indexes
@@ -296,7 +309,7 @@ async function validateTableIndexes(
  * List foreign key constraints (informational only)
  * Note: Does not compare with Drizzle schema - requires complex metadata extraction
  */
-async function listForeignKeys(summary: any): Promise<void> {
+async function listForeignKeys(summary: SchemaValidationResult["summary"]): Promise<void> {
   try {
     // Query foreign key constraints
     const fkResult = await db.execute<ForeignKeyInfo>(sql`
@@ -337,10 +350,10 @@ async function listForeignKeys(summary: any): Promise<void> {
 /**
  * Get Drizzle column type as a string
  */
-function getDrizzleColumnType(colDef: any): string {
+function getDrizzleColumnType(colDef: Record<string, unknown>): string {
   // Extract type from Drizzle column definition
-  if (colDef.getSQLType) {
-    return colDef.getSQLType().toLowerCase();
+  if (typeof colDef.getSQLType === "function") {
+    return (colDef.getSQLType as () => string)().toLowerCase();
   }
 
   // Fallback: try to infer from constructor name

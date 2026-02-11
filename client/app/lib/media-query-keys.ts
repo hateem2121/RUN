@@ -42,6 +42,8 @@
  * - Invalidate: queryClient.invalidateQueries({ queryKey: MediaQueryKeys.all })
  */
 
+import type { QueryClient } from "@tanstack/react-query";
+
 export const MediaQueryKeys = {
   // Base keys for broad invalidation
   all: ["/api/media"] as const, // FIXED: Changed from 'apimedia' to valid URL path for queryFn
@@ -79,7 +81,7 @@ export const createMediaQueryKey = {
   batch: (ids: (number | string)[]) =>
     [...MediaQueryKeys.batch, ids.map(String).sort().join(",")] as const,
 
-  variants: (id: number | string, options?: Record<string, any>) =>
+  variants: (id: number | string, options?: Record<string, unknown>) =>
     [...MediaQueryKeys.variants, String(id), options || {}] as const,
 
   forPage: (page: string, ids?: (number | string)[]) =>
@@ -97,7 +99,7 @@ export const createMediaQueryKey = {
  * USAGE:
  * await invalidateMediaQueries(queryClient);
  */
-export const invalidateMediaQueries = (queryClient: any) => {
+export const invalidateMediaQueries = (queryClient: QueryClient) => {
   return queryClient.invalidateQueries({
     queryKey: MediaQueryKeys.all,
     refetchType: "all",
@@ -110,19 +112,19 @@ export const invalidateMediaQueries = (queryClient: any) => {
  */
 // biome-ignore lint/complexity/noStaticOnlyClass: legacy support
 export class MediaCacheInvalidator {
-  static async invalidateAll(queryClient: any): Promise<void> {
+  static async invalidateAll(queryClient: QueryClient): Promise<void> {
     return invalidateMediaQueries(queryClient);
   }
 
-  static async invalidateItem(queryClient: any, _mediaId?: number | string): Promise<void> {
+  static async invalidateItem(queryClient: QueryClient, _mediaId?: number | string): Promise<void> {
     return invalidateMediaQueries(queryClient);
   }
 
-  static async invalidatePaginated(queryClient: any): Promise<void> {
+  static async invalidatePaginated(queryClient: QueryClient): Promise<void> {
     return invalidateMediaQueries(queryClient);
   }
 
-  static async invalidateBatch(queryClient: any): Promise<void> {
+  static async invalidateBatch(queryClient: QueryClient): Promise<void> {
     return invalidateMediaQueries(queryClient);
   }
 }

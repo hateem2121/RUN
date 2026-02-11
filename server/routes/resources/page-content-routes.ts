@@ -253,7 +253,7 @@ router.get("/technology-batch", async (_req, res) => {
 router.get("/technology-hero", async (_req, res) => {
   try {
     const hero = await withTimeout(getStorage().getTechnologyHero(), 10000, "Get technology hero");
-    return res.json(hero || null);
+    return res.json(hero || {});
   } catch (error) {
     return res.status(500).json({
       error: error instanceof Error ? error.message : "Failed to get technology hero",

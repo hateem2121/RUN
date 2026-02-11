@@ -63,10 +63,10 @@ registry.registerPath({
 // CHUNK 5: Added pagination support for large category lists
 router.get("/categories", async (req, res) => {
   // CLAIM REQUEST: Prevent fall-through to 404 handler during async operations
-  (req as any)._handled = true;
+  (req as unknown as Record<string, boolean>)._handled = true;
 
   try {
-    const { page, limit } = req.query as any;
+    const { page, limit } = req.query as { page?: string; limit?: string };
 
     // If pagination params provided, use pagination
     if (page || limit) {
@@ -144,7 +144,7 @@ router.patch("/categories/reorder", authService.requireAdmin, async (req, res) =
               gridPosition: existingCategory.gridPosition ?? undefined,
               featuredOnHomepage: existingCategory.featuredOnHomepage ?? undefined,
               featuredContent: existingCategory.featuredContent
-                ? (existingCategory.featuredContent as any)
+                ? (existingCategory.featuredContent as Record<string, unknown>)
                 : undefined,
               // Handle level and parentId
               level: existingCategory.level ?? undefined,
@@ -155,7 +155,10 @@ router.patch("/categories/reorder", authService.requireAdmin, async (req, res) =
                 parentId: categoryData.parentId,
               }),
             };
-            const updated = await storage.updateCategory(categoryData.id, updatedCategory as any);
+            const updated = await storage.updateCategory(
+              categoryData.id,
+              updatedCategory as Record<string, unknown>,
+            );
             updateResults.push(updated);
           }
         }
@@ -206,7 +209,7 @@ router.patch("/categories/reorder", authService.requireAdmin, async (req, res) =
 // GET /api/categories/by-slug/:slug - Get category by slug (SEO-friendly lookup)
 router.get("/categories/by-slug/:slug", async (req, res) => {
   try {
-    const { slug } = req.params as any;
+    const { slug } = req.params;
 
     // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
     if (shouldBypassCache(req)) {

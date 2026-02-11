@@ -1,4 +1,9 @@
 import { err, ok, type Result } from "neverthrow";
+import type {
+  InsertNavigationItem,
+  NavigationGlassmorphismSettings,
+  NavigationItem,
+} from "../../shared/schema.js";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
@@ -15,7 +20,7 @@ export class NavigationService {
   /**
    * Normalize navigation items for frontend consumption
    */
-  private static normalizeItems(items: any[]) {
+  private static normalizeItems(items: NavigationItem[]): NavigationItem[] {
     return items.map((item) => ({
       ...item,
       title: item.title || item.label || "",
@@ -26,9 +31,15 @@ export class NavigationService {
   /**
    * Get all navigation items with caching strategy
    */
-  static async getItems(
-    bypassCache = false,
-  ): Promise<Result<{ data: any[]; metadata: any }, AppError>> {
+  static async getItems(bypassCache = false): Promise<
+    Result<
+      {
+        data: NavigationItem[];
+        metadata: { cacheHit: boolean; responseTime: number; ttl: number };
+      },
+      AppError
+    >
+  > {
     const startTime = performance.now();
     const storage = getStorage();
 
@@ -91,7 +102,7 @@ export class NavigationService {
     });
   }
 
-  static async getItem(id: number): Promise<Result<any, AppError>> {
+  static async getItem(id: number): Promise<Result<NavigationItem, AppError>> {
     const result = await safeQuery(
       withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item"),
     );
@@ -106,7 +117,9 @@ export class NavigationService {
     return ok(result.value);
   }
 
-  static async createItem(data: any): Promise<Result<any, AppError>> {
+  static async createItem(
+    data: Partial<InsertNavigationItem>,
+  ): Promise<Result<NavigationItem, AppError>> {
     // Transform logic
     const itemData = {
       title: data.title || data.label || "Untitled",
@@ -139,7 +152,10 @@ export class NavigationService {
     return ok(result.value);
   }
 
-  static async updateItem(id: number, data: any): Promise<Result<any, AppError>> {
+  static async updateItem(
+    id: number,
+    data: Partial<InsertNavigationItem>,
+  ): Promise<Result<NavigationItem, AppError>> {
     const updateData = removeUndefined({
       ...data,
       ...(data.isActive !== undefined && { isActive: data.isActive }),
@@ -190,7 +206,7 @@ export class NavigationService {
 
   static async reorderItems(
     items: { id: number; sortOrder: number }[],
-  ): Promise<Result<any[], AppError>> {
+  ): Promise<Result<NavigationItem[], AppError>> {
     const storage = getStorage();
 
     const result = await safeQuery(
@@ -214,7 +230,9 @@ export class NavigationService {
     return ok(getResult.value.data);
   }
 
-  static async getGlassmorphismSettings(): Promise<Result<any, AppError>> {
+  static async getGlassmorphismSettings(): Promise<
+    Result<NavigationGlassmorphismSettings | Partial<NavigationGlassmorphismSettings>, AppError>
+  > {
     const cacheKey = "navigation-glassmorphism-settings";
     const cached = await unifiedCache.get(cacheKey);
     if (cached) {
@@ -249,7 +267,9 @@ export class NavigationService {
     return ok(settings);
   }
 
-  static async updateGlassmorphismSettings(data: any): Promise<Result<any, AppError>> {
+  static async updateGlassmorphismSettings(
+    data: Partial<NavigationGlassmorphismSettings>,
+  ): Promise<Result<NavigationGlassmorphismSettings | Record<string, unknown>, AppError>> {
     const settingsData = {
       ...data,
       opacity: data.opacity !== undefined ? String(data.opacity) : undefined,

@@ -174,7 +174,7 @@ grep -n "port:" vite.config.ts
 ```bash
 # Port Configuration (MANDATORY)
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api/v1
+VITE_API_BASE_URL=http://localhost:5002/api
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 
 # Database
@@ -188,7 +188,7 @@ SESSION_SECRET=your-secret-key
 
 ```bash
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api/v1
+VITE_API_BASE_URL=http://localhost:5002/api
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 DATABASE_URL=
 SESSION_SECRET=
@@ -584,7 +584,7 @@ npm run build
 npm run start
 
 # Check production server
-curl http://localhost:5002/api/v1/health
+curl http://localhost:5002/api/health
 ```
 
 ---

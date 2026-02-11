@@ -75,17 +75,19 @@ class SmartLogger {
         return correlationId ? { correlationId } : {};
       },
       // Pretty printing in development
-      transport: isDevelopment
+      ...(isDevelopment
         ? {
-            target: "pino-pretty",
-            options: {
-              translateTime: "SYS:standard",
-              ignore: "pid,hostname",
-              colorize: true,
-              messageFormat: "{msg} {metadata}", // Display metadata if present
+            transport: {
+              target: "pino-pretty",
+              options: {
+                translateTime: "SYS:standard",
+                ignore: "pid,hostname",
+                colorize: true,
+                messageFormat: "{msg} {metadata}", // Display metadata if present
+              },
             },
           }
-        : (undefined as any),
+        : {}),
       // Base service name
       base: {
         service: "run-apparel-api",
@@ -104,7 +106,7 @@ class SmartLogger {
    * Safe metadata serializer handling errors and objects
    */
   private prepareMetadata(metadata?: unknown, error?: Error): object {
-    const meta: Record<string, any> = {};
+    const meta: Record<string, unknown> = {};
 
     if (metadata) {
       if (typeof metadata === "object" && metadata !== null) {
@@ -207,7 +209,7 @@ class SmartLogger {
 
 export const logger = SmartLogger.getInstance();
 
-export function serializeError(error: unknown): Record<string, any> {
+export function serializeError(error: unknown): Record<string, unknown> {
   if (error instanceof Error) {
     return {
       name: error.name,

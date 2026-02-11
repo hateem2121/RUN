@@ -47,10 +47,18 @@ const Footer: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  // const _location = useLocation();
+
   const [errors, setErrors] = useState<{
     email?: string | undefined;
     specs?: string;
   }>({});
+
+  // Reset success state on navigation
+  useEffect(() => {
+    setShowSuccess(false);
+    setIsSent(false);
+  }, []);
 
   // Refs
   const footerRef = useRef<HTMLDivElement>(null);
@@ -139,7 +147,14 @@ const Footer: React.FC = () => {
     try {
       const response = await fetch("/api/inquiries", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token":
+            document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("csrf_token="))
+              ?.split("=")[1] || "",
+        },
         body: JSON.stringify({
           contact: {
             company: companyInput?.value || "",
@@ -290,7 +305,7 @@ const Footer: React.FC = () => {
                 ref={btnRef}
                 type="submit"
                 disabled={isSubmitting || isSent}
-                aria-busy={isSubmitting ? "true" : "false"}
+                aria-busy={isSubmitting}
                 className={cn(
                   "relative mt-8 overflow-hidden border px-12 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300",
                   isSent
@@ -409,7 +424,7 @@ const Footer: React.FC = () => {
       <div className="z-elevated relative w-full text-center overflow-hidden" aria-hidden="true">
         <h1
           ref={textRef}
-          className="text-foreground leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-(--font-size-footer-display)"
+          className="leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-(--font-size-footer-display)"
         >
           RUN APPAREL
         </h1>

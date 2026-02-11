@@ -226,7 +226,9 @@ export async function updateMediaAsset(req: Request, res: Response, next: NextFu
   const data = removeUndefined(MediaUpdateSchema.parse(req.body));
   const storage = getStorage();
 
-  const result = await safeQuery(storage.updateMediaAsset(id, data as any));
+  const result = await safeQuery(
+    storage.updateMediaAsset(id, data as unknown as Partial<MediaAsset>),
+  );
 
   if (result.isErr()) {
     return next(result.error);
