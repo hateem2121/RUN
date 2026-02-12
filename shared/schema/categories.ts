@@ -13,8 +13,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { pgTable } from "./common.js";
-import { mediaAssets } from "./media.js";
+import { pgTable } from "./common";
+import { mediaAssets } from "./media";
 
 /**
  * Categories Table - Hierarchical Product Organization

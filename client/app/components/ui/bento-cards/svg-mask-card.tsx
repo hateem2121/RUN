@@ -204,9 +204,7 @@ const SvgMaskCard = memo(function SvgMaskCard({
   // Show loading state while SVG mask is being processed
   if (isLoadingMask) {
     return (
-      <section
-        className="relative h-auto min-h-300 w-full max-h-600 bg-surface-subtle"
-      >
+      <section className="relative h-auto min-h-300 w-full max-h-600 bg-surface-subtle">
         <div className="flex h-full w-full items-center justify-center">
           <div className="text-center text-text-muted">
             <div className="text-sm">Loading mask...</div>
@@ -222,16 +220,18 @@ const SvgMaskCard = memo(function SvgMaskCard({
   return (
     <section
       className="relative flex h-auto min-h-300 w-full max-h-600 flex-col bg-(--bg) [mask-image:var(--mask-uri)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
-      // biome-ignore lint/style/noInlineStyles: Dynamic masking logic
-      style={{
-        "--bg":
-          hasError || contentLoadError
-            ? "var(--color-surface-subtle)"
-            : actualContentMediaUrl
-              ? "transparent"
-              : "transparent",
-        "--mask-uri": svgMaskDataUri,
-      } as React.CSSProperties}
+      // biome-ignore lint/style: Dynamic masking logic
+      style={
+        {
+          "--bg":
+            hasError || contentLoadError
+              ? "var(--color-surface-subtle)"
+              : actualContentMediaUrl
+                ? "transparent"
+                : "transparent",
+          "--mask-uri": svgMaskDataUri,
+        } as React.CSSProperties
+      }
       aria-label={`Masked media: ${title || "Category content"}`}
     >
       {/* Error state */}

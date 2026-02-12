@@ -8,7 +8,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { pgTable } from "./common.js";
+import { pgTable } from "./common";
 
 /**
  * Performance Metrics Table - Frontend Performance Tracking

@@ -140,7 +140,7 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 
 // --- Internal ---
 
-async function mockSendEmail(_inquiry: any) {
+async function mockSendEmail(_inquiry: { email: string; id: number }) {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 100));
   // biome-ignore lint/suspicious/noConsole: mock email
@@ -150,7 +150,7 @@ async function mockSendEmail(_inquiry: any) {
 }
 
 // React 19 Server Action Adapter for useActionState
-export async function submitInquiryAction(_prevState: any, formData: FormData) {
+export async function submitInquiryAction(_prevState: unknown, formData: FormData) {
   const data = {
     name: (formData.get("name") || formData.get("contactName")) as string,
     email: formData.get("email") as string,
@@ -185,9 +185,9 @@ export async function submitInquiryAction(_prevState: any, formData: FormData) {
 
     if (error instanceof z.ZodError) {
       invalidParams = error.flatten().fieldErrors as Record<string, string[]>;
-    } else if ((error as any)?.invalidParams) {
+    } else if (error && typeof error === "object" && "invalidParams" in error) {
       // AppError or similar
-      invalidParams = (error as any).invalidParams;
+      invalidParams = (error as { invalidParams: Record<string, string[]> }).invalidParams;
     }
 
     // Construct a pseudo-ApiError for the client

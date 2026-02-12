@@ -1,3 +1,8 @@
+import dns from "node:dns";
+
+// Set global DNS servers early to ensure all lookups (secrets, DB, etc) use reliable resolvers
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import { initTelemetry } from "./lib/monitoring/telemetry.js";
 
 // 0. Initialize Telemetry (Must be first)

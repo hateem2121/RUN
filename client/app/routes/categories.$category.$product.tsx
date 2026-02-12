@@ -18,7 +18,7 @@ import {
   useTransition,
 } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
-import { ProductBreadcrumbs } from "@/components/product/product-breadcrumbs";
+import { ProductBreadcrumbs } from "@/components/products/ProductBreadcrumbs";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
 import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
@@ -343,7 +343,7 @@ function ProductDetailContent() {
       ];
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <main id="main-content" className="min-h-screen bg-white pb-24">
       <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">
         {/* Breadcrumb */}
         <div className="mb-8">
@@ -455,7 +455,7 @@ function ProductDetailContent() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

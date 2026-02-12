@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router";
+import { AdminErrorBoundary } from "@/components/admin/AdminErrorBoundary";
 import AdminLayout from "@/components/admin/admin-layout";
-
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
 import { AdminProvider } from "@/context/AdminContext";
 import type { Route } from "./+types/admin";
@@ -8,6 +8,8 @@ import type { Route } from "./+types/admin";
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Admin Console | RUN APPAREL" }];
 }
+
+export { AdminErrorBoundary as ErrorBoundary };
 
 export default function AdminRoute() {
   const location = useLocation();

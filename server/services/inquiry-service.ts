@@ -23,7 +23,7 @@ export class InquiryService {
   }) {
     const page = params.page || 1;
     const limit = params.limit || 20;
-    
+
     const result = await getStorage().listInquiries({
       page,
       limit,
@@ -67,7 +67,7 @@ export class InquiryService {
 
       const finalStats = stats || defaultStats;
       await unifiedCache.set(cacheKey, finalStats, CACHE_TTL_INQUIRIES * 1000);
-      
+
       return { data: finalStats, fromCache: false };
     } catch (error) {
       logger.error("[InquiryService] Failed to fetch stats:", error);
@@ -95,7 +95,9 @@ export class InquiryService {
     }
 
     const inquiry = await getStorage().getInquiryById(id);
-    if (!inquiry) return null;
+    if (!inquiry) {
+      return null;
+    }
 
     await unifiedCache.set(cacheKey, inquiry, CACHE_TTL_INQUIRIES * 1000);
     return { data: inquiry, fromCache: false };
@@ -104,13 +106,19 @@ export class InquiryService {
   /**
    * Updates an inquiry's status and notes, invalidating relevant caches.
    */
-  async updateStatus(id: number, status: "new" | "read" | "responded" | "archived", adminNotes?: string) {
+  async updateStatus(
+    id: number,
+    status: "new" | "read" | "responded" | "archived",
+    adminNotes?: string,
+  ) {
     const updated = await getStorage().updateInquiryStatus(id, status, adminNotes);
-    if (!updated) return null;
+    if (!updated) {
+      return null;
+    }
 
     await this.invalidateInquiryCaches(id);
     logger.info(`[InquiryService] Inquiry #${id} status updated to ${status}`);
-    
+
     return updated;
   }
 
@@ -119,11 +127,13 @@ export class InquiryService {
    */
   async deleteInquiry(id: number) {
     const deleted = await getStorage().deleteInquiry(id);
-    if (!deleted) return false;
+    if (!deleted) {
+      return false;
+    }
 
     await this.invalidateInquiryCaches(id);
     logger.info(`[InquiryService] Inquiry #${id} deleted`);
-    
+
     return true;
   }
 

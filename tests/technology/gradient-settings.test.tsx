@@ -116,11 +116,11 @@ describe("TechnologyGradientSettings - Extracted Module", () => {
     );
 
     // Essential controls should be visible
-    expect(screen.getByText("Background Settings")).toBeInTheDocument();
-    expect(screen.getByText("Colors")).toBeInTheDocument();
-    expect(screen.getByText("Exactly 2 colors")).toBeInTheDocument();
-    expect(screen.getByText(/Gradient Angle/)).toBeInTheDocument();
-    expect(screen.getByText(/Background Texture/)).toBeInTheDocument();
+    expect(screen.getByText("Background Settings")).toBeTruthy();
+    expect(screen.getByText("Colors")).toBeTruthy();
+    expect(screen.getByText("Exactly 2 colors")).toBeTruthy();
+    expect(screen.getByText(/Gradient Angle/)).toBeTruthy();
+    expect(screen.getByText(/Background Texture/)).toBeTruthy();
   });
 
   it("should handle color changes correctly", () => {
@@ -156,15 +156,15 @@ describe("TechnologyGradientSettings - Extracted Module", () => {
     );
 
     // Advanced settings should be hidden by default
-    expect(screen.queryByText("Edge Sharpness")).not.toBeInTheDocument();
+    expect(screen.queryByText("Edge Sharpness")).not.toBeTruthy();
 
     // Click to show advanced
     const advancedButton = screen.getByText("Advanced Settings");
     fireEvent.click(advancedButton);
 
     // Advanced settings should now be visible
-    expect(screen.getByText("Edge Sharpness")).toBeInTheDocument();
-    expect(screen.getByText("Spot Intensity")).toBeInTheDocument();
+    expect(screen.getByText("Edge Sharpness")).toBeTruthy();
+    expect(screen.getByText("Spot Intensity")).toBeTruthy();
   });
 
   it("should handle form submission correctly", async () => {
@@ -205,12 +205,12 @@ describe("TechnologyGradientSettings - Extracted Module", () => {
     );
 
     // Verify exactly 2 colors enforced
-    expect(screen.getByText("Exactly 2 colors")).toBeInTheDocument();
+    expect(screen.getByText("Exactly 2 colors")).toBeTruthy();
 
     // Verify range controls are present with correct labels
-    expect(screen.getByText("45°")).toBeInTheDocument(); // Angle display
-    expect(screen.getByText("30%")).toBeInTheDocument(); // Noise percentage
-    expect(screen.getByText("16")).toBeInTheDocument(); // Blind count
+    expect(screen.getByText("45°")).toBeTruthy(); // Angle display
+    expect(screen.getByText("30%")).toBeTruthy(); // Noise percentage
+    expect(screen.getByText("16")).toBeTruthy(); // Blind count
   });
 
   it("should handle admin controls correctly", () => {
@@ -224,9 +224,9 @@ describe("TechnologyGradientSettings - Extracted Module", () => {
     );
 
     // Admin section should be visible
-    expect(screen.getByText("Admin Controls")).toBeInTheDocument();
-    expect(screen.getByText("Admin Only")).toBeInTheDocument();
-    expect(screen.getByText("Force Settings Override")).toBeInTheDocument();
+    expect(screen.getByText("Admin Controls")).toBeTruthy();
+    expect(screen.getByText("Admin Only")).toBeTruthy();
+    expect(screen.getByText("Force Settings Override")).toBeTruthy();
   });
 
   it("should preserve all original gradient data structure", () => {

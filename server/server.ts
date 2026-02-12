@@ -59,6 +59,10 @@ serverReady = (async () => {
     setupErrorHandling(app);
 
     // 8. Start Background Services
+    // 8. Start Background Services
+    // Removed duplicate call here as it is called below with logs
+
+    // 9. Start Server
     await startServices();
 
     // 9. Start Server

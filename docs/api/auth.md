@@ -6,7 +6,7 @@
 ## Authentication Flow
 
 1. **Initiate Login**
-   - GET `/api/auth/google`
+   - GET `/api/login` (Standard entry point)
    - Redirects to Google Consent Screen
 
 2. **Callback**

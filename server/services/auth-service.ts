@@ -15,11 +15,12 @@ export interface SessionUser extends User {
   claims: {
     email: string | null;
     sub: string;
+    isMock?: boolean;
   };
 }
 
 interface CustomSessionData {
-  passport?: { user: unknown };
+  passport?: { user: SessionUser };
   uaHash?: string;
   lastRotated?: number;
   [key: string]: unknown; // Allow other properties like cookie, id, etc.
@@ -76,26 +77,32 @@ export class AuthService {
   private async getSessionMiddleware() {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
     const { RedisStore } = await import("connect-redis");
-    const { redis } = await import("../lib/cache/upstash-client.js");
+    const { redis, isRedisEnabled } = await import("../lib/cache/upstash-client.js");
 
-    const sessionStore = new RedisStore({
-      client: redis as Redis,
-      prefix: "sess:",
-      ttl: sessionTtl / 1000,
-    });
+    let sessionStore;
+    if (isRedisEnabled) {
+      sessionStore = new RedisStore({
+        client: redis as Redis,
+        prefix: "sess:",
+        ttl: sessionTtl / 1000,
+      });
+    } else {
+      logger.warn("[Auth] Redis not configured - falling back to MemoryStore (Development Only)");
+      // session() uses MemoryStore by default if store is undefined
+      sessionStore = undefined;
+    }
 
     // P1 SECURITY: Support Secret Rotation
     // If SESSION_SECRET_PREVIOUS is set, use it for verifying old sessions
     const currentSecret = getSecret("SESSION_SECRET") || process.env.SESSION_SECRET;
 
     if (!currentSecret) {
-      if (process.env.NODE_ENV === "production") {
-        throw new Error("CRITICAL SECURITY ERROR: SESSION_SECRET must be provided in production.");
-      }
-      logger.warn("[Auth] SESSION_SECRET missing in development. Falling back to unsafe default.");
+      throw new Error(
+        "CRITICAL SECURITY ERROR: SESSION_SECRET must be provided in all environments.",
+      );
     }
 
-    const finalSecret = currentSecret || "unsafe-dev-fallback-only";
+    const finalSecret = currentSecret;
     const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
     const secrets = previousSecret ? [finalSecret, previousSecret] : finalSecret;
 
@@ -269,6 +276,18 @@ export class AuthService {
   }
 
   /**
+   * SECURITY: Check if mock admin access is allowed
+   * STRICTLY RESTRICTED to development environment with explicit flag
+   */
+  private isMockAccessAllowed(user: SessionUser): boolean {
+    const isDev = process.env.NODE_ENV === "development";
+    const isMockEnabled = process.env.ENABLE_MOCK_ADMIN === "true";
+    const isMockUser = user.claims.isMock === true;
+
+    return isDev && isMockEnabled && isMockUser;
+  }
+
+  /**
    * Middleware: Require authenticated user
    */
   public isAuthenticated: RequestHandler = (req, res, next) => {
@@ -301,6 +320,13 @@ export class AuthService {
       return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
         error: AuthErrors.ADMIN_REQUIRED,
       });
+    }
+
+    // P1 SECURITY: Mock Admin Bypass
+    // CRITICAL: This must ONLY be active in development environment
+    if (this.isMockAccessAllowed(user)) {
+      logger.warn(`[AuthService] ⚠️ MOCK ADMIN ACCESS GRANTED for user: ${userId}`);
+      return next();
     }
 
     try {

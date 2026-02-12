@@ -33,16 +33,16 @@ describe("Technology Component Structure", () => {
   it("should render technology page structure", () => {
     renderWithProvider(<MockTechnologyComponent />);
 
-    expect(screen.getByTestId("technology-page")).toBeInTheDocument();
-    expect(screen.getByTestId("gradient-container")).toBeInTheDocument();
-    expect(screen.getByTestId("3d-model-container")).toBeInTheDocument();
+    expect(screen.getByTestId("technology-page")).toBeDefined();
+    expect(screen.getByTestId("gradient-container")).toBeDefined();
+    expect(screen.getByTestId("3d-model-container")).toBeDefined();
   });
 
   it("should handle component isolation for safe refactoring", () => {
     const { unmount } = renderWithProvider(<MockTechnologyComponent />);
 
     // Component should mount and unmount cleanly
-    expect(screen.getByText("Technology Page")).toBeInTheDocument();
+    expect(screen.getByText("Technology Page")).toBeDefined();
 
     unmount();
 

@@ -1,5 +1,5 @@
 import type { TransformedProduct } from "@/lib/product-transformers";
-import { ProductCard } from "./product-card";
+import { ProductCard } from "./ProductCard";
 
 interface FeaturedProductsProps {
   title: string;

@@ -106,12 +106,12 @@ describe("Technology Page - Admin Sync Integration", () => {
     });
 
     // Should show loading state briefly
-    expect(screen.getByText(/synchronizing content/i)).toBeInTheDocument();
+    expect(screen.getByText(/synchronizing content/i)).toBeTruthy();
 
     // Should resolve without flickering
     await waitFor(
       () => {
-        expect(screen.queryByText(/synchronizing content/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/synchronizing content/i)).not.toBeTruthy();
       },
       { timeout: 2000 },
     );

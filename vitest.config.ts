@@ -8,6 +8,12 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
     globals: true,
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.{idea,git,cache,output,temp}/**",
+    ],
     testTimeout: 60000,
     coverage: {
       enabled: false, // Enable with --coverage flag

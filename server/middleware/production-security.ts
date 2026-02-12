@@ -48,6 +48,8 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
           connectSrc: ["'self'", "https:", "data:", "blob:", "wss:"],
           workerSrc: ["'self'", "blob:"],
           mediaSrc: ["'self'", "https:", "data:", "blob:"],
+          manifestSrc: ["'self'"],
+          upgradeInsecureRequests: config.app.environment === "production" ? [] : null,
         },
       },
       // HSTS: Enforce HTTPS for 1 year with preload eligibility

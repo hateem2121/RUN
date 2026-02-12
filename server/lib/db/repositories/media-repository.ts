@@ -565,11 +565,16 @@ export class MediaRepository {
     return result as any;
   }
 
-  async getMediaAssetsIncludingDeleted(): Promise<MediaAsset[]> {
+  async getMediaAssetsIncludingDeleted(
+    limit: number = 100,
+    offset: number = 0,
+  ): Promise<MediaAsset[]> {
     return await db
       .select(MEDIA_DETAIL_COLUMNS)
       .from(mediaAssets)
-      .orderBy(desc(mediaAssets.createdAt));
+      .orderBy(desc(mediaAssets.createdAt))
+      .limit(limit)
+      .offset(offset);
   }
 
   async getAssetsNeedingThumbnails(): Promise<MediaAsset[]> {

@@ -1,78 +1,11 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FocusScope } from "@radix-ui/react-focus-scope";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { apiRequest } from "../../lib/queryClient";
-import { useHydratedStore } from "../../lib/useHydratedStore";
-import { useQuoteStore } from "../../stores/useQuoteStore";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-
-// ... existing imports
-
-// Form Validation Schema
-const inquiryFormSchema = z.object({
-  contact: z.object({
-    name: z.string().min(2, "Name is required"),
-    email: z.string().email("Invalid email"),
-    company: z.string().min(2, "Company is required"),
-    phone: z.string().optional(),
-    projectDescription: z.string().optional(),
-  }),
-});
-
-type InquiryFormData = z.infer<typeof inquiryFormSchema>;
+import { useInquiryForm } from "@/hooks/use-inquiry-form";
+import { InquiryForm } from "./InquiryForm";
+import { QuoteList } from "./QuoteList";
 
 export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  // Use hydrated store to prevent mismatch
-  // biome-ignore lint/suspicious/noExplicitAny: Store hydration typing issue
-  const store = useHydratedStore(useQuoteStore, (state) => state) as any;
-
-  // Safe defaults if not hydrated
-  const items = store?.items ?? [];
-  const removeFromQuote = store?.removeFromQuote ?? (() => {});
-  const updateQuantity = store?.updateQuantity ?? (() => {});
-  const clearQuote = store?.clearQuote ?? (() => {});
-
-  const [success, setSuccess] = useState(false);
-
-  const methods = useForm<InquiryFormData>({
-    resolver: zodResolver(inquiryFormSchema),
-  });
-
-  const mutation = useMutation({
-    mutationFn: async (data: InquiryFormData) => {
-      const payload = {
-        contact: data.contact,
-        // biome-ignore lint/suspicious/noExplicitAny: Item structure is dynamic
-        items: items.map((i: any) => ({
-          productId: i.id,
-          quantity: i.quantity,
-          notes: "", // Default notes
-        })),
-      };
-
-      // Submit via API endpoint to avoid local server-only module imports in client
-      return await apiRequest("/api/inquiries", {
-        method: "POST",
-        body: JSON.stringify({
-          ...payload,
-          source: "quote_drawer",
-        }),
-      });
-    },
-    onSuccess: () => {
-      setSuccess(true);
-      clearQuote();
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 3000);
-    },
-  });
+  const { form, items, removeFromQuote, updateQuantity, success, mutation, onSubmit } =
+    useInquiryForm({ onClose });
 
   if (!isOpen) {
     return null;
@@ -144,157 +77,19 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
             <div className="flex-1 overflow-y-auto">
               {/* Items List */}
               <div className="space-y-6 p-6">
-                {items.length === 0 ? (
-                  <div className="rounded-xl border-2 border-slate-200 border-dashed py-12 text-center">
-                    <p className="text-slate-500">Your quote list is empty.</p>
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="mt-4 font-medium text-blue-600 hover:underline"
-                    >
-                      Browse Catalog
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-slate-500 text-xs uppercase tracking-wider">
-                      Selected Items ({items.length})
-                    </h3>
-                    {/* biome-ignore lint/suspicious/noExplicitAny: Item structure is dynamic */}
-                    {items.map((item: any) => (
-                      <div
-                        key={item.id}
-                        className="flex gap-4 rounded-lg border border-slate-100 bg-slate-50 p-4"
-                      >
-                        {item.imageUrl && (
-                          <img
-                            src={item.imageUrl}
-                            alt={item.name}
-                            className="h-16 w-16 rounded-md bg-white object-cover"
-                          />
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <h4 className="truncate font-medium text-slate-900">{item.name}</h4>
-                          <div className="mt-2 flex items-center gap-4">
-                            <div className="flex items-center rounded-md border border-slate-200 bg-white">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  updateQuantity(
-                                    item.id,
-                                    Math.max(item.minOrderQuantity, item.quantity - 1),
-                                  )
-                                }
-                                className="px-2 py-1 text-slate-500 hover:bg-slate-50"
-                              >
-                                -
-                              </button>
-                              <span className="w-12 px-2 text-center font-medium text-sm">
-                                {item.quantity}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="px-2 py-1 text-slate-500 hover:bg-slate-50"
-                              >
-                                +
-                              </button>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removeFromQuote(item.id)}
-                              className="text-red-500 text-xs hover:underline"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <QuoteList
+                  items={items}
+                  updateQuantity={updateQuantity}
+                  removeFromQuote={removeFromQuote}
+                  onClose={onClose}
+                />
               </div>
 
               {/* Inquiry Form */}
               {items.length > 0 && (
                 <div className="border-slate-100 border-t bg-slate-50/50 p-6">
                   <h3 className="mb-4 font-bold text-lg text-slate-900">Contact Details</h3>
-                  <Form {...methods}>
-                    <form
-                      id="inquiry-form"
-                      onSubmit={methods.handleSubmit((data) => mutation.mutate(data))}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={methods.control}
-                        name="contact.name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
-                              Full Name
-                            </FormLabel>
-                            <FormControl>
-                              <Input {...field} className="bg-white" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={methods.control}
-                        name="contact.company"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
-                              Company Name
-                            </FormLabel>
-                            <FormControl>
-                              <Input {...field} className="bg-white" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={methods.control}
-                        name="contact.email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
-                              Work Email
-                            </FormLabel>
-                            <FormControl>
-                              <Input {...field} className="bg-white" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={methods.control}
-                        name="contact.projectDescription"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
-                              Project Description (Optional)
-                            </FormLabel>
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                rows={3}
-                                className="resize-none bg-white"
-                                placeholder="Tell us about your project requirements..."
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </form>
-                  </Form>
+                  <InquiryForm form={form} onSubmit={onSubmit} />
                 </div>
               )}
             </div>

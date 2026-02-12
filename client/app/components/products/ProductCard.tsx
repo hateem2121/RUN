@@ -4,9 +4,9 @@ import { Card, CardContent, CardFooter, GlassCardDecorations } from "@/component
 import { useInquiryCart } from "@/contexts/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { cn } from "@/lib/utils";
-import { GotsIcon, OekoTexIcon, RcsIcon } from "./product-badges";
+import { GotsIcon, OekoTexIcon, RcsIcon } from "./ProductBadges";
 
-import { ProductImageCarousel } from "./product-image-carousel";
+import { ProductImageCarousel } from "./ProductImageCarousel";
 
 interface ProductCardProps {
   product: TransformedProduct;

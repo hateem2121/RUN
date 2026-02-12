@@ -31,12 +31,12 @@ import contactRouter from "./contact.routes.js";
 // Homepage Page Resources (relocated from modules/ on October 15, 2025)
 import homepageBatchRouter from "./homepage-batch.routes.js";
 import homepageManagementRouter from "./homepage-management.routes.js";
+import logoSettingsRouter from "./logo-settings.routes.js";
 import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes.js";
 import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
-import logoSettingsRouter from "./logo-settings.routes.js";
 import navigationRouter from "./navigation.routes.js";
 import sustainabilityRouter from "./sustainability.routes.js";
 // Sustainability Page Resources

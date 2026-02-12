@@ -13,4 +13,4 @@ export const productSchema = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-export type Product = z.infer<typeof productSchema>;
+export type ProductSchemaType = z.infer<typeof productSchema>;

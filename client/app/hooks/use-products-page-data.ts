@@ -156,7 +156,9 @@ export function useProductsPageData({
 
   const categoryTabs = (() => {
     const tabs = [{ name: "ALL", label: "All Products" }];
-    const activeCategories = categories.filter((c) => c.isActive);
+    const activeCategories = (Array.isArray(categories) ? categories : []).filter(
+      (c) => c?.isActive,
+    );
     activeCategories.forEach((cat) => {
       tabs.push({
         name: cat.name.toUpperCase().replace(/\s+/g, "_"),
@@ -252,9 +254,11 @@ export function useProductsPageData({
   // Derived Product Lists
   // ─────────────────────────────────────────────────────────────────────────
 
-  const featuredProducts = transformedProducts.filter((p) => p.isFeatured).slice(0, 4);
+  const featuredProducts = (Array.isArray(transformedProducts) ? transformedProducts : [])
+    .filter((p) => p.isFeatured)
+    .slice(0, 4);
 
-  const gearProducts = transformedProducts.filter((p) =>
+  const gearProducts = (Array.isArray(transformedProducts) ? transformedProducts : []).filter((p) =>
     p.category?.toLowerCase().includes("gear"),
   );
 

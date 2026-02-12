@@ -95,9 +95,9 @@ cms-system/
 │       └── routeMapping.ts  # Route mapping table
 │
 ├── docs/                    # Documentation
-│   ├── PORT_5002_ARCHITECTURE.md
-│   ├── ROUTE_MAPPING.md
-│   └── TROUBLESHOOTING.md
+│   ├── core/                # Tech stack, architecture, standards
+│   ├── ROUTE_MAPPING.md     # Route mapping table
+│   └── TROUBLESHOOTING.md   # Common issues and fixes
 │
 ├── scripts/
 │   └── verify-port-5002.js  # Port verification script
@@ -106,9 +106,9 @@ cms-system/
 ├── .env.example            # Template (PORT=5002)
 ├── vite.config.ts          # Vite config (port: 5002)
 ├── package.json            # Scripts for port 5002
-├── RULES.md                # Coding rules (Rule #0: Port 5002)
-├── WORKFLOW.md             # Development workflow
-├── AGENT.md                # AI agent instructions
+├── docs/CODING_STANDARDS.md # Coding rules (Rule #0: Port 5002)
+├── docs/DEVELOPMENT_WORKFLOW.md # Development workflow
+├── docs/AGENT_INSTRUCTIONS.md # AI agent instructions
 └── README.md               # This file
 ```
 
@@ -435,7 +435,7 @@ curl http://localhost:5002/team
 curl http://localhost:5002/admin/team
 ```
 
-**See `WORKFLOW.md` for detailed processes.**
+**See `docs/DEVELOPMENT_WORKFLOW.md` for detailed processes.**
 
 ---
 
@@ -443,13 +443,13 @@ curl http://localhost:5002/admin/team
 
 ### Core Documentation
 
-- **RULES.md** - Coding standards (Rule #0: Port 5002)
-- **WORKFLOW.md** - Development processes
-- **AGENT.md** - AI agent instructions
+- **docs/CODING_STANDARDS.md** - Coding standards (Rule #0: Port 5002)
+- **docs/DEVELOPMENT_WORKFLOW.md** - Development processes
+- **docs/AGENT_INSTRUCTIONS.md** - AI agent instructions
 
 ### Architecture Documentation
 
-- **docs/PORT_5002_ARCHITECTURE.md** - Port 5002 system design
+- **docs/core/tech-stack.md** - Port 5002 system design
 - **docs/ROUTE_MAPPING.md** - Frontend-admin route mapping
 - **docs/TROUBLESHOOTING.md** - Common issues and fixes
 
@@ -628,7 +628,7 @@ const Input = forwardRef((props, ref) => {
 // Missing admin counterpart!
 ```
 
-**See `RULES.md` for complete coding standards.**
+**See `docs/CODING_STANDARDS.md` for complete coding standards.**
 
 ---
 

@@ -1,109 +1,88 @@
-# Contributing to RUN Apparel B2B
+# Contributing to RUN Remix
 
-First off, thanks for taking the time to contribute! 🎉
+**Welcome to the RUN Remix codebase!** This document outlines the standards and workflows required to maintain the high quality and performance of the RUN APPAREL CMS.
 
-The following is a set of guidelines for contributing to the RUN-Remix monorepo.
+---
 
-## 🛠 Tech Stack Overview
+## 1. Tech Stack (Non-Negotiable)
 
-- **Core**: React 19, Express 5, Node 24
-- **Build**: Vite 7, TurboRepo
-- **Style**: Tailwind CSS v4
-- **Language**: TypeScript 5+ (Strict)
-- **Test**: Vitest (Unit), Playwright (E2E)
+| Layer | Technology | Version | Notes |
+|-------|------------|---------|-------|
+| **Frontend** | React | 19 | Functional components only. No `forwardRef`. |
+| **Build** | Vite | 7 | Uses `@react-router/dev`. |
+| **Styling** | Tailwind CSS | 4 | Use `@utility` layer. No arbitrary values. |
+| **Backend** | Express | 5 | Async handlers supported natively. |
+| **Language** | TypeScript | 5+ | **Strict Mode**. `noImplicitAny`. |
+| **3D** | Model Viewer | - | **ONLY** `@google/model-viewer`. No Three.js/Fiber. |
+| **Validation** | Zod | - | Unified schemas in `@run-remix/shared`. |
 
-## 🚀 Quick Start
+---
 
-1.  **Prerequisites**: Node.js 24+, npm 10+
-2.  **Clone**: `git clone <repo>`
-3.  **Install**: `npm install`
-4.  **Setup Env**: `cp .env.example .env`
-5.  **Dev Server**: `npm run dev`
+## 2. Coding Standards
 
-## 🏗 Monorepo Structure
+### TypeScript
 
-We use **NPM Workspaces** managed by TurboRepo.
+- **Zero `any` Policy:** Do not use `any`. Use `unknown` or proper interfaces.
+- **Strict Null Checks:** Handle `null` and `undefined` explicitly.
+- **Shared Types:** API responses and DTOs must be defined in `@run-remix/shared`.
 
-- `client/`: Frontend application (`@run-remix/client`)
-- `server/`: Backend API (`@run-remix/server`)
-- `shared/`: Shared schemas/types (`@run-remix/shared`)
-- `scripts/`: Dev & CI automation
+### Components
 
-⚠️ **Rule**: Never edit `shared` without checking dependents (`client` and `server`).
+- **Naming:** PascalCase for filenames and components (e.g., `ProductCard.tsx`).
+- **Structure:** Domain-driven organization:
 
-## 🧪 Testing Policy
+  ```text
+  client/app/components/
+  ├── ui/              # Generic (Button, Input) - shadcn-like
+  ├── products/        # Domain specific
+  ├── orders/          # Domain specific
+  └── admin/           # Admin specific
+  ```
 
-All PRs must pass the "Tech Integrity" check:
-
-\`\`\`bash
-npm run verify:tech-integrity
-\`\`\`
-
-This single command runs:
-1.  **Typecheck**: `tsc -b`
-2.  **Lint**: `biome check`
-3.  **Audit**: `audit-ci`
-4.  **Build**: `vite build`
-
-## 📝 Coding Standards
-
-### React 19
-
-#### The "No-ForwardRef" Rule
-
-`React.forwardRef` is **DEPRECATED**. In React 19, `ref` is passed as a prop automatically.
-
-```tsx
-// ❌ DO NOT USE:
-const Example = React.forwardRef<HTMLDivElement, Props>((props, ref) => (
-  <div ref={ref} {...props} />
-));
-
-// ✅ DO USE:
-interface ExampleProps extends React.HTMLAttributes<HTMLDivElement> {
-  ref?: React.Ref<HTMLDivElement>;
-}
-const Example = ({ ref, ...props }: ExampleProps) => (
-  <div ref={ref} {...props} />
-);
-```
-
-- **Actions**: Use `useActionState` for forms.
-- **Server Components**: Keep client components at leaves (`"use client"`).
+- **Props:** Use interfaces, not types, for component props.
 
 ### Styling (Tailwind v4)
 
-- **No Raw Colors**: Use semantic tokens (e.g., `text-muted-foreground`, not `text-gray-500`).
-- **Composition**: Use `cn()` helper for merging classes.
+- **CSS Variables:** Use semantic variables defined in `index.css` / `theme.css`.
+- **Classes:** Use `cn()` for class merging.
+- **Forbidden:**
+  - ❌ `<div className="w-[350px]">` (Arbitrary values)
+  - ✅ `<div className="w-sidebar-expanded">` (tokens)
 
-#### Z-Index Strategy
+---
 
-Manual Z-index classes (e.g., `z-50`, `z-[100]`) are **FORBIDDEN**. Use semantic scale:
+## 3. Workflow
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `z-toast` | 700 | Toasts, notifications |
-| `z-popover` | 600 | Dropdowns, menus |
-| `z-modal` | 500 | Dialogs, sheets |
-| `z-overlay` | 400 | Dimmed overlays |
-| `z-fixed` | 300 | Fixed elements |
-| `z-sticky` | 200 | Sticky headers |
+### Git Conventions
 
-#### Tailwind v4 Syntax
+- **Branches:** `type/description` (e.g., `feat/add-product-3d`, `fix/navbar-z-index`).
+- **Commits:** Conventional Commits (`type(scope): message`).
+  - `feat`: New feature
+  - `fix`: Bug fix
+  - `refactor`: Code change that neither fixes a bug nor adds a feature
+  - `chore`: Build process or auxiliary tool changes
 
-- Use `/` syntax for opacity: `bg-black/50` not `bg-opacity-50`
-- Use `outline-hidden` not `outline-none`
+### Definition of Done
 
-### Commits
+1. **Linting:** `biome check` passes.
+2. **Types:** `tsc --noEmit` passes with 0 errors.
+3. **Tests:** Relevant tests added/updated.
+4. **Accessibility:** Interactive elements have ARIA labels & keyboard support.
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-- `feat: add 3d viewer`
-- `fix: resolve hydration error`
-- `docs: update api reference`
+---
 
-## 📦 Pull Request Process
+## 4. 3D Content Guidelines (CRITICAL)
 
-1.  Update the `README.md` with details of changes if appropriate.
-2.  Update the `CHANGELOG.md` with a note describing your changes.
-3.  The PR will trigger a `verify:tech-integrity` check.
-4.  The checks **must pass** before merging.
+- **Engine:** We use `@google/model-viewer` for performance and stability.
+- **Forbidden:** Do **NOT** introduce `@react-three/fiber` or `drei`.
+- **Assets:** Models must be optimized GLB files under 5MB.
+
+---
+
+## 5. Directory Structure
+
+- `client/`: React Remix Frontend
+- `server/`: Express Backend
+- `shared/`: Shared Zod schemas and TypeScript types
+
+Thank you for helping us build the future of sustainable sportswear technology.

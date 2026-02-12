@@ -5,13 +5,16 @@ import type { TransformedProduct } from "@/lib/product-transformers";
 import { transformProducts } from "@/lib/product-transformers";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-import { ProductCard } from "./product-card";
-import { QuickViewModal } from "./quick-view-modal";
+import { ProductCard } from "./ProductCard";
+import { QuickViewModal } from "./QuickViewModal";
 
 interface ProductGridProps {
   products: ProductSummary[];
   viewMode: "small" | "medium" | "large";
-  categories: (Pick<Category, "id" | "name" | "slug" | "isActive" | "sortOrder"> & { description?: string | null | undefined; parentId?: number | null | undefined })[];
+  categories: (Pick<Category, "id" | "name" | "slug" | "isActive" | "sortOrder"> & {
+    description?: string | null | undefined;
+    parentId?: number | null | undefined;
+  })[];
   fabrics?: Fabric[];
   certificates?: Certificate[];
 }

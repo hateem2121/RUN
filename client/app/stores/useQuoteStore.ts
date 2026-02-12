@@ -10,7 +10,7 @@ export interface QuoteItem {
   imageUrl?: string;
 }
 
-interface QuoteStore {
+export interface QuoteStore {
   items: QuoteItem[];
   addToQuote: (item: QuoteItem) => void;
   removeFromQuote: (id: number) => void;

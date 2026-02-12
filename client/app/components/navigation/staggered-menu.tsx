@@ -361,7 +361,7 @@ export const StaggeredMenu = ({
               <div
                 key={i}
                 className="sm-prelayer absolute top-0 right-0 h-full w-full bg-(--bg) translate-x-0"
-                // biome-ignore lint/style/noInlineStyles: Dynamic pre-layer background
+                // biome-ignore lint/style: Dynamic pre-layer background
                 style={{ "--bg": c } as React.CSSProperties}
               />
             ));
@@ -371,7 +371,7 @@ export const StaggeredMenu = ({
         <header
           className="staggered-menu-header absolute top-0 left-0 z-(--z-index-dock) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
           aria-label="Main navigation header"
-          // biome-ignore lint/style/noInlineStyles: Safe-area padding calculation
+          // biome-ignore lint/style: Safe-area padding calculation
           style={{ "--pt": "max(1rem, env(safe-area-inset-top))" } as React.CSSProperties}
         >
           <button
@@ -408,12 +408,14 @@ export const StaggeredMenu = ({
           id="staggered-menu-panel"
           ref={panelRef}
           className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pb-(--pb) pt-(--pt) shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
-          // biome-ignore lint/style/noInlineStyles: Dynamic layout/blur via CSS variables
-          style={{
-            "--pb": "max(2rem, env(safe-area-inset-bottom))",
-            "--pt": "max(5rem, env(safe-area-inset-top))",
-            WebkitBackdropFilter: "blur(16px)",
-          } as React.CSSProperties}
+          // biome-ignore lint/style: Dynamic layout/blur via CSS variables
+          style={
+            {
+              "--pb": "max(2rem, env(safe-area-inset-bottom))",
+              "--pt": "max(5rem, env(safe-area-inset-top))",
+              WebkitBackdropFilter: "blur(16px)",
+            } as React.CSSProperties
+          }
           aria-hidden={!open ? "true" : "false"}
           tabIndex={-1} // Allow programmatic focus
         >

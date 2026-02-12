@@ -26,7 +26,7 @@ import {
   storageChangeLogs,
   users,
 } from "../../shared/schema.js";
-import { db } from "../db.js";
+import { db, sql as rawSql } from "../db.js";
 import type { IStorage } from "../storage.js";
 import { UnifiedCache, unifiedCache } from "./cache/unified-cache.js";
 import { MediaRepository } from "./db/repositories/media-repository.js";
@@ -1639,11 +1639,16 @@ export class DirectPostgreSQLStorage implements IStorage {
   // SOFT DELETE METHODS
   // =============================================================================
 
-  async getCategoriesIncludingDeleted(): Promise<Category[]> {
+  async getCategoriesIncludingDeleted(
+    limit: number = 1000,
+    offset: number = 0,
+  ): Promise<Category[]> {
     return (await db
       .select()
       .from(categories)
-      .orderBy(asc(categories.sortOrder), asc(categories.name))) as Category[];
+      .orderBy(asc(categories.sortOrder), asc(categories.name))
+      .limit(limit)
+      .offset(offset)) as Category[];
   }
 
   async restoreCategory(id: number): Promise<boolean> {
@@ -1659,8 +1664,13 @@ export class DirectPostgreSQLStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getProductsIncludingDeleted(): Promise<Product[]> {
-    return await db.select().from(products).orderBy(desc(products.createdAt));
+  async getProductsIncludingDeleted(limit: number = 50, offset: number = 0): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset);
   }
 
   async restoreProduct(id: number): Promise<boolean> {
@@ -1676,8 +1686,11 @@ export class DirectPostgreSQLStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getMediaAssetsIncludingDeleted(): Promise<MediaAsset[]> {
-    return await this.mediaRepository.getMediaAssetsIncludingDeleted();
+  async getMediaAssetsIncludingDeleted(
+    limit: number = 100,
+    offset: number = 0,
+  ): Promise<MediaAsset[]> {
+    return await this.mediaRepository.getMediaAssetsIncludingDeleted(limit, offset);
   }
 
   async restoreMediaAsset(id: number): Promise<boolean> {
@@ -1693,8 +1706,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getFabricsIncludingDeleted(): Promise<Fabric[]> {
-    return await db.select().from(fabrics).orderBy(asc(fabrics.name));
+  async getFabricsIncludingDeleted(limit: number = 1000, offset: number = 0): Promise<Fabric[]> {
+    return await db.select().from(fabrics).orderBy(asc(fabrics.name)).limit(limit).offset(offset);
   }
 
   async restoreFabric(id: number): Promise<boolean> {
@@ -2296,7 +2309,7 @@ export class DirectPostgreSQLStorage implements IStorage {
     const startTime = performance.now();
     try {
       // Execute simple SELECT 1 query to test database connectivity
-      await db.execute(sql`SELECT 1 as ping`);
+      await rawSql`SELECT 1 as ping`;
       const latency = Math.round((performance.now() - startTime) * 100) / 100; // Round to 2 decimals
       return { healthy: true, latency };
     } catch (error) {

@@ -10,8 +10,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { z } from "zod";
-import { pgTable } from "./common.js";
-import { mediaAssets } from "./media.js";
+import { pgTable } from "./common";
+import { mediaAssets } from "./media";
 
 // Fabrics
 export const fabrics = pgTable(

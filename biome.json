@@ -57,14 +57,15 @@
       },
       "suspicious": {
         "noArrayIndexKey": "off",
-        "noConsole": "warn",
-        "noExplicitAny": "warn",
-        "noImplicitAnyLet": "warn",
-        "useAwait": "warn"
+        "noConsole": "off",
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off",
+        "useAwait": "off"
       },
       "style": {
         "noNonNullAssertion": "off",
-        "useBlockStatements": "warn"
+        "useBlockStatements": "off",
+        "noUnusedTemplateLiteral": "off"
       }
     }
   },

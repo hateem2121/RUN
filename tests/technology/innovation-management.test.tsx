@@ -156,55 +156,57 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check main interface elements
-    expect(screen.getByText("Technology Innovations")).toBeInTheDocument();
+    expect(screen.getByText("Technology Innovations")).toBeTruthy();
     expect(
       screen.getByText("Showcase your technological innovations and breakthroughs"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("add-innovation")).toBeInTheDocument();
+    ).toBeTruthy();
+    expect(screen.getByTestId("add-innovation")).toBeTruthy();
   });
 
   it("should display innovation details correctly", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check innovation details are rendered
-    expect(screen.getByTestId("innovation-title")).toHaveTextContent("Smart Fabric Technology");
-    expect(screen.getByTestId("innovation-category")).toHaveTextContent("Fabric Technology");
+    expect(screen.getByTestId("innovation-title").textContent).toContain("Smart Fabric Technology");
+    expect(screen.getByTestId("innovation-category").textContent).toContain("Fabric Technology");
     expect(screen.getByTestId("innovation-description")).toHaveTextContent(
       "Revolutionary smart fabric with embedded sensors",
     );
-    expect(screen.getByTestId("innovation-status")).toHaveTextContent("Active");
+    expect(screen.getByTestId("innovation-status").textContent).toContain("Active");
   });
 
   it("should handle innovation benefits correctly", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check initial benefits
-    expect(screen.getByTestId("benefit-0")).toHaveTextContent("Energy Efficient");
-    expect(screen.getByTestId("benefit-1")).toHaveTextContent("Self-Monitoring");
+    expect(screen.getByTestId("benefit-0").textContent).toContain("Energy Efficient");
+    expect(screen.getByTestId("benefit-1").textContent).toContain("Self-Monitoring");
 
     // Test adding new benefit
     fireEvent.click(screen.getByTestId("add-benefit"));
-    expect(screen.getByText("New Benefit")).toBeInTheDocument();
+    expect(screen.getByText("New Benefit")).toBeTruthy();
   });
 
   it("should display specifications properly", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check specifications rendering
-    expect(screen.getByTestId("spec-Material")).toHaveTextContent("Material: Carbon Fiber");
-    expect(screen.getByTestId("spec-Weight")).toHaveTextContent("Weight: 50g/m²");
+    expect(screen.getByTestId("spec-Material").textContent).toContain("Material: Carbon Fiber");
+    expect(screen.getByTestId("spec-Weight").textContent).toContain("Weight: 50g/m²");
   });
 
   it("should handle impact metrics section", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check impact metrics are displayed
-    expect(screen.getByTestId("metric-Energy Savings")).toHaveTextContent("Energy Savings: 30%");
-    expect(screen.getByTestId("metric-Durability")).toHaveTextContent("Durability: 200%");
+    expect(screen.getByTestId("metric-Energy Savings").textContent).toContain(
+      "Energy Savings: 30%",
+    );
+    expect(screen.getByTestId("metric-Durability").textContent).toContain("Durability: 200%");
 
     // Test adding new metric
     fireEvent.click(screen.getByTestId("add-metric"));
-    expect(screen.getByText("New Metric: 100%")).toBeInTheDocument();
+    expect(screen.getByText("New Metric: 100%")).toBeTruthy();
   });
 
   it("should support all innovation categories", () => {
@@ -223,7 +225,7 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     ];
 
     expectedCategories.forEach((category) => {
-      expect(screen.getByTestId(`category-${category}`)).toHaveTextContent(category);
+      expect(screen.getByTestId(`category-${category}`).textContent).toContain(category);
     });
   });
 
@@ -231,24 +233,24 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Test title update
-    expect(screen.getByTestId("innovation-title")).toHaveTextContent("Smart Fabric Technology");
+    expect(screen.getByTestId("innovation-title").textContent).toContain("Smart Fabric Technology");
 
     fireEvent.click(screen.getByTestId("update-title"));
-    expect(screen.getByTestId("innovation-title")).toHaveTextContent("Updated Innovation");
+    expect(screen.getByTestId("innovation-title").textContent).toContain("Updated Innovation");
   });
 
   it("should handle specifications management", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check initial specifications
-    expect(screen.getByTestId("spec-Material")).toHaveTextContent("Material: Carbon Fiber");
+    expect(screen.getByTestId("spec-Material").textContent).toContain("Material: Carbon Fiber");
 
     // Test adding new specification
     fireEvent.click(screen.getByTestId("add-specification"));
-    expect(screen.getByText("New Spec: New Value")).toBeInTheDocument();
+    expect(screen.getByText("New Spec: New Value")).toBeTruthy();
 
     // Original specifications should still be there
-    expect(screen.getByTestId("spec-Material")).toHaveTextContent("Material: Carbon Fiber");
+    expect(screen.getByTestId("spec-Material").textContent).toContain("Material: Carbon Fiber");
   });
 
   it("should handle CRUD operations via API", () => {
@@ -260,58 +262,60 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // The component should handle API calls for CRUD operations
-    expect(screen.getByTestId("innovation-management")).toBeInTheDocument();
+    expect(screen.getByTestId("innovation-management")).toBeTruthy();
   });
 
   it("should support drag-and-drop functionality structure", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check that innovation items are rendered (drag-and-drop ready)
-    expect(screen.getByTestId("innovation-item")).toBeInTheDocument();
+    expect(screen.getByTestId("innovation-item")).toBeTruthy();
   });
 
   it("should maintain innovation form state correctly", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Verify initial form state
-    expect(screen.getByTestId("innovation-title")).toHaveTextContent("Smart Fabric Technology");
-    expect(screen.getByTestId("innovation-category")).toHaveTextContent("Fabric Technology");
+    expect(screen.getByTestId("innovation-title").textContent).toContain("Smart Fabric Technology");
+    expect(screen.getByTestId("innovation-category").textContent).toContain("Fabric Technology");
 
     // Test state persistence after updates
     fireEvent.click(screen.getByTestId("add-benefit"));
-    expect(screen.getByText("New Benefit")).toBeInTheDocument();
+    expect(screen.getByText("New Benefit")).toBeTruthy();
 
     // Original benefits should still be there
-    expect(screen.getByTestId("benefit-0")).toHaveTextContent("Energy Efficient");
+    expect(screen.getByTestId("benefit-0").textContent).toContain("Energy Efficient");
   });
 
   it("should handle media integration for images and videos", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Component should be ready for media integration
-    expect(screen.getByTestId("innovation-management")).toBeInTheDocument();
+    expect(screen.getByTestId("innovation-management")).toBeTruthy();
   });
 
   it("should preserve all innovation data structure", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Verify all essential innovation fields are handled
-    expect(screen.getByTestId("innovation-title")).toBeInTheDocument();
-    expect(screen.getByTestId("innovation-category")).toBeInTheDocument();
-    expect(screen.getByTestId("innovation-description")).toBeInTheDocument();
-    expect(screen.getByTestId("benefits-section")).toBeInTheDocument();
-    expect(screen.getByTestId("specifications-section")).toBeInTheDocument();
-    expect(screen.getByTestId("metrics-section")).toBeInTheDocument();
-    expect(screen.getByTestId("innovation-status")).toBeInTheDocument();
+    expect(screen.getByTestId("innovation-title")).toBeTruthy();
+    expect(screen.getByTestId("innovation-category")).toBeTruthy();
+    expect(screen.getByTestId("innovation-description")).toBeTruthy();
+    expect(screen.getByTestId("benefits-section")).toBeTruthy();
+    expect(screen.getByTestId("specifications-section")).toBeTruthy();
+    expect(screen.getByTestId("metrics-section")).toBeTruthy();
+    expect(screen.getByTestId("innovation-status")).toBeTruthy();
   });
 
   it("should handle complex specifications and metrics correctly", () => {
     renderWithProvider(<MockTechnologyInnovationManagement />);
 
     // Check that multiple specifications and metrics can coexist
-    expect(screen.getByTestId("spec-Material")).toHaveTextContent("Material: Carbon Fiber");
-    expect(screen.getByTestId("spec-Weight")).toHaveTextContent("Weight: 50g/m²");
-    expect(screen.getByTestId("metric-Energy Savings")).toHaveTextContent("Energy Savings: 30%");
-    expect(screen.getByTestId("metric-Durability")).toHaveTextContent("Durability: 200%");
+    expect(screen.getByTestId("spec-Material").textContent).toContain("Material: Carbon Fiber");
+    expect(screen.getByTestId("spec-Weight").textContent).toContain("Weight: 50g/m²");
+    expect(screen.getByTestId("metric-Energy Savings").textContent).toContain(
+      "Energy Savings: 30%",
+    );
+    expect(screen.getByTestId("metric-Durability").textContent).toContain("Durability: 200%");
   });
 });

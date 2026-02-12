@@ -15,7 +15,10 @@ export const apiLimiter = new RateLimiter({
 // Can be overridden by RATELIMIT_AUTH_MAX
 export const authLimiter = new RateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: parseInt(process.env.RATELIMIT_AUTH_MAX || "5", 10),
+  max:
+    process.env.NODE_ENV === "development"
+      ? 1000
+      : parseInt(process.env.RATELIMIT_AUTH_MAX || "5", 10),
   message: "Too many login attempts, please try again later.",
   statusCode: 429,
 });

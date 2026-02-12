@@ -36,7 +36,9 @@ export interface TransformedProduct {
   media: Array<{ id: number; type: "image" | "video"; url?: string }>;
 }
 
-export type MinimalCategory = Pick<Category, "id" | "name" | "slug"> & { parentId?: number | null | undefined };
+export type MinimalCategory = Pick<Category, "id" | "name" | "slug"> & {
+  parentId?: number | null | undefined;
+};
 
 export interface TransformContext {
   categories: MinimalCategory[];

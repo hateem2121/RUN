@@ -38,110 +38,215 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     {
       label: "Dashboard",
       href: "/admin",
-      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconBrandTabler
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Categories",
       href: "/admin/categories",
-      icon: <IconCategory className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconCategory
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Products",
       href: "/admin/products",
-      icon: <IconShirt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconShirt
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Fibers",
       href: "/admin/fibers",
-      icon: <IconForms className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconForms
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Fabrics",
       href: "/admin/fabrics",
-      icon: <IconFileFilled className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconFileFilled
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Certificates",
       href: "/admin/certificates",
-      icon: <IconCertificate className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconCertificate
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Size Charts",
       href: "/admin/size-charts",
-      icon: <IconRuler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconRuler
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Accessories",
       href: "/admin/accessories",
-      icon: <IconBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconBolt
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Media",
       href: "/admin/media",
-      icon: <IconPhoto className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconPhoto
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Storage Optimization",
       href: "/admin/storage-optimization",
-      icon: <IconDatabase className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconDatabase
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
 
     {
       label: "Navigation",
       href: "/admin/navigation",
-      icon: <IconNavigation className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconNavigation
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
 
     {
       label: "Contact",
       href: "/admin/contact",
-      icon: <IconMail className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconMail
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Footer",
       href: "/admin/footer",
-      icon: <IconForms className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconForms
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Inquiries",
       href: "/admin/inquiries",
-      icon: <IconInbox className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconInbox
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Blog",
       href: "/admin/blog",
-      icon: <IconFileFilled className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconFileFilled
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Homepage",
       href: "/admin/homepage",
-      icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconHome
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
 
     {
       label: "About Us",
       href: "/admin/about",
-      icon: <IconFileFilled className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconFileFilled
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Sustainability",
       href: "/admin/sustainability",
-      icon: <IconLeaf className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconLeaf
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Manufacturing",
       href: "/admin/manufacturing",
-      icon: <IconTool className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconTool
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Technology",
       href: "/admin/technology",
-      icon: <IconCpu className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconCpu
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
     {
       label: "Back to Website",
       href: "/",
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconArrowLeft
+          className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
+          aria-hidden="true"
+        />
+      ),
     },
   ];
 

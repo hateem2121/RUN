@@ -121,7 +121,7 @@ export default function Index() {
       {!preloaderFinished && <Preloader onComplete={() => setPreloaderFinished(true)} />}
       <CustomCursor />
 
-      <main className="w-full bg-background-alt">
+      <main id="main-content" className="w-full bg-background-alt">
         <Suspense fallback={null}>
           {/* GROUP 1: Skewable Top Section */}
           <div ref={heroRef} className="origin-top will-change-transform">

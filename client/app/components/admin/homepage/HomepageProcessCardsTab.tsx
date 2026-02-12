@@ -151,7 +151,12 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     ) : (
                       <span className="text-sm text-muted-foreground">No image selected</span>
                     )}
-                    <Button variant="outline" size="sm" onClick={() => openMediaPicker("create")}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openMediaPicker("create")}
+                      aria-label="Select image for card"
+                    >
                       Select Image
                     </Button>
                   </div>
@@ -182,6 +187,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                           variant="secondary"
                           size="icon"
                           className="h-8 w-8 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label={`Drag to reorder card ${card.step}`}
                         >
                           <GripVertical className="h-4 w-4" />
                         </Button>
@@ -193,6 +199,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => setEditingCard(card)}
+                        aria-label={`Edit ${card.title}`}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -201,6 +208,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => handleDelete(card.id)}
+                        aria-label={`Delete ${card.title}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -4,43 +4,41 @@
  * data transformations, and system maintenance.
  */
 
-import { z } from "zod";
-import type { MediaAsset, Product } from "../../shared/schema.js";
-import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
-import { logger } from "../lib/monitoring/logger.js";
-import { withTimeout } from "../lib/resilience/request-timeout.js";
-import { getStorage } from "../lib/storage-singleton.js";
+import type { MediaAsset, Product } from "@run-remix/shared";
+import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-scheduler.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { getStorage } from "../../lib/storage-singleton.js";
 
 export class AdminService {
   /**
    * Fetches and processes initial data for the admin products dashboard.
    * Eliminates the need for complex transformations in the route handler.
    */
-  async getInitialProductsData() {
-    const [allProducts, categories, fabrics, mediaAssets] = await withTimeout(
+  async getInitialProductsData(page: number = 1, limit: number = 50) {
+    const offset = (page - 1) * limit;
+
+    const [allProducts, totalProductsCount, categories, fabrics] = await withTimeout(
       Promise.all([
-        getStorage().getProductsIncludingDeleted(),
+        getStorage().getProductsIncludingDeleted(limit, offset),
+        getStorage().getProductsCount(),
         getStorage().getCategories(),
         getStorage().getFabrics(),
-        getStorage().getMediaAssets(),
       ]),
       15000,
       "Fetch admin initial data",
     );
 
     const safeAllProducts = Array.isArray(allProducts) ? allProducts : [];
-    const safeMediaAssets = Array.isArray(mediaAssets) ? mediaAssets : [];
 
-    // Filter for active/undeleted products
+    // Filter for active/undeleted products (though getProductsIncludingDeleted returns potentially deleted ones,
+    // the UI might expect them if it's an admin view. The previous code filtered them:
+    // const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
+    // But getProductsIncludingDeleted serves a purpose. If the admin needs to see deleted, we should keep them.
+    // However, to maintain parity with previous logic which explicitly filtered them ONLY for "products" variable:
     const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
 
-    // Filter valid media assets
-    const validMediaAssets = safeMediaAssets.filter(
-      (asset): asset is MediaAsset =>
-        typeof asset.filename === "string" && asset.filename !== "undefined",
-    );
-
-    // Calculate referenced media
+    // Calculate referenced media IDs from the PAGINATED products
     const referencedMediaIds = new Set<number>();
     const enhancedProducts = products.map((product: Product) => {
       if (product.primaryImageId) referencedMediaIds.add(product.primaryImageId);
@@ -63,15 +61,27 @@ export class AdminService {
       };
     });
 
-    // Partition media assets
-    const relevantMediaAssets = validMediaAssets.filter((asset: MediaAsset) =>
-      referencedMediaIds.has(asset.id),
-    );
-    const additionalMedia = validMediaAssets
-      .filter((asset: MediaAsset) => !referencedMediaIds.has(asset.id))
-      .slice(0, 50);
+    // Efficiently fetch ONLY referenced media assets + some recent ones
+    // Validating IDs before passing to DB
+    const validMediaIds = Array.from(referencedMediaIds).filter((id) => !isNaN(id));
+    const mediaIdsStrings = validMediaIds.map((id) => id.toString());
 
-    const allMediaToSend = [...relevantMediaAssets, ...additionalMedia].map((asset) => ({
+    const [referencedMedia, recentMedia] = await Promise.all([
+      mediaIdsStrings.length > 0
+        ? getStorage().getMediaAssetsByIds(mediaIdsStrings)
+        : Promise.resolve([]),
+      getStorage().getMediaAssets(50, 0), // Fetch recent 50 for picker/general use
+    ]);
+
+    // Merge and deduplicate media assets
+    const mediaMap = new Map<number, MediaAsset>();
+    [...referencedMedia, ...recentMedia].forEach((asset) => {
+      if (asset && typeof asset.filename === "string" && asset.filename !== "undefined") {
+        mediaMap.set(asset.id, asset);
+      }
+    });
+
+    const allMediaToSend = Array.from(mediaMap.values()).map((asset) => ({
       id: asset.id,
       filename: asset.filename,
       type: asset.type,
@@ -85,11 +95,14 @@ export class AdminService {
       fabrics: Array.isArray(fabrics) ? fabrics : [],
       mediaAssets: allMediaToSend,
       meta: {
-        totalProducts: products.length,
+        totalProducts: totalProductsCount,
         totalCategories: Array.isArray(categories) ? categories.length : 0,
         totalFabrics: Array.isArray(fabrics) ? fabrics.length : 0,
-        totalMediaAssets: validMediaAssets.length,
+        totalMediaAssets: allMediaToSend.length, // This is count of *sent* media, not total in DB.
         timestamp: Date.now(),
+        page,
+        limit,
+        totalPages: Math.ceil(totalProductsCount / limit),
       },
     };
   }

@@ -14,6 +14,36 @@ router.get(
   }),
 );
 
+// Mock Login Route (Development Only)
+if (process.env.NODE_ENV === "development") {
+  router.get("/mock-login", (req, res) => {
+    const mockUser: SessionUser = {
+      id: "mock-admin-id",
+      email: "mock-admin@example.com",
+      firstName: "Mock",
+      lastName: "Admin",
+      profileImageUrl: "https://via.placeholder.com/150",
+      isAdmin: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      claims: {
+        email: "mock-admin@example.com",
+        sub: "mock-admin-id",
+        isMock: true,
+      },
+    };
+
+    req.login(mockUser, (err) => {
+      if (err) {
+        console.error("Mock login failed", err);
+        return res.status(500).json({ error: "Mock login failed" });
+      }
+      // Redirect to admin dashboard
+      return res.redirect("/admin");
+    });
+  });
+}
+
 // OAuth callback - completes authentication
 router.get(
   "/auth/google/callback",
@@ -41,6 +71,19 @@ router.get(
   authService.isAuthenticated,
   async (req, res): Promise<undefined | Response> => {
     const user = req.user as SessionUser;
+
+    // Return mock user immediately if isMock flag is set
+    if (user.claims.isMock) {
+      return res.json({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileImageUrl: user.profileImageUrl,
+        isAdmin: user.isAdmin,
+      });
+    }
+
     const userId = user.claims.sub;
     const dbUser = await getStorage().getUser(userId);
     if (!dbUser) {

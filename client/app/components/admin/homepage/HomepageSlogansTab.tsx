@@ -125,7 +125,12 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                     <div className="flex items-center justify-between rounded-lg border p-4 bg-card">
                       <div className="flex items-center gap-4">
                         <SortableItemHandle asChild>
-                          <Button variant="ghost" size="icon" className="cursor-grab">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="cursor-grab"
+                            aria-label={`Drag to reorder slogan: ${slogan.text}`}
+                          >
                             <GripVertical className="h-5 w-5 text-muted-foreground" />
                           </Button>
                         </SortableItemHandle>
@@ -141,10 +146,20 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => setEditingSlogan(slogan)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingSlogan(slogan)}
+                          aria-label={`Edit slogan: ${slogan.text}`}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(slogan.id)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(slogan.id)}
+                          aria-label={`Delete slogan: ${slogan.text}`}
+                        >
                           <Trash2 className="text-destructive h-4 w-4" />
                         </Button>
                       </div>

@@ -33,22 +33,21 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 
 The codebase is split into three tightly coupled workspaces:
 
-1.  **`@run-remix/client`** (`client/`)
-    - **Responsibility**: UI rendering, client-side routing, assets.
-    - **Dev Mode**: Does **NOT** run its own server. It is consumed as middleware by the server.
-    - **Build**: Outputs to `dist/public` (assets) and `dist/server` (SSR).
+1. **`@run-remix/client`** (`client/`)
+- **Responsibility**: UI rendering, client-side routing, assets.
+- **Dev Mode**: Does **NOT** run its own server. It is consumed as middleware by the server.
+- **Build**: Outputs to `dist/public` (assets) and `dist/server` (SSR).
 
-2.  **`@run-remix/server`** (`server/`)
-    - **Responsibility**: API, Auth, Database access, and serving the Client.
-    - **Dev Mode**: Runs `tsx watch index.ts`. Orchestrates Vite middleware to serve the client with HMR.
-    - **Prod Mode**: Runs compiled `dist/index.js`. Serves static assets from `dist/public`.
+2. **`@run-remix/server`** (`server/`)
+- **Responsibility**: API, Auth, Database access, and serving the Client.
+- **Dev Mode**: Runs `tsx watch index.ts`. Orchestrates Vite middleware to serve the client with HMR.
+- **Prod Mode**: Runs compiled `dist/index.js`. Serves static assets from `dist/public`.
 
-3.  **`@run-remix/shared`** (`shared/`)
-    - **Responsibility**: Type definitions, Zod schemas, Database schemas.
-    - **Constraint**: Zero runtime dependencies (except Zod/Drizzle-ORM types). Pure TS/JSON.
+3. **`@run-remix/shared`** (`shared/`)
+- **Responsibility**: Type definitions, Zod schemas, Database schemas.
+- **Constraint**: Zero runtime dependencies (except Zod/Drizzle-ORM types). Pure TS/JSON.
 
 ### 3.2. Server-Side Rendering (SSR) Strategy
-
 - **Approach**: Custom Express + Vite SSR implementation.
 - **Dev Flow**: Request -> Express -> Vite Dev Middleware -> Transforms `entry-server.tsx` -> Renders Stream.
 - **Prod Flow**: Request -> Express -> Imports `dist/server/entry-server.js` -> Renders Stream.
@@ -109,29 +108,45 @@ export const CustomInput = forwardRef((props, ref) => {
 ### 5.2. Runtime
 
 - **Entry Point**: `node dist/index.js`
-- **Ports**:
-  - `5002` (Local Dev)
-  - `5002` (Docker/Production)
+- **Port Enforcement (The 5002 Law)**:
+  - **Development**: Both Express and Vite are configured for port `5002`. Express serves as the primary gateway, proxying to the Vite dev server for client-side assets.
+  - **Production**: The Node.js process listens strictly on port `5002`. Upstream reverse proxies (Nginx/Cloud Run) handle SSL termination (80/443) and forward to `5002`.
+  - **Strict Mode**: `server.strictPort: true` in Vite config prevents fallback to other ports.
+
 - **Health Checks**:
   - `/api/health` (Liveness)
   - `/api/health/db` (Readiness)
 
-### 5.3. Observability
+### 5.3. Network Topology & Request Flow
 
-- **Logging**: Pino (Structured JSON).
-- **Tracing**: OpenTelemetry SDK + Sentry.
-- **Metrics**: Prometheus endpoint (if configured).
+```mermaid
+graph TD
+    User([User Browser]) -->|Port 5002| Proxy[Vite Dev Proxy]
+    Proxy -->|Static Assets| Client[React Client]
+    Proxy -->|/api/*| Server[Express Server]
+    Proxy -->|/admin/*| Server
+    Server -->|Port 5432| DB[(Neon DB)]
+    Server -->|Redis| Cache[(Upstash)]
+```
+
+**Route-Based Separation:**
+
+- `http://localhost:5002/` → Public frontend
+- `http://localhost:5002/api/v1/` → Public API
+- `http://localhost:5002/admin/` → Admin panel UI
+- `http://localhost:5002/admin/api/` → Admin management API
 
 ---
 
 ## 6. Architecture Constraints (Hard Rules)
 
-1.  **No "Client" Dev Script**: Attempting to run `vite` directly in `client/` will fail to proxy API requests correctly. Always start via Server.
-2.  **Shared Schema**: Never define DB types manually in Client. Import from `@run-remix/shared`.
-3.  **Tailwind 4**: Do not create `tailwind.config.js`. Use CSS variables in `@theme` block in `index.css`.
-4.  **React 19**: Use `use()` hook for promises; avoid `useEffect` for data fetching where Suspense is applicable.
+1. **Port 5002 Absolute Compliance**: Never use environment variables for the port without defaulting to `5002`. This is verified by `npm run verify-port`.
+2. **No "Client" Dev Script**: Attempting to run `vite` directly in `client/` will fail to proxy API requests correctly. Always start via Server.
+3. **Shared Schema**: Never define DB types manually in Client. Import from `@run-remix/shared`.
+4. **Tailwind 4**: Do not create `tailwind.config.js`. Use CSS variables in `@theme` block in `index.css`.
+5. **Admin Parity**: Every public route MUST have an associated admin route for content management (see `docs/ROUTE_MAPPING.md`).
 
 ---
 
 **Author**: Antigravity Agent
-**Verified Against**: Repo State @ Jan 5, 2026
+**Verified Against**: Repo State @ Feb 11, 2026

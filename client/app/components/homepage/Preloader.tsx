@@ -31,7 +31,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
-      const duration = 2.5; // Total loading time
+      const duration = 1.2; // Optimized loading time (reduced from 2.5s)
 
       // Animate progress value
       const progressObj = { value: 0 };

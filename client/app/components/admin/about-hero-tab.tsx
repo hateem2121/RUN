@@ -206,6 +206,7 @@ export function AboutHeroTab() {
                             size="icon"
                             className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
                             onClick={handleRemoveMedia}
+                            aria-label="Remove background media"
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>

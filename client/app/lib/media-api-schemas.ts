@@ -34,7 +34,7 @@ export const MediaAssetSchema = z.object({
   mimeType: z.string(),
   url: z.string().nullable(),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.string(), z.any()).default({}),
+  metadata: z.record(z.string(), z.unknown()).default({}),
   uploadedAt: z
     .string()
     .nullable()

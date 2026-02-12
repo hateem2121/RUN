@@ -6,7 +6,7 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 | Section | Path | Description |
 | :--- | :--- | :--- |
-| **Architecture** | [`/docs/core`](./core/architecture.md) | System maps, data flows, and tech stack details. |
+| **Architecture** | [`/docs/core`](./core/tech-stack.md) | System maps, data flows, and tech stack details. |
 | **Operations** | [`/docs/operations`](./operations/environment.md) | Runbooks, environment setup, and deployment guides. |
 | **Development** | [`/docs/development`](./development/ide-setup.md) | IDE setup, styling architecture, and coding patterns. |
 | **Contributing** | [`CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributing guidelines and coding standards. |
@@ -19,11 +19,11 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 ## 🚀 Quick Links
 
-- **[System Context](./core/architecture.md)**: High-level technical reference.
+- **[System Context](./core/tech-stack.md)**: High-level technical reference.
 - **[README](../README.md)**: Project onboarding and quick start.
 - **[SLO Definitions](./operations/slos.md)**: Service level objectives and error budgets.
 
 ## 🧠 For AI Agents
 
-Refer to **[`AGENTS.md`](../AGENTS.md)** for operational rules and behavioral constraints.
+Refer to **[`AGENT_INSTRUCTIONS.md`](./AGENT_INSTRUCTIONS.md)** for operational rules and behavioral constraints.
 

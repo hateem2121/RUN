@@ -325,7 +325,7 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Wrong port
 
 **Environment file (.env):**
 ```bash
-VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 ```
 
 ---
@@ -584,7 +584,7 @@ const PORT = 5002;
 **Solution:**
 ```typescript
 // Fix API base URL in .env
-VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 
 // Fix API client code
 const API_BASE_URL = 'http://localhost:5002/api';
@@ -638,8 +638,7 @@ Agent Self-Assessment:
 
 ```bash
 # 1. Read critical documentation
-cat RULES.md | head -100        # Read Rule #0
-cat docs/PORT_5002_ARCHITECTURE.md
+cat RULES.md | head -100     - [ ] **Port 5002 System Architecture** (`docs/core/tech-stack.md`)
 
 # 2. Verify current state
 npm run verify-port

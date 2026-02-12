@@ -104,55 +104,55 @@ describe("TechnologyEquipmentManagement - Extracted Module", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check main interface elements
-    expect(screen.getByText("Technology Equipment")).toBeInTheDocument();
-    expect(screen.getByText("Manage your advanced manufacturing equipment")).toBeInTheDocument();
-    expect(screen.getByTestId("add-equipment")).toBeInTheDocument();
+    expect(screen.getByText("Technology Equipment")).toBeTruthy();
+    expect(screen.getByText("Manage your advanced manufacturing equipment")).toBeTruthy();
+    expect(screen.getByTestId("add-equipment")).toBeTruthy();
   });
 
   it("should display equipment details correctly", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check equipment details are rendered
-    expect(screen.getByTestId("equipment-name")).toHaveTextContent("Automated Cutting System");
-    expect(screen.getByTestId("equipment-category")).toHaveTextContent("Cutting");
-    expect(screen.getByTestId("equipment-brand")).toHaveTextContent("Brother");
-    expect(screen.getByTestId("equipment-model")).toHaveTextContent("KM-4000");
+    expect(screen.getByTestId("equipment-name").textContent).toContain("Automated Cutting System");
+    expect(screen.getByTestId("equipment-category").textContent).toContain("Cutting");
+    expect(screen.getByTestId("equipment-brand").textContent).toContain("Brother");
+    expect(screen.getByTestId("equipment-model").textContent).toContain("KM-4000");
   });
 
   it("should handle equipment capabilities correctly", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check initial capabilities
-    expect(screen.getByTestId("capability-0")).toHaveTextContent("High Precision");
-    expect(screen.getByTestId("capability-1")).toHaveTextContent("Multi-Layer");
+    expect(screen.getByTestId("capability-0").textContent).toContain("High Precision");
+    expect(screen.getByTestId("capability-1").textContent).toContain("Multi-Layer");
 
     // Test adding new capability
     fireEvent.click(screen.getByTestId("add-capability"));
-    expect(screen.getByText("New Capability")).toBeInTheDocument();
+    expect(screen.getByText("New Capability")).toBeTruthy();
   });
 
   it("should display specifications properly", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check specifications rendering
-    expect(screen.getByTestId("spec-Max Speed")).toHaveTextContent("Max Speed: 1000 rpm");
+    expect(screen.getByTestId("spec-Max Speed").textContent).toContain("Max Speed: 1000 rpm");
   });
 
   it("should handle benefits section", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check benefits are displayed
-    expect(screen.getByTestId("benefit-0")).toHaveTextContent("Increased Efficiency");
+    expect(screen.getByTestId("benefit-0").textContent).toContain("Increased Efficiency");
   });
 
   it("should handle form updates correctly", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Test name update
-    expect(screen.getByTestId("equipment-name")).toHaveTextContent("Automated Cutting System");
+    expect(screen.getByTestId("equipment-name").textContent).toContain("Automated Cutting System");
 
     fireEvent.click(screen.getByTestId("update-name"));
-    expect(screen.getByTestId("equipment-name")).toHaveTextContent("Updated Equipment");
+    expect(screen.getByTestId("equipment-name").textContent).toContain("Updated Equipment");
   });
 
   it("should handle CRUD operations via API", async () => {
@@ -165,48 +165,48 @@ describe("TechnologyEquipmentManagement - Extracted Module", () => {
 
     // The component should handle API calls for CRUD operations
     // This test validates the component structure supports API integration
-    expect(screen.getByTestId("equipment-management")).toBeInTheDocument();
+    expect(screen.getByTestId("equipment-management")).toBeTruthy();
   });
 
   it("should support drag-and-drop functionality structure", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Check that equipment items are rendered (drag-and-drop ready)
-    expect(screen.getByTestId("equipment-item")).toBeInTheDocument();
+    expect(screen.getByTestId("equipment-item")).toBeTruthy();
   });
 
   it("should maintain equipment form state correctly", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Verify initial form state
-    expect(screen.getByTestId("equipment-name")).toHaveTextContent("Automated Cutting System");
-    expect(screen.getByTestId("equipment-category")).toHaveTextContent("Cutting");
+    expect(screen.getByTestId("equipment-name").textContent).toContain("Automated Cutting System");
+    expect(screen.getByTestId("equipment-category").textContent).toContain("Cutting");
 
     // Test state persistence after updates
     fireEvent.click(screen.getByTestId("add-capability"));
-    expect(screen.getByText("New Capability")).toBeInTheDocument();
+    expect(screen.getByText("New Capability")).toBeTruthy();
 
     // Original capabilities should still be there
-    expect(screen.getByTestId("capability-0")).toHaveTextContent("High Precision");
+    expect(screen.getByTestId("capability-0").textContent).toContain("High Precision");
   });
 
   it("should handle media integration for equipment images", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Component should be ready for media integration
-    expect(screen.getByTestId("equipment-management")).toBeInTheDocument();
+    expect(screen.getByTestId("equipment-management")).toBeTruthy();
   });
 
   it("should preserve all equipment data structure", () => {
     renderWithProvider(<MockTechnologyEquipmentManagement />);
 
     // Verify all essential equipment fields are handled
-    expect(screen.getByTestId("equipment-name")).toBeInTheDocument();
-    expect(screen.getByTestId("equipment-category")).toBeInTheDocument();
-    expect(screen.getByTestId("equipment-brand")).toBeInTheDocument();
-    expect(screen.getByTestId("equipment-model")).toBeInTheDocument();
-    expect(screen.getByTestId("capabilities-section")).toBeInTheDocument();
-    expect(screen.getByTestId("specifications-section")).toBeInTheDocument();
-    expect(screen.getByTestId("benefits-section")).toBeInTheDocument();
+    expect(screen.getByTestId("equipment-name")).toBeTruthy();
+    expect(screen.getByTestId("equipment-category")).toBeTruthy();
+    expect(screen.getByTestId("equipment-brand")).toBeTruthy();
+    expect(screen.getByTestId("equipment-model")).toBeTruthy();
+    expect(screen.getByTestId("capabilities-section")).toBeTruthy();
+    expect(screen.getByTestId("specifications-section")).toBeTruthy();
+    expect(screen.getByTestId("benefits-section")).toBeTruthy();
   });
 });

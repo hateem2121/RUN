@@ -192,10 +192,20 @@
 | `sizeChartId` | `integer` | - |
 | `certificateIds` | `jsonb` | - |
 | `accessoryIds` | `jsonb` | - |
-| `relatedProductIds` | `jsonb` | - |
+| `relatedProductIds` | `jsonb` | @deprecated (Prefer product_relations) |
 | `metaTitle` | `varchar` | - |
 | `metaDescription` | `text` | - |
 | `metadata` | `jsonb` | - |
 | `isActive` | `boolean` | - |
 | `isFeatured` | `boolean` | - |
 | `deletedAt` | `timestamp` | - |
+
+### Table: product_relations
+
+| Column | Drizzle Type | Constraints |
+| :--- | :--- | :--- |
+| `id` | `serial` | PRIMARY KEY |
+| `productId` | `integer` | FK (products.id), CASCADE |
+| `relatedProductId` | `integer` | FK (products.id), CASCADE |
+| `sortOrder` | `integer` | DEFAULT 0 |
+| `createdAt` | `timestamp` | DEFAULT now() |

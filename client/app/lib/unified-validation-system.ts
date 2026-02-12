@@ -266,7 +266,7 @@ export const UnifiedSchemas = {
     mimeType: z.string(),
     url: z.string().nullable(),
     tags: z.array(z.string()).default([]),
-    metadata: z.record(z.string(), z.any()).default({}),
+    metadata: z.record(z.string(), z.unknown()).default({}),
     createdAt: z.union([z.string(), z.date()]).transform((val) => new Date(val)),
     updatedAt: z.union([z.string(), z.date()]).transform((val) => new Date(val)),
     isActive: z.boolean().optional(),
@@ -283,7 +283,7 @@ export const UnifiedSchemas = {
 
   CacheItem: z.object({
     queryKey: z.string(),
-    data: z.any(),
+    data: z.unknown(),
     lastFetch: z.number(),
     isStale: z.boolean(),
   }),

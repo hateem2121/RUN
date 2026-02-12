@@ -269,6 +269,7 @@ export default function FooterManagement() {
                     size="icon"
                     className="absolute -top-3 -right-3 h-8 w-8 rounded-full border bg-background text-destructive hover:bg-destructive/10"
                     onClick={() => removeNav(index)}
+                    aria-label={`Remove ${field.title || "navigation column"}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -308,6 +309,7 @@ export default function FooterManagement() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeLegal(index)}
+                      aria-label="Remove legal link"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -375,6 +377,7 @@ export default function FooterManagement() {
                         size="icon"
                         className="mb-0.5 text-destructive"
                         onClick={() => removeSocial(index)}
+                        aria-label={`Remove ${field.name || "social profile"}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -465,6 +468,7 @@ function NavigationLinksEditor({ control, index, register }: NavigationLinksEdit
             size="icon"
             className="h-8 w-8"
             onClick={() => remove(linkIndex)}
+            aria-label="Remove link"
           >
             <Trash2 className="h-3 w-3" />
           </Button>

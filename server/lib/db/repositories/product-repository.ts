@@ -24,6 +24,8 @@ import {
   certificates,
   fabrics,
   mediaAssets,
+  type ProductRelation,
+  productRelations,
   products,
   sizeCharts,
 } from "../../../../shared/schema.js";
@@ -506,6 +508,7 @@ export class ProductRepository {
         accessoriesResult,
         fibersData,
         allCategoryProductsResult,
+        relatedProductsResult,
       ] = await Promise.all([
         // CHUNK 2 FIX: Fetch category + parent together (eliminate N+1)
         (async () => {
@@ -616,6 +619,32 @@ export class ProductRepository {
           // Note: relatedProducts timing removed (derived from categoryProducts post-query)
           return result;
         })(),
+
+        // PHASE 3: Fetch related products from normalized table
+        (async () => {
+          const start = performance.now();
+          const result = await db
+            .select({
+              ...PRODUCT_SUMMARY_COLUMNS,
+              relationId: productRelations.id,
+              sortOrder: productRelations.sortOrder,
+            })
+            .from(productRelations)
+            .innerJoin(
+              products,
+              and(
+                eq(productRelations.relatedProductId, products.id),
+                eq(products.isActive, true),
+                isNull(products.deletedAt),
+              ),
+            )
+            .where(eq(productRelations.productId, product.id))
+            .orderBy(asc(productRelations.sortOrder), desc(products.createdAt))
+            .limit(10); // Limit to reasonable number
+
+          batchTimings.relatedProducts = Math.round(performance.now() - start);
+          return result.map(({ relationId, sortOrder, ...p }) => p);
+        })(),
       ]);
       queryTimings["2_parallel_batch"] = Math.round(performance.now() - batchQueryStart);
       queryTimings.total_db_time = Math.round(performance.now() - queryStart);
@@ -656,8 +685,21 @@ export class ProductRepository {
 
       // PHASE 1 TASK 7: Derive relatedProducts + categoryProducts from single query result
       // Filter out current product for relatedProducts (first 5)
+      // Filter out current product for relatedProducts (first 5)
+      // PHASE 3: Use explicit related products if available, fallback to category logic if empty?
+      // For now, implementing logic: If manual relations exist, use them. Else empty (or could fallback)
+      // The requirement "Migrate... to normalized table" implies we want to use the table.
+      // But currently we don't have data, so let's use the fetched related items.
+      const manuallyRelatedProducts = relatedProductsResult;
+
+      // Fallback: If no manual relations, use category products (excluding current)
       const productsExcludingCurrent = allCategoryProductsResult.filter((p) => p.id !== product.id);
-      const relatedProducts = productsExcludingCurrent.slice(0, 5);
+
+      const relatedProducts =
+        manuallyRelatedProducts.length > 0
+          ? manuallyRelatedProducts
+          : productsExcludingCurrent.slice(0, 5);
+
       const categoryProducts = allCategoryProductsResult.slice(0, 10);
 
       // Navigation: Find current product in batch (might be -1 if product not in top 12)
@@ -756,16 +798,42 @@ export class ProductRepository {
       .where(eq(products.id, productId))
       .limit(1);
 
-    if (!sourceProduct.length || !sourceProduct[0]?.categoryId) {
+    const categoryId = sourceProduct[0]?.categoryId;
+    if (!categoryId) {
       return [];
     }
 
+    // PHASE 3: Attempt to fetch from proper relations table first
+    const relations = await db
+      .select({
+        ...PRODUCT_SUMMARY_COLUMNS,
+        relationId: productRelations.id,
+        sortOrder: productRelations.sortOrder,
+      })
+      .from(productRelations)
+      .innerJoin(
+        products,
+        and(
+          eq(productRelations.relatedProductId, products.id),
+          eq(products.isActive, true),
+          isNull(products.deletedAt),
+        ),
+      )
+      .where(eq(productRelations.productId, productId))
+      .orderBy(asc(productRelations.sortOrder), desc(products.createdAt))
+      .limit(5);
+
+    if (relations.length > 0) {
+      return relations.map(({ relationId, sortOrder, ...p }) => p);
+    }
+
+    // Fallback to category-based logic
     return await db
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
       .where(
         and(
-          eq(products.categoryId, sourceProduct[0]?.categoryId),
+          eq(products.categoryId, categoryId),
           ne(products.id, productId),
           eq(products.isActive, true),
           isNull(products.deletedAt),

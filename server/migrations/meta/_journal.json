@@ -29,6 +29,13 @@
       "when": 1770794240619,
       "tag": "0003_lyrical_paper_doll",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770837780296,
+      "tag": "0004_fancy_bromley",
+      "breakpoints": true
     }
   ]
 }

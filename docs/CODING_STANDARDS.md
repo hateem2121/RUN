@@ -364,7 +364,7 @@ server/
 ```bash
 # Port Configuration (MANDATORY)
 PORT=5002
-VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 
 # Database

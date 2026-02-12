@@ -1,5 +1,4 @@
 import { vi } from "vitest";
-import "@testing-library/jest-dom/vitest";
 
 // Mock Replit database (Vitest 4.0 syntax)
 vi.mock("@replit/database", () => {
@@ -17,15 +16,17 @@ vi.mock("@replit/database", () => {
 });
 
 // Mock IntersectionObserver for 3D model tests
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  disconnect: vi.fn(),
-  unobserve: vi.fn(),
-  root: null,
-  rootMargin: "",
-  thresholds: [],
-  takeRecords: vi.fn(),
-}));
+class MockIntersectionObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+  root = null;
+  rootMargin = "";
+  thresholds = [];
+  takeRecords = vi.fn();
+}
+
+global.IntersectionObserver = MockIntersectionObserver as any;
 
 // Mock WebGL for gradient tests
 Object.defineProperty(window, "WebGLRenderingContext", {

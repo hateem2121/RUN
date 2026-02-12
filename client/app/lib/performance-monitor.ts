@@ -272,7 +272,10 @@ export const measureComponentRender = (_componentName: string, fn: () => void) =
   fn();
 };
 
-export const measureAsyncOperation = async (_operationName: string, fn: () => Promise<any>) => {
+export const measureAsyncOperation = async <T>(
+  _operationName: string,
+  fn: () => Promise<T>,
+): Promise<T> => {
   const result = await fn();
   return result;
 };

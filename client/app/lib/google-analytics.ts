@@ -16,14 +16,14 @@ export interface GAEvent {
   category?: string;
   label?: string;
   value?: number;
-  custom_parameters?: Record<string, any>;
+  custom_parameters?: Record<string, unknown>;
 }
 
 interface GAPageView {
   page_title?: string;
   page_location?: string;
   page_path?: string;
-  custom_parameters?: Record<string, any>;
+  custom_parameters?: Record<string, unknown>;
 }
 
 export class GoogleAnalytics {

@@ -22,8 +22,10 @@ export function useNavigationItems() {
   const mediaAssets = mediaResponse?.data?.data || [];
 
   // Combine navigation items with their media assets
-  const itemsWithMedia: NavigationItemWithMedia[] = navigationItems
-    .filter((item) => item.isActive)
+  const itemsWithMedia: NavigationItemWithMedia[] = (
+    Array.isArray(navigationItems) ? navigationItems : []
+  )
+    .filter((item) => item?.isActive)
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
     .map((item) => {
       if (item.iconType === "media" && item.mediaIconId) {
@@ -58,8 +60,10 @@ export function useStaggeredMenuItems() {
 
   // Transform navigation items to StaggeredMenuItem format
   // Filter for mobile-visible items only
-  const staggeredItems: StaggeredMenuItem[] = navigationItems
-    .filter((item) => item.isActive && item.showOnMobile !== false)
+  const staggeredItems: StaggeredMenuItem[] = (
+    Array.isArray(navigationItems) ? navigationItems : []
+  )
+    .filter((item) => item?.isActive && item.showOnMobile !== false)
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
     .map((item) => ({
       label: item.title || item.label || "Untitled",

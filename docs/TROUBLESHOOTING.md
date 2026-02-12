@@ -214,7 +214,7 @@ VITE_API_BASE_URL=http://localhost:3000/api
 **Solution:**
 ```bash
 # .env
-VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 ```
 
@@ -810,10 +810,10 @@ cat .env | grep VITE_
 **1. Variables must have VITE_ prefix:**
 ```bash
 # ❌ WRONG
-API_BASE_URL=http://localhost:5002/api/v1/v1
+API_BASE_URL=http://localhost:5002/api/v1
 
 # ✅ CORRECT
-VITE_API_BASE_URL=http://localhost:5002/api/v1/v1
+VITE_API_BASE_URL=http://localhost:5002/api/v1
 ```
 
 **2. Restart dev server:**
@@ -966,7 +966,7 @@ npm run dev > debug.log 2>&1
 - **RULES.md** - Coding standards
 - **WORKFLOW.md** - Development processes
 - **AGENT.md** - AI agent instructions
-- **docs/PORT_5002_ARCHITECTURE.md** - System architecture
+- **Detailed Architecture**: [`docs/core/tech-stack.md`](./core/tech-stack.md)
 
 ### Support Channels
 

@@ -458,6 +458,7 @@ export function ContactPageSettings() {
                           onClick={() => removeHours(index)}
                           className="mt-6"
                           data-testid={`button-remove-hours-${index}`}
+                          aria-label="Remove trading hours"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

@@ -15,7 +15,7 @@
 | Component | Policy / Version | Provenance |
 | :--- | :--- | :--- |
 | **OS** | Linux (Alpine) in Prod; Mac/Linux for Dev | `Dockerfile` (node:24-alpine), User Agent |
-| **Node.js** | **v24** (Strict) | `Dockerfile`, `AGENTS.md` |
+| **Node.js** | **v24** (Strict) | `Dockerfile`, `docs/AGENT_INSTRUCTIONS.md` |
 | **Package Manager** | **npm 10.9.2** | `package.json` (packageManager field) |
 | **Workspace Tool** | npm workspaces + Turbo Repo | `package.json`, `turbo.json` |
 
@@ -187,6 +187,6 @@ npm ci
 
 ### AI Agent Tools
 
-- **Operational Map:** See `AGENTS.md`.
+- **Operational Map:** See `docs/AGENT_INSTRUCTIONS.md`.
 - **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
-- **Context:** `docs/core/architecture.md` provides definitions for AI decision making.
+- **Context:** `docs/core/tech-stack.md` provides definitions for AI decision making.

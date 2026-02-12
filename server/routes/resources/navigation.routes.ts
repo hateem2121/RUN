@@ -3,23 +3,21 @@
  * Handles public navigation items and settings
  */
 
-import express, { type NextFunction, type Request, type Response } from "express";
+import express from "express";
 import { z } from "zod";
 import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
 } from "../../../shared/schema.js";
-import { safeQuery } from "../../db.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
 import { NavigationService } from "../../services/navigation-service.js";
 
 const router = express.Router();
 
 // Cache TTL (2 hours for navigation data)
-const CACHE_TTL = 7200;
+const _CACHE_TTL = 7200;
 
 /**
  * CHUNK 7: Admin Cache Bypass Utility

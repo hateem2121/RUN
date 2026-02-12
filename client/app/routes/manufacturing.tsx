@@ -24,6 +24,7 @@ import type {
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
+  MediaAsset,
 } from "@shared/schema";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
@@ -112,7 +113,7 @@ export default function Manufacturing() {
   const processes = processesData || [];
   const capabilities = capabilitiesData || [];
   const qualityItems = qualitiesData || [];
-  const mediaAssets: any[] = []; // Endpoints don't return aggregated media anymore
+  const mediaAssets: MediaAsset[] = []; // Endpoints don't return aggregated media anymore
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

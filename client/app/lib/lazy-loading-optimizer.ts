@@ -18,7 +18,7 @@ interface LazyImageOptions {
 }
 
 // Advanced lazy component wrapper with preloading capabilities
-export const createLazyComponent = <T extends ComponentType<any>>(
+export const createLazyComponent = <T extends ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentOptions = {},
 ): LazyExoticComponent<T> => {
@@ -36,7 +36,7 @@ export const createLazyComponent = <T extends ComponentType<any>>(
 };
 
 // Intersection observer-based component lazy loading
-export const createIntersectionLazyComponent = <T extends ComponentType<any>>(
+export const createIntersectionLazyComponent = <T extends ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentOptions = {},
 ) => {

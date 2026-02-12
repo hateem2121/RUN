@@ -3,7 +3,7 @@
  * Handles logo animation settings and UI configuration
  */
 
-import express, { type NextFunction, type Request, type Response } from "express";
+import express from "express";
 import { insertLogoAnimationSettingsSchema } from "../../../shared/schema.js";
 import { safeQuery } from "../../db.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
@@ -44,7 +44,7 @@ router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (
   if (!validation.success) {
     return next(new ValidationError("Invalid logo settings", { issues: validation.error.issues }));
   }
-  
+
   const result = await safeQuery(
     withTimeout(
       getStorage().updateLogoAnimationSettings(validation.data),

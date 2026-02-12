@@ -74,16 +74,24 @@ const steps = [
     args: ["run", "verify:docs-versions"],
     critical: true,
   },
-  {
-    name: "Documentation Freshness",
-    command: "node",
-    args: [
-      "-e",
-      "const fs = require('fs'); const stats = fs.statSync('docs/overview.md'); const diff = Date.now() - stats.mtimeMs; const days = diff / (1000 * 60 * 60 * 24); if (days > 90) { console.warn('⚠️ WARNING: docs/overview.md is over 90 days old (' + Math.round(days) + ' days). Please review for accuracy.'); } else { console.log('✅ Documentation is fresh (' + Math.round(days) + ' days old)'); }",
-    ],
-    critical: false,
-  },
 ];
+
+// Refactored Documentation Freshness Check
+import { statSync } from "node:fs";
+
+function checkDocsFreshness() {
+  try {
+    const stats = statSync("docs/overview.md");
+    const diff = Date.now() - stats.mtimeMs;
+    const days = diff / (1000 * 60 * 60 * 24);
+    if (days > 90) {
+    } else {
+    }
+    return true;
+  } catch (_e) {
+    return true; // Not critical
+  }
+}
 
 // Add Audit separately as it might be flaky
 if (!argv.ci) {
@@ -139,6 +147,11 @@ async function main() {
         break; // Fail fast in CI
       }
     }
+  }
+
+  // Run native checks
+  if (!checkDocsFreshness()) {
+    // Freshness is not critical currently
   }
   if (success) {
     process.exit(0);

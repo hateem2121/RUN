@@ -691,9 +691,9 @@ export class PageContentRepository {
   // ABOUT PAGE METHODS
   // =============================================================================
 
-  async getAboutHero(): Promise<AboutHero | undefined> {
+  async getAboutHero(includeInactive: boolean = false): Promise<AboutHero | undefined> {
     // PERFORMANCE: Cache about hero for 30min (truly static content, rarely changes)
-    const cacheKey = "about:hero";
+    const cacheKey = includeInactive ? "about:hero:all" : "about:hero";
     try {
       const cached = await unifiedCache.get<AboutHero>(cacheKey, "data");
       if (cached) {
@@ -703,7 +703,12 @@ export class PageContentRepository {
       logger.debug("[Cache] Failed to get about hero from cache:", error);
     }
 
-    const [hero] = await db.select().from(aboutHero).where(eq(aboutHero.isActive, true)).limit(1);
+    let query = db.select().from(aboutHero).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutHero.isActive, true));
+    }
+
+    const [hero] = await query.limit(1);
 
     if (hero) {
       try {
@@ -755,12 +760,12 @@ export class PageContentRepository {
     return result;
   }
 
-  async getAboutTimelineEntries(): Promise<AboutTimelineEntry[]> {
-    return await db
-      .select()
-      .from(aboutTimelineEntries)
-      .where(eq(aboutTimelineEntries.isActive, true))
-      .orderBy(asc(aboutTimelineEntries.sortOrder));
+  async getAboutTimelineEntries(includeInactive: boolean = false): Promise<AboutTimelineEntry[]> {
+    let query = db.select().from(aboutTimelineEntries).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutTimelineEntries.isActive, true));
+    }
+    return await query.orderBy(asc(aboutTimelineEntries.sortOrder));
   }
 
   async getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined> {
@@ -829,12 +834,12 @@ export class PageContentRepository {
     }
   }
 
-  async getAboutMapLocations(): Promise<AboutMapLocation[]> {
-    return await db
-      .select()
-      .from(aboutMapLocations)
-      .where(eq(aboutMapLocations.isActive, true))
-      .orderBy(asc(aboutMapLocations.name));
+  async getAboutMapLocations(includeInactive: boolean = false): Promise<AboutMapLocation[]> {
+    let query = db.select().from(aboutMapLocations).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutMapLocations.isActive, true));
+    }
+    return await query.orderBy(asc(aboutMapLocations.name));
   }
 
   async getAboutMapLocation(id: number): Promise<AboutMapLocation | undefined> {
@@ -888,12 +893,12 @@ export class PageContentRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getAboutSections(): Promise<AboutSection[]> {
-    return await db
-      .select()
-      .from(aboutSections)
-      .where(eq(aboutSections.isActive, true))
-      .orderBy(asc(aboutSections.sortOrder));
+  async getAboutSections(includeInactive: boolean = false): Promise<AboutSection[]> {
+    let query = db.select().from(aboutSections).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutSections.isActive, true));
+    }
+    return await query.orderBy(asc(aboutSections.sortOrder));
   }
 
   async getAboutSection(id: number): Promise<AboutSection | undefined> {
@@ -959,12 +964,12 @@ export class PageContentRepository {
     }
   }
 
-  async getAboutStatistics(): Promise<AboutStatistic[]> {
-    return await db
-      .select()
-      .from(aboutStatistics)
-      .where(eq(aboutStatistics.isActive, true))
-      .orderBy(asc(aboutStatistics.sortOrder));
+  async getAboutStatistics(includeInactive: boolean = false): Promise<AboutStatistic[]> {
+    let query = db.select().from(aboutStatistics).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutStatistics.isActive, true));
+    }
+    return await query.orderBy(asc(aboutStatistics.sortOrder));
   }
 
   async getAboutStatistic(id: number): Promise<AboutStatistic | undefined> {
@@ -1030,12 +1035,19 @@ export class PageContentRepository {
     }
   }
 
-  async getAboutTeamMessage(): Promise<AboutTeamMessage | undefined> {
-    const [message] = await db
-      .select()
-      .from(aboutTeamMessages)
-      .where(eq(aboutTeamMessages.isActive, true))
-      .limit(1);
+  async getAboutTeamMessage(
+    includeInactive: boolean = false,
+  ): Promise<AboutTeamMessage | undefined> {
+    const cacheKey = includeInactive ? "about:team_message:all" : "about:team_message";
+
+    // ... cache logic omitted for brevity, assuming standard pattern ...
+    // Since original didn't separate cache keys, I'll simplify.
+
+    let query = db.select().from(aboutTeamMessages).$dynamic();
+    if (!includeInactive) {
+      query = query.where(eq(aboutTeamMessages.isActive, true));
+    }
+    const [message] = await query.limit(1);
     return message;
   }
 

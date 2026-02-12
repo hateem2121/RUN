@@ -34,7 +34,7 @@ npm run dev
 ```
 ✓ Server running on http://localhost:5002
 ✓ Admin panel: http://localhost:5002/admin
-✓ API base: http://localhost:5002/api/v1/v1
+✓ API base: http://localhost:5002/api/v1
 ```
 
 If you see a different port, **STOP** and fix the configuration.

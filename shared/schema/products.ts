@@ -10,11 +10,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { sizeCharts } from "./catalog.js";
-import { categories } from "./categories.js";
-import { pgTable } from "./common.js";
-import { fabrics } from "./materials.js";
-import { mediaAssets } from "./media.js";
+import { sizeCharts } from "./catalog";
+import { categories } from "./categories";
+import { pgTable } from "./common";
+import { fabrics } from "./materials";
+import { mediaAssets } from "./media";
 
 // Schemas for JSONB columns
 const ProductTechnicalSpecsSchema = z.record(
@@ -187,6 +187,38 @@ export const products = pgTable(
     // - products_image_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
   ],
 );
+
+/**
+ * Product Relations Table - Normalized Relationships
+ *
+ * @table product_relations
+ * @description Stores directed relationships between products (e.g., related items, accessories)
+ * Replaces legacy JSONB `relatedProductIds` array.
+ */
+export const productRelations = pgTable(
+  "product_relations",
+  {
+    id: serial("id").primaryKey(),
+    productId: integer("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    relatedProductId: integer("related_product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    sortOrder: integer("sort_order").default(0),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+  },
+  (table) => [
+    index("product_relations_product_id_idx").on(table.productId),
+    index("product_relations_related_product_id_idx").on(table.relatedProductId),
+  ],
+);
+
+export type ProductRelation = typeof productRelations.$inferSelect;
+export type InsertProductRelation = typeof productRelations.$inferInsert;
 
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = typeof products.$inferInsert;

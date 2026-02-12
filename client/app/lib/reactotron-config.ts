@@ -17,7 +17,7 @@ if (import.meta.env.DEV) {
   }).connect(); // Connect to the desktop app
 
   // Optional: clear on load
-  (Reactotron as any).clear?.();
+  (Reactotron as unknown as { clear: () => void }).clear?.();
   */
 }
 

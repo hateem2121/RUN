@@ -1,9 +1,9 @@
 import { relations } from "drizzle-orm";
-import { accessories, certificates, sizeCharts } from "./catalog.js";
-import { categories } from "./categories.js";
-import { fabricCompositions, fabrics, fibers } from "./materials.js";
-import { mediaAssets } from "./media.js";
-import { products } from "./products.js";
+import { accessories, certificates, sizeCharts } from "./catalog";
+import { categories } from "./categories";
+import { fabricCompositions, fabrics, fibers } from "./materials";
+import { mediaAssets } from "./media";
+import { products } from "./products";
 
 // Products Relations
 export const productsRelations = relations(products, ({ one }) => ({

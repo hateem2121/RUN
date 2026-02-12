@@ -125,7 +125,7 @@ export class MediaService {
       return false;
     }
 
-    const obj = asset as Record<string, any>;
+    const obj = asset as Record<string, unknown>;
     return (
       typeof obj.id === "number" &&
       typeof obj.filename === "string" &&

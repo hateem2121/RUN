@@ -1,5 +1,4 @@
-// Re-export everything from the new modular schema structure
-// This maintains backward compatibility for imports from "shared/schema"
-
-export * from "./errors.js";
-export * from "./schema/index.js";
+export * from "./errors";
+export * from "./schema/index";
+export * from "./schemas/api-response.schema";
+export * from "./schemas/product.schema";

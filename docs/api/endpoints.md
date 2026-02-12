@@ -30,12 +30,13 @@ This document provides a comprehensive reference for RUN APPAREL's B2B API endpo
    - [GET /api/navigation-items](#get-apinavigation-items)
    - [GET /api/navigation-settings](#get-apinavigation-settings)
    - [GET /api/logo-animation-settings](#get-apilogo-animation-settings)
-   - [ADMIN /api/admin/*](#admin-navigation--settings)
-5. [Privacy Endpoints](#privacy-endpoints)
-   - [POST /api/privacy/data-export](#post-apiprivacydata-export)
-   - [POST /api/privacy/deletion-request](#post-apiprivacydeletion-request)
-   - [GET /api/privacy/request-status/:id](#get-apiprivacyrequest-statusid)
-5. [Migration Guide](#migration-guide)
+5. [Sustainability Endpoints](#sustainability-endpoints)
+6. [Manufacturing Endpoints](#manufacturing-endpoints)
+7. [Technology Endpoints](#technology-endpoints)
+8. [About Endpoints](#about-endpoints)
+9. [Homepage Endpoints](#homepage-endpoints)
+10. [Privacy Endpoints](#privacy-endpoints)
+11. [Migration Guide](#migration-guide)
 
 ---
 
@@ -464,6 +465,99 @@ All Admin endpoints require `admin` role authentication via session cookie.
 | `PATCH` | `/api/admin/logo-animation-settings` | Update logo animation settings |
 | `POST` | `/api/admin/contact-page-configuration` | Create contact config |
 | `PATCH` | `/api/admin/contact-page-configuration` | Update contact config |
+
+---
+
+## Sustainability Endpoints
+
+### GET /api/sustainability
+
+**Purpose**: Retrieve unified sustainability configuration (hero, metrics, certifications, initiatives, goals).
+
+#### Response Format
+```json
+{
+  "id": 1,
+  "title": "Sustainability at RUN",
+  "headline": "Committed to a Greener Future",
+  "metrics": {
+    "waterSaved": "1.2M Liters",
+    "carbonOffset": "450 Tons"
+  },
+  "certificationsTitle": "Our Certifications",
+  "certificationIds": [1, 2, 3]
+}
+```
+
+### GET /api/sustainability/batch
+
+**Purpose**: Retrieve full sustainability context in a single request (config + metrics + goals + initiatives).
+
+---
+
+## Manufacturing Endpoints
+
+### GET /api/manufacturing-hero
+
+**Purpose**: Retrieve hero section data for the Manufacturing page.
+
+### GET /api/manufacturing-processes
+
+**Purpose**: Retrieve list of manufacturing processes.
+
+### GET /api/manufacturing-capabilities
+
+**Purpose**: Retrieve list of manufacturing capabilities.
+
+---
+
+## Technology Endpoints
+
+### GET /api/technology-innovations
+
+**Purpose**: Retrieve list of technological innovations.
+
+### GET /api/technology-equipment
+
+**Purpose**: Retrieve list of machinery and equipment details.
+
+### GET /api/technology-roadmap
+
+**Purpose**: Retrieve development roadmap for technical features.
+
+---
+
+## About Endpoints
+
+### GET /api/about-hero
+
+**Purpose**: Retrieve hero section data for the About page.
+
+### GET /api/about-locations
+
+**Purpose**: Retrieve office and factory locations for the About page map.
+
+### GET /api/about-statistics
+
+**Purpose**: Retrieve key business statistics (years in business, global reach, etc.).
+
+---
+
+## Homepage Endpoints
+
+### GET /api/homepage-hero
+
+**Purpose**: Retrieve hero section data for the homepage.
+
+### GET /api/homepage-slogans
+
+**Purpose**: Retrieve list of rotating brand slogans.
+
+### GET /api/homepage-batch
+
+**Purpose**: Retrieve full homepage context in a single request for optimized SSR.
+
+---
 
 ---
 

@@ -27,7 +27,7 @@ export const categorySchema = insertCategorySchema.extend({
   featuredOnHomepage: z.boolean().default(false),
   gridPosition: z.number().default(0),
   displayOrder: z.number().default(0),
-  featuredContent: z.record(z.string(), z.any()).nullable().default(null),
+  featuredContent: z.record(z.string(), z.unknown()).nullable().default(null),
   bannerUrl: z.string().nullable().default(null),
   imageUrl: z.string().nullable().default(null),
   deletedAt: z

@@ -4,8 +4,7 @@
  * Neon suspends after 5 minutes of inactivity, causing 200-500ms cold start penalty
  */
 
-import { sql } from "drizzle-orm";
-import { db } from "../../db.js";
+import { sql as rawSql } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 
 export class DatabaseKeepAlive {
@@ -68,15 +67,19 @@ export class DatabaseKeepAlive {
     const startTime = performance.now();
 
     try {
-      // Lightweight query: SELECT 1
-      await db.execute(sql`SELECT 1 as ping`);
+      // Lightweight query: SELECT 1 using raw Neon driver to avoid any Drizzle overhead/state issues
+      await rawSql`SELECT 1 as ping`;
 
       const duration = Math.round(performance.now() - startTime);
       this.lastPingTime = Date.now();
 
       logger.debug(`[DB Keep-Alive] ✓ Ping successful (${duration}ms)`);
     } catch (error) {
-      logger.error("[DB Keep-Alive] ✗ Ping failed:", error);
+      logger.error("[DB Keep-Alive] ✗ Ping failed:", {
+        error: error instanceof Error ? error.message : String(error),
+        code: (error as any)?.code,
+        stack: (error as any)?.stack,
+      });
       throw error;
     }
   }
