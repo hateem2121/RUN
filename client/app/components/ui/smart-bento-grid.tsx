@@ -178,7 +178,6 @@ export function NaturalMedia({ src, alt, className, cardSpan }: NaturalMediaProp
           "h-auto w-full rounded object-cover min-h-(--min-h) max-h-(--max-h)",
           cardSpan && cardSpan.colSpan >= 2 ? "object-center" : "object-cover",
         )}
-        // biome-ignore lint/style: Dynamic media sizing via CSS variables
         style={
           {
             "--max-h": mediaSize.maxHeight,

@@ -51,7 +51,6 @@ export default function handleRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleRequest.
           if (shellRendered) {
-            // biome-ignore lint/suspicious/noConsole: critical error logging
             console.error(error);
           }
         },

@@ -498,32 +498,40 @@ All Admin endpoints require `admin` role authentication via session cookie.
 ## Manufacturing Endpoints
 
 ### GET /api/manufacturing-hero
+**Purpose**: Retrieve hero section data for the Manufacturing page.  
+**Registration**: `server/routes/resources/manufacturing-hero.routes.ts`
 
-**Purpose**: Retrieve hero section data for the Manufacturing page.
+### GET /api/v1/manufacturing-processes
+**Purpose**: Retrieve a list of all manufacturing processes with descriptions and icons.  
+**Registration**: `server/routes/resources/manufacturing-processes.routes.ts`
 
-### GET /api/manufacturing-processes
+### GET /api/v1/manufacturing-capabilities
+**Purpose**: Retrieve a list of manufacturing infrastructure and technical capabilities.  
+**Registration**: `server/routes/resources/manufacturing-capabilities.routes.ts`
 
-**Purpose**: Retrieve list of manufacturing processes.
-
-### GET /api/manufacturing-capabilities
-
-**Purpose**: Retrieve list of manufacturing capabilities.
+### GET /api/v1/manufacturing-qualities
+**Purpose**: Retrieve quality assurance standards and certification details.  
+**Registration**: `server/routes/resources/manufacturing-qualities.routes.ts`
 
 ---
 
 ## Technology Endpoints
 
-### GET /api/technology-innovations
+### GET /api/v1/technology-innovations
+**Purpose**: Retrieve details on proprietary technology and R&D breakthroughs.  
+**Registration**: `server/routes/resources/technology-innovations.routes.ts`
 
-**Purpose**: Retrieve list of technological innovations.
+### GET /api/v1/technology-equipment
+**Purpose**: List advanced machinery and automation systems used in production.  
+**Registration**: `server/routes/resources/technology-equipment.routes.ts`
 
-### GET /api/technology-equipment
+### GET /api/v1/technology-roadmap
+**Purpose**: Retrieve the technical development roadmap for future system phases.  
+**Registration**: `server/routes/resources/technology-roadmap.routes.ts`
 
-**Purpose**: Retrieve list of machinery and equipment details.
-
-### GET /api/technology-roadmap
-
-**Purpose**: Retrieve development roadmap for technical features.
+### GET /api/technology-gradient-settings
+**Purpose**: Retrieve global CSS gradient configurations for technical UI elements.  
+**Registration**: `server/routes/resources/technology-gradient-settings.routes.ts`
 
 ---
 
@@ -793,7 +801,5 @@ For questions or issues with the API:
 - Review field usage in the endpoint descriptions
 
 ---
-
-**Last Updated**: January 2026
-**API Version**: 1.0 (implicit, no versioning)
+**Version**: 1.1.0 | **Audit Status**: Verified | **Last Remediated**: 2026-02-12
 **Breaking Changes**: Column selection optimization (products: 25→7 fields, media: 25→8 fields)

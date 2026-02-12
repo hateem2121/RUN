@@ -21,7 +21,6 @@ const pageTransition = {
   type: "tween",
   ease: "anticipate",
   duration: 0.4,
-  // biome-ignore lint/suspicious/noExplicitAny: Animation transition props
 } as any;
 
 export function PageTransition({ children }: PageTransitionProps) {
@@ -41,7 +40,6 @@ export function PageTransition({ children }: PageTransitionProps) {
       <motion.div
         key={location}
         {...animationProps}
-        // biome-ignore lint/suspicious/noExplicitAny: Animation transition cast
         transition={{ ...animationProps.transition, delay } as any}
       >
         {children}

@@ -139,7 +139,6 @@ export const StaggeredMenu = ({
       gsap.set(itemEls, { yPercent: 140, rotate: 10 });
     }
     if (numberEls.length) {
-      // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
       gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
     }
 
@@ -191,7 +190,6 @@ export const StaggeredMenu = ({
           {
             duration: 0.6,
             ease: "power2.out",
-            // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
             ["--sm-num-opacity" as any]: 1,
             stagger: { each: 0.08, from: "start" },
           },
@@ -251,7 +249,6 @@ export const StaggeredMenu = ({
           panel.querySelectorAll(".sm-panel-list[data-numbering] .sm-panel-item"),
         ) as HTMLElement[];
         if (numberEls.length) {
-          // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
           gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
         }
 
@@ -337,7 +334,6 @@ export const StaggeredMenu = ({
           className ? `${className} ` : ""
         }staggered-menu-wrapper relative z-(--z-index-sticky) h-full w-full`}
         style={
-          // biome-ignore lint/suspicious/noExplicitAny: Dynamic CSS variable
           accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined
         }
         data-position={position}
@@ -361,7 +357,6 @@ export const StaggeredMenu = ({
               <div
                 key={i}
                 className="sm-prelayer absolute top-0 right-0 h-full w-full bg-(--bg) translate-x-0"
-                // biome-ignore lint/style: Dynamic pre-layer background
                 style={{ "--bg": c } as React.CSSProperties}
               />
             ));
@@ -371,7 +366,6 @@ export const StaggeredMenu = ({
         <header
           className="staggered-menu-header absolute top-0 left-0 z-(--z-index-dock) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
           aria-label="Main navigation header"
-          // biome-ignore lint/style: Safe-area padding calculation
           style={{ "--pt": "max(1rem, env(safe-area-inset-top))" } as React.CSSProperties}
         >
           <button
@@ -408,7 +402,6 @@ export const StaggeredMenu = ({
           id="staggered-menu-panel"
           ref={panelRef}
           className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pb-(--pb) pt-(--pt) shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
-          // biome-ignore lint/style: Dynamic layout/blur via CSS variables
           style={
             {
               "--pb": "max(2rem, env(safe-area-inset-bottom))",

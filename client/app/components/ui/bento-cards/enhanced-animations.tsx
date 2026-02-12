@@ -36,7 +36,6 @@ export const cardVariants = {
       duration: 0.1,
     },
   },
-  // biome-ignore lint/suspicious/noExplicitAny: Animation variants cast
 } as any;
 
 export const staggerContainer = {

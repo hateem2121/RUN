@@ -18,7 +18,6 @@ import { removeUndefined } from "../../utils.js";
 import { Router } from "express";
 import { z } from "zod";
 import { insertAboutStatisticSchema } from "../../../shared/schema.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";
@@ -113,13 +112,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
       throw new Error("Failed to create statistic");
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutStatistics] ✅ Cache invalidated after creation");
-    } catch (cacheError) {
-      logger.error("[AboutStatistics] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutStatistics] Created statistic ${newStatistic.id}`);
     return res.status(201).json(newStatistic);
   } catch (error) {
@@ -157,13 +150,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
       return res.status(404).json({ error: "Statistic not found" });
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutStatistics] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[AboutStatistics] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutStatistics] Updated statistic ${id}`);
     return res.json(updatedStatistic);
   } catch (error) {
@@ -192,13 +179,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
       return res.status(404).json({ error: "Statistic not found" });
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutStatistics] ✅ Cache invalidated after deletion");
-    } catch (cacheError) {
-      logger.error("[AboutStatistics] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutStatistics] Deleted statistic ${id}`);
     return res.status(204).send();
   } catch (error) {
@@ -232,13 +213,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
       ),
     );
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutStatistics] ✅ Cache invalidated after reorder");
-    } catch (cacheError) {
-      logger.error("[AboutStatistics] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutStatistics] Reordered ${updates.length} statistics`);
     return res.json({ success: true, updated: updates.length });
   } catch (error) {

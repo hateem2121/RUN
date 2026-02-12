@@ -125,9 +125,7 @@ const ChartTooltipContent = ({
     indicator?: "line" | "dot" | "dashed";
     nameKey?: string | undefined;
     labelKey?: string | undefined;
-    // biome-ignore lint/suspicious/noExplicitAny: Chart payload type
     payload?: any[];
-    // biome-ignore lint/suspicious/noExplicitAny: Chart label type
     label?: any;
     ref?: React.Ref<HTMLDivElement>;
   }) => {
@@ -258,7 +256,6 @@ const ChartLegendContent = ({
   Pick<RechartsPrimitive.LegendProps, "verticalAlign"> & {
     hideIcon?: boolean | undefined;
     nameKey?: string | undefined;
-    // biome-ignore lint/suspicious/noExplicitAny: Chart payload type
     payload?: any[];
     ref?: React.Ref<HTMLDivElement>;
   }) => {

@@ -6,7 +6,6 @@
 export type AnimationType = "client" | "facility";
 
 interface CachedAnimation {
-  // biome-ignore lint/suspicious/noExplicitAny: Lottie animation data
   data: any;
   loading: boolean;
   error?: string;
@@ -14,7 +13,6 @@ interface CachedAnimation {
 
 class AnimationCacheService {
   private cache = new Map<AnimationType, CachedAnimation>();
-  // biome-ignore lint/suspicious/noExplicitAny: Animation data promise
   private loadingPromises = new Map<AnimationType, Promise<any>>();
 
   private getAnimationUrl(type: AnimationType): string {
@@ -23,7 +21,6 @@ class AnimationCacheService {
       : "/attached_assets/map-marker.json";
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Animation data promise
   async getAnimation(type: AnimationType): Promise<any> {
     // Return cached data if available
     const cached = this.cache.get(type);
@@ -57,7 +54,6 @@ class AnimationCacheService {
     }
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Animation data promise
   private async loadAnimation(type: AnimationType): Promise<any> {
     const url = this.getAnimationUrl(type);
 

@@ -27,6 +27,7 @@ import { ResearchSection } from "@/components/technology/ResearchSection";
 import { RoadmapSection } from "@/components/technology/RoadmapSection";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
 // useMobileDetection import removed as unused
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
@@ -339,7 +340,6 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   // Initialize model-viewer
   React.useEffect(() => {
     ensureModelViewerLoaded().catch((e) => {
-      // biome-ignore lint/suspicious/noConsole: debugging
       console.error(e);
     });
   }, []);
@@ -507,13 +507,13 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
         </div>
       ) : (
         <div className="relative aspect-4/3">
-          <img
-            src={
-              media.url ||
-              (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
-            }
+          <OptimizedImage
+            mediaId={media.id}
+            src={media.url || undefined}
             alt="Technology Hero Display"
-            className="h-full w-full rounded-xl object-cover"
+            imageClassName="h-full w-full rounded-xl object-cover"
+            className="h-full w-full"
+            priority={true}
           />
         </div>
       )}
@@ -614,7 +614,6 @@ export default function Technology() {
               fallback={
                 <div
                   className="fixed inset-0 bg-[image:var(--gradient-bg)]"
-                  // biome-ignore lint: dynamic background needed
                   style={
                     {
                       "--gradient-bg": `linear-gradient(${safeGradientSettings.angle}deg, ${safeGradientSettings.gradientColors.join(", ")})`,

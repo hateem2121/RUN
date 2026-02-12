@@ -31,7 +31,6 @@ export function RelatedProductsGrid({
   // Helper to get media URL for a product
   const getProductImage = (product: Product) => {
     // Products may have media IDs in a media array or as a single ID
-    // biome-ignore lint/suspicious/noExplicitAny: Product type definition issue
     const productMedia = (product as any).media;
     if (productMedia && productMedia.length > 0) {
       const firstMediaId = productMedia[0];
@@ -59,7 +58,6 @@ export function RelatedProductsGrid({
       <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-10">
         {products.slice(0, 4).map((product) => {
           const imageUrl = getProductImage(product);
-          // biome-ignore lint/suspicious/noExplicitAny: Product type definition issue
           const productUrl = (product as any).canonicalUrl || `/products/${product.slug}`;
 
           return (

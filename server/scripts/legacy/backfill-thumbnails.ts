@@ -89,7 +89,6 @@ class ThumbnailBackfillService {
 // Run the backfill if this script is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const backfillService = new ThumbnailBackfillService();
-  // biome-ignore lint/suspicious/noConsole: CLI script
   backfillService.run().catch(console.error);
 }
 

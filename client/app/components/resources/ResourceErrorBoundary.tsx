@@ -23,7 +23,6 @@ export class ResourceErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: React lifecycle signature
   override componentDidCatch(_error: Error, _errorInfo: any) {}
 
   override render() {

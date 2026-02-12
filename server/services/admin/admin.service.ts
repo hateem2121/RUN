@@ -109,46 +109,86 @@ export class AdminService {
 
   /**
    * Corrects media URL corruption in category featured content.
+   * Optimized to process in parallel chunks and filter before processing.
    */
-  async fixCorruptedMedia() {
-    logger.debug("AdminService: Starting cleanup of corrupted media URLs");
-    const categories = await withTimeout(getStorage().getCategories(), 10000, "Get categories");
+  async fixCorruptedMedia(timeoutMs = 30000) {
+    logger.debug(
+      `AdminService: Starting cleanup of corrupted media URLs (timeout: ${timeoutMs}ms)`,
+    );
+    // Fetch all categories - this is fast
+    const categories = await withTimeout(
+      getStorage().getCategories(),
+      10000,
+      "Get all categories for media fix",
+    );
 
     let fixedCount = 0;
     const fixedCategories: string[] = [];
 
-    for (const category of categories) {
-      if (category.featuredContent) {
-        let needsUpdate = false;
-        const updatedFeaturedContent = { ...category.featuredContent };
+    // Filter for categories that actually need updates (in memory optimization)
+    const categoriesToUpdate = categories.filter((category) => {
+      if (!category.featuredContent) return false;
 
-        for (const cardKey of ["card1", "card2", "card3", "card4"] as const) {
-          const card = updatedFeaturedContent[
-            cardKey as keyof typeof updatedFeaturedContent
-          ] as any;
-          if (card?.mediaUrl) {
-            const mediaUrl = card.mediaUrl;
-            if (mediaUrl.includes("undefined") || mediaUrl === "/api/media/undefined/content") {
-              card.mediaUrl = "";
-              needsUpdate = true;
+      const content = category.featuredContent as any;
+      const cardKeys = ["card1", "card2", "card3", "card4"];
+
+      return cardKeys.some((key) => {
+        const card = content[key];
+        return (
+          card?.mediaUrl &&
+          (card.mediaUrl.includes("undefined") || card.mediaUrl === "/api/media/undefined/content")
+        );
+      });
+    });
+
+    if (categoriesToUpdate.length === 0) {
+      logger.info("AdminService: No corrupted media URLs found.");
+      return { fixedCount: 0, fixedCategories: [] };
+    }
+
+    logger.info(
+      `AdminService: Found ${categoriesToUpdate.length} categories with corrupted media. Processing updates...`,
+    );
+
+    // Process updates in parallel with concurrency limit to avoid DB contention
+    // Using a simple chunking strategy
+    const CHUNK_SIZE = 5;
+    for (let i = 0; i < categoriesToUpdate.length; i += CHUNK_SIZE) {
+      const chunk = categoriesToUpdate.slice(i, i + CHUNK_SIZE);
+
+      await Promise.all(
+        chunk.map(async (category) => {
+          const updatedFeaturedContent = { ...category.featuredContent } as any;
+          let needsUpdate = false;
+
+          // Apply fixes
+          for (const cardKey of ["card1", "card2", "card3", "card4"] as const) {
+            const card = updatedFeaturedContent[cardKey];
+            if (card?.mediaUrl) {
+              const mediaUrl = card.mediaUrl;
+              if (mediaUrl.includes("undefined") || mediaUrl === "/api/media/undefined/content") {
+                card.mediaUrl = "";
+                needsUpdate = true;
+              }
             }
           }
-        }
 
-        if (needsUpdate) {
-          const updateResult = await withTimeout(
-            getStorage().updateCategory(category.id, {
-              featuredContent: updatedFeaturedContent,
-            }),
-            5000,
-            `Update category ${category.id}`,
-          );
-          if (updateResult) {
-            fixedCount++;
-            fixedCategories.push(category.name);
+          if (needsUpdate) {
+            const updateResult = await withTimeout(
+              getStorage().updateCategory(category.id, {
+                featuredContent: updatedFeaturedContent,
+              }),
+              timeoutMs, // Use configurable timeout per update operation
+              `Update category ${category.id}`,
+            );
+
+            if (updateResult) {
+              fixedCount++;
+              fixedCategories.push(category.name);
+            }
           }
-        }
-      }
+        }),
+      );
     }
 
     return {
@@ -160,9 +200,15 @@ export class AdminService {
   /**
    * Triggers system storage cleanup.
    */
-  async triggerCleanup(autoClean: boolean) {
+  async triggerCleanup(autoClean: boolean, timeoutMs = 60000) {
     const scheduler = getLifecycleScheduler();
-    const report = await scheduler.runCleanup(autoClean === false);
+    // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
+    // If runCleanup is long, we wrap it.
+    const report = await withTimeout(
+      scheduler.runCleanup(autoClean === false),
+      timeoutMs,
+      "Storage cleanup",
+    );
 
     logger.info(`[AdminService] Storage cleanup triggered (autoClean: ${autoClean})`, {
       cleanedFiles: report.cleanedFiles.length,

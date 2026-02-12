@@ -64,6 +64,5 @@ export async function ensureModelViewerLoaded(): Promise<void> {
 
 // Auto-initialize when this module is imported
 if (typeof window !== "undefined") {
-  // biome-ignore lint/suspicious/noConsole: CLI
   ensureModelViewerLoaded().catch(console.error);
 }

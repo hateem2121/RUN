@@ -13,9 +13,7 @@ interface ProgressiveLoadingState {
 }
 
 export function useProgressiveLoading(
-  // biome-ignore lint/suspicious/noExplicitAny: Hero can be any data type
   hero: unknown,
-  // biome-ignore lint/suspicious/noExplicitAny: Batch data can be any type
   batchData: unknown,
   isBatchError: boolean,
 ): ProgressiveLoadingState {

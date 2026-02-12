@@ -101,7 +101,6 @@ export function CapabilityCard({ capability, index, mediaAssets }: CapabilityCar
                   <div className="space-y-1">
                     {capability.specifications
                       .slice(0, gridSpan.colSpan >= 2 ? 6 : 3)
-                      // biome-ignore lint/suspicious/noExplicitAny: Specification data type
                       .map((spec: any, i: number) => (
                         <div key={i} className="flex justify-between text-muted-foreground text-xs">
                           <span className="truncate">

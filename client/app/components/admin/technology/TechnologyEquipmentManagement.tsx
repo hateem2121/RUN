@@ -62,7 +62,6 @@ interface EquipmentFormData {
   maintenanceSchedule: string;
   description: string;
   certifications: string[];
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic specification values can be of any type
   specifications: Record<string, any>;
   imageId: number | null;
   installationDate: Date | null;

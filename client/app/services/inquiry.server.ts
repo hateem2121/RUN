@@ -51,7 +51,6 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
 
   // 2. Honeypot check
   if (validated.honeypot && validated.honeypot.trim().length > 0) {
-    // biome-ignore lint/suspicious/noConsole: honeypot logging
     console.warn(`[Inquiry] Honeypot triggered: ${validated.email}`);
     throw new Error("Invalid submission");
   }
@@ -77,7 +76,6 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
       throw new Error("Failed to insert inquiry");
     }
 
-    // biome-ignore lint/suspicious/noConsole: tracking
     // console.log(`[Inquiry] Created inquiry #${result.id} via Server Action`);
 
     // 4. Mock Email
@@ -85,7 +83,6 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
 
     return { success: true, submissionId: result.id };
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: error logging
     console.error("[Inquiry] Failed to submit:", error);
     throw new Error("Failed to submit inquiry");
   }
@@ -101,14 +98,12 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 
   try {
     // 2. Logic: Log to DB (Still Mocked)
-    // biome-ignore lint/suspicious/noConsole: Log payload
     // console.log("[Quote Request Received]", {
     //   timestamp: new Date().toISOString(),
     //   ...validated,
     // });
 
     // 3. Mock Email Send
-    // biome-ignore lint/suspicious/noConsole: Mock email
     // console.log(`[Email Mock] Sending quote confirmation to ${validated.contact.email}`);
 
     // In the future: Insert into inquiries table (needs schema migration for items)
@@ -130,7 +125,6 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
       inquiryId: `INQ-${Date.now()}`,
     };
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: error logging
     console.error("[Quote] Failed to submit:", error);
     throw new Error("Failed to submit quote request");
   }
@@ -143,9 +137,7 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 async function mockSendEmail(_inquiry: { email: string; id: number }) {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 100));
-  // biome-ignore lint/suspicious/noConsole: mock email
   // console.log(`[Email Mock] Sending confirmation to ${inquiry.email}`);
-  // biome-ignore lint/suspicious/noConsole: mock email
   // console.log(`[Email Mock] Sending admin notification for inquiry #${inquiry.id}`);
 }
 

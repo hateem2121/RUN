@@ -187,7 +187,6 @@ export default function SizeChartManagementEnhanced() {
     region: "",
     type: "",
     description: "",
-    // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
     measurements: {} as Record<string, any>,
     isActive: true,
   });
@@ -374,7 +373,6 @@ export default function SizeChartManagementEnhanced() {
       return;
     }
 
-    // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
     const newMeasurements: Record<string, any> = {};
     sizes.forEach((size) => {
       newMeasurements[size] = {};
@@ -453,7 +451,6 @@ export default function SizeChartManagementEnhanced() {
     return cmTypes.some((cmType) => type.includes(cmType));
   };
 
-  // biome-ignore lint/suspicious/noExplicitAny: Generic object handling
   const renderMeasurementTable = (measurements: Record<string, any>) => {
     if (!measurements || Object.keys(measurements).length === 0) {
       return <p className="py-4 text-center text-neutral-500">No measurements defined</p>;
@@ -708,7 +705,6 @@ export default function SizeChartManagementEnhanced() {
                         <div key={size} className="rounded-lg bg-neutral-50 p-3">
                           <h4 className="mb-2 font-medium">{size}</h4>
                           <div className="flex flex-wrap gap-2">
-                            {/* biome-ignore lint/suspicious/noExplicitAny: Generic object handling */}
                             {Object.entries(measurements as Record<string, any>).map(
                               ([key, value]) => (
                                 <Badge

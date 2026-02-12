@@ -34,13 +34,11 @@ interface ScrollExpandMediaProps {
 }
 
 // Throttle utility for performance optimization (high-resolution timing)
-// biome-ignore lint/suspicious/noExplicitAny: Generic throttle function
 const throttle = <F extends (...args: any[]) => any>(
   func: F,
   limit: number,
 ): ((...args: Parameters<F>) => ReturnType<F> | undefined) => {
   let lastCall = 0;
-  // biome-ignore lint/suspicious/noExplicitAny: Generic function context required
   return function (this: any, ...args: Parameters<F>): ReturnType<F> | undefined {
     const now = performance.now();
     if (now - lastCall >= limit) {

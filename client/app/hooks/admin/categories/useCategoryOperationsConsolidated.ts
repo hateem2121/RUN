@@ -162,7 +162,6 @@ export default function useCategoryOperationsConsolidated() {
 
   // Mutations (Mocked for now to pass build, but strict enough to be used)
   const createCategoryMutation = useMutation({
-    // biome-ignore lint/suspicious/noExplicitAny: Mock mutation accepts any payload
     mutationFn: async (_data: Record<string, unknown>) => {
       // return axios.post('/api/categories', data);
       await new Promise((r) => setTimeout(r, 500));
@@ -178,7 +177,6 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   const updateCategoryMutation = useMutation({
-    // biome-ignore lint/suspicious/noExplicitAny: Mock mutation accepts any payload
     mutationFn: async ({ id: _id, data: _data }: { id: number; data: Record<string, unknown> }) => {
       // return axios.put(`/api/categories/${id}`, data);
       await new Promise((r) => setTimeout(r, 500));
@@ -204,10 +202,8 @@ export default function useCategoryOperationsConsolidated() {
   });
 
   // Exported wrappers
-  // biome-ignore lint/suspicious/noExplicitAny: Wrapper passes through to mutation
   const createCategory = (data: Record<string, unknown>) =>
     createCategoryMutation.mutateAsync(data);
-  // biome-ignore lint/suspicious/noExplicitAny: Wrapper passes through to mutation
   const updateCategory = (data: { id: number; data: Record<string, unknown> }) =>
     updateCategoryMutation.mutateAsync(data);
   const deleteCategory = (id: number) => deleteCategoryMutation.mutateAsync(id);
@@ -222,7 +218,6 @@ export default function useCategoryOperationsConsolidated() {
     toast({ title: "Hard delete not implemented yet" });
   };
 
-  // biome-ignore lint/suspicious/noExplicitAny: Reorder accepts generic items array
   const reorderCategories = async (_items: unknown[]) => {
     // Mock logic
   };

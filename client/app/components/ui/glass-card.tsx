@@ -148,7 +148,6 @@ const LiquidGlassCard = ({
           "inline-block", // Maintain inline-block for LiquidGlassCard
           className,
         )}
-        // biome-ignore lint/style: Dynamic layout props required
         style={{
           borderRadius,
           width: width || "auto",
@@ -160,7 +159,6 @@ const LiquidGlassCard = ({
         {/* Static gradient background matching main render */}
         <div
           className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
-          // biome-ignore lint/style: Dynamic border radius
           style={{ borderRadius }}
         />
         <div className="relative z-elevated h-full">{children}</div>
@@ -176,7 +174,6 @@ const LiquidGlassCard = ({
       {...(shouldEnableDrag ? { dragElastic: 0.1 } : {})}
       {...(shouldEnableDrag ? { dragTransition: { bounceStiffness: 600, bounceDamping: 20 } } : {})}
       {...(shouldEnableDrag ? { onDragEnd: handleDragEnd } : {})}
-      // biome-ignore lint/style: Animation values require inline styles
       style={{
         ...(shouldEnableDrag ? { x } : {}),
         ...(shouldEnableDrag ? { y } : {}),
@@ -187,7 +184,6 @@ const LiquidGlassCard = ({
         height: currentHeight,
         ...(shouldEnableDrag ? { perspective: "1000px" } : {}),
         ...(shouldEnableDrag ? { transformStyle: "preserve-3d" } : {}),
-        // biome-ignore lint/suspicious/noExplicitAny: Style cast for compatibility
         ...(style as any),
       }}
       animate={{
@@ -218,13 +214,11 @@ const LiquidGlassCard = ({
     >
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10"
-        // biome-ignore lint/style: Dynamic border radius
         style={{ borderRadius }}
       />
 
       <div
         className="card-border-overlay rounded-[calc(var(--radius)-1px)]"
-        // biome-ignore lint/style: Dynamic border radius calc
         style={{ borderRadius: `calc(${borderRadius} - 1px)` }}
       />
 
@@ -232,7 +226,6 @@ const LiquidGlassCard = ({
 
       <div
         className="pointer-events-none absolute inset-0 hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block"
-        // biome-ignore lint/style: Dynamic border radius
         style={{ borderRadius }}
       >
         <div className="shimmer-overlay z-elevated" />

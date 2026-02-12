@@ -51,7 +51,6 @@ export class ViteAssetManager {
         }
       }
     } catch (e) {
-      // biome-ignore lint/suspicious/noConsole: library logging
       console.error("[ViteAssetManager] Failed to load manifest:", e);
       this.manifest = null;
     }

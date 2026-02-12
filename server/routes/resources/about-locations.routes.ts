@@ -16,7 +16,6 @@
 import { Router } from "express";
 import { z } from "zod";
 import { insertAboutMapLocationSchema } from "../../../shared/schema.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";
@@ -113,13 +112,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
       throw new Error("Failed to create location");
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after creation");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutLocations] Created location ${newLocation.id}`);
     return res.status(201).json(newLocation);
   } catch (error) {
@@ -165,13 +158,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
       return res.status(404).json({ error: "Location not found" });
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutLocations] Updated location ${id}`);
     return res.json(updatedLocation);
   } catch (error) {
@@ -200,13 +187,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
       return res.status(404).json({ error: "Location not found" });
     }
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after deletion");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutLocations] Deleted location ${id}`);
     return res.status(204).send();
   } catch (error) {
@@ -241,13 +222,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
       ),
     );
 
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutLocations] ✅ Cache invalidated after reorder");
-    } catch (cacheError) {
-      logger.error("[AboutLocations] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info(`[AboutLocations] Reordered ${updates.length} locations`);
     return res.json({ success: true, updated: updates.length });
   } catch (error) {

@@ -14,7 +14,6 @@ export function QuoteOverlay() {
     return null;
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Store items typing
   const count = (items as any[])?.length ?? 0;
 
   if (count === 0 && !isDrawerOpen) {

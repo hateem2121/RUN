@@ -46,7 +46,6 @@ export function usePerformanceMonitor() {
 
           entries.forEach((entry) => {
             if (entry.entryType === "layout-shift") {
-              // biome-ignore lint/suspicious/noExplicitAny: Performance API cast
               const clsEntry = entry as any;
               if (!clsEntry.hadRecentInput) {
                 setMetrics((prev) => {
@@ -66,7 +65,6 @@ export function usePerformanceMonitor() {
             }
 
             if (entry.entryType === "first-input") {
-              // biome-ignore lint/suspicious/noExplicitAny: Performance API cast
               const fidValue = (entry as any).processingStart - entry.startTime;
               setMetrics((prev) => {
                 checkThreshold("fid", fidValue, 100, 300);
@@ -85,7 +83,6 @@ export function usePerformanceMonitor() {
     // Memory monitoring
     const monitorMemory = () => {
       if ("memory" in performance) {
-        // biome-ignore lint/suspicious/noExplicitAny: Performance API cast
         const memoryInfo = (performance as any).memory;
         const memoryUsage = memoryInfo.usedJSHeapSize / 1024 / 1024; // MB
         setMetrics((prev) => ({ ...prev, memory: memoryUsage }));

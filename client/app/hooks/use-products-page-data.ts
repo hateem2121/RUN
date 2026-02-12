@@ -120,7 +120,6 @@ export function useProductsPageData({
         setMediaContentMap(mediaMap);
       } catch (_error) {
         // Silently fail media fetch to prevent UI crash
-        // biome-ignore lint/suspicious/noConsole: debugging
         console.error("Failed to fetch media content", _error);
       } finally {
         setIsLoadingMedia(false);

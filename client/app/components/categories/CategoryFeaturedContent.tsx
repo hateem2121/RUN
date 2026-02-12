@@ -5,6 +5,7 @@ import ExpandableCard from "@/components/ui/bento-cards/expandable-card";
 import FlipCard from "@/components/ui/bento-cards/flip-card";
 import SvgMaskCard from "@/components/ui/bento-cards/svg-mask-card";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
 import { isModelUrl } from "@/lib/media-type-detector";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
@@ -173,10 +174,11 @@ export function CategoryFeaturedContent({
                           showLoadingProgress={true}
                         />
                       ) : (
-                        <img
+                        <OptimizedImage
                           src={resolvedUrl}
                           alt={featuredContent.card4?.title || "Glass Effect"}
-                          className="h-full w-full object-cover"
+                          imageClassName="h-full w-full object-cover"
+                          className="h-full w-full"
                         />
                       )}
                     </div>

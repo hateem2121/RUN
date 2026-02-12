@@ -3,8 +3,6 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
-import type { MediaAsset } from "@shared/schema/media";
-import type { Product } from "@shared/schema/products";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
@@ -24,6 +22,12 @@ import { Typography } from "@/components/ui/typography";
 import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+import {
+  type MediaAsset,
+  type ProductSummary as Product,
+  type ProductDetail,
+  ProductDetailSchema,
+} from "@/schemas/product";
 import type { Route } from "./+types/categories.$category.$product";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -279,11 +283,7 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
   );
 }
 
-interface ProductData {
-  product: Product;
-  context: any; // Schema for this not strictly defined in generic shared types yet
-  media: MediaAsset[];
-}
+// ProductData replaced by Zod inferred type ProductDetail
 
 function ProductDetailContent() {
   const params = useParams();
@@ -304,13 +304,22 @@ function ProductDetailContent() {
     data: productData,
     isPending,
     error,
-  } = useQuery<ProductData>({
+  } = useQuery<ProductDetail>({
     queryKey: ["/api/products/by-path", fullPath],
     queryFn: async () => {
       const response = await apiRequest(
         `/api/products/by-path?path=${encodeURIComponent(fullPath)}`,
       );
-      return response as ProductData;
+
+      // Strict Zod Validation
+      const result = ProductDetailSchema.safeParse(response);
+
+      if (!result.success) {
+        console.error("[Loader] Product validation failed:", result.error);
+        throw new Error("Invalid product data received from server");
+      }
+
+      return result.data;
     },
     enabled: !!fullPath,
   });
@@ -347,7 +356,7 @@ function ProductDetailContent() {
       <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">
         {/* Breadcrumb */}
         <div className="mb-8">
-          <ProductBreadcrumbs items={context.breadcrumb || []} />
+          <ProductBreadcrumbs items={context?.breadcrumb || []} />
         </div>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
@@ -360,7 +369,7 @@ function ProductDetailContent() {
           <div className="flex flex-col">
             <div className="mb-2">
               <span className="font-bold text-blue-600 text-xs uppercase tracking-wider">
-                {context.category?.name || "Premium Collection"}
+                {context?.category?.name || "Premium Collection"}
               </span>
             </div>
 
@@ -463,7 +472,7 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: "Product Detail | Run Apparel" }];
 }
 
-export default function ProductDetail() {
+export default function ProductDetailRoute() {
   const loaderData = useLoaderData<typeof loader>();
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

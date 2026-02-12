@@ -3,7 +3,6 @@
  * Clipped geometric elements, enhanced galleries, and premium UI components
  */
 
-import type { Product } from "@shared/schema";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Box,
@@ -20,6 +19,7 @@ import {
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 // CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import type { FabricDisplayProps, SizeChartDisplayProps, TabbedDetailsProps } from "./types";
 
 // ============================================================================
 // ClippedElement - Geometric Angular Cut Component
@@ -31,8 +31,7 @@ interface ClippedElementProps {
   className?: string | undefined;
   clipAmount?: number | undefined;
   style?: React.CSSProperties;
-  // biome-ignore lint/suspicious/noExplicitAny: Flexible props
-  [x: string]: any;
+  [x: string]: unknown;
 }
 
 export const ClippedElement: React.FC<ClippedElementProps> = ({
@@ -47,7 +46,6 @@ export const ClippedElement: React.FC<ClippedElementProps> = ({
     clipPath: `polygon(0 0, 100% 0, calc(100% - ${clipAmount}px) 100%, 0 100%)`,
   };
   const finalStyle = { ...style, ...clipPathStyle };
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic tag type
   const Element = Tag as any;
 
   return (
@@ -99,7 +97,7 @@ export function normalizeMediaType(type: string | undefined | null): MediaType {
   return MediaType.Image;
 }
 
-interface MediaItem {
+export interface MediaItem {
   id: number;
   type: MediaType;
   src: string;
@@ -244,7 +242,6 @@ export const ProductGallery = ({
                           uploadedAt: null,
                           updatedAt: null,
                           createdAt: null,
-                          // biome-ignore lint/suspicious/noExplicitAny: Mock asset data
                         } as any
                       }
                       config={{
@@ -416,21 +413,6 @@ ThumbnailButton.displayName = "ThumbnailButton";
 
 type Tab = "specs" | "tech" | "care" | "info" | "certs";
 
-interface TabbedDetailsProps {
-  product: Product & {
-    specifications?: string[];
-    // biome-ignore lint/suspicious/noExplicitAny: Legacy technical specs
-    technicalSpecs?: Record<string, any>;
-    careInstructions?: string[];
-    minimumOrderQuantity?: number | undefined;
-    leadTime?: string | null;
-    customFit?: string | null;
-    customWeight?: string | null;
-  };
-  // biome-ignore lint/suspicious/noExplicitAny: Certificate type dynamic
-  certificates: any[];
-}
-
 export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certificates }) => {
   const [activeTab, setActiveTab] = useState<Tab>("specs");
 
@@ -574,9 +556,7 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
                 certificates.map((cert, i) => (
                   <div key={i} className="bg-background flex items-center rounded p-3">
                     <Shield className="mr-3 h-5 w-5 shrink-0 text-green-600" />
-                    <span className="text-foreground/80 text-sm font-medium">
-                      {cert.name || cert}
-                    </span>
+                    <span className="text-foreground/80 text-sm font-medium">{cert.name}</span>
                   </div>
                 ))
               ) : (
@@ -674,11 +654,6 @@ export const TabbedDetails: React.FC<TabbedDetailsProps> = ({ product, certifica
 // Inline Size Chart Display
 // ============================================================================
 
-interface SizeChartDisplayProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy size chart type
-  sizeChart: any;
-}
-
 export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart }) => {
   const sizes = sizeChart?.measurements ? Object.keys(sizeChart.measurements) : [];
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
@@ -741,13 +716,6 @@ export const SizeChartDisplay: React.FC<SizeChartDisplayProps> = ({ sizeChart })
 // ============================================================================
 // Fabric Display Component
 // ============================================================================
-
-interface FabricDisplayProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy fabric type
-  fabric: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy fiber type
-  fibers?: any[];
-}
 
 export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -850,7 +818,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
               Performance Features
             </h4>
             <ul className="space-y-2" data-testid="list-fabric-features">
-              {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
+              {fabric.properties?.performanceFeatures?.map((feature: string, index: number) => (
                 <li key={index} className="flex items-start text-sm">
                   <span className="mr-2 text-black">•</span>
                   <span className="text-foreground/80">{feature}</span>
@@ -894,12 +862,14 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
                     Performance Features
                   </h4>
                   <ul className="space-y-2" data-testid="list-fabric-features">
-                    {fabric.properties.performanceFeatures.map((feature: string, index: number) => (
-                      <li key={index} className="flex items-start text-sm">
-                        <span className="mr-2 text-black">•</span>
-                        <span className="text-foreground/80">{feature}</span>
-                      </li>
-                    ))}
+                    {fabric.properties?.performanceFeatures?.map(
+                      (feature: string, index: number) => (
+                        <li key={index} className="flex items-start text-sm">
+                          <span className="mr-2 text-black">•</span>
+                          <span className="text-foreground/80">{feature}</span>
+                        </li>
+                      ),
+                    )}
                   </ul>
                 </div>
               )}
@@ -925,9 +895,7 @@ export const FabricDisplay: React.FC<FabricDisplayProps> = ({ fabric, fibers = [
 // ============================================================================
 
 interface FiberCompositionDisplayProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy fabric type
   fabric: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Legacy fiber type
   fibers?: any[];
 }
 
@@ -938,7 +906,6 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
   const compositions = fabric?.properties?.compositions || [];
 
   // Find default composition or use first one
-  // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
   const defaultComposition = compositions.find((c: any) => c.isDefault) || compositions[0];
   const [selectedComposition, setSelectedComposition] = useState<string>(
     defaultComposition?.name || "",
@@ -953,14 +920,12 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
   }
 
   const currentComposition =
-    // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
     compositions.find((c: any) => c.name === selectedComposition) || defaultComposition;
   const compositionFibers = currentComposition?.fibers || [];
 
   // Helper to get fiber details
   const getFiberDetails = (fiberId: number) => {
     return (
-      // biome-ignore lint/suspicious/noExplicitAny: Implicit array element type
       fibers.find((f: any) => f.id === fiberId) || {
         name: "Unknown Fiber",
         type: "unknown",
@@ -986,7 +951,6 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
       {/* Composition Toggle Buttons */}
       {compositions.length > 1 && (
         <div className="border-border mb-8 flex flex-wrap items-center gap-2 border-b pb-3">
-          {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
           {compositions.map((comp: any) => (
             <ClippedElement
               key={comp.name}
@@ -1018,7 +982,6 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
             transition={{ duration: 0.2 }}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {/* biome-ignore lint/suspicious/noExplicitAny: Implicit array element type */}
             {compositionFibers.map((fiber: any, index: number) => {
               const fiberDetails = getFiberDetails(fiber.fiberId);
               return (

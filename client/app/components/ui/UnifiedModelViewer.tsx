@@ -865,7 +865,6 @@ export default function UnifiedModelViewer({
         {/* Model Viewer - Stable attributes to prevent Lit element update conflicts */}
         {isVisible &&
           React.createElement("model-viewer", {
-            // biome-ignore lint/suspicious/noExplicitAny: Custom element ref
             ref: modelViewerRef as any,
             // src set programmatically in useEffect
             alt: asset.originalName || "3D Model",

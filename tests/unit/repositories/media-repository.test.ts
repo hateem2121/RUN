@@ -93,7 +93,6 @@ describe("MediaRepository", () => {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue([mockMediaAsset]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.getMediaAsset(1);
@@ -106,7 +105,6 @@ describe("MediaRepository", () => {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue([]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.getMediaAsset(999);
@@ -128,7 +126,6 @@ describe("MediaRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.getMediaAssets(10, 0);
@@ -147,7 +144,6 @@ describe("MediaRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.getMediaAssets(10, 0, { type: "image" });
@@ -162,7 +158,6 @@ describe("MediaRepository", () => {
         values: vi.fn().mockReturnValue({
           returning: vi.fn().mockResolvedValue([mockMediaAsset]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.createMediaAsset({
@@ -187,7 +182,6 @@ describe("MediaRepository", () => {
             returning: vi.fn().mockResolvedValue([updatedAsset]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.updateMediaAsset(1, { filename: "updated.jpg" });
@@ -204,7 +198,6 @@ describe("MediaRepository", () => {
             returning: vi.fn().mockResolvedValue([{ ...mockMediaAsset, deletedAt: new Date() }]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.deleteMediaAsset(1);
@@ -219,7 +212,6 @@ describe("MediaRepository", () => {
             returning: vi.fn().mockResolvedValue([]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       await expect(mediaRepository.deleteMediaAsset(999)).rejects.toThrow(
@@ -237,7 +229,6 @@ describe("MediaRepository", () => {
               orderBy: vi.fn().mockResolvedValue([mockFolder]),
             }),
           }),
-          // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
         } as any);
 
         const result = await mediaRepository.getFolders();
@@ -253,7 +244,6 @@ describe("MediaRepository", () => {
           values: vi.fn().mockReturnValue({
             returning: vi.fn().mockResolvedValue([mockFolder]),
           }),
-          // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
         } as any);
 
         const result = await mediaRepository.createFolder({
@@ -267,15 +257,12 @@ describe("MediaRepository", () => {
 
     describe("deleteFolder", () => {
       it("should delete a folder", async () => {
-        // MediaRepository.deleteFolder uses db.delete, not soft delete
         vi.mocked(db.delete).mockReturnValue({
           where: vi.fn().mockResolvedValue([mockFolder]),
-          // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
         } as any);
 
         const result = await mediaRepository.deleteFolder(1);
 
-        // The method returns boolean based on rowCount
         expect(typeof result).toBe("boolean");
       });
     });
@@ -290,7 +277,6 @@ describe("MediaRepository", () => {
             returning: vi.fn().mockResolvedValue([movedAsset]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await mediaRepository.moveMediaAsset(1, 2);

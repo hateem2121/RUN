@@ -6,6 +6,7 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
 } from "../../shared/schema.js";
+import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 /**
@@ -50,7 +51,9 @@ export class AboutService {
   }
 
   async updateHero(data: Partial<InsertAboutHero>) {
-    return this.storage.updateAboutHero(data);
+    const result = await this.storage.updateAboutHero(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   // ===========================================================================
@@ -66,15 +69,21 @@ export class AboutService {
   }
 
   async createTimelineEntry(data: InsertAboutTimelineEntry) {
-    return this.storage.createAboutTimelineEntry(data);
+    const result = await this.storage.createAboutTimelineEntry(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async updateTimelineEntry(id: number, data: Partial<InsertAboutTimelineEntry>) {
-    return this.storage.updateAboutTimelineEntry(id, data);
+    const result = await this.storage.updateAboutTimelineEntry(id, data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async deleteTimelineEntry(id: number) {
-    return this.storage.deleteAboutTimelineEntry(id);
+    const result = await this.storage.deleteAboutTimelineEntry(id);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   // ===========================================================================
@@ -90,15 +99,21 @@ export class AboutService {
   }
 
   async createLocation(data: InsertAboutMapLocation) {
-    return this.storage.createAboutMapLocation(data);
+    const result = await this.storage.createAboutMapLocation(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async updateLocation(id: number, data: Partial<InsertAboutMapLocation>) {
-    return this.storage.updateAboutMapLocation(id, data);
+    const result = await this.storage.updateAboutMapLocation(id, data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async deleteLocation(id: number) {
-    return this.storage.deleteAboutMapLocation(id);
+    const result = await this.storage.deleteAboutMapLocation(id);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   // ===========================================================================
@@ -114,15 +129,21 @@ export class AboutService {
   }
 
   async createSection(data: InsertAboutSection) {
-    return this.storage.createAboutSection(data);
+    const result = await this.storage.createAboutSection(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async updateSection(id: number, data: Partial<InsertAboutSection>) {
-    return this.storage.updateAboutSection(id, data);
+    const result = await this.storage.updateAboutSection(id, data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async deleteSection(id: number) {
-    return this.storage.deleteAboutSection(id);
+    const result = await this.storage.deleteAboutSection(id);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   // ===========================================================================
@@ -138,15 +159,21 @@ export class AboutService {
   }
 
   async createStatistic(data: InsertAboutStatistic) {
-    return this.storage.createAboutStatistic(data);
+    const result = await this.storage.createAboutStatistic(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async updateStatistic(id: number, data: Partial<InsertAboutStatistic>) {
-    return this.storage.updateAboutStatistic(id, data);
+    const result = await this.storage.updateAboutStatistic(id, data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   async deleteStatistic(id: number) {
-    return this.storage.deleteAboutStatistic(id);
+    const result = await this.storage.deleteAboutStatistic(id);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 
   // ===========================================================================
@@ -158,7 +185,9 @@ export class AboutService {
   }
 
   async updateTeamMessage(data: Partial<InsertAboutTeamMessage>) {
-    return this.storage.updateAboutTeamMessage(data);
+    const result = await this.storage.updateAboutTeamMessage(data);
+    await CacheOperations.invalidateAbout();
+    return result;
   }
 }
 

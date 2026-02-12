@@ -30,7 +30,11 @@ const auditConfigSchema = z.object({
   trackedTables: z.array(z.string()).optional(),
 });
 
-const emptyBodySchema = z.strictObject({}); // For routes that should not accept any body data
+const emptyBodySchema = z
+  .object({
+    timeout: z.number().optional(), // Allow optional timeout override
+  })
+  .strict();
 
 // GET /products/initial-data - Admin products batch data
 router.get("/products/initial-data", authService.requireAdmin, async (_req, res) => {
@@ -47,8 +51,8 @@ router.get("/test", authService.requireAdmin, (_req, res) => {
 // prettier-ignore
 router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) => {
   // security
-  emptyBodySchema.parse(req.body);
-  const result = await adminService.fixCorruptedMedia();
+  const { timeout } = emptyBodySchema.parse(req.body);
+  const result = await adminService.fixCorruptedMedia(timeout);
 
   // Audit Log
   const user = req.user as any; // SessionUser
@@ -75,8 +79,8 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
 
 // POST /api/admin/cleanup/trigger - Trigger storage cleanup
 router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
-  const { autoClean } = req.body;
-  const report = await adminService.triggerCleanup(autoClean === true);
+  const { autoClean, timeout } = req.body;
+  const report = await adminService.triggerCleanup(autoClean === true, timeout);
 
   // Audit Log
   const user = req.user as any;

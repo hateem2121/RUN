@@ -28,7 +28,6 @@ export function ProductNavigation({
     <div className={cn("flex items-center justify-between py-6", className)}>
       <div className="flex-1">
         {previousProduct && (
-          // biome-ignore lint/suspicious/noExplicitAny: canonicalUrl missing in Product type
           <Link to={(previousProduct as any).canonicalUrl || `/products/${previousProduct.slug}`}>
             <Button variant="ghost" className="group">
               <ChevronLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -43,7 +42,6 @@ export function ProductNavigation({
 
       <div className="flex-1 text-right">
         {nextProduct && (
-          // biome-ignore lint/suspicious/noExplicitAny: canonicalUrl missing in Product type
           <Link to={(nextProduct as any).canonicalUrl || `/products/${nextProduct.slug}`}>
             <Button variant="ghost" className="group">
               <div className="text-right">

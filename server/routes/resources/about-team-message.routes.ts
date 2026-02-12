@@ -13,7 +13,6 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { insertAboutTeamMessageSchema } from "../../../shared/schema.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";
@@ -61,14 +60,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
       "Update team message",
     );
 
-    // Invalidate cache
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutTeamMessage] ✅ Cache invalidated after update");
-    } catch (cacheError) {
-      logger.error("[AboutTeamMessage] ❌ Cache invalidation failed:", cacheError);
-    }
-
+    // Invalidation handled by service layer
     logger.info("[AboutTeamMessage] Team message updated successfully");
     return res.json(updated);
   } catch (error) {

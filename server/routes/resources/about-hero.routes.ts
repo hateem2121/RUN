@@ -13,7 +13,6 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { insertAboutHeroSchema } from "../../../shared/schema.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";
@@ -73,17 +72,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
       "Update about hero",
     );
 
-    // Invalidate cache
-    try {
-      await CacheOperations.invalidateAbout();
-      logger.info("[AboutHero] ✅ Cache invalidated after hero update");
-    } catch (cacheError) {
-      // CACHE FAILURE FALLBACK: Log error but do not fail the request
-      // This ensures the DB update persists even if Redis/Cache is temporary down
-      logger.error("[AboutHero] ⚠️ Cache invalidation failed - stale data may persist:", cacheError);
-      // Optional: Trigger an alert or background retry mechanism here
-    }
-
+    // Invalidation handled by service layer
     logger.info("[AboutHero] Hero updated successfully");
     return res.json(updatedHero);
   } catch (error) {

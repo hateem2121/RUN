@@ -122,7 +122,6 @@ export async function setupMiddleware(app: Express) {
             metadata: { body_keys: Object.keys(req.body || {}) },
           });
         })
-        // biome-ignore lint/suspicious/noConsole: audit log failure
         .catch((err) => console.error("Audit log failed", err));
     }
     next();

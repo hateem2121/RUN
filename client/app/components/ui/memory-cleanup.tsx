@@ -19,7 +19,6 @@ export function MemoryCleanup() {
         modelViewers.forEach((viewer, index) => {
           if (index > 2) {
             // Keep only first 2 models loaded
-            // biome-ignore lint/suspicious/noExplicitAny: Model viewer internal property
             (viewer as any).src = "";
           }
         });
@@ -47,7 +46,6 @@ export function MemoryCleanup() {
     // Monitor memory usage every 30 seconds
     const memoryMonitor = setInterval(() => {
       if ("memory" in performance && performance.memory) {
-        // biome-ignore lint/suspicious/noExplicitAny: Chrome memory API
         const memory = performance.memory as any;
         const usedMB = memory.usedJSHeapSize / 1024 / 1024;
         // const totalMB = memory.totalJSHeapSize / 1024 / 1024;

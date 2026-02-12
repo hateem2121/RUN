@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 interface Timeline3DProps {
   entries: AboutTimelineEntry[];
   getAssetUrl: (id: number) => string | null;
-  // biome-ignore lint/suspicious/noExplicitAny: Asset can be any type
   getAsset: (id: number) => any;
 }
 
@@ -44,7 +43,6 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Framer Motion variants
   } as any;
 
   const timelineVariants = {
@@ -56,7 +54,6 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
         ease: "easeInOut",
       },
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Framer Motion variants
   } as any;
 
   return (

@@ -66,7 +66,6 @@ interface InnovationFormData {
   shortDescription: string;
   iconName: string;
   status: string;
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic technical details
   technicalDetails: Record<string, any>;
   relatedProducts: string[];
   benefits: string[];

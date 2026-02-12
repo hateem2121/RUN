@@ -8,7 +8,6 @@ import { z } from "zod";
 export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
   if (!Array.isArray(data)) {
     if (import.meta.env.DEV) {
-      // biome-ignore lint/suspicious/noConsole: debugging
       console.warn("safeParseArray: Input is not an array", data);
     }
     return [];
@@ -21,7 +20,6 @@ export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
     } else {
       // In development, log the schema error for debugging
       if (import.meta.env.DEV) {
-        // biome-ignore lint/suspicious/noConsole: debugging
         console.warn("Schema validation failed for item:", item, result.error);
       }
     }
@@ -31,14 +29,38 @@ export function safeParseArray<T>(schema: z.ZodType<T>, data: unknown[]): T[] {
 
 // -- Primitive Schemas --
 
-export const MediaAssetSchema = z.object({
-  id: z.number(),
-  url: z.string(),
-  type: z.string(), // 'image', 'video', etc.
-  thumbnailUrl: z.string().nullable().optional(),
-  mimeType: z.string().optional(),
-  altText: z.string().nullable().optional(),
-});
+export const MediaAssetSchema = z
+  .object({
+    id: z.number(),
+    url: z.string(),
+    type: z.string(), // 'image', 'video', 'model', etc.
+    thumbnailUrl: z.string().nullable().default(null),
+    mimeType: z.string().default("application/octet-stream"),
+    altText: z.string().nullable().default(null),
+    caption: z.string().nullable().default(null),
+    metadata: z.record(z.string(), z.any()).default({}),
+    isActive: z.boolean().nullable().default(true),
+    tags: z.array(z.string()).nullable().default([]),
+    originalName: z.string().nullable().default(null),
+    filename: z.string().default("unknown"), // Enforcing string to match shared schema
+    size: z.number().nullable().default(0),
+    createdAt: z.coerce.date().nullable().default(null),
+    updatedAt: z.coerce.date().nullable().default(null),
+    uploadedAt: z.coerce.date().nullable().default(null),
+    deletedAt: z.coerce.date().nullable().default(null),
+    fileSize: z.number().nullable().default(0),
+    bucketName: z.string().default(""),
+    imageVariants: z.any().nullable().default(null),
+    thumbnailFilename: z.string().nullable().default(null),
+    thumbnailStoragePath: z.string().nullable().default(null),
+    folderId: z.number().nullable().default(null),
+    storagePath: z.string().default(""),
+    blurhash: z.string().nullable().default(null),
+    dimensionWidth: z.number().nullable().default(null),
+    dimensionHeight: z.number().nullable().default(null),
+    // Allow other fields to pass through if needed, or define them all
+  })
+  .passthrough();
 
 export const CategorySchema = z.object({
   id: z.number(),
@@ -82,6 +104,7 @@ export const ProductSummarySchema = z.object({
   slug: z.string(),
   sku: z.string(),
   description: z.string().nullable(),
+  shortDescription: z.string().nullable(),
 
   // Relationships
   categoryId: z.number(),
@@ -101,11 +124,15 @@ export const ProductSummarySchema = z.object({
   leadTime: z.string().nullable(),
 
   // Specifications
-  careInstructions: z.any().nullable(),
-  technicalSpecs: z.any().nullable(),
+  careInstructions: z.array(z.string()).nullable(),
+  technicalSpecs: z
+    .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+    .nullable(),
   customFit: z.string().nullable(),
-  fiberComposition: z.any().nullable(),
-  specifications: z.any().nullable(),
+  fiberComposition: z
+    .record(z.string(), z.union([z.string(), z.number(), z.array(z.number())]))
+    .nullable(),
+  specifications: z.array(z.string()).nullable(),
 
   // Tags & Metadata
   tags: z.array(z.string()).nullable(),
@@ -123,3 +150,16 @@ export type MediaAsset = z.infer<typeof MediaAssetSchema>;
 export type Certificate = z.infer<typeof CertificateSchema>;
 export type SizeChart = z.infer<typeof SizeChartSchema>;
 export type Accessory = z.infer<typeof AccessorySchema>;
+
+export const ProductDetailSchema = z.object({
+  product: ProductSummarySchema,
+  context: z
+    .object({
+      breadcrumb: z.array(z.object({ name: z.string(), url: z.string() })).optional(),
+      category: CategorySchema.nullable().optional(),
+    })
+    .optional(),
+  media: z.array(MediaAssetSchema),
+});
+
+export type ProductDetail = z.infer<typeof ProductDetailSchema>;

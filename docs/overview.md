@@ -190,3 +190,6 @@ npm ci
 - **Operational Map:** See `docs/AGENT_INSTRUCTIONS.md`.
 - **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
 - **Context:** `docs/core/tech-stack.md` provides definitions for AI decision making.
+
+---
+**Version**: 1.1.0 | **Audit Status**: Verified | **Last Remediated**: 2026-02-12

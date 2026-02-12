@@ -32,7 +32,6 @@ export async function loader({ request }: Route.LoaderArgs) {
       queryFn: () => fetch(`${baseUrl}/api/contact-info`).then((res) => res.json()),
     });
   } catch (_error) {
-    // biome-ignore lint/suspicious/noConsole: prefetch failure
     console.error("[Contact] Failed to prefetch contact info:", _error);
   }
 

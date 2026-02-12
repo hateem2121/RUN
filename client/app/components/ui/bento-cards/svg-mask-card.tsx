@@ -220,7 +220,6 @@ const SvgMaskCard = memo(function SvgMaskCard({
   return (
     <section
       className="relative flex h-auto min-h-300 w-full max-h-600 flex-col bg-(--bg) [mask-image:var(--mask-uri)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
-      // biome-ignore lint/style: Dynamic masking logic
       style={
         {
           "--bg":

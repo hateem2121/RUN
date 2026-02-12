@@ -13,7 +13,6 @@ startTransition(() => {
     </StrictMode>,
     {
       onCaughtError: (error, errorInfo) => {
-        // biome-ignore lint/suspicious/noConsole: Critical frontend error report
         console.error("Caught error during hydration:", error);
         // Report to Sentry if available (initSentry handles this, but explicit context is useful)
         import("@sentry/react").then((Sentry) => {
@@ -27,7 +26,6 @@ startTransition(() => {
         });
       },
       onUncaughtError: (error, errorInfo) => {
-        // biome-ignore lint/suspicious/noConsole: Critical frontend error report
         console.error("Uncaught error during hydration:", error);
         import("@sentry/react").then((Sentry) => {
           Sentry.captureException(error, {

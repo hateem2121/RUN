@@ -3,7 +3,6 @@ import lottie from "lottie-web/build/player/lottie_light";
 import { useEffect, useRef } from "react";
 
 interface LottieIconProps {
-  // biome-ignore lint: Lottie animation data is complex JSON
   animationData: Record<string, unknown>;
   size: number;
   type: "client" | "facility";
@@ -50,7 +49,6 @@ export function LottieIcon({ animationData, size, type }: LottieIconProps) {
 
   return (
     <div
-      // biome-ignore lint/style: Dynamic size prop required
       style={
         {
           "--size": `${size}px`,

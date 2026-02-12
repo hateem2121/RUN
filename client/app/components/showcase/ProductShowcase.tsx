@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useDeferredValue, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { useHydratedStore } from "../../lib/useHydratedStore";
 import { useQuoteStore } from "../../stores/useQuoteStore";
 
@@ -117,11 +118,11 @@ const ProductShowcase = () => {
                   className="group transform overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
                   <div className="relative aspect-video overflow-hidden bg-slate-100">
-                    <img
+                    <OptimizedImage
                       src={product.imageUrl}
                       alt={product.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
+                      imageClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="h-full w-full"
                     />
                     <div className="absolute top-4 right-4 rounded-full border border-white/50 bg-white/90 px-3 py-1 font-semibold text-slate-700 text-xs shadow-sm backdrop-blur-sm">
                       MOQ: {product.minOrderQuantity}
@@ -155,7 +156,6 @@ const ProductShowcase = () => {
                       disabled={!addToQuote} // Disable until hydrated to prevent mismatch
                       onClick={() => {
                         if (addToQuote) {
-                          // biome-ignore lint/suspicious/noExplicitAny: Legacy quote handler
                           (addToQuote as any)({
                             id: product.id,
                             name: product.name,

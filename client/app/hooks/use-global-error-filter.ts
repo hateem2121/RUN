@@ -3,7 +3,6 @@ import { useEffect } from "react";
 /**
  * Checks if an error is an AbortError (fetch cancellation)
  */
-// biome-ignore lint/suspicious/noExplicitAny: Error can be any type
 export const isAbortError = (reason: unknown): boolean => {
   return (
     // Standard Error objects
@@ -25,7 +24,6 @@ export const isAbortError = (reason: unknown): boolean => {
 /**
  * Checks if an error is generic third-party extension noise
  */
-// biome-ignore lint/suspicious/noExplicitAny: Error can be any type
 export const isExtensionNoise = (reason: unknown): boolean => {
   if (!reason || typeof reason !== "object") {
     return false;

@@ -3,31 +3,17 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { Button } from "@/components/ui/button";
-import { useOptimizedMedia } from "@/hooks/use-optimized-media";
-
+import { OptimizedImage } from "@/components/ui/optimized-image";
 export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
   // FIX: removed raw window access to prevent Hydration Mismatch (Server vs Client)
   // Defaulting to high-quality desktop asset for stability.
   // Future optimization: Use <picture> with srcset for true responsive images.
-
-  const { urls } = useOptimizedMedia(media.id, {
-    width: 1920,
-    quality: 90,
-    format: "webp",
-  });
-
-  const imageSrc =
-    urls?.large ||
-    urls?.medium ||
-    media.url ||
-    (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined);
 
   return (
     <div className="absolute inset-0 min-h-full">
       {media.type === "video" ? (
         <video
           src={
-            urls?.large ||
             media.url ||
             (media.id && media.id < 1000000000000 ? `/api/media/${media.id}/content` : undefined)
           }
@@ -38,10 +24,13 @@ export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
           className="h-full w-full object-cover"
         />
       ) : (
-        <img
-          src={imageSrc}
+        <OptimizedImage
+          mediaId={media.id}
+          src={media.url || undefined}
           alt="Sustainability hero background"
-          className="h-full w-full object-cover"
+          imageClassName="h-full w-full object-cover"
+          className="h-full w-full"
+          priority={true}
         />
       )}
       <div className="absolute inset-0 bg-linear-to-b from-stone-900/50 to-stone-800/30" />

@@ -49,7 +49,6 @@ export function useContactForm(config?: UseContactFormConfig) {
 
   const apiError = useMemo(() => {
     if (state.status === "error" && state.error) {
-      // biome-ignore lint/suspicious/noExplicitAny: Error handling boundary
       return new ApiError((state.error as any).status || 500, state.error as any);
     }
     return null;

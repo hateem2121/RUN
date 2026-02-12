@@ -106,7 +106,6 @@ export function MediaTransition({
         <motion.div
           key={media.id}
           custom={direction}
-          // biome-ignore lint/suspicious/noExplicitAny: Framer motion complexity
           variants={variants as any}
           initial="initial"
           animate="animate"

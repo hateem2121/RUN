@@ -18,11 +18,9 @@ export let serverReady: Promise<void>;
 serverReady = (async () => {
   try {
     // 1. Load Secrets (Async)
-    // biome-ignore lint/suspicious/noConsole: startup logging
     console.log("[Bootstrap] Loading secrets from Secret Manager...");
     const secrets = await loadSecrets();
     injectSecretsToEnv();
-    // biome-ignore lint/suspicious/noConsole: startup logging
     console.log(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
 
     // 1.5. Validate Environment Variables
@@ -36,7 +34,6 @@ serverReady = (async () => {
     app = mod.app;
     await mod.serverReady;
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: Critical startup error
     console.error("[Bootstrap] Critical failure during startup:", error);
     process.exit(1);
   }
