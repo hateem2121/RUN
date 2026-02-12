@@ -50,6 +50,21 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
   emptyBodySchema.parse(req.body);
   const result = await adminService.fixCorruptedMedia();
 
+  // Audit Log
+  const user = req.user as any; // SessionUser
+  if (result.fixedCount > 0) {
+    await getStorage().createAuditLog({
+      action: "UPDATE",
+      tableName: "categories",
+      recordId: "BULK_FIX",
+      userId: user?.id,
+      userEmail: user?.email,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      metadata: { operation: "fix-corrupted-media", result },
+    });
+  }
+
   return res.json({
     success: true,
     message: `Corrupted media cleanup completed: ${result.fixedCount} categories fixed`,
@@ -62,6 +77,20 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
 router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
   const { autoClean } = req.body;
   const report = await adminService.triggerCleanup(autoClean === true);
+
+  // Audit Log
+  const user = req.user as any;
+  await getStorage().createAuditLog({
+    action: "DELETE",
+    tableName: "storage",
+    recordId: "CLEANUP",
+    userId: user?.id,
+    userEmail: user?.email,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+    metadata: { operation: "cleanup", autoClean, report },
+  });
+
   res.json({ success: true, report });
 });
 
@@ -97,6 +126,21 @@ router.post("/enterprise/audit-config", authService.requireAdmin, async (req, re
   if (Array.isArray(trackedTables)) {
     getStorage().configureTrackedTables(trackedTables);
   }
+
+  // Audit Log
+  const user = req.user as any;
+  await getStorage().createAuditLog({
+    action: "UPDATE",
+    tableName: "audit_configuration",
+    recordId: "CONFIG",
+    userId: user?.id,
+    userEmail: user?.email,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+    newValues: validatedData,
+    metadata: { operation: "update-audit-config" },
+  });
+
   return res.json({ success: true, message: "Audit configuration updated" });
 });
 
@@ -111,6 +155,20 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
   }
 
   const result = await withTimeout(getStorage().restoreCategory(id), 5000, "Restore category");
+
+  if (result) {
+    const user = req.user as any;
+    await getStorage().createAuditLog({
+      action: "RESTORE",
+      tableName: "categories",
+      recordId: id.toString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+  }
+
   return res.json({ success: result });
 });
 
@@ -124,6 +182,20 @@ router.post("/products/:id/restore", authService.requireAdmin, async (req, res) 
   }
 
   const result = await withTimeout(getStorage().restoreProduct(id), 5000, "Restore product");
+
+  if (result) {
+    const user = req.user as any;
+    await getStorage().createAuditLog({
+      action: "RESTORE",
+      tableName: "products",
+      recordId: id.toString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+  }
+
   return res.json({ success: result });
 });
 
@@ -137,6 +209,20 @@ router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, r
   }
 
   const result = await withTimeout(getStorage().restoreMediaAsset(id), 5000, "Restore media asset");
+
+  if (result) {
+    const user = req.user as any;
+    await getStorage().createAuditLog({
+      action: "RESTORE",
+      tableName: "media_assets",
+      recordId: id.toString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+  }
+
   return res.json({ success: result });
 });
 

@@ -205,7 +205,12 @@ export class AuthService {
     });
 
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-      logger.warn("[AuthService] Google Auth credentials missing.");
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "CRITICAL SECURITY ERROR: GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required in production.",
+        );
+      }
+      logger.warn("[AuthService] Google Auth credentials missing. OAuth will be disabled.");
       return;
     }
 

@@ -90,7 +90,7 @@ declare global {
   }
 }
 
-// Augmentation for React 18+ JSX namespace
+// Augmentation for React 19+ JSX namespace
 declare module "react" {
   namespace JSX {
     interface IntrinsicElements {

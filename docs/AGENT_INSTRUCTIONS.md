@@ -82,7 +82,7 @@ grep -r "localhost:" --exclude-dir=node_modules . | grep -v "5002"
 - Task sets up new services
 
 **Required Actions:**
-1. Read `docs/PORT_5002_ARCHITECTURE.md` FIRST
+1. Read `docs/core/port-5002-architecture.md` FIRST
 2. Verify all changes use port `5002`
 3. Run `npm run verify-port` BEFORE and AFTER changes
 4. Update documentation if needed

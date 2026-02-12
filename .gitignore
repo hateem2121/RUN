@@ -46,3 +46,14 @@ FINAL_REMEDIATION_PROMPT.txt
 playwright-report/
 test-results/
 openapi-spec.json
+# Temporary audit and log files
+audit.json
+biome-report.txt
+biome_full_v2.txt
+coverage/
+duplication_report.md
+e2e/__snapshots__/
+lint.txt
+test-db-*.ts
+test-neon-http.ts
+typecheck*.txt

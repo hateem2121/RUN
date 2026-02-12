@@ -1815,6 +1815,11 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
   }
 
+  async createAuditLog(log: import("../../shared/schema.js").InsertAuditLog): Promise<AuditLog> {
+    const [created] = await db.insert(auditLogs).values(log).returning();
+    return created!;
+  }
+
   setAuditTrailEnabled(enabled: boolean): void {
     // Implementation would store this in a configuration system
     logger.debug(`Audit trail ${enabled ? "enabled" : "disabled"}`);

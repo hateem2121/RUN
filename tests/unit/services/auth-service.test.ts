@@ -85,12 +85,10 @@ describe("AuthService", () => {
 
       const req = {
         isAuthenticated: () => true,
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 
@@ -105,12 +103,10 @@ describe("AuthService", () => {
 
       const req = {
         isAuthenticated: () => false,
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 
@@ -133,12 +129,10 @@ describe("AuthService", () => {
       const req = {
         isAuthenticated: () => false,
         user: undefined,
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 
@@ -157,12 +151,10 @@ describe("AuthService", () => {
       const req = {
         isAuthenticated: () => true,
         user: { claims: undefined },
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 
@@ -180,12 +172,10 @@ describe("AuthService", () => {
       const req = {
         isAuthenticated: () => true,
         user: { claims: { sub: "user-123", email: "test@test.com" } },
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 
@@ -204,12 +194,10 @@ describe("AuthService", () => {
       const req = {
         isAuthenticated: () => true,
         user: { claims: { sub: "user-123", email: "test@test.com" } },
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express request
       } as any;
       const res = {
         status: vi.fn().mockReturnThis(),
         json: vi.fn(),
-        // biome-ignore lint/suspicious/noExplicitAny: Mocking express response
       } as any;
       const next = vi.fn();
 

@@ -167,6 +167,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
   return (
     <Link
       to={link.href}
+      prefetch="intent"
       className={cn(
         "group/sidebar flex items-center justify-start gap-2 py-2 transition-all duration-200",
         isActive

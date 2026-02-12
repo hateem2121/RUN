@@ -54,11 +54,11 @@
   },
   "bundlesize": [
     {
-      "path": "./client/build/client/assets/index-*.js",
+      "path": "./dist/public/assets/index-*.js",
       "maxSize": "150 kB"
     },
     {
-      "path": "./client/build/client/assets/root-*.css",
+      "path": "./dist/public/assets/root-*.css",
       "maxSize": "50 kB"
     }
   ],

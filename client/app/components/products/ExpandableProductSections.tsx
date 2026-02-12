@@ -4,6 +4,9 @@
  * Includes visual swatches for materials, colors, and variations
  */
 
+import type { Certificate } from "@shared/schema/catalog";
+import type { Fabric } from "@shared/schema/materials";
+import type { ProductDetail } from "@shared/schema/products";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, ChevronRight, Info, Layers, Package2, Palette, Shield } from "lucide-react";
 import { useState } from "react";
@@ -13,10 +16,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface ProductSectionProps {
-  // biome-ignore lint/suspicious/noExplicitAny: Product type is complex/legacy
-  product: any;
-  // biome-ignore lint/suspicious/noExplicitAny: Context type is legacy
-  context: any;
+  product: ProductDetail & { selectedFiberComposition?: string };
+  context: {
+    fabric?: Pick<Fabric, "description"> | null;
+    certificates?: Pick<Certificate, "id" | "name" | "description">[] | null;
+  };
   categoryColor?: string | undefined;
 }
 
@@ -349,8 +353,7 @@ export function ExpandableProductSections({
         >
           <div className="rounded-lg border bg-white p-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {/* biome-ignore lint/suspicious/noExplicitAny: Certificate type dynamic */}
-              {context.certificates.map((cert: any) => (
+              {context.certificates?.map((cert) => (
                 <div
                   key={cert.id}
                   className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-3"

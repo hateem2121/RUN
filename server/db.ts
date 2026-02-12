@@ -97,7 +97,6 @@ function wrapSql(
 
       return tracer.startActiveSpan("db.query", async (span) => {
         try {
-          // @ts-expect-error - arguments are passed through exactly
           const result = await Reflect.apply(target, thisArg, args);
           metrics.successfulQueries++;
           span.setAttribute("db.rows", Array.isArray(result) ? result.length : 0);

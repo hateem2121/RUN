@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   AmbientLight,

@@ -1,6 +1,6 @@
 /**
  * Offline Detection Hook
- * Provides real-time online/offline status using useSyncExternalStore for React 18+ compatibility
+ * Provides real-time online/offline status using useSyncExternalStore for React 19 compatibility
  */
 
 import { useSyncExternalStore } from "react";

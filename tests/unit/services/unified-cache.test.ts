@@ -42,7 +42,6 @@ vi.mock("../../../server/lib/resilience/circuit-breaker.js", () => ({
 vi.mock("@opentelemetry/api", () => ({
   trace: {
     getTracer: () => ({
-      // biome-ignore lint/suspicious/noExplicitAny: Mocking OpenTelemetry span
       startActiveSpan: (_name: string, fn: (span: any) => any) => {
         const mockSpan = {
           setAttribute: vi.fn(),

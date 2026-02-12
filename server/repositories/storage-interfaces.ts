@@ -583,6 +583,7 @@ export interface ISystemRepository {
   deleteStorageChangeLog(id: number): Promise<boolean>;
   getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]>;
   getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
+  createAuditLog(log: import("../../shared/schema.js").InsertAuditLog): Promise<AuditLog>;
   setAuditTrailEnabled(enabled: boolean): void;
   configureTrackedTables(tables: string[]): void;
   repairDatabaseIntegrity(): Promise<{ validated: number; repaired: number; removed: number }>;

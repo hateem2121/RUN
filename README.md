@@ -455,7 +455,7 @@ curl http://localhost:5002/admin/team
 
 ### API Documentation
 
-- **docs/API.md** - Complete API reference
+- **docs/api/README.md** - Complete API reference
 - **Swagger/OpenAPI** - Interactive API docs at `/api/docs`
 
 ---
@@ -864,7 +864,7 @@ See `docs/TROUBLESHOOTING.md` for solutions to common problems.
 
 **Remember:** This system uses **port 5002 exclusively**. Any deviation is a bug.
 
-**For questions about port configuration:** See `docs/PORT_5002_ARCHITECTURE.md`  
+**For questions about port configuration:** See `docs/core/port-5002-architecture.md`  
 **For development workflow:** See `WORKFLOW.md`  
 **For coding standards:** See `RULES.md`  
 **For AI agents:** See `AGENT.md`

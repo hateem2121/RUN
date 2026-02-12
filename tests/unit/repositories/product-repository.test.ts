@@ -92,7 +92,6 @@ describe("ProductRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getProducts(10, 0);
@@ -112,7 +111,6 @@ describe("ProductRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       await productRepository.getProducts();
@@ -128,7 +126,6 @@ describe("ProductRepository", () => {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue([mockProductDetail]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getProduct(1);
@@ -141,7 +138,6 @@ describe("ProductRepository", () => {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue([]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getProduct(999);
@@ -156,7 +152,6 @@ describe("ProductRepository", () => {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue([mockProductDetail]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getProductBySlug("test-product");
@@ -172,7 +167,6 @@ describe("ProductRepository", () => {
         values: vi.fn().mockReturnValue({
           returning: vi.fn().mockResolvedValue([newProduct]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.createProduct({
@@ -190,7 +184,6 @@ describe("ProductRepository", () => {
         values: vi.fn().mockReturnValue({
           returning: vi.fn().mockResolvedValue([]),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       await expect(
@@ -213,7 +206,6 @@ describe("ProductRepository", () => {
             returning: vi.fn().mockResolvedValue([updatedProduct]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.updateProduct(1, { name: "Updated Name" });
@@ -228,7 +220,6 @@ describe("ProductRepository", () => {
             returning: vi.fn().mockResolvedValue([]),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.updateProduct(999, { name: "Updated" });
@@ -250,7 +241,6 @@ describe("ProductRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.searchProducts("test", 10, 0);
@@ -273,7 +263,6 @@ describe("ProductRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getProductsByCategory(1, 10, 0);
@@ -293,7 +282,6 @@ describe("ProductRepository", () => {
             }),
           }),
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: Mock chain return type
       } as any);
 
       const result = await productRepository.getFeaturedProducts();
