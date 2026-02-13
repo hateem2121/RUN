@@ -11,20 +11,7 @@ import { logger } from "../lib/monitoring/logger.js";
 import { getSecret } from "../lib/secrets/secret-manager.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
-export interface SessionUser extends User {
-  claims: {
-    email: string | null;
-    sub: string;
-    isMock?: boolean;
-  };
-}
-
-interface CustomSessionData {
-  passport?: { user: SessionUser };
-  uaHash?: string;
-  lastRotated?: number;
-  [key: string]: unknown; // Allow other properties like cookie, id, etc.
-}
+import type { SessionUser } from "../types/session.js";
 
 export const AuthErrors = {
   SESSION_EXPIRED: {
@@ -86,6 +73,7 @@ export class AuthService {
         prefix: "sess:",
         ttl: sessionTtl / 1000,
       });
+      logger.info("[Auth] Redis Session Store initialized");
     } else {
       logger.warn("[Auth] Redis not configured - falling back to MemoryStore (Development Only)");
       // session() uses MemoryStore by default if store is undefined
@@ -135,74 +123,11 @@ export class AuthService {
 
     // P1 SECURITY: Force Session ID Rotation every 15 minutes
     // This effectively implements "Short-lived Access Token" behavior with Cookies
-    app.use((req, res, next) => {
-      if (!req.session || !req.user) {
-        return next();
-      }
+    app.use(this.sessionSecurityMiddleware);
 
-      const now = Date.now();
-      // Cast session to CustomSessionData to avoid TS errors
-      const sess = req.session as unknown as CustomSessionData;
-      const currentUA = req.headers["user-agent"] || "";
-
-      // P2 SECURITY: User Agent Binding - verify session wasn't stolen
-      // Hash the UA to avoid storing full strings and for privacy
-      const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
-
-      // On first request (or after session regeneration), store the UA hash
-      if (!sess.uaHash) {
-        sess.uaHash = uaHash;
-      } else if (sess.uaHash !== uaHash) {
-        // UA mismatch - potential session hijacking
-        logger.warn("[Auth] User agent mismatch detected, invalidating session", {
-          storedHash: sess.uaHash,
-          currentHash: uaHash,
-        });
-
-        return req.session.destroy((err) => {
-          if (err) {
-            logger.error("[Auth] Failed to destroy hijacked session:", err);
-          }
-          res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
-        });
-      }
-
-      let lastRotated = sess.lastRotated;
-      if (!lastRotated) {
-        sess.lastRotated = now;
-        lastRotated = now;
-      }
-      const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
-
-      if (now - lastRotated > ROTATION_INTERVAL) {
-        // Save old passport state and UA hash
-        const passportState = sess.passport;
-        const savedUaHash = sess.uaHash;
-
-        req.session.regenerate((err) => {
-          if (err) {
-            logger.error("[Auth] Session regeneration failed:", err);
-            return next(err);
-          }
-          // Restore passport state, UA hash, and update rotation timestamp
-          if (req.session) {
-            req.session.passport = passportState;
-            req.session.uaHash = savedUaHash;
-            req.session.lastRotated = now;
-
-            // Explicitly save to ensure the new SID is stored
-            req.session.save((err) => {
-              if (err) {
-                logger.error("[Auth] Failed to save regenerated session:", err);
-              }
-              next();
-            });
-          }
-        });
-      } else {
-        next();
-      }
-    });
+    if (process.env.NODE_ENV === "production" && process.env.ENABLE_MOCK_ADMIN === "true") {
+      throw new Error("CRITICAL SECURITY ERROR: ENABLE_MOCK_ADMIN must be false in production.");
+    }
 
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       if (process.env.NODE_ENV === "production") {
@@ -293,6 +218,85 @@ export class AuthService {
   }
 
   /**
+   * Middleware: Session Security (Rotation & UA Binding)
+   */
+  public sessionSecurityMiddleware: RequestHandler = (req, res, next) => {
+    if (!req.session || !req.user) {
+      return next();
+    }
+
+    const now = Date.now();
+    // No cast needed due to module augmentation in types/session.ts
+    const sess = req.session;
+    const currentUA = req.headers["user-agent"] || "";
+
+    // P2 SECURITY: User Agent Binding - verify session wasn't stolen
+    // Hash the UA to avoid storing full strings and for privacy
+    const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
+
+    // On first request (or after session regeneration), store the UA hash
+    if (!sess.uaHash) {
+      sess.uaHash = uaHash;
+    } else if (sess.uaHash !== uaHash) {
+      // UA mismatch - potential session hijacking
+      logger.warn("[Auth] User agent mismatch detected, invalidating session", {
+        storedHash: sess.uaHash,
+        currentHash: uaHash,
+      });
+
+      return req.session.destroy((err) => {
+        if (err) {
+          logger.error("[Auth] Failed to destroy hijacked session:", err);
+        }
+        res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
+      });
+    }
+
+    let lastRotated = sess.lastRotated;
+    if (!lastRotated) {
+      sess.lastRotated = now;
+      lastRotated = now;
+    }
+    const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
+
+    if (now - lastRotated > ROTATION_INTERVAL) {
+      // Save old passport state and UA hash
+      const passportState = sess.passport;
+      const savedUaHash = sess.uaHash;
+
+      req.session.regenerate((err) => {
+        if (err) {
+          logger.error("[Auth] Session regeneration failed:", err);
+          return next(err);
+        }
+
+        // Restore passport state, UA hash, and update rotation timestamp
+        if (req.session) {
+          if (passportState) {
+            req.session.passport = passportState;
+          }
+          if (savedUaHash) {
+            req.session.uaHash = savedUaHash;
+          }
+          req.session.lastRotated = now;
+
+          // Explicitly save to ensure the new SID is stored
+          req.session.save((err) => {
+            if (err) {
+              logger.error("[Auth] Failed to save regenerated session:", err);
+            }
+            next();
+          });
+        } else {
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  };
+
+  /**
    * Middleware: Require authenticated user
    */
   public isAuthenticated: RequestHandler = (req, res, next) => {
@@ -306,7 +310,7 @@ export class AuthService {
    * Middleware: Require admin role
    */
   public requireAdmin: RequestHandler = async (req, res, next) => {
-    const user = req.user as SessionUser | undefined;
+    const user = req.user;
 
     if (!req.isAuthenticated() || !user?.claims?.sub) {
       return res.status(AuthErrors.SESSION_EXPIRED.status).json({
@@ -339,6 +343,7 @@ export class AuthService {
       if (!dbUser) {
         return res.status(AuthErrors.USER_NOT_FOUND.status).json({
           error: AuthErrors.USER_NOT_FOUND,
+          status: 404,
         });
       }
 

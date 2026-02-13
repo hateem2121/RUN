@@ -147,7 +147,7 @@ export const insertFabricSchema = z.object({
   stretch: z.string().optional(),
   finishTreatment: z.string().optional(),
   finish: z.string().optional(),
-  properties: z.record(z.string(), z.any()).optional(),
+  properties: z.record(z.string(), z.unknown()).optional(),
   careInstructions: z.string().optional(),
   sustainabilityScore: z.union([z.number().int(), z.string()]).optional(),
   certificateIds: z.array(z.number()).optional(),
@@ -219,7 +219,7 @@ export const insertFiberSchema = z.object({
   description: z.string().optional(),
   sustainabilityScore: z.number().int().optional(),
   environmentalImpact: z.string().optional(),
-  properties: z.record(z.string(), z.any()).optional(),
+  properties: z.record(z.string(), z.unknown()).optional(),
   isActive: z.boolean().optional(),
 });
 

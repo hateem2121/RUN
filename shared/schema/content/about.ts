@@ -101,12 +101,16 @@ export const aboutMapLocations = pgTable(
     details: text(),
 
     isActive: boolean().default(true),
+    sortOrder: integer().default(0),
     createdAt: timestamp({
       mode: "date",
       precision: 3,
     }).defaultNow(),
   },
-  (table) => [index("about_map_locations_is_active_idx").on(table.isActive)],
+  (table) => [
+    index("about_map_locations_is_active_idx").on(table.isActive),
+    index("about_map_locations_sort_order_idx").on(table.sortOrder),
+  ],
 );
 
 // About Sections
@@ -228,8 +232,8 @@ export const selectAboutHeroSchema = createSelectSchema(aboutHero);
 export const insertAboutTimelineEntrySchema = createInsertSchema(aboutTimelineEntries);
 export const selectAboutTimelineEntrySchema = createSelectSchema(aboutTimelineEntries);
 
-export const insertAboutMapLocationSchema = createInsertSchema(aboutMapLocations);
 export const selectAboutMapLocationSchema = createSelectSchema(aboutMapLocations);
+export const insertAboutMapLocationSchema = createInsertSchema(aboutMapLocations);
 
 export const insertAboutSectionSchema = createInsertSchema(aboutSections);
 export const selectAboutSectionSchema = createSelectSchema(aboutSections);

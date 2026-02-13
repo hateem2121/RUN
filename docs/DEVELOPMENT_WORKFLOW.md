@@ -1,7 +1,7 @@
 # Development Workflow
 
 **Version:** 2.0  
-**Last Updated:** February 2026  
+**Last Updated:** February 13, 2026  
 **System:** RUN APPAREL CMS (Port 5002)
 
 ---
@@ -64,6 +64,12 @@ If you see a different port, **STOP** and fix the configuration.
 - [ ] All API calls target http://localhost:5002
 - [ ] Config files remain unchanged (or updated to 5002)
 
+## Database & Caching (Feb 2026 Standards)
+- [ ] Critical read paths utilize `UnifiedCache` (L1/L2)
+- [ ] Schema changes include appropriate B-Tree/GIST indexes
+- [ ] Invalidation events emitted for multi-region consistency
+- [ ] Slow query logging verified (<100ms targets)
+
 ## Files to Create/Modify
 - `path/to/file1.ts` - [changes]
 - `path/to/file2.tsx` - [changes]
@@ -79,6 +85,7 @@ If you see a different port, **STOP** and fix the configuration.
 - [ ] npm run test passes
 - [ ] Route mapping updated
 - [ ] Documentation updated
+- [ ] Cache hit rates verified with log audit
 ```
 
 #### Step 2.2: Implementation
@@ -120,6 +127,7 @@ npm run test
 □ Authentication works (for admin routes)
 □ No console errors
 □ No 404 errors in Network tab
+□ **Cache invalidation verified** (Update admin -> View public)
 ```
 
 **Automated Testing:**

@@ -36,6 +36,13 @@
       "when": 1770837780296,
       "tag": "0004_fancy_bromley",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770962380126,
+      "tag": "0005_curved_xavin",
+      "breakpoints": true
     }
   ]
 }

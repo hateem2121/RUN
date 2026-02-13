@@ -10,6 +10,7 @@ import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
+import type { SessionUser } from "../../types/session.js";
 import { validateIdParam } from "../../utils.js";
 
 const router = Router();
@@ -55,14 +56,12 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
   const result = await adminService.fixCorruptedMedia(timeout);
 
   // Audit Log
-  const user = req.user as any; // SessionUser
   if (result.fixedCount > 0) {
-    await getStorage().createAuditLog({
+    await adminService.logAudit({
       action: "UPDATE",
       tableName: "categories",
       recordId: "BULK_FIX",
-      userId: user?.id,
-      userEmail: user?.email,
+      user: req.user as SessionUser,
       userAgent: req.headers["user-agent"],
       ipAddress: req.ip,
       metadata: { operation: "fix-corrupted-media", result },
@@ -83,13 +82,11 @@ router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
   const report = await adminService.triggerCleanup(autoClean === true, timeout);
 
   // Audit Log
-  const user = req.user as any;
-  await getStorage().createAuditLog({
+  await adminService.logAudit({
     action: "DELETE",
     tableName: "storage",
     recordId: "CLEANUP",
-    userId: user?.id,
-    userEmail: user?.email,
+    user: req.user as SessionUser,
     userAgent: req.headers["user-agent"],
     ipAddress: req.ip,
     metadata: { operation: "cleanup", autoClean, report },
@@ -132,13 +129,11 @@ router.post("/enterprise/audit-config", authService.requireAdmin, async (req, re
   }
 
   // Audit Log
-  const user = req.user as any;
-  await getStorage().createAuditLog({
+  await adminService.logAudit({
     action: "UPDATE",
     tableName: "audit_configuration",
     recordId: "CONFIG",
-    userId: user?.id,
-    userEmail: user?.email,
+    user: req.user,
     userAgent: req.headers["user-agent"],
     ipAddress: req.ip,
     newValues: validatedData,
@@ -161,13 +156,11 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
   const result = await withTimeout(getStorage().restoreCategory(id), 5000, "Restore category");
 
   if (result) {
-    const user = req.user as any;
-    await getStorage().createAuditLog({
+    await adminService.logAudit({
       action: "RESTORE",
       tableName: "categories",
       recordId: id.toString(),
-      userId: user?.id,
-      userEmail: user?.email,
+      user: req.user,
       userAgent: req.headers["user-agent"],
       ipAddress: req.ip,
     });
@@ -188,13 +181,11 @@ router.post("/products/:id/restore", authService.requireAdmin, async (req, res) 
   const result = await withTimeout(getStorage().restoreProduct(id), 5000, "Restore product");
 
   if (result) {
-    const user = req.user as any;
-    await getStorage().createAuditLog({
+    await adminService.logAudit({
       action: "RESTORE",
       tableName: "products",
       recordId: id.toString(),
-      userId: user?.id,
-      userEmail: user?.email,
+      user: req.user,
       userAgent: req.headers["user-agent"],
       ipAddress: req.ip,
     });
@@ -215,13 +206,11 @@ router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, r
   const result = await withTimeout(getStorage().restoreMediaAsset(id), 5000, "Restore media asset");
 
   if (result) {
-    const user = req.user as any;
-    await getStorage().createAuditLog({
+    await adminService.logAudit({
       action: "RESTORE",
       tableName: "media_assets",
       recordId: id.toString(),
-      userId: user?.id,
-      userEmail: user?.email,
+      user: req.user,
       userAgent: req.headers["user-agent"],
       ipAddress: req.ip,
     });

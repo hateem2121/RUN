@@ -29,7 +29,6 @@ serverReady = (async () => {
     const httpServer = createServer(app);
 
     // 2.5. Serve Static Assets (Dev) - Bypass all middleware for performance/stability
-    // 2.5. Serve Static Assets (Dev) - Bypass all middleware for performance/stability
     if (process.env.NODE_ENV !== "production") {
       // Fixes ERR_EMPTY_RESPONSE for fonts/icons by serving them before any other logic
       // Note: process.cwd() is the 'server' directory, so we need to go up one level
@@ -59,13 +58,10 @@ serverReady = (async () => {
     setupErrorHandling(app);
 
     // 8. Start Background Services
-    // 8. Start Background Services
-    // Removed duplicate call here as it is called below with logs
 
     // 9. Start Server
     await startServices();
 
-    // 9. Start Server
     // 9. Start Server
     // PORT 5002 is strictly enforced for dev/prod, but can be overridden in tests to avoid EADDRINUSE
     const PORT =

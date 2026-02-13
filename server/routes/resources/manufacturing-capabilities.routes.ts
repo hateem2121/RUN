@@ -119,7 +119,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateManufacturingCapability(id, removeUndefined(validation.data)),
+      getStorage().updateManufacturingCapability(id, removeUndefined(validation.data) as any),
       10000,
       "Update manufacturing capability",
     );

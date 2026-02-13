@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, Folder, PanelLeftClose, Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,25 @@ import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 // Phase 1: Search and Filtering Interface (90 lines target)
 export default function MediaFiltersPanel() {
   const { state, updateState } = useMediaLibraryEnhanced();
+
+  // PHASE 3 OPTIMIZATION: Local state for search to prevent global context updates on every keystroke (INP fix)
+  const [localSearch, setLocalSearch] = useState(state.searchTerm);
+
+  // Sync local state when global state changes (e.g. valid clearSearch from elsewhere)
+  useEffect(() => {
+    setLocalSearch(state.searchTerm);
+  }, [state.searchTerm]);
+
+  // Debounced update to global state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== state.searchTerm) {
+        updateState("searchTerm", localSearch);
+      }
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timer);
+  }, [localSearch, state.searchTerm, updateState]);
 
   return (
     <div className="flex h-full flex-col">
@@ -45,8 +65,8 @@ export default function MediaFiltersPanel() {
             <Input
               id="filters-search"
               placeholder="Search media..."
-              value={state.searchTerm}
-              onChange={(e) => updateState("searchTerm", e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               className="pl-10"
             />
           </div>

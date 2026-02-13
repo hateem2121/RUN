@@ -1,6 +1,10 @@
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { logger } from "../monitoring/logger.js";
+import { isRedisEnabled, redis } from "./upstash-client.js";
 
 const CACHE_EVENT_KEY = "cache:invalidation:events";
+
+const tracer = trace.getTracer("cache-events");
 
 export interface CacheInvalidationEvent {
   pattern: string;
@@ -9,46 +13,57 @@ export interface CacheInvalidationEvent {
   expiresAt: number; // Timestamp when this event expires
 }
 
-// In-memory storage for events (replacing Replit KV)
-// Key: eventKey, Value: CacheInvalidationEvent
-const eventStore = new Map<string, CacheInvalidationEvent>();
+// In-memory storage for events (fallback)
+// Key: pattern, Value: CacheInvalidationEvent (only latest needed for functional parity with Redis logic optimization)
+const localEventStore = new Map<string, CacheInvalidationEvent>();
 
 /**
  * EVENT-DRIVEN CACHE INVALIDATION
- * Emits cache invalidation events using in-memory storage
- * Frontend polls these events to know when to refetch data
+ * Emits cache invalidation events using Redis for cross-instance propagation.
+ * Frontend polls these events to know when to refetch data.
  */
 export async function emitCacheInvalidation(
   pattern: string,
   reason: CacheInvalidationEvent["reason"],
 ): Promise<void> {
-  try {
-    const EVENT_TTL_MS = 5 * 60 * 1000; // 5 minutes
-    const now = Date.now();
+  return tracer.startActiveSpan("cache_events.emit", async (span) => {
+    span.setAttribute("cache.pattern", pattern);
+    span.setAttribute("cache.reason", reason);
 
-    const event: CacheInvalidationEvent = {
-      pattern,
-      timestamp: now,
-      reason,
-      expiresAt: now + EVENT_TTL_MS,
-    };
+    try {
+      const EVENT_TTL_SECONDS = 300; // 5 minutes
+      const now = Date.now();
 
-    const eventKey = `${CACHE_EVENT_KEY}:${pattern}:${event.timestamp}`;
+      const event: CacheInvalidationEvent = {
+        pattern,
+        timestamp: now,
+        reason,
+        expiresAt: now + EVENT_TTL_SECONDS * 1000,
+      };
 
-    // Store event
-    eventStore.set(eventKey, event);
+      // Log emission
+      logger.info(`[CacheEvents] Emitting invalidation event: ${pattern} (${reason})`);
 
-    // Cleanup expired events
-    for (const [key, storedEvent] of eventStore.entries()) {
-      if (storedEvent.expiresAt < now) {
-        eventStore.delete(key);
+      if (isRedisEnabled) {
+        const key = `cache:invalidation:latest:${pattern}`;
+        // Store latest event with TTL
+        await redis.set(key, JSON.stringify(event), { ex: EVENT_TTL_SECONDS });
+        span.setAttribute("cache.distributed", true);
+      } else {
+        // Local fallback
+        localEventStore.set(pattern, event);
+        span.setAttribute("cache.distributed", false);
       }
-    }
 
-    logger.info(`[CacheEvents] Emitted invalidation event: ${pattern} (${reason})`);
-  } catch (error) {
-    logger.warn("[CacheEvents] Failed to emit invalidation event:", error);
-  }
+      span.setStatus({ code: SpanStatusCode.OK });
+    } catch (error) {
+      logger.warn("[CacheEvents] Failed to emit invalidation event:", error);
+      span.recordException(error as Error);
+      span.setStatus({ code: SpanStatusCode.ERROR, message: (error as Error).message });
+    } finally {
+      span.end();
+    }
+  });
 }
 
 /**
@@ -57,26 +72,18 @@ export async function emitCacheInvalidation(
  */
 export async function getLatestInvalidationTime(pattern: string): Promise<number> {
   try {
-    const now = Date.now();
-    const validTimestamps: number[] = [];
-
-    // Filter events matching the pattern
-    for (const [key, event] of eventStore.entries()) {
-      if (key.includes(`${CACHE_EVENT_KEY}:${pattern}:`)) {
-        if (event.expiresAt > now) {
-          validTimestamps.push(event.timestamp);
-        } else {
-          // Cleanup expired
-          eventStore.delete(key);
-        }
+    if (isRedisEnabled) {
+      const key = `cache:invalidation:latest:${pattern}`;
+      const data = await redis.get<CacheInvalidationEvent>(key);
+      return data ? data.timestamp : 0;
+    } else {
+      // Local fallback
+      const event = localEventStore.get(pattern);
+      if (event && event.expiresAt > Date.now()) {
+        return event.timestamp;
       }
-    }
-
-    if (validTimestamps.length === 0) {
       return 0;
     }
-
-    return Math.max(...validTimestamps);
   } catch (error) {
     logger.error("[CacheEvents] Failed to get latest invalidation time:", error);
     return 0;

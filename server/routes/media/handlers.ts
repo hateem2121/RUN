@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { err, ok, type Result } from "neverthrow";
+import { z } from "zod";
 import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
@@ -129,7 +130,11 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
   );
 }
 
-export async function getMediaAssetById(req: Request, res: Response, next: NextFunction) {
+export async function getMediaAssetById(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
   res.locals._handled = true;
   const { id } = MediaIdParamSchema.parse(req.params);
 
@@ -221,7 +226,11 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
 // CRUD HANDLERS
 // ============================================================================
 
-export async function updateMediaAsset(req: Request, res: Response, next: NextFunction) {
+export async function updateMediaAsset(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const data = removeUndefined(MediaUpdateSchema.parse(req.body));
   const storage = getStorage();
@@ -243,7 +252,11 @@ export async function updateMediaAsset(req: Request, res: Response, next: NextFu
   return res.json(createSuccessResponse(updated));
 }
 
-export async function deleteMediaAsset(req: Request, res: Response, next: NextFunction) {
+export async function deleteMediaAsset(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const assetId = id;
   const storage = getStorage();
@@ -607,7 +620,11 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
 // CONTENT DELIVERY HANDLERS
 // ============================================================================
 
-export async function getMediaContent(req: Request, res: Response, next: NextFunction) {
+export async function getMediaContent(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { id } = MediaIdParamSchema.parse(req.params);
     const storage = getStorage();
@@ -664,7 +681,7 @@ export async function getMediaContent(req: Request, res: Response, next: NextFun
   }
 }
 
-export async function getThumbnail(req: Request, res: Response) {
+export async function getThumbnail(req: Request<{ id: string }>, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
   const asset = await storage.getMediaAsset(id);
@@ -882,7 +899,8 @@ export async function batchDeleteAssets(req: Request, res: Response, _next: Next
 }
 
 export async function batchGetContent(req: Request, res: Response, next: NextFunction) {
-  const { ids } = req.query as any;
+  const query = req.query as { ids?: string };
+  const { ids } = query;
 
   if (!ids) {
     return res.status(400).json(createErrorResponse("No IDs provided"));
@@ -1094,9 +1112,9 @@ export async function getCacheStats(_req: Request, res: Response) {
 // ============================================================================
 
 export async function clearMediaCache(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const asset = await storage.getMediaAsset(id);
 
   if (!asset?.storagePath) {
     return res.status(404).json(createErrorResponse("Asset not found"));
@@ -1258,7 +1276,7 @@ export async function uploadChunkRaw(req: Request, res: Response) {
 }
 
 export async function getUploadProgress(req: Request, res: Response) {
-  const { uploadId } = req.params as any;
+  const { uploadId } = req.params as { uploadId?: string };
   const progress = enhancedUploadService.getUploadProgress(uploadId!);
 
   if (progress.status === "not_found") {
@@ -1269,7 +1287,7 @@ export async function getUploadProgress(req: Request, res: Response) {
 }
 
 export async function cancelUpload(req: Request, res: Response) {
-  const { uploadId } = req.params as any;
+  const { uploadId } = req.params as { uploadId?: string };
   const deleted = enhancedUploadService.cancelUpload(uploadId!);
   return res.json(
     createSuccessResponse({
@@ -1332,7 +1350,7 @@ export async function uploadSingleFile(req: Request, res: Response) {
             }
           })()
       : undefined,
-  } as any;
+  } as UploadOptions;
 
   const asset = await processUploadedFile(req.file, options);
 
@@ -1360,12 +1378,12 @@ export async function uploadSingleFile(req: Request, res: Response) {
 // ============================================================================
 
 export async function getMediaContentWithPath(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   res.redirect(`/api/media/${id}/content`);
 }
 
 export async function getMediaGeometry(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   res.json(
     createSuccessResponse({
       id,
@@ -1375,15 +1393,15 @@ export async function getMediaGeometry(req: Request, res: Response) {
 }
 
 export async function getMediaRaw(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   res.redirect(`/api/media/${id}/content`);
 }
 
 export async function getMediaProxy(req: Request, res: Response) {
   res.locals._handled = true;
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const asset = await storage.getMediaAsset(id);
 
   if (!asset || !asset.storagePath) {
     return res.status(404).send("Media not found");
@@ -1404,9 +1422,9 @@ export async function getMediaProxy(req: Request, res: Response) {
 }
 
 export async function getThumbnailProxy(req: Request, res: Response) {
-  const { id } = req.params as any;
+  const { id } = MediaIdParamSchema.parse(req.params);
   const storage = getStorage();
-  const asset = await storage.getMediaAsset(parseInt(id!, 10));
+  const asset = await storage.getMediaAsset(id);
 
   if (!asset) {
     return res.status(404).send("Media not found");

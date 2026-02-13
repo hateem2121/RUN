@@ -170,7 +170,7 @@ export const insertSizeChartSchema = z.object({
   gender: z.string().optional(),
   type: z.string().optional(),
   region: z.string().optional(),
-  measurements: z.record(z.string(), z.any()).optional(),
+  measurements: z.record(z.string(), z.unknown()).optional(),
   sizeRange: z.array(z.string()).optional(),
   unit: z.string().optional(),
   fitNotes: z.string().optional(),
@@ -189,6 +189,6 @@ export const insertAccessorySchema = z.object({
   sku: z.string().optional(),
   price: z.number().or(z.string()).optional(),
   imageId: z.number().int().optional(),
-  specifications: z.record(z.string(), z.any()).optional(),
+  specifications: z.record(z.string(), z.unknown()).optional(),
   isActive: z.boolean().optional(),
 });

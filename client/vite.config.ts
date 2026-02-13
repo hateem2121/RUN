@@ -64,6 +64,13 @@ export default defineConfig(
           ? path.resolve(__dirname, "../dist/server")
           : path.resolve(__dirname, "../dist/public"),
         emptyOutDir: !isSsrBuild, // Only empty for client build
+        minify: "terser",
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+          },
+        },
         rollupOptions: {
           onwarn(warning: any, warn: any) {
             // Suppress "Can't resolve original location of error" source map warnings
@@ -76,37 +83,67 @@ export default defineConfig(
             manualChunks: isSsrBuild
               ? undefined
               : {
-                  "vendor-react": ["react", "react-dom", "@tanstack/react-query"],
-                  // OPTIMIZATION: Separate Admin Vendor Chunk
-                  "admin-vendor": [
-                    // Shared deps moved to respective vendor chunks to avoid duplication
-                    // "@radix-ui/react-select", -> vendor-ui
-                    // "react-hook-form", -> vendor-utils
-                    // "recharts", -> vendor-charts
-                    // "zod", -> vendor-utils
-
-                    // Unique to Admin?
-                    "@radix-ui/react-checkbox",
-                    "@radix-ui/react-context-menu",
-                    "@radix-ui/react-tabs",
-                    "@radix-ui/react-toast",
-                    "cmdk",
+                  "vendor-react": [
+                    "react",
+                    "react-dom",
+                    "@tanstack/react-query",
+                    "react-router",
+                    "react-router-dom",
                   ],
+
+                  // LOW-LEVEL UTILS: Must be loaded first, shared by everyone
+                  "vendor-utils": [
+                    "clsx",
+                    "tailwind-merge",
+                    "class-variance-authority",
+                    "date-fns",
+                    "zod",
+                    "react-hook-form",
+                  ],
+
+                  // UI LIBRARY: All Radix primitives to prevent circular deps
                   "vendor-ui": [
+                    "@radix-ui/react-accordion",
+                    "@radix-ui/react-alert-dialog",
+                    "@radix-ui/react-aspect-ratio",
+                    "@radix-ui/react-avatar",
+                    "@radix-ui/react-checkbox",
+                    "@radix-ui/react-collapsible",
+                    "@radix-ui/react-context-menu",
                     "@radix-ui/react-dialog",
                     "@radix-ui/react-dropdown-menu",
+                    "@radix-ui/react-hover-card",
+                    "@radix-ui/react-label",
+                    "@radix-ui/react-menubar",
+                    "@radix-ui/react-navigation-menu",
+                    "@radix-ui/react-popover",
+                    "@radix-ui/react-progress",
+                    "@radix-ui/react-radio-group",
+                    "@radix-ui/react-scroll-area",
                     "@radix-ui/react-select",
-
+                    "@radix-ui/react-separator",
+                    "@radix-ui/react-slider",
+                    "@radix-ui/react-slot",
+                    "@radix-ui/react-switch",
+                    "@radix-ui/react-tabs",
+                    "@radix-ui/react-toast",
+                    "@radix-ui/react-toggle",
+                    "@radix-ui/react-toggle-group",
+                    "@radix-ui/react-tooltip",
+                    "@radix-ui/react-visually-hidden",
+                    "cmdk",
+                    "vaul",
+                    "sonner",
                     "framer-motion",
-                    "clsx",
                   ],
+
+                  // HEAVY VENDORS: Isolated
                   "vendor-3d": ["three", "@google/model-viewer"],
-                  "vendor-utils": ["date-fns", "zod", "react-hook-form"],
-                  "vendor-schema": ["@run-remix/shared", "drizzle-orm", "drizzle-zod"], // Use package name
-                  "vendor-icons-lucide": ["lucide-react"],
-                  "vendor-icons-radix": ["@radix-ui/react-icons"],
-                  "vendor-icons": ["react-icons"],
                   "vendor-charts": ["recharts", "recharts-scale"],
+                  "vendor-icons": ["lucide-react", "@radix-ui/react-icons", "react-icons"],
+
+                  // SCHEMA
+                  "vendor-schema": ["@run-remix/shared", "drizzle-orm", "drizzle-zod"],
                 },
           },
         },
@@ -114,7 +151,7 @@ export default defineConfig(
       ssr: {
         // P0: Externalize backend dependencies
         external: ["pg", "drizzle-orm", "better-sqlite3", "fsevents"],
-        noExternal: ["react-helmet-async", "lucide-react", "recharts", "recharts-scale"],
+        noExternal: ["react-helmet-async", "recharts", "recharts-scale"], // REMOVED lucide-react from noExternal to allow tree-shaking if possible
       },
       server: {
         // FORENSIC: Dev server optimizations for faster module loading

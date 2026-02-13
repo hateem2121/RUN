@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.2.0] - Feb 13, 2026 (Database Optimization Phase 3)
+
+- **Feat:** Implemented Hybrid L1/L2 Caching architecture via `UnifiedCache` (In-memory + Redis).
+- **Feat:** Added Distributed Rate Limiting using Redis atomic counters with sliding-window support.
+- **Feat:** Added support for Event-Driven Cache Invalidation across multi-region Cloud Run instances.
+- **Perf:** Optimized Neon PostgreSQL connection pooling and added circuit breaker protection (`opossum`).
+- **Security:** Enhanced session management with distributed storage in Upstash Redis.
+- **Docs:** Updated `README.md` and `DEVELOPMENT_WORKFLOW.md` to reflect tiered caching and rate limiting standards.
+
 ## [v4.1.1] - Feb 5, 2026 (Documentation Cleanup)
 
 - **Docs:** Completed comprehensive audit of all documentation and scripts.

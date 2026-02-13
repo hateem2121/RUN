@@ -24,6 +24,11 @@ import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
+interface BatchResponse {
+  mediaAssets?: unknown[];
+  [key: string]: unknown;
+}
+
 // Cache TTL constants (in seconds)
 // PHASE 1 OPTIMIZATION: Increased from 900s (15min) to 7200s (120min)
 // Navigation and batch data changes infrequently (manual admin updates only)
@@ -44,7 +49,7 @@ router.get("/about-batch", async (_req, res) => {
   try {
     // CHUNK 3: Check cache first
     const cacheKey = CacheKeys.about.batch();
-    const cached = (await unifiedCache.get(cacheKey)) as any;
+    const cached = await unifiedCache.get<BatchResponse>(cacheKey);
 
     if (cached) {
       logger.info("[About] Returning cached batch data");
@@ -172,7 +177,7 @@ router.get("/technology-batch", async (_req, res) => {
   try {
     // Check if cached data exists and its age
     const cacheKey = CacheKeys.technology.batch();
-    const cached = (await unifiedCache.get(cacheKey)) as any;
+    const cached = await unifiedCache.get<BatchResponse>(cacheKey);
     // Standard cache check
     if (cached) {
       logger.info("[Technology] Returning cached batch data");

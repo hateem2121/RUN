@@ -1,6 +1,7 @@
 import {
   boolean,
   decimal,
+  index,
   integer,
   jsonb,
   serial,
@@ -24,41 +25,56 @@ import { pgTable } from "./common";
  * - TTFB (Time To First Byte)
  * - Custom component-level metrics
  */
-export const performanceMetrics = pgTable("performance_metrics", {
-  id: serial("id").primaryKey(),
-  metricType: varchar({ length: 100 }).notNull(),
-  componentName: varchar({ length: 255 }).notNull(),
-  component: varchar({ length: 255 }), // Additional component field for compatibility
-  value: decimal({ precision: 12, scale: 4 }).notNull(),
-  unit: varchar({ length: 20 }).notNull(),
-  metadata: jsonb().$type<Record<string, any>>(),
-  timestamp: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-});
+export const performanceMetrics = pgTable(
+  "performance_metrics",
+  {
+    id: serial("id").primaryKey(),
+    metricType: varchar({ length: 100 }).notNull(),
+    componentName: varchar({ length: 255 }).notNull(),
+    component: varchar({ length: 255 }), // Additional component field for compatibility
+    value: decimal({ precision: 12, scale: 4 }).notNull(),
+    unit: varchar({ length: 20 }).notNull(),
+    metadata: jsonb().$type<Record<string, any>>(),
+    timestamp: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+  },
+  (table) => [
+    index("metrics_type_time_idx").on(table.metricType, table.timestamp),
+    index("metrics_component_idx").on(table.componentName),
+    index("metrics_timestamp_idx").on(table.timestamp.desc()),
+  ],
+);
 
 // Animation Errors
-export const animationErrors = pgTable("animation_errors", {
-  id: serial("id").primaryKey(),
-  errorType: varchar({ length: 100 }).notNull(),
-  message: text().notNull(),
-  stackTrace: text("stack_trace"),
-  componentName: varchar({ length: 255 }),
-  url: varchar({ length: 500 }),
-  userAgent: varchar({ length: 500 }),
-  retryCount: integer("retry_count").default(0),
-  resolved: boolean().default(false),
-  resolvedAt: timestamp("resolved_at", { mode: "date", precision: 3 }),
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-});
+export const animationErrors = pgTable(
+  "animation_errors",
+  {
+    id: serial("id").primaryKey(),
+    errorType: varchar({ length: 100 }).notNull(),
+    message: text().notNull(),
+    stackTrace: text("stack_trace"),
+    componentName: varchar({ length: 255 }),
+    url: varchar({ length: 500 }),
+    userAgent: varchar({ length: 500 }),
+    retryCount: integer("retry_count").default(0),
+    resolved: boolean().default(false),
+    resolvedAt: timestamp("resolved_at", { mode: "date", precision: 3 }),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+  },
+  (table) => [
+    index("anim_errors_type_resolved_idx").on(table.errorType, table.resolved),
+    index("anim_errors_component_idx").on(table.componentName),
+  ],
+);
 
 // Logo Animation Settings
 export const logoAnimationSettings = pgTable("logo_animation_settings", {
@@ -120,18 +136,22 @@ export const storageAnalysisResults = pgTable("storage_analysis_results", {
 });
 
 // Storage Change Logs
-export const storageChangeLogs = pgTable("storage_change_logs", {
-  id: serial("id").primaryKey(),
-  timestamp: varchar({ length: 50 }).notNull(),
-  action: varchar({ length: 20 }).notNull(),
-  mediaId: integer("media_id").notNull(),
-  filename: varchar({ length: 255 }).notNull(),
-  size: integer(),
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-});
+export const storageChangeLogs = pgTable(
+  "storage_change_logs",
+  {
+    id: serial("id").primaryKey(),
+    timestamp: varchar({ length: 50 }).notNull(),
+    action: varchar({ length: 20 }).notNull(),
+    mediaId: integer("media_id").notNull(),
+    filename: varchar({ length: 255 }).notNull(),
+    size: integer(),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+  },
+  (table) => [index("storage_logs_action_time_idx").on(table.action, table.createdAt)],
+);
 
 /**
  * Audit Logs Table - Comprehensive Change Tracking
@@ -164,44 +184,54 @@ export const storageChangeLogs = pgTable("storage_change_logs", {
  * });
  * ```
  */
-export const auditLogs = pgTable("audit_logs", {
-  id: serial("id").primaryKey(),
+export const auditLogs = pgTable(
+  "audit_logs",
+  {
+    id: serial("id").primaryKey(),
 
-  // Action details
-  action: varchar({ length: 50 }).notNull(), // CREATE, UPDATE, DELETE, RESTORE, SOFT_DELETE
-  tableName: varchar({ length: 100 }).notNull(),
-  recordId: varchar({ length: 50 }).notNull(), // String to support various ID types
+    // Action details
+    action: varchar({ length: 50 }).notNull(), // CREATE, UPDATE, DELETE, RESTORE, SOFT_DELETE
+    tableName: varchar({ length: 100 }).notNull(),
+    recordId: varchar({ length: 50 }).notNull(), // String to support various ID types
 
-  // Change tracking
-  oldValues: jsonb().$type<Record<string, any>>(), // Previous state
-  newValues: jsonb().$type<Record<string, any>>(), // New state
-  changedFields: jsonb().$type<string[]>(), // List of modified fields
+    // Change tracking
+    oldValues: jsonb().$type<Record<string, any>>(), // Previous state
+    newValues: jsonb().$type<Record<string, any>>(), // New state
+    changedFields: jsonb().$type<string[]>(), // List of modified fields
 
-  // User attribution
-  userId: varchar({ length: 100 }), // User who made the change
-  userEmail: varchar({ length: 255 }), // Email for tracking
-  userRole: varchar({ length: 50 }), // Role at time of change
+    // User attribution
+    userId: varchar({ length: 100 }), // User who made the change
+    userEmail: varchar({ length: 255 }), // Email for tracking
+    userRole: varchar({ length: 50 }), // Role at time of change
 
-  // Request context
-  ipAddress: varchar({ length: 45 }), // IPv4/IPv6 support
-  userAgent: text(), // Browser/client information
-  sessionId: varchar({ length: 255 }), // Session tracking
+    // Request context
+    ipAddress: varchar({ length: 45 }), // IPv4/IPv6 support
+    userAgent: text(), // Browser/client information
+    sessionId: varchar({ length: 255 }), // Session tracking
 
-  // Additional metadata
-  reason: text(), // Optional reason for change
-  metadata: jsonb().$type<Record<string, any>>(), // Additional context
+    // Additional metadata
+    reason: text(), // Optional reason for change
+    metadata: jsonb().$type<Record<string, any>>(), // Additional context
 
-  // Timestamps
-  timestamp: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(), // Additional timestamp for compatibility
+    // Timestamps
+    timestamp: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(), // Additional timestamp for compatibility
 
-  // Enterprise features
-  complianceLevel: varchar({ length: 50 }).default("standard"), // standard, high, critical
-  retentionPeriod: integer().default(2555), // Days to retain (7 years default)
-});
+    // Enterprise features
+    complianceLevel: varchar({ length: 50 }).default("standard"), // standard, high, critical
+    retentionPeriod: integer().default(2555), // Days to retain (7 years default)
+  },
+  (table) => [
+    // CRITICAL INDEXES for Audit Log performance
+    index("audit_table_record_idx").on(table.tableName, table.recordId),
+    index("audit_user_idx").on(table.userId),
+    index("audit_timestamp_idx").on(table.timestamp.desc()),
+    index("audit_action_time_idx").on(table.action, table.timestamp.desc()),
+  ],
+);
 
 // Audit Configuration for system-wide audit settings
 export const auditConfiguration = pgTable("audit_configuration", {

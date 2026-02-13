@@ -3,7 +3,8 @@
  * Handles product and category operations with caching and performance monitoring
  */
 
-import { and, asc, desc, eq, inArray, isNull, like, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, like, lt, ne, or, sql } from "drizzle-orm"; // added lt
+
 import type {
   Accessory,
   Category,
@@ -155,6 +156,29 @@ export class ProductRepository {
   // =============================================================================
   // PRODUCT METHODS
   // =============================================================================
+
+  // EXPERIMENTAL: Cursor-based pagination for high-performance scrolling
+  // Avoids OFFSET performance penalty for deep pages
+  async getProductsCursor(
+    limit: number = 20,
+    cursor?: number, // using ID as cursor
+  ): Promise<ProductSummary[]> {
+    const conditions = [eq(products.isActive, true), isNull(products.deletedAt)];
+
+    if (cursor) {
+      // Fetch items with ID < cursor (assuming descending order)
+      conditions.push(lt(products.id, cursor));
+    }
+
+    return await dbCircuitBreaker.execute(async () => {
+      return await db
+        .select(PRODUCT_SUMMARY_COLUMNS)
+        .from(products)
+        .where(and(...conditions))
+        .orderBy(desc(products.id))
+        .limit(limit);
+    }, "getProductsCursor");
+  }
 
   async getProducts(limit: number = 100, offset: number = 0): Promise<ProductSummary[]> {
     const cacheKey = `products:${limit}:${offset}`;
@@ -429,11 +453,21 @@ export class ProductRepository {
       .offset(offset);
   }
 
+  // PREPARED STATEMENT for hot-path slug lookup
+  private getProductBySlugQuery = db
+    .select(PRODUCT_DETAIL_COLUMNS)
+    .from(products)
+    .where(
+      and(
+        eq(products.slug, sql.placeholder("slug")),
+        eq(products.isActive, true),
+        isNull(products.deletedAt),
+      ),
+    )
+    .prepare("get_product_by_slug");
+
   async getProductBySlug(slug: string): Promise<ProductDetail | undefined> {
-    const [product] = await db
-      .select(PRODUCT_DETAIL_COLUMNS)
-      .from(products)
-      .where(and(eq(products.slug, slug), eq(products.isActive, true), isNull(products.deletedAt)));
+    const [product] = await this.getProductBySlugQuery.execute({ slug });
     return product;
   }
 

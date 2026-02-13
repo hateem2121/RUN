@@ -9,8 +9,37 @@ import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import type { SessionUser } from "../../types/session.js";
 
 export class AdminService {
+  /**
+   * Centralized audit logging.
+   */
+  async logAudit(data: {
+    action: string;
+    tableName: string;
+    recordId: string;
+    user?: SessionUser | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    metadata?: Record<string, any>;
+    newValues?: Record<string, any>;
+    oldValues?: Record<string, any>;
+  }) {
+    return getStorage().createAuditLog({
+      action: data.action,
+      tableName: data.tableName,
+      recordId: data.recordId,
+      userId: data.user?.id,
+      userEmail: data.user?.email,
+      userAgent: data.userAgent,
+      ipAddress: data.ipAddress,
+      metadata: data.metadata,
+      newValues: data.newValues,
+      oldValues: data.oldValues,
+    });
+  }
+
   /**
    * Fetches and processes initial data for the admin products dashboard.
    * Eliminates the need for complex transformations in the route handler.

@@ -13,6 +13,7 @@ import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
+import type { SessionUser } from "../../types/session.js";
 import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
 
 const router = Router();
@@ -68,7 +69,7 @@ router.patch(
       }
 
       const hero = await withTimeout(
-        getStorage().updateManufacturingHero(removeUndefined(validation.data)),
+        getStorage().updateManufacturingHero(removeUndefined(validation.data) as any),
         10000,
         "Update manufacturing hero",
       );
@@ -82,7 +83,7 @@ router.patch(
       }
 
       // Audit Logging
-      const user = req.user as any;
+      const user = req.user as SessionUser | undefined;
       const adminId = user?.claims?.sub || "unknown";
       logger.info(`[Audit] Admin ${adminId} updated manufacturing hero`);
 

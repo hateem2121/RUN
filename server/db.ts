@@ -12,6 +12,7 @@ import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
+import { retryDbOperation } from "./lib/db/db-retry.js";
 import {
   ConflictError,
   DatabaseDeadlockError,
@@ -82,6 +83,7 @@ if (
  * Adds OpenTelemetry tracing and tracks internal query statistics
  * Ues Proxy to preserve tagged template behavior required by Neon driver 1.0+
  */
+
 function wrapSql(
   queryFn: NeonQueryFunction<boolean, boolean>,
 ): NeonQueryFunction<boolean, boolean> {
@@ -97,7 +99,21 @@ function wrapSql(
 
       return tracer.startActiveSpan("db.query", async (span) => {
         try {
-          const result = await Reflect.apply(target, thisArg, args);
+          // Verify we have a valid connection string before attempting query
+          if (!database.url && !isTestMode) {
+            throw new Error("Database URL is not configured");
+          }
+
+          // WRAPPED WITH RETRY LOGIC for resilience
+          const result = await retryDbOperation(
+            () => Reflect.apply(target, thisArg, args) as Promise<any>,
+            {
+              operationName: "db.query",
+              maxRetries: 3, // Retry 3 times on transient failures
+              backoffMs: 100, // Initial backoff 100ms
+            },
+          );
+
           metrics.successfulQueries++;
           span.setAttribute("db.rows", Array.isArray(result) ? result.length : 0);
           span.setStatus({ code: SpanStatusCode.OK });
@@ -112,7 +128,13 @@ function wrapSql(
           throw error;
         } finally {
           metrics.currentConcurrentQueries--;
-          metrics.totalQueryTimeMs += performance.now() - startTime;
+          const duration = performance.now() - startTime;
+          metrics.totalQueryTimeMs += duration;
+
+          if (duration > 100) {
+            logger.warn(`[Database] Slow query detected (${Math.round(duration)}ms)`);
+          }
+
           span.end();
         }
       });

@@ -2,6 +2,10 @@
 
 This document defines the 1:1 relationship between public frontend pages and admin console pages.
 
+> [!IMPORTANT]
+> **Source of Truth**: The actual route configuration is defined in `client/app/routes.ts` (React Router 7 Config).
+> The files in `client/app/routes/` are the route *modules* referenced by that configuration.
+
 ## Mapping Table
 
 | Public Route | Admin Route | Shared API Endpoint | Description |
@@ -32,12 +36,14 @@ This document defines the 1:1 relationship between public frontend pages and adm
 ### Example: Product Page Flow
 
 **Public View:**
+
 1. User visits: `http://localhost:5002/products/abc123`
 2. Frontend calls: `GET /api/products/abc123`
 3. API returns: Published product data
 4. Component: `<ProductDetailPage />`
 
 **Admin View:**
+
 1. Admin visits: `http://localhost:5002/admin/products/abc123/edit`
 2. Admin panel calls: `GET /admin/api/products/abc123` (authenticated)
 3. API returns: Full product data (including unpublished fields)

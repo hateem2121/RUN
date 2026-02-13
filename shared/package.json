@@ -2,8 +2,8 @@
   "name": "@run-remix/shared",
   "version": "1.0.0",
   "type": "module",
-  "main": "schema.ts",
-  "types": "schema.ts",
+  "main": "index.ts",
+  "types": "index.ts",
   "scripts": {
     "build": "tsc -b"
   },

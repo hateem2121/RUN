@@ -90,7 +90,7 @@ router.get("/debug/validation", async (_req, res) => {
       },
       {
         name: 'certificationIds: ["1"]',
-        payload: { certificationIds: ["1" as any], title: "Test" },
+        payload: { certificationIds: ["1" as unknown as number], title: "Test" },
       },
       { name: "no data wrapper", payload: { title: "Test", ctaText: "Click" } },
       { name: "with data wrapper", payload: { data: { title: "Test" } } },

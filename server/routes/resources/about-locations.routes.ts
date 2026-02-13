@@ -103,7 +103,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     };
 
     const newLocation = await withTimeout(
-      aboutService.createLocation(data as any),
+      aboutService.createLocation(data as z.infer<typeof insertAboutMapLocationSchema>),
       10000,
       "Create map location",
     );
@@ -218,7 +218,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     // Note: Implicitly relies on sortOrder existing or being ignored if missing
     const updates = await Promise.all(
       validation.data.entries.map(({ id, position }) =>
-        aboutService.updateLocation(id, { sortOrder: position } as any),
+        aboutService.updateLocation(id, { sortOrder: position }),
       ),
     );
 

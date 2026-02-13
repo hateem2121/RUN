@@ -41,7 +41,8 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
   fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
   onLoad,
   onError,
-  ...props
+  priority = false, // Destructure priority
+  ...rest // Rename to rest to avoid confusion
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentSrc, setCurrentSrc] = useState(srcProp);
@@ -85,9 +86,10 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
           setHasError(true);
           onError?.(e);
         }}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
         decoding="async"
-        {...props}
+        fetchPriority={priority ? "high" : "auto"}
+        {...rest}
       />
 
       {/* Skeleton / Pulse Overlay during loading */}

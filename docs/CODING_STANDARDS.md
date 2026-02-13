@@ -619,6 +619,28 @@ Violations of these rules will cause:
 
 ---
 
+---
+
+## RULE #16: Database & Caching Optimization
+
+### Caching Strategy (`UnifiedCache`)
+- **Tiered Approach**: ALWAYS use `UnifiedCache` for critical paths (Products, Categories, Navigation).
+- **L1 Access**: Local in-memory caching for high-frequency low-payload data.
+- **L2 Access**: Redis caching for distributed shared state/sessions.
+- **Event-Driven**: Repository methods MUST emit invalidation events on data mutation (`emitCacheInvalidation`).
+
+### Database Optimization
+- **Indexing**: Every new table/column used for filtering/sorting MUST have a corresponding index.
+- **Prepared Statements**: Use `db.execute(sql.prepare(...))` for high-frequency parameterized queries.
+- **Cursor Pagination**: Prefer cursor-based pagination (`getProductsCursor`) over offset for large datasets.
+- **Resilience**: Wrap critical I/O in `retryDbOperation` and `withCircuit`.
+
+### Monitoring & Observability
+- **Slow Query Logging**: Queries exceeding 100ms are automatically logged for audit.
+- **Tracing**: All database and cache operations must be instrumented with OpenTelemetry spans.
+
+---
+
 **Maintained by:** Development Team  
 **Review Cycle:** Quarterly  
 **Questions?** See `docs/TROUBLESHOOTING.md`

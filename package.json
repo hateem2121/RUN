@@ -65,8 +65,10 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@playwright/test": "^1.57.0",
+    "@size-limit/preset-app": "^12.0.0",
     "@stryker-mutator/core": "^9.5.1",
     "@stryker-mutator/vitest-runner": "^9.4.0",
+    "@tanstack/react-virtual": "^3.13.18",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/react": "^16.3.1",
     "@types/node": "^24.10.0",
@@ -83,9 +85,13 @@
     "markdown-link-check": "^3.14.2",
     "node-fetch": "^3.3.2",
     "playwright-core": "^1.57.0",
+    "sharp": "^0.34.5",
+    "svgo": "^4.0.0",
     "turbo": "^2.7.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.6"
+    "vite-bundle-visualizer": "^1.2.1",
+    "vitest": "^4.0.6",
+    "web-vitals": "^5.1.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

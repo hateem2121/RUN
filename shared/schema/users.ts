@@ -2,16 +2,25 @@ import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "./common";
 
 // =============================================================================
-// REPLIT AUTH TABLES
-// Reference: https://docs.replit.com/hosting/deployments/replit-authn
-// Cost Optimization: https://neon.tech/docs/guides/node
-// ✓ CHECKPOINT: PHASE-1-SCHEMA-ADDED
+// AUTHENTICATION TABLES
+// Primary Auth: Google OAuth (via Passport.js)
+// Reference: server/middleware/auth.ts
+// ✓ CHECKPOINT: PHASE-1-SCHEMA-UPDATED
 // =============================================================================
 
 /**
- * Users table (REQUIRED by Replit Auth)
- * Auto-populated via OpenID Connect on first login
- * Admin promotion must be done manually via SQL
+ * Users table
+ *
+ * @table users
+ * @description Stores user profiles authenticated via Google OAuth.
+ * Auto-populated on first login.
+ *
+ * @business
+ * - Users are created automatically upon first successful OAuth login.
+ * - `isAdmin` flag controls access to `/admin` routes and must be set manually via SQL or seed scripts.
+ * - `id` corresponds to the unique Google profile ID or generated user ID.
+ *
+ * @related `server/types/session.ts` - `SessionUser` interface mirrors this schema for request context.
  */
 export const users = pgTable("users", {
   id: varchar({ length: 255 }).primaryKey(), // Replit user ID (stable, unique)

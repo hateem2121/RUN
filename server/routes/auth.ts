@@ -2,7 +2,8 @@ import { type Response, Router } from "express";
 import passport from "passport";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { getStorage } from "../lib/storage-singleton.js";
-import { authService, type SessionUser } from "../services/auth-service.js";
+import { authService } from "../services/auth-service.js";
+import type { SessionUser } from "../types/session.js";
 
 const router = Router();
 

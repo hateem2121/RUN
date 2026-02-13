@@ -239,6 +239,9 @@ export class UnifiedCache {
   /**
    * Delete value from cache
    */
+  /**
+   * Delete value from cache
+   */
   async delete(key: string, _namespace?: string): Promise<void> {
     this.memoryCache.delete(key);
 
@@ -249,6 +252,13 @@ export class UnifiedCache {
     }
 
     this.stats.deletes++;
+
+    // Emit invalidation event
+    import("./cache-events.js").then(({ emitCacheInvalidation }) => {
+      emitCacheInvalidation(key, "delete").catch((err) =>
+        logger.warn("[UnifiedCache] Failed to emit invalidation event", err),
+      );
+    });
   }
 
   /**
@@ -266,6 +276,13 @@ export class UnifiedCache {
     }
 
     logger.info("[Cache] Cache cleared completely (L1 and L2)");
+
+    // Emit invalidation event for everything
+    import("./cache-events.js").then(({ emitCacheInvalidation }) => {
+      emitCacheInvalidation("*", "delete").catch((err) =>
+        logger.warn("[UnifiedCache] Failed to emit global invalidation event", err),
+      );
+    });
   }
 
   /**
@@ -311,6 +328,13 @@ export class UnifiedCache {
         logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
       }
     }
+
+    // Emit invalidation event
+    import("./cache-events.js").then(({ emitCacheInvalidation }) => {
+      emitCacheInvalidation(pattern, "delete").catch((err) =>
+        logger.warn("[UnifiedCache] Failed to emit invalidation event", err),
+      );
+    });
   }
 
   /**

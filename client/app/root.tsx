@@ -18,7 +18,9 @@ import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
+import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
+import { reportWebVitals } from "@/lib/web-vitals";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
@@ -46,6 +48,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+import { API_ROUTES } from "@run-remix/shared";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
@@ -58,24 +61,31 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const baseUrl = `${url.protocol}//${url.host}`;
 
   try {
+    // ... inside loader ...
+
     // Prefetch navigation items
     await queryClient.prefetchQuery({
-      queryKey: ["/api/navigation-items"],
-      queryFn: () => fetch(`${baseUrl}/api/navigation-items`).then((res) => res.json()),
+      queryKey: [API_ROUTES.CONTENT.NAVIGATION],
+      queryFn: () => fetch(`${baseUrl}${API_ROUTES.CONTENT.NAVIGATION}`).then((res) => res.json()),
     });
 
-    // Prefetch media items
-    await queryClient.prefetchQuery({
-      queryKey: MediaQueryKeys.list,
-      queryFn: () => fetch(`${baseUrl}/api/media`).then((res) => res.json()), // Fallback to list if specific endpoint not found
-    });
+    // Prefetch media items - Scoped to admin to reduce initial load
+    if (url.pathname.startsWith("/admin")) {
+      await queryClient.prefetchQuery({
+        queryKey: MediaQueryKeys.list,
+        queryFn: () => fetch(`${baseUrl}${API_ROUTES.MEDIA.ROOT}`).then((res) => res.json()),
+      });
+    }
 
     // Prefetch homepage batch data (Critical for Hero LCP)
     await queryClient.prefetchQuery({
       queryKey: ["homepage", "batch"],
-      queryFn: () => fetch(`${baseUrl}/api/homepage-batch`).then((res) => res.json()),
+      queryFn: () =>
+        fetch(`${baseUrl}${API_ROUTES.CONTENT.HOMEPAGE_BATCH}`).then((res) => res.json()),
     });
-  } catch (_error) {}
+  } catch (error) {
+    console.error("[RootLoader] Error prefetching data:", error);
+  }
 
   return { cspNonce, dehydratedState: dehydrate(queryClient) };
 }
@@ -87,6 +97,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // Create a client for the root (singleton on client, new on server per request)
   // using useState allows us to keep the client stable across re-renders
   const [queryClient] = useState(() => getQueryClient());
+
+  useEffect(() => {
+    reportWebVitals();
+  }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>

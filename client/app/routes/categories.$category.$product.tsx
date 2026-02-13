@@ -17,9 +17,9 @@ import {
 } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
 import { ProductBreadcrumbs } from "@/components/products/ProductBreadcrumbs";
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
-import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import {
@@ -119,7 +119,7 @@ function Gallery({ media, name }: GalleryProps) {
             {item.type === "model" ||
             item.mimeType?.includes("glb") ||
             item.mimeType?.includes("gltf") ? (
-              <UnifiedModelViewer
+              <LazyUnifiedModelViewer
                 asset={item}
                 className="h-full w-full"
                 showControls={true}

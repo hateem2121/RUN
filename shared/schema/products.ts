@@ -31,7 +31,13 @@ const ProductVideoSchema = z.object({
   type: z.string().optional(),
   thumbnail: z.string().optional(),
 });
-const ProductMetadataSchema = z.record(z.string(), z.any());
+const ProductMetadataSchema = z.object({
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  customFields: z
+    .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+    .optional(),
+});
 
 /**
  * Products Table - Core Product Catalog
@@ -134,6 +140,10 @@ export const products = pgTable(
     // Plan: Refactor to derive related products from categoryProducts context (see getProductByPath)
     // Once refactored, mark with @deprecated and set removal timeline
     // Related: server/lib/repositories/product-repository.ts line 680 (categoryProducts derivation)
+    /**
+     * @deprecated Use `productRelations` table instead.
+     * Legacy field for related products. content will be migrated to `product_relations`.
+     */
     relatedProductIds: jsonb().$type<number[]>(),
 
     // SEO

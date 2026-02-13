@@ -13,6 +13,13 @@ import {
   insertManufacturingQualitySchema,
 } from "../../shared/schema.js";
 
+export {
+  insertManufacturingCapabilitySchema,
+  insertManufacturingHeroSchema,
+  insertManufacturingProcessSchema,
+  insertManufacturingQualitySchema,
+};
+
 /**
  * Standard validation result type
  */

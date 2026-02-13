@@ -1,24 +1,24 @@
-import {
-  IconArrowLeft,
-  IconBolt,
-  IconBrandTabler,
-  IconCategory,
-  IconCertificate,
-  IconCpu,
-  IconDatabase,
-  IconFileFilled,
-  IconForms,
-  IconHome,
-  IconInbox,
-  IconLeaf,
-  IconMail,
-  IconNavigation,
-  IconPhoto,
-  IconRuler,
-  IconShirt,
-  IconTool,
-} from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Award,
+  Cpu,
+  Database,
+  FileText,
+  Home,
+  Image,
+  Inbox,
+  LayoutDashboard,
+  LayoutList,
+  Leaf,
+  Mail,
+  Navigation,
+  Ruler,
+  ScrollText,
+  Shirt,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 
@@ -31,7 +31,7 @@ interface AdminLayoutProps {
   currentModule?: string | undefined;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export function AdminLayout({ children }: AdminLayoutProps) {
   // const [_location] = useLocation();
 
   const links = [
@@ -39,7 +39,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Dashboard",
       href: "/admin",
       icon: (
-        <IconBrandTabler
+        <LayoutDashboard
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Categories",
       href: "/admin/categories",
       icon: (
-        <IconCategory
+        <LayoutList
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Products",
       href: "/admin/products",
       icon: (
-        <IconShirt
+        <Shirt
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -69,7 +69,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Fibers",
       href: "/admin/fibers",
       icon: (
-        <IconForms
+        <ScrollText
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -79,7 +79,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Fabrics",
       href: "/admin/fabrics",
       icon: (
-        <IconFileFilled
+        <FileText
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -89,7 +89,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Certificates",
       href: "/admin/certificates",
       icon: (
-        <IconCertificate
+        <Award
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -99,7 +99,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Size Charts",
       href: "/admin/size-charts",
       icon: (
-        <IconRuler
+        <Ruler
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -109,7 +109,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Accessories",
       href: "/admin/accessories",
       icon: (
-        <IconBolt
+        <Zap
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -119,7 +119,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Media",
       href: "/admin/media",
       icon: (
-        <IconPhoto
+        <Image
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -129,7 +129,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Storage Optimization",
       href: "/admin/storage-optimization",
       icon: (
-        <IconDatabase
+        <Database
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Navigation",
       href: "/admin/navigation",
       icon: (
-        <IconNavigation
+        <Navigation
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -151,7 +151,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Contact",
       href: "/admin/contact",
       icon: (
-        <IconMail
+        <Mail
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -161,7 +161,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Footer",
       href: "/admin/footer",
       icon: (
-        <IconForms
+        <ScrollText
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Inquiries",
       href: "/admin/inquiries",
       icon: (
-        <IconInbox
+        <Inbox
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -181,7 +181,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Blog",
       href: "/admin/blog",
       icon: (
-        <IconFileFilled
+        <FileText
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -191,7 +191,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Homepage",
       href: "/admin/homepage",
       icon: (
-        <IconHome
+        <Home
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -202,7 +202,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "About Us",
       href: "/admin/about",
       icon: (
-        <IconFileFilled
+        <FileText
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -212,7 +212,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Sustainability",
       href: "/admin/sustainability",
       icon: (
-        <IconLeaf
+        <Leaf
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -222,7 +222,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Manufacturing",
       href: "/admin/manufacturing",
       icon: (
-        <IconTool
+        <Wrench
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -232,7 +232,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Technology",
       href: "/admin/technology",
       icon: (
-        <IconCpu
+        <Cpu
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />
@@ -242,7 +242,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       label: "Back to Website",
       href: "/",
       icon: (
-        <IconArrowLeft
+        <ArrowLeft
           className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200"
           aria-hidden="true"
         />

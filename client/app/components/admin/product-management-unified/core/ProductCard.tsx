@@ -24,7 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { useToast } from "@/hooks/use-toast";
 import { RelationshipIndicators } from "./RelationshipIndicators";
 
@@ -157,7 +157,7 @@ export const ProductCard = memo(function ProductCard({
               {/* Media Preview */}
               <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {show3DPreview && model3D ? (
-                  <UnifiedModelViewer
+                  <LazyUnifiedModelViewer
                     asset={model3D}
                     className="h-full w-full"
                     config={{
@@ -313,7 +313,7 @@ export const ProductCard = memo(function ProductCard({
         {/* Media Display */}
         <div className="relative aspect-4/3 overflow-hidden bg-muted">
           {show3DPreview && model3D ? (
-            <UnifiedModelViewer
+            <LazyUnifiedModelViewer
               asset={model3D}
               className="h-full w-full"
               config={{

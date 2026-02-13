@@ -26,6 +26,15 @@ import { authService } from "../../services/auth-service.js";
 const tasksClient = new CloudTasksClient();
 const bigquery = new BigQuery();
 
+interface RecaptchaResponse {
+  success: boolean;
+  score: number;
+  action?: string;
+  challenge_ts?: string;
+  hostname?: string;
+  "error-codes"?: string[];
+}
+
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 const EMAIL_QUEUE = "email-queue";
@@ -102,7 +111,7 @@ router.post("/contact", async (req, res) => {
     try {
       const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${validatedData.recaptchaToken}`;
       const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
-      const recaptchaData = (await recaptchaRes.json()) as any;
+      const recaptchaData = (await recaptchaRes.json()) as RecaptchaResponse;
 
       if (!recaptchaData.success || recaptchaData.score < 0.5) {
         logger.warn(`[Contact] reCAPTCHA failed for ${req.ip}: score ${recaptchaData.score}`);
