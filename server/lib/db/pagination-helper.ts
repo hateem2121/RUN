@@ -1,4 +1,4 @@
-import { type AnyColumn, and, asc, desc, gt, lt, type SQL, sql } from "drizzle-orm";
+import { type AnyColumn, asc, desc, gt, lt, type SQL } from "drizzle-orm";
 import type { PgSelect } from "drizzle-orm/pg-core";
 
 export interface CursorPaginationOptions<TColumn extends AnyColumn> {

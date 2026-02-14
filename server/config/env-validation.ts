@@ -20,6 +20,9 @@ const envSchema = z.object({
   // JWT - reject known weak patterns in production
   JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
 
+  // Data Encryption
+  ENCRYPTION_KEY: z.string().min(32, "ENCRYPTION_KEY must be at least 32 characters"),
+
   // Google OAuth
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
   GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
@@ -58,6 +61,17 @@ export function validateEnv(): ValidatedEnv {
     }
     if (result.data.SESSION_SECRET.length < 48) {
       logger.warn("⚠️ SESSION_SECRET is short for production (recommended: 48+ chars)");
+    }
+
+    // SEC-F02: Critical Mock Admin Check
+    if (process.env.ENABLE_MOCK_ADMIN === "true") {
+      logger.error(
+        "❌ FATAL: ENABLE_MOCK_ADMIN is set to 'true' in PRODUCTION. This is a critical security violation.",
+      );
+      logger.error(
+        "❌ Server refused to start. Disable MOCK_ADMIN or switch to development environment.",
+      );
+      process.exit(1);
     }
   }
 

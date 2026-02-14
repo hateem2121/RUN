@@ -39,47 +39,41 @@ serverReady = (async () => {
     await setupMiddleware(app);
 
     // 4. Setup Health Checks (Must be before Routes/SSR to avoid shadowing)
-
     setupHealthChecks(app);
 
-    // 5. Setup Routes & SSR
-    await setupRoutes(app, httpServer);
-
-    // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
-    // Runs before error handlers but after API routes
-    if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
-      // In production, assets should be served via CDN (GCS/Cloud CDN).
-      // We only serve favicon/robots here if absolutely necessary, but generally disable static serving
-      // to reduce Node.js load.
-      // app.use(express.static(path.resolve(process.cwd(), "dist/public"), { index: false }));
-    }
-
-    // 7. Setup Error Handling (Must be last middleware)
-    setupErrorHandling(app);
-
-    // 8. Start Background Services
-
-    // 9. Start Server
-    await startServices();
-
-    // 9. Start Server
-    // PORT 5002 is strictly enforced for dev/prod, but can be overridden in tests to avoid EADDRINUSE
-    const PORT =
-      (process.env.NODE_ENV === "test" || process.env.VITEST === "true") &&
-      process.env.PORT !== undefined
-        ? parseInt(process.env.PORT, 10)
-        : 5002;
+    // 4.5. Start Server early (Async Bootstrap)
+    // Port 5002 is strictly enforced for dev/prod, but can be overridden in tests to avoid EADDRINUSE
+    const PORT = process.env.PORT !== undefined ? parseInt(process.env.PORT, 10) : 5002;
 
     // Only listen if we are not in a test environment, or if specifically forced (integration tests)
     const shouldListen = process.env.NODE_ENV !== "test" || process.env.FORCE_LISTEN === "true";
 
     if (shouldListen) {
       httpServer.listen(PORT, () => {
-        const address = httpServer.address();
-        const _actualPort = typeof address === "string" ? PORT : address?.port || PORT;
-        logger.info(`Environment: ${config.app.environment}`);
+        logger.info(
+          `[Startup] HTTP Listener open on port ${PORT}. Environment: ${config.app.environment}`,
+        );
+        logger.info("[Startup] Continuing async bootstrap (Routes, SSR, Services)...");
       });
     }
+
+    // 5. Setup Routes & SSR (Async - continues while server is listening)
+    await setupRoutes(app, httpServer);
+
+    // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
+    // ... continues ...
+    if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
+      // Serve static assets from the built client directory
+      const staticPath = path.resolve(process.cwd(), "../client/build/client");
+      app.use(express.static(staticPath, { index: false }));
+      logger.info(`[Production] Serving static assets from: ${staticPath}`);
+    }
+
+    // 7. Setup Error Handling (Must be last middleware)
+    setupErrorHandling(app);
+
+    // 8. Start Background Services
+    await startServices();
 
     // 10. Server Configuration
     httpServer.timeout = 120000;

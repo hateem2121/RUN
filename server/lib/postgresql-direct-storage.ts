@@ -24,7 +24,6 @@ import {
   sizeCharts,
   storageAnalysisResults,
   storageChangeLogs,
-  users,
 } from "../../shared/schema.js";
 import { db, sql as rawSql } from "../db.js";
 import type { IStorage } from "../storage.js";
@@ -38,6 +37,9 @@ import {
   ProductRepository,
   type ProductSummary,
 } from "./db/repositories/product-repository.js";
+import { UserRepository } from "./db/repositories/user-repository.js";
+import { WebhookRepository } from "./db/repositories/webhook-repository.js";
+import { decrypt } from "./encryption.js";
 import { logger } from "./monitoring/logger.js";
 import { appStorageService } from "./storage/app-service.js";
 
@@ -145,8 +147,10 @@ export class DirectPostgreSQLStorage implements IStorage {
   // PHASE 5: Repository instances for modular data access
   private readonly mediaRepository = new MediaRepository();
   private readonly productRepository = new ProductRepository();
+  private readonly userRepository = new UserRepository();
   private readonly miscRepository = new MiscRepository();
   private readonly pageContentRepository = new PageContentRepository();
+  private readonly webhookRepository = new WebhookRepository();
 
   // =============================================================================
   // TRANSACTION HELPER - CHUNK 1: DATA INTEGRITY
@@ -238,44 +242,24 @@ export class DirectPostgreSQLStorage implements IStorage {
 
   /**
    * Get user by user ID
-   * Cost Optimization: No cache needed - middleware caches admin status
    */
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    return await this.userRepository.getUser(id);
   }
 
   /**
-   * Upsert user on login (create or update profile data)
-   *
-   * IMPORTANT: isAdmin flag is NOT updated on conflict
-   * Admin promotion must be done manually via SQL to prevent privilege escalation
+   * Upsert user on login
    */
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values({
-        ...userData,
-        updatedAt: new Date(),
-      })
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          profileImageUrl: userData.profileImageUrl,
-          updatedAt: new Date(),
-          // NOTE: isAdmin NOT updated on conflict - must be set manually via SQL
-        },
-      })
-      .returning();
+    return await this.userRepository.upsertUser(userData);
+  }
 
-    if (!user) {
-      throw new Error("Failed to upsert user - no user returned from database");
-    }
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return await this.userRepository.getUserByEmail(email);
+  }
 
-    return user;
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    return await this.userRepository.updateUser(id, updates);
   }
 
   // =============================================================================
@@ -1804,15 +1788,17 @@ export class DirectPostgreSQLStorage implements IStorage {
   // =============================================================================
 
   async getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]> {
-    return await db
+    const logs = await db
       .select()
       .from(auditLogs)
       .where(and(eq(auditLogs.tableName, tableName), eq(auditLogs.recordId, recordId)))
       .orderBy(desc(auditLogs.createdAt));
+    return logs.map((log) => this.decryptAuditLog(log));
   }
 
   async getRecentAuditLogs(limit: number = 100): Promise<AuditLog[]> {
-    return await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
+    const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
+    return logs.map((log) => this.decryptAuditLog(log));
   }
 
   async createAuditLog(log: import("../../shared/schema.js").InsertAuditLog): Promise<AuditLog> {
@@ -1828,6 +1814,24 @@ export class DirectPostgreSQLStorage implements IStorage {
   configureTrackedTables(tables: string[]): void {
     // Implementation would store this in a configuration system
     logger.debug(`Audit trail configured for tables: ${tables.join(", ")}`);
+  }
+
+  private decryptAuditLog(log: AuditLog): AuditLog {
+    return {
+      ...log,
+      userEmail: log.userEmail ? this.safeDecrypt(log.userEmail) : log.userEmail,
+      ipAddress: log.ipAddress ? this.safeDecrypt(log.ipAddress) : log.ipAddress,
+      userAgent: log.userAgent ? this.safeDecrypt(log.userAgent) : log.userAgent,
+    };
+  }
+
+  private safeDecrypt(value: string): string {
+    if (!value || !value.includes(":")) return value;
+    try {
+      return decrypt(value);
+    } catch {
+      return value;
+    }
   }
 
   // Homepage Featured Products Settings - DELEGATED TO PageContentRepository
@@ -2322,5 +2326,33 @@ export class DirectPostgreSQLStorage implements IStorage {
       logger.error("[Health Check] Database health check failed:", error);
       return { healthy: false, latency };
     }
+  }
+
+  // =============================================================================
+  // WEBHOOK METHODS
+  // =============================================================================
+
+  async getWebhookSubscriptions(): Promise<any[]> {
+    return await this.webhookRepository.getWebhookSubscriptions();
+  }
+
+  async getWebhookSubscription(id: number): Promise<any | undefined> {
+    return await this.webhookRepository.getWebhookSubscription(id);
+  }
+
+  async createWebhookSubscription(subscription: any): Promise<any> {
+    return await this.webhookRepository.createWebhookSubscription(subscription);
+  }
+
+  async updateWebhookSubscription(id: number, subscription: any): Promise<any | undefined> {
+    return await this.webhookRepository.updateWebhookSubscription(id, subscription);
+  }
+
+  async deleteWebhookSubscription(id: number): Promise<boolean> {
+    return await this.webhookRepository.deleteWebhookSubscription(id);
+  }
+
+  async logWebhookDelivery(delivery: any): Promise<void> {
+    await this.webhookRepository.logWebhookDelivery(delivery);
   }
 }

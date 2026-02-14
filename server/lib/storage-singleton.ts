@@ -67,6 +67,15 @@ class StorageSingleton {
   }
 
   /**
+   * Set the singleton instance (useful for testing)
+   * @internal
+   */
+  public static setInstance(instance: IStorage): void {
+    logger.info("[StorageSingleton] Manually setting storage instance");
+    StorageSingleton.instance = instance;
+  }
+
+  /**
    * Get connection status information
    */
   public static getStatus(): {

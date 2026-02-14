@@ -201,12 +201,13 @@ export const auditLogs = pgTable(
 
     // User attribution
     userId: varchar({ length: 100 }), // User who made the change
-    userEmail: varchar({ length: 255 }), // Email for tracking
+    userEmail: varchar({ length: 255 }), // Encrypted (AES-256-GCM)
+    userEmailIndex: varchar({ length: 255 }), // Blind Index (HMAC-SHA256)
     userRole: varchar({ length: 50 }), // Role at time of change
 
     // Request context
-    ipAddress: varchar({ length: 45 }), // IPv4/IPv6 support
-    userAgent: text(), // Browser/client information
+    ipAddress: varchar({ length: 255 }), // Encrypted (expanded length for ciphertext)
+    userAgent: text(), // Encrypted
     sessionId: varchar({ length: 255 }), // Session tracking
 
     // Additional metadata
@@ -228,6 +229,7 @@ export const auditLogs = pgTable(
     // CRITICAL INDEXES for Audit Log performance
     index("audit_table_record_idx").on(table.tableName, table.recordId),
     index("audit_user_idx").on(table.userId),
+    index("audit_user_email_index_idx").on(table.userEmailIndex),
     index("audit_timestamp_idx").on(table.timestamp.desc()),
     index("audit_action_time_idx").on(table.action, table.timestamp.desc()),
   ],

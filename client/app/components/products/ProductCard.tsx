@@ -68,6 +68,7 @@ export const ProductCard = ({
                 onClick={() => onQuickViewClick(product)}
                 className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 data-testid={`quick-view-${product.id}`}
+                aria-label={`Quick view ${product.name}`}
               >
                 Quick View
               </button>

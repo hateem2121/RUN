@@ -1,2 +1,2 @@
-export * from "./routes";
-export * from "./schema";
+export * from "./routes.js";
+export * from "./schema.js";

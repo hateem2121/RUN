@@ -1038,7 +1038,7 @@ export class PageContentRepository {
   async getAboutTeamMessage(
     includeInactive: boolean = false,
   ): Promise<AboutTeamMessage | undefined> {
-    const cacheKey = includeInactive ? "about:team_message:all" : "about:team_message";
+    const _cacheKey = includeInactive ? "about:team_message:all" : "about:team_message";
 
     // ... cache logic omitted for brevity, assuming standard pattern ...
     // Since original didn't separate cache keys, I'll simplify.

@@ -202,8 +202,8 @@ export const DB_CIRCUIT_OPTIONS: Partial<CircuitBreakerConfig> = {
  * Lower timeout as Redis should be fast
  */
 export const REDIS_CIRCUIT_OPTIONS: Partial<CircuitBreakerConfig> = {
-  timeout: 3000, // 3s for Redis (relaxed for serverless network latency)
-  errorThresholdPercentage: 50,
+  timeout: 2000, // 2s for Redis
+  errorThresholdPercentage: 60,
   resetTimeout: 15000,
   volumeThreshold: 10,
 };

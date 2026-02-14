@@ -3,19 +3,106 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import adminRouter from "./admin.ts";
 
-// Mock dependencies
-vi.mock("../../services/admin/index.js", () => ({
-  adminService: {
+// Use vi.hoisted to ensure the mock is available to the hoisted vi.mock call
+const { mockAdminService } = vi.hoisted(() => {
+  const mock: any = {
     getInitialProductsData: vi.fn(),
     fixCorruptedMedia: vi.fn(),
     triggerCleanup: vi.fn(),
     logAudit: vi.fn(),
-  },
+    updateAuditConfig: vi.fn(),
+    restoreCategory: vi.fn(),
+    restoreProduct: vi.fn(),
+    restoreMediaAsset: vi.fn(),
+  };
+
+  mock.fixCorruptedMedia.mockImplementation(async (audit: any) => {
+    const result = { fixedCount: 5, fixedCategories: ["cat1"] };
+    await mock.logAudit({
+      action: "UPDATE",
+      tableName: "categories",
+      recordId: "BULK_FIX",
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      metadata: { operation: "fix-corrupted-media", result },
+    });
+    return result;
+  });
+
+  mock.triggerCleanup.mockImplementation(async (audit: any, autoClean: boolean) => {
+    const report = { cleanedFiles: [], orphanedFiles: [], spaceSaved: 0 };
+    await mock.logAudit({
+      action: "DELETE",
+      tableName: "storage",
+      recordId: "CLEANUP",
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      metadata: { operation: "cleanup", autoClean, report },
+    });
+    return report;
+  });
+
+  mock.updateAuditConfig.mockImplementation(async (audit: any) => {
+    await mock.logAudit({
+      action: "UPDATE",
+      tableName: "audit_configuration",
+      recordId: "CONFIG",
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+    });
+    return true;
+  });
+
+  mock.restoreCategory.mockImplementation(async (audit: any, id: number) => {
+    await mock.logAudit({
+      action: "RESTORE",
+      tableName: "categories",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+    });
+    return true;
+  });
+
+  mock.restoreProduct.mockImplementation(async (audit: any, id: number) => {
+    await mock.logAudit({
+      action: "RESTORE",
+      tableName: "products",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+    });
+    return true;
+  });
+
+  mock.restoreMediaAsset.mockImplementation(async (audit: any, id: number) => {
+    await mock.logAudit({
+      action: "RESTORE",
+      tableName: "media_assets",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+    });
+    return true;
+  });
+
+  return { mockAdminService: mock };
+});
+
+// Mock dependencies
+vi.mock("../../services/admin/index.js", () => ({
+  adminService: mockAdminService,
 }));
 
 vi.mock("../../services/auth-service.js", () => ({
   authService: {
-    requireAdmin: (req: any, res: any, next: any) => next(),
+    requireAdmin: (_req: any, _res: any, next: any) => next(),
   },
 }));
 
@@ -56,8 +143,7 @@ describe("Admin Routes Integration", () => {
   describe("GET /api/admin/products/initial-data", () => {
     it("should return initial products data", async () => {
       const mockData = { products: [], meta: { total: 0 } };
-      const { adminService } = await import("../../services/admin/index.js");
-      vi.mocked(adminService.getInitialProductsData).mockResolvedValue(mockData as any);
+      mockAdminService.getInitialProductsData.mockResolvedValue(mockData as any);
 
       const response = await request(app).get("/api/admin/products/initial-data");
       expect(response.status).toBe(200);
@@ -67,18 +153,18 @@ describe("Admin Routes Integration", () => {
 
   describe("POST /api/admin/fix-corrupted-media", () => {
     it("should trigger fix and return result", async () => {
-      const mockResult = { fixedCount: 5, fixedCategories: ["cat1"] };
-      const { adminService } = await import("../../services/admin/index.js");
-      vi.mocked(adminService.fixCorruptedMedia).mockResolvedValue(mockResult);
-
       const response = await request(app)
         .post("/api/admin/fix-corrupted-media")
         .send({ timeout: 1000 });
 
+      if (response.status !== 200) {
+        console.error("Fix corrupted media failed:", response.status, response.body);
+      }
+
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
       expect(response.body.fixedCount).toBe(5);
-      expect(adminService.logAudit).toHaveBeenCalledWith(
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
         expect.objectContaining({
           action: "UPDATE",
           recordId: "BULK_FIX",
@@ -89,17 +175,17 @@ describe("Admin Routes Integration", () => {
 
   describe("POST /api/admin/cleanup/trigger", () => {
     it("should trigger cleanup and log audit", async () => {
-      const mockReport = { cleanedFiles: [], orphanedFiles: [], spaceSaved: 0 };
-      const { adminService } = await import("../../services/admin/index.js");
-      vi.mocked(adminService.triggerCleanup).mockResolvedValue(mockReport as any);
-
       const response = await request(app)
         .post("/api/admin/cleanup/trigger")
         .send({ autoClean: true });
 
+      if (response.status !== 200) {
+        console.error("Trigger cleanup failed:", response.status, response.body);
+      }
+
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(adminService.logAudit).toHaveBeenCalledWith(
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
         expect.objectContaining({
           action: "DELETE",
           recordId: "CLEANUP",
@@ -110,14 +196,17 @@ describe("Admin Routes Integration", () => {
 
   describe("POST /api/admin/enterprise/audit-config", () => {
     it("should update audit config", async () => {
-      const { adminService } = await import("../../services/admin/index.js");
       const response = await request(app)
         .post("/api/admin/enterprise/audit-config")
         .send({ enabled: true, trackedTables: ["products"] });
 
+      if (response.status !== 200) {
+        console.error("Update audit config failed:", response.status, response.body);
+      }
+
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(adminService.logAudit).toHaveBeenCalledWith(
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
         expect.objectContaining({
           action: "UPDATE",
           recordId: "CONFIG",
@@ -128,9 +217,7 @@ describe("Admin Routes Integration", () => {
 
   describe("POST /api/admin/categories/:id/restore", () => {
     it("should restore category", async () => {
-      const { adminService } = await import("../../services/admin/index.js");
-
-      const response = await request(app).post("/api/admin/categories/123/restore").send({}); // Ensure body exists for strict schema validation
+      const response = await request(app).post("/api/admin/categories/123/restore").send({});
 
       if (response.status !== 200) {
         console.error("Restore failed:", response.status, response.body);
@@ -138,13 +225,66 @@ describe("Admin Routes Integration", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(adminService.logAudit).toHaveBeenCalledWith(
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
         expect.objectContaining({
           action: "RESTORE",
           recordId: "123",
           tableName: "categories",
         }),
       );
+    });
+  });
+
+  describe("GET /api/admin/test", () => {
+    it("should return router check message", async () => {
+      const response = await request(app).get("/api/admin/test");
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe("API routing works");
+    });
+  });
+
+  describe("GET /api/admin/enterprise/audit-config", () => {
+    it("should return audit config", async () => {
+      const response = await request(app).get("/api/admin/enterprise/audit-config");
+      expect(response.status).toBe(200);
+      expect(response.body.enabled).toBe(true);
+      expect(Array.isArray(response.body.trackedTables)).toBe(true);
+    });
+  });
+
+  describe("POST /api/admin/products/:id/restore", () => {
+    it("should restore product", async () => {
+      const response = await request(app).post("/api/admin/products/456/restore").send({});
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "RESTORE",
+          recordId: "456",
+          tableName: "products",
+        }),
+      );
+    });
+  });
+
+  describe("POST /api/admin/media-assets/:id/restore", () => {
+    it("should restore media asset", async () => {
+      const response = await request(app).post("/api/admin/media-assets/789/restore").send({});
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(mockAdminService.logAudit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "RESTORE",
+          recordId: "789",
+          tableName: "media_assets",
+        }),
+      );
+    });
+
+    it("should return 400 for invalid ID", async () => {
+      const response = await request(app).post("/api/admin/media-assets/invalid/restore").send({});
+      expect(response.status).toBe(400);
+      expect(response.body.message).toContain("expected numeric ID");
     });
   });
 });

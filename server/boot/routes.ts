@@ -1,11 +1,12 @@
-import { readFile } from "node:fs/promises";
 import type { Server } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Express } from "express";
+import { generateOpenApiSpec } from "../lib/api/openapi-generator.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { createSsrHandler } from "../lib/ssr/ssr-handler.js";
 import { registerRoutes } from "../routes/index.js";
+import openapiRouter from "../routes/v1/openapi.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,18 +22,12 @@ export async function setupRoutes(app: Express, httpServer: Server) {
   app.use("/docs", docsRouter);
 
   // API Documentation
-  app.get("/api-docs", async (_req, res) => {
-    try {
-      res.setHeader("Content-Type", "application/json");
-      res.setHeader("Cache-Control", "public, max-age=3600");
-      const specPath = path.resolve(__dirname, "../../openapi-spec.json");
-      const spec = JSON.parse(await readFile(specPath, "utf-8"));
-      res.json(spec);
-    } catch (err) {
-      logger.error("[API Docs] Failed to load OpenAPI spec:", err);
-      res.status(500).json({ error: "Failed to load API documentation" });
-    }
+  app.get("/api-docs", (_req, res) => {
+    const spec = generateOpenApiSpec();
+    res.json(spec);
   });
+
+  app.use("/api", openapiRouter);
 
   // P1 SECURITY: Block crawling of Admin/API routes
   app.get("/robots.txt", (_req, res) => {

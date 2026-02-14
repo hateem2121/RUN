@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface CustomSelectProps<T> {
+  id?: string;
   value: T | null;
   options: T[];
   onChange: (value: T) => void;
@@ -13,9 +14,12 @@ interface CustomSelectProps<T> {
   className?: string;
   "data-testid"?: string;
   "aria-describedby"?: string | undefined;
+  "aria-label"?: string | undefined;
+  "aria-labelledby"?: string | undefined;
 }
 
 export function CustomSelect<T>({
+  id,
   value,
   options,
   onChange,
@@ -27,6 +31,8 @@ export function CustomSelect<T>({
   className,
   "data-testid": testId,
   "aria-describedby": ariaDescribedBy,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -98,11 +104,14 @@ export function CustomSelect<T>({
   return (
     <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
       <button
+        id={id}
         type="button"
         data-testid={testId}
         onClick={() => setOpen(!open)}
         aria-haspopup="listbox"
-        aria-expanded={open}
+        aria-expanded={open ? "true" : "false"}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         className={cn(
           "relative w-full cursor-default rounded-lg border border-border bg-background p-3 text-left shadow-sm transition-colors",
@@ -127,12 +136,17 @@ export function CustomSelect<T>({
               />
             </div>
           )}
-          <ul ref={listRef} role="listbox" className="max-h-40 overflow-y-auto py-1">
+          <ul
+            ref={listRef}
+            role="listbox"
+            aria-labelledby={ariaLabelledBy || id}
+            className="max-h-40 overflow-y-auto py-1"
+          >
             {filtered.map((option, index) => (
               <li
                 key={getKey(option)}
                 role="option"
-                aria-selected={value === option}
+                aria-selected={value === option ? "true" : "false"}
                 onClick={() => {
                   onChange(option);
                   setOpen(false);
@@ -148,7 +162,13 @@ export function CustomSelect<T>({
               </li>
             ))}
             {filtered.length === 0 && (
-              <li className="px-3 py-2 text-muted-foreground text-sm">No results</li>
+              <li
+                role="option"
+                aria-disabled="true"
+                className="px-3 py-2 text-muted-foreground text-sm"
+              >
+                No results
+              </li>
             )}
           </ul>
         </div>

@@ -33,6 +33,11 @@ const sdk = new NodeSDK({
 });
 
 export const startOtel = () => {
+  // Allow explicit disable with ENABLE_OTEL=false even in production
+  if (process.env.ENABLE_OTEL === "false") {
+    return;
+  }
+
   if (process.env.ENABLE_OTEL === "true" || process.env.NODE_ENV === "production") {
     sdk.start();
 

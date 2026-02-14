@@ -19,6 +19,9 @@ interface StoredResponse {
   timestamp: string;
 }
 
+// In-memory fallback for development/testing
+const memoryStore = new Map<string, StoredResponse>();
+
 /**
  * Idempotency Middleware
  * Ensures safe retries for POST/PATCH operations
@@ -27,8 +30,8 @@ interface StoredResponse {
 export const idempotencyMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const idempotencyKey = req.headers["idempotency-key"] as string;
 
-  // Skip if no key or no Redis
-  if (!idempotencyKey || !redis) {
+  // Skip if no key
+  if (!idempotencyKey) {
     return next();
   }
 
@@ -41,7 +44,12 @@ export const idempotencyMiddleware = async (req: Request, res: Response, next: N
 
   try {
     // Check for existing response
-    const cached = await redis.get<StoredResponse>(key);
+    let cached: StoredResponse | undefined | null;
+    if (redis) {
+      cached = await redis.get<StoredResponse>(key);
+    } else {
+      cached = memoryStore.get(key);
+    }
 
     if (cached) {
       logger.info(`[Idempotency] Hit for key: ${idempotencyKey}`);
@@ -55,31 +63,32 @@ export const idempotencyMiddleware = async (req: Request, res: Response, next: N
         }
       });
       res.setHeader("X-Idempotency-Hit", "true");
+      res.setHeader("Idempotent-Replayed", "true"); // For compatibility with existing tests
 
       return res.json(cached.body);
     }
 
     // Hook response to cache it on finish
-    // We override json/send to capture the body
     const originalJson = res.json;
 
-    // Simple capture for JSON responses
     res.json = function (body) {
-      // Only cache successful or client error responses, not server crashes
-      if (res.statusCode < 500) {
-        // Fire and forget cache set
-        redis
-          ?.set(
-            key,
-            {
-              status: res.statusCode,
-              headers: res.getHeaders(),
-              body,
-              timestamp: new Date().toISOString(),
-            },
-            { ex: 86400 }, // 24 hours
-          )
-          .catch((err) => logger.error("[Idempotency] Failed to cache response", err));
+      if (res.statusCode < 500 && !req.path.includes("/api/health")) {
+        const entry: StoredResponse = {
+          status: res.statusCode,
+          headers: res.getHeaders(),
+          body,
+          timestamp: new Date().toISOString(),
+        };
+
+        if (redis) {
+          redis
+            .set(key, entry, { ex: 86400 })
+            .catch((err) => logger.error("[Idempotency] Failed to cache response", err));
+        } else {
+          memoryStore.set(key, entry);
+          // Auto-cleanup for memory store after 24h
+          setTimeout(() => memoryStore.delete(key), 86400 * 1000).unref();
+        }
       }
 
       return originalJson.call(this, body);
@@ -88,7 +97,34 @@ export const idempotencyMiddleware = async (req: Request, res: Response, next: N
     next();
   } catch (error) {
     logger.error("[Idempotency] Error processing key", error);
-    // Fail open: continue processing request if cache fails
     next();
   }
+};
+
+/**
+ * Utility to clear the idempotency store (for testing)
+ */
+export const clearIdempotencyStore = async () => {
+  if (redis) {
+    const keys = await redis.keys("idempotency:*");
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  }
+  memoryStore.clear();
+};
+
+/**
+ * Utility to get idempotency metrics (for monitoring/testing)
+ */
+export const getIdempotencyMetrics = () => {
+  const entries = Array.from(memoryStore.entries()).sort(
+    (a, b) => new Date(a[1].timestamp).getTime() - new Date(b[1].timestamp).getTime(),
+  );
+
+  return {
+    isRedisConnected: !!redis,
+    memoryEntriesCount: memoryStore.size,
+    oldestMemoryEntry: entries[0] ? entries[0][1] : null,
+  };
 };

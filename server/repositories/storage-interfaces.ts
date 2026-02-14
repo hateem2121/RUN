@@ -104,7 +104,9 @@ import type {
 // User Repository
 export interface IUserRepository {
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
 }
 
 // Category Repository
@@ -556,6 +558,15 @@ export interface ITechnologyRepository {
   createTechnologyCta(cta: InsertTechnologyCta): Promise<TechnologyCta>;
 }
 
+export interface IWebhookRepository {
+  getWebhookSubscriptions(): Promise<any[]>;
+  getWebhookSubscription(id: number): Promise<any | undefined>;
+  createWebhookSubscription(subscription: any): Promise<any>;
+  updateWebhookSubscription(id: number, subscription: any): Promise<any | undefined>;
+  deleteWebhookSubscription(id: number): Promise<boolean>;
+  logWebhookDelivery(delivery: any): Promise<void>;
+}
+
 // System, Metrics & Audit
 export interface ISystemRepository {
   getAnimationErrors(): Promise<AnimationError[]>;
@@ -590,3 +601,23 @@ export interface ISystemRepository {
   cleanupAllCorruptEntries(): Promise<{ totalCleaned: number; results: Record<string, unknown> }>;
   checkDatabaseHealth(): Promise<{ healthy: boolean; latency: number }>;
 }
+
+export interface IStorage
+  extends IUserRepository,
+    ICategoryRepository,
+    IFiberRepository,
+    IFabricRepository,
+    ICertificateRepository,
+    ISizeChartRepository,
+    IAccessoryRepository,
+    IMediaRepository,
+    IProductRepository,
+    INavigationRepository,
+    IContactRepository,
+    IInquiryRepository,
+    IContentRepository,
+    ISustainabilityRepository,
+    IManufacturingRepository,
+    ITechnologyRepository,
+    IWebhookRepository,
+    ISystemRepository {}

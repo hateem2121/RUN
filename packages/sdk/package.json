@@ -1,0 +1,27 @@
+{
+  "name": "@run-remix/sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Official TypeScript SDK for RUN Remix CMS",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "generate": "npx openapi-typescript ../../openapi-spec.json -o src/generated/schema.d.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0",
+    "openapi-typescript": "^7.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

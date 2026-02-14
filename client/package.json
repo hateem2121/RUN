@@ -99,7 +99,7 @@
   },
   "scripts": {
     "dev": "vite --port 5002",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && vite build --ssr",
     "build:analyze": "VITE_ANALYZE=true tsc -b && vite build",
     "preview": "vite preview",
     "lint:html": "html-validate \"index.html\" \"public/**/*.html\" \"src/**/*.html\""

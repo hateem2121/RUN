@@ -107,6 +107,8 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             playsInline
             onMouseEnter={(e) => e.currentTarget.play()}
             onMouseLeave={(e) => e.currentTarget.pause()}
+            aria-label={`${productName} product video`}
+            title={`${productName} product video`}
           />
           <div className="absolute top-2 right-2 rounded bg-black/70 p-1 text-white">
             <Play className="h-3 w-3" />

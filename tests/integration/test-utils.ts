@@ -23,9 +23,14 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     DATABASE_URL: process.env.DATABASE_URL || "postgres://localhost:5432/test",
     TEST_REAL_DB: process.env.TEST_REAL_DB || "false",
     SESSION_SECRET: "test-session-secret-12345-long-enough", // 32+ chars
-    JWT_SECRET: "test-jwt-secret-12345",
+    JWT_SECRET: "test-jwt-secret-12345-long-enough-32-chars", // Must be 32+ chars
+    ENCRYPTION_KEY: "test-encryption-key-32-chars-long!!!",
+    GOOGLE_CLIENT_ID: "test-google-id",
+    GOOGLE_CLIENT_SECRET: "test-google-secret",
+    INITIAL_ADMIN_EMAIL: "admin@wear-run.com",
     FORCE_LISTEN: "true",
     VITEST: "true", // Ensure spawned server knows it's in test mode
+    SKIP_SECRET_MANAGER: "true",
     ...env,
   };
   const serverProcess = spawn(TSX_PATH, [SERVER_PATH], {
@@ -72,7 +77,9 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
       process.stderr.write(data); // Debug: Pipe server stdout to test runner stderr
       const str = data.toString();
       // console.log("[Server]", str); // Optional debug
-      const match = str.match(/Server running on port (\d+)/);
+      const match =
+        str.match(/HTTP Listener open on port (\d+)/i) ||
+        str.match(/Server running on port (\d+)/i);
       if (match) {
         const port = match[1];
         baseUrl = `http://localhost:${port}`;

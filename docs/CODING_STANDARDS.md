@@ -300,21 +300,26 @@ Update `shared/constants/routeMapping.ts`:
 ## RULE #8: Testing Requirements
 
 ### Unit Tests (Vitest)
-- Every service function must have tests
-- Minimum 80% coverage for services
+- Every service function MUST have tests in `server/services/*.test.ts`.
+- Minimum 80% coverage for services.
 
-### Integration Tests
-- API endpoints must have integration tests
-- Test both public and admin endpoints
+### Integration Tests (MemoryStorage)
+- **Mandatory**: Every API endpoint and mutation flow MUST have an integration test.
+- **Statefulness**: Use `MemoryStorage` for multi-step verification.
+- **RBAC**: Every mutation endpoint MUST verify admin-only access using `createMockSessionUser`.
+- **v2 Preferred**: Prefer the `v2` testing pattern implemented in `server/tests/integration/*.integration.test.ts`.
 
-### E2E Tests (Optional but Recommended)
-- Critical user flows (login, checkout, etc.)
+### E2E Tests (Recommended)
+- Critical user flows (login, media upload, product configuration) using Playwright.
 
 **Run tests before committing:**
 
 ```bash
+# Run all vitest suites
 npm run test
-npm run test:coverage
+
+# Run preferred integration suites
+npm run test server/tests/integration/admin-v2.integration.test.ts
 ```
 
 ---

@@ -37,6 +37,7 @@ Object.defineProperty(window, "WebGLRenderingContext", {
 process.env.DATABASE_URL = process.env.DATABASE_URL || "postgres://localhost:5432/test";
 process.env.SESSION_SECRET = process.env.SESSION_SECRET || "test-session-secret-12345";
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret-12345";
+process.env.ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "test-encryption-key-32-chars-long!!!";
 process.env.NODE_ENV = "test";
 process.env.ENABLE_DEBUG_ROUTES = "true";
 process.env.DEBUG_ROUTE_TOKEN = "test-token-123";

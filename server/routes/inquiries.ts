@@ -44,6 +44,10 @@ router.post("/inquiries", async (req, res) => {
 
     const inquiry = await storage.createInquiry(inquiryData);
 
+    // Trigger Webhook
+    const { webhookService } = await import("../services/webhook-service.js");
+    webhookService.trigger("inquiry.created", inquiry);
+
     logger.info(
       `[Inquiries] Created new inquiry #${inquiry.id} from ${inquiry.email} (Source: ${inquiryData.source})`,
     );

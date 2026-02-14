@@ -14,7 +14,7 @@ import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
-import { authService } from "../../services/auth-service.js";
+import { webhookService } from "../../services/webhook-service.js";
 import {
   checkRateLimit,
   shouldBypassCache,
@@ -33,16 +33,84 @@ registry.registerPath({
   method: "get",
   path: "/products",
   summary: "List all products",
-  description: "Retrieve products with pagination, filtering, and search.",
+  description:
+    "Retrieve products with pagination, filtering, and search. Supports bulk retrieval for B2B integrations.",
   tags: ["Products"],
   parameters: [
-    { name: "category", in: "query", schema: { type: "integer" } },
-    { name: "search", in: "query", schema: { type: "string" } },
-    { name: "page", in: "query", schema: { type: "integer", default: 1 } },
-    { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
+    {
+      name: "category",
+      in: "query",
+      schema: { type: "integer" },
+      description: "Filter by category ID",
+    },
+    { name: "tag", in: "query", schema: { type: "string" }, description: "Filter by tag" },
+    {
+      name: "search",
+      in: "query",
+      schema: { type: "string" },
+      description: "Search by name or SKU",
+    },
+    {
+      name: "featured",
+      in: "query",
+      schema: { type: "string", enum: ["true", "false"] },
+      description: "Filter featured products",
+    },
+    {
+      name: "active",
+      in: "query",
+      schema: { type: "string", enum: ["true", "false"] },
+      description: "Filter active products",
+    },
+    {
+      name: "page",
+      in: "query",
+      schema: { type: "integer", default: 1 },
+      description: "Page number",
+    },
+    {
+      name: "limit",
+      in: "query",
+      schema: { type: "integer", default: 20 },
+      description: "Items per page (max 100)",
+    },
   ],
   responses: {
-    200: jsonResponse(z.array(z.any()), "List of products with pagination metadata"),
+    200: jsonResponse(
+      z.object({
+        data: z.array(z.any()),
+        pagination: z.object({
+          page: z.number(),
+          limit: z.number(),
+          total: z.number(),
+          pages: z.number(),
+          hasMore: z.boolean(),
+        }),
+      }),
+      "Paginated list of products",
+    ),
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/products/by-path",
+  summary: "Get product by URL path",
+  description:
+    "Resolve a hierarchical URL path to a product with its full context (category, breadcrumbs, etc.).",
+  tags: ["Products"],
+  parameters: [
+    {
+      name: "path",
+      in: "query",
+      required: true,
+      schema: { type: "string" },
+      description: "Hierarchical path (e.g., '/activewear/tops/performance-tee')",
+    },
+  ],
+  responses: {
+    200: jsonResponse(z.any(), "The product with its full context"),
+    404: { description: "Product not found for the given path" },
   },
 });
 
@@ -50,10 +118,124 @@ registry.registerPath({
   method: "get",
   path: "/products/{id}",
   summary: "Get product by ID",
+  description:
+    "Retrieve full details for a specific product including technical specs and media references.",
   tags: ["Products"],
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: { type: "integer" },
+      description: "Product ID",
+    },
+  ],
+  responses: {
+    200: jsonResponse(z.any(), "Complete product details"),
+    404: { description: "Product not found" },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/products/{id}/3d-model",
+  summary: "Get product 3D model metadata",
+  description: "Retrieve GLB/GLTF model metadata for interactive 3D visualization.",
+  tags: ["Products"],
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: { type: "integer" },
+      description: "Product ID",
+    },
+  ],
+  responses: {
+    200: jsonResponse(z.any(), "3D model metadata"),
+    404: { description: "3D model not found for this product" },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/products",
+  summary: "Create a new product",
+  description: "Add a new product to the catalog. Admin role required.",
+  tags: ["Products"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: insertProductSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    201: jsonResponse(z.any(), "The created product"),
+    400: { description: "Validation error" },
+    401: { description: "Unauthorized" },
+  },
+});
+
+registry.registerPath({
+  method: "put",
+  path: "/products/{id}",
+  summary: "Update product (Full)",
+  description: "Replace a product's entire configuration. Admin role required.",
+  tags: ["Products"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: insertProductSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: jsonResponse(z.any(), "The updated product"),
+    404: { description: "Product not found" },
+  },
+});
+
+registry.registerPath({
+  method: "patch",
+  path: "/products/{id}",
+  summary: "Update product (Partial)",
+  description: "Partially update specific fields of a product. Admin role required.",
+  tags: ["Products"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: insertProductSchema.partial(),
+        },
+      },
+    },
+  },
+  responses: {
+    200: jsonResponse(z.any(), "The partially updated product"),
+    404: { description: "Product not found" },
+  },
+});
+
+registry.registerPath({
+  method: "delete",
+  path: "/products/{id}",
+  summary: "Delete product",
+  description: "Soft-delete a product from the catalog. Admin role required.",
+  tags: ["Products"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
   parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
   responses: {
-    200: jsonResponse(z.any(), "The product object"),
+    204: { description: "Product deleted successfully" },
     404: { description: "Product not found" },
   },
 });
@@ -305,55 +487,57 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
   }
 });
 
+import { requireRole } from "../../middleware/rbac.js";
+
 // POST /api/products - Create new product
-router.post(
-  "/products",
-  authService.requireAdmin,
-  async (req, res): Promise<undefined | Response> => {
-    try {
-      // Rate limiting check
-      if (!checkRateLimit()) {
-        return res.status(429).json({
-          success: false,
-          error: { message: "Too many requests. Please try again later." },
-        });
-      }
-
-      // Enhanced input validation and sanitization
-      if (req.body.name) {
-        req.body.name = validateAndSanitizeInput(req.body.name);
-      }
-      if (req.body.description) {
-        req.body.description = validateAndSanitizeInput(req.body.description);
-      }
-
-      const validatedData = insertProductSchema.parse(req.body);
-      const product = await withTimeout(
-        retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
-          operationName: "Create product",
-        }),
-        10000,
-        "Create product",
-      );
-      return res.status(201).json(product);
-    } catch (error: unknown) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            message: "Validation error",
-            details: error.issues,
-          },
-        });
-      }
-      logger.error("CREATE PRODUCT error:", error);
-      return res.status(500).json({
+router.post("/products", requireRole("admin"), async (req, res): Promise<undefined | Response> => {
+  try {
+    // Rate limiting check
+    if (!checkRateLimit()) {
+      return res.status(429).json({
         success: false,
-        error: { message: "Failed to create product" },
+        error: { message: "Too many requests. Please try again later." },
       });
     }
-  },
-);
+
+    // Enhanced input validation and sanitization
+    if (req.body.name) {
+      req.body.name = validateAndSanitizeInput(req.body.name);
+    }
+    if (req.body.description) {
+      req.body.description = validateAndSanitizeInput(req.body.description);
+    }
+
+    const validatedData = insertProductSchema.parse(req.body);
+    const product = await withTimeout(
+      retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
+        operationName: "Create product",
+      }),
+      10000,
+      "Create product",
+    );
+
+    // Trigger Webhook
+    webhookService.trigger("product.created", product);
+
+    return res.status(201).json(product);
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: "Validation error",
+          details: error.issues,
+        },
+      });
+    }
+    logger.error("CREATE PRODUCT error:", error);
+    return res.status(500).json({
+      success: false,
+      error: { message: "Failed to create product" },
+    });
+  }
+});
 
 // Shared update handler for both PUT and PATCH
 const updateProductHandler = async (req: Request, res: Response): Promise<undefined | Response> => {
@@ -377,6 +561,10 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
         error: { message: "Product not found" },
       });
     }
+
+    // Trigger Webhook
+    webhookService.trigger("product.updated", product);
+
     return res.json(product);
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
@@ -402,15 +590,15 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
 };
 
 // PUT /api/products/:id - Update product
-router.put("/products/:id", authService.requireAdmin, updateProductHandler);
+router.put("/products/:id", requireRole("admin"), updateProductHandler);
 
 // PATCH /api/products/:id - Update product (partial update)
-router.patch("/products/:id", authService.requireAdmin, updateProductHandler);
+router.patch("/products/:id", requireRole("admin"), updateProductHandler);
 
 // DELETE /api/products/:id - Delete product
 router.delete(
   "/products/:id",
-  authService.requireAdmin,
+  requireRole("admin"),
   async (req, res): Promise<undefined | Response> => {
     try {
       const id = validateIdParam(req, res, "id", "product");
@@ -431,6 +619,10 @@ router.delete(
           error: { message: "Product not found" },
         });
       }
+
+      // Trigger Webhook
+      webhookService.trigger("product.deleted", { id });
+
       return res.status(204).send();
     } catch (error: unknown) {
       logger.error("Route: Error deleting product:", error);

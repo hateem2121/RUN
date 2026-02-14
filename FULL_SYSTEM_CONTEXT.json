@@ -43,7 +43,8 @@
     },
     "tooling": {
       "lint": "Biome",
-      "test": "Vitest",
+      "test": "Vitest (+ MemoryStorage)",
+      "integration": "Supertest",
       "e2e": "Playwright"
     }
   },
@@ -54,7 +55,7 @@
       "verify": "npm run verify:tech-integrity"
     },
     "packages": {
-      "server": ["dev", "start", "db:migrate", "db:push"],
+      "server": ["dev", "start", "db:migrate", "db:push", "test:v2"],
       "client": ["build", "preview", "lint:html"],
       "shared": ["build"]
     }

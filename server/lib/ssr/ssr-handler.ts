@@ -61,8 +61,8 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     });
   } else {
     // Production: Load the built server module
-    // Adjust path based on your vite.config.ts output
-    const buildPath = path.resolve(root, "dist/server/index.js");
+    // Standard React Router 7 build output path
+    const buildPath = path.resolve(root, "client/build/server/index.js");
 
     logger.info(`[SSR] Loading Production Build from: ${buildPath}`);
 

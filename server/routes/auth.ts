@@ -21,10 +21,13 @@ if (process.env.NODE_ENV === "development") {
     const mockUser: SessionUser = {
       id: "mock-admin-id",
       email: "mock-admin@example.com",
+      emailIndex: "mock-admin-email-index",
       firstName: "Mock",
       lastName: "Admin",
       profileImageUrl: "https://via.placeholder.com/150",
       isAdmin: true,
+      failedLoginAttempts: "0",
+      lockoutUntil: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       claims: {

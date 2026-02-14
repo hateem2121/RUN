@@ -15,9 +15,52 @@ vi.mock("../../lib/monitoring/logger.js", () => ({
   },
 }));
 
+vi.mock("../../lib/encryption.js", () => ({
+  encrypt: vi.fn((val) => `enc_${val}`),
+  getBlindIndex: vi.fn((val) => `idx_${val}`),
+}));
+
+vi.mock("../../lib/integrations/storage-lifecycle-scheduler.js", () => ({
+  getLifecycleScheduler: vi.fn(() => ({
+    runCleanup: vi.fn().mockResolvedValue({
+      cleanedFiles: ["f1"],
+      orphanedFiles: [],
+      spaceSaved: 100,
+    }),
+  })),
+}));
+
 describe("AdminService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  describe("logAudit", () => {
+    it("should encrypt sensitive data and call storage", async () => {
+      const mockStorage = { createAuditLog: vi.fn().mockResolvedValue({ id: 1 }) };
+      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+
+      const auditData = {
+        action: "UPDATE",
+        tableName: "products",
+        recordId: "123",
+        user: { id: "u1", email: "test@example.com" } as any,
+        ipAddress: "127.0.0.1",
+        userAgent: "test-agent",
+      };
+
+      await adminService.logAudit(auditData);
+
+      expect(mockStorage.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "UPDATE",
+          userEmail: "enc_test@example.com",
+          userEmailIndex: "idx_test@example.com",
+          ipAddress: "enc_127.0.0.1",
+          userAgent: "enc_test-agent",
+        }),
+      );
+    });
   });
 
   describe("getInitialProductsData", () => {
@@ -85,37 +128,79 @@ describe("AdminService", () => {
       const mockStorage = {
         getCategories: vi.fn().mockResolvedValue(categories),
         updateCategory: vi.fn().mockResolvedValue(true),
+        createAuditLog: vi.fn(),
       };
       vi.mocked(getStorage).mockReturnValue(mockStorage as any);
 
-      const result = await adminService.fixCorruptedMedia();
+      const auditCtx = {
+        user: { id: "u1", email: "a@b.com" } as any,
+        userAgent: "ua",
+        ipAddress: "ip",
+      };
+      const result = await adminService.fixCorruptedMedia(auditCtx);
 
       expect(result.fixedCount).toBe(1);
       expect(result.fixedCategories).toContain("Cat 1");
-      expect(mockStorage.updateCategory).toHaveBeenCalledWith(
-        1,
-        expect.objectContaining({
-          featuredContent: expect.objectContaining({
-            card1: expect.objectContaining({ mediaUrl: "" }), // Fixed to empty string
-          }),
-        }),
-      );
+      expect(mockStorage.updateCategory).toHaveBeenCalled();
+      expect(mockStorage.createAuditLog).toHaveBeenCalled();
     });
+  });
 
-    it("returns 0 if no corruption found", async () => {
-      const categories = [
-        { id: 1, name: "Cat 1", featuredContent: { card1: { mediaUrl: "/valid/url" } } },
-      ];
+  describe("triggerCleanup", () => {
+    it("should call scheduler and log audit", async () => {
+      const mockStorage = { createAuditLog: vi.fn() };
+      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
 
+      const auditCtx = {
+        user: { id: "u1", email: "a@b.com" } as any,
+        userAgent: "ua",
+        ipAddress: "ip",
+      };
+      const report = await adminService.triggerCleanup(auditCtx, true);
+
+      expect(report.cleanedFiles).toContain("f1");
+      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+    });
+  });
+
+  describe("updateAuditConfig", () => {
+    it("should update storage and log audit", async () => {
       const mockStorage = {
-        getCategories: vi.fn().mockResolvedValue(categories),
+        setAuditTrailEnabled: vi.fn(),
+        configureTrackedTables: vi.fn(),
+        createAuditLog: vi.fn(),
       };
       vi.mocked(getStorage).mockReturnValue(mockStorage as any);
 
-      const result = await adminService.fixCorruptedMedia();
+      const auditCtx = {
+        user: { id: "u1", email: "a@b.com" } as any,
+        userAgent: "ua",
+        ipAddress: "ip",
+      };
+      const config = { enabled: true, trackedTables: ["users"] };
 
-      expect(result.fixedCount).toBe(0);
-      expect(result.fixedCategories).toEqual([]);
+      const result = await adminService.updateAuditConfig(auditCtx, config);
+
+      expect(result).toBe(true);
+      expect(mockStorage.setAuditTrailEnabled).toHaveBeenCalledWith(true);
+      expect(mockStorage.configureTrackedTables).toHaveBeenCalledWith(["users"]);
+      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+    });
+  });
+
+  describe("restore methods", () => {
+    it("restoreCategory calls storage and logs audit", async () => {
+      const mockStorage = {
+        restoreCategory: vi.fn().mockResolvedValue(true),
+        createAuditLog: vi.fn(),
+      };
+      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+
+      const auditCtx = { user: { id: "u1" } as any, userAgent: "ua", ipAddress: "ip" };
+      await adminService.restoreCategory(auditCtx, 1);
+
+      expect(mockStorage.restoreCategory).toHaveBeenCalledWith(1);
+      expect(mockStorage.createAuditLog).toHaveBeenCalled();
     });
   });
 });

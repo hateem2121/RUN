@@ -36,6 +36,7 @@ import {
 import { type DbClient, db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
+import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 
@@ -1154,7 +1155,17 @@ export class MiscRepository {
   // =============================================================================
 
   async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
-    const [created] = await db.insert(inquiries).values(inquiry).returning();
+    const encryptedData = {
+      ...inquiry,
+      name: inquiry.name ? encrypt(inquiry.name) : inquiry.name,
+      email: inquiry.email ? encrypt(inquiry.email) : inquiry.email,
+      emailIndex: inquiry.email ? getBlindIndex(inquiry.email) : null,
+      company: inquiry.company ? encrypt(inquiry.company) : inquiry.company,
+      phone: inquiry.phone ? encrypt(inquiry.phone) : inquiry.phone,
+      message: inquiry.message ? encrypt(inquiry.message) : inquiry.message,
+    };
+
+    const [created] = await db.insert(inquiries).values(encryptedData).returning();
 
     try {
       await unifiedCache.delete("inquiries:stats");
@@ -1173,7 +1184,7 @@ export class MiscRepository {
 
   async getInquiryById(id: number): Promise<Inquiry | undefined> {
     const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
-    return inquiry;
+    return inquiry ? this.decryptInquiry(inquiry) : undefined;
   }
 
   async listInquiries(filters: {
@@ -1195,13 +1206,20 @@ export class MiscRepository {
       conditions.push(eq(inquiries.source, filters.source));
     }
     if (filters.search) {
-      conditions.push(
-        or(
-          like(inquiries.name, `%${filters.search}%`),
-          like(inquiries.email, `%${filters.search}%`),
-          like(inquiries.message, `%${filters.search}%`),
-        ),
-      );
+      if (filters.search.includes("@")) {
+        // Search by email blind index for precision/security
+        conditions.push(eq(inquiries.emailIndex, getBlindIndex(filters.search)));
+      } else {
+        // Fallback or warning: like search on encrypted fields is limited
+        conditions.push(
+          or(
+            // Note: these will effectively only match non-encrypted legacy data or Fail
+            like(inquiries.name, `%${filters.search}%`),
+            like(inquiries.email, `%${filters.search}%`),
+            like(inquiries.message, `%${filters.search}%`),
+          ),
+        );
+      }
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -1218,7 +1236,7 @@ export class MiscRepository {
     ]);
 
     return {
-      inquiries: results,
+      inquiries: results.map((inq) => this.decryptInquiry(inq)),
       total: totalResult[0]?.count ?? 0,
     };
   }
@@ -1347,16 +1365,46 @@ export class MiscRepository {
    * Subscribe an email to the newsletter
    */
   async subscribeToNewsletter(email: string): Promise<boolean> {
+    const encryptedEmail = encrypt(email);
+    const index = getBlindIndex(email);
     try {
       const result = await db
         .insert(newsletterSubscribers)
-        .values({ email })
+        .values({
+          email: encryptedEmail,
+          emailIndex: index,
+        })
         .onConflictDoNothing()
         .returning();
       return result.length > 0;
     } catch (error) {
       logger.error("Failed to subscribe to newsletter", { email, error });
       return false;
+    }
+  }
+
+  private decryptInquiry(inquiry: Inquiry): Inquiry {
+    try {
+      return {
+        ...inquiry,
+        email: inquiry.email ? this.safeDecrypt(inquiry.email) : inquiry.email,
+        name: inquiry.name ? this.safeDecrypt(inquiry.name) : inquiry.name,
+        company: inquiry.company ? this.safeDecrypt(inquiry.company) : inquiry.company,
+        phone: inquiry.phone ? this.safeDecrypt(inquiry.phone) : inquiry.phone,
+        message: inquiry.message ? this.safeDecrypt(inquiry.message) : inquiry.message,
+      };
+    } catch (error) {
+      logger.error(`[MiscRepository] Failed to decrypt inquiry ${inquiry.id}:`, error);
+      return inquiry;
+    }
+  }
+
+  private safeDecrypt(value: string): string {
+    if (!value || !value.includes(":")) return value;
+    try {
+      return decrypt(value);
+    } catch {
+      return value;
     }
   }
 }

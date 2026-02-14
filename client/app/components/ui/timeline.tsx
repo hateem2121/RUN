@@ -86,9 +86,12 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
       <div ref={ref} className="relative mx-auto max-w-7xl pb-20">
         {data.map((item, index) => (
-          <div key={index} className="flex justify-start pt-10 md:gap-10 md:pt-40">
+          <article key={index} className="flex justify-start pt-10 md:gap-10 md:pt-40">
             <div className="sticky top-40 z-sticky flex max-w-xs flex-col items-center self-start md:w-full md:flex-row lg:max-w-sm">
-              <div className="absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-background md:left-3">
+              <div
+                className="absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-background md:left-3"
+                aria-hidden="true"
+              >
                 <div className="h-4 w-4 rounded-full border border-border bg-muted p-2" />
               </div>
               <h3 className="hidden font-bold text-muted-foreground text-xl md:block md:pl-20 md:text-5xl">
@@ -102,9 +105,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               </h3>
               {item.content}{" "}
             </div>
-          </div>
+          </article>
         ))}
         <div
+          aria-hidden="true"
           style={{
             height: `${height}px`,
           }}

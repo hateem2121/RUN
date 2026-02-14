@@ -1,74 +1,76 @@
-# E2E Automation & Guardrails
+# Testing Infrastructure & Methodology
 
-This project uses **Playwright** for end-to-end testing and **Forensic Guardrails** to prevent regressions.
+This document outlines the testing standards for the RUN Remix CMS, covering Unit, Integration, and E2E testing.
 
-## 🌍 Environment
+## 🧪 1. Unit Testing (Vitest)
 
-The test suite needs a running application server.
+Unit tests focus on individual services and utility functions.
 
-- **Default**: `http://localhost:5002`
-- **Override**: Set `E2E_BASE_URL` and `PORT`.
+- **Stack**: Vitest
+- **Location**: `server/services/*.test.ts`, `client/app/hooks/*.test.ts`
+- **Mandate**: 80%+ code coverage for the service layer.
 
+### Running Unit Tests
 ```bash
-# Example: Targeting a different port
-E2E_BASE_URL=http://localhost:3000 PORT=3000 npm run test:e2e
+npm run test
 ```
 
-## 🏃 Running Tests
+---
 
-### Local Development
+## 🔗 2. Integration Testing (Stateful)
 
-Start the dev server in one terminal, then run tests:
+Integration tests verify API endpoints and business flows using a high-fidelity stateful mock.
 
+- **Stack**: Vitest + Supertest
+- **Mock Store**: `server/tests/memory-storage.ts` (`MemoryStorage`)
+- **Location**: `server/tests/integration/*.integration.test.ts`
+
+### The MemoryStorage Mock
+Unlike stateless mocks, `MemoryStorage` implements the full `IStorage` interface and persists data in-memory during the test run. This allows for complex verification of state changes across multiple API calls.
+
+### RBAC Verification
+All mutation endpoints must be tested for Role-Based Access Control:
+- Use `createMockSessionUser({ isAdmin: true })` for success cases.
+- Use `createMockSessionUser({ isAdmin: false })` to verify `403 Forbidden`.
+
+### Running Integration Tests
+```bash
+# Run preferred v2 suites
+npm run test tests/v2
+```
+
+---
+
+## 🌍 3. E2E Automation & Guardrails
+
+E2E tests verify the full system behavior from the user's perspective.
+
+- **Stack**: Playwright
+- **Location**: `e2e/`
+- **Environment**: `http://localhost:5002`
+
+### Running E2E Tests
 ```bash
 # Terminal 1: Start server
 npm run dev
 
-# Terminal 2: Run E2E tests
+# Terminal 2: Run tests
 npm run test:e2e
 ```
 
-### Quick Start (Smoke)
-
-Runs the critical path smoke test (Home, Contact, Overlays).
-
-```bash
-npx playwright test e2e/smoke.spec.ts
-```
-
-### Full Test Suite
-
-```bash
-npm run test:e2e
-```
-
-### CI Mode
-
-In CI, tests run against a production build:
-
-```bash
-npm run build
-npm run start &
-npm run test:e2e
-```
+---
 
 ## 🛡️ Guardrails
 
 ### Z-Index Policy
-
-Use design tokens (`z-modal`, `z-dock`) instead of arbitrary values (`z-[999]`).
-
-- **Enforcement**: Biome linting (`npm run lint`)
-- **Tokens**: Defined in `client/app/index.css` (`@theme` block)
+Use design tokens (`z-modal`, `z-dock`) instead of arbitrary values.
+- **Enforcement**: Biome linting.
 
 ### SSR Hydration Check
-
-Tests automatically verify `window.__REACT_QUERY_STATE__` is injected to prevent "Loading..." stalls.
+Tests verify `window.__REACT_QUERY_STATE__` injection to prevent loading stalls.
 
 ## 📂 Artifacts
-
 Test failures generate artifacts in `e2e/artifacts/`:
-
-- **Screenshots**: `.png` snapshots of the failure state.
-- **Traces**: Run `npx playwright show-trace e2e/artifacts/trace.zip` to debug.
+- **Screenshots**: `.png` snapshots.
+- **Traces**: Run `npx playwright show-trace e2e/artifacts/trace.zip`.
 - **Report**: `playwright-report/index.html`.

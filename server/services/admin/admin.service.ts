@@ -5,15 +5,22 @@
  */
 
 import type { MediaAsset, Product } from "@run-remix/shared";
+import { encrypt, getBlindIndex } from "../../lib/encryption.js";
 import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import type { SessionUser } from "../../types/session.js";
 
+export interface AuditContext {
+  user: SessionUser;
+  userAgent: string | undefined;
+  ipAddress: string | undefined;
+}
+
 export class AdminService {
   /**
-   * Centralized audit logging.
+   * Centralizes audit logging.
    */
   async logAudit(data: {
     action: string;
@@ -26,14 +33,22 @@ export class AdminService {
     newValues?: Record<string, any>;
     oldValues?: Record<string, any>;
   }) {
+    const userEmail = data.user?.email;
+    const encryptedUserEmail = userEmail ? encrypt(userEmail) : undefined;
+    const userEmailIndex = userEmail ? getBlindIndex(userEmail) : undefined;
+    const encryptedIpAddress = data.ipAddress ? encrypt(data.ipAddress) : undefined;
+    // userAgent can be long, but encryption is fine
+    const encryptedUserAgent = data.userAgent ? encrypt(data.userAgent) : undefined;
+
     return getStorage().createAuditLog({
       action: data.action,
       tableName: data.tableName,
       recordId: data.recordId,
       userId: data.user?.id,
-      userEmail: data.user?.email,
-      userAgent: data.userAgent,
-      ipAddress: data.ipAddress,
+      userEmail: encryptedUserEmail,
+      userEmailIndex: userEmailIndex,
+      userAgent: encryptedUserAgent,
+      ipAddress: encryptedIpAddress,
       metadata: data.metadata,
       newValues: data.newValues,
       oldValues: data.oldValues,
@@ -92,7 +107,7 @@ export class AdminService {
 
     // Efficiently fetch ONLY referenced media assets + some recent ones
     // Validating IDs before passing to DB
-    const validMediaIds = Array.from(referencedMediaIds).filter((id) => !isNaN(id));
+    const validMediaIds = Array.from(referencedMediaIds).filter((id) => !Number.isNaN(id));
     const mediaIdsStrings = validMediaIds.map((id) => id.toString());
 
     const [referencedMedia, recentMedia] = await Promise.all([
@@ -140,7 +155,7 @@ export class AdminService {
    * Corrects media URL corruption in category featured content.
    * Optimized to process in parallel chunks and filter before processing.
    */
-  async fixCorruptedMedia(timeoutMs = 30000) {
+  async fixCorruptedMedia(audit: AuditContext, timeoutMs = 30000) {
     logger.debug(
       `AdminService: Starting cleanup of corrupted media URLs (timeout: ${timeoutMs}ms)`,
     );
@@ -220,16 +235,31 @@ export class AdminService {
       );
     }
 
-    return {
+    const result = {
       fixedCount,
       fixedCategories,
     };
+
+    // SEC-F04: Audit Log
+    if (fixedCount > 0) {
+      await this.logAudit({
+        action: "UPDATE",
+        tableName: "categories",
+        recordId: "BULK_FIX",
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        metadata: { operation: "fix-corrupted-media", result },
+      });
+    }
+
+    return result;
   }
 
   /**
    * Triggers system storage cleanup.
    */
-  async triggerCleanup(autoClean: boolean, timeoutMs = 60000) {
+  async triggerCleanup(audit: AuditContext, autoClean: boolean, timeoutMs = 60000) {
     const scheduler = getLifecycleScheduler();
     // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
     // If runCleanup is long, we wrap it.
@@ -245,20 +275,114 @@ export class AdminService {
       spaceSaved: report.spaceSaved,
     });
 
+    // SEC-F04: Audit Log
+    await this.logAudit({
+      action: "DELETE",
+      tableName: "storage",
+      recordId: "CLEANUP",
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      metadata: { operation: "cleanup", autoClean, report },
+    });
+
     return report;
   }
 
   /**
    * Updates enterprise audit configuration.
    */
-  async updateAuditConfig(config: { enabled?: boolean; trackedTables?: string[] }) {
+  async updateAuditConfig(
+    audit: AuditContext,
+    config: { enabled?: boolean | undefined; trackedTables?: string[] | undefined },
+  ) {
     if (typeof config.enabled === "boolean") {
       getStorage().setAuditTrailEnabled(config.enabled);
     }
     if (Array.isArray(config.trackedTables)) {
       getStorage().configureTrackedTables(config.trackedTables);
     }
+
+    // SEC-F04: Audit Log
+    await this.logAudit({
+      action: "UPDATE",
+      tableName: "audit_configuration",
+      recordId: "CONFIG",
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      newValues: config,
+      metadata: { operation: "update-audit-config" },
+    });
+
     return true;
+  }
+
+  /**
+   * Restores a soft-deleted category
+   */
+  async restoreCategory(audit: AuditContext, id: number) {
+    const result = await withTimeout(getStorage().restoreCategory(id), 5000, "Restore category");
+
+    if (result) {
+      // SEC-F04: Audit Log
+      await this.logAudit({
+        action: "RESTORE",
+        tableName: "categories",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Restores a soft-deleted product
+   */
+  async restoreProduct(audit: AuditContext, id: number) {
+    const result = await withTimeout(getStorage().restoreProduct(id), 5000, "Restore product");
+
+    if (result) {
+      // SEC-F04: Audit Log
+      await this.logAudit({
+        action: "RESTORE",
+        tableName: "products",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Restores a soft-deleted media asset
+   */
+  async restoreMediaAsset(audit: AuditContext, id: number) {
+    const result = await withTimeout(
+      getStorage().restoreMediaAsset(id),
+      5000,
+      "Restore media asset",
+    );
+
+    if (result) {
+      // SEC-F04: Audit Log
+      await this.logAudit({
+        action: "RESTORE",
+        tableName: "media_assets",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+      });
+    }
+
+    return result;
   }
 }
 

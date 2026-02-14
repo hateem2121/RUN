@@ -10,7 +10,8 @@
   "workspaces": [
     "client",
     "server",
-    "shared"
+    "shared",
+    "packages/sdk"
   ],
   "scripts": {
     "dev:server": "PORT=5002 npm run --workspace=@run-remix/server dev",
@@ -63,6 +64,7 @@
     }
   ],
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@biomejs/biome": "2.3.10",
     "@playwright/test": "^1.57.0",
     "@size-limit/preset-app": "^12.0.0",
@@ -91,6 +93,7 @@
     "typescript": "^5.9.3",
     "vite-bundle-visualizer": "^1.2.1",
     "vitest": "^4.0.6",
+    "vitest-axe": "^0.1.0",
     "web-vitals": "^5.1.0"
   },
   "lint-staged": {

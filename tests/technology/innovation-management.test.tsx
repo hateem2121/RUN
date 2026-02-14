@@ -166,7 +166,7 @@ describe("TechnologyInnovationManagement - Extracted Module", () => {
     // Check innovation details are rendered
     expect(screen.getByTestId("innovation-title").textContent).toContain("Smart Fabric Technology");
     expect(screen.getByTestId("innovation-category").textContent).toContain("Fabric Technology");
-    expect(screen.getByTestId("innovation-description")).toHaveTextContent(
+    expect(screen.getByTestId("innovation-description").textContent).toContain(
       "Revolutionary smart fabric with embedded sensors",
     );
     expect(screen.getByTestId("innovation-status").textContent).toContain("Active");

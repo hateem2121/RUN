@@ -22,6 +22,13 @@ export default [
     route("technology", "routes/technology.tsx"),
     route("terms", "routes/terms.tsx"),
 
+    // Developer Portal
+    route("developer", "routes/developer.tsx", [
+      index("routes/developer._index.tsx"),
+      route("playground", "routes/developer.playground.tsx"),
+      route("guides/:slug", "routes/developer.guides.$slug.tsx"),
+    ]),
+
     // Categories (Public)
     route("categories", "routes/categories._index.tsx"),
     route("categories/:slug", "routes/categories.$slug.tsx"),

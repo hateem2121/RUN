@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import { err, ok, type Result } from "neverthrow";
-import { z } from "zod";
 import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
@@ -11,6 +10,7 @@ import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import { webhookService } from "../../services/webhook-service.js";
 import { removeUndefined, safeSerialize, shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import { backendUploadManager, uploadMetrics } from "./middleware.js";
@@ -249,6 +249,9 @@ export async function updateMediaAsset(
     return next(new NotFoundError("Media asset not found"));
   }
 
+  // Trigger Webhook
+  webhookService.trigger("media.updated", updated);
+
   return res.json(createSuccessResponse(updated));
 }
 
@@ -300,6 +303,9 @@ export async function deleteMediaAsset(
         );
       });
   }
+
+  // Trigger Webhook
+  webhookService.trigger("media.deleted", { id: assetId });
 
   return res.json(createSuccessResponse({ deleted: true }));
 }
@@ -592,7 +598,12 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
       }
 
       const updatedAsset = finalAssetResult.value;
-      return res.status(201).json(createSuccessResponse(updatedAsset || asset));
+      const finalResultAsset = updatedAsset || asset;
+
+      // Trigger Webhook
+      webhookService.trigger("media.uploaded", finalResultAsset);
+
+      return res.status(201).json(createSuccessResponse(finalResultAsset));
     } catch (error: unknown) {
       // Compensating delete: Remove assembled file if DB insert fails
       if (finalStorageKey) {
@@ -777,6 +788,11 @@ export async function batchCreateAssets(req: Request, res: Response, next: NextF
       unifiedCache.delete("search"),
     ]);
     logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
+
+    // Trigger Webhooks for batch uploads
+    results.forEach((asset) => {
+      webhookService.trigger("media.uploaded", asset);
+    });
 
     return res.status(201).json(createSuccessResponse(results));
   } catch (error) {

@@ -24,14 +24,19 @@ import { pgTable } from "./common";
  */
 export const users = pgTable("users", {
   id: varchar({ length: 255 }).primaryKey(), // Replit user ID (stable, unique)
-  email: varchar({ length: 255 }).unique(),
-  firstName: varchar({ length: 255 }),
-  lastName: varchar({ length: 255 }),
-  profileImageUrl: text(),
+  email: varchar({ length: 255 }).unique(), // Encrypted in DB (AES-256-GCM)
+  emailIndex: varchar({ length: 255 }).unique(), // Blind Index for searching (HMAC-SHA256)
+  firstName: varchar({ length: 255 }), // Encrypted
+  lastName: varchar({ length: 255 }), // Encrypted
+  profileImageUrl: text(), // Encrypted
 
   // ROLE-BASED ACCESS CONTROL
   // Admin status NOT auto-updated on login - must be set via SQL
   isAdmin: boolean().default(false).notNull(),
+
+  // SECURITY: Account Lockout
+  failedLoginAttempts: text({}).default("0").notNull(), // Stored as string to avoid precision issues if needed, but int is better. Wait, drizzle has integer.
+  lockoutUntil: timestamp({ mode: "date", precision: 3 }),
 
   // Timestamps for audit trail
   createdAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),

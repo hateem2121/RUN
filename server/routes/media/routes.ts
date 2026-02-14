@@ -59,7 +59,12 @@ registry.registerPath({
   method: "get",
   path: "/media",
   summary: "List media assets",
+  description: "Retrieve a paginated list of media assets (images, videos, 3D models).",
   tags: ["Media"],
+  parameters: [
+    { name: "page", in: "query", schema: { type: "integer", default: 1 } },
+    { name: "limit", in: "query", schema: { type: "integer", default: 20 } },
+  ],
   responses: {
     200: jsonResponse(z.array(z.any()), "List of media assets"),
   },
@@ -67,12 +72,86 @@ registry.registerPath({
 
 registry.registerPath({
   method: "get",
+  path: "/media/search",
+  summary: "Search media assets",
+  description: "Search for media assets by filename, original name, or tags.",
+  tags: ["Media"],
+  parameters: [
+    {
+      name: "q",
+      in: "query",
+      required: true,
+      schema: { type: "string" },
+      description: "Search query",
+    },
+  ],
+  responses: {
+    200: jsonResponse(z.array(z.any()), "Search results"),
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/media/{id}",
+  summary: "Get media asset by ID",
+  description: "Retrieve metadata for a specific media asset.",
+  tags: ["Media"],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  responses: {
+    200: jsonResponse(z.any(), "Media asset metadata"),
+    404: { description: "Media asset not found" },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/media/upload",
+  summary: "Upload single file",
+  description: "Upload a single media file (image, video, or GLB). Admin role required.",
+  tags: ["Media"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        "multipart/form-data": {
+          schema: z.object({
+            file: z.any().describe("The file to upload"),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: jsonResponse(z.any(), "The uploaded media asset"),
+    401: { description: "Unauthorized" },
+  },
+});
+
+registry.registerPath({
+  method: "delete",
+  path: "/media/{id}",
+  summary: "Delete media asset",
+  description:
+    "Permanently delete a media asset and its associated files from storage. Admin role required.",
+  tags: ["Media"],
+  security: [{ sessionAuth: [] }, { bearerAuth: [] }],
+  parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+  responses: {
+    204: { description: "Media asset deleted successfully" },
+    404: { description: "Media asset not found" },
+  },
+});
+
+registry.registerPath({
+  method: "get",
   path: "/media/performance-dashboard",
   summary: "Media performance dashboard",
+  description:
+    "Retrieve real-time performance metrics for the media subsystem (processing times, cache hit rates, etc.).",
   tags: ["Admin", "Media"],
   security: [{ sessionAuth: [] }],
   responses: {
-    200: jsonResponse(z.any(), "Performance metrics"),
+    200: jsonResponse(z.any(), "Detailed performance metrics"),
     403: { description: "Admin access required" },
   },
 });

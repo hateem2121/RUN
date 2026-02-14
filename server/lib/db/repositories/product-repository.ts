@@ -25,7 +25,6 @@ import {
   certificates,
   fabrics,
   mediaAssets,
-  type ProductRelation,
   productRelations,
   products,
   sizeCharts,

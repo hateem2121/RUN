@@ -1,0 +1,497 @@
+
+Running 2 tests using 1 worker
+
+[1A[2K[1/2] [setup] › e2e/auth.setup.ts:11:1 › authenticate as admin
+[1A[2K[2/2] [chromium] › e2e/accessibility.spec.ts:41:5 › Accessibility Audit › Public Pages › Products page should have no accessibility violations
+[1A[2K  1) [chromium] › e2e/accessibility.spec.ts:41:5 › Accessibility Audit › Public Pages › Products page should have no accessibility violations 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+    [32m- Expected  -   1[39m
+    [31m+ Received  + 443[39m
+
+    [32m- Array [][39m
+    [31m+ Array [[39m
+    [31m+   Object {[39m
+    [31m+     "description": "Ensure buttons have discernible text",[39m
+    [31m+     "help": "Buttons must have discernible text",[39m
+    [31m+     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/button-name?application=playwright",[39m
+    [31m+     "id": "button-name",[39m
+    [31m+     "impact": "critical",[39m
+    [31m+     "nodes": Array [[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "button-has-visible-text",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have inner text that is visible to screen readers",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-label attribute does not exist or is empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-labelledby",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "messageKey": "noAttr",[39m
+    [31m+             },[39m
+    [31m+             "id": "non-empty-title",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element has no title attribute",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "implicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an implicit (wrapped) <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "explicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an explicit <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "presentational-role",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element does not have inner text that is visible to screen readers[39m
+    [31m+   aria-label attribute does not exist or is empty[39m
+    [31m+   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty[39m
+    [31m+   Element has no title attribute[39m
+    [31m+   Element does not have an implicit (wrapped) <label>[39m
+    [31m+   Element does not have an explicit <label>[39m
+    [31m+   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+         "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_0_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-10 items-cent...\">",[39m
+    [31m+         "impact": "critical",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".sm\\:w-48",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "button-has-visible-text",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have inner text that is visible to screen readers",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-label attribute does not exist or is empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-labelledby",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "messageKey": "noAttr",[39m
+    [31m+             },[39m
+    [31m+             "id": "non-empty-title",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element has no title attribute",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "implicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an implicit (wrapped) <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "explicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an explicit <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "presentational-role",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element does not have inner text that is visible to screen readers[39m
+    [31m+   aria-label attribute does not exist or is empty[39m
+    [31m+   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty[39m
+    [31m+   Element has no title attribute[39m
+    [31m+   Element does not have an implicit (wrapped) <label>[39m
+    [31m+   Element does not have an explicit <label>[39m
+    [31m+   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+         "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_1_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-10 items-cent...\">",[39m
+    [31m+         "impact": "critical",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".sm\\:w-40",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "button-has-visible-text",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have inner text that is visible to screen readers",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-label attribute does not exist or is empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-labelledby",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "messageKey": "noAttr",[39m
+    [31m+             },[39m
+    [31m+             "id": "non-empty-title",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element has no title attribute",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "implicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an implicit (wrapped) <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "explicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an explicit <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "presentational-role",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element does not have inner text that is visible to screen readers[39m
+    [31m+   aria-label attribute does not exist or is empty[39m
+    [31m+   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty[39m
+    [31m+   Element has no title attribute[39m
+    [31m+   Element does not have an implicit (wrapped) <label>[39m
+    [31m+   Element does not have an explicit <label>[39m
+    [31m+   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+         "html": "<button class=\"inline-center-flex g...\">",[39m
+    [31m+         "impact": "critical",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".hover\\:bg-accent.hover\\:text-accent-foreground.h-9:nth-child(1)",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "button-has-visible-text",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have inner text that is visible to screen readers",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-label attribute does not exist or is empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-labelledby",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "messageKey": "noAttr",[39m
+    [31m+             },[39m
+    [31m+             "id": "non-empty-title",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element has no title attribute",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "implicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an implicit (wrapped) <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "explicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an explicit <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "presentational-role",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element does not have inner text that is visible to screen readers[39m
+    [31m+   aria-label attribute does not exist or is empty[39m
+    [31m+   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty[39m
+    [31m+   Element has no title attribute[39m
+    [31m+   Element does not have an implicit (wrapped) <label>[39m
+    [31m+   Element does not have an explicit <label>[39m
+    [31m+   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+         "html": "<button class=\"inline-center-flex g...\">",[39m
+    [31m+         "impact": "critical",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".bg-muted > .bg-primary.text-primary-foreground.hover\\:bg-primary\\/90",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "button-has-visible-text",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have inner text that is visible to screen readers",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-label attribute does not exist or is empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "aria-labelledby",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "messageKey": "noAttr",[39m
+    [31m+             },[39m
+    [31m+             "id": "non-empty-title",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element has no title attribute",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "implicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an implicit (wrapped) <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "explicit-label",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element does not have an explicit <label>",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+           Object {[39m
+    [31m+             "data": null,[39m
+    [31m+             "id": "presentational-role",[39m
+    [31m+             "impact": "critical",[39m
+    [31m+             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+             "relatedNodes": Array [],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element does not have inner text that is visible to screen readers[39m
+    [31m+   aria-label attribute does not exist or is empty[39m
+    [31m+   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty[39m
+    [31m+   Element has no title attribute[39m
+    [31m+   Element does not have an implicit (wrapped) <label>[39m
+    [31m+   Element does not have an explicit <label>[39m
+    [31m+   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",[39m
+    [31m+         "html": "<button class=\"inline-center-flex g...\">",[39m
+    [31m+         "impact": "critical",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".hover\\:bg-accent.hover\\:text-accent-foreground.h-9:nth-child(3)",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+     ],[39m
+    [31m+     "tags": Array [[39m
+    [31m+       "cat.name-role-value",[39m
+    [31m+       "wcag2a",[39m
+    [31m+       "wcag412",[39m
+    [31m+       "section508",[39m
+    [31m+       "section508.22.a",[39m
+    [31m+       "TTv5",[39m
+    [31m+       "TT6.a",[39m
+    [31m+       "EN-301-549",[39m
+    [31m+       "EN-9.4.1.2",[39m
+    [31m+       "ACT",[39m
+    [31m+       "RGAAv4",[39m
+    [31m+       "RGAA-11.9.1",[39m
+    [31m+     ],[39m
+    [31m+   },[39m
+    [31m+   Object {[39m
+    [31m+     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",[39m
+    [31m+     "help": "Elements must meet minimum color contrast ratio thresholds",[39m
+    [31m+     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",[39m
+    [31m+     "id": "color-contrast",[39m
+    [31m+     "impact": "serious",[39m
+    [31m+     "nodes": Array [[39m
+    [31m+       Object {[39m
+    [31m+         "all": Array [],[39m
+    [31m+         "any": Array [[39m
+    [31m+           Object {[39m
+    [31m+             "data": Object {[39m
+    [31m+               "bgColor": "#0b0c0f",[39m
+    [31m+               "contrastRatio": 1.14,[39m
+    [31m+               "expectedContrastRatio": "4.5:1",[39m
+    [31m+               "fgColor": "#1a1a2e",[39m
+    [31m+               "fontSize": "7.5pt (10px)",[39m
+    [31m+               "fontWeight": "normal",[39m
+    [31m+               "messageKey": null,[39m
+    [31m+             },[39m
+    [31m+             "id": "color-contrast",[39m
+    [31m+             "impact": "serious",[39m
+    [31m+             "message": "Element has insufficient color contrast of 1.14 (foreground color: #1a1a2e, background color: #0b0c0f, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1",[39m
+    [31m+             "relatedNodes": Array [[39m
+    [31m+               Object {[39m
+    [31m+                 "html": "<div class=\"z-sticky border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md\">",[39m
+    [31m+                 "target": Array [[39m
+    [31m+                   ".z-sticky",[39m
+    [31m+                 ],[39m
+    [31m+               },[39m
+    [31m+               Object {[39m
+    [31m+                 "html": "<div class=\"bg-muted/30 pt-production-header min-h-screen\">",[39m
+    [31m+                 "target": Array [[39m
+    [31m+                   ".bg-muted\\/30",[39m
+    [31m+                 ],[39m
+    [31m+               },[39m
+    [31m+               Object {[39m
+    [31m+                 "html": "<body>",[39m
+    [31m+                 "target": Array [[39m
+    [31m+                   "body",[39m
+    [31m+                 ],[39m
+    [31m+               },[39m
+    [31m+             ],[39m
+    [31m+           },[39m
+    [31m+         ],[39m
+    [31m+         "failureSummary": "Fix any of the following:[39m
+    [31m+   Element has insufficient color contrast of 1.14 (foreground color: #1a1a2e, background color: #0b0c0f, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1",[39m
+    [31m+         "html": "<span class=\"text-luxury-charcoal font-medium\">Products</span>",[39m
+    [31m+         "impact": "serious",[39m
+    [31m+         "none": Array [],[39m
+    [31m+         "target": Array [[39m
+    [31m+           ".text-luxury-charcoal.font-medium",[39m
+    [31m+         ],[39m
+    [31m+       },[39m
+    [31m+     ],[39m
+    [31m+     "tags": Array [[39m
+    [31m+       "cat.color",[39m
+    [31m+       "wcag2aa",[39m
+    [31m+       "wcag143",[39m
+    [31m+       "TTv5",[39m
+    [31m+       "TT13.c",[39m
+    [31m+       "EN-301-549",[39m
+    [31m+       "EN-9.1.4.3",[39m
+    [31m+       "ACT",[39m
+    [31m+       "RGAAv4",[39m
+    [31m+       "RGAA-3.2.1",[39m
+    [31m+     ],[39m
+    [31m+   },[39m
+    [31m+ ][39m
+
+      47 |         .analyze();
+      48 |
+    > 49 |       expect(accessibilityScanResults.violations).toEqual([]);
+         |                                                   ^
+      50 |     });
+      51 |
+      52 |     test("Contact page should have no accessibility violations", async ({ page }) => {
+        at /Users/hateemjamshaid/Documents/RUN-Remix/e2e/accessibility.spec.ts:49:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/video-1.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/accessibility-Accessibilit-80616-no-accessibility-violations-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  1 failed
+    [chromium] › e2e/accessibility.spec.ts:41:5 › Accessibility Audit › Public Pages › Products page should have no accessibility violations 
+  1 passed (6.1s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report[39m
+[36m[39m

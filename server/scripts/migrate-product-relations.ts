@@ -1,4 +1,4 @@
-import { isNotNull, sql } from "drizzle-orm";
+import { isNotNull } from "drizzle-orm";
 import { productRelations, products } from "../../shared/schema.js";
 import { db } from "../db.js";
 

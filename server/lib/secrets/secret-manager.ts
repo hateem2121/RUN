@@ -34,8 +34,8 @@ export async function loadSecrets(): Promise<Record<string, string>> {
 
   // Skip in development - use .env file
   // PERFORMANCE: Return immediately to avoid network definition lookups
-  if (process.env.NODE_ENV !== "production") {
-    logger.info("[SecretManager] Development mode - bypassing Secret Manager");
+  if (process.env.NODE_ENV !== "production" || process.env.SKIP_SECRET_MANAGER === "true") {
+    logger.info("[SecretManager] Bypassing Secret Manager (Development or E2E mode)");
     cachedSecrets = {};
     return cachedSecrets;
   }

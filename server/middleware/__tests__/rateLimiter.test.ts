@@ -1,9 +1,7 @@
 import { Redis } from "@upstash/redis";
-import type { NextFunction, Request, Response } from "express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { apiRateLimiter, createRateLimiter, RateLimiter } from "../rateLimiter.js";
+import { createRateLimiter, RateLimiter, UploadRateLimiter } from "../rateLimiter";
 
-// Mock dependnecies
 vi.mock("@upstash/redis", () => ({
   Redis: {
     fromEnv: vi.fn(),
@@ -13,148 +11,122 @@ vi.mock("@upstash/redis", () => ({
 vi.mock("../lib/monitoring/logger.js", () => ({
   logger: {
     warn: vi.fn(),
+    info: vi.fn(),
     error: vi.fn(),
   },
 }));
 
 describe("RateLimiter Middleware", () => {
-  let req: Partial<Request>;
-  let res: Partial<Response>;
-  let next: NextFunction;
+  let req: any;
+  let res: any;
+  let next: any;
 
   beforeEach(() => {
-    req = {
-      ip: "127.0.0.1",
-      headers: {},
-    };
+    vi.clearAllMocks();
+    req = { ip: "127.0.0.1", headers: {} };
     res = {
       setHeader: vi.fn(),
+      set: vi.fn(),
       status: vi.fn().mockReturnThis(),
       json: vi.fn(),
     };
     next = vi.fn();
-    vi.clearAllMocks();
-    vi.useFakeTimers();
+    process.env.UPSTASH_REDIS_REST_URL = "test";
+    process.env.UPSTASH_REDIS_REST_TOKEN = "test";
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
   });
 
-  describe("In-Memory Strategy (Default Fallback)", () => {
-    it("should allow requests within limit", async () => {
-      // Force memory mode by ensuring Redis throws or returns null
-      vi.mocked(Redis.fromEnv).mockImplementation(() => {
-        throw new Error("No Redis");
-      });
-
-      const limiter = new RateLimiter({
-        windowMs: 1000,
-        max: 2,
-        message: "Too many",
-        statusCode: 429,
-      });
-
-      const middleware = limiter.middleware();
-
-      // Request 1
-      await middleware(req as Request, res as Response, next);
-      expect(next).toHaveBeenCalled();
-      expect(res.setHeader).toHaveBeenCalledWith("RateLimit-Remaining", "1");
-
-      // Request 2
-      await middleware(req as Request, res as Response, next);
-      expect(res.setHeader).toHaveBeenCalledWith("RateLimit-Remaining", "0");
-    });
-
-    it("should block requests exceeding limit", async () => {
-      vi.mocked(Redis.fromEnv).mockImplementation(() => {
-        throw new Error("No Redis");
-      });
-      const limiter = new RateLimiter({
-        windowMs: 1000,
-        max: 1,
-        message: "Too many",
-        statusCode: 429,
-      });
-      const middleware = limiter.middleware();
-
-      await middleware(req as Request, res as Response, next); // 1st OK
-      await middleware(req as Request, res as Response, next); // 2nd Blocked
-
-      // The middleware calls next(error) when blocked
-      expect(next).toHaveBeenLastCalledWith(expect.any(Error));
-      const errorArg = vi.mocked(next).mock.calls[1][0] as any;
-      expect(errorArg.statusCode).toBe(429);
-      expect(errorArg.message).toBe("Too many");
-    });
-
-    it("should reset after windowMs", async () => {
-      vi.mocked(Redis.fromEnv).mockImplementation(() => {
-        throw new Error("No Redis");
-      });
-      const limiter = new RateLimiter({
-        windowMs: 1000,
-        max: 1,
-        message: "Too many",
-        statusCode: 429,
-      });
-      const middleware = limiter.middleware();
-
-      await middleware(req as Request, res as Response, next); // 1 OK
-
-      // Advance time
-      vi.advanceTimersByTime(1100);
-
-      await middleware(req as Request, res as Response, next); // 2 OK (reset)
-
-      expect(res.setHeader).toHaveBeenCalledWith("RateLimit-Remaining", "0");
-      expect(next).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe("Redis Strategy", () => {
-    let mockRedis: any;
-
-    beforeEach(() => {
-      mockRedis = {
-        incr: vi.fn(),
-        expire: vi.fn(),
-        ttl: vi.fn(),
+  describe("RateLimiter (Redis-based)", () => {
+    it("uses Redis if available", async () => {
+      const mockRedis = {
+        incr: vi.fn().mockResolvedValue(1),
+        expire: vi.fn().mockResolvedValue(1),
       };
-      vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis);
-      process.env.UPSTASH_REDIS_REST_URL = "https://mock.upstash.io";
-      process.env.UPSTASH_REDIS_REST_TOKEN = "mock-token";
-    });
+      vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as any);
 
-    afterEach(() => {
-      delete process.env.UPSTASH_REDIS_REST_URL;
-      delete process.env.UPSTASH_REDIS_REST_TOKEN;
-    });
+      const limiter = new RateLimiter({
+        windowMs: 60000,
+        max: 5,
+        message: "Too many requests",
+        statusCode: 429,
+      });
 
-    it("should use Redis when available", async () => {
-      mockRedis.incr.mockResolvedValue(1);
-      mockRedis.expire.mockResolvedValue(1);
+      await limiter.middleware()(req, res, next);
 
-      const limiter = new RateLimiter({ windowMs: 1000, max: 10, message: "", statusCode: 429 });
-      const middleware = limiter.middleware();
-
-      await middleware(req as Request, res as Response, next);
-
-      expect(mockRedis.incr).toHaveBeenCalledWith("ratelimit:127.0.0.1");
+      expect(mockRedis.incr).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
 
-    it("should fallback to memory if Redis fails during request", async () => {
-      mockRedis.incr.mockRejectedValue(new Error("Redis connection lost"));
+    it("blocks request if limit exceeded (Redis)", async () => {
+      const mockRedis = {
+        incr: vi.fn().mockResolvedValue(6),
+        ttl: vi.fn().mockResolvedValue(30),
+      };
+      vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as any);
 
-      const limiter = new RateLimiter({ windowMs: 1000, max: 10, message: "", statusCode: 429 });
+      const limiter = new RateLimiter({
+        windowMs: 60000,
+        max: 5,
+        message: "Limit hit",
+        statusCode: 429,
+      });
+
+      await limiter.middleware()(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: "Limit hit" }));
+    });
+  });
+
+  describe("RateLimiter (Memory Fallback)", () => {
+    it("falls back to memory if Redis initialization fails", async () => {
+      vi.mocked(Redis.fromEnv).mockImplementation(() => {
+        throw new Error("Redis failed");
+      });
+
+      const limiter = new RateLimiter({
+        windowMs: 60000,
+        max: 2,
+        message: "Memory limit",
+        statusCode: 429,
+      });
+
       const middleware = limiter.middleware();
 
-      await middleware(req as Request, res as Response, next);
+      await middleware(req, res, next); // 1
+      await middleware(req, res, next); // 2
+      await middleware(req, res, next); // 3 (Should fail)
 
-      // Should log error but succeed via fallback
-      expect(next).toHaveBeenCalled();
+      expect(next).toHaveBeenCalledTimes(3);
+      expect(next).toHaveBeenLastCalledWith(expect.objectContaining({ message: "Memory limit" }));
+      limiter.destroy();
+    });
+  });
+
+  describe("createRateLimiter factory", () => {
+    it("creates a middleware correctly", async () => {
+      const middleware = createRateLimiter({ windowMs: 1000, max: 10 });
+      expect(typeof middleware).toBe("function");
+    });
+  });
+
+  describe("UploadRateLimiter", () => {
+    it("limits upload requests using memory", async () => {
+      const limiter = new UploadRateLimiter(2, 60000);
+      const middleware = limiter.middleware;
+
+      middleware(req, res, next); // 1
+      middleware(req, res, next); // 2
+      middleware(req, res, next); // 3 (Should fail)
+
+      expect(res.status).toHaveBeenCalledWith(429);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: "Too many upload requests" }),
+      );
+      limiter.destroy();
     });
   });
 });

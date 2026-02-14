@@ -65,6 +65,17 @@ type Pages = {
   "/terms": {
     params: {};
   };
+  "/developer": {
+    params: {};
+  };
+  "/developer/playground": {
+    params: {};
+  };
+  "/developer/guides/:slug": {
+    params: {
+      "slug": string;
+    };
+  };
   "/categories": {
     params: {};
   };
@@ -104,11 +115,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module/*" | "/api/media" | "/api/navigation-items";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/developer" | "/developer/playground" | "/developer/guides/:slug" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module/*" | "/api/media" | "/api/navigation-items";
   };
   "routes/_public.tsx": {
     id: "routes/_public";
-    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/developer" | "/developer/playground" | "/developer/guides/:slug" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product";
   };
   "routes/_index.tsx": {
     id: "routes/_index";
@@ -182,6 +193,22 @@ type RouteFiles = {
     id: "routes/terms";
     page: "/terms";
   };
+  "routes/developer.tsx": {
+    id: "routes/developer";
+    page: "/developer" | "/developer/playground" | "/developer/guides/:slug";
+  };
+  "routes/developer._index.tsx": {
+    id: "routes/developer._index";
+    page: "/developer";
+  };
+  "routes/developer.playground.tsx": {
+    id: "routes/developer.playground";
+    page: "/developer/playground";
+  };
+  "routes/developer.guides.$slug.tsx": {
+    id: "routes/developer.guides.$slug";
+    page: "/developer/guides/:slug";
+  };
   "routes/categories._index.tsx": {
     id: "routes/categories._index";
     page: "/categories";
@@ -241,6 +268,10 @@ type RouteModules = {
   "routes/sustainability": typeof import("./app/routes/sustainability.tsx");
   "routes/technology": typeof import("./app/routes/technology.tsx");
   "routes/terms": typeof import("./app/routes/terms.tsx");
+  "routes/developer": typeof import("./app/routes/developer.tsx");
+  "routes/developer._index": typeof import("./app/routes/developer._index.tsx");
+  "routes/developer.playground": typeof import("./app/routes/developer.playground.tsx");
+  "routes/developer.guides.$slug": typeof import("./app/routes/developer.guides.$slug.tsx");
   "routes/categories._index": typeof import("./app/routes/categories._index.tsx");
   "routes/categories.$slug": typeof import("./app/routes/categories.$slug.tsx");
   "routes/categories.$slug.products": typeof import("./app/routes/categories.$slug.products.tsx");

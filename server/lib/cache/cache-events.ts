@@ -2,7 +2,7 @@ import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { logger } from "../monitoring/logger.js";
 import { isRedisEnabled, redis } from "./upstash-client.js";
 
-const CACHE_EVENT_KEY = "cache:invalidation:events";
+const _CACHE_EVENT_KEY = "cache:invalidation:events";
 
 const tracer = trace.getTracer("cache-events");
 

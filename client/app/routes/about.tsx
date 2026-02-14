@@ -212,7 +212,7 @@ function AboutPageContent() {
                         <div className="mb-6">
                           <OptimizedImage
                             mediaId={teamMessage.imageId}
-                            alt="Team"
+                            alt="RUN APPAREL Executive Team"
                             className="h-64 w-full rounded-xl object-cover bg-transparent"
                             quality={90}
                             priority={false}
@@ -221,7 +221,7 @@ function AboutPageContent() {
                       )}
                     </div>
                     <div>
-                      <MessageSquare className="mb-4 h-8 w-8 text-primary" />
+                      <MessageSquare className="mb-4 h-8 w-8 text-primary" aria-hidden="true" />
                       {teamMessage.title && (
                         <Typography.H3 className="mb-4 font-bold text-2xl">
                           {teamMessage.title}
@@ -290,7 +290,7 @@ function AboutPageContent() {
                     <GlowingShadow>
                       <div className="flex h-full flex-col items-center justify-center">
                         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                          <IconComponent className="h-8 w-8 text-primary" />
+                          <IconComponent className="h-8 w-8 text-primary" aria-hidden="true" />
                         </div>
                         <Typography.H3 className="mb-2 font-bold text-3xl text-foreground">
                           {stat.value}

@@ -9,7 +9,10 @@ interface ContactInfoCardsProps {
 
 export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
   return (
-    <div className="col-span-1 lg:col-span-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1">
+    <aside
+      className="col-span-1 lg:col-span-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1"
+      aria-label="Contact information and resources"
+    >
       {/* Social Connect Card - Mobile First */}
       <Card
         variant="glass-premium"
@@ -18,7 +21,7 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
         <GlassCardDecorations />
         <div className="relative z-10 flex flex-col items-center p-6 text-center">
           <div className="mb-4 rounded-full bg-primary/10 p-3 ring-1 ring-primary/20 transition-all duration-300 group-hover:bg-primary/20">
-            <Share2 className="h-6 w-6 text-primary" />
+            <Share2 className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <Typography.H3 className="mb-2 font-bold text-lg">Connect With Us</Typography.H3>
           <div className="flex gap-4">
@@ -31,9 +34,10 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
                   rel="noopener noreferrer"
                   className="rounded-full bg-background/50 p-2 text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
                 >
-                  <span className="sr-only">{platform}</span>
-                  {/* Icons would go here */}
-                  <span className="font-bold text-xs capitalize">{platform}</span>
+                  <span className="sr-only">{platform} (opens in a new tab)</span>
+                  <span className="font-bold text-xs capitalize" aria-hidden="true">
+                    {platform}
+                  </span>
                 </a>
               ))}
           </div>
@@ -48,28 +52,30 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
         <GlassCardDecorations />
         <div className="relative z-10 flex flex-col items-center p-6 text-center">
           <div className="mb-4 rounded-full bg-primary/10 p-3 ring-1 ring-primary/20 transition-all duration-300 group-hover:bg-primary/20">
-            <Phone className="h-6 w-6 text-primary" />
+            <Phone className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <Typography.H3 className="mb-2 font-bold text-lg">Contact Info</Typography.H3>
           <div className="space-y-2 text-muted-foreground text-sm">
-            <p className="flex items-center justify-center gap-2">
-              <Mail className="h-4 w-4" />
+            <div className="flex items-center justify-center gap-2">
+              <Mail className="h-4 w-4" aria-hidden="true" />
               <a
                 href={`mailto:${contactConfig?.email || "hello@runapparel.co"}`}
                 className="transition-colors hover:text-primary"
+                aria-label={`Email us at ${contactConfig?.email || "hello@runapparel.co"}`}
               >
                 {contactConfig?.email || "hello@runapparel.co"}
               </a>
-            </p>
-            <p className="flex items-center justify-center gap-2">
-              <Phone className="h-4 w-4" />
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Phone className="h-4 w-4" aria-hidden="true" />
               <a
                 href={`tel:${contactConfig?.phone || "+1 (555) 123-4567"}`}
                 className="transition-colors hover:text-primary"
+                aria-label={`Call us at ${contactConfig?.phone || "+1 (555) 123-4567"}`}
               >
                 {contactConfig?.phone || "+1 (555) 123-4567"}
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </Card>
@@ -82,7 +88,7 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
         <GlassCardDecorations />
         <div className="relative z-10 flex flex-col items-center p-6 text-center">
           <div className="mb-4 rounded-full bg-primary/10 p-3 ring-1 ring-primary/20 transition-all duration-300 group-hover:bg-primary/20">
-            <MapPin className="h-6 w-6 text-primary" />
+            <MapPin className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <Typography.H3 className="mb-2 font-bold text-lg">Our Location</Typography.H3>
           <Typography.P className="mb-4 max-w-[200px] text-muted-foreground text-sm">
@@ -97,6 +103,7 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
             className="inline-flex items-center font-medium text-primary text-xs hover:underline"
           >
             {contactConfig?.locationButtonText || "GET DIRECTIONS"}
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
       </Card>
@@ -109,7 +116,7 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
         <GlassCardDecorations />
         <div className="relative z-10 flex flex-col items-center p-6 text-center">
           <div className="mb-4 rounded-full bg-primary/10 p-3 ring-1 ring-primary/20 transition-all duration-300 group-hover:bg-primary/20">
-            <Clock className="h-6 w-6 text-primary" />
+            <Clock className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <Typography.H3 className="mb-4 font-bold text-lg">Business Hours</Typography.H3>
           <div className="w-full space-y-3">
@@ -138,6 +145,6 @@ export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProp
           </div>
         </div>
       </Card>
-    </div>
+    </aside>
   );
 }

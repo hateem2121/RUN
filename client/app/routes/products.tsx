@@ -15,6 +15,14 @@ import { GlobalErrorBoundary } from "@/components/error-boundaries/GlobalErrorBo
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductsListSEO } from "@/components/products/ProductsListSEO";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -405,13 +413,19 @@ export default function ProductsPage() {
             <div className="container mx-auto max-w-7xl px-4 md:px-8 py-4">
               {/* Breadcrumbs Integration */}
               <div className="mb-4 flex justify-start">
-                <nav className="flex items-center space-x-2 text-luxury-gray-400 text-[10px] uppercase tracking-widest">
-                  <a href="/" className="hover:text-luxury-charcoal transition-colors">
-                    Home
-                  </a>
-                  <span className="text-luxury-gray-300">/</span>
-                  <span className="text-luxury-charcoal font-medium">Products</span>
-                </nav>
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink asChild>
+                        <a href="/">Home</a>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Products</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
               </div>
 
               <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
@@ -428,12 +442,13 @@ export default function ProductsPage() {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-10 sm:w-80"
+                      aria-label="Search products"
                     />
                   </div>
 
                   {/* Category Filter */}
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full sm:w-48">
+                    <SelectTrigger className="w-full sm:w-48" aria-label="Filter by category">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -450,7 +465,7 @@ export default function ProductsPage() {
 
                   {/* Sort */}
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full sm:w-40">
+                    <SelectTrigger className="w-full sm:w-40" aria-label="Sort by">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -461,12 +476,17 @@ export default function ProductsPage() {
                   </Select>
 
                   {/* View Mode */}
-                  <div className="bg-muted flex gap-1 rounded-md p-1">
+                  <div
+                    className="bg-muted flex gap-1 rounded-md p-1"
+                    role="group"
+                    aria-label="View mode"
+                  >
                     <Button
                       size="sm"
                       variant={viewMode === "small" ? "default" : "ghost"}
                       onClick={() => setViewMode("small")}
                       className="p-2"
+                      aria-label="Small grid view"
                     >
                       <Grid3X3 className="h-4 w-4" />
                     </Button>
@@ -475,6 +495,7 @@ export default function ProductsPage() {
                       variant={viewMode === "medium" ? "default" : "ghost"}
                       onClick={() => setViewMode("medium")}
                       className="p-2"
+                      aria-label="Medium grid view"
                     >
                       <Grid2X2 className="h-4 w-4" />
                     </Button>
@@ -483,6 +504,7 @@ export default function ProductsPage() {
                       variant={viewMode === "large" ? "default" : "ghost"}
                       onClick={() => setViewMode("large")}
                       className="p-2"
+                      aria-label="Large grid view"
                     >
                       <LayoutGrid className="h-4 w-4" />
                     </Button>
@@ -503,7 +525,11 @@ export default function ProductsPage() {
             </div>
 
             {/* Results count */}
-            <div className="text-muted-foreground mt-2 text-sm container mx-auto max-w-7xl px-4 md:px-8 pb-2">
+            <div
+              className="text-muted-foreground mt-2 text-sm container mx-auto max-w-7xl px-4 md:px-8 pb-2"
+              role="status"
+              aria-live="polite"
+            >
               Showing {sortedProducts.length} products
               {searchTerm && ` for "${searchTerm}"`}
               {selectedCategory &&

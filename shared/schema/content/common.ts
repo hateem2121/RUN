@@ -127,15 +127,16 @@ export const inquiries = pgTable(
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
     // Contact information
-    name: varchar({ length: 100 }).notNull(),
-    email: varchar({ length: 320 }).notNull(),
-    company: varchar({ length: 100 }),
-    phone: varchar({ length: 20 }),
+    name: varchar({ length: 100 }).notNull(), // Encrypted (AES-256-GCM)
+    email: varchar({ length: 320 }).notNull(), // Encrypted
+    emailIndex: varchar({ length: 255 }), // Blind Index (HMAC-SHA256)
+    company: varchar({ length: 100 }), // Encrypted
+    phone: varchar({ length: 50 }), // Encrypted
     country: varchar({ length: 100 }),
 
     // Form data
     preferredPlatform: varchar({ length: 50 }),
-    message: text().notNull(),
+    message: text().notNull(), // Encrypted
 
     // Metadata
     source: varchar({ length: 50 }).default("contact-page").notNull(),
@@ -153,7 +154,7 @@ export const inquiries = pgTable(
     // Performance indexes
     index("inquiries_status_idx").on(table.status),
     index("inquiries_submitted_at_idx").on(table.submittedAt.desc()),
-    index("inquiries_email_idx").on(table.email),
+    index("inquiries_email_index_idx").on(table.emailIndex),
     index("inquiries_source_idx").on(table.source),
     // Composite index for admin filtering (status + submittedAt)
     index("inquiries_status_submitted_idx").on(table.status, table.submittedAt.desc()),

@@ -18,7 +18,7 @@ To build powerful frontend HTML artifacts, follow these steps:
 4. Display artifact to user
 5. (Optional) Test the artifact
 
-**Stack**: React 18 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui
+**Stack**: React 19 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui
 
 ## Design & Style Guidelines
 
@@ -36,7 +36,7 @@ cd <project-name>
 
 This creates a fully configured project with:
 - ✅ React + TypeScript (via Vite)
-- ✅ Tailwind CSS 3.4.1 with shadcn/ui theming system
+- ✅ Tailwind CSS v4.0.0 with shadcn/ui theming system
 - ✅ Path aliases (`@/`) configured
 - ✅ 40+ shadcn/ui components pre-installed
 - ✅ All Radix UI dependencies included

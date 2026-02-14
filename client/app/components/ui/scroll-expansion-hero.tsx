@@ -328,6 +328,7 @@ const ScrollExpandMedia = ({
                       <iframe
                         width="100%"
                         height="100%"
+                        title={title ? `Video of ${title}` : "Brand introduction video"}
                         src={
                           mediaSrc.includes("embed")
                             ? mediaSrc +
@@ -358,6 +359,9 @@ const ScrollExpandMedia = ({
                         loop
                         playsInline
                         preload="auto"
+                        aria-label={
+                          title ? `Video demonstration of ${title}` : "Brand background video"
+                        }
                         className="h-full w-full rounded-xl object-cover"
                         controls={false}
                         disablePictureInPicture

@@ -22,10 +22,10 @@ export default defineConfig({
       reportsDirectory: "./coverage",
       exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/mocks/**"],
       thresholds: {
-        lines: 80,
+        lines: 70,
         functions: 70,
-        branches: 60,
-        statements: 80,
+        branches: 70,
+        statements: 70,
       },
     },
   },

@@ -244,8 +244,13 @@ npm run test:watch
 # Generate coverage report
 npm run test:coverage
 
-# Integration tests
+# Integration tests (LEGACY)
 npm run test:integration
+
+# Integration tests (V2 - Preferred)
+npm run test server/tests/integration/product-v2.integration.test.ts
+npm run test server/tests/integration/admin-v2.integration.test.ts
+npm run test server/tests/integration/auth-v2.integration.test.ts
 ```
 
 ### Build & Deploy
@@ -651,7 +656,7 @@ npm run test:watch
 npm run test:coverage
 ```
 
-### Integration Tests
+### Integration Tests (LEGACY)
 
 ```bash
 # API integration tests
@@ -659,6 +664,15 @@ npm run test:integration
 
 # Test specific endpoint
 npm run test:integration -- products
+```
+
+### Integration Tests (V2 - Preferred)
+
+```bash
+# Comprehensive API suites using MemoryStorage
+npm run test server/tests/integration/product-v2.integration.test.ts
+npm run test server/tests/integration/admin-v2.integration.test.ts
+npm run test server/tests/integration/auth-v2.integration.test.ts
 ```
 
 ### E2E Tests
@@ -674,8 +688,10 @@ npm run test:e2e -- login
 ### Testing Standards
 
 - Service layer: **80%+ coverage required**
-- API endpoints: **Integration tests required**
-- Critical flows: **E2E tests recommended**
+- API endpoints: **Integration tests required** using `MemoryStorage`.
+- Critical flows: **E2E tests recommended** using Playwright.
+- **RBAC**: Every mutation endpoint MUST be verified for admin-only access.
+- **Statefulness**: Multi-step business flows must be tested via the stateful `MemoryStorage` mock.
 
 ---
 

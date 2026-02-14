@@ -24,6 +24,22 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
       return next(new Error("Secure Context Failed: CSP Nonce missing"));
     }
 
+    // P1 SECURITY: Permissions Policy
+    // Restricts sensitive browser features
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    );
+
+    // P1 FIX: CSP Reporting (Report-Only)
+    // Helps catch violations before they break production
+    if (config.monitoring?.sentry?.reportUri) {
+      res.setHeader(
+        "Content-Security-Policy-Report-Only",
+        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; report-uri ${config.monitoring.sentry.reportUri}`,
+      );
+    }
+
     // Use Helmet for security headers
     helmet({
       contentSecurityPolicy: {
@@ -62,22 +78,6 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
       crossOriginEmbedderPolicy: false, // Often causes issues with 3rd party assets
       crossOriginResourcePolicy: { policy: "cross-origin" },
     })(req, res, next);
-
-    // P1 SECURITY: Permissions Policy
-    // Restricts sensitive browser features
-    res.setHeader(
-      "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
-    );
-
-    // P1 FIX: CSP Reporting (Report-Only)
-    // Helps catch violations before they break production
-    if (config.monitoring?.sentry?.reportUri) {
-      res.setHeader(
-        "Content-Security-Policy-Report-Only",
-        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; report-uri ${config.monitoring.sentry.reportUri}`,
-      );
-    }
   } else {
     next();
   }

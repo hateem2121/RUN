@@ -30,6 +30,7 @@
 | :--- | :--- |
 | **Versions / Stack** | `docs/overview.md` |
 | **Architecture** | `docs/core/architecture.md` |
+| **SDK Package** | `docs/core/sdk-workspace.md` |
 | **Styles / UI** | `docs/development/styling.md` |
 | **Testing** | `docs/development/testing.md` |
 | **API Endpoints** | `docs/api/endpoints.md` |
@@ -53,6 +54,8 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 | **Start Dev** | `npm run dev` | Starts Backend (5002) + Frontend Proxy. |
 | **Typecheck** | `npm run typecheck` | Validates TypeScript across all workspaces. |
 | **Lint (Fix)** | `npm run check:apply` | Auto-fixes Biome linting issues. |
+| **Test (All)** | `npm run test` | Runs all unit and integration tests. |
+| **Test (V2)** | `npm run test tests/v2` | Runs the preferred stateful integration suites. |
 | **DB Push** | `npm run db:push` | Syncs Drizzle schema to Neon DB. |
 
 ## 4. Architectural Rules (Strict Invariants)
@@ -90,6 +93,21 @@ Agrents SHOULD prioritize these npm scripts over raw CLI commands.
 *   **Port Conflicts**: If port 5002 is busy, use `npm run kill:all` to clear zombie Node processes.
 *   **Vite HMR**: If HMR fails, ensure `client/vite.config.ts` has `server.hmr.clientPort` set to 5002.
 *   **Neon Cold Starts**: The DB sleeps after inactivity. The first request may take 3-5s. `server/db.ts` handles the wakeup via `wakeupDatabase()`.
+
+## 7. Testing Patterns (Critical Capability)
+
+Future agents SHOULD follow these patterns to maintain 2026 testing standards:
+
+### A. Integration Testing (`MemoryStorage`)
+Use `server/tests/memory-storage.ts` for stateful integration tests. It mocks the `IStorage` interface, allowing you to test complex sequences (e.g., product creation + retrieval) without a real database.
+
+### B. RBAC Verification
+Always verify Role-Based Access Control using the `createMockSessionUser` utility from `server/tests/test-utils.ts`:
+1.  **Admin Case**: Set `isAdmin: true` and verify `200/201` status.
+2.  **Unauthorized Case**: Set `isAdmin: false` and verify `403 Forbidden`.
+
+### C. Service Coverage
+Aim for **80%+ coverage** in the service layer (`server/services/`). Tests should be written in `server/services/*.test.ts` using Vitest.
 
 ---
 

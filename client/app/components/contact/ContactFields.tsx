@@ -126,11 +126,17 @@ export function ContactFields({
           )}
         </div>
         <div>
-          <Label className="mb-2 block font-medium text-foreground/80 text-sm">
+          <Label
+            id="country-label"
+            htmlFor="country-select"
+            className="mb-2 block font-medium text-foreground/80 text-sm"
+          >
             Country <span className="text-destructive">*</span>
           </Label>
           <div className="relative">
             <CustomSelect
+              id="country-select"
+              aria-labelledby="country-label"
               value={selectedCountry}
               options={countryOptions}
               onChange={onCountryChange}
@@ -163,11 +169,17 @@ export function ContactFields({
       {/* Platform and Contact Number */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
-          <Label className="mb-2 block font-medium text-foreground/80 text-sm">
+          <Label
+            id="platform-label"
+            htmlFor="platform-select"
+            className="mb-2 block font-medium text-foreground/80 text-sm"
+          >
             Preferred Platform
           </Label>
           <div className="relative">
             <CustomSelect
+              id="platform-select"
+              aria-labelledby="platform-label"
               value={selectedPlatform || null}
               options={platformOptions}
               onChange={(p) => setValue("platform", p)}
@@ -180,18 +192,23 @@ export function ContactFields({
         </div>
         <div>
           <Label
+            id="contact-number-label"
             htmlFor="contactNumber"
             className="mb-2 block font-medium text-foreground/80 text-sm"
           >
             Contact Number / Handle
           </Label>
           <div className="flex items-center overflow-hidden rounded-lg border border-border shadow-sm transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary h-12">
-            <span className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm h-full">
+            <span
+              id="country-prefix"
+              className="inline-flex items-center border-border border-r bg-muted px-3 text-foreground/80 sm:text-sm h-full"
+            >
               {selectedCountry ? `+${selectedCountry.phone}` : "--"}
             </span>
             <Input
               id="contactNumber"
               data-testid="input-contact-number"
+              aria-labelledby="contact-number-label country-prefix"
               {...register("contactNumber")}
               variant="ghost"
               className="flex-1 border-0 bg-transparent p-3 h-full"
@@ -243,11 +260,15 @@ export function ContactFields({
 
       {/* Contact Preference */}
       <div>
-        <Label className="mb-2 block font-medium text-foreground/80 text-sm">
+        <Label
+          id="contact-preference-label"
+          className="mb-2 block font-medium text-foreground/80 text-sm"
+        >
           How should we contact you?
         </Label>
         <RadioGroup
           defaultValue="email"
+          aria-labelledby="contact-preference-label"
           onValueChange={(value) => setValue("contactPreference", value as "email" | "platform")}
           disabled={isPending}
         >

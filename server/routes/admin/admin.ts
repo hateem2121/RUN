@@ -50,23 +50,20 @@ router.get("/test", authService.requireAdmin, (_req, res) => {
 
 // POST /fix-corrupted-media - Fix corrupted media URLs
 // prettier-ignore
+// POST /fix-corrupted-media - Fix corrupted media URLs
+// prettier-ignore
 router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) => {
   // security
   const { timeout } = emptyBodySchema.parse(req.body);
-  const result = await adminService.fixCorruptedMedia(timeout);
 
-  // Audit Log
-  if (result.fixedCount > 0) {
-    await adminService.logAudit({
-      action: "UPDATE",
-      tableName: "categories",
-      recordId: "BULK_FIX",
-      user: req.user as SessionUser,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-      metadata: { operation: "fix-corrupted-media", result },
-    });
-  }
+  // Create audit context
+  const auditContext = {
+    user: req.user as SessionUser,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+  };
+
+  const result = await adminService.fixCorruptedMedia(auditContext, timeout);
 
   return res.json({
     success: true,
@@ -79,18 +76,15 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
 // POST /api/admin/cleanup/trigger - Trigger storage cleanup
 router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
   const { autoClean, timeout } = req.body;
-  const report = await adminService.triggerCleanup(autoClean === true, timeout);
 
-  // Audit Log
-  await adminService.logAudit({
-    action: "DELETE",
-    tableName: "storage",
-    recordId: "CLEANUP",
+  // Create audit context
+  const auditContext = {
     user: req.user as SessionUser,
     userAgent: req.headers["user-agent"],
     ipAddress: req.ip,
-    metadata: { operation: "cleanup", autoClean, report },
-  });
+  };
+
+  const report = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
 
   res.json({ success: true, report });
 });
@@ -120,25 +114,15 @@ router.get("/enterprise/audit-config", authService.requireAdmin, async (_req, re
 router.post("/enterprise/audit-config", authService.requireAdmin, async (req, res) => {
   // security
   const validatedData = auditConfigSchema.parse(req.body);
-  const { enabled, trackedTables } = validatedData;
-  if (typeof enabled === "boolean") {
-    getStorage().setAuditTrailEnabled(enabled);
-  }
-  if (Array.isArray(trackedTables)) {
-    getStorage().configureTrackedTables(trackedTables);
-  }
 
-  // Audit Log
-  await adminService.logAudit({
-    action: "UPDATE",
-    tableName: "audit_configuration",
-    recordId: "CONFIG",
-    user: req.user,
+  // Create audit context
+  const auditContext = {
+    user: req.user as SessionUser,
     userAgent: req.headers["user-agent"],
     ipAddress: req.ip,
-    newValues: validatedData,
-    metadata: { operation: "update-audit-config" },
-  });
+  };
+
+  await adminService.updateAuditConfig(auditContext, validatedData);
 
   return res.json({ success: true, message: "Audit configuration updated" });
 });
@@ -153,18 +137,14 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
     return; // Error response already sent
   }
 
-  const result = await withTimeout(getStorage().restoreCategory(id), 5000, "Restore category");
+  // Create audit context
+  const auditContext = {
+    user: req.user as SessionUser,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+  };
 
-  if (result) {
-    await adminService.logAudit({
-      action: "RESTORE",
-      tableName: "categories",
-      recordId: id.toString(),
-      user: req.user,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-    });
-  }
+  const result = await adminService.restoreCategory(auditContext, id);
 
   return res.json({ success: result });
 });
@@ -178,18 +158,14 @@ router.post("/products/:id/restore", authService.requireAdmin, async (req, res) 
     return; // Error response already sent
   }
 
-  const result = await withTimeout(getStorage().restoreProduct(id), 5000, "Restore product");
+  // Create audit context
+  const auditContext = {
+    user: req.user as SessionUser,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+  };
 
-  if (result) {
-    await adminService.logAudit({
-      action: "RESTORE",
-      tableName: "products",
-      recordId: id.toString(),
-      user: req.user,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-    });
-  }
+  const result = await adminService.restoreProduct(auditContext, id);
 
   return res.json({ success: result });
 });
@@ -203,18 +179,14 @@ router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, r
     return; // Error response already sent
   }
 
-  const result = await withTimeout(getStorage().restoreMediaAsset(id), 5000, "Restore media asset");
+  // Create audit context
+  const auditContext = {
+    user: req.user as SessionUser,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+  };
 
-  if (result) {
-    await adminService.logAudit({
-      action: "RESTORE",
-      tableName: "media_assets",
-      recordId: id.toString(),
-      user: req.user,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-    });
-  }
+  const result = await adminService.restoreMediaAsset(auditContext, id);
 
   return res.json({ success: result });
 });
