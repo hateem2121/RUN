@@ -404,7 +404,7 @@ export class AuthService {
     if (!user) return;
 
     const attempts = Number.parseInt(user.failedLoginAttempts || "0", 10) + 1;
-    const updates: any = {
+    const updates: Partial<User> = {
       failedLoginAttempts: attempts.toString(),
       updatedAt: new Date(),
     };
@@ -415,17 +415,14 @@ export class AuthService {
       logger.warn(`[AuthService] Account locked for ${email} following 5 failures`);
     }
 
-    // We need update capability in userRepository or storage
-    // For now, let's assume getStorage().upsertUser or a generic update exists.
-    // Actually, I should check UserRepository.
-    await (getStorage() as any).updateUser(user.id, updates);
+    await getStorage().updateUser(user.id, updates);
   }
 
   public async recordSuccessfulLogin(email: string): Promise<void> {
     const user = await getStorage().getUserByEmail(email);
     if (!user) return;
 
-    await (getStorage() as any).updateUser(user.id, {
+    await getStorage().updateUser(user.id, {
       failedLoginAttempts: "0",
       lockoutUntil: null,
       updatedAt: new Date(),

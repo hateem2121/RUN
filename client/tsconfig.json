@@ -22,12 +22,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["app/**/*", "src/types/**/*", "../utils/**/*", "vite.config.ts"],
+  "include": ["app/**/*", "src/types/**/*", "vite.config.ts"],
 
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts", "../server/**/*"],
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ]
+  "references": [{ "path": "../shared" }, { "path": "../utils" }]
 }

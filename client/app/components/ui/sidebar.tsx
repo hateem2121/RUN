@@ -181,7 +181,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
       <div
         className={cn(
           "transition-colors duration-200",
-          isActive && "text-blue-600 dark:text-blue-400",
+          isActive ? "text-blue-600 dark:text-blue-400" : "text-neutral-500 dark:text-neutral-400",
         )}
       >
         {link.icon}

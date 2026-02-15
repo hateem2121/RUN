@@ -119,19 +119,21 @@ export default function Accessories() {
 
   const getAccessoryDetails = (accessory: Accessory) => (
     <div className="space-y-3 text-sm">
-      {accessory.specifications && accessory.specifications.length > 0 && (
-        <div>
-          <span className="font-medium text-foreground/80">Specifications:</span>
-          <ul className="mt-2 space-y-1">
-            {accessory.specifications.map((spec: string, index: number) => (
-              <li key={index} className="relative pl-4 text-muted-foreground">
-                <span className="absolute left-0">•</span>
-                {spec}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {accessory.specifications &&
+        typeof accessory.specifications === "object" &&
+        Object.keys(accessory.specifications).length > 0 && (
+          <div>
+            <span className="font-medium text-foreground/80">Specifications:</span>
+            <ul className="mt-2 space-y-1">
+              {Object.entries(accessory.specifications).map(([key, value], index) => (
+                <li key={index} className="relative pl-4 text-muted-foreground">
+                  <span className="absolute left-0">•</span>
+                  <span className="font-medium">{key}:</span> {String(value)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       {accessory.description && (
         <div>
           <span className="font-medium text-foreground/80">Details:</span>

@@ -18,6 +18,7 @@ import type {
   ITechnologyRepository,
   IUserRepository,
   IWebhookRepository,
+  IBlogRepository,
 } from "./repositories/storage-interfaces.js";
 
 export interface IStorage
@@ -38,6 +39,7 @@ export interface IStorage
     IManufacturingRepository,
     ITechnologyRepository,
     IWebhookRepository,
-    ISystemRepository {}
+    ISystemRepository,
+    IBlogRepository {}
 
 export const storage = getStorage();

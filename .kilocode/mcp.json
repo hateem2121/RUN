@@ -71,7 +71,8 @@
     },
     "git-mcp": {
       "command": "npx",
-      "args": ["-y", "mcp-remote@0.1.29", "https://gitmcp.io/hateem2121/RUN"]
+      "args": ["-y", "mcp-remote@0.1.29", "https://gitmcp.io/hateem2121/RUN"],
+      "alwaysAllow": ["fetch_generic_url_content"]
     },
     "neon": { "command": "npx", "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"] }
   }

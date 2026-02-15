@@ -110,7 +110,7 @@ export const mediaAssets = pgTable(
     // Enhanced metadata
     altText: text("alt_text"),
     caption: text(),
-    metadata: jsonb().$type<Record<string, any>>().notNull().default(sql`'{}'::jsonb`),
+    metadata: jsonb().$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
 
     // REMOVED 2025-11-14: Usage tracking columns (never updated - tracking not implemented)
     // - downloadCount: integer("download_count").default(0)

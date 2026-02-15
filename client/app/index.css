@@ -221,6 +221,36 @@
 }
 
 /* =========================================
+   AntiGravity Premium: Border Beam & Motion
+   ========================================= */
+
+@utility border-beam {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-background), var(--color-background)) padding-box,
+    linear-gradient(var(--border-beam-angle, 45deg), var(--color-brand-lime), #3300ff, #ff00cc)
+    border-box;
+  animation: border-beam-rotate var(--border-beam-speed, 4s) linear infinite;
+}
+
+@keyframes border-beam-rotate {
+  from {
+    --border-beam-angle: 0deg;
+  }
+  to {
+    --border-beam-angle: 360deg;
+  }
+}
+
+@property --border-beam-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+/* =========================================
    AntiGravity Premium: Bento Grid System
    ========================================= */
 

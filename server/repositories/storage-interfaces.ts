@@ -29,6 +29,8 @@ import type {
   InsertAboutTimelineEntry,
   InsertAccessory,
   InsertAnimationError,
+  InsertBlogCategory,
+  InsertBlogPost,
   InsertCategory,
   InsertCertificate,
   InsertContactPageConfiguration,
@@ -93,6 +95,8 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
+  BlogPost,
+  BlogCategory,
 } from "../../shared/schema.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
@@ -602,6 +606,34 @@ export interface ISystemRepository {
   checkDatabaseHealth(): Promise<{ healthy: boolean; latency: number }>;
 }
 
+// Blog Repository
+export interface IBlogRepository {
+  getBlogPosts(
+    limit?: number,
+    offset?: number,
+    filters?: {
+      status?: string;
+      categoryId?: number;
+      authorId?: string;
+      search?: string;
+      includeDeleted?: boolean;
+    },
+  ): Promise<{ posts: BlogPost[]; total: number }>;
+  getBlogPost(id: number): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: number): Promise<boolean>;
+  restoreBlogPost(id: number): Promise<boolean>;
+  getBlogCategories(): Promise<BlogCategory[]>;
+  createBlogCategory(category: InsertBlogCategory): Promise<BlogCategory>;
+  updateBlogCategory(
+    id: number,
+    category: Partial<InsertBlogCategory>,
+  ): Promise<BlogCategory | undefined>;
+  deleteBlogCategory(id: number): Promise<boolean>;
+}
+
 export interface IStorage
   extends IUserRepository,
     ICategoryRepository,
@@ -620,4 +652,5 @@ export interface IStorage
     IManufacturingRepository,
     ITechnologyRepository,
     IWebhookRepository,
-    ISystemRepository {}
+    ISystemRepository,
+    IBlogRepository {}

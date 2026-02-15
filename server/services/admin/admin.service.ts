@@ -59,15 +59,22 @@ export class AdminService {
    * Fetches and processes initial data for the admin products dashboard.
    * Eliminates the need for complex transformations in the route handler.
    */
-  async getInitialProductsData(page: number = 1, limit: number = 50) {
+  async getInitialProductsData(
+    page: number = 1,
+    limit: number = 50,
+    options: { skipMetadata?: boolean; includeRecentMedia?: boolean } = {},
+  ) {
     const offset = (page - 1) * limit;
+
+    const metadataPromises = options.skipMetadata
+      ? [Promise.resolve([]), Promise.resolve([])]
+      : [getStorage().getCategories(), getStorage().getFabrics()];
 
     const [allProducts, totalProductsCount, categories, fabrics] = await withTimeout(
       Promise.all([
         getStorage().getProductsIncludingDeleted(limit, offset),
         getStorage().getProductsCount(),
-        getStorage().getCategories(),
-        getStorage().getFabrics(),
+        ...metadataPromises,
       ]),
       15000,
       "Fetch admin initial data",
@@ -75,11 +82,7 @@ export class AdminService {
 
     const safeAllProducts = Array.isArray(allProducts) ? allProducts : [];
 
-    // Filter for active/undeleted products (though getProductsIncludingDeleted returns potentially deleted ones,
-    // the UI might expect them if it's an admin view. The previous code filtered them:
-    // const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
-    // But getProductsIncludingDeleted serves a purpose. If the admin needs to see deleted, we should keep them.
-    // However, to maintain parity with previous logic which explicitly filtered them ONLY for "products" variable:
+    // Filter for active/undeleted products for the primary list
     const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
 
     // Calculate referenced media IDs from the PAGINATED products
@@ -105,8 +108,7 @@ export class AdminService {
       };
     });
 
-    // Efficiently fetch ONLY referenced media assets + some recent ones
-    // Validating IDs before passing to DB
+    // Efficiently fetch ONLY referenced media assets + some recent ones if requested
     const validMediaIds = Array.from(referencedMediaIds).filter((id) => !Number.isNaN(id));
     const mediaIdsStrings = validMediaIds.map((id) => id.toString());
 
@@ -114,7 +116,7 @@ export class AdminService {
       mediaIdsStrings.length > 0
         ? getStorage().getMediaAssetsByIds(mediaIdsStrings)
         : Promise.resolve([]),
-      getStorage().getMediaAssets(50, 0), // Fetch recent 50 for picker/general use
+      options.includeRecentMedia ? getStorage().getMediaAssets(50, 0) : Promise.resolve([]),
     ]);
 
     // Merge and deduplicate media assets
@@ -142,7 +144,7 @@ export class AdminService {
         totalProducts: totalProductsCount,
         totalCategories: Array.isArray(categories) ? categories.length : 0,
         totalFabrics: Array.isArray(fabrics) ? fabrics.length : 0,
-        totalMediaAssets: allMediaToSend.length, // This is count of *sent* media, not total in DB.
+        totalMediaAssets: allMediaToSend.length,
         timestamp: Date.now(),
         page,
         limit,

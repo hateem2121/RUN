@@ -29,6 +29,7 @@ import { db, sql as rawSql } from "../db.js";
 import type { IStorage } from "../storage.js";
 import { UnifiedCache, unifiedCache } from "./cache/unified-cache.js";
 import { MediaRepository } from "./db/repositories/media-repository.js";
+import { BlogRepository } from "./db/repositories/blog-repository.js";
 import { MiscRepository } from "./db/repositories/misc-repository.js";
 import { PageContentRepository } from "./db/repositories/page-content-repository.js";
 import {
@@ -77,6 +78,8 @@ import type {
   InsertAboutTimelineEntry,
   InsertAccessory,
   InsertAnimationError,
+  InsertBlogCategory,
+  InsertBlogPost,
   InsertCategory,
   InsertCertificate,
   InsertContactPageConfiguration,
@@ -141,6 +144,8 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
+  BlogPost,
+  BlogCategory,
 } from "../../shared/schema.js";
 
 export class DirectPostgreSQLStorage implements IStorage {
@@ -151,6 +156,7 @@ export class DirectPostgreSQLStorage implements IStorage {
   private readonly miscRepository = new MiscRepository();
   private readonly pageContentRepository = new PageContentRepository();
   private readonly webhookRepository = new WebhookRepository();
+  private readonly blogRepository = new BlogRepository();
 
   // =============================================================================
   // TRANSACTION HELPER - CHUNK 1: DATA INTEGRITY
@@ -2354,5 +2360,94 @@ export class DirectPostgreSQLStorage implements IStorage {
 
   async logWebhookDelivery(delivery: any): Promise<void> {
     await this.webhookRepository.logWebhookDelivery(delivery);
+  }
+
+  // =============================================================================
+  // BLOG METHODS - DELEGATED TO BlogRepository
+  // =============================================================================
+
+  async getBlogPosts(
+    limit?: number,
+    offset?: number,
+    filters?: {
+      status?: string;
+      categoryId?: number;
+      authorId?: string;
+      search?: string;
+      includeDeleted?: boolean;
+    },
+  ): Promise<{ posts: BlogPost[]; total: number }> {
+    return await this.blogRepository.getBlogPosts(limit, offset, filters);
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    return await this.blogRepository.getBlogPost(id);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    return await this.blogRepository.getBlogPostBySlug(slug);
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.createBlogPost(post),
+      ["^blog:posts:"],
+      "createBlogPost",
+    );
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.updateBlogPost(id, post),
+      ["^blog:posts:", `blog/post/${id}`],
+      "updateBlogPost",
+    );
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.deleteBlogPost(id),
+      ["^blog:posts:", `blog/post/${id}`],
+      "deleteBlogPost",
+    );
+  }
+
+  async restoreBlogPost(id: number): Promise<boolean> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.restoreBlogPost(id),
+      ["^blog:posts:", `blog/post/${id}`],
+      "restoreBlogPost",
+    );
+  }
+
+  async getBlogCategories(): Promise<BlogCategory[]> {
+    return await this.blogRepository.getBlogCategories();
+  }
+
+  async createBlogCategory(category: InsertBlogCategory): Promise<BlogCategory> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.createBlogCategory(category),
+      ["blog:categories"],
+      "createBlogCategory",
+    );
+  }
+
+  async updateBlogCategory(
+    id: number,
+    category: Partial<InsertBlogCategory>,
+  ): Promise<BlogCategory | undefined> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.updateBlogCategory(id, category),
+      ["blog:categories"],
+      "updateBlogCategory",
+    );
+  }
+
+  async deleteBlogCategory(id: number): Promise<boolean> {
+    return await this.withCacheInvalidation(
+      () => this.blogRepository.deleteBlogCategory(id),
+      ["blog:categories", "^blog:posts:"],
+      "deleteBlogCategory",
+    );
   }
 }

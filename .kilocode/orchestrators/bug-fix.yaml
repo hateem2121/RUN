@@ -1,0 +1,154 @@
+name: bug-fix
+description: Systematic bug fixing workflow from identification to verification
+trigger: When fixing bugs, errors, or unexpected behavior in the codebase
+agents:
+  - orchestrator
+  - developer
+  - tester
+  - reviewer
+steps:
+  - step: 1
+    agent: orchestrator
+    action: triage
+    description: Triage bug report and gather context
+    outputs:
+      - bug_report.md
+      - findings.md
+    questions:
+      - What is the expected behavior?
+      - What is the actual behavior?
+      - What are the steps to reproduce?
+      - What is the severity and impact?
+      - Is there a workaround?
+    blast_phase: blueprint
+
+  - step: 2
+    agent: developer
+    action: investigate
+    description: Investigate root cause using systematic debugging
+    skill: systematic-debugging
+    substeps:
+      - Observe the error or unexpected behavior
+      - Form hypothesis about root cause
+      - Isolate the problematic code
+      - Identify the fix needed
+    outputs:
+      - root_cause_analysis.md
+    blast_phase: blueprint
+
+  - step: 3
+    agent: developer
+    action: write-test
+    description: Write a failing test that reproduces the bug
+    skill: test-driven-development
+    instructions:
+      - Write test that demonstrates the bug
+      - Verify test fails with current code
+      - Test should be minimal and focused
+    outputs:
+      - failing_test.ts
+    blast_phase: architect
+
+  - step: 4
+    agent: developer
+    action: fix
+    description: Implement the fix to make test pass
+    instructions:
+      - Make minimal changes to fix the bug
+      - Do not introduce new features
+      - Maintain backward compatibility
+    outputs:
+      - fix_implementation
+    blast_phase: architect
+
+  - step: 5
+    agent: tester
+    action: verify
+    description: Verify fix resolves the issue
+    skill: verification-before-completion
+    commands:
+      - npm run test
+      - npm run test:coverage
+    checks:
+      - Failing test now passes
+      - No regressions in existing tests
+      - Coverage maintained at 80%+
+    blast_phase: architect
+
+  - step: 6
+    agent: reviewer
+    action: review
+    description: Review fix for quality and side effects
+    skill: code-review
+    checklist:
+      - Fix addresses root cause not symptoms
+      - No new technical debt introduced
+      - Error handling is appropriate
+      - No security vulnerabilities
+    blast_phase: architect
+
+  - step: 7
+    agent: developer
+    action: document
+    description: Document the fix and update changelog
+    outputs:
+      - CHANGELOG.md update
+      - Code comments if complex
+    blast_phase: stylize
+
+  - step: 8
+    agent: orchestrator
+    action: verify
+    description: Final verification before completion
+    commands:
+      - npm run build
+      - npm run typecheck
+      - npm run check:apply
+    blast_phase: trigger
+
+  - step: 9
+    agent: orchestrator
+    action: complete
+    description: Mark bug fix complete and close issue
+    outputs:
+      - progress.md
+    blast_phase: trigger
+error_handling:
+  test_still_failing:
+    action: retry
+    max_retries: 3
+    agent: developer
+  regression_found:
+    action: investigate
+    agent: developer
+  build_failure:
+    action: fix
+    agent: developer
+  review_rejection:
+    action: refactor
+    agent: developer
+severity_levels:
+  critical:
+    response_time: immediate
+    skip_review: false
+    notify_stakeholders: true
+  high:
+    response_time: 4_hours
+    skip_review: false
+    notify_stakeholders: true
+  medium:
+    response_time: 24_hours
+    skip_review: false
+    notify_stakeholders: false
+  low:
+    response_time: 72_hours
+    skip_review: true
+    notify_stakeholders: false
+rollback:
+  enabled: true
+  strategy: git_revert
+  checkpoint: after_step_3
+metadata:
+  version: 1.0.0
+  created: 2026-02-15
+  author: AntiGravity Framework

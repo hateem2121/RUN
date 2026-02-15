@@ -10,18 +10,19 @@ description: |
   Stack: React 19, Vite 7, Express 5, Tailwind V4, TypeScript strict.
 ---
 
-# Project Standards & Patterns
+# Project Standards & Patterns (v2.0)
 
-## When to Use
+## The System Pilot Protocol (B.L.A.S.T.)
 
-Use this skill when:
-- Creating new React components (UI or domain-specific)
-- Setting up Express API routes
-- Styling with Tailwind V4 `@utility` directives
-- Loading 3D models (GLB/GLTF files)
-- Configuring TypeScript strict mode compliance
+All work MUST follow the B.L.A.S.T. protocol as defined in `gemini.md`:
 
-## 1. Project Structure (Monorepo-style)
+1. **Blueprint**: Vision first. SOPs in `architecture/`.
+2. **Link**: Handsake. Scripts in `scripts/`.
+3. **Architect**: L1 Architecture, L2 Navigation, L3 Tools in `tools/`.
+4. **Stylize**: The WOW. 5 Dimensions of Design.
+5. **Trigger**: Deployment & Maintenance.
+
+## 1. Project Structure (A.N.T. Layers)
 
 - **Root**: Configuration files (`biome.json`, `tsconfig.base.json`).
 - **Client** (`/client`): React 19 + Vite app.
@@ -117,6 +118,16 @@ const Component = ({
 export { Component, componentVariants };
 ```
 
+
+### 5 Dimensions of Design (The WOW Factor)
+
+Every UI component MUST be evaluated against these dimensions:
+
+1. **Skeleton (Layout)**: Use Bento Grids or Industry-Standard layouts.
+2. **Skin (Aesthetic)**: Glassmorphism (`glass-premium`), Aurora/Mesh Gradients.
+3. **Palette (Theme)**: Trust-based colors, Slate #0a0a0a dark mode.
+4. **Voice (Typography)**: Inter/JetBrains Mono pairing.
+5. **Soul (Motion)**: 60fps micro-animations, Border Beams, Scroll Reveal.
 
 ### Tailwind CSS V4
 - **Directives**: Use `@utility` for custom utility classes in CSS files.

@@ -172,7 +172,7 @@ const AccessoryList = ({
                           key={key}
                           className="rounded bg-neutral-50 px-2 py-1 text-neutral-700 text-xs"
                         >
-                          <span className="font-medium">{key}:</span> {value}
+                          <span className="font-medium">{key}:</span> {String(value)}
                         </div>
                       ))}
                     {Object.keys(accessory.specifications).length > 2 && (
@@ -757,7 +757,7 @@ export default function AccessoryManagementEnhanced() {
                             className="flex justify-between rounded-lg bg-neutral-50 p-3"
                           >
                             <span className="font-medium text-neutral-700">{key}:</span>
-                            <span className="text-neutral-900">{value}</span>
+                            <span className="text-neutral-900">{String(value)}</span>
                           </div>
                         ))}
                       </div>

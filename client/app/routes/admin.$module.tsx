@@ -37,7 +37,9 @@ const LazyFooterManagement = lazy(
   () => import("@/components/admin/footer-management/FooterManagement"),
 );
 const AboutManagement = lazy(() => import("@/components/admin/AboutManagement"));
-const BlogManagement = () => <PlaceholderModule moduleName="Blog Management" />;
+const BlogManagement = lazy(() =>
+  import("@/components/admin/blog-management").then((m) => ({ default: m.BlogManagement })),
+);
 
 const UnifiedSustainabilityManagement = lazy(() =>
   import("@/components/admin/unified-sustainability-management").then((m) => ({

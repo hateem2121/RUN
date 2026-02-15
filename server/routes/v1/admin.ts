@@ -11,6 +11,7 @@ import navigationRouter from "../resources/navigation.routes.js";
 import pageContentRouter from "../resources/page-content-routes.js";
 import footerConfigRouter from "../utilities/footer-config.js";
 import inquiryAdminRouter from "../utilities/inquiry-admin.js";
+import blogRouter from "./admin/blog.js";
 
 const router = Router();
 
@@ -22,6 +23,8 @@ router.use(
   enforceValidation,
   adminRouter,
 );
+
+router.use("/admin/blog", authService.requireAdmin, blogRouter);
 
 // Admin-accessible utilities — all require admin authentication
 router.use(authService.requireAdmin, inquiryAdminRouter);

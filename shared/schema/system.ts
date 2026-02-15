@@ -34,7 +34,7 @@ export const performanceMetrics = pgTable(
     component: varchar({ length: 255 }), // Additional component field for compatibility
     value: decimal({ precision: 12, scale: 4 }).notNull(),
     unit: varchar({ length: 20 }).notNull(),
-    metadata: jsonb().$type<Record<string, any>>(),
+    metadata: jsonb().$type<Record<string, unknown>>(),
     timestamp: timestamp({
       mode: "date",
       precision: 3,
@@ -99,7 +99,7 @@ export const logoAnimationSettings = pgTable("logo_animation_settings", {
   showFrequency: boolean().default(false), // Show frequency indicator
   customCssClass: varchar({ length: 255 }), // Custom CSS class
   debugMode: boolean().default(false), // Debug mode for animation
-  settings: jsonb().$type<Record<string, any>>(),
+  settings: jsonb().$type<Record<string, unknown>>(),
   isActive: boolean().default(true),
   createdAt: timestamp({
     mode: "date",
@@ -195,8 +195,8 @@ export const auditLogs = pgTable(
     recordId: varchar({ length: 50 }).notNull(), // String to support various ID types
 
     // Change tracking
-    oldValues: jsonb().$type<Record<string, any>>(), // Previous state
-    newValues: jsonb().$type<Record<string, any>>(), // New state
+    oldValues: jsonb().$type<Record<string, unknown>>(), // Previous state
+    newValues: jsonb().$type<Record<string, unknown>>(), // New state
     changedFields: jsonb().$type<string[]>(), // List of modified fields
 
     // User attribution
@@ -212,7 +212,7 @@ export const auditLogs = pgTable(
 
     // Additional metadata
     reason: text(), // Optional reason for change
-    metadata: jsonb().$type<Record<string, any>>(), // Additional context
+    metadata: jsonb().$type<Record<string, unknown>>(), // Additional context
 
     // Timestamps
     timestamp: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),

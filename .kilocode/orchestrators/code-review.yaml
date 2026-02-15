@@ -1,0 +1,202 @@
+name: code-review
+description: Comprehensive code review workflow for quality assurance
+trigger: When reviewing code changes before merge or after implementation
+agents:
+  - reviewer
+  - developer
+  - tester
+steps:
+  - step: 1
+    agent: reviewer
+    action: analyze
+    description: Analyze code changes and scope of review
+    inputs:
+      - diff or changed files
+      - PR description or task context
+    outputs:
+      - review_scope.md
+    blast_phase: blueprint
+
+  - step: 2
+    agent: reviewer
+    action: review_typescript
+    description: Review TypeScript code quality
+    skill: code-review
+    checklist:
+      - No any types used
+      - Explicit return types on functions
+      - Proper interface definitions
+      - Type guards for runtime checks
+      - No unsafe type assertions
+    blast_phase: architect
+
+  - step: 3
+    agent: reviewer
+    action: review_react
+    description: Review React component quality
+    checklist:
+      - No forwardRef usage - React 19 pattern
+      - Named exports for components
+      - Functional components only
+      - Proper hooks usage
+      - Error boundaries for critical sections
+      - Loading and error states handled
+    blast_phase: architect
+
+  - step: 4
+    agent: reviewer
+    action: review_backend
+    description: Review Express backend code
+    checklist:
+      - Thin routes - business logic in services
+      - No try/catch in async handlers - Express 5
+      - Zod validation for all inputs
+      - Proper error classes used
+      - Stateless logic
+    blast_phase: architect
+
+  - step: 5
+    agent: reviewer
+    action: review_styling
+    description: Review Tailwind CSS styling
+    checklist:
+      - No arbitrary values in className
+      - CVA used for variants
+      - Custom CSS in @layer utilities
+      - Lucide React icons used
+      - cn() utility for conditional classes
+    blast_phase: architect
+
+  - step: 6
+    agent: reviewer
+    action: review_accessibility
+    description: Review accessibility compliance
+    checklist:
+      - ARIA labels present
+      - Keyboard navigation supported
+      - Focus management implemented
+      - Semantic HTML used
+      - Color contrast meets WCAG AA
+    blast_phase: architect
+
+  - step: 7
+    agent: reviewer
+    action: review_3d
+    description: Review 3D content implementation
+    condition: If 3D content is present
+    checklist:
+      - Uses @google/model-viewer ONLY
+      - NO React Three Fiber imports
+      - NO @react-three/drei imports
+      - Wrapped in ModelViewerErrorBoundary
+      - Lazy loading for heavy models
+    blast_phase: architect
+
+  - step: 8
+    agent: tester
+    action: verify_tests
+    description: Verify test coverage and quality
+    skill: verification-before-completion
+    commands:
+      - npm run test
+      - npm run test:coverage
+    gates:
+      - Coverage meets 80% target for services
+      - All tests pass
+      - No skipped tests without justification
+    blast_phase: architect
+
+  - step: 9
+    agent: reviewer
+    action: compile_feedback
+    description: Compile review feedback
+    outputs:
+      - review_feedback.md
+    categories:
+      - blocking: Must fix before merge
+      - important: Should fix soon
+      - suggestion: Nice to have improvements
+      - praise: Good patterns to highlight
+    blast_phase: stylize
+
+  - step: 10
+    agent: developer
+    action: address_feedback
+    description: Address review feedback
+    condition: If blocking or important issues found
+    skill: refactoring
+    blast_phase: architect
+
+  - step: 11
+    agent: reviewer
+    action: approve
+    description: Final approval
+    gates:
+      - All blocking issues resolved
+      - All important issues addressed or deferred
+      - Tests pass with coverage
+    outputs:
+      - approval_status.md
+    blast_phase: trigger
+review_criteria:
+  code_quality:
+    - Readability and clarity
+    - DRY principle adherence
+    - Single responsibility
+    - Proper naming conventions
+  security:
+    - Input validation present
+    - No hardcoded secrets
+    - Proper authentication checks
+    - SQL injection prevention
+  performance:
+    - No N+1 queries
+    - Proper memoization
+    - Lazy loading where appropriate
+    - Bundle size impact considered
+  maintainability:
+    - Code is self-documenting
+    - Complex logic has comments
+    - JSDoc on public APIs
+    - README updated if needed
+feedback_template: |
+  ## Code Review: [Feature/Bug Name]
+  
+  ### Summary
+  [Brief overview of changes reviewed]
+  
+  ### Blocking Issues 🔴
+  [Must fix before merge]
+  
+  ### Important Issues 🟡
+  [Should fix soon]
+  
+  ### Suggestions 🟢
+  [Nice to have improvements]
+  
+  ### Praise ✨
+  [Good patterns to highlight]
+  
+  ### Test Coverage
+  - Services: X%
+  - Routes: X%
+  - Components: X%
+  
+  ### Verdict
+  [ ] Approved
+  [ ] Changes Requested
+  [ ] Needs Discussion
+error_handling:
+  test_failures:
+    action: request_fix
+    agent: developer
+  blocking_issues:
+    action: request_changes
+    agent: developer
+  build_failure:
+    action: request_fix
+    agent: developer
+metadata:
+  version: 1.0.0
+  created: 2026-02-15
+  author: AntiGravity Framework

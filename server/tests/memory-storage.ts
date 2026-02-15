@@ -8,6 +8,8 @@ import type {
   Accessory,
   AnimationError,
   AuditLog,
+  BlogCategory,
+  BlogPost,
   Category,
   Certificate,
   ContactPageConfiguration,
@@ -29,6 +31,8 @@ import type {
   InsertAboutTimelineEntry,
   InsertAccessory,
   InsertAnimationError,
+  InsertBlogCategory,
+  InsertBlogPost,
   InsertCategory,
   InsertCertificate,
   InsertContactPageConfiguration,
@@ -84,6 +88,8 @@ export class MemoryStorage implements IStorage {
   private accessories = new Map<number, Accessory>();
   private inquiries = new Map<number, Inquiry>();
   private navigationItems = new Map<number, NavigationItem>();
+  private blogPosts = new Map<number, BlogPost>();
+  private blogCategories = new Map<number, BlogCategory>();
 
   private nextIds = {
     category: 1,
@@ -98,6 +104,8 @@ export class MemoryStorage implements IStorage {
     accessory: 1,
     inquiry: 1,
     navigationItem: 1,
+    blogPost: 1,
+    blogCategory: 1,
   };
 
   // User Repository
@@ -1368,5 +1376,140 @@ export class MemoryStorage implements IStorage {
   }
   async checkDatabaseHealth(): Promise<any> {
     return { healthy: true, latency: 0 };
+  }
+
+  // Blog Repository
+  async getBlogPosts(
+    limit = 50,
+    offset = 0,
+    filters?: {
+      status?: string;
+      categoryId?: number;
+      authorId?: string;
+      search?: string;
+      includeDeleted?: boolean;
+    },
+  ): Promise<{ posts: BlogPost[]; total: number }> {
+    let posts = Array.from(this.blogPosts.values());
+
+    if (!filters?.includeDeleted) {
+      posts = posts.filter((p) => !p.deletedAt);
+    }
+
+    if (filters?.status) {
+      posts = posts.filter((p) => p.status === filters.status);
+    }
+
+    if (filters?.categoryId) {
+      posts = posts.filter((p) => p.categoryId === filters.categoryId);
+    }
+
+    if (filters?.authorId) {
+      posts = posts.filter((p) => p.authorId === filters.authorId);
+    }
+
+    if (filters?.search) {
+      const s = filters.search.toLowerCase();
+      posts = posts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(s) ||
+          p.content.toLowerCase().includes(s) ||
+          p.excerpt?.toLowerCase().includes(s),
+      );
+    }
+
+    const total = posts.length;
+    const paginated = posts.slice(offset, offset + limit);
+
+    return { posts: paginated, total };
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    return this.blogPosts.get(id);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    return Array.from(this.blogPosts.values()).find((p) => p.slug === slug);
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const id = this.nextIds.blogPost++;
+    const newPost: BlogPost = {
+      ...post,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
+      publishedAt: post.status === "published" ? new Date() : null,
+      featuredImageId: post.featuredImageId ?? null,
+      metaTitle: post.metaTitle ?? null,
+      metaDescription: post.metaDescription ?? null,
+      canonicalUrl: post.canonicalUrl ?? null,
+      ogImage: post.ogImage ?? null,
+      keywords: post.keywords ?? null,
+    } as any;
+    this.blogPosts.set(id, newPost);
+    return newPost;
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const existing = this.blogPosts.get(id);
+    if (!existing) return undefined;
+
+    const updated = {
+      ...existing,
+      ...post,
+      updatedAt: new Date(),
+      publishedAt:
+        post.status === "published" && !existing.publishedAt ? new Date() : existing.publishedAt,
+    } as BlogPost;
+
+    this.blogPosts.set(id, updated);
+    return updated;
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    const post = this.blogPosts.get(id);
+    if (!post) return false;
+    this.blogPosts.set(id, { ...post, deletedAt: new Date() } as BlogPost);
+    return true;
+  }
+
+  async restoreBlogPost(id: number): Promise<boolean> {
+    const post = this.blogPosts.get(id);
+    if (!post) return false;
+    this.blogPosts.set(id, { ...post, deletedAt: null } as BlogPost);
+    return true;
+  }
+
+  async getBlogCategories(): Promise<BlogCategory[]> {
+    return Array.from(this.blogCategories.values());
+  }
+
+  async createBlogCategory(category: InsertBlogCategory): Promise<BlogCategory> {
+    const id = this.nextIds.blogCategory++;
+    const newCategory: BlogCategory = {
+      ...category,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as any;
+    this.blogCategories.set(id, newCategory);
+    return newCategory;
+  }
+
+  async updateBlogCategory(
+    id: number,
+    category: Partial<InsertBlogCategory>,
+  ): Promise<BlogCategory | undefined> {
+    const existing = this.blogCategories.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...category, updatedAt: new Date() };
+    this.blogCategories.set(id, updated as BlogCategory);
+    return updated as BlogCategory;
+  }
+
+  async deleteBlogCategory(id: number): Promise<boolean> {
+    return this.blogCategories.delete(id);
   }
 }

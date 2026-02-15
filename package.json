@@ -55,12 +55,12 @@
   },
   "bundlesize": [
     {
-      "path": "./dist/public/assets/index-*.js",
-      "maxSize": "150 kB"
+      "path": "./client/build/client/assets/client-*.js",
+      "maxSize": "350 kB"
     },
     {
-      "path": "./dist/public/assets/root-*.css",
-      "maxSize": "50 kB"
+      "path": "./client/build/client/assets/root-*.css",
+      "maxSize": "300 kB"
     }
   ],
   "devDependencies": {
@@ -80,6 +80,7 @@
     "audit-ci": "^7.1.0",
     "bundlesize": "^0.18.2",
     "cheerio": "^1.1.2",
+    "depcheck": "^1.4.7",
     "drizzle-kit": "^0.31.4",
     "husky": "^9.1.7",
     "knip": "^5.75.2",

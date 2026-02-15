@@ -70,7 +70,7 @@ export const sizeCharts = pgTable(
     gender: varchar({ length: 20 }),
     type: varchar({ length: 100 }), // Frontend expects chart type
     region: varchar({ length: 100 }), // Regional sizing standards (US, EU, UK, etc.)
-    measurements: jsonb().$type<Record<string, any>>(),
+    measurements: jsonb().$type<Record<string, unknown>>(),
     sizeRange: jsonb().$type<string[]>(),
     unit: varchar({ length: 10 }).default("cm"),
     fitNotes: text(), // Fit guidance and notes
@@ -115,7 +115,7 @@ export const accessories = pgTable(
     imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    specifications: jsonb().$type<Record<string, any>>(),
+    specifications: jsonb().$type<Record<string, unknown>>(),
     isActive: boolean().default(true),
     createdAt: timestamp({
       mode: "date",
