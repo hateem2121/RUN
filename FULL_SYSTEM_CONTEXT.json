@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-02-15T13:10:00+05:00",
+  "generated_at": "2026-02-16T00:43:00+05:00",
   "repo": {
     "name": "run-remix-monorepo",
     "root": "/Users/hateemjamshaid/Documents/RUN-Remix",
-    "commit": "UNKNOWN",
+    "commit": "649d7c5618dcc622322951bc4e5b404492f12872",
     "workspaces": ["@run-remix/client", "@run-remix/server", "@run-remix/shared"]
   },
   "runtime": {
-    "os": "Linux (Alpine)",
+    "os": "macOS",
     "node": "24",
     "package_manager": {
       "name": "npm",
@@ -17,7 +17,7 @@
   "stack": {
     "frontend": {
       "framework": "React 19.2.4",
-      "router": "React Router 7.11.0",
+      "router": "React Router 7.12.0",
       "build": "Vite 7.0.0",
       "style": "Tailwind CSS 4.0.0"
     },
@@ -153,7 +153,8 @@
     "status": "Protocol 0 Active",
     "constitution": "gemini.md",
     "workflow": "B.L.A.S.T.",
-    "design_system": "Premium (Aurora, Bento, Soft UI)"
+    "design_system": "Premium (Aurora, Bento, Soft UI)",
+    "last_audit": "2026-02-16"
   },
   "agent_tools": [
     {

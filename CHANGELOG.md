@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased] - 2026-02-16
+
+### Added
+- Comprehensive documentation audit and synchronization.
+- Updated `README.md` and `docs/CODING_STANDARDS.md` to reflect actual Port 5002 enforcement in `server/server.ts`.
+- Realigned `AGENTS.md` with `.agent/` directory structure and current skill library.
+- Synchronized `FULL_SYSTEM_CONTEXT.json` with current tech stack versions and git commit hash.
+
 ## [v4.2.0] - Feb 13, 2026 (Database Optimization Phase 3)
 
 - **Feat:** Implemented Hybrid L1/L2 Caching architecture via `UnifiedCache` (In-memory + Redis).

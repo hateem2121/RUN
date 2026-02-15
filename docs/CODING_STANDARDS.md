@@ -33,19 +33,24 @@ All coding standards defined here MUST be cross-referenced with the architectura
 - Allow port to be configurable without explicit override
 - Skip port verification before deployment
 
-### Mandatory Files to Check
+#### server/server.ts
+```typescript
+// Port 5002 is strictly enforced in the HTTP server listener
+const PORT = process.env.PORT !== undefined ? parseInt(process.env.PORT, 10) : 5002;
+httpServer.listen(PORT, () => {
+  logger.info(`[Startup] HTTP Listener open on port ${PORT}`);
+});
+```
 
-Before ANY commit, verify these files contain ONLY port 5002:
-
-```bash
-# Critical configuration files
-- vite.config.ts          # Line 7: port: 5002
-- server/index.ts         # Line 5: const PORT = 5002
-- .env                    # Line 1: PORT=5002
-- .env.example            # Line 1: PORT=5002
-- package.json            # scripts: --port 5002
-- docker-compose.yml      # ports: "5002:5002"
-- nginx.conf              # proxy_pass: 5002
+#### vite.config.ts
+```typescript
+// Dev server optimization - Host true allows local/LAN access
+export default defineConfig({
+  server: {
+    host: true,
+    hmr: { overlay: true },
+  },
+});
 ```
 
 ### Verification Command (Run Before Every Commit)

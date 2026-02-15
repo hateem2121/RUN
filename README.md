@@ -156,19 +156,24 @@ cms-system/
 
 #### vite.config.ts
 ```typescript
+// Port is controlled by Express master process in dev
 export default defineConfig({
   server: {
-    port: 5002,           // Line 7
-    strictPort: true,     // Fail if unavailable
+    host: true,
+    hmr: { overlay: true },
   },
 });
 ```
 
-#### server/index.ts
+#### server/server.ts
 ```typescript
-const PORT = 5002;        // Line 5 - Hardcoded
-app.listen(PORT, () => {
-  console.log(`✓ Server running on http://localhost:${PORT}`);
+// Port 5002 is strictly enforced here
+const PORT = process.env.PORT !== undefined 
+  ? parseInt(process.env.PORT, 10) 
+  : 5002;
+
+httpServer.listen(PORT, () => {
+  logger.info(`[Startup] HTTP Listener open on port ${PORT}`);
 });
 ```
 
@@ -183,7 +188,7 @@ VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 ```json
 {
   "scripts": {
-    "dev:client": "vite --port 5002",
+    "dev:server": "PORT=5002 npm run --workspace=@run-remix/server dev",
     "verify-port": "node scripts/verify-port-5002.js"
   }
 }
