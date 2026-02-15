@@ -6,6 +6,14 @@
 
 ---
 
+## 🏛️ AntiGravity Project Constitution
+
+**Primary Source of Truth (SSOT)**: [`gemini.md`](../gemini.md)
+
+All coding standards defined here MUST be cross-referenced with the architectural invariants and design laws in `gemini.md`. In case of conflict, `gemini.md` takes precedence.
+
+---
+
 ## 🚨 RULE #0: PORT 5002 ABSOLUTE COMPLIANCE (NON-NEGOTIABLE)
 
 **CRITICAL:** This system uses **port 5002** exclusively. This is the FIRST rule for a reason.

@@ -1,6 +1,12 @@
 # AGENTS.md - Operational Intelligence Map
 
-> **Context Injection for AI Agents**: This file is the primary entry point for AI agents working on the RUN-Remix repository. It defines technical constraints, architectural boundaries, and operational commands.
+---
+
+## 0. AntiGravity Project Constitution
+
+**Primary Source of Truth (SSOT)**: [gemini.md](file:///Users/hateemjamshaid/Documents/RUN-Remix/gemini.md)
+
+All agents MUST read and adhere to the architectural invariants and design laws defined in `gemini.md`. This file takes precedence over all other documentation.
 
 ---
 

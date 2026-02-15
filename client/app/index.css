@@ -183,6 +183,83 @@
   border-color: color-mix(in oklab, var(--color-foreground) 20%, transparent);
 }
 
+/* =========================================
+   AntiGravity Premium: Aurora & Mesh Gradients
+   ========================================= */
+
+@utility aurora-gradient {
+  background: linear-gradient(
+    135deg,
+    #00c6ff 0%,
+    #0072ff 25%,
+    #ff00cc 50%,
+    #3333ff 75%,
+    #00c6ff 100%
+  );
+  background-size: 400% 400%;
+  animation: aurora-flow 15s ease infinite;
+}
+
+@utility mesh-gradient {
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+}
+
+@keyframes aurora-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* =========================================
+   AntiGravity Premium: Bento Grid System
+   ========================================= */
+
+@utility bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+@utility bento-card-wide {
+  grid-column: span 2;
+}
+
+@utility bento-card-tall {
+  grid-row: span 2;
+}
+
+/* =========================================
+   AntiGravity Premium: Soft UI (Neumorphism 2.0)
+   ========================================= */
+
+@utility soft-ui-raised {
+  background: var(--color-background);
+  box-shadow:
+    8px 8px 16px color-mix(in oklab, var(--color-foreground) 10%, transparent),
+    -8px -8px 16px color-mix(in oklab, var(--color-background) 10%, white);
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--color-foreground) 5%, transparent);
+}
+
+@utility soft-ui-inset {
+  background: var(--color-background);
+  box-shadow:
+    inset 8px 8px 16px color-mix(in oklab, var(--color-foreground) 10%, transparent),
+    inset -8px -8px 16px color-mix(in oklab, var(--color-background) 10%, white);
+  border-radius: 16px;
+}
+
 /* Houdini Properties */
 @property --hue {
   syntax: "<number>";

@@ -6,7 +6,8 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 | Section | Path | Description |
 | :--- | :--- | :--- |
-| **Architecture** | [`/docs/core`](./core/tech-stack.md) | System maps, data flows, and tech stack details. |
+| **AntiGravity** | [`/gemini.md`](../gemini.md) | **Project Constitution (SSOT).** |
+| **Architecture** | [`/docs/core`](./core/tech-stack.md) | System maps and tech stack details. |
 | **Operations** | [`/docs/operations`](./operations/environment.md) | Runbooks, environment setup, and deployment guides. |
 | **Development** | [`/docs/development`](./development/ide-setup.md) | IDE setup, styling architecture, and coding patterns. |
 | **Contributing** | [`CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributing guidelines and coding standards. |
@@ -25,5 +26,5 @@ Welcome to the RUN Apparel B2B Platform documentation.
 
 ## 🧠 For AI Agents
 
-Refer to **[`AGENT_INSTRUCTIONS.md`](./AGENT_INSTRUCTIONS.md)** for operational rules and behavioral constraints.
+Refer to **[`AGENT_INSTRUCTIONS.md`](./AGENT_INSTRUCTIONS.md)** and the **[`gemini.md`](../gemini.md)** constitution for operational rules and behavioral constraints.
 

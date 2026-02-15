@@ -1,8 +1,16 @@
 # Development Workflow
 
-**Version:** 2.0  
-**Last Updated:** February 13, 2026  
+**Version:** 3.0 (AntiGravity Protocol 0 Aligned)  
+**Last Updated:** February 2026  
 **System:** RUN APPAREL CMS (Port 5002)
+
+---
+
+## 🏛️ AntiGravity Project Constitution
+
+**Primary Source of Truth (SSOT)**: [`gemini.md`](../gemini.md)
+
+All workflows defined here MUST be cross-referenced with the architectural invariants and design laws in `gemini.md`. In case of conflict, `gemini.md` takes precedence.
 
 ---
 

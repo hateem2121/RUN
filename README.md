@@ -60,12 +60,18 @@ Open your browser to:
 
 **If any URL fails, check port configuration.**
 
----
+## 📁 Project Structure (AntiGravity Protocol 0)
 
-## 📁 Project Structure
+Every agent MUST follow the Protocol 0 architecture defined in `gemini.md`.
 
 ```
 cms-system/
+├── gemini.md                # Project Constitution (SSOT)
+├── task_plan.md             # Active roadmap and checklist
+├── findings.md              # Research and requirement synthesis
+├── progress.md              # Real-time action log
+├── architecture/            # Systematic execution SOPs
+│   └── SOP_CODE_CHANGE.md   # Standard for code modifications
 ├── client/                  # Frontend (React 19 + Vite)
 │   ├── app/
 │   │   ├── components/
@@ -135,13 +141,10 @@ cms-system/
 - **LazyUnifiedModelViewer** - REQUIRED for all public-facing usages (lazy loads the 1MB+ 3D engine)
 - ❌ **NEVER** use React Three Fiber or drei
 
-### Development Tools
-- **Vitest** - Testing framework
-- **Biome** - Linting and formatting
-- **Lucide React** - Icons
-- **React Hook Form** - Form handling
-- **Zod** - Validation
-- **CVA** - Component variants
+### AntiGravity Standards
+- **B.L.A.S.T.** - Blueprint, Link, Architect, Self-anneal, Tool Atomic.
+- **Premium Design** - Aurora/Mesh Gradients, Bento Grids, Soft UI.
+- **Agent Intelligence** - Skill-based reasoning for UI/UX excellence.
 
 ---
 
@@ -895,7 +898,7 @@ See `docs/TROUBLESHOOTING.md` for solutions to common problems.
 
 **Remember:** This system uses **port 5002 exclusively**. Any deviation is a bug.
 
-**For questions about port configuration:** See `docs/core/port-5002-architecture.md`  
-**For development workflow:** See `WORKFLOW.md`  
-**For coding standards:** See `RULES.md`  
-**For AI agents:** See `AGENT.md`
+**For questions about port configuration:** See `docs/core/port-5002-architecture.md`
+**For development workflow:** See `docs/DEVELOPMENT_WORKFLOW.md`
+**For coding standards:** See `docs/CODING_STANDARDS.md`
+**For AI agents:** See `AGENTS.md` and `gemini.md`

@@ -1,8 +1,16 @@
 # Agent Instructions
 
 **For:** AI Coding Agents (Antigravity, Claude Code, etc.)  
-**Version:** 2.0  
+**Version:** 3.0 (AntiGravity Protocol 0 Aligned)  
 **Last Updated:** February 2026
+
+---
+
+## 🏛️ AntiGravity Project Constitution
+
+**Primary Source of Truth (SSOT)**: [`gemini.md`](../gemini.md)
+
+All agents working on this codebase MUST strictly adhere to the architectural invariants and design laws defined in `gemini.md`. This Protocol 0 constitution takes precedence over all other documentation, including this file.
 
 ---
 

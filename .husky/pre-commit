@@ -7,8 +7,8 @@ npm run verify-port
 # Run Type Checking
 npm run typecheck
 
-# Run Linting & Formatting
-npm run check
+# Run Linting & Formatting (only on staged files)
+npx lint-staged
 
 # Security Checks
 ./scripts/security/check-secrets.sh

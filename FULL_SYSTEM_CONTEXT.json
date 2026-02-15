@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-07T17:25:34+05:00",
+  "generated_at": "2026-02-15T13:10:00+05:00",
   "repo": {
     "name": "run-remix-monorepo",
     "root": "/Users/hateemjamshaid/Documents/RUN-Remix",
@@ -148,6 +148,12 @@
     "detected": true,
     "servers": ["filesystem", "git", "postgres"],
     "notes": "MCP configured via mcp.json in repo root."
+  },
+  "antigravity": {
+    "status": "Protocol 0 Active",
+    "constitution": "gemini.md",
+    "workflow": "B.L.A.S.T.",
+    "design_system": "Premium (Aurora, Bento, Soft UI)"
   },
   "agent_tools": [
     {
