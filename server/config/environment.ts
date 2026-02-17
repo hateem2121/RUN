@@ -18,6 +18,10 @@ const environmentSchema = z.object({
 
   // Database Configuration
   DATABASE_URL: z.string().default("postgres://localhost:5432/test"),
+  DIRECT_DATABASE_URL: z
+    .string()
+    .optional()
+    .describe("Direct (non-pooled) database URL for LISTEN/NOTIFY"),
   DATABASE_SSL_ENABLED: z
     .string()
     .default("true")
@@ -195,6 +199,7 @@ export const isTest = env.NODE_ENV === "test";
 // Database configuration with secure SSL defaults
 export const database = {
   url: env.DATABASE_URL,
+  directUrl: env.DIRECT_DATABASE_URL,
   ssl: env.DATABASE_SSL_ENABLED
     ? {
         rejectUnauthorized: env.DATABASE_SSL_REJECT_UNAUTHORIZED,

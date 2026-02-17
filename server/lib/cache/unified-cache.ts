@@ -239,9 +239,6 @@ export class UnifiedCache {
   /**
    * Delete value from cache
    */
-  /**
-   * Delete value from cache
-   */
   async delete(key: string, _namespace?: string): Promise<void> {
     this.memoryCache.delete(key);
 
@@ -259,6 +256,14 @@ export class UnifiedCache {
         logger.warn("[UnifiedCache] Failed to emit invalidation event", err),
       );
     });
+  }
+
+  /**
+   * Delete value from cache (alias for delete)
+   * Convenience method for backward compatibility
+   */
+  async del(key: string, _namespace?: string): Promise<void> {
+    return this.delete(key, _namespace);
   }
 
   /**

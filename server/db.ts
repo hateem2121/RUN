@@ -3,7 +3,7 @@
  * Simplified implementation using standard Neon Serverless driver patterns
  */
 
-import { type NeonQueryFunction, neon } from "@neondatabase/serverless";
+import { type NeonQueryFunction, neon, neonConfig } from "@neondatabase/serverless";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
 import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
@@ -20,6 +20,11 @@ import {
   DatabaseTimeoutError,
 } from "./lib/errors.js";
 import { logger } from "./lib/monitoring/logger.js";
+import { registerShutdownHook } from "./lib/shutdown-manager.js";
+
+// CHUNK 101: Enable driver-level connection caching for HTTP queries
+// This reduces TCP/TLS handshake overhead for serverless environments
+neonConfig.fetchConnectionCache = true;
 
 const tracer = trace.getTracer("db");
 
@@ -66,6 +71,17 @@ if (isTestMode && !enableRealDb) {
     fetchOptions: {
       timeout: 5000, // 5s timeout to prevent hang
     },
+  });
+
+  // CHUNK 102: Register shutdown hook to end driver session
+  // Although HTTP is stateless, the driver may hold background resources or connections
+  registerShutdownHook(async () => {
+    logger.info("[Database] Closing database connections...");
+    // @ts-expect-error - The sql function from neon() has an end property in newer versions
+    if (typeof (sql as any).end === "function") {
+      await (sql as any).end();
+    }
+    logger.info("[Database] Database connections closed.");
   });
 }
 
@@ -226,6 +242,13 @@ export const getPoolMetrics = () => ({
   lastHealthCheckAt: metrics.lastHealthCheckAt,
   connectionPooling: metrics.connectionPooling,
 });
+
+/**
+ * Update last health check timestamp
+ */
+export function updateHealthCheckTime(): void {
+  metrics.lastHealthCheckAt = new Date();
+}
 
 export const closeDatabaseConnection = async () => {}; // No-op for HTTP
 

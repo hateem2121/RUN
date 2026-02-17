@@ -29,6 +29,7 @@ const envSchema = z.object({
 
   // Admin config
   INITIAL_ADMIN_EMAIL: z.string().email("INITIAL_ADMIN_EMAIL must be a valid email"),
+  ENABLE_MOCK_ADMIN: z.enum(["true", "false"]).default("false"),
 
   // Server config (optional with defaults)
   PORT: z.coerce.number().default(5002),
