@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
-@import "./styles/z-index.css";
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
 @import "./styles/animations.css";
@@ -9,6 +8,8 @@
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
   --font-size-footer-display: clamp(3rem, 12vw, 15rem);
+  --color-theme-sun: var(--color-orange-500);
+  --color-theme-moon: var(--color-blue-400);
 }
 
 /* =========================

@@ -45,4 +45,5 @@ export default [
   // API Routes
   route("api/media", "routes/api.media.tsx"),
   route("api/navigation-items", "routes/api.navigation-items.tsx"),
+  route("api/navigation-settings", "routes/api.navigation-settings.tsx"),
 ] satisfies RouteConfig;

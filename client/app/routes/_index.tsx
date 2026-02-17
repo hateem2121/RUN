@@ -122,23 +122,38 @@ export default function Index() {
       <CustomCursor />
 
       <main id="main-content" className="w-full bg-background-alt">
-        <Suspense fallback={null}>
-          {/* GROUP 1: Skewable Top Section */}
-          <div ref={heroRef} className="origin-top will-change-transform">
-            <Hero />
-          </div>
+        {/* Hero Section - Static to minimize FCP/LCP */}
+        <div ref={heroRef} className="origin-top will-change-transform">
+          <Hero />
+        </div>
 
-          {/* STATIC: Stats has sticky elements, kept outside skew to avoid jitter */}
+        {/* 
+            Performance Optimization: Independent Suspense Boundaries 
+            Prevents "Waterfall Pop-in" and cumulative layout shift (CLS).
+        */}
+
+        {/* Stats Section: High height impact (150vh) */}
+        <Suspense fallback={<div className="min-h-[150vh] bg-background animate-pulse" />}>
           <Stats />
+        </Suspense>
 
-          {/* GROUP 2: Skewable Middle Content */}
-          <div ref={contentRef} className="origin-top will-change-transform">
+        {/* Content Section: Mid-page components */}
+        <div ref={contentRef} className="origin-top transform-gpu will-change-transform">
+          <Suspense fallback={<div className="min-h-[80vh] bg-background animate-pulse" />}>
             <Categories data={homepageData?.categories?.result} />
-            <FeaturedProducts products={homepageData?.products?.result} />
-            <Values />
-          </div>
+          </Suspense>
 
-          {/* STATIC: Process has viewport pinning, MUST be outside transformed container */}
+          <Suspense fallback={<div className="min-h-[100vh] bg-background-alt animate-pulse" />}>
+            <FeaturedProducts products={homepageData?.products?.result} />
+          </Suspense>
+
+          <Suspense fallback={<div className="min-h-[60vh] bg-background-alt animate-pulse" />}>
+            <Values />
+          </Suspense>
+        </div>
+
+        {/* Process Section: Viewport pinning needs static context */}
+        <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
           <Process />
         </Suspense>
       </main>

@@ -23,7 +23,7 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
     <header className="fixed top-0 left-0 w-full z-(--z-index-dock) pointer-events-none">
       {/* Brand Logo - Fixed top-left with two-line layout to prevent overlap */}
       <div className="fixed top-4 left-4 z-10 pointer-events-auto">
-        <Link to="/" className="shrink-0">
+        <Link to="/" className="shrink-0" aria-label="Run Apparel Home">
           <div className="flex flex-col items-center gap-1 px-2 sm:flex-row sm:gap-3">
             <h1 className="relative whitespace-nowrap font-bold font-neue-stance text-luxury-charcoal dark:text-white text-sm sm:text-base md:text-lg">
               <span

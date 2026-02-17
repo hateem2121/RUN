@@ -1,6 +1,6 @@
 import { useReducedMotion } from "framer-motion";
 import { gsap } from "gsap";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 
@@ -39,8 +39,13 @@ export const StaggeredMenu = ({
   onMenuClose,
 }: StaggeredMenuProps) => {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const openRef = useRef(false);
   const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Focus trap hook integration
   const focusTrapRef = useFocusTrap<HTMLDivElement>({
@@ -66,17 +71,26 @@ export const StaggeredMenu = ({
   const hamburgerBottomRef = useRef<HTMLSpanElement | null>(null);
   const iconRef = useRef<HTMLSpanElement | null>(null);
 
-  const openTlRef = useRef<gsap.core.Timeline | null>(null);
-  const closeTweenRef = useRef<gsap.core.Tween | null>(null);
-  const hamburgerAnimRef = useRef<gsap.core.Timeline | null>(null);
-  const colorTweenRef = useRef<gsap.core.Tween | null>(null);
+  const animRefs = useRef<{
+    openTimeline: gsap.core.Timeline | null;
+    closeTween: gsap.core.Tween | null;
+    hamburgerTimeline: gsap.core.Timeline | null;
+    colorTween: gsap.core.Tween | null;
+    itemEntranceTween: gsap.core.Tween | null;
+    busy: boolean;
+  }>({
+    openTimeline: null,
+    closeTween: null,
+    hamburgerTimeline: null,
+    colorTween: null,
+    itemEntranceTween: null,
+    busy: false,
+  });
 
   const toggleBtnRef = useRef<HTMLButtonElement | null>(null);
-  const busyRef = useRef(false);
 
-  const itemEntranceTweenRef = useRef<gsap.core.Tween | null>(null);
-
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (!mounted) return;
     const ctx = gsap.context(() => {
       const panel = panelRef.current;
       const preContainer = preLayersRef.current;
@@ -117,12 +131,12 @@ export const StaggeredMenu = ({
       return null;
     }
 
-    openTlRef.current?.kill();
-    if (closeTweenRef.current) {
-      closeTweenRef.current.kill();
-      closeTweenRef.current = null;
+    animRefs.current.openTimeline?.kill();
+    if (animRefs.current.closeTween) {
+      animRefs.current.closeTween.kill();
+      animRefs.current.closeTween = null;
     }
-    itemEntranceTweenRef.current?.kill();
+    animRefs.current.itemEntranceTween?.kill();
 
     const itemEls = Array.from(panel.querySelectorAll(".sm-panel-itemLabel")) as HTMLElement[];
     const numberEls = Array.from(
@@ -198,30 +212,30 @@ export const StaggeredMenu = ({
       }
     }
 
-    openTlRef.current = tl;
+    animRefs.current.openTimeline = tl;
     return tl;
   }, [panelRef.current, shouldReduceMotion]);
 
   const playOpen = useCallback(() => {
-    if (busyRef.current) {
+    if (animRefs.current.busy) {
       return;
     }
-    busyRef.current = true;
+    animRefs.current.busy = true;
     const tl = buildOpenTimeline();
     if (tl) {
       tl.eventCallback("onComplete", () => {
-        busyRef.current = false;
+        animRefs.current.busy = false;
       });
       tl.play(0);
     } else {
-      busyRef.current = false;
+      animRefs.current.busy = false;
     }
   }, [buildOpenTimeline]);
 
   const playClose = useCallback(() => {
-    openTlRef.current?.kill();
-    openTlRef.current = null;
-    itemEntranceTweenRef.current?.kill();
+    animRefs.current.openTimeline?.kill();
+    animRefs.current.openTimeline = null;
+    animRefs.current.itemEntranceTween?.kill();
 
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
@@ -230,11 +244,11 @@ export const StaggeredMenu = ({
     }
 
     const all: HTMLElement[] = [...layers, panel];
-    closeTweenRef.current?.kill();
+    animRefs.current.closeTween?.kill();
 
     const offscreen = position === "left" ? -100 : 100;
 
-    closeTweenRef.current = gsap.to(all, {
+    animRefs.current.closeTween = gsap.to(all, {
       xPercent: offscreen,
       duration: 0.32,
       ease: "power3.in",
@@ -252,7 +266,7 @@ export const StaggeredMenu = ({
           gsap.set(numberEls, { ["--sm-num-opacity" as any]: 0 });
         }
 
-        busyRef.current = false;
+        animRefs.current.busy = false;
       },
     });
   }, [position, panelRef.current]);
@@ -265,18 +279,18 @@ export const StaggeredMenu = ({
       return;
     }
 
-    hamburgerAnimRef.current?.kill();
+    animRefs.current.hamburgerTimeline?.kill();
 
     if (opening) {
       // Animate to X
-      hamburgerAnimRef.current = gsap
+      animRefs.current.hamburgerTimeline = gsap
         .timeline({ defaults: { ease: "power2.out", duration: 0.3 } })
         .to(top, { y: 8, rotation: 45 }, 0)
         .to(middle, { opacity: 0 }, 0)
         .to(bottom, { y: -8, rotation: -45 }, 0);
     } else {
       // Animate to hamburger
-      hamburgerAnimRef.current = gsap
+      animRefs.current.hamburgerTimeline = gsap
         .timeline({ defaults: { ease: "power2.out", duration: 0.3 } })
         .to(top, { y: 0, rotation: 0 }, 0)
         .to(middle, { opacity: 1 }, 0)
@@ -290,10 +304,10 @@ export const StaggeredMenu = ({
       if (!btn) {
         return;
       }
-      colorTweenRef.current?.kill();
+      animRefs.current.colorTween?.kill();
       if (changeMenuColorOnOpen) {
         const targetColor = opening ? openMenuButtonColor : menuButtonColor;
-        colorTweenRef.current = gsap.to(btn, {
+        animRefs.current.colorTween = gsap.to(btn, {
           color: targetColor,
           delay: 0.05,
           duration: 0.3,
@@ -370,7 +384,7 @@ export const StaggeredMenu = ({
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-black/40 dark:text-white/60"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open ? "true" : "false"}
             aria-controls="staggered-menu-panel"
