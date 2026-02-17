@@ -236,8 +236,9 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
       });
     }
 
+    const orderedIds = removeUndefined(validation.data).metrics.map((m: { id: number }) => m.id);
     await withTimeout(
-      getStorage().reorderSustainabilityMetrics(removeUndefined(validation.data).metrics),
+      getStorage().reorderSustainabilityMetrics(orderedIds),
       10000,
       "Reorder sustainability metrics",
     );

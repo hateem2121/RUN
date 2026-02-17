@@ -353,7 +353,7 @@ export interface IContentRepository {
     slogan: Partial<InsertHomepageSlogan>,
   ): Promise<HomepageSlogan | undefined>;
   deleteHomepageSlogan(id: number): Promise<boolean>;
-  reorderHomepageSlogans(slogans: { id: number; position: number }[]): Promise<void>;
+  reorderHomepageSlogans(orderedIds: number[]): Promise<void>;
   getHomepageProcessCards(includeInactive?: boolean): Promise<HomepageProcessCard[]>;
   getHomepageProcessCard(id: number): Promise<HomepageProcessCard | undefined>;
   createHomepageProcessCard(card: InsertHomepageProcessCard): Promise<HomepageProcessCard>;
@@ -362,7 +362,7 @@ export interface IContentRepository {
     card: Partial<InsertHomepageProcessCard>,
   ): Promise<HomepageProcessCard | undefined>;
   deleteHomepageProcessCard(id: number): Promise<boolean>;
-  reorderHomepageProcessCards(cards: { id: number; position: number }[]): Promise<void>;
+  reorderHomepageProcessCards(orderedIds: number[]): Promise<void>;
   getHomepageSections(): Promise<HomepageSection[]>;
   getHomepageSection(name: string): Promise<HomepageSection | undefined>;
   getHomepageSectionById(id: number): Promise<HomepageSection | undefined>;
@@ -399,7 +399,7 @@ export interface IContentRepository {
     entry: Partial<InsertAboutTimelineEntry>,
   ): Promise<AboutTimelineEntry | undefined>;
   deleteAboutTimelineEntry(id: number): Promise<boolean>;
-  reorderAboutTimelineEntries(entries: { id: number; position: number }[]): Promise<void>;
+  reorderAboutTimelineEntries(orderedIds: number[]): Promise<void>;
   getAboutMapLocations(includeInactive?: boolean): Promise<AboutMapLocation[]>;
   getAboutMapLocation(id: number): Promise<AboutMapLocation | undefined>;
   createAboutMapLocation(location: InsertAboutMapLocation): Promise<AboutMapLocation>;
@@ -416,7 +416,7 @@ export interface IContentRepository {
     section: Partial<InsertAboutSection>,
   ): Promise<AboutSection | undefined>;
   deleteAboutSection(id: number): Promise<boolean>;
-  reorderAboutSections(sections: { id: number; position: number }[]): Promise<void>;
+  reorderAboutSections(orderedIds: number[]): Promise<void>;
   getAboutStatistics(includeInactive?: boolean): Promise<AboutStatistic[]>;
   getAboutStatistic(id: number): Promise<AboutStatistic | undefined>;
   createAboutStatistic(statistic: InsertAboutStatistic): Promise<AboutStatistic>;
@@ -425,7 +425,7 @@ export interface IContentRepository {
     statistic: Partial<InsertAboutStatistic>,
   ): Promise<AboutStatistic | undefined>;
   deleteAboutStatistic(id: number): Promise<boolean>;
-  reorderAboutStatistics(statistics: { id: number; position: number }[]): Promise<void>;
+  reorderAboutStatistics(orderedIds: number[]): Promise<void>;
   getAboutTeamMessage(includeInactive?: boolean): Promise<AboutTeamMessage | undefined>;
   updateAboutTeamMessage(message: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage>;
 }
@@ -441,7 +441,7 @@ export interface ISustainabilityRepository {
     metric: Partial<InsertSustainabilityMetric>,
   ): Promise<SustainabilityMetric | undefined>;
   deleteSustainabilityMetric(id: number): Promise<boolean>;
-  reorderSustainabilityMetrics(metrics: { id: number; position: number }[]): Promise<void>;
+  reorderSustainabilityMetrics(orderedIds: number[]): Promise<void>;
   getSustainabilityInitiatives(): Promise<SustainabilityInitiative[]>;
   getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined>;
   createSustainabilityInitiative(
@@ -452,7 +452,7 @@ export interface ISustainabilityRepository {
     initiative: Partial<InsertSustainabilityInitiative>,
   ): Promise<SustainabilityInitiative | undefined>;
   deleteSustainabilityInitiative(id: number): Promise<boolean>;
-  reorderSustainabilityInitiatives(initiatives: { id: number; position: number }[]): Promise<void>;
+  reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void>;
   getSustainabilityGoals(): Promise<SustainabilityGoal[]>;
   getSustainabilityGoal(id: number): Promise<SustainabilityGoal | undefined>;
   createSustainabilityGoal(goal: InsertSustainabilityGoal): Promise<SustainabilityGoal>;
@@ -461,12 +461,12 @@ export interface ISustainabilityRepository {
     goal: Partial<InsertSustainabilityGoal>,
   ): Promise<SustainabilityGoal | undefined>;
   deleteSustainabilityGoal(id: number): Promise<boolean>;
-  reorderSustainabilityGoals(goals: { id: number; position: number }[]): Promise<void>;
+  reorderSustainabilityGoals(orderedIds: number[]): Promise<void>;
   getUnifiedSustainability(): Promise<UnifiedSustainability | undefined>;
   updateUnifiedSustainability(
     data: Partial<InsertUnifiedSustainability>,
   ): Promise<UnifiedSustainability>;
-  migrateLegacySustainabilityData(): Promise<UnifiedSustainability>;
+  migrateLegacySustainabilityData(): Promise<{ migrated: number }>;
   validateSustainabilitySync(): Promise<{ success: boolean; issues?: string[] }>;
   syncUnifiedSustainabilityCollections(): Promise<{ success: boolean; count: number }>;
   getSustainabilitySectionHeaders(): Promise<unknown[]>;
@@ -490,7 +490,7 @@ export interface IManufacturingRepository {
     process: Partial<InsertManufacturingProcess>,
   ): Promise<ManufacturingProcess | undefined>;
   deleteManufacturingProcess(id: number): Promise<boolean>;
-  reorderManufacturingProcesses(processes: { id: number; position: number }[]): Promise<void>;
+  reorderManufacturingProcesses(orderedIds: number[]): Promise<void>;
   getManufacturingCapabilities(): Promise<ManufacturingCapability[]>;
   getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined>;
   createManufacturingCapability(
@@ -501,7 +501,7 @@ export interface IManufacturingRepository {
     capability: Partial<InsertManufacturingCapability>,
   ): Promise<ManufacturingCapability | undefined>;
   deleteManufacturingCapability(id: number): Promise<boolean>;
-  reorderManufacturingCapabilities(capabilities: { id: number; position: number }[]): Promise<void>;
+  reorderManufacturingCapabilities(orderedIds: number[]): Promise<void>;
   getManufacturingQualities(): Promise<ManufacturingQuality[]>;
   getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined>;
   createManufacturingQuality(quality: InsertManufacturingQuality): Promise<ManufacturingQuality>;
@@ -510,7 +510,7 @@ export interface IManufacturingRepository {
     quality: Partial<InsertManufacturingQuality>,
   ): Promise<ManufacturingQuality | undefined>;
   deleteManufacturingQuality(id: number): Promise<boolean>;
-  reorderManufacturingQualities(qualities: { id: number; position: number }[]): Promise<void>;
+  reorderManufacturingQualities(orderedIds: number[]): Promise<void>;
 }
 
 export interface ITechnologyRepository {
@@ -524,7 +524,7 @@ export interface ITechnologyRepository {
     innovation: Partial<InsertTechnologyInnovation>,
   ): Promise<TechnologyInnovation | undefined>;
   deleteTechnologyInnovation(id: number): Promise<boolean>;
-  reorderTechnologyInnovations(innovations: { id: number; position: number }[]): Promise<void>;
+  reorderTechnologyInnovations(orderedIds: number[]): Promise<void>;
   getTechnologyEquipment(): Promise<TechnologyEquipment[]>;
   getTechnologyEquipmentItem(id: number): Promise<TechnologyEquipment | undefined>;
   createTechnologyEquipment(equipment: InsertTechnologyEquipment): Promise<TechnologyEquipment>;
@@ -533,7 +533,7 @@ export interface ITechnologyRepository {
     equipment: Partial<InsertTechnologyEquipment>,
   ): Promise<TechnologyEquipment | undefined>;
   deleteTechnologyEquipment(id: number): Promise<boolean>;
-  reorderTechnologyEquipment(equipment: { id: number; position: number }[]): Promise<void>;
+  reorderTechnologyEquipment(orderedIds: number[]): Promise<void>;
   getTechnologyResearch(): Promise<TechnologyResearch[]>;
   getTechnologyResearchItem(id: number): Promise<TechnologyResearch | undefined>;
   createTechnologyResearch(research: InsertTechnologyResearch): Promise<TechnologyResearch>;
@@ -542,7 +542,7 @@ export interface ITechnologyRepository {
     research: Partial<InsertTechnologyResearch>,
   ): Promise<TechnologyResearch | undefined>;
   deleteTechnologyResearch(id: number): Promise<boolean>;
-  reorderTechnologyResearch(research: { id: number; position: number }[]): Promise<void>;
+  reorderTechnologyResearch(orderedIds: number[]): Promise<void>;
   getTechnologyRoadmap(): Promise<TechnologyRoadmap[]>;
   getTechnologyRoadmapItem(id: number): Promise<TechnologyRoadmap | undefined>;
   createTechnologyRoadmap(roadmap: InsertTechnologyRoadmap): Promise<TechnologyRoadmap>;
@@ -551,7 +551,7 @@ export interface ITechnologyRepository {
     roadmap: Partial<InsertTechnologyRoadmap>,
   ): Promise<TechnologyRoadmap | undefined>;
   deleteTechnologyRoadmap(id: number): Promise<boolean>;
-  reorderTechnologyRoadmap(roadmap: { id: number; position: number }[]): Promise<void>;
+  reorderTechnologyRoadmap(orderedIds: number[]): Promise<void>;
   getTechnologyGradientSettings(): Promise<TechnologyGradientSettings | undefined>;
   updateTechnologyGradientSettings(
     settings: Partial<InsertTechnologyGradientSettings>,

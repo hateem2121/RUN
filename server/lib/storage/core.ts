@@ -396,7 +396,7 @@ export interface IStorage {
   updateUnifiedSustainability(
     data: Partial<InsertUnifiedSustainability>,
   ): Promise<UnifiedSustainability>;
-  migrateLegacySustainabilityData(): Promise<UnifiedSustainability>;
+  migrateLegacySustainabilityData(): Promise<{ migrated: number }>;
 
   // Manufacturing Page methods
   getManufacturingHero(): Promise<ManufacturingHero | undefined>;

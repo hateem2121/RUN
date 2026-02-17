@@ -258,8 +258,7 @@ export class MediaRepository {
         cacheError,
       );
       throw new CacheInvalidationError(
-        "delete",
-        cacheError instanceof Error ? cacheError : undefined,
+        `Cache invalidation failed for delete operation: ${cacheError instanceof Error ? cacheError.message : String(cacheError)}`,
       );
     }
 
@@ -312,7 +311,7 @@ export class MediaRepository {
     // If asset not found or already deleted, throw typed error
     if (!result.length) {
       logger.warn(`[MediaRepository] ⚠️ Asset ${id} not found for deletion (cache already cleared)`);
-      throw new MediaNotFoundError(id);
+      throw new MediaNotFoundError(`Media asset with ID ${id} not found`);
     }
 
     logger.info(`[MediaRepository] ✅ Cache-first delete succeeded for asset ${id}`);

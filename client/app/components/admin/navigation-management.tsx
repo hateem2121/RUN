@@ -1,7 +1,6 @@
 import type { InsertNavigationItem, MediaAsset, NavigationItem } from "@shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Navigation, Plus } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {

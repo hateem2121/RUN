@@ -77,7 +77,6 @@ if (isTestMode && !enableRealDb) {
   // Although HTTP is stateless, the driver may hold background resources or connections
   registerShutdownHook(async () => {
     logger.info("[Database] Closing database connections...");
-    // @ts-expect-error - The sql function from neon() has an end property in newer versions
     if (typeof (sql as any).end === "function") {
       await (sql as any).end();
     }

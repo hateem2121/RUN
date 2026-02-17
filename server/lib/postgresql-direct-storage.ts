@@ -888,10 +888,10 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteHomepageSlogan(id);
   }
 
-  async reorderHomepageSlogans(slogans: { id: number; position: number }[]): Promise<void> {
+  async reorderHomepageSlogans(orderedIds: number[]): Promise<void> {
     await this.withTransaction(
-      async (tx) => {
-        return await this.pageContentRepository.reorderHomepageSlogans(slogans, tx);
+      async (_tx) => {
+        return await this.pageContentRepository.reorderHomepageSlogans(orderedIds);
       },
       undefined,
       "reorderHomepageSlogans",
@@ -921,10 +921,10 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteHomepageProcessCard(id);
   }
 
-  async reorderHomepageProcessCards(cards: { id: number; position: number }[]): Promise<void> {
+  async reorderHomepageProcessCards(orderedIds: number[]): Promise<void> {
     await this.withTransaction(
-      async (tx) => {
-        return await this.pageContentRepository.reorderHomepageProcessCards(cards, tx);
+      async (_tx) => {
+        return await this.pageContentRepository.reorderHomepageProcessCards(orderedIds);
       },
       ["homepage:process_cards"],
       "reorderHomepageProcessCards",
@@ -1013,8 +1013,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteAboutTimelineEntry(id);
   }
 
-  async reorderAboutTimelineEntries(entries: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderAboutTimelineEntries(entries);
+  async reorderAboutTimelineEntries(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderAboutTimelineEntries(orderedIds);
   }
 
   async getAboutMapLocations(): Promise<AboutMapLocation[]> {
@@ -1063,8 +1063,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteAboutSection(id);
   }
 
-  async reorderAboutSections(sections: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderAboutSections(sections);
+  async reorderAboutSections(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderAboutSections(orderedIds);
   }
 
   async getAboutStatistics(): Promise<AboutStatistic[]> {
@@ -1090,8 +1090,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteAboutStatistic(id);
   }
 
-  async reorderAboutStatistics(statistics: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderAboutStatistics(statistics);
+  async reorderAboutStatistics(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderAboutStatistics(orderedIds);
   }
 
   async getAboutTeamMessage(): Promise<AboutTeamMessage | undefined> {
@@ -1143,8 +1143,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteSustainabilityMetric(id);
   }
 
-  async reorderSustainabilityMetrics(metrics: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderSustainabilityMetrics(metrics);
+  async reorderSustainabilityMetrics(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderSustainabilityMetrics(orderedIds);
   }
 
   async getSustainabilityInitiatives(): Promise<SustainabilityInitiative[]> {
@@ -1172,10 +1172,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteSustainabilityInitiative(id);
   }
 
-  async reorderSustainabilityInitiatives(
-    initiatives: { id: number; position: number }[],
-  ): Promise<void> {
-    return await this.pageContentRepository.reorderSustainabilityInitiatives(initiatives);
+  async reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderSustainabilityInitiatives(orderedIds);
   }
 
   async getSustainabilityGoals(): Promise<SustainabilityGoal[]> {
@@ -1201,8 +1199,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteSustainabilityGoal(id);
   }
 
-  async reorderSustainabilityGoals(goals: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderSustainabilityGoals(goals);
+  async reorderSustainabilityGoals(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderSustainabilityGoals(orderedIds);
   }
 
   async getUnifiedSustainability(): Promise<UnifiedSustainability | undefined> {
@@ -1215,7 +1213,7 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.updateUnifiedSustainability(data);
   }
 
-  async migrateLegacySustainabilityData(): Promise<UnifiedSustainability> {
+  async migrateLegacySustainabilityData(): Promise<{ migrated: number }> {
     return await this.pageContentRepository.migrateLegacySustainabilityData();
   }
 
@@ -1258,10 +1256,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteManufacturingProcess(id);
   }
 
-  async reorderManufacturingProcesses(
-    processes: { id: number; position: number }[],
-  ): Promise<void> {
-    return await this.pageContentRepository.reorderManufacturingProcesses(processes);
+  async reorderManufacturingProcesses(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderManufacturingProcesses(orderedIds);
   }
 
   async getManufacturingCapabilities(): Promise<ManufacturingCapability[]> {
@@ -1289,10 +1285,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteManufacturingCapability(id);
   }
 
-  async reorderManufacturingCapabilities(
-    capabilities: { id: number; position: number }[],
-  ): Promise<void> {
-    return await this.pageContentRepository.reorderManufacturingCapabilities(capabilities);
+  async reorderManufacturingCapabilities(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderManufacturingCapabilities(orderedIds);
   }
 
   async getManufacturingQualities(): Promise<ManufacturingQuality[]> {
@@ -1320,10 +1314,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteManufacturingQuality(id);
   }
 
-  async reorderManufacturingQualities(
-    qualities: { id: number; position: number }[],
-  ): Promise<void> {
-    return await this.pageContentRepository.reorderManufacturingQualities(qualities);
+  async reorderManufacturingQualities(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderManufacturingQualities(orderedIds);
   }
 
   // =============================================================================
@@ -1363,10 +1355,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteTechnologyInnovation(id);
   }
 
-  async reorderTechnologyInnovations(
-    innovations: { id: number; position: number }[],
-  ): Promise<void> {
-    return await this.pageContentRepository.reorderTechnologyInnovations(innovations);
+  async reorderTechnologyInnovations(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderTechnologyInnovations(orderedIds);
   }
 
   async getTechnologyEquipment(): Promise<TechnologyEquipment[]> {
@@ -1394,8 +1384,8 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteTechnologyEquipment(id);
   }
 
-  async reorderTechnologyEquipment(equipment: { id: number; position: number }[]): Promise<void> {
-    return await this.pageContentRepository.reorderTechnologyEquipment(equipment);
+  async reorderTechnologyEquipment(orderedIds: number[]): Promise<void> {
+    return await this.pageContentRepository.reorderTechnologyEquipment(orderedIds);
   }
 
   async getTechnologyResearch(): Promise<TechnologyResearch[]> {
@@ -1421,10 +1411,10 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteTechnologyResearch(id);
   }
 
-  async reorderTechnologyResearch(research: { id: number; position: number }[]): Promise<void> {
+  async reorderTechnologyResearch(orderedIds: number[]): Promise<void> {
     await this.withTransaction(
-      async (tx) => {
-        return await this.pageContentRepository.reorderTechnologyResearch(research, tx);
+      async (_tx) => {
+        return await this.pageContentRepository.reorderTechnologyResearch(orderedIds);
       },
       undefined,
       "reorderTechnologyResearch",
@@ -1454,10 +1444,10 @@ export class DirectPostgreSQLStorage implements IStorage {
     return await this.pageContentRepository.deleteTechnologyRoadmap(id);
   }
 
-  async reorderTechnologyRoadmap(roadmap: { id: number; position: number }[]): Promise<void> {
+  async reorderTechnologyRoadmap(orderedIds: number[]): Promise<void> {
     await this.withTransaction(
-      async (tx) => {
-        return await this.pageContentRepository.reorderTechnologyRoadmap(roadmap, tx);
+      async (_tx) => {
+        return await this.pageContentRepository.reorderTechnologyRoadmap(orderedIds);
       },
       undefined,
       "reorderTechnologyRoadmap",
