@@ -108,10 +108,9 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
 
   const [formData, setFormData] = useState<InsertNavigationItem>({
     // Primary fields for validation schema
-    title: item?.label || item?.title || "",
-    href: item?.url || item?.href || "",
-    // Keep label for TypeScript compatibility with database type
-    label: item?.label || item?.title || "",
+    title: item?.title || "",
+    href: item?.href || "",
+    label: item?.label || "",
     iconType: (item?.iconType as "media" | "fallback") || "fallback",
     iconSize: (item?.iconSize as "small" | "medium" | "large") || "medium",
     fallbackIcon: item?.fallbackIcon || "IconHome",
@@ -166,7 +165,7 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="title">Navigation Title</Label>
+          <Label htmlFor="title">Navigation Title (Internal/Admin)</Label>
           <Input
             id="title"
             value={formData.title || ""}
@@ -174,9 +173,25 @@ export function NavigationForm({ item, onSubmit, onCancel }: NavigationFormProps
               setFormData({
                 ...formData,
                 title: e.target.value,
+              })
+            }
+            placeholder="e.g. Products - Men"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="label">Display Label (Hover/Mobile)</Label>
+          <Input
+            id="label"
+            value={formData.label || ""}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
                 label: e.target.value,
               })
             }
+            placeholder="e.g. Products"
             required
           />
         </div>

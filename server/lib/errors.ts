@@ -12,7 +12,7 @@ export abstract class AppError extends Error {
     details?: Record<string, unknown>,
     options?: { cause?: unknown },
   ) {
-    super(message, { cause: options?.cause });
+    super(message);
     this.statusCode = statusCode;
     this.code = code;
     this.isOperational = isOperational;

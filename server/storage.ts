@@ -1,6 +1,7 @@
 import { getStorage } from "./lib/storage-singleton.js";
 import type {
   IAccessoryRepository,
+  IBlogRepository,
   ICategoryRepository,
   ICertificateRepository,
   IContactRepository,
@@ -18,7 +19,6 @@ import type {
   ITechnologyRepository,
   IUserRepository,
   IWebhookRepository,
-  IBlogRepository,
 } from "./repositories/storage-interfaces.js";
 
 export interface IStorage

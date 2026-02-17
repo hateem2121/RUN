@@ -64,6 +64,7 @@ export interface HomepageBatchResponse {
   featuredProductsSettings: DataWithTimestamp<unknown>;
   products: DataWithTimestamp<ProductItem[]>;
   categories: DataWithTimestamp<CategoryItem[]>;
+  processCards: DataWithTimestamp<ProcessStep[]>;
 }
 
 // Global augmentation for React Three Fiber elements

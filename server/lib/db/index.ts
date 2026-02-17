@@ -1,21 +1,18 @@
 /**
  * Database Module Index
- * Re-exports all database functionality from focused modules
+ * Re-exports all database functionality from the consolidated db.ts
  */
 
-// Connection and core database instance
 export {
   checkDatabaseConnection,
   closeDatabaseConnection,
   type Database,
+  type DbClient,
   db,
+  getPoolMetrics,
+  safeQuery,
+  safeTransaction,
   sql,
+  updateHealthCheckTime,
   wakeupDatabase,
-} from "./connection.js";
-
-// Metrics
-export { getPoolMetrics, updateHealthCheckTime } from "./metrics.js";
-
-// Safe wrappers
-export { safeQuery } from "./safe-query.js";
-export { type DbClient, safeTransaction } from "./transactions.js";
+} from "../../db.js";

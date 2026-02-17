@@ -1,12 +1,12 @@
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { blogPosts, blogCategories } from "../../../../shared/schema.js";
-import type { 
-  BlogPost, 
-  BlogCategory, 
-  InsertBlogPost, 
-  InsertBlogCategory 
+import type {
+  BlogCategory,
+  BlogPost,
+  InsertBlogCategory,
+  InsertBlogPost,
 } from "../../../../shared/schema.js";
+import { blogCategories, blogPosts } from "../../../../shared/schema.js";
+import { db } from "../../../db.js";
 import type { IBlogRepository } from "../../../repositories/storage-interfaces.js";
 
 export class BlogRepository implements IBlogRepository {
@@ -19,7 +19,7 @@ export class BlogRepository implements IBlogRepository {
       authorId?: string;
       search?: string;
       includeDeleted?: boolean;
-    }
+    },
   ): Promise<{ posts: BlogPost[]; total: number }> {
     const conditions = [];
 
@@ -43,8 +43,8 @@ export class BlogRepository implements IBlogRepository {
       conditions.push(
         or(
           ilike(blogPosts.title, `%${filters.search}%`),
-          ilike(blogPosts.content, `%${filters.search}%`)
-        )
+          ilike(blogPosts.content, `%${filters.search}%`),
+        ),
       );
     }
 
@@ -65,33 +65,22 @@ export class BlogRepository implements IBlogRepository {
 
     return {
       posts: posts as BlogPost[],
-      total: Number(totalResult?.count || 0)
+      total: Number(totalResult?.count || 0),
     };
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    const [post] = await db
-      .select()
-      .from(blogPosts)
-      .where(eq(blogPosts.id, id))
-      .limit(1);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
     return post as BlogPost | undefined;
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-    const [post] = await db
-      .select()
-      .from(blogPosts)
-      .where(eq(blogPosts.slug, slug))
-      .limit(1);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
     return post as BlogPost | undefined;
   }
 
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const [newPost] = await db
-      .insert(blogPosts)
-      .values(post)
-      .returning();
+    const [newPost] = await db.insert(blogPosts).values(post).returning();
     return newPost as BlogPost;
   }
 
@@ -123,23 +112,17 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async getBlogCategories(): Promise<BlogCategory[]> {
-    return await db
-      .select()
-      .from(blogCategories)
-      .orderBy(desc(blogCategories.name));
+    return await db.select().from(blogCategories).orderBy(desc(blogCategories.name));
   }
 
   async createBlogCategory(category: InsertBlogCategory): Promise<BlogCategory> {
-    const [newCategory] = await db
-      .insert(blogCategories)
-      .values(category)
-      .returning();
+    const [newCategory] = await db.insert(blogCategories).values(category).returning();
     return newCategory as BlogCategory;
   }
 
   async updateBlogCategory(
     id: number,
-    category: Partial<InsertBlogCategory>
+    category: Partial<InsertBlogCategory>,
   ): Promise<BlogCategory | undefined> {
     const [updatedCategory] = await db
       .update(blogCategories)

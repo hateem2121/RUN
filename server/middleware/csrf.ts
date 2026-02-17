@@ -45,7 +45,7 @@ function isExcludedRoute(path: string): boolean {
  */
 export function csrfTokenGenerator(req: Request, res: Response, next: NextFunction): void {
   // Bypassed for tests
-  if ((req as any)._skipCsrf) {
+  if ((req as any)._skipCsrf || res.headersSent) {
     return next();
   }
 
@@ -75,7 +75,7 @@ export function csrfTokenGenerator(req: Request, res: Response, next: NextFuncti
  */
 export function csrfValidator(req: Request, res: Response, next: NextFunction): void {
   // Bypassed for tests
-  if ((req as any)._skipCsrf) {
+  if ((req as any)._skipCsrf || res.headersSent) {
     return next();
   }
 
@@ -93,13 +93,16 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
 
   const cookieToken = req.cookies?.[CSRF_COOKIE_NAME];
   const headerToken = req.get(CSRF_HEADER_NAME);
+  const bodyToken = req.body?.[CSRF_COOKIE_NAME] || req.body?.csrfToken;
+  const tokenToValidate = headerToken || bodyToken;
 
   // Validate both tokens exist and match
-  if (!cookieToken || !headerToken) {
+  if (!cookieToken || !tokenToValidate) {
     logger.warn("[CSRF] Missing token", {
       path: req.path,
       hasCookie: !!cookieToken,
       hasHeader: !!headerToken,
+      hasBodyToken: !!bodyToken,
     });
     res.status(403).json({
       error: "CSRF_TOKEN_MISSING",
@@ -109,7 +112,7 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
   }
 
   // Constant-time comparison to prevent timing attacks
-  if (!crypto.timingSafeEqual(Buffer.from(cookieToken), Buffer.from(headerToken))) {
+  if (!crypto.timingSafeEqual(Buffer.from(cookieToken), Buffer.from(tokenToValidate))) {
     logger.warn("[CSRF] Token mismatch", { path: req.path });
     res.status(403).json({
       error: "CSRF_TOKEN_INVALID",

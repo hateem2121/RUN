@@ -4,7 +4,6 @@ import { logger } from "../lib/monitoring/logger.js";
 // Algorithm: AES-256-GCM (Authenticated Encryption)
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
-const _TAG_LENGTH = 16;
 
 /**
  * Derives a 32-byte key from the environment variable.

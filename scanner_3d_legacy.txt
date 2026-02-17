@@ -1,0 +1,12 @@
+./docs/CODING_STANDARDS.md
+./docs/guides/3D_INTEGRATION.md
+./.kilocode/workflows/3D Integration & Testing.md
+./.kilocode/rules/Core Identity & Tech Stack.md
+./CONTRIBUTING.md
+./.agent/workflows/3d-integration.md
+./.agent/rules/core-identity-tech-stack.md
+./.agent/skills/core-identity/SKILL.md
+./.agent/skills/advanced-debugging/SKILL.md
+./.agent/skills/project-standards/SKILL.md
+./.agent/skills/react-express-typescript/SKILL.md
+./audit-reports/homepage-forensic-audit-2026-02-15.md

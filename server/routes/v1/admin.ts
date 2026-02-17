@@ -9,7 +9,6 @@ import contactRouter from "../resources/contact.routes.js";
 import logoSettingsRouter from "../resources/logo-settings.routes.js";
 import navigationRouter from "../resources/navigation.routes.js";
 import pageContentRouter from "../resources/page-content-routes.js";
-import footerConfigRouter from "../utilities/footer-config.js";
 import inquiryAdminRouter from "../utilities/inquiry-admin.js";
 import blogRouter from "./admin/blog.js";
 
@@ -28,7 +27,6 @@ router.use("/admin/blog", authService.requireAdmin, blogRouter);
 
 // Admin-accessible utilities — all require admin authentication
 router.use(authService.requireAdmin, inquiryAdminRouter);
-router.use(authService.requireAdmin, footerConfigRouter);
 router.use("/feature-flags", authService.requireAdmin, featureFlagsRouter);
 router.use("/debug", authService.requireAdmin, debugRouter);
 

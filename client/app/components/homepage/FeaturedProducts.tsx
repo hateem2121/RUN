@@ -58,10 +58,18 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products }) => {
   };
 
   return (
-    <section ref={containerRef} className="bg-background-alt w-full px-4 py-32 md:px-8">
+    <section
+      ref={containerRef}
+      className="bg-background-alt w-full px-4 py-32 md:px-8"
+      role="region"
+      aria-labelledby="featured-products-heading"
+    >
       <div className="max-w-container-2xl mx-auto">
         <div className="mb-16 flex items-end justify-between border-b border-foreground/10 pb-8">
-          <h2 className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]">
+          <h2
+            id="featured-products-heading"
+            className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]"
+          >
             Archive <br /> 24/25
           </h2>
           <div className="hidden text-right md:block">
@@ -115,7 +123,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products }) => {
         <div className="mt-24 text-center">
           <button
             onClick={handleCatalogueClick}
-            className="hover:border-brand-accent hover:text-brand-accent border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
+            className="hover:border-primary hover:text-primary border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
             onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
             onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
           >

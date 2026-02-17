@@ -89,9 +89,16 @@ const Values: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section className="w-full bg-background-alt px-4 py-32 md:px-8">
+    <section
+      className="w-full bg-background-alt px-4 py-32 md:px-8"
+      role="region"
+      aria-labelledby="values-heading"
+    >
       <div className="mx-auto max-w-container-2xl">
-        <h2 className="mb-16 text-center font-bold text-display-xl uppercase leading-none">
+        <h2
+          id="values-heading"
+          className="mb-16 text-center font-bold text-display-xl uppercase leading-none"
+        >
           Built on <span className="font-serif italic">Precision</span>
         </h2>
 

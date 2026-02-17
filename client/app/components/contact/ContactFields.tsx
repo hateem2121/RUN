@@ -36,13 +36,18 @@ export function ContactFields({
       {/* Name Fields */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
-          <Label htmlFor="firstName" className="mb-2 block font-medium text-foreground/80 text-sm">
-            First Name <span className="text-red-500">*</span>
+          <Label htmlFor="firstName" className="mb-2 block font-medium text-foreground text-sm">
+            First Name{" "}
+            <span className="text-red-500" aria-hidden="true">
+              *
+            </span>
           </Label>
           <Input
             id="firstName"
             data-testid="input-first-name"
             size="lg"
+            aria-required="true"
+            aria-invalid={!!errors.firstName}
             aria-describedby={errors.firstName ? "firstName-error" : undefined}
             {...register("firstName")}
             disabled={isPending}
@@ -54,13 +59,18 @@ export function ContactFields({
           )}
         </div>
         <div>
-          <Label htmlFor="lastName" className="mb-2 block font-medium text-foreground/80 text-sm">
-            Last Name <span className="text-red-500">*</span>
+          <Label htmlFor="lastName" className="mb-2 block font-medium text-foreground text-sm">
+            Last Name{" "}
+            <span className="text-red-500" aria-hidden="true">
+              *
+            </span>
           </Label>
           <Input
             id="lastName"
             data-testid="input-last-name"
             size="lg"
+            aria-required="true"
+            aria-invalid={!!errors.lastName}
             aria-describedby={errors.lastName ? "lastName-error" : undefined}
             {...register("lastName")}
             disabled={isPending}
@@ -76,28 +86,27 @@ export function ContactFields({
       {/* Work Information */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
-          <Label htmlFor="jobTitle" className="mb-2 block font-medium text-foreground/80 text-sm">
+          <Label htmlFor="jobTitle" className="mb-2 block font-medium text-foreground text-sm">
             Job Title
           </Label>
           <Input
             id="jobTitle"
             data-testid="input-job-title"
             size="lg"
+            aria-invalid={!!errors.jobTitle}
             {...register("jobTitle")}
             disabled={isPending}
           />
         </div>
         <div>
-          <Label
-            htmlFor="companyName"
-            className="mb-2 block font-medium text-foreground/80 text-sm"
-          >
+          <Label htmlFor="companyName" className="mb-2 block font-medium text-foreground text-sm">
             Company Name
           </Label>
           <Input
             id="companyName"
             data-testid="input-company-name"
             size="lg"
+            aria-invalid={!!errors.companyName}
             {...register("companyName")}
             disabled={isPending}
           />
@@ -107,14 +116,19 @@ export function ContactFields({
       {/* Email and Country */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
-          <Label htmlFor="email" className="mb-2 block font-medium text-foreground/80 text-sm">
-            Email Address <span className="text-red-500">*</span>
+          <Label htmlFor="email" className="mb-2 block font-medium text-foreground text-sm">
+            Email Address{" "}
+            <span className="text-red-500" aria-hidden="true">
+              *
+            </span>
           </Label>
           <Input
             id="email"
             type="email"
             data-testid="input-email"
             size="lg"
+            aria-required="true"
+            aria-invalid={!!errors.email}
             aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email")}
             disabled={isPending}
@@ -129,9 +143,12 @@ export function ContactFields({
           <Label
             id="country-label"
             htmlFor="country-select"
-            className="mb-2 block font-medium text-foreground/80 text-sm"
+            className="mb-2 block font-medium text-foreground text-sm"
           >
-            Country <span className="text-destructive">*</span>
+            Country{" "}
+            <span className="text-destructive" aria-hidden="true">
+              *
+            </span>
           </Label>
           <div className="relative">
             <CustomSelect
@@ -155,6 +172,8 @@ export function ContactFields({
               placeholder="Select Country"
               searchable
               data-testid="button-country-dropdown"
+              aria-required="true"
+              aria-invalid={!!errors.country}
               aria-describedby={errors.country ? "country-error" : undefined}
             />
           </div>
@@ -172,7 +191,7 @@ export function ContactFields({
           <Label
             id="platform-label"
             htmlFor="platform-select"
-            className="mb-2 block font-medium text-foreground/80 text-sm"
+            className="mb-2 block font-medium text-foreground text-sm"
           >
             Preferred Platform
           </Label>
@@ -194,7 +213,7 @@ export function ContactFields({
           <Label
             id="contact-number-label"
             htmlFor="contactNumber"
-            className="mb-2 block font-medium text-foreground/80 text-sm"
+            className="mb-2 block font-medium text-foreground text-sm"
           >
             Contact Number / Handle
           </Label>
@@ -209,6 +228,7 @@ export function ContactFields({
               id="contactNumber"
               data-testid="input-contact-number"
               aria-labelledby="contact-number-label country-prefix"
+              aria-invalid={!!errors.contactNumber}
               {...register("contactNumber")}
               variant="ghost"
               className="flex-1 border-0 bg-transparent p-3 h-full"
@@ -221,16 +241,14 @@ export function ContactFields({
       {/* Other Platform */}
       {showOtherPlatform && (
         <div>
-          <Label
-            htmlFor="otherPlatform"
-            className="mb-2 block font-medium text-foreground/80 text-sm"
-          >
+          <Label htmlFor="otherPlatform" className="mb-2 block font-medium text-foreground text-sm">
             Please specify platform
           </Label>
           <Input
             id="otherPlatform"
             data-testid="input-other-platform"
             size="lg"
+            aria-invalid={!!errors.otherPlatform}
             {...register("otherPlatform")}
             disabled={isPending}
           />
@@ -239,13 +257,18 @@ export function ContactFields({
 
       {/* Message */}
       <div>
-        <Label htmlFor="message" className="mb-2 block font-medium text-foreground/80 text-sm">
-          Message <span className="text-red-500">*</span>
+        <Label htmlFor="message" className="mb-2 block font-medium text-foreground text-sm">
+          Message{" "}
+          <span className="text-red-500" aria-hidden="true">
+            *
+          </span>
         </Label>
         <Textarea
           id="message"
           data-testid="textarea-message"
           rows={5}
+          aria-required="true"
+          aria-invalid={!!errors.message}
           aria-describedby={errors.message ? "message-error" : undefined}
           {...register("message")}
           className="block w-full rounded-lg border-border p-3 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
@@ -262,7 +285,7 @@ export function ContactFields({
       <div>
         <Label
           id="contact-preference-label"
-          className="mb-2 block font-medium text-foreground/80 text-sm"
+          className="mb-2 block font-medium text-foreground text-sm"
         >
           How should we contact you?
         </Label>

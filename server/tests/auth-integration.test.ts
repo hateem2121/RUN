@@ -29,6 +29,13 @@ vi.mock("../lib/cache/unified-cache.js", () => ({
       set: vi.fn(),
       delete: vi.fn(),
     }),
+    TTL_PRESETS: {
+      SHORT: 300,
+      MEDIUM: 1800,
+      LONG: 3600,
+      MEDIA: 21600,
+      STATIC: 86400,
+    },
   },
 }));
 

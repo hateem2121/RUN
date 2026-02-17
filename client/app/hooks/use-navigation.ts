@@ -66,13 +66,32 @@ export function useStaggeredMenuItems() {
     .filter((item) => item?.isActive && item.showOnMobile !== false)
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
     .map((item) => ({
-      label: item.title || item.label || "Untitled",
-      ariaLabel: `Navigate to ${item.title || item.label || "page"}`,
-      link: item.href || item.url || "#",
+      label: item.label || item.title || "Untitled",
+      ariaLabel: `Navigate to ${item.label || item.title || "page"}`,
+      link: item.href || "#",
     }));
 
   return {
     menuItems: staggeredItems,
     isLoading: navigationLoading,
+  };
+}
+
+export function useNavigationSettings() {
+  const { data: settings, isLoading } = useQuery<{
+    glassmorphismEnabled: boolean;
+    showLabels: boolean;
+    dockPosition: "top" | "bottom";
+  }>({
+    queryKey: ["/api/navigation-settings"],
+  });
+
+  return {
+    settings: settings || {
+      glassmorphismEnabled: true,
+      showLabels: true,
+      dockPosition: "top",
+    },
+    isLoading,
   };
 }

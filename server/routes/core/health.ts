@@ -17,7 +17,7 @@ router.get("/deep", async (_req: Request, res: Response) => {
     },
   };
 
-  // Database Check
+  // Database Check (Pooled)
   const dbStart = performance.now();
   try {
     await db.execute(sql`SELECT 1`);
@@ -26,7 +26,31 @@ router.get("/deep", async (_req: Request, res: Response) => {
   } catch (error) {
     health.services.database.status = "down";
     health.status = "degraded";
-    logger.error("Health Check: Database failed", error as Error);
+    logger.error("Health Check: Pooled database failed", error as Error);
+  }
+
+  // Database Check (Direct - for LISTEN/NOTIFY)
+  const dbConfig = (await import("../../config/environment.js")).database;
+  if (dbConfig.directUrl) {
+    const directStart = performance.now();
+    try {
+      const { Client } = await import("pg");
+      const client = new Client({
+        connectionString: dbConfig.directUrl,
+        ssl: dbConfig.ssl,
+      });
+      await client.connect();
+      await client.query("SELECT 1");
+      await client.end();
+      (health.services as any).directDatabase = {
+        status: "up",
+        latencyMs: Math.round(performance.now() - directStart),
+      };
+    } catch (error) {
+      (health.services as any).directDatabase = { status: "down" };
+      health.status = "degraded";
+      logger.error("Health Check: Direct database failed", error as Error);
+    }
   }
 
   // Memory Check

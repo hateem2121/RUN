@@ -1,0 +1,3 @@
+./node_modules/tailwind-merge/README.md
+./node_modules/@tailwindcss/typography/README.md
+./node_modules/next-themes/README.md

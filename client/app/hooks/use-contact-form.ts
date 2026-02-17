@@ -8,16 +8,32 @@ import { useToast } from "@/hooks/use-toast";
 import { useServerValidation } from "@/hooks/useServerValidation";
 import { ApiError } from "@/lib/api";
 
-type ActionState = {
+interface ActionState {
   status: "idle" | "success" | "error";
   message: string;
   timestamp: number;
-  data?: unknown;
-  error?: unknown;
-};
+  data?: {
+    submissionId?: string;
+  };
+  error?: {
+    status?: number;
+    title?: string;
+    message?: string;
+    "invalid-params"?: Record<string, string[]>;
+  };
+}
 
 interface UseContactFormConfig {
   successMessage?: string;
+}
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      getResponse: () => string;
+      reset: () => void;
+    };
+  }
 }
 
 export function useContactForm(config?: UseContactFormConfig) {
@@ -47,9 +63,21 @@ export function useContactForm(config?: UseContactFormConfig) {
     },
   });
 
+  // PHASE 4 REMEDIATION: Pre-warm Cloud Task pipeline on form focus
+  useEffect(() => {
+    const handleFocus = () => {
+      // Trigger a light-weight pre-warm request to the contact endpoint
+      // This initializes server-side connection pools for Google Cloud Clients
+      fetch("/api/contact", { method: "HEAD", priority: "low" }).catch(() => {});
+    };
+
+    window.addEventListener("focus", handleFocus, { once: true });
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
+
   const apiError = useMemo(() => {
     if (state.status === "error" && state.error) {
-      return new ApiError((state.error as any).status || 500, state.error as any);
+      return new ApiError(state.error.status || 500, state.error);
     }
     return null;
   }, [state]);
@@ -98,9 +126,17 @@ export function useContactForm(config?: UseContactFormConfig) {
       .split("; ")
       .find((row) => row.startsWith("csrf_token="))
       ?.split("=")[1];
+
+    // reCAPTCHA Token (PHASE 4 REMEDIATION)
+    const recaptchaToken = window.grecaptcha?.getResponse?.() || "";
+    if (recaptchaToken) formData.append("recaptchaToken", recaptchaToken);
+
     if (csrfToken) formData.append("csrf_token", csrfToken);
 
-    fetcher.submit(formData, { method: "post", action: "/contact" });
+    fetcher.submit(formData, {
+      method: "post",
+      action: "/contact",
+    });
   };
 
   const setCountry = (country: Country) => {

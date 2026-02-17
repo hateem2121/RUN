@@ -55,7 +55,9 @@ const TechnologyManagement = lazy(() =>
 const StorageOptimization = () => <PlaceholderModule moduleName="Storage Optimization" />;
 const ContactManagement = lazy(() => import("@/components/admin/contact-management"));
 const MediaTestRunner = () => <PlaceholderModule moduleName="Media Test Runner" />;
-const InquiryManagement = () => <PlaceholderModule moduleName="Inquiry Management" />;
+const InquiryManagement = lazy(() =>
+  import("@/components/admin/inquiry-management").then((m) => ({ default: m.InquiryManagement })),
+);
 
 // Loading component
 function ModuleLoader() {

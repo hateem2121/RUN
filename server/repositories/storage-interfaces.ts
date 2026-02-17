@@ -8,6 +8,8 @@ import type {
   Accessory,
   AnimationError,
   AuditLog,
+  BlogCategory,
+  BlogPost,
   Category,
   Certificate,
   ContactPageConfiguration,
@@ -95,8 +97,6 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
-  BlogPost,
-  BlogCategory,
 } from "../../shared/schema.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {

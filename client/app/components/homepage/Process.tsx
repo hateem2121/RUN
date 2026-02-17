@@ -3,16 +3,27 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { PROCESS_STEPS } from "./constants";
+import { useHomepageData } from "@/hooks/use-homepage-data";
+import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
 
 const Process: React.FC = () => {
+  const { data: batchData, isLoading } = useHomepageData();
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
 
+  // Use CMS data if available, otherwise fallback to constants
+  const steps = batchData?.processCards?.result || FALLBACK_STEPS;
+
   useEffect(() => {
-    // Strict null checks
-    if (!sectionRef.current || !triggerRef.current || !pathRef.current) {
+    // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
+    if (
+      isLoading ||
+      !steps.length ||
+      !sectionRef.current ||
+      !triggerRef.current ||
+      !pathRef.current
+    ) {
       return;
     }
 
@@ -25,9 +36,7 @@ const Process: React.FC = () => {
       const sections = gsap.utils.toArray<HTMLElement>(triggerEl.querySelectorAll(".process-card"));
 
       // Prevent GSAP target null warning if empty
-      if (sections.length === 0) {
-        return;
-      }
+      if (sections.length === 0) return;
 
       // Initial set for SVG line
       if (pathEl) {
@@ -106,16 +115,32 @@ const Process: React.FC = () => {
     return () => {
       ctx.revert();
     };
-  }, []);
+  }, [isLoading, steps]); // Re-run when steps change or load
+
+  // Skeleton state for initial batch fetch to stabilize layout
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full animate-pulse bg-surface/5 flex items-center justify-center">
+        <div className="h-32 w-32 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <section className="overflow-hidden bg-background text-foreground">
+    <section
+      className="overflow-hidden bg-background text-foreground"
+      role="region"
+      aria-labelledby="process-heading"
+    >
       <div
         ref={triggerRef}
         className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
         <div className="absolute top-8 left-8 z-elevated">
-          <h3 className="rounded-full border border-border bg-surface/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl">
+          <h3
+            id="process-heading"
+            className="rounded-full border border-border bg-surface/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl"
+          >
             Production Pipeline
           </h3>
         </div>
@@ -142,7 +167,7 @@ const Process: React.FC = () => {
           className="flex h-auto w-full flex-col pt-24 will-change-transform md:h-full md:flex-row md:pt-0"
           ref={sectionRef}
         >
-          {PROCESS_STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <div
               key={index}
               className="process-card relative z-default flex min-h-loading-center w-full flex-shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"

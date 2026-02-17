@@ -1,0 +1,5 @@
+./plans/tailwind-v4-migration-audit-report.md
+./node_modules/@paralleldrive/cuid2/README.md
+./node_modules/pretty-format/README.md
+./node_modules/@testing-library/react/README.md
+./packages/sdk/node_modules/pretty-format/README.md

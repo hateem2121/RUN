@@ -85,6 +85,9 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 
 // Request Validation Middleware
 export function requestValidation(req: Request, res: Response, next: NextFunction) {
+  if (res.headersSent) {
+    return next();
+  }
   // Validate request size
   const contentLength = parseInt(req.get("Content-Length") || "0", 10);
   const maxSize = parseInt(config.app.maxRequestSize.replace("mb", ""), 10) * 1024 * 1024;
@@ -226,6 +229,9 @@ export function requestTimeout(req: Request, res: Response, next: NextFunction) 
 
 // Production-specific request logging
 export function productionLogging(req: Request, res: Response, next: NextFunction) {
+  if (res.headersSent) {
+    return next();
+  }
   if (config.app.environment === "production") {
     // Log only essential information in production
     const startTime = Date.now();

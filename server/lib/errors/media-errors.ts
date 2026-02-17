@@ -6,21 +6,19 @@
 export class MediaNotFoundError extends Error {
   public readonly status: number = 404;
 
-  constructor(mediaId: number | string) {
-    super(`Media asset not found or already deleted: ${mediaId}`);
+  constructor(message: string = "Media not found") {
+    super(message);
     this.name = "MediaNotFoundError";
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
 export class CacheInvalidationError extends Error {
   public readonly status: number = 500;
-  override cause?: Error;
 
-  constructor(operation: string, cause?: Error) {
-    super(
-      `Cache invalidation failed for ${operation} operation: ${cause?.message || "Unknown error"}`,
-    );
+  constructor(message: string = "Cache invalidation failed") {
+    super(message);
     this.name = "CacheInvalidationError";
-    this.cause = cause || new Error("Unknown cause");
+    Error.captureStackTrace(this, this.constructor);
   }
 }

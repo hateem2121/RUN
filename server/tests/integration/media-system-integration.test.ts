@@ -15,15 +15,15 @@ import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 // import { assetHealthMonitor } from "../lib/asset-health-monitor.js";
 // import { mediaPerformanceMonitor } from "../lib/media-performance-monitor.js";
-import { getStorage } from "../lib/storage-singleton.js";
+import { getStorage } from "../../lib/storage-singleton.js";
 
 // Test app setup
 const app = express();
 app.use(express.json());
 
 // Import and mount media routes
-import mediaRoutes from "../routes/media/routes.js";
-import { authService } from "../services/auth-service.js";
+import mediaRoutes from "../../routes/media/routes.js";
+import { authService } from "../../services/auth-service.js";
 
 // Mock admin auth for integration tests
 authService.requireAdmin = (_req: any, _res: any, next: any) => next();

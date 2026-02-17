@@ -12,53 +12,44 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   const chars = "0123456789";
 
   useEffect(() => {
-    if (!elementRef.current) {
-      return;
-    }
+    if (!elementRef.current) return;
 
-    let st: ScrollTrigger | null = null;
     let intervalId: ReturnType<typeof setInterval> | null = null;
 
     const runScramble = () => {
       let iterations = 0;
+      if (intervalId) clearInterval(intervalId);
+
       intervalId = setInterval(() => {
         setDisplayValue((prev) =>
           prev
             .split("")
             .map((_letter, index) => {
-              if (index < iterations) {
-                return value[index];
-              }
+              if (index < iterations) return value[index];
               return chars[Math.floor(Math.random() * chars.length)];
             })
             .join(""),
         );
 
         if (iterations >= value.length) {
-          if (intervalId) {
-            clearInterval(intervalId);
-          }
+          if (intervalId) clearInterval(intervalId);
           setDisplayValue(value);
         }
         iterations += 1 / 3;
       }, 50);
     };
 
-    st = ScrollTrigger.create({
-      trigger: elementRef.current,
-      start: "top 90%",
-      onEnter: () => {
-        runScramble();
-      },
-    });
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: elementRef.current,
+        start: "top 90%",
+        onEnter: () => runScramble(),
+      });
+    }, elementRef);
 
     return () => {
-      if (st) {
-        st.kill();
-      }
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
+      ctx.revert();
+      if (intervalId) clearInterval(intervalId);
     };
   }, [value]);
 
@@ -142,6 +133,8 @@ const Stats: React.FC = () => {
     <section
       ref={containerRef}
       className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-[150vh] md:flex-row"
+      role="region"
+      aria-labelledby="stats-heading"
     >
       {/* Sticky Background Image */}
       <div className="pointer-events-none absolute inset-0 z-base">
@@ -162,7 +155,10 @@ const Stats: React.FC = () => {
         className="relative z-elevated flex w-full flex-col justify-center border-border border-b bg-surface/20 p-6 text-foreground backdrop-blur-sm md:h-screen md:w-1/2 md:border-r md:border-b-0 md:bg-transparent md:p-16 md:pt-28 md:backdrop-blur-none"
       >
         <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
-          <h2 className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]">
+          <h2
+            id="stats-heading"
+            className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]"
+          >
             The Evolution of <br />
             <span className="animate-gradient bg-300% bg-linear-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent dark:from-blue-500 dark:to-white">
               Athletic Craftsmanship

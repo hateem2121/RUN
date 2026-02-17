@@ -188,10 +188,7 @@ describe("ProductService - TDD Example", () => {
       });
 
       // Act
-      const result = await listProducts(
-        { page: 1, pageSize: 10, category: "activewear" },
-        mockDb as any,
-      );
+      await listProducts({ page: 1, pageSize: 10, category: "activewear" }, mockDb as any);
 
       // Assert
       expect(mockDb.products.findAll).toHaveBeenCalledWith(

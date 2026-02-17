@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useToast } from "@/hooks/use-toast";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
@@ -24,9 +25,18 @@ interface NavigationItemWithMedia extends NavigationItem {
 }
 
 export default function NavigationManagement() {
-  const [editingItem, setEditingItem] = useState<NavigationItem | null>(null);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingItem, setEditingItem] = useLocalStorage<NavigationItem | null>(
+    "admin_nav_editing_item",
+    null,
+  );
+  const [showCreateDialog, setShowCreateDialog] = useLocalStorage<boolean>(
+    "admin_nav_show_create",
+    false,
+  );
+  const [showEditDialog, setShowEditDialog] = useLocalStorage<boolean>(
+    "admin_nav_show_edit",
+    false,
+  );
   const { toast } = useToast();
 
   const { data: navigationItems = [], isLoading } = useQuery<NavigationItem[]>({

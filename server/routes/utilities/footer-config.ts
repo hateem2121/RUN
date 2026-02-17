@@ -17,6 +17,7 @@ import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = express.Router();
 
@@ -151,6 +152,7 @@ router.get(
 // ADMIN endpoint for footer configuration
 router.get(
   "/admin/footer",
+  authService.requireAdmin,
   asyncHandler(async (_req, res) => {
     // Shared cache key with public endpoint
     const cacheKey = CacheKeys.footer.config();
@@ -170,6 +172,7 @@ router.get(
 // prettier-ignore
 router.patch(
   "/admin/footer",
+  authService.requireAdmin,
   asyncHandler(async (req, res) => {
     // security
     // 1. Validate payload
@@ -231,8 +234,17 @@ router.patch(
     }
 
     // 4. Invalidate Cache
-    await unifiedCache.delete(CacheKeys.footer.config());
-    logger.info("[Footer] Footer configuration updated");
+    try {
+      await unifiedCache.delete(CacheKeys.footer.config());
+      logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`);
+    } catch (cacheError) {
+      logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError);
+    }
+
+    logger.info("[Footer] Footer configuration updated successfully", {
+      id: updated?.id,
+      updatedFields: Object.keys(normalizedData),
+    });
 
     return res.json(updated);
   }),

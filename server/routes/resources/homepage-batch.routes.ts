@@ -53,17 +53,25 @@ router.get(
       const storage = getStorage();
 
       // PERFORMANCE: Fetch all data in parallel
-      // Process cards excluded - separate lazy-loaded endpoint /api/homepage-process-cards
-      const [hero, slogans, sections, featuredProductsSettings, products, categories] =
-        await Promise.all([
-          storage.getHomepageHero(),
-          storage.getHomepageSlogans(),
-          storage.getHomepageSections(),
+      // Process cards now included in batch (Remediation Feb 15, 2026) to eliminate hydration waterfall
+      const [
+        hero,
+        slogans,
+        sections,
+        featuredProductsSettings,
+        products,
+        categories,
+        processCards,
+      ] = await Promise.all([
+        storage.getHomepageHero(),
+        storage.getHomepageSlogans(),
+        storage.getHomepageSections(),
 
-          storage.getHomepageFeaturedProductsSettings(),
-          storage.getProducts(20),
-          storage.getCategories(),
-        ]);
+        storage.getHomepageFeaturedProductsSettings(),
+        storage.getProducts(20),
+        storage.getCategories(),
+        storage.getHomepageProcessCards(),
+      ]);
 
       return {
         hero: { result: hero, timestamp },
@@ -76,6 +84,7 @@ router.get(
         },
         products: { result: products, timestamp },
         categories: { result: categories, timestamp },
+        processCards: { result: processCards, timestamp },
       };
     };
 

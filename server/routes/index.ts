@@ -20,6 +20,7 @@ import resourcesRouter from "./resources/index.js";
 import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
 import { registerDataCreationRoutes } from "./utilities/data-creation.js";
 import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postgres-population.js";
+import footerConfigRouter from "./utilities/footer-config.js";
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerMigrationExecutionRoutes } from "./utilities/migration-execution.js";
@@ -91,6 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // 1.5 Resources (Public Page Content - Must be before Admin/Core to avoid conflicts)
   apiRouter.use(resourcesRouter);
+  apiRouter.use(footerConfigRouter);
 
   // 2. Core Business Domains
   apiRouter.use(v1CoreRouter);

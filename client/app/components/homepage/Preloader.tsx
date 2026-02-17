@@ -31,7 +31,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
-      const duration = 1.2; // Optimized loading time (reduced from 2.5s)
+      const duration = 0.7; // Optimized loading time (reduced from 1.2s)
 
       // Animate progress value
       const progressObj = { value: 0 };
@@ -64,17 +64,17 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
         gsap.to(textRef.current, {
           opacity: 0,
-          duration: 0.25,
+          duration: 0.2, // Faster cycling
           ease: "power2.inOut",
           onComplete: () => {
             setLoadingText(nextText);
             gsap.to(textRef.current, {
               opacity: 1,
-              duration: 0.25,
+              duration: 0.2,
               ease: "power2.inOut",
               onComplete: () => {
                 // Recursively call next cycle with a slight pause
-                gsap.delayedCall(0.3, cycleText, [nextIndex]);
+                gsap.delayedCall(0.1, cycleText, [nextIndex]);
               },
             });
           },
@@ -82,14 +82,14 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       };
 
       // Start cycling after a short delay
-      gsap.delayedCall(0.5, cycleText, [0]);
+      gsap.delayedCall(0.2, cycleText, [0]);
 
       // Exit Sequence
       tl.to(scope, {
         yPercent: -100,
-        duration: 1.2,
+        duration: 0.8, // Faster exit
         ease: "power4.inOut",
-        delay: 0.2,
+        delay: 0.1,
         onComplete: () => {
           onComplete();
         },

@@ -110,12 +110,15 @@ type Pages = {
   "/api/navigation-items": {
     params: {};
   };
+  "/api/navigation-settings": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/developer" | "/developer/playground" | "/developer/guides/:slug" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module/*" | "/api/media" | "/api/navigation-items";
+    page: "/" | "/about" | "/accessories" | "/analytics" | "/certifications" | "/contact" | "/dashboard" | "/fabrics" | "/fibers" | "/manufacturing" | "/products" | "/resources" | "/services" | "/size-charts" | "/privacy" | "/sustainability" | "/technology" | "/terms" | "/developer" | "/developer/playground" | "/developer/guides/:slug" | "/categories" | "/categories/:slug" | "/categories/:slug/products" | "/categories/:category/:product" | "/admin" | "/admin/:module/*" | "/api/media" | "/api/navigation-items" | "/api/navigation-settings";
   };
   "routes/_public.tsx": {
     id: "routes/_public";
@@ -245,6 +248,10 @@ type RouteFiles = {
     id: "routes/api.navigation-items";
     page: "/api/navigation-items";
   };
+  "routes/api.navigation-settings.tsx": {
+    id: "routes/api.navigation-settings";
+    page: "/api/navigation-settings";
+  };
 };
 
 type RouteModules = {
@@ -281,4 +288,5 @@ type RouteModules = {
   "routes/admin.$module": typeof import("./app/routes/admin.$module.tsx");
   "routes/api.media": typeof import("./app/routes/api.media.tsx");
   "routes/api.navigation-items": typeof import("./app/routes/api.navigation-items.tsx");
+  "routes/api.navigation-settings": typeof import("./app/routes/api.navigation-settings.tsx");
 };

@@ -23,8 +23,9 @@ export class NavigationService {
   private static normalizeItems(items: NavigationItem[]): NavigationItem[] {
     return items.map((item) => ({
       ...item,
-      title: item.title || item.label || "",
-      href: item.href || item.url || "#",
+      title: item.title || "",
+      label: item.label || "",
+      href: item.href || "#",
     }));
   }
 
@@ -123,9 +124,9 @@ export class NavigationService {
     // Transform logic
     const itemData = {
       title: data.title || data.label || "Untitled",
+      label: data.label || data.title || "Untitled",
       href: data.href || data.url || "#",
-      label: data.title || data.label || "Untitled",
-      url: data.href || data.url || "#",
+      url: data.url || data.href || "#",
       iconType: data.iconType,
       iconSize: data.iconSize,
       fallbackIcon: data.fallbackIcon,

@@ -1,6 +1,8 @@
 import { Client } from "pg";
+import { database as dbConfig } from "../../config/environment.js";
 import { adminCacheManager } from "../cache/admin-cache.js";
 import { logger } from "../monitoring/logger.js";
+import { registerShutdownHook } from "../shutdown-manager.js";
 
 const CHANNEL = "admin_cache_clear";
 let listenerClient: Client | null = null;
@@ -12,16 +14,24 @@ export const adminNotifier = {
    * Uses a dedicated PG connection because LISTEN/NOTIFY requires it.
    */
   async start() {
-    if (!process.env.DATABASE_URL) {
+    const connectionString = dbConfig.directUrl || dbConfig.url;
+
+    if (!connectionString) {
+      logger.warn("[AdminNotifier] No database URL configured, skipping listener startup.");
       return;
     }
+
+    // Register shutdown hook once
+    registerShutdownHook(async () => {
+      await adminNotifier.stop();
+    });
 
     const connect = async () => {
       try {
         listenerClient = new Client({
-          connectionString: process.env.DATABASE_URL,
+          connectionString,
           keepAlive: true,
-          ssl: true, // Neon requires SSL
+          ssl: dbConfig.ssl, // Use centralized SSL config
         });
 
         await listenerClient.connect();
@@ -76,20 +86,35 @@ export const adminNotifier = {
   },
 
   /**
+   * Stop listening and close connection
+   */
+  async stop() {
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+
+    if (listenerClient) {
+      try {
+        logger.info("[AdminNotifier] Stopping listener...");
+        await listenerClient.end();
+        listenerClient = null;
+        logger.info("[AdminNotifier] Listener stopped.");
+      } catch (err) {
+        logger.error("[AdminNotifier] Error stopping listener:", err);
+      }
+    }
+  },
+
+  /**
    * broadcast invalidation event
    * @param userId specific user ID or undefined for all
    */
   async notify(userId?: string) {
-    if (!process.env.DATABASE_URL) {
+    const connectionString = dbConfig.directUrl || dbConfig.url;
+    if (!connectionString) {
       return;
     }
-
-    // We can use a separate ephemeral client or the app's pool.
-    // Ideally use the app's main db pool, but to avoid circular deps with db.ts,
-    // we'll just open a quick connection or assume caller handles it?
-    // Actually, creating a client is cheap enough here for admin actions (rare).
-    // Or we can assume `listenerClient` is connected and valid to use for query?
-    // Yes, we can use listenerClient to sending NOTIFY too if connected.
 
     const payload = userId || "ALL";
     const query = `NOTIFY ${CHANNEL}, '${payload}'`;
@@ -100,8 +125,8 @@ export const adminNotifier = {
         await listenerClient.query(query);
       } else {
         const tempClient = new Client({
-          connectionString: process.env.DATABASE_URL,
-          ssl: true,
+          connectionString,
+          ssl: dbConfig.ssl,
         });
         await tempClient.connect();
         await tempClient.query(query);

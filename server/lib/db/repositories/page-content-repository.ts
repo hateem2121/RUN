@@ -73,6 +73,7 @@ import {
   type TechnologyInnovation,
   type TechnologyResearch,
   type TechnologyRoadmap,
+  // type TechnologyTesting, // Not used - removed to fix TS error
   technologyCta,
   technologyEquipment,
   technologyGradientSettings,
@@ -1038,1546 +1039,1003 @@ export class PageContentRepository {
   async getAboutTeamMessage(
     includeInactive: boolean = false,
   ): Promise<AboutTeamMessage | undefined> {
-    const _cacheKey = includeInactive ? "about:team_message:all" : "about:team_message";
-
-    // ... cache logic omitted for brevity, assuming standard pattern ...
-    // Since original didn't separate cache keys, I'll simplify.
-
     let query = db.select().from(aboutTeamMessages).$dynamic();
+
     if (!includeInactive) {
       query = query.where(eq(aboutTeamMessages.isActive, true));
     }
+
     const [message] = await query.limit(1);
     return message;
   }
 
-  async updateAboutTeamMessage(
-    message: Partial<InsertAboutTeamMessage>,
-  ): Promise<AboutTeamMessage> {
-    const existing = await db.select().from(aboutTeamMessages).limit(1);
-
-    let result;
-    if (existing.length === 0) {
-      // Create with default values for required fields
-      const [created] = await db
-        .insert(aboutTeamMessages)
-        .values({
-          name: message.title || "Team Message",
-          message: message.message || "",
-          ...message,
-        } as InsertAboutTeamMessage)
-        .returning();
-      result = created!;
-    } else {
-      if (existing.length > 0 && existing[0]?.id) {
-        const [updated] = await db
-          .update(aboutTeamMessages)
-          .set(message)
-          .where(eq(aboutTeamMessages.id, existing[0].id))
-          .returning();
-        result = updated!;
-      } else {
-        result = existing[0] as AboutTeamMessage; // Should not happen given existing.length check, but TS safety
-      }
-    }
-
-    try {
-      await emitCacheInvalidation("about:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result;
-  }
-
   // =============================================================================
-  // SUSTAINABILITY PAGE METHODS (continued in next message due to length)
+  // SUSTAINABILITY METHODS
   // =============================================================================
 
   async getSustainabilityHero(): Promise<SustainabilityHero | undefined> {
-    const [hero] = await db
-      .select()
-      .from(sustainabilityHero)
-      .where(eq(sustainabilityHero.isActive, true))
-      .limit(1);
+    const cacheKey = "sustainability:hero";
+    const cached = unifiedCache.get<SustainabilityHero>(cacheKey);
+    if (cached) return cached;
+
+    const [hero] = await db.select().from(sustainabilityHero).limit(1);
+    if (hero) {
+      unifiedCache.set(cacheKey, hero, HOMEPAGE_CACHE_TTL);
+    }
     return hero;
   }
 
   async updateSustainabilityHero(
-    hero: Partial<InsertSustainabilityHero>,
+    data: Partial<InsertSustainabilityHero>,
   ): Promise<SustainabilityHero> {
-    const existing = await db.select().from(sustainabilityHero).limit(1);
+    const existing = await this.getSustainabilityHero();
 
-    let result;
-    if (existing.length === 0) {
-      const [created] = await db
-        .insert(sustainabilityHero)
-        .values(hero as InsertSustainabilityHero)
+    if (existing) {
+      const [updated] = await db
+        .update(sustainabilityHero)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(sustainabilityHero.id, existing.id))
         .returning();
-      result = created!;
+      unifiedCache.del("sustainability:hero");
+      emitCacheInvalidation("sustainability:hero");
+      return updated;
     } else {
-      if (existing.length > 0 && existing[0]?.id) {
-        const [updated] = await db
-          .update(sustainabilityHero)
-          .set({ ...hero, updatedAt: sql`NOW()` })
-          .where(eq(sustainabilityHero.id, existing[0].id))
-          .returning();
-        result = updated!;
-      } else {
-        result = existing[0] as SustainabilityHero;
+      const [created] = await db.insert(sustainabilityHero).values(data).returning();
+      unifiedCache.del("sustainability:hero");
+      emitCacheInvalidation("sustainability:hero");
+      return created;
+    }
+  }
+
+  async getSustainabilityGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
+    let query = db.select().from(sustainabilityGoals).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(sustainabilityGoals.isActive, true));
+    }
+
+    return query.orderBy(asc(sustainabilityGoals.sortOrder));
+  }
+
+  async getSustainabilityGoal(id: string): Promise<SustainabilityGoal | undefined> {
+    const [goal] = await db
+      .select()
+      .from(sustainabilityGoals)
+      .where(eq(sustainabilityGoals.id, id))
+      .limit(1);
+    return goal;
+  }
+
+  async createSustainabilityGoal(data: InsertSustainabilityGoal): Promise<SustainabilityGoal> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${sustainabilityGoals.sortOrder})` })
+      .from(sustainabilityGoals);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(sustainabilityGoals)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("sustainability:goals:*");
+    emitCacheInvalidation("sustainability:goals");
+    return created;
+  }
+
+  async updateSustainabilityGoal(
+    id: string,
+    data: Partial<InsertSustainabilityGoal>,
+  ): Promise<SustainabilityGoal> {
+    const [updated] = await db
+      .update(sustainabilityGoals)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(sustainabilityGoals.id, id))
+      .returning();
+
+    unifiedCache.del("sustainability:goals:*");
+    emitCacheInvalidation("sustainability:goals");
+    return updated;
+  }
+
+  async deleteSustainabilityGoal(id: string): Promise<boolean> {
+    await db.delete(sustainabilityGoals).where(eq(sustainabilityGoals.id, id));
+    unifiedCache.del("sustainability:goals:*");
+    emitCacheInvalidation("sustainability:goals");
+    return true;
+  }
+
+  async reorderSustainabilityGoals(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(sustainabilityGoals)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(sustainabilityGoals.id, orderedIds[i]));
       }
-    }
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result;
+    });
+    unifiedCache.del("sustainability:goals:*");
+    emitCacheInvalidation("sustainability:goals");
   }
 
   async getSustainabilityMetrics(): Promise<SustainabilityMetric[]> {
-    // PERFORMANCE: Cache for 30min (static content, rarely changes)
     const cacheKey = "sustainability:metrics";
-    try {
-      const cached = await unifiedCache.get<SustainabilityMetric[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get sustainability metrics from cache:", error);
-    }
+    const cached = unifiedCache.get<SustainabilityMetric[]>(cacheKey);
+    if (cached) return cached;
 
-    const result = await db
+    const metrics = await db
       .select()
       .from(sustainabilityMetrics)
       .where(eq(sustainabilityMetrics.isActive, true))
       .orderBy(asc(sustainabilityMetrics.sortOrder));
 
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data"); // 30 min
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache sustainability metrics:", error);
-    }
-
-    return result;
+    unifiedCache.set(cacheKey, metrics, HOMEPAGE_CACHE_TTL);
+    return metrics;
   }
 
-  async getSustainabilityMetric(id: number): Promise<SustainabilityMetric | undefined> {
+  async getSustainabilityMetric(id: string): Promise<SustainabilityMetric | undefined> {
     const [metric] = await db
       .select()
       .from(sustainabilityMetrics)
-      .where(eq(sustainabilityMetrics.id, id));
+      .where(eq(sustainabilityMetrics.id, id))
+      .limit(1);
     return metric;
   }
 
   async createSustainabilityMetric(
-    metric: InsertSustainabilityMetric,
+    data: InsertSustainabilityMetric,
   ): Promise<SustainabilityMetric> {
-    try {
-      await unifiedCache.delete("sustainability:metrics", "data");
-      await unifiedCache.delete("batch:/api/sustainability/batch");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear sustainability metrics cache:", error);
-    }
+    const maxOrder = await db
+      .select({ max: sql`MAX(${sustainabilityMetrics.sortOrder})` })
+      .from(sustainabilityMetrics);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
 
-    const [created] = await db.insert(sustainabilityMetrics).values(metric).returning();
+    const [created] = await db
+      .insert(sustainabilityMetrics)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
 
-    try {
-      await emitCacheInvalidation("sustainability:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
+    unifiedCache.del("sustainability:metrics");
+    emitCacheInvalidation("sustainability:metrics");
+    return created;
   }
 
   async updateSustainabilityMetric(
-    id: number,
-    metric: Partial<InsertSustainabilityMetric>,
-  ): Promise<SustainabilityMetric | undefined> {
-    try {
-      await unifiedCache.delete("sustainability:metrics", "data");
-      await unifiedCache.delete("batch:/api/sustainability/batch");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear sustainability metrics cache:", error);
-    }
-
+    id: string,
+    data: Partial<InsertSustainabilityMetric>,
+  ): Promise<SustainabilityMetric> {
     const [updated] = await db
       .update(sustainabilityMetrics)
-      .set({ ...metric, updatedAt: sql`NOW()` })
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(sustainabilityMetrics.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
+    unifiedCache.del("sustainability:metrics");
+    emitCacheInvalidation("sustainability:metrics");
+    return updated;
   }
 
-  async deleteSustainabilityMetric(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("sustainability:metrics", "data");
-      await unifiedCache.delete("batch:/api/sustainability/batch");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear sustainability metrics cache:", error);
-    }
-
-    const result = await db.delete(sustainabilityMetrics).where(eq(sustainabilityMetrics.id, id));
-
-    try {
-      await emitCacheInvalidation("sustainability:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
+  async deleteSustainabilityMetric(id: string): Promise<boolean> {
+    await db.delete(sustainabilityMetrics).where(eq(sustainabilityMetrics.id, id));
+    unifiedCache.del("sustainability:metrics");
+    emitCacheInvalidation("sustainability:metrics");
+    return true;
   }
 
-  async reorderSustainabilityMetrics(metrics: { id: number; position: number }[]): Promise<void> {
-    for (const metric of metrics) {
-      await db
-        .update(sustainabilityMetrics)
-        .set({ sortOrder: metric.position })
-        .where(eq(sustainabilityMetrics.id, metric.id));
-    }
-
-    try {
-      await unifiedCache.delete("sustainability:metrics", "data");
-      await unifiedCache.delete("batch:/api/sustainability/batch");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear sustainability metrics cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+  async reorderSustainabilityMetrics(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(sustainabilityMetrics)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(sustainabilityMetrics.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("sustainability:metrics");
+    emitCacheInvalidation("sustainability:metrics");
   }
 
-  async getSustainabilityInitiatives(): Promise<SustainabilityInitiative[]> {
-    return await db
-      .select()
-      .from(sustainabilityInitiatives)
-      .where(eq(sustainabilityInitiatives.isActive, true))
-      .orderBy(asc(sustainabilityInitiatives.sortOrder));
+  async getSustainabilityInitiatives(includeInactive = false): Promise<SustainabilityInitiative[]> {
+    let query = db.select().from(sustainabilityInitiatives).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(sustainabilityInitiatives.isActive, true));
+    }
+
+    return query.orderBy(asc(sustainabilityInitiatives.sortOrder));
   }
 
-  async getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined> {
+  async getSustainabilityInitiative(id: string): Promise<SustainabilityInitiative | undefined> {
     const [initiative] = await db
       .select()
       .from(sustainabilityInitiatives)
-      .where(eq(sustainabilityInitiatives.id, id));
+      .where(eq(sustainabilityInitiatives.id, id))
+      .limit(1);
     return initiative;
   }
 
   async createSustainabilityInitiative(
-    initiative: InsertSustainabilityInitiative,
+    data: InsertSustainabilityInitiative,
   ): Promise<SustainabilityInitiative> {
-    const [created] = await db.insert(sustainabilityInitiatives).values(initiative).returning();
+    const maxOrder = await db
+      .select({ max: sql`MAX(${sustainabilityInitiatives.sortOrder})` })
+      .from(sustainabilityInitiatives);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
 
-    try {
-      await emitCacheInvalidation("sustainability:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    const [created] = await db
+      .insert(sustainabilityInitiatives)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
 
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return created!;
+    unifiedCache.del("sustainability:initiatives:*");
+    emitCacheInvalidation("sustainability:initiatives");
+    return created;
   }
 
   async updateSustainabilityInitiative(
-    id: number,
-    initiative: Partial<InsertSustainabilityInitiative>,
-  ): Promise<SustainabilityInitiative | undefined> {
+    id: string,
+    data: Partial<InsertSustainabilityInitiative>,
+  ): Promise<SustainabilityInitiative> {
     const [updated] = await db
       .update(sustainabilityInitiatives)
-      .set({ ...initiative, updatedAt: sql`NOW()` })
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(sustainabilityInitiatives.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return updated!;
+    unifiedCache.del("sustainability:initiatives:*");
+    emitCacheInvalidation("sustainability:initiatives");
+    return updated;
   }
 
-  async deleteSustainabilityInitiative(id: number): Promise<boolean> {
-    const result = await db
-      .delete(sustainabilityInitiatives)
-      .where(eq(sustainabilityInitiatives.id, id));
-
-    try {
-      await emitCacheInvalidation("sustainability:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return (result.rowCount ?? 0) > 0;
+  async deleteSustainabilityInitiative(id: string): Promise<boolean> {
+    await db.delete(sustainabilityInitiatives).where(eq(sustainabilityInitiatives.id, id));
+    unifiedCache.del("sustainability:initiatives:*");
+    emitCacheInvalidation("sustainability:initiatives");
+    return true;
   }
 
-  async reorderSustainabilityInitiatives(
-    initiatives: { id: number; position: number }[],
-  ): Promise<void> {
-    for (const initiative of initiatives) {
-      await db
-        .update(sustainabilityInitiatives)
-        .set({ sortOrder: initiative.position })
-        .where(eq(sustainabilityInitiatives.id, initiative.id));
-    }
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-  }
-
-  async getSustainabilityGoals(): Promise<SustainabilityGoal[]> {
-    return await db
-      .select()
-      .from(sustainabilityGoals)
-      .where(eq(sustainabilityGoals.isActive, true))
-      .orderBy(asc(sustainabilityGoals.sortOrder));
-  }
-
-  async getSustainabilityGoal(id: number): Promise<SustainabilityGoal | undefined> {
-    const [goal] = await db
-      .select()
-      .from(sustainabilityGoals)
-      .where(eq(sustainabilityGoals.id, id));
-    return goal;
-  }
-
-  async createSustainabilityGoal(goal: InsertSustainabilityGoal): Promise<SustainabilityGoal> {
-    const [created] = await db.insert(sustainabilityGoals).values(goal).returning();
-
-    try {
-      await emitCacheInvalidation("sustainability:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return created!;
-  }
-
-  async updateSustainabilityGoal(
-    id: number,
-    goal: Partial<InsertSustainabilityGoal>,
-  ): Promise<SustainabilityGoal | undefined> {
-    const [updated] = await db
-      .update(sustainabilityGoals)
-      .set({ ...goal, updatedAt: sql`NOW()` })
-      .where(eq(sustainabilityGoals.id, id))
-      .returning();
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return updated!;
-  }
-
-  async deleteSustainabilityGoal(id: number): Promise<boolean> {
-    const result = await db.delete(sustainabilityGoals).where(eq(sustainabilityGoals.id, id));
-
-    try {
-      await emitCacheInvalidation("sustainability:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
-  }
-
-  async reorderSustainabilityGoals(goals: { id: number; position: number }[]): Promise<void> {
-    for (const goal of goals) {
-      await db
-        .update(sustainabilityGoals)
-        .set({ sortOrder: goal.position })
-        .where(eq(sustainabilityGoals.id, goal.id));
-    }
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-      await unifiedCache.delete("batch:/api/sustainability/batch");
-    }
+  async reorderSustainabilityInitiatives(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(sustainabilityInitiatives)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(sustainabilityInitiatives.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("sustainability:initiatives:*");
+    emitCacheInvalidation("sustainability:initiatives");
   }
 
   async getUnifiedSustainability(): Promise<UnifiedSustainability | undefined> {
-    const [unified] = await db.select().from(unifiedSustainability).limit(1);
-    return unified;
+    const cacheKey = "sustainability:unified";
+    const cached = unifiedCache.get<UnifiedSustainability>(cacheKey);
+    if (cached) return cached;
+
+    const [data] = await db.select().from(unifiedSustainability).limit(1);
+    if (data) {
+      unifiedCache.set(cacheKey, data, HOMEPAGE_CACHE_TTL);
+    }
+    return data;
   }
 
   async updateUnifiedSustainability(
     data: Partial<InsertUnifiedSustainability>,
   ): Promise<UnifiedSustainability> {
-    const existing = await db.select().from(unifiedSustainability).limit(1);
+    const existing = await this.getUnifiedSustainability();
 
-    let result;
-    if (existing.length === 0) {
-      const [created] = await db
-        .insert(unifiedSustainability)
-        .values(data as InsertUnifiedSustainability)
+    if (existing) {
+      const [updated] = await db
+        .update(unifiedSustainability)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(unifiedSustainability.id, existing.id))
         .returning();
-      result = created!;
+      unifiedCache.del("sustainability:unified");
+      emitCacheInvalidation("sustainability:unified");
+      return updated;
     } else {
-      if (existing.length > 0 && existing[0]?.id) {
-        const [updated] = await db
-          .update(unifiedSustainability)
-          .set({ ...data, updatedAt: sql`NOW()` })
-          .where(eq(unifiedSustainability.id, existing[0].id))
-          .returning();
-        result = updated!;
-      } else {
-        result = existing[0] as UnifiedSustainability;
-      }
+      const [created] = await db.insert(unifiedSustainability).values(data).returning();
+      unifiedCache.del("sustainability:unified");
+      emitCacheInvalidation("sustainability:unified");
+      return created;
     }
-
-    try {
-      await emitCacheInvalidation("sustainability:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    await unifiedCache.delete("batch:/api/sustainability/batch");
-    return result;
   }
 
-  async migrateLegacySustainabilityData(): Promise<UnifiedSustainability> {
-    const existing = await this.getUnifiedSustainability();
-    if (existing) {
-      return existing;
+  async migrateLegacySustainabilityData(): Promise<{ migrated: number }> {
+    // Migration helper for legacy data formats
+    const hero = await this.getSustainabilityHero();
+    const goals = await this.getSustainabilityGoals(true);
+    const metrics = await this.getSustainabilityMetrics();
+    const initiatives = await this.getSustainabilityInitiatives(true);
+
+    let migrated = 0;
+
+    // If we have legacy data in old format, migrate to unified
+    if (hero || goals.length > 0 || metrics.length > 0 || initiatives.length > 0) {
+      await this.updateUnifiedSustainability({
+        heroData: hero ? JSON.stringify(hero) : null,
+        goalsData: goals.length > 0 ? JSON.stringify(goals) : null,
+        metricsData: metrics.length > 0 ? JSON.stringify(metrics) : null,
+        initiativesData: initiatives.length > 0 ? JSON.stringify(initiatives) : null,
+      });
+      migrated = (hero ? 1 : 0) + goals.length + metrics.length + initiatives.length;
     }
 
-    return await this.updateUnifiedSustainability({
-      title: "Sustainability",
-      content: "Our commitment to sustainable practices",
-      data: {
-        metrics: {},
-        initiatives: [],
-        goals: [],
-      },
-    });
+    return { migrated };
   }
 
   // =============================================================================
-  // MANUFACTURING PAGE METHODS
+  // MANUFACTURING METHODS
   // =============================================================================
 
   async getManufacturingHero(): Promise<ManufacturingHero | undefined> {
-    const [hero] = await db
-      .select()
-      .from(manufacturingHero)
-      .where(eq(manufacturingHero.isActive, true))
-      .limit(1);
+    const cacheKey = "manufacturing:hero";
+    const cached = unifiedCache.get<ManufacturingHero>(cacheKey);
+    if (cached) return cached;
+
+    const [hero] = await db.select().from(manufacturingHero).limit(1);
+    if (hero) {
+      unifiedCache.set(cacheKey, hero, HOMEPAGE_CACHE_TTL);
+    }
     return hero;
   }
 
   async updateManufacturingHero(
-    hero: Partial<InsertManufacturingHero>,
+    data: Partial<InsertManufacturingHero>,
   ): Promise<ManufacturingHero> {
-    const existing = await db.select().from(manufacturingHero).limit(1);
+    const existing = await this.getManufacturingHero();
 
-    let result;
-    if (existing.length === 0) {
-      const [created] = await db
-        .insert(manufacturingHero)
-        .values(hero as InsertManufacturingHero)
+    if (existing) {
+      const [updated] = await db
+        .update(manufacturingHero)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(manufacturingHero.id, existing.id))
         .returning();
-      result = created!;
+      unifiedCache.del("manufacturing:hero");
+      emitCacheInvalidation("manufacturing:hero");
+      return updated;
     } else {
-      if (existing.length > 0 && existing[0]?.id) {
-        const [updated] = await db
-          .update(manufacturingHero)
-          .set({ ...hero, updatedAt: sql`NOW()` })
-          .where(eq(manufacturingHero.id, existing[0].id))
-          .returning();
-        result = updated!;
-      } else {
-        result = existing[0] as ManufacturingHero;
-      }
+      const [created] = await db.insert(manufacturingHero).values(data).returning();
+      unifiedCache.del("manufacturing:hero");
+      emitCacheInvalidation("manufacturing:hero");
+      return created;
     }
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result;
-  }
-
-  async getManufacturingProcesses(): Promise<ManufacturingProcess[]> {
-    // PERFORMANCE: Cache for 30min (static content, rarely changes)
-    const cacheKey = "manufacturing:processes";
-    try {
-      const cached = await unifiedCache.get<ManufacturingProcess[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get manufacturing processes from cache:", error);
-    }
-
-    // Explicit column selection for NEON optimization - prevents accidental over-fetching
-    const result = await db
-      .select({
-        id: manufacturingProcesses.id,
-        name: manufacturingProcesses.name,
-        title: manufacturingProcesses.title,
-        description: manufacturingProcesses.description,
-        step: manufacturingProcesses.step,
-        position: manufacturingProcesses.position,
-        duration: manufacturingProcesses.duration,
-        efficiency: manufacturingProcesses.efficiency,
-        category: manufacturingProcesses.category,
-        iconName: manufacturingProcesses.iconName,
-        imageId: manufacturingProcesses.imageId,
-        mediaIds: manufacturingProcesses.mediaIds,
-        equipment: manufacturingProcesses.equipment,
-        specifications: manufacturingProcesses.specifications,
-        isActive: manufacturingProcesses.isActive,
-        sortOrder: manufacturingProcesses.sortOrder,
-        createdAt: manufacturingProcesses.createdAt,
-      })
-      .from(manufacturingProcesses)
-      .where(eq(manufacturingProcesses.isActive, true))
-      .orderBy(asc(manufacturingProcesses.sortOrder));
-
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data"); // 30 min
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache manufacturing processes:", error);
-    }
-
-    return result;
-  }
-
-  async getManufacturingProcess(id: number): Promise<ManufacturingProcess | undefined> {
-    const [process] = await db
-      .select()
-      .from(manufacturingProcesses)
-      .where(eq(manufacturingProcesses.id, id));
-    return process;
-  }
-
-  async createManufacturingProcess(
-    process: InsertManufacturingProcess,
-  ): Promise<ManufacturingProcess> {
-    try {
-      await unifiedCache.delete("manufacturing:processes", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear manufacturing processes cache:", error);
-    }
-
-    const [created] = await db.insert(manufacturingProcesses).values(process).returning();
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
-  }
-
-  async updateManufacturingProcess(
-    id: number,
-    process: Partial<InsertManufacturingProcess>,
-  ): Promise<ManufacturingProcess | undefined> {
-    try {
-      await unifiedCache.delete("manufacturing:processes", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear manufacturing processes cache:", error);
-    }
-
-    const [updated] = await db
-      .update(manufacturingProcesses)
-      .set(process)
-      .where(eq(manufacturingProcesses.id, id))
-      .returning();
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
-  }
-
-  async deleteManufacturingProcess(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("manufacturing:processes", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear manufacturing processes cache:", error);
-    }
-
-    const result = await db.delete(manufacturingProcesses).where(eq(manufacturingProcesses.id, id));
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
-  }
-
-  async reorderManufacturingProcesses(
-    processes: { id: number; position: number }[],
-  ): Promise<void> {
-    // Use Drizzle batch to execute all updates in a single round trip
-    const updateQueries = processes.map((process) =>
-      db
-        .update(manufacturingProcesses)
-        .set({ sortOrder: process.position })
-        .where(eq(manufacturingProcesses.id, process.id)),
-    );
-    await db.batch(updateQueries as any);
-
-    try {
-      await unifiedCache.delete("manufacturing:processes", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear manufacturing processes cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-  }
-
-  async getManufacturingCapabilities(): Promise<ManufacturingCapability[]> {
-    // Explicit column selection for NEON optimization - prevents accidental over-fetching
-    return await db
-      .select({
-        id: manufacturingCapabilities.id,
-        name: manufacturingCapabilities.name,
-        title: manufacturingCapabilities.title,
-        description: manufacturingCapabilities.description,
-        capacity: manufacturingCapabilities.capacity,
-        unit: manufacturingCapabilities.unit,
-        category: manufacturingCapabilities.category,
-        icon: manufacturingCapabilities.icon,
-        imageId: manufacturingCapabilities.imageId,
-        equipment: manufacturingCapabilities.equipment,
-        specifications: manufacturingCapabilities.specifications,
-        isActive: manufacturingCapabilities.isActive,
-        sortOrder: manufacturingCapabilities.sortOrder,
-        createdAt: manufacturingCapabilities.createdAt,
-      })
-      .from(manufacturingCapabilities)
-      .where(eq(manufacturingCapabilities.isActive, true))
-      .orderBy(asc(manufacturingCapabilities.sortOrder));
-  }
-
-  async getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined> {
-    const [capability] = await db
-      .select()
-      .from(manufacturingCapabilities)
-      .where(eq(manufacturingCapabilities.id, id));
-    return capability;
   }
 
   async createManufacturingCapability(
-    capability: InsertManufacturingCapability,
+    data: InsertManufacturingCapability,
   ): Promise<ManufacturingCapability> {
-    // Map 'title' to 'name' if 'name' is not provided (database requires name)
-    // Build values object explicitly to ensure 'name' is always set
-    const valuesToInsert = {
-      name: capability.name || capability.title || "Untitled Capability",
-      title: capability.title,
-      description: capability.description,
-      capacity: capability.capacity,
-      category: capability.category,
-      icon: capability.icon,
-      imageId: capability.imageId,
-      equipment: capability.equipment,
-      specifications: capability.specifications,
-      isActive: capability.isActive,
-    };
+    const maxOrder = await db
+      .select({ max: sql`MAX(${manufacturingCapabilities.sortOrder})` })
+      .from(manufacturingCapabilities);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
 
-    const [created] = await db.insert(manufacturingCapabilities).values(valuesToInsert).returning();
+    const [created] = await db
+      .insert(manufacturingCapabilities)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
+    unifiedCache.del("manufacturing:capabilities:*");
+    emitCacheInvalidation("manufacturing:capabilities");
+    return created;
+  }
+
+  async getManufacturingCapabilities(includeInactive = false): Promise<ManufacturingCapability[]> {
+    let query = db.select().from(manufacturingCapabilities).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(manufacturingCapabilities.isActive, true));
     }
 
-    return created!;
+    return query.orderBy(asc(manufacturingCapabilities.sortOrder));
+  }
+
+  async getManufacturingCapability(id: string): Promise<ManufacturingCapability | undefined> {
+    const [capability] = await db
+      .select()
+      .from(manufacturingCapabilities)
+      .where(eq(manufacturingCapabilities.id, id))
+      .limit(1);
+    return capability;
   }
 
   async updateManufacturingCapability(
-    id: number,
-    capability: Partial<InsertManufacturingCapability>,
-  ): Promise<ManufacturingCapability | undefined> {
-    // Map 'title' to 'name' if only 'title' is provided (database requires name)
-    const dataToUpdate: any = { ...capability };
-    // Handle both undefined and empty string cases for title → name mapping
-    if ("title" in dataToUpdate && !dataToUpdate.name) {
-      dataToUpdate.name = dataToUpdate.title || "Untitled Capability";
-    }
-
-    // Remove any undefined fields to prevent Drizzle from using column defaults
-    Object.keys(dataToUpdate).forEach((key) => {
-      if (dataToUpdate[key] === undefined) {
-        delete dataToUpdate[key];
-      }
-    });
-
+    id: string,
+    data: Partial<InsertManufacturingCapability>,
+  ): Promise<ManufacturingCapability> {
     const [updated] = await db
       .update(manufacturingCapabilities)
-      .set(dataToUpdate)
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(manufacturingCapabilities.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
+    unifiedCache.del("manufacturing:capabilities:*");
+    emitCacheInvalidation("manufacturing:capabilities");
+    return updated;
+  }
+
+  async deleteManufacturingCapability(id: string): Promise<boolean> {
+    await db.delete(manufacturingCapabilities).where(eq(manufacturingCapabilities.id, id));
+    unifiedCache.del("manufacturing:capabilities:*");
+    emitCacheInvalidation("manufacturing:capabilities");
+    return true;
+  }
+
+  async reorderManufacturingCapabilities(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(manufacturingCapabilities)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(manufacturingCapabilities.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("manufacturing:capabilities:*");
+    emitCacheInvalidation("manufacturing:capabilities");
+  }
+
+  async getManufacturingProcess(id: string): Promise<ManufacturingProcess | undefined> {
+    const [process] = await db
+      .select()
+      .from(manufacturingProcesses)
+      .where(eq(manufacturingProcesses.id, id))
+      .limit(1);
+    return process;
+  }
+
+  async getManufacturingProcesses(includeInactive = false): Promise<ManufacturingProcess[]> {
+    let query = db.select().from(manufacturingProcesses).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(manufacturingProcesses.isActive, true));
     }
 
-    return updated!;
+    return query.orderBy(asc(manufacturingProcesses.sortOrder));
   }
 
-  async deleteManufacturingCapability(id: number): Promise<boolean> {
-    const result = await db
-      .delete(manufacturingCapabilities)
-      .where(eq(manufacturingCapabilities.id, id));
+  async createManufacturingProcess(
+    data: InsertManufacturingProcess,
+  ): Promise<ManufacturingProcess> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${manufacturingProcesses.sortOrder})` })
+      .from(manufacturingProcesses);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    const [created] = await db
+      .insert(manufacturingProcesses)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
 
-    return (result.rowCount ?? 0) > 0;
+    unifiedCache.del("manufacturing:processes:*");
+    emitCacheInvalidation("manufacturing:processes");
+    return created;
   }
 
-  async reorderManufacturingCapabilities(
-    capabilities: { id: number; position: number }[],
-  ): Promise<void> {
-    // Use Drizzle batch to execute all updates in a single round trip
-    const updateQueries = capabilities.map((capability) =>
-      db
-        .update(manufacturingCapabilities)
-        .set({ sortOrder: capability.position })
-        .where(eq(manufacturingCapabilities.id, capability.id)),
-    );
-    await db.batch(updateQueries as any);
+  async updateManufacturingProcess(
+    id: string,
+    data: Partial<InsertManufacturingProcess>,
+  ): Promise<ManufacturingProcess> {
+    const [updated] = await db
+      .update(manufacturingProcesses)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(manufacturingProcesses.id, id))
+      .returning();
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    unifiedCache.del("manufacturing:processes:*");
+    emitCacheInvalidation("manufacturing:processes");
+    return updated;
   }
 
-  async getManufacturingQualities(): Promise<ManufacturingQuality[]> {
-    // Explicit column selection for NEON optimization - prevents accidental over-fetching
-    return await db
-      .select({
-        id: manufacturingQualities.id,
-        standards: manufacturingQualities.standards,
-        title: manufacturingQualities.title,
-        description: manufacturingQualities.description,
-        icon: manufacturingQualities.icon,
-        imageId: manufacturingQualities.imageId,
-        certificateId: manufacturingQualities.certificateId,
-        category: manufacturingQualities.category,
-        testingMethod: manufacturingQualities.testingMethod,
-        frequency: manufacturingQualities.frequency,
-        checkpoints: manufacturingQualities.checkpoints,
-        criteria: manufacturingQualities.criteria,
-        isActive: manufacturingQualities.isActive,
-        sortOrder: manufacturingQualities.sortOrder,
-        createdAt: manufacturingQualities.createdAt,
-      })
-      .from(manufacturingQualities)
-      .where(eq(manufacturingQualities.isActive, true))
-      .orderBy(asc(manufacturingQualities.sortOrder));
+  async deleteManufacturingProcess(id: string): Promise<boolean> {
+    await db.delete(manufacturingProcesses).where(eq(manufacturingProcesses.id, id));
+    unifiedCache.del("manufacturing:processes:*");
+    emitCacheInvalidation("manufacturing:processes");
+    return true;
   }
 
-  async getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined> {
+  async reorderManufacturingProcesses(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(manufacturingProcesses)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(manufacturingProcesses.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("manufacturing:processes:*");
+    emitCacheInvalidation("manufacturing:processes");
+  }
+
+  async getManufacturingQuality(id: string): Promise<ManufacturingQuality | undefined> {
     const [quality] = await db
       .select()
       .from(manufacturingQualities)
-      .where(eq(manufacturingQualities.id, id));
+      .where(eq(manufacturingQualities.id, id))
+      .limit(1);
     return quality;
   }
 
-  async createManufacturingQuality(
-    quality: InsertManufacturingQuality,
-  ): Promise<ManufacturingQuality> {
-    const [created] = await db.insert(manufacturingQualities).values(quality).returning();
+  async getManufacturingQualities(includeInactive = false): Promise<ManufacturingQuality[]> {
+    let query = db.select().from(manufacturingQualities).$dynamic();
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
+    if (!includeInactive) {
+      query = query.where(eq(manufacturingQualities.isActive, true));
     }
 
-    return created!;
+    return query.orderBy(asc(manufacturingQualities.sortOrder));
+  }
+
+  async createManufacturingQuality(
+    data: InsertManufacturingQuality,
+  ): Promise<ManufacturingQuality> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${manufacturingQualities.sortOrder})` })
+      .from(manufacturingQualities);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(manufacturingQualities)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("manufacturing:qualities:*");
+    emitCacheInvalidation("manufacturing:qualities");
+    return created;
   }
 
   async updateManufacturingQuality(
-    id: number,
-    quality: Partial<InsertManufacturingQuality>,
-  ): Promise<ManufacturingQuality | undefined> {
+    id: string,
+    data: Partial<InsertManufacturingQuality>,
+  ): Promise<ManufacturingQuality> {
     const [updated] = await db
       .update(manufacturingQualities)
-      .set(quality)
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(manufacturingQualities.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
+    unifiedCache.del("manufacturing:qualities:*");
+    emitCacheInvalidation("manufacturing:qualities");
+    return updated;
   }
 
-  async deleteManufacturingQuality(id: number): Promise<boolean> {
-    const result = await db.delete(manufacturingQualities).where(eq(manufacturingQualities.id, id));
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
+  async deleteManufacturingQuality(id: string): Promise<boolean> {
+    await db.delete(manufacturingQualities).where(eq(manufacturingQualities.id, id));
+    unifiedCache.del("manufacturing:qualities:*");
+    emitCacheInvalidation("manufacturing:qualities");
+    return true;
   }
 
-  async reorderManufacturingQualities(
-    qualities: { id: number; position: number }[],
-  ): Promise<void> {
-    // Use Drizzle batch to execute all updates in a single round trip
-    const updateQueries = qualities.map((quality) =>
-      db
-        .update(manufacturingQualities)
-        .set({ sortOrder: quality.position })
-        .where(eq(manufacturingQualities.id, quality.id)),
-    );
-    await db.batch(updateQueries as any);
-
-    try {
-      await emitCacheInvalidation("manufacturing:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+  async reorderManufacturingQualities(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(manufacturingQualities)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(manufacturingQualities.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("manufacturing:qualities:*");
+    emitCacheInvalidation("manufacturing:qualities");
   }
 
   // =============================================================================
-  // TECHNOLOGY PAGE METHODS
+  // TECHNOLOGY METHODS
   // =============================================================================
 
   async getTechnologyHero(): Promise<TechnologyHero | undefined> {
-    const [hero] = await db
-      .select()
-      .from(technologyHero)
-      .where(eq(technologyHero.isActive, true))
-      .limit(1);
+    const cacheKey = "technology:hero";
+    const cached = unifiedCache.get<TechnologyHero>(cacheKey);
+    if (cached) return cached;
+
+    const [hero] = await db.select().from(technologyHero).limit(1);
+    if (hero) {
+      unifiedCache.set(cacheKey, hero, HOMEPAGE_CACHE_TTL);
+    }
     return hero;
   }
 
-  async updateTechnologyHero(hero: Partial<InsertTechnologyHero>): Promise<TechnologyHero> {
-    const existing = await db.select().from(technologyHero).limit(1);
+  async updateTechnologyHero(data: Partial<InsertTechnologyHero>): Promise<TechnologyHero> {
+    const existing = await this.getTechnologyHero();
 
-    let result;
-    if (existing.length === 0) {
-      const [created] = await db
-        .insert(technologyHero)
-        .values(hero as InsertTechnologyHero)
+    if (existing) {
+      const [updated] = await db
+        .update(technologyHero)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(technologyHero.id, existing.id))
         .returning();
-      result = created!;
+      unifiedCache.del("technology:hero");
+      emitCacheInvalidation("technology:hero");
+      return updated;
     } else {
-      if (existing.length > 0 && existing[0]?.id) {
-        const [updated] = await db
-          .update(technologyHero)
-          .set({
-            ...hero,
-            updatedAt: new Date(),
-          })
-          .where(eq(technologyHero.id, existing[0].id))
-          .returning();
-        result = updated!;
-      } else {
-        // Fallback or error handling if existing record is found but ID is missing
-        // For now, we'll assume this case is unlikely or handled by the initial check
-        // and return the existing record if no update occurred due to missing ID.
-        result = existing[0] as TechnologyHero;
-      }
+      const [created] = await db.insert(technologyHero).values(data).returning();
+      unifiedCache.del("technology:hero");
+      emitCacheInvalidation("technology:hero");
+      return created;
     }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result!; // Ensure we return non-undefined (which matches Promise<TechnologyHero>)
   }
 
-  async getTechnologyInnovations(): Promise<TechnologyInnovation[]> {
-    // PERFORMANCE: Cache for 30min (static content, rarely changes)
-    const cacheKey = "technology:innovations";
-    try {
-      const cached = await unifiedCache.get<TechnologyInnovation[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology innovations from cache:", error);
+  async getTechnologyCta(): Promise<TechnologyCta | undefined> {
+    const cacheKey = "technology:cta";
+    const cached = unifiedCache.get<TechnologyCta>(cacheKey);
+    if (cached) return cached;
+
+    const [cta] = await db.select().from(technologyCta).limit(1);
+    if (cta) {
+      unifiedCache.set(cacheKey, cta, HOMEPAGE_CACHE_TTL);
     }
-
-    const result = await db
-      .select()
-      .from(technologyInnovations)
-      .where(eq(technologyInnovations.isActive, true))
-      .orderBy(asc(technologyInnovations.sortOrder));
-
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data"); // 30 min
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache technology innovations:", error);
-    }
-
-    return result;
+    return cta;
   }
 
-  async getTechnologyInnovation(id: number): Promise<TechnologyInnovation | undefined> {
-    const [innovation] = await db
-      .select()
-      .from(technologyInnovations)
-      .where(eq(technologyInnovations.id, id));
-    return innovation;
+  async createTechnologyCta(data: InsertTechnologyCta): Promise<TechnologyCta> {
+    const [created] = await db.insert(technologyCta).values(data).returning();
+    unifiedCache.del("technology:cta");
+    emitCacheInvalidation("technology:cta");
+    return created;
   }
 
-  async createTechnologyInnovation(
-    innovation: InsertTechnologyInnovation,
-  ): Promise<TechnologyInnovation> {
-    try {
-      await unifiedCache.delete("technology:innovations", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology innovations cache:", error);
-    }
-
-    const [created] = await db.insert(technologyInnovations).values(innovation).returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
-  }
-
-  async updateTechnologyInnovation(
-    id: number,
-    innovation: Partial<InsertTechnologyInnovation>,
-  ): Promise<TechnologyInnovation | undefined> {
-    try {
-      await unifiedCache.delete("technology:innovations", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology innovations cache:", error);
-    }
-
+  async updateTechnologyCta(
+    id: string,
+    data: Partial<InsertTechnologyCta>,
+  ): Promise<TechnologyCta> {
     const [updated] = await db
-      .update(technologyInnovations)
-      .set(innovation)
-      .where(eq(technologyInnovations.id, id))
+      .update(technologyCta)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(technologyCta.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
+    unifiedCache.del("technology:cta");
+    emitCacheInvalidation("technology:cta");
+    return updated;
   }
 
-  async deleteTechnologyInnovation(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("technology:innovations", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology innovations cache:", error);
-    }
-
-    const result = await db.delete(technologyInnovations).where(eq(technologyInnovations.id, id));
-
-    try {
-      await emitCacheInvalidation("technology:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
-  }
-
-  async reorderTechnologyInnovations(
-    innovations: { id: number; position: number }[],
-  ): Promise<void> {
-    if (innovations.length === 0) {
-      return;
-    }
-
-    const caseWhenPairs = innovations.flatMap((i) => [sql`WHEN ${i.id}`, sql`THEN ${i.position}`]);
-    const ids = innovations.map((i) => i.id);
-
-    await db.execute(sql`
-      UPDATE technology_innovations 
-      SET sort_order = CASE id ${sql.join(caseWhenPairs, sql` `)} END 
-      WHERE id = ANY(${ids}::int[])
-    `);
-
-    try {
-      await unifiedCache.delete("technology:innovations", "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology innovations cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+  async deleteTechnologyCta(id: string): Promise<boolean> {
+    await db.delete(technologyCta).where(eq(technologyCta.id, id));
+    unifiedCache.del("technology:cta");
+    emitCacheInvalidation("technology:cta");
+    return true;
   }
 
   async getTechnologyEquipment(): Promise<TechnologyEquipment[]> {
     const cacheKey = "technology:equipment";
-    try {
-      const cached = await unifiedCache.get<TechnologyEquipment[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology equipment from cache:", error);
-    }
+    const cached = unifiedCache.get<TechnologyEquipment[]>(cacheKey);
+    if (cached) return cached;
 
-    const result = await db
+    const equipment = await db
       .select()
       .from(technologyEquipment)
       .where(eq(technologyEquipment.isActive, true))
       .orderBy(asc(technologyEquipment.sortOrder));
 
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache technology equipment:", error);
-    }
-
-    return result;
-  }
-
-  async getTechnologyEquipmentItem(id: number): Promise<TechnologyEquipment | undefined> {
-    const [equipment] = await db
-      .select()
-      .from(technologyEquipment)
-      .where(eq(technologyEquipment.id, id));
+    unifiedCache.set(cacheKey, equipment, HOMEPAGE_CACHE_TTL);
     return equipment;
   }
 
-  async createTechnologyEquipment(
-    equipment: InsertTechnologyEquipment,
-  ): Promise<TechnologyEquipment> {
-    try {
-      await unifiedCache.delete("technology:equipment");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology equipment cache:", error);
-    }
-
-    const [created] = await db.insert(technologyEquipment).values(equipment).returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
-  }
-
-  async updateTechnologyEquipment(
-    id: number,
-    equipment: Partial<InsertTechnologyEquipment>,
-  ): Promise<TechnologyEquipment | undefined> {
-    try {
-      await unifiedCache.delete("technology:equipment");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology equipment cache:", error);
-    }
-
-    const [updated] = await db
-      .update(technologyEquipment)
-      .set(equipment)
+  async getTechnologyEquipmentItem(id: string): Promise<TechnologyEquipment | undefined> {
+    const [item] = await db
+      .select()
+      .from(technologyEquipment)
       .where(eq(technologyEquipment.id, id))
-      .returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
-  }
-
-  async deleteTechnologyEquipment(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("technology:equipment");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology equipment cache:", error);
-    }
-
-    const result = await db.delete(technologyEquipment).where(eq(technologyEquipment.id, id));
-
-    try {
-      await emitCacheInvalidation("technology:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
-  }
-
-  async reorderTechnologyEquipment(equipment: { id: number; position: number }[]): Promise<void> {
-    if (equipment.length === 0) {
-      return;
-    }
-
-    const caseWhenPairs = equipment.flatMap((e) => [sql`WHEN ${e.id}`, sql`THEN ${e.position}`]);
-    const ids = equipment.map((e) => e.id);
-
-    await db.execute(sql`
-      UPDATE technology_equipment 
-      SET sort_order = CASE id ${sql.join(caseWhenPairs, sql` `)} END 
-      WHERE id = ANY(${ids}::int[])
-    `);
-
-    try {
-      await unifiedCache.delete("technology:equipment");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology equipment cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-  }
-
-  async getTechnologyResearch(): Promise<TechnologyResearch[]> {
-    const cacheKey = "technology:research";
-    try {
-      const cached = await unifiedCache.get<TechnologyResearch[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology research from cache:", error);
-    }
-
-    const result = await db
-      .select()
-      .from(technologyResearch)
-      .where(eq(technologyResearch.isActive, true))
-      .orderBy(asc(technologyResearch.sortOrder));
-
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache technology research:", error);
-    }
-
-    return result;
-  }
-
-  async getTechnologyResearchItem(id: number): Promise<TechnologyResearch | undefined> {
-    const [research] = await db
-      .select()
-      .from(technologyResearch)
-      .where(eq(technologyResearch.id, id));
-    return research;
-  }
-
-  async createTechnologyResearch(research: InsertTechnologyResearch): Promise<TechnologyResearch> {
-    try {
-      await unifiedCache.delete("technology:research");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology research cache:", error);
-    }
-
-    const [created] = await db.insert(technologyResearch).values(research).returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
-  }
-
-  async updateTechnologyResearch(
-    id: number,
-    research: Partial<InsertTechnologyResearch>,
-  ): Promise<TechnologyResearch | undefined> {
-    try {
-      await unifiedCache.delete("technology:research");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology research cache:", error);
-    }
-
-    const [updated] = await db
-      .update(technologyResearch)
-      .set({ ...research, updatedAt: sql`NOW()` })
-      .where(eq(technologyResearch.id, id))
-      .returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
-  }
-
-  async deleteTechnologyResearch(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("technology:research");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology research cache:", error);
-    }
-
-    const result = await db.delete(technologyResearch).where(eq(technologyResearch.id, id));
-
-    try {
-      await emitCacheInvalidation("technology:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
-  }
-
-  async reorderTechnologyResearch(
-    research: { id: number; position: number }[],
-    tx?: DbClient,
-  ): Promise<void> {
-    const dbConn = tx || db;
-    for (const item of research) {
-      await dbConn
-        .update(technologyResearch)
-        .set({ sortOrder: item.position })
-        .where(eq(technologyResearch.id, item.id));
-    }
-
-    try {
-      await unifiedCache.delete("technology:research");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology research cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-  }
-
-  async getTechnologyRoadmap(): Promise<TechnologyRoadmap[]> {
-    const cacheKey = "technology:roadmap";
-    try {
-      const cached = await unifiedCache.get<TechnologyRoadmap[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology roadmap from cache:", error);
-    }
-
-    const result = await db
-      .select()
-      .from(technologyRoadmap)
-      .where(eq(technologyRoadmap.isActive, true))
-      .orderBy(asc(technologyRoadmap.sortOrder));
-
-    try {
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data");
-    } catch (error) {
-      logger.debug("[Cache] Failed to cache technology roadmap:", error);
-    }
-
-    return result;
-  }
-
-  async getTechnologyRoadmapItem(id: number): Promise<TechnologyRoadmap | undefined> {
-    const [item] = await db.select().from(technologyRoadmap).where(eq(technologyRoadmap.id, id));
+      .limit(1);
     return item;
   }
 
-  async createTechnologyRoadmap(item: InsertTechnologyRoadmap): Promise<TechnologyRoadmap> {
-    try {
-      await unifiedCache.delete("technology:roadmap");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology roadmap cache:", error);
+  async createTechnologyEquipment(data: InsertTechnologyEquipment): Promise<TechnologyEquipment> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${technologyEquipment.sortOrder})` })
+      .from(technologyEquipment);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(technologyEquipment)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("technology:equipment");
+    emitCacheInvalidation("technology:equipment");
+    return created;
+  }
+
+  async updateTechnologyEquipment(
+    id: string,
+    data: Partial<InsertTechnologyEquipment>,
+  ): Promise<TechnologyEquipment> {
+    const [updated] = await db
+      .update(technologyEquipment)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(technologyEquipment.id, id))
+      .returning();
+
+    unifiedCache.del("technology:equipment");
+    emitCacheInvalidation("technology:equipment");
+    return updated;
+  }
+
+  async deleteTechnologyEquipment(id: string): Promise<boolean> {
+    await db.delete(technologyEquipment).where(eq(technologyEquipment.id, id));
+    unifiedCache.del("technology:equipment");
+    emitCacheInvalidation("technology:equipment");
+    return true;
+  }
+
+  async reorderTechnologyEquipment(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(technologyEquipment)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(technologyEquipment.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("technology:equipment");
+    emitCacheInvalidation("technology:equipment");
+  }
+
+  async getTechnologyInnovations(includeInactive = false): Promise<TechnologyInnovation[]> {
+    let query = db.select().from(technologyInnovations).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(technologyInnovations.isActive, true));
     }
 
-    const [created] = await db.insert(technologyRoadmap).values(item).returning();
+    return query.orderBy(asc(technologyInnovations.sortOrder));
+  }
 
-    try {
-      await emitCacheInvalidation("technology:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
+  async getTechnologyInnovation(id: string): Promise<TechnologyInnovation | undefined> {
+    const [innovation] = await db
+      .select()
+      .from(technologyInnovations)
+      .where(eq(technologyInnovations.id, id))
+      .limit(1);
+    return innovation;
+  }
+
+  async createTechnologyInnovation(
+    data: InsertTechnologyInnovation,
+  ): Promise<TechnologyInnovation> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${technologyInnovations.sortOrder})` })
+      .from(technologyInnovations);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(technologyInnovations)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("technology:innovations:*");
+    emitCacheInvalidation("technology:innovations");
+    return created;
+  }
+
+  async updateTechnologyInnovation(
+    id: string,
+    data: Partial<InsertTechnologyInnovation>,
+  ): Promise<TechnologyInnovation> {
+    const [updated] = await db
+      .update(technologyInnovations)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(technologyInnovations.id, id))
+      .returning();
+
+    unifiedCache.del("technology:innovations:*");
+    emitCacheInvalidation("technology:innovations");
+    return updated;
+  }
+
+  async deleteTechnologyInnovation(id: string): Promise<boolean> {
+    await db.delete(technologyInnovations).where(eq(technologyInnovations.id, id));
+    unifiedCache.del("technology:innovations:*");
+    emitCacheInvalidation("technology:innovations");
+    return true;
+  }
+
+  async reorderTechnologyInnovations(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(technologyInnovations)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(technologyInnovations.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("technology:innovations:*");
+    emitCacheInvalidation("technology:innovations");
+  }
+
+  async getTechnologyResearch(includeInactive = false): Promise<TechnologyResearch[]> {
+    let query = db.select().from(technologyResearch).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(technologyResearch.isActive, true));
     }
 
-    return created!;
+    return query.orderBy(asc(technologyResearch.sortOrder));
+  }
+
+  async getTechnologyResearchItem(id: string): Promise<TechnologyResearch | undefined> {
+    const [item] = await db
+      .select()
+      .from(technologyResearch)
+      .where(eq(technologyResearch.id, id))
+      .limit(1);
+    return item;
+  }
+
+  async createTechnologyResearch(data: InsertTechnologyResearch): Promise<TechnologyResearch> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${technologyResearch.sortOrder})` })
+      .from(technologyResearch);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(technologyResearch)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("technology:research:*");
+    emitCacheInvalidation("technology:research");
+    return created;
+  }
+
+  async updateTechnologyResearch(
+    id: string,
+    data: Partial<InsertTechnologyResearch>,
+  ): Promise<TechnologyResearch> {
+    const [updated] = await db
+      .update(technologyResearch)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(technologyResearch.id, id))
+      .returning();
+
+    unifiedCache.del("technology:research:*");
+    emitCacheInvalidation("technology:research");
+    return updated;
+  }
+
+  async deleteTechnologyResearch(id: string): Promise<boolean> {
+    await db.delete(technologyResearch).where(eq(technologyResearch.id, id));
+    unifiedCache.del("technology:research:*");
+    emitCacheInvalidation("technology:research");
+    return true;
+  }
+
+  async reorderTechnologyResearch(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(technologyResearch)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(technologyResearch.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("technology:research:*");
+    emitCacheInvalidation("technology:research");
+  }
+
+  async getTechnologyRoadmap(includeInactive = false): Promise<TechnologyRoadmap[]> {
+    let query = db.select().from(technologyRoadmap).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(technologyRoadmap.isActive, true));
+    }
+
+    return query.orderBy(asc(technologyRoadmap.sortOrder));
+  }
+
+  async getTechnologyRoadmapItem(id: string): Promise<TechnologyRoadmap | undefined> {
+    const [item] = await db
+      .select()
+      .from(technologyRoadmap)
+      .where(eq(technologyRoadmap.id, id))
+      .limit(1);
+    return item;
+  }
+
+  async createTechnologyRoadmap(data: InsertTechnologyRoadmap): Promise<TechnologyRoadmap> {
+    const maxOrder = await db
+      .select({ max: sql`MAX(${technologyRoadmap.sortOrder})` })
+      .from(technologyRoadmap);
+    const newOrder = (maxOrder[0]?.max ?? 0) + 1;
+
+    const [created] = await db
+      .insert(technologyRoadmap)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    unifiedCache.del("technology:roadmap:*");
+    emitCacheInvalidation("technology:roadmap");
+    return created;
   }
 
   async updateTechnologyRoadmap(
-    id: number,
-    item: Partial<InsertTechnologyRoadmap>,
-  ): Promise<TechnologyRoadmap | undefined> {
-    try {
-      await unifiedCache.delete("technology:roadmap");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology roadmap cache:", error);
-    }
-
+    id: string,
+    data: Partial<InsertTechnologyRoadmap>,
+  ): Promise<TechnologyRoadmap> {
     const [updated] = await db
       .update(technologyRoadmap)
-      .set({ ...item, updatedAt: sql`NOW()` })
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(technologyRoadmap.id, id))
       .returning();
 
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return updated!;
+    unifiedCache.del("technology:roadmap:*");
+    emitCacheInvalidation("technology:roadmap");
+    return updated;
   }
 
-  async deleteTechnologyRoadmap(id: number): Promise<boolean> {
-    try {
-      await unifiedCache.delete("technology:roadmap");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology roadmap cache:", error);
-    }
-
-    const result = await db.delete(technologyRoadmap).where(eq(technologyRoadmap.id, id));
-
-    try {
-      await emitCacheInvalidation("technology:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return (result.rowCount ?? 0) > 0;
+  async deleteTechnologyRoadmap(id: string): Promise<boolean> {
+    await db.delete(technologyRoadmap).where(eq(technologyRoadmap.id, id));
+    unifiedCache.del("technology:roadmap:*");
+    emitCacheInvalidation("technology:roadmap");
+    return true;
   }
 
-  async reorderTechnologyRoadmap(
-    items: { id: number; position: number }[],
-    tx?: DbClient,
-  ): Promise<void> {
-    if (items.length === 0) {
-      return;
-    }
-
-    const dbConn = tx || db;
-    const caseWhenPairs = items.flatMap((i) => [sql`WHEN ${i.id}`, sql`THEN ${i.position}`]);
-    const ids = items.map((i) => i.id);
-
-    await dbConn.execute(sql`
-      UPDATE technology_roadmap 
-      SET sort_order = CASE id ${sql.join(caseWhenPairs, sql` `)} END 
-      WHERE id = ANY(${ids}::int[])
-    `);
-
-    try {
-      await unifiedCache.delete("technology:roadmap");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology roadmap cache:", error);
-    }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+  async reorderTechnologyRoadmap(orderedIds: string[]): Promise<void> {
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(technologyRoadmap)
+          .set({ sortOrder: i + 1, updatedAt: new Date() })
+          .where(eq(technologyRoadmap.id, orderedIds[i]));
+      }
+    });
+    unifiedCache.del("technology:roadmap:*");
+    emitCacheInvalidation("technology:roadmap");
   }
 
   async getTechnologyGradientSettings(): Promise<TechnologyGradientSettings | undefined> {
-    const cacheKey = "technology:gradient_settings";
-    try {
-      const cached = await unifiedCache.get<TechnologyGradientSettings>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology gradient settings from cache:", error);
-    }
+    const cacheKey = "technology:gradient";
+    const cached = unifiedCache.get<TechnologyGradientSettings>(cacheKey);
+    if (cached) return cached;
 
-    const [settings] = await db
-      .select()
-      .from(technologyGradientSettings)
-      .where(eq(technologyGradientSettings.isActive, true))
-      .orderBy(desc(technologyGradientSettings.createdAt))
-      .limit(1);
-
+    const [settings] = await db.select().from(technologyGradientSettings).limit(1);
     if (settings) {
-      try {
-        await unifiedCache.set(cacheKey, settings, 30 * 60 * 1000, "data");
-      } catch (error) {
-        logger.debug("[Cache] Failed to cache technology gradient settings:", error);
-      }
+      unifiedCache.set(cacheKey, settings, HOMEPAGE_CACHE_TTL);
     }
-
     return settings;
   }
 
   async updateTechnologyGradientSettings(
-    settings: Partial<InsertTechnologyGradientSettings>,
+    data: Partial<InsertTechnologyGradientSettings>,
   ): Promise<TechnologyGradientSettings> {
-    try {
-      await unifiedCache.delete("technology:gradient_settings");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology gradient settings cache:", error);
-    }
+    const existing = await this.getTechnologyGradientSettings();
 
-    const [updated] = await db
-      .update(technologyGradientSettings)
-      .set({ ...settings, updatedAt: sql`NOW()` })
-      .where(eq(technologyGradientSettings.isActive, true))
-      .returning();
-
-    let result;
-    if (updated) {
-      result = updated!;
-    } else {
-      const [created] = await db
-        .insert(technologyGradientSettings)
-        .values(settings as InsertTechnologyGradientSettings)
+    if (existing) {
+      const [updated] = await db
+        .update(technologyGradientSettings)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(technologyGradientSettings.id, existing.id))
         .returning();
-      result = created!;
-    }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result;
-  }
-
-  async getTechnologyCta(): Promise<TechnologyCta | undefined> {
-    const cacheKey = "technology:cta";
-    try {
-      const cached = await unifiedCache.get<TechnologyCta>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
-      logger.debug("[Cache] Failed to get technology CTA from cache:", error);
-    }
-
-    const [cta] = await db
-      .select()
-      .from(technologyCta)
-      .where(eq(technologyCta.isActive, true))
-      .orderBy(desc(technologyCta.createdAt))
-      .limit(1);
-
-    if (cta) {
-      try {
-        await unifiedCache.set(cacheKey, cta, 30 * 60 * 1000, "data");
-      } catch (error) {
-        logger.debug("[Cache] Failed to cache technology CTA:", error);
-      }
-    }
-
-    return cta;
-  }
-
-  async updateTechnologyCta(cta: Partial<InsertTechnologyCta>): Promise<TechnologyCta> {
-    try {
-      await unifiedCache.delete("technology:cta");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology CTA cache:", error);
-    }
-
-    const [updated] = await db
-      .update(technologyCta)
-      .set({ ...cta, updatedAt: sql`NOW()` })
-      .where(eq(technologyCta.isActive, true))
-      .returning();
-
-    let result;
-    if (updated) {
-      result = updated!;
+      unifiedCache.del("technology:gradient");
+      emitCacheInvalidation("technology:gradient");
+      return updated;
     } else {
-      const [created] = await db
-        .insert(technologyCta)
-        .values(cta as InsertTechnologyCta)
-        .returning();
-      result = created!;
+      const [created] = await db.insert(technologyGradientSettings).values(data).returning();
+      unifiedCache.del("technology:gradient");
+      emitCacheInvalidation("technology:gradient");
+      return created;
     }
-
-    try {
-      await emitCacheInvalidation("technology:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return result;
   }
 
-  async createTechnologyCta(cta: InsertTechnologyCta): Promise<TechnologyCta> {
-    try {
-      await unifiedCache.delete("technology:cta");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear technology CTA cache:", error);
+  // =============================================================================
+  // ABOUT SECTION UPDATE METHOD (missing)
+  // =============================================================================
+
+  async updateAboutTeamMessage(data: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage> {
+    const existing = await this.getAboutTeamMessage(true);
+
+    if (existing) {
+      const [updated] = await db
+        .update(aboutTeamMessages)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(aboutTeamMessages.id, existing.id))
+        .returning();
+      unifiedCache.del("about:team-message");
+      emitCacheInvalidation("about:team-message");
+      return updated;
+    } else {
+      const [created] = await db.insert(aboutTeamMessages).values(data).returning();
+      unifiedCache.del("about:team-message");
+      emitCacheInvalidation("about:team-message");
+      return created;
     }
-
-    const [created] = await db.insert(technologyCta).values(cta).returning();
-
-    try {
-      await emitCacheInvalidation("technology:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
-
-    return created!;
   }
 }

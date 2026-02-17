@@ -58,6 +58,13 @@ class SmartLogger {
           "email_password",
           "oauth_secret",
           "client_secret",
+          // B2B Contact PII (PHASE 4 REMEDIATION)
+          "name",
+          "email",
+          "phone",
+          "company",
+          "message",
+          "preferredPlatform",
           // Object paths
           "req.headers['authorization']",
           "req.headers['cookie']",

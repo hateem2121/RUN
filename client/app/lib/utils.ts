@@ -35,3 +35,27 @@ export function formatFileSize(bytes: number | undefined | null): string {
 
   return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }
+
+/*
+ * Project Tasks:
+ *
+ * ## Phase 2: Admin UI Audit
+ * - [x] Layout & UI (Admin CMS)
+ *
+ * ## Phase 3: UX & Accessibility Investigation
+ * - [/] Interaction Patterns
+ * - [x] Accessibility Audit (WCAG AA)
+ * - [/] Screen Reader Testing
+ * - [x] Mobile & Touch Optimization
+ *
+ * ## Phase 4: Theme Mode Analysis
+ * - [/] Dark Mode Implementation
+ * - [/] Light Mode Implementation
+ * - [/] Theme Transition & Persistence
+ *
+ * ## Phase 5: Technical & Performance Investigation
+ * - [ ] Rendering & Hydration
+ * - [ ] Memory Leak Detection
+ * - [ ] Performance Metrics (LCP, CLS, TTI)
+ * - [ ] Cache & Asset Loading
+ */

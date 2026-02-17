@@ -27,9 +27,10 @@ const inquirySchema = z.object({
 router.post("/inquiries", async (req, res) => {
   try {
     const payload = inquirySchema.parse(req.body);
-    const storage = getStorage();
+    const { inquiryService } = await import("../services/inquiry-service.js");
 
     // Transform payload to match InsertInquiry schema
+    // FIX: Map country and preferredPlatform correctly from payload
     const inquiryData = {
       name: payload.contact.name || payload.contact.company || "Inquiry",
       email: payload.contact.email,
@@ -38,15 +39,11 @@ router.post("/inquiries", async (req, res) => {
       source: payload.source || "form_submission",
       status: "new",
       phone: payload.contact.phone || null,
-      country: null,
-      preferredPlatform: null,
+      country: (payload.contact as any).country || null,
+      preferredPlatform: (payload.contact as any).preferredPlatform || null,
     };
 
-    const inquiry = await storage.createInquiry(inquiryData);
-
-    // Trigger Webhook
-    const { webhookService } = await import("../services/webhook-service.js");
-    webhookService.trigger("inquiry.created", inquiry);
+    const inquiry = await inquiryService.createInquiry(inquiryData);
 
     logger.info(
       `[Inquiries] Created new inquiry #${inquiry.id} from ${inquiry.email} (Source: ${inquiryData.source})`,

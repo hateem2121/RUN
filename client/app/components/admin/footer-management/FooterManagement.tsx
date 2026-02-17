@@ -15,7 +15,13 @@ import {
   Type,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type Control, type UseFormRegister, useFieldArray, useForm } from "react-hook-form";
+import {
+  type Control,
+  Controller,
+  type UseFormRegister,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -59,7 +65,7 @@ export default function FooterManagement() {
     },
   });
 
-  const { register, control, handleSubmit, reset, watch } = useForm<FooterConfiguration>({
+  const { register, control, handleSubmit, reset } = useForm<FooterConfiguration>({
     defaultValues: {
       contactFormHeading: "GET IN TOUCH WITH RUN APPAREL",
       contactFormEnabled: true,
@@ -233,10 +239,16 @@ export default function FooterManagement() {
                       Enable/disable the global lead generation form in footer.
                     </span>
                   </Label>
-                  <Switch
-                    id="contactFormEnabled"
-                    checked={watch("contactFormEnabled")}
-                    onCheckedChange={(val) => reset({ ...watch(), contactFormEnabled: val })}
+                  <Controller
+                    control={control}
+                    name="contactFormEnabled"
+                    render={({ field }) => (
+                      <Switch
+                        id="contactFormEnabled"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
                   />
                 </div>
                 <div className="space-y-2">

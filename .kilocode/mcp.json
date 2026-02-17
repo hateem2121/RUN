@@ -9,7 +9,16 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
-    "playwright": { "command": "npx", "args": ["-y", "@playwright/mcp@0.0.38"] },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.38"],
+      "alwaysAllow": [
+        "browser_navigate",
+        "browser_take_screenshot",
+        "browser_console_messages",
+        "browser_snapshot"
+      ]
+    },
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],

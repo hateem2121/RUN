@@ -1,72 +1,17 @@
-// Mock navigation data matching the shared schema
-const MOCK_NAVIGATION_ITEMS = [
-  {
-    id: 1,
-    label: "Home",
-    title: "Home",
-    url: "/",
-    href: "/",
-    iconType: "fallback",
-    fallbackIcon: "IconHome",
-    showOnDesktop: true,
-    showOnMobile: true,
-    isActive: true,
-    sortOrder: 1,
-  },
-  {
-    id: 2,
-    label: "Products",
-    title: "Products",
-    url: "/products",
-    href: "/products",
-    iconType: "fallback",
-    fallbackIcon: "IconShoppingBag",
-    showOnDesktop: true,
-    showOnMobile: true,
-    isActive: true,
-    sortOrder: 2,
-  },
-  {
-    id: 3,
-    label: "Technology",
-    title: "Technology",
-    url: "/technology",
-    href: "/technology",
-    iconType: "fallback",
-    fallbackIcon: "IconCpu",
-    showOnDesktop: true,
-    showOnMobile: true,
-    isActive: true,
-    sortOrder: 3,
-  },
-  {
-    id: 4,
-    label: "Sustainability",
-    title: "Sustainability",
-    url: "/sustainability",
-    href: "/sustainability",
-    iconType: "fallback",
-    fallbackIcon: "IconLeaf",
-    showOnDesktop: true,
-    showOnMobile: true,
-    isActive: true,
-    sortOrder: 4,
-  },
-  {
-    id: 5,
-    label: "Contact",
-    title: "Contact",
-    url: "/contact",
-    href: "/contact",
-    iconType: "fallback",
-    fallbackIcon: "IconMail",
-    showOnDesktop: true,
-    showOnMobile: true,
-    isActive: true,
-    sortOrder: 5,
-  },
-];
-
 export async function loader() {
-  return MOCK_NAVIGATION_ITEMS;
+  try {
+    // Dynamic import to avoid including server code in client bundle
+    // React Router 7 loaders run on the server in this architecture
+    const { NavigationService } = await import("../../../server/services/navigation-service.js");
+    const result = await NavigationService.getItems();
+
+    if (result.isErr()) {
+      throw new Response(result.error.message, { status: 500 });
+    }
+
+    return result.value.data;
+  } catch (error) {
+    console.error("[NavigationItemsLoader] Error:", error);
+    throw new Response("Internal Server Error", { status: 500 });
+  }
 }
