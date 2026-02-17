@@ -4,13 +4,139 @@
  * including statistics, caching, and state management.
  */
 
+import { BigQuery } from "@google-cloud/bigquery";
+import { CloudTasksClient } from "@google-cloud/tasks";
+import type { Inquiry, InsertInquiry } from "../../shared/schema/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { emailService } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { getStorage } from "../lib/storage-singleton.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 
+// Initialize Google Cloud Clients for production flow
+const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
+const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
+const EMAIL_QUEUE = "email-queue";
+
+const tasksClient = new CloudTasksClient();
+const bigquery = new BigQuery();
+
 export class InquiryService {
+  /**
+   * Creates a new inquiry, ensuring consistent encryption and validation.
+   * Centralizes all side-effects (Encryption, Webhooks, BigQuery, Cloud Tasks).
+   */
+  async createInquiry(data: InsertInquiry): Promise<Inquiry> {
+    const inquiry = await getStorage().createInquiry(data);
+
+    // 1. Invalidate Relevant Caches
+    try {
+      await unifiedCache.delete("inquiries:stats");
+    } catch (error) {
+      logger.debug("[InquiryService] Cache invalidation failed:", error);
+    }
+
+    // 2. Trigger Webhook
+    try {
+      const { webhookService } = await import("./webhook-service.js");
+      webhookService.trigger("inquiry.created", inquiry);
+    } catch (error) {
+      logger.error("[InquiryService] Failed to trigger inquiry webhook:", error);
+    }
+
+    // 3. Stream to BigQuery (Fire and Forget)
+    if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
+      this.streamToBigQuery(inquiry).catch((err) =>
+        logger.error("[InquiryService] BigQuery streaming failed:", err),
+      );
+    }
+
+    // 4. Dispatch Email Automation
+    this.dispatchEmailAutomation(inquiry).catch((err) =>
+      logger.error("[InquiryService] Email automation failed:", err),
+    );
+
+    return inquiry;
+  }
+
+  /**
+   * Internal helper to stream inquiry to BigQuery analytics.
+   */
+  private async streamToBigQuery(inquiry: Inquiry) {
+    try {
+      await bigquery
+        .dataset("analytics")
+        .table("leads")
+        .insert([
+          {
+            id: inquiry.id,
+            name: inquiry.name,
+            email: inquiry.email,
+            company: inquiry.company,
+            source: inquiry.source,
+            created_at: inquiry.submittedAt.toISOString(),
+          },
+        ]);
+      logger.info(`[InquiryService] Streamed inquiry #${inquiry.id} to BigQuery`);
+    } catch (error) {
+      logger.debug("[InquiryService] BigQuery insert skipped or failed:", error);
+    }
+  }
+
+  /**
+   * Internal helper to dispatch email automation via Cloud Tasks (Prod) or EmailService (Dev).
+   */
+  private async dispatchEmailAutomation(inquiry: Inquiry) {
+    const emailData = {
+      id: inquiry.id,
+      name: inquiry.name,
+      email: inquiry.email,
+      company: inquiry.company ?? undefined,
+      phone: inquiry.phone ?? undefined,
+      country: inquiry.country ?? undefined,
+      message: inquiry.message,
+      preferredPlatform: inquiry.preferredPlatform ?? undefined,
+      submittedAt: inquiry.submittedAt,
+    };
+
+    if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
+      try {
+        const parent = tasksClient.queuePath(
+          GOOGLE_CLOUD_PROJECT,
+          GOOGLE_CLOUD_LOCATION,
+          EMAIL_QUEUE,
+        );
+        // Note: URL derivation might need care if service is not on same host
+        const task = {
+          httpRequest: {
+            httpMethod: "POST" as const,
+            url: `https://run-remix.app/api/workers/send-email`, // Hardcoded for prod security
+            headers: { "Content-Type": "application/json" },
+            body: Buffer.from(JSON.stringify(emailData)).toString("base64"),
+          },
+        };
+        await tasksClient.createTask({ parent, task });
+        logger.info(`[InquiryService] Dispatched Cloud Task for inquiry #${inquiry.id}`);
+      } catch (error) {
+        logger.error("[InquiryService] Cloud Tasks failed, falling back to EmailService:", error);
+        await this.fallbackSyncEmail(emailData);
+      }
+    } else {
+      await this.fallbackSyncEmail(emailData);
+    }
+  }
+
+  private async fallbackSyncEmail(emailData: any) {
+    try {
+      await emailService.sendAdminNotification(emailData);
+      await emailService.sendCustomerConfirmation(emailData);
+      logger.info(`[InquiryService] Dispatched synchronous emails for inquiry #${emailData.id}`);
+    } catch (error) {
+      logger.error("[InquiryService] Fallback email dispatch failed:", error);
+    }
+  }
+
   /**
    * Lists inquiries with pagination and filters.
    */

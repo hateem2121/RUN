@@ -19,6 +19,7 @@ import { ValidationError } from "../../lib/errors.js";
 import { emailService } from "../../lib/integrations/email-service.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
 import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
@@ -101,33 +102,19 @@ router.post("/contact", async (req, res) => {
   }
 
   // 1. Server-side reCAPTCHA v3 Validation
-  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
-  if (process.env.NODE_ENV === "production" && recaptchaSecret) {
-    if (!validatedData.recaptchaToken) {
-      logger.warn(`[Contact] Missing reCAPTCHA token from ${req.ip}`);
-      return res.status(400).json({ success: false, error: "Bot detected (missing token)" });
-    }
+  const recaptchaResult = await verifyRecaptcha(validatedData.recaptchaToken, req.ip || "unknown");
 
-    try {
-      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${validatedData.recaptchaToken}`;
-      const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
-      const recaptchaData = (await recaptchaRes.json()) as RecaptchaResponse;
-
-      if (!recaptchaData.success || recaptchaData.score < 0.5) {
-        logger.warn(`[Contact] reCAPTCHA failed for ${req.ip}: score ${recaptchaData.score}`);
-        return res.status(400).json({ success: false, error: "Bot detected (low score)" });
-      }
-    } catch (error) {
-      logger.error("[Contact] reCAPTCHA verification error:", error);
-      // Fail open or closed? Fail closed for security in this context.
-      return res.status(500).json({ success: false, error: "Security check failed" });
-    }
+  if (!recaptchaResult.success) {
+    return res.status(400).json({
+      success: false,
+      error: recaptchaResult.error || "Security check failed",
+    });
   }
 
-  const storage = getStorage();
-
-  // Create inquiry in database
-  const inquiry = await storage.createInquiry({
+  // Create inquiry via unified service layer
+  // NOTE: This centralizes Encryption, Webhooks, BigQuery, and Email side-effects
+  const { inquiryService } = await import("../../services/inquiry-service.js");
+  const inquiry = await inquiryService.createInquiry({
     name: validatedData.name,
     email: validatedData.email,
     message: validatedData.message,
@@ -139,85 +126,9 @@ router.post("/contact", async (req, res) => {
     status: "new",
   });
 
-  // Invalidate inquiry stats cache
-  try {
-    await unifiedCache.delete("inquiries:stats");
-  } catch (error) {
-    logger.debug("[Contact] Failed to invalidate inquiry cache:", error);
-  }
-
-  logger.info(`[Contact] New inquiry #${inquiry.id} from ${validatedData.email}`);
-
-  // 2. Stream to BigQuery (Async - Fire and Forget)
-  if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
-    (async () => {
-      try {
-        await bigquery
-          .dataset("analytics")
-          .table("leads")
-          .insert([
-            {
-              id: inquiry.id,
-              name: inquiry.name,
-              email: inquiry.email,
-              company: inquiry.company,
-              source: "contact-page",
-              created_at: new Date().toISOString(),
-            },
-          ]);
-        logger.info(`[Analytics] Streamed inquiry #${inquiry.id} to BigQuery`);
-      } catch (error) {
-        logger.error("[Analytics] Failed to stream to BigQuery:", error);
-      }
-    })();
-  }
-
-  // 3. Dispatch Email Task to Cloud Tasks (Async)
-  const emailData = {
-    id: inquiry.id,
-    name: inquiry.name,
-    email: inquiry.email,
-    company: inquiry.company ?? undefined,
-    phone: inquiry.phone ?? undefined,
-    country: inquiry.country ?? undefined,
-    message: inquiry.message,
-    preferredPlatform: inquiry.preferredPlatform ?? undefined,
-    submittedAt: inquiry.submittedAt,
-  };
-
-  if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
-    try {
-      const parent = tasksClient.queuePath(
-        GOOGLE_CLOUD_PROJECT,
-        GOOGLE_CLOUD_LOCATION,
-        EMAIL_QUEUE,
-      );
-      const url = `https://${req.get("host")}/api/workers/send-email`;
-
-      const task = {
-        httpRequest: {
-          httpMethod: "POST" as const,
-          url,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: Buffer.from(JSON.stringify(emailData)).toString("base64"),
-        },
-      };
-
-      await tasksClient.createTask({ parent, task });
-      logger.info(`[Contact] Dispatched email task for inquiry #${inquiry.id}`);
-    } catch (error) {
-      logger.error("[Contact] Failed to create Cloud Task:", error);
-      // Fallback to sync email if Cloud Tasks fails?
-      // For now, log error. In a real scenario, we might want a fallback or alert.
-    }
-  } else {
-    // Development fallback: Send directly
-    logger.info("[Contact] Development mode: Sending emails directly");
-    emailService.sendAdminNotification(emailData).catch((e) => logger.error(e));
-    emailService.sendCustomerConfirmation(emailData).catch((e) => logger.error(e));
-  }
+  logger.info(
+    `[Contact] New inquiry #${inquiry.id} from ${validatedData.email} via unified service`,
+  );
 
   return res.json({
     success: true,

@@ -1,8 +1,6 @@
 "use server";
 
-import { inquiries } from "@shared/schema";
 import { z } from "zod";
-import { db } from "../db.server";
 
 // --- Schemas ---
 
@@ -15,6 +13,7 @@ export const ContactSubmissionSchema = z.object({
   country: z.string().nullish(),
   preferredPlatform: z.string().nullish(),
   honeypot: z.string().optional(),
+  recaptchaToken: z.string().optional(),
 });
 
 export const QuoteSubmissionSchema = z.object({
@@ -55,31 +54,34 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
     throw new Error("Invalid submission");
   }
 
+  // 3. reCAPTCHA v3 Validation (PHASE 4 REMEDIATION)
+  const { verifyRecaptcha } = await import("../../../server/lib/security/recaptcha-verify.js");
+  const recaptchaResult = await verifyRecaptcha(validated.recaptchaToken, "server-action");
+
+  if (!recaptchaResult.success) {
+    console.warn(`[Inquiry] reCAPTCHA failed: ${recaptchaResult.error}`);
+    throw new Error(recaptchaResult.error || "Security check failed");
+  }
+
   try {
-    // 3. Insert into Database
-    const [result] = await db
-      .insert(inquiries)
-      .values({
-        name: validated.name,
-        email: validated.email,
-        message: validated.message,
-        company: validated.company || null,
-        phone: validated.phone || null,
-        country: validated.country || null,
-        preferredPlatform: validated.preferredPlatform || null,
-        source: "contact-page",
-        status: "new",
-      })
-      .returning();
+    // 3. Insert into Database via Unified Service Layer
+    // NOTE: This ensures consistent AES-256-GCM encryption and blind indexing
+    const { inquiryService } = await import("../../../server/services/inquiry-service.js");
+    const result = await inquiryService.createInquiry({
+      name: validated.name,
+      email: validated.email,
+      message: validated.message,
+      company: validated.company || null,
+      phone: validated.phone || null,
+      country: validated.country || null,
+      preferredPlatform: validated.preferredPlatform || null,
+      source: "contact-page",
+      status: "new",
+    });
 
     if (!result) {
       throw new Error("Failed to insert inquiry");
     }
-
-    // console.log(`[Inquiry] Created inquiry #${result.id} via Server Action`);
-
-    // 4. Mock Email
-    await mockSendEmail(result);
 
     return { success: true, submissionId: result.id };
   } catch (error) {
@@ -132,15 +134,6 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 
 // --- Internal ---
 
-// --- Internal ---
-
-async function mockSendEmail(_inquiry: { email: string; id: number }) {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  // console.log(`[Email Mock] Sending confirmation to ${inquiry.email}`);
-  // console.log(`[Email Mock] Sending admin notification for inquiry #${inquiry.id}`);
-}
-
 // React 19 Server Action Adapter for useActionState
 export async function submitInquiryAction(_prevState: unknown, formData: FormData) {
   const data = {
@@ -152,7 +145,7 @@ export async function submitInquiryAction(_prevState: unknown, formData: FormDat
     country: formData.get("country") as string,
     preferredPlatform: (formData.get("preferredPlatform") || formData.get("platform")) as string,
     honeypot: formData.get("honeypot") as string,
-    // Add other fields from B2B form if needed
+    recaptchaToken: formData.get("recaptchaToken") as string,
   };
 
   try {
