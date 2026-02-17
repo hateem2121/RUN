@@ -17,8 +17,12 @@ gcs-service-account-key.json
 # Ignore compiled TypeScript outputs in source directories
 server/**/*.js
 server/**/*.js.map
+server/**/*.d.ts
+server/**/*.d.ts.map
 shared/**/*.js
 shared/**/*.js.map
+shared/**/*.d.ts
+shared/**/*.d.ts.map
 client/src/**/*.js
 client/src/**/*.js.map
 *.tsbuildinfo
