@@ -1,101 +1,31 @@
-import { logger } from "./monitoring/logger.js";
+import type { IStorage } from "../repositories/storage-interfaces.js";
 
 /**
- * DIRECT POSTGRESQL STORAGE SINGLETON
- * Provides single, shared PostgreSQL-only storage instance
- * Eliminates hybrid complexity for maximum reliability
- *
- * Uses NEON PostgreSQL + Drizzle ORM exclusively
+ * Storage Singleton
+ * Manages the single instance of the storage provider (Memory, Postgres, etc.)
+ * Used primarily for testing and legacy access patterns.
  */
-
-import type { IStorage } from "../storage.js";
-import { DirectPostgreSQLStorage } from "./postgresql-direct-storage.js";
-
-class StorageSingleton {
+export class StorageSingleton {
   private static instance: IStorage | null = null;
-  private static isInitializing = false;
 
-  /**
-   * Get the singleton instance of DirectPostgreSQLStorage
-   * Thread-safe initialization with PostgreSQL-only architecture
-   */
-  public static getInstance(): IStorage {
-    if (StorageSingleton.instance !== null) {
-      return StorageSingleton.instance;
-    }
+  static setInstance(storage: IStorage) {
+    StorageSingleton.instance = storage;
+  }
 
-    if (StorageSingleton.isInitializing) {
-      throw new Error("Storage singleton is currently being initialized. Please wait.");
-    }
-
-    StorageSingleton.isInitializing = true;
-
-    try {
-      logger.info("[StorageSingleton] Initializing Direct PostgreSQL Storage...");
-
-      // Initialize PostgreSQL-only storage (eliminates hybrid complexity)
-      StorageSingleton.instance = new DirectPostgreSQLStorage();
-
-      logger.info("[StorageSingleton] ✅ Direct PostgreSQL Storage initialized successfully");
-
-      return StorageSingleton.instance;
-    } catch (error) {
-      logger.error("[StorageSingleton] ❌ Failed to initialize PostgreSQL storage:", error);
+  static getInstance(): IStorage {
+    if (!StorageSingleton.instance) {
       throw new Error(
-        `PostgreSQL storage initialization failed: ${error instanceof Error ? error.message : String(error)}`,
+        "Storage instance not initialized. Call StorageSingleton.setInstance() first.",
       );
-    } finally {
-      StorageSingleton.isInitializing = false;
     }
+    return StorageSingleton.instance;
   }
 
-  /**
-   * Check if singleton is initialized
-   */
-  public static isInitialized(): boolean {
-    return StorageSingleton.instance !== null;
-  }
-
-  /**
-   * Reset the singleton (useful for testing)
-   * @internal
-   */
-  public static reset(): void {
-    logger.info("[StorageSingleton] Resetting singleton instance");
-    StorageSingleton.instance = null;
-    StorageSingleton.isInitializing = false;
-  }
-
-  /**
-   * Set the singleton instance (useful for testing)
-   * @internal
-   */
-  public static setInstance(instance: IStorage): void {
-    logger.info("[StorageSingleton] Manually setting storage instance");
-    StorageSingleton.instance = instance;
-  }
-
-  /**
-   * Get connection status information
-   */
-  public static getStatus(): {
-    initialized: boolean;
-    isInitializing: boolean;
-    databaseUrl: boolean;
-  } {
-    return {
-      initialized: StorageSingleton.instance !== null,
-      isInitializing: StorageSingleton.isInitializing,
-      databaseUrl: !!process.env.DATABASE_URL,
-    };
+  static hasInstance(): boolean {
+    return !!StorageSingleton.instance;
   }
 }
 
-// Export the singleton instance getter
-export const getStorage = () => StorageSingleton.getInstance();
-
-// Export the class for advanced usage
-export { StorageSingleton };
-
-// Export type for TypeScript usage
-export type StorageInstance = IStorage;
+export function getStorage(): IStorage {
+  return StorageSingleton.getInstance();
+}

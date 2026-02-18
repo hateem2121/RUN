@@ -15,12 +15,12 @@ import {
 import { safeQuery } from "../../db.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { emailService } from "../../lib/integrations/email-service.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 // Initialize Google Cloud Clients
@@ -154,8 +154,7 @@ router.get("/contact-info", async (req, res) => {
   }
 
   // Query contact page configuration from database
-  const storage = getStorage();
-  const config = await storage.getContactPageConfiguration();
+  const config = await miscRepository.getContactPageConfiguration();
 
   if (!config) {
     logger.warn("[Contact] No contact configuration found in database");
@@ -221,7 +220,7 @@ router.get("/locations", async (req, res) => {
 // Contact page configuration
 router.get("/contact-page-configuration", async (_req, res, next) => {
   const result = await safeQuery(
-    withTimeout(getStorage().getContactPageConfiguration(), 5000, "Get contact page config"),
+    withTimeout(miscRepository.getContactPageConfiguration(), 5000, "Get contact page config"),
   );
 
   if (result.isErr()) {
@@ -244,7 +243,7 @@ router.post(
 
     const result = await safeQuery(
       withTimeout(
-        getStorage().createContactPageConfiguration(validation.data),
+        miscRepository.createContactPageConfiguration(validation.data),
         5000,
         "Create contact page config",
       ),
@@ -280,7 +279,7 @@ router.patch(
     // Contact page configuration is a singleton - always use ID 1
     const result = await safeQuery(
       withTimeout(
-        getStorage().updateContactPageConfiguration(1, validation.data),
+        miscRepository.updateContactPageConfiguration(1, validation.data),
         5000,
         "Update contact page config",
       ),

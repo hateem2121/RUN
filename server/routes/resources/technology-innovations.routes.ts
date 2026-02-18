@@ -23,9 +23,9 @@ import {
 } from "../../../shared/schema.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
       logger.info("[TechnologyInnovations] Cache miss - fetching from database");
     }
     const innovations = await withTimeout(
-      getStorage().getTechnologyInnovations(),
+      pageContentRepository.getTechnologyInnovations(),
       10000,
       "Get technology innovations",
     );
@@ -102,7 +102,7 @@ router.get("/:id", async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const innovation = await withTimeout(
-      getStorage().getTechnologyInnovation(id),
+      pageContentRepository.getTechnologyInnovation(id),
       10000,
       "Get technology innovation",
     );
@@ -134,7 +134,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newInnovation = await withTimeout(
-      getStorage().createTechnologyInnovation(removeUndefined(validation.data)),
+      pageContentRepository.createTechnologyInnovation(removeUndefined(validation.data)),
       10000,
       "Create technology innovation",
     );
@@ -170,7 +170,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyInnovation(id, removeUndefined(validation.data)),
+      pageContentRepository.updateTechnologyInnovation(id, removeUndefined(validation.data)),
       10000,
       "Update technology innovation",
     );
@@ -201,7 +201,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const deleted = await withTimeout(
-      getStorage().deleteTechnologyInnovation(id),
+      pageContentRepository.deleteTechnologyInnovation(id),
       10000,
       "Delete technology innovation",
     );
@@ -241,7 +241,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     const updates = await Promise.all(
       removeUndefined(validation.data).innovations.map(({ id, position }) =>
-        getStorage().updateTechnologyInnovation(id, { sortOrder: position }),
+        pageContentRepository.updateTechnologyInnovation(id, { sortOrder: position }),
       ),
     );
 

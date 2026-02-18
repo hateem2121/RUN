@@ -1,12 +1,15 @@
 import { logger } from "../lib/monitoring/logger.js";
+
 // Enhanced Health Monitoring System
 // PHASE 4: Production Readiness - Comprehensive Health Checks
 
+import { sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { database, development } from "../config/environment.js";
 import { getConfig } from "../config/production.js";
+import { db } from "../db.js";
+import { productRepository } from "../lib/db/repositories/index.js";
 import { appStorageService } from "../lib/storage/app-service.js";
-import { storage } from "../storage.js";
 
 // import { IndexUsageMonitor } from '../scripts/monitor-index-usage.js';
 
@@ -66,7 +69,7 @@ async function checkDatabase(): Promise<HealthCheckResult> {
   const start = Date.now();
   try {
     // Test basic database connectivity
-    await storage.getCategories();
+    await db.execute(sql`SELECT 1`);
     const responseTime = Date.now() - start;
 
     return {
@@ -130,7 +133,7 @@ async function checkStorage(): Promise<HealthCheckResult> {
   const start = Date.now();
   try {
     // Test storage system health (PostgreSQL + KV hybrid)
-    const products = await storage.getProducts();
+    const products = await productRepository.getProducts(1);
     const responseTime = Date.now() - start;
 
     return {

@@ -1,9 +1,9 @@
 import type { MediaAsset } from "@shared/schema.js";
+import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
 import { correctMimeType } from "../../utils.js";
@@ -454,7 +454,7 @@ export const enhancedUploadService = {
     const storagePath = generateOrganizedStoragePath(mediaType, session.filename);
 
     // Store file in Replit Object Storage using correct pattern
-    const storage = getStorage();
+    const storage = mediaRepository;
 
     // Upload to object storage using correct App Storage pattern
     await withTimeout(

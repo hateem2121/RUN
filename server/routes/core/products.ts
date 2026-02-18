@@ -11,9 +11,9 @@ import { z } from "zod";
 import { insertProductSchema } from "../../../shared/schema.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
+import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { webhookService } from "../../services/webhook-service.js";
 import {
   checkRateLimit,
@@ -277,32 +277,32 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     // This eliminates memory overhead and provides accurate counts without fetching all rows
     if (search && typeof search === "string") {
       products = await retryDbOperation(
-        () => getStorage().searchProducts(search, pageSize, offset),
+        () => productRepository.searchProducts(search, pageSize, offset),
         { operationName: "Search products by query" },
       );
-      totalCount = await retryDbOperation(() => getStorage().searchProductsCount(search), {
+      totalCount = await retryDbOperation(() => productRepository.searchProductsCount(search), {
         operationName: "Count search results",
       });
     } else if (tag && typeof tag === "string") {
       products = await retryDbOperation(
-        () => getStorage().getProductsByTag(tag, pageSize, offset),
+        () => productRepository.getProductsByTag(tag, pageSize, offset),
         { operationName: "Get products by tag" },
       );
-      totalCount = await retryDbOperation(() => getStorage().getProductsByTagCount(tag), {
+      totalCount = await retryDbOperation(() => productRepository.getProductsByTagCount(tag), {
         operationName: "Count products by tag",
       });
     } else if (category && typeof category === "string") {
       const categoryId = parseInt(category, 10);
       products = await retryDbOperation(
-        () => getStorage().getProductsByCategory(categoryId, pageSize, offset),
+        () => productRepository.getProductsByCategory(categoryId, pageSize, offset),
         { operationName: "Get products by category" },
       );
       totalCount = await retryDbOperation(
-        () => getStorage().getProductsByCategoryCount(categoryId),
+        () => productRepository.getProductsByCategoryCount(categoryId),
         { operationName: "Count products by category" },
       );
     } else if (featured === "true") {
-      products = await retryDbOperation(() => getStorage().getFeaturedProducts(), {
+      products = await retryDbOperation(() => productRepository.getFeaturedProducts(), {
         operationName: "Get featured products",
       });
       totalCount = products.length;
@@ -310,7 +310,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     } else if (active === "true") {
       // CHUNK 27-R: Combined query with window function - 40% faster (one query instead of two)
       const result = await retryDbOperation(
-        () => getStorage().getProductsSummary(pageSize, offset),
+        () => productRepository.getProductsSummary(pageSize, offset),
         { operationName: "Get active products summary" },
       );
       products = result.products;
@@ -318,7 +318,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     } else {
       // CHUNK 27-R: Combined query with window function - 40% faster (one query instead of two)
       const result = await retryDbOperation(
-        () => getStorage().getProductsSummary(pageSize, offset),
+        () => productRepository.getProductsSummary(pageSize, offset),
         { operationName: "Get all products summary" },
       );
       products = result.products;
@@ -377,7 +377,7 @@ router.get("/products/by-path", async (req, res): Promise<undefined | Response> 
 
     // Repository layer (product-repository.ts) handles all caching including 404s
     const productContext = await withTimeout(
-      retryDbOperation(() => getStorage().getProductByPath(path), {
+      retryDbOperation(() => productRepository.getProductByPath(path), {
         operationName: "Get product by path",
       }),
       10000,
@@ -421,7 +421,7 @@ router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Respo
     }
 
     const modelMetadata = await withTimeout(
-      retryDbOperation(() => getStorage().get3DModelMetadata(id), {
+      retryDbOperation(() => productRepository.get3DModelMetadata(id), {
         operationName: "Get 3D model metadata",
       }),
       5000,
@@ -465,7 +465,7 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
     }
 
     const product = await withTimeout(
-      retryDbOperation(() => getStorage().getProduct(id), {
+      retryDbOperation(() => productRepository.getProduct(id), {
         operationName: "Get product by ID",
       }),
       5000,
@@ -510,7 +510,7 @@ router.post("/products", requireRole("admin"), async (req, res): Promise<undefin
 
     const validatedData = insertProductSchema.parse(req.body);
     const product = await withTimeout(
-      retryDbOperation(() => getStorage().createProduct(removeUndefined(validatedData)), {
+      retryDbOperation(() => productRepository.createProduct(removeUndefined(validatedData)), {
         operationName: "Create product",
       }),
       10000,
@@ -549,7 +549,7 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
 
     const validatedData = insertProductSchema.partial().parse(req.body);
     const product = await withTimeout(
-      retryDbOperation(() => getStorage().updateProduct(id, removeUndefined(validatedData)), {
+      retryDbOperation(() => productRepository.updateProduct(id, removeUndefined(validatedData)), {
         operationName: "Update product",
       }),
       10000,
@@ -607,7 +607,7 @@ router.delete(
       }
 
       const deleted = await withTimeout(
-        retryDbOperation(() => getStorage().deleteProduct(id), {
+        retryDbOperation(() => productRepository.deleteProduct(id), {
           operationName: "Delete product",
         }),
         10000,

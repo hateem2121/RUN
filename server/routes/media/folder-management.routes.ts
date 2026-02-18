@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined, validateIdParam } from "../../utils.js";
 
 /**
  * FOLDERS ROUTER MODULE
@@ -8,11 +8,10 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { type Folder, insertFolderSchema } from "../../../shared/schema.js";
+import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
-import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 
@@ -21,7 +20,7 @@ router.get("/folders", async (req, res) => {
   // Check if we should fetch subfolders as well
   const includeChildren = req.query.includeChildren === "true";
 
-  const folders = await withTimeout(getStorage().getFolders(), 10000, "Get folders");
+  const folders = await withTimeout(mediaRepository.getFolders(), 10000, "Get folders");
 
   if (includeChildren) {
     // For each folder, get its subfolders
@@ -29,7 +28,7 @@ router.get("/folders", async (req, res) => {
       folders.map(async (folder) => {
         try {
           const children = await withTimeout(
-            getStorage().getFolderChildren(folder.id),
+            mediaRepository.getFolderChildren(folder.id),
             5000,
             `Get children for folder ${folder.id}`,
           );
@@ -57,7 +56,7 @@ router.get("/folders/tree", async (_req, res) => {
       }));
   };
 
-  const allFolders = await withTimeout(getStorage().getFolders(), 10000, "Get folders for tree");
+  const allFolders = await withTimeout(mediaRepository.getFolders(), 10000, "Get folders for tree");
   const tree = buildTree(allFolders);
 
   return res.json(tree);
@@ -70,7 +69,7 @@ router.get("/folders/:id", async (req, res) => {
     return;
   }
 
-  const folder = await withTimeout(getStorage().getFolder(id), 5000, "Get folder by ID");
+  const folder = await withTimeout(mediaRepository.getFolder(id), 5000, "Get folder by ID");
 
   if (!folder) {
     return res.status(404).json({ message: "Folder not found" });
@@ -83,7 +82,7 @@ router.get("/folders/:id", async (req, res) => {
 router.post("/folders", authService.requireAdmin, async (req, res) => {
   const validatedData = insertFolderSchema.parse(req.body);
   const folder = await withTimeout(
-    getStorage().createFolder(removeUndefined(validatedData)),
+    mediaRepository.createFolder(removeUndefined(validatedData)),
     10000,
     "Create folder",
   );
@@ -99,7 +98,7 @@ router.put("/folders/:id", authService.requireAdmin, async (req, res) => {
 
   const validatedData = insertFolderSchema.partial().parse(req.body);
   const folder = await withTimeout(
-    getStorage().updateFolder(id, removeUndefined(validatedData)),
+    mediaRepository.updateFolder(id, removeUndefined(validatedData)),
     10000,
     "Update folder",
   );
@@ -120,7 +119,7 @@ router.delete("/folders/:id", authService.requireAdmin, async (req, res) => {
 
   // Check if folder has children
   const children = await withTimeout(
-    getStorage().getFolderChildren(id),
+    mediaRepository.getFolderChildren(id),
     5000,
     "Get folder children for deletion check",
   );
@@ -130,7 +129,7 @@ router.delete("/folders/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const success = await withTimeout(getStorage().deleteFolder(id), 10000, "Delete folder");
+  const success = await withTimeout(mediaRepository.deleteFolder(id), 10000, "Delete folder");
 
   if (!success) {
     return res.status(404).json({ message: "Folder not found" });
@@ -147,7 +146,7 @@ router.get("/folders/:id/children", async (req, res) => {
   }
 
   const children = await withTimeout(
-    getStorage().getFolderChildren(id),
+    mediaRepository.getFolderChildren(id),
     5000,
     "Get folder children",
   );
@@ -162,7 +161,7 @@ router.get("/folders/:id/media", async (req, res) => {
   }
 
   const assets = await withTimeout(
-    getStorage().getMediaAssetsByFolder(id),
+    mediaRepository.getMediaAssetsByFolder(id),
     5000,
     "Get media assets by folder",
   );
@@ -184,7 +183,7 @@ router.post("/folders/:id/move-media", authService.requireAdmin, async (req, res
   }
 
   const updatedAsset = await withTimeout(
-    getStorage().moveMediaAsset(mediaAssetId, folderId),
+    mediaRepository.moveMediaAsset(mediaAssetId, folderId),
     10000,
     "Move media asset to folder",
   );

@@ -10,9 +10,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertFiberSchema } from "../../../shared/schema.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 
@@ -22,7 +22,7 @@ const router = Router();
 router.get("/fibers", async (_req, res) => {
   try {
     const fibers = await withTimeout(
-      retryDbOperation(() => getStorage().getFibers(), {
+      retryDbOperation(() => miscRepository.getFibers(), {
         operationName: "Get all fibers",
       }),
       10000,
@@ -42,7 +42,7 @@ router.post("/fibers", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFiberSchema.parse(req.body);
     const fiber = await withTimeout(
-      retryDbOperation(() => getStorage().createFiber(removeUndefined(validatedData)), {
+      retryDbOperation(() => miscRepository.createFiber(removeUndefined(validatedData)), {
         operationName: "Create fiber",
       }),
       10000,
@@ -66,7 +66,7 @@ router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
 
     const validatedData = insertFiberSchema.partial().parse(req.body);
     const fiber = await withTimeout(
-      retryDbOperation(() => getStorage().updateFiber(id, removeUndefined(validatedData)), {
+      retryDbOperation(() => miscRepository.updateFiber(id, removeUndefined(validatedData)), {
         operationName: "Update fiber",
       }),
       10000,
@@ -92,7 +92,7 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const deleted = await withTimeout(
-      retryDbOperation(() => getStorage().deleteFiber(id), {
+      retryDbOperation(() => miscRepository.deleteFiber(id), {
         operationName: "Delete fiber",
       }),
       10000,

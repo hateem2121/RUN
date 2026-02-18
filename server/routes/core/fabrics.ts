@@ -8,9 +8,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { type fabrics, insertFabricSchema } from "../../../shared/schema.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 
@@ -22,7 +22,7 @@ const router = Router();
 router.get("/fabrics", async (_req, res) => {
   try {
     const fabrics = await withTimeout(
-      retryDbOperation(() => getStorage().getFabrics(), {
+      retryDbOperation(() => miscRepository.getFabrics(), {
         operationName: "Get all fabrics",
       }),
       10000,
@@ -46,9 +46,12 @@ router.post("/fabrics", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
-      retryDbOperation(() => getStorage().createFabric(validatedData as unknown as InsertFabric), {
-        operationName: "Create fabric",
-      }),
+      retryDbOperation(
+        () => miscRepository.createFabric(validatedData as unknown as InsertFabric),
+        {
+          operationName: "Create fabric",
+        },
+      ),
       10000,
       "Create fabric",
     );
@@ -85,7 +88,7 @@ router.put("/fabrics/:id", authService.requireAdmin, async (req, res) => {
     const validatedData = insertFabricSchema.parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(
-        () => getStorage().updateFabric(id, validatedData as unknown as Partial<InsertFabric>),
+        () => miscRepository.updateFabric(id, validatedData as unknown as Partial<InsertFabric>),
         {
           operationName: `Update fabric ${id}`,
         },
@@ -134,7 +137,7 @@ router.patch("/fabrics/:id", authService.requireAdmin, async (req, res) => {
     const partialData = insertFabricSchema.partial().parse(req.body);
     const fabric = await withTimeout(
       retryDbOperation(
-        () => getStorage().updateFabric(id, partialData as unknown as Partial<InsertFabric>),
+        () => miscRepository.updateFabric(id, partialData as unknown as Partial<InsertFabric>),
         {
           operationName: `Partial update fabric ${id}`,
         },
@@ -181,7 +184,7 @@ router.delete("/fabrics/:id", authService.requireAdmin, async (req, res) => {
       return;
     }
     const success = await withTimeout(
-      retryDbOperation(() => getStorage().deleteFabric(id), {
+      retryDbOperation(() => miscRepository.deleteFabric(id), {
         operationName: `Delete fabric ${id}`,
       }),
       10000,

@@ -2,12 +2,16 @@
 // Direct access to PostgreSQL data using actual available methods
 
 import type { Express } from "express";
+import {
+  accessoryRepository,
+  mediaRepository,
+  miscRepository,
+  pageContentRepository,
+  productRepository,
+} from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 
 export function registerKVDiagnosticsRoutes(app: Express): void {
-  const storage = getStorage();
-
   // Direct PostgreSQL Storage inspection
   app.get("/api/kv-direct/inspect-all", async (_req, res) => {
     try {
@@ -30,20 +34,20 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
         navigationItems,
         contactPageConfiguration,
       ] = await Promise.all([
-        storage.getCategories(),
-        storage.getProducts(),
-        storage.getFabrics(),
-        storage.getFibers(),
-        storage.getCertificates(),
-        storage.getAccessories(),
-        storage.getSizeCharts(),
-        storage.getMediaAssets(),
-        storage.getHomepageHero(),
-        storage.getHomepageSections(),
-        storage.getHomepageProcessCards(),
+        productRepository.getCategories(),
+        productRepository.getProducts(),
+        miscRepository.getFabrics(),
+        miscRepository.getFibers(),
+        miscRepository.getCertificates(),
+        accessoryRepository.getAccessories(),
+        miscRepository.getSizeCharts(),
+        mediaRepository.getMediaAssets(),
+        pageContentRepository.getHomepageHero(),
+        pageContentRepository.getHomepageSections(),
+        pageContentRepository.getHomepageProcessCards(),
 
-        storage.getNavigationItems(),
-        storage.getContactPageConfiguration(),
+        miscRepository.getNavigationItems(),
+        miscRepository.getContactPageConfiguration(),
       ]);
 
       const results = {
@@ -97,20 +101,20 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       const type = req.params.type;
 
       const methodMap: Record<string, () => Promise<any>> = {
-        categories: () => storage.getCategories(),
-        products: () => storage.getProducts(),
-        fabrics: () => storage.getFabrics(),
-        fibers: () => storage.getFibers(),
-        certificates: () => storage.getCertificates(),
-        accessories: () => storage.getAccessories(),
-        sizeCharts: () => storage.getSizeCharts(),
-        mediaAssets: () => storage.getMediaAssets(),
-        homepageHero: () => storage.getHomepageHero(),
-        homepageSections: () => storage.getHomepageSections(),
-        homepageProcessCards: () => storage.getHomepageProcessCards(),
+        categories: () => productRepository.getCategories(),
+        products: () => productRepository.getProducts(),
+        fabrics: () => miscRepository.getFabrics(),
+        fibers: () => miscRepository.getFibers(),
+        certificates: () => miscRepository.getCertificates(),
+        accessories: () => accessoryRepository.getAccessories(),
+        sizeCharts: () => miscRepository.getSizeCharts(),
+        mediaAssets: () => mediaRepository.getMediaAssets(),
+        homepageHero: () => pageContentRepository.getHomepageHero(),
+        homepageSections: () => pageContentRepository.getHomepageSections(),
+        homepageProcessCards: () => pageContentRepository.getHomepageProcessCards(),
 
-        navigationItems: () => storage.getNavigationItems(),
-        contactPageConfiguration: () => storage.getContactPageConfiguration(),
+        navigationItems: () => miscRepository.getNavigationItems(),
+        contactPageConfiguration: () => miscRepository.getContactPageConfiguration(),
       };
 
       const method = methodMap[type];

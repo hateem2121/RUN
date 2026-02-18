@@ -18,9 +18,9 @@ import {
 } from "../../../shared/schema.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -51,7 +51,7 @@ router.get("/", async (_req, res) => {
 
     // Cache miss - fetch from storage
     const settings = await withTimeout(
-      getStorage().getTechnologyGradientSettings(),
+      pageContentRepository.getTechnologyGradientSettings(),
       10000,
       "Get technology gradient settings",
     );
@@ -132,7 +132,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyGradientSettings(removeUndefined(finalValidation.data)),
+      pageContentRepository.updateTechnologyGradientSettings(removeUndefined(finalValidation.data)),
       10000,
       "Update technology gradient settings",
     );

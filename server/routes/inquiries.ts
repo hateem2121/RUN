@@ -6,7 +6,6 @@
 import express from "express";
 import { z } from "zod";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 const router = express.Router();
 

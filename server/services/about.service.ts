@@ -7,7 +7,7 @@ import type {
   InsertAboutTimelineEntry,
 } from "../../shared/schema.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
-import { getStorage } from "../lib/storage-singleton.js";
+import { pageContentRepository } from "../lib/db/repositories/index.js";
 
 /**
  * AboutService - Centralized business logic for About page management
@@ -19,10 +19,6 @@ import { getStorage } from "../lib/storage-singleton.js";
  * and standardized with the rest of the Service Layer.
  */
 export class AboutService {
-  private get storage() {
-    return getStorage();
-  }
-
   /**
    * Get all About page data in a single optimized aggregate call
    * Used by: /api/about-batch (public route)
@@ -47,11 +43,11 @@ export class AboutService {
   // ===========================================================================
 
   async getHero(includeInactive: boolean = true) {
-    return this.storage.getAboutHero(includeInactive);
+    return pageContentRepository.getAboutHero(includeInactive);
   }
 
   async updateHero(data: Partial<InsertAboutHero>) {
-    const result = await this.storage.updateAboutHero(data);
+    const result = await pageContentRepository.updateAboutHero(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -61,27 +57,27 @@ export class AboutService {
   // ===========================================================================
 
   async getTimeline(includeInactive: boolean = true) {
-    return this.storage.getAboutTimelineEntries(includeInactive);
+    return pageContentRepository.getAboutTimelineEntries(includeInactive);
   }
 
   async getTimelineEntry(id: number) {
-    return this.storage.getAboutTimelineEntry(id);
+    return pageContentRepository.getAboutTimelineEntry(id);
   }
 
   async createTimelineEntry(data: InsertAboutTimelineEntry) {
-    const result = await this.storage.createAboutTimelineEntry(data);
+    const result = await pageContentRepository.createAboutTimelineEntry(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async updateTimelineEntry(id: number, data: Partial<InsertAboutTimelineEntry>) {
-    const result = await this.storage.updateAboutTimelineEntry(id, data);
+    const result = await pageContentRepository.updateAboutTimelineEntry(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteTimelineEntry(id: number) {
-    const result = await this.storage.deleteAboutTimelineEntry(id);
+    const result = await pageContentRepository.deleteAboutTimelineEntry(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -91,27 +87,27 @@ export class AboutService {
   // ===========================================================================
 
   async getLocations(includeInactive: boolean = true) {
-    return this.storage.getAboutMapLocations(includeInactive);
+    return pageContentRepository.getAboutMapLocations(includeInactive);
   }
 
   async getLocation(id: number) {
-    return this.storage.getAboutMapLocation(id);
+    return pageContentRepository.getAboutMapLocation(id);
   }
 
   async createLocation(data: InsertAboutMapLocation) {
-    const result = await this.storage.createAboutMapLocation(data);
+    const result = await pageContentRepository.createAboutMapLocation(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async updateLocation(id: number, data: Partial<InsertAboutMapLocation>) {
-    const result = await this.storage.updateAboutMapLocation(id, data);
+    const result = await pageContentRepository.updateAboutMapLocation(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteLocation(id: number) {
-    const result = await this.storage.deleteAboutMapLocation(id);
+    const result = await pageContentRepository.deleteAboutMapLocation(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -121,27 +117,27 @@ export class AboutService {
   // ===========================================================================
 
   async getSections(includeInactive: boolean = true) {
-    return this.storage.getAboutSections(includeInactive);
+    return pageContentRepository.getAboutSections(includeInactive);
   }
 
   async getSection(id: number) {
-    return this.storage.getAboutSection(id);
+    return pageContentRepository.getAboutSection(id);
   }
 
   async createSection(data: InsertAboutSection) {
-    const result = await this.storage.createAboutSection(data);
+    const result = await pageContentRepository.createAboutSection(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async updateSection(id: number, data: Partial<InsertAboutSection>) {
-    const result = await this.storage.updateAboutSection(id, data);
+    const result = await pageContentRepository.updateAboutSection(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteSection(id: number) {
-    const result = await this.storage.deleteAboutSection(id);
+    const result = await pageContentRepository.deleteAboutSection(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -151,27 +147,27 @@ export class AboutService {
   // ===========================================================================
 
   async getStatistics(includeInactive: boolean = true) {
-    return this.storage.getAboutStatistics(includeInactive);
+    return pageContentRepository.getAboutStatistics(includeInactive);
   }
 
   async getStatistic(id: number) {
-    return this.storage.getAboutStatistic(id);
+    return pageContentRepository.getAboutStatistic(id);
   }
 
   async createStatistic(data: InsertAboutStatistic) {
-    const result = await this.storage.createAboutStatistic(data);
+    const result = await pageContentRepository.createAboutStatistic(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async updateStatistic(id: number, data: Partial<InsertAboutStatistic>) {
-    const result = await this.storage.updateAboutStatistic(id, data);
+    const result = await pageContentRepository.updateAboutStatistic(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteStatistic(id: number) {
-    const result = await this.storage.deleteAboutStatistic(id);
+    const result = await pageContentRepository.deleteAboutStatistic(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -181,11 +177,11 @@ export class AboutService {
   // ===========================================================================
 
   async getTeamMessage(includeInactive: boolean = true) {
-    return this.storage.getAboutTeamMessage(includeInactive);
+    return pageContentRepository.getAboutTeamMessage(includeInactive);
   }
 
   async updateTeamMessage(data: Partial<InsertAboutTeamMessage>) {
-    const result = await this.storage.updateAboutTeamMessage(data);
+    const result = await pageContentRepository.updateAboutTeamMessage(data);
     await CacheOperations.invalidateAbout();
     return result;
   }

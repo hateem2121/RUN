@@ -10,9 +10,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertCertificateSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 
@@ -22,7 +22,7 @@ const router = Router();
 router.get("/certificates", async (_req, res) => {
   try {
     const certificates = await withTimeout(
-      getStorage().getCertificates(),
+      miscRepository.getCertificates(),
       10000,
       "Get all certificates",
     );
@@ -49,7 +49,7 @@ router.post("/certificates", authService.requireAdmin, async (req, res) => {
     };
 
     const certificate = await withTimeout(
-      getStorage().createCertificate(removeUndefined(validatedData)),
+      miscRepository.createCertificate(removeUndefined(validatedData)),
       10000,
       "Create certificate",
     );
@@ -97,7 +97,7 @@ router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
     };
 
     const certificate = await withTimeout(
-      getStorage().updateCertificate(id, removeUndefined(validatedData)),
+      miscRepository.updateCertificate(id, removeUndefined(validatedData)),
       10000,
       "Update certificate",
     );
@@ -140,7 +140,7 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
       return;
     }
     const success = await withTimeout(
-      getStorage().deleteCertificate(id),
+      miscRepository.deleteCertificate(id),
       10000,
       "Delete certificate",
     );
@@ -172,7 +172,7 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
 router.get("/sustainability-certificates", async (_req, res) => {
   try {
     const certificates = await withTimeout(
-      getStorage().getCertificates(),
+      miscRepository.getCertificates(),
       10000,
       "Get sustainability certificates",
     );

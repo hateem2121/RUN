@@ -44,8 +44,8 @@ import {
 } from "../../../shared/schema.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { authService } from "../../services/auth-service.js";
 
@@ -98,7 +98,7 @@ router.get(
       logger.debug("[Homepage] Admin/debug request - bypassing cache for hero");
     }
 
-    const hero = await getStorage().getHomepageHero();
+    const hero = await pageContentRepository.getHomepageHero();
     const result = hero || {};
     await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -130,7 +130,7 @@ router.patch(
     logger.info("✅ Validation passed, updating hero in database...");
     logger.info("📦 Validated data:", JSON.stringify(removeUndefined(validation.data)));
 
-    const hero = await getStorage().updateHomepageHero(removeUndefined(validation.data));
+    const hero = await pageContentRepository.updateHomepageHero(removeUndefined(validation.data));
 
     logger.info("✅ Hero updated in database successfully");
     logger.info("📦 Updated hero data:", JSON.stringify(hero));
@@ -172,7 +172,7 @@ router.get(
       logger.debug("[Homepage] Admin/debug request - bypassing cache for slogans");
     }
 
-    const slogans = await getStorage().getHomepageSlogans();
+    const slogans = await pageContentRepository.getHomepageSlogans();
     const result = slogans || [];
     await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -187,7 +187,7 @@ router.get(
   "/homepage-slogans/:id",
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id as string, 10);
-    const slogan = await getStorage().getHomepageSlogan(id);
+    const slogan = await pageContentRepository.getHomepageSlogan(id);
     if (!slogan) {
       return res.status(404).json({ message: "Slogan not found" });
     }
@@ -208,7 +208,9 @@ router.post(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const slogan = await getStorage().createHomepageSlogan(removeUndefined(validation.data));
+    const slogan = await pageContentRepository.createHomepageSlogan(
+      removeUndefined(validation.data),
+    );
     await invalidateHomepageCache();
     return res.status(201).json(slogan);
   }),
@@ -225,7 +227,10 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const slogan = await getStorage().updateHomepageSlogan(id, removeUndefined(validation.data));
+    const slogan = await pageContentRepository.updateHomepageSlogan(
+      id,
+      removeUndefined(validation.data),
+    );
     if (!slogan) {
       return res.status(404).json({ message: "Slogan not found" });
     }
@@ -241,7 +246,7 @@ router.delete(
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id as string, 10);
-    const deleted = await getStorage().deleteHomepageSlogan(id);
+    const deleted = await pageContentRepository.deleteHomepageSlogan(id);
     if (!deleted) {
       return res.status(404).json({ message: "Slogan not found" });
     }
@@ -260,7 +265,7 @@ router.patch(
     if (!Array.isArray(slogans)) {
       return res.status(400).json({ message: "Slogans must be an array" });
     }
-    const reorderedSlogans = await getStorage().reorderHomepageSlogans(slogans);
+    const reorderedSlogans = await pageContentRepository.reorderHomepageSlogans(slogans);
     await invalidateHomepageCache();
     return res.json(reorderedSlogans);
   }),
@@ -280,7 +285,7 @@ router.get(
     }
 
     // FORCE FRESH READ + INCLUDE INACTIVE
-    const cards = await getStorage().getHomepageProcessCards(true);
+    const cards = await pageContentRepository.getHomepageProcessCards(true);
 
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
@@ -295,7 +300,7 @@ router.get(
   "/homepage-process-cards",
   asyncHandler(async (_req, res) => {
     // Delegate to batch router logic or return active only
-    const cards = await getStorage().getHomepageProcessCards(false);
+    const cards = await pageContentRepository.getHomepageProcessCards(false);
     return res.json(cards || []);
   }),
 );
@@ -304,7 +309,7 @@ router.get(
   "/homepage-process-cards/:id",
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id as string, 10);
-    const card = await getStorage().getHomepageProcessCard(id);
+    const card = await pageContentRepository.getHomepageProcessCard(id);
     if (!card) {
       return res.status(404).json({ message: "Process card not found" });
     }
@@ -325,7 +330,9 @@ router.post(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const card = await getStorage().createHomepageProcessCard(removeUndefined(validation.data));
+    const card = await pageContentRepository.createHomepageProcessCard(
+      removeUndefined(validation.data),
+    );
     await invalidateHomepageCache();
     return res.status(201).json(card);
   }),
@@ -342,7 +349,10 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const card = await getStorage().updateHomepageProcessCard(id, removeUndefined(validation.data));
+    const card = await pageContentRepository.updateHomepageProcessCard(
+      id,
+      removeUndefined(validation.data),
+    );
     if (!card) {
       return res.status(404).json({ message: "Process card not found" });
     }
@@ -358,7 +368,7 @@ router.delete(
   authService.requireAdmin,
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id as string, 10);
-    const deleted = await getStorage().deleteHomepageProcessCard(id);
+    const deleted = await pageContentRepository.deleteHomepageProcessCard(id);
     if (!deleted) {
       return res.status(404).json({ message: "Process card not found" });
     }
@@ -377,7 +387,7 @@ router.patch(
     if (!Array.isArray(cards)) {
       return res.status(400).json({ message: "Cards must be an array" });
     }
-    const reorderedCards = await getStorage().reorderHomepageProcessCards(cards);
+    const reorderedCards = await pageContentRepository.reorderHomepageProcessCards(cards);
     await invalidateHomepageCache();
     return res.json(reorderedCards);
   }),
@@ -407,7 +417,7 @@ router.get(
       logger.debug("[Homepage] Admin/debug request - bypassing cache for sections");
     }
 
-    const sections = await getStorage().getHomepageSections();
+    const sections = await pageContentRepository.getHomepageSections();
     const result = sections || [];
     await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -422,7 +432,7 @@ router.get(
   "/homepage-sections/:id",
   asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id as string, 10);
-    const section = await getStorage().getHomepageSectionById(id);
+    const section = await pageContentRepository.getHomepageSectionById(id);
     if (!section) {
       return res.status(404).json({ message: "Section not found" });
     }
@@ -444,7 +454,7 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const section = await getStorage().updateHomepageSectionById(
+    const section = await pageContentRepository.updateHomepageSectionById(
       id,
       removeUndefined(validation.data),
     );
@@ -482,7 +492,7 @@ router.get(
       );
     }
 
-    const settings = await getStorage().getHomepageFeaturedProductsSettings();
+    const settings = await pageContentRepository.getHomepageFeaturedProductsSettings();
     const result = settings || {};
     await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -502,7 +512,7 @@ router.patch(
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.message });
     }
-    const settings = await getStorage().updateHomepageFeaturedProductsSettings(
+    const settings = await pageContentRepository.updateHomepageFeaturedProductsSettings(
       removeUndefined(validation.data),
     );
     await invalidateHomepageCache();

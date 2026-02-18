@@ -7,10 +7,10 @@ import type {
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
-import { getStorage } from "../lib/storage-singleton.js";
 import { removeUndefined } from "../utils.js";
 
 const CACHE_TTL_NAVIGATION = 7200; // 2 hours
@@ -42,7 +42,7 @@ export class NavigationService {
     >
   > {
     const startTime = performance.now();
-    const storage = getStorage();
+    const storage = miscRepository;
 
     // Admin/Bypass path
     if (bypassCache) {
@@ -105,7 +105,7 @@ export class NavigationService {
 
   static async getItem(id: number): Promise<Result<NavigationItem, AppError>> {
     const result = await safeQuery(
-      withTimeout(getStorage().getNavigationItem(id), 5000, "Get navigation item"),
+      withTimeout(miscRepository.getNavigationItem(id), 5000, "Get navigation item"),
     );
 
     if (result.isErr()) {
@@ -138,7 +138,7 @@ export class NavigationService {
     };
 
     const result = await safeQuery(
-      withTimeout(getStorage().createNavigationItem(itemData), 5000, "Create navigation item"),
+      withTimeout(miscRepository.createNavigationItem(itemData), 5000, "Create navigation item"),
     );
 
     if (result.isErr()) {
@@ -166,7 +166,7 @@ export class NavigationService {
 
     const result = await safeQuery(
       withTimeout(
-        getStorage().updateNavigationItem(id, updateData),
+        miscRepository.updateNavigationItem(id, updateData),
         5000,
         "Update navigation item",
       ),
@@ -188,7 +188,7 @@ export class NavigationService {
 
   static async deleteItem(id: number): Promise<Result<void, AppError>> {
     const result = await safeQuery(
-      withTimeout(getStorage().deleteNavigationItem(id), 5000, "Delete navigation item"),
+      withTimeout(miscRepository.deleteNavigationItem(id), 5000, "Delete navigation item"),
     );
 
     if (result.isErr()) {
@@ -208,7 +208,7 @@ export class NavigationService {
   static async reorderItems(
     items: { id: number; sortOrder: number }[],
   ): Promise<Result<NavigationItem[], AppError>> {
-    const storage = getStorage();
+    const storage = miscRepository;
 
     const result = await safeQuery(
       withTimeout(storage.reorderNavigationItems(items), 5000, "Reorder navigation items"),
@@ -242,7 +242,7 @@ export class NavigationService {
 
     const result = await safeQuery(
       withTimeout(
-        getStorage().getNavigationGlassmorphismSettings(),
+        miscRepository.getNavigationGlassmorphismSettings(),
         5000,
         "Get glassmorphism settings",
       ),
@@ -278,7 +278,7 @@ export class NavigationService {
 
     const result = await safeQuery(
       withTimeout(
-        getStorage().updateNavigationGlassmorphismSettings(settingsData),
+        miscRepository.updateNavigationGlassmorphismSettings(settingsData),
         5000,
         "Update glassmorphism settings",
       ),

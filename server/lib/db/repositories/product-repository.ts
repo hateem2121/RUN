@@ -997,6 +997,62 @@ export class ProductRepository {
     );
   }
 
+  async getProductsCount(): Promise<number> {
+    return await this.getProductCount();
+  }
+
+  async getProductsIncludingDeleted(limit: number = 50, offset: number = 0): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  async restoreProduct(id: number, tx?: DbClient): Promise<boolean> {
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance
+          .update(products)
+          .set({ deletedAt: null, updatedAt: sql`NOW()` })
+          .where(eq(products.id, id));
+
+        const success = (result.rowCount ?? 0) > 0;
+
+        if (!tx && success) {
+          await this.invalidateProductCache();
+          await this.invalidateProductCount();
+        }
+
+        return success;
+      },
+      "restoreProduct",
+      { isIdempotent: false },
+    );
+  }
+
+  async permanentlyDeleteProduct(id: number, tx?: DbClient): Promise<boolean> {
+    return await dbCircuitBreaker.execute(
+      async () => {
+        const dbInstance = tx || db;
+        const result = await dbInstance.delete(products).where(eq(products.id, id));
+
+        const success = (result.rowCount ?? 0) > 0;
+
+        if (!tx && success) {
+          await this.invalidateProductCache();
+          await this.invalidateProductCount();
+        }
+
+        return success;
+      },
+      "permanentlyDeleteProduct",
+      { isIdempotent: false },
+    );
+  }
+
   // =============================================================================
   // CATEGORY METHODS
   // =============================================================================
@@ -1273,6 +1329,19 @@ export class ProductRepository {
     }
 
     return result;
+  }
+
+  // Helper method matching facade behavior for migration consistency
+  async getCategoriesIncludingDeleted(
+    limit: number = 1000,
+    offset: number = 0,
+  ): Promise<Category[]> {
+    return (await db
+      .select()
+      .from(categories)
+      .orderBy(asc(categories.sortOrder), asc(categories.name))
+      .limit(limit)
+      .offset(offset)) as Category[];
   }
 
   async restoreCategory(id: number, tx?: DbClient): Promise<boolean> {

@@ -4,10 +4,11 @@ import { removeUndefined } from "../../utils.js";
 // Aggregates metrics from cache, database, and performance monitoring systems
 
 import os from "node:os";
+import { sql } from "drizzle-orm";
 import type { Express } from "express";
 import { z } from "zod";
 import type { AlertConfig } from "../../config/alerts.js";
-import { getPoolMetrics } from "../../db.js";
+import { db, getPoolMetrics } from "../../db.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
@@ -16,7 +17,6 @@ import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import {
   CacheInvalidationQuerySchema,
@@ -552,21 +552,17 @@ export function registerMetricsRoutes(app: Express): void {
   app.get("/api/health/db", async (_req, res) => {
     try {
       // Test database connectivity with 3s timeout
-      const healthCheck = await withTimeout(
-        getStorage().checkDatabaseHealth(),
-        3000,
-        "Database health check",
-      );
+      const start = Date.now();
+      await withTimeout(db.execute(sql`SELECT 1`), 3000, "Database health check");
+      const latency = Date.now() - start;
 
       const response = {
-        status: healthCheck.healthy ? "healthy" : "unhealthy",
-        latency: healthCheck.latency,
+        status: "healthy",
+        latency,
         timestamp: new Date().toISOString(),
       };
 
-      // Return 503 Service Unavailable if unhealthy, 200 OK if healthy
-      const statusCode = healthCheck.healthy ? 200 : 503;
-      return res.status(statusCode).json(response);
+      return res.status(200).json(response);
     } catch (error) {
       // Timeout or other error occurred
       logger.error("[Health Check] Database health check failed:", error);

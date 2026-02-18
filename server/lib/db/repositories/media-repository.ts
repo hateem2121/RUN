@@ -706,6 +706,28 @@ export class MediaRepository {
     );
   }
 
+  async restoreMediaAsset(id: number): Promise<boolean> {
+    const result = await db
+      .update(mediaAssets)
+      .set({ deletedAt: null, updatedAt: sql`NOW()` })
+      .where(eq(mediaAssets.id, id));
+
+    const success = (result.rowCount ?? 0) > 0;
+    if (success) {
+      await this.invalidateMediaCacheSelectively("update", id);
+    }
+    return success;
+  }
+
+  async permanentlyDeleteMediaAsset(id: number): Promise<boolean> {
+    const result = await db.delete(mediaAssets).where(eq(mediaAssets.id, id));
+    const success = (result.rowCount ?? 0) > 0;
+    if (success) {
+      await this.invalidateMediaCacheSelectively("delete", id);
+    }
+    return success;
+  }
+
   private async preloadFirstPageCache(): Promise<void> {
     try {
       Promise.allSettled([

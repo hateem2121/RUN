@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
+import { webhookRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 /**
  * WEBHOOK SERVICE
@@ -17,8 +17,7 @@ export class WebhookService {
    */
   async trigger(event: string, payload: any): Promise<void> {
     try {
-      const storage = getStorage();
-      const subscriptions = await storage.getWebhookSubscriptions();
+      const subscriptions = await webhookRepository.getWebhookSubscriptions();
 
       const activeSubs = subscriptions.filter(
         (sub) => sub.isActive === "Y" && (sub.events as string[]).includes(event),
@@ -74,7 +73,7 @@ export class WebhookService {
       const responseBody = await response.text().catch(() => "");
 
       // Log delivery attempt
-      await getStorage().logWebhookDelivery({
+      await webhookRepository.logWebhookDelivery({
         subscriptionId: sub.id,
         event,
         payload: deliveryPayload,
@@ -92,7 +91,7 @@ export class WebhookService {
     } catch (error) {
       logger.error(`[WebhookService] Delivery to ${sub.url} failed:`, error);
 
-      await getStorage().logWebhookDelivery({
+      await webhookRepository.logWebhookDelivery({
         subscriptionId: sub.id,
         event,
         payload: deliveryPayload,

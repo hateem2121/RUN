@@ -44,5 +44,14 @@ import { MiscRepository } from "./misc-repository.js";
 export { MiscRepository } from "./misc-repository.js";
 export const miscRepository = new MiscRepository();
 
+// Blog operations
+import { BlogRepository } from "./blog-repository.js";
+
+export { BlogRepository } from "./blog-repository.js";
+export const blogRepository = new BlogRepository();
+
 // Shared utilities
 export * from "./shared-utils.js";
+// System operations (audit logs, settings)
+export { SystemRepository, systemRepository } from "./system-repository.js";
+export { WebhookRepository, webhookRepository } from "./webhook-repository.js";

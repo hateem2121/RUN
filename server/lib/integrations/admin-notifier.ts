@@ -14,10 +14,19 @@ export const adminNotifier = {
    * Uses a dedicated PG connection because LISTEN/NOTIFY requires it.
    */
   async start() {
-    const connectionString = dbConfig.directUrl || dbConfig.url;
+    // CRITICAL: LISTEN/NOTIFY requires a direct connection. Pooled connections (port 6543)
+    // in transaction mode will fail or hang.
+    const connectionString = dbConfig.directUrl;
 
     if (!connectionString) {
-      logger.warn("[AdminNotifier] No database URL configured, skipping listener startup.");
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "DIRECT_DATABASE_URL is required for admin-notifier (LISTEN/NOTIFY) in production.",
+        );
+      }
+      logger.warn(
+        "[AdminNotifier] DIRECT_DATABASE_URL not configured. Real-time cache invalidation disabled.",
+      );
       return;
     }
 
@@ -26,12 +35,14 @@ export const adminNotifier = {
       await adminNotifier.stop();
     });
 
+    let retryCount = 0;
+
     const connect = async () => {
       try {
         listenerClient = new Client({
           connectionString,
           keepAlive: true,
-          ssl: dbConfig.ssl, // Use centralized SSL config
+          ssl: dbConfig.ssl,
         });
 
         await listenerClient.connect();
@@ -61,6 +72,7 @@ export const adminNotifier = {
 
         await listenerClient.query(`LISTEN ${CHANNEL}`);
         logger.info("[AdminNotifier] ✅ Listening for real-time cache invalidation");
+        retryCount = 0; // Reset on success
       } catch (err) {
         logger.error("[AdminNotifier] Startup failed:", err);
         scheduleReconnect();
@@ -71,15 +83,16 @@ export const adminNotifier = {
       if (reconnectTimer) {
         return;
       }
+
+      // Exponential backoff: 1s, 2s, 4s, 8s, 16s, capped at 30s
+      const delay = Math.min(2 ** retryCount * 1000, 30000);
+      retryCount++;
+
       reconnectTimer = setTimeout(() => {
         reconnectTimer = null;
-        if (process.env.NODE_ENV !== "production") {
-          logger.warn("[AdminNotifier] Reconnect disabled in development to prevent log spam");
-          return;
-        }
-        logger.info("[AdminNotifier] Reconnecting...");
+        logger.info(`[AdminNotifier] Reconnecting in ${delay}ms... (Attempt ${retryCount})`);
         connect();
-      }, 5000); // Retry every 5s
+      }, delay);
     };
 
     connect();

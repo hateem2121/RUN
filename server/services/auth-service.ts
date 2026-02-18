@@ -7,9 +7,9 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
+import { userRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { getSecret } from "../lib/secrets/secret-manager.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 import type { SessionUser } from "../types/session.js";
 
@@ -75,7 +75,14 @@ export class AuthService {
       });
       logger.info("[Auth] Redis Session Store initialized");
     } else {
-      logger.warn("[Auth] Redis not configured - falling back to MemoryStore (Development Only)");
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "Redis is required for session storage in production (NEON/Serverless). Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
+        );
+      }
+      logger.warn(
+        "[Auth] Redis not configured - falling back to MemoryStore (Development Only). THIS IS NOT SAFE FOR PRODUCTION (Serverless).",
+      );
       // session() uses MemoryStore by default if store is undefined
       sessionStore = undefined;
     }
@@ -187,7 +194,7 @@ export class AuthService {
       throw new Error("No email provided by Google");
     }
 
-    const user = await getStorage().upsertUser({
+    const user = await userRepository.upsertUser({
       id: profile.id,
       email: email,
       firstName: profile.name?.givenName || "",
@@ -334,7 +341,7 @@ export class AuthService {
     }
 
     try {
-      const dbUser = await getStorage().getUser(userId);
+      const dbUser = await userRepository.getUser(userId);
       if (!dbUser) {
         return false;
       }
@@ -383,7 +390,7 @@ export class AuthService {
    * SECURITY: Account Lockout Logic
    */
   public async isAccountLocked(email: string): Promise<boolean> {
-    const user = await getStorage().getUserByEmail(email);
+    const user = await userRepository.getUserByEmail(email);
     if (!user || !user.lockoutUntil) return false;
 
     if (user.lockoutUntil > new Date()) {
@@ -400,7 +407,7 @@ export class AuthService {
   }
 
   public async recordFailedLogin(email: string): Promise<void> {
-    const user = await getStorage().getUserByEmail(email);
+    const user = await userRepository.getUserByEmail(email);
     if (!user) return;
 
     const attempts = Number.parseInt(user.failedLoginAttempts || "0", 10) + 1;
@@ -415,14 +422,14 @@ export class AuthService {
       logger.warn(`[AuthService] Account locked for ${email} following 5 failures`);
     }
 
-    await getStorage().updateUser(user.id, updates);
+    await userRepository.updateUser(user.id, updates);
   }
 
   public async recordSuccessfulLogin(email: string): Promise<void> {
-    const user = await getStorage().getUserByEmail(email);
+    const user = await userRepository.getUserByEmail(email);
     if (!user) return;
 
-    await getStorage().updateUser(user.id, {
+    await userRepository.updateUser(user.id, {
       failedLoginAttempts: "0",
       lockoutUntil: null,
       updatedAt: new Date(),
@@ -430,7 +437,7 @@ export class AuthService {
   }
 
   public async getFailedAttempts(email: string): Promise<number> {
-    const user = await getStorage().getUserByEmail(email);
+    const user = await userRepository.getUserByEmail(email);
     return user ? Number.parseInt(user.failedLoginAttempts || "0", 10) : 0;
   }
 

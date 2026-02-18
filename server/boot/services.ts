@@ -1,10 +1,10 @@
+import { sql } from "drizzle-orm";
 import { getConfig } from "../config/production.js";
-import { wakeupDatabase } from "../db.js";
+import { db, wakeupDatabase } from "../db.js";
 import { dbKeepAlive } from "../lib/db/keep-alive.js";
 import { adminNotifier } from "../lib/integrations/admin-notifier.js";
 import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 const config = getConfig();
 
@@ -84,12 +84,9 @@ async function handleColdStart() {
 
 async function performInitialHealthCheck() {
   try {
-    const health = await getStorage().checkDatabaseHealth();
-    if (health.healthy) {
-      logger.info("[Startup] Database health check passed");
-    } else {
-      logger.warn("[Startup] Database health check returned unhealthy status");
-    }
+    // Simple connectivity check
+    await db.execute(sql`SELECT 1`);
+    logger.info("[Startup] Database health check passed");
   } catch (e) {
     logger.error("[Startup] Initial database health check failed", e);
   }

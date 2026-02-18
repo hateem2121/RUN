@@ -8,7 +8,7 @@
  * PHASE 5: Added primedByLoader flag to prevent double caching during warmup
  */
 
-import type { IStorage } from "../../storage.js";
+import type { IStorage } from "../../repositories/storage-interfaces.js";
 import { CacheKeys } from "./cache-keys.js";
 
 export type CacheWarmupTask<T = any> = {

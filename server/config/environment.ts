@@ -197,7 +197,16 @@ export const isProduction = env.NODE_ENV === "production";
 export const isTest = env.NODE_ENV === "test";
 
 // Database configuration with secure SSL defaults
-export const database = {
+export const database: {
+  readonly url: string;
+  readonly directUrl: string | undefined;
+  readonly ssl:
+    | false
+    | {
+        rejectUnauthorized: boolean;
+        ca: string | undefined;
+      };
+} = {
   url: env.DATABASE_URL,
   directUrl: env.DIRECT_DATABASE_URL,
   ssl: env.DATABASE_SSL_ENABLED
@@ -206,7 +215,7 @@ export const database = {
         ca: env.DATABASE_SSL_CA || undefined,
       }
     : false,
-} as const;
+};
 
 // CORS origin allowlist builder
 const corsOrigins: string[] = (() => {

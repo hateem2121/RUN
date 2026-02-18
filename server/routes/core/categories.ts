@@ -13,10 +13,9 @@ import { db } from "../../db.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
-
+import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { webhookService } from "../../services/webhook-service.js";
@@ -213,10 +212,10 @@ router.get("/categories", async (req, res) => {
       const offset = (pageNum - 1) * pageSize;
 
       const categories = await retryDbOperation(
-        () => getStorage().getCategories(pageSize, offset),
+        () => productRepository.getCategories(pageSize, offset),
         { operationName: "Get categories with pagination" },
       );
-      const totalCount = await retryDbOperation(() => getStorage().getCategoriesCount(), {
+      const totalCount = await retryDbOperation(() => productRepository.getCategoriesCount(), {
         operationName: "Get categories count",
       });
 
@@ -230,7 +229,7 @@ router.get("/categories", async (req, res) => {
         },
       });
     } else {
-      const categories = await retryDbOperation(() => getStorage().getCategories(), {
+      const categories = await retryDbOperation(() => productRepository.getCategories(), {
         operationName: "Get all categories",
       });
 
@@ -266,11 +265,10 @@ router.patch("/categories/reorder", authService.requireAdmin, async (req, res) =
     const startTime = Date.now();
     const results = await withTimeout(
       db.transaction(async () => {
-        const storage = getStorage();
         const updateResults = [];
 
         for (const categoryData of removeUndefined(validatedData).categories) {
-          const existingCategory = await storage.getCategory(categoryData.id);
+          const existingCategory = await productRepository.getCategory(categoryData.id);
           if (existingCategory) {
             const updatedCategory = {
               ...existingCategory,
@@ -288,7 +286,7 @@ router.patch("/categories/reorder", authService.requireAdmin, async (req, res) =
                 parentId: categoryData.parentId,
               }),
             };
-            const updated = await storage.updateCategory(
+            const updated = await productRepository.updateCategory(
               categoryData.id,
               updatedCategory as Record<string, unknown>,
             );
@@ -362,7 +360,7 @@ router.get("/categories/by-slug/:slug", async (req, res) => {
     const normalizedSlug = normalizeSlug(slug);
 
     const category = await withTimeout(
-      retryDbOperation(() => getStorage().getCategoryBySlug(normalizedSlug), {
+      retryDbOperation(() => productRepository.getCategoryBySlug(normalizedSlug), {
         operationName: `Get category by slug: ${normalizedSlug}`,
       }),
       5000,
@@ -401,7 +399,7 @@ router.get("/categories/:id", async (req, res) => {
     }
 
     const category = await withTimeout(
-      retryDbOperation(() => getStorage().getCategory(id), {
+      retryDbOperation(() => productRepository.getCategory(id), {
         operationName: `Get category ${id}`,
       }),
       5000,
@@ -440,7 +438,7 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
     const validatedData = insertCategorySchema.parse(req.body);
 
     const allCategories = (await withTimeout(
-      retryDbOperation(() => getStorage().getCategories(), {
+      retryDbOperation(() => productRepository.getCategories(), {
         operationName: "Get categories for validation",
       }),
       10000,
@@ -471,7 +469,7 @@ router.post("/categories", authService.requireAdmin, async (req, res) => {
     }
 
     const category = await withTimeout(
-      retryDbOperation(() => getStorage().createCategory(removeUndefined(validatedData)), {
+      retryDbOperation(() => productRepository.createCategory(removeUndefined(validatedData)), {
         operationName: "Create category",
       }),
       10000,
@@ -511,7 +509,7 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
 
     const validatedData = insertCategorySchema.partial().parse(req.body);
     const allCategories = (await withTimeout(
-      retryDbOperation(() => getStorage().getCategories(), {
+      retryDbOperation(() => productRepository.getCategories(), {
         operationName: "Get categories for update validation",
       }),
       10000,
@@ -536,7 +534,7 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const category = await withTimeout(
-      retryDbOperation(() => getStorage().updateCategory(id, removeUndefined(validatedData)), {
+      retryDbOperation(() => productRepository.updateCategory(id, removeUndefined(validatedData)), {
         operationName: `Update category ${id}`,
       }),
       10000,
@@ -577,7 +575,7 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
     const validatedData = insertCategorySchema.partial().parse(req.body);
 
     const category = await withTimeout(
-      retryDbOperation(() => getStorage().updateCategory(id, removeUndefined(validatedData)), {
+      retryDbOperation(() => productRepository.updateCategory(id, removeUndefined(validatedData)), {
         operationName: `Patch category ${id}`,
       }),
       10000,
@@ -617,7 +615,7 @@ router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
     if (id === null) return;
 
     const deleted = await withTimeout(
-      retryDbOperation(() => getStorage().deleteCategory(id), {
+      retryDbOperation(() => productRepository.deleteCategory(id), {
         operationName: `Delete category ${id}`,
       }),
       10000,
@@ -649,7 +647,7 @@ router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
 router.get("/categories/deleted", async (_req, res) => {
   try {
     const deletedCategories = await withTimeout(
-      retryDbOperation(() => getStorage().getCategoriesIncludingDeleted(), {
+      retryDbOperation(() => productRepository.getCategoriesIncludingDeleted(), {
         operationName: "Get deleted categories",
       }),
       10000,
@@ -667,7 +665,7 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
     const id = validateIdParam(req, res, "id", "category");
     if (id === null) return;
     const restored = await withTimeout(
-      retryDbOperation(() => getStorage().restoreCategory(id), {
+      retryDbOperation(() => productRepository.restoreCategory(id), {
         operationName: `Restore category ${id}`,
       }),
       10000,
@@ -699,7 +697,7 @@ router.delete("/categories/:id/hard-delete", authService.requireAdmin, async (re
     const id = validateIdParam(req, res, "id", "category");
     if (id === null) return;
     const hardDeleted = await withTimeout(
-      retryDbOperation(() => getStorage().permanentlyDeleteCategory(id), {
+      retryDbOperation(() => productRepository.permanentlyDeleteCategory(id), {
         operationName: `Hard delete category ${id}`,
       }),
       10000,

@@ -64,7 +64,7 @@ const searchSchema = z.object({
  * Handles batch fetching and search for certificates, accessories, size charts, fabrics, and fibers
  */
 import type { Application } from "express";
-import type { IStorage } from "../../storage.js";
+import type { IStorage } from "../../repositories/storage-interfaces.js";
 
 export function setupResourceRoutes(app: Application, storage: IStorage) {
   // Batch endpoint to fetch multiple resource types in one request

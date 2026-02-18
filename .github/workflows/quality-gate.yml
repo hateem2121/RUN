@@ -11,6 +11,21 @@ jobs:
     name: 🛡️ Late 2025 Quality Gate
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: run_remix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -68,6 +83,10 @@ jobs:
         run: |
           # Run Lighthouse against the production build
           # Note: The 'startServerCommand' in .lighthouserc.json handles the server startup
+          # We need to run migrations first for the app to start
+          npm run migrate:deploy
           npm run test:lighthouse
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          DATABASE_URL: postgresql://user:password@localhost:5432/run_remix
+          NODE_ENV: production

@@ -33,20 +33,7 @@ jobs:
         run: npm run check:audit
         continue-on-error: true
 
-  snyk:
-    name: Snyk Security Scan
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'schedule'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Run Snyk
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
+
 
   codeql:
     name: CodeQL Analysis

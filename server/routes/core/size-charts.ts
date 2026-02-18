@@ -9,9 +9,9 @@ import { removeUndefined } from "../../utils.js";
 import { Router } from "express";
 import { z } from "zod";
 import { insertSizeChartSchema } from "../../../shared/schema.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import { validateIdParam } from "../../utils.js";
 
@@ -20,7 +20,7 @@ const router = Router();
 // GET /api/size-charts - List all size charts
 router.get("/size-charts", async (_req, res) => {
   try {
-    const sizeCharts = await withTimeout(getStorage().getSizeCharts(), 5000, "Get size charts");
+    const sizeCharts = await withTimeout(miscRepository.getSizeCharts(), 5000, "Get size charts");
     res.json(sizeCharts);
   } catch (error: unknown) {
     logger.error("Route: Error fetching size charts:", error);
@@ -36,7 +36,7 @@ router.post("/size-charts", authService.requireAdmin, async (req, res) => {
   try {
     const validatedData = insertSizeChartSchema.parse(req.body);
     const sizeChart = await withTimeout(
-      getStorage().createSizeChart(removeUndefined(validatedData)),
+      miscRepository.createSizeChart(removeUndefined(validatedData)),
       10000,
       "Create size chart",
     );
@@ -66,7 +66,7 @@ router.put("/size-charts/:id", authService.requireAdmin, async (req, res) => {
     }
     const validatedData = insertSizeChartSchema.partial().parse(req.body);
     const sizeChart = await withTimeout(
-      getStorage().updateSizeChart(id, removeUndefined(validatedData)),
+      miscRepository.updateSizeChart(id, removeUndefined(validatedData)),
       10000,
       "Update size chart",
     );
@@ -100,7 +100,11 @@ router.delete("/size-charts/:id", authService.requireAdmin, async (req, res) => 
       return;
     }
 
-    const success = await withTimeout(getStorage().deleteSizeChart(id), 10000, "Delete size chart");
+    const success = await withTimeout(
+      miscRepository.deleteSizeChart(id),
+      10000,
+      "Delete size chart",
+    );
 
     if (!success) {
       return res.status(404).json({ message: "Size chart not found" });

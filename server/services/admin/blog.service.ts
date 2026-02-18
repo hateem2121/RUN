@@ -5,8 +5,8 @@ import type {
   InsertBlogPost,
 } from "../../../shared/schema.js";
 import { insertBlogCategorySchema, insertBlogPostSchema } from "../../../shared/schema.js";
+import { blogRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { storage } from "../../storage.js";
 import { type AuditContext, adminService } from "./admin.service.js";
 
 export class BlogService {
@@ -35,14 +35,14 @@ export class BlogService {
       search?: string;
     },
   ) {
-    return await storage.getBlogPosts(limit, offset, filters);
+    return await blogRepository.getBlogPosts(limit, offset, filters);
   }
 
   /**
    * Get a single post by ID
    */
   async getPost(id: number) {
-    const post = await storage.getBlogPost(id);
+    const post = await blogRepository.getBlogPost(id);
     if (!post) {
       throw new Error(`Blog post with ID ${id} not found`);
     }
@@ -60,14 +60,14 @@ export class BlogService {
     if (!validated.slug) {
       const baseSlug = this.generateSlug(validated.title);
       // Basic collision avoidance
-      const existing = await storage.getBlogPostBySlug(baseSlug);
+      const existing = await blogRepository.getBlogPostBySlug(baseSlug);
       validated.slug = existing ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug;
     }
 
     // Set author
     validated.authorId = audit.user.id;
 
-    const post = await storage.createBlogPost(validated);
+    const post = await blogRepository.createBlogPost(validated);
 
     // Audit log
     await adminService.logAudit({
@@ -87,7 +87,7 @@ export class BlogService {
    * Update an existing blog post
    */
   async updatePost(audit: AuditContext, id: number, data: Partial<InsertBlogPost>) {
-    const existing = await storage.getBlogPost(id);
+    const existing = await blogRepository.getBlogPost(id);
     if (!existing) {
       throw new Error(`Blog post with ID ${id} not found`);
     }
@@ -96,7 +96,7 @@ export class BlogService {
       data.slug = this.generateSlug(data.title);
     }
 
-    const post = await storage.updateBlogPost(id, data);
+    const post = await blogRepository.updateBlogPost(id, data);
 
     // Audit log
     await adminService.logAudit({
@@ -117,8 +117,8 @@ export class BlogService {
    * Delete a blog post (soft delete)
    */
   async deletePost(audit: AuditContext, id: number) {
-    const existing = await storage.getBlogPost(id);
-    const success = await storage.deleteBlogPost(id);
+    const existing = await blogRepository.getBlogPost(id);
+    const success = await blogRepository.deleteBlogPost(id);
 
     if (success && existing) {
       await adminService.logAudit({
@@ -139,7 +139,7 @@ export class BlogService {
    * Get all categories
    */
   async getCategories() {
-    return await storage.getBlogCategories();
+    return await blogRepository.getBlogCategories();
   }
 
   /**
@@ -147,7 +147,7 @@ export class BlogService {
    */
   async createCategory(audit: AuditContext, data: InsertBlogCategory) {
     const validated = insertBlogCategorySchema.parse(data);
-    const category = await storage.createBlogCategory(validated);
+    const category = await blogRepository.createBlogCategory(validated);
 
     await adminService.logAudit({
       action: "CREATE",

@@ -6,8 +6,8 @@
 
 import { Router } from "express";
 import { z } from "zod";
+import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 import type { SessionUser } from "../../types/session.js";
@@ -18,7 +18,7 @@ const router = Router();
 // GET /api/media-assets - List all media assets (admin only)
 router.get("/media-assets", authService.requireAdmin, async (_req, res) => {
   const mediaAssets = await withTimeout(
-    getStorage().getMediaAssets(),
+    mediaRepository.getMediaAssets(),
     5000,
     "Fetch all media assets",
   );

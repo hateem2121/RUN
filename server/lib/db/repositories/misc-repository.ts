@@ -42,9 +42,8 @@ import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
-// CHUNK 2: In-memory fiber cache (boot-time memoization for reference data)
-let fibersMemoryCache: Fiber[] | null = null;
-let fibersCacheLoadedAt: number = 0;
+// CHUNK 2: Fibers cache key
+const FIBERS_CACHE_KEY = "fibers:all";
 const FIBERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 export class MiscRepository {
@@ -53,24 +52,29 @@ export class MiscRepository {
   // =============================================================================
 
   async getFibers(): Promise<Fiber[]> {
-    // CHUNK 2: Serve from in-memory cache (no DB/KV lookup)
-    const now = Date.now();
-    if (fibersMemoryCache && now - fibersCacheLoadedAt < FIBERS_CACHE_TTL) {
-      return fibersMemoryCache;
+    try {
+      // Use unifiedCache (Redis) instead of global memory for statelessness
+      const cached = await unifiedCache.get<Fiber[]>(FIBERS_CACHE_KEY, "data");
+      if (cached) {
+        return cached;
+      }
+    } catch (error) {
+      logger.debug("[MiscRepo] Failed to get fibers from cache:", error);
     }
 
-    // Cache miss or expired: fetch from database
+    // Cache miss or error: fetch from database
     const result = await db
       .select()
       .from(fibers)
       .where(isNull(fibers.deletedAt))
       .orderBy(asc(fibers.name));
 
-    // Update in-memory cache
-    fibersMemoryCache = result;
-    fibersCacheLoadedAt = now;
+    try {
+      await unifiedCache.set(FIBERS_CACHE_KEY, result, FIBERS_CACHE_TTL, "data");
+    } catch (error) {
+      logger.debug("[MiscRepo] Failed to set fibers cache:", error);
+    }
 
-    logger.info(`[MiscRepo] Fibers loaded into memory cache (${result.length} items)`);
     return result;
   }
 
@@ -86,11 +90,8 @@ export class MiscRepository {
     const dbConn = tx || db;
     const [created] = await dbConn.insert(fibers).values(fiber).returning();
 
-    // CHUNK 2: Invalidate in-memory cache
-    fibersMemoryCache = null;
-
     try {
-      await unifiedCache.delete("fibers:all");
+      await unifiedCache.delete(FIBERS_CACHE_KEY);
     } catch (error) {
       logger.debug("[Cache] Failed to clear fiber cache:", error);
     }
@@ -116,11 +117,8 @@ export class MiscRepository {
       .where(and(eq(fibers.id, id), isNull(fibers.deletedAt)))
       .returning();
 
-    // CHUNK 2: Invalidate in-memory cache
-    fibersMemoryCache = null;
-
     try {
-      await unifiedCache.delete("fibers:all");
+      await unifiedCache.delete(FIBERS_CACHE_KEY);
     } catch (error) {
       logger.debug("[Cache] Failed to clear fiber cache:", error);
     }
@@ -141,11 +139,8 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(fibers.id, id));
 
-    // CHUNK 2: Invalidate in-memory cache
-    fibersMemoryCache = null;
-
     try {
-      await unifiedCache.delete("fibers:all");
+      await unifiedCache.delete(FIBERS_CACHE_KEY);
     } catch (error) {
       logger.debug("[Cache] Failed to clear fiber cache:", error);
     }

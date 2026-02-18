@@ -11,10 +11,10 @@ import { promisify } from "node:util";
 import ffprobe from "ffprobe-static";
 import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
 import { isImageFile, processImage } from "../../image-processor.js";
+import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { correctMimeType } from "../../utils.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
@@ -502,7 +502,7 @@ export async function processUploadedFile(
   file: Express.Multer.File,
   options: UploadOptions = {},
 ): Promise<MediaAsset> {
-  const storage = getStorage();
+  const storage = mediaRepository;
   let storageKey: string | null = null;
 
   try {

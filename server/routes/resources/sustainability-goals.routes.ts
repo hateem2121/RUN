@@ -19,9 +19,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertSustainabilityGoalSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -42,7 +42,7 @@ const reorderSchema = z.object({
 router.get("/", async (_req, res) => {
   try {
     const goals = await withTimeout(
-      getStorage().getSustainabilityGoals(),
+      pageContentRepository.getSustainabilityGoals(),
       10000,
       "Get sustainability goals",
     );
@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const goal = await withTimeout(
-      getStorage().getSustainabilityGoal(id),
+      pageContentRepository.getSustainabilityGoal(id),
       10000,
       "Get sustainability goal",
     );
@@ -94,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newGoal = await withTimeout(
-      getStorage().createSustainabilityGoal(removeUndefined(validation.data)),
+      pageContentRepository.createSustainabilityGoal(removeUndefined(validation.data)),
       10000,
       "Create sustainability goal",
     );
@@ -130,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateSustainabilityGoal(id, removeUndefined(validation.data)),
+      pageContentRepository.updateSustainabilityGoal(id, removeUndefined(validation.data)),
       10000,
       "Update sustainability goal",
     );
@@ -161,7 +161,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const deleted = await withTimeout(
-      getStorage().deleteSustainabilityGoal(id),
+      pageContentRepository.deleteSustainabilityGoal(id),
       10000,
       "Delete sustainability goal",
     );
@@ -201,7 +201,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     const updates = await Promise.all(
       removeUndefined(validation.data).goals.map(({ id, position }) =>
-        getStorage().updateSustainabilityGoal(id, { sortOrder: position }),
+        pageContentRepository.updateSustainabilityGoal(id, { sortOrder: position }),
       ),
     );
 

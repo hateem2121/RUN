@@ -1,6 +1,9 @@
 name: CI / Neon Preview
 
 on:
+  push:
+    branches:
+      - '**' # Run on all branches during dev
   pull_request:
     types:
       - opened
@@ -18,6 +21,7 @@ jobs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Get branch name
         id: branch_name
         uses: tj-actions/branch-names@v8

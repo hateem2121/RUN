@@ -3,8 +3,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertWebhookSubscriptionSchema } from "../../../shared/schema.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
+import { webhookRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -44,7 +44,7 @@ registry.registerPath({
 // GET /api/webhooks - List subscriptions
 router.get("/webhooks", authService.requireAdmin, async (_req, res) => {
   try {
-    const subscriptions = await getStorage().getWebhookSubscriptions();
+    const subscriptions = await webhookRepository.getWebhookSubscriptions();
     return res.json({ success: true, data: subscriptions });
   } catch (error) {
     logger.error("Failed to fetch webhooks:", error);
@@ -58,7 +58,7 @@ router.post("/webhooks", authService.requireAdmin, async (req, res) => {
     const validated = insertWebhookSubscriptionSchema.parse(req.body);
     const secret = crypto.randomBytes(32).toString("hex");
 
-    const subscription = await getStorage().createWebhookSubscription({
+    const subscription = await webhookRepository.createWebhookSubscription({
       ...validated,
       secret,
     });

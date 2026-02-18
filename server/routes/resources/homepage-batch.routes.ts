@@ -22,8 +22,8 @@
 import express from "express";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
+import { pageContentRepository, productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 
 const router = express.Router();
@@ -50,7 +50,6 @@ router.get(
     // CHUNK 5: Two-tier cache with benchmarking - fetch function for reuse
     const fetchHomepageData = async () => {
       const timestamp = new Date().toISOString();
-      const storage = getStorage();
 
       // PERFORMANCE: Fetch all data in parallel
       // Process cards now included in batch (Remediation Feb 15, 2026) to eliminate hydration waterfall
@@ -63,14 +62,14 @@ router.get(
         categories,
         processCards,
       ] = await Promise.all([
-        storage.getHomepageHero(),
-        storage.getHomepageSlogans(),
-        storage.getHomepageSections(),
+        pageContentRepository.getHomepageHero(),
+        pageContentRepository.getHomepageSlogans(),
+        pageContentRepository.getHomepageSections(),
 
-        storage.getHomepageFeaturedProductsSettings(),
-        storage.getProducts(20),
-        storage.getCategories(),
-        storage.getHomepageProcessCards(),
+        pageContentRepository.getHomepageFeaturedProductsSettings(),
+        productRepository.getProducts(20),
+        productRepository.getCategories(),
+        pageContentRepository.getHomepageProcessCards(),
       ]);
 
       return {
@@ -180,8 +179,7 @@ router.get(
     const { data, benchmark } = await twoTierBatchCache.get(
       "homepage:process-cards",
       async () => {
-        const storage = getStorage();
-        const processCards = await storage.getHomepageProcessCards();
+        const processCards = await pageContentRepository.getHomepageProcessCards();
 
         return {
           result: processCards,

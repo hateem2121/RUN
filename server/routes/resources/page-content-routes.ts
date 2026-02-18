@@ -14,10 +14,10 @@ import {
 } from "../../../shared/schema.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { mediaRepository, pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { extractMediaIds } from "../../lib/utilities/media-utils.js";
 import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
@@ -76,7 +76,7 @@ router.get("/about-batch", async (_req, res) => {
     const mediaAssets =
       mediaIds.size > 0
         ? await withTimeout(
-            getStorage().getMediaAssetsByIds(Array.from(mediaIds).map((id) => id.toString())),
+            mediaRepository.getMediaAssetsByIds(Array.from(mediaIds).map((id) => id.toString())),
             10000,
             "Fetch about media assets by IDs",
           )
@@ -130,7 +130,7 @@ router.get("/sustainability-hero", async (_req, res) => {
     res.setHeader("Vary", "Accept-Encoding");
 
     const hero = await withTimeout(
-      getStorage().getSustainabilityHero(),
+      pageContentRepository.getSustainabilityHero(),
       10000,
       "Get sustainability hero",
     );
@@ -149,7 +149,7 @@ router.patch("/admin/sustainability-hero", authService.requireAdmin, async (req,
       return res.status(400).json({ error: validation.error.message });
     }
     const hero = await withTimeout(
-      getStorage().updateSustainabilityHero(removeUndefined(validation.data)),
+      pageContentRepository.updateSustainabilityHero(removeUndefined(validation.data)),
       10000,
       "Update sustainability hero",
     );
@@ -193,13 +193,13 @@ router.get("/technology-batch", async (_req, res) => {
     const [hero, innovations, equipment, research, roadmap, cta, gradientSettings] =
       await withTimeout(
         Promise.all([
-          getStorage().getTechnologyHero(),
-          getStorage().getTechnologyInnovations(),
-          getStorage().getTechnologyEquipment(),
-          getStorage().getTechnologyResearch(),
-          getStorage().getTechnologyRoadmap(),
-          getStorage().getTechnologyCta(),
-          getStorage().getTechnologyGradientSettings(),
+          pageContentRepository.getTechnologyHero(),
+          pageContentRepository.getTechnologyInnovations(),
+          pageContentRepository.getTechnologyEquipment(),
+          pageContentRepository.getTechnologyResearch(),
+          pageContentRepository.getTechnologyRoadmap(),
+          pageContentRepository.getTechnologyCta(),
+          pageContentRepository.getTechnologyGradientSettings(),
         ]),
         20000,
         "Technology batch fetch (7 parallel queries)",
@@ -213,7 +213,7 @@ router.get("/technology-batch", async (_req, res) => {
     const mediaAssets =
       mediaIds.size > 0
         ? await withTimeout(
-            getStorage().getMediaAssetsByIds(Array.from(mediaIds).map((id) => id.toString())),
+            mediaRepository.getMediaAssetsByIds(Array.from(mediaIds).map((id) => id.toString())),
             10000,
             "Fetch technology media assets by IDs",
           )
@@ -257,7 +257,11 @@ router.get("/technology-batch", async (_req, res) => {
 // Technology hero
 router.get("/technology-hero", async (_req, res) => {
   try {
-    const hero = await withTimeout(getStorage().getTechnologyHero(), 10000, "Get technology hero");
+    const hero = await withTimeout(
+      pageContentRepository.getTechnologyHero(),
+      10000,
+      "Get technology hero",
+    );
     return res.json(hero || {});
   } catch (error) {
     return res.status(500).json({
@@ -273,7 +277,7 @@ router.patch("/admin/technology-hero", authService.requireAdmin, async (req, res
       return res.status(400).json({ error: validation.error.message });
     }
     const hero = await withTimeout(
-      getStorage().updateTechnologyHero(removeUndefined(validation.data)),
+      pageContentRepository.updateTechnologyHero(removeUndefined(validation.data)),
       10000,
       "Update technology hero",
     );

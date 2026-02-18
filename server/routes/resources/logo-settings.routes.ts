@@ -7,9 +7,9 @@ import express from "express";
 import { insertLogoAnimationSettingsSchema } from "../../../shared/schema.js";
 import { safeQuery } from "../../db.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = express.Router();
@@ -26,7 +26,11 @@ router.get("/logo-animation-settings", async (_req, res, next) => {
   }
 
   const result = await safeQuery(
-    withTimeout(getStorage().getLogoAnimationSettings(), 5000, "Get logo animation settings"),
+    withTimeout(
+      pageContentRepository.getLogoAnimationSettings(),
+      5000,
+      "Get logo animation settings",
+    ),
   );
 
   if (result.isErr()) {
@@ -47,7 +51,7 @@ router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (
 
   const result = await safeQuery(
     withTimeout(
-      getStorage().updateLogoAnimationSettings(validation.data),
+      pageContentRepository.updateLogoAnimationSettings(validation.data),
       5000,
       "Update logo animation settings",
     ),

@@ -72,7 +72,7 @@ import type {
   ProductDetailWithContext,
   ProductSummary,
 } from "../lib/db/repositories/product-repository.js";
-import type { IStorage } from "../storage.js";
+import type { IStorage } from "../repositories/storage-interfaces.js";
 
 export class MemoryStorage implements IStorage {
   private users = new Map<string, User>();

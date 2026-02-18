@@ -3,13 +3,12 @@ import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { type AppError, BadRequestError, DatabaseError, NotFoundError } from "../../lib/errors.js";
-
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { webhookService } from "../../services/webhook-service.js";
 import { removeUndefined, safeSerialize, shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
@@ -45,7 +44,7 @@ setInterval(
 
 // Helper: Fetch ALL media assets by iterating through all pages
 async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
-  const storage = getStorage();
+  const storage = mediaRepository;
   const allAssets: MediaAsset[] = [];
   const pageSize = 1000;
   let offset = 0;
@@ -96,7 +95,7 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
 
   // NEON OPTIMIZATION: Use batch query to minimize active compute time
   // Runs both SELECT and COUNT in single transaction instead of 2 separate queries
-  const storage = getStorage();
+  const storage = mediaRepository;
   // Create filters respecting exactOptionalPropertyTypes
   const filters: { type?: string; search?: string; folderId?: number } = {};
   if (type) {
@@ -145,7 +144,7 @@ export async function getMediaAssetById(
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   }
 
-  const storage = getStorage();
+  const storage = mediaRepository;
   const result = await safeQuery(storage.getMediaAsset(id));
 
   if (result.isErr()) {
@@ -164,7 +163,7 @@ export async function getMediaAssetById(
 export async function getMediaCount(req: Request, res: Response, next: NextFunction) {
   const query = MediaListQuerySchema.partial().parse(req.query);
   const { type, folderId } = query;
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   // Build filters object for database-level filtering
   const filters: { type?: string | undefined; folderId?: number } = {};
@@ -190,7 +189,7 @@ export async function getMediaCount(req: Request, res: Response, next: NextFunct
 export async function searchMediaAssets(req: Request, res: Response, next: NextFunction) {
   const query = MediaListQuerySchema.parse(req.query);
   const { search, type, limit, folderId } = query;
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   // Build filters object for database-level filtering
   const filters: {
@@ -233,7 +232,7 @@ export async function updateMediaAsset(
 ) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const data = removeUndefined(MediaUpdateSchema.parse(req.body));
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   const result = await safeQuery(
     storage.updateMediaAsset(id, data as unknown as Partial<MediaAsset>),
@@ -262,7 +261,7 @@ export async function deleteMediaAsset(
 ) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const assetId = id;
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   // Get asset metadata before deletion (needed for physical file cleanup)
   const assetResult = await safeQuery(storage.getMediaAsset(assetId));
@@ -424,7 +423,7 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
     try {
       // Store assembled file with organized path using automatic slugification
       // Format: {partition}/media/{type}/{yyyy}/{mm}/{timestamp}-{slugified-filename}.{ext}
-      const storage = getStorage();
+      const storage = mediaRepository;
       const mediaType = detectMediaType(session.mimeType);
 
       const storageKey = generateOrganizedStoragePath(mediaType, session.filename);
@@ -638,7 +637,7 @@ export async function getMediaContent(
 ) {
   try {
     const { id } = MediaIdParamSchema.parse(req.params);
-    const storage = getStorage();
+    const storage = mediaRepository;
     const result = await safeQuery(storage.getMediaAsset(id));
 
     if (result.isErr()) {
@@ -694,7 +693,7 @@ export async function getMediaContent(
 
 export async function getThumbnail(req: Request<{ id: string }>, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);
-  const storage = getStorage();
+  const storage = mediaRepository;
   const asset = await storage.getMediaAsset(id);
 
   if (!asset) {
@@ -807,7 +806,7 @@ export async function batchDeleteAssets(req: Request, res: Response, _next: Next
     throw new BadRequestError("No IDs provided for deletion");
   }
 
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   // COMPENSATING TRANSACTION PATTERN FOR BATCH DELETES:
   // 1. Get all asset metadata before deletion (need storagePaths for cleanup)
@@ -935,7 +934,7 @@ export async function batchGetContent(req: Request, res: Response, next: NextFun
     return res.json(cached);
   }
 
-  const storage = getStorage();
+  const storage = mediaRepository;
 
   // PERFORMANCE FIX: Batch fetch all media assets in single query to eliminate N+1 pattern
   // Previous: N individual queries via Promise.allSettled + getMediaAsset
@@ -1129,7 +1128,7 @@ export async function getCacheStats(_req: Request, res: Response) {
 
 export async function clearMediaCache(req: Request, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);
-  const storage = getStorage();
+  const storage = mediaRepository;
   const asset = await storage.getMediaAsset(id);
 
   if (!asset?.storagePath) {
@@ -1416,7 +1415,7 @@ export async function getMediaRaw(req: Request, res: Response) {
 export async function getMediaProxy(req: Request, res: Response) {
   res.locals._handled = true;
   const { id } = MediaIdParamSchema.parse(req.params);
-  const storage = getStorage();
+  const storage = mediaRepository;
   const asset = await storage.getMediaAsset(id);
 
   if (!asset || !asset.storagePath) {
@@ -1439,7 +1438,7 @@ export async function getMediaProxy(req: Request, res: Response) {
 
 export async function getThumbnailProxy(req: Request, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);
-  const storage = getStorage();
+  const storage = mediaRepository;
   const asset = await storage.getMediaAsset(id);
 
   if (!asset) {

@@ -10,9 +10,9 @@
 
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
+import { miscRepository, pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 
 const router = Router();
 
@@ -37,16 +37,28 @@ router.get("/", async (req, res) => {
       async () => {
         // Fetch all sustainability data in parallel to minimize NEON connection time
         const [hero, metrics, initiatives, goals, certificates, fabrics] = await Promise.all([
-          withTimeout(getStorage().getUnifiedSustainability(), 10000, "Get unified sustainability"),
-          withTimeout(getStorage().getSustainabilityMetrics(), 10000, "Get sustainability metrics"),
           withTimeout(
-            getStorage().getSustainabilityInitiatives(),
+            pageContentRepository.getUnifiedSustainability(),
+            10000,
+            "Get unified sustainability",
+          ),
+          withTimeout(
+            pageContentRepository.getSustainabilityMetrics(),
+            10000,
+            "Get sustainability metrics",
+          ),
+          withTimeout(
+            pageContentRepository.getSustainabilityInitiatives(),
             10000,
             "Get sustainability initiatives",
           ),
-          withTimeout(getStorage().getSustainabilityGoals(), 10000, "Get sustainability goals"),
-          withTimeout(getStorage().getCertificates(), 10000, "Get certificates"),
-          withTimeout(getStorage().getFabrics(), 10000, "Get fabrics"),
+          withTimeout(
+            pageContentRepository.getSustainabilityGoals(),
+            10000,
+            "Get sustainability goals",
+          ),
+          withTimeout(miscRepository.getCertificates(), 10000, "Get certificates"),
+          withTimeout(miscRepository.getFabrics(), 10000, "Get fabrics"),
         ]);
 
         // Construct batch response

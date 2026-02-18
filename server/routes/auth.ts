@@ -1,7 +1,7 @@
 import { type Response, Router } from "express";
 import passport from "passport";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
-import { getStorage } from "../lib/storage-singleton.js";
+import { userRepository } from "../lib/db/repositories/index.js";
 import { authService } from "../services/auth-service.js";
 import type { SessionUser } from "../types/session.js";
 
@@ -89,7 +89,7 @@ router.get(
     }
 
     const userId = user.claims.sub;
-    const dbUser = await getStorage().getUser(userId);
+    const dbUser = await userRepository.getUser(userId);
     if (!dbUser) {
       return res.status(404).json({ message: "User not found" });
     }

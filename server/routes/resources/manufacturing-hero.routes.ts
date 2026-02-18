@@ -9,9 +9,9 @@ import { removeUndefined } from "../../utils.js";
 
 import { type NextFunction, type Request, type Response, Router } from "express";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 import type { SessionUser } from "../../types/session.js";
 import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
@@ -40,7 +40,7 @@ router.get(
       res.setHeader("Vary", "Accept-Encoding");
 
       const hero = await withTimeout(
-        getStorage().getManufacturingHero(),
+        pageContentRepository.getManufacturingHero(),
         10000,
         "Get manufacturing hero",
       );
@@ -69,7 +69,7 @@ router.patch(
       }
 
       const hero = await withTimeout(
-        getStorage().updateManufacturingHero(removeUndefined(validation.data) as any),
+        pageContentRepository.updateManufacturingHero(removeUndefined(validation.data) as any),
         10000,
         "Update manufacturing hero",
       );

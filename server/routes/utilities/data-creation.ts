@@ -2,8 +2,12 @@
 // Creates the 47 structured business items mentioned by user
 
 import type { Express } from "express";
+import {
+  accessoryRepository,
+  miscRepository,
+  productRepository,
+} from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 
 import { authService } from "../../services/auth-service.js";
 export function registerDataCreationRoutes(app: Express): void {
@@ -16,7 +20,6 @@ export function registerDataCreationRoutes(app: Express): void {
       try {
         logger.debug("[Data Creation] 🚀 Creating all 47 structured business items...");
 
-        const storage = getStorage();
         interface DataCreationResults {
           categories: unknown[];
           fabrics: unknown[];
@@ -56,7 +59,7 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const cat of categoryData) {
-          const created = await storage.createCategory(cat);
+          const created = await productRepository.createCategory(cat);
           results.categories.push(created);
         }
 
@@ -101,7 +104,7 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const fabric of fabricData) {
-          const created = await storage.createFabric(fabric);
+          const created = await miscRepository.createFabric(fabric);
           results.fabrics.push(created);
         }
 
@@ -187,7 +190,7 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const fiber of fiberData) {
-          const created = await storage.createFiber(fiber);
+          const created = await miscRepository.createFiber(fiber);
           results.fibers.push(created);
         }
 
@@ -273,7 +276,7 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const cert of certificateData) {
-          const created = await storage.createCertificate(cert);
+          const created = await miscRepository.createCertificate(cert);
           results.certificates.push(created);
         }
 
@@ -377,7 +380,7 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const accessory of accessoryData) {
-          const created = await storage.createAccessory(accessory);
+          const created = await accessoryRepository.createAccessory(accessory);
           results.accessories.push(created);
         }
 

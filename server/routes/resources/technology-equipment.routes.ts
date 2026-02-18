@@ -19,9 +19,9 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertTechnologyEquipmentSchema } from "../../../shared/schema.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { getStorage } from "../../lib/storage-singleton.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -42,7 +42,7 @@ const reorderSchema = z.object({
 router.get("/", async (_req, res) => {
   try {
     const equipment = await withTimeout(
-      getStorage().getTechnologyEquipment(),
+      pageContentRepository.getTechnologyEquipment(),
       10000,
       "Get technology equipment",
     );
@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const item = await withTimeout(
-      getStorage().getTechnologyEquipmentItem(id),
+      pageContentRepository.getTechnologyEquipmentItem(id),
       10000,
       "Get technology equipment item",
     );
@@ -94,7 +94,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     }
 
     const newEquipment = await withTimeout(
-      getStorage().createTechnologyEquipment(removeUndefined(validation.data)),
+      pageContentRepository.createTechnologyEquipment(removeUndefined(validation.data)),
       10000,
       "Create technology equipment",
     );
@@ -130,7 +130,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     }
 
     const updated = await withTimeout(
-      getStorage().updateTechnologyEquipment(id, removeUndefined(validation.data)),
+      pageContentRepository.updateTechnologyEquipment(id, removeUndefined(validation.data)),
       10000,
       "Update technology equipment",
     );
@@ -161,7 +161,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     const { id } = idParamSchema.parse(req.params);
 
     const deleted = await withTimeout(
-      getStorage().deleteTechnologyEquipment(id),
+      pageContentRepository.deleteTechnologyEquipment(id),
       10000,
       "Delete technology equipment",
     );
@@ -201,7 +201,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
     const updates = await Promise.all(
       removeUndefined(validation.data).equipment.map(({ id, position }) =>
-        getStorage().updateTechnologyEquipment(id, { sortOrder: position }),
+        pageContentRepository.updateTechnologyEquipment(id, { sortOrder: position }),
       ),
     );
 

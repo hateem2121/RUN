@@ -8,9 +8,9 @@ import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
 import type { Inquiry, InsertInquiry } from "../../shared/schema/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { miscRepository } from "../lib/db/repositories/index.js";
 import { emailService } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { getStorage } from "../lib/storage-singleton.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 
@@ -28,7 +28,7 @@ export class InquiryService {
    * Centralizes all side-effects (Encryption, Webhooks, BigQuery, Cloud Tasks).
    */
   async createInquiry(data: InsertInquiry): Promise<Inquiry> {
-    const inquiry = await getStorage().createInquiry(data);
+    const inquiry = await miscRepository.createInquiry(data);
 
     // 1. Invalidate Relevant Caches
     try {
@@ -150,7 +150,7 @@ export class InquiryService {
     const page = params.page || 1;
     const limit = params.limit || 20;
 
-    const result = await getStorage().listInquiries({
+    const result = await miscRepository.listInquiries({
       page,
       limit,
       status: params.status,
@@ -184,7 +184,7 @@ export class InquiryService {
         return { data: cached, fromCache: true };
       }
 
-      const stats = await getStorage().getInquiryStats();
+      const stats = await miscRepository.getInquiryStats();
       const defaultStats = {
         byStatus: { new: 0, read: 0, responded: 0, archived: 0 },
         bySource: {},
@@ -220,7 +220,7 @@ export class InquiryService {
       return { data: cached, fromCache: true };
     }
 
-    const inquiry = await getStorage().getInquiryById(id);
+    const inquiry = await miscRepository.getInquiryById(id);
     if (!inquiry) {
       return null;
     }
@@ -237,7 +237,7 @@ export class InquiryService {
     status: "new" | "read" | "responded" | "archived",
     adminNotes?: string,
   ) {
-    const updated = await getStorage().updateInquiryStatus(id, status, adminNotes);
+    const updated = await miscRepository.updateInquiryStatus(id, status, adminNotes);
     if (!updated) {
       return null;
     }
@@ -252,7 +252,7 @@ export class InquiryService {
    * Deletes an inquiry and invalidates relevant caches.
    */
   async deleteInquiry(id: number) {
-    const deleted = await getStorage().deleteInquiry(id);
+    const deleted = await miscRepository.deleteInquiry(id);
     if (!deleted) {
       return false;
     }

@@ -8,7 +8,7 @@
  * PHASE 5: Added CacheFetchStrategy for warmup optimization
  */
 
-import type { IStorage } from "../../storage.js";
+import type { IStorage } from "../../repositories/storage-interfaces.js";
 import { logger } from "../monitoring/logger.js";
 import { CacheKeys, InvalidationPatterns } from "./cache-keys.js";
 import { UnifiedCache } from "./unified-cache.js";
