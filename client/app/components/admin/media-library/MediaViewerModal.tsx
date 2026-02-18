@@ -87,7 +87,7 @@ if (typeof window !== "undefined") {
 // }
 
 // Phase 1: Enhanced Media Viewing with Loading States
-export default function MediaViewerModal() {
+export function MediaViewerModal() {
   const {
     state,
     setLightboxOpen,

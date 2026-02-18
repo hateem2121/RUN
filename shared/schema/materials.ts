@@ -13,6 +13,59 @@ import { z } from "zod";
 import { pgTable } from "./common";
 import { mediaAssets } from "./media";
 
+export interface FiberComposition {
+  fiberId: number | null;
+  percentage: string;
+}
+
+export interface CompositionSet {
+  name: string;
+  isDefault: boolean;
+  fibers: FiberComposition[];
+}
+
+export interface FabricProperties {
+  compositions?: CompositionSet[];
+  moistureManagement?: string;
+  wickingRate?: string;
+  dryingTime?: string;
+  airPermeability?: string | number;
+  waterColumn?: string | number;
+  enhancedMoistureManagement?: string;
+  yarnCountConstruction?: string;
+  colorfastness?: string;
+  tensileStrength?: string;
+  tearStrength?: string;
+  abrasionResistance?: string | number;
+  pillingGrade?: string | number;
+  shrinkageTolerancePercentage?: string | number;
+  washTemperature?: string;
+  breathability?: string | number;
+  stretchPercentage?: string | number;
+  stretchDirection?: string[];
+  performanceFeatures?: string[];
+  keyApplications?: string[];
+  finish?: string;
+  finishTreatments?: string[];
+  certificationIds?: number[];
+  certificationTags?: string[];
+  endOfLifeOptions?: string[];
+  recyclabilityNotes?: string;
+  useCases?: string[];
+  washCareInstructions?: {
+    careSymbols: string[];
+    instructions: string;
+    restrictions: string[];
+  };
+  composition?: string; // Legacy field
+  [key: string]: unknown;
+}
+
+export interface FiberProperties {
+  environmentalImpact?: string;
+  [key: string]: unknown;
+}
+
 // Fabrics
 export const fabrics = pgTable(
   "fabrics",
@@ -35,13 +88,8 @@ export const fabrics = pgTable(
     stretch: varchar({ length: 50 }),
     finishTreatment: varchar({ length: 255 }), // Fabric finishing treatment
 
-    // Properties - Stores structured technical data including:
-    // - compositions: Array<{name, isDefault, fibers: Array<{fiberId, percentage}>}>
-    // - Performance: stretchPercentage, enhancedMoistureManagement, wickingRate, dryingTime, performanceFeatures[], airPermeability, waterColumn
-    // - Durability: colorfastness, tensileStrength, tearStrength, abrasionResistance, pillingGrade, shrinkageTolerancePercentage, washTemperature, yarnCountConstruction
-    // - Care: washCareInstructions {careSymbols[], instructions, restrictions[]}
-    // - Sustainability: endOfLifeOptions[]
-    properties: jsonb().$type<Record<string, any>>(),
+    // Properties - Stores structured technical data
+    properties: jsonb().$type<FabricProperties>(),
     careInstructions: text(),
 
     // Sustainability
@@ -86,7 +134,7 @@ export const fibers = pgTable(
     // Business fields
     sustainabilityScore: integer(),
     environmentalImpact: text(),
-    properties: jsonb().$type<Record<string, any>>(),
+    properties: jsonb().$type<FiberProperties>(),
 
     isActive: boolean().default(true),
     createdAt: timestamp({
@@ -120,42 +168,22 @@ export type InsertFabric = typeof fabrics.$inferInsert;
 export type Fiber = typeof fibers.$inferSelect;
 export type InsertFiber = typeof fibers.$inferInsert;
 
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
 // Zod Schemas
-export const insertFabricSchema = z.object({
-  // Basic Fields
-  name: z.string().min(1),
-  description: z.string().optional(),
-  fabricType: z.string().optional(),
+export const selectFabricSchema = createSelectSchema(fabrics);
+export const selectFiberSchema = createSelectSchema(fibers);
 
-  // PRODUCT ESSENCE - B2B Core Fields
-  sport: z.string().optional(),
-  marketSegment: z.string().optional(),
-  seasonality: z.string().optional(),
-
-  weight: z.string().optional(),
+export const insertFabricSchema = createInsertSchema(fabrics, {
+  name: (s) => s.min(1),
+  sustainabilityScore: z.union([z.number().int(), z.string()]).optional(),
+}).extend({
   /**
    * @deprecated Use `compositions` array instead for structured fiber composition data
-   * @since 2024-09 - Field removed from database schema, kept in Zod for backward compatibility
-   * @remove 2026-03 - Will be removed after 6-month grace period with zero usage
-   * @description Legacy string field for fabric composition. Server-side mapping converts this to compositions array.
-   *              New integrations should use the structured `compositions` array field.
    */
   composition: z.string().optional(),
-  weave: z.string().optional(),
-  weaveType: z.string().optional(),
-  weaveTypes: z.array(z.string()).optional(),
-  stretch: z.string().optional(),
-  finishTreatment: z.string().optional(),
   finish: z.string().optional(),
-  properties: z.record(z.string(), z.unknown()).optional(),
-  careInstructions: z.string().optional(),
-  sustainabilityScore: z.union([z.number().int(), z.string()]).optional(),
   certificateIds: z.array(z.number()).optional(),
-  visualSwatchId: z.number().int().optional(),
-  keyApplications: z.array(z.string()).optional(),
-  isActive: z.boolean().optional(),
-
-  // Fiber Compositions (multiple compositions, each can be 100%)
   compositions: z
     .array(
       z.object({
@@ -170,8 +198,6 @@ export const insertFabricSchema = z.object({
       }),
     )
     .optional(),
-
-  // Performance & Technical Fields
   stretchDirection: z.array(z.string()).optional(),
   stretchPercentage: z.string().optional(),
   breathability: z.string().optional(),
@@ -182,28 +208,20 @@ export const insertFabricSchema = z.object({
   airPermeability: z.string().optional(),
   waterColumn: z.string().optional(),
   performanceFeatures: z.array(z.string()).optional(),
-
-  // Durability & Quality Fields
   yarnCountConstruction: z.string().optional(),
-  colorfastness: z.string().optional(), // NEW: Color fastness rating
-  tensileStrength: z.string().optional(), // NEW: Tensile strength measurement
-  tearStrength: z.string().optional(), // NEW: Tear strength measurement
+  colorfastness: z.string().optional(),
+  tensileStrength: z.string().optional(),
+  tearStrength: z.string().optional(),
   abrasionResistance: z.string().optional(),
   pillingGrade: z.string().optional(),
   shrinkageTolerancePercentage: z.string().optional(),
   washTemperature: z.string().optional(),
-
-  // Sustainability & Lifecycle Fields
   certificationTags: z.array(z.number()).optional(),
   certificationIds: z.array(z.number()).optional(),
   endOfLifeOptions: z.array(z.string()).optional(),
   recyclabilityNotes: z.string().optional(),
-
-  // Use Cases & Applications
   useCases: z.array(z.string()).optional(),
   finishTreatments: z.array(z.string()).optional(),
-
-  // Care Instructions (structured)
   washCareInstructions: z
     .object({
       careSymbols: z.array(z.string()).optional(),
@@ -213,14 +231,9 @@ export const insertFabricSchema = z.object({
     .optional(),
 });
 
-export const insertFiberSchema = z.object({
-  name: z.string().min(1),
-  type: z.string().min(1), // REQUIRED: matches database schema
-  description: z.string().optional(),
-  sustainabilityScore: z.number().int().optional(),
-  environmentalImpact: z.string().optional(),
-  properties: z.record(z.string(), z.unknown()).optional(),
-  isActive: z.boolean().optional(),
+export const insertFiberSchema = createInsertSchema(fibers, {
+  name: (s) => s.min(1),
+  type: (s) => s.min(1),
 });
 
 // Additional Sustainability Types (from Zod schemas)

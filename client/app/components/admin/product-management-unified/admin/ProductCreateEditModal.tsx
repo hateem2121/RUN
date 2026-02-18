@@ -59,12 +59,24 @@ import {
 } from "@/components/ui/dialog";
 
 // Phase 5.1: Lazy load section components for code splitting - Fixed for default exports
-const BasicInfoSection = lazy(() => import("../sections/BasicInfoSection"));
-const CategoryFabricSection = lazy(() => import("../sections/CategoryFabricSection"));
-const MediaAssetsSection = lazy(() => import("../sections/MediaAssetsSection"));
-const SpecificationsSection = lazy(() => import("../sections/SpecificationsSection"));
-const CertificationsSection = lazy(() => import("../sections/CertificationsSection"));
-const CustomizationSection = lazy(() => import("../sections/CustomizationSection"));
+const BasicInfoSection = lazy(() =>
+  import("../sections/BasicInfoSection").then((m) => ({ default: m.BasicInfoSection })),
+);
+const CategoryFabricSection = lazy(() =>
+  import("../sections/CategoryFabricSection").then((m) => ({ default: m.CategoryFabricSection })),
+);
+const MediaAssetsSection = lazy(() =>
+  import("../sections/MediaAssetsSection").then((m) => ({ default: m.MediaAssetsSection })),
+);
+const SpecificationsSection = lazy(() =>
+  import("../sections/SpecificationsSection").then((m) => ({ default: m.SpecificationsSection })),
+);
+const CertificationsSection = lazy(() =>
+  import("../sections/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+);
+const CustomizationSection = lazy(() =>
+  import("../sections/CustomizationSection").then((m) => ({ default: m.CustomizationSection })),
+);
 
 import type { InsertProduct } from "@shared/schema";
 // Import mutations and queries

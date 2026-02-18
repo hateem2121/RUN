@@ -47,7 +47,7 @@ import {
   initialCertificateFormData,
 } from "./certificate/types";
 
-export default function CertificateManagement() {
+export function CertificateManagement() {
   const [formData, setFormData] = useState<CertificateFormData>(initialCertificateFormData);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [editingCertificate, setEditingCertificate] = useState<Certificate | null>(null);

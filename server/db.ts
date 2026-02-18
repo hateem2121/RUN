@@ -1,18 +1,18 @@
 /**
- * HTTP-BASED POSTGRESQL DATABASE CONNECTION
- * Simplified implementation using standard Neon Serverless driver patterns
+ * WEBSOCKET-BASED POSTGRESQL DATABASE CONNECTION
+ * Robust implementation using Neon Serverless WebSocket driver (Pool)
+ * Enables interactive transactions and persistent connections.
  */
 
-import { type NeonQueryFunction, neon, neonConfig } from "@neondatabase/serverless";
-import { SpanStatusCode, trace } from "@opentelemetry/api";
+import { neonConfig, Pool } from "@neondatabase/serverless";
+import { trace } from "@opentelemetry/api";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import type { NeonHttpQueryResultHKT } from "drizzle-orm/neon-http";
-import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
+import ws from "ws";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
-import { retryDbOperation } from "./lib/db/db-retry.js";
 import {
   ConflictError,
   DatabaseDeadlockError,
@@ -22,25 +22,23 @@ import {
 import { logger } from "./lib/monitoring/logger.js";
 import { registerShutdownHook } from "./lib/shutdown-manager.js";
 
-// CHUNK 101: Enable driver-level connection caching for HTTP queries
-// This reduces TCP/TLS handshake overhead for serverless environments
-neonConfig.fetchConnectionCache = true;
+// CHUNK 101: Configure WebSocket for Node.js environment
+neonConfig.webSocketConstructor = ws;
 
-const tracer = trace.getTracer("db");
+trace.getTracer("db");
 
 // Validate connection string presence
 if (!database.url && process.env.NODE_ENV !== "test") {
   throw new Error("PROD_ERROR: DATABASE_URL is required but missing.");
 }
 logger.info(
-  `[Database] Initializing with host: ${database.url ? new URL(database.url).hostname : "MISSING"}`,
+  `[Database] Initializing Pool with host: ${database.url ? new URL(database.url).hostname : "MISSING"}`,
 );
 
 const isTestMode = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const enableRealDb = process.env.TEST_REAL_DB === "true";
 
-export let sql: NeonQueryFunction<boolean, boolean>;
-
+// Metrics container
 const metrics = {
   totalQueries: 0,
   successfulQueries: 0,
@@ -52,158 +50,100 @@ const metrics = {
   connectionPooling: database.url.includes("-pooler") ? "enabled" : "disabled",
 };
 
-if (isTestMode && !enableRealDb) {
-  logger.info("[Database] Test mode - skipping real DB connection (Mock Mode)");
+// Global Pool Instance
+export let pool: Pool;
 
-  if (process.env.TEST_MOCK_ERROR === "true") {
-    logger.info("[Database] Mock Error Mode Enabled");
-    sql = (() => Promise.reject(new Error("Mock Database Error"))) as unknown as typeof sql;
-  } else {
-    // Create a no-op SQL function for tests
-    // Return empty array to simulate empty result set
-    sql = (() => Promise.resolve([])) as unknown as typeof sql;
-  }
+if (isTestMode && !enableRealDb) {
+  logger.info("[Database] Test mode - using Mock Pool");
+  pool = {
+    connect: () => Promise.resolve({ release: () => {} }),
+    query: () => Promise.resolve({ rows: [] }),
+    end: () => Promise.resolve(),
+    on: () => {},
+  } as unknown as Pool;
 } else {
-  // Use standard Neon HTTP driver
-  // Removing custom fetchOptions to rely on defaults
-  sql = neon(database.url, {
-    fullResults: false,
-    fetchOptions: {
-      timeout: 5000, // 5s timeout to prevent hang
-    },
+  // Real Neon Pool
+  // Optimization: Direct SSL negotiation for lower latency
+  const connectionString = database.url;
+  const isPooler = connectionString.includes("-pooler");
+  const hasSslParam = connectionString.includes("sslnegotiation=");
+
+  pool = new Pool({
+    connectionString:
+      isPooler && !hasSslParam
+        ? `${connectionString}${connectionString.includes("?") ? "&" : "?"}sslnegotiation=direct`
+        : connectionString,
+    max: 10, // Reasonable default for serverless/Lambda interop
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
   });
 
-  // CHUNK 102: Register shutdown hook to end driver session
-  // Although HTTP is stateless, the driver may hold background resources or connections
+  // Error handling for the pool
+  pool.on("error", (err: Error) => {
+    logger.error("[Database] Unexpected error on idle client", err);
+  });
+
+  // Graceful shutdown
   registerShutdownHook(async () => {
-    logger.info("[Database] Closing database connections...");
-    if (typeof (sql as any).end === "function") {
-      await (sql as any).end();
-    }
-    logger.info("[Database] Database connections closed.");
+    logger.info("[Database] Closing connection pool...");
+    await pool.end();
+    logger.info("[Database] Connection pool closed.");
   });
 }
 
-// FORCE MOCK MODE for local dev if DB is unreachable
+// FORCE MOCK MODE override
 if (
   process.env.MOCK_DB === "true" ||
   (process.env.NODE_ENV === "development" && !process.env.DATABASE_URL)
 ) {
   logger.warn("[Database] ⚠️ MOCK MODE ENABLED - Ops will return empty data ⚠️");
-  sql = (() => Promise.resolve([])) as unknown as typeof sql;
+  pool = {
+    connect: () => Promise.resolve({ release: () => {} }),
+    query: () => Promise.resolve({ rows: [] }),
+    end: () => Promise.resolve(),
+    on: () => {},
+  } as unknown as Pool;
 }
 
 /**
- * Metrics wrapping compatible with NeonQueryFunction signature
- * Adds OpenTelemetry tracing and tracks internal query statistics
- * Ues Proxy to preserve tagged template behavior required by Neon driver 1.0+
+ * Standard Drizzle WebSocket Database Instance
  */
-
-function wrapSql(
-  queryFn: NeonQueryFunction<boolean, boolean>,
-): NeonQueryFunction<boolean, boolean> {
-  return new Proxy(queryFn, {
-    apply: async (target, thisArg, args) => {
-      metrics.totalQueries++;
-      metrics.currentConcurrentQueries++;
-      if (metrics.currentConcurrentQueries > metrics.peakConcurrentQueries) {
-        metrics.peakConcurrentQueries = metrics.currentConcurrentQueries;
-      }
-
-      const startTime = performance.now();
-
-      return tracer.startActiveSpan("db.query", async (span) => {
-        try {
-          // Verify we have a valid connection string before attempting query
-          if (!database.url && !isTestMode) {
-            throw new Error("Database URL is not configured");
-          }
-
-          // WRAPPED WITH RETRY LOGIC for resilience
-          const result = await retryDbOperation(
-            () => Reflect.apply(target, thisArg, args) as Promise<any>,
-            {
-              operationName: "db.query",
-              maxRetries: 3, // Retry 3 times on transient failures
-              backoffMs: 100, // Initial backoff 100ms
-            },
-          );
-
-          metrics.successfulQueries++;
-          span.setAttribute("db.rows", Array.isArray(result) ? result.length : 0);
-          span.setStatus({ code: SpanStatusCode.OK });
-          return result;
-        } catch (error) {
-          metrics.failedQueries++;
-          span.recordException(error as Error);
-          span.setStatus({
-            code: SpanStatusCode.ERROR,
-            message: error instanceof Error ? error.message : "Database query failed",
-          });
-          throw error;
-        } finally {
-          metrics.currentConcurrentQueries--;
-          const duration = performance.now() - startTime;
-          metrics.totalQueryTimeMs += duration;
-
-          if (duration > 100) {
-            logger.warn(`[Database] Slow query detected (${Math.round(duration)}ms)`);
-          }
-
-          span.end();
-        }
-      });
-    },
-  });
-}
-
-// Wrap SQL function to track metrics (for both real and mock modes)
-sql = wrapSql(sql);
-
-/**
- * Standard Drizzle HTTP Database Instance
- * No custom proxies or circuit breakers - relying on platform resilience
- */
-
-/**
- * Standard Drizzle HTTP Database Instance
- * No custom proxies or circuit breakers - relying on platform resilience
- */
-export const db: NeonHttpDatabase<typeof schema> = drizzle(sql, {
+export const db: NeonDatabase<typeof schema> = drizzle(pool, {
   schema,
   casing: "snake_case",
-  logger: process.env.NODE_ENV === "development", // Built-in query logging in dev
+  logger: process.env.NODE_ENV === "development",
 });
 
 // Type alias for database client - supports both direct db access and transactions
 export type DbClient =
-  | NeonHttpDatabase<typeof schema>
-  | PgTransaction<NeonHttpQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
+  | NeonDatabase<typeof schema>
+  | PgTransaction<any, typeof schema, ExtractTablesWithRelations<typeof schema>>;
 
 export type Database = typeof db;
 
 /**
  * Check database connectivity
- * Useful for healthchecks and startup verification
  */
 export async function checkDatabaseConnection(): Promise<boolean> {
+  let client;
   try {
-    await sql`SELECT 1`;
-    metrics.lastHealthCheckAt = new Date(); // Update health check time
+    client = await pool.connect();
+    await client.query("SELECT 1");
+    metrics.lastHealthCheckAt = new Date();
     return true;
   } catch (error) {
     logger.error("[Database] Health check failed:", {
       error: error instanceof Error ? error.message : String(error),
       code: (error as any)?.code,
-      stack: (error as any)?.stack,
     });
     return false;
+  } finally {
+    if (client) client.release();
   }
 }
 
 /**
  * Wakeup function for "Cold Start" resilience
- * Retains simple retry logic for serverless wakeups
  */
 export async function wakeupDatabase(
   retries = 3,
@@ -212,8 +152,10 @@ export async function wakeupDatabase(
   const startTime = performance.now();
 
   for (let i = 0; i < retries; i++) {
+    let client;
     try {
-      await sql`SELECT 1`;
+      client = await pool.connect();
+      await client.query("SELECT 1");
       const latency = performance.now() - startTime;
       return { success: true, latency };
     } catch (error) {
@@ -222,48 +164,53 @@ export async function wakeupDatabase(
         return { success: false, latency: performance.now() - startTime };
       }
       await new Promise((r) => setTimeout(r, delay));
+    } finally {
+      if (client) client.release();
     }
   }
   return { success: false, latency: 0 };
 }
 
 // Export metrics
+// Helper for raw queries (compatible with previous neon() sql tag)
+export const sql = async (strings: TemplateStringsArray, ...values: any[]) => {
+  const text = strings.reduce(
+    (acc, str, i) => acc + str + (i < values.length ? `$${i + 1}` : ""),
+    "",
+  );
+  return pool.query(text, values);
+};
+
 export const getPoolMetrics = () => ({
   totalQueries: metrics.totalQueries,
   successfulQueries: metrics.successfulQueries,
   failedQueries: metrics.failedQueries,
-  averageQueryTime:
-    metrics.successfulQueries > 0
-      ? Math.round(metrics.totalQueryTimeMs / metrics.successfulQueries)
-      : 0,
+  totalQueryTimeMs: metrics.totalQueryTimeMs,
+  averageQueryTime: metrics.totalQueries > 0 ? metrics.totalQueryTimeMs / metrics.totalQueries : 0,
   peakConcurrentQueries: metrics.peakConcurrentQueries,
   currentConcurrentQueries: metrics.currentConcurrentQueries,
   lastHealthCheckAt: metrics.lastHealthCheckAt,
   connectionPooling: metrics.connectionPooling,
 });
 
-/**
- * Update last health check timestamp
- */
 export function updateHealthCheckTime(): void {
   metrics.lastHealthCheckAt = new Date();
 }
 
-export const closeDatabaseConnection = async () => {}; // No-op for HTTP
+export const closeDatabaseConnection = async () => {
+  await pool.end();
+};
 
 /**
  * Safe Database Query Wrapper
- * Puts a functional safety layer around Drizzle promises
  */
 export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, DatabaseError>> {
   try {
     const data = await promise;
     return ok(data);
   } catch (error: unknown) {
-    // Check for unique constraint violation (Postgres error 23505)
     const pgError = error as { code?: string; constraint?: string; detail?: string };
     if (pgError?.code === "23505") {
-      // We might want a ConflictError, but for now wrap in DatabaseError with details
       return err(
         new DatabaseError("Duplicate entry violates unique constraint", {
           code: "23505",
@@ -272,7 +219,6 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
         }),
       );
     }
-
     logger.error("[Database] Query failed:", error);
     return err(
       new DatabaseError("Database operation failed", {
@@ -284,27 +230,7 @@ export async function safeQuery<T>(promise: Promise<T>): Promise<Result<T, Datab
 
 /**
  * Safe Transaction Wrapper
- * Executes a callback within a database transaction with automatic rollback on error.
- *
- * Features:
- * - Automatic rollback on any error
- * - Proper error classification (deadlock, timeout, constraint violations)
- * - Type-safe Result return type
- *
- * @example
- * ```typescript
- * const result = await safeTransaction(async (tx) => {
- *   const user = await tx.insert(users).values({ name: "John" }).returning();
- *   await tx.insert(profiles).values({ userId: user[0].id, bio: "" });
- *   return user[0];
- * });
- *
- * if (result.isOk()) {
- *   console.log("User created:", result.value);
- * } else {
- *   console.error("Transaction failed:", result.error);
- * }
- * ```
+ * Executes a callback within a REAL database transaction.
  */
 export async function safeTransaction<T>(
   callback: (tx: DbClient) => Promise<T>,
@@ -312,6 +238,7 @@ export async function safeTransaction<T>(
   Result<T, DatabaseError | ConflictError | DatabaseDeadlockError | DatabaseTimeoutError>
 > {
   try {
+    // Drizzle with Pool supports real interactive transactions
     const result = await db.transaction(async (tx) => {
       return await callback(tx);
     });
@@ -321,7 +248,6 @@ export async function safeTransaction<T>(
     const pgCode = pgError?.code;
     const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Unique constraint violation (23505)
     if (pgCode === "23505") {
       return err(
         new ConflictError("Resource already exists", {
@@ -331,8 +257,6 @@ export async function safeTransaction<T>(
         }),
       );
     }
-
-    // Foreign key violation (23503)
     if (pgCode === "23503") {
       return err(
         new ConflictError("Referenced resource does not exist", {
@@ -342,45 +266,24 @@ export async function safeTransaction<T>(
         }),
       );
     }
-
-    // Deadlock detected (40P01)
     if (pgCode === "40P01") {
-      logger.warn("[Database] Deadlock detected in transaction:", {
-        error: errorMessage,
-      });
-      return err(
-        new DatabaseDeadlockError("Transaction deadlock, please retry", {
-          code: pgCode,
-        }),
-      );
+      return err(new DatabaseDeadlockError("Transaction deadlock, please retry", { code: pgCode }));
     }
-
-    // Serialization failure (40001) - also retryable
     if (pgCode === "40001") {
-      logger.warn("[Database] Serialization failure in transaction:", {
-        error: errorMessage,
-      });
       return err(
         new DatabaseDeadlockError("Concurrent transaction conflict, please retry", {
           code: pgCode,
         }),
       );
     }
-
-    // Query timeout
     if (
       errorMessage.includes("timeout") ||
       errorMessage.includes("canceling statement") ||
       pgCode === "57014"
     ) {
-      return err(
-        new DatabaseTimeoutError("Transaction timed out", {
-          code: pgCode || "TIMEOUT",
-        }),
-      );
+      return err(new DatabaseTimeoutError("Transaction timed out", { code: pgCode || "TIMEOUT" }));
     }
 
-    // Generic database error
     logger.error("[Database] Transaction failed:", error);
     return err(
       new DatabaseError("Transaction failed", {

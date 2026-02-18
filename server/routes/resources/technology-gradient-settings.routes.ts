@@ -13,6 +13,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import {
+  type InsertTechnologyGradientSettings,
   insertTechnologyGradientSettingsSchema,
   technologyGradientFrontendSchema,
 } from "../../../shared/schema.js";
@@ -80,7 +81,7 @@ router.get("/", async (_req, res) => {
  */
 router.patch("/", authService.requireAdmin, async (req, res) => {
   try {
-    let storageData: any = {};
+    let storageData: Record<string, unknown> = {};
 
     // STRATEGY 1: Check if request matches the Frontend Schema (flat structure)
     // This handles the standard Admin UI request

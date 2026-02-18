@@ -34,7 +34,7 @@ interface CategoryFabricSectionProps {
   fibers?: Fiber[];
 }
 
-const CategoryFabricSection = memo(function CategoryFabricSection({
+export const CategoryFabricSection = memo(function CategoryFabricSection({
   formData,
   formErrors,
   isOpen,
@@ -249,6 +249,3 @@ const CategoryFabricSection = memo(function CategoryFabricSection({
     </Collapsible>
   );
 });
-
-// Default export for lazy loading compatibility
-export default CategoryFabricSection;

@@ -1,3 +1,0 @@
-./node_modules/swagger-ui-express/README.md
-./node_modules/router/HISTORY.md
-./.kilocode/skills/error-handling/SKILL.md

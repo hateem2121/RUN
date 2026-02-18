@@ -3,10 +3,10 @@
 import { Activity, Database, Gauge, Settings, Shield, TestTube } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MediaLibraryContainerEnhanced from "./MediaLibraryContainerEnhanced";
+import { MediaLibraryContainerEnhanced } from "./MediaLibraryContainerEnhanced";
 
 // Enhanced Media Library with All 6 Phases Integrated
-export default function MediaLibraryTabsEnhanced() {
+export function MediaLibraryTabsEnhanced() {
   return (
     <div className="h-full">
       <Tabs defaultValue="library" className="h-full">

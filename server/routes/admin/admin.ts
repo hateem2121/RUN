@@ -11,6 +11,7 @@ import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 import type { SessionUser } from "../../types/session.js";
+import { getAuditContext } from "../../utils/request-context.js";
 import { validateIdParam } from "../../utils.js";
 
 const router = Router();
@@ -57,11 +58,7 @@ router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) =
   const { timeout } = emptyBodySchema.parse(req.body);
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   const result = await adminService.fixCorruptedMedia(auditContext, timeout);
 
@@ -78,11 +75,7 @@ router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
   const { autoClean, timeout } = req.body;
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   const report = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
 
@@ -116,11 +109,7 @@ router.post("/enterprise/audit-config", authService.requireAdmin, async (req, re
   const validatedData = auditConfigSchema.parse(req.body);
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   await adminService.updateAuditConfig(auditContext, validatedData);
 
@@ -138,11 +127,7 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
   }
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   const result = await adminService.restoreCategory(auditContext, id);
 
@@ -159,11 +144,7 @@ router.post("/products/:id/restore", authService.requireAdmin, async (req, res) 
   }
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   const result = await adminService.restoreProduct(auditContext, id);
 
@@ -180,11 +161,7 @@ router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, r
   }
 
   // Create audit context
-  const auditContext = {
-    user: req.user as SessionUser,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  };
+  const auditContext = getAuditContext(req);
 
   const result = await adminService.restoreMediaAsset(auditContext, id);
 

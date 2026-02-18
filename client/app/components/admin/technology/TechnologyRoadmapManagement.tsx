@@ -61,7 +61,7 @@ interface TechnologyRoadmapManagementProps {
 
 export function TechnologyRoadmapManagement({
   isLoading: externalLoading,
-}: TechnologyRoadmapManagementProps) {
+}: TechnologyRoadmapManagementProps = {}) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

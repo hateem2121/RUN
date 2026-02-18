@@ -315,5 +315,3 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
     </div>
   );
 }
-
-export default ProductDetailsPanel;

@@ -158,13 +158,13 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
   );
 }
 
-interface TechnologyEquipmentManagementProps {
-  isLoading?: boolean | undefined;
+export interface TechnologyEquipmentManagementProps {
+  isLoading?: boolean;
 }
 
 export function TechnologyEquipmentManagement({
   isLoading = false,
-}: TechnologyEquipmentManagementProps) {
+}: TechnologyEquipmentManagementProps = {}) {
   const { toast } = useToast();
 
   // Form state management

@@ -52,13 +52,15 @@ export default function Fibers() {
     }
 
     const term = searchTerm.toLowerCase();
-    return fibers.filter(
-      (fiber) =>
-        fiber.name.toLowerCase().includes(term) ||
-        fiber.type.toLowerCase().includes(term) ||
-        fiber.description?.toLowerCase().includes(term) ||
-        fiber.properties?.toLowerCase().includes(term),
-    );
+    return fibers.filter((fiber) => {
+      const propertiesArray = getPropertiesArray(fiber.properties);
+      const searchableContent = [fiber.name, fiber.type, fiber.description, ...propertiesArray]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableContent.includes(term);
+    });
   }, [fibers, searchTerm]);
 
   // Group fibers by type

@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -53,16 +53,16 @@ export default function Sustainability() {
   const heroOpacity = useTransform(scrollY, [0, 300], [1, isMobile ? 1 : 0]);
 
   // Queries for unified sustainability data (Batch Request)
-  const { data: batchData } = useQuery<any>({
+  const { data: batchData } = useQuery<SustainabilityBatchResponse>({
     queryKey: ["/api/sustainability/batch"],
     queryFn: () => apiRequest("/api/sustainability/batch"),
     staleTime: 5 * 60 * 1000,
   });
 
   const unifiedData = batchData?.hero;
-  const activeImpactMetrics = batchData?.metrics?.filter((m: any) => m.isActive) || [];
-  const activeInitiatives = batchData?.initiatives?.filter((i: any) => i.isActive) || [];
-  const activeGoals = batchData?.goals?.filter((g: any) => g.isActive) || [];
+  const activeImpactMetrics = batchData?.metrics?.filter((m) => m.isActive) || [];
+  const activeInitiatives = batchData?.initiatives?.filter((i) => i.isActive) || [];
+  const activeGoals = batchData?.goals?.filter((g) => g.isActive) || [];
   // Use certificates from batch data directly
   const allCertificates = batchData?.certificates || [];
 
@@ -71,7 +71,8 @@ export default function Sustainability() {
     ? {
         title: unifiedData.featuresTitle,
         description: unifiedData.featuresDescription || "",
-        highlightedFeatures: (unifiedData.data?.highlightedFeatures as any[]) || [],
+        highlightedFeatures:
+          (unifiedData.data?.highlightedFeatures as { title: string; description: string }[]) || [],
       }
     : null;
 
@@ -143,7 +144,7 @@ export default function Sustainability() {
     }
 
     // Add IDs from initiatives
-    activeInitiatives.forEach((initiative: any) => {
+    activeInitiatives.forEach((initiative) => {
       if (initiative.imageId) {
         ids.add(initiative.imageId);
       }
@@ -151,7 +152,7 @@ export default function Sustainability() {
 
     // Add IDs from fabrics (now available in batchData)
     const fabricsToCollect = batchData?.fabrics || [];
-    fabricsToCollect.forEach((fabric: any) => {
+    fabricsToCollect.forEach((fabric) => {
       if (fabric.visualSwatchId) {
         ids.add(fabric.visualSwatchId);
       }
@@ -196,7 +197,7 @@ export default function Sustainability() {
 
   // Filter certificates based on selected certificationIds from unified data
   const certificates = unifiedData?.certificationIds
-    ? allCertificates.filter((cert: any) => unifiedData.certificationIds?.includes(cert.id!))
+    ? allCertificates.filter((cert) => unifiedData.certificationIds?.includes(cert.id))
     : [];
 
   return (
@@ -325,7 +326,7 @@ export default function Sustainability() {
               role="group"
               aria-label="Sustainability metrics"
             >
-              {activeImpactMetrics.map((metric: any, index: number) => (
+              {activeImpactMetrics.map((metric, index) => (
                 <MetricCard key={metric.id} metric={metric} index={index} />
               ))}
             </div>
@@ -382,9 +383,9 @@ export default function Sustainability() {
               </motion.div>
 
               <FabricPortfolioSection
-                mediaAssets={mediaAssets}
-                selectedFabricIds={fabricPortfolioData.selectedFabricIds}
-                fabrics={batchData?.fabrics}
+                mediaAssets={mediaAssets || []}
+                selectedFabricIds={unifiedData?.data?.selectedFabricIds || []}
+                fabrics={batchData?.fabrics || []}
               />
             </div>
           </section>

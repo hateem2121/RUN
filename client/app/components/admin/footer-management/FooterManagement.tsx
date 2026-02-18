@@ -32,7 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
-export default function FooterManagement() {
+export function FooterManagement() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("general");
 

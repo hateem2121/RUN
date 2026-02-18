@@ -4,13 +4,19 @@ import { useToast } from "@/hooks/use-toast";
 import { getQueryClient } from "@/lib/queryClient";
 import { MediaLibraryProvider, useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
-const MediaGrid = React.lazy(() => import("./MediaGrid"));
-const MediaFiltersPanel = React.lazy(() => import("./MediaFiltersPanel"));
-const MediaUploadEnhanced = React.lazy(() => import("./MediaUploadEnhanced"));
-const MediaViewerModal = React.lazy(() => import("./MediaViewerModal"));
+const MediaGrid = React.lazy(() => import("./MediaGrid").then((m) => ({ default: m.MediaGrid })));
+const MediaFiltersPanel = React.lazy(() =>
+  import("./MediaFiltersPanel").then((m) => ({ default: m.MediaFiltersPanel })),
+);
+const MediaUploadEnhanced = React.lazy(() =>
+  import("./MediaUploadEnhanced").then((m) => ({ default: m.MediaUploadEnhanced })),
+);
+const MediaViewerModal = React.lazy(() =>
+  import("./MediaViewerModal").then((m) => ({ default: m.MediaViewerModal })),
+);
 
 import type { MediaAsset } from "@shared/schema";
-import { AlertTriangle, PanelLeft, RefreshCw, Settings, Trash2 } from "lucide-react";
+import { AlertTriangle, PanelLeft, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -108,13 +114,11 @@ interface MediaLibraryContainerEnhancedProps {
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void; // Direct asset selection callback
 }
 
-export default function MediaLibraryContainerEnhanced({
+export function MediaLibraryContainerEnhanced({
   selectionMode = false,
-  // useExistingContext = false,
   initialFilter = "all",
-  // mediaPickerTarget removed
   onAssetSelect,
-}: MediaLibraryContainerEnhancedProps = {}) {
+}: MediaLibraryContainerEnhancedProps) {
   const { toast } = useToast();
 
   // SIMPLIFIED: Pure traditional pagination mode (infinite scroll eliminated)
@@ -203,158 +207,53 @@ export default function MediaLibraryContainerEnhanced({
     }
   };
 
-  // Enhanced global error handler for unhandled promise rejections
   useEffect(() => {
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      // Enhanced logging with categorization
-      const error = event.reason;
-      const errorType = error instanceof Error ? error.constructor.name : typeof error;
-      const message = error instanceof Error ? error.message : String(error);
-      const stack = error instanceof Error ? error.stack : undefined;
-
-      // PERFORMANCE FIX: Detect and gracefully handle AbortError rejections from cancelled requests
-      const isAbortError =
-        errorType === "AbortError" ||
-        (errorType === "DOMException" && message.includes("aborted")) ||
-        message.includes("signal is aborted") ||
-        message.includes("cancelled") ||
-        message.includes("abort");
-
-      if (isAbortError) {
-        // Handle AbortError gracefully - these are normal cancellations from dialog close, navigation, etc.
-
-        // Prevent the default behavior - no user notification needed for cancellations
-        event.preventDefault();
-        return; // Exit early - do NOT log as CRITICAL
-      }
-
-      // CRITICAL FIX: Precisely detect ImageBitmapLoader/Model Viewer errors (not generic fetch failures)
-      const isModelViewerTextureError =
-        message.includes("ImageBitmapLoader") ||
-        stack?.includes("ImageBitmapLoader") ||
-        stack?.includes("@google/model-viewer") ||
-        stack?.includes("model-viewer") ||
-        (stack?.includes("three.js") && message.includes("texture"));
-
-      if (isModelViewerTextureError) {
-        // Handle Model Viewer texture errors gracefully - these are rendering issues, not system failures
-
-        // Prevent the default behavior
-        event.preventDefault();
-
-        // Show gentle notification for texture loading issues
-        toast({
-          title: "3D Model Texture Loading",
-          description:
-            "Some model textures may not display perfectly. The model is still functional.",
-          variant: "default", // Use default variant, not destructive
-        });
-
-        return; // Exit early - do NOT auto-reload for texture issues
-      }
-
-      // Prevent the default behavior (which would crash the app)
-      event.preventDefault();
-
-      // Show user-friendly error notification for critical errors
-      if (
-        error instanceof Error &&
-        (error.message.includes("cleanup") ||
-          error.message.includes("media") ||
-          error.message.includes("database"))
-      ) {
-        toast({
-          title: "Background Operation Error",
-          description:
-            "A background process encountered an issue. Please refresh the page if problems persist.",
-          variant: "destructive",
-        });
-      }
-
-      // Show user-friendly error message for genuine system errors
-      toast({
-        title: "System Error",
-        description: "A critical error occurred. The system will attempt to recover.",
-        variant: "destructive",
-      });
-
-      // Only auto-reload for genuine system errors, NOT for texture loading issues
-      setTimeout(() => {
-        // Auto-recovery: Page reload instead of cache invalidation to prevent cache churn
-        globalThis.location.reload();
-      }, 5000);
+    const handleError = (event: ErrorEvent) => {
+      console.error("MediaLibraryContainerEnhanced captured error:", event.error);
     };
 
-    const handleError = (_event: ErrorEvent) => {
-      toast({
-        title: "Application Error",
-        description: "An unexpected error occurred. Please refresh the page.",
-        variant: "destructive",
-      });
-    };
-
-    // Add global error handlers
-    globalThis.addEventListener("unhandledrejection", handleUnhandledRejection);
     globalThis.addEventListener("error", handleError);
-
     return () => {
-      globalThis.removeEventListener("unhandledrejection", handleUnhandledRejection);
       globalThis.removeEventListener("error", handleError);
     };
-  }, [toast]);
+  }, []);
 
   // SURGICAL FIX: Conditional scroll logic - standalone needs internal scroll, dialogs use external
   const isStandalone = !selectionMode;
 
   const content = (
-    <div
-      className={cn(
-        "flex h-full flex-col bg-background",
-        // STANDALONE MODE: Enable overflow-hidden to contain scrolling within component
-        isStandalone && "overflow-hidden",
-      )}
-    >
-      {/* Enhanced responsive header */}
+    <div className="flex h-full flex-col overflow-hidden">
       <div className="shrink-0 border-b bg-card">
         <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-2 md:gap-4">
-            <div className="flex items-center gap-2">
-              <h1 className="font-bold text-lg md:text-2xl">Media Library</h1>
-            </div>
+          <div>
+            <h2 className="font-bold text-2xl tracking-tight">Media Library</h2>
+            <p className="text-muted-foreground text-sm">
+              Manage your brand assets and sustainable storytelling media.
+            </p>
           </div>
-          {!selectionMode && (
-            <div className="flex items-center gap-2">
-              {/* Development controls */}
-              {(import.meta as unknown as { env: { MODE: string } }).env?.MODE ===
-                "development" && (
-                <>
-                  <div className="hidden items-center gap-2 rounded-lg bg-muted/50 px-3 py-1 md:flex">
-                    <Settings className="h-4 w-4 text-muted-foreground" />
-                    <Badge variant="outline" className="text-xs">
-                      Pagination Mode
-                    </Badge>
-                  </div>
-
-                  <Separator orientation="vertical" className="hidden h-6 md:block" />
-
-                  <Button
-                    onClick={handleDatabaseCleanup}
-                    disabled={isCleaningUp}
-                    variant="outline"
-                    size="sm"
-                    className="hidden gap-2 md:flex"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    {isCleaningUp ? "Cleaning..." : "Cleanup DB"}
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDatabaseCleanup}
+              disabled={isCleaningUp}
+              className="hidden sm:flex"
+            >
+              <RefreshCw className={cn("mr-2 h-4 w-4", isCleaningUp && "animate-spin")} />
+              {isCleaningUp ? "Cleaning..." : "Sync & Repair"}
+            </Button>
+            {!isStandalone && (
+              <div className="flex items-center gap-2">
+                <Separator orientation="vertical" className="h-4" />
+                <Badge variant="outline" className="bg-primary/5 text-primary">
+                  Selection Active
+                </Badge>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Main content area with enhanced error boundaries */}
       <MediaLibraryMainContent
         selectionMode={selectionMode}
         {...(onAssetSelect ? { onAssetSelect } : {})}
@@ -364,7 +263,6 @@ export default function MediaLibraryContainerEnhanced({
     </div>
   );
 
-  // Auto-filter initialization component
   const AutoFilterInitializer = () => {
     const { state, updateState } = useMediaLibraryEnhanced();
 
@@ -387,18 +285,19 @@ export default function MediaLibraryContainerEnhanced({
   );
 }
 
+MediaLibraryContainerEnhanced.displayName = "MediaLibraryContainerEnhanced";
+
 // Separate component to access the context properly
 function MediaLibraryMainContent({
   selectionMode = false,
   onAssetSelect,
-  // paginationMode removed
   isStandalone,
-}: Readonly<{
-  selectionMode?: boolean | undefined;
+}: {
+  selectionMode?: boolean;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;
   paginationMode?: "traditional";
   isStandalone: boolean;
-}>) {
+}) {
   const { state, updateState } = useMediaLibraryEnhanced();
 
   // Phase 3: Development-mode validation warnings

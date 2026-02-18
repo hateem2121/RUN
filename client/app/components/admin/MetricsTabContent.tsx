@@ -85,7 +85,6 @@ interface MetricsTabContentProps {
   }) => void;
   onSetMetricsPage: (page: number) => void;
 }
-
 export function MetricsTabContent({
   metrics,
   paginatedMetrics,

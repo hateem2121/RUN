@@ -20,13 +20,8 @@ interface Feature {
   description: string;
 }
 
-export function FeaturesTabContent({
-  localForm,
-  hasUnsavedChanges,
-  isPending,
-  onLocalUpdate,
-  onSave,
-}: FeaturesTabContentProps) {
+export function FeaturesTabContent(props: FeaturesTabContentProps) {
+  const { localForm, hasUnsavedChanges, isPending, onLocalUpdate, onSave } = props;
   const highlightedFeatures = (localForm.data?.highlightedFeatures as Feature[]) || [];
 
   const addFeature = () => {

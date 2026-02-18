@@ -1,17 +1,11 @@
 import { Router } from "express";
-import { z } from "zod";
-import { logger } from "../../../lib/monitoring/logger.js";
 import { blogService } from "../../../services/admin/blog.service.js";
 import type { SessionUser } from "../../../types/session.js";
+import { getAuditContext } from "../../../utils/request-context.js";
 
 const router = Router();
 
-// Helper for audit context
-const getAuditContext = (req: any) => ({
-  user: req.user as SessionUser,
-  userAgent: req.headers["user-agent"],
-  ipAddress: req.ip,
-});
+// Helper for audit context - MOVED TO SHARED UTILS
 
 // GET /api/admin/blog/posts
 router.get("/posts", async (req, res) => {

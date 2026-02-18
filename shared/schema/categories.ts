@@ -11,7 +11,7 @@ import {
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createSelectSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { pgTable } from "./common";
 import { mediaAssets } from "./media";
@@ -126,29 +126,12 @@ export const categories = pgTable(
 
 export const selectCategorySchema = createSelectSchema(categories);
 
-export const insertCategorySchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1), // REQUIRED: matches database schema
-  description: z.string().nullable().optional(),
-  isActive: z.boolean().optional(),
-  parentId: z.number().nullable().optional(), // FIXED: Allow null values for no parent
-  gridPosition: z.number().optional(), // ADDED: missing from schema
-  featuredOnHomepage: z.boolean().optional(), // ADDED: missing from schema
-  sortOrder: z.number().optional(), // ADDED: missing from schema
-  primaryImageId: z.number().nullable().optional(), // CHUNK 10: Object Storage migration
-
-  // SEO fields - align with database schema
-  metaTitle: z.string().max(255).optional(),
-  metaDescription: z.string().optional(),
-
-  // Image fields - align with database schema
-  imageUrl: z.string().max(500).optional(),
-  bannerUrl: z.string().max(500).optional(),
-
-  // Display ordering - align with database schema
-  displayOrder: z.number().optional(),
-
-  // Featured content - nested structure matching CategoryForm and database JSONB
+export const insertCategorySchema = createInsertSchema(categories, {
+  name: (s) => s.min(1),
+  slug: (s) => s.min(1),
+  metaTitle: (s) => s.max(255),
+  imageUrl: (s) => s.max(500),
+  bannerUrl: (s) => s.max(500),
   featuredContent: z
     .object({
       card1: z

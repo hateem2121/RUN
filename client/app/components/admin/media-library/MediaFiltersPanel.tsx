@@ -13,7 +13,7 @@ import {
 import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 // Phase 1: Search and Filtering Interface (90 lines target)
-export default function MediaFiltersPanel() {
+export function MediaFiltersPanel() {
   const { state, updateState } = useMediaLibraryEnhanced();
 
   // PHASE 3 OPTIMIZATION: Local state for search to prevent global context updates on every keystroke (INP fix)

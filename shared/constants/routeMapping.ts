@@ -54,6 +54,72 @@ export const ROUTE_MAP: RouteMapping[] = [
     description: "Image Gallery / Media Manager",
     apiEndpoint: "/api/media",
   },
+  {
+    public: "/accessories",
+    admin: "/admin/accessories",
+    description: "Accessories Catalog / Management",
+    apiEndpoint: "/api/accessories",
+  },
+  {
+    public: "/analytics",
+    admin: "/admin/analytics",
+    description: "System Analytics / Data Insights",
+    apiEndpoint: "/api/analytics/summary",
+  },
+  {
+    public: "/certifications",
+    admin: "/admin/certifications",
+    description: "Company Certifications / Credentials",
+    apiEndpoint: "/api/certifications",
+  },
+  {
+    public: "/fabrics",
+    admin: "/admin/fabrics",
+    description: "Fabric Material Catalog / Management",
+    apiEndpoint: "/api/fabrics",
+  },
+  {
+    public: "/fibers",
+    admin: "/admin/fibers",
+    description: "Fiber & Yarn Catalog / Management",
+    apiEndpoint: "/api/fibers",
+  },
+  {
+    public: "/manufacturing",
+    admin: "/admin/manufacturing",
+    description: "Manufacturing Facilities / Capacity",
+    apiEndpoint: "/api/manufacturing/status",
+  },
+  {
+    public: "/resources",
+    admin: "/admin/resources",
+    description: "B2B Resources & Documents",
+    apiEndpoint: "/api/resources",
+  },
+  {
+    public: "/services",
+    admin: "/admin/services",
+    description: "Manufacturing Services & Solutions",
+    apiEndpoint: "/api/services",
+  },
+  {
+    public: "/size-charts",
+    admin: "/admin/size-charts",
+    description: "Global Size Charts / Grading",
+    apiEndpoint: "/api/size-charts",
+  },
+  {
+    public: "/sustainability",
+    admin: "/admin/sustainability",
+    description: "Sustainability Reports / Material Traceability",
+    apiEndpoint: "/api/sustainability",
+  },
+  {
+    public: "/technology",
+    admin: "/admin/technology",
+    description: "Technology Stack / Innovation Lab",
+    apiEndpoint: "/api/technology",
+  },
 ];
 
 // Helper function to get admin route from public route

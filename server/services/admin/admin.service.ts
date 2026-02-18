@@ -24,6 +24,23 @@ export interface AuditContext {
 }
 
 export class AdminService {
+  private readonly systemRepo: typeof systemRepository;
+  private readonly productRepo: typeof productRepository;
+  private readonly mediaRepo: typeof mediaRepository;
+  private readonly miscRepo: typeof miscRepository;
+
+  constructor(
+    systemRepo = systemRepository,
+    productRepo = productRepository,
+    mediaRepo = mediaRepository,
+    miscRepo = miscRepository,
+  ) {
+    this.systemRepo = systemRepo;
+    this.productRepo = productRepo;
+    this.mediaRepo = mediaRepo;
+    this.miscRepo = miscRepo;
+  }
+
   /**
    * Centralizes audit logging.
    */
@@ -45,7 +62,7 @@ export class AdminService {
     // userAgent can be long, but encryption is fine
     const encryptedUserAgent = data.userAgent ? encrypt(data.userAgent) : undefined;
 
-    return systemRepository.createAuditLog({
+    return this.systemRepo.createAuditLog({
       action: data.action,
       tableName: data.tableName,
       recordId: data.recordId,
@@ -73,12 +90,12 @@ export class AdminService {
 
     const metadataPromises = options.skipMetadata
       ? [Promise.resolve([]), Promise.resolve([])]
-      : [productRepository.getCategories(), miscRepository.getFabrics()];
+      : [this.productRepo.getCategories(), this.miscRepo.getFabrics()];
 
     const [allProducts, totalProductsCount, categories, fabrics] = await withTimeout(
       Promise.all([
-        productRepository.getProductsIncludingDeleted(limit, offset),
-        productRepository.getProductsCount(),
+        this.productRepo.getProductsIncludingDeleted(limit, offset),
+        this.productRepo.getProductsCount(),
         ...metadataPromises,
       ]),
       15000,
@@ -119,9 +136,9 @@ export class AdminService {
 
     const [referencedMedia, recentMedia] = await Promise.all([
       mediaIdsStrings.length > 0
-        ? mediaRepository.getMediaAssetsByIds(mediaIdsStrings)
+        ? this.mediaRepo.getMediaAssetsByIds(mediaIdsStrings)
         : Promise.resolve([]),
-      options.includeRecentMedia ? mediaRepository.getMediaAssets(50, 0) : Promise.resolve([]),
+      options.includeRecentMedia ? this.mediaRepo.getMediaAssets(50, 0) : Promise.resolve([]),
     ]);
 
     // Merge and deduplicate media assets
@@ -168,7 +185,7 @@ export class AdminService {
     );
     // Fetch all categories - this is fast
     const categories = await withTimeout(
-      productRepository.getCategories(),
+      this.productRepo.getCategories(),
       10000,
       "Get all categories for media fix",
     );
@@ -226,7 +243,7 @@ export class AdminService {
 
           if (needsUpdate) {
             const updateResult = await withTimeout(
-              productRepository.updateCategory(category.id, {
+              this.productRepo.updateCategory(category.id, {
                 featuredContent: updatedFeaturedContent,
               }),
               timeoutMs, // Use configurable timeout per update operation
@@ -304,10 +321,10 @@ export class AdminService {
     config: { enabled?: boolean | undefined; trackedTables?: string[] | undefined },
   ) {
     if (typeof config.enabled === "boolean") {
-      systemRepository.setAuditTrailEnabled(config.enabled);
+      this.systemRepo.setAuditTrailEnabled(config.enabled);
     }
     if (Array.isArray(config.trackedTables)) {
-      systemRepository.configureTrackedTables(config.trackedTables);
+      this.systemRepo.configureTrackedTables(config.trackedTables);
     }
 
     // SEC-F04: Audit Log
@@ -330,7 +347,7 @@ export class AdminService {
    */
   async restoreCategory(audit: AuditContext, id: number) {
     const result = await withTimeout(
-      productRepository.restoreCategory(id),
+      this.productRepo.restoreCategory(id),
       5000,
       "Restore category",
     );
@@ -354,7 +371,7 @@ export class AdminService {
    * Restores a soft-deleted product
    */
   async restoreProduct(audit: AuditContext, id: number) {
-    const result = await withTimeout(productRepository.restoreProduct(id), 5000, "Restore product");
+    const result = await withTimeout(this.productRepo.restoreProduct(id), 5000, "Restore product");
 
     if (result) {
       // SEC-F04: Audit Log
@@ -376,7 +393,7 @@ export class AdminService {
    */
   async restoreMediaAsset(audit: AuditContext, id: number) {
     const result = await withTimeout(
-      mediaRepository.restoreMediaAsset(id),
+      this.mediaRepo.restoreMediaAsset(id),
       5000,
       "Restore media asset",
     );

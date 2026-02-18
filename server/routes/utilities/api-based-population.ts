@@ -5,6 +5,7 @@ import type { Express } from "express";
 import { logger } from "../../lib/monitoring/logger.js";
 
 import { authService } from "../../services/auth-service.js";
+
 export function registerAPIBasedPopulationRoutes(app: Express): void {
   // Populate all data using existing API endpoints
   // prettier-ignore
@@ -32,8 +33,8 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
       const makeInternalAPICall = async (
         method: string,
         endpoint: string,
-        data?: any,
-      ): Promise<any> => {
+        data?: unknown,
+      ): Promise<unknown> => {
         const response = await fetch(`http://localhost:5000${endpoint}`, {
           method,
           headers: { "Content-Type": "application/json" },
@@ -72,7 +73,9 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
 
       for (const cat of categoryData) {
         try {
-          const created = await makeInternalAPICall("POST", "/api/categories", cat);
+          const created = (await makeInternalAPICall("POST", "/api/categories", cat)) as {
+            name: string;
+          };
           results.categories.push(created);
           logger.debug("[API Population] ✅ Created category:", created.name);
         } catch (error) {
@@ -126,7 +129,9 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
 
       for (const fabric of fabricData) {
         try {
-          const created = await makeInternalAPICall("POST", "/api/fabrics", fabric);
+          const created = (await makeInternalAPICall("POST", "/api/fabrics", fabric)) as {
+            name: string;
+          };
           results.fabrics.push(created);
           logger.debug("[API Population] ✅ Created fabric:", created.name);
         } catch (error) {
@@ -221,7 +226,10 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
 
       for (const fiber of fiberData) {
         try {
-          const created = await makeInternalAPICall("POST", "/api/fibers", fiber);
+          const created = (await makeInternalAPICall("POST", "/api/fibers", fiber)) as {
+            name: string;
+            sustainabilityScore: number;
+          };
           results.fibers.push(created);
           logger.debug(
             `[API Population] ✅ Created fiber: ${created.name} Score: ${created.sustainabilityScore}`,
@@ -318,7 +326,9 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
 
       for (const cert of certificateData) {
         try {
-          const created = await makeInternalAPICall("POST", "/api/certificates", cert);
+          const created = (await makeInternalAPICall("POST", "/api/certificates", cert)) as {
+            name: string;
+          };
           results.certificates.push(created);
           logger.debug("[API Population] ✅ Created certificate:", created.name);
         } catch (error) {
@@ -448,7 +458,9 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
 
       for (const accessory of accessoryData) {
         try {
-          const created = await makeInternalAPICall("POST", "/api/accessories", accessory);
+          const created = (await makeInternalAPICall("POST", "/api/accessories", accessory)) as {
+            name: string;
+          };
           results.accessories.push(created);
           logger.debug("[API Population] ✅ Created accessory:", created.name);
         } catch (error) {

@@ -24,7 +24,7 @@ interface BasicInfoSectionProps {
   generateSlug: () => void;
 }
 
-const BasicInfoSection = memo(function BasicInfoSection({
+export const BasicInfoSection = memo(function BasicInfoSection({
   formData,
   formErrors,
   isOpen,
@@ -187,6 +187,3 @@ const BasicInfoSection = memo(function BasicInfoSection({
     </Collapsible>
   );
 });
-
-// Default export for lazy loading compatibility
-export default BasicInfoSection;

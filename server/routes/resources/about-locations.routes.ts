@@ -15,7 +15,10 @@
 
 import { Router } from "express";
 import { z } from "zod";
-import { insertAboutMapLocationSchema } from "../../../shared/schema.js";
+import {
+  type InsertAboutMapLocation,
+  insertAboutMapLocationSchema,
+} from "../../../shared/schema.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";
@@ -96,14 +99,14 @@ router.post("/", authService.requireAdmin, async (req, res) => {
       });
     }
 
-    const data = {
+    const data: InsertAboutMapLocation = {
       ...validation.data,
       latitude: String(validation.data.latitude),
       longitude: String(validation.data.longitude),
-    };
+    } as InsertAboutMapLocation;
 
     const newLocation = await withTimeout(
-      aboutService.createLocation(data as z.infer<typeof insertAboutMapLocationSchema>),
+      aboutService.createLocation(data),
       10000,
       "Create map location",
     );
@@ -140,7 +143,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
       });
     }
 
-    const data: any = { ...validation.data };
+    const data = { ...validation.data } as Partial<InsertAboutMapLocation>;
     if (data.latitude !== undefined) {
       data.latitude = String(data.latitude);
     }

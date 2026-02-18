@@ -36,7 +36,7 @@ import useCategoryOperationsConsolidated from "@/hooks/admin/categories/useCateg
 import CategoryForm from "./categories/CategoryForm";
 import CategoryList from "./categories/CategoryList";
 
-export default function CategoryManagementSimplified() {
+export function CategoryManagementSimplified() {
   const {
     categories,
     filteredCategories,

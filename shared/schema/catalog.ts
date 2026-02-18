@@ -136,6 +136,8 @@ export const accessories = pgTable(
   ],
 );
 
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
 // Types
 export type Certificate = typeof certificates.$inferSelect;
 export type InsertCertificate = typeof certificates.$inferInsert;
@@ -147,48 +149,19 @@ export type Accessory = typeof accessories.$inferSelect;
 export type InsertAccessory = typeof accessories.$inferInsert;
 
 // Zod Schemas
-export const insertCertificateSchema = z.object({
-  name: z.string().min(1),
-  type: z.string().nullable().optional(),
-  issuingOrganization: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
-  certificateNumber: z.string().nullable().optional(),
+export const selectCertificateSchema = createSelectSchema(certificates);
+export const insertCertificateSchema = createInsertSchema(certificates, {
+  name: (s) => s.min(1),
   issueDate: z.date().or(z.string()).nullable().optional(),
   expiryDate: z.date().or(z.string()).nullable().optional(),
-  imageId: z.number().int().nullable().optional(),
-  documentId: z.number().int().nullable().optional(),
-  issuingBody: z.string().nullable().optional(),
-  documentUrl: z.string().nullable().optional(),
-  imageUrl: z.string().nullable().optional(),
-  isActive: z.boolean().optional(),
 });
 
-export const insertSizeChartSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  category: z.string().optional(),
-  gender: z.string().optional(),
-  type: z.string().optional(),
-  region: z.string().optional(),
-  measurements: z.record(z.string(), z.unknown()).optional(),
-  sizeRange: z.array(z.string()).optional(),
-  unit: z.string().optional(),
-  fitNotes: z.string().optional(),
-  imageId: z.number().int().optional(),
-  isActive: z.boolean().optional(),
+export const selectSizeChartSchema = createSelectSchema(sizeCharts);
+export const insertSizeChartSchema = createInsertSchema(sizeCharts, {
+  name: (s) => s.min(1),
 });
 
-export const insertAccessorySchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  category: z.string().optional(),
-  type: z.string().optional(),
-  material: z.string().optional(),
-  color: z.string().optional(),
-  size: z.string().optional(),
-  sku: z.string().optional(),
-  price: z.number().or(z.string()).optional(),
-  imageId: z.number().int().optional(),
-  specifications: z.record(z.string(), z.unknown()).optional(),
-  isActive: z.boolean().optional(),
+export const selectAccessorySchema = createSelectSchema(accessories);
+export const insertAccessorySchema = createInsertSchema(accessories, {
+  name: (s) => s.min(1),
 });

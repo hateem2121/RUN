@@ -181,7 +181,7 @@ const SizeChartList = ({
   );
 };
 
-export default function SizeChartManagementEnhanced() {
+export function SizeChartManagementEnhanced() {
   const [formData, setFormData] = useState({
     name: "",
     region: "",

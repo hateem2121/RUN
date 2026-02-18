@@ -41,7 +41,7 @@ export interface UnifiedModelViewerProps {
   onInteraction?: (type: string, data?: unknown) => void;
 }
 
-export default function UnifiedModelViewer({
+export function UnifiedModelViewer({
   asset,
   className,
   config = {},

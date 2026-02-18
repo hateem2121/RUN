@@ -436,6 +436,21 @@ export function buildInsertMediaAsset(metadata: MediaMetadata): InsertMediaAsset
   };
 }
 
+interface FFProbeStream {
+  codec_type: string;
+  codec_name?: string;
+  duration?: string;
+  width?: number;
+  height?: number;
+}
+
+interface FFProbeOutput {
+  streams?: FFProbeStream[];
+  format?: {
+    duration?: string;
+  };
+}
+
 /**
  * Extracts metadata from a video file using ffprobe
  *
@@ -463,8 +478,8 @@ export async function getVideoMetadata(buffer: Buffer): Promise<{
       tempPath,
     ]);
 
-    const data = JSON.parse(stdout);
-    const videoStream = data.streams?.find((s: any) => s.codec_type === "video");
+    const data = JSON.parse(stdout) as FFProbeOutput;
+    const videoStream = data.streams?.find((s) => s.codec_type === "video");
     const format = data.format;
 
     return {

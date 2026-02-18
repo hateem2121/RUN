@@ -16,27 +16,51 @@ import { lazy } from "react";
 // Lazy load heavy admin components
 export const LazyProductManagement = lazy(() =>
   import("./product-management-unified/ProductManagementUnified").then((module) => ({
-    default: module.default || module.ProductManagementUnified,
+    default: module.ProductManagementUnified,
   })),
 );
 
-export const LazyMediaLibrary = lazy(() => import("./media-library/MediaLibraryContainerEnhanced"));
+export const LazyMediaLibrary = lazy(() =>
+  import("./media-library/MediaLibraryContainerEnhanced").then((m) => ({
+    default: m.MediaLibraryContainerEnhanced,
+  })),
+);
 
-// LazyFolderManagement removed - functionality integrated into media library
+export const LazyFabricManagement = lazy(() =>
+  import("./fabric-management-enhanced-v2").then((m) => ({
+    default: m.FabricManagementEnhancedV2,
+  })),
+);
 
-export const LazyFabricManagement = lazy(() => import("./fabric-management-enhanced-v2"));
+export const LazyFiberManagement = lazy(() =>
+  import("./fiber-management").then((m) => ({ default: m.FiberManagement })),
+);
 
-export const LazyFiberManagement = lazy(() => import("./fiber-management"));
+export const LazyCertificateManagement = lazy(() =>
+  import("./certificate-management").then((m) => ({ default: m.CertificateManagement })),
+);
 
-export const LazyCertificateManagement = lazy(() => import("./certificate-management"));
+export const LazySizeChartManagement = lazy(() =>
+  import("./size-chart-management-enhanced").then((m) => ({
+    default: m.SizeChartManagementEnhanced,
+  })),
+);
 
-export const LazySizeChartManagement = lazy(() => import("./size-chart-management-enhanced"));
+export const LazyAccessoryManagement = lazy(() =>
+  import("./accessory-management-enhanced").then((m) => ({
+    default: m.AccessoryManagementEnhanced,
+  })),
+);
 
-export const LazyAccessoryManagement = lazy(() => import("./accessory-management-enhanced"));
+export const LazyCategoryManagement = lazy(() =>
+  import("./category-management-simplified").then((m) => ({
+    default: m.CategoryManagementSimplified,
+  })),
+);
 
-export const LazyCategoryManagement = lazy(() => import("./category-management-simplified"));
-
-export const LazyFooterManagement = lazy(() => import("./footer-management/FooterManagement"));
+export const LazyFooterManagement = lazy(() =>
+  import("./footer-management/FooterManagement").then((m) => ({ default: m.FooterManagement })),
+);
 
 // Note: LazyComponentWrapper was removed as it's not used anywhere in the codebase.
 // All lazy components are rendered directly with Suspense in admin.tsx.

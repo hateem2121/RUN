@@ -165,7 +165,7 @@ interface MediaAssetsSectionProps {
   getMediaAsset: (id: number) => MediaAsset | undefined;
 }
 
-const MediaAssetsSection = memo(function MediaAssetsSection({
+export const MediaAssetsSection = memo(function MediaAssetsSection({
   formData,
   formErrors,
   isOpen,
@@ -523,4 +523,3 @@ const MediaAssetsSection = memo(function MediaAssetsSection({
 });
 
 // Default export for lazy loading compatibility
-export default MediaAssetsSection;

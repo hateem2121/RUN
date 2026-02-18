@@ -1,6 +1,7 @@
 import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/schema";
 import { useMemo } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
+import { getPropertiesArray } from "@/lib/fiber-utils";
 
 export interface SearchResult {
   id: number | string;
@@ -30,7 +31,7 @@ export function useResourceSearch(
     }
 
     const results: SearchResult[] = [];
-    const term = debouncedSearchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase(); // Changed from debouncedSearchTerm
 
     // Search certificates
     data.certificates.forEach((cert) => {
@@ -118,23 +119,20 @@ export function useResourceSearch(
 
     // Search fibers
     data.fibers.forEach((fiber) => {
-      if (
-        fiber.name.toLowerCase().includes(term) ||
-        fiber.type.toLowerCase().includes(term) ||
-        fiber.properties?.toLowerCase().includes(term) ||
-        fiber.description?.toLowerCase().includes(term)
-      ) {
+      const propertiesArray = getPropertiesArray(fiber.properties);
+      const searchableContent = [fiber.name, fiber.type, fiber.description, ...propertiesArray]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      if (searchableContent.includes(term)) {
         results.push({
           id: fiber.id,
           type: "fiber",
           title: fiber.name,
           subtitle: fiber.type,
           ...(fiber.description ? { description: fiber.description } : {}),
-          tags:
-            fiber.properties
-              ?.split(",")
-              .map((p: string) => p.trim())
-              .slice(0, 3) || [],
+          tags: propertiesArray.slice(0, 3),
           data: fiber,
         });
       }

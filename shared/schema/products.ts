@@ -8,7 +8,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createSelectSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { sizeCharts } from "./catalog";
 import { categories } from "./categories";
@@ -303,54 +303,24 @@ export type ProductDetail = Pick<
 >;
 
 // Zod Schema
-export const insertProductSchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1),
-  description: z.string().optional(),
-  shortDescription: z.string().optional(),
-  categoryId: z.number().min(1, "Category ID is required"),
-  categoryPath: z.string().optional(),
-
-  // Media associations
+export const insertProductSchema = createInsertSchema(products, {
+  name: (s) => s.min(1),
+  slug: (s) => s.min(1),
+  sku: (s) => s.min(1, "SKU is required"),
+  categoryId: (s) => s.min(1, "Category ID is required"),
   primaryImageId: z.number().optional().nullable(),
   primaryVideoId: z.number().optional().nullable(),
   modelFileId: z.number().optional().nullable(),
   imageIds: z.array(z.number()).optional(),
   videos: z.array(ProductVideoSchema).optional(),
-
-  // Business fields
-  sku: z.string().min(1, "SKU is required"),
-
-  // B2B specific
   minimumOrderQuantity: z.number().min(1).optional(),
-  leadTime: z.string().optional(),
-
-  // Product specifications
   specifications: z.array(z.string()).optional(),
   technicalSpecs: ProductTechnicalSpecsSchema.optional(),
   fiberComposition: ProductFiberCompositionSchema.optional(),
   tags: z.array(z.string()).optional(),
   careInstructions: z.array(z.string()).optional(),
-
-  // Additional properties
-  urlPath: z.string().optional(),
-  customWeight: z.string().optional(),
-  customFit: z.string().optional(),
-  customizationOptions: z.array(z.string()).optional(),
-
-  // Relationships to other entities
-  fabricId: z.number().optional().nullable(),
-  sizeChartId: z.number().optional().nullable(),
   certificateIds: z.array(z.number()).optional(),
   accessoryIds: z.array(z.number()).optional(),
-  // TODO: Candidate for deprecation - See Drizzle schema comment above
   relatedProductIds: z.array(z.number()).optional(),
-
-  // SEO
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional(),
-
-  // Status
-  isActive: z.boolean().optional(),
-  isFeatured: z.boolean().optional(),
+  customizationOptions: z.array(z.string()).optional(),
 });

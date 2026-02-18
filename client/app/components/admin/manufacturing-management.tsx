@@ -8,7 +8,7 @@ import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
-export default function ManufacturingManagement() {
+export function ManufacturingManagement() {
   // OPTIMIZATION: Defer heavy media loading until editing mode is active (Refactor Phase 4)
   const { data: mediaResponse, isPending: isMediaLoading } = useQuery<{
     success: boolean;

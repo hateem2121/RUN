@@ -1,1 +1,1 @@
-export { ContactPageSettings, ContactPageSettings as default } from "./ContactPageSettings";
+export { ContactPageSettings } from "./ContactPageSettings";

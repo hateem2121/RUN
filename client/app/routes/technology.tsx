@@ -3,7 +3,9 @@ import React from "react";
 // PHASE C: Lazy load heavy components to reduce initial bundle by ~350-500KB
 const GradientBlinds = React.lazy(() => import("@/components/homepage/effects/GradientBlinds"));
 
-const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
+const UnifiedModelViewer = React.lazy(() =>
+  import("@/components/ui/UnifiedModelViewer").then((m) => ({ default: m.UnifiedModelViewer })),
+);
 
 import type {
   MediaAsset,

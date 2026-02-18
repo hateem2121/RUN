@@ -5,7 +5,7 @@ interface PlaceholderModuleProps {
   moduleName: string;
 }
 
-export default function PlaceholderModule({ moduleName }: PlaceholderModuleProps) {
+export function PlaceholderModule({ moduleName }: PlaceholderModuleProps) {
   return (
     <div className="m-4 flex h-loading-center flex-col items-center justify-center rounded-lg border-2 border-border/50 border-dashed bg-muted/20 p-8 text-center">
       <div className="mb-6 rounded-full bg-muted p-4">

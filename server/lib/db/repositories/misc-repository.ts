@@ -264,8 +264,8 @@ export class MiscRepository {
    */
   private transformFabricForDatabase(
     fabric: Partial<InsertFabric>,
-    currentProperties?: Record<string, any> | null,
-  ): any {
+    currentProperties?: Record<string, unknown> | null,
+  ): InsertFabric {
     // Fields that have dedicated database columns
     const {
       name,
@@ -318,7 +318,7 @@ export class MiscRepository {
       washCareInstructions,
       finish,
       ...otherFields
-    } = fabric as Record<string, unknown>;
+    } = fabric as any; // Cast for internal destructuring of mixed legacy/current fields
 
     // DEPRECATED FIELD MONITORING: Track usage of legacy composition field
     if (composition !== undefined) {
@@ -334,7 +334,7 @@ export class MiscRepository {
 
     // Build the properties object with all technical specifications
     // Merge existing properties with new ones to prevent data loss on updates
-    const technicalProperties: Record<string, any> = {
+    const technicalProperties: Record<string, unknown> = {
       ...(currentProperties || {}), // Start with existing properties
       ...(incomingProperties || {}), // Override with any incoming properties
     };
@@ -436,7 +436,8 @@ export class MiscRepository {
     }
 
     // Return the transformed fabric object with database columns + properties
-    const result: any = {
+    const result: InsertFabric = {
+      name: name as string, // Guaranteed by InsertFabric requirement or handled by caller validation
       ...otherFields,
     };
 
@@ -1241,13 +1242,13 @@ export class MiscRepository {
     status: string,
     adminNotes?: string,
   ): Promise<Inquiry | undefined> {
-    const updateData: any = {
+    const updateData: Partial<InsertInquiry> = {
       status,
       ...(adminNotes !== undefined && { adminNotes }),
     };
 
     if (status === "read" || status === "responded") {
-      updateData.respondedAt = sql`NOW()`;
+      updateData.respondedAt = sql`NOW()` as any;
     }
 
     const [updated] = await db

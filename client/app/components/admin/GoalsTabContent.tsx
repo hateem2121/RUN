@@ -74,7 +74,6 @@ interface GoalsTabContentProps {
   }>;
   onSetGoalsPage: (page: number) => void;
 }
-
 export function GoalsTabContent({
   goals,
   paginatedGoals,

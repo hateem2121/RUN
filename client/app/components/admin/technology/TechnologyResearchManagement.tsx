@@ -89,7 +89,7 @@ interface TechnologyResearchManagementProps {
 
 export function TechnologyResearchManagement({
   isLoading: externalLoading,
-}: TechnologyResearchManagementProps) {
+}: TechnologyResearchManagementProps = {}) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

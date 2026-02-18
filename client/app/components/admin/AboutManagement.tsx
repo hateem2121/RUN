@@ -6,7 +6,7 @@ import { AboutTeamMessageTab } from "@/components/admin/about-team-message-tab";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function AboutManagement() {
+export function AboutManagement() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

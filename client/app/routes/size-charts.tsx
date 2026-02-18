@@ -221,7 +221,6 @@ export default function SizeCharts() {
                       <div className="mb-4 flex items-center justify-between">
                         <span className="text-foreground/80 text-sm font-medium">Measurements</span>
                         <Badge variant="outline" className="text-xs">
-                          {/* @ts-ignore - Schema mismatch potential */}
                           Units: {chart.unit || "CM"}
                         </Badge>
                       </div>

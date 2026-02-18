@@ -1,20 +1,34 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getStorage } from "../../lib/storage-singleton.js";
-import { adminService } from "../admin/admin.service.js";
+import { AdminService } from "../admin/admin.service.js";
 
-vi.mock("../../lib/storage-singleton.js", () => ({
-  getStorage: vi.fn(),
-}));
+// Mock Repositories Interface
+const mockProductRepository = {
+  getProductsIncludingDeleted: vi.fn(),
+  getProductsCount: vi.fn(),
+  getCategories: vi.fn(),
+  updateCategory: vi.fn(),
+  restoreCategory: vi.fn(),
+  restoreProduct: vi.fn(),
+};
 
-vi.mock("../../lib/monitoring/logger.js", () => ({
-  logger: {
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-  },
-}));
+const mockMiscRepository = {
+  getFabrics: vi.fn(),
+  getFibers: vi.fn(),
+};
 
+const mockMediaRepository = {
+  getMediaAssetsByIds: vi.fn(),
+  getMediaAssets: vi.fn(),
+  restoreMediaAsset: vi.fn(),
+};
+
+const mockSystemRepository = {
+  createAuditLog: vi.fn().mockResolvedValue({ id: 1 }),
+  setAuditTrailEnabled: vi.fn(),
+  configureTrackedTables: vi.fn(),
+};
+
+// Mock other dependencies
 vi.mock("../../lib/encryption.js", () => ({
   encrypt: vi.fn((val) => `enc_${val}`),
   getBlindIndex: vi.fn((val) => `idx_${val}`),
@@ -23,23 +37,48 @@ vi.mock("../../lib/encryption.js", () => ({
 vi.mock("../../lib/integrations/storage-lifecycle-scheduler.js", () => ({
   getLifecycleScheduler: vi.fn(() => ({
     runCleanup: vi.fn().mockResolvedValue({
-      cleanedFiles: ["f1"],
+      cleanedFiles: ["file1.jpg"],
       orphanedFiles: [],
-      spaceSaved: 100,
+      spaceSaved: 1024,
     }),
   })),
 }));
 
+vi.mock("../../lib/monitoring/logger.js", () => ({
+  logger: {
+    debug: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+  },
+}));
+
+vi.mock("../../lib/resilience/request-timeout.js", () => ({
+  withTimeout: vi.fn((promise) => promise),
+}));
+
 describe("AdminService", () => {
+  let adminService: AdminService;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // Inject mocks
+    adminService = new AdminService(
+      mockSystemRepository as any,
+      mockProductRepository as any,
+      mockMediaRepository as any,
+      mockMiscRepository as any,
+    );
   });
 
-  describe("logAudit", () => {
-    it("should encrypt sensitive data and call storage", async () => {
-      const mockStorage = { createAuditLog: vi.fn().mockResolvedValue({ id: 1 }) };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+  const mockAuditContext = {
+    user: { id: "user-1", email: "admin@example.com", role: "admin" } as any,
+    userAgent: "Mozilla/5.0",
+    ipAddress: "127.0.0.1",
+  };
 
+  describe("logAudit", () => {
+    it("should encrypt sensitive data and call systemRepository", async () => {
       const auditData = {
         action: "UPDATE",
         tableName: "products",
@@ -51,7 +90,7 @@ describe("AdminService", () => {
 
       await adminService.logAudit(auditData);
 
-      expect(mockStorage.createAuditLog).toHaveBeenCalledWith(
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalledWith(
         expect.objectContaining({
           action: "UPDATE",
           userEmail: "enc_test@example.com",
@@ -64,143 +103,165 @@ describe("AdminService", () => {
   });
 
   describe("getInitialProductsData", () => {
-    it("fetches and aggregates data correctly", async () => {
+    it("fetches products and metadata successfully", async () => {
       const mockProducts = [
-        { id: 1, name: "P1", isActive: true, deletedAt: null, primaryImageId: 10 },
-        { id: 2, name: "P2", isActive: false, deletedAt: null }, // Inactive
+        {
+          id: 1,
+          name: "Test Product",
+          isActive: true,
+          deletedAt: null,
+          primaryImageId: 10,
+          imageIds: [11],
+        },
       ];
-      const mockMedia = [{ id: 10, filename: "img.jpg", type: "image", url: "/url" }];
 
-      const mockStorage = {
-        getProductsIncludingDeleted: vi.fn().mockResolvedValue(mockProducts),
-        getProductsCount: vi.fn().mockResolvedValue(2),
-        getCategories: vi.fn().mockResolvedValue([]),
-        getFabrics: vi.fn().mockResolvedValue([]),
-        getMediaAssetsByIds: vi.fn().mockResolvedValue(mockMedia),
-        getMediaAssets: vi.fn().mockResolvedValue([]),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+      vi.mocked(mockProductRepository.getProductsIncludingDeleted).mockResolvedValue(mockProducts);
+      vi.mocked(mockProductRepository.getProductsCount).mockResolvedValue(1);
+      vi.mocked(mockProductRepository.getCategories).mockResolvedValue([]);
+      vi.mocked(mockMiscRepository.getFabrics).mockResolvedValue([]);
+      vi.mocked(mockMediaRepository.getMediaAssetsByIds).mockResolvedValue([
+        { id: 10, filename: "img10.jpg" },
+        { id: 11, filename: "img11.jpg" },
+      ]);
+      vi.mocked(mockMediaRepository.getMediaAssets).mockResolvedValue([]);
 
       const result = await adminService.getInitialProductsData(1, 50);
 
-      expect(result.products).toHaveLength(1); // Only active and not deleted
-      expect(result.products[0].name).toBe("P1");
-      expect(result.meta.totalProducts).toBe(2);
-      expect(result.mediaAssets).toHaveLength(1);
+      expect(result.products).toHaveLength(1);
+      expect(result.mediaAssets).toHaveLength(2);
+      expect(mockProductRepository.getProductsIncludingDeleted).toHaveBeenCalledWith(50, 0);
     });
 
-    it("handles empty data gracefully", async () => {
-      const mockStorage = {
-        getProductsIncludingDeleted: vi.fn().mockResolvedValue([]),
-        getProductsCount: vi.fn().mockResolvedValue(0),
-        getCategories: vi.fn().mockResolvedValue([]),
-        getFabrics: vi.fn().mockResolvedValue([]),
-        getMediaAssetsByIds: vi.fn().mockResolvedValue([]),
-        getMediaAssets: vi.fn().mockResolvedValue([]),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+    it("handles empty results gracefully", async () => {
+      vi.mocked(mockProductRepository.getProductsIncludingDeleted).mockResolvedValue([]);
+      vi.mocked(mockProductRepository.getProductsCount).mockResolvedValue(0);
+      vi.mocked(mockProductRepository.getCategories).mockResolvedValue([]);
+      vi.mocked(mockMiscRepository.getFabrics).mockResolvedValue([]);
 
       const result = await adminService.getInitialProductsData();
 
-      expect(result.products).toEqual([]);
+      expect(result.products).toHaveLength(0);
       expect(result.meta.totalProducts).toBe(0);
     });
   });
 
   describe("fixCorruptedMedia", () => {
     it("identifies and fixes corrupted media URLs", async () => {
-      const categories = [
+      const mockCategories = [
         {
           id: 1,
-          name: "Cat 1",
+          name: "Category 1",
           featuredContent: {
-            card1: { mediaUrl: "/api/media/undefined/content" }, // Corrupted
-            card2: { mediaUrl: "/valid/url" },
+            card1: { mediaUrl: "/api/media/undefined/content" },
           },
-        },
-        {
-          id: 2,
-          name: "Cat 2",
-          featuredContent: { card1: { mediaUrl: "/valid/url" } },
         },
       ];
 
-      const mockStorage = {
-        getCategories: vi.fn().mockResolvedValue(categories),
-        updateCategory: vi.fn().mockResolvedValue(true),
-        createAuditLog: vi.fn(),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+      vi.mocked(mockProductRepository.getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(mockProductRepository.updateCategory).mockResolvedValue({ id: 1 } as any);
 
-      const auditCtx = {
-        user: { id: "u1", email: "a@b.com" } as any,
-        userAgent: "ua",
-        ipAddress: "ip",
-      };
-      const result = await adminService.fixCorruptedMedia(auditCtx);
+      const result = await adminService.fixCorruptedMedia(mockAuditContext);
 
       expect(result.fixedCount).toBe(1);
-      expect(result.fixedCategories).toContain("Cat 1");
-      expect(mockStorage.updateCategory).toHaveBeenCalled();
-      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+      expect(result.fixedCategories).toContain("Category 1");
+      expect(mockProductRepository.updateCategory).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          featuredContent: expect.objectContaining({
+            card1: expect.objectContaining({ mediaUrl: "" }),
+          }),
+        }),
+      );
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalled();
+    });
+
+    it("skips categories without corruption", async () => {
+      const mockCategories = [
+        {
+          id: 1,
+          name: "Clean Category",
+          featuredContent: {
+            card1: { mediaUrl: "/api/media/123/content" },
+          },
+        },
+      ];
+
+      vi.mocked(mockProductRepository.getCategories).mockResolvedValue(mockCategories);
+
+      const result = await adminService.fixCorruptedMedia(mockAuditContext);
+
+      expect(result.fixedCount).toBe(0);
+      expect(mockProductRepository.updateCategory).not.toHaveBeenCalled();
     });
   });
 
   describe("triggerCleanup", () => {
-    it("should call scheduler and log audit", async () => {
-      const mockStorage = { createAuditLog: vi.fn() };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+    it("triggers storage cleanup and logs audit", async () => {
+      const result = await adminService.triggerCleanup(mockAuditContext, true);
 
-      const auditCtx = {
-        user: { id: "u1", email: "a@b.com" } as any,
-        userAgent: "ua",
-        ipAddress: "ip",
-      };
-      const report = await adminService.triggerCleanup(auditCtx, true);
-
-      expect(report.cleanedFiles).toContain("f1");
-      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+      expect(result.cleanedFiles).toContain("file1.jpg");
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "DELETE",
+          recordId: "CLEANUP",
+        }),
+      );
     });
   });
 
   describe("updateAuditConfig", () => {
-    it("should update storage and log audit", async () => {
-      const mockStorage = {
-        setAuditTrailEnabled: vi.fn(),
-        configureTrackedTables: vi.fn(),
-        createAuditLog: vi.fn(),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
-
-      const auditCtx = {
-        user: { id: "u1", email: "a@b.com" } as any,
-        userAgent: "ua",
-        ipAddress: "ip",
-      };
+    it("updates configuration and logs audit", async () => {
       const config = { enabled: true, trackedTables: ["users"] };
 
-      const result = await adminService.updateAuditConfig(auditCtx, config);
+      await adminService.updateAuditConfig(mockAuditContext, config);
 
-      expect(result).toBe(true);
-      expect(mockStorage.setAuditTrailEnabled).toHaveBeenCalledWith(true);
-      expect(mockStorage.configureTrackedTables).toHaveBeenCalledWith(["users"]);
-      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+      expect(mockSystemRepository.setAuditTrailEnabled).toHaveBeenCalledWith(true);
+      expect(mockSystemRepository.configureTrackedTables).toHaveBeenCalledWith(["users"]);
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "UPDATE",
+          tableName: "audit_configuration",
+          recordId: "CONFIG",
+        }),
+      );
     });
   });
 
   describe("restore methods", () => {
-    it("restoreCategory calls storage and logs audit", async () => {
-      const mockStorage = {
-        restoreCategory: vi.fn().mockResolvedValue(true),
-        createAuditLog: vi.fn(),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as any);
+    it("restores category", async () => {
+      vi.mocked(mockProductRepository.restoreCategory).mockResolvedValue(true);
 
-      const auditCtx = { user: { id: "u1" } as any, userAgent: "ua", ipAddress: "ip" };
-      await adminService.restoreCategory(auditCtx, 1);
+      const result = await adminService.restoreCategory(mockAuditContext, 1);
 
-      expect(mockStorage.restoreCategory).toHaveBeenCalledWith(1);
-      expect(mockStorage.createAuditLog).toHaveBeenCalled();
+      expect(result).toBe(true);
+      expect(mockProductRepository.restoreCategory).toHaveBeenCalledWith(1);
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "RESTORE",
+          tableName: "categories",
+          recordId: "1",
+        }),
+      );
+    });
+
+    it("restores product", async () => {
+      vi.mocked(mockProductRepository.restoreProduct).mockResolvedValue(true);
+
+      const result = await adminService.restoreProduct(mockAuditContext, 1);
+
+      expect(result).toBe(true);
+      expect(mockProductRepository.restoreProduct).toHaveBeenCalledWith(1);
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalled();
+    });
+
+    it("restores media asset", async () => {
+      vi.mocked(mockMediaRepository.restoreMediaAsset).mockResolvedValue(true);
+
+      const result = await adminService.restoreMediaAsset(mockAuditContext, 1);
+
+      expect(result).toBe(true);
+      expect(mockMediaRepository.restoreMediaAsset).toHaveBeenCalledWith(1);
+      expect(mockSystemRepository.createAuditLog).toHaveBeenCalled();
     });
   });
 });

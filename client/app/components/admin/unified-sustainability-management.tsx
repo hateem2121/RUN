@@ -267,7 +267,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
 });
 
 export function UnifiedSustainabilityManagement() {
-  // Removed unused useLocation hook
+  // No default export needed for UnifiedSustainabilityManagement as it is already a named export.
 
   const { toast } = useToast();
 

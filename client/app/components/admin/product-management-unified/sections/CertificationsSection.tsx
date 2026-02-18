@@ -21,7 +21,7 @@ interface CertificationsSectionProps {
   products: Product[];
 }
 
-const CertificationsSection = memo(function CertificationsSection({
+export const CertificationsSection = memo(function CertificationsSection({
   formData,
   isOpen,
   onToggle,
@@ -293,6 +293,3 @@ const CertificationsSection = memo(function CertificationsSection({
     </Collapsible>
   );
 });
-
-// Default export for lazy loading compatibility
-export default CertificationsSection;

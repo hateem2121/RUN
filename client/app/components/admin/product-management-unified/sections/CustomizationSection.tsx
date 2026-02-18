@@ -30,7 +30,7 @@ interface CustomizationSectionProps {
   generateMetaDescription: () => void;
 }
 
-const CustomizationSection = memo(function CustomizationSection({
+export const CustomizationSection = memo(function CustomizationSection({
   formData,
   formErrors,
   isOpen,
@@ -244,6 +244,3 @@ const CustomizationSection = memo(function CustomizationSection({
     </Collapsible>
   );
 });
-
-// Default export for lazy loading compatibility
-export default CustomizationSection;

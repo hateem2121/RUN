@@ -44,7 +44,7 @@ interface TechnologyCtaManagementProps {
 
 export function TechnologyCtaManagement({
   isLoading: externalLoading,
-}: TechnologyCtaManagementProps) {
+}: TechnologyCtaManagementProps = {}) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

@@ -1,4 +1,4 @@
-import type { Certificate, Fabric, Fiber } from "@shared/schema";
+import type { Certificate, CompositionSet, Fabric, Fiber } from "@shared/schema";
 import { dehydrate, HydrationBoundary, keepPreviousData, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronUp, Layers, Leaf, Loader2, Search, Shirt, Wind } from "lucide-react";
@@ -48,14 +48,14 @@ export function meta({}: Route.MetaArgs) {
 }
 
 // Helper to get the default composition from a fabric
-const getDefaultComposition = (fabric: Fabric) => {
-  const compositions = (fabric.properties as any)?.compositions;
+const getDefaultComposition = (fabric: Fabric): CompositionSet | null => {
+  const compositions = fabric.properties?.compositions;
   if (!compositions || compositions.length === 0) {
     return null;
   }
   // Find the default composition or use the first one
-  const defaultComp = compositions.find((c: any) => c.isDefault);
-  return defaultComp || compositions[0];
+  const defaultComp = compositions.find((c) => c.isDefault);
+  return defaultComp || compositions[0] || null;
 };
 
 export default function Fabrics() {
@@ -147,7 +147,8 @@ export default function Fabrics() {
     return Layers;
   };
 
-  const getFiberName = (fiberId: number) => {
+  const getFiberName = (fiberId: number | null) => {
+    if (fiberId === null) return "Unknown";
     const fiber = fibers.find((f) => f.id === fiberId);
     return fiber?.name || "Unknown";
   };
@@ -354,25 +355,20 @@ export default function Fabrics() {
                                           return defaultComp?.fibers &&
                                             defaultComp.fibers.length > 0 ? (
                                             <div className="mb-3 space-y-2">
-                                              {defaultComp.fibers
-                                                .slice(0, 2)
-                                                .map((fiber: any, idx: number) => (
-                                                  <div
-                                                    key={idx}
-                                                    className="flex items-center gap-2"
-                                                  >
-                                                    <span className="text-muted-foreground text-xs">
-                                                      {getFiberName(fiber.fiberId)}
-                                                    </span>
-                                                    <Progress
-                                                      value={fiber.percentage || 0}
-                                                      className="h-2 flex-1"
-                                                    />
-                                                    <span className="font-medium text-xs">
-                                                      {fiber.percentage}%
-                                                    </span>
-                                                  </div>
-                                                ))}
+                                              {defaultComp.fibers.slice(0, 2).map((fiber, idx) => (
+                                                <div key={idx} className="flex items-center gap-2">
+                                                  <span className="text-muted-foreground text-xs">
+                                                    {getFiberName(fiber.fiberId)}
+                                                  </span>
+                                                  <Progress
+                                                    value={Number(fiber.percentage) || 0}
+                                                    className="h-2 flex-1"
+                                                  />
+                                                  <span className="font-medium text-xs">
+                                                    {fiber.percentage}%
+                                                  </span>
+                                                </div>
+                                              ))}
                                               {defaultComp.fibers.length > 2 && !isExpanded && (
                                                 <Typography.P className="text-muted-foreground/70 text-xs">
                                                   +{defaultComp.fibers.length - 2} more fibers
@@ -406,52 +402,50 @@ export default function Fabrics() {
 
                                                 {/* All Fiber Compositions */}
                                                 {(() => {
-                                                  const compositions = (fabric.properties as any)
-                                                    ?.compositions;
+                                                  const compositions =
+                                                    fabric.properties?.compositions;
                                                   return compositions && compositions.length > 0 ? (
                                                     <div className="space-y-2">
                                                       <Typography.P className="font-semibold text-foreground/80 text-xs">
                                                         Fiber Compositions:
                                                       </Typography.P>
-                                                      {compositions.map(
-                                                        (comp: any, idx: number) => (
-                                                          <div
-                                                            key={idx}
-                                                            className="rounded bg-muted/50 p-2"
-                                                          >
-                                                            <Typography.P className="mb-1 font-medium text-foreground/80 text-xs">
-                                                              {comp.name}{" "}
-                                                              {comp.isDefault && (
-                                                                <Badge
-                                                                  variant="outline"
-                                                                  className="ml-1 text-xs"
-                                                                >
-                                                                  Default
-                                                                </Badge>
-                                                              )}
-                                                            </Typography.P>
-                                                            {comp.fibers?.map(
-                                                              (fiber: any, fidx: number) => (
-                                                                <div
-                                                                  key={fidx}
-                                                                  className="flex items-center gap-2 text-xs"
-                                                                >
-                                                                  <span className="text-muted-foreground">
-                                                                    {getFiberName(fiber.fiberId)}
-                                                                  </span>
-                                                                  <Progress
-                                                                    value={fiber.percentage || 0}
-                                                                    className="h-1 flex-1"
-                                                                  />
-                                                                  <span className="font-medium">
-                                                                    {fiber.percentage}%
-                                                                  </span>
-                                                                </div>
-                                                              ),
+                                                      {compositions.map((comp, idx) => (
+                                                        <div
+                                                          key={idx}
+                                                          className="rounded bg-muted/50 p-2"
+                                                        >
+                                                          <Typography.P className="mb-1 font-medium text-foreground/80 text-xs">
+                                                            {comp.name}{" "}
+                                                            {comp.isDefault && (
+                                                              <Badge
+                                                                variant="outline"
+                                                                className="ml-1 text-xs"
+                                                              >
+                                                                Default
+                                                              </Badge>
                                                             )}
-                                                          </div>
-                                                        ),
-                                                      )}
+                                                          </Typography.P>
+                                                          {comp.fibers?.map((fiber, fidx) => (
+                                                            <div
+                                                              key={fidx}
+                                                              className="flex items-center gap-2 text-xs"
+                                                            >
+                                                              <span className="text-muted-foreground">
+                                                                {getFiberName(fiber.fiberId)}
+                                                              </span>
+                                                              <Progress
+                                                                value={
+                                                                  Number(fiber.percentage) || 0
+                                                                }
+                                                                className="h-1 flex-1"
+                                                              />
+                                                              <span className="font-medium">
+                                                                {fiber.percentage}%
+                                                              </span>
+                                                            </div>
+                                                          ))}
+                                                        </div>
+                                                      ))}
                                                     </div>
                                                   ) : null;
                                                 })()}

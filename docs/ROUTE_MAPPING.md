@@ -18,8 +18,17 @@ This document defines the 1:1 relationship between public frontend pages and adm
 | `/about` | `/admin/pages/about` | `/api/pages/about` | About page / editor |
 | `/contact` | `/admin/settings/contact` | `/api/contact-info` | Contact page / settings |
 | `/gallery` | `/admin/media/gallery` | `/api/media` | Image gallery / media manager |
-| N/A (Global) | `/admin/settings/navigation` | `/api/navigation-items` | Navigation menu management |
-| N/A (Global) | `/admin/settings/ui` | `/api/logo-animation-settings` | Global UI & Logo settings |
+| `/accessories` | `/admin/accessories` | `/api/accessories` | Accessories Catalog / Management |
+| `/analytics` | `/admin/analytics` | `/api/analytics/summary` | System Analytics / Data Insights |
+| `/certifications` | `/admin/certifications` | `/api/certifications` | Company Certifications / Credentials |
+| `/fabrics` | `/admin/fabrics` | `/api/fabrics` | Fabric Material Catalog / Management |
+| `/fibers` | `/admin/fibers` | `/api/fibers` | Fiber & Yarn Catalog / Management |
+| `/manufacturing` | `/admin/manufacturing` | `/api/manufacturing/status` | Manufacturing Facilities / Capacity |
+| `/resources` | `/admin/resources` | `/api/resources` | B2B Resources & Documents |
+| `/services` | `/admin/services` | `/api/services` | Manufacturing Services & Solutions |
+| `/size-charts` | `/admin/size-charts` | `/api/size-charts` | Global Size Charts / Grading |
+| `/sustainability` | `/admin/sustainability` | `/api/sustainability` | Sustainability Reports |
+| `/technology` | `/admin/technology` | `/api/technology` | Technology Stack / Innovation Lab |
 
 ## Implementation Notes
 

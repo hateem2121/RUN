@@ -461,7 +461,7 @@ const UploadItem = React.memo(
   },
 );
 
-export default function MediaUploadEnhanced() {
+export function MediaUploadEnhanced() {
   const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibraryEnhanced();
 
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -32,7 +32,7 @@ interface SpecificationsSectionProps {
   onInputChange: (field: string, value: ProductFormFieldValue) => void;
 }
 
-const SpecificationsSection = memo(function SpecificationsSection({
+export const SpecificationsSection = memo(function SpecificationsSection({
   formData,
   formErrors,
   isOpen,
@@ -454,6 +454,3 @@ const SpecificationsSection = memo(function SpecificationsSection({
     </Collapsible>
   );
 });
-
-// Default export for lazy loading compatibility
-export default SpecificationsSection;

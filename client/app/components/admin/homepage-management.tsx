@@ -7,7 +7,7 @@ import { HomepageProcessCardsTab } from "./homepage/HomepageProcessCardsTab";
 import { HomepageSectionsTab } from "./homepage/HomepageSectionsTab";
 import { HomepageSlogansTab } from "./homepage/HomepageSlogansTab";
 
-export default function HomepageManagement() {
+export function HomepageManagement() {
   const { isLoading, hero, slogans, sections, featuredSettings, processCards } =
     useAdminHomepageData();
 

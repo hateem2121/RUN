@@ -37,6 +37,12 @@ export const webhookDeliveries = pgTable("webhook_deliveries", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Types
+export type WebhookSubscription = typeof webhookSubscriptions.$inferSelect;
+export type InsertWebhookSubscription = typeof webhookSubscriptions.$inferInsert;
+export type WebhookDelivery = typeof webhookDeliveries.$inferSelect;
+export type InsertWebhookDelivery = typeof webhookDeliveries.$inferInsert;
+
 // Zod Schemas
 export const selectWebhookSubscriptionSchema = createSelectSchema(webhookSubscriptions);
 export const insertWebhookSubscriptionSchema = z.object({

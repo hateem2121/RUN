@@ -12,7 +12,6 @@ interface CertificationsTabContentProps {
   onLocalUpdate: (updates: Partial<UnifiedSustainability>) => void;
   onSave: () => void;
 }
-
 export function CertificationsTabContent({
   localForm,
   hasUnsavedChanges,

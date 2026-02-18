@@ -25,7 +25,7 @@ import {
   parseNumericValue,
 } from "./fabric/types";
 
-export default function FabricManagementEnhancedV2() {
+export function FabricManagementEnhancedV2() {
   const [formData, setFormData] = useState<EnhancedFormData>(initialFormData);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

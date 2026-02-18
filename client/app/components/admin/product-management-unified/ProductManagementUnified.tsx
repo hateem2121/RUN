@@ -6,8 +6,12 @@ import { ProductGrid } from "./core/ProductGrid";
 import { PerformanceMonitor } from "./PerformanceMonitor";
 
 // Lazy load advanced components
-const ProductDetailsPanel = lazy(() => import("./shared/ProductDetailsPanel"));
-const ProductCreateEditModal = lazy(() => import("./admin/ProductCreateEditModal"));
+const ProductDetailsPanel = lazy(() =>
+  import("./shared/ProductDetailsPanel").then((m) => ({ default: m.ProductDetailsPanel })),
+);
+const ProductCreateEditModal = lazy(() =>
+  import("./admin/ProductCreateEditModal").then((m) => ({ default: m.ProductCreateEditModal })),
+);
 
 type ProductManagementUnifiedProps = Record<string, never>;
 
@@ -120,5 +124,3 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
     </div>
   );
 }
-
-export default ProductManagementUnified;

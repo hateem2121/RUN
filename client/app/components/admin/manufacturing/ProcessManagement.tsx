@@ -75,8 +75,8 @@ type ProcessFormData = Omit<
   step: number; // Override nullable
 };
 
-interface ProcessManagementProps {
-  mediaAssets: MediaAsset[];
+export interface ProcessManagementProps {
+  mediaAssets?: MediaAsset[];
 }
 
 const processIcons = ["Factory", "Settings", "Wrench", "Box", "Truck", "CheckCircle2"];
@@ -142,7 +142,7 @@ function SortableProcessItem({
   );
 }
 
-export function ProcessManagement({ mediaAssets }: ProcessManagementProps) {
+export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps = {}) {
   const [editingProcess, setEditingProcess] = useState<ManufacturingProcess | null>(null);
   const [showProcessDialog, setShowProcessDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);

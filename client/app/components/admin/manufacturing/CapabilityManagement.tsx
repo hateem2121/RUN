@@ -65,8 +65,8 @@ type CapabilityFormData = Omit<
   unit: string | null;
 };
 
-interface CapabilityManagementProps {
-  mediaAssets: MediaAsset[];
+export interface CapabilityManagementProps {
+  mediaAssets?: MediaAsset[];
 }
 
 const capabilityIcons = ["Factory", "Cog", "Award", "Shield", "Wrench", "CircuitBoard"];
@@ -153,7 +153,7 @@ function SortableCapabilityItem({
   );
 }
 
-export function CapabilityManagement({ mediaAssets }: CapabilityManagementProps) {
+export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementProps = {}) {
   const [editingCapability, setEditingCapability] = useState<ManufacturingCapability | null>(null);
   const [showCapabilityDialog, setShowCapabilityDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);

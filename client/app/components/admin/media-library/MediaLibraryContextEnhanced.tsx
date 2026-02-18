@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type React from "react";
 import {
   createContext,
-  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -289,7 +288,7 @@ interface MediaLibraryContextType {
 
 const MediaLibraryContext = createContext<MediaLibraryContextType | null>(null);
 
-export function MediaLibraryProvider({ children }: Readonly<{ children: ReactNode }>) {
+export function MediaLibraryProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(mediaLibraryReducer, initialState);
   const queryClient = useQueryClient();
   const { toast } = useToast();

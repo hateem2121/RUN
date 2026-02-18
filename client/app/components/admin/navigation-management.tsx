@@ -23,7 +23,7 @@ interface NavigationItemWithMedia extends NavigationItem {
   mediaIcon?: MediaAsset;
 }
 
-export default function NavigationManagement() {
+export function NavigationManagement() {
   const [editingItem, setEditingItem] = useLocalStorage<NavigationItem | null>(
     "admin_nav_editing_item",
     null,

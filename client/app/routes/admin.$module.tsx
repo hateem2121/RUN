@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router"; // RR7 uses useParams from react-router
-import PlaceholderModule from "@/components/admin/PlaceholderModule";
+import { PlaceholderModule } from "@/components/admin/PlaceholderModule";
 import { ApiErrorFallback } from "@/components/admin/shared/ApiErrorFallback";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Typography } from "@/components/ui/typography";
@@ -15,48 +15,87 @@ const ProductManagementUnified = lazy(() =>
   })),
 );
 
-const AdminMediaPage = lazy(
-  () => import("@/components/admin/media-library/MediaLibraryContainerEnhanced"),
+const AdminMediaPage = lazy(() =>
+  import("@/components/admin/media-library/MediaLibraryContainerEnhanced").then((m) => ({
+    default: m.MediaLibraryContainerEnhanced,
+  })),
 );
 
-const FabricManagementEnhancedV2 = lazy(
-  () => import("@/components/admin/fabric-management-enhanced-v2"),
+const FabricManagement = lazy(() =>
+  import("@/components/admin/fabric-management-enhanced-v2").then((m) => ({
+    default: m.FabricManagementEnhancedV2,
+  })),
 );
-const FiberManagement = lazy(() => import("@/components/admin/fiber-management"));
-const CertificateManagement = lazy(() => import("@/components/admin/certificate-management"));
-const SizeChartManagementEnhanced = lazy(
-  () => import("@/components/admin/size-chart-management-enhanced"),
+const FiberManagement = lazy(() =>
+  import("@/components/admin/fiber-management").then((m) => ({ default: m.FiberManagement })),
 );
-const AccessoryManagement = lazy(() => import("@/components/admin/accessory-management-enhanced"));
-const NavigationManagement = lazy(() => import("@/components/admin/navigation-management"));
-const HomepageManagement = lazy(() => import("@/components/admin/homepage-management"));
-const CategoryManagementSimplified = lazy(
-  () => import("@/components/admin/category-management-simplified"),
+const CertificateManagement = lazy(() =>
+  import("@/components/admin/certificate-management").then((m) => ({
+    default: m.CertificateManagement,
+  })),
 );
-const LazyFooterManagement = lazy(
-  () => import("@/components/admin/footer-management/FooterManagement"),
+const SizeChartManagement = lazy(() =>
+  import("@/components/admin/size-chart-management-enhanced").then((m) => ({
+    default: m.SizeChartManagementEnhanced,
+  })),
 );
-const AboutManagement = lazy(() => import("@/components/admin/AboutManagement"));
+const AccessoryManagement = lazy(() =>
+  import("@/components/admin/accessory-management-enhanced").then((m) => ({
+    default: m.AccessoryManagementEnhanced,
+  })),
+);
+// Unused exports removed
+const HomepageManagement = lazy(() =>
+  import("@/components/admin/homepage-management").then((m) => ({
+    default: m.HomepageManagement,
+  })),
+);
+const CategoryManagement = lazy(() =>
+  import("@/components/admin/category-management-simplified").then((m) => ({
+    default: m.CategoryManagementSimplified,
+  })),
+);
+const FooterManagement = lazy(() =>
+  import("@/components/admin/footer-management/FooterManagement").then((m) => ({
+    default: m.FooterManagement,
+  })),
+);
+const AboutManagement = lazy(() =>
+  import("@/components/admin/AboutManagement").then((m) => ({ default: m.AboutManagement })),
+);
 const BlogManagement = lazy(() =>
   import("@/components/admin/blog-management").then((m) => ({ default: m.BlogManagement })),
 );
 
-const UnifiedSustainabilityManagement = lazy(() =>
+const SustainabilityManagement = lazy(() =>
   import("@/components/admin/unified-sustainability-management").then((m) => ({
     default: m.UnifiedSustainabilityManagement,
   })),
 );
-const ManufacturingManagement = lazy(() => import("@/components/admin/manufacturing-management"));
+const ManufacturingManagement = lazy(() =>
+  import("@/components/admin/manufacturing-management").then((m) => ({
+    default: m.ManufacturingManagement,
+  })),
+);
 const TechnologyManagement = lazy(() =>
   import("@/components/admin/technology-management").then((m) => ({
     default: m.TechnologyManagement,
   })),
 );
 const StorageOptimization = () => <PlaceholderModule moduleName="Storage Optimization" />;
-const ContactManagement = lazy(() => import("@/components/admin/contact-management"));
+const ContactManagement = lazy(() =>
+  import("@/components/admin/contact-management/ContactPageSettings").then((m) => ({
+    default: m.ContactPageSettings,
+  })),
+);
 const MediaTestRunner = () => <PlaceholderModule moduleName="Media Test Runner" />;
 const InquiryManagement = lazy(() =>
-  import("@/components/admin/inquiry-management").then((m) => ({ default: m.InquiryManagement })),
+  import("@/components/admin/inquiry-management/index").then((m) => ({
+    default: m.InquiryManagement,
+  })),
+);
+const InventoryManagement = lazy(() =>
+  import("@/components/admin/PlaceholderModule").then((m) => ({ default: m.PlaceholderModule })),
 );
 
 // Loading component
@@ -78,6 +117,19 @@ export function meta({ params }: Route.MetaArgs) {
   return [{ title: `${moduleName} | RUN APPAREL Admin` }];
 }
 
+const AdminDashboard = ({ moduleName }: { moduleName: string }) => (
+  <PlaceholderModule moduleName={moduleName} />
+);
+const OrderManagement = ({ moduleName }: { moduleName: string }) => (
+  <PlaceholderModule moduleName={moduleName} />
+);
+const CustomerManagement = ({ moduleName }: { moduleName: string }) => (
+  <PlaceholderModule moduleName={moduleName} />
+);
+const AdminSettings = ({ moduleName }: { moduleName: string }) => (
+  <PlaceholderModule moduleName={moduleName} />
+);
+
 export default function AdminModule() {
   const { module } = useParams();
 
@@ -85,30 +137,47 @@ export default function AdminModule() {
     switch (module) {
       case "products":
         return <ProductManagementUnified />;
+      case "product":
+        return <InventoryManagement moduleName="Inventory" />;
+      case "orders":
+        return <OrderManagement moduleName="Orders" />;
+      case "customers":
+        return <CustomerManagement moduleName="Customers" />;
+      case "settings":
+        return <AdminSettings moduleName="Settings" />;
+      case "dashboard":
+        return <AdminDashboard moduleName="Dashboard" />;
       case "categories":
-        return <CategoryManagementSimplified />;
+        return <CategoryManagement />;
+      case "category":
+        return <CategoryManagement />;
       case "media":
         return <AdminMediaPage />;
       case "fabrics":
-        return <FabricManagementEnhancedV2 />;
+        return <FabricManagement />;
       case "fibers":
+        return <FiberManagement />;
+      case "fiber":
         return <FiberManagement />;
       case "certificates":
         return <CertificateManagement />;
+      case "certificate":
+        return <CertificateManagement />;
       case "size-charts":
-        return <SizeChartManagementEnhanced />;
+        return <SizeChartManagement />;
+      case "size-chart":
+        return <SizeChartManagement />;
       case "accessories":
         return <AccessoryManagement />;
-      case "navigation":
-        return <NavigationManagement />;
+
+      case "manufacturing":
+        return <ManufacturingManagement />;
       case "homepage":
         return <HomepageManagement />;
       case "about":
         return <AboutManagement />;
       case "sustainability":
-        return <UnifiedSustainabilityManagement />;
-      case "manufacturing":
-        return <ManufacturingManagement />;
+        return <SustainabilityManagement />;
       case "technology":
         return <TechnologyManagement />;
       case "storage-optimization":
@@ -116,25 +185,17 @@ export default function AdminModule() {
       case "contact":
         return <ContactManagement />;
       case "footer":
-        return <LazyFooterManagement />;
-      case "test-runner":
-        return <MediaTestRunner />;
+        return <FooterManagement />;
       case "inquiries":
         return <InquiryManagement />;
       case "blog":
         return <BlogManagement />;
-      case "dashboard":
-        // Should be handled by _index but just in case
-        return null;
+      case "test-runner":
+        return <MediaTestRunner />;
+
+      case "placeholder":
       default:
-        return (
-          <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-            <Typography.H2>Module Not Found</Typography.H2>
-            <Typography.P className="text-muted-foreground">
-              The requested admin module "{module}" does not exist.
-            </Typography.P>
-          </div>
-        );
+        return <PlaceholderModule moduleName={module ?? "Unknown Module"} />;
     }
   };
 

@@ -220,7 +220,7 @@ const AccessoryList = ({
   );
 };
 
-export default function AccessoryManagementEnhanced() {
+export function AccessoryManagementEnhanced() {
   const [formData, setFormData] = useState({
     name: "",
     category: "",

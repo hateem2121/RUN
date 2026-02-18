@@ -59,7 +59,13 @@ export function registerDataCreationRoutes(app: Express): void {
         ];
 
         for (const cat of categoryData) {
-          const created = await productRepository.createCategory(cat);
+          const categoryWithDefaults = {
+            ...cat,
+            metaTitle: null,
+            bannerUrl: null,
+            imageUrl: null,
+          };
+          const created = await productRepository.createCategory(categoryWithDefaults);
           results.categories.push(created);
         }
 

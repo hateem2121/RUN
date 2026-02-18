@@ -27,7 +27,7 @@ import { FiberForm } from "./fiber/FiberForm";
 import { FiberList } from "./fiber/FiberList";
 import { type FiberFormData, initialFiberFormData } from "./fiber/types";
 
-export default function FiberManagement() {
+export function FiberManagement() {
   const [formData, setFormData] = useState<FiberFormData>(initialFiberFormData);
   const [propertyList, setPropertyList] = useState<string[]>([]);
   const [newProperty, setNewProperty] = useState("");

@@ -1,7 +1,7 @@
 import type { MediaAsset } from "@shared/schema";
 import { AlertCircle, Check, FileIcon, Image, Video, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
-import MediaLibraryContainerEnhanced from "@/components/admin/media-library/MediaLibraryContainerEnhanced";
+import { MediaLibraryContainerEnhanced } from "@/components/admin/media-library/MediaLibraryContainerEnhanced";
 import { useMediaLibraryEnhanced } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import { Button } from "@/components/ui/button";
 

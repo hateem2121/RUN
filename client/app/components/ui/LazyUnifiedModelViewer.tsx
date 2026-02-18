@@ -2,7 +2,9 @@ import type { ComponentProps } from "react";
 import { lazy, Suspense } from "react";
 
 // Lazy-load the actual UnifiedModelViewer component
-const UnifiedModelViewer = lazy(() => import("./UnifiedModelViewer"));
+const UnifiedModelViewer = lazy(() =>
+  import("./UnifiedModelViewer").then((m) => ({ default: m.UnifiedModelViewer })),
+);
 
 // Loading fallback component
 function ModelViewerSkeleton() {

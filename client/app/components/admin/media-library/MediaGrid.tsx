@@ -44,7 +44,9 @@ import { cn } from "@/lib/utils";
 import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
 
 // STEP 3 INTEGRATION: Import UnifiedModelViewer for 3D preview thumbnails
-const UnifiedModelViewer = React.lazy(() => import("@/components/ui/UnifiedModelViewer"));
+const UnifiedModelViewer = React.lazy(() =>
+  import("@/components/ui/UnifiedModelViewer").then((m) => ({ default: m.UnifiedModelViewer })),
+);
 
 // Import centralized standardized query keys
 import { createMediaQueryKey, invalidateMediaQueries } from "@/lib/media-query-keys";
@@ -543,19 +545,30 @@ const MediaBulkOperations = React.memo(() => {
 MediaBulkOperations.displayName = "MediaBulkOperations";
 
 // Main MediaGrid Component (consolidates MediaGridResponsive)
-export default function MediaGrid({
-  selectionMode = false,
-  // isStandalone removed
-  onAssetSelect,
-}: {
-  selectionMode?: boolean | undefined;
-  isStandalone?: boolean | undefined;
+// MediaGridProps interface was redundant and removed to simplify the file.
+export interface MediaGridProps {
+  selectionMode?: boolean;
+  isStandalone?: boolean;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;
-} = {}) {
+}
+
+export function MediaGrid({
+  selectionMode = false,
+  isStandalone = false,
+  onAssetSelect,
+}: MediaGridProps) {
   const { state, updateState, setSelectedAsset, setLightboxOpen, setCurrentPage, setTotalPages } =
     useMediaLibraryEnhanced();
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Standalone check used for grid classes
+  const gridClassName = cn(
+    "grid gap-4",
+    isStandalone
+      ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
+  );
 
   // PHASE 4: Event-driven cache invalidation - listen for backend cache invalidation events
   useCacheInvalidationListener("media:");
@@ -653,6 +666,8 @@ export default function MediaGrid({
         return data;
       }
 
+      // MediaGridProps interface removed as it was redundant with local component props and unused elsewhere.
+      // Small helper for individual media items (internal)
       // Filter out deletedAt items as safety net against stale backend cache
       const filteredAssets = dataRecord.data.filter((asset: unknown) => {
         if (typeof asset !== "object" || asset === null) {
@@ -983,17 +998,13 @@ export default function MediaGrid({
 
       {/* SIMPLIFIED: Pure CSS Grid Layout (removed virtual scrolling complexity) */}
       <div ref={containerRef} className="w-full">
-        <div
-          className={cn(
-            "grid-base-media grid-responsive-media",
-            state.viewMode === "list" && "grid-cols-1",
-          )}
-        >
+        <div className={cn(gridClassName, state.viewMode === "list" && "grid-cols-1")}>
           {displayAssets.map((asset: MediaAsset, index: number) => (
             <MediaGridItem
               key={`${asset.id}-${batchContent?.[asset.id] ? "signed" : "loading"}`}
               asset={asset}
               isSelected={state.selectedAssets.has(asset.id)}
+              aria-checked={state.selectedAssets.has(asset.id) ? "true" : "false"}
               isOptimistic={false}
               onSelect={handleAssetSelect}
               onClick={handleAssetClick}

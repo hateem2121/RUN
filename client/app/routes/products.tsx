@@ -33,9 +33,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Typography } from "@/components/ui/typography";
+import { db } from "@/db.server";
 import { useAnalyticsTracker } from "@/hooks/useAnalyticsTracker";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
-import { db } from "@/lib/db.server";
 import {
   AccessorySchema,
   CategorySchema,
