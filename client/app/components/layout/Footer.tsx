@@ -323,12 +323,15 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Massive Parallax Logotype */}
-      <div className="z-elevated relative w-full text-center overflow-hidden" aria-hidden="true">
+      <div
+        className="z-elevated relative w-full text-center overflow-hidden translate-y-[13%]"
+        aria-hidden="true"
+      >
         <h1
           ref={textRef}
-          className="leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-(--font-size-footer-display)"
+          className="leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-[15.5vw]"
         >
-          {footerConfig?.brandText || "RUN APPAREL"}
+          RUN APPAREL
         </h1>
       </div>
     </footer>
