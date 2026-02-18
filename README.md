@@ -73,6 +73,7 @@ cms-system/
 ├── architecture/            # Systematic execution SOPs
 │   └── SOP_CODE_CHANGE.md   # Standard for code modifications
 ├── client/                  # Frontend (React 19 + Vite)
+│   ├── vite.config.ts       # Vite config (port 5002)
 │   ├── app/
 │   │   ├── components/
 │   │   │   ├── ui/         # Generic UI components
@@ -110,7 +111,6 @@ cms-system/
 │
 ├── .env                     # Environment (PORT=5002)
 ├── .env.example            # Template (PORT=5002)
-├── vite.config.ts          # Vite config (port: 5002)
 ├── package.json            # Scripts for port 5002
 ├── docs/CODING_STANDARDS.md # Coding rules (Rule #0: Port 5002)
 ├── docs/DEVELOPMENT_WORKFLOW.md # Development workflow
@@ -522,7 +522,7 @@ npm run dev
 
 2. **Check CORS configuration:**
    ```typescript
-   // server/middleware/cors.ts should allow localhost:5002
+   // server/middleware/cors-config.ts should allow localhost:5002
    ```
 
 3. **Test endpoint directly:**
