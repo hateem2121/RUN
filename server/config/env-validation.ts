@@ -13,6 +13,8 @@ import { logger } from "../lib/monitoring/logger.js";
 const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  // Redis (Optional but recommended for Queues)
+  REDIS_URL: z.string().optional(),
 
   // Session security
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),

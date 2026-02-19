@@ -17,7 +17,7 @@ export interface HydratedFabric extends Omit<Fabric, "properties"> {
         percentage: string;
       }>;
     }>;
-    [key: string]: any; // Allow other properties but type known ones
+    [key: string]: unknown; // Allow other properties but type known ones
   };
 }
 
@@ -65,7 +65,7 @@ export interface TabbedDetailsProps {
 
 export interface FabricDisplayProps {
   fabric: HydratedFabric | null;
-  fibers?: any[]; // Keep as any for now if unused, or type strictly if we find usage
+  fibers?: Array<{ id: number; name: string }>; // Typed based on common usage
 }
 
 export interface SizeChartDisplayProps {

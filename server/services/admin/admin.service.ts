@@ -180,9 +180,7 @@ export class AdminService {
    * Optimized to process in parallel chunks and filter before processing.
    */
   async fixCorruptedMedia(audit: AuditContext, timeoutMs = 30000) {
-    logger.debug(
-      `AdminService: Starting cleanup of corrupted media URLs (timeout: ${timeoutMs}ms)`,
-    );
+    logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
     // Fetch all categories - this is fast
     const categories = await withTimeout(
       this.productRepo.getCategories(),
@@ -214,9 +212,9 @@ export class AdminService {
       return { fixedCount: 0, fixedCategories: [] };
     }
 
-    logger.info(
-      `AdminService: Found ${categoriesToUpdate.length} categories with corrupted media. Processing updates...`,
-    );
+    logger.info("AdminService: Found categories with corrupted media. Processing updates...", {
+      count: categoriesToUpdate.length,
+    });
 
     // Process updates in parallel with concurrency limit to avoid DB contention
     // Using a simple chunking strategy

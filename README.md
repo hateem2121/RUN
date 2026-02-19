@@ -817,7 +817,8 @@ We achievement sub-100ms query latencies via a tiered caching architecture (`Uni
 - Admin API: < 500ms (p95)
 - Automated slow query logging for operations exceeding 100ms.
 
-**See [Database Performance Guide](file:///Users/hateemjamshaid/Documents/RUN-Remix/server/docs/database-performance.md) for technical details.**
+**See [Database Performance Guide](file:///Users/hateemjamshaid/Documents/# RUN Remix v3.0.0
+/server/docs/database-performance.md) for technical details.**
 
 ---
 

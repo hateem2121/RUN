@@ -29,6 +29,7 @@ import { ResearchSection } from "@/components/technology/ResearchSection";
 import { RoadmapSection } from "@/components/technology/RoadmapSection";
 import LoadingSkeleton from "@/components/ui/bento-cards/loading-skeleton";
 import { Card, GlassCardDecorations } from "@/components/ui/card";
+import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
 // useMobileDetection import removed as unused
@@ -458,39 +459,41 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           {/* PHASE B: Only render ModelViewer when ready to load */}
           {/* PHASE C: Suspense wrapper for lazy-loaded UnifiedModelViewer */}
           {shouldLoadModel && (
-            <React.Suspense
-              fallback={
-                <div className="flex h-full min-h-96 w-full items-center justify-center rounded-xl bg-black/20">
-                  <Loader2 className="text-primary h-8 w-8 animate-spin" />
-                </div>
-              }
-            >
-              <UnifiedModelViewer
-                asset={{
-                  ...media,
-                  id: typeof media.id === "number" ? media.id : 0,
-                  filename: media.filename || "technology_demo.gltf",
-                  originalName: media.filename || "Technology Hero 3D Model",
-                  mimeType: "model/gltf+json",
-                  type: "3d_model" as const,
-                  url: media.url || `/api/media/${media.id || 0}/content`,
-                  altText: media.altText || "Technology Hero 3D Model - Interactive display",
-                  metadata: media.metadata || {},
-                  tags: media.tags || [],
-                  deletedAt: null,
-                  folderId: null,
-                  caption: null,
-                }}
-                config={{
-                  cameraControls: true,
-                  autoRotate: true,
-                  backgroundColorHex: "transparent",
-                  shadowIntensity: 1,
-                  exposure: 1,
-                }}
-                className="h-full min-h-96 w-full transition-opacity duration-500"
-              />
-            </React.Suspense>
+            <ModelViewerErrorBoundary asset={media}>
+              <React.Suspense
+                fallback={
+                  <div className="flex h-full min-h-96 w-full items-center justify-center rounded-xl bg-black/20">
+                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
+                  </div>
+                }
+              >
+                <UnifiedModelViewer
+                  asset={{
+                    ...media,
+                    id: typeof media.id === "number" ? media.id : 0,
+                    filename: media.filename || "technology_demo.gltf",
+                    originalName: media.filename || "Technology Hero 3D Model",
+                    mimeType: "model/gltf+json",
+                    type: "3d_model" as const,
+                    url: media.url || `/api/media/${media.id || 0}/content`,
+                    altText: media.altText || "Technology Hero 3D Model - Interactive display",
+                    metadata: media.metadata || {},
+                    tags: media.tags || [],
+                    deletedAt: null,
+                    folderId: null,
+                    caption: null,
+                  }}
+                  config={{
+                    cameraControls: true,
+                    autoRotate: true,
+                    backgroundColorHex: "transparent",
+                    shadowIntensity: 1,
+                    exposure: 1,
+                  }}
+                  className="h-full min-h-96 w-full transition-opacity duration-500"
+                />
+              </React.Suspense>
+            </ModelViewerErrorBoundary>
           )}
         </div>
       ) : media.type === "video" ? (

@@ -6,6 +6,7 @@
 
 import { Router } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { adminService } from "../../services/admin/index.js";
@@ -53,22 +54,28 @@ router.get("/test", authService.requireAdmin, (_req, res) => {
 // prettier-ignore
 // POST /fix-corrupted-media - Fix corrupted media URLs
 // prettier-ignore
-router.post("/fix-corrupted-media", authService.requireAdmin, async (req, res) => {
-  // security
-  const { timeout } = emptyBodySchema.parse(req.body);
+router.post(
+  "/fix-corrupted-media",
+  authService.requireAdmin,
+  validateRequest({
+    body: emptyBodySchema,
+  }),
+  async (req, res) => {
+    const { timeout } = req.body;
 
-  // Create audit context
-  const auditContext = getAuditContext(req);
+    // Create audit context
+    const auditContext = getAuditContext(req);
 
-  const result = await adminService.fixCorruptedMedia(auditContext, timeout);
+    const result = await adminService.fixCorruptedMedia(auditContext, timeout);
 
-  return res.json({
-    success: true,
-    message: `Corrupted media cleanup completed: ${result.fixedCount} categories fixed`,
-    ...result,
-    timestamp: Date.now(),
-  });
-});
+    return res.json({
+      success: true,
+      message: `Corrupted media cleanup completed: ${result.fixedCount} categories fixed`,
+      ...result,
+      timestamp: Date.now(),
+    });
+  },
+);
 
 // POST /api/admin/cleanup/trigger - Trigger storage cleanup
 router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
@@ -104,68 +111,90 @@ router.get("/enterprise/audit-config", authService.requireAdmin, async (_req, re
 
 // POST /enterprise/audit-config - Audit configuration update
 // prettier-ignore
-router.post("/enterprise/audit-config", authService.requireAdmin, async (req, res) => {
-  // security
-  const validatedData = auditConfigSchema.parse(req.body);
+router.post(
+  "/enterprise/audit-config",
+  authService.requireAdmin,
+  validateRequest({
+    body: auditConfigSchema,
+  }),
+  async (req, res) => {
+    const validatedData = req.body;
 
-  // Create audit context
-  const auditContext = getAuditContext(req);
+    // Create audit context
+    const auditContext = getAuditContext(req);
 
-  await adminService.updateAuditConfig(auditContext, validatedData);
+    await adminService.updateAuditConfig(auditContext, validatedData);
 
-  return res.json({ success: true, message: "Audit configuration updated" });
-});
+    return res.json({ success: true, message: "Audit configuration updated" });
+  },
+);
 
 // Restore endpoints
 // prettier-ignore
-router.post("/categories/:id/restore", authService.requireAdmin, async (req, res) => {
-  // security
-  emptyBodySchema.parse(req.body); // Validate no body data expected
-  const id = validateIdParam(req, res, "id", "category");
-  if (id === null) {
-    return; // Error response already sent
-  }
+router.post(
+  "/categories/:id/restore",
+  authService.requireAdmin,
+  validateRequest({
+    body: emptyBodySchema,
+  }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) {
+      return; // Error response already sent
+    }
 
-  // Create audit context
-  const auditContext = getAuditContext(req);
+    // Create audit context
+    const auditContext = getAuditContext(req);
 
-  const result = await adminService.restoreCategory(auditContext, id);
+    const result = await adminService.restoreCategory(auditContext, id);
 
-  return res.json({ success: result });
-});
-
-// prettier-ignore
-router.post("/products/:id/restore", authService.requireAdmin, async (req, res) => {
-  // security
-  emptyBodySchema.parse(req.body); // Validate no body data expected
-  const id = validateIdParam(req, res, "id", "product");
-  if (id === null) {
-    return; // Error response already sent
-  }
-
-  // Create audit context
-  const auditContext = getAuditContext(req);
-
-  const result = await adminService.restoreProduct(auditContext, id);
-
-  return res.json({ success: result });
-});
+    return res.json({ success: result });
+  },
+);
 
 // prettier-ignore
-router.post("/media-assets/:id/restore", authService.requireAdmin, async (req, res) => {
-  // security
-  emptyBodySchema.parse(req.body); // Validate no body data expected
-  const id = validateIdParam(req, res, "id", "media asset");
-  if (id === null) {
-    return; // Error response already sent
-  }
+// prettier-ignore
+router.post(
+  "/products/:id/restore",
+  authService.requireAdmin,
+  validateRequest({
+    body: emptyBodySchema,
+  }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "product");
+    if (id === null) {
+      return; // Error response already sent
+    }
 
-  // Create audit context
-  const auditContext = getAuditContext(req);
+    // Create audit context
+    const auditContext = getAuditContext(req);
 
-  const result = await adminService.restoreMediaAsset(auditContext, id);
+    const result = await adminService.restoreProduct(auditContext, id);
 
-  return res.json({ success: result });
-});
+    return res.json({ success: result });
+  },
+);
+
+// prettier-ignore
+router.post(
+  "/media-assets/:id/restore",
+  authService.requireAdmin,
+  validateRequest({
+    body: emptyBodySchema,
+  }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "media asset");
+    if (id === null) {
+      return; // Error response already sent
+    }
+
+    // Create audit context
+    const auditContext = getAuditContext(req);
+
+    const result = await adminService.restoreMediaAsset(auditContext, id);
+
+    return res.json({ success: result });
+  },
+);
 
 export default router;

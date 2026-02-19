@@ -17,8 +17,9 @@ import {
   Shield,
 } from "lucide-react";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
-// CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+// CHUNK 6: Use lazy-loaded 3D viewer to reduce initial bundle by ~1MB
+import type { MediaAsset } from "@/schemas/product";
 import type { FabricDisplayProps, SizeChartDisplayProps, TabbedDetailsProps } from "./types";
 
 // ============================================================================
@@ -46,7 +47,7 @@ export const ClippedElement: React.FC<ClippedElementProps> = ({
     clipPath: `polygon(0 0, 100% 0, calc(100% - ${clipAmount}px) 100%, 0 100%)`,
   };
   const finalStyle = { ...style, ...clipPathStyle };
-  const Element = Tag as any;
+  const Element = Tag as React.ElementType;
 
   return (
     <Element className={className} style={finalStyle} {...props}>
@@ -242,7 +243,7 @@ export const ProductGallery = ({
                           uploadedAt: null,
                           updatedAt: null,
                           createdAt: null,
-                        } as any
+                        } as unknown as MediaAsset
                       }
                       config={{
                         loading: "eager",
@@ -899,14 +900,20 @@ interface FiberCompositionDisplayProps {
   fibers?: any[];
 }
 
+interface Composition {
+  name: string;
+  isDefault: boolean;
+  fibers: Array<{ fiberId: number; percentage: string }>;
+}
+
 export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = ({
   fabric,
   fibers = [],
 }) => {
-  const compositions = fabric?.properties?.compositions || [];
+  const compositions = (fabric?.properties?.compositions as Composition[]) || [];
 
   // Find default composition or use first one
-  const defaultComposition = compositions.find((c: any) => c.isDefault) || compositions[0];
+  const defaultComposition = compositions.find((c) => c.isDefault) || compositions[0];
   const [selectedComposition, setSelectedComposition] = useState<string>(
     defaultComposition?.name || "",
   );
@@ -919,14 +926,14 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
     );
   }
 
-  const currentComposition =
-    compositions.find((c: any) => c.name === selectedComposition) || defaultComposition;
-  const compositionFibers = currentComposition?.fibers || [];
+  const activeComposition =
+    compositions.find((c) => c.name === selectedComposition) || defaultComposition;
+  const compositionFibers = activeComposition?.fibers || [];
 
   // Helper to get fiber details
   const getFiberDetails = (fiberId: number) => {
     return (
-      fibers.find((f: any) => f.id === fiberId) || {
+      fibers.find((f) => f.id === fiberId) || {
         name: "Unknown Fiber",
         type: "unknown",
       }
@@ -948,25 +955,20 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
 
   return (
     <div>
-      {/* Composition Toggle Buttons */}
       {compositions.length > 1 && (
         <div className="border-border mb-8 flex flex-wrap items-center gap-2 border-b pb-3">
-          {compositions.map((comp: any) => (
-            <ClippedElement
+          {compositions.map((comp) => (
+            <button
               key={comp.name}
-              as="button"
               onClick={() => setSelectedComposition(comp.name)}
-              className={`min-h-tab tracking-premium md:tracking-premium-lg px-4 py-2.5 text-sm font-bold uppercase transition-all duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-hidden sm:px-5 ${
-                selectedComposition === comp.name
-                  ? "scale-105 bg-black text-white"
-                  : "bg-muted text-muted-foreground hover:bg-muted/20 hover:scale-105"
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                selectedComposition === comp.name || (!selectedComposition && comp.isDefault)
+                  ? "bg-black text-white"
+                  : "bg-muted text-muted-foreground hover:bg-muted/30"
               }`}
-              clipAmount={8}
-              aria-pressed={selectedComposition === comp.name}
-              data-testid={`button-composition-${comp.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {comp.name}
-            </ClippedElement>
+            </button>
           ))}
         </div>
       )}
@@ -982,7 +984,7 @@ export const FiberCompositionDisplay: React.FC<FiberCompositionDisplayProps> = (
             transition={{ duration: 0.2 }}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {compositionFibers.map((fiber: any, index: number) => {
+            {compositionFibers.map((fiber, index: number) => {
               const fiberDetails = getFiberDetails(fiber.fiberId);
               return (
                 <div

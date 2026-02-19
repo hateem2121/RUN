@@ -36,7 +36,32 @@ export class MediaUrlBuilder {
     }
 
     // UNIFIED API: Use new REST-compliant content endpoint
-    return `/api/media/${id}/content`;
+    const baseUrl = `/api/media/${id}/content`;
+    const cdnUrl = import.meta.env.VITE_CDN_URL;
+
+    // Phase 2: CDN Support
+    const fullUrl = cdnUrl ? `${cdnUrl}${baseUrl}` : baseUrl;
+
+    // Phase 2: Cache Busting (if version provided)
+    // We append it as query param ?v=...
+    // Note: The caller needs to append this if they have the asset metadata
+    return fullUrl;
+  }
+
+  /**
+   * Helper to append version parameter for cache busting
+   */
+  static appendVersion(url: string | null, updatedAt?: string | Date | number): string | null {
+    if (!url || !updatedAt) return url;
+
+    const version =
+      typeof updatedAt === "object" && "toISOString" in updatedAt
+        ? updatedAt.toISOString()
+        : String(updatedAt);
+
+    // Simple hash of the timestamp
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}v=${btoa(version).slice(0, 8)}`;
   }
 
   /**
@@ -177,7 +202,12 @@ export class MediaUrlBuilder {
 
     // PHASE 2.2: UNIFIED - Single endpoint for all model files
     // Since Phase 1 validation ensures embedded textures, use content endpoint for everything
-    const url = MediaUrlBuilder.buildContentUrl(id);
+    let url = MediaUrlBuilder.buildContentUrl(id);
+
+    // Phase 2: Add cache busting if asset metadata is available
+    if (_asset && "updatedAt" in _asset) {
+      url = MediaUrlBuilder.appendVersion(url, (_asset as any).updatedAt);
+    }
 
     if (import.meta.env.DEV) {
       // debug

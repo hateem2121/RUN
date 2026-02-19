@@ -5,6 +5,7 @@ import { dbKeepAlive } from "../lib/db/keep-alive.js";
 import { adminNotifier } from "../lib/integrations/admin-notifier.js";
 import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { startWorker } from "../lib/queue/worker.js";
 
 const config = getConfig();
 
@@ -63,6 +64,13 @@ export async function startServices() {
 
   // 8. Database Health Check
   await performInitialHealthCheck();
+
+  // 9. Start Email Worker
+  try {
+    startWorker();
+  } catch (e) {
+    logger.warn("Failed to start email worker", e);
+  }
 
   logger.info("[Startup] All services started.");
 }

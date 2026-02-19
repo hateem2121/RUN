@@ -13,7 +13,7 @@ function sendToAnalytics(metric: MetricType) {
   const threshold = getThreshold(metric.name);
   const isPoor = metric.value > threshold;
 
-  if (process.env.NODE_ENV === "development" || isPoor) {
+  if (process.env.NODE_ENV === "development") {
     console.groupCollapsed(
       `%c[Web Vitals] ${metric.name}: ${Math.round(metric.value)}${getUnit(metric.name)}`,
       `color: ${isPoor ? "#ef4444" : "#22c55e"}; font-weight: bold;`,
@@ -23,6 +23,16 @@ function sendToAnalytics(metric: MetricType) {
     console.log("ID:", metric.id);
     console.log("Target:", `< ${threshold}${getUnit(metric.name)}`);
     console.groupEnd();
+  } else {
+    // Production: Send to analytics endpoint
+    const body = JSON.stringify(metric);
+    const url = "/api/analytics/vitals";
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url, body);
+    } else {
+      fetch(url, { body, method: "POST", keepalive: true }).catch(() => {});
+    }
   }
 }
 
@@ -53,4 +63,13 @@ export function reportWebVitals() {
   onLCP(sendToAnalytics);
   onFCP(sendToAnalytics);
   onTTFB(sendToAnalytics);
+}
+
+export function reportCustomMetric(name: string, value: number, id?: string) {
+  sendToAnalytics({
+    name,
+    value,
+    delta: 0,
+    id: id || `custom-${Date.now()}`,
+  });
 }

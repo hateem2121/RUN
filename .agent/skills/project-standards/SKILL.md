@@ -176,9 +176,9 @@ export default router;
 
 ## 4. 3D & Visualization Patterns
 
-> **Important**: This project uses `@google/model-viewer` as the primary 3D rendering solution, NOT `@react-three/drei` for GLTF loading.
+> **Important**: This project uses `@google/model-viewer` as the primary 3D rendering solution.
 >
-> **Note**: `@react-three/drei` IS installed (v10.7.7) but **only** for non-GLTF utilities like `PerspectiveCamera`. Do NOT import `useGLTF` from drei.
+> **Warning**: Do NOT import or use `@react-three/fiber` or `@react-three/drei`. These are NOT installed and NOT supported.
 
 - **Primary Library**: `@google/model-viewer` (web component)
 - **React Wrapper**: `UnifiedModelViewer` component (`@/components/ui/UnifiedModelViewer.tsx`)

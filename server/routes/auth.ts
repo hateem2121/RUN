@@ -1,5 +1,7 @@
 import { type Response, Router } from "express";
 import passport from "passport";
+import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { userRepository } from "../lib/db/repositories/index.js";
 import { authService } from "../services/auth-service.js";
@@ -106,15 +108,24 @@ router.get(
 );
 
 // Admin Cache Management
-router.post("/admin/cache/clear", authService.requireAdmin, (req, res) => {
-  const { userId } = req.body;
-  if (userId) {
-    adminCacheManager.clearUser(userId);
-  } else {
-    adminCacheManager.clear();
-  }
-  res.json({ success: true, message: "Admin cache cleared" });
-});
+router.post(
+  "/admin/cache/clear",
+  authService.requireAdmin,
+  validateRequest({
+    body: z.object({
+      userId: z.string().optional(),
+    }),
+  }),
+  (req, res) => {
+    const { userId } = req.body;
+    if (userId) {
+      adminCacheManager.clearUser(userId);
+    } else {
+      adminCacheManager.clear();
+    }
+    res.json({ success: true, message: "Admin cache cleared" });
+  },
+);
 
 router.get("/admin/cache/stats", authService.requireAdmin, (_req, res) => {
   const stats = adminCacheManager.getStats();

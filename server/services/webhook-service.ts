@@ -24,21 +24,27 @@ export class WebhookService {
       );
 
       if (activeSubs.length === 0) {
-        logger.debug(`[WebhookService] No active subscribers for event '${event}'`);
+        logger.debug("[WebhookService] No active subscribers for event", { event });
         return;
       }
 
-      logger.info(`[WebhookService] Triggering '${event}' for ${activeSubs.length} subscribers`);
+      logger.info("[WebhookService] Triggering event", {
+        event,
+        subscriberCount: activeSubs.length,
+      });
 
       // Fire and forget deliveries to avoid blocking the main thread
       // In a production environment, this would be enqueued to a background worker
       for (const sub of activeSubs) {
         this.deliver(sub, event, payload).catch((err) => {
-          logger.error(`[WebhookService] Background delivery failed for sub ${sub.id}:`, err);
+          logger.error("[WebhookService] Background delivery failed", {
+            error: err,
+            subscriptionId: sub.id,
+          });
         });
       }
     } catch (error) {
-      logger.error(`[WebhookService] Failed to trigger event '${event}':`, error);
+      logger.error("[WebhookService] Failed to trigger event", { error, event });
     }
   }
 
@@ -84,12 +90,10 @@ export class WebhookService {
       });
 
       if (!response.ok) {
-        logger.warn(
-          `[WebhookService] Delivery to ${sub.url} failed with status ${response.status}`,
-        );
+        logger.warn("[WebhookService] Delivery failed", { url: sub.url, status: response.status });
       }
     } catch (error) {
-      logger.error(`[WebhookService] Delivery to ${sub.url} failed:`, error);
+      logger.error("[WebhookService] Delivery failed", { error, url: sub.url });
 
       await webhookRepository.logWebhookDelivery({
         subscriptionId: sub.id,

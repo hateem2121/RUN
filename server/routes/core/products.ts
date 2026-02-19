@@ -8,6 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { insertProductSchema } from "../../../shared/schema.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
@@ -276,13 +277,28 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     // CHUNK 5: Use database-level pagination (LIMIT/OFFSET) with dedicated COUNT queries
     // This eliminates memory overhead and provides accurate counts without fetching all rows
     if (search && typeof search === "string") {
+      const filters: {
+        categoryId?: number;
+        isActive?: boolean;
+        isFeatured?: boolean;
+      } = {};
+
+      if (category) filters.categoryId = parseInt(category as string, 10);
+      if (active === "true") filters.isActive = true;
+      else if (active === "false") filters.isActive = false;
+      if (featured === "true") filters.isFeatured = true;
+      else if (featured === "false") filters.isFeatured = false;
+
       products = await retryDbOperation(
-        () => productRepository.searchProducts(search, pageSize, offset),
+        () => productRepository.searchProducts(search, filters, pageSize, offset),
         { operationName: "Search products by query" },
       );
-      totalCount = await retryDbOperation(() => productRepository.searchProductsCount(search), {
-        operationName: "Count search results",
-      });
+      totalCount = await retryDbOperation(
+        () => productRepository.searchProductsCount(search, filters),
+        {
+          operationName: "Count search results",
+        },
+      );
     } else if (tag && typeof tag === "string") {
       products = await retryDbOperation(
         () => productRepository.getProductsByTag(tag, pageSize, offset),
@@ -490,54 +506,55 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
 import { requireRole } from "../../middleware/rbac.js";
 
 // POST /api/products - Create new product
-router.post("/products", requireRole("admin"), async (req, res): Promise<undefined | Response> => {
-  try {
-    // Rate limiting check
-    if (!checkRateLimit()) {
-      return res.status(429).json({
+router.post(
+  "/products",
+  requireRole("admin"),
+  validateRequest({
+    body: insertProductSchema,
+  }),
+  async (req, res): Promise<undefined | Response> => {
+    try {
+      // Rate limiting check
+      if (!checkRateLimit()) {
+        return res.status(429).json({
+          success: false,
+          error: { message: "Too many requests. Please try again later." },
+        });
+      }
+
+      // Input sanitization handled by middleware and Zod schema
+      const validatedData = req.body;
+
+      const product = await withTimeout(
+        retryDbOperation(() => productRepository.createProduct(removeUndefined(validatedData)), {
+          operationName: "Create product",
+        }),
+        10000,
+        "Create product",
+      );
+
+      // Trigger Webhook
+      webhookService.trigger("product.created", product);
+
+      return res.status(201).json(product);
+    } catch (error: unknown) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: "Validation error",
+            details: error.issues,
+          },
+        });
+      }
+      logger.error("CREATE PRODUCT error:", error);
+      return res.status(500).json({
         success: false,
-        error: { message: "Too many requests. Please try again later." },
+        error: { message: "Failed to create product" },
       });
     }
-
-    // Enhanced input validation and sanitization
-    if (req.body.name) {
-      req.body.name = validateAndSanitizeInput(req.body.name);
-    }
-    if (req.body.description) {
-      req.body.description = validateAndSanitizeInput(req.body.description);
-    }
-
-    const validatedData = insertProductSchema.parse(req.body);
-    const product = await withTimeout(
-      retryDbOperation(() => productRepository.createProduct(removeUndefined(validatedData)), {
-        operationName: "Create product",
-      }),
-      10000,
-      "Create product",
-    );
-
-    // Trigger Webhook
-    webhookService.trigger("product.created", product);
-
-    return res.status(201).json(product);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          message: "Validation error",
-          details: error.issues,
-        },
-      });
-    }
-    logger.error("CREATE PRODUCT error:", error);
-    return res.status(500).json({
-      success: false,
-      error: { message: "Failed to create product" },
-    });
-  }
-});
+  },
+);
 
 // Shared update handler for both PUT and PATCH
 const updateProductHandler = async (req: Request, res: Response): Promise<undefined | Response> => {
@@ -547,7 +564,9 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
       return; // Error response already sent
     }
 
-    const validatedData = insertProductSchema.partial().parse(req.body);
+    // Input sanitization handled by middleware and Zod schema
+    const validatedData = req.body;
+
     const product = await withTimeout(
       retryDbOperation(() => productRepository.updateProduct(id, removeUndefined(validatedData)), {
         operationName: "Update product",
@@ -590,10 +609,24 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
 };
 
 // PUT /api/products/:id - Update product
-router.put("/products/:id", requireRole("admin"), updateProductHandler);
+router.put(
+  "/products/:id",
+  requireRole("admin"),
+  validateRequest({
+    body: insertProductSchema.partial(),
+  }),
+  updateProductHandler,
+);
 
 // PATCH /api/products/:id - Update product (partial update)
-router.patch("/products/:id", requireRole("admin"), updateProductHandler);
+router.patch(
+  "/products/:id",
+  requireRole("admin"),
+  validateRequest({
+    body: insertProductSchema.partial(),
+  }),
+  updateProductHandler,
+);
 
 // DELETE /api/products/:id - Delete product
 router.delete(

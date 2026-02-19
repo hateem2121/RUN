@@ -39,12 +39,12 @@ All agents MUST read and adhere to the architectural invariants and design laws 
 | Topic | Primary Source (SSOT) |
 | :--- | :--- |
 | **Versions / Stack** | `package.json` |
-| **Architecture** | `docs/core/architecture.md` |
+| **Architecture** | `docs/architecture/system_diagrams.md` |
 | **SDK Package** | `docs/core/sdk-workspace.md` |
-| **Styles / UI** | `docs/development/styling.md` |
-| **Testing** | `docs/development/testing.md` |
+| **Styles / UI** | `docs/guides/developer-workflow.md` |
+| **Testing** | `docs/testing/testing-tiers.md` |
 | **API Endpoints** | `docs/api/endpoints.md` |
-| **3D Assets** | `docs/development/3d-pipeline.md` |
+| **3D Assets** | `docs/guides/3D_INTEGRATION.md` |
 | **Developer Workflow** | `docs/guides/developer-workflow.md` |
 
 ---
@@ -157,7 +157,7 @@ Skills use a three-tier structure for token efficiency:
 ### 7.1. Agent Architecture
 
 ```
-.kilocode/agents/
+.agent/agents/
 ├── orchestrator.yaml    # Workflow Coordination Agent
 ├── architect.yaml       # System Architecture Designer
 ├── developer.yaml       # Code Implementation Specialist
@@ -206,7 +206,7 @@ context:
 ### 8.1. Available Workflows
 
 ```
-.kilocode/orchestrators/
+.agent/workflows/
 ├── feature-development.yaml   # Full feature lifecycle
 ├── bug-fix.yaml              # Systematic bug resolution
 ├── code-review.yaml          # Comprehensive review process
@@ -284,7 +284,7 @@ Workflows are activated by the orchestrator agent based on task type:
 
 ## Version Compatibility
 
-*   **Last Updated**: 2026-02-15
-*   **Applies to**: `run-remix-monorepo` v4.3.0+
+*   **Last Updated**: 2026-02-19
+*   **Applies to**: `run-remix-monorepo` v3.0.0
 *   **Agent Protocol**: System Pilot v3.0
 *   **Skills Framework**: AntiGravity v2.0

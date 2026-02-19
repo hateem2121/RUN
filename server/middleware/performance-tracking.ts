@@ -63,6 +63,9 @@ export function performanceTrackingMiddleware(req: Request, res: Response, next:
   // Intercept first write to track TTFB
   res.write = function (this: Response, ...args: any[]) {
     ttfb ??= Date.now() - startTime;
+    if (!this.headersSent) {
+      this.setHeader("X-Response-Time", `${(Date.now() - startTime).toFixed(2)}ms`);
+    }
     // eslint-disable-next-line prefer-rest-params, prefer-spread
     return originalWrite.apply(
       this,

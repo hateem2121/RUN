@@ -1,4 +1,4 @@
-# Project Coding Rules
+# Project Coding Rules (v3.0.0)
 
 **Last Updated:** February 2026  
 **For:** RUN APPAREL CMS System  

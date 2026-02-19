@@ -4,7 +4,13 @@ import { safeQuery } from "../../db.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../../image-processor.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
-import { type AppError, BadRequestError, DatabaseError, NotFoundError } from "../../lib/errors.js";
+import {
+  type AppError,
+  BadRequestError,
+  DatabaseError,
+  InternalError,
+  NotFoundError,
+} from "../../lib/errors.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
@@ -406,7 +412,7 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
       const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
       const buffer = await appStorageService.downloadAsset(chunkKey);
       if (!buffer) {
-        throw new Error(`Chunk ${i} missing`);
+        throw new InternalError(`Chunk ${i} missing during assembly`);
       }
       return { index: i, buffer };
     });
@@ -682,6 +688,8 @@ export async function getMediaContent(
       : "v1";
     res.set("ETag", `"${id}-${versionHash}"`);
     res.set("Access-Control-Allow-Origin", "*");
+    // Phase 2: Cache-Control for signed URL redirects (5 minutes matches signed URL TTL)
+    res.set("Cache-Control", "public, max-age=300");
 
     return res.redirect(302, signedUrl);
   } catch (error: unknown) {
@@ -759,13 +767,11 @@ export async function batchOperations(req: Request, res: Response, next: NextFun
   }
 
   // Invalid request
-  return res
-    .status(400)
-    .json(
-      createErrorResponse(
-        'Invalid batch operation. Expected files for upload or { operation: "delete", ids: [...] } for delete',
-      ),
-    );
+  return next(
+    new BadRequestError(
+      'Invalid batch operation. Expected files for upload or { operation: "delete", ids: [...] } for delete',
+    ),
+  );
 }
 
 export async function batchCreateAssets(req: Request, res: Response, next: NextFunction) {

@@ -21,7 +21,9 @@ interface Props {
   onError?: (error: Error, errorInfo: ErrorInfo, asset?: MediaAsset) => void;
   onRecovery?: (asset?: MediaAsset) => void;
   showDevDetails?: boolean | undefined;
-  resetKeys?: string[]; // Optional array of keys that trigger reset when changed
+  resetKeys?: string[] | undefined; // Optional array of keys that trigger reset when changed
+  fallbackImage?: string | undefined;
+  fallbackVideo?: string | undefined;
 }
 
 interface State {
@@ -74,6 +76,9 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
       if (assetChanged || resetKeysChanged) {
         if (MODEL_VIEWER_ENVIRONMENT.isDevelopment) {
+          console.log(
+            `[ModelViewerErrorBoundary] Auto-recovering due to ${assetChanged ? "asset" : "key"} change`,
+          );
         }
 
         this.setState({
@@ -103,33 +108,12 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
     // Development logging
     if (MODEL_VIEWER_ENVIRONMENT.isDevelopment) {
+      console.error("[ModelViewerErrorBoundary] Caught error:", error, errorInfo);
     }
-
-    // Production error reporting (lightweight)
-    if (
-      !MODEL_VIEWER_ENVIRONMENT.isDevelopment &&
-      MODEL_VIEWER_ENVIRONMENT.logging.enableErrorReporting
-    ) {
-      this.reportErrorToMonitoring(error, errorInfo);
-    }
-  }
-
-  private reportErrorToMonitoring(_error: Error, _errorInfo: ErrorInfo) {
-    // Lightweight production error tracking
-    // const _errorReport = {
-    //   timestamp: new Date().toISOString(),
-    //   errorId: this.state.errorId,
-    //   message: error.message,
-    //   stack: error.stack?.slice(0, 500), // Truncate stack trace
-    //   assetId: this.props.asset?.id,
-    //   assetFilename: this.props.asset?.filename,
-    //   componentStack: errorInfo.componentStack?.slice(0, 300), // Truncate component stack
-    //   userAgent: navigator.userAgent,
-    //   url: window.location.href,
-    // };
 
     // Send to monitoring service (placeholder - replace with actual monitoring)
     if (typeof window !== "undefined" && window.console) {
+      console.warn("[ModelViewerErrorBoundary] Error reported to monitoring:", error.message);
     }
   }
 
@@ -222,7 +206,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
   private renderErrorContent() {
     const { error, retryCount, isRecovering } = this.state;
-    const { asset } = this.props;
+    const { asset, fallbackImage, fallbackVideo } = this.props;
 
     if (!error) {
       return null;
@@ -232,6 +216,122 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
     const IconComponent = errorDetails.icon;
     const canRetry = retryCount < this.maxRetries;
     const showDevDetails = this.props.showDevDetails ?? MODEL_VIEWER_ENVIRONMENT.isDevelopment;
+
+    // Use fallback media if available
+    const fallbackSrc = fallbackImage || asset?.thumbnailUrl;
+
+    if (fallbackVideo) {
+      return (
+        <div className="group relative h-full w-full overflow-hidden rounded-lg bg-black">
+          <video
+            src={fallbackVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover opacity-60 transition-opacity group-hover:opacity-50"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+            <div className="mb-2 rounded-full bg-background/80 p-3 text-destructive shadow-sm backdrop-blur-sm">
+              <IconComponent className="h-6 w-6" />
+            </div>
+            <h3 className="mb-1 font-semibold text-white text-sm drop-shadow-md">
+              3D Preview Unavailable
+            </h3>
+            {canRetry && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  this.handleRetry();
+                }}
+                disabled={isRecovering}
+                variant="secondary"
+                size="sm"
+                className="mt-2"
+              >
+                {isRecovering ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Retrying...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Try Again
+                  </>
+                )}
+              </Button>
+            )}
+
+            {showDevDetails && (
+              <div className="mt-4 max-w-xs rounded bg-background/80 p-2 text-xs backdrop-blur-sm text-left">
+                <div className="font-mono text-destructive">{error.message}</div>
+                {this.state.errorInfo && (
+                  <div className="mt-1 text-[10px] text-muted-foreground truncate">
+                    {this.state.errorInfo.componentStack?.slice(0, 100)}...
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (fallbackSrc) {
+      return (
+        <div className="group relative h-full w-full overflow-hidden rounded-lg bg-muted">
+          <img
+            src={fallbackSrc}
+            alt="3D Model Fallback"
+            className="h-full w-full object-cover opacity-50 transition-opacity group-hover:opacity-40"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+            <div className="mb-2 rounded-full bg-background/80 p-3 text-destructive shadow-sm backdrop-blur-sm">
+              <IconComponent className="h-6 w-6" />
+            </div>
+            <h3 className="mb-1 font-semibold text-foreground text-sm">3D Preview Unavailable</h3>
+            {canRetry && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  this.handleRetry();
+                }}
+                disabled={isRecovering}
+                variant="secondary"
+                size="sm"
+                className="mt-2"
+              >
+                {isRecovering ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Retrying...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Try Again
+                  </>
+                )}
+              </Button>
+            )}
+
+            {showDevDetails && (
+              <div className="mt-4 max-w-xs rounded bg-background/80 p-2 text-xs backdrop-blur-sm text-left">
+                <div className="font-mono text-destructive">{error.message}</div>
+                {this.state.errorInfo && (
+                  <div className="mt-1 text-[10px] text-muted-foreground truncate">
+                    {this.state.errorInfo.componentStack?.slice(0, 100)}...
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
 
     return (
       <Card className="border-destructive/20 bg-destructive/5 mx-auto w-full max-w-md">
@@ -346,7 +446,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="flex min-h-72 items-center justify-center p-4">
+        <div className="flex h-full w-full min-h-[300px] items-center justify-center p-4">
           {this.renderErrorContent()}
         </div>
       );

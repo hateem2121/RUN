@@ -73,7 +73,7 @@ export class AuthService {
         prefix: "sess:",
         ttl: sessionTtl / 1000,
       });
-      logger.info("[Auth] Redis Session Store initialized");
+      logger.info("[Auth] Redis Session Store initialized", { ttl: sessionTtl / 1000 });
     } else {
       if (process.env.NODE_ENV === "production") {
         throw new Error(
@@ -142,7 +142,9 @@ export class AuthService {
           "CRITICAL SECURITY ERROR: GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required in production.",
         );
       }
-      logger.warn("[AuthService] Google Auth credentials missing. OAuth will be disabled.");
+      logger.warn("[AuthService] Google Auth credentials missing. OAuth will be disabled.", {
+        env: process.env.NODE_ENV,
+      });
       return;
     }
 
@@ -168,7 +170,7 @@ export class AuthService {
             };
             done(null, sessionUser);
           } catch (error) {
-            logger.error("[AuthService] Login failed:", error);
+            logger.error("[AuthService] Login failed", { error, profileId: profile.id });
             done(error, undefined);
           }
         },
@@ -204,7 +206,7 @@ export class AuthService {
 
     // Bootstrapping: Auto-promote initial admin
     if (process.env.INITIAL_ADMIN_EMAIL === email && !user.isAdmin) {
-      logger.info(`[AuthService] Promoting initial admin: ${email}`);
+      logger.info("[AuthService] Promoting initial admin", { email });
       // Note: This logic depends on the storage implementation support
       // For now we log it as per the original googleAuth.ts pattern
     }
@@ -258,7 +260,7 @@ export class AuthService {
 
       return req.session.destroy((err) => {
         if (err) {
-          logger.error("[Auth] Failed to destroy hijacked session:", err);
+          logger.error("[Auth] Failed to destroy hijacked session", { error: err });
         }
         res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
       });
@@ -278,7 +280,7 @@ export class AuthService {
 
       req.session.regenerate((err) => {
         if (err) {
-          logger.error("[Auth] Session regeneration failed:", err);
+          logger.error("[Auth] Session regeneration failed", { error: err });
           return next(err);
         }
 
@@ -295,7 +297,7 @@ export class AuthService {
           // Explicitly save to ensure the new SID is stored
           req.session.save((err) => {
             if (err) {
-              logger.error("[Auth] Failed to save regenerated session:", err);
+              logger.error("[Auth] Failed to save regenerated session", { error: err });
             }
             next();
           });
@@ -336,7 +338,7 @@ export class AuthService {
     // P1 SECURITY: Mock Admin Bypass
     // CRITICAL: This must ONLY be active in development environment
     if (this.isMockAccessAllowed(user)) {
-      logger.warn(`[AuthService] ⚠️ MOCK ADMIN ACCESS GRANTED for user: ${userId}`);
+      logger.warn("[AuthService] ⚠️ MOCK ADMIN ACCESS GRANTED", { userId });
       return true;
     }
 
@@ -350,7 +352,7 @@ export class AuthService {
       adminCacheManager.set(userId, isAdmin);
       return isAdmin;
     } catch (error) {
-      logger.error("[AuthService] Error checking admin status:", error);
+      logger.error("[AuthService] Error checking admin status", { error, userId });
       // Fail closed
       return false;
     }
@@ -379,7 +381,7 @@ export class AuthService {
         error: AuthErrors.ADMIN_REQUIRED,
       });
     } catch (error) {
-      logger.error("[AuthService] Error in requireAdmin middleware:", error);
+      logger.error("[AuthService] Error in requireAdmin middleware", { error });
       return res.status(AuthErrors.AUTH_SERVER_ERROR.status).json({
         error: AuthErrors.AUTH_SERVER_ERROR,
       });
@@ -419,7 +421,7 @@ export class AuthService {
     if (attempts >= 5) {
       const lockoutMinutes = 15;
       updates.lockoutUntil = new Date(Date.now() + lockoutMinutes * 60 * 1000);
-      logger.warn(`[AuthService] Account locked for ${email} following 5 failures`);
+      logger.warn("[AuthService] Account locked following 5 failures", { email, lockoutMinutes });
     }
 
     await userRepository.updateUser(user.id, updates);

@@ -13,6 +13,7 @@ import { err, ok, type Result } from "neverthrow";
 import ws from "ws";
 import * as schema from "../shared/schema.js";
 import { database } from "./config/environment.js";
+import { getConfig } from "./config/production.js";
 import {
   ConflictError,
   DatabaseDeadlockError,
@@ -68,13 +69,20 @@ if (isTestMode && !enableRealDb) {
   const isPooler = connectionString.includes("-pooler");
   const hasSslParam = connectionString.includes("sslnegotiation=");
 
+  const config = getConfig();
+  const poolConfig = config.database;
+
+  logger.info(
+    `[Database] Configuring pool: max=${poolConfig.maxConnections}, idleTimeout=${poolConfig.queryTimeout}`,
+  );
+
   pool = new Pool({
     connectionString:
       isPooler && !hasSslParam
         ? `${connectionString}${connectionString.includes("?") ? "&" : "?"}sslnegotiation=direct`
         : connectionString,
-    max: 10, // Reasonable default for serverless/Lambda interop
-    idleTimeoutMillis: 30000,
+    max: poolConfig.maxConnections,
+    idleTimeoutMillis: 30000, // Keep idle timeout standard for serverless
     connectionTimeoutMillis: 5000,
   });
 

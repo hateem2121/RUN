@@ -28,6 +28,7 @@ import {
 } from "../middleware/production-security.js";
 import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
 import { responseTracker } from "../middleware/response-tracker.js";
+import { requestSanitization } from "../middleware/sanitization.js";
 import { authService } from "../services/auth-service.js";
 
 const config = getConfig();
@@ -87,9 +88,10 @@ export async function setupMiddleware(app: Express) {
   app.use(performanceTrackingMiddleware);
 
   // Granular Rate Limiting
-  app.use("/api/auth", authLimiter.middleware());
-  app.use("/api/media", uploadLimiter.middleware());
-  app.use("/api", apiLimiter.middleware());
+  app.use("/api/auth", authLimiter);
+  app.use("/api/login", authLimiter); // Protect login route
+  app.use("/api/media", uploadLimiter);
+  app.use("/api", apiLimiter);
 
   // Compression
   configureCompression(app);
@@ -104,6 +106,9 @@ export async function setupMiddleware(app: Express) {
 
   // Request Body Parsers
   configureBodyParsers(app);
+
+  // Sanitization (Must be after body parsers)
+  app.use(requestSanitization);
 
   // PHASE 3: Audit Logging for Admin Mutations
   // Log all state-changing operations in the admin panel

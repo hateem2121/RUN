@@ -16,6 +16,7 @@ import authRouter from "./auth.js";
 import debugRouter from "./debug.js";
 import docsRouter from "./docs.js";
 import resourcesRouter from "./resources/index.js";
+import analyticsRouter from "./utilities/analytics.js";
 // Utilities / Populators
 import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
 import { registerDataCreationRoutes } from "./utilities/data-creation.js";
@@ -23,7 +24,6 @@ import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postg
 import footerConfigRouter from "./utilities/footer-config.js";
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
-
 import { registerNewsletterRoutes } from "./utilities/newsletter.js";
 import v1AdminRouter from "./v1/admin.js";
 // V1 Modular Routers
@@ -129,6 +129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerDirectPostgresPopulationRoutes(app);
   registerAPIBasedPopulationRoutes(app);
   registerNewsletterRoutes(app);
+  app.use("/api/analytics", analyticsRouter);
 
   logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 

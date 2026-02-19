@@ -38,7 +38,9 @@ export const MediaAssetSchema = z
     mimeType: z.string().default("application/octet-stream"),
     altText: z.string().nullable().default(null),
     caption: z.string().nullable().default(null),
-    metadata: z.record(z.string(), z.any()).default({}),
+    metadata: z
+      .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
+      .default({}),
     isActive: z.boolean().nullable().default(true),
     tags: z.array(z.string()).nullable().default([]),
     originalName: z.string().nullable().default(null),
@@ -50,7 +52,7 @@ export const MediaAssetSchema = z
     deletedAt: z.coerce.date().nullable().default(null),
     fileSize: z.number().nullable().default(0),
     bucketName: z.string().default(""),
-    imageVariants: z.any().nullable().default(null),
+    imageVariants: z.record(z.string(), z.string()).nullable().default(null),
     thumbnailFilename: z.string().nullable().default(null),
     thumbnailStoragePath: z.string().nullable().default(null),
     folderId: z.number().nullable().default(null),
@@ -115,7 +117,7 @@ export const ProductSummarySchema = z.object({
   primaryImageId: z.number().nullable(),
   primaryVideoId: z.number().nullable(),
   imageIds: z.array(z.number()).nullable(),
-  videos: z.array(z.any()).nullable(),
+  videos: z.array(MediaAssetSchema).nullable(),
 
   // Business Logic
   isFeatured: z.boolean().default(false),

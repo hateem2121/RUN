@@ -46,7 +46,7 @@ export class NavigationService {
 
     // Admin/Bypass path
     if (bypassCache) {
-      logger.info("[Navigation] Bypassing cache for real-time data");
+      logger.info("[Navigation] Bypassing cache for real-time data", { bypassCache });
       const result = await safeQuery(
         withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
       );
@@ -147,7 +147,7 @@ export class NavigationService {
 
     // Invalidate cache
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err),
+      logger.error("[Navigation] Cache invalidation failed", { error: err }),
     );
 
     return ok(result.value);
@@ -180,7 +180,7 @@ export class NavigationService {
     }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err),
+      logger.error("[Navigation] Cache invalidation failed", { error: err }),
     );
 
     return ok(result.value);
@@ -199,7 +199,7 @@ export class NavigationService {
     }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err),
+      logger.error("[Navigation] Cache invalidation failed", { error: err }),
     );
 
     return ok(undefined);
@@ -219,7 +219,7 @@ export class NavigationService {
     }
 
     await CacheOperations.invalidateNavigation().catch((err) =>
-      logger.error("[Navigation] Cache invalidation failed:", err),
+      logger.error("[Navigation] Cache invalidation failed", { error: err }),
     );
 
     // Return updated list - recursive call to getItems needs error handling

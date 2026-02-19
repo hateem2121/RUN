@@ -71,14 +71,14 @@ export interface HomepageBatchResponse {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      mesh: any;
-      planeGeometry: any;
-      shaderMaterial: any;
-      group: any;
-      directionalLight: any;
-      ambientLight: any;
-      pointLight: any;
-      primitive: any;
+      mesh: unknown;
+      planeGeometry: unknown;
+      shaderMaterial: unknown;
+      group: unknown;
+      directionalLight: unknown;
+      ambientLight: unknown;
+      pointLight: unknown;
+      primitive: unknown;
     }
   }
 }
@@ -87,14 +87,14 @@ declare global {
 declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
-      mesh: any;
-      planeGeometry: any;
-      shaderMaterial: any;
-      group: any;
-      directionalLight: any;
-      ambientLight: any;
-      pointLight: any;
-      primitive: any;
+      mesh: unknown;
+      planeGeometry: unknown;
+      shaderMaterial: unknown;
+      group: unknown;
+      directionalLight: unknown;
+      ambientLight: unknown;
+      pointLight: unknown;
+      primitive: unknown;
     }
   }
 }

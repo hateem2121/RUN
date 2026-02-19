@@ -8,6 +8,7 @@ import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
 import type { Inquiry, InsertInquiry } from "../../shared/schema/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { CircuitBreaker } from "../lib/circuit-breaker.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { emailService } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -17,10 +18,25 @@ const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 // Initialize Google Cloud Clients for production flow
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
-const EMAIL_QUEUE = "email-queue";
+const EMAIL_QUEUE_KEY = "email-queue";
+
+import { emailQueue } from "../lib/queue/email-queue.js";
 
 const tasksClient = new CloudTasksClient();
 const bigquery = new BigQuery();
+
+// Initialize Circuit Breakers
+const emailBreaker = new CircuitBreaker({
+  failureThreshold: 3,
+  resetTimeout: 30000, // 30s
+  requestTimeout: 10000, // 10s
+});
+
+const analyticsBreaker = new CircuitBreaker({
+  failureThreshold: 5,
+  resetTimeout: 60000, // 1m
+  requestTimeout: 5000, // 5s
+});
 
 export class InquiryService {
   /**
@@ -65,22 +81,25 @@ export class InquiryService {
    */
   private async streamToBigQuery(inquiry: Inquiry) {
     try {
-      await bigquery
-        .dataset("analytics")
-        .table("leads")
-        .insert([
-          {
-            id: inquiry.id,
-            name: inquiry.name,
-            email: inquiry.email,
-            company: inquiry.company,
-            source: inquiry.source,
-            created_at: inquiry.submittedAt.toISOString(),
-          },
-        ]);
-      logger.info(`[InquiryService] Streamed inquiry #${inquiry.id} to BigQuery`);
+      await analyticsBreaker.fire(async () => {
+        await bigquery
+          .dataset("analytics")
+          .table("leads")
+          .insert([
+            {
+              id: inquiry.id,
+              name: inquiry.name,
+              email: inquiry.email,
+              company: inquiry.company,
+              source: inquiry.source,
+              created_at: inquiry.submittedAt.toISOString(),
+            },
+          ]);
+      });
+      logger.info("[InquiryService] Streamed inquiry to BigQuery", { inquiryId: inquiry.id });
     } catch (error) {
-      logger.debug("[InquiryService] BigQuery insert skipped or failed:", error);
+      // Breaker open or insert failed
+      logger.debug("[InquiryService] BigQuery insert skipped (Circuit Open or Failed)", { error });
     }
   }
 
@@ -100,12 +119,22 @@ export class InquiryService {
       submittedAt: inquiry.submittedAt,
     };
 
+    if (emailQueue) {
+      try {
+        await emailQueue.add("send-inquiry-email", emailData);
+        logger.info(`[InquiryService] Added email job to BullMQ for inquiry #${inquiry.id}`);
+        return;
+      } catch (error) {
+        logger.error("[InquiryService] Failed to add to email queue, falling back:", error);
+      }
+    }
+
     if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
       try {
         const parent = tasksClient.queuePath(
           GOOGLE_CLOUD_PROJECT,
           GOOGLE_CLOUD_LOCATION,
-          EMAIL_QUEUE,
+          EMAIL_QUEUE_KEY,
         );
         // Note: URL derivation might need care if service is not on same host
         const task = {
@@ -129,11 +158,13 @@ export class InquiryService {
 
   private async fallbackSyncEmail(emailData: any) {
     try {
-      await emailService.sendAdminNotification(emailData);
-      await emailService.sendCustomerConfirmation(emailData);
-      logger.info(`[InquiryService] Dispatched synchronous emails for inquiry #${emailData.id}`);
+      await emailBreaker.fire(async () => {
+        await emailService.sendAdminNotification(emailData);
+        await emailService.sendCustomerConfirmation(emailData);
+      });
+      logger.info("[InquiryService] Dispatched synchronous emails", { inquiryId: emailData.id });
     } catch (error) {
-      logger.error("[InquiryService] Fallback email dispatch failed:", error);
+      logger.error("[InquiryService] Email dispatch failed (Circuit Open or Failed)", { error });
     }
   }
 

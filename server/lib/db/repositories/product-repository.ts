@@ -3,7 +3,7 @@
  * Handles product and category operations with caching and performance monitoring
  */
 
-import { and, asc, desc, eq, inArray, isNull, like, lt, ne, or, sql } from "drizzle-orm"; // added lt
+import { and, asc, desc, eq, inArray, isNull, lt, ne, sql } from "drizzle-orm"; // added lt
 
 import type {
   Accessory,
@@ -397,7 +397,14 @@ export class ProductRepository {
     return count;
   }
 
-  async searchProductsCount(query: string): Promise<number> {
+  async searchProductsCount(
+    query: string,
+    filters: {
+      categoryId?: number;
+      isActive?: boolean;
+      isFeatured?: boolean;
+    } = {},
+  ): Promise<number> {
     const cacheKey = `products:count:search:${query}`;
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -409,12 +416,14 @@ export class ProductRepository {
       .from(products)
       .where(
         and(
-          or(
-            like(products.name, `%${query}%`),
-            like(products.description, `%${query}%`),
-            like(products.sku, `%${query}%`),
-          ),
-          eq(products.isActive, true),
+          sql`search_vector @@ websearch_to_tsquery('english', ${query})`,
+          filters.categoryId ? eq(products.categoryId, filters.categoryId) : undefined,
+          filters.isActive !== undefined
+            ? eq(products.isActive, filters.isActive)
+            : eq(products.isActive, true),
+          filters.isFeatured !== undefined
+            ? eq(products.isFeatured, filters.isFeatured)
+            : undefined,
           isNull(products.deletedAt),
         ),
       );
@@ -904,24 +913,36 @@ export class ProductRepository {
 
   async searchProducts(
     query: string,
+    filters: {
+      categoryId?: number;
+      isActive?: boolean;
+      isFeatured?: boolean;
+    } = {},
     limit: number = 100,
     offset: number = 0,
   ): Promise<ProductSummary[]> {
     return await db
-      .select(PRODUCT_SUMMARY_COLUMNS)
+      .select({
+        ...PRODUCT_SUMMARY_COLUMNS,
+        rank: sql<number>`ts_rank(search_vector, websearch_to_tsquery('english', ${query}))`.as(
+          "rank",
+        ),
+      })
       .from(products)
       .where(
         and(
-          or(
-            like(products.name, `%${query}%`),
-            like(products.description, `%${query}%`),
-            like(products.sku, `%${query}%`),
-          ),
-          eq(products.isActive, true),
+          sql`search_vector @@ websearch_to_tsquery('english', ${query})`,
+          filters.categoryId ? eq(products.categoryId, filters.categoryId) : undefined,
+          filters.isActive !== undefined
+            ? eq(products.isActive, filters.isActive)
+            : eq(products.isActive, true),
+          filters.isFeatured !== undefined
+            ? eq(products.isFeatured, filters.isFeatured)
+            : undefined,
           isNull(products.deletedAt),
         ),
       )
-      .orderBy(desc(products.createdAt))
+      .orderBy(desc(sql`rank`), desc(products.createdAt))
       .limit(limit)
       .offset(offset);
   }
