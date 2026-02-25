@@ -14,7 +14,7 @@ const sizeClasses = {
  * Consolidated icon mapper for metrics, initiatives, and goals
  */
 export function getSustainabilityIcon(iconName: string | null, size: IconSize = "md") {
-  const className = `${sizeClasses[size]} text-stone-700`;
+  const className = `${sizeClasses[size]} text-[#00C97B]`;
 
   switch (iconName) {
     case "Droplets":

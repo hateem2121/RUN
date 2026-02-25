@@ -1,165 +1,265 @@
+import { useGSAP } from "@gsap/react";
 import type { ManufacturingHero, MediaAsset } from "@shared/schema";
-import { domAnimation, LazyMotion, type MotionValue, m, type Variants } from "framer-motion";
-import { ArrowDown, Factory } from "lucide-react";
+import gsap from "gsap";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
-
-import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { countUpAnimation } from "@/lib/gsap-animations";
+import { cn } from "@/lib/utils";
 
 interface PublicHeroSectionProps {
-  mouseX: MotionValue<number>;
-  mouseY: MotionValue<number>;
-  rotateX: MotionValue<number>;
-  rotateY: MotionValue<number>;
   mediaAssets: MediaAsset[];
   hero: ManufacturingHero | undefined;
+  stats?: Array<{ label: string; value: number; suffix: string; icon: string }>;
 }
 
 export function PublicHeroSection({
-  mouseX,
-  mouseY,
-  rotateX,
-  rotateY,
   mediaAssets,
   hero,
+  stats: dynamicStats,
 }: PublicHeroSectionProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const subheadlineRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
 
-  // Hero background media
   const heroBackgroundAsset =
     Array.isArray(mediaAssets) && hero?.backgroundMediaId
       ? mediaAssets.find((asset) => asset.id === hero.backgroundMediaId)
       : null;
 
-  // Gear-like rotation for decorative elements (if added later)
-  // Assembly line stagger effect
+  useGSAP(
+    () => {
+      if (!hero || !headlineRef.current) return;
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2, // Sequential reveals like assembly line
-        delayChildren: 0.3,
-      },
+      const words = headlineRef.current.innerText.split(" ");
+      headlineRef.current.innerHTML = words
+        .map((word) => {
+          const isHighlighted = word.startsWith("**") && word.endsWith("**");
+          const cleanWord = isHighlighted ? word.slice(2, -2) : word;
+          return `<span class="inline-block overflow-hidden pb-2"><span class="word inline-block ${
+            isHighlighted ? "text-[#D4A853] relative" : ""
+          }">${cleanWord}${
+            isHighlighted
+              ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-[#D4A853] rotate-45 animate-pulse shadow-[0_0_10px_#D4A853]"></span>'
+              : ""
+          }</span></span>`;
+        })
+        .join(" ");
+
+      const wordElements = headlineRef.current.querySelectorAll(".word");
+
+      gsap.from(wordElements, {
+        y: 100,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: headlineRef.current,
+          start: "top 80%",
+        },
+      });
+
+      gsap.from(subheadlineRef.current, {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+        delay: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headlineRef.current,
+          start: "top 80%",
+        },
+      });
+
+      gsap.from(ctaRef.current, {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+        delay: 1.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headlineRef.current,
+          start: "top 80%",
+        },
+      });
+
+      const statsElements = statsRef.current?.querySelectorAll(".stat-number");
+      statsElements?.forEach((stat) => {
+        gsap.from(stat, {
+          scrollTrigger: {
+            trigger: stat,
+            start: "top 90%",
+            onEnter: () =>
+              countUpAnimation(
+                stat as HTMLElement,
+                parseFloat((stat as HTMLElement).dataset.target || "0"),
+              ),
+          },
+        });
+      });
     },
-  };
+    { scope: containerRef, dependencies: [hero, dynamicStats] },
+  );
 
-  if (!hero) {
-    return (
-      <section className="center-flex bg-manufacturing-primary/10 min-h-screen">
-        <div className="text-center">
-          <Factory className="text-manufacturing-primary mx-auto mb-4 h-16 w-16" />
-          <h1 className="text-foreground mb-2 text-4xl font-bold">Manufacturing Excellence</h1>
-          <p className="text-muted-foreground text-xl">
-            Precision crafted solutions for your business
-          </p>
-        </div>
-      </section>
-    );
-  }
+  if (!hero) return null;
+
+  const defaultStats = [
+    { label: "Machines", value: 200, suffix: "+", icon: "TrendingUp" },
+    { label: "Capacity", value: 100, suffix: "K", icon: "Cpu" },
+    { label: "Defects", value: 0.05, suffix: "%", icon: "ShieldCheck" },
+    { label: "Cycle", value: 24, suffix: "/7", icon: "Zap" },
+  ];
+
+  const stats = dynamicStats && dynamicStats.length >= 4 ? dynamicStats : defaultStats;
+
+  const defaultHeadline = "Precision Engineered Performance";
+  const displayHeadline = hero.headline || defaultHeadline;
 
   return (
     <ManufacturingErrorBoundary>
-      <LazyMotion features={domAnimation}>
-        <m.section
-          ref={heroRef}
-          style={{ perspective: 2000 }}
-          className="center-flex relative min-h-[90vh] w-full overflow-hidden py-24 md:py-32"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          onMouseMove={(e) => {
-            // Simple optimization: Direct set is usually fast, but we can guard against excessive updates
-            // Framer Motion values are optimized, but we'll ensure we don't trigger layout thrashing
-            mouseX.set(e.clientX);
-            mouseY.set(e.clientY);
-          }}
-        >
-          {/* Background Elements */}
+      <div ref={containerRef} className="relative bg-[#0A0A0A]">
+        {/* Header Section */}
+        <header className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+          {/* Floating Sparks */}
+          <div className="absolute inset-0 z-[5] overflow-hidden pointer-events-none">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "absolute bg-[#D4A853] shadow-[0_0_8px_#D4A853] opacity-40 pointer-events-none spark",
+                  i % 3 === 0 ? "w-1 h-1" : i % 2 === 0 ? "w-1.5 h-1.5" : "w-0.5 h-0.5",
+                )}
+                style={{
+                  "--spark-left": `${10 + i * 10}%`,
+                  "--spark-bottom": i % 2 === 0 ? "0" : `-${10 + i * 5}%`,
+                  "--spark-duration": `${6 + (i % 5)}s`,
+                  "--spark-delay": `${i * 0.5}s`,
+                } as React.CSSProperties}
+              />
+            ))}
+          </div>
+
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+            .spark {
+              left: var(--spark-left);
+              bottom: var(--spark-bottom);
+              animation: float-up var(--spark-duration) linear infinite;
+              animation-delay: var(--spark-delay);
+            }
+            @keyframes float-up {
+              0% { transform: translateY(120%) scale(0.5); opacity: 0; }
+              10% { opacity: 0.4; }
+              90% { opacity: 0.4; }
+              100% { transform: translateY(-120%) scale(1.2); opacity: 0; }
+            }
+          `,
+            }}
+          />
+
+          {/* Background Images / Gradients */}
           <div className="absolute inset-0 z-0">
             {heroBackgroundAsset ? (
               <OptimizedImage
                 mediaId={heroBackgroundAsset.id}
                 alt="Manufacturing Background"
-                className="h-full w-full object-cover opacity-20 dark:opacity-40"
+                className="w-full h-full object-cover opacity-30 grayscale mix-blend-overlay"
                 priority={true}
               />
             ) : (
-              <div className="bg-muted/10 h-full w-full" />
+              <img
+                alt="Macro photography of sewing machine needle"
+                className="w-full h-full object-cover opacity-30 grayscale mix-blend-overlay"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaFr8satMiHuubKnq6ZmnTrhos9xLMveFMM4olbG-J23bK5ywE9wF3atm-z3ne_0ztbPnL1etAMv6bRuKpUbC42HETMKBh0VuEUmOffoQdi7Y_2ipx8QjbDa12BKfSsZhvdoahTOEOsW20djY3Hi8a29So3_Cd0OMzm7Kl1UHZViy2Skj4o7hv61vKsFdjYtgSJp7klmS0SdpX6k9ltAN73ADtT0Yb4TZM_DIhlFs2pGb5ygJWMVAcZJz9wEh5bBtgRByWiLhmw"
+              />
             )}
-            <div className="from-background via-background/80 to-background absolute inset-0 bg-gradient-to-b" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#0A0A0A_100%)]"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#D4A8530D_1px,transparent_1px),linear-gradient(to_bottom,#D4A8530D_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           </div>
 
-          {/* Content Container */}
-          <m.div
-            style={{ rotateX, rotateY }}
-            className="z-default relative mx-auto max-w-5xl px-6 text-center"
-          >
-            <m.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <Factory className="mx-auto mb-8 size-20 text-primary md:size-24" />
-            </m.div>
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center h-full pb-20 mt-10">
+            <div className="max-w-5xl">
+              <div className="inline-flex items-center space-x-3 border-l-4 border-[#D4A853] pl-4 mb-8">
+                <span className="text-xs font-mono uppercase tracking-widest text-[#D4A853] font-bold">
+                  Est. 1889
+                </span>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#68869A]">
+                  ISO 9001:2015 Certified
+                </span>
+              </div>
 
-            <m.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-foreground mb-6 text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl"
-            >
-              {hero.headline}
-            </m.h1>
-
-            <m.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl"
-            >
-              {hero.subheadline}
-            </m.p>
-
-            {hero.ctaText && hero.ctaLink && (
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }} // Adjusted delay
-                className="mt-10" // Added margin top
+              <h1
+                ref={headlineRef}
+                className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold tracking-tighter uppercase italic leading-[0.85] mb-8 text-white relative transform skew-x-[-2deg]"
+                aria-label={displayHeadline.replace(/\*\*/g, "")}
               >
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="bg-primary text-primary-foreground px-8 py-4 text-lg hover:bg-primary/90"
-                  asChild
+                {displayHeadline}
+              </h1>
+
+              <p
+                ref={subheadlineRef}
+                className="text-lg md:text-xl text-[#E3DFD6] max-w-2xl font-light leading-relaxed mb-12 border-l border-white/10 pl-6"
+              >
+                {hero.subheadline ||
+                  "193,000 sq ft of cutting-edge manufacturing space dedicated to the future of technical apparel. Where algorithmic precision meets artisanal expertise."}
+              </p>
+
+              <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
+                <a
+                  className="inline-flex items-center justify-center bg-[#D4A853] hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(212,168,83,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
+                  href={hero.ctaLink || "#process"}
                 >
-                  <a href={hero.ctaLink}>{hero.ctaText}</a>
-                </Button>
-              </m.div>
-            )}
+                  {hero.ctaText || "Explore Our Process"}
+                </a>
+                <a
+                  className="inline-flex items-center justify-center border border-white/30 hover:border-[#D4A853] hover:text-[#D4A853] text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-[#121212]/50 backdrop-blur-sm skew-x-[-10deg]"
+                  href="#tour"
+                >
+                  Request Factory Tour
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
 
-            {/* Scroll indicator */}
-            <m.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.8 }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 transform"
-            >
-              <m.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex flex-col items-center text-blue-200"
-              >
-                <span className="mb-2 text-sm">Scroll to explore</span>
-                <ArrowDown className="h-5 w-5" />
-              </m.div>
-            </m.div>
-          </m.div>
-        </m.section>
-      </LazyMotion>
+        {/* Stats Bar Sticky */}
+        <div
+          ref={statsRef}
+          className="sticky top-20 z-40 bg-[#0A0A0A]/95 backdrop-blur-md border-y border-[#D4A853]/20 shadow-lg shadow-[#D4A853]/5 transition-all duration-300"
+        >
+          <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center overflow-x-auto no-scrollbar">
+            <div className="flex space-x-12 md:space-x-24 min-w-max mx-auto md:mx-0 w-full md:w-auto justify-between md:justify-start">
+              {stats.map((stat, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col md:flex-row items-center gap-1 md:gap-3 group cursor-default"
+                >
+                  <span className="text-[#D4A853] font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
+                    {stat.value === 0.05 ? "<" : ""}
+                    <span className="stat-number" data-target={stat.value}>
+                      0
+                    </span>
+                    {stat.suffix}
+                  </span>
+                  <span className="text-[10px] text-[#E3DFD6] uppercase tracking-widest border-t border-transparent group-hover:border-[#D4A853]/50 pt-1 transition-all font-bold">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-4 text-xs font-mono text-[#D4A853]">
+              <span className="w-2 h-2 rounded-none rotate-45 bg-[#D4A853] animate-pulse"></span>
+              <span className="font-bold tracking-wider">LIVE PRODUCTION STATUS: ACTIVE</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </ManufacturingErrorBoundary>
   );
 }

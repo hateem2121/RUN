@@ -15,6 +15,12 @@
         "@modelcontextprotocol/server-postgres",
         "postgresql://neondb_owner:npg_password@ep-cool-shadow-a5g8z13d-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
       ]
+    },
+    "stitch": {
+      "serverUrl": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "AQ.Ab8RN6I9yS3-b1cP0db9a935iGDUjj4z5CLE_1vGAcGByjvZ_w"
+      }
     }
   }
 }

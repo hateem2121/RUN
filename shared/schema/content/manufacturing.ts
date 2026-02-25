@@ -21,30 +21,30 @@ export const manufacturingHero = pgTable(
     headline: varchar({ length: 255 }), // Frontend alias for title
     subheadline: text(), // Frontend alias for subtitle
     description: text(),
-    imageId: integer().references(() => mediaAssets.id, {
+    imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    videoId: integer().references(() => mediaAssets.id, {
+    videoId: integer("video_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    backgroundMediaId: integer().references(() => mediaAssets.id, {
+    backgroundMediaId: integer("background_media_id").references(() => mediaAssets.id, {
       onDelete: "set null",
-    }), // Missing property causing errors
-    ctaText: varchar({ length: 100 }), // Call-to-action button text
-    ctaLink: varchar({ length: 255 }), // Call-to-action button link
+    }),
+    ctaText: varchar("cta_text", { length: 100 }),
+    ctaLink: varchar("cta_link", { length: 255 }),
 
     // Bottom Call to Action Section
-    bottomCtaTitle: varchar({ length: 255 }),
-    bottomCtaDescription: text(),
-    bottomCtaText: varchar({ length: 100 }),
-    bottomCtaLink: varchar({ length: 255 }),
+    bottomCtaTitle: varchar("bottom_cta_title", { length: 255 }),
+    bottomCtaDescription: text("bottom_cta_description"),
+    bottomCtaText: varchar("bottom_cta_text", { length: 100 }),
+    bottomCtaLink: varchar("bottom_cta_link", { length: 255 }),
 
-    isActive: boolean().default(true),
-    createdAt: timestamp({
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at", {
       mode: "date",
       precision: 3,
     }).defaultNow(),
-    updatedAt: timestamp({
+    updatedAt: timestamp("updated_at", {
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -70,16 +70,16 @@ export const manufacturingProcesses = pgTable(
     duration: varchar({ length: 100 }),
     efficiency: integer(), // Process efficiency metric (0-100 percentage)
     category: varchar({ length: 100 }), // Process category/type
-    iconName: varchar({ length: 100 }), // Icon identifier for UI display
-    imageId: integer().references(() => mediaAssets.id, {
+    iconName: varchar("icon_name", { length: 100 }),
+    imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    mediaIds: jsonb().$type<number[]>(), // Additional media for process visualization
-    equipment: jsonb().$type<string[]>(),
-    specifications: jsonb().$type<Record<string, any>>(),
-    isActive: boolean().default(true),
-    sortOrder: integer().default(0),
-    createdAt: timestamp({
+    mediaIds: jsonb("media_ids").$type<number[]>(),
+    equipment: jsonb("equipment").$type<string[]>(),
+    specifications: jsonb("specifications").$type<Record<string, any>>(),
+    isActive: boolean("is_active").default(true),
+    sortOrder: integer("sort_order").default(0),
+    createdAt: timestamp("created_at", {
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -103,14 +103,14 @@ export const manufacturingCapabilities = pgTable(
     unit: varchar({ length: 50 }),
     category: varchar({ length: 100 }),
     icon: varchar({ length: 100 }), // Icon for capability display
-    imageId: integer().references(() => mediaAssets.id, {
+    imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    equipment: jsonb().$type<string[]>(), // Equipment list for this capability
-    specifications: jsonb().$type<Record<string, any>>(),
-    isActive: boolean().default(true),
-    sortOrder: integer().default(0),
-    createdAt: timestamp({
+    equipment: jsonb("equipment").$type<string[]>(),
+    specifications: jsonb("specifications").$type<Record<string, any>>(),
+    isActive: boolean("is_active").default(true),
+    sortOrder: integer("sort_order").default(0),
+    createdAt: timestamp("created_at", {
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -131,18 +131,18 @@ export const manufacturingQualities = pgTable(
     title: varchar({ length: 255 }), // Frontend display title
     description: text(),
     icon: varchar({ length: 100 }), // Icon for quality standard display
-    imageId: integer().references(() => mediaAssets.id, {
+    imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
     certificateId: integer("certificate_id"),
-    category: varchar({ length: 100 }), // Quality standard category
-    testingMethod: varchar({ length: 255 }),
-    frequency: varchar({ length: 100 }), // Testing frequency (e.g., "Every batch", "Monthly")
-    checkpoints: jsonb().$type<string[]>(), // Quality control checkpoints
-    criteria: jsonb().$type<Record<string, any>>(),
-    isActive: boolean().default(true),
-    sortOrder: integer().default(0),
-    createdAt: timestamp({
+    category: varchar("category", { length: 100 }),
+    testingMethod: varchar("testing_method", { length: 255 }),
+    frequency: varchar("frequency", { length: 100 }),
+    checkpoints: jsonb("checkpoints").$type<string[]>(),
+    criteria: jsonb("criteria").$type<Record<string, any>>(),
+    isActive: boolean("is_active").default(true),
+    sortOrder: integer("sort_order").default(0),
+    createdAt: timestamp("created_at", {
       mode: "date",
       precision: 3,
     }).defaultNow(),
@@ -151,6 +151,38 @@ export const manufacturingQualities = pgTable(
     index("manufacturing_qualities_is_active_idx").on(table.isActive),
     index("manufacturing_qualities_image_id_idx").on(table.imageId),
     index("manufacturing_qualities_sort_order_idx").on(table.sortOrder),
+  ],
+);
+
+// Manufacturing Case Studies
+export const manufacturingCaseStudies = pgTable(
+  "manufacturing_case_studies",
+  {
+    id: serial("id").primaryKey(),
+    client: varchar({ length: 255 }).notNull(),
+    type: varchar({ length: 255 }).notNull(), // e.g., "High-Performance Teamwear"
+    metric: varchar({ length: 100 }).notNull(), // e.g., "-22% Lead Time"
+    description: text().notNull(),
+    quote: text().notNull(),
+    author: varchar({ length: 255 }).notNull(),
+    imageId: integer("image_id").references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
+    isActive: boolean("is_active").default(true),
+    sortOrder: integer("sort_order").default(0),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    updatedAt: timestamp("updated_at", {
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+  },
+  (table) => [
+    index("manufacturing_case_studies_is_active_idx").on(table.isActive),
+    index("manufacturing_case_studies_image_id_idx").on(table.imageId),
+    index("manufacturing_case_studies_sort_order_idx").on(table.sortOrder),
   ],
 );
 
@@ -167,6 +199,9 @@ export type InsertManufacturingCapability = typeof manufacturingCapabilities.$in
 export type ManufacturingQuality = typeof manufacturingQualities.$inferSelect;
 export type InsertManufacturingQuality = typeof manufacturingQualities.$inferInsert;
 
+export type ManufacturingCaseStudy = typeof manufacturingCaseStudies.$inferSelect;
+export type InsertManufacturingCaseStudy = typeof manufacturingCaseStudies.$inferInsert;
+
 // Zod Schemas
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -181,3 +216,6 @@ export const selectManufacturingCapabilitySchema = createSelectSchema(manufactur
 
 export const insertManufacturingQualitySchema = createInsertSchema(manufacturingQualities);
 export const selectManufacturingQualitySchema = createSelectSchema(manufacturingQualities);
+
+export const insertManufacturingCaseStudySchema = createInsertSchema(manufacturingCaseStudies);
+export const selectManufacturingCaseStudySchema = createSelectSchema(manufacturingCaseStudies);

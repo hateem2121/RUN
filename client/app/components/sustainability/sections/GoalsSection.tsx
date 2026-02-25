@@ -1,18 +1,142 @@
 import type { SustainabilityGoal } from "@shared/schema";
-import { motion } from "framer-motion";
-import { useMemo } from "react";
-import { Progress } from "@/components/ui/progress";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CheckCircle, Circle, Target } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
 
+gsap.registerPlugin(ScrollTrigger);
+
+interface GoalsSectionProps {
+  goals: SustainabilityGoal[];
+  title?: string | undefined;
+  description?: string | undefined;
+}
+
+/* ─────────────────────────────────────────────
+   Timeline Dot (status indicator)
+   ───────────────────────────────────────────── */
+function TimelineDot({ progress }: { progress: number }) {
+  if (progress >= 100) {
+    return (
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00C97B] shadow-[0_0_12px_rgba(0,201,123,0.4)]">
+        <CheckCircle className="h-4 w-4 text-white" />
+      </div>
+    );
+  }
+  if (progress > 0) {
+    return (
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00C97B] shadow-[0_0_12px_rgba(0,201,123,0.3)]">
+        <Target className="h-4 w-4 text-white" />
+      </div>
+    );
+  }
+  return (
+    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-[#00C97B]/40 bg-transparent">
+      <Circle className="h-3 w-3 text-[#00C97B]/40" />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Goal Card (branching from timeline)
+   ───────────────────────────────────────────── */
+function GoalCard({ goal, progress }: { goal: SustainabilityGoal; progress: number }) {
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+
+    gsap.fromTo(
+      bar,
+      { width: "0%" },
+      {
+        width: `${Math.min(progress, 100)}%`,
+        duration: 1.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: bar.parentElement,
+          start: "top 85%",
+        },
+      },
+    );
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => {
+        if (t.trigger === bar.parentElement) t.kill();
+      });
+    };
+  }, [progress]);
+
+  return (
+    <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl p-6 transition-all duration-300 hover:bg-white/[0.07] hover:border-[#00C97B]/20">
+      <div className="mb-4">
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="font-semibold text-lg text-white">{goal.title}</h3>
+          {goal.targetYear && (
+            <span className="font-medium text-sm text-[#00C97B]">{goal.targetYear}</span>
+          )}
+        </div>
+
+        {goal.category && (
+          <span className="mb-3 inline-block rounded-full bg-[#00C97B]/10 px-3 py-1 font-medium text-[#00C97B] text-xs">
+            {goal.category}
+          </span>
+        )}
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-4">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-sm text-[#68869A]">Progress</span>
+          <span className="font-medium text-sm text-white">{progress.toFixed(1)}%</span>
+        </div>
+        <div
+          className="h-2 w-full rounded-full bg-white/[0.08] overflow-hidden"
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${goal.title} progress`}
+        >
+          <div
+            ref={barRef}
+            className="h-full rounded-full bg-gradient-to-r from-[#00C97B] to-[#00C97B]/70 w-0"
+          />
+        </div>
+      </div>
+
+      <div className="mb-4 space-y-1">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-[#68869A]">Current:</span>
+          <span className="font-medium text-white">
+            {goal.currentValue || "0"} {goal.unit}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-[#68869A]">Target:</span>
+          <span className="font-medium text-white">
+            {goal.targetValue} {goal.unit}
+          </span>
+        </div>
+      </div>
+
+      {goal.description && (
+        <p className="text-sm text-[#E3DFD6]/70 leading-relaxed">{goal.description}</p>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Goals Section — Vertical Timeline
+   ───────────────────────────────────────────── */
 export function GoalsSection({
   goals,
   title = "Our Sustainability Goals",
   description = "Track our progress toward achieving ambitious sustainability targets and environmental commitments.",
-}: {
-  goals: SustainabilityGoal[];
-  title?: string | undefined;
-  description?: string | undefined;
-}) {
+}: GoalsSectionProps) {
   const goalsWithProgress = useMemo(
     () =>
       goals.map((goal) => ({
@@ -23,76 +147,41 @@ export function GoalsSection({
   );
 
   return (
-    <section className="relative bg-stone-50 py-20">
+    <section className="relative bg-[#0F0F0F] py-20">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
-        >
-          <h2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-900">{title}</h2>
-          <p className="mx-auto max-w-3xl text-lg text-stone-600">{description}</p>
-        </motion.div>
+        {/* Section Header */}
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 font-bold font-neue-stance text-3xl text-white">{title}</h2>
+          <p className="mx-auto max-w-3xl text-lg text-[#E3DFD6]">{description}</p>
+        </div>
 
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {goalsWithProgress.map((goal, index) => {
-            const progress = goal.progress;
+        {/* Timeline Layout */}
+        <div className="mx-auto max-w-3xl">
+          <div className="relative">
+            {/* Vertical timeline line */}
+            <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-[#00C97B]/60 via-[#00C97B]/30 to-transparent" />
 
-            return (
-              <motion.div
-                key={goal.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="rounded-xl border border-stone-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
-              >
-                <div className="mb-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <h3 className="font-semibold text-lg text-stone-900">{goal.title}</h3>
-                    <span className="font-medium text-sm text-stone-600">{goal.targetYear}</span>
+            {/* Goal items */}
+            <div className="space-y-8">
+              {goalsWithProgress.map((goal, index) => (
+                <div key={goal.id} className="relative flex gap-6 items-start">
+                  {/* Timeline dot */}
+                  <div className="shrink-0 relative z-10">
+                    <TimelineDot progress={goal.progress} />
+                    {/* Connector to card */}
+                    {index < goalsWithProgress.length - 1 && (
+                      <div className="absolute left-1/2 top-8 -translate-x-1/2 w-px h-8 bg-[#00C97B]/20" />
+                    )}
                   </div>
 
-                  {goal.category && (
-                    <span className="mb-3 inline-block rounded-full bg-stone-200 px-3 py-1 font-medium text-stone-800 text-xs">
-                      {goal.category}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm text-stone-600">Progress</span>
-                    <span className="font-medium text-sm text-stone-900">
-                      {progress.toFixed(1)}%
-                    </span>
-                  </div>
-                  <Progress value={progress} className="h-2 bg-stone-200" />
-                </div>
-
-                <div className="mb-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-stone-600">Current:</span>
-                    <span className="font-medium text-stone-900">
-                      {goal.currentValue || "0"} {goal.unit}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-stone-600">Target:</span>
-                    <span className="font-medium text-stone-900">
-                      {goal.targetValue} {goal.unit}
-                    </span>
+                  {/* Goal card */}
+                  <div className="flex-1 pb-2">
+                    <GoalCard goal={goal} progress={goal.progress} />
                   </div>
                 </div>
-
-                {goal.description && (
-                  <p className="text-sm text-stone-600 leading-relaxed">{goal.description}</p>
-                )}
-              </motion.div>
-            );
-          })}
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

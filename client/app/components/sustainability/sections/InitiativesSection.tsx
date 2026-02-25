@@ -14,7 +14,7 @@ export function InitiativesSection({
   description?: string | undefined;
 }) {
   return (
-    <section className="relative bg-white py-20">
+    <section className="relative bg-[#0F0F0F] py-20">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -23,8 +23,8 @@ export function InitiativesSection({
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-4 font-bold font-neue-stance text-3xl text-stone-900">{title}</h2>
-          <p className="mx-auto max-w-3xl text-lg text-stone-600">{description}</p>
+          <h2 className="mb-4 font-bold font-neue-stance text-3xl text-white">{title}</h2>
+          <p className="mx-auto max-w-3xl text-lg text-[#E3DFD6]">{description}</p>
         </motion.div>
 
         <div

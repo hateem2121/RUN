@@ -8,6 +8,7 @@ import type {
 } from "../../shared/schema.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { pageContentRepository } from "../lib/db/repositories/index.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 /**
  * AboutService - Centralized business logic for About page management
@@ -24,9 +25,9 @@ export class AboutService {
    * Used by: /api/about-batch (public route)
    */
   async getAllAboutData() {
-    // Note: Passing true to includeInactive to preserve original behavior where public API
-    // received all data. In the future, we might want to pass false here for public views.
-    const [hero, timeline, locations, sections, statistics, teamMessage] = await Promise.all([
+    // Use Promise.allSettled for resilience: a single failing query
+    // (e.g., missing DB column after schema change) won't crash the entire batch
+    const results = await Promise.allSettled([
       this.getHero(true),
       this.getTimeline(true),
       this.getLocations(true),
@@ -35,7 +36,22 @@ export class AboutService {
       this.getTeamMessage(true),
     ]);
 
-    return { hero, timeline, locations, sections, statistics, teamMessage };
+    const getValue = <T>(result: PromiseSettledResult<T>, fallback: T): T => {
+      if (result.status === "fulfilled") return result.value;
+      logger.warn("[AboutService] Partial batch failure, using fallback", {
+        reason: result.reason instanceof Error ? result.reason.message : String(result.reason),
+      });
+      return fallback;
+    };
+
+    return {
+      hero: getValue(results[0], null),
+      timeline: getValue(results[1], []),
+      locations: getValue(results[2], []),
+      sections: getValue(results[3], []),
+      statistics: getValue(results[4], []),
+      teamMessage: getValue(results[5], null),
+    };
   }
 
   // ===========================================================================

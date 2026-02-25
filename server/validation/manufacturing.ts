@@ -8,6 +8,7 @@
 import { type ZodSchema, z } from "zod";
 import {
   insertManufacturingCapabilitySchema,
+  insertManufacturingCaseStudySchema,
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
@@ -15,6 +16,7 @@ import {
 
 export {
   insertManufacturingCapabilitySchema,
+  insertManufacturingCaseStudySchema,
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
@@ -92,6 +94,17 @@ export function validateManufacturingHeroPartial(data: unknown) {
 }
 
 /**
+ * Manufacturing Case Study validation
+ */
+export function validateManufacturingCaseStudy(data: unknown) {
+  return validate(insertManufacturingCaseStudySchema, data);
+}
+
+export function validateManufacturingCaseStudyPartial(data: unknown) {
+  return validate(insertManufacturingCaseStudySchema.partial(), data);
+}
+
+/**
  * Reorder validation schemas
  */
 export const reorderProcessesSchema = z.object({
@@ -121,6 +134,15 @@ export const reorderQualitiesSchema = z.object({
   ),
 });
 
+export const reorderCaseStudiesSchema = z.object({
+  caseStudies: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
 export function validateReorderProcesses(data: unknown) {
   return validate(reorderProcessesSchema, data);
 }
@@ -131,4 +153,8 @@ export function validateReorderCapabilities(data: unknown) {
 
 export function validateReorderQualities(data: unknown) {
   return validate(reorderQualitiesSchema, data);
+}
+
+export function validateReorderCaseStudies(data: unknown) {
+  return validate(reorderCaseStudiesSchema, data);
 }

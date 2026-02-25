@@ -12,6 +12,7 @@ export const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req: Request) => {
+    if (process.env.NODE_ENV !== "production") return true;
     if (req.path === "/health" || req.path.startsWith("/src")) return true;
     return false;
   },

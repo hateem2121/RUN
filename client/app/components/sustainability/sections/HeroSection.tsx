@@ -33,7 +33,7 @@ export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
           priority={true}
         />
       )}
-      <div className="absolute inset-0 bg-linear-to-b from-stone-900/50 to-stone-800/30" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/60 to-[#0A0A0A]/40" />
     </div>
   );
 }

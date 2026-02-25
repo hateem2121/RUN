@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Technology - Engineered Performance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@300;400;500;600&amp;family=Oswald:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cobalt: {
+                DEFAULT: "#0047AB",
+                light: "#2E74D9",
+                dark: "#002F75",
+                glow: "rgba(0, 71, 171, 0.2)",
+              },
+              "background-light": "#F5F7FA",
+              "surface-white": "#FFFFFF",
+              "surface-off": "#F0F2F5",
+              "text-main": "#1A1A1A",
+              "text-muted": "#64748B"
+            },
+            fontFamily: {
+              display: ["'Anton'", "'Oswald'", "sans-serif"],
+              body: ["'Inter'", "sans-serif"],
+            },
+            backgroundImage: {
+                'hero-gradient': 'linear-gradient(180deg, rgba(245,247,250,0) 0%, rgba(245,247,250,0.8) 80%, rgba(245,247,250,1) 100%)',
+                'cobalt-gradient': 'linear-gradient(90deg, #0047AB 0%, #002F75 100%)',
+                'cobalt-text-gradient': 'linear-gradient(135deg, #0047AB 0%, #002F75 80%)',
+            },
+            animation: {
+                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'glow-pulse': 'glow-pulse 3s infinite alternate',
+                'scan': 'scan 2s linear infinite',
+            },
+            keyframes: {
+                'glow-pulse': {
+                    '0%': { boxShadow: '0 0 10px rgba(0, 71, 171, 0.1)' },
+                    '100%': { boxShadow: '0 0 25px rgba(0, 71, 171, 0.3)' },
+                },
+                'scan': {
+                    '0%': { transform: 'translateY(-100%)' },
+                    '100%': { transform: 'translateY(100%)' },
+                }
+            }
+          },
+        },
+      };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5F7FA; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0047AB;
+        }
+        .clean-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-left: 3px solid #0047AB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .clean-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-left-color: #2E74D9;
+        }.clean-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(0, 71, 171, 0.05) 50%, 
+                transparent 100%);
+            transform: translateY(-100%);
+            transition: none;
+            pointer-events: none;
+        }
+        .clean-card:hover::after {
+            animation: scan 1.5s linear infinite;
+        }
+        .clean-thumb {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .clean-thumb.active {
+            border: 2px solid #0047AB;
+            background: #F0F7FF;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+        .clean-thumb:hover {
+            background: #F8FAFC;
+        }
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 12s linear infinite; 
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: radial-gradient(rgba(0, 71, 171, 0.1) 1px, transparent 1px);
+        }
+        .timeline-container {
+            position: relative;
+            padding-top: 40px;
+        }
+        .timeline-line-horizontal {
+            position: absolute;
+            top: 52px; 
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0, 71, 171, 0.2);
+            z-index: 0;
+        }
+        .timeline-node-horizontal {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #0047AB;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .timeline-node-horizontal.filled {
+            background: #0047AB;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+        .timeline-node-horizontal.hollow {
+            background: #F5F7FA;
+            border-color: #94A3B8;
+        }
+        .timeline-node-horizontal.pulsing {
+             background: #0047AB;
+             box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.7);
+             animation: pulse-node 2s infinite;
+        }
+        @keyframes pulse-node {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(0, 71, 171, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 71, 171, 0);
+            }
+        }
+        .clean-frame {
+             background: #FFFFFF;
+             border: 1px solid rgba(0, 0, 0, 0.05);
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .partner-marquee {
+            animation: marquee-partners 30s linear infinite;
+        }
+        @keyframes marquee-partners {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .typewriter h1 {
+            overflow: hidden; 
+            white-space: nowrap; 
+            margin: 0 auto; 
+            letter-spacing: .15em; 
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #0047AB; }
+        }
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #0047AB;
+            animation: typing 2.5s steps(20, end), blink-caret .75s step-end infinite;
+            width: fit-content;
+        }
+        .view-details {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .clean-card:hover .view-details {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background-light text-text-main font-body antialiased selection:bg-cobalt selection:text-white">
+<div class="fixed inset-0 pointer-events-none z-[-1] bg-grid opacity-60"></div>
+<div class="min-h-screen relative overflow-x-hidden">
+<nav class="fixed w-full z-50 top-0 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-2xl font-display font-bold text-black tracking-tighter">RUN<span class="text-cobalt">APPAREL</span></span>
+</div>
+<div class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-500">
+<a class="hover:text-cobalt transition-colors" href="#">Technology</a>
+<a class="hover:text-cobalt transition-colors" href="#">Sustainability</a>
+<a class="hover:text-cobalt transition-colors" href="#">Partners</a>
+<a class="hover:text-cobalt transition-colors" href="#">Lab</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 border border-gray-300 hover:border-cobalt hover:text-cobalt text-black text-[10px] font-bold uppercase tracking-widest transition-all hidden sm:block bg-white hover:shadow-md">
+                        Contact Sales
+                    </button>
+<button class="md:hidden p-2 text-black hover:text-cobalt transition-colors">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<header class="relative pt-40 pb-32 px-6 min-h-[95vh] flex flex-col justify-center overflow-hidden bg-gradient-to-b from-white to-gray-50">
+<div class="absolute inset-0 z-0 bg-grid opacity-[0.4]"></div>
+<div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cobalt/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute top-28 right-6 md:right-12 border border-gray-200 bg-white/80 backdrop-blur px-3 py-1 rounded-sm text-[10px] font-mono text-gray-400 tracking-wider">
+                SYS.STATUS: ONLINE
+            </div>
+<div class="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
+<div class="mb-8 inline-flex items-center gap-2 px-3 py-1 bg-cobalt/5 border border-cobalt/20 rounded-full">
+<div class="w-1.5 h-1.5 bg-cobalt rounded-full animate-pulse"></div>
+<span class="text-[10px] font-mono font-bold text-cobalt tracking-widest uppercase">v.2.04 Stable Release</span>
+</div>
+<div class="flex flex-col items-center mb-10 space-y-2">
+<h1 class="text-6xl md:text-[8rem] lg:text-[10rem] font-display font-bold text-black leading-[0.85] tracking-tight uppercase flex flex-col items-center gap-4">
+<span class="block text-gray-900">Where</span>
+<span class="bg-clip-text text-transparent bg-cobalt-text-gradient drop-shadow-sm pb-2">Science</span>
+<div class="typewriter-text text-black mt-2">
+                            Meets Fabric
+                        </div>
+</h1>
+</div>
+<div class="h-1 w-[120px] bg-cobalt mb-10"></div>
+<p class="text-base md:text-lg text-gray-600 font-normal leading-relaxed max-w-2xl mb-14 tracking-wide">
+                    Engineering the next generation of athletic skin. We go beyond textiles, diving deep into biotechnology to enhance human performance through reactive materials.
+                </p>
+<div class="flex justify-center">
+<button class="px-10 py-4 bg-cobalt text-white font-bold uppercase tracking-widest text-xs shadow-lg hover:bg-cobalt-dark hover:shadow-xl transition-all duration-300 flex items-center gap-3 transform hover:-translate-y-1">
+                        Explore Our Innovations
+                        <span class="material-symbols-outlined text-base">arrow_downward</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 text-[10px] font-mono text-gray-400 tracking-wider hidden md:block">
+                LAT: 47.3769° N <br/> LON: 8.5417° E
+            </div>
+<div class="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-white/50 backdrop-blur-sm h-24 flex items-center overflow-hidden">
+<div class="flex whitespace-nowrap partner-marquee w-full grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+<div class="flex items-center gap-24 mx-12">
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">CLO 3D</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">OPTITEX</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">GERBER TECHNOLOGY</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">BROWZWEAR</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">LECTRA</span>
+</div>
+<div class="flex items-center gap-24 mx-12">
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">CLO 3D</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">OPTITEX</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">GERBER TECHNOLOGY</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">BROWZWEAR</span>
+<span class="text-xl md:text-2xl font-display text-black font-bold cursor-pointer tracking-tighter">LECTRA</span>
+</div>
+</div>
+</div>
+</header>
+<div class="bg-cobalt py-3 overflow-hidden shadow-lg z-20 relative border-y border-cobalt-dark">
+<div class="marquee-container">
+<div class="marquee-content font-display text-lg text-white font-bold uppercase tracking-[0.15em] flex gap-12">
+<span>INNOVATION •</span>
+<span>3D DESIGN •</span>
+<span>SMART TEXTILES •</span>
+<span>R&amp;D •</span>
+<span>BIOMECHANICS •</span>
+<span>COMPUTATIONAL ANALYSIS •</span>
+<span>INNOVATION •</span>
+<span>3D DESIGN •</span>
+<span>SMART TEXTILES •</span>
+<span>R&amp;D •</span>
+<span>BIOMECHANICS •</span>
+<span>COMPUTATIONAL ANALYSIS •</span>
+</div>
+</div>
+</div>
+<section class="py-24 px-6 relative max-w-7xl mx-auto bg-background-light">
+<div class="absolute top-0 right-0 p-4 opacity-50">
+<span class="text-[10px] font-mono text-gray-400 border border-gray-200 px-2 py-1 bg-white">SECURE CONNECTION ESTABLISHED</span>
+</div>
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-display font-bold text-black uppercase tracking-tight mb-4">Technology Stack</h2>
+<div class="w-16 h-1 bg-cobalt mx-auto"></div>
+</div>
+<div class="flex justify-center mb-16">
+<div class="inline-flex rounded-full bg-white p-1 border border-gray-200 shadow-sm">
+<button class="px-8 py-2.5 rounded-full bg-cobalt text-white text-[10px] font-bold uppercase tracking-widest shadow-md">All</button>
+<button class="px-8 py-2.5 rounded-full text-gray-500 hover:text-cobalt hover:bg-gray-50 text-[10px] font-bold uppercase tracking-widest transition-colors">Innovations</button>
+<button class="px-8 py-2.5 rounded-full text-gray-500 hover:text-cobalt hover:bg-gray-50 text-[10px] font-bold uppercase tracking-widest transition-colors">Equipment</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
+<div class="lg:col-span-2 clean-card p-0 relative overflow-hidden group min-h-[340px] flex flex-col md:flex-row border-0">
+<div class="w-full md:w-1/2 bg-gray-100 relative h-64 md:h-auto overflow-hidden">
+<img alt="Close up of high tech fabric mesh with cobalt lighting" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 mix-blend-multiply opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPXw48tMKet2thQwT6vLmJH2ljJiol8Ql2FtSQAZfGpvIG2ED_YmP1NePND6zedqWeqbbDD74YQYQwiUxZdP4xNYh87l-V63ksIvN_SSoIiHK25iMtAQGJ4QiHapz6GZlrY5dLxiT7V6Lx0Fxlll7RdUBRAeB3t2GVOVuQmDBgaAik1MwYEl5_kE9XW9msGEyFHic0YT7U91GoFJafTtX_TUMKvPKyc3EPDm8mkP0yaAojy0NgWaJsAPExLIKiWi16HAerxFtG5w"/>
+<div class="absolute inset-0 bg-cobalt/10 mix-blend-overlay"></div>
+</div>
+<div class="w-full md:w-1/2 p-10 flex flex-col justify-center relative z-20 bg-white">
+<div class="mb-4">
+<span class="text-[10px] font-mono text-cobalt uppercase tracking-widest border border-cobalt/20 px-2 py-1 rounded mb-4 inline-block bg-cobalt/5">Featured Tech</span>
+<h3 class="text-3xl font-display font-bold text-black uppercase tracking-tight leading-none">Aero-Knit<br/>Pro Series</h3>
+</div>
+<p class="text-sm text-gray-600 leading-relaxed mb-8 font-light">Our flagship ultralight mesh construction maximizes airflow through algorithmic zonal mapping, reducing skin temperature by up to 4°C during peak exertion.</p>
+<div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6 mt-auto">
+<div>
+<span class="text-[10px] text-gray-400 font-mono uppercase block mb-1">Airflow Metric</span>
+<span class="text-lg text-cobalt font-bold font-mono">98%</span>
+</div>
+<div>
+<span class="text-[10px] text-gray-400 font-mono uppercase block mb-1">Weight Reduction</span>
+<span class="text-lg text-cobalt font-bold font-mono">-15g</span>
+</div>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-cobalt">
+<span class="text-[10px] uppercase font-bold tracking-wider">View Details</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between">
+<div>
+<span class="text-[10px] text-cobalt font-bold font-mono tracking-widest uppercase mb-2 block">Innovation</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">Thermal-Shield</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-cobalt transition-colors text-xl">thermostat</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Reactive insulation traps body heat dynamically based on skin temp.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Insulation Grade</span>
+<span class="text-xs text-black font-bold font-mono">CLO 2.4</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-cobalt bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Expand</span>
+<span class="material-symbols-outlined text-sm">add</span>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between border-l-purple-600 hover:border-l-purple-500">
+<div>
+<span class="text-[10px] text-purple-600 font-bold font-mono tracking-widest uppercase mb-2 block">Equipment</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">3D Knit Loom</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-purple-600 transition-colors text-xl">precision_manufacturing</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Zero-waste seamless garment production units.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Capacity</span>
+<span class="text-xs text-purple-600 font-bold font-mono">200 Units/Hr</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-purple-600 bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Specs</span>
+<span class="material-symbols-outlined text-sm">settings</span>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between">
+<div>
+<span class="text-[10px] text-cobalt font-bold font-mono tracking-widest uppercase mb-2 block">Innovation</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">Kinetic-Return</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-cobalt transition-colors text-xl">bolt</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Elastomeric fibers that return energy to the muscle on contraction.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Energy Return</span>
+<span class="text-xs text-black font-bold font-mono">+14%</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-cobalt bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Analysis</span>
+<span class="material-symbols-outlined text-sm">analytics</span>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between border-l-purple-600 hover:border-l-purple-500">
+<div>
+<span class="text-[10px] text-purple-600 font-bold font-mono tracking-widest uppercase mb-2 block">Equipment</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">Laser Cutter X</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-purple-600 transition-colors text-xl">center_focus_strong</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Precision cutting with 0.01mm tolerance for complex patterns.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Precision</span>
+<span class="text-xs text-purple-600 font-bold font-mono">0.01mm</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-purple-600 bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Tech Sheet</span>
+<span class="material-symbols-outlined text-sm">description</span>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between">
+<div>
+<span class="text-[10px] text-cobalt font-bold font-mono tracking-widest uppercase mb-2 block">Innovation</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">Nano-Guard</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-cobalt transition-colors text-xl">water_drop</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Microscopic hydrophobic layer that repels water and bacteria.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Resistance</span>
+<span class="text-xs text-black font-bold font-mono">IPX-6</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-cobalt bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Lab Report</span>
+<span class="material-symbols-outlined text-sm">science</span>
+</div>
+</div>
+<div class="clean-card p-8 relative overflow-hidden group flex flex-col justify-between border-l-purple-600 hover:border-l-purple-500">
+<div>
+<span class="text-[10px] text-purple-600 font-bold font-mono tracking-widest uppercase mb-2 block">Equipment</span>
+<div class="flex justify-between items-start mb-3">
+<h4 class="text-xl font-bold text-black uppercase font-display tracking-tight">Bond Press</h4>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-purple-600 transition-colors text-xl">layers</span>
+</div>
+<p class="text-xs text-gray-600 leading-relaxed mb-6 font-light">Seamless bonding technology replacing traditional stitching.</p>
+</div>
+<div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
+<span class="text-[10px] text-gray-400 font-mono uppercase">Temp Range</span>
+<span class="text-xs text-purple-600 font-bold font-mono">450°C</span>
+</div>
+<div class="view-details absolute bottom-4 right-4 flex items-center gap-1 text-purple-600 bg-white pl-2">
+<span class="text-[10px] uppercase font-bold tracking-wider">Process</span>
+<span class="material-symbols-outlined text-sm">factory</span>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 px-6 max-w-7xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 my-16 relative">
+<div class="absolute top-6 left-6 text-[10px] font-mono text-gray-400 tracking-wider">
+                MODULE: 3D-VIEW
+            </div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-100 pb-6 gap-4 pt-4">
+<h2 class="text-3xl md:text-4xl font-display font-bold text-black uppercase tracking-tight">Interactive Experience</h2>
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-cobalt border border-cobalt/30 px-3 py-1 rounded font-mono bg-cobalt/5">v.4.2.0</span>
+<span class="text-[10px] text-gray-500 font-mono uppercase">3D Viewer Module</span>
+<div class="flex items-center gap-2 ml-4">
+<span class="text-[10px] font-bold text-black uppercase tracking-wider">Data Overlay</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cobalt"></div>
+</label>
+</div>
+</div>
+</div>
+<div class="clean-frame p-2 md:p-4 rounded-xl relative bg-gray-50">
+<div class="relative w-full aspect-[4/5] md:aspect-[16/9] bg-white rounded-lg overflow-hidden group border border-gray-200 shadow-inner">
+<button class="absolute top-4 right-4 z-40 bg-white/80 backdrop-blur-md p-2 rounded-lg border border-gray-200 hover:border-cobalt hover:text-cobalt transition-colors shadow-sm text-gray-700">
+<span class="material-symbols-outlined text-xl">fullscreen</span>
+</button>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="text-center z-20">
+<span class="material-symbols-outlined text-6xl text-gray-200">view_in_ar</span>
+</div>
+</div>
+<img alt="3D wireframe render of a futuristic running shoe with cobalt accents" class="w-full h-full object-cover mix-blend-multiply hover:scale-105 transition-transform duration-[20s] opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYMAcUulYx7jLmhaJnOCNjDJdJJ-3G9DNXk8BJufJvI-4dfCr52fUWcYV0zA5b5MYVVfD3Yqv7kwVBet7o1PQNXzciAntQAdNJedYpNUV7g2ykPDMpTerXp7GhXHE-c8SrzLCIdvb36geI3X9FPpXT2eRlfCjzx38-YkTMb-wso0vtLNpY6lpppDhw3ChugAt2pBJ50Z4RtmUzxv02M_LQqPMeUWg6rBKp5IoYhy-xJIuvV_e_iiT5zVPNAW_Ss9te3rcyNfE69Cs"/>
+<div class="absolute inset-0 bg-grid opacity-30 pointer-events-none z-10"></div>
+<div class="absolute top-1/2 left-1/4 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+<div class="w-32 h-32 border border-cobalt/30 rounded-full flex items-center justify-center animate-pulse">
+<div class="w-24 h-24 border border-cobalt/50 rounded-full"></div>
+</div>
+</div>
+<div class="absolute top-4 left-4 md:top-8 md:left-8 z-30">
+<div class="flex flex-col gap-2 bg-white/80 p-3 rounded backdrop-blur-sm border border-gray-100 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-cobalt rounded-full animate-pulse"></div>
+<span class="text-[10px] text-cobalt font-mono uppercase tracking-widest font-bold">Model: Proto-X1</span>
+</div>
+<span class="text-[10px] text-gray-500 font-mono uppercase">Poly Count: 42,000</span>
+<span class="text-[10px] text-gray-500 font-mono uppercase">Textures: 4K PBR</span>
+</div>
+</div>
+<div class="absolute top-1/2 right-1/3 w-4 h-4 z-30 cursor-pointer group/hotspot hidden md:block">
+<div class="absolute inset-0 bg-cobalt rounded-full animate-ping opacity-75"></div>
+<div class="absolute inset-0 bg-cobalt rounded-full border-2 border-white shadow-lg"></div>
+<div class="absolute left-6 top-0 w-max bg-white border border-cobalt/20 text-[10px] text-black p-2 rounded opacity-0 group-hover/hotspot:opacity-100 transition-opacity shadow-lg font-bold uppercase tracking-wide">
+                            Adaptive Fit Zone
+                        </div>
+</div>
+<div class="absolute bottom-4 md:bottom-8 left-0 right-0 text-center z-30 px-4">
+<div class="inline-flex items-center gap-4 md:gap-6 px-4 md:px-6 py-2 md:py-3 bg-white/90 backdrop-blur-md rounded-full border border-gray-200 shadow-lg max-w-full overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-2 whitespace-nowrap cursor-pointer hover:text-cobalt transition-colors">
+<span class="material-symbols-outlined text-cobalt text-sm md:text-base">360</span>
+<span class="text-[10px] md:text-xs text-gray-700 uppercase tracking-wide font-bold">Rotate</span>
+</div>
+<div class="w-px h-3 md:h-4 bg-gray-300"></div>
+<div class="flex items-center gap-2 whitespace-nowrap cursor-pointer hover:text-cobalt transition-colors">
+<span class="material-symbols-outlined text-cobalt text-sm md:text-base">zoom_in</span>
+<span class="text-[10px] md:text-xs text-gray-700 uppercase tracking-wide font-bold">Zoom</span>
+</div>
+<div class="w-px h-3 md:h-4 bg-gray-300"></div>
+<div class="flex items-center gap-2 whitespace-nowrap cursor-pointer hover:text-cobalt transition-colors">
+<span class="material-symbols-outlined text-cobalt text-sm md:text-base">pinch</span>
+<span class="text-[10px] md:text-xs text-gray-700 uppercase tracking-wide font-bold">Scale</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 overflow-x-auto pb-4 px-1 no-scrollbar">
+<div class="flex gap-4 w-max">
+<div class="clean-thumb active w-40 p-3 rounded-lg flex flex-col gap-2 cursor-pointer group border-cobalt shadow-md bg-cobalt/5">
+<div class="w-full aspect-square bg-white rounded flex items-center justify-center border border-cobalt/20 relative overflow-hidden group-hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-cobalt text-3xl group-hover:scale-110 transition-transform">checkroom</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-black font-bold uppercase tracking-wider truncate">Performance Jacket</span>
+<span class="text-[10px] text-cobalt font-mono uppercase font-bold">ACTIVE VIEW</span>
+</div>
+</div>
+<div class="clean-thumb w-40 p-3 rounded-lg flex flex-col gap-2 cursor-pointer group hover:border-gray-300">
+<div class="w-full aspect-square bg-gray-100 rounded flex items-center justify-center border border-gray-200 relative overflow-hidden group-hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-gray-400 text-3xl group-hover:text-black group-hover:scale-110 transition-all">accessibility_new</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-gray-600 font-bold uppercase tracking-wider truncate group-hover:text-black transition-colors">Compression Wear</span>
+<span class="text-[10px] text-gray-500 font-mono uppercase">USDZ • 8MB</span>
+</div>
+</div>
+<div class="clean-thumb w-40 p-3 rounded-lg flex flex-col gap-2 cursor-pointer group hover:border-gray-300">
+<div class="w-full aspect-square bg-gray-100 rounded flex items-center justify-center border border-gray-200 relative overflow-hidden group-hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-gray-400 text-3xl group-hover:text-black group-hover:scale-110 transition-all">layers</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-gray-600 font-bold uppercase tracking-wider truncate group-hover:text-black transition-colors">Thermal Base</span>
+<span class="text-[10px] text-gray-500 font-mono uppercase">GLB • 15MB</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 max-w-7xl mx-auto bg-background-light relative">
+<div class="absolute top-0 right-6 text-[10px] font-mono text-gray-400 border-l border-gray-300 pl-2">
+                TIMELINE.JS
+            </div>
+<h2 class="text-4xl md:text-5xl font-display font-bold text-black uppercase mb-20 text-center tracking-tight">The Road <span class="text-cobalt">Ahead</span></h2>
+<div class="timeline-container relative">
+<div class="hidden md:block timeline-line-horizontal"></div>
+<div class="md:hidden absolute top-0 bottom-0 left-[23px] w-px bg-cobalt/30 z-0"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
+<div class="relative flex flex-row md:flex-col items-start md:items-center text-left md:text-center group gap-6 md:gap-0 pl-2 md:pl-0">
+<div class="timeline-node-horizontal pulsing flex-shrink-0 mt-6 md:mt-0 z-20"></div>
+<div class="mt-0 md:mt-4 p-6 bg-white border border-gray-200 rounded-xl hover:border-cobalt hover:shadow-lg transition-all w-full relative overflow-hidden clean-card shadow-lg ring-1 ring-cobalt/10">
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+</div>
+<span class="text-[10px] text-cobalt font-mono mb-2 block tracking-widest font-bold bg-cobalt/5 inline-block px-2 rounded">CURRENT MILESTONE</span>
+<span class="text-xs text-black font-mono mb-2 block tracking-wider font-bold">Q3 2024</span>
+<h4 class="text-black font-bold uppercase text-lg mb-2">Adaptive Skin</h4>
+<p class="text-xs text-gray-500 font-light">Self-healing micro-fiber release to mass market.</p>
+</div>
+</div>
+<div class="relative flex flex-row md:flex-col items-start md:items-center text-left md:text-center group gap-6 md:gap-0 pl-2 md:pl-0">
+<div class="timeline-node-horizontal filled group-hover:scale-125 flex-shrink-0 mt-6 md:mt-0"></div>
+<div class="mt-0 md:mt-4 p-6 bg-white border border-gray-200 rounded-xl hover:border-cobalt hover:shadow-lg transition-all w-full relative overflow-hidden clean-card opacity-90">
+<span class="text-xs text-gray-600 font-mono mb-2 block tracking-wider font-bold">Q1 2025</span>
+<h4 class="text-black font-bold uppercase text-lg mb-2">Neural Integration</h4>
+<p class="text-xs text-gray-500 font-light">Haptic feedback sensors embedded in competition wear.</p>
+</div>
+</div>
+<div class="relative flex flex-row md:flex-col items-start md:items-center text-left md:text-center group gap-6 md:gap-0 pl-2 md:pl-0">
+<div class="timeline-node-horizontal hollow group-hover:border-cobalt flex-shrink-0 mt-6 md:mt-0"></div>
+<div class="mt-0 md:mt-4 p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-white hover:border-gray-300 transition-all w-full opacity-70 hover:opacity-100">
+<span class="text-xs text-gray-500 font-mono mb-2 block tracking-wider">Q4 2025</span>
+<h4 class="text-gray-700 font-bold uppercase text-lg mb-2">Carbon Zero Lab</h4>
+<p class="text-xs text-gray-500 font-light">Fully circular production facility operational.</p>
+</div>
+</div>
+<div class="relative flex flex-row md:flex-col items-start md:items-center text-left md:text-center group gap-6 md:gap-0 pl-2 md:pl-0">
+<div class="timeline-node-horizontal hollow group-hover:border-cobalt flex-shrink-0 mt-6 md:mt-0"></div>
+<div class="mt-0 md:mt-4 p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-white hover:border-gray-300 transition-all w-full opacity-70 hover:opacity-100">
+<span class="text-xs text-gray-500 font-mono mb-2 block tracking-wider">2026+</span>
+<h4 class="text-gray-700 font-bold uppercase text-lg mb-2">Bio-Synthetic</h4>
+<p class="text-xs text-gray-500 font-light">Lab-grown organic textiles replacing petroleum.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 px-6 relative overflow-hidden flex items-center justify-center bg-gray-50 border-t border-gray-200">
+<div class="absolute inset-0 bg-grid opacity-10 z-0"></div>
+<div class="absolute bottom-4 left-4 text-[10px] font-mono text-gray-400">
+                LIVE FEED: CONNECTED
+            </div>
+<div class="absolute top-4 right-4 text-[10px] font-mono text-gray-400">
+                ENCRYPTION: SECURED
+            </div>
+<div class="relative z-10 text-center max-w-4xl mx-auto">
+<h2 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-black mb-6 uppercase italic tracking-tighter leading-[0.9]">
+                    Ready to <br/><span class="text-cobalt">Innovate</span> Together?
+                </h2>
+<p class="text-base md:text-lg text-gray-600 mb-12 max-w-xl mx-auto font-light leading-relaxed">
+                    Equip your team with technology designed for the next century of sport. 
+                    Partner with us to redefine what is possible.
+                </p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center">
+<button class="px-8 md:px-12 py-4 md:py-5 bg-cobalt text-white font-bold uppercase tracking-widest rounded-sm shadow-lg hover:shadow-xl hover:bg-cobalt-dark hover:-translate-y-1 transition-all transform text-xs md:text-sm">
+                        Book a Tech Demo
+                    </button>
+<button class="px-8 md:px-12 py-4 md:py-5 border border-gray-300 bg-white text-black font-bold uppercase tracking-widest rounded-sm hover:border-cobalt hover:text-cobalt transition-all text-xs md:text-sm">
+                        View Equipment Specs
+                    </button>
+</div>
+</div>
+</section>
+<footer class="bg-white border-t border-gray-200 py-20 px-6">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="md:col-span-1">
+<span class="text-2xl font-display font-bold text-black tracking-tighter">RUN<span class="text-cobalt">APPAREL</span></span>
+<p class="text-gray-500 text-sm mt-4 leading-relaxed font-light">
+                        Pioneering the intersection of biology and technology for the modern athlete.
+                        <br/><br/>
+                        Zurich, Switzerland.<br/>Est. 2024
+                    </p>
+</div>
+<div class="md:col-span-1">
+<h4 class="text-black font-bold uppercase tracking-widest text-[10px] mb-6">Technologies</h4>
+<ul class="space-y-3 text-sm text-gray-500 font-light">
+<li><a class="hover:text-cobalt transition-colors" href="#">Smart Fabrics</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Hardware Specs</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Patents &amp; IP</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Sustainability Reports</a></li>
+</ul>
+</div>
+<div class="md:col-span-1">
+<h4 class="text-black font-bold uppercase tracking-widest text-[10px] mb-6">Company</h4>
+<ul class="space-y-3 text-sm text-gray-500 font-light">
+<li><a class="hover:text-cobalt transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Press Kit</a></li>
+<li><a class="hover:text-cobalt transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div class="md:col-span-1">
+<h4 class="text-black font-bold uppercase tracking-widest text-[10px] mb-6">Newsletter</h4>
+<div class="flex flex-col gap-4">
+<input class="bg-gray-50 border border-gray-300 text-black text-xs p-3 focus:border-cobalt focus:ring-1 focus:ring-cobalt outline-none uppercase placeholder-gray-400" placeholder="ENTER EMAIL" type="email"/>
+<button class="bg-black text-white text-[10px] font-bold uppercase p-3 hover:bg-cobalt transition-colors tracking-widest">Subscribe</button>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-20 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-[10px] text-gray-400 font-mono">
+                    © 2024 RUN APPAREL SYSTEMS. ALL RIGHTS RESERVED.
+                </div>
+<div class="flex gap-6">
+<a class="text-[10px] text-gray-500 hover:text-cobalt transition-colors uppercase font-bold tracking-wider" href="#">Privacy Policy</a>
+<a class="text-[10px] text-gray-500 hover:text-cobalt transition-colors uppercase font-bold tracking-wider" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

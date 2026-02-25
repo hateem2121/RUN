@@ -37,7 +37,10 @@ import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
+
 import navigationRouter from "./navigation.routes.js";
+// Page Content Routes (public batch + hero endpoints)
+import pageContentRouter from "./page-content-routes.js";
 import sustainabilityRouter from "./sustainability.routes.js";
 // Sustainability Page Resources
 import sustainabilityBatchRouter from "./sustainability-batch.routes.js";
@@ -76,6 +79,11 @@ router.use("/about-statistics", aboutStatisticsRouter);
 router.use("/about-team-message", aboutTeamMessageRouter);
 
 // ============================================================================
+// ABOUT & TECHNOLOGY BATCH ROUTES (PUBLIC - from page-content-routes)
+// ============================================================================
+router.use(pageContentRouter); // Mounts /about-batch, /technology-batch, /sustainability-hero, /technology-hero
+
+// ============================================================================
 // SUSTAINABILITY PAGE RESOURCES
 // ============================================================================
 router.use("/sustainability/batch", sustainabilityBatchRouter); // Must be before /sustainability to match /batch
@@ -90,6 +98,7 @@ router.use("/sustainability-goals", sustainabilityGoalsRouter);
 router.use("/manufacturing-processes", manufacturingProcessesRouter);
 router.use("/manufacturing-capabilities", manufacturingCapabilitiesRouter);
 router.use("/manufacturing-qualities", manufacturingQualitiesRouter);
+
 
 // ============================================================================
 // TECHNOLOGY PAGE RESOURCES

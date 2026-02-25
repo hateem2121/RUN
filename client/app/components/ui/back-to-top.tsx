@@ -1,10 +1,27 @@
 import { ArrowUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const ROUTE_ACCENT_MAP: Record<string, { bg: string; hover: string }> = {
+  "/manufacturing": { bg: "bg-[#D4A853]", hover: "hover:bg-[#D4A853]/90" },
+  "/technology": { bg: "bg-[#00D4FF]", hover: "hover:bg-[#00D4FF]/90" },
+  "/sustainability": { bg: "bg-[#00C97B]", hover: "hover:bg-[#00C97B]/90" },
+};
+
+const DEFAULT_ACCENT = { bg: "bg-[#D4A853]", hover: "hover:bg-[#D4A853]/90" };
+
 export function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+
+  const accent = useMemo(() => {
+    const match = Object.entries(ROUTE_ACCENT_MAP).find(([path]) =>
+      location.pathname.startsWith(path),
+    );
+    return match ? match[1] : DEFAULT_ACCENT;
+  }, [location.pathname]);
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -39,7 +56,11 @@ export function BackToTop() {
         variant="default"
         size="icon"
         onClick={scrollToTop}
-        className="h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-luxury-lg transition-all hover:scale-110 hover:bg-primary/90 active:scale-95"
+        className={cn(
+          "h-14 w-14 rounded-full text-black shadow-luxury-lg transition-all hover:scale-110 active:scale-95",
+          accent.bg,
+          accent.hover,
+        )}
         aria-label="Back to top"
       >
         <ArrowUp className="h-6 w-6" />

@@ -95,11 +95,14 @@
 
   /* Font Families - Custom Brand Fonts */
   --font-neue-stance: "Neue Stance", "Inter", system-ui, sans-serif;
+  --font-futura: "Futura BT", "Helvetica Neue", sans-serif;
+  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Luxury Color Palette */
   --color-luxury-charcoal: #1a1a2e;
   --color-luxury-heading: #16213e;
   --color-luxury-gold: #b8860b;
+  --color-brand-manufacturing: #d4a853;
 
   /* Glass Effects */
   --color-glass: rgba(255, 255, 255, 0.1);
@@ -120,9 +123,9 @@
   /* Feature-Specific Gradients */
   --gradient-manufacturing-hero: linear-gradient(
     to bottom right,
-    #f8f9fa,
-    #e9ecef
-  ); /* Light Mode default */
+    #0a0a0a,
+    #121212
+  );
 
   /* =========================================
      Surface & Text Scale (Phase 1 Token Foundation)
@@ -188,7 +191,9 @@
   --color-ring: var(--ring);
 
   /* Typography */
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Helvetica Neue", "Inter", system-ui, sans-serif;
+  --font-futura: "Futura BT", "Helvetica Neue", sans-serif;
+  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   /* Spacing & Radius */

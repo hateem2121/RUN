@@ -3,7 +3,6 @@ import type { UseFormReturn } from "react-hook-form";
 import { CustomSelect } from "@/components/ui/custom-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import type { Country } from "@/data/countries";
@@ -289,27 +288,43 @@ export function ContactFields({
         >
           How should we contact you?
         </Label>
-        <RadioGroup
-          defaultValue="email"
+        <div
+          className="flex items-center space-x-6"
+          role="radiogroup"
           aria-labelledby="contact-preference-label"
-          onValueChange={(value) => setValue("contactPreference", value as "email" | "platform")}
-          disabled={isPending}
         >
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="email" id="contact-pref-email" />
-              <Label htmlFor="contact-pref-email" className="text-sm">
-                Email
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="platform" id="contact-pref-platform" />
-              <Label htmlFor="contact-pref-platform" className="text-sm">
-                Your Preferred Platform
-              </Label>
-            </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              name="contactPreference"
+              value="email"
+              id="contact-pref-email"
+              defaultChecked
+              onChange={() => setValue("contactPreference", "email")}
+              disabled={isPending}
+              aria-label="Contact via email"
+              className="h-4 w-4 border-border text-primary focus:ring-2 focus:ring-primary accent-primary"
+            />
+            <Label htmlFor="contact-pref-email" className="text-sm">
+              Email
+            </Label>
           </div>
-        </RadioGroup>
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              name="contactPreference"
+              value="platform"
+              id="contact-pref-platform"
+              onChange={() => setValue("contactPreference", "platform")}
+              disabled={isPending}
+              aria-label="Contact via preferred platform"
+              className="h-4 w-4 border-border text-primary focus:ring-2 focus:ring-primary accent-primary"
+            />
+            <Label htmlFor="contact-pref-platform" className="text-sm">
+              Your Preferred Platform
+            </Label>
+          </div>
+        </div>
       </div>
 
       {/* Honeypot */}

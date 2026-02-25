@@ -41,11 +41,11 @@ All agents MUST read and adhere to the architectural invariants and design laws 
 | **Versions / Stack** | `package.json` |
 | **Architecture** | `docs/architecture/system_diagrams.md` |
 | **SDK Package** | `docs/core/sdk-workspace.md` |
-| **Styles / UI** | `docs/guides/developer-workflow.md` |
+| **Styles / UI** | `docs/DEVELOPMENT_WORKFLOW.md` |
 | **Testing** | `docs/testing/testing-tiers.md` |
 | **API Endpoints** | `docs/api/endpoints.md` |
 | **3D Assets** | `docs/guides/3D_INTEGRATION.md` |
-| **Developer Workflow** | `docs/guides/developer-workflow.md` |
+| **Developer Workflow** | `docs/DEVELOPMENT_WORKFLOW.md` |
 
 ---
 

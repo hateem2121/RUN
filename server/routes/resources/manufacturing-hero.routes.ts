@@ -34,9 +34,14 @@ router.get(
   "/manufacturing-hero",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // Set cache headers for performance optimization (30 mins)
-      res.setHeader("Cache-Control", "public, max-age=1800, s-maxage=1800");
-      res.setHeader("X-Cache-TTL", "1800");
+      if (process.env.NODE_ENV === "production") {
+        res.setHeader("Cache-Control", "public, max-age=1800, s-maxage=1800");
+        res.setHeader("X-Cache-TTL", "1800");
+      } else {
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+      }
       res.setHeader("Vary", "Accept-Encoding");
 
       const hero = await withTimeout(
