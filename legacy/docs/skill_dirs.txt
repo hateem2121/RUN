@@ -1,0 +1,16 @@
+advanced-debugging
+agent-teams
+brainstorming
+code-standards
+core-identity
+development-workflow
+dispatching-parallel-agents
+executing-plans
+port-5002-compliance
+production-standards
+project-standards
+react-express-typescript
+subagent-driven-development
+systematic-debugging
+test-driven-development
+using-git-worktrees

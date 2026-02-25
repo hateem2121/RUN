@@ -29,8 +29,7 @@ All agents MUST read and adhere to the architectural invariants and design laws 
 | `tools/` | **Engines (L3)** | Deterministic scripts (Python/JS). Atomic. |
 | `scripts/` | **Handshaking** | API verification and build-time automation. |
 | `.agent/skills/` | **Skills Library** | AntiGravity skills with SKILL.md format. |
-| `.agent/agents/` | **Agent Configs** | Multi-agent orchestration definitions. |
-| `.agent/orchestrators/` | **Workflows** | Complex multi-step automation workflows. |
+| `.agent/workflows/` | **Workflows** | Complex multi-step automation workflows (Markdown). |
 
 ---
 
@@ -131,14 +130,20 @@ Limitations and edge cases
 
 | Skill | Purpose | Location |
 | :--- | :--- | :--- |
-| **code-standards** | React 19, Express 5, Tailwind V4 patterns | `.agent/skills/code-standards/` |
+| **project-standards** | React 19, Express 5, Tailwind V4 patterns | `.agent/skills/project-standards/` |
+| **core-identity** | Project mission, tech stack, business context | `.agent/skills/core-identity/` |
 | **development-workflow** | Testing standards and uncertainty protocol | `.agent/skills/development-workflow/` |
 | **systematic-debugging** | Root cause analysis and troubleshooting | `.agent/skills/systematic-debugging/` |
 | **test-driven-development** | Red-Green-Refactor logic | `.agent/skills/test-driven-development/` |
 | **dispatching-parallel-agents** | Large scale task delegation | `.agent/skills/dispatching-parallel-agents/` |
 | **executing-plans** | Step-by-step implementation tracking | `.agent/skills/executing-plans/` |
+| **subagent-driven-development** | Subagent task delegation and management | `.agent/skills/subagent-driven-development/` |
 | **production-standards** | Performance, Security, Accessibility | `.agent/skills/production-standards/` |
 | **advanced-debugging** | Deep system forensics | `.agent/skills/advanced-debugging/` |
+| **agent-teams** | Multi-agent coordination and orchestration | `.agent/skills/agent-teams/` |
+| **brainstorming** | Collaborative ideation and research | `.agent/skills/brainstorming/` |
+| **port-5002-compliance** | Strict port verification and enforcement | `.agent/skills/port-5002-compliance/` |
+| **using-git-worktrees** | Parallel work isolation and git management | `.agent/skills/using-git-worktrees/` |
 
 ### 6.4. Progressive Disclosure Architecture
 
@@ -156,15 +161,11 @@ Skills use a three-tier structure for token efficiency:
 
 ### 7.1. Agent Architecture
 
-```
-.agent/agents/
-├── orchestrator.yaml    # Workflow Coordination Agent
-├── architect.yaml       # System Architecture Designer
-├── developer.yaml       # Code Implementation Specialist
-├── tester.yaml          # Quality Assurance Specialist
-├── reviewer.yaml        # Code Quality Inspector
-└── documenter.yaml      # Documentation Specialist
-```
+### 7.1. Agent Architecture
+
+> [!NOTE]
+> Agent configurations are managed via internal prompts and tool-shaping rather than static YAML files.
+
 
 ### 7.2. Agent Roles
 
@@ -207,11 +208,9 @@ context:
 
 ```
 .agent/workflows/
-├── feature-development.yaml   # Full feature lifecycle
-├── bug-fix.yaml              # Systematic bug resolution
-├── code-review.yaml          # Comprehensive review process
-├── release.yaml              # Production release workflow
-└── hotfix.yaml               # Emergency hotfix process
+├── feature-development-bug-fixing.md   # Full feature & bug lifecycle
+├── 3d-integration.md                  # 3D assets & loader workflow
+└── component-api-creation.md          # Fullstack component creation
 ```
 
 ### 8.2. Feature Development Workflow
@@ -264,11 +263,9 @@ Workflows are activated by the orchestrator agent based on task type:
 
 | Task Type | Workflow |
 | :--- | :--- |
-| New feature | `feature-development.yaml` |
-| Bug report | `bug-fix.yaml` |
-| Code review request | `code-review.yaml` |
-| Release preparation | `release.yaml` |
-| Emergency fix | `hotfix.yaml` |
+| New feature / Bug fix | `feature-development-bug-fixing.md` |
+| 3D / Assets | `3d-integration.md` |
+| API / Component | `component-api-creation.md` |
 
 ---
 

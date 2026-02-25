@@ -6,7 +6,7 @@ description: |
   - "how do I style", "Tailwind v4", "@utility"
   - "Express route pattern", "API structure"
   - "3D model", "GLB", "GLTF", "@google/model-viewer"
-  - "TypeScript strict", "no any"
+  - "TypeScript strict", "no any", "return types"
   Stack: React 19, Vite 7, Express 5, Tailwind V4, TypeScript strict.
 ---
 
@@ -52,15 +52,17 @@ All work MUST follow the B.L.A.S.T. protocol as defined in `gemini.md`:
     - `noUncheckedIndexedAccess`: true (Handle undefined array/object access).
     - `noImplicitOverride`: true.
 - **No `any`**: Strictly forbidden. Use `unknown` or specific types.
+- **Return Types**: Always specify explicit return types for functions.
+- **Async/Await**: Always use `async/await` for asynchronous operations.
 
 ### React (Client)
-- **Components**: Functional components with named exports.
-- **Styling**: 
-    - Use `class-variance-authority` (cva) for component variants.
-    - Use `cn` utility for class merging.
-    - **Radix UI**: Use Radix primitives for accessible interactive components.
-    - **Icons**: Use `lucide-react`.
+- **Named Exports**: Use named exports for all components.
+- **Functional Components**: Functional components only. No class components.
+- **Radix UI**: Use Radix primitives for accessible interactive components.
+- **Icons**: Use `lucide-react`.
 - **Props**: Define interfaces for props. Use `React.ComponentProps<"element">` for extending native elements.
+- **Raw Ref Prop**: Use the raw `ref` prop (React 19 pattern). No `forwardRef`.
+- **Hooks**: Follow proper hooks usage with cancellation logic in `useEffect`.
 
 #### Component Template (UI)
 ```tsx
@@ -149,9 +151,12 @@ Every UI component MUST be evaluated against these dimensions:
 
 ### Express (Server)
 - **Routing**: Use `Router()` modules.
-- **Async/Await**: Use `async` handlers. Express 5 supports proper error handling for promises (no need for wrapper).
-- **Linting**: Use `// biome-ignore ...` for necessary suppressions.
-- **Services**: Logic goes in `services/`, not controllers/routes.
+- **Async/Await**: Use `async` handlers. Express 5 handles promise rejections automatically.
+- **Validation**: Always use Zod for request body and parameter validation.
+- **Services**: Business logic and DB operations MUST go in `services/`, not handlers/routes.
+- **Thin Routes**: Routes should be thin, focusing on handshake and response.
+- **Error Handling**: Use custom error classes (e.g., `ProductNotFoundError`).
+- **Middleware**: Use middleware for cross-cutting concerns (Auth, Logging).
 
 #### Route Template
 ```typescript
