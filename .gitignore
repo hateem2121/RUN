@@ -61,3 +61,20 @@ lint.txt
 test-db-*.ts
 test-neon-http.ts
 typecheck*.txt
+
+# Compiled utility outputs
+utils/**/*.js
+utils/**/*.d.ts
+utils/**/*.d.ts.map
+
+# Legacy worktrees
+legacy/worktrees/
+
+# IDE/tool-specific
+.kilocodemodes
+.config/
+
+# One-off debug artifacts
+test-bind.ts
+shell_metadata.csv
+FULL_SYSTEM_CONTEXT.json

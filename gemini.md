@@ -17,10 +17,10 @@
 
 ## 3. The B.L.A.S.T. Protocol
 
-- **Blueprint**: VISION FIRST. Define schemas in `shared/` and SOPs in `architecture/` before scripting.
+- **Blueprint**: VISION FIRST. Define schemas in `shared/` and SOPs in `docs/core/sops/` before scripting.
 - **Link**: HANDSHAKE. Verify APIs and `.env` via atomic scripts in `scripts/`. No broken links.
 - **Architect**: THE BUILD (A.N.T. Layers).
-  - **L1 Architecture**: Markdown SOPs in `architecture/`. Reasoning before code.
+  - **L1 Architecture**: Markdown SOPs in `docs/core/sops/`. Reasoning before code.
   - **L2 Navigation**: Decision routing logic.
   - **L3 Tools**: Deterministic scripts in `tools/`. Atomic and testable.
 - **Stylize**: THE WOW. Apply the 5 Dimensions of Design to all outputs.

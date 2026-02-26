@@ -1,8 +1,0 @@
-./.agent/scripts/check-vite-config.sh
-./.agent/skills/systematic-debugging/find-polluter.sh
-./.husky/_/husky.sh
-./scripts/audit-env.sh
-./scripts/bootstrap.sh
-./scripts/security/check-secrets.sh
-./scripts/setup/install-extensions.sh
-./scripts/setup/verify-setup.sh

@@ -646,9 +646,12 @@ Agent Self-Assessment:
 
 ```bash
 # 1. Read critical documentation
-cat RULES.md | head -100     - [ ] **Port 5002 System Architecture** (`docs/core/tech-stack.md`)
+cat gemini.md | head -100
 
-# 2. Verify current state
+# 2. Review L1 Architecture (SOPs)
+ls docs/core/sops/
+
+# 3. Verify current state
 npm run verify-port
 
 # 3. Check route mappings

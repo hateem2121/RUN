@@ -89,22 +89,23 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[4/5] md:aspect-[16/9] bg-black/40 rounded-lg overflow-hidden group border border-white/10 shadow-inner"
+      className="relative w-full aspect-[4/5] md:aspect-[16/9] bg-slate-100/50 rounded-lg overflow-hidden group border border-black/5 shadow-inner"
     >
       {/* 3D Model specific hints matching Stitch design */}
       {media.type === "3d_model" && (
         <div className="absolute top-4 left-4 md:top-8 md:left-8 z-30">
-          <div className="flex flex-col gap-2 bg-black/60 p-3 rounded backdrop-blur-md border border-white/10 shadow-sm">
+          <div className="flex flex-col gap-1 bg-white/80 p-3 rounded backdrop-blur-md border border-black/5 shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full animate-pulse bg-[#00D4FF]"></div>
-              <span className="text-[10px] text-[#00D4FF] font-mono uppercase tracking-widest font-bold">
+              <span className="text-[10px] text-[#0088AA] font-mono uppercase tracking-widest font-bold">
                 Model: Active
               </span>
             </div>
-            <span className="text-[10px] text-gray-400 font-mono uppercase">Interactive Demo</span>
+            <span className="text-[10px] text-slate-400 font-mono uppercase">Interactive Demo</span>
           </div>
         </div>
       )}
+
 
       {/* Decorative center target/crosshair overlay when not active */}
       {!shouldLoadModel && media.type === "3d_model" && (
@@ -127,37 +128,39 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
         <div className="relative w-full h-full">
           {/* Progressive enhancement overlay */}
           {!shouldLoadModel && (
-            <div className="z-modal bg-black/60 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm">
-              <div className="bg-[#00D4FF]/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-[#00D4FF]/30">
+            <div className="z-modal bg-white/60 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm">
+              <div className="bg-[#00D4FF]/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-[#00D4FF]/20">
                 <Box className="h-8 w-8 text-[#00D4FF]" />
               </div>
-              <Typography.P className="mb-2 font-medium text-white tracking-widest uppercase text-sm">
+              <Typography.P className="mb-2 font-medium text-slate-900 tracking-widest uppercase text-sm">
                 Interactive 3D Engine
               </Typography.P>
-              <Typography.P className="text-white/60 mb-6 text-xs font-mono">
+              <Typography.P className="text-slate-500 mb-6 text-xs font-mono">
                 {isIntersecting ? "INITIALIZING SUBSYSTEMS..." : "SCROLL TO ACTIVATE"}
               </Typography.P>
               <button
                 onClick={() => setUserRequestedLoad(true)}
-                className="bg-white/10 border border-white/20 hover:border-[#00D4FF] hover:bg-[#00D4FF]/10 text-white rounded-sm px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300"
+                className="bg-[#00D4FF] hover:bg-[#00E5FF] text-white rounded-sm px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-md shadow-cyan-500/20"
               >
                 Engage Viewer
               </button>
             </div>
           )}
 
+
           {/* Loading Overlay */}
           {isLoading && shouldLoadModel && (
-            <div className="z-modal-backdrop absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md">
+            <div className="z-modal-backdrop absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
               <Loader2 className="text-[#00D4FF] mb-4 h-10 w-10 animate-spin" />
-              <Typography.P className="mb-2 text-xs font-mono font-bold tracking-widest text-white uppercase">
+              <Typography.P className="mb-2 text-xs font-mono font-bold tracking-widest text-slate-900 uppercase">
                 Loading Assets...
               </Typography.P>
-              <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mt-2">
+              <div className="w-48 h-1 bg-slate-200 rounded-full overflow-hidden mt-2">
                 <div className="h-full bg-[#00D4FF] w-1/2 rounded-full animate-pulse"></div>
               </div>
             </div>
           )}
+
 
           {/* Model Viewer */}
           {shouldLoadModel && (
@@ -200,8 +203,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
 
           {/* Controls overlay matched to stitch */}
           <div className="absolute bottom-4 md:bottom-8 left-0 right-0 text-center z-30 px-4 pointer-events-none">
-            <div className="inline-flex items-center gap-4 md:gap-6 px-4 md:px-6 py-2 md:py-3 bg-black/60 backdrop-blur-md rounded-full border border-white/10 shadow-lg max-w-full overflow-x-auto pointer-events-auto">
-              <div className="flex items-center gap-2 whitespace-nowrap text-white/70">
+            <div className="inline-flex items-center gap-4 md:gap-6 px-4 md:px-6 py-2 md:py-3 bg-white/70 backdrop-blur-md rounded-full border border-black/5 shadow-lg max-w-full overflow-x-auto pointer-events-auto">
+              <div className="flex items-center gap-2 whitespace-nowrap text-slate-600">
                 <span className="material-symbols-outlined text-[#00D4FF] text-sm md:text-base">
                   360
                 </span>
@@ -209,8 +212,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                   Rotate
                 </span>
               </div>
-              <div className="w-px h-3 md:h-4 bg-white/20"></div>
-              <div className="flex items-center gap-2 whitespace-nowrap text-white/70">
+              <div className="w-px h-3 md:h-4 bg-slate-200"></div>
+              <div className="flex items-center gap-2 whitespace-nowrap text-slate-600">
                 <span className="material-symbols-outlined text-[#00D4FF] text-sm md:text-base">
                   zoom_in
                 </span>
@@ -220,6 +223,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
               </div>
             </div>
           </div>
+
         </div>
       ) : media.type === "video" ? (
         <video
@@ -256,34 +260,35 @@ export function InteractiveExperienceSection({
 
   return (
     <section className={cn("py-24 px-4 sm:px-6 max-w-7xl mx-auto relative", className)}>
-      <div className="bg-black/40 backdrop-blur-md rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-8 relative overflow-hidden">
+      <div className="bg-white/60 backdrop-blur-md rounded-3xl shadow-xl border border-black/5 p-4 sm:p-8 relative overflow-hidden">
         {/* Decorative elements */}
-        <div className="absolute top-6 left-6 text-[10px] font-mono text-white/40 tracking-wider">
+        <div className="absolute top-6 left-6 text-[10px] font-mono text-slate-400 tracking-wider">
           MODULE: 3D-VIEW
         </div>
 
-        {/* Radial glow behind viewer */}
+        {/* Subtle radial glow behind viewer */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#00D4FF]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-white/10 pb-6 gap-4 pt-10 sm:pt-4 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-white uppercase tracking-tight">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-black/5 pb-6 gap-4 pt-10 sm:pt-4 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 uppercase tracking-tight">
             Interactive <span className="text-[#00D4FF]">Experience</span>
           </h2>
 
           <div className="flex items-center gap-4">
-            <span className="text-[10px] text-[#00D4FF] border border-[#00D4FF]/30 px-3 py-1 rounded font-mono bg-[#00D4FF]/10">
+            <span className="text-[10px] text-[#0088AA] border border-[#00D4FF]/30 px-3 py-1 rounded font-mono bg-[#00D4FF]/5">
               {version}
             </span>
-            <span className="text-[10px] text-white/50 font-mono uppercase hidden sm:inline-block">
+            <span className="text-[10px] text-slate-400 font-mono uppercase hidden sm:inline-block">
               3D Viewer Module
             </span>
           </div>
         </div>
 
-        <div className="bg-black/60 p-2 md:p-4 rounded-2xl relative border border-white/10 z-10">
+        <div className="bg-slate-50/80 p-2 md:p-4 rounded-2xl relative border border-black/5 z-10 shadow-sm">
           <OptimizedTechnologyHero media={media} />
         </div>
       </div>
     </section>
+
   );
 }

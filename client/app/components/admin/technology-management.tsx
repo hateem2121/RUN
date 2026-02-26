@@ -1,13 +1,13 @@
 import { TechnologyCtaManagement } from "@/components/admin/technology/TechnologyCtaManagement";
 import { TechnologyEquipmentManagement } from "@/components/admin/technology/TechnologyEquipmentManagement";
-import { TechnologyGradientSettings } from "@/components/admin/technology/TechnologyGradientSettings";
 import { TechnologyHeroManagement } from "@/components/admin/technology/TechnologyHeroManagement";
 import { TechnologyInnovationManagement } from "@/components/admin/technology/TechnologyInnovationManagement";
 import { TechnologyResearchManagement } from "@/components/admin/technology/TechnologyResearchManagement";
 import { TechnologyRoadmapManagement } from "@/components/admin/technology/TechnologyRoadmapManagement";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTechnologyFeatureFlags } from "@/hooks/useTechnologyFeatureFlags";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
+
 
 /**
  * PHASE 4.1: TECHNOLOGY MANAGEMENT - COMPLETE MONOLITH DECOMPOSITION
@@ -22,8 +22,8 @@ import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
  * ✅ TechnologyResearchManagement - Research project tracking
  * ✅ TechnologyRoadmapManagement - Future development planning
  * ✅ TechnologyCtaManagement - Call-to-action configuration
- * ✅ TechnologyGradientSettings - ReactBits.dev compliant gradient backgrounds
  *
+
  * LEGACY PATTERNS ELIMINATED:
  * ❌ 3,000+ lines of duplicate form handling code
  * ❌ Duplicate sortable component implementations
@@ -74,15 +74,15 @@ export function TechnologyManagement() {
               research: "TechnologyResearchManagement",
               roadmap: "TechnologyRoadmapManagement",
               cta: "TechnologyCtaManagement",
-              background: "TechnologyGradientSettings",
             }).length
           }{" "}
           components loaded
         </div>
+
       </div>
 
       <Tabs defaultValue="hero" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="hero" data-testid="tab-hero">
             Hero Section
           </TabsTrigger>
@@ -101,10 +101,8 @@ export function TechnologyManagement() {
           <TabsTrigger value="cta" data-testid="tab-cta">
             Call to Action
           </TabsTrigger>
-          <TabsTrigger value="background" data-testid="tab-background">
-            Background
-          </TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="hero" className="space-y-6" data-testid="content-hero">
           <TechnologyHeroManagement />
@@ -130,12 +128,6 @@ export function TechnologyManagement() {
           <TechnologyCtaManagement />
         </TabsContent>
 
-        <TabsContent value="background" className="space-y-6" data-testid="content-background">
-          <TechnologyGradientSettings
-            gradientData={TECHNOLOGY_DEFAULTS.gradientSettings}
-            setGradientData={() => {}} // Component manages its own state internally
-          />
-        </TabsContent>
       </Tabs>
     </div>
   );

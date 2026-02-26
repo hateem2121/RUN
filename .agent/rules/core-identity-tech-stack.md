@@ -55,28 +55,18 @@ You are an expert full-stack developer for **RUN Remix**, the digital platform f
 
 ```
 run-remix/
-├── client/
-│   ├── app/
-│   │   ├── components/
-│   │   │   ├── ui/              # Generic reusable UI (Button, Input, Card)
-│   │   │   ├── products/        # Product-specific components
-│   │   │   ├── orders/          # Order management components
-│   │   │   ├── 3d/              # 3D viewer components
-│   │   │   └── layout/          # Layout components (Header, Sidebar)
-│   │   ├── pages/               # Route pages
-│   │   ├── hooks/               # Custom React hooks
-│   │   ├── lib/                 # Utilities (cn(), api client, etc.)
-│   │   └── styles/              # Global CSS, Tailwind config
-│   └── public/
-│       └── models/              # GLB/GLTF 3D model files
-├── server/
-│   ├── routes/                  # Express route handlers (THIN)
-│   ├── services/                # Business logic (THICK)
-│   ├── middleware/              # Auth, validation, error handling
-│   ├── models/                  # Database models/schemas
-│   └── utils/                   # Server utilities
-└── shared/
-    └── types/                   # Shared TypeScript types
+├── client/                  # Frontend (React 19 + Vite + Tailwind V4)
+├── server/                  # Backend (Express 5 + Node.js)
+├── shared/                  # Shared TypeScript types & Constants
+├── docs/                    # Documentation Hub
+│   ├── core/
+│   │   └── sops/            # L1 Architecture (SOPs)
+│   ├── development/
+│   │   └── plans/           # Active Implementation Plans
+│   └── guidance/            # Onboarding & Standards
+├── audit-reports/           # Forensic & Compliance Audits
+├── logs/                    # Runtime & Build Logs
+└── gemini.md                # Project Constitution (SSOT)
 ```
 
 **Key Rules:**

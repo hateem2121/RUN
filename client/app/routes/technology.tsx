@@ -1,26 +1,22 @@
 import React from "react";
 
-// PHASE C: Lazy load heavy components
-const GradientBlinds = React.lazy(() => import("@/components/homepage/effects/GradientBlinds"));
-
 import type {
   MediaAsset,
   TechnologyCta as TechnologyCtaType,
   TechnologyEquipment,
-  TechnologyGradientSettings,
   TechnologyHero,
   TechnologyInnovation,
   TechnologyResearch,
   TechnologyRoadmap,
 } from "@shared/schema";
+
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
-import { ClientOnly } from "@/components/shared/ClientOnly";
 import { Typography } from "@/components/ui/typography";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { getQueryClient } from "@/lib/queryClient";
-import { TECHNOLOGY_DEFAULTS } from "@/lib/technology-theme";
 import type { Route } from "./+types/technology";
+
 
 // Import NEW unified sections
 import { InteractiveExperienceSection } from "@/components/technology/InteractiveExperienceSection";
@@ -47,29 +43,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  override componentDidCatch(_error: unknown, _errorInfo: React.ErrorInfo) {}
-
-  override render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
 // Import shared ViewModels
 import type {
   CtaVM,
@@ -87,25 +60,8 @@ type TechnologyVM = {
   research: ResearchVM[];
   roadmap: RoadmapVM[];
   cta: CtaVM | null;
-  gradient: ReturnType<typeof mapGradientSettings>;
 };
 
-// Type for gradient settings config
-type GradientSettingsConfig = {
-  angle?: number;
-  noise?: number;
-  blindCount?: number;
-  blindMinWidth?: number;
-  spotlightRadius?: number;
-  spotlightSoftness?: number;
-  spotlightOpacity?: number;
-  mouseDampening?: number;
-  mirrorGradient?: boolean;
-  distortAmount?: number;
-  shineDirection?: string;
-  mixBlendMode?: string;
-  paused?: boolean;
-};
 
 // Type for batch API response
 type TechnologyBatchResponse = {
@@ -115,8 +71,8 @@ type TechnologyBatchResponse = {
   research: TechnologyResearch[];
   roadmap: TechnologyRoadmap[];
   cta: TechnologyCtaType | null;
-  gradientSettings: TechnologyGradientSettings | null;
   mediaAssets: MediaAsset[];
+
   _meta?: {
     fetchedAt: string;
     totalRequests: number;
@@ -145,31 +101,7 @@ function collectMediaIds(item: MediaEntity): {
   };
 }
 
-function mapGradientSettings(settings: TechnologyGradientSettings | undefined) {
-  if (!settings) {
-    return TECHNOLOGY_DEFAULTS.gradientSettings;
-  }
-  const config = settings.settings as GradientSettingsConfig | undefined;
-  return {
-    gradientColors: (settings.colors?.length
-      ? settings.colors
-      : TECHNOLOGY_DEFAULTS.gradientSettings.gradientColors) as [string, string],
-    angle: config?.angle ?? TECHNOLOGY_DEFAULTS.gradientSettings.angle,
-    noise: config?.noise ?? TECHNOLOGY_DEFAULTS.gradientSettings.noise,
-    blindCount: config?.blindCount ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindCount,
-    blindMinWidth: config?.blindMinWidth ?? TECHNOLOGY_DEFAULTS.gradientSettings.blindMinWidth,
-    spotlightRadius: config?.spotlightRadius ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightRadius,
-    spotlightSoftness: config?.spotlightSoftness ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightSoftness,
-    spotlightOpacity: config?.spotlightOpacity ?? TECHNOLOGY_DEFAULTS.gradientSettings.spotlightOpacity,
-    mouseDampening: config?.mouseDampening ?? TECHNOLOGY_DEFAULTS.gradientSettings.mouseDampening,
-    mirrorGradient: config?.mirrorGradient ?? TECHNOLOGY_DEFAULTS.gradientSettings.mirrorGradient,
-    distortAmount: config?.distortAmount ?? TECHNOLOGY_DEFAULTS.gradientSettings.distortAmount,
-    shineDirection: (config?.shineDirection ??
-      TECHNOLOGY_DEFAULTS.gradientSettings.shineDirection) as "left" | "right",
-    mixBlendMode: config?.mixBlendMode ?? TECHNOLOGY_DEFAULTS.gradientSettings.mixBlendMode,
-    paused: config?.paused ?? TECHNOLOGY_DEFAULTS.gradientSettings.paused,
-  };
-}
+
 
 function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
   if (!h) return null;
@@ -273,8 +205,8 @@ function normalizeTechnologyData(
   research: TechnologyResearch[],
   roadmap: TechnologyRoadmap[],
   cta: TechnologyCtaType | undefined,
-  gradientSettings: TechnologyGradientSettings | undefined,
 ): TechnologyVM {
+
   return {
     hero: normalizeHero(hero),
     innovations: (innovations || []).map(normalizeInnovation),
@@ -282,7 +214,6 @@ function normalizeTechnologyData(
     research: (research || []).map(normalizeResearch),
     roadmap: (roadmap || []).map(normalizeRoadmap),
     cta: normalizeCta(cta),
-    gradient: mapGradientSettings(gradientSettings),
   };
 }
 
@@ -307,7 +238,6 @@ function TechnologyInner() {
   const research = batchData?.research || [];
   const roadmap = batchData?.roadmap || [];
   const cta = batchData?.cta;
-  const gradientSettings = batchData?.gradientSettings;
   const mediaAssets = batchData?.mediaAssets || [];
 
   const vm: TechnologyVM = React.useMemo(
@@ -319,12 +249,10 @@ function TechnologyInner() {
         research,
         roadmap,
         cta ?? undefined,
-        gradientSettings ?? undefined,
       ),
-    [hero, innovations, equipment, research, roadmap, cta, gradientSettings],
-  );
 
-  const [, setWebglInitialized] = React.useState(false);
+    [hero, innovations, equipment, research, roadmap, cta],
+  );
 
   React.useEffect(() => {
     document.documentElement.classList.add("technology-page");
@@ -347,7 +275,6 @@ function TechnologyInner() {
     return mediaAssetsMap.get(mediaId) || null;
   };
 
-  const safeGradientSettings = mapGradientSettings(gradientSettings ?? undefined);
   const backgroundMedia = mainHeroMediaId ? getMediaAsset(mainHeroMediaId) : null;
 
   // Title formatting - extracting the last word to apply the cyan highlight
@@ -358,8 +285,8 @@ function TechnologyInner() {
   return (
     <>
       {batchLoading ? (
-        <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-black">
-          <div className="text-center text-white">
+        <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[hsl(240,5%,96%)]">
+          <div className="text-center text-slate-900">
             <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#00D4FF]/30 border-t-[#00D4FF]"></div>
             <Typography.P className="text-sm tracking-widest uppercase font-mono text-[#00D4FF]/70">
               Initializing...
@@ -367,77 +294,43 @@ function TechnologyInner() {
           </div>
         </div>
       ) : (
-        <div className="technology-page-root relative isolate min-h-screen overflow-hidden bg-black">
-          {/* Gradient Background */}
-          <div className="-z-elevated fixed inset-0">
-            <ClientOnly
-              fallback={
-                <div
-                  className="fixed inset-0"
-                  style={{
-                    background: `linear-gradient(${safeGradientSettings.angle}deg, ${safeGradientSettings.gradientColors.join(", ")})`,
-                  }}
-                />
-              }
-            >
-              <ErrorBoundary fallback={<div className="bg-black fixed inset-0" />}>
-                <React.Suspense fallback={<div className="bg-black fixed inset-0" />}>
-                  <GradientBlinds
-                    gradientColors={safeGradientSettings.gradientColors}
-                    angle={safeGradientSettings.angle}
-                    noise={safeGradientSettings.noise}
-                    blindCount={safeGradientSettings.blindCount}
-                    blindMinWidth={safeGradientSettings.blindMinWidth}
-                    spotlightRadius={safeGradientSettings.spotlightRadius}
-                    spotlightSoftness={safeGradientSettings.spotlightSoftness}
-                    spotlightOpacity={safeGradientSettings.spotlightOpacity}
-                    mouseDampening={safeGradientSettings.mouseDampening}
-                    mirrorGradient={safeGradientSettings.mirrorGradient}
-                    distortAmount={safeGradientSettings.distortAmount}
-                    shineDirection={safeGradientSettings.shineDirection as "left" | "right"}
-                    mixBlendMode={safeGradientSettings.mixBlendMode}
-                    paused={safeGradientSettings.paused}
-                    onWebGLReady={() => setWebglInitialized(true)}
-                  />
-                </React.Suspense>
-              </ErrorBoundary>
-            </ClientOnly>
-          </div>
-
-          <div className="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(rgba(0,212,255,0.05)_1px,transparent_1px)] bg-[length:40px_40px] opacity-40 mix-blend-screen"></div>
+        <div className="technology-page-root relative isolate min-h-screen overflow-hidden bg-[hsl(240,5%,96%)]">
+          {/* Subtle Grid Pattern Adaptated for Light Theme */}
+          <div className="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(rgba(0,212,255,0.08)_1px,transparent_1px)] bg-[length:40px_40px] opacity-60"></div>
 
           {/* Cinematic Hero Section */}
-          <header className="relative min-h-screen flex flex-col justify-center overflow-hidden px-6 pt-20 border-b border-white/10">
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#00D4FF]/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <header className="relative min-h-screen flex flex-col justify-center overflow-hidden px-6 pt-20 border-b border-black/5">
+            {/* Subtle glow behind hero content */}
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#00D4FF]/5 rounded-full blur-[100px] pointer-events-none"></div>
             
             <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center text-center mt-12 sm:mt-0">
               
-              <div className="mb-8 inline-flex items-center gap-2 px-3 py-1 bg-black/40 border border-white/10 rounded-full backdrop-blur-sm">
+              <div className="mb-8 inline-flex items-center gap-2 px-3 py-1 bg-white/60 border border-black/5 rounded-full backdrop-blur-sm shadow-sm">
                 <div className="w-1.5 h-1.5 bg-[#00D4FF] rounded-full animate-pulse"></div>
-                <span className="text-[10px] font-mono font-bold text-[#00D4FF] tracking-widest uppercase">
+                <span className="text-[10px] font-mono font-bold text-[#0088AA] tracking-widest uppercase">
                   v.2.04 Stable Release
                 </span>
               </div>
               
               <div className="flex flex-col items-center mb-10 space-y-2">
-                <Typography.H1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-display font-bold text-white leading-[0.85] tracking-tight uppercase flex flex-col items-center gap-2 sm:gap-4 drop-shadow-xl">
+                <Typography.H1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-display font-bold text-slate-900 leading-[0.85] tracking-tight uppercase flex flex-col items-center gap-2 sm:gap-4">
                   {mainTitlePart ? <span className="block">{mainTitlePart}</span> : null}
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00D4FF] to-[#0088AA] pb-2 drop-shadow-[0_0_15px_rgba(0,212,255,0.4)]">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00D4FF] to-[#0088AA] pb-2">
                     {lastTitleWord}
                   </span>
                 </Typography.H1>
               </div>
               
-              <div className="h-px w-2/5 md:w-1/4 max-w-[200px] bg-[#00D4FF] mb-10 opacity-80 shadow-[0_0_10px_rgba(0,212,255,0.8)]"></div>
+              <div className="h-px w-2/5 md:w-1/4 max-w-[200px] bg-[#00D4FF]/40 mb-10"></div>
               
-              <Typography.P className="text-base md:text-lg text-white/80 font-normal leading-relaxed max-w-2xl mb-14 tracking-wide drop-shadow-md">
+              <Typography.P className="text-base md:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl mb-14 tracking-wide">
                 {vm.hero?.subtitle || "Engineering the next generation of athletic skin. We go beyond textiles, diving deep into biotechnology to enhance human performance through reactive materials."}
               </Typography.P>
               
               <div className="flex justify-center">
                 <a
                   href={vm.hero?.primaryCtaLink || "#"}
-                  className="px-8 md:px-10 py-4 bg-[#00D4FF] text-black font-bold uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(0,212,255,0.3)] hover:bg-[#00E5FF] hover:shadow-[0_0_30px_rgba(0,212,255,0.5)] transition-all duration-300 flex items-center gap-3 transform hover:-translate-y-1 rounded-sm"
+                  className="px-8 md:px-10 py-4 bg-[#00D4FF] text-white font-bold uppercase tracking-widest text-xs shadow-[0_10px_20px_rgba(0,212,255,0.2)] hover:bg-[#00E5FF] hover:shadow-[0_15px_30px_rgba(0,212,255,0.3)] transition-all duration-300 flex items-center gap-3 transform hover:-translate-y-1 rounded-sm"
                 >
                   {vm.hero?.primaryCtaText || "Explore Our Innovations"}
                   <span className="material-symbols-outlined text-base">arrow_downward</span>
@@ -445,7 +338,7 @@ function TechnologyInner() {
               </div>
             </div>
 
-            <div className="absolute bottom-6 left-6 text-[10px] font-mono text-white/40 tracking-wider hidden md:block">
+            <div className="absolute bottom-6 left-6 text-[10px] font-mono text-slate-400 tracking-wider hidden md:block">
               LAT: 47.3769° N <br/> LON: 8.5417° E
             </div>
           </header>
@@ -463,30 +356,30 @@ function TechnologyInner() {
 
           {/* CTA Section */}
           {vm.cta && (
-            <section className="py-32 px-6 relative overflow-hidden flex items-center justify-center bg-black/40 border-t border-white/10 mt-16 backdrop-blur-sm">
-              <div className="absolute inset-0 bg-[radial-gradient(rgba(0,212,255,0.05)_1px,transparent_1px)] bg-[length:40px_40px] opacity-20 hidden md:block z-0 mix-blend-screen"></div>
+            <section className="py-32 px-6 relative overflow-hidden flex items-center justify-center bg-white/40 border-t border-black/5 mt-16 backdrop-blur-sm">
+              <div className="absolute inset-0 bg-[radial-gradient(rgba(0,212,255,0.03)_1px,transparent_1px)] bg-[length:40px_40px] opacity-40 hidden md:block z-0"></div>
               
-              <div className="absolute bottom-4 left-4 text-[10px] font-mono text-white/30 hidden md:block">
+              <div className="absolute bottom-4 left-4 text-[10px] font-mono text-slate-400 hidden md:block">
                 LIVE FEED: CONNECTED
               </div>
-              <div className="absolute top-4 right-4 text-[10px] font-mono text-white/30 hidden md:block">
+              <div className="absolute top-4 right-4 text-[10px] font-mono text-slate-400 hidden md:block">
                 ENCRYPTION: SECURED
               </div>
               
               <div className="relative z-10 text-center max-w-4xl mx-auto">
-                <Typography.H2 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-6 uppercase italic tracking-tighter leading-[0.9]">
+                <Typography.H2 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-slate-900 mb-6 uppercase italic tracking-tighter leading-[0.9]">
                   {vm.cta.headline.replace("?", "")} <br/><span className="text-[#00D4FF]">Together?</span>
                 </Typography.H2>
                 
-                <Typography.P className="text-base md:text-lg text-white/70 mb-12 max-w-xl mx-auto font-light leading-relaxed">
+                <Typography.P className="text-base md:text-lg text-slate-600 mb-12 max-w-xl mx-auto font-light leading-relaxed">
                   {vm.cta.subheadline || "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
                 </Typography.P>
                 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                  <a href="/contact" className="px-8 md:px-12 py-4 md:py-5 bg-[#00D4FF] text-black font-bold uppercase tracking-widest rounded-sm shadow-lg hover:shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:bg-white transition-all transform hover:-translate-y-1 text-xs md:text-sm text-center">
+                  <a href="/contact" className="px-8 md:px-12 py-4 md:py-5 bg-[#00D4FF] text-white font-bold uppercase tracking-widest rounded-sm shadow-md hover:shadow-xl hover:bg-slate-900 transition-all transform hover:-translate-y-1 text-xs md:text-sm text-center">
                     {vm.cta.primaryText || "Book a Tech Demo"}
                   </a>
-                  <button className="px-8 md:px-12 py-4 md:py-5 border border-white/20 bg-black/50 backdrop-blur text-white font-bold uppercase tracking-widest rounded-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all text-xs md:text-sm">
+                  <button className="px-8 md:px-12 py-4 md:py-5 border border-black/10 bg-white/50 backdrop-blur text-slate-900 font-bold uppercase tracking-widest rounded-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all text-xs md:text-sm">
                     View Equipment Specs
                   </button>
                 </div>

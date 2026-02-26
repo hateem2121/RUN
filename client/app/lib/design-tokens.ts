@@ -255,20 +255,11 @@ export function getCssVar(name: string): string {
  */
 export const HARDCODED_COLORS_TO_MIGRATE = [
   {
-    hex: "#5227FF",
-    replacement: "brandPurple",
-    files: ["GradientBlinds.tsx", "TechnologyGradientSettings.tsx"],
-  },
-  {
-    hex: "#FF9FFC",
-    replacement: "brandPurpleLight",
-    files: ["GradientBlinds.tsx", "TechnologyGradientSettings.tsx"],
-  },
-  {
     hex: "#CCFF00",
     replacement: "brandLime",
     files: ["Footer.tsx", "Categories.tsx"],
   },
+
   {
     hex: "#10b981",
     replacement: "success",
