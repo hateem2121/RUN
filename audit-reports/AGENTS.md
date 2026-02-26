@@ -4,7 +4,7 @@
 
 ## 0. AntiGravity Project Constitution
 
-**Primary Source of Truth (SSOT)**: [gemini.md](./gemini.md)
+**Primary Source of Truth (SSOT)**: [gemini.md](../gemini.md)
 
 All agents MUST read and adhere to the architectural invariants and design laws defined in `gemini.md`. This file takes precedence over all other documentation.
 
