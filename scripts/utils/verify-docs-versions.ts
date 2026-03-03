@@ -34,7 +34,7 @@ function extractVersion(version: string): string {
 }
 
 function main(): void {
-  const context = readJson("FULL_SYSTEM_CONTEXT.json") as {
+  const context = readJson("docs/FULL_SYSTEM_CONTEXT.json") as {
     runtime: { node: string };
     stack: {
       frontend: { framework: string; build: string; style: string };

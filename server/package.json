@@ -50,7 +50,7 @@
     "lru-cache": "^11.2.2",
     "memoizee": "^0.4.17",
     "mermaid": "^11.12.2",
-    "multer": "^2.0.1",
+    "multer": "^2.1.0",
     "neverthrow": "^8.1.1",
     "nodemailer": "^7.0.11",
     "openid-client": "^6.8.1",
