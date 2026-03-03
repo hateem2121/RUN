@@ -16,9 +16,8 @@ function scanDir(dir) {
         const content = fs.readFileSync(fullPath, 'utf8');
         
         const tabs = [];
-        const tabRegex = /<TabsTrigger[^>]*value="([^"]+)"[^>]*>([\s\S]*?)<\/TabsTrigger>/g;
-        let match;
-        while ((match = tabRegex.exec(content)) !== null) {
+        const matches = content.matchAll(tabRegex);
+        for (const match of matches) {
           tabs.push({ value: match[1], label: match[2].trim() });
         }
 
