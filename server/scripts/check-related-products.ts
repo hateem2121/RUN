@@ -1,5 +1,5 @@
 import { isNotNull } from "drizzle-orm";
-import { products } from "../../shared/schema.js";
+import { products } from "../../shared/index.js";
 import { db } from "../db.js";
 
 async function checkData() {

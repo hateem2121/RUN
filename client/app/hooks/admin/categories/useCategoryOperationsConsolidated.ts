@@ -1,4 +1,4 @@
-import type { Category } from "@shared/schema";
+import type { Category } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";

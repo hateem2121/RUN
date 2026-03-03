@@ -22,7 +22,7 @@
   }
 
   model-viewer .progress-bar {
-    @apply absolute top-1/2 left-1/2 block h-1 w-1/3 overflow-hidden rounded-sm bg-black/10;
+    @apply absolute top-1/2 left-1/2 block h-[4px] w-1/3 overflow-hidden rounded-sm bg-black/10;
     transform: translate(-50%, -50%);
   }
 

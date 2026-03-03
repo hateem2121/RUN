@@ -12,7 +12,7 @@ import type {
   HomepageSlogan,
   Product,
   UnifiedSustainability,
-} from "@/../../shared/schema";
+} from "@shared/index";
 
 export interface HomepageBatchData {
   hero: HomepageHero | null;

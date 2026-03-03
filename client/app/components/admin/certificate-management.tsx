@@ -1,4 +1,4 @@
-import type { Certificate, InsertCertificate } from "@shared/schema";
+import type { Certificate, InsertCertificate } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   BarChart3,

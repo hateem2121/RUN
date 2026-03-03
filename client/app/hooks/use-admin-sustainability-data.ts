@@ -4,7 +4,7 @@ import type {
   SustainabilityInitiative,
   SustainabilityMetric,
   UnifiedSustainability,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 

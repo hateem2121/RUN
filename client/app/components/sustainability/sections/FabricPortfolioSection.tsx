@@ -1,10 +1,16 @@
-import type { Fabric, MediaAsset } from "@shared/schema";
+import type { Fabric, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import { Leaf, RotateCw } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface FabricPortfolioSectionProps {
   mediaAssets?: MediaAsset[];
@@ -12,21 +18,15 @@ interface FabricPortfolioSectionProps {
   fabrics?: Fabric[];
 }
 
-/* ─────────────────────────────────────────────
-   Sustainability Score (leaf icons)
-   ───────────────────────────────────────────── */
 function SustainabilityScore({ score }: { score: number }) {
   return (
-    <div
-      className="flex items-center gap-0.5"
-      aria-label={`Sustainability score: ${score} out of 5`}
-    >
+    <div className="flex items-center gap-0.5" aria-label={`Sustainability score: ${score} out of 5`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <Leaf
           key={i}
           className={cn(
             "h-3.5 w-3.5 transition-colors",
-            i <= score ? "text-[#00C97B] fill-[#00C97B]" : "text-white/20",
+            i <= score ? "text-[color:var(--s-primary)] fill-[color:var(--s-primary)]" : "text-white/20"
           )}
         />
       ))}
@@ -34,205 +34,158 @@ function SustainabilityScore({ score }: { score: number }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Fabric Card (flip on click)
-   ───────────────────────────────────────────── */
 function FabricCard({
   fabric,
   fabricImage,
-  index,
 }: {
   fabric: Fabric;
   fabricImage?: MediaAsset | undefined;
-  index: number;
 }) {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  const toggleFlip = useCallback(() => {
-    setIsFlipped((prev) => !prev);
-  }, []);
-
-  // Derive a sustainability score from certifications count or a fallback
   const sustainabilityScore = useMemo(() => {
     if (fabric.certifications && Array.isArray(fabric.certifications)) {
       return Math.min(fabric.certifications.length + 2, 5);
     }
-    return 3; // Default
+    return 3;
   }, [fabric.certifications]);
 
+  const imageUrl =
+    fabricImage?.url ||
+    (fabricImage?.id && fabricImage.id < 1000000000000
+      ? `/api/media/${fabricImage.id}/content`
+      : undefined);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="snap-center shrink-0 w-72 md:w-80"
-    >
-      <div
-        className="relative h-[420px] cursor-pointer"
-        style={{ perspective: "1000px" }}
-        onClick={toggleFlip}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggleFlip();
-          }
-        }}
-        role="button"
-        tabIndex={0}
-        aria-label={`${fabric.name} — click to ${isFlipped ? "see front" : "see details"}`}
-      >
-        <div
-          className="relative w-full h-full transition-transform duration-700"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-          }}
-        >
-          {/* ── Front Side ── */}
-          <div
-            className="absolute inset-0 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl overflow-hidden"
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            {/* Swatch Image */}
-            {fabricImage && (
-              <div className="h-44 overflow-hidden">
-                <img
-                  src={
-                    fabricImage.url ||
-                    (fabricImage.id && fabricImage.id < 1000000000000
-                      ? `/api/media/${fabricImage.id}/content`
-                      : undefined)
-                  }
-                  alt={`${fabric.name} sustainable fabric`}
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
+    <div className="fabric-card group snap-center shrink-0 w-[340px] h-[480px] perspective-1000">
+      <div className="relative w-full h-full cursor-pointer card-inner">
+        {/* ── Card Front ── */}
+        <div className="card-front rounded-[2rem] overflow-hidden shadow-xl border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]">
+          <div className="absolute inset-0">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt={`${fabric.name} sustainable fabric`}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[color:var(--s-primary)]/10 to-[color:var(--s-primary)]/5 flex items-center justify-center">
+                <Leaf className="h-16 w-16 text-[color:var(--s-primary)]/30" />
               </div>
             )}
-            {!fabricImage && (
-              <div className="h-44 bg-gradient-to-br from-[#00C97B]/10 to-[#00C97B]/5 flex items-center justify-center">
-                <Leaf className="h-12 w-12 text-[#00C97B]/30" />
-              </div>
-            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          </div>
 
-            <div className="p-5">
-              <h3 className="font-semibold text-white text-lg mb-1">{fabric.name}</h3>
+          {/* Badge */}
+          {fabric.fabricType && (
+            <div className="absolute top-4 right-4 z-10">
+              <span className="bg-[color:var(--s-primary)]/90 text-black text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
+                {fabric.fabricType.toUpperCase()}
+              </span>
+            </div>
+          )}
 
-              {/* Composition */}
+          {/* Bottom content */}
+          <div className="absolute bottom-0 left-0 w-full p-8 backdrop-blur-[2px]">
+            <div className="flex flex-col gap-1 mb-4">
+              <h3 className="text-3xl font-bold text-white leading-tight drop-shadow-lg">{fabric.name}</h3>
               {fabric.properties?.composition && (
-                <p className="text-sm text-[#E3DFD6]/70 mb-3 line-clamp-2">
+                <p className="text-[color:var(--s-primary)] font-medium text-sm tracking-wide opacity-90 drop-shadow-md">
                   {fabric.properties.composition}
                 </p>
               )}
-
-              {/* Certification badges */}
-              {fabric.certifications &&
-                Array.isArray(fabric.certifications) &&
-                fabric.certifications.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {(fabric.certifications as string[]).slice(0, 3).map((cert, ci) => (
-                      <span
-                        key={ci}
-                        className="rounded-full bg-[#00C97B]/10 px-2 py-0.5 text-[10px] text-[#00C97B] font-medium"
-                      >
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-              {/* Sustainability Score */}
-              <div className="flex items-center justify-between">
-                <SustainabilityScore score={sustainabilityScore} />
-                <span className="text-[10px] text-[#68869A] flex items-center gap-1">
-                  <RotateCw className="h-3 w-3" />
-                  Tap to flip
-                </span>
-              </div>
             </div>
-          </div>
-
-          {/* ── Back Side (Technical specs) ── */}
-          <div
-            className="absolute inset-0 rounded-2xl bg-white/[0.06] border border-[#00C97B]/20 backdrop-blur-xl overflow-hidden p-6 flex flex-col justify-between"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          >
-            <div>
-              <h3 className="font-semibold text-white text-lg mb-4 pb-3 border-b border-white/[0.08]">
-                {fabric.name} — Specs
-              </h3>
-
-              <div className="space-y-3">
-                {fabric.fabricType && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-[#68869A]">Type</span>
-                    <span className="font-medium text-white">{fabric.fabricType}</span>
-                  </div>
-                )}
-
-                {fabric.weight && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-[#68869A]">Weight</span>
-                    <span className="font-medium text-white">{fabric.weight}</span>
-                  </div>
-                )}
-
-                {fabric.careInstructions && (
-                  <div className="text-sm">
-                    <span className="text-[#68869A] block mb-1">Care</span>
-                    <span className="text-[#E3DFD6]/70 text-xs leading-relaxed">
-                      {fabric.careInstructions}
-                    </span>
-                  </div>
-                )}
-
-                {fabric.description && (
-                  <div className="text-sm">
-                    <span className="text-[#68869A] block mb-1">Description</span>
-                    <span className="text-[#E3DFD6]/70 text-xs leading-relaxed line-clamp-3">
-                      {fabric.description}
-                    </span>
-                  </div>
-                )}
-
-                {fabric.keyApplications && fabric.keyApplications.length > 0 && (
-                  <div className="text-sm">
-                    <span className="text-[#68869A] block mb-1">Applications</span>
-                    <div className="flex flex-wrap gap-1">
-                      {fabric.keyApplications.slice(0, 4).map((app: string, ai: number) => (
-                        <span
-                          key={ai}
-                          className="rounded-full bg-white/[0.08] px-2 py-0.5 text-[10px] text-[#E3DFD6]"
-                        >
-                          {app}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+            <div className="flex items-center justify-between border-t border-white/20 pt-4">
+              <SustainabilityScore score={sustainabilityScore} />
+              <span className="text-[10px] uppercase tracking-widest text-gray-300 flex items-center gap-1">
+                Flip for Specs
+                <RotateCw className="h-3 w-3 text-gray-400" />
+              </span>
             </div>
-
-            <span className="text-[10px] text-[#68869A] text-center flex items-center justify-center gap-1 pt-3 border-t border-white/[0.08]">
-              <RotateCw className="h-3 w-3" />
-              Tap to flip back
-            </span>
           </div>
         </div>
+
+        {/* ── Card Back (Technical specs) ── */}
+        <div className="card-back rounded-[2rem] p-8 flex flex-col justify-between border border-[color:var(--s-primary)]/50 bg-[color:var(--s-bg-card)] shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">Technical Specs</h3>
+              <Leaf className="h-5 w-5 text-[color:var(--s-primary)]" />
+            </div>
+
+            <div className="space-y-4">
+              {fabric.fabricType && (
+                <div className="flex justify-between border-b border-white/10 pb-2">
+                  <span className="text-sm text-[color:var(--s-text-muted)]">Type</span>
+                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">{fabric.fabricType}</span>
+                </div>
+              )}
+              {fabric.weight && (
+                <div className="flex justify-between border-b border-white/10 pb-2">
+                  <span className="text-sm text-[color:var(--s-text-muted)]">Weight</span>
+                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">{fabric.weight}</span>
+                </div>
+              )}
+              {fabric.certifications && Array.isArray(fabric.certifications) && fabric.certifications.length > 0 && (
+                <div className="flex justify-between border-b border-white/10 pb-2">
+                  <span className="text-sm text-[#68869A]">Certification</span>
+                  <span className="text-sm text-[color:var(--s-primary)] font-mono">
+                    {(fabric.certifications as string[]).slice(0, 2).join(", ")}
+                  </span>
+                </div>
+              )}
+              {fabric.keyApplications && fabric.keyApplications.length > 0 && (
+                <div className="flex justify-between border-b border-white/10 pb-2">
+                  <span className="text-sm text-[color:var(--s-text-muted)]">Applications</span>
+                  <span className="text-sm text-[color:var(--s-text-head)] font-mono text-right max-w-[140px]">
+                    {(fabric.keyApplications as string[]).slice(0, 2).join(", ")}
+                  </span>
+                </div>
+              )}
+              {fabric.description && (
+                <div className="p-4 bg-white/5 rounded-xl border border-[color:var(--s-border-card)] mt-4">
+                  <p className="text-xs text-[color:var(--s-text-muted)] italic leading-relaxed line-clamp-3">
+                    "{fabric.description}"
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+          <button className="w-full py-3 rounded-xl bg-[color:var(--s-primary)] text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2">
+            Request Swatch <span className="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   Fabric Portfolio Section — Horizontal Scroll
-   ───────────────────────────────────────────── */
+function FilterBtn({ label, isActive, onClick }: { label: string; isActive: boolean; onClick: () => void }) {
+  // Simple deterministic pattern for alternating leaf border radius mapping to Stitch design
+  const isAlt = label.length % 2 === 0;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "px-5 py-2 text-sm font-medium transition-all duration-300",
+        isActive
+          ? "bg-[color:var(--s-primary)] text-black font-bold shadow-[0_0_15px_rgba(0,199,123,0.3)] border-transparent"
+          : "bg-white/5 text-[color:var(--s-text-muted)] hover:bg-white/10 hover:text-white border border-white/5"
+      )}
+      style={{ borderRadius: isAlt ? "0.5rem 2rem 0.5rem 2rem" : "2rem 0.5rem 2rem 0.5rem" }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function FabricPortfolioSection({
   mediaAssets = [],
   selectedFabricIds = [],
   fabrics: initialFabrics,
 }: FabricPortfolioSectionProps) {
-  const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [activeFilter, setActiveFilter] = useState<string>("All"); // Mistake corrected below
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { data: fabricsData = initialFabrics || [] } = useQuery<Fabric[]>({
     queryKey: ["/api/fabrics"],
@@ -254,7 +207,6 @@ export function FabricPortfolioSection({
     return activeFabrics.slice(0, 12);
   }, [fabricsData, selectedFabricIds]);
 
-  // Derive unique categories from fabrics
   const categories = useMemo(() => {
     const cats = new Set<string>();
     sustainableFabrics.forEach((f) => {
@@ -263,11 +215,24 @@ export function FabricPortfolioSection({
     return ["All", ...Array.from(cats)];
   }, [sustainableFabrics]);
 
-  // Filter fabrics by active category
   const filteredFabrics = useMemo(() => {
     if (activeFilter === "All") return sustainableFabrics;
     return sustainableFabrics.filter((f) => f.fabricType === activeFilter);
   }, [sustainableFabrics, activeFilter]);
+
+  useGSAP(() => {
+    gsap.from(".fabric-card", {
+      scrollTrigger: {
+        trigger: ".fabric-scroll-container",
+        start: "top 80%",
+      },
+      opacity: 0,
+      x: 30,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "power2.out",
+    });
+  }, { scope: containerRef, dependencies: [filteredFabrics] });
 
   if (sustainableFabrics.length === 0) {
     return (
@@ -278,37 +243,30 @@ export function FabricPortfolioSection({
   }
 
   return (
-    <div>
+    <div ref={containerRef}>
       {/* Category Filter Bar */}
       {categories.length > 1 && (
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+        <div className="flex gap-3 overflow-x-auto pb-2 px-6 lg:px-10 mb-8 hide-scrollbar">
           {categories.map((cat) => (
-            <button
+            <FilterBtn
               key={cat}
-              type="button"
+              label={cat}
+              isActive={activeFilter === cat}
               onClick={() => setActiveFilter(cat)}
-              className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
-                activeFilter === cat
-                  ? "bg-[#00C97B] text-white"
-                  : "bg-white/[0.06] text-[#E3DFD6] hover:bg-white/[0.1] border border-white/[0.08]",
-              )}
-            >
-              {cat}
-            </button>
+            />
           ))}
         </div>
       )}
 
-      {/* Horizontal scroll container */}
+      {/* Horizontal scroll container with 3D flip cards */}
       <div
-        className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10"
+        className="fabric-scroll-container flex gap-6 overflow-x-auto pb-10 px-6 lg:px-10 snap-x snap-mandatory scroll-smooth hide-scrollbar"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {filteredFabrics.map((fabric, index) => {
+        {filteredFabrics.map((fabric) => {
           const fabricImage = mediaAssets.find((asset) => asset.id === fabric.visualSwatchId);
           return (
-            <FabricCard key={fabric.id} fabric={fabric} fabricImage={fabricImage} index={index} />
+            <FabricCard key={fabric.id} fabric={fabric} fabricImage={fabricImage} />
           );
         })}
       </div>

@@ -1,4 +1,4 @@
-import type { InsertSizeChart, SizeChart } from "@shared/schema";
+import type { InsertSizeChart, SizeChart } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Edit, Eye, Flag, Plus, RotateCcw, Ruler, X } from "lucide-react";
 import { useState } from "react";

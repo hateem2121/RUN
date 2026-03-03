@@ -1,4 +1,4 @@
-import type { Category, Certificate, Fabric, ProductSummary } from "@shared/schema";
+import type { Category, Certificate, Fabric, ProductSummary } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";

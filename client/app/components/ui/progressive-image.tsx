@@ -3,7 +3,7 @@
  * Implements blur-to-sharp loading with multiple resolution support
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 

@@ -1,11 +1,14 @@
-import type { SustainabilityGoal } from "@shared/schema";
+import type { SustainabilityGoal } from "@shared/index";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CheckCircle, Circle, Target } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { useMemo, useRef } from "react";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
+import { cn } from "@/lib/utils";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface GoalsSectionProps {
   goals: SustainabilityGoal[];
@@ -13,175 +16,164 @@ interface GoalsSectionProps {
   description?: string | undefined;
 }
 
-/* ─────────────────────────────────────────────
-   Timeline Dot (status indicator)
-   ───────────────────────────────────────────── */
-function TimelineDot({ progress }: { progress: number }) {
-  if (progress >= 100) {
-    return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00C97B] shadow-[0_0_12px_rgba(0,201,123,0.4)]">
-        <CheckCircle className="h-4 w-4 text-white" />
-      </div>
-    );
-  }
-  if (progress > 0) {
-    return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00C97B] shadow-[0_0_12px_rgba(0,201,123,0.3)]">
-        <Target className="h-4 w-4 text-white" />
-      </div>
-    );
-  }
-  return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-[#00C97B]/40 bg-transparent">
-      <Circle className="h-3 w-3 text-[#00C97B]/40" />
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   Goal Card (branching from timeline)
-   ───────────────────────────────────────────── */
-function GoalCard({ goal, progress }: { goal: SustainabilityGoal; progress: number }) {
+function RoadmapItem({
+  goal,
+  progress,
+  index,
+}: {
+  goal: SustainabilityGoal;
+  progress: number;
+  index: number;
+}) {
   const barRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isEven = index % 2 === 0;
 
-  useEffect(() => {
-    const bar = barRef.current;
-    if (!bar) return;
+  const isDone = progress >= 100;
+  const isInProgress = progress > 0 && progress < 100;
 
-    gsap.fromTo(
-      bar,
-      { width: "0%" },
-      {
-        width: `${Math.min(progress, 100)}%`,
+  useGSAP(() => {
+    // Fade up the whole item
+    gsap.from(containerRef.current, {
+      opacity: 0,
+      y: 40,
+      duration: 0.8,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 85%",
+      }
+    });
+
+    // Animate the progress bar width
+    if (barRef.current) {
+      gsap.fromTo(
+        barRef.current,
+        { width: "0%" },
+        {
+          width: `${Math.min(progress, 100)}%`,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+          },
+        }
+      );
+    }
+
+    // Count-up on percentage text
+    const percentEl = containerRef.current?.querySelector(".goal-percent") as HTMLElement | null;
+    if (percentEl && progress > 0 && progress < 100) {
+      const pObj = { val: 0 };
+      gsap.to(pObj, {
+        val: progress,
         duration: 1.5,
         ease: "power2.out",
         scrollTrigger: {
-          trigger: bar.parentElement,
+          trigger: containerRef.current,
           start: "top 85%",
         },
-      },
-    );
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => {
-        if (t.trigger === bar.parentElement) t.kill();
+        onUpdate: () => {
+          percentEl.textContent = `${Math.floor(pObj.val)}% Complete`;
+        },
       });
-    };
-  }, [progress]);
+    }
+  }, { scope: containerRef, dependencies: [progress] });
 
   return (
-    <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl p-6 transition-all duration-300 hover:bg-white/[0.07] hover:border-[#00C97B]/20">
-      <div className="mb-4">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-lg text-white">{goal.title}</h3>
-          {goal.targetYear && (
-            <span className="font-medium text-sm text-[#00C97B]">{goal.targetYear}</span>
-          )}
-        </div>
+    <div ref={containerRef} className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 group">
+      {/* Vertical center connecting line */}
+      <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2 group-last:bottom-auto group-last:h-full" />
 
-        {goal.category && (
-          <span className="mb-3 inline-block rounded-full bg-[#00C97B]/10 px-3 py-1 font-medium text-[#00C97B] text-xs">
-            {goal.category}
-          </span>
+      {/* Left-side visually (Year for even, Content for odd) */}
+      <div className={cn("md:w-[45%] md:text-right", !isEven && "md:order-last")}>
+        <span
+          className={cn(
+            "text-5xl font-bold font-neue-stance",
+            isDone ? "text-[color:var(--s-primary)] opacity-40" : "text-white opacity-20"
+          )}
+        >
+          {goal.targetYear || `${2025 + index * 3}`}
+        </span>
+      </div>
+
+      {/* Timeline Node - center */}
+      <div className="absolute left-[-9px] md:left-1/2 md:-translate-x-1/2 z-10 mt-2 md:mt-0">
+        {isDone ? (
+          <div className="w-4 h-4 rounded-full bg-[color:var(--s-primary)] shadow-[0_0_15px_rgba(0,199,123,0.6)]" />
+        ) : isInProgress ? (
+          <div className="w-4 h-4 rounded-full border-2 border-[color:var(--s-primary)] bg-[#10291f]" />
+        ) : (
+          <div className="w-4 h-4 rounded-full border-2 border-gray-600 bg-[#10291f]" />
         )}
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm text-[#68869A]">Progress</span>
-          <span className="font-medium text-sm text-white">{progress.toFixed(1)}%</span>
-        </div>
-        <div
-          className="h-2 w-full rounded-full bg-white/[0.08] overflow-hidden"
-          role="progressbar"
-          aria-valuenow={Math.round(progress)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`${goal.title} progress`}
-        >
+      {/* Right-side visually (Content for even, Year for odd) */}
+      <div className={cn("pl-8 md:pl-0 md:w-[45%]", !isEven && "md:text-right")}>
+        <h3 className="text-xl font-bold text-white mb-2">{goal.title}</h3>
+        {goal.description && (
+          <p className="text-sm mb-3 text-white/60">{goal.description}</p>
+        )}
+        
+        <div className={cn("w-full h-1.5 bg-white/10 rounded-full overflow-hidden", !isEven && "md:ml-auto")}>
           <div
             ref={barRef}
-            className="h-full rounded-full bg-gradient-to-r from-[#00C97B] to-[#00C97B]/70 w-0"
+            className={cn(
+              "h-full rounded-full w-0",
+              isDone ? "bg-[color:var(--s-primary)]" : isInProgress ? "bg-[color:var(--s-primary)]" : "bg-gray-600"
+            )}
           />
         </div>
+        
+        <span
+          className={cn(
+            "text-xs mt-1 block font-mono",
+            isDone ? "text-[color:var(--s-primary)]" : isInProgress ? "text-white/60" : "text-gray-500"
+          )}
+        >
+          {isDone ? "Complete" : isInProgress ? <span className="goal-percent">0% Complete</span> : "Initiation Phase"}
+        </span>
       </div>
-
-      <div className="mb-4 space-y-1">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-[#68869A]">Current:</span>
-          <span className="font-medium text-white">
-            {goal.currentValue || "0"} {goal.unit}
-          </span>
-        </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-[#68869A]">Target:</span>
-          <span className="font-medium text-white">
-            {goal.targetValue} {goal.unit}
-          </span>
-        </div>
-      </div>
-
-      {goal.description && (
-        <p className="text-sm text-[#E3DFD6]/70 leading-relaxed">{goal.description}</p>
-      )}
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   Goals Section — Vertical Timeline
-   ───────────────────────────────────────────── */
 export function GoalsSection({
   goals,
-  title = "Our Sustainability Goals",
+  title = "2030 Sustainability Roadmap",
   description = "Track our progress toward achieving ambitious sustainability targets and environmental commitments.",
 }: GoalsSectionProps) {
+  const containerRef = useRef<HTMLElement>(null);
+
   const goalsWithProgress = useMemo(
     () =>
       goals.map((goal) => ({
         ...goal,
         progress: calculateGoalProgress(goal.currentValue, goal.targetValue),
       })),
-    [goals],
+    [goals]
   );
 
   return (
-    <section className="relative bg-[#0F0F0F] py-20">
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="mb-16 text-center">
-          <h2 className="mb-4 font-bold font-neue-stance text-3xl text-white">{title}</h2>
-          <p className="mx-auto max-w-3xl text-lg text-[#E3DFD6]">{description}</p>
-        </div>
+    <section
+      ref={containerRef}
+      className="relative py-24 px-6 lg:px-10 overflow-hidden bg-[#10291f] text-white border-t border-[#1a4331]"
+    >
+      {/* Right-side fade accent */}
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[color:var(--s-primary)]/8 to-transparent pointer-events-none" />
 
-        {/* Timeline Layout */}
-        <div className="mx-auto max-w-3xl">
-          <div className="relative">
-            {/* Vertical timeline line */}
-            <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-[#00C97B]/60 via-[#00C97B]/30 to-transparent" />
+      <div className="container mx-auto max-w-4xl relative z-10">
+        <h2 className="mb-4 text-center text-3xl md:text-4xl font-bold font-neue-stance text-white">
+          {title}
+        </h2>
+        <p className="mb-16 text-center text-white/60 max-w-2xl mx-auto">{description}</p>
 
-            {/* Goal items */}
-            <div className="space-y-8">
-              {goalsWithProgress.map((goal, index) => (
-                <div key={goal.id} className="relative flex gap-6 items-start">
-                  {/* Timeline dot */}
-                  <div className="shrink-0 relative z-10">
-                    <TimelineDot progress={goal.progress} />
-                    {/* Connector to card */}
-                    {index < goalsWithProgress.length - 1 && (
-                      <div className="absolute left-1/2 top-8 -translate-x-1/2 w-px h-8 bg-[#00C97B]/20" />
-                    )}
-                  </div>
-
-                  {/* Goal card */}
-                  <div className="flex-1 pb-2">
-                    <GoalCard goal={goal} progress={goal.progress} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Timeline rows */}
+        <div className="relative border-l-2 border-white/10 ml-4 md:ml-0 md:pl-0 md:border-none space-y-12">
+          {goalsWithProgress.map((goal, index) => (
+            <RoadmapItem key={goal.id} goal={goal} progress={goal.progress} index={index} />
+          ))}
         </div>
       </div>
     </section>

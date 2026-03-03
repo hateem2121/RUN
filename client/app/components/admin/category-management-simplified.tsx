@@ -1,7 +1,7 @@
 import { closestCenter, DndContext } from "@dnd-kit/core";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { Category, InsertCategory } from "@shared/schema";
+import type { Category, InsertCategory } from "@shared/index";
 import {
   BarChart3,
   Download,

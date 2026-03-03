@@ -147,7 +147,7 @@ sequenceDiagram
 
 ## 5. Data Models (ERD)
 
-Derived from `shared/schema` directory structure.
+Derived from `shared/schemas` directory structure.
 
 ```mermaid
 erDiagram

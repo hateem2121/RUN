@@ -20,7 +20,7 @@
  */
 
 import { sql } from "drizzle-orm";
-import * as schema from "../../../shared/schema.js";
+import * as schema from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 

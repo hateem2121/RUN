@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { aboutHero, mediaAssets } from "../../shared/schema.js";
+import { aboutHero, mediaAssets } from "../../shared/index.js";
 import { db } from "../db.js";
 
 async function seedAboutHero() {

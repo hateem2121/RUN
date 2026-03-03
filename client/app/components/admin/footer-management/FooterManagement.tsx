@@ -1,4 +1,4 @@
-import type { FooterConfiguration } from "@shared/schema";
+import type { FooterConfiguration } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Building2,

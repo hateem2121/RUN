@@ -1,7 +1,7 @@
 /**
  * Shared utility functions for admin products
  */
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 
 /**
  * Convert media IDs to MediaAsset objects using a getter function

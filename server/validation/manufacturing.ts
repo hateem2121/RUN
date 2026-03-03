@@ -12,7 +12,7 @@ import {
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
-} from "../../shared/schema.js";
+} from "../../shared/index.js";
 
 export {
   insertManufacturingCapabilitySchema,

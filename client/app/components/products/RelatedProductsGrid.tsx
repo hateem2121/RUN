@@ -3,7 +3,7 @@
  * Displays grid of related products based on category or tags
  */
 
-import type { MediaAsset, Product } from "@shared/schema";
+import type { MediaAsset, Product } from "@shared/index";
 import { Package } from "lucide-react";
 import { Link } from "react-router";
 import { cn } from "@/lib/utils";

@@ -38,10 +38,10 @@ This document outlines the comprehensive forensic-level audit of the RUN Remix C
 #### 1.1 Database Schema Analysis
 
 **Files Reviewed:**
-- `shared/schema/index.ts` - Central schema exports
-- `shared/schema/products.ts` - Product catalog (356 lines)
-- `shared/schema/system.ts` - System tables (319 lines)
-- `shared/schema/users.ts` - User authentication (48 lines)
+- `shared/schemas/index.ts` - Central schema exports
+- `shared/schemas/products.ts` - Product catalog (356 lines)
+- `shared/schemas/system.ts` - System tables (319 lines)
+- `shared/schemas/users.ts` - User authentication (48 lines)
 
 **Positive Findings:**
 - ✅ Products table has comprehensive indexing strategy (12+ indexes)

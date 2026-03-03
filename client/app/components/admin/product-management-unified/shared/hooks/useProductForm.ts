@@ -1,4 +1,4 @@
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { useCallback, useEffect, useReducer } from "react";
 import { logger } from "../logger";
 import type { ProductFormFieldValue } from "../types";

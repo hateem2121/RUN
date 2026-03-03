@@ -126,24 +126,21 @@ Concrete usage scenarios
 Limitations and edge cases
 ```
 
-### 6.3. Available Skills (Representative List)
+### 6.3. Available Skills (AntiGravity Matrix v3.0)
 
 | Skill | Purpose | Location |
 | :--- | :--- | :--- |
-| **project-standards** | React 19, Express 5, Tailwind V4 patterns | `.agent/skills/project-standards/` |
-| **core-identity** | Project mission, tech stack, business context | `.agent/skills/core-identity/` |
-| **development-workflow** | Testing standards and uncertainty protocol | `.agent/skills/development-workflow/` |
-| **systematic-debugging** | Root cause analysis and troubleshooting | `.agent/skills/systematic-debugging/` |
-| **test-driven-development** | Red-Green-Refactor logic | `.agent/skills/test-driven-development/` |
-| **dispatching-parallel-agents** | Large scale task delegation | `.agent/skills/dispatching-parallel-agents/` |
-| **executing-plans** | Step-by-step implementation tracking | `.agent/skills/executing-plans/` |
-| **subagent-driven-development** | Subagent task delegation and management | `.agent/skills/subagent-driven-development/` |
-| **production-standards** | Performance, Security, Accessibility | `.agent/skills/production-standards/` |
-| **advanced-debugging** | Deep system forensics | `.agent/skills/advanced-debugging/` |
-| **agent-teams** | Multi-agent coordination and orchestration | `.agent/skills/agent-teams/` |
-| **brainstorming** | Collaborative ideation and research | `.agent/skills/brainstorming/` |
-| **port-5002-compliance** | Strict port verification and enforcement | `.agent/skills/port-5002-compliance/` |
-| **using-git-worktrees** | Parallel work isolation and git management | `.agent/skills/using-git-worktrees/` |
+| **project-standards** | High-level orchestration & architecture | `.agent/skills/project-standards/` |
+| **react-19-optimistic-ui** | Optimistic UI, Actions, and Raw Refs | `.agent/skills/react-19-optimistic-ui/` |
+| **tailwind-v4-oxide-engine** | Oxide engine styling & CSS native themes | `.agent/skills/tailwind-v4-oxide-engine/` |
+| **neon-drizzle-edge-sql** | Serverless SQL & mitigate cold starts | `.agent/skills/neon-drizzle-edge-sql/` |
+| **express-5-async-patterns** | Native async routes & error propagation | `.agent/skills/express-5-async-patterns/` |
+| **gsap-3-13-react-integration** | Complex animations & lifecycle management | `.agent/skills/gsap-3-13-react-integration/` |
+| **playwright-visual-regression** | Zero-leak visual governance & DOM snapshots | `.agent/skills/playwright-visual-regression/` |
+| **tech-integrity-validator** | Automated Build/Type/Lint checks | `.agent/skills/tech-integrity-validator/` |
+| **core-identity** | Project mission & business context | `.agent/skills/core-identity/` |
+| **development-workflow** | Testing standards & TDD | `.agent/skills/development-workflow/` |
+| **systematic-debugging** | Root cause analysis & forensics | `.agent/skills/systematic-debugging/` |
 
 ### 6.4. Progressive Disclosure Architecture
 

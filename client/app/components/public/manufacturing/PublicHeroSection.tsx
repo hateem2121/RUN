@@ -1,5 +1,5 @@
 import { useGSAP } from "@gsap/react";
-import type { ManufacturingHero, MediaAsset } from "@shared/schema";
+import type { ManufacturingHero, MediaAsset } from "@shared/index";
 import gsap from "gsap";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
@@ -39,10 +39,10 @@ export function PublicHeroSection({
           const isHighlighted = word.startsWith("**") && word.endsWith("**");
           const cleanWord = isHighlighted ? word.slice(2, -2) : word;
           return `<span class="inline-block overflow-hidden pb-2"><span class="word inline-block ${
-            isHighlighted ? "text-[#D4A853] relative" : ""
+            isHighlighted ? "text-[#FF4D00] relative" : ""
           }">${cleanWord}${
             isHighlighted
-              ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-[#D4A853] rotate-45 animate-pulse shadow-[0_0_10px_#D4A853]"></span>'
+              ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-[#FF4D00] rotate-45 animate-pulse shadow-[0_0_10px_#FF4D00]"></span>'
               : ""
           }</span></span>`;
         })
@@ -120,7 +120,7 @@ export function PublicHeroSection({
 
   return (
     <ManufacturingErrorBoundary>
-      <div ref={containerRef} className="relative bg-[#0A0A0A]">
+      <div ref={containerRef} className="relative bg-[#1A0000]">
         {/* Header Section */}
         <header className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
           {/* Floating Sparks */}
@@ -129,7 +129,7 @@ export function PublicHeroSection({
               <div
                 key={i}
                 className={cn(
-                  "absolute bg-[#D4A853] shadow-[0_0_8px_#D4A853] opacity-40 pointer-events-none spark",
+                  "absolute bg-[#FF4D00] shadow-[0_0_8px_#FF4D00] opacity-40 pointer-events-none spark",
                   i % 3 === 0 ? "w-1 h-1" : i % 2 === 0 ? "w-1.5 h-1.5" : "w-0.5 h-0.5",
                 )}
                 style={{
@@ -167,25 +167,25 @@ export function PublicHeroSection({
               <OptimizedImage
                 mediaId={heroBackgroundAsset.id}
                 alt="Manufacturing Background"
-                className="w-full h-full object-cover opacity-30 grayscale mix-blend-overlay"
+                className="w-full h-full object-cover opacity-20 grayscale sepia hue-rotate-15 mix-blend-overlay"
                 priority={true}
               />
             ) : (
               <img
                 alt="Macro photography of sewing machine needle"
-                className="w-full h-full object-cover opacity-30 grayscale mix-blend-overlay"
+                className="w-full h-full object-cover opacity-20 grayscale sepia hue-rotate-15 mix-blend-overlay"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaFr8satMiHuubKnq6ZmnTrhos9xLMveFMM4olbG-J23bK5ywE9wF3atm-z3ne_0ztbPnL1etAMv6bRuKpUbC42HETMKBh0VuEUmOffoQdi7Y_2ipx8QjbDa12BKfSsZhvdoahTOEOsW20djY3Hi8a29So3_Cd0OMzm7Kl1UHZViy2Skj4o7hv61vKsFdjYtgSJp7klmS0SdpX6k9ltAN73ADtT0Yb4TZM_DIhlFs2pGb5ygJWMVAcZJz9wEh5bBtgRByWiLhmw"
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent"></div>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#0A0A0A_100%)]"></div>
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#D4A8530D_1px,transparent_1px),linear-gradient(to_bottom,#D4A8530D_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1A0000] via-[#1A0000]/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#1A0000_100%)]"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#FF4D000D_1px,transparent_1px),linear-gradient(to_bottom,#FF4D000D_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           </div>
 
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center h-full pb-20 mt-10">
             <div className="max-w-5xl">
-              <div className="inline-flex items-center space-x-3 border-l-4 border-[#D4A853] pl-4 mb-8">
-                <span className="text-xs font-mono uppercase tracking-widest text-[#D4A853] font-bold">
+              <div className="inline-flex items-center space-x-3 border-l-4 border-[#FF4D00] pl-4 mb-8">
+                <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D00] font-bold">
                   Est. 1889
                 </span>
                 <span className="text-xs font-mono uppercase tracking-widest text-[#68869A]">
@@ -211,13 +211,13 @@ export function PublicHeroSection({
 
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
                 <a
-                  className="inline-flex items-center justify-center bg-[#D4A853] hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(212,168,83,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center bg-[#FF4D00] hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(212,168,83,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
                   href={hero.ctaLink || "#process"}
                 >
                   {hero.ctaText || "Explore Our Process"}
                 </a>
                 <a
-                  className="inline-flex items-center justify-center border border-white/30 hover:border-[#D4A853] hover:text-[#D4A853] text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-[#121212]/50 backdrop-blur-sm skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center border border-white/30 hover:border-[#FF4D00] hover:text-[#FF4D00] text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-[#121212]/50 backdrop-blur-sm skew-x-[-10deg]"
                   href="#tour"
                 >
                   Request Factory Tour
@@ -230,7 +230,7 @@ export function PublicHeroSection({
         {/* Stats Bar Sticky */}
         <div
           ref={statsRef}
-          className="sticky top-20 z-40 bg-[#0A0A0A]/95 backdrop-blur-md border-y border-[#D4A853]/20 shadow-lg shadow-[#D4A853]/5 transition-all duration-300"
+          className="sticky top-20 z-40 bg-[#1A0000]/95 backdrop-blur-md border-y border-[#FF4D00]/20 shadow-lg shadow-[#FF4D00]/10 transition-all duration-300"
         >
           <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center overflow-x-auto no-scrollbar">
             <div className="flex space-x-12 md:space-x-24 min-w-max mx-auto md:mx-0 w-full md:w-auto justify-between md:justify-start">
@@ -239,22 +239,22 @@ export function PublicHeroSection({
                   key={i}
                   className="flex flex-col md:flex-row items-center gap-1 md:gap-3 group cursor-default"
                 >
-                  <span className="text-[#D4A853] font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
+                  <span className="text-[#FF4D00] font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
                     {stat.value === 0.05 ? "<" : ""}
                     <span className="stat-number" data-target={stat.value}>
                       0
                     </span>
                     {stat.suffix}
                   </span>
-                  <span className="text-[10px] text-[#E3DFD6] uppercase tracking-widest border-t border-transparent group-hover:border-[#D4A853]/50 pt-1 transition-all font-bold">
+                  <span className="text-[10px] text-[#E3DFD6] uppercase tracking-widest border-t border-transparent group-hover:border-[#FF4D00]/50 pt-1 transition-all font-bold">
                     {stat.label}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="hidden md:flex items-center gap-4 text-xs font-mono text-[#D4A853]">
-              <span className="w-2 h-2 rounded-none rotate-45 bg-[#D4A853] animate-pulse"></span>
+            <div className="hidden md:flex items-center gap-4 text-xs font-mono text-[#FF4D00]">
+              <span className="w-2 h-2 rounded-none rotate-45 bg-[#FF4D00] animate-pulse"></span>
               <span className="font-bold tracking-wider">LIVE PRODUCTION STATUS: ACTIVE</span>
             </div>
           </div>

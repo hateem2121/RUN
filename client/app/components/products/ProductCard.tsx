@@ -1,7 +1,8 @@
+import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import { Link } from "react-router";
 import { Card, CardContent, CardFooter, GlassCardDecorations } from "@/components/ui/card";
-import { useInquiryCart } from "@/contexts/InquiryCartContext";
+import { useInquiryCart } from "@/context/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { cn } from "@/lib/utils";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./ProductBadges";
@@ -21,6 +22,27 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const { addItem, isInCart } = useInquiryCart();
   const alreadyInCart = isInCart(product.id);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setIsIntersecting(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleRequestQuote = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -29,8 +51,9 @@ export const ProductCard = ({
 
   return (
     <Card
+      ref={cardRef}
       variant="glass-premium"
-      className="group overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl"
+      className="group overflow-hidden rounded-lg transition-all duration-500 hover:shadow-2xl hover:-translate-y-1"
       aria-label={product.name}
       data-testid={`product-card-${product.id}`}
     >
@@ -42,12 +65,16 @@ export const ProductCard = ({
             viewMode === "small" ? "aspect-3/4" : "aspect-4/3",
           )}
         >
-          <ProductImageCarousel
-            images={product.media.filter((m) => m.type === "image")}
-            primaryVideo={product.media.find((m) => m.type === "video") ?? null}
-            productName={product.name}
-            viewMode={viewMode}
-          />
+          {isIntersecting ? (
+            <ProductImageCarousel
+              images={product.media.filter((m) => m.type === "image")}
+              primaryVideo={product.media.find((m) => m.type === "video") ?? null}
+              productName={product.name}
+              viewMode={viewMode}
+            />
+          ) : (
+            <div className="h-full w-full animate-pulse bg-muted" />
+          )}
 
           {/* Certification badges */}
           <div

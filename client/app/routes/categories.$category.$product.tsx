@@ -4,8 +4,16 @@
  */
 
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
+
+// Register ScrollTrigger
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 import {
   createContext,
   useContext,
@@ -40,12 +48,23 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  await queryClient.prefetchQuery({
+  const productData = await queryClient.fetchQuery<any>({
     queryKey: ["/api/products/by-path", fullPath],
     queryFn: async () => {
       return apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
     },
   });
+
+  // Preload associated media assets to avoid N+1 loading on render
+  if (productData?.media?.length) {
+    const mediaIds = productData.media
+      .map((m: any) => m.id)
+      .filter((id: any): id is number => typeof id === "number");
+    if (mediaIds.length > 0) {
+      const { prefetchMediaBatch } = await import("@/lib/queryClient");
+      await prefetchMediaBatch(mediaIds);
+    }
+  }
 
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -173,7 +192,7 @@ function ProductSpecs({ specs }: ProductSpecsProps) {
   }
 
   return (
-    <div className="mt-12">
+    <div className="mt-12 product-section-reveal">
       <Typography.H3 className="mb-6 font-bold text-xl tracking-tight">
         Technical Specifications
       </Typography.H3>
@@ -247,13 +266,11 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
       <div className="mb-4 flex items-center justify-between">
         <span className="font-bold text-2xl tracking-tight">$249.00</span>
         {optimisticState.status === "added" && (
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+          <span
             className="flex items-center gap-1 font-medium text-green-600 text-sm"
           >
             <Check className="h-4 w-4" /> Added to Cart
-          </motion.span>
+          </span>
         )}
       </div>
 
@@ -286,6 +303,51 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
 // ProductData replaced by Zod inferred type ProductDetail
 
 function ProductDetailContent() {
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      // 1. Hero Reveal
+      gsap.from(".product-hero-reveal", {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        stagger: 0.1,
+        ease: "expo.out",
+        delay: 0.2,
+      });
+
+      // 2. Section Reveals with ScrollTrigger
+      const sections = gsap.utils.toArray<HTMLElement>(".product-section-reveal");
+      sections.forEach((section) => {
+        gsap.from(section, {
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      });
+
+      // 3. Parallax for Gallery
+      gsap.to(".parallax-gallery", {
+        y: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".parallax-gallery",
+          start: "top center",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    },
+    { scope: containerRef },
+  );
+
   const params = useParams();
   const categoryParam = params.category;
   const productParam = params.product;
@@ -352,7 +414,7 @@ function ProductDetailContent() {
       ];
 
   return (
-    <main id="main-content" className="min-h-screen bg-white pb-24">
+    <main ref={containerRef} id="main-content" className="min-h-screen bg-white pb-24 dark:bg-zinc-950">
       <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">
         {/* Breadcrumb */}
         <div className="mb-8">
@@ -361,23 +423,23 @@ function ProductDetailContent() {
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
           {/* Left: Native Scroll Snap Gallery */}
-          <div className="h-fit lg:sticky lg:top-32">
+          <div className="h-fit parallax-gallery lg:sticky lg:top-32">
             <Gallery media={galleryMedia} name={product.name} />
           </div>
 
           {/* Right: Product Info */}
           <div className="flex flex-col">
-            <div className="mb-2">
+            <div className="mb-2 product-hero-reveal">
               <span className="font-bold text-blue-600 text-xs uppercase tracking-wider">
                 {context?.category?.name || "Premium Collection"}
               </span>
             </div>
 
-            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl">
+            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl product-hero-reveal">
               {product.name}
             </Typography.H1>
 
-            <div className="mb-8 flex items-center gap-4 text-sm">
+            <div className="mb-8 flex items-center gap-4 text-sm product-hero-reveal">
               {product.sku && (
                 <span className="rounded bg-muted px-2 py-1 font-mono text-muted-foreground text-xs">
                   {product.sku}
@@ -390,14 +452,14 @@ function ProductDetailContent() {
               </div>
             </div>
 
-            <Typography.P className="mb-8 text-pretty text-lg text-muted-foreground leading-relaxed">
+            <Typography.P className="mb-8 text-pretty text-lg text-muted-foreground leading-relaxed product-hero-reveal">
               {product.description ||
                 product.shortDescription ||
                 "Engineered for peak performance, this product represents the pinnacle of our material science innovation. Designed for athletes who demand the absolute best."}
             </Typography.P>
 
             {/* Sizes (Mock) */}
-            <div className="mb-8">
+            <div className="mb-8 product-section-reveal">
               <div className="mb-3 flex items-center justify-between">
                 <label className="font-bold text-sm uppercase tracking-wider">Select Size</label>
                 <button className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground">
@@ -417,7 +479,7 @@ function ProductDetailContent() {
             </div>
 
             {/* Colors (Mock) */}
-            <div className="mb-10">
+            <div className="mb-10 product-section-reveal">
               <label className="mb-3 block font-bold text-sm uppercase tracking-wider">
                 Select Color
               </label>
@@ -438,7 +500,9 @@ function ProductDetailContent() {
             </div>
 
             {/* Action Buttons */}
-            <AddToCartSection product={product} />
+            <div className="product-section-reveal">
+              <AddToCartSection product={product} />
+            </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
               <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">

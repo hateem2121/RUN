@@ -65,7 +65,7 @@ import type {
   StorageChangeLog,
   UpsertUser,
   User,
-} from "../../shared/schema.js";
+} from "../../shared/index.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
   ProductDetail,

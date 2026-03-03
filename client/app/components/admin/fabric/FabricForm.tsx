@@ -1,4 +1,4 @@
-import type { Certificate, Fiber, MediaAsset } from "@shared/schema";
+import type { Certificate, Fiber, MediaAsset } from "@shared/index";
 import {
   Activity,
   ChevronDown,

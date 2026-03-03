@@ -4,8 +4,8 @@
  */
 
 import { eq } from "drizzle-orm";
-import type { UpsertUser, User } from "../../../../shared/schema.js";
-import { users } from "../../../../shared/schema.js";
+import type { UpsertUser, User } from "../../../../shared/index.js";
+import { users } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";

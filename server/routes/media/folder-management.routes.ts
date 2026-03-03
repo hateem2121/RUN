@@ -7,7 +7,7 @@ import { removeUndefined, validateIdParam } from "../../utils.js";
  */
 
 import { Router } from "express";
-import { type Folder, insertFolderSchema } from "../../../shared/schema.js";
+import { type Folder, insertFolderSchema } from "../../../shared/index.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";

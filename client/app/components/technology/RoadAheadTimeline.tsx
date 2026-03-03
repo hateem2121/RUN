@@ -1,215 +1,169 @@
-import { useGSAP } from "@gsap/react";
-import type { ResearchVM, RoadmapVM } from "@shared/viewmodels";
-import gsap from "gsap";
-import { Draggable } from "gsap/dist/Draggable";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { useMemo, useRef } from "react";
-import { Typography } from "@/components/ui/typography";
+import React from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
+import type { RoadmapVM, ResearchVM } from "@shared/viewmodels";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(Draggable, ScrollTrigger);
-}
+gsap.registerPlugin(ScrollTrigger);
 
 interface RoadAheadTimelineProps {
   roadmap: RoadmapVM[];
   research: ResearchVM[];
+  className?: string;
 }
 
 type TimelineNode = {
-  id: string;
-  type: "milestone" | "research";
+  id: number;
   title: string;
   description: string;
-  dateStr: string;
-  sortValue: string;
-  isCurrent: boolean;
-  researchArea?: string | undefined;
-  teamCount?: number | undefined;
+  timeline: string;
+  type: "roadmap" | "research";
   status?: string | undefined;
+  isCurrent: boolean;
 };
 
-export function RoadAheadTimeline({ roadmap, research }: RoadAheadTimelineProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const dragTargetRef = useRef<HTMLDivElement>(null);
+export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTimelineProps) {
+  const sectionRef = React.useRef<HTMLElement>(null);
 
-  const nodes: TimelineNode[] = useMemo(() => {
-    const combined: TimelineNode[] = [
-      ...roadmap.map((r) => ({
-        id: `rm-${r.id}`,
-        type: "milestone" as const,
-        title: r.name,
-        description: r.description,
-        dateStr: r.timeline,
-        sortValue: r.timeline || "9999",
-        isCurrent: r.timeline ? r.timeline.includes("2024") || r.timeline.includes("2025") : false,
-        status: "Planned",
-      })),
-      ...research.map((r) => ({
-        id: `rs-${r.id}`,
-        type: "research" as const,
-        title: r.name,
-        description: r.description,
-        dateStr: r.startDate
-          ? new Date(r.startDate).toLocaleDateString(undefined, { year: "numeric", month: "short" })
-          : "Ongoing",
-        sortValue: r.startDate || "9999",
-        isCurrent: r.status === "Ongoing",
-        researchArea: r.researchArea,
-        status: r.status,
-        teamCount: r.teamMembers?.length || 0,
-      })),
-    ];
+  // Merge and sort timeline nodes
+  const nodes: TimelineNode[] = React.useMemo(() => {
+    const roadmapNodes: TimelineNode[] = roadmap.map((r, i) => ({
+      id: r.id,
+      title: r.name,
+      description: r.description,
+      timeline: r.timeline || "TBD",
+      type: "roadmap" as const,
+      isCurrent: i === 0,
+    }));
 
-    return combined.sort((a, b) => a.sortValue.localeCompare(b.sortValue));
+    const researchNodes: TimelineNode[] = research.map((r) => ({
+      id: r.id,
+      title: r.name,
+      description: r.description,
+      timeline: r.status || "Ongoing",
+      type: "research" as const,
+      status: r.status,
+      isCurrent: false,
+    }));
+
+    return [...roadmapNodes, ...researchNodes].slice(0, 4);
   }, [roadmap, research]);
 
-  useGSAP(
-    () => {
-      if (dragTargetRef.current && containerRef.current) {
-        Draggable.create(dragTargetRef.current, {
-          type: "x",
-          bounds: containerRef.current,
-          inertia: true,
-          edgeResistance: 0.65,
-        });
+  // GSAP scroll-triggered stagger animation
+  React.useEffect(() => {
+    if (!sectionRef.current) return;
 
-        const cards = gsap.utils.toArray<HTMLElement>(".timeline-node-card");
-        if (cards.length > 0) {
-          gsap.fromTo(
-            cards,
-            { opacity: 0, y: (_, el) => (el.classList.contains("node-above") ? 20 : -20) },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              stagger: 0.1,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top 75%",
-              },
-            },
-          );
-        }
-      }
-    },
-    { scope: containerRef, dependencies: [nodes] },
-  );
+    const ctx = gsap.context(() => {
+      gsap.from(".timeline-node", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: "power2.out",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [nodes]);
+
+  if (nodes.length === 0) return null;
+
 
   return (
-    <section className="py-24 overflow-hidden relative min-h-[600px]" ref={containerRef}>
-      <div className="max-w-7xl mx-auto px-6 mb-16 text-center relative z-10">
-        <Typography.H2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 uppercase tracking-tight mb-4">
-          The Road <span className="text-[#00D4FF]">Ahead</span>
-        </Typography.H2>
-        <div className="flex items-center justify-center gap-2 text-slate-400 text-xs max-w-xl mx-auto uppercase tracking-widest font-mono">
-          <span className="material-symbols-outlined text-sm animate-pulse">swipe</span>
-          Drag to explore timeline
-        </div>
+    <section ref={sectionRef} className={cn("py-32 px-6 max-w-7xl mx-auto relative overflow-hidden", className)}>
+      {/* Vertical HUD text — left side */}
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden md:block">
+        <span className="micro-copy opacity-20 dark:text-[#00D4FF] -rotate-90 origin-left whitespace-nowrap block">
+          TIMELINE.JS_SYSTEM_V.03
+        </span>
       </div>
 
+      {/* Centered Section Header — Stitch style */}
+      <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase mb-24 text-center tracking-tight">
+        The Road <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]">Ahead</span>
+      </h2>
 
-      <div className="relative h-[480px] w-full cursor-grab active:cursor-grabbing pb-8 pr-20 overflow-visible z-10">
-        <div
-          ref={dragTargetRef}
-          className="absolute inset-y-0 left-10 md:left-[10vw] flex items-center min-w-[200vw] sm:min-w-[150vw]"
-        >
-          {/* Continuous cyan timeline spine */}
-          <div className="absolute left-0 right-0 h-[1px] bg-[#00D4FF]/20 z-0 shadow-[0_0_10px_rgba(0,212,255,0.1)] pointer-events-none"></div>
+      {/* 4-column grid with connecting line */}
+      <div className="relative">
+        {/* Horizontal connecting line — visible on md+ at center of circles */}
+        <div className="absolute top-[32px] left-0 right-0 h-px bg-slate-200 dark:bg-white/[0.08] hidden md:block"></div>
 
-
-          {nodes.map((node, index) => {
-            const isAbove = index % 2 === 0;
-            const isCurrent = node.isCurrent;
-
-            return (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          {nodes.map((node, index) => (
+            <div
+              key={node.id}
+              className={cn(
+                "timeline-node relative flex flex-col items-center group",
+                index === 1 && "opacity-80",
+                index >= 2 && "opacity-60",
+                "hover:!opacity-100",
+              )}
+            >
+              {/* Medium circle node — Stitch w-12 h-12 */}
               <div
-                key={node.id}
-                className="relative z-10 w-[300px] md:w-[380px] flex-shrink-0 flex items-center justify-center -ml-10"
+                className={cn(
+                  "w-12 h-12 rounded-full border flex items-center justify-center z-10 mb-8 transition-all shadow-sm",
+                  node.isCurrent
+                    ? "bg-white dark:bg-[#0A0A0A] border-[#0047AB] dark:border-[#00D4FF] timeline-pulse shadow-xl dark:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+                    : "bg-slate-50 dark:bg-white/[0.04] backdrop-blur-xl border-slate-200 dark:border-white/[0.08] group-hover:border-[#0047AB] dark:group-hover:border-[#00D4FF] dark:group-hover:bg-[#0A0A0A] dark:group-hover:shadow-[0_0_15px_rgba(0,212,255,0.2)]",
+                )}
               >
-                {/* Visual Dot on line */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                  <div
-                    className={cn(
-                      "w-3 h-3 rounded-full border-2 transition-all duration-300",
-                      isCurrent
-                        ? "bg-[#00D4FF] border-[#00D4FF] shadow-[0_0_15px_rgba(0,212,255,0.4)]"
-                        : "bg-white border-[#00D4FF] shadow-[0_0_5px_rgba(0,212,255,0.1)]",
-                    )}
-                  />
-                </div>
-
-
-                {/* Floating Card */}
                 <div
                   className={cn(
-                    "timeline-node-card node-above absolute left-1/2 w-[260px] md:w-[320px] -translate-x-1/2",
-                    isAbove ? "bottom-[40px] node-above" : "top-[40px] !node-above", // Keep class for GSAP select, but adjust manually below
-                    "bg-white/60 backdrop-blur-xl border p-6 rounded-xl shadow-lg transition-all duration-500 hover:border-[#00D4FF]/30 hover:shadow-cyan-100/50 hover:shadow-xl",
-                    isCurrent ? "border-[#00D4FF]/30" : "border-black/5",
+                    "w-3 h-3 rounded-full transition-colors",
+                    node.isCurrent
+                      ? "bg-[#0047AB] dark:bg-[#00D4FF] dark:shadow-[0_0_8px_#00D4FF]"
+                      : "bg-slate-300 dark:bg-slate-600 group-hover:bg-[#0047AB] dark:group-hover:bg-[#00D4FF] dark:group-hover:shadow-[0_0_8px_#00D4FF]",
                   )}
-                  style={{ top: isAbove ? "auto" : "40px", bottom: isAbove ? "40px" : "auto" }}
-                >
-
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">
-                      {node.type === "research" ? "RESEARCH" : "ROADMAP"}
-                    </span>
-                    <span className="text-[10px] font-mono text-[#0088AA] bg-[#00D4FF]/10 px-2 py-0.5 rounded border border-[#00D4FF]/20">
-                      {node.dateStr}
-                    </span>
-                  </div>
-
-                  <Typography.H4 className="text-lg font-bold text-slate-900 uppercase font-display tracking-tight mb-2">
-                    {node.title}
-                  </Typography.H4>
-
-                  <Typography.P className="text-xs text-slate-600 leading-relaxed font-light mb-4 line-clamp-3">
-                    {node.description}
-                  </Typography.P>
-
-
-                  <div className="flex flex-wrap gap-2 mt-auto border-t border-black/5 pt-4">
-                    {node.type === "research" ? (
-                      <>
-                        <span className="text-[10px] uppercase font-mono px-2 py-1 bg-slate-50 border border-slate-200 text-slate-500 rounded">
-                          {node.researchArea || "Core Tech"}
-                        </span>
-                        {(node.teamCount ?? 0) > 0 && (
-                          <span className="text-[10px] uppercase font-mono px-2 py-1 bg-[#00D4FF]/5 border border-[#00D4FF]/10 text-[#0088AA] rounded flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[10px]">group</span>
-                            {node.teamCount} STAFF
-                          </span>
-                        )}
-                        <span className="text-[10px] uppercase font-mono px-2 py-1 text-slate-700 border border-slate-200 rounded">
-                          {node.status}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-[10px] uppercase font-mono px-2 py-1 bg-slate-50 border border-slate-200 text-slate-500 rounded">
-                        PHASE: {node.status || "PLANNED"}
-                      </span>
-                    )}
-                  </div>
-
-                </div>
-
-                {/* Connecting stem line */}
-                <div
-                  className={cn(
-                    "absolute left-1/2 w-[1px] bg-[#00D4FF]/30 -translate-x-1/2 pointer-events-none z-10",
-                  )}
-                  style={{
-                    height: "24px",
-                    top: isAbove ? "auto" : "10px",
-                    bottom: isAbove ? "10px" : "auto",
-                    transform: isAbove ? "translateY(100%)" : "translateY(-100%)",
-                  }}
-                />
+                ></div>
               </div>
-            );
-          })}
+
+              {/* Card content */}
+              <div
+                className={cn(
+                  "lab-card p-8 w-full border-l-0 group-hover:opacity-100 transition-all rounded-xl dark:backdrop-blur-xl",
+                  node.isCurrent
+                    ? "border-t-2 border-t-[#0047AB] dark:border-t-[#00D4FF] dark:bg-white/[0.04] border border-transparent dark:border-white/[0.08]"
+                    : "border-t-2 border-t-slate-100 dark:border-t-white/[0.08] dark:bg-white/[0.02] border border-transparent dark:border-white/[0.08]",
+                )}
+              >
+                {/* Current milestone badge */}
+                {node.isCurrent && (
+                  <span className="tech-badge !bg-[#0047AB] dark:!bg-[#00D4FF] !text-white dark:!text-black !border-[#0047AB] dark:!border-[#00D4FF] mb-4 block w-fit dark:shadow-[0_0_10px_rgba(0,212,255,0.4)]">
+                    Current Milestone
+                  </span>
+                )}
+
+                {/* Timeline tag */}
+                <span className="text-[10px] text-slate-400 font-mono mb-2 block font-bold">
+                  {node.timeline}
+                </span>
+
+                <h4 className="text-black dark:text-white font-bold uppercase text-lg mb-3 font-neue-stance">
+                  {node.title}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-[#E3DFD6] font-light leading-relaxed font-helvetica">
+                  {node.description}
+                </p>
+
+                {/* Status indicator for research */}
+                {node.type === "research" && node.status && (
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center gap-2">
+                    <div className={cn(
+                      "w-1.5 h-1.5 rounded-full",
+                      node.status === "Ongoing" ? "bg-amber-400" : "bg-green-500"
+                    )}></div>
+                    <span className="text-[9px] font-mono text-slate-400 uppercase">{node.status}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

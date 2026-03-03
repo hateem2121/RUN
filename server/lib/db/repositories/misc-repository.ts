@@ -32,7 +32,7 @@ import {
   newsletterSubscribers,
   type SizeChart,
   sizeCharts,
-} from "../../../../shared/schema.js";
+} from "../../../../shared/index.js";
 import { type DbClient, db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";

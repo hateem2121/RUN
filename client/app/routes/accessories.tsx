@@ -1,4 +1,4 @@
-import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/schema";
+import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Package, Settings, Wrench } from "lucide-react";

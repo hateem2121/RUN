@@ -5,7 +5,7 @@
 
 // import { Filter } from "lucide-react";
 // import { cn } from "@/lib/utils";
-import type { Category, Product } from "@shared/schema";
+import type { Category, Product } from "@shared/index";
 
 interface CategoryContextSidebarProps {
   currentCategory: Category | null;

@@ -9,7 +9,7 @@ import { removeUndefined } from "../../utils.js";
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import { insertProductSchema } from "../../../shared/schema.js";
+import { insertProductSchema } from "../../../shared/index.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { productRepository } from "../../lib/db/repositories/index.js";

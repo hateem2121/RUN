@@ -83,7 +83,7 @@ export const CustomInput = forwardRef((props, ref) => {
 
 ### 4.1. Schema Authority
 
-- **Source of Truth**: `shared/schema.ts`
+- **Source of Truth**: `shared/schemas.ts`
 - **Mechanism**: Drizzle ORM defines tables and Zod schemas in one place.
 - **Migration**: Managed by Drizzle Kit (`npm run db:push` or `migrate`).
 

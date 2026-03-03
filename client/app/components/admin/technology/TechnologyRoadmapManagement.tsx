@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Calendar,

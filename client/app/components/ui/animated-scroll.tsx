@@ -1,4 +1,4 @@
-import type { AboutSection, MediaAsset } from "@shared/schema";
+import type { AboutSection, MediaAsset } from "@shared/index";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 

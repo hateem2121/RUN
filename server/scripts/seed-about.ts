@@ -1,4 +1,4 @@
-import { aboutSections, aboutTeamMessages } from "../../shared/schema/content/about.js";
+import { aboutSections, aboutTeamMessages } from "../../shared/schemas/content/about.js";
 import { db } from "../db.js";
 
 async function seedAboutData() {

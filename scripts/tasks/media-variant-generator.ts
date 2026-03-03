@@ -8,7 +8,7 @@ import { generateResponsiveVariants } from "../../server/image-processor.js";
 import { logger } from "../../server/lib/monitoring/logger.js";
 import { appStorageService } from "../../server/lib/storage/app-service.js";
 import { getStorage } from "../../server/lib/storage-singleton.js";
-import type { MediaAsset } from "../../shared/schema.js";
+import type { MediaAsset } from "../../shared/schemas.js";
 
 async function runOptimization() {
   logger.info("🚀 Starting Media Library Optimization...");

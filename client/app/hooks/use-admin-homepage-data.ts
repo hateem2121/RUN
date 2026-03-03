@@ -4,7 +4,7 @@ import type {
   HomepageProcessCard,
   HomepageSection,
   HomepageSlogan,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 
 interface HomepageBatchResponse {

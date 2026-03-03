@@ -1,4 +1,4 @@
-import type { Category } from "@shared/schema";
+import type { Category } from "@shared/index";
 import { Package } from "lucide-react";
 
 interface CategoryDragOverlayProps {

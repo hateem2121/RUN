@@ -43,141 +43,34 @@ All work MUST follow the B.L.A.S.T. protocol as defined in `gemini.md`:
 - **Language**: TypeScript (Strict Mode).
 - **Linter/Formatter**: Biome.
 
-## 3. Coding Standards
+## 3. Technical Implementation & Granular Skills
 
-### TypeScript
-- **Strict Mode**: Enabled in `tsconfig.base.json`.
-- **Imports**: Use `import type` for type-only imports associated with `verbatimModuleSyntax`.
-- **Config**: 
-    - `noUncheckedIndexedAccess`: true (Handle undefined array/object access).
-    - `noImplicitOverride`: true.
-- **No `any`**: Strictly forbidden. Use `unknown` or specific types.
-- **Return Types**: Always specify explicit return types for functions.
-- **Async/Await**: Always use `async/await` for asynchronous operations.
+This project utilizes a **Modular Skill Architecture**. While these standards provide the framework, specific technical implementation details are delegated to granular skills. 
 
-### React (Client)
-- **Named Exports**: Use named exports for all components.
-- **Functional Components**: Functional components only. No class components.
-- **Radix UI**: Use Radix primitives for accessible interactive components.
-- **Icons**: Use `lucide-react`.
-- **Props**: Define interfaces for props. Use `React.ComponentProps<"element">` for extending native elements.
-- **Raw Ref Prop**: Use the raw `ref` prop (React 19 pattern). No `forwardRef`.
-- **Hooks**: Follow proper hooks usage with cancellation logic in `useEffect`.
+### Granular Technical Skills (Tier 1 Enforcement)
+Refer to the following skills in `.agent/skills/` for specific patterns:
+- **`react-19-optimistic-ui`**: State management, hooks, and refs.
+- **`tailwind-v4-oxide-engine`**: Styling, @theme, and utilities.
+- **`neon-drizzle-edge-sql`**: DB drivers, pooling, and caching.
+- **`express-5-async-patterns`**: Route handling and error propagation.
+- **`gsap-3-13-react-integration`**: Complex animations and cleanup.
+- **`tech-integrity-validator`**: Build-time verification and staging.
 
-#### Component Template (UI)
-```tsx
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
-import { cn } from "@/lib/utils";
+### High-Level Architectural Patterns
 
-const componentVariants = cva(
-  "base-classes-here",
-  {
-    variants: {
-      variant: {
-        default: "variant-classes",
-        outline: "outline-classes",
-      },
-      size: {
-        default: "h-10 px-4",
-        sm: "h-9 px-3",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-);
-
-export interface ComponentProps
-  extends React.ComponentProps<"button">,
-    VariantProps<typeof componentVariants> {
-  asChild?: boolean;
-  ref?: React.Ref<HTMLButtonElement>;
-}
-
-// React 19: ref is a standard prop, no forwardRef needed
-const Component = ({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ref,
-  ...props
-}: ComponentProps) => {
-  const Comp = asChild ? Slot : "button";
-  return (
-    <Comp
-      className={cn(componentVariants({ variant, size, className }))}
-      ref={ref}
-      {...props}
-    />
-  );
-};
-
-export { Component, componentVariants };
-```
-
-
-### 5 Dimensions of Design (The WOW Factor)
-
+#### 5 Dimensions of Design (The WOW Factor)
 Every UI component MUST be evaluated against these dimensions:
-
-1. **Skeleton (Layout)**: Use Bento Grids or Industry-Standard layouts.
+1. **Skeleton (Layout)**: Use Bento Grids or Industry-Standard patterns.
 2. **Skin (Aesthetic)**: Glassmorphism (`glass-premium`), Aurora/Mesh Gradients.
 3. **Palette (Theme)**: Trust-based colors, Slate #0a0a0a dark mode.
 4. **Voice (Typography)**: Inter/JetBrains Mono pairing.
 5. **Soul (Motion)**: 60fps micro-animations, Border Beams, Scroll Reveal.
 
-### Tailwind CSS V4
-- **Directives**: Use `@utility` for custom utility classes in CSS files.
-- **Variables**: Use native CSS variables (e.g., `var(--color-bg)`) for theming.
-- **Imports**: standard `@import "tailwindcss";`.
-
-#### CSS Example
-```css
-@import "tailwindcss";
-
-@utility z-dock {
-  z-index: var(--z-index-dock, 300);
-}
-
-@utility text-subtle {
-  color: var(--color-text-subtle);
-}
-```
-
-### Express (Server)
-- **Routing**: Use `Router()` modules.
-- **Async/Await**: Use `async` handlers. Express 5 handles promise rejections automatically.
-- **Validation**: Always use Zod for request body and parameter validation.
-- **Services**: Business logic and DB operations MUST go in `services/`, not handlers/routes.
-- **Thin Routes**: Routes should be thin, focusing on handshake and response.
-- **Error Handling**: Use custom error classes (e.g., `ProductNotFoundError`).
-- **Middleware**: Use middleware for cross-cutting concerns (Auth, Logging).
-
-#### Route Template
-```typescript
-import { Router, type Request, type Response } from "express";
-import { someService } from "../services/some-service.js";
-
-const router = Router();
-
-router.get("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const data = await someService.getById(id);
-  
-  if (!data) {
-    return res.status(404).json({ error: "Not found" });
-  }
-  
-  return res.json(data);
-});
-
-export default router;
-```
+#### Monorepo Boundaries
+- **Client depends on Shared**.
+- **Server depends on Shared**.
+- **Client MUST NEVER depend on Server**.
+- All shared data contracts (Zod, Types, Tables) reside in `shared/`.
 
 ## 4. 3D & Visualization Patterns
 

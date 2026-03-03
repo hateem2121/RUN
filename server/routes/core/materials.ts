@@ -8,7 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { insertFiberSchema } from "../../../shared/schema.js";
+import { insertFiberSchema } from "../../../shared/index.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";

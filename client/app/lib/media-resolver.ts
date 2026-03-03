@@ -3,7 +3,7 @@
  * Handles robust media ID resolution and provides graceful fallbacks
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 
 // Development-only logging
 const errorLog = (_message: string, ..._args: unknown[]) => {

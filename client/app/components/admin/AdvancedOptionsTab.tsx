@@ -4,7 +4,7 @@
  */
 
 // Import schema types
-import type { Accessory, Certificate } from "@shared/schema";
+import type { Accessory, Certificate } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Info, Plus, Search, X } from "lucide-react";
 import type React from "react";

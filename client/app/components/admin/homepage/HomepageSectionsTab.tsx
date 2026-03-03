@@ -1,4 +1,4 @@
-import type { HomepageSection } from "@shared/schema";
+import type { HomepageSection } from "@shared/index";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

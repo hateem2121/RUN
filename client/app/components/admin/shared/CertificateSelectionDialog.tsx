@@ -5,7 +5,7 @@
  * Follows the same pattern as StandardMediaSelectionDialog.
  */
 
-import type { Certificate } from "@shared/schema";
+import type { Certificate } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Award, CheckCircle2, Search } from "lucide-react";
 import { useMemo, useState } from "react";

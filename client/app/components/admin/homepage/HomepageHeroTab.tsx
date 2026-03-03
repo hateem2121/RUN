@@ -1,4 +1,4 @@
-import type { HomepageHero, InsertHomepageHero, MediaAsset } from "@shared/schema";
+import type { HomepageHero, InsertHomepageHero, MediaAsset } from "@shared/index";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";

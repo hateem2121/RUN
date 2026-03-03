@@ -1,4 +1,4 @@
-import type { Category, MediaAsset, Product } from "@shared/schema";
+import type { Category, MediaAsset, Product } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { ChevronRight, Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
 import { useState } from "react";

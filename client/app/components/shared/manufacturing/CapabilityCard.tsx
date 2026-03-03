@@ -1,4 +1,4 @@
-import type { ManufacturingCapability, MediaAsset } from "@shared/schema";
+import type { ManufacturingCapability, MediaAsset } from "@shared/index";
 import { Settings } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { OptimizedImage } from "@/components/ui/optimized-image";

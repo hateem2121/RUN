@@ -19,7 +19,7 @@ import type {
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
-} from "@shared/schema";
+} from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
@@ -282,7 +282,7 @@ function ManufacturingInner() {
         {/* Brand Marquee */}
         <MarqueeStrip 
           text="CUTTING • ASSEMBLY • FINISHING • QUALITY • INNOVATION •"
-          accentColor="#D4A853"
+          accentColor="#FF4D00"
           speed={40}
         />
 

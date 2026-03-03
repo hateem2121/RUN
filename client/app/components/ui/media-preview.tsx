@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { Box, FileX, Image as ImageIcon, Video } from "lucide-react";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";

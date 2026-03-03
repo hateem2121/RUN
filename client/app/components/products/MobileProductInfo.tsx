@@ -1,4 +1,4 @@
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { Info, Package, Ruler, Shield, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

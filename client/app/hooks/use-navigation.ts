@@ -1,4 +1,4 @@
-import type { MediaAsset, NavigationItem } from "@shared/schema";
+import type { MediaAsset, NavigationItem } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import type { StaggeredMenuItem } from "@/components/navigation/staggered-menu";
 import { MediaQueryKeys } from "@/lib/media-query-keys";

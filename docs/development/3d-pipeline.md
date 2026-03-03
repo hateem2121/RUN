@@ -32,7 +32,7 @@ We do **not** use the raw `<model-viewer>` element directly. Always use the `Uni
 
 ```tsx
 import UnifiedModelViewer from "@/components/ui/UnifiedModelViewer";
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/schemas";
 
 export function ProductShowcase({ asset }: { asset: MediaAsset }) {
   return (

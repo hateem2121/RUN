@@ -4,7 +4,7 @@
  */
 
 import { type ZodIssue, z } from "zod";
-import type { MediaAsset } from "../shared/schema.js";
+import type { MediaAsset } from "../shared/index.js";
 import { parseApiDate } from "./date-helpers.js";
 import type { SchemaValidationResult } from "./types/validation.js";
 

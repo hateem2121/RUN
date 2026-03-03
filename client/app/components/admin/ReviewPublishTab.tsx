@@ -1,4 +1,4 @@
-import type { Accessory, Category, Certificate, Fabric, Product, SizeChart } from "@shared/schema";
+import type { Accessory, Category, Certificate, Fabric, Product, SizeChart } from "@shared/index";
 import {
   AlertCircle,
   AlertTriangle,

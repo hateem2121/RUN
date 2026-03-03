@@ -11,7 +11,7 @@ import { drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
 import ws from "ws";
-import * as schema from "../shared/schema.js";
+import * as schema from "../shared/index.js";
 import { database } from "./config/environment.js";
 import { getConfig } from "./config/production.js";
 import {

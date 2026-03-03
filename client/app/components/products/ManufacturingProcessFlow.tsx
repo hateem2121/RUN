@@ -1,4 +1,4 @@
-import type { ManufacturingProcess } from "@shared/schema";
+import type { ManufacturingProcess } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import gsap from "gsap";

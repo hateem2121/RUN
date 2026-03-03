@@ -6,7 +6,7 @@ import type {
   SustainabilityGoal,
   SustainabilityInitiative,
   SustainabilityMetric,
-} from "@shared/schema";
+} from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 

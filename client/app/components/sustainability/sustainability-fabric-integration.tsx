@@ -1,4 +1,4 @@
-import type { Fabric } from "@shared/schema";
+import type { Fabric } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, Award, BarChart3, Leaf, TrendingUp } from "lucide-react";

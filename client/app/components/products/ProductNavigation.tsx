@@ -3,7 +3,7 @@
  * Previous/Next product navigation within category
  */
 
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";

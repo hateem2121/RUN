@@ -4,9 +4,9 @@
  * Includes visual swatches for materials, colors, and variations
  */
 
-import type { Certificate } from "@shared/schema/catalog";
-import type { Fabric } from "@shared/schema/materials";
-import type { ProductDetail } from "@shared/schema/products";
+import type { Certificate } from "@shared/schemas/catalog";
+import type { Fabric } from "@shared/schemas/materials";
+import type { ProductDetail } from "@shared/schemas/products";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, ChevronRight, Info, Layers, Package2, Palette, Shield } from "lucide-react";
 import { useState } from "react";

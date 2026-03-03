@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { useInquiryCart } from "@/contexts/InquiryCartContext";
+import { useInquiryCart } from "@/context/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./ProductBadges";
 

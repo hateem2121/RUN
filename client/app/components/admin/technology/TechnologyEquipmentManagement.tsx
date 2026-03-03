@@ -28,7 +28,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { MediaAsset, TechnologyEquipment } from "@shared/schema";
+import type { MediaAsset, TechnologyEquipment } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Plus, X } from "lucide-react";
 import { useState } from "react";

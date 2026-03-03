@@ -1,4 +1,4 @@
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Archive, CheckSquare, Download, Edit3, Square, Star, Trash2 } from "lucide-react";
 import { useState } from "react";

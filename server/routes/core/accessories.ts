@@ -8,7 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { insertAccessorySchema } from "../../../shared/schema.js";
+import { insertAccessorySchema } from "../../../shared/index.js";
 import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";

@@ -1,4 +1,4 @@
-import type { SustainabilityMetric } from "@shared/schema";
+import type { SustainabilityMetric } from "@shared/index";
 import { motion } from "framer-motion";
 import { memo } from "react";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";

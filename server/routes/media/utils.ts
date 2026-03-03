@@ -9,7 +9,7 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import ffprobe from "ffprobe-static";
-import type { InsertMediaAsset, MediaAsset } from "../../../shared/schema.js";
+import type { InsertMediaAsset, MediaAsset } from "../../../shared/index.js";
 import { isImageFile, processImage } from "../../image-processor.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";

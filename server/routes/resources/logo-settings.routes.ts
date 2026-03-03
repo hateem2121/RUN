@@ -4,7 +4,7 @@
  */
 
 import express from "express";
-import { insertLogoAnimationSettingsSchema } from "../../../shared/schema.js";
+import { insertLogoAnimationSettingsSchema } from "../../../shared/index.js";
 import { safeQuery } from "../../db.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";

@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { MediaAsset, NavigationItem } from "@shared/schema";
+import type { MediaAsset, NavigationItem } from "@shared/index";
 import { Edit, GripVertical, Trash2 } from "lucide-react";
 import { memo } from "react";
 import { NavigationIcon } from "@/components/navigation/navigation-icon";

@@ -5,6 +5,7 @@
 @import "./styles/animations.css";
 @import "./styles/manufacturing-utilities.css";
 @import "./components/ui/map/map-styles.css";
+@import "./styles/sustainability-utilities.css";
 
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
@@ -560,6 +561,410 @@
   Defines the actual values for the theme, supporting dark mode by default.
 */
 /* Root Variables moved to styles/theme.css */
+
+/* =========================================
+   Technology Page: Stitch Design System
+   Light Mode: Cobalt #0047AB | Dark Mode: Cyan #00D4FF
+   ========================================= */
+
+@layer components {
+  /* ── Glass Panel — frosted surface card ── */
+  .technology-page .glass-panel {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid white;
+    position: relative;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      0 4px 6px -1px rgba(0, 0, 0, 0.02),
+      0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  }
+  .dark .technology-page .glass-panel,
+  .technology-page.dark .glass-panel {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.05),
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ── Lab Card — primary interactive card ── */
+  .technology-page .lab-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid white;
+    position: relative;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      0 4px 6px -1px rgba(0, 0, 0, 0.02),
+      0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border-left: 2px solid #0047AB;
+  }
+  .dark .technology-page .lab-card,
+  .technology-page.dark .lab-card {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(0, 212, 255, 0.5);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.05),
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .technology-page .lab-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 71, 171, 0.1),
+      0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    border-left-color: #2E74D9;
+  }
+  .dark .technology-page .lab-card:hover,
+  .technology-page.dark .lab-card:hover {
+    border-left-color: #00D4FF;
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 212, 255, 0.1),
+      0 20px 25px -5px rgba(0, 0, 0, 0.5),
+      0 0 10px rgba(0, 212, 255, 0.3),
+      0 0 20px rgba(0, 212, 255, 0.1);
+  }
+
+  /* ── Scan Line — animated horizontal scan on hover ── */
+  .technology-page .scan-line {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 71, 171, 0.03) 50%, transparent 100%);
+    transform: translateY(-100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .dark .technology-page .scan-line,
+  .technology-page.dark .scan-line {
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
+  }
+
+  .technology-page .lab-card:hover .scan-line {
+    animation: tech-scan 2s linear infinite;
+  }
+
+  /* ── Dashboard Panel — sidebar panels ── */
+  .technology-page .dashboard-panel {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    box-shadow:
+      inset 1px 1px 0px rgba(255, 255, 255, 0.9),
+      inset -1px -1px 0px rgba(200, 200, 200, 0.2),
+      0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+  }
+  .dark .technology-page .dashboard-panel,
+  .technology-page.dark .dashboard-panel {
+    background-color: #111111;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+      inset -1px -1px 0px rgba(0, 0, 0, 0.5),
+      0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ── Control Button — layer selection buttons ── */
+  .technology-page .control-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dark .technology-page .control-btn,
+  .technology-page.dark .control-btn {
+    border-color: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+  }
+
+  .technology-page .control-btn:hover {
+    border-color: #0047AB;
+    background-color: #f8fafc;
+    color: #0047AB;
+  }
+  .dark .technology-page .control-btn:hover,
+  .technology-page.dark .control-btn:hover {
+    border-color: rgba(0, 212, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #00D4FF;
+  }
+
+  .technology-page .control-btn.active {
+    border-color: #0047AB;
+    background-color: rgba(0, 71, 171, 0.05);
+    color: #0047AB;
+    box-shadow: inset 2px 0 0 0 #0047AB;
+  }
+  .dark .technology-page .control-btn.active,
+  .technology-page.dark .control-btn.active {
+    border-color: #00D4FF;
+    background-color: rgba(0, 212, 255, 0.1);
+    color: #00D4FF;
+    box-shadow: inset 2px 0 0 0 #00D4FF;
+  }
+}
+
+/* Tech Badge — small monospace category label */
+@utility tech-badge {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid rgba(0, 71, 171, 0.2);
+  background-color: rgba(0, 71, 171, 0.05);
+  font-size: 9px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #0047AB;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 2px;
+}
+
+.dark .technology-page .tech-badge,
+.technology-page.dark .tech-badge {
+  border-color: rgba(0, 212, 255, 0.3);
+  background-color: rgba(0, 212, 255, 0.1);
+  color: #00D4FF;
+}
+
+/* Micro Copy — HUD-style small monospace text */
+@utility micro-copy {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.dark .technology-page .micro-copy,
+.technology-page.dark .micro-copy {
+  color: #64748b;
+}
+
+/* Arctic Grid Background (Light Mode) */
+@utility bg-grid-arctic {
+  background-size: 30px 30px;
+  background-image: linear-gradient(to right, rgba(0, 71, 171, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 71, 171, 0.03) 1px, transparent 1px);
+}
+
+/* Tech Grid Background (Dark Mode) — radial dots */
+@utility bg-grid-tech {
+  background-size: 30px 30px;
+  background-image: radial-gradient(circle, rgba(0, 212, 255, 0.08) 1px, transparent 1px);
+}
+
+/* Neon Glow Shadow (Dark Mode) */
+@utility shadow-neon-glow {
+  box-shadow:
+    0 0 10px rgba(0, 212, 255, 0.3),
+    0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* Technology Keyframes */
+@keyframes tech-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes tech-timeline-pulse-light {
+  0% { box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(0, 71, 171, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 71, 171, 0); }
+}
+
+@keyframes tech-timeline-pulse-dark {
+  0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(0, 212, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+}
+
+@keyframes tech-typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Timeline Pulse — pulsing ring on current milestone node */
+@utility timeline-pulse {
+  box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.4);
+  animation: tech-timeline-pulse-light 2.5s infinite;
+}
+
+.dark .technology-page .timeline-pulse,
+.technology-page.dark .timeline-pulse {
+  box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
+  animation: tech-timeline-pulse-dark 2.5s infinite;
+}
+
+/* Typewriter Text — animated text reveal */
+@utility typewriter-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #0047AB;
+  animation: tech-typewriter 3s steps(25, end) infinite alternate;
+  width: fit-content;
+}
+
+.dark .technology-page .typewriter-text,
+.technology-page.dark .typewriter-text {
+  border-right-color: #00D4FF;
+}
+
+/* Emboss Shadows for Dashboard */
+@utility shadow-emboss {
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.9),
+    inset -1px -1px 0px rgba(200, 200, 200, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@utility shadow-emboss-deep {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.8);
+}
+
+@utility shadow-inner-glow {
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.5),
+    0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.dark .technology-page .shadow-inner-glow,
+.technology-page.dark .shadow-inner-glow {
+  box-shadow:
+    inset 0 0 20px rgba(0, 212, 255, 0.1),
+    0 0 15px rgba(0, 212, 255, 0.05);
+}
+
+.dark .technology-page .shadow-emboss,
+.technology-page.dark .shadow-emboss {
+  box-shadow:
+    inset 1px 1px 0px rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark .technology-page .shadow-emboss-deep,
+.technology-page.dark .shadow-emboss-deep {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.03);
+}
+
+
+/* =========================================
+   Sustainability Page: Stitch Design System
+   DARK:  Primary #00C97B (emerald), bg #0A0A0A
+   LIGHT: Primary #1A4331 (forest green), bg #F9FAF9
+   ========================================= */
+
+/* --- CSS Variables for both modes --- */
+.sustainability-page {
+  --s-primary: #00C97B;
+  --s-bg: #0A0A0A;
+  --s-bg-section: #050807;
+  --s-bg-card: rgba(255, 255, 255, 0.04);
+  --s-border-card: rgba(255, 255, 255, 0.08);
+  --s-text-head: #ffffff;
+  --s-text-body: #E3DFD6;
+  --s-text-muted: #68869A;
+  --s-card-shadow: none;
+  --s-marquee-bg: #00C97B;
+  --s-marquee-text: #0A0A0A;
+}
+
+.light .sustainability-page,
+.sustainability-page.light {
+  --s-primary: #1A4331;
+  --s-bg: #F9FAF9;
+  --s-bg-section: #F3F4F3;
+  --s-bg-card: rgba(255, 255, 255, 0.60);
+  --s-border-card: #ffffff;
+  --s-text-head: #111827;
+  --s-text-body: #374151;
+  --s-text-muted: #6B7280;
+  --s-card-shadow: 0 8px 30px rgba(209, 250, 229, 0.5);
+  --s-marquee-bg: #1A4331;
+  --s-marquee-text: #ffffff;
+}
+
+/* Named float animations — matching Stitch animate-bob-1/2/3/4 */
+@utility animate-bob-1 { animation: sustainability-float 3s ease-in-out infinite; }
+@utility animate-bob-2 { animation: sustainability-float 3.5s ease-in-out 0.5s infinite; }
+@utility animate-bob-3 { animation: sustainability-float 4s ease-in-out 1s infinite; }
+@utility animate-bob-4 { animation: sustainability-float 2.5s ease-in-out 1.5s infinite; }
+/* Keep generic bob for backwards compatibility */
+@utility animate-bob   { animation: sustainability-float 3s ease-in-out infinite; }
+
+/* Named float variants (alternate naming) */
+@utility animate-float-slow    { animation: sustainability-float 3s ease-in-out infinite; }
+@utility animate-float-medium  { animation: sustainability-float 3.5s ease-in-out 0.5s infinite; }
+@utility animate-float-delayed { animation: sustainability-float 4s ease-in-out 1s infinite; }
+@utility animate-float-fast    { animation: sustainability-float 2.5s ease-in-out 1.5s infinite; }
+
+/* Line-by-line reveal for hero headline */
+@utility animate-reveal-1 { opacity: 0; animation: sustainability-line-reveal 0.6s ease 0.1s forwards; }
+@utility animate-reveal-2 { opacity: 0; animation: sustainability-line-reveal 0.6s ease 0.3s forwards; }
+@utility animate-reveal-3 { opacity: 0; animation: sustainability-line-reveal 0.6s ease 0.5s forwards; }
+@utility animate-reveal-4 { opacity: 0; animation: sustainability-line-reveal 0.6s ease 0.6s forwards; }
+@utility animate-reveal-5 { opacity: 0; animation: sustainability-line-reveal 0.6s ease 0.7s forwards; }
+
+/* Heartbeat for gradient line */
+@utility animate-heartbeat {
+  animation: sustainability-heartbeat 2s ease-in-out infinite;
+}
+
+/* Gradient line animation — legacy */
+@utility animate-gradient-line {
+  animation: sustainability-heartbeat 2s ease infinite;
+}
+/* Gradient line background — emerald to navy */
+@utility bg-sustainability-gradient-line {
+  background: linear-gradient(90deg, #00C97B, #003366, #00C97B);
+  background-size: 200% 100%;
+}
+
+/* Leaf-vein background texture (light mode) */
+@utility leaf-vein-bg {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(26, 67, 49, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(26, 67, 49, 0.04) 0%, transparent 50%),
+    repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(26, 67, 49, 0.015) 40px, rgba(26, 67, 49, 0.015) 41px);
+}
+
+/* Shared keyframes */
+@keyframes sustainability-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes sustainability-line-reveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sustainability-heartbeat {
+  0%, 100% { opacity: 0.5; transform: scaleX(0.97); }
+  50%       { opacity: 1;   transform: scaleX(1.05); }
+}
 
 @layer base {
   html {

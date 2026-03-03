@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 
 /**
  * PHASE 3 ENHANCED: MediaService - Frontend service with WebP optimization support

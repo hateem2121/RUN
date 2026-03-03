@@ -409,10 +409,10 @@ export const PASSWORD_REQUIREMENTS = {
 
 ### Zod Schema Validation
 
-All external inputs are validated using Zod schemas defined in `shared/schema.ts`.
+All external inputs are validated using Zod schemas defined in `shared/schemas.ts`.
 
 ```typescript
-// shared/schema.ts
+// shared/schemas.ts
 import { z } from 'zod';
 
 // User input validation

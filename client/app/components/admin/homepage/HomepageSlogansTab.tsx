@@ -1,4 +1,4 @@
-import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/schema";
+import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/index";
 import { Edit, GripVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";

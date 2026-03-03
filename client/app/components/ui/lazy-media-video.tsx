@@ -3,7 +3,7 @@
  * Phase 1 Optimization: Video lazy loading with poster prioritization
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { Play } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";

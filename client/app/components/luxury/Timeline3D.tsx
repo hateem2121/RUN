@@ -1,4 +1,4 @@
-import type { AboutTimelineEntry } from "@shared/schema";
+import type { AboutTimelineEntry } from "@shared/index";
 import { motion, useInView } from "framer-motion";
 import { Calendar, Sparkles } from "lucide-react";
 import { useRef } from "react";

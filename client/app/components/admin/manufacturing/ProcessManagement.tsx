@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
+import type { ManufacturingProcess, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import {
   Edit,

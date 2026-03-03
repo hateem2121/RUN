@@ -18,7 +18,7 @@ import { z } from "zod";
 import {
   type InsertAboutMapLocation,
   insertAboutMapLocationSchema,
-} from "../../../shared/schema.js";
+} from "../../../shared/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";

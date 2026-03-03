@@ -1,4 +1,4 @@
-import type { ManufacturingHero, MediaAsset } from "@shared/schema";
+import type { ManufacturingHero, MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Image, Play } from "lucide-react";
 import { useEffect, useState } from "react";

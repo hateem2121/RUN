@@ -1,4 +1,4 @@
-import type { InsertNavigationItem, MediaAsset, NavigationItem } from "@shared/schema";
+import type { InsertNavigationItem, MediaAsset, NavigationItem } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Navigation, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";

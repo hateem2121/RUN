@@ -11,7 +11,7 @@ import { Router } from "express";
 import {
   insertSustainabilityHeroSchema,
   insertTechnologyHeroSchema,
-} from "../../../shared/schema.js";
+} from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { mediaRepository, pageContentRepository } from "../../lib/db/repositories/index.js";

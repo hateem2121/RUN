@@ -8,7 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { type Category, insertCategorySchema } from "../../../shared/schema.js";
+import { type Category, insertCategorySchema } from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";

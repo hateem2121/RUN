@@ -4,7 +4,7 @@ import {
   sustainabilityGoals,
   sustainabilityInitiatives,
   sustainabilityMetrics,
-} from "../shared/schema/content/sustainability.js";
+} from "../shared/schemas/content/sustainability.js";
 
 async function seed() {
   try {

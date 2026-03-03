@@ -1,4 +1,4 @@
-import type { ManufacturingQuality, MediaAsset } from "@shared/schema";
+import type { ManufacturingQuality, MediaAsset } from "@shared/index";
 import { motion } from "framer-motion";
 import { CheckCircle2, Shield } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import type { Category, Product } from "@shared/schema";
+import type { Category, Product } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { LayoutGrid } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";

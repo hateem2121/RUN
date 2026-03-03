@@ -1,5 +1,5 @@
 import { db } from "./server/db";
-import { footerConfiguration } from "./shared/schema";
+import { footerConfiguration } from "./shared/schemas";
 
 async function verify() {
   try {

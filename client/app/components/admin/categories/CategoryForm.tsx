@@ -1,4 +1,4 @@
-import type { Category, InsertCategory, MediaAsset } from "@shared/schema";
+import type { Category, InsertCategory, MediaAsset } from "@shared/index";
 import { FileText, Search, Star } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";

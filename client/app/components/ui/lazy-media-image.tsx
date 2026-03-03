@@ -3,7 +3,7 @@
  * Phase 1 Optimization: Smart image loading for homepage performance
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getOptimizedMediaUrl } from "@/lib/homepage-media-loader";

@@ -8,7 +8,7 @@ import type {
   NavigationItem,
   Product,
   SizeChart,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";

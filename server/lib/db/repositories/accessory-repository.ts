@@ -8,8 +8,8 @@
  */
 
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
-import type { Accessory, InsertAccessory } from "../../../../shared/schema.js";
-import { accessories } from "../../../../shared/schema.js";
+import type { Accessory, InsertAccessory } from "../../../../shared/index.js";
+import { accessories } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";

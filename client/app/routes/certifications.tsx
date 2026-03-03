@@ -1,4 +1,4 @@
-import type { Certificate } from "@shared/schema";
+import type { Certificate } from "@shared/index";
 import { motion } from "framer-motion";
 import { Award, ExternalLink, FileCheck, Leaf, Shield } from "lucide-react";
 import { useMemo, useState } from "react";

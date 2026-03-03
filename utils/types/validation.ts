@@ -5,7 +5,7 @@
  * Each interface serves a specific validation context with clear naming.
  */
 
-import type { MediaAsset } from "../../shared/schema.js";
+import type { MediaAsset } from "../../shared/index.js";
 
 /**
  * Schema Validation Result

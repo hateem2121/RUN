@@ -7,7 +7,7 @@ import {
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { Category } from "@shared/schema";
+import type { Category } from "@shared/index";
 import React, { memo, useCallback, useState } from "react";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CategoryDisplay from "./CategoryDisplay";

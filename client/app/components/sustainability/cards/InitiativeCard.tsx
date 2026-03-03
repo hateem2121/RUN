@@ -1,4 +1,4 @@
-import type { MediaAsset, SustainabilityInitiative } from "@shared/schema";
+import type { MediaAsset, SustainabilityInitiative } from "@shared/index";
 import { motion } from "framer-motion";
 import { memo } from "react";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";

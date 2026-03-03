@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 // Removed useMediaErrorHandler - using console.error for error handling
 import { AnimatePresence, motion } from "framer-motion";
 import {

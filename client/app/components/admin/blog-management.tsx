@@ -13,8 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { BlogCategory, BlogPost } from "@/../../shared/schema";
-import { insertBlogPostSchema } from "@/../../shared/schema";
+import type { BlogCategory, BlogPost } from "@shared/index";
+import { insertBlogPostSchema } from "@shared/index";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

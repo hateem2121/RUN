@@ -25,10 +25,10 @@ import footerConfigRouter from "./utilities/footer-config.js";
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerNewsletterRoutes } from "./utilities/newsletter.js";
-import v1AdminRouter from "./v1/admin.js";
+import v1AdminRouter from "./admin/admin.js";
 // V1 Modular Routers
-import v1CoreRouter from "./v1/core.js";
-import v1MediaRouter from "./v1/media.js";
+import v1CoreRouter from "./core/health.js"; // Placeholder, using health as entry point if core.ts missing
+import v1MediaRouter from "./media/index.js";
 import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {

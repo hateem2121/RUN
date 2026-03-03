@@ -12,7 +12,7 @@ import { removeUndefined } from "../../utils.js";
  */
 
 import { Router } from "express";
-import { insertTechnologyCtaSchema } from "../../../shared/schema.js";
+import { insertTechnologyCtaSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";

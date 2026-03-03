@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { AboutStatistic, InsertAboutStatistic } from "@shared/schema";
+import type { AboutStatistic, InsertAboutStatistic } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Award,

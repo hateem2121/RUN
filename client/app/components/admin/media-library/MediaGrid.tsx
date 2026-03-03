@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   AlertCircle,

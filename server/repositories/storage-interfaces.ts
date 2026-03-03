@@ -97,7 +97,7 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
-} from "../../shared/schema.js";
+} from "../../shared/index.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
   ProductDetail,
@@ -598,7 +598,7 @@ export interface ISystemRepository {
   deleteStorageChangeLog(id: number): Promise<boolean>;
   getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]>;
   getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
-  createAuditLog(log: import("../../shared/schema.js").InsertAuditLog): Promise<AuditLog>;
+  createAuditLog(log: import("../../shared/index.js").InsertAuditLog): Promise<AuditLog>;
   setAuditTrailEnabled(enabled: boolean): void;
   configureTrackedTables(tables: string[]): void;
   repairDatabaseIntegrity(): Promise<{ validated: number; repaired: number; removed: number }>;

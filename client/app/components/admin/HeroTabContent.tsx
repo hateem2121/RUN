@@ -1,4 +1,4 @@
-import type { UnifiedSustainability } from "@shared/schema";
+import type { UnifiedSustainability } from "@shared/index";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

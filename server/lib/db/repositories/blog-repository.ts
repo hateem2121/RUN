@@ -4,8 +4,8 @@ import type {
   BlogPost,
   InsertBlogCategory,
   InsertBlogPost,
-} from "../../../../shared/schema.js";
-import { blogCategories, blogPosts } from "../../../../shared/schema.js";
+} from "../../../../shared/index.js";
+import { blogCategories, blogPosts } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import type { IBlogRepository } from "../../../repositories/storage-interfaces.js";
 

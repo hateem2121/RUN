@@ -1,4 +1,4 @@
-import type { Category, Fabric, MediaAsset, Product } from "@shared/schema";
+import type { Category, Fabric, MediaAsset, Product } from "@shared/index";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Filter, Grid, List, Package, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

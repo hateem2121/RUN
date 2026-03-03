@@ -1,4 +1,4 @@
-import type { Certificate, Fabric, Fiber, MediaAsset } from "@shared/schema";
+import type { Certificate, Fabric, Fiber, MediaAsset } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Shirt } from "lucide-react";
 import { useMemo, useState } from "react";

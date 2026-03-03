@@ -12,7 +12,7 @@ import { removeUndefined } from "../../utils.js";
  */
 
 import { Router } from "express";
-import { insertAboutTeamMessageSchema } from "../../../shared/schema.js";
+import { insertAboutTeamMessageSchema } from "../../../shared/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { aboutService } from "../../services/about.service.js";

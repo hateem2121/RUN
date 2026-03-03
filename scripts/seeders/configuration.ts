@@ -10,7 +10,7 @@ import {
   logoAnimationSettings,
   navigationGlassmorphismSettings,
   navigationItems,
-} from "../../shared/schema.js";
+} from "../../shared/schemas.js";
 import { type SeedResult, seedWithTransaction } from "../utils/seed-helpers.js";
 // import { sql } from 'drizzle-orm';
 

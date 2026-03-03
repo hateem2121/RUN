@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "./server/db";
-import { footerConfiguration } from "./shared/schema/content/common";
+import { footerConfiguration } from "./shared/schemas/content/common";
 
 async function run() {
   console.log("Starting manual DB update...");

@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema.js";
+import type { MediaAsset } from "@shared/index.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";

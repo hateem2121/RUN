@@ -7,7 +7,7 @@ import type {
   SustainabilityInitiative,
   SustainabilityMetric,
   UnifiedSustainability,
-} from "@shared/schema";
+} from "@shared/index";
 import {
   Droplets,
   Edit,

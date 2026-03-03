@@ -5,7 +5,7 @@ import type {
   InsertSustainabilityInitiative,
   MediaAsset,
   SustainabilityInitiative,
-} from "@shared/schema";
+} from "@shared/index";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus, Upload } from "lucide-react";
 import { useState } from "react";

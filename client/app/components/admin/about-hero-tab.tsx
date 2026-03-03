@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { AboutHero, InsertAboutHero, MediaAsset } from "@shared/schema";
-import { insertAboutHeroSchema } from "@shared/schema";
+import type { AboutHero, InsertAboutHero, MediaAsset } from "@shared/index";
+import { insertAboutHeroSchema } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Eye, Save, Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";

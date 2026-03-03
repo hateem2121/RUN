@@ -10,7 +10,7 @@ import {
   type WebhookSubscription,
   webhookDeliveries,
   webhookSubscriptions,
-} from "../../../../shared/schema.js";
+} from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 
 export class WebhookRepository {

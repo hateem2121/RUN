@@ -1,4 +1,4 @@
-import type { Category, Fabric, MediaAsset, Product } from "@shared/schema";
+import type { Category, Fabric, MediaAsset, Product } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Box,

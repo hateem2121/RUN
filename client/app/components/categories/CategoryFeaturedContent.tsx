@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
-import { Component, lazy, type ReactNode, Suspense } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Component, lazy, type ReactNode, useRef, Suspense } from "react";
 import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import ExpandableCard from "@/components/ui/bento-cards/expandable-card";
 import FlipCard from "@/components/ui/bento-cards/flip-card";
@@ -10,6 +12,11 @@ import { Typography } from "@/components/ui/typography";
 import { isModelUrl } from "@/lib/media-type-detector";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
 import { cn } from "@/lib/utils";
+
+// Register ScrollTrigger
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // Lazy-load FluidGlass
 const FluidGlass = lazy(() => import("@/components/ui/bento-cards/fluid-glass-final"));
@@ -74,18 +81,40 @@ export function CategoryFeaturedContent({
   getMediaUrl,
   extractMediaId,
   mediaMimeTypes,
-  categoryIndex,
 }: CategoryFeaturedContentProps) {
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
+
+      const cards = containerRef.current.querySelectorAll(".bento-card");
+
+      gsap.fromTo(
+        cards,
+        {
+          opacity: 0,
+          y: 50,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+    },
+    { scope: containerRef },
+  );
+
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.4,
-        delay: categoryIndex * 0.05,
-      }}
-      className="mb-10 space-y-6 md:mb-20"
-    >
+    <section ref={containerRef} className="mb-10 space-y-6 md:mb-20">
       <BentoCardContainer>
         {/* Card 1 - SVG Masking */}
         <div className={cn("bento-card", getResponsiveSpanClasses("card1"))}>
@@ -213,6 +242,6 @@ export function CategoryFeaturedContent({
           )}
         </div>
       </BentoCardContainer>
-    </motion.section>
+    </section>
   );
 }

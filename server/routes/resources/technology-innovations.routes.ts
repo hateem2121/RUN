@@ -20,7 +20,7 @@ import { z } from "zod";
 import {
   insertTechnologyInnovationSchema,
   type TechnologyInnovation,
-} from "../../../shared/schema.js";
+} from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";

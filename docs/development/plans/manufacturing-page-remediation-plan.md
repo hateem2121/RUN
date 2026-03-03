@@ -528,7 +528,7 @@ CREATE TABLE manufacturing_case_studies (
 // File: server/routes/manufacturingCaseStudiesRoutes.ts
 import { Router } from 'express';
 import { db } from '../db';
-import { manufacturingCaseStudies } from '@shared/schema';
+import { manufacturingCaseStudies } from '@shared/schemas';
 
 const router = Router();
 

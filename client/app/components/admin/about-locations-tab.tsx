@@ -1,4 +1,4 @@
-import type { AboutMapLocation, InsertAboutMapLocation } from "@shared/schema";
+import type { AboutMapLocation, InsertAboutMapLocation } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import type { Fabric, UnifiedSustainability } from "@shared/schema";
+import type { Fabric, UnifiedSustainability } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { useState } from "react";

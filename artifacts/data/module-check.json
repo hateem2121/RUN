@@ -6,7 +6,7 @@
     "sourceFile": "server/scripts/analyze-orphaned-files.ts"
   },
   {
-    "importPath": "../../../shared/schema.js",
+    "importPath": "../../../shared/schemas.js",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "server/lib/repositories/media-repository.js"
@@ -120,13 +120,13 @@
     "sourceFile": "scripts/utils/certification-mapper.ts"
   },
   {
-    "importPath": "../../shared/schema-types",
+    "importPath": "../../shared/schemas-types",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "scripts/utils/certification-mapper.ts"
   },
   {
-    "importPath": "../../shared/schema.js",
+    "importPath": "../../shared/schemas.js",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "server/lib/postgresql-direct-storage.js"
@@ -498,13 +498,13 @@
     "sourceFile": "client/src/components/admin/product-management-unified/admin/ProductCreateEditModal.tsx"
   },
   {
-    "importPath": "../shared/schema-types",
+    "importPath": "../shared/schemas-types",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "scripts/import-fibers.ts"
   },
   {
-    "importPath": "../shared/schema.js",
+    "importPath": "../shared/schemas.js",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "archive/server-routes-monolithic.ts"
@@ -3498,7 +3498,7 @@
     "sourceFile": "client/src/components/admin/about-hero-tab.tsx"
   },
   {
-    "importPath": "@shared/schema",
+    "importPath": "@shared/schemas",
     "existsOnDisk": false,
     "hasTypeDeclarations": false,
     "sourceFile": "client/src/components/WebPOptimizationDemo.tsx"
@@ -3615,7 +3615,7 @@
     "importPath": "drizzle-orm/pg-core",
     "existsOnDisk": true,
     "hasTypeDeclarations": true,
-    "sourceFile": "shared/schema.ts"
+    "sourceFile": "shared/schemas.ts"
   },
   {
     "importPath": "express",

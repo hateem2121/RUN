@@ -1,7 +1,7 @@
 # Database Schema Reference
 
 > **Generated on:** 2026-02-03
-> **Source:** `shared/schema/`
+> **Source:** `shared/schemas/`
 
 ---
 

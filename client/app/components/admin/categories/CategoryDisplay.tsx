@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Category } from "@shared/schema";
+import type { Category } from "@shared/index";
 import {
   ChevronDown,
   ChevronRight,

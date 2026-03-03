@@ -1,4 +1,4 @@
-import type { folders } from "@shared/schema";
+import type { folders } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

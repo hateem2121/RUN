@@ -1,6 +1,6 @@
 import { closestCenter, DndContext, type SensorDescriptor } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/schema";
+import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/index";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus } from "lucide-react";
 import { useState } from "react";

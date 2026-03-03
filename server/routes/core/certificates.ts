@@ -8,7 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { insertCertificateSchema } from "../../../shared/schema.js";
+import { insertCertificateSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";

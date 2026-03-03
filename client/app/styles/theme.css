@@ -36,8 +36,11 @@
     --color-brand-lime: #b3e600;
 
     /* Glass Tokens - Light Mode */
-    --glass-bg-start: rgba(255, 255, 255, 0.7);
-    --glass-bg-end: rgba(255, 255, 255, 0.4);
+    --glass-bg-start: rgba(255, 255, 255, 0.75);
+    --glass-bg-end: rgba(255, 255, 255, 0.45);
+    --mesh-gradient-1: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                      radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                      radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
   }
 
   .dark {
@@ -74,8 +77,17 @@
     --color-surface-gray: #1a1a1a;
 
     /* Glass Tokens - Dark Mode */
-    --glass-bg-start: rgba(255, 255, 255, 0.1);
+    --glass-bg-start: rgba(255, 255, 255, 0.12);
     --glass-bg-end: rgba(255, 255, 255, 0.05);
+
+    /* Mesh Gradients - Dark Mode Luxury */
+    --mesh-gradient-1: radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.15) 0px, transparent 0%),
+                      radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 0.1) 0px, transparent 50%),
+                      radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.1) 0px, transparent 50%),
+                      radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.1) 0px, transparent 50%);
 
     /* Feature Gradients - Dark Mode */
   }

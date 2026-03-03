@@ -1,4 +1,4 @@
-import type { SizeChart } from "@shared/schema";
+import type { SizeChart } from "@shared/index";
 import { motion } from "framer-motion";
 import { Info, Ruler, User } from "lucide-react";
 import { useMemo, useState } from "react";

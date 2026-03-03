@@ -1,9 +1,9 @@
-// @ts-nocheck
+import type { JSX } from "react";
 import { Droplets, Leaf, Recycle, Target, TreePine, Wind } from "lucide-react";
 
 type IconSize = "sm" | "md" | "lg";
 
-const sizeClasses = {
+const sizeClasses: Record<IconSize, string> = {
   sm: "w-6 h-6",
   md: "w-8 h-8",
   lg: "w-10 h-10",
@@ -13,8 +13,8 @@ const sizeClasses = {
  * Get sustainability icon component by name
  * Consolidated icon mapper for metrics, initiatives, and goals
  */
-export function getSustainabilityIcon(iconName: string | null, size: IconSize = "md") {
-  const className = `${sizeClasses[size]} text-[#00C97B]`;
+export function getSustainabilityIcon(iconName: string | null, size: IconSize = "md"): JSX.Element {
+  const className = `${sizeClasses[size]} text-[color:var(--s-primary)]`;
 
   switch (iconName) {
     case "Droplets":

@@ -1,4 +1,4 @@
-import type { Fiber } from "@shared/schema";
+import type { Fiber } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BarChart3, Grid2X2, Layers, List, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";

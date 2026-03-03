@@ -5,7 +5,7 @@ import type {
   Fabric,
   ProductSummary,
   SizeChart,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {

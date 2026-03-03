@@ -1,4 +1,4 @@
-import type { Accessory, InsertAccessory, MediaAsset } from "@shared/schema";
+import type { Accessory, InsertAccessory, MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Edit,

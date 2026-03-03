@@ -1,4 +1,4 @@
-import type { Fabric } from "@shared/schema";
+import type { Fabric } from "@shared/index";
 import { Activity, Award, Globe, Shirt } from "lucide-react";
 import type React from "react";
 import { Card, CardContent } from "@/components/ui/card";

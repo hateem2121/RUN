@@ -2,7 +2,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const SCHEMA_DIR = join(process.cwd(), "shared/schema");
+const SCHEMA_DIR = join(process.cwd(), "shared/schemas");
 const OUTPUT_FILE = join(process.cwd(), "docs/api/schema-reference.md");
 
 function parseTableFile(filePath: string) {
@@ -44,7 +44,7 @@ function parseTableFile(filePath: string) {
 function main() {
   let fullDoc = "# Database Schema Reference\n\n";
   fullDoc += `> **Generated on:** ${new Date().toISOString().split("T")[0]}\n`;
-  fullDoc += `> **Source:** \`shared/schema/\`\n\n`;
+  fullDoc += `> **Source:** \`shared/schemas/\`\n\n`;
   fullDoc += "---\n\n";
 
   const files = readdirSync(SCHEMA_DIR).filter(

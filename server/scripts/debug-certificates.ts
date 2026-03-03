@@ -1,5 +1,5 @@
 import { eq, inArray } from "drizzle-orm";
-import { certificates, mediaAssets } from "../../shared/schema.js";
+import { certificates, mediaAssets } from "../../shared/index.js";
 import { db } from "../db.js";
 
 async function main() {

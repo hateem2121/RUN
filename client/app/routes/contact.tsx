@@ -71,7 +71,7 @@ export default function Contact() {
   );
 }
 
-import type { ContactPageConfiguration } from "@shared/schema";
+import type { ContactPageConfiguration } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 
 function ContactContent({ isMobile }: { isMobile: boolean }) {

@@ -1,4 +1,4 @@
-import type { Certificate, Fabric } from "@shared/schema";
+import type { Certificate, Fabric } from "@shared/index";
 import { Activity, Award, ChevronDown, ChevronUp, Edit, Globe, Trash2, Zap } from "lucide-react";
 import type React from "react";
 import { Badge } from "@/components/ui/badge";

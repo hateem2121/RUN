@@ -18,7 +18,7 @@ import type {
   ProductDetail,
   ProductSummary,
   SizeChart,
-} from "../../../../shared/schema.js";
+} from "../../../../shared/index.js";
 import {
   accessories,
   categories,
@@ -28,7 +28,7 @@ import {
   productRelations,
   products,
   sizeCharts,
-} from "../../../../shared/schema.js";
+} from "../../../../shared/index.js";
 import { type DbClient, db } from "../../../db.js";
 import { CacheKeys } from "../../cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../cache/cache-strategies.js";

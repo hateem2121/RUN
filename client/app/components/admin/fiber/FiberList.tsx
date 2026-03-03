@@ -1,4 +1,4 @@
-import type { Fiber } from "@shared/schema";
+import type { Fiber } from "@shared/index";
 import { CheckSquare, Copy, Edit, Eye, MoreHorizontal, Square, Star, Trash2 } from "lucide-react";
 import type React from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";

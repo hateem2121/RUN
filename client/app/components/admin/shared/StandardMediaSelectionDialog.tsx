@@ -14,7 +14,7 @@
  * - Unified error handling
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { lazy, Suspense } from "react";
 import { MediaLibraryEnhancedProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import {

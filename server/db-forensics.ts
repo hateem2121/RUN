@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { inquiries } from "../shared/schema/content/common.js";
+import { inquiries } from "../shared/schemas/content/common.js";
 import { db } from "./db.js";
 import { decrypt } from "./lib/encryption.js";
 import { logger } from "./lib/monitoring/logger.js";

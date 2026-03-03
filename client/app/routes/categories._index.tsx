@@ -1,9 +1,10 @@
-import type { Category } from "@shared/schema";
+import type { Category } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
 import { AlertCircle, Eye, Loader2 } from "lucide-react";
 // CHUNK 6: Lazy-load FluidGlass to defer three.js (565KB) from main bundle
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLoaderData } from "react-router";
 import { CategoryFeaturedContent } from "@/components/categories/CategoryFeaturedContent";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -87,6 +88,22 @@ export function meta({}: Route.MetaArgs) {
 
 export default function CategoriesPage() {
   const loaderData = useLoaderData<typeof loader>();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.to(".hero-reveal", {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: "expo.out",
+        delay: 0.2,
+      });
+    },
+    { scope: containerRef },
+  );
+
   // Fetch all categories
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -249,11 +266,11 @@ export default function CategoriesPage() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
+      <div ref={containerRef} className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
         {/* Hero Section */}
         <div className="container px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
           {/* Breadcrumbs Integration */}
-          <div className="mb-8 flex justify-center">
+          <div className="mb-8 flex justify-center opacity-0 hero-reveal">
             <nav className="flex items-center space-x-2 text-luxury-gray-400 text-xs uppercase tracking-widest">
               <a href="/" className="hover:text-luxury-charcoal transition-colors">
                 Home
@@ -263,25 +280,17 @@ export default function CategoriesPage() {
             </nav>
           </div>
 
-          <motion.h1
+          <h1
             className={cn(
               headingVariants({ variant: "h1" }),
-              "font-neue-stance text-luxury-heading text-center font-bold md:text-5xl",
+              "font-neue-stance text-luxury-heading text-center font-bold md:text-5xl opacity-0 hero-reveal",
             )}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
           >
             Product Categories
-          </motion.h1>
-          <motion.p
-            className="text-luxury-body mx-auto mt-3 mb-4 max-w-2xl text-center text-lg"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.05 }}
-          >
+          </h1>
+          <p className="text-luxury-body mx-auto mt-3 mb-4 max-w-2xl text-center text-lg opacity-0 hero-reveal">
             Explore our comprehensive range of sportswear solutions
-          </motion.p>
+          </p>
         </div>
         {/* Categories with Bento Cards */}
         <div className="container mx-auto max-w-7xl px-4 md:px-8">
@@ -301,13 +310,7 @@ export default function CategoriesPage() {
                   <div key={category.id} className="w-full">
                     {!hasAnyContent ? (
                       // Enhanced error handling for categories without featured content
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 0.3,
-                          delay: categoryIndex * 0.05,
-                        }}
+                      <div
                         className="border-border shadow-luxury-md mb-20 overflow-hidden rounded-2xl border bg-card/60 p-8 backdrop-blur-md dark:bg-card/40"
                       >
                         <div className="mb-6 text-center">
@@ -348,7 +351,7 @@ export default function CategoriesPage() {
                             </div>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     ) : (
                       <CategoryFeaturedContent
                         category={{

@@ -1,4 +1,4 @@
-import type { Fiber } from "@shared/schema";
+import type { Fiber } from "@shared/index";
 import { Star } from "lucide-react";
 import type React from "react";
 import { Badge } from "@/components/ui/badge";

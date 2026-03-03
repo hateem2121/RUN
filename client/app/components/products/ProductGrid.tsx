@@ -1,4 +1,4 @@
-import type { Category, Certificate, Fabric, ProductSummary } from "@shared/schema";
+import type { Category, Certificate, Fabric, ProductSummary } from "@shared/index";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { TransformedProduct } from "@/lib/product-transformers";

@@ -1,4 +1,4 @@
-import type { Certificate, CompositionSet, Fabric, Fiber } from "@shared/schema";
+import type { Certificate, CompositionSet, Fabric, Fiber } from "@shared/index";
 import { dehydrate, HydrationBoundary, keepPreviousData, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronUp, Layers, Leaf, Loader2, Search, Shirt, Wind } from "lucide-react";

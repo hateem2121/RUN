@@ -4,7 +4,7 @@ import type {
   InsertHomepageProcessCard,
   InsertHomepageSection,
   InsertHomepageSlogan,
-} from "@shared/schema";
+} from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 

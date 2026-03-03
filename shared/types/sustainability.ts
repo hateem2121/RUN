@@ -1,11 +1,11 @@
-import type { Certificate } from "../schema/catalog";
+import type { Certificate } from "../schemas/catalog";
 import type {
   SustainabilityGoal,
   SustainabilityInitiative,
   SustainabilityMetric,
   UnifiedSustainability,
-} from "../schema/content/sustainability";
-import type { Fabric } from "../schema/materials";
+} from "../schemas/content/sustainability";
+import type { Fabric } from "../schemas/materials";
 
 export interface SustainabilityBatchResponse {
   hero: UnifiedSustainability | null;

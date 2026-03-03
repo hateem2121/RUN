@@ -1,4 +1,4 @@
-import type { ContactPageConfiguration, FooterConfiguration } from "@shared/schema";
+import type { ContactPageConfiguration, FooterConfiguration } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
 import gsap from "gsap";

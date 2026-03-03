@@ -3,7 +3,7 @@ import {
   insertNavigationItemSchema,
   type MediaAsset,
   type NavigationItem,
-} from "@shared/schema";
+} from "@shared/index";
 import {
   IconArrowLeft,
   IconArrowRight,

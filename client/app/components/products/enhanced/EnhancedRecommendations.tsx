@@ -3,7 +3,7 @@
  * Premium grid layout with hover effects and proper navigation
  */
 
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import { ClippedElement } from "./PremiumProductComponents";

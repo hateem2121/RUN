@@ -6,7 +6,7 @@ import type {
   SustainabilityMetric,
   TechnologyInnovation,
   TechnologyResearch,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, Cpu, Factory, Leaf, Shield, Target, Zap } from "lucide-react";

@@ -1,4 +1,4 @@
-import type { Accessory, Certificate, Product } from "@shared/schema";
+import type { Accessory, Certificate, Product } from "@shared/index";
 import { Award, CheckCircle, ChevronDown, ChevronRight, X } from "lucide-react";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";

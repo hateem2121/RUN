@@ -1,4 +1,4 @@
-import type { Category, Fabric, Product } from "@shared/schema";
+import type { Category, Fabric, Product } from "@shared/index";
 import { useEffect } from "react";
 
 interface ProductSEOProps {

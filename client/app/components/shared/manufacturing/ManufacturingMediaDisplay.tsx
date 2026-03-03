@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { AnimatePresence, motion } from "framer-motion";
 import { ImageOff, Play } from "lucide-react";
 import React, { useState } from "react";

@@ -1,4 +1,4 @@
-import type { HomepageProcessCard, InsertHomepageProcessCard, MediaAsset } from "@shared/schema";
+import type { HomepageProcessCard, InsertHomepageProcessCard, MediaAsset } from "@shared/index";
 import { Edit, GripVertical, Image as ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";

@@ -4,7 +4,7 @@
  */
 
 import { db } from "../../server/db.js";
-import { folders, mediaAssets } from "../../shared/schema.js";
+import { folders, mediaAssets } from "../../shared/schemas.js";
 import { randomInt, type SeedResult, seedWithTransaction } from "../utils/seed-helpers.js";
 
 /**

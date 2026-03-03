@@ -69,7 +69,7 @@ All issues identified in the initial evaluation (85/100) have been successfully 
 
 | Aspect | Score | Notes |
 |--------|-------|-------|
-| TypeScript Usage | 5/5 | Strong typing with imported types from `@shared/schema` |
+| TypeScript Usage | 5/5 | Strong typing with imported types from `@shared/schemas` |
 | React 19 Patterns | 5/5 | No forwardRef, functional components only, proper hooks usage |
 | Error Handling | 5/5 | ManufacturingErrorBoundary wraps all sections |
 | Code Organization | 5/5 | Clean separation of concerns, proper file structure |

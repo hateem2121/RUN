@@ -1,5 +1,5 @@
 import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
-import type { AboutTeamMessage, MediaAsset } from "@shared/schema";
+import type { AboutTeamMessage, MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Save, Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";

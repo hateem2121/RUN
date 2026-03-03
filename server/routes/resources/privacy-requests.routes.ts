@@ -10,7 +10,7 @@
 import { eq } from "drizzle-orm";
 import { type Response, Router } from "express";
 import { z } from "zod";
-import { auditLogs, users } from "../../../shared/schema.js";
+import { auditLogs, users } from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { validateRequest } from "../../middleware/validateRequest.js";

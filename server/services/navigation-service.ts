@@ -3,7 +3,7 @@ import type {
   InsertNavigationItem,
   NavigationGlassmorphismSettings,
   NavigationItem,
-} from "../../shared/schema.js";
+} from "../../shared/index.js";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";

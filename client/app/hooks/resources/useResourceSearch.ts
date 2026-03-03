@@ -1,4 +1,4 @@
-import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/schema";
+import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/index";
 import { useMemo } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { getPropertiesArray } from "@/lib/fiber-utils";

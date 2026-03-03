@@ -3,8 +3,8 @@ import type {
   BlogPost,
   InsertBlogCategory,
   InsertBlogPost,
-} from "../../../shared/schema.js";
-import { insertBlogCategorySchema, insertBlogPostSchema } from "../../../shared/schema.js";
+} from "../../../shared/index.js";
+import { insertBlogCategorySchema, insertBlogPostSchema } from "../../../shared/index.js";
 import { blogRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { type AuditContext, adminService } from "./admin.service.js";

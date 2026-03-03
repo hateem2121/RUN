@@ -1,4 +1,4 @@
-import type { Category, Fabric, Fiber, SizeChart } from "@shared/schema";
+import type { Category, Fabric, Fiber, SizeChart } from "@shared/index";
 import { AlertCircle, CheckCircle, ChevronDown, ChevronRight, Tag } from "lucide-react";
 import { memo } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";

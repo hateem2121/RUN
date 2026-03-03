@@ -5,7 +5,7 @@
  * recovery mechanisms, and meaningful error messages for users.
  */
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { AlertCircle, Box, Download, FileX, RefreshCw, Shield } from "lucide-react";
 import type React from "react";
 import { Component, type ErrorInfo, type ReactNode } from "react";

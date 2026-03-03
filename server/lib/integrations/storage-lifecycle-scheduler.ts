@@ -256,7 +256,7 @@ async function cleanupOrphanedFiles(
   try {
     // Import database access
     const { db } = await import("../../db.js");
-    const { mediaAssets } = await import("../../../shared/schema.js");
+    const { mediaAssets } = await import("../../../shared/index.js");
     const { sql } = await import("drizzle-orm");
 
     // 1. Get all storagePath values from database (including deleted records to be safe)

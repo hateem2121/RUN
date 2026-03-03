@@ -11,7 +11,7 @@ import {
   footerConfiguration,
   insertFooterConfigurationSchema,
   mediaAssets,
-} from "../../../shared/schema.js";
+} from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";

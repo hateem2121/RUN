@@ -1,4 +1,4 @@
-import type { Certificate, Fabric, Product, SizeChart } from "@shared/schema";
+import type { Certificate, Fabric, Product, SizeChart } from "@shared/index";
 import type { MediaItem } from "./PremiumProductComponents";
 
 // ============================================================================

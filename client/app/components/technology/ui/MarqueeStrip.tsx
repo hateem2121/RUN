@@ -10,7 +10,6 @@ interface MarqueeStripProps {
 
 export function MarqueeStrip({
   items,
-  accentColor = "#00D4FF",
   className,
   direction = "left",
   speed = "normal",
@@ -29,29 +28,20 @@ export function MarqueeStrip({
   return (
     <div
       className={cn(
-        "py-4 overflow-hidden shadow-lg z-20 relative border-y bg-transparent",
+        "py-4 overflow-hidden shadow-2xl dark:shadow-[0_0_30px_rgba(0,212,255,0.2)] z-20 relative border-y transition-colors duration-500",
+        "bg-[#0047AB] dark:bg-[#00D4FF]",
+        "border-white/10 dark:border-white/20",
         className,
       )}
-      style={{
-        borderColor: `${accentColor}40`, // 25% opacity
-      }}
     >
-      {/* Background gradient overlay matching Stitch design */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          background: `linear-gradient(90deg, transparent 0%, ${accentColor} 50%, transparent 100%)`,
-        }}
-      />
-
       <div className="relative flex overflow-hidden group">
         <div className={cn("flex whitespace-nowrap group-hover:pause", speedClass, directionClass)}>
           {displayItems.map((item, index) => (
             <span
               key={`${item}-${index}`}
-              className="font-display text-lg text-white font-bold uppercase tracking-[0.15em] mx-6"
+              className="font-neue-stance text-sm text-white dark:text-black font-bold uppercase tracking-[0.3em] mx-6"
             >
-              {item}
+              {item} •
             </span>
           ))}
         </div>
@@ -59,3 +49,4 @@ export function MarqueeStrip({
     </div>
   );
 }
+

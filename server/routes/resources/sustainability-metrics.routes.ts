@@ -17,7 +17,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { type Request, Router } from "express";
 import { z } from "zod";
-import { insertSustainabilityMetricSchema } from "../../../shared/schema.js";
+import { insertSustainabilityMetricSchema } from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";

@@ -15,7 +15,7 @@ const MediaViewerModal = React.lazy(() =>
   import("./MediaViewerModal").then((m) => ({ default: m.MediaViewerModal })),
 );
 
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { AlertTriangle, PanelLeft, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -17,7 +17,7 @@ trigger: always_on
 - Components in: client/app/routes/ (page-specific) and client/app/components/ (shared)
 - All public page data is CMS-managed via REST API (/api/*)
 - API calls use apiRequest() from @/lib/queryClient
-- Shared types in @shared/schema and @shared/viewmodels
+- Shared types in @shared/schemas and @shared/viewmodels
 - Lazy loading for heavy components (use React.lazy + Suspense)
 
 ## Brand Typography

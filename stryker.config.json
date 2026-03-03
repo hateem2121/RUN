@@ -5,7 +5,7 @@
   "coverageAnalysis": "perTest",
   "mutate": [
     "server/lib/**/*.ts",
-    "shared/schema/**/*.ts",
+    "shared/schemas/**/*.ts",
     "!**/*.test.ts",
     "!**/*.spec.ts",
     "!**/node_modules/**"

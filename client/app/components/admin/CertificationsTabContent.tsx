@@ -1,4 +1,4 @@
-import type { Certificate, UnifiedSustainability } from "@shared/schema";
+import type { Certificate, UnifiedSustainability } from "@shared/index";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";

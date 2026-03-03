@@ -1,4 +1,4 @@
-import type { ManufacturingProcess, MediaAsset } from "@shared/schema";
+import type { ManufacturingProcess, MediaAsset } from "@shared/index";
 import {
   Activity,
   CheckCircle2,

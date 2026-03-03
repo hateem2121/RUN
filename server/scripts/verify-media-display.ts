@@ -1,5 +1,5 @@
 import { isNull } from "drizzle-orm";
-import { mediaAssets } from "../../shared/schema.js";
+import { mediaAssets } from "../../shared/index.js";
 import { db } from "../db.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 

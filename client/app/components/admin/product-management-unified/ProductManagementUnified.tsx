@@ -1,4 +1,4 @@
-import type { Product } from "@shared/schema";
+import type { Product } from "@shared/index";
 import { lazy, Suspense, useState } from "react";
 import { ProductErrorBoundary } from "@/components/admin/ProductErrorBoundary";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";

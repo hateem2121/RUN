@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Download, Edit, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-// import type { MediaAsset } from "@shared/schema";
+// import type { MediaAsset } from "@shared/index";
 import {
   Dialog,
   DialogContent,

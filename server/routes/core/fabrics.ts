@@ -6,7 +6,7 @@
 
 import { Router } from "express";
 import { z } from "zod";
-import { type fabrics, insertFabricSchema } from "../../../shared/schema.js";
+import { type fabrics, insertFabricSchema } from "../../../shared/index.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";

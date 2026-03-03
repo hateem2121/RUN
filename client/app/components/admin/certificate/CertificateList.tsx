@@ -1,4 +1,4 @@
-import type { Certificate } from "@shared/schema";
+import type { Certificate } from "@shared/index";
 import {
   Award,
   CheckCircle,

@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
@@ -86,7 +86,7 @@ export function PublicCaseStudySection({
                 <path
                   d="M 40 0 L 0 0 0 40"
                   fill="none"
-                  stroke="#D4A853"
+                  stroke="#FF4D00"
                   strokeOpacity="0.2"
                   strokeWidth="1"
                 ></path>
@@ -99,7 +99,7 @@ export function PublicCaseStudySection({
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between md:items-end mb-16 gap-6">
             <div>
-              <span className="text-[#D4A853] font-mono text-xs uppercase tracking-widest font-bold">
+              <span className="text-[#FF4D00] font-mono text-xs uppercase tracking-widest font-bold">
                 Featured Case Studies
               </span>
               <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-white uppercase mt-4 italic tracking-tighter skew-x-[-2deg]">
@@ -111,21 +111,21 @@ export function PublicCaseStudySection({
               <button
                 onClick={prevProject}
                 aria-label="Previous project"
-                className="w-12 h-12 flex items-center justify-center border border-[#D4A853]/30 bg-black/50 text-[#D4A853] hover:bg-[#D4A853] hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-[#FF4D00]/30 bg-black/50 text-[#FF4D00] hover:bg-[#FF4D00] hover:text-black transition-colors skew-x-[-10deg]"
               >
                 <ChevronLeft className="w-6 h-6 skew-x-[10deg]" />
               </button>
               <button
                 onClick={nextProject}
                 aria-label="Next project"
-                className="w-12 h-12 flex items-center justify-center border border-[#D4A853]/30 bg-black/50 text-[#D4A853] hover:bg-[#D4A853] hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-[#FF4D00]/30 bg-black/50 text-[#FF4D00] hover:bg-[#FF4D00] hover:text-black transition-colors skew-x-[-10deg]"
               >
                 <ChevronRight className="w-6 h-6 skew-x-[10deg]" />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-[#121212]/80 backdrop-blur-md shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-[#1A0000]/80 backdrop-blur-md shadow-2xl">
             {/* Image Side */}
             <div className="lg:col-span-3 pb-[60%] lg:pb-0 relative overflow-hidden group">
               <img
@@ -134,8 +134,8 @@ export function PublicCaseStudySection({
                 className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
                 src={currentProject.img}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#121212] hidden lg:block opacity-90"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent lg:hidden opacity-90"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0000] hidden lg:block opacity-90"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A0000] to-transparent lg:hidden opacity-90"></div>
               <div className="absolute top-6 left-6 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
                 <span className="text-[10px] uppercase font-mono tracking-widest text-white/70 font-bold bg-black/50 px-2 py-0.5 border border-white/10 backdrop-blur-md">
@@ -146,7 +146,7 @@ export function PublicCaseStudySection({
 
             {/* Content Side */}
             <div className="lg:col-span-2 p-8 md:p-12 flex flex-col justify-center relative z-10">
-              <span className="text-xs font-mono uppercase tracking-widest text-[#D4A853] mb-4 font-bold border-l-2 border-[#D4A853] pl-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D00] mb-4 font-bold border-l-2 border-[#FF4D00] pl-3">
                 {currentProject.tag}
               </span>
 
@@ -172,7 +172,7 @@ export function PublicCaseStudySection({
               </div>
 
               <a
-                className="inline-flex items-center justify-between w-full border border-white/10 bg-white/[0.02] hover:bg-[#D4A853] hover:text-black text-white px-6 py-4 uppercase text-xs tracking-widest font-bold transition-all duration-300 group cursor-pointer"
+                className="inline-flex items-center justify-between w-full border border-white/10 bg-white/[0.02] hover:bg-[#FF4D00] hover:text-black text-white px-6 py-4 uppercase text-xs tracking-widest font-bold transition-all duration-300 group cursor-pointer"
                 href="/case-studies"
               >
                 <span>View Full Specs</span>

@@ -6,7 +6,7 @@ import type {
   AboutTeamMessage,
   AboutTimelineEntry,
   MediaAsset,
-} from "@shared/schema";
+} from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";

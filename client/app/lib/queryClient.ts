@@ -236,6 +236,19 @@ export function getQueryClient() {
   }
 }
 
+/**
+ * ✨ FORENSIC REMEDIATION: Batch Preloading Utility
+ * Preloads media assets in a single batch to eliminate N+1 cascades during page transitions.
+ */
+export async function prefetchMediaBatch(assetIds: number[]) {
+  if (!assetIds.length) return;
+  return getQueryClient().prefetchQuery({
+    queryKey: ["media", "batch", assetIds.sort().join(",")],
+    queryFn: () => batchFetchMediaContent(assetIds),
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
 // Keep legacy export for backward compatibility but warn (or replace usages)
 // For now, we point it to getQueryClient() to maintain API, though strictly it should be a function call
 // Ideally codebase should switch to getQueryClient().
@@ -289,7 +302,7 @@ export const batchFetchMediaContent = async (assetIds: number[]): Promise<BatchM
     const idsString = assetIds.join(",");
 
     // FORENSIC FIX: Use request manager to prevent browser connection exhaustion
-    const response = await requestManager.fetch(`/api/media/batch/content?ids=${idsString}`, {
+    const response = await requestManager.fetch(`/api/media/batch/content?ids=${idsString}&prefetch=true`, {
       method: "GET",
       credentials: "include",
       priority: "high", // Media content is high priority

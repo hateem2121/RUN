@@ -1,4 +1,4 @@
-import type { AboutHero } from "@shared/schema";
+import type { AboutHero } from "@shared/index";
 import { ScrollExpandMedia } from "@/components/ui/scroll-expansion-hero";
 import { Typography } from "@/components/ui/typography";
 

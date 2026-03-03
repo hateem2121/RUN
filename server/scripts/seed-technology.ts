@@ -1,4 +1,4 @@
-import { technologyEquipment, technologyResearch } from "../../shared/schema/content/technology.js";
+import { technologyEquipment, technologyResearch } from "../../shared/schemas/content/technology.js";
 import { db } from "../db.js";
 
 async function seedTechnologyData() {

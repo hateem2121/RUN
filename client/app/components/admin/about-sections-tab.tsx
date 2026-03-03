@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
-import type { AboutSection, InsertAboutSection, MediaAsset } from "@shared/schema";
+import type { AboutSection, InsertAboutSection, MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";

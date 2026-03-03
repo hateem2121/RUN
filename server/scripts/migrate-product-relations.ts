@@ -1,5 +1,5 @@
 import { isNotNull } from "drizzle-orm";
-import { productRelations, products } from "../../shared/schema.js";
+import { productRelations, products } from "../../shared/index.js";
 import { db } from "../db.js";
 
 async function migrate() {

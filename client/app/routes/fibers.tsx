@@ -1,4 +1,4 @@
-import type { Fiber } from "@shared/schema";
+import type { Fiber } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Beaker, ChevronDown, ChevronUp, Leaf, Search, Sparkles, Star } from "lucide-react";

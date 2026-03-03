@@ -5,7 +5,7 @@
  */
 
 import { isNull } from "drizzle-orm";
-import { mediaAssets } from "../../shared/schema";
+import { mediaAssets } from "../../shared/schemas";
 import { appStorageService } from "../app-storage-service";
 import { db } from "../db";
 import { logger } from "../lib/smart-logger";

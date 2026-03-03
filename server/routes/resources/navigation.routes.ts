@@ -8,7 +8,7 @@ import { z } from "zod";
 import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
-} from "../../../shared/schema.js";
+} from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { authService } from "../../services/auth-service.js";

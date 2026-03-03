@@ -6,7 +6,7 @@
 
 import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
-import type { Inquiry, InsertInquiry } from "../../shared/schema/content/common.js";
+import type { Inquiry, InsertInquiry } from "../../shared/schemas/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { CircuitBreaker } from "../lib/circuit-breaker.js";
 import { miscRepository } from "../lib/db/repositories/index.js";

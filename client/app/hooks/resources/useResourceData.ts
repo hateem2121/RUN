@@ -1,4 +1,4 @@
-import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/schema";
+import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 
 export type ResourceType = "certificate" | "accessory" | "sizechart" | "fabric" | "fiber";

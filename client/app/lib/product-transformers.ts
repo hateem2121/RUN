@@ -5,7 +5,7 @@ import type {
   MediaAsset,
   Product,
   ProductSummary,
-} from "@shared/schema";
+} from "@shared/index";
 import type { ProductMediaItem } from "@shared/types/homepage";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 

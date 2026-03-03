@@ -8,7 +8,7 @@ import type {
   MediaAsset,
   Product,
   SizeChart,
-} from "@shared/schema";
+} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import type React from "react";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
@@ -78,7 +78,7 @@ const CustomizationSection = lazy(() =>
   import("../sections/CustomizationSection").then((m) => ({ default: m.CustomizationSection })),
 );
 
-import type { InsertProduct } from "@shared/schema";
+import type { InsertProduct } from "@shared/index";
 // Import mutations and queries
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";

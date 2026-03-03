@@ -1,4 +1,4 @@
-import type { AboutSection, MediaAsset } from "@shared/schema";
+import type { AboutSection, MediaAsset } from "@shared/index";
 import { type MotionValue, motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { IconWrapper } from "@/components/ui/icon-wrapper";

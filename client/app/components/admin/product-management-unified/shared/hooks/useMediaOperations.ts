@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@shared/schema";
+import type { MediaAsset } from "@shared/index";
 import { useCallback, useMemo } from "react";
 
 // import { logger } from '../logger';
