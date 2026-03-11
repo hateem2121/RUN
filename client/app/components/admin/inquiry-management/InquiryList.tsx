@@ -15,9 +15,9 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
   if (inquiries.length === 0) {
     return (
       <div className="flex h-[400px] flex-col items-center justify-center text-center p-8">
-        <Mail className="h-12 w-12 text-muted-foreground/30 mb-4" />
+        <Mail className="h-12 w-12 text-[#68869A]/30 mb-4" />
         <Typography.H4>No inquiries found</Typography.H4>
-        <Typography.P className="text-muted-foreground">
+        <Typography.P className="text-[#68869A]">
           There are currently no customer inquiries matching your filters.
         </Typography.P>
       </div>
@@ -26,7 +26,7 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
 
   return (
     <div className="divide-y divide-border/40">
-      <div className="bg-muted/30 px-6 py-3 grid grid-cols-4 text-xs font-semibold text-muted-foreground tracking-wider uppercase">
+      <div className="bg-white/[0.03] px-6 py-3 grid grid-cols-4 text-xs font-semibold text-[#68869A] tracking-wider uppercase">
         <div className="col-span-1">Contact</div>
         <div className="col-span-1 text-center">Company / Platform</div>
         <div className="col-span-1 text-center">Status</div>
@@ -38,25 +38,25 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
             key={inquiry.id}
             onClick={() => onSelect(inquiry.id)}
             className={cn(
-              "p-6 grid grid-cols-4 items-center gap-4 transition-colors cursor-pointer hover:bg-muted/30",
+              "p-6 grid grid-cols-4 items-center gap-4 transition-colors cursor-pointer hover:bg-white/[0.03]",
               selectedId === inquiry.id && "bg-primary/5 ring-1 ring-inset ring-primary/20",
             )}
           >
             <div className="col-span-1 overflow-hidden">
               <div className="font-bold text-sm truncate">{inquiry.name}</div>
-              <div className="text-xs text-muted-foreground truncate">{inquiry.email}</div>
+              <div className="text-xs text-[#68869A] truncate">{inquiry.email}</div>
             </div>
 
             <div className="col-span-1 text-center">
               <div className="flex flex-col items-center gap-1">
                 {inquiry.company ? (
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full truncate max-w-full">
+                  <span className="text-xs bg-white/[0.05] px-2 py-0.5 rounded-full truncate max-w-full">
                     {inquiry.company}
                   </span>
                 ) : (
-                  <span className="text-xs text-muted-foreground italic">N/A</span>
+                  <span className="text-xs text-[#68869A] italic">N/A</span>
                 )}
-                <span className="text-[10px] text-muted-foreground/70 flex items-center gap-1">
+                <span className="text-[10px] text-[#68869A]/70 flex items-center gap-1">
                   {inquiry.preferredPlatform || "Email"}
                 </span>
               </div>
@@ -66,8 +66,13 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
               <StatusBadge status={inquiry.status} />
             </div>
 
-            <div className="col-span-1 text-right text-xs text-muted-foreground whitespace-nowrap">
-              {formatDistanceToNow(new Date(inquiry.createdAt), { addSuffix: true })}
+            <div className="col-span-1 text-right text-xs text-[#68869A] whitespace-nowrap">
+              {(() => {
+                const date = new Date(inquiry.createdAt);
+                return Number.isNaN(date.getTime())
+                  ? "Recently"
+                  : formatDistanceToNow(date, { addSuffix: true });
+              })()}
             </div>
           </div>
         ))}
@@ -84,10 +89,10 @@ function StatusBadge({ status }: { status: Inquiry["status"] }) {
       label: "Responded",
       className: "bg-green-500/10 text-green-500 border-green-500/20",
     },
-    archived: { label: "Archived", className: "bg-muted text-muted-foreground border-border" },
+    archived: { label: "Archived", className: "bg-white/[0.05] text-[#68869A] border-white/10" },
   };
 
-  const config = configs[status];
+  const config = configs[status.toLowerCase() as keyof typeof configs] || configs.new;
 
   return (
     <Badge

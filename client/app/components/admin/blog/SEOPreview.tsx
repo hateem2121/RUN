@@ -20,7 +20,7 @@ export function SEOPreview({ title, description, slug, ogImage, type }: SEOPrevi
 
   if (type === "google") {
     return (
-      <Card className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <Card className="bg-white/[0.03] border-white/10 shadow-sm">
         <CardContent className="p-4 space-y-1">
           <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
             <div className="w-7 h-7 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center">
@@ -43,7 +43,7 @@ export function SEOPreview({ title, description, slug, ogImage, type }: SEOPrevi
   }
 
   return (
-    <Card className="overflow-hidden bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-sm max-w-md">
+    <Card className="overflow-hidden bg-white/[0.03] border-white/10 shadow-sm max-w-md">
       <div className="aspect-[1.91/1] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative overflow-hidden">
         {ogImage ? (
           <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" />

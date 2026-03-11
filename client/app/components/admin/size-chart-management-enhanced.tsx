@@ -104,12 +104,12 @@ const SizeChartList = ({
         return (
           <div
             key={chart.id}
-            className="group rounded-lg border border-neutral-200 p-4 transition-all duration-200 hover:border-blue-300 hover:shadow-md"
+            className="glass-premium group rounded-lg border border-white/10 p-4 transition-all duration-200 hover:border-blue-400/50"
           >
             <div className="mb-3 flex items-start justify-between">
               <div className="min-w-0 flex-1">
                 <div className="mb-2 flex items-center gap-2">
-                  <h4 className="truncate font-medium text-neutral-900">{chart.name}</h4>
+                  <h4 className="truncate font-medium text-white">{chart.name}</h4>
                   {!chart.isActive && (
                     <Badge variant="secondary" className="text-xs">
                       Inactive
@@ -132,13 +132,13 @@ const SizeChartList = ({
                 {validation.total > 0 && (
                   <div className="mb-2">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="text-neutral-600 text-xs">Completeness:</span>
+                      <span className="text-xs text-[#68869A]">Completeness:</span>
                       {validation.incomplete > 0 && (
                         <AlertTriangle className="h-3 w-3 text-amber-500" />
                       )}
                     </div>
                     <Progress value={validation.completeness} className="h-2" />
-                    <p className="mt-1 text-neutral-500 text-xs">
+                    <p className="mt-1 text-xs text-[#68869A]">
                       {validation.total - validation.incomplete}/{validation.total} measurements
                       complete
                     </p>
@@ -507,10 +507,8 @@ export function SizeChartManagementEnhanced() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-bold font-neue-stance text-3xl text-neutral-900">
-            Size Chart Management
-          </h1>
-          <p className="mt-2 text-neutral-600">
+          <h1 className="font-bold font-neue-stance text-3xl text-white">Size Chart Management</h1>
+          <p className="mt-2 text-[#68869A]">
             Create and manage size charts for different regions and product categories
           </p>
         </div>
@@ -543,10 +541,10 @@ export function SizeChartManagementEnhanced() {
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
         {/* Size Chart Form */}
         <div className="xl:col-span-2">
-          <Card className="border-2">
-            <CardHeader className="border-b bg-linear-to-r from-blue-50 to-purple-50">
-              <CardTitle className="flex items-center gap-2 font-neue-stance">
-                <Ruler className="h-5 w-5 text-blue-600" />
+          <Card className="glass-premium border-white/10">
+            <CardHeader className="border-b border-white/10 bg-white/[0.02]">
+              <CardTitle className="flex items-center gap-2 font-neue-stance text-white">
+                <Ruler className="h-5 w-5 text-blue-400" />
                 {editingChart ? "Edit Size Chart" : "Create New Size Chart"}
               </CardTitle>
             </CardHeader>
@@ -771,10 +769,10 @@ export function SizeChartManagementEnhanced() {
 
         {/* Size Charts List */}
         <div>
-          <Card className="border-2">
-            <CardHeader className="border-b bg-linear-to-r from-green-50 to-blue-50">
-              <CardTitle className="flex items-center gap-2 font-neue-stance">
-                <Flag className="h-5 w-5 text-green-600" />
+          <Card className="glass-premium border-white/10">
+            <CardHeader className="border-b border-white/10 bg-white/[0.02]">
+              <CardTitle className="flex items-center gap-2 font-neue-stance text-white">
+                <Flag className="h-5 w-5 text-emerald-400" />
                 Size Charts ({sizeCharts?.length || 0})
               </CardTitle>
             </CardHeader>

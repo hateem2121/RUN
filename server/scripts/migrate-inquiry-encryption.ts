@@ -44,7 +44,7 @@ async function runMigration() {
           try {
             const plainEmail = decrypt(record.email);
             updates.emailIndex = getBlindIndex(plainEmail);
-          } catch (e) {
+          } catch (_e) {
             logger.error(`[Migration] Failed to decrypt email for index on inquiry #${record.id}`);
           }
         }

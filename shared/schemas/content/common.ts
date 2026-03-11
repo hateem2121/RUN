@@ -147,8 +147,25 @@ export const inquiries = pgTable(
     respondedAt: timestamp({ mode: "date", precision: 3 }),
 
     // Admin fields
-    adminNotes: text(),
-    assignedTo: varchar({ length: 100 }),
+    adminNotes: text("admin_notes"),
+    assignedTo: varchar("assigned_to", { length: 100 }),
+
+    // CRM Enhancement Fields
+    priority: varchar({ length: 20 }).default("medium").notNull(),
+    crmStage: varchar("crm_stage", { length: 50 }).default("lead").notNull(),
+    crmLogs: jsonb("crm_logs")
+      .$type<
+        Array<{
+          date: string;
+          action: string;
+          note: string;
+          user?: string;
+        }>
+      >()
+      .default([])
+      .notNull(),
+    leadScore: integer("lead_score").default(0).notNull(),
+    tags: jsonb().$type<string[]>().default([]).notNull(),
   },
   (table) => [
     // Performance indexes

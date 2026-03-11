@@ -13,6 +13,7 @@ import {
   insertTechnologyHeroSchema,
 } from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { mediaRepository, pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -153,6 +154,16 @@ router.patch("/admin/sustainability-hero", authService.requireAdmin, async (req,
       10000,
       "Update sustainability hero",
     );
+
+    // Invalidate sustainability caches
+    try {
+      await CacheOperations.invalidateSustainability();
+      await twoTierBatchCache.invalidate("sustainability:batch");
+      logger.info("[Sustainability] ✅ Cache invalidated after hero update");
+    } catch (cacheError) {
+      logger.error("[Sustainability] ❌ Cache invalidation failed:", cacheError);
+    }
+
     return res.json(hero);
   } catch (error) {
     return res.status(500).json({

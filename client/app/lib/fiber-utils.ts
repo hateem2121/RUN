@@ -9,13 +9,16 @@
  */
 export function propertiesToObject(properties: string[]): Record<string, boolean> {
   if (!Array.isArray(properties)) return {};
-  
-  return properties.reduce((acc, prop) => {
-    if (prop) {
-      acc[prop] = true;
-    }
-    return acc;
-  }, {} as Record<string, boolean>);
+
+  return properties.reduce(
+    (acc, prop) => {
+      if (prop) {
+        acc[prop] = true;
+      }
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
 }
 
 /**
@@ -23,9 +26,9 @@ export function propertiesToObject(properties: string[]): Record<string, boolean
  * It returns the keys of the object.
  */
 export function getPropertiesArray(properties: unknown): string[] {
-  if (!properties || typeof properties !== 'object') {
+  if (!properties || typeof properties !== "object") {
     return [];
   }
-  
+
   return Object.keys(properties);
 }

@@ -16,12 +16,7 @@ import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { webhookService } from "../../services/webhook-service.js";
-import {
-  checkRateLimit,
-  shouldBypassCache,
-  validateAndSanitizeInput,
-  validateIdParam,
-} from "../../utils.js";
+import { checkRateLimit, shouldBypassCache, validateIdParam } from "../../utils.js";
 
 // import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 

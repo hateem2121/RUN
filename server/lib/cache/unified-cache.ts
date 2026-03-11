@@ -30,7 +30,7 @@ const tracer = trace.getTracer("unified-cache", "1.0.0");
 
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
-  private memoryCache: LRUCache<string, {}>;
+  private memoryCache: LRUCache<string, object>;
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {
@@ -57,7 +57,7 @@ export class UnifiedCache {
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
       maxSize: 100 * 1024 * 1024, // Max 100MB (approx)
-      sizeCalculation: (value: {}, key: string) => {
+      sizeCalculation: (value: object, key: string) => {
         // Rough size estimation
         return JSON.stringify(value).length + key.length;
       },
@@ -157,7 +157,7 @@ export class UnifiedCache {
       try {
         // Set in L1 Memory Cache
         if (value !== null && value !== undefined) {
-          this.memoryCache.set(key, value as {}, { ttl: ttlSeconds * 1000 });
+          this.memoryCache.set(key, value as object, { ttl: ttlSeconds * 1000 });
         }
         span.setAttribute("cache.l1", true);
 

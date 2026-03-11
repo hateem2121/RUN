@@ -302,12 +302,15 @@ export const batchFetchMediaContent = async (assetIds: number[]): Promise<BatchM
     const idsString = assetIds.join(",");
 
     // FORENSIC FIX: Use request manager to prevent browser connection exhaustion
-    const response = await requestManager.fetch(`/api/media/batch/content?ids=${idsString}&prefetch=true`, {
-      method: "GET",
-      credentials: "include",
-      priority: "high", // Media content is high priority
-      timeout: 30000, // 30s timeout
-    });
+    const response = await requestManager.fetch(
+      `/api/media/batch/content?ids=${idsString}&prefetch=true`,
+      {
+        method: "GET",
+        credentials: "include",
+        priority: "high", // Media content is high priority
+        timeout: 30000, // 30s timeout
+      },
+    );
 
     if (!response.ok) {
       // Fallback to individual requests

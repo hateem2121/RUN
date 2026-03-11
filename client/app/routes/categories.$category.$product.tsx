@@ -3,17 +3,18 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { useGSAP } from "@gsap/react";
+import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion } from "framer-motion";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
 
 // Register ScrollTrigger
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
 import {
   createContext,
   useContext,
@@ -266,9 +267,7 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
       <div className="mb-4 flex items-center justify-between">
         <span className="font-bold text-2xl tracking-tight">$249.00</span>
         {optimisticState.status === "added" && (
-          <span
-            className="flex items-center gap-1 font-medium text-green-600 text-sm"
-          >
+          <span className="flex items-center gap-1 font-medium text-green-600 text-sm">
             <Check className="h-4 w-4" /> Added to Cart
           </span>
         )}
@@ -414,7 +413,11 @@ function ProductDetailContent() {
       ];
 
   return (
-    <main ref={containerRef} id="main-content" className="min-h-screen bg-white pb-24 dark:bg-zinc-950">
+    <main
+      ref={containerRef}
+      id="main-content"
+      className="min-h-screen bg-white pb-24 dark:bg-zinc-950"
+    >
       <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">
         {/* Breadcrumb */}
         <div className="mb-8">

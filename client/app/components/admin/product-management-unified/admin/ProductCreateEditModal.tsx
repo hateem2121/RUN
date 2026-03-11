@@ -74,8 +74,10 @@ const SpecificationsSection = lazy(() =>
 const CertificationsSection = lazy(() =>
   import("../sections/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
 );
-const CustomizationSection = lazy(() =>
-  import("../sections/CustomizationSection").then((m) => ({ default: m.CustomizationSection })),
+const CustomizationSEOSection = lazy(() =>
+  import("../sections/CustomizationSEOSection").then((m) => ({
+    default: m.CustomizationSEOSection,
+  })),
 );
 
 import type { InsertProduct } from "@shared/index";
@@ -84,7 +86,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useAccordionPersistence, useProductForm } from "../shared/hooks";
+import { useProductForm } from "../hooks/useProductForm";
 // Import StandardMediaSelectionDialog and shared hooks
 import { logger } from "../shared/logger";
 import type { ProductFormFieldValue } from "../shared/types";
@@ -99,14 +101,17 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
   const isEditing = !!product;
 
   // Phase 2: Use optimized form management with useReducer
-  const { formData, updateField, updateMultipleFields } = useProductForm(product);
+  const {
+    formData,
+    updateField,
+    updateMultipleFields,
+    isSectionComplete,
+    accordionHelper,
+    isGeneratingSlug,
+  } = useProductForm(product);
 
-  // Phase 3: Persistent accordion states
-  const { accordionStates, toggleSection } = useAccordionPersistence(
-    "product-form-accordion-states",
-  );
-
-  // Phase 2: Form synchronization is now handled by useProductForm hook
+  // Destructure accordion helper
+  const { accordionStates, toggleSection } = accordionHelper;
 
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [mediaPickerMode] = useState<"images" | "primary" | "videos" | "model">("images");
@@ -150,13 +155,14 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
     }
 
     // Invalidate hierarchical product queries
+    queryClient.invalidateQueries({ queryKey: ["/api/v1/admin/products"] });
     queryClient.invalidateQueries({ queryKey: ["/api/products/by-path"] });
     queryClient.invalidateQueries({ queryKey: ["/api/product-complete"] });
   };
 
   const createProductMutation = useMutation({
     mutationFn: (data: InsertProduct) =>
-      apiRequest("/api/products", {
+      apiRequest("/api/v1/admin/products", {
         method: "POST",
         body: JSON.stringify(data),
       }) as Promise<Product>,
@@ -188,7 +194,7 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
   const updateProductMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<InsertProduct> }) =>
-      apiRequest(`/api/products/${id}`, {
+      apiRequest(`/api/v1/admin/products/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
       }) as Promise<Product>,
@@ -461,57 +467,12 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
     return () => clearTimeout(timeoutId);
   }, [formData, validateFormPure]);
 
-  // Phase 3: Workflow Enhancements - Auto-generation and Smart Features
+  // Debounced slug/SKU generation now handled internally by useProductForm hook
+  // (auto-triggers when name field changes in create mode)
+
+  // Auto-save draft state
   const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-
-  // Debounced auto-generation functions to prevent loops
-  const debouncedSlugGeneration = useMemo(() => {
-    let timeoutId: NodeJS.Timeout;
-    return (name: string) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        if (name && !formData.slug) {
-          const generatedSlug = name
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .substring(0, 50);
-          updateField("slug", generatedSlug);
-        }
-      }, 500);
-    };
-  }, [formData.slug, updateField]);
-
-  const debouncedSkuGeneration = useMemo(() => {
-    let timeoutId: NodeJS.Timeout;
-    return (name: string) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        if (name && !formData.sku && !isEditing) {
-          const words = name.split(" ").filter((word) => word.length > 2);
-          const initials = words.map((word) => word.substring(0, 2).toUpperCase()).join("");
-          const randomNum = Math.floor(Math.random() * 90) + 10;
-          const suggestedSku = `${initials}_${randomNum}`;
-          updateField("sku", suggestedSku);
-        }
-      }, 500);
-    };
-  }, [formData.sku, isEditing, updateField]);
-
-  // Auto-generate slug from name with debouncing
-  useEffect(() => {
-    if (formData.name) {
-      debouncedSlugGeneration(formData.name);
-    }
-  }, [formData.name, debouncedSlugGeneration]);
-
-  // Auto-generate SKU suggestion with debouncing
-  useEffect(() => {
-    if (formData.name) {
-      debouncedSkuGeneration(formData.name);
-    }
-  }, [formData.name, debouncedSkuGeneration]);
 
   // Auto-save draft functionality
   useEffect(() => {
@@ -928,37 +889,37 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
                     key={key}
                     className={`rounded-lg border p-2 text-center ${
                       percentage === 100
-                        ? "border-green-200 bg-green-50"
+                        ? "border-emerald-500/30 bg-emerald-500/10"
                         : percentage > 0
-                          ? "border-yellow-200 bg-yellow-50"
-                          : "border-border bg-background"
+                          ? "border-amber-500/30 bg-amber-500/10"
+                          : "border-white/10 bg-white/[0.03]"
                     }`}
                   >
                     <IconComponent
                       className={`mx-auto mb-1 h-4 w-4 ${
                         percentage === 100
-                          ? "text-green-600"
+                          ? "text-emerald-400"
                           : percentage > 0
-                            ? "text-yellow-600"
-                            : "text-muted-foreground/70"
+                            ? "text-amber-400"
+                            : "text-[#68869A]/70"
                       }`}
                     />
-                    <p className="text-foreground/80 mb-1 text-xs font-medium">
+                    <p className="text-[#E3DFD6]/80 mb-1 text-xs font-medium">
                       {typedSection.name}
                     </p>
                     <div className="center-flex gap-1 text-xs">
                       <span
                         className={
                           percentage === 100
-                            ? "font-semibold text-green-600"
+                            ? "font-semibold text-emerald-400"
                             : percentage > 0
-                              ? "text-yellow-600"
-                              : "text-muted-foreground"
+                              ? "text-amber-400"
+                              : "text-[#68869A]"
                         }
                       >
                         {typedSection.completed}/{typedSection.total}
                       </span>
-                      {percentage === 100 && <span className="text-green-600">✓</span>}
+                      {percentage === 100 && <span className="text-emerald-400">✓</span>}
                     </div>
                   </div>
                 );
@@ -969,22 +930,31 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             <div className="flex gap-2 text-xs">
               {/* Auto-save Status */}
               {lastSaved && (
-                <div className="flex items-center gap-1 rounded bg-green-100 px-2 py-1 text-green-700">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                <div className="flex items-center gap-1 rounded bg-emerald-500/10 px-2 py-1 text-emerald-400 border border-emerald-500/20">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
                   <span>Draft saved {lastSaved.toLocaleTimeString()}</span>
                 </div>
               )}
 
               {/* Auto-generation Indicators */}
-              {formData.name && formData.slug && (
-                <div className="flex items-center gap-1 rounded bg-blue-100 px-2 py-1 text-blue-700">
+              {isGeneratingSlug && (
+                <div className="flex items-center gap-1 rounded bg-blue-500/10 px-2 py-1 text-blue-400 border border-blue-500/20">
+                  <Zap className="h-3 w-3 animate-pulse" />
+                  <span>Generating slug…</span>
+                </div>
+              )}
+              {!isGeneratingSlug && formData.name && formData.slug && (
+                <div className="flex items-center gap-1 rounded bg-blue-500/10 px-2 py-1 text-blue-400 border border-blue-500/20">
                   <Zap className="h-3 w-3" />
-                  <span>Slug auto-generated</span>
+                  <span>
+                    Slug auto-generated
+                    {isSectionComplete("basic") && " ✓"}
+                  </span>
                 </div>
               )}
 
               {formData.name && formData.sku && !isEditing && (
-                <div className="flex items-center gap-1 rounded bg-purple-100 px-2 py-1 text-purple-700">
+                <div className="flex items-center gap-1 rounded bg-purple-500/10 px-2 py-1 text-purple-400 border border-purple-500/20">
                   <Zap className="h-3 w-3" />
                   <span>SKU auto-suggested</span>
                 </div>
@@ -1028,7 +998,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             {/* Phase 5.1: Lazy-loaded sections with Suspense boundaries */}
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
               <BasicInfoSection
@@ -1055,7 +1027,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
               <CategoryFabricSection
@@ -1080,7 +1054,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
               <MediaAssetsSection
@@ -1101,7 +1077,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
               <SpecificationsSection
@@ -1124,7 +1102,9 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
               <CertificationsSection
@@ -1149,10 +1129,12 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
 
             <Suspense
               fallback={
-                <div className="bg-background animate-pulse rounded-lg border p-4">Loading...</div>
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                  Loading...
+                </div>
               }
             >
-              <CustomizationSection
+              <CustomizationSEOSection
                 formData={{
                   customizationOptions: formData.customizationOptions || [],
                   metaTitle: formData.metaTitle,
@@ -1168,12 +1150,12 @@ export function ProductCreateEditModal({ product, isOpen, onClose }: ProductCrea
             </Suspense>
 
             {/* Phase 3: Enhanced Actions with Validation Status */}
-            <div className="space-y-3 border-t pt-4">
+            <div className="space-y-3 border-t border-white/5 pt-4">
               {/* Validation Status Summary */}
               {!validationSummary.isValid && (
-                <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
-                  <AlertCircle className="h-4 w-4 text-red-600" />
-                  <span className="text-sm text-red-700">
+                <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                  <AlertCircle className="h-4 w-4 text-red-400" />
+                  <span className="text-sm text-red-400">
                     Fix {validationSummary.errorCount} error
                     {validationSummary.errorCount !== 1 ? "s" : ""}
                     {validationSummary.warningCount > 0 &&

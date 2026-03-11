@@ -17,15 +17,14 @@ import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js"
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { ValidationError } from "../../lib/errors.js";
-import { emailService } from "../../lib/integrations/email-service.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
 import { authService } from "../../services/auth-service.js";
 
 // Initialize Google Cloud Clients
-const tasksClient = new CloudTasksClient();
-const bigquery = new BigQuery();
+const _tasksClient = new CloudTasksClient();
+const _bigquery = new BigQuery();
 
 interface RecaptchaResponse {
   success: boolean;
@@ -36,9 +35,9 @@ interface RecaptchaResponse {
   "error-codes"?: string[];
 }
 
-const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
-const EMAIL_QUEUE = "email-queue";
+const _GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
+const _GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
+const _EMAIL_QUEUE = "email-queue";
 
 const router = express.Router();
 

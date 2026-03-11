@@ -479,7 +479,7 @@ export function MediaViewerModal() {
 
           <div className="flex min-h-0 flex-1 overflow-hidden pt-4">
             {/* Media display */}
-            <div className="mr-4 flex max-h-full max-w-[calc(100%-17rem)] flex-1 items-center justify-center rounded-lg bg-muted/20">
+            <div className="mr-4 flex max-h-full max-w-[calc(100%-17rem)] flex-1 items-center justify-center rounded-lg bg-white/[0.03]">
               {selectedAsset && (
                 <div className="flex h-full w-full items-center justify-center">
                   <UnifiedMediaTheater
@@ -542,15 +542,15 @@ export function MediaViewerModal() {
                   <div className="space-y-2 text-sm">
                     <div>
                       <span className="font-medium">Name:</span>
-                      <p className="text-muted-foreground">{selectedAsset.originalName}</p>
+                      <p className="text-[#68869A]">{selectedAsset.originalName}</p>
                     </div>
                     <div>
                       <span className="font-medium">Type:</span>
-                      <p className="text-muted-foreground">{selectedAsset.type}</p>
+                      <p className="text-[#68869A]">{selectedAsset.type}</p>
                     </div>
                     <div>
                       <span className="font-medium">Size:</span>
-                      <p className="text-muted-foreground">
+                      <p className="text-[#68869A]">
                         {selectedAsset.size} bytes
                         {selectedAsset.type === "model" && (
                           <span className="mt-1 block text-xs">{/* Size info simplified */}</span>
@@ -559,7 +559,7 @@ export function MediaViewerModal() {
                     </div>
                     <div>
                       <span className="font-medium">Upload Date:</span>
-                      <p className="text-muted-foreground">
+                      <p className="text-[#68869A]">
                         {new Date(selectedAsset.uploadedAt || Date.now()).toLocaleDateString()}
                       </p>
                     </div>

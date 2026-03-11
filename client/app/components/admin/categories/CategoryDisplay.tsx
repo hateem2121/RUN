@@ -12,9 +12,9 @@ import {
   Trash2,
 } from "lucide-react";
 import { memo } from "react";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -57,7 +57,7 @@ const getProductCountColor = (count: number) => {
 };
 
 const CategoryImage = memo(({ category }: { category: Category }) => (
-  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
+  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-black/20 border border-white/10">
     {category.primaryImageId ? (
       <img
         src={`/api/media/${category.primaryImageId}`}
@@ -72,7 +72,7 @@ const CategoryImage = memo(({ category }: { category: Category }) => (
         }}
       />
     ) : (
-      <div className="flex h-full w-full items-center justify-center text-muted-foreground/70">
+      <div className="flex h-full w-full items-center justify-center text-[#68869A]/70">
         <Image className="h-5 w-5" />
       </div>
     )}
@@ -97,14 +97,17 @@ const CategoryActions = memo(
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onEdit(category)}>
+      <DropdownMenuContent align="end" className="bg-[#0A0A0A] border-white/10 text-white">
+        <DropdownMenuItem
+          onClick={() => onEdit(category)}
+          className="hover:bg-white/10 focus:bg-white/10 cursor-pointer"
+        >
           <Edit2 className="mr-2 h-4 w-4" />
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => onDelete(category)}
-          className="text-red-600 focus:text-red-600"
+          className="text-red-400 focus:text-red-300 hover:bg-red-500/10 focus:bg-red-500/10 cursor-pointer"
           aria-label={`Delete ${category.name} category`}
         >
           <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -143,14 +146,13 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
     <tr
       ref={setNodeRef}
       style={style}
-      className={`group transition-colors hover:bg-background ${isSelected ? "bg-blue-50" : ""} ${isDragging ? "border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""} `}
-      aria-roledescription="sortable list item"
+      className={`group transition-colors hover:bg-white/5 border-b border-white/5 ${isSelected ? "bg-blue-500/10" : ""} ${isDragging ? "border-2 border-blue-500/50 border-dashed bg-blue-500/10 opacity-50" : ""} `}
     >
       <td className="w-12 px-4 py-3">
         <div className="flex items-center gap-2">
           {enableDragDrop && (
             <button
-              className="cursor-grab text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
+              className="cursor-grab text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
               {...attributes}
               {...listeners}
               title="Drag to reorder"
@@ -171,12 +173,12 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
       </td>
       <td className="px-4 py-3">
         <div className="flex flex-col">
-          <span className="font-medium text-foreground">{category.name}</span>
-          <span className="text-muted-foreground text-sm">{category.slug}</span>
+          <span className="font-bold text-white">{category.name}</span>
+          <span className="text-[#68869A] text-sm">{category.slug}</span>
         </div>
       </td>
       <td className="px-4 py-3">
-        <span className="text-muted-foreground text-sm">{parentName || "No parent"}</span>
+        <span className="text-[#68869A] text-sm">{parentName || "No parent"}</span>
       </td>
       <td className="px-4 py-3">
         <Badge className={getProductCountColor(productCount)}>{productCount}</Badge>
@@ -222,15 +224,14 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
   };
 
   return (
-    <Card
+    <GlassCard
       ref={setNodeRef}
       style={style}
-      className={`group transition-all hover:shadow-md ${
-        isSelected ? "bg-blue-50 ring-2 ring-ring" : ""
-      } ${isDragging ? "scale-105 opacity-50 shadow-lg ring-2 ring-blue-300 ring-dashed" : ""} `}
-      aria-roledescription="sortable list item"
+      className={`group transition-all hover:bg-white/[0.04] p-0 ${
+        isSelected ? "bg-blue-500/10 ring-1 ring-blue-500/50" : ""
+      } ${isDragging ? "scale-105 opacity-50 ring-2 ring-blue-500/50 ring-dashed" : ""} `}
     >
-      <CardContent className="p-4">
+      <div className="p-4">
         <div className="space-y-3">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
@@ -241,7 +242,7 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
               />
               {enableDragDrop && (
                 <button
-                  className="cursor-grab p-1 text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
+                  className="cursor-grab p-1 text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
                   {...attributes}
                   {...listeners}
                   title="Drag to reorder"
@@ -262,14 +263,14 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
           <div className="flex items-center space-x-3">
             <CategoryImage category={category} />
             <div className="min-w-0 flex-1">
-              <h3 className="truncate font-medium text-foreground">{category.name}</h3>
-              <p className="truncate text-muted-foreground text-sm">{category.slug}</p>
+              <h3 className="truncate font-bold text-white">{category.name}</h3>
+              <p className="truncate text-[#68869A] text-sm">{category.slug}</p>
             </div>
           </div>
 
           <div className="space-y-2">
             {category.description && (
-              <p className="line-clamp-2 text-muted-foreground text-sm">{category.description}</p>
+              <p className="line-clamp-2 text-[#68869A] text-sm">{category.description}</p>
             )}
 
             <div className="flex items-center justify-between">
@@ -283,8 +284,8 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </GlassCard>
   );
 });
 
@@ -321,14 +322,14 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center rounded-lg p-2 transition-colors hover:bg-background ${
-        isSelected ? "bg-blue-50" : ""
+      className={`group flex items-center rounded-xl p-2 transition-colors hover:bg-white/5 border border-transparent hover:border-white/5 ${
+        isSelected ? "bg-blue-500/10 border-blue-500/20" : ""
       } ${
-        isDragging ? "scale-105 border-2 border-blue-300 border-dashed bg-blue-100 opacity-50" : ""
+        isDragging
+          ? "scale-105 border-2 border-blue-500/50 border-dashed bg-blue-500/10 opacity-50"
+          : ""
       } `}
       data-depth={depth}
-      role="listitem"
-      aria-roledescription="sortable list item"
     >
       {/* Expand/collapse button */}
       {hasChildren && onToggleExpanded ? (
@@ -348,7 +349,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
       <div className="mr-3 flex items-center gap-2" style={{ paddingLeft: `${indent}px` }}>
         {enableDragDrop && (
           <button
-            className="cursor-grab p-1 text-muted-foreground/70 transition-colors hover:text-muted-foreground active:cursor-grabbing"
+            className="cursor-grab p-1 text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
             {...attributes}
             {...listeners}
             title="Drag to reorder"
@@ -369,13 +370,13 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
         <CategoryImage category={category} />
         <div className="ml-3 min-w-0 flex-1">
           <div className="flex items-center space-x-2">
-            <span className="truncate font-medium text-foreground">{category.name}</span>
+            <span className="truncate font-bold text-white">{category.name}</span>
             <Badge className={getProductCountColor(productCount)}>{productCount}</Badge>
             <Badge variant={category.isActive ? "default" : "secondary"} className="text-xs">
               {category.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
-          <p className="truncate text-muted-foreground text-sm">{category.slug}</p>
+          <p className="truncate text-[#68869A] text-sm">{category.slug}</p>
         </div>
       </div>
 

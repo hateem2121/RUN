@@ -227,10 +227,9 @@ const Footer: React.FC = () => {
 
       {/* Dynamic Navigation Columns from CMS */}
       <div className="container-centered z-elevated relative grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 md:gap-12">
-        {isLoading ? (
-          // SKELETON STATE: Prevent layout shift during fetch
-          <>
-            {[1, 2, 3].map((i) => (
+        {isLoading
+          ? // SKELETON STATE: Prevent layout shift during fetch
+            [1, 2, 3].map((i) => (
               <div key={i} className="border-glass flex flex-col border-l pl-8 md:col-span-1">
                 <Skeleton className="h-4 w-24 mb-6 opacity-20" />
                 <div className="space-y-4">
@@ -239,37 +238,34 @@ const Footer: React.FC = () => {
                   <Skeleton className="h-6 w-36 opacity-10" />
                 </div>
               </div>
+            ))
+          : footerConfig?.navigationColumns?.map((column, idx) => (
+              <div
+                key={column.title}
+                className={cn(
+                  "border-glass flex flex-col border-l pl-8 md:col-span-1",
+                  idx > 0 && "hidden lg:flex",
+                )}
+              >
+                <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+                  [ {column.title} ]
+                </h4>
+                <ul className="space-y-2">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
+                        className={footerLinkVariants({ display: "inline" })}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </>
-        ) : (
-          footerConfig?.navigationColumns?.map((column, idx) => (
-            <div
-              key={column.title}
-              className={cn(
-                "border-glass flex flex-col border-l pl-8 md:col-span-1",
-                idx > 0 && "hidden lg:flex",
-              )}
-            >
-              <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
-                [ {column.title} ]
-              </h4>
-              <ul className="space-y-2">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noopener noreferrer" : undefined}
-                      className={footerLinkVariants({ display: "inline" })}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        )}
       </div>
 
       {/* Certification Marquee (Phase 3 Achievement) */}

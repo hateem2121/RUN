@@ -18,7 +18,7 @@ interface AdminContextValue extends AdminContextState {
   setSidebarOpen: (open: boolean) => void;
   setHasUnsavedChanges: (hasChanges: boolean) => void;
   refreshData: () => void;
-  navigateWithState: (path: string, preserveParams?: boolean) => void;
+  navigateWithGuard: (to: string) => void;
 }
 
 const AdminContext = createContext<AdminContextValue | undefined>(undefined);
@@ -30,7 +30,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     currentModule: location.pathname.split("/")[2] || "dashboard",
     isLoading: false,
     error: null,
-    sidebarOpen: false,
+    sidebarOpen: true, // Defaulting sidebar to open per standard desktop practice, though can be false
     // SSR-safe: defer window access to client
     queryParams:
       typeof window !== "undefined"
@@ -64,26 +64,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     getQueryClient().invalidateQueries();
   }, []);
 
-  const navigateWithState = useCallback(
-    (path: string, preserveParams = false) => {
-      if (state.hasUnsavedChanges && typeof window !== "undefined") {
-        const confirmLeave = window.confirm(
-          "You have unsaved changes. Are you sure you want to leave?",
-        );
-        if (!confirmLeave) {
-          return;
-        }
+  const navigateWithGuard = useCallback(
+    (to: string) => {
+      // The UnsavedChangesGuard (useBlocker) will intercept this if hasUnsavedChanges is true.
+      let finalPath = to;
+      if (state.queryParams.toString()) {
+        finalPath = `${to}?${state.queryParams.toString()}`;
       }
-
-      let finalPath = path;
-      if (preserveParams && state.queryParams.toString()) {
-        finalPath = `${path}?${state.queryParams.toString()}`;
-      }
-
       navigate(finalPath);
-      setCurrentModule(path.split("/")[2] || "dashboard");
+      setCurrentModule(to.split("/")[2] || "dashboard");
     },
-    [state.hasUnsavedChanges, state.queryParams, navigate, setCurrentModule],
+    [state.queryParams, navigate, setCurrentModule],
   );
 
   const value = useMemo(
@@ -95,7 +86,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setSidebarOpen,
       setHasUnsavedChanges,
       refreshData,
-      navigateWithState,
+      navigateWithGuard,
     }),
     [
       state,
@@ -105,7 +96,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setSidebarOpen,
       setHasUnsavedChanges,
       refreshData,
-      navigateWithState,
+      navigateWithGuard,
     ],
   );
 

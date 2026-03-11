@@ -85,11 +85,11 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-lg border bg-white p-4 dark:bg-background ${isDragging ? "shadow-lg" : ""}`}
+      className={`rounded-lg border bg-white/[0.03] p-4 ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-center gap-4">
         <button className="cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-muted-foreground/70" />
+          <GripVertical className="h-5 w-5 text-[#68869A]/70" />
         </button>
 
         <div className="flex flex-1 items-center gap-3">
@@ -332,7 +332,7 @@ export function AboutStatisticsTab() {
         </CardHeader>
         <CardContent>
           {sortedStatistics.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground">
+            <div className="py-12 text-center text-[#68869A]">
               No statistics yet. Add your first key metric!
             </div>
           ) : (

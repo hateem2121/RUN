@@ -9,10 +9,11 @@
  * @see client/app/components/admin/manufacturing/ProcessManagement.tsx
  */
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
- { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { describe, expect, test, vi, beforeEach } from "vitest";
+
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 // Mock the hooks
 const mockToast = vi.fn();
@@ -123,13 +124,7 @@ vi.mock("@/components/shared/manufacturing", () => ({
 }));
 
 vi.mock("@/components/admin/shared", () => ({
-  DeleteConfirmationDialog: ({
-    onConfirm,
-    title,
-  }: {
-    onConfirm: () => void;
-    title: string;
-  }) => (
+  DeleteConfirmationDialog: ({ onConfirm, title }: { onConfirm: () => void; title: string }) => (
     <button type="button" onClick={onConfirm} data-testid="delete-dialog">
       {title}
     </button>
@@ -189,9 +184,7 @@ describe("HeroManagement Component", () => {
 
   test("should render hero management form with all fields", async () => {
     // Dynamic import to apply mocks
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     const mockMediaAssets = [
       { id: 1, filename: "background.jpg", url: "/background.jpg" },
@@ -214,9 +207,7 @@ describe("HeroManagement Component", () => {
       isPending: true,
     });
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -244,9 +235,7 @@ describe("HeroManagement Component", () => {
       isPending: false,
     });
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -259,9 +248,7 @@ describe("HeroManagement Component", () => {
   test("should handle form input changes", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -275,9 +262,7 @@ describe("HeroManagement Component", () => {
   test("should submit form with updated data", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -293,9 +278,7 @@ describe("HeroManagement Component", () => {
   test("should open background media picker when button clicked", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -308,9 +291,7 @@ describe("HeroManagement Component", () => {
   test("should open video picker when button clicked", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -323,9 +304,7 @@ describe("HeroManagement Component", () => {
   test("should toggle active switch", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -339,9 +318,7 @@ describe("HeroManagement Component", () => {
   });
 
   test("should display bottom CTA fields", async () => {
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -602,9 +579,7 @@ describe("CMS to Page Data Flow Integration", () => {
   test("should invalidate queries after hero update", async () => {
     const user = userEvent.setup();
 
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -645,9 +620,7 @@ describe("CMS to Page Data Flow Integration", () => {
  */
 describe("CMS Component Accessibility", () => {
   test("HeroManagement should have proper form labels", async () => {
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 
@@ -676,9 +649,7 @@ describe("CMS Component Accessibility", () => {
   });
 
   test("Form submit buttons should have descriptive text", async () => {
-    const { HeroManagement } = await import(
-      "@/components/admin/manufacturing/HeroManagement"
-    );
+    const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
     render(createWrapper()(HeroManagement({ mediaAssets: [] })));
 

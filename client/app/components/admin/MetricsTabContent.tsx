@@ -2,10 +2,10 @@ import { closestCenter, DndContext, type SensorDescriptor } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/index";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { Eye, Plus } from "lucide-react";
+import { Eye, LayoutTemplate, Plus, Save, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogBody,
@@ -35,6 +35,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { IconDisplay, IconPicker } from "./shared/IconPicker";
 
 interface MetricFormData {
@@ -85,6 +86,7 @@ interface MetricsTabContentProps {
   }) => void;
   onSetMetricsPage: (page: number) => void;
 }
+
 export function MetricsTabContent({
   metrics,
   paginatedMetrics,
@@ -282,32 +284,38 @@ export function MetricsTabContent({
 
   return (
     <>
-      <TabsContent value="metrics" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Sustainability Metrics
-              <Button onClick={() => openMetricDialog()}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Metric
-              </Button>
-            </CardTitle>
-            <CardDescription>
-              Manage sustainability metrics with drag-and-drop reordering
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {metrics && metrics.length > 0 ? (
-              <>
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={onMetricDragEnd}
+      <TabsContent value="metrics" className="outline-none">
+        <GlassCard className="p-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                Real-Time Impact Metrics
+              </h2>
+              <p className="text-sm text-[#68869A]">
+                Quantify operational efficiency and ecosystem health through data
+              </p>
+            </div>
+            <Button
+              onClick={() => openMetricDialog()}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Initialise Metric
+            </Button>
+          </div>
+
+          {metrics && metrics.length > 0 ? (
+            <div className="space-y-6">
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={onMetricDragEnd}
+              >
+                <SortableContext
+                  items={paginatedMetrics.map((m) => m.id)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  <SortableContext
-                    items={paginatedMetrics.map((m) => m.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
+                  <div className="grid gap-3">
                     {paginatedMetrics.map((metric) => (
                       <SortableMetricItem
                         key={metric.id}
@@ -316,74 +324,108 @@ export function MetricsTabContent({
                         onDelete={(id) => deleteMetricMutation.mutate(id)}
                       />
                     ))}
-                  </SortableContext>
-                </DndContext>
-                {metricsTotalPages > 1 && (
-                  <div className="mt-6 flex justify-center">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            onClick={() => onSetMetricsPage(Math.max(1, metricsPage - 1))}
-                            className={
-                              metricsPage === 1
-                                ? "pointer-events-none opacity-50"
-                                : "cursor-pointer"
-                            }
-                          />
-                        </PaginationItem>
-                        {[...Array(metricsTotalPages)].map((_, i) => (
-                          <PaginationItem key={i}>
-                            <PaginationLink
-                              onClick={() => onSetMetricsPage(i + 1)}
-                              isActive={metricsPage === i + 1}
-                              className="cursor-pointer"
-                            >
-                              {i + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                          <PaginationNext
-                            onClick={() =>
-                              onSetMetricsPage(Math.min(metricsTotalPages, metricsPage + 1))
-                            }
-                            className={
-                              metricsPage === metricsTotalPages
-                                ? "pointer-events-none opacity-50"
-                                : "cursor-pointer"
-                            }
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="py-8 text-center text-muted-foreground">
-                No metrics yet. Create your first sustainability metric.
+                </SortableContext>
+              </DndContext>
+
+              {metricsTotalPages > 1 && (
+                <div className="mt-8 flex justify-center">
+                  <Pagination>
+                    <PaginationContent className="bg-white/5 border border-white/10 rounded-xl p-1">
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => onSetMetricsPage(Math.max(1, metricsPage - 1))}
+                          className={cn(
+                            "rounded-lg text-[#68869A] hover:bg-white/10 hover:text-white",
+                            metricsPage === 1 && "pointer-events-none opacity-30",
+                          )}
+                        />
+                      </PaginationItem>
+                      {[...Array(metricsTotalPages)].map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => onSetMetricsPage(i + 1)}
+                            isActive={metricsPage === i + 1}
+                            className={cn(
+                              "rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all",
+                              metricsPage === i + 1
+                                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/20"
+                                : "text-[#68869A] hover:bg-white/10",
+                            )}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() =>
+                            onSetMetricsPage(Math.min(metricsTotalPages, metricsPage + 1))
+                          }
+                          className={cn(
+                            "rounded-lg text-[#68869A] hover:bg-white/10 hover:text-white",
+                            metricsPage === metricsTotalPages && "pointer-events-none opacity-30",
+                          )}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="py-20 flex flex-col items-center justify-center text-center bg-white/[0.02] border border-dashed border-white/10 rounded-2xl">
+              <div className="size-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                <TrendingUp className="h-8 w-8 text-[#68869A]/40" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <h3 className="text-white font-bold mb-1">No Metrics Recorded</h3>
+              <p className="text-[#68869A] text-sm max-w-[280px]">
+                Operational data streams have not been initialised.
+              </p>
+            </div>
+          )}
+        </GlassCard>
       </TabsContent>
 
       {/* Metric Dialog */}
       <Dialog open={showMetricDialog} onOpenChange={setShowMetricDialog}>
-        <DialogContent contentType="form">
-          <DialogHeader>
-            <DialogTitle>{editingMetric ? "Edit Metric" : "Add New Metric"}</DialogTitle>
-            <DialogDescription>
-              {editingMetric
-                ? "Update the sustainability metric details"
-                : "Create a new sustainability metric"}
+        <DialogContent
+          contentType="form"
+          className="max-w-2xl bg-[#0A0A0A] border-white/10 p-0 overflow-hidden rounded-[32px] shadow-2xl ring-1 ring-white/10"
+        >
+          <DialogHeader className="p-8 pb-0">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <div className="size-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <TrendingUp className="h-5 w-5" />
+                </div>
+                <DialogTitle className="text-xl font-bold text-white tracking-tight">
+                  {editingMetric ? "Refine Metric" : "New Ecosystem Metric"}
+                </DialogTitle>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowMetricDialog(false)}
+                className="rounded-full hover:bg-white/5 text-[#68869A]"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <DialogDescription className="text-[#68869A] ml-13">
+              Configure operational parameters to track global environmental impact.
             </DialogDescription>
           </DialogHeader>
-          <DialogBody>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="category">Category</Label>
+
+          <DialogBody className="p-8 space-y-6">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="category"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Impact Sector
+                </Label>
                 <Select
                   value={metricForm.category}
                   onValueChange={(value) => {
@@ -392,29 +434,35 @@ export function MetricsTabContent({
                   }}
                 >
                   <SelectTrigger
-                    className={
-                      !metricValidation.category.isValid
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }
+                    className={cn(
+                      "bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50",
+                      !metricValidation.category.isValid && "border-red-500/50 bg-red-500/5",
+                    )}
                   >
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Select Sector" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Energy">Energy</SelectItem>
-                    <SelectItem value="Water">Water</SelectItem>
-                    <SelectItem value="Waste">Waste</SelectItem>
-                    <SelectItem value="Carbon">Carbon</SelectItem>
-                    <SelectItem value="Materials">Materials</SelectItem>
-                    <SelectItem value="Social">Social</SelectItem>
+                  <SelectContent className="bg-[#121212] border-white/10 text-white">
+                    <SelectItem value="Energy">Energy Efficiency</SelectItem>
+                    <SelectItem value="Water">Water Stewardship</SelectItem>
+                    <SelectItem value="Waste">Waste Minimisation</SelectItem>
+                    <SelectItem value="Carbon">Carbon Footprint</SelectItem>
+                    <SelectItem value="Materials">Sustainable Materials</SelectItem>
+                    <SelectItem value="Social">Social Compliance</SelectItem>
                   </SelectContent>
                 </Select>
                 {!metricValidation.category.isValid && (
-                  <p className="mt-1 text-red-500 text-sm">{metricValidation.category.message}</p>
+                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                    {metricValidation.category.message}
+                  </p>
                 )}
               </div>
-              <div>
-                <Label htmlFor="metric">Metric Name</Label>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="metric"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Metric Definition
+                </Label>
                 <Input
                   id="metric"
                   value={metricForm.metric}
@@ -425,162 +473,214 @@ export function MetricsTabContent({
                     }));
                     validateMetricForm("metric");
                   }}
-                  onBlur={() => validateMetricForm("metric")}
-                  placeholder="e.g., Energy Consumption"
-                  className={
-                    !metricValidation.metric.isValid
-                      ? "border-red-500 focus-visible:ring-red-500"
-                      : ""
-                  }
+                  placeholder="e.g., Solar Power Utilisation"
+                  className={cn(
+                    "bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20",
+                    !metricValidation.metric.isValid && "border-red-500/50 bg-red-500/5",
+                  )}
                 />
                 {!metricValidation.metric.isValid && (
-                  <p className="mt-1 text-red-500 text-sm">{metricValidation.metric.message}</p>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="value">Value</Label>
-                  <Input
-                    id="value"
-                    value={metricForm.value}
-                    onChange={(e) => {
-                      setMetricForm((prev) => ({
-                        ...prev,
-                        value: e.target.value,
-                      }));
-                      validateMetricForm("value");
-                    }}
-                    onBlur={() => validateMetricForm("value")}
-                    placeholder="e.g., 25"
-                    className={
-                      !metricValidation.value.isValid
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }
-                  />
-                  {!metricValidation.value.isValid && (
-                    <p className="mt-1 text-red-500 text-sm">{metricValidation.value.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="unit">Unit</Label>
-                  <Input
-                    id="unit"
-                    value={metricForm.unit}
-                    onChange={(e) => {
-                      setMetricForm((prev) => ({
-                        ...prev,
-                        unit: e.target.value,
-                      }));
-                      validateMetricForm("unit");
-                    }}
-                    onBlur={() => validateMetricForm("unit")}
-                    placeholder="e.g., kWh"
-                    className={
-                      !metricValidation.unit.isValid
-                        ? "border-red-500 focus-visible:ring-red-500"
-                        : ""
-                    }
-                  />
-                  {!metricValidation.unit.isValid && (
-                    <p className="mt-1 text-red-500 text-sm">{metricValidation.unit.message}</p>
-                  )}
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={metricForm.description}
-                  onChange={(e) => {
-                    setMetricForm((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }));
-                    validateMetricForm("description");
-                  }}
-                  onBlur={() => validateMetricForm("description")}
-                  placeholder="Describe this metric..."
-                  className={
-                    !metricValidation.description.isValid
-                      ? "border-red-500 focus-visible:ring-red-500"
-                      : ""
-                  }
-                />
-                {!metricValidation.description.isValid && (
-                  <p className="mt-1 text-red-500 text-sm">
-                    {metricValidation.description.message}
+                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                    {metricValidation.metric.message}
                   </p>
                 )}
               </div>
-              <div>
-                <Label>Icon Selection</Label>
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="flex items-center gap-2 rounded-lg border bg-background p-3">
-                    <IconDisplay iconName={metricForm.icon} showBackground={true} />
-                    <span className="font-medium text-sm">{metricForm.icon || "Leaf"}</span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowMetricIconPicker(true)}
-                    className="px-4"
-                  >
-                    Choose Icon
-                  </Button>
-                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="value"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Current Magnitude
+                </Label>
+                <Input
+                  id="value"
+                  value={metricForm.value}
+                  onChange={(e) => {
+                    setMetricForm((prev) => ({
+                      ...prev,
+                      value: e.target.value,
+                    }));
+                    validateMetricForm("value");
+                  }}
+                  placeholder="e.g., 85"
+                  className={cn(
+                    "bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20",
+                    !metricValidation.value.isValid && "border-red-500/50 bg-red-500/5",
+                  )}
+                />
+                {!metricValidation.value.isValid && (
+                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                    {metricValidation.value.message}
+                  </p>
+                )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="metric-active"
-                    checked={metricForm.isActive}
-                    onCheckedChange={(checked) =>
-                      setMetricForm((prev) => ({ ...prev, isActive: checked }))
-                    }
-                  />
-                  <Label htmlFor="metric-active" className="font-medium text-sm">
-                    Active
+              <div className="space-y-2">
+                <Label
+                  htmlFor="unit"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Unit of Measure
+                </Label>
+                <Input
+                  id="unit"
+                  value={metricForm.unit}
+                  onChange={(e) => {
+                    setMetricForm((prev) => ({
+                      ...prev,
+                      unit: e.target.value,
+                    }));
+                    validateMetricForm("unit");
+                  }}
+                  placeholder="e.g., % of total output"
+                  className={cn(
+                    "bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20",
+                    !metricValidation.unit.isValid && "border-red-500/50 bg-red-500/5",
+                  )}
+                />
+                {!metricValidation.unit.isValid && (
+                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                    {metricValidation.unit.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="description"
+                className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+              >
+                Supporting Context
+              </Label>
+              <Textarea
+                id="description"
+                value={metricForm.description}
+                onChange={(e) => {
+                  setMetricForm((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }));
+                  validateMetricForm("description");
+                }}
+                placeholder="Elaborate on the significance of this metric within the ecosystem..."
+                rows={4}
+                className={cn(
+                  "bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
+                  !metricValidation.description.isValid && "border-red-500/50 bg-red-500/5",
+                )}
+              />
+              {!metricValidation.description.isValid && (
+                <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                  {metricValidation.description.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                Visual Symbology
+              </Label>
+              <div className="flex items-center gap-4">
+                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <IconDisplay iconName={metricForm.icon} />
+                  </div>
+                  <span className="text-sm font-bold text-white tracking-tight">
+                    {metricForm.icon || "Leaf"}
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowMetricIconPicker(true)}
+                  className="h-16 px-6 rounded-xl border border-white/10 text-[#68869A] hover:bg-white/5 font-bold uppercase text-[10px] tracking-widest"
+                >
+                  Configure Symbol
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                <div className="flex flex-col gap-0.5">
+                  <Label
+                    htmlFor="metric-active"
+                    className="text-sm font-bold text-white tracking-tight"
+                  >
+                    Active Protocol
                   </Label>
+                  <p className="text-[10px] text-[#68869A] uppercase font-bold tracking-widest">
+                    Visibility in Dashboard
+                  </p>
                 </div>
-                <div>
-                  <Label htmlFor="position">Display Position</Label>
-                  <Input
-                    id="position"
-                    type="number"
-                    min="1"
-                    value={metricForm.position || ""}
-                    onChange={(e) =>
-                      setMetricForm((prev) => ({
-                        ...prev,
-                        position: parseInt(e.target.value, 10) || 1,
-                      }))
-                    }
-                    placeholder="1"
-                  />
-                </div>
+                <Switch
+                  id="metric-active"
+                  checked={metricForm.isActive}
+                  onCheckedChange={(checked) =>
+                    setMetricForm((prev) => ({ ...prev, isActive: checked }))
+                  }
+                  className="data-[state=checked]:bg-emerald-600"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="position"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Priority Index
+                </Label>
+                <Input
+                  id="position"
+                  type="number"
+                  min="1"
+                  value={metricForm.position || ""}
+                  onChange={(e) =>
+                    setMetricForm((prev) => ({
+                      ...prev,
+                      position: parseInt(e.target.value, 10) || 1,
+                    }))
+                  }
+                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20"
+                  placeholder="1"
+                />
               </div>
             </div>
           </DialogBody>
-          <DialogFooter>
-            <div className="flex w-full justify-between">
+
+          <DialogFooter className="p-8 pt-0 border-0 bg-transparent">
+            <div className="flex w-full items-center justify-between gap-4">
               <Button
-                variant="secondary"
+                variant="ghost"
                 onClick={() => setShowMetricPreview(true)}
-                className="flex items-center gap-2"
+                className="h-12 px-6 rounded-xl text-[#68869A] hover:bg-white/5 font-bold uppercase text-[10px] tracking-widest"
               >
-                <Eye className="h-4 w-4" />
-                Preview
+                <Eye className="mr-2 h-4 w-4" />
+                Live Preview
               </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setShowMetricDialog(false)}>
+              <div className="flex gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowMetricDialog(false)}
+                  className="h-12 px-6 rounded-xl text-[#68869A] hover:bg-white/5 font-bold uppercase text-[10px] tracking-widest"
+                >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleMetricSubmit}
                   disabled={createMetricMutation.isPending || updateMetricMutation.isPending}
+                  className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
                 >
-                  {editingMetric ? "Update" : "Create"} Metric
+                  {createMetricMutation.isPending || updateMetricMutation.isPending ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />
+                  ) : editingMetric ? (
+                    <Save className="h-4 w-4 mr-2" />
+                  ) : (
+                    <Plus className="h-4 w-4 mr-2" />
+                  )}
+                  {editingMetric ? "Sync Metric" : "Initialise Metric"}
                 </Button>
               </div>
             </div>
@@ -590,49 +690,65 @@ export function MetricsTabContent({
 
       {/* Metric Preview Modal */}
       <Dialog open={showMetricPreview} onOpenChange={setShowMetricPreview}>
-        <DialogContent contentType="form">
-          <DialogHeader>
-            <DialogTitle>Metric Preview</DialogTitle>
-            <DialogDescription>
-              This is how your metric will appear on the sustainability page
-            </DialogDescription>
+        <DialogContent
+          contentType="form"
+          className="max-w-md bg-[#0A0A0A] border-white/10 p-0 overflow-hidden rounded-[32px] shadow-2xl ring-1 ring-white/10"
+        >
+          <DialogHeader className="p-8 pb-4">
+            <div className="items-center gap-2 mb-2 p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 inline-flex w-fit mx-auto">
+              <LayoutTemplate className="h-4 w-4 text-emerald-400" />
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                Mobile Viewport Simulation
+              </span>
+            </div>
+            <DialogTitle className="text-xl font-bold text-white tracking-tight text-center">
+              Protocol Preview
+            </DialogTitle>
           </DialogHeader>
-          <div className="rounded-lg border-2 border-border border-dashed bg-background p-6">
-            <div className="rounded-xl bg-white p-6 shadow-lg">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                    <IconDisplay iconName={metricForm.icon} className="text-green-600" />
-                  </div>
+
+          <div className="px-8 pb-8 flex justify-center">
+            <div className="aspect-[9/16] w-full max-w-[280px] rounded-[32px] border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-transparent to-black z-0" />
+
+              <div className="relative z-10 space-y-8 flex flex-col items-center text-center">
+                <div className="size-20 rounded-[28%] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+                  <IconDisplay iconName={metricForm.icon} className="size-10" />
                 </div>
-                <div className="flex-1">
-                  <div className="mb-2 flex items-center gap-2">
-                    <span className="rounded bg-muted px-2 py-1 font-medium text-muted-foreground text-sm">
-                      {metricForm.category || "Category"}
+
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                      {metricForm.category || "Environmental Impact"}
                     </span>
+                    <h3 className="text-2xl font-bold text-white tracking-tight leading-tight pt-2">
+                      {metricForm.metric || "Sustainable Protocol"}
+                    </h3>
                   </div>
-                  <h3 className="mb-1 font-semibold text-foreground text-lg">
-                    {metricForm.metric || "Metric Name"}
-                  </h3>
-                  <div className="mb-3 flex items-baseline gap-2">
-                    <span className="font-bold text-3xl text-green-600">
+
+                  <div className="flex items-baseline justify-center gap-1.5 pt-2">
+                    <span className="text-5xl font-bold text-white tracking-tighter shadow-emerald-500/20">
                       {metricForm.value || "0"}
                     </span>
-                    <span className="text-lg text-muted-foreground">
-                      {metricForm.unit || "unit"}
+                    <span className="text-base font-bold text-white/40 uppercase tracking-widest">
+                      {metricForm.unit || "N/A"}
                     </span>
                   </div>
-                  <p className="text-foreground/80 text-sm leading-relaxed">
+
+                  <p className="text-[10px] text-white/50 leading-relaxed line-clamp-4 max-w-[200px]">
                     {metricForm.description ||
-                      "Add a description to explain this metric and its impact on sustainability goals."}
+                      "Comprehensive operational data stream representing a critical ecosystem milestone."}
                   </p>
                 </div>
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowMetricPreview(false)}>
-              Close Preview
+
+          <DialogFooter className="p-8 pt-0 border-0">
+            <Button
+              onClick={() => setShowMetricPreview(false)}
+              className="w-full h-12 rounded-xl bg-white/5 border border-white/10 text-white font-bold uppercase text-[10px] tracking-widest hover:bg-white/10"
+            >
+              Terminate Preview
             </Button>
           </DialogFooter>
         </DialogContent>

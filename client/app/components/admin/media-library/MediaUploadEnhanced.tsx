@@ -339,7 +339,7 @@ const UploadItem = React.memo(
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
           );
         default:
-          return <Icon className="text-muted-foreground h-4 w-4" />;
+          return <Icon className="text-[#68869A] h-4 w-4" />;
       }
     };
 
@@ -354,14 +354,14 @@ const UploadItem = React.memo(
     };
 
     return (
-      <div className="bg-muted/50 flex items-center justify-between rounded-lg p-3">
+      <div className="bg-white/[0.03] flex items-center justify-between rounded-lg p-3 border border-white/5">
         <div className="flex flex-1 items-center gap-3">
           <div className="shrink-0">{getStatusIcon()}</div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="truncate text-sm font-medium">{item.file.name}</p>
-              <Badge variant="outline" className="text-xs">
+              <p className="truncate text-sm font-medium text-[#E3DFD6]">{item.file.name}</p>
+              <Badge variant="outline" className="text-xs border-white/10 text-[#68869A]">
                 {formatFileSize(item.file.size)}
               </Badge>
             </div>
@@ -369,7 +369,7 @@ const UploadItem = React.memo(
             {item.status === "uploading" && (
               <div className="mt-1">
                 <Progress value={item.progress} className="h-1" />
-                <div className="text-muted-foreground mt-1 flex justify-between text-xs">
+                <div className="text-[#68869A] mt-1 flex justify-between text-xs">
                   <span>{item.progress.toFixed(1)}% uploaded</span>
                   <div className="flex gap-2">
                     {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
@@ -385,15 +385,13 @@ const UploadItem = React.memo(
               <div className="mt-1">
                 <p className="text-xs text-red-500">{item.errorMessage}</p>
                 {item.retryCount && item.retryCount > 0 && (
-                  <p className="text-muted-foreground text-xs">
-                    Retry attempts: {item.retryCount}/3
-                  </p>
+                  <p className="text-[#68869A] text-xs">Retry attempts: {item.retryCount}/3</p>
                 )}
               </div>
             )}
 
             {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
-              <p className="text-muted-foreground mt-1 text-xs">
+              <p className="text-[#68869A] mt-1 text-xs">
                 Queued • Position: {queueManager.getQueuePosition(item.id)}
               </p>
             )}
@@ -1004,9 +1002,11 @@ export function MediaUploadEnhanced() {
       {/* Upload area */}
       <div
         className={cn(
-          "cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors",
-          isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25",
-          hasActiveUploads && "opacity-50",
+          "cursor-pointer rounded-xl border border-dashed p-10 flex flex-col items-center justify-center transition-all bg-white/[0.02]",
+          isDragging
+            ? "border-primary bg-primary/5"
+            : "border-white/10 hover:border-white/20 hover:bg-white/[0.04]",
+          hasActiveUploads && "opacity-50 pointer-events-none",
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -1029,16 +1029,23 @@ export function MediaUploadEnhanced() {
           aria-label="Upload media files"
         />
 
-        <div className="flex flex-col items-center gap-2">
-          <Upload className="text-muted-foreground h-8 w-8" />
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="h-12 w-12 rounded-full bg-white/[0.05] flex items-center justify-center mb-2">
+            <Upload className="text-[#68869A] h-6 w-6" />
+          </div>
           <div>
-            <p className="text-sm font-medium">
-              {isDragging ? "Drop files here" : "Drag and drop files here"}
+            <p className="text-base font-medium text-[#E3DFD6]">
+              {isDragging ? "Drop files here" : "Drag & drop files or click to browse"}
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">or click to select files</p>
+            <p className="text-[#68869A] mt-1 text-sm">Supports GLB, PNG, JPG, MP4 up to 50MB</p>
           </div>
 
-          <Button variant="outline" size="sm" disabled={hasActiveUploads}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={hasActiveUploads}
+            className="mt-2 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+          >
             Select Files
           </Button>
         </div>
@@ -1088,7 +1095,7 @@ export function MediaUploadEnhanced() {
       {/* Overall progress */}
       {hasActiveUploads && (
         <div className="text-center">
-          <div className="text-muted-foreground inline-flex items-center gap-2 text-sm">
+          <div className="text-[#68869A] inline-flex items-center gap-2 text-sm">
             <div className="border-primary h-4 w-4 animate-spin rounded-full border-b-2"></div>
             Processing uploads...
           </div>

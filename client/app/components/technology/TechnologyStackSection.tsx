@@ -1,11 +1,11 @@
-import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import type { InnovationVM, EquipmentVM } from "@shared/viewmodels";
 import type { MediaAsset } from "@shared/index";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import type { EquipmentVM, InnovationVM } from "@shared/viewmodels";
+import { AnimatePresence, motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,7 +48,7 @@ export function TechnologyStackSection({
     }, cardsRef);
 
     return () => ctx.revert();
-  }, [activeTab]);
+  }, []);
 
   // GSAP count-up animation for stat values
   React.useEffect(() => {
@@ -63,7 +63,7 @@ export function TechnologyStackSection({
         const suffix = el.getAttribute("data-suffix") || "";
         const prefix = el.getAttribute("data-prefix") || "";
         const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
-        
+
         if (Number.isNaN(numericValue)) return;
 
         gsap.from(el, {
@@ -76,7 +76,7 @@ export function TechnologyStackSection({
           duration: 1.5,
           ease: "power2.out",
           snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
-          onUpdate: function () {
+          onUpdate: () => {
             const current = parseFloat(el.textContent || "0");
             el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
           },
@@ -148,7 +148,10 @@ export function TechnologyStackSection({
       </div>
 
       {/* Cards Grid — Stitch 3-column bento */}
-      <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 auto-rows-fr">
+      <div
+        ref={cardsRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 auto-rows-fr"
+      >
         {/* Featured Innovation Card — 2-col span */}
         {featured && (activeTab === "all" || activeTab === "innovations") && (
           <div className="lg:col-span-2 lab-card group flex flex-col md:flex-row border-l-4 !border-l-[#0047AB] dark:!border-l-[#00D4FF] bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-transparent dark:border-white/[0.08] shadow-lg dark:shadow-none overflow-hidden rounded-xl">
@@ -158,7 +161,10 @@ export function TechnologyStackSection({
               {featured.videoId && getMediaUrl(featured.videoId) ? (
                 <video
                   src={getMediaUrl(featured.videoId) || undefined}
-                  autoPlay loop muted playsInline
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:scale-110 transition-transform duration-1000 dark:mix-blend-luminosity dark:opacity-60 dark:group-hover:opacity-80"
                 />
               ) : featured.imageId && getMediaUrl(featured.imageId) ? (
@@ -174,7 +180,9 @@ export function TechnologyStackSection({
                 <>
                   <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-40 dark:opacity-20"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-8xl text-[#0047AB] dark:text-[#00D4FF] opacity-10">science</span>
+                    <span className="material-symbols-outlined text-8xl text-[#0047AB] dark:text-[#00D4FF] opacity-10">
+                      science
+                    </span>
                   </div>
                 </>
               )}
@@ -192,19 +200,29 @@ export function TechnologyStackSection({
               <div className="grid grid-cols-2 gap-8 border-t border-slate-100 dark:border-white/10 pt-8 mt-auto">
                 <div>
                   <span className="micro-copy block mb-1">Airflow</span>
-                  <span className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup" data-target="98" data-suffix="%">
+                  <span
+                    className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup"
+                    data-target="98"
+                    data-suffix="%"
+                  >
                     98%
                   </span>
                 </div>
                 <div>
                   <span className="micro-copy block mb-1">Weight</span>
-                  <span className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup" data-target="15" data-prefix="-" data-suffix="g">
+                  <span
+                    className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup"
+                    data-target="15"
+                    data-prefix="-"
+                    data-suffix="g"
+                  >
                     -15g
                   </span>
                 </div>
               </div>
               <div className="mt-8 flex items-center gap-2 text-[#0047AB] dark:text-[#00D4FF] font-bold text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity dark:drop-shadow-[0_0_5px_rgba(0,212,255,0.8)]">
-                View Details <span className="material-symbols-outlined text-sm">arrow_outward</span>
+                View Details{" "}
+                <span className="material-symbols-outlined text-sm">arrow_outward</span>
               </div>
             </div>
           </div>
@@ -221,7 +239,10 @@ export function TechnologyStackSection({
             className="contents"
           >
             {filteredItems.innovations.map((innovation) => (
-              <div key={`inn-${innovation.id}`} className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow">
+              <div
+                key={`inn-${innovation.id}`}
+                className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow"
+              >
                 <div className="scan-line"></div>
                 <div>
                   <div className="flex justify-between items-start mb-6">
@@ -248,7 +269,10 @@ export function TechnologyStackSection({
 
             {/* Equipment Cards */}
             {filteredItems.equipment.map((equip) => (
-              <div key={`eq-${equip.id}`} className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow !border-l-4 !border-l-slate-200 dark:!border-l-slate-700 hover:!border-l-[#0047AB] dark:hover:!border-l-[#00D4FF]">
+              <div
+                key={`eq-${equip.id}`}
+                className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow !border-l-4 !border-l-slate-200 dark:!border-l-slate-700 hover:!border-l-[#0047AB] dark:hover:!border-l-[#00D4FF]"
+              >
                 <div className="scan-line"></div>
                 <div>
                   <div className="flex justify-between items-start mb-6">
@@ -263,7 +287,8 @@ export function TechnologyStackSection({
                     {equip.name}
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-[#E3DFD6] leading-relaxed font-light font-helvetica">
-                    {equip.brand}{equip.model && ` / ${equip.model}`}
+                    {equip.brand}
+                    {equip.model && ` / ${equip.model}`}
                   </p>
                 </div>
                 <div className="border-t border-slate-100 dark:border-white/10 pt-6 mt-8 flex justify-between items-end">

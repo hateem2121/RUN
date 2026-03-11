@@ -1,15 +1,20 @@
 import { memo, useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { FloatingDockSkeleton } from "./floating-dock-skeleton";
 import ResponsiveNavigation from "./responsive-navigation";
 
 const FloatingDockHeader = memo(function FloatingDockHeader() {
   const [mounted, setMounted] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (location.pathname.startsWith("/admin")) {
+    return null;
+  }
 
   if (!mounted) {
     return (

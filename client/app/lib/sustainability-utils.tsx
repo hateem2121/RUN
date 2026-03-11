@@ -1,5 +1,5 @@
-import type { JSX } from "react";
 import { Droplets, Leaf, Recycle, Target, TreePine, Wind } from "lucide-react";
+import type { JSX } from "react";
 
 type IconSize = "sm" | "md" | "lg";
 

@@ -1,20 +1,8 @@
-// import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Atom,
-  Cpu,
-  Dna,
-  Edit,
-  FlaskConical,
-  GripVertical,
-  Lightbulb,
-  Microscope,
-} from "lucide-react";
+import { Edit2, Layers, Trash2 } from "lucide-react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 // Types
 interface ResearchProject {
@@ -26,16 +14,12 @@ interface ResearchProject {
 interface TechnologyResearch {
   id: number;
   title: string;
-  description?: string | undefined;
+  description?: string;
+  researchArea?: string;
+  status?: "Planning" | "In Progress" | "Testing" | "Completed" | "Ongoing";
   currentProjects?: ResearchProject[];
-  publications?: string[];
-  partners?: string[];
-  outcomes?: string[];
-  icon?: string | undefined;
-  imageId?: number | null;
-  videoId?: number | null;
-  isActive?: boolean | undefined;
-  position?: number | undefined;
+  isActive?: boolean;
+  position?: number;
 }
 
 interface SortableResearchItemProps {
@@ -45,118 +29,125 @@ interface SortableResearchItemProps {
 }
 
 export function SortableResearchItem({ research, onEdit, onDelete }: SortableResearchItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: research.id,
   });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto",
   };
 
-  const IconComponent =
-    {
-      Microscope,
-      Flask: FlaskConical,
-      Atom,
-      Dna,
-      Lightbulb,
-      Cpu,
-    }[research.icon || "Microscope"] || Microscope;
+  const statusConfig = {
+    Ongoing: {
+      color: "bg-[#00D4FF]",
+      label: "Active Research",
+      badge: "bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20",
+    },
+    "In Progress": {
+      color: "bg-[#00D4FF]",
+      label: "In Progress",
+      badge: "bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20",
+    },
+    Completed: {
+      color: "bg-emerald-500",
+      label: "Completed",
+      badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    },
+    Planning: {
+      color: "bg-slate-600",
+      label: "Planned",
+      badge: "bg-slate-700 text-slate-400 border-slate-600",
+    },
+    Testing: {
+      color: "bg-amber-500",
+      label: "Testing",
+      badge: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    },
+  }[research.status || "Ongoing"] || {
+    color: "bg-slate-600",
+    label: research.status || "Unknown",
+    badge: "bg-slate-700 text-slate-400 border-slate-600",
+  };
 
   return (
-    <div ref={setNodeRef} style={style} className="admin-sortable-card">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-1 items-start gap-4">
-          <div
-            {...attributes}
-            {...listeners}
-            className="mt-1 cursor-move text-muted-foreground/70 hover:text-muted-foreground"
+    // biome-ignore lint: Dynamic inline style required for dnd-kit
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group relative flex items-center gap-6 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:bg-white/[0.06] hover:border-[#00D4FF]/30 backdrop-blur-xl"
+    >
+      {/* Status Accent Bar */}
+      <div
+        className={cn(
+          "h-16 w-1.5 shrink-0 rounded-full transition-all group-hover:shadow-[0_0_15px_rgba(0,212,255,0.4)]",
+          statusConfig.color,
+          statusConfig.color.includes("00D4FF") && "group-hover:shadow-[#00D4FF]",
+        )}
+      />
+
+      <div className="flex-1 min-w-0 font-display">
+        <div className="flex items-center gap-3 mb-1">
+          <h4 className="text-lg font-bold text-white tracking-wide truncate">{research.title}</h4>
+          <span
+            className={cn(
+              "rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest",
+              statusConfig.badge,
+            )}
           >
-            <GripVertical className="h-5 w-5" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-purple-100 p-2">
-                <IconComponent className="h-5 w-5 text-purple-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium text-foreground">{research.title}</h4>
-                {research.description && (
-                  <p className="mt-1 text-muted-foreground text-sm">{research.description}</p>
-                )}
-                {research.currentProjects && research.currentProjects.length > 0 && (
-                  <div className="mt-2">
-                    <p className="font-medium text-muted-foreground text-xs">Current Projects:</p>
-                    {research.currentProjects.slice(0, 2).map((project, index) => (
-                      <div key={index} className="mt-1 flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">{project.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`rounded px-1.5 py-0.5 text-xs ${
-                              project.status === "Completed"
-                                ? "bg-green-100 text-green-700"
-                                : project.status === "In Progress"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : project.status === "Testing"
-                                    ? "bg-yellow-100 text-yellow-700"
-                                    : "bg-muted text-foreground/80"
-                            }`}
-                          >
-                            {project.status}
-                          </span>
-                          <div className="w-12">
-                            <Progress value={project.progress} className="h-1" />
-                          </div>
-                          <span className="text-muted-foreground">{project.progress}%</span>
-                        </div>
-                      </div>
-                    ))}
-                    {research.currentProjects.length > 2 && (
-                      <p className="mt-1 text-muted-foreground text-xs">
-                        +{research.currentProjects.length - 2} more projects
-                      </p>
-                    )}
-                  </div>
-                )}
-                <div className="mt-2 flex flex-wrap gap-4 text-muted-foreground text-xs">
-                  {research.publications && research.publications.length > 0 && (
-                    <span>
-                      📚 {research.publications.length} publication
-                      {research.publications.length !== 1 ? "s" : ""}
-                    </span>
-                  )}
-                  {research.partners && research.partners.length > 0 && (
-                    <span>
-                      🤝 {research.partners.length} partner
-                      {research.partners.length !== 1 ? "s" : ""}
-                    </span>
-                  )}
-                  {research.outcomes && research.outcomes.length > 0 && (
-                    <span>
-                      🎯 {research.outcomes.length} outcome
-                      {research.outcomes.length !== 1 ? "s" : ""}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+            {statusConfig.label}
+          </span>
         </div>
-        <div className="ml-4 flex items-start gap-2">
-          <Badge variant={research.isActive ? "default" : "secondary"}>
-            {research.isActive ? "Active" : "Inactive"}
-          </Badge>
-          <Button size="sm" variant="ghost" onClick={() => onEdit(research)}>
-            <Edit className="h-4 w-4" />
-          </Button>
-          <DeleteConfirmationDialog
-            onConfirm={() => onDelete(research.id)}
-            title="Delete Research"
-            description={`Are you sure you want to delete "${research.title}"? This action cannot be undone.`}
-            triggerClassName="text-red-600 hover:text-red-700"
-          />
+
+        {research.researchArea && (
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#00D4FF]/70">
+            Focus: {research.researchArea}
+          </p>
+        )}
+
+        <p className="line-clamp-2 max-w-2xl text-sm leading-relaxed text-[#E3DFD6]/60">
+          {research.description ||
+            "Experimental research initiative exploring advanced material properties and biomechanical integration for high-performance footwear."}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-2">
+        {/* Drag Handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="flex h-10 w-10 cursor-grab items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-white active:cursor-grabbing"
+          aria-label="Drag to reorder"
+        >
+          <Layers className="h-5 w-5" />
         </div>
+
+        <button
+          onClick={() => onEdit(research)}
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
+          title="Edit item"
+          aria-label="Edit item"
+        >
+          <Edit2 className="h-5 w-5" />
+        </button>
+
+        <DeleteConfirmationDialog
+          onConfirm={() => onDelete(research.id)}
+          title="Archive Research"
+          description="Are you sure you want to deprioritize and archive this research initiative?"
+          trigger={
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-rose-500/10 hover:text-rose-500"
+              title="Delete item"
+              aria-label="Delete item"
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
+          }
+        />
       </div>
     </div>
   );

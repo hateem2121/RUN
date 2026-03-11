@@ -17,7 +17,7 @@ export function FactoryGallery() {
       // Clamp index between 1 and total slides to avoid bugs
       setCurrentIndex(Math.min(Math.max(1, newIndex), totalSlides));
     }
-  }, [totalSlides]);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;

@@ -3,7 +3,7 @@ import { Activity, Award, ChevronDown, ChevronUp, Edit, Globe, Trash2, Zap } fro
 import type React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { parseNumericValue } from "./types";
 
@@ -25,8 +25,8 @@ export const FabricCard: React.FC<FabricCardProps> = ({
   certificates,
 }) => {
   return (
-    <Card className="transition-all duration-200 hover:shadow-lg">
-      <CardContent className="p-6">
+    <Card className="glass-premium transition-all duration-200 hover:border-white/20">
+      <div className="p-6">
         {/* Always visible summary */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -89,12 +89,12 @@ export const FabricCard: React.FC<FabricCardProps> = ({
         </div>
 
         {/* Basic info always visible */}
-        <p className="text-muted-foreground mb-4">{fabric.description}</p>
+        <p className="text-[#68869A] mb-4">{fabric.description}</p>
 
         {/* Expandable detailed view */}
         <Collapsible open={isExpanded} onOpenChange={() => onToggleExpand(fabric.id)}>
           <CollapsibleContent>
-            <div className="grid grid-cols-1 gap-6 border-t pt-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 border-t border-white/5 pt-4 lg:grid-cols-3">
               {/* Basic Information */}
               <div className="space-y-4">
                 <div>
@@ -115,7 +115,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                       )}
                     </div>
                   </div>
-                  <p className="text-muted-foreground">{fabric.description}</p>
+                  <p className="text-[#68869A]">{fabric.description}</p>
                 </div>
 
                 {/* Classification */}
@@ -164,7 +164,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {fabric.weight && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Weight:</span>
+                      <span className="text-[#68869A]">Weight:</span>
                       <Badge
                         variant={(() => {
                           const weight = parseNumericValue(fabric.weight);
@@ -185,7 +185,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                   )}
                   {fabric.properties?.yarnCountConstruction && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Construction:</span>
+                      <span className="text-[#68869A]">Construction:</span>
                       <span className="text-xs font-medium">
                         {fabric.properties?.yarnCountConstruction}
                       </span>
@@ -197,7 +197,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 {fabric.properties?.performanceFeatures &&
                   fabric.properties.performanceFeatures.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-muted-foreground text-sm">Performance Features:</span>
+                      <span className="text-[#68869A] text-sm">Performance Features:</span>
                       <div className="flex flex-wrap gap-1">
                         {fabric.properties.performanceFeatures.map(
                           (feature: string, idx: number) => (
@@ -218,27 +218,33 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 {/* Technical Metrics */}
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   {fabric.properties?.stretchPercentage && (
-                    <div className="rounded bg-blue-50 p-2">
-                      <div className="text-muted-foreground">Stretch</div>
-                      <div className="font-semibold">{fabric.properties.stretchPercentage}%</div>
+                    <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-2">
+                      <div className="text-[#68869A]">Stretch</div>
+                      <div className="font-semibold text-white">
+                        {fabric.properties.stretchPercentage}%
+                      </div>
                     </div>
                   )}
                   {fabric.properties?.airPermeability && (
-                    <div className="rounded bg-green-50 p-2">
-                      <div className="text-muted-foreground">Air Perm.</div>
-                      <div className="font-semibold">{fabric.properties.airPermeability} mm/s</div>
+                    <div className="rounded-lg bg-green-500/10 border border-green-500/20 p-2">
+                      <div className="text-[#68869A]">Air Perm.</div>
+                      <div className="font-semibold text-white">
+                        {fabric.properties.airPermeability} mm/s
+                      </div>
                     </div>
                   )}
                   {fabric.properties?.waterColumn && (
-                    <div className="rounded bg-purple-50 p-2">
-                      <div className="text-muted-foreground">Waterproof</div>
-                      <div className="font-semibold">{fabric.properties.waterColumn} mm</div>
+                    <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 p-2">
+                      <div className="text-[#68869A]">Waterproof</div>
+                      <div className="font-semibold text-white">
+                        {fabric.properties.waterColumn} mm
+                      </div>
                     </div>
                   )}
                   {fabric.sustainabilityScore && (
-                    <div className="rounded bg-emerald-50 p-2">
-                      <div className="text-muted-foreground">Sustainability</div>
-                      <div className="font-semibold">
+                    <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-2">
+                      <div className="text-[#68869A]">Sustainability</div>
+                      <div className="font-semibold text-white">
                         {"★".repeat(parseNumericValue(fabric.sustainabilityScore) || 0)}
                       </div>
                     </div>
@@ -248,7 +254,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
 
               {/* Actions */}
               <div className="space-y-4">
-                <div className="space-y-2 border-t pt-4">
+                <div className="space-y-2 border-t border-white/5 pt-4">
                   <Button
                     variant="outline"
                     size="sm"
@@ -272,7 +278,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
             </div>
           </CollapsibleContent>
         </Collapsible>
-      </CardContent>
+      </div>
     </Card>
   );
 };

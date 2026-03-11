@@ -1,4 +1,3 @@
-import type { Request, Response } from "express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies

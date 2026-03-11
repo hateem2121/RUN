@@ -11,6 +11,11 @@ import type { SessionUser } from "../types/session.js";
  */
 export function requireRole(...allowedRoles: string[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    // 0. Development bypass
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
+
     // 1. Authentication check
     if (!req.isAuthenticated() || !req.user) {
       return res.status(401).json({ error: "Unauthorized" });

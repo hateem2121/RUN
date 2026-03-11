@@ -17,9 +17,9 @@ const MediaViewerModal = React.lazy(() =>
 
 import type { MediaAsset } from "@shared/index";
 import { AlertTriangle, PanelLeft, RefreshCw } from "lucide-react";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { cn } from "@/lib/utils";
@@ -37,25 +37,25 @@ import type { FallbackProps } from "react-error-boundary";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
-    <Card className="border-red-200 bg-red-50">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-red-800">
+    <GlassCard className="border-red-500/30">
+      <div className="px-5 pt-4 pb-1">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-red-400">
           <AlertTriangle className="h-5 w-5" />
           Media Library Error
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div className="px-5 pb-5">
         <div className="space-y-4">
-          <div className="text-red-700 text-sm">
+          <div className="text-red-400/80 text-sm">
             <p className="mb-2 font-medium">Something went wrong:</p>
-            <p className="rounded-md bg-red-100 p-3 font-mono text-xs">
+            <p className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 font-mono text-xs text-red-400">
               {error instanceof Error ? error.message : String(error)}
             </p>
           </div>
 
           <div className="space-y-2">
-            <p className="font-medium text-red-600 text-sm">Recovery Options:</p>
-            <ul className="space-y-1 text-red-600 text-sm">
+            <p className="font-medium text-red-400 text-sm">Recovery Options:</p>
+            <ul className="space-y-1 text-[#68869A] text-sm">
               <li>• Try refreshing the page</li>
               <li>• Clear browser cache</li>
               <li>• Check internet connection</li>
@@ -68,7 +68,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
               onClick={resetErrorBoundary}
               variant="outline"
               size="sm"
-              className="border-red-200 text-red-700 hover:bg-red-50"
+              className="border-red-500/30 text-red-400 hover:bg-red-500/10"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
               Try Again
@@ -83,14 +83,14 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
               }}
               variant="outline"
               size="sm"
-              className="border-red-200 text-red-700 hover:bg-red-50"
+              className="border-red-500/30 text-red-400 hover:bg-red-500/10"
             >
               Refresh Page
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </GlassCard>
   );
 }
 
@@ -99,8 +99,8 @@ function LoadingFallback() {
   return (
     <div className="center-flex p-8">
       <div className="text-center">
-        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-primary border-b-2"></div>
-        <p className="text-muted-foreground text-sm">Loading media library...</p>
+        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-blue-500 border-b-2"></div>
+        <p className="text-[#68869A] text-sm">Loading media library...</p>
       </div>
     </div>
   );
@@ -223,11 +223,11 @@ export function MediaLibraryContainerEnhanced({
 
   const content = (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="shrink-0 border-b bg-card">
+      <div className="shrink-0 border-b border-white/5">
         <div className="flex items-center justify-between p-4">
           <div>
-            <h2 className="font-bold text-2xl tracking-tight">Media Library</h2>
-            <p className="text-muted-foreground text-sm">
+            <h2 className="text-3xl font-bold tracking-tight text-white">Media Library</h2>
+            <p className="text-sm text-[#68869A]">
               Manage your brand assets and sustainable storytelling media.
             </p>
           </div>
@@ -237,15 +237,18 @@ export function MediaLibraryContainerEnhanced({
               size="sm"
               onClick={handleDatabaseCleanup}
               disabled={isCleaningUp}
-              className="hidden sm:flex"
+              className="hidden sm:flex border border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
             >
               <RefreshCw className={cn("mr-2 h-4 w-4", isCleaningUp && "animate-spin")} />
               {isCleaningUp ? "Cleaning..." : "Sync & Repair"}
             </Button>
             {!isStandalone && (
               <div className="flex items-center gap-2">
-                <Separator orientation="vertical" className="h-4" />
-                <Badge variant="outline" className="bg-primary/5 text-primary">
+                <Separator orientation="vertical" className="h-4 bg-white/10" />
+                <Badge
+                  variant="outline"
+                  className="bg-blue-500/10 text-blue-400 border-blue-500/30"
+                >
                   Selection Active
                 </Badge>
               </div>
@@ -312,11 +315,11 @@ function MediaLibraryMainContent({
       {state.showFiltersPanel && (
         <>
           {/* Desktop sidebar */}
-          <div className="hidden w-80 border-r bg-card transition-all duration-300 ease-in-out lg:block">
+          <div className="hidden w-80 border-r border-white/5 bg-white/[0.02] transition-all duration-300 ease-in-out lg:block">
             <ErrorBoundary
               FallbackComponent={({ resetErrorBoundary }) => (
                 <div className="p-4 text-center">
-                  <p className="mb-2 text-red-600 text-sm">Filter panel error</p>
+                  <p className="mb-2 text-red-400 text-sm">Filter panel error</p>
                   <Button size="sm" onClick={resetErrorBoundary}>
                     Reset
                   </Button>
@@ -345,14 +348,14 @@ function MediaLibraryMainContent({
               aria-modal="true"
               aria-labelledby="filters-panel-title"
               tabIndex={-1}
-              className="fixed inset-y-0 left-0 w-80 max-w-md bg-card shadow-xl sm:max-w-lg"
+              className="fixed inset-y-0 left-0 w-80 max-w-md bg-[#121212] shadow-xl sm:max-w-lg border-r border-white/5"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
             >
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <div className="p-4 text-center">
-                    <p className="mb-2 text-red-600 text-sm">Filter panel error</p>
+                    <p className="mb-2 text-red-400 text-sm">Filter panel error</p>
                     <Button size="sm" onClick={resetErrorBoundary}>
                       Reset
                     </Button>
@@ -372,7 +375,7 @@ function MediaLibraryMainContent({
       <div className={cn("flex min-h-0 min-w-0 flex-1 flex-col")}>
         {/* Show filters toggle when panel is hidden */}
         {!state.showFiltersPanel && (
-          <div className="shrink-0 border-b bg-card p-2">
+          <div className="shrink-0 border-b border-white/5 p-2">
             <Button
               variant="outline"
               size="sm"
@@ -389,11 +392,11 @@ function MediaLibraryMainContent({
         <div className={cn("flex min-h-0 flex-1 flex-col")}>
           {/* Enhanced upload section - hidden in selection mode */}
           {!selectionMode && (
-            <div className="shrink-0 border-b bg-card">
+            <div className="shrink-0 border-b border-white/5">
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <div className="p-4 text-center">
-                    <p className="mb-2 text-red-600 text-sm">Upload handler error</p>
+                    <p className="mb-2 text-red-400 text-sm">Upload handler error</p>
                     <Button size="sm" onClick={resetErrorBoundary}>
                       Reset
                     </Button>
@@ -419,7 +422,7 @@ function MediaLibraryMainContent({
             <ErrorBoundary
               FallbackComponent={({ resetErrorBoundary }) => (
                 <div className="p-8 text-center">
-                  <p className="mb-4 text-red-600 text-sm">Media grid error</p>
+                  <p className="mb-4 text-red-400 text-sm">Media grid error</p>
                   <Button onClick={resetErrorBoundary}>Reset Grid</Button>
                 </div>
               )}
@@ -439,7 +442,7 @@ function MediaLibraryMainContent({
       {/* CRITICAL FIX: Add MediaViewerModal - was imported but never rendered */}
       <ErrorBoundary
         FallbackComponent={({ resetErrorBoundary }) => (
-          <div className="p-4 text-center text-red-600">
+          <div className="p-4 text-center text-red-400">
             <p className="mb-2 text-sm">Media viewer error</p>
             <Button size="sm" onClick={resetErrorBoundary}>
               Reset

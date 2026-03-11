@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Technology Management - Run Apparel CMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00D4FF",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0a0e14",
+                        "card-dark": "#161b22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 212, 255, 0.2);
+        }
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 bg-primary rounded flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined font-bold">apparel</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">Run Apparel</h2>
+</div>
+<nav class="flex-1 px-4 space-y-8 overflow-y-auto pt-4">
+<!-- Dashboard Group -->
+<div>
+<p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">General</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+</div>
+</div>
+<!-- Content Group -->
+<div>
+<p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Content</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">article</span>
+<span class="text-sm font-medium">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">image</span>
+<span class="text-sm font-medium">Media Gallery</span>
+</a>
+</div>
+</div>
+<!-- Catalog Group -->
+<div>
+<p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Catalog</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+<span class="text-sm font-medium">Products</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">category</span>
+<span class="text-sm font-medium">Categories</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span class="text-sm font-medium">Inventory</span>
+</a>
+</div>
+</div>
+<!-- System Group -->
+<div>
+<p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">System</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20" href="#">
+<span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
+<span class="text-sm font-medium">Technology</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-sm font-medium">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</div>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-100 dark:bg-slate-800/50">
+<div class="size-8 rounded-full bg-slate-300 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi2-FY1uRwLQ0zt4CcscOc_49XITsAN0WfyDHmJ0j0hGgjkW0NZfWEid5gP5lKPYKfDF5L9x5pIGXi-w6E9rtSOu1zC4wwzJtREfqDO8QeTKZG30yJzu_SsRr_nQ7AF0gwwRMvqKti8aWpo_UxdGkB2sQ_hX3TWLtyMWKBJDPDEK0mfjddUFCN4TkKvhA8ra2fiOg3VAcDQrFtf6vLtLrWjH-scOaDe9rpDbiS227lSpqtVbmlffDjnulGtpBY-KSM9Lok0J8SjZ0"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold truncate">Alex Chen</p>
+<p class="text-[10px] text-slate-400 truncate">System Admin</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">more_vert</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-slate-50 dark:bg-background-dark/50">
+<!-- Top Nav -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+<div class="flex items-center gap-6">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-1 focus:ring-primary/50 placeholder:text-slate-500" placeholder="Search equipment..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 dark:border-slate-800 mx-2"></div>
+<button class="bg-primary hover:bg-primary/90 text-background-dark font-bold text-xs px-4 py-2 rounded-lg flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                        NEW EQUIPMENT
+                    </button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-8 max-w-[1440px] mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col gap-2 mb-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">precision_manufacturing</span>
+<h1 class="text-3xl font-black tracking-tight uppercase">Technology <span class="text-primary">Management</span></h1>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm max-w-2xl">Advanced manufacturing ecosystem control. Monitor software licenses, hardware status, and quality assurance instrumentation across the global production network.</p>
+</div>
+<!-- Tabs -->
+<div class="flex border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto">
+<a class="px-6 py-4 text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Overview</a>
+<a class="px-6 py-4 text-sm font-bold text-primary border-b-2 border-primary bg-primary/5" href="#">Equipment</a>
+<a class="px-6 py-4 text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Software Licenses</a>
+<a class="px-6 py-4 text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Maintenance Logs</a>
+</div>
+<!-- Equipment Grid -->
+<div class="equipment-grid">
+<!-- Card 1: CLO 3D -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Abstract 3D digital garment visualization" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpvoH6nDc_Mu6i9ao-OA7uhcUd5kHqguhMbwn434eyhNRE1QEFHwkJ0A38KtwosF2WyhEDvPpFES71N2u86Hk_JGniFiwKO6sAlg-BFToMPThuF4mY_unlpLa88ppEOalqy-fgC4a_oYyDC1vk9o0An6WBfOfm5FlEmwaASxam06YrE2vHctkWgVtavKlP9172mD3e42SSNyZpdIm06FvywbDD0PXd8O78hdgXLvxFDTWWS9xxODHDysMhJtCWCT5OPu-YoekjXsw"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Software</span>
+<span class="flex items-center gap-1 text-[10px] text-green-400 font-medium">
+<span class="size-1.5 rounded-full bg-green-400 animate-pulse"></span> ACTIVE
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">CLO 3D</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">High-fidelity 3D garment visualization and real-time simulation for design validation and digital sampling.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">v7.2 Pro</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Multi-user</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Render Farm</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Optitex -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Technical pattern making software interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCmi7GqL1yluYYD3YQwnhcG74EZKHI5wuwrR6qUWMHQDnsfIVdFvfUjQjfZI1aLzXPoheyBH2J6BkVQedmyPW1N-fSwC35b9vVMJXnKzhexP6wf4HzFrEWMpeu_qNNTycV1R9uNNfpSDimtZHIy6r20yzdU9ZmfPxjaa7AKaV35ey0bHcwWvOfs5JW7CnoklxX7z6u_g77hT7JWbtoE0JZ4XRAifkhzPmoPgYyQDF82OxvB2wQuSEjgFM95QQvaFc_BYtxLPOyEz4"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Software</span>
+<span class="flex items-center gap-1 text-[10px] text-green-400 font-medium">
+<span class="size-1.5 rounded-full bg-green-400"></span> ACTIVE
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">Optitex</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">Integrated 2D/3D pattern making, grading, and marker making suite for apparel manufacturing optimization.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">v2024.1</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">PDS 2D</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Cloud Grading</span>
+</div>
+</div>
+</div>
+<!-- Card 3: CNC Cutting Machine -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Industrial CNC fabric cutting machine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMIEj1DOuOSm5HJWK25MV8iFgCSA9brnJ4tqMSpXN1yHNHhaWZ0RcINUnY1zpW2dPz_jBvVt6dP5rWDHrpLWFKkKHeXqiffOonahOK-qUui2fVBuq-n4oKonPnTMgVWfBtLSdMdiaO2eRrgkc7M7BUU2Jn6cNWW_kl3FanhUlsMGjriEKU1dfAmjzyoBFIq0dk0b2yUbYKnq_DE7j0lB_AOPTkEb5TWheAM2M3toOsBENvVHkyMyHxF4vWXEE9GJtQJMIaVvGMKC0"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Hardware</span>
+<span class="flex items-center gap-1 text-[10px] text-orange-400 font-medium">
+<span class="size-1.5 rounded-full bg-orange-400"></span> BUSY
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">CNC Cutting Machine</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">High-precision automated fabric cutting system with vacuum bed and multi-tool head integration.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Station 04</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">120m/min</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Laser Nav</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Digital Embroidery Machine -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Multi-head digital embroidery machine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK2VS6fQlY0Nzw_6yKfc0P6bUVeYrsADpiVHTRcMebeN9m12EW_JUtsJA4q2aHD4owWI5TOeAb-P36YANmfscBiHuYx2XvhdHQ-iDDASHgh8hgvUIGDppbshtQgAOQqkjofW01QvyJS_iFtFvQo2pmo3AM8lDmUq8S_s7zQFUrO1HFfnJsVu5GUQKyCuEMTO6ABjHHcQalhjPnrmOJOFP1PW1ATtpwBHDCFAympUaYZ7QEXc9OdFmppp_eC_z41ERMyp7jj3mH9nE"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Hardware</span>
+<span class="flex items-center gap-1 text-[10px] text-green-400 font-medium">
+<span class="size-1.5 rounded-full bg-green-400"></span> ACTIVE
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">Digital Embroidery Machine</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">Multi-head industrial digital embroidery system with automated thread trimming and sequence management.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Unit 12</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">12-Head</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">WIFISync</span>
+</div>
+</div>
+</div>
+<!-- Card 5: 3D Body Scanner -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High tech body scanner lab" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXQIBOlWGxO-nK95wCthKlf2Dzi5utYQTmX6x8LfMeUmN-9-XBJc11zuyg_W2JpgGVCXTRAJ11OjeYkUAQ8wx9-0NKShDIEm42VuL_ooSV5H-ROGOBcGGg4CUx5fBhfQhi7dOBkc8kFoWuAFWtsUYFt8LhxO-x040nxx6AjwGvVMCVXfsTsYOjeF3seCm0E2uPXsqYbaThxpKq44niG6aY8TzNVyiAD8yH6Lslu13GZX8aecMWXcVEKIlTXcAW6sDoDxWwnah7N_k"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Hardware</span>
+<span class="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
+<span class="size-1.5 rounded-full bg-slate-400"></span> OFFLINE
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">3D Body Scanner</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">Full-body 3D scanning station for precise anatomical measurement and custom-fit pattern generation.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Lab 01</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">0.5mm Accuracy</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">LiDAR</span>
+</div>
+</div>
+</div>
+<!-- Card 6: Tensile Testing Equipment -->
+<div class="glass-card rounded-xl overflow-hidden group relative flex flex-col">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="size-8 rounded-lg bg-background-dark/80 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="h-40 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-[1]"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Laboratory tensile testing machine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlMAsV_qlGoGuEHFDnR1FTFDmP_TSMITN4mZvgJgmJSAXOmNDKjwiy3g8iu73OZ4jZ9FT76RlziM3jl9Wg51kRsgqtniv35dUJWhkYcnzLL8aqjLNknJAAwrqv-DyXwk9gdd4wUz7IcHK5PjH5fM_tXYwK8fx3E0bsE5LIQi1fojXfntHLNgEm2EeJP2usLtI0jgAo5WgPlStwWc2Nnx9IpPwOXEgEJysai4CSKICghl4PurUNma8Z2XsZKoCORctu5jrNHw-Rtvw"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-primary/20 text-primary border border-primary/30">Quality</span>
+<span class="flex items-center gap-1 text-[10px] text-green-400 font-medium">
+<span class="size-1.5 rounded-full bg-green-400"></span> CALIBRATED
+                                </span>
+</div>
+<h3 class="text-lg font-bold mb-1">Tensile Testing Equipment</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">Material strength and durability testing apparatus for evaluating fabric burst, stretch, and recovery.</p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">Quality Lab</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">5kN Load Cell</span>
+<span class="px-2 py-1 bg-slate-800 rounded-md text-[10px] text-slate-300">ASTM Compliant</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="mt-12 grid grid-cols-4 gap-4 p-6 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-background-dark/30">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Total Assets</p>
+<p class="text-2xl font-black">124</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Hardware Health</p>
+<p class="text-2xl font-black text-green-400">98.2%</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">License Expiry (30d)</p>
+<p class="text-2xl font-black text-orange-400">3</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">System Uptime</p>
+<p class="text-2xl font-black text-primary">99.99%</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

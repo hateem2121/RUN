@@ -185,11 +185,7 @@ const parseEnvironment = () => {
 
 // Validated environment configuration
 export let env: z.infer<typeof environmentSchema>;
-try {
-  env = parseEnvironment();
-} catch (e) {
-  throw e;
-}
+env = parseEnvironment();
 
 // Environment utilities
 export const isDevelopment = env.NODE_ENV === "development";

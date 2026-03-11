@@ -16,6 +16,7 @@ import {
   Recycle,
   Save,
   Target,
+  Trash2,
   TreePine,
   TrendingUp,
   Undo2,
@@ -29,6 +30,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminSustainabilityData } from "@/hooks/use-admin-sustainability-data";
 import { useAdminSustainabilityMutations } from "@/hooks/use-admin-sustainability-mutations";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { CallToActionTabContent } from "./CallToActionTabContent";
 import { CertificationsTabContent } from "./CertificationsTabContent";
 import { FabricPortfolioTabContent } from "./FabricPortfolioTabContent";
@@ -39,14 +41,7 @@ import { InitiativesTabContent } from "./InitiativesTabContent";
 import { SectionHeadersTabContent } from "./SectionHeadersTabContent";
 import { MetricsTabContent } from "./sustainability/metrics-tab";
 
-// Sortable item components (Keeping these local as they are used by other tabs still using the old pattern if any, but MetricsTab now handles its own)
-// Wait, MetricsTab uses SortableMetricItem which was moved inside it?
-// No, the new MetricsTabContent has SortableMetricItem passed as prop?
-// The new MetricsTabContent I wrote defined SortableMetricItem internally or expected it as prop?
-// Checking my previous write_to_file...
-// The new MetricsTabContent I wrote accepts SortableMetricItem as a prop.
-// So I should keep the definition here.
-
+// Sortable item components standardized with Stitch aesthetics
 const SortableMetricItem = memo(function SortableMetricItem({
   metric,
   onEdit,
@@ -77,39 +72,55 @@ const SortableMetricItem = memo(function SortableMetricItem({
     }[metric.iconName || "Leaf"] || Leaf;
 
   return (
-    <div ref={setNodeRef} style={style} className="admin-sortable-card">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div
-            {...attributes}
-            {...listeners}
-            className="text-muted-foreground/70 hover:text-muted-foreground cursor-move"
-          >
-            <GripVertical className="h-5 w-5" />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-green-100 p-2">
-              <IconComponent className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <h4 className="text-foreground font-medium">{metric.name}</h4>
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                <span className="font-semibold">
-                  {metric.value} {metric.unit}
-                </span>
-                <span className="bg-muted rounded-full px-2 py-0.5 text-xs">{metric.category}</span>
-              </div>
-            </div>
+    // biome-ignore lint: Dynamic inline style required for dnd-kit
+    <div ref={setNodeRef} style={style} className="group relative">
+      <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
+
+        <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+          <IconComponent className="size-5 text-emerald-400" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h4 className="font-bold text-white tracking-tight truncate">{metric.name}</h4>
+          <div className="flex items-center gap-3 mt-0.5">
+            <span className="text-emerald-400 font-bold text-sm">
+              {metric.value} {metric.unit}
+            </span>
+            <span className="text-[10px] uppercase tracking-widest text-[#68869A] font-bold">
+              {metric.category}
+            </span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => onEdit(metric)}>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(metric)}
+            className="size-8 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400"
+          >
             <Edit className="h-4 w-4" />
           </Button>
           <DeleteConfirmationDialog
             onConfirm={() => onDelete(metric.id)}
             title="Delete Metric"
             description="Are you sure you want to delete this sustainability metric?"
+            trigger={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-8 rounded-lg hover:bg-red-500/10 hover:text-red-400"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            }
           />
         </div>
       </div>
@@ -135,50 +146,53 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
     transition,
   };
 
-  const IconComponent =
-    {
-      Leaf,
-      Droplets,
-      Wind,
-      Recycle,
-      TreePine,
-      Target,
-      TrendingUp,
-    }.Leaf || Leaf;
-
   return (
-    <div ref={setNodeRef} style={style} className="admin-sortable-card">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-1 items-start gap-4">
-          <div
-            {...attributes}
-            {...listeners}
-            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
-          >
-            <GripVertical className="h-5 w-5" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-green-100 p-2">
-                <IconComponent className="h-5 w-5 text-green-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-foreground font-medium">{initiative.title}</h4>
-                {initiative.description && (
-                  <p className="text-muted-foreground mt-2 text-sm">{initiative.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
+    // biome-ignore lint: Dynamic inline style required for dnd-kit
+    <div ref={setNodeRef} style={style} className="group relative">
+      <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+        <div
+          {...attributes}
+          {...listeners}
+          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+        >
+          <GripVertical className="h-5 w-5" />
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => onEdit(initiative)}>
+
+        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+          <Leaf className="size-6 text-emerald-400" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h4 className="font-bold text-white tracking-tight truncate mb-1">{initiative.title}</h4>
+          {initiative.description && (
+            <p className="text-[#68869A] text-sm leading-relaxed line-clamp-2">
+              {initiative.description}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(initiative)}
+            className="size-8 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400"
+          >
             <Edit className="h-4 w-4" />
           </Button>
           <DeleteConfirmationDialog
             onConfirm={() => onDelete(initiative.id)}
             title="Delete Initiative"
             description="Are you sure you want to delete this sustainability initiative?"
+            trigger={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-8 rounded-lg hover:bg-red-500/10 hover:text-red-400"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            }
           />
         </div>
       </div>
@@ -198,6 +212,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: goal.id });
 
   const style = {
+    // biome-ignore lint: Dynamic inline style required for dnd-kit
     transform: CSS.Transform.toString(transform),
     transition,
   };
@@ -208,57 +223,82 @@ const SortableGoalItem = memo(function SortableGoalItem({
       : 0;
 
   return (
-    <div ref={setNodeRef} style={style} className="admin-sortable-card">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-1 items-start gap-4">
-          <div
-            {...attributes}
-            {...listeners}
-            className="text-muted-foreground/70 hover:text-muted-foreground mt-1 cursor-move"
-          >
-            <GripVertical className="h-5 w-5" />
+    <div ref={setNodeRef} style={style} className="group relative">
+      <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+        <div
+          {...attributes}
+          {...listeners}
+          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
+
+        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+          <Target className="size-6 text-emerald-400" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-2">
+            <h4 className="font-bold text-white tracking-tight truncate">{goal.title}</h4>
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-md">
+              Target: {goal.targetYear || "TBD"}
+            </span>
           </div>
-          <div className="flex-1">
-            <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-blue-100 p-2">
-                <Target className="h-5 w-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-foreground font-medium">{goal.title}</h4>
-                <div className="mt-2 flex items-center gap-4">
-                  <div className="text-muted-foreground text-sm">
-                    <span className="font-semibold">{goal.currentValue}</span> /{" "}
-                    <span>{goal.targetValue}</span> {goal.unit}
-                  </div>
-                  <div className="bg-muted rounded-full px-2 py-0.5 text-xs">
-                    Target: {goal.targetYear || "TBD"}
-                  </div>
-                  <div
-                    className={`rounded-full px-2 py-0.5 text-xs ${
-                      progressPercentage >= 100
-                        ? "bg-green-100 text-green-700"
-                        : progressPercentage >= 75
-                          ? "bg-blue-100 text-blue-700"
-                          : progressPercentage >= 50
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {progressPercentage}%
-                  </div>
-                </div>
-              </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-[#68869A]">
+                <span className="text-white font-bold">{goal.currentValue}</span> /{" "}
+                {goal.targetValue}{" "}
+                <span className="text-[10px] uppercase font-bold text-white/40 ml-1">
+                  {goal.unit}
+                </span>
+              </span>
+              <span
+                className={cn(
+                  "font-bold uppercase tracking-widest text-[10px]",
+                  progressPercentage >= 100 ? "text-emerald-400" : "text-emerald-400/70",
+                )}
+              >
+                {progressPercentage}% Complete
+              </span>
+            </div>
+            <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+              <div
+                className={cn(
+                  "h-full transition-all duration-1000",
+                  progressPercentage >= 100
+                    ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                    : "bg-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.3)]",
+                )}
+                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+              />
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => onEdit(goal)}>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(goal)}
+            className="size-8 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400"
+          >
             <Edit className="h-4 w-4" />
           </Button>
           <DeleteConfirmationDialog
             onConfirm={() => onDelete(goal.id)}
             title="Delete Goal"
             description="Are you sure you want to delete this sustainability goal?"
+            trigger={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-8 rounded-lg hover:bg-red-500/10 hover:text-red-400"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            }
           />
         </div>
       </div>
@@ -267,11 +307,8 @@ const SortableGoalItem = memo(function SortableGoalItem({
 });
 
 export function UnifiedSustainabilityManagement() {
-  // No default export needed for UnifiedSustainabilityManagement as it is already a named export.
-
   const { toast } = useToast();
 
-  // URL Param logic for active tab
   const getTabFromUrl = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.search);
     return searchParams.get("tab") || "hero";
@@ -280,7 +317,6 @@ export function UnifiedSustainabilityManagement() {
   const [activeTab, setActiveTab] = useState(getTabFromUrl);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
-  // Sync state with URL when tab changes
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     const searchParams = new URLSearchParams(window.location.search);
@@ -289,7 +325,6 @@ export function UnifiedSustainabilityManagement() {
     window.history.pushState({}, "", newUrl);
   };
 
-  // Listen to popstate (back/forward) to sync tab
   useEffect(() => {
     const handlePopState = () => {
       setActiveTab(getTabFromUrl());
@@ -298,14 +333,9 @@ export function UnifiedSustainabilityManagement() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [getTabFromUrl]);
 
-  // Local form state to prevent auto-saving on every keystroke
   const [localForm, setLocalForm] = useState<Partial<UnifiedSustainability>>({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // Note: Individual tab components manage their own dialog/form/editing states internally
-
-  // Initiative validation state
-  // Use data and pagination hook
   const {
     isLoading,
     unifiedData,
@@ -331,8 +361,6 @@ export function UnifiedSustainabilityManagement() {
     setGoalsPage,
   } = pagination;
 
-  // Note: Validation logic now handled within individual tab components
-  // Drag and drop sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -340,7 +368,6 @@ export function UnifiedSustainabilityManagement() {
     }),
   );
 
-  // Sync server data to local form state
   const resetForm = useCallback(() => {
     if (unifiedData) {
       const mappedData: Partial<UnifiedSustainability> = {
@@ -364,7 +391,6 @@ export function UnifiedSustainabilityManagement() {
     resetForm();
   }, [resetForm]);
 
-  // Use mutations hook
   const mutations = useAdminSustainabilityMutations();
   const updateMutation = mutations.updateConfig;
 
@@ -374,132 +400,73 @@ export function UnifiedSustainabilityManagement() {
   };
 
   const handleSave = () => {
-    // Map localForm fields to database schema
     const cleanedData: Partial<UnifiedSustainability> = {};
 
-    // Core fields (database columns)
-    if (localForm.title !== undefined) {
-      cleanedData.title = localForm.title;
-    }
-    if (localForm.content !== undefined) {
-      cleanedData.content = localForm.content;
-    }
-    if (localForm.isActive !== undefined) {
-      cleanedData.isActive = localForm.isActive;
-    }
-
-    // Hero section fields (database columns at top-level, not in data JSONB)
-    // These are stored in localForm.data['']* by UI but need to go to top-level columns
-    if (localForm.data?.headline !== undefined) {
-      cleanedData.headline = localForm.data.headline;
-    }
-    if (localForm.data?.subheadline !== undefined) {
+    if (localForm.title !== undefined) cleanedData.title = localForm.title;
+    if (localForm.content !== undefined) cleanedData.content = localForm.content;
+    if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
+    if (localForm.data?.headline !== undefined) cleanedData.headline = localForm.data.headline;
+    if (localForm.data?.subheadline !== undefined)
       cleanedData.subheadline = localForm.data.subheadline;
-    }
-    if (localForm.data?.backgroundMediaId !== undefined) {
+    if (localForm.data?.backgroundMediaId !== undefined)
       cleanedData.backgroundImageId = localForm.data.backgroundMediaId;
-    }
-    if (localForm.data?.ctaText !== undefined) {
-      cleanedData.ctaText = localForm.data.ctaText;
-    }
-    if (localForm.data?.ctaLink !== undefined) {
-      cleanedData.ctaLink = localForm.data.ctaLink;
-    }
-
-    // Features Section
-    if (localForm.featuresTitle !== undefined) {
-      cleanedData.featuresTitle = localForm.featuresTitle;
-    }
-    if (localForm.featuresDescription !== undefined) {
+    if (localForm.data?.ctaText !== undefined) cleanedData.ctaText = localForm.data.ctaText;
+    if (localForm.data?.ctaLink !== undefined) cleanedData.ctaLink = localForm.data.ctaLink;
+    if (localForm.featuresTitle !== undefined) cleanedData.featuresTitle = localForm.featuresTitle;
+    if (localForm.featuresDescription !== undefined)
       cleanedData.featuresDescription = localForm.featuresDescription;
-    }
-
-    // Fabric Portfolio Section
-    if (localForm.fabricPortfolioTitle !== undefined) {
+    if (localForm.fabricPortfolioTitle !== undefined)
       cleanedData.fabricPortfolioTitle = localForm.fabricPortfolioTitle;
-    }
-    if (localForm.fabricPortfolioDescription !== undefined) {
+    if (localForm.fabricPortfolioDescription !== undefined)
       cleanedData.fabricPortfolioDescription = localForm.fabricPortfolioDescription;
-    }
-
-    // Call To Action Section
-    if (localForm.callToActionTitle !== undefined) {
+    if (localForm.callToActionTitle !== undefined)
       cleanedData.callToActionTitle = localForm.callToActionTitle;
-    }
-    if (localForm.callToActionDescription !== undefined) {
+    if (localForm.callToActionDescription !== undefined)
       cleanedData.callToActionDescription = localForm.callToActionDescription;
-    }
-    if (localForm.callToActionButtonText !== undefined) {
+    if (localForm.callToActionButtonText !== undefined)
       cleanedData.callToActionButtonText = localForm.callToActionButtonText;
-    }
-    if (localForm.callToActionButtonLink !== undefined) {
+    if (localForm.callToActionButtonLink !== undefined)
       cleanedData.callToActionButtonLink = localForm.callToActionButtonLink;
-    }
-
-    // Section Headers
-    if (localForm.metricsTitle !== undefined) {
-      cleanedData.metricsTitle = localForm.metricsTitle;
-    }
-    if (localForm.metricsDescription !== undefined) {
+    if (localForm.metricsTitle !== undefined) cleanedData.metricsTitle = localForm.metricsTitle;
+    if (localForm.metricsDescription !== undefined)
       cleanedData.metricsDescription = localForm.metricsDescription;
-    }
-    if (localForm.certificationsTitle !== undefined) {
+    if (localForm.certificationsTitle !== undefined)
       cleanedData.certificationsTitle = localForm.certificationsTitle;
-    }
-    if (localForm.certificationsDescription !== undefined) {
+    if (localForm.certificationsDescription !== undefined)
       cleanedData.certificationsDescription = localForm.certificationsDescription;
-    }
-    if (localForm.certificationsFooterNote !== undefined) {
+    if (localForm.certificationsFooterNote !== undefined)
       cleanedData.certificationsFooterNote = localForm.certificationsFooterNote;
-    }
-    if (localForm.initiativesTitle !== undefined) {
+    if (localForm.initiativesTitle !== undefined)
       cleanedData.initiativesTitle = localForm.initiativesTitle;
-    }
-    if (localForm.initiativesDescription !== undefined) {
+    if (localForm.initiativesDescription !== undefined)
       cleanedData.initiativesDescription = localForm.initiativesDescription;
-    }
-    if (localForm.goalsTitle !== undefined) {
-      cleanedData.goalsTitle = localForm.goalsTitle;
-    }
-    if (localForm.goalsDescription !== undefined) {
+    if (localForm.goalsTitle !== undefined) cleanedData.goalsTitle = localForm.goalsTitle;
+    if (localForm.goalsDescription !== undefined)
       cleanedData.goalsDescription = localForm.goalsDescription;
-    }
 
-    // Certification IDs (database column, JSONB array)
     if (localForm.data?.certificationIds !== undefined) {
       cleanedData.certificationIds = localForm.data.certificationIds;
     }
 
-    // JSONB data field - legacy/extra fields
     const dataFields: Record<string, any> = {};
-    if (localForm.data?.highlightedFeatures !== undefined) {
+    if (localForm.data?.highlightedFeatures !== undefined)
       dataFields.highlightedFeatures = localForm.data.highlightedFeatures;
-    }
-    if (localForm.data?.statistics !== undefined && localForm.data.statistics !== null) {
+    if (localForm.data?.statistics !== undefined && localForm.data.statistics !== null)
       dataFields.statistics = localForm.data.statistics;
-    }
     if (
       localForm.data?.impactMetrics &&
       typeof localForm.data.impactMetrics === "object" &&
       localForm.data.impactMetrics !== null
-    ) {
+    )
       dataFields.impactMetrics = localForm.data.impactMetrics;
-    }
-    if (localForm.data?.initiatives !== undefined && localForm.data.initiatives !== null) {
+    if (localForm.data?.initiatives !== undefined && localForm.data.initiatives !== null)
       dataFields.initiatives = localForm.data.initiatives;
-    }
-    if (localForm.data?.goals !== undefined && localForm.data.goals !== null) {
+    if (localForm.data?.goals !== undefined && localForm.data.goals !== null)
       dataFields.goals = localForm.data.goals;
-    }
-    if (localForm.data?.selectedFabricIds !== undefined) {
+    if (localForm.data?.selectedFabricIds !== undefined)
       dataFields.selectedFabricIds = localForm.data.selectedFabricIds;
-    }
 
-    if (Object.keys(dataFields).length > 0) {
-      cleanedData.data = dataFields;
-    }
-
-    // REMOVED: metrics JSONB column update (use sustainability_metrics table instead)
+    if (Object.keys(dataFields).length > 0) cleanedData.data = dataFields;
 
     updateMutation.mutate(cleanedData, {
       onSuccess: () => {
@@ -509,18 +476,10 @@ export function UnifiedSustainabilityManagement() {
           description: "Sustainability settings have been successfully updated.",
         });
       },
-      onError: () => {
-        toast({
-          title: "Error saving configuration",
-          description: "Failed to save sustainability settings. Please try again.",
-          variant: "destructive",
-        });
-      },
     });
   };
 
   const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
-    // Handle both single asset and array (dialog uses single mode but type supports both)
     const media = Array.isArray(assets) ? assets[0] : assets;
     if (media) {
       handleLocalUpdate({
@@ -530,7 +489,6 @@ export function UnifiedSustainabilityManagement() {
     }
   };
 
-  // Get all mutations from the hook
   const createMetricMutation = mutations.createMetric;
   const updateMetricMutation = mutations.updateMetric;
   const deleteMetricMutation = mutations.deleteMetric;
@@ -543,11 +501,7 @@ export function UnifiedSustainabilityManagement() {
   const updateGoalMutation = mutations.updateGoal;
   const deleteGoalMutation = mutations.deleteGoal;
 
-  // Drag and drop handlers
-  const handleMetricDragEnd = (event: {
-    active: { id: string | number };
-    over: { id: string | number } | null;
-  }) => {
+  const handleMetricDragEnd = (event: any) => {
     const { active, over } = event;
     if (over && active.id !== over.id && metrics) {
       const oldIndex = metrics.findIndex((item) => item.id === active.id);
@@ -561,17 +515,12 @@ export function UnifiedSustainabilityManagement() {
     }
   };
 
-  const handleInitiativeDragEnd = (event: {
-    active: { id: string | number };
-    over: { id: string | number } | null;
-  }) => {
+  const handleInitiativeDragEnd = (event: any) => {
     const { active, over } = event;
     if (over && active.id !== over.id && initiatives) {
-      // Use full initiatives array (not paginated) for correct global positions
       const oldIndex = initiatives.findIndex((item) => item.id === active.id);
       const newIndex = initiatives.findIndex((item) => item.id === over.id);
       const reorderedInitiatives = arrayMove(initiatives, oldIndex, newIndex);
-      // Map all initiatives with their new zero-based positions
       const updates = reorderedInitiatives.map((initiative, index) => ({
         id: initiative.id,
         position: index,
@@ -582,70 +531,87 @@ export function UnifiedSustainabilityManagement() {
 
   if (isLoading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-center">
-          <div className="border-border mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-600" />
-          <p className="text-muted-foreground">Loading sustainability data...</p>
+      <div className="flex flex-col items-center justify-center py-40 gap-4">
+        <div className="flex space-x-2">
+          <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]"></div>
+          <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]"></div>
+          <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500"></div>
         </div>
+        <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+          Initialising Ecosystem Data...
+        </p>
       </div>
     );
   }
 
   return (
     <div className="relative space-y-6">
-      {/* Global Sticky Header */}
-      <div className="z-elevated shadow-sm-xs sticky top-0 -mx-6 mb-4 flex items-center justify-between border-b bg-white/80 px-6 pt-4 pb-4 backdrop-blur-xs">
-        <div>
-          <h1 className="text-foreground flex items-center gap-2 text-2xl font-bold">
-            <Leaf className="h-6 w-6 text-green-600" />
-            Unified Sustainability Management
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Manage all sustainability content from a single, unified interface
-          </p>
+      <div className="z-10 sticky top-0 -mx-6 mb-6 flex items-center justify-between border-b border-white/5 bg-black/60 px-6 py-5 backdrop-blur-xl">
+        <div className="flex items-center gap-4">
+          <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+            <Leaf className="h-6 w-6 text-emerald-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white tracking-tight">
+              Eco-System Configuration
+            </h1>
+            <p className="text-sm text-[#68869A]">
+              Sovereign oversight of global sustainability protocols and metrics
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {hasUnsavedChanges && (
-            <span className="mr-2 animate-pulse text-sm font-medium text-yellow-600">
-              Unsaved changes
+            <span className="mr-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest animate-pulse">
+              Unsaved Ecosystem Changes
             </span>
           )}
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={resetForm}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="gap-2"
+            className="text-[#68869A] hover:bg-white/5 text-[10px] font-bold uppercase tracking-widest h-11"
           >
-            <Undo2 className="h-4 w-4" />
+            <Undo2 className="h-4 w-4 mr-2" />
             Reset
           </Button>
           <Button
             onClick={handleSave}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="min-w-sidebar gap-2 bg-green-600 hover:bg-green-700"
+            className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
           >
             {updateMutation.isPending ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
             ) : (
-              <Save className="h-4 w-4" />
+              <Save className="h-4 w-4 mr-2" />
             )}
-            {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            {updateMutation.isPending ? "Syncing..." : "Sync Ecosystem"}
           </Button>
         </div>
       </div>
 
       {unifiedData ? (
         <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="mb-6 flex w-full flex-wrap h-auto gap-2">
-            <TabsTrigger value="hero">Hero</TabsTrigger>
-            <TabsTrigger value="features">Features</TabsTrigger>
-            <TabsTrigger value="metrics">Metrics</TabsTrigger>
-            <TabsTrigger value="initiatives">Initiatives</TabsTrigger>
-            <TabsTrigger value="certifications">Certifications</TabsTrigger>
-            <TabsTrigger value="goals">Goals</TabsTrigger>
-            <TabsTrigger value="fabric-portfolio">Fabric Portfolio</TabsTrigger>
-            <TabsTrigger value="cta">Call to Action</TabsTrigger>
-            <TabsTrigger value="headers">Section Headers</TabsTrigger>
+          <TabsList className="mb-8 flex w-full flex-wrap h-auto gap-2 bg-white/5 p-2 rounded-2xl border border-white/10">
+            {[
+              { id: "hero", label: "Hero" },
+              { id: "features", label: "Features" },
+              { id: "metrics", label: "Impact Metrics" },
+              { id: "initiatives", label: "Initiatives" },
+              { id: "certifications", label: "Compliance" },
+              { id: "goals", label: "Mission Goals" },
+              { id: "fabric-portfolio", label: "Portfolio" },
+              { id: "cta", label: "Call to Action" },
+              { id: "headers", label: "Headers" },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="flex-1 py-3 text-[10px] uppercase font-bold tracking-widest data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all rounded-xl"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <HeroTabContent
@@ -653,7 +619,7 @@ export function UnifiedSustainabilityManagement() {
             hasUnsavedChanges={hasUnsavedChanges}
             isPending={updateMutation.isPending}
             onLocalUpdate={handleLocalUpdate}
-            onSave={handleSave} // Kept for logic internal to tab if any, but button removed in top header
+            onSave={handleSave}
             onOpenMediaPicker={() => setIsMediaPickerOpen(true)}
           />
 
@@ -741,14 +707,11 @@ export function UnifiedSustainabilityManagement() {
         </Tabs>
       ) : null}
 
-      {/* Media Picker Dialog */}
       <StandardMediaSelectionDialog
         isOpen={isMediaPickerOpen}
         onClose={() => setIsMediaPickerOpen(false)}
         onSelect={handleMediaSelect}
-        title="Select Background Media"
-        mediaPickerTarget="sustainability-hero-background"
-        selectionMode="single"
+        mediaPickerTarget="featured-image"
       />
     </div>
   );

@@ -1,11 +1,11 @@
 /**
  * Manufacturing Page Custom Tailwind V4 Utilities
- * 
+ *
  * This file contains custom utility classes for the Manufacturing page
  * to avoid arbitrary Tailwind values (e.g., bg-[#0A0A0A]) in component code.
- * 
+ *
  * All colors are WCAG AA compliant for text on dark backgrounds.
- * 
+ *
  * @see client/app/components/public/manufacturing/
  */
 
@@ -13,27 +13,27 @@
   /* ===========================================
    * Background Colors
    * =========================================== */
-  
+
   /** Primary dark background - #0A0A0A */
   .bg-manufacturing-dark {
-    background-color: #0A0A0A;
+    background-color: #0a0a0a;
   }
-  
+
   /** Surface/secondary background - #121212 */
   .bg-manufacturing-surface {
     background-color: #121212;
   }
-  
+
   /** Accent gold background - #D4A853 */
   .bg-manufacturing-accent {
-    background-color: #D4A853;
+    background-color: #d4a853;
   }
-  
+
   /** Accent gold at 10% opacity */
   .bg-manufacturing-accent-10 {
     background-color: rgba(212, 168, 83, 0.1);
   }
-  
+
   /** Accent gold at ~6.7% opacity (1/15) */
   .bg-manufacturing-accent-11 {
     background-color: rgba(212, 168, 83, 0.067);
@@ -42,25 +42,25 @@
   /* ===========================================
    * Text Colors
    * =========================================== */
-  
+
   /** Accent gold text - #D4A853 */
   .text-manufacturing-accent {
-    color: #D4A853;
+    color: #d4a853;
   }
-  
-  /** 
+
+  /**
    * Muted text color - #8BA3B5
    * WCAG AA compliant: 4.5:1 contrast ratio on #0A0A0A
    */
   .text-manufacturing-muted {
-    color: #8BA3B5;
+    color: #8ba3b5;
   }
-  
+
   /** Light text color - #E3DFD6 */
   .text-manufacturing-light {
-    color: #E3DFD6;
+    color: #e3dfd6;
   }
-  
+
   /** Accent gold at 40% opacity for subtle text */
   .text-manufacturing-accent-40 {
     color: rgba(212, 168, 83, 0.4);
@@ -69,17 +69,17 @@
   /* ===========================================
    * Border Colors
    * =========================================== */
-  
+
   /** Accent gold border */
   .border-manufacturing-accent {
-    border-color: #D4A853;
+    border-color: #d4a853;
   }
-  
+
   /** Accent gold at ~13.3% opacity (1/7.5) for subtle borders */
   .border-manufacturing-accent-22 {
     border-color: rgba(212, 168, 83, 0.133);
   }
-  
+
   /** Accent gold at ~27% opacity for hover states */
   .border-manufacturing-accent-44 {
     border-color: rgba(212, 168, 83, 0.27);
@@ -88,59 +88,59 @@
   /* ===========================================
    * Fill Colors (for SVG icons)
    * =========================================== */
-  
+
   /** Accent gold fill for SVG icons */
   .fill-manufacturing-accent {
-    fill: #D4A853;
+    fill: #d4a853;
   }
 
   /* ===========================================
    * Ring Colors (for focus states)
    * =========================================== */
-  
+
   /** Accent gold ring for focus-visible states */
   .ring-manufacturing-accent {
-    --tw-ring-color: #D4A853;
+    --tw-ring-color: #d4a853;
   }
-  
+
   /** Dark ring offset for focus states */
   .ring-offset-manufacturing-dark {
-    --tw-ring-offset-color: #0A0A0A;
+    --tw-ring-offset-color: #0a0a0a;
   }
 
   /* ===========================================
    * Gradient Utilities
    * =========================================== */
-  
+
   /** Progress bar gradient */
   .bg-gradient-manufacturing-progress {
-    background: linear-gradient(to right, transparent, #D4A853, #D4A853);
+    background: linear-gradient(to right, transparent, #d4a853, #d4a853);
   }
-  
+
   /** Horizontal line gradient */
   .bg-gradient-manufacturing-line {
     background: linear-gradient(to right, rgba(212, 168, 83, 0.2), transparent);
   }
-  
+
   /** Vertical accent gradient */
   .bg-gradient-manufacturing-vertical {
-    background: linear-gradient(to bottom, #D4A853, transparent);
+    background: linear-gradient(to bottom, #d4a853, transparent);
   }
-  
+
   /** Overlay gradient for images */
   .bg-gradient-manufacturing-overlay {
-    background: linear-gradient(to top, #0A0A0A, rgba(10, 10, 10, 0.2), transparent);
+    background: linear-gradient(to top, #0a0a0a, rgba(10, 10, 10, 0.2), transparent);
   }
-  
+
   /** Surface gradient for cards */
   .bg-gradient-manufacturing-surface {
-    background: linear-gradient(to bottom right, #121212, #0A0A0A);
+    background: linear-gradient(to bottom right, #121212, #0a0a0a);
   }
 
   /* ===========================================
    * Radial Gradients
    * =========================================== */
-  
+
   /** Subtle aura effect for backgrounds */
   .bg-manufacturing-aura {
     background: radial-gradient(circle at 20% 30%, rgba(212, 168, 83, 0.05) 0%, transparent 50%);
@@ -149,12 +149,12 @@
   /* ===========================================
    * Shadow Utilities
    * =========================================== */
-  
+
   /** Subtle gold glow for hover states */
   .shadow-manufacturing-glow-sm {
     box-shadow: 0 0 10px rgba(212, 168, 83, 0.1);
   }
-  
+
   /** Medium gold glow for emphasis */
   .shadow-manufacturing-glow-md {
     box-shadow: 0 0 20px rgba(212, 168, 83, 0.15);

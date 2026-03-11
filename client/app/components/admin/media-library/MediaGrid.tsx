@@ -94,8 +94,8 @@ const MediaGridItem = React.memo(
           "hover:scale-[1.02] hover:shadow-lg",
           isOptimistic && "pointer-events-none opacity-60",
           isSelected
-            ? "border-blue-500 ring-2 ring-blue-200/50"
-            : "border-border hover:border-border/50",
+            ? "border-blue-500 ring-2 ring-blue-500/20"
+            : "border-white/10 hover:border-white/20",
         )}
       >
         {/* Selection checkbox */}
@@ -114,7 +114,7 @@ const MediaGridItem = React.memo(
               "flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 transition-all",
               isSelected
                 ? "border-blue-500 bg-blue-500"
-                : "border-border/50 bg-white hover:border-blue-400",
+                : "border-white/20 bg-white/10 hover:border-blue-400",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -151,7 +151,7 @@ const MediaGridItem = React.memo(
 
         {/* Enhanced Media preview with video and 3D support */}
         <div
-          className="group z-elevated bg-muted relative flex aspect-square w-full cursor-pointer items-center justify-center"
+          className="group z-elevated bg-white/[0.03] relative flex aspect-square w-full cursor-pointer items-center justify-center"
           onClick={() => onClick(asset, index)}
           role="button"
           tabIndex={0}
@@ -210,7 +210,7 @@ const MediaGridItem = React.memo(
               </div>
             </div>
           ) : is3DModel ? (
-            <div className="relative h-full w-full bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+            <div className="relative h-full w-full bg-linear-to-br from-purple-900/20 to-purple-800/20">
               {/* STEP 3 INTEGRATION: Enhanced 3D preview using UnifiedModelViewer */}
               {/* SCROLL FIX: Disable pointer events in selection mode to prevent wheel event capture */}
               <div
@@ -220,8 +220,8 @@ const MediaGridItem = React.memo(
               >
                 <React.Suspense
                   fallback={
-                    <div className="bg-muted flex h-full w-full items-center justify-center">
-                      <Loader2 className="text-muted-foreground/70 h-6 w-6 animate-spin" />
+                    <div className="bg-white/[0.03] flex h-full w-full items-center justify-center">
+                      <Loader2 className="text-[#68869A]/70 h-6 w-6 animate-spin" />
                     </div>
                   }
                 >
@@ -312,7 +312,7 @@ const MediaGridItem = React.memo(
             {asset.originalName || asset.filename}
           </div>
 
-          <div className="text-muted flex items-center justify-between text-xs">
+          <div className="text-[#68869A] flex items-center justify-between text-xs">
             <span className="text-subtle">{formatFileSize(asset.size || 0)}</span>
             <Badge variant="outline" className="text-xs">
               {asset.type}
@@ -322,8 +322,8 @@ const MediaGridItem = React.memo(
 
         {/* Loading overlay for optimistic uploads */}
         {isOptimistic && (
-          <div className="center-flex absolute inset-0 bg-white/80">
-            <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+          <div className="center-flex absolute inset-0 bg-black/60">
+            <div className="border-blue-500 h-8 w-8 animate-spin rounded-full border-b-2"></div>
           </div>
         )}
       </div>
@@ -503,7 +503,10 @@ const MediaBulkOperations = React.memo(() => {
 
   return (
     <div className="flex items-center gap-2">
-      <Badge variant="secondary" className="status-badge-base">
+      <Badge
+        variant="secondary"
+        className="status-badge-base bg-white/10 text-white border-white/20"
+      >
         {selectedCount} selected
       </Badge>
 
@@ -511,7 +514,7 @@ const MediaBulkOperations = React.memo(() => {
         onClick={handleBulkDownload}
         variant="outline"
         size="sm"
-        className="action-button-sidebar"
+        className="action-button-sidebar border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
       >
         <Download className="mr-2 h-4 w-4" />
         Download
@@ -519,7 +522,11 @@ const MediaBulkOperations = React.memo(() => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+          >
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -917,7 +924,7 @@ export function MediaGrid({
           {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={`skeleton-${i}`}
-              className="bg-muted aspect-square animate-pulse rounded-lg"
+              className="bg-white/[0.03] aspect-square animate-pulse rounded-lg border border-white/5"
             />
           ))}
         </div>
@@ -931,7 +938,7 @@ export function MediaGrid({
       <div className="fallback-content py-12">
         <FileImage className="mb-4 h-12 w-12" />
         <h3 className="mb-2 text-lg font-medium">No media found</h3>
-        <p className="text-muted-foreground">
+        <p className="text-[#68869A]">
           {state.searchTerm || state.selectedType !== "all"
             ? "Try adjusting your search or filters"
             : "Upload some media to get started"}
@@ -954,7 +961,7 @@ export function MediaGrid({
               variant={state.viewMode === "grid" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("viewMode", "grid")}
-              className="action-button-icon"
+              className={`action-button-icon ${state.viewMode === "grid" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
@@ -962,7 +969,7 @@ export function MediaGrid({
               variant={state.viewMode === "list" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("viewMode", "list")}
-              className="action-button-icon"
+              className={`action-button-icon ${state.viewMode === "list" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -987,7 +994,7 @@ export function MediaGrid({
             variant="outline"
             size="sm"
             onClick={() => updateState("sortOrder", state.sortOrder === "asc" ? "desc" : "asc")}
-            className="action-button-icon"
+            className="action-button-icon border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
           >
             {state.sortOrder === "asc" ? "↑" : "↓"}
           </Button>
@@ -1025,10 +1032,10 @@ export function MediaGrid({
         return shouldShowPagination;
       })() && (
         <div
-          className="flex items-center justify-between border-t px-4 py-6"
+          className="flex items-center justify-between border-t border-white/5 px-4 py-6"
           data-testid="pagination-controls"
         >
-          <div className="text-muted-foreground text-sm">
+          <div className="text-[#68869A] text-sm">
             Showing {displayAssets.length} of {totalAssets} media items
           </div>
 
@@ -1039,7 +1046,7 @@ export function MediaGrid({
               size="sm"
               onClick={() => setCurrentPage(Math.max(1, state.currentPage - 1))}
               disabled={state.currentPage <= 1}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
               Previous
@@ -1074,7 +1081,7 @@ export function MediaGrid({
 
               {pagination.totalPages > 5 && state.currentPage < pagination.totalPages - 2 && (
                 <>
-                  <span className="text-muted-foreground px-2">...</span>
+                  <span className="text-[#68869A] px-2">...</span>
                   <Button
                     variant="outline"
                     size="sm"
@@ -1093,7 +1100,7 @@ export function MediaGrid({
               size="sm"
               onClick={() => setCurrentPage(Math.min(pagination.totalPages, state.currentPage + 1))}
               disabled={state.currentPage >= pagination.totalPages}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
             >
               Next
               <ChevronRight className="h-4 w-4" />
@@ -1104,7 +1111,7 @@ export function MediaGrid({
 
       {/* No pagination needed but show count - Now shown in both modes */}
       {pagination.totalPages <= 1 && displayAssets.length > 0 && (
-        <div className="text-muted-foreground border-t py-4 text-center text-sm">
+        <div className="text-[#68869A] border-t border-white/5 py-4 text-center text-sm">
           {displayAssets.length} media {displayAssets.length === 1 ? "item" : "items"}
         </div>
       )}

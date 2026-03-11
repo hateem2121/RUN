@@ -44,17 +44,31 @@ const getParentName = (category: Category, allCategories: Category[]) => {
 // Table view component
 const CategoryTableView = memo(
   ({ categories, ...props }: CategoryListProps & { activeId?: number | null }) => (
-    <div className="overflow-hidden rounded-lg border">
+    <div className="overflow-hidden rounded-xl border border-white/5 bg-black/20">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-16">Order</TableHead>
-            <TableHead className="w-16">Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Parent</TableHead>
-            <TableHead>Products</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="w-16">Actions</TableHead>
+        <TableHeader className="border-b border-white/5 bg-white/5">
+          <TableRow className="hover:bg-transparent border-none">
+            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Order
+            </TableHead>
+            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Image
+            </TableHead>
+            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Name
+            </TableHead>
+            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Parent
+            </TableHead>
+            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Products
+            </TableHead>
+            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Status
+            </TableHead>
+            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -166,9 +180,7 @@ const CategoryTreeView = memo(
     const hierarchy = buildHierarchy(categories);
 
     return (
-      <div className="space-y-1" role="list">
-        {hierarchy.flatMap((category) => renderTreeItem(category))}
-      </div>
+      <div className="space-y-1">{hierarchy.flatMap((category) => renderTreeItem(category))}</div>
     );
   },
 );
@@ -261,20 +273,20 @@ export default function CategoryList(props: CategoryListProps) {
       </SortableContext>
       <DragOverlay>
         {activeCategory && (
-          <div className="rounded-lg border-2 border-blue-300 bg-white p-2 opacity-90 shadow-lg">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
+          <div className="rounded-xl border border-blue-500/50 bg-[#0A0A0A] p-2 opacity-90 shadow-2xl shadow-blue-500/20">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/50 border border-white/10 overflow-hidden">
                 {(activeCategory as Category & { imageUrl?: string }).imageUrl ? (
                   <img
                     src={(activeCategory as Category & { imageUrl?: string }).imageUrl}
                     alt=""
-                    className="h-full w-full rounded object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
                   <span className="text-xs">📁</span>
                 )}
               </div>
-              <span className="font-medium text-foreground">{activeCategory.name}</span>
+              <span className="font-bold text-white">{activeCategory.name}</span>
             </div>
           </div>
         )}

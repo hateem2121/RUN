@@ -1,6 +1,6 @@
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -8,10 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
  * Hook to manage GSAP ScrollTrigger registration and lifecycle.
  * Provides a context-safe way to use ScrollTrigger within components.
  */
-export function useScrollTrigger(
-  callback: () => void,
-  dependencies: any[] = []
-): void {
+export function useScrollTrigger(callback: () => void, dependencies: any[] = []): void {
   useGSAP(() => {
     callback();
 
@@ -37,7 +34,7 @@ export function useScrollTrigger(
  */
 export function registerScrollDefaults() {
   ScrollTrigger.defaults({
-    markers: process.env.NODE_ENV === 'development',
-    toggleActions: 'play none none reverse',
+    markers: process.env.NODE_ENV === "development",
+    toggleActions: "play none none reverse",
   });
 }

@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Archive, CheckCircle, Inbox, Loader2, Package } from "lucide-react";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Typography } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { InquiryDetails } from "./InquiryDetails";
 import { InquiryList } from "./InquiryList";
 
@@ -22,6 +23,18 @@ export interface Inquiry {
   adminNotes?: string | null;
   createdAt: string;
   updatedAt: string;
+  // CRM Fields
+  priority: "low" | "medium" | "high" | "urgent";
+  crmStage: string;
+  crmLogs: Array<{
+    date: string;
+    action: string;
+    note: string;
+    user?: string;
+  }>;
+  leadScore: number;
+  tags: string[];
+  assignedTo?: string | null;
 }
 
 export function InquiryManagement() {
@@ -40,25 +53,20 @@ export function InquiryManagement() {
         statusFilter === "all"
           ? "/api/admin/inquiries"
           : `/api/admin/inquiries?status=${statusFilter}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch inquiries");
-      return res.json();
+      return apiRequest(url);
     },
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: Inquiry["status"] }) => {
-      const res = await fetch(`/api/admin/inquiries/${id}/status`, {
+    mutationFn: async ({ id, ...data }: { id: number } & Partial<Inquiry>) => {
+      return apiRequest(`/api/admin/inquiries/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to update status");
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/inquiries"] });
-      toast({ title: "Updated", description: "Inquiry status updated successfully." });
+      toast({ title: "Updated", description: "Inquiry updated successfully." });
     },
   });
 
@@ -75,53 +83,55 @@ export function InquiryManagement() {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="w-full" onValueChange={setStatusFilter}>
-        <TabsList className="grid w-full grid-cols-4 lg:w-[400px]">
-          <TabsTrigger value="all">
-            <Inbox className="mr-2 h-4 w-4" />
-            All
-          </TabsTrigger>
-          <TabsTrigger value="new">
-            <Package className="mr-2 h-4 w-4" />
-            New
-          </TabsTrigger>
-          <TabsTrigger value="responded">
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Active
-          </TabsTrigger>
-          <TabsTrigger value="archived">
-            <Archive className="mr-2 h-4 w-4" />
-            Archived
-          </TabsTrigger>
-        </TabsList>
-
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Card className="col-span-1 lg:col-span-2 overflow-hidden border-border/40 bg-background/50 backdrop-blur-sm">
-            {isLoading ? (
-              <div className="flex h-[400px] items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            ) : (
-              <InquiryList
-                inquiries={inquiries}
-                onSelect={setSelectedInquiryId}
-                selectedId={selectedInquiryId}
-              />
+      <div className="flex items-center gap-2 bg-white/[0.02] border border-white/5 p-1 rounded-lg w-fit">
+        {[
+          { id: "all", label: "All", icon: Inbox },
+          { id: "new", label: "New", icon: Package },
+          { id: "responded", label: "Active", icon: CheckCircle },
+          { id: "archived", label: "Archived", icon: Archive },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setStatusFilter(tab.id)}
+            className={cn(
+              "flex items-center px-4 py-2 rounded-md text-xs font-bold transition-all duration-200",
+              statusFilter === tab.id
+                ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_-3px_rgba(0,212,255,0.2)]"
+                : "text-[#68869A] hover:text-white hover:bg-white/5 border border-transparent",
             )}
-          </Card>
+          >
+            <tab.icon className="mr-2 h-4 w-4" />
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <Card className="col-span-1 border-border/40 bg-background/50 backdrop-blur-sm p-6">
-            <InquiryDetails
-              inquiryId={selectedInquiryId}
-              onStatusChange={(status: Inquiry["status"]) => {
-                if (selectedInquiryId) {
-                  updateStatusMutation.mutate({ id: selectedInquiryId, status });
-                }
-              }}
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <Card className="col-span-1 lg:col-span-2 overflow-hidden border-border/40 bg-background/50 backdrop-blur-sm">
+          {isLoading ? (
+            <div className="flex h-[400px] items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <InquiryList
+              inquiries={inquiries}
+              onSelect={setSelectedInquiryId}
+              selectedId={selectedInquiryId}
             />
-          </Card>
-        </div>
-      </Tabs>
+          )}
+        </Card>
+
+        <Card className="col-span-1 border-border/40 bg-background/50 backdrop-blur-sm p-6">
+          <InquiryDetails
+            inquiryId={selectedInquiryId}
+            onUpdate={(data: Partial<Inquiry>) => {
+              if (selectedInquiryId) {
+                updateStatusMutation.mutate({ id: selectedInquiryId, ...data });
+              }
+            }}
+          />
+        </Card>
+      </div>
     </div>
   );
 }

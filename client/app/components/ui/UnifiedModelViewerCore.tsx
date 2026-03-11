@@ -428,8 +428,9 @@ export function UnifiedModelViewer({
     handleError,
     handleProgress,
     onInteraction,
-    onLoad, // Predictive Recovery: Automatically trigger recovery when context is back
+    onLoad,
     handleWebGLRecovery,
+    loadingState.startTime,
   ]);
 
   // Enhanced GLTF initialization with intelligent caching

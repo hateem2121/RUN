@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel - Product Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3B82F6",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#0A0A0A",
+                        "sidebar-dark": "#111111",
+                        "card-dark": "#1A1A1A",
+                        "text-muted": "#68869A",
+                        success: "#00C97B",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-border { border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white h-screen flex overflow-hidden">
+<aside class="w-64 bg-white dark:bg-sidebar-dark border-r border-gray-200 dark:border-gray-800 flex flex-col flex-shrink-0 transition-colors duration-200">
+<div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800">
+<span class="font-bold tracking-widest text-sm uppercase">Run Apparel</span>
+</div>
+<div class="flex-1 overflow-y-auto hide-scrollbar py-4 px-3 space-y-6">
+<div>
+<div class="text-xs font-semibold text-gray-500 dark:text-text-muted mb-2 px-3 tracking-wider">CONTENT</div>
+<nav class="space-y-1">
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">dashboard</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">home</span>
+                        Homepage
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">info</span>
+                        About Us
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">eco</span>
+                        Sustainability
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">precision_manufacturing</span>
+                        Manufacturing
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">memory</span>
+                        Technology
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">article</span>
+                        Blog
+                    </a>
+</nav>
+</div>
+<div>
+<div class="text-xs font-semibold text-gray-500 dark:text-text-muted mb-2 px-3 tracking-wider">CATALOG</div>
+<nav class="space-y-1">
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">category</span>
+                        Categories
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 dark:bg-primary/10 text-primary" href="#">
+<span class="material-icons text-[20px] mr-3">inventory_2</span>
+                        Products
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">layers</span>
+                        Fabrics
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">dehaze</span>
+                        Fibers
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">verified</span>
+                        Certificates
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">straighten</span>
+                        Size Charts
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">watch</span>
+                        Accessories
+                    </a>
+</nav>
+</div>
+<div>
+<div class="text-xs font-semibold text-gray-500 dark:text-text-muted mb-2 px-3 tracking-wider">SYSTEM</div>
+<nav class="space-y-1">
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">perm_media</span>
+                        Media Library
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">storage</span>
+                        Storage
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">menu</span>
+                        Navigation
+                    </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-icons text-[20px] mr-3">contact_mail</span>
+                        Contact
+                    </a>
+</nav>
+</div>
+</div>
+<div class="p-4 border-t border-gray-200 dark:border-gray-800">
+<div class="flex items-center w-full">
+<img alt="Alex Rivera" class="h-8 w-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXhJ5U0SfQE5GTrJwFPjMag_MwNyJJJ0RMgaYl8fBTN-Cap-hsSE2txI2TYd4KQRmDvMhXQDdaxovzOVpLMFN02bkLhUTIHpT_WtU3WEFdyn_L7OMio8mkmxpGaCooagHzFWbOpkQR-Zg8tiYVBtuWK0PLD-uhkl_lIXtEqsDQ1gzqiEhscbCThSVbVdFO1KZhslzZkJiPAwDjnyHYGGnRZTcERlfCa64tPvvm7gdYmzNipT5wZsq-JKnzhrPFd3Iv-_YTUX5uKrmt"/>
+<div class="ml-3 flex-1 overflow-hidden">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate">Alex Rivera</p>
+<p class="text-xs text-gray-500 dark:text-text-muted truncate">Admin</p>
+</div>
+<button class="text-gray-400 hover:text-gray-500 dark:hover:text-white">
+<span class="material-icons text-[20px]">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark transition-colors duration-200">
+<div class="flex items-center text-sm">
+<span class="material-icons text-gray-400 text-[18px] mr-2">home</span>
+<span class="text-gray-400 mx-2">›</span>
+<a class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" href="#">Catalog</a>
+<span class="text-gray-400 mx-2">›</span>
+<span class="font-medium text-gray-900 dark:text-white">Products</span>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+<input class="w-64 pl-9 pr-12 py-1.5 bg-gray-100 dark:bg-card-dark border-transparent dark:border-gray-800 rounded-md text-sm focus:border-primary focus:ring-1 focus:ring-primary dark:text-white placeholder-gray-500" placeholder="Search modules..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-0.5">⌘K</span>
+</div>
+<button class="text-gray-400 hover:text-gray-500 dark:hover:text-white relative">
+<span class="material-icons text-[20px]">notifications</span>
+<span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-background-dark"></span>
+</button>
+<div class="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-sm font-medium border border-gray-300 dark:border-gray-700">
+                    AR
+                </div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<div class="w-2/5 flex flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark">
+<div class="p-6 pb-4">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center space-x-3">
+<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Products</h1>
+<span class="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">127</span>
+</div>
+<button class="flex items-center px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors">
+<span class="material-icons text-[18px] mr-1">add</span>
+                            New Product
+                        </button>
+</div>
+<div class="flex space-x-2 overflow-x-auto hide-scrollbar">
+<button class="px-3 py-1 text-sm rounded-full bg-blue-50 dark:bg-primary/20 text-primary border border-blue-200 dark:border-primary/30 font-medium whitespace-nowrap">All</button>
+<button class="px-3 py-1 text-sm rounded-full bg-gray-100 dark:bg-card-dark text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-gray-800 whitespace-nowrap">Category</button>
+<button class="px-3 py-1 text-sm rounded-full bg-gray-100 dark:bg-card-dark text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-gray-800 whitespace-nowrap">Status</button>
+<button class="px-3 py-1 text-sm rounded-full bg-gray-100 dark:bg-card-dark text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-gray-800 whitespace-nowrap">Fabric</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 pt-0">
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative bg-blue-50/50 dark:bg-card-dark rounded-lg p-3 border-2 border-primary cursor-pointer transition-all">
+<div class="aspect-square rounded-md bg-gray-200 dark:bg-gray-800 mb-3 overflow-hidden">
+<img alt="Elite Performance Tee" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNjy0ztI6aENQBIDPkVnGGV6OQpT1Y-vDgtZ5TM1Intb8xJm_cT20lmUGQn5WhJyF5qOdQ3o4Xd5RNGCTatwJOXbxWq0GRlyI2F627m25RsjBbmQ894INVv--JynBgi37NVAW0q8yptid2HBiT48NQ1jxSwiOSD9JYGtmZwma3PJXtHrmcBZDrBG8FrKHeYmNCbuYiMSbhp6qgu2Zo9zGwmiu62oOHWV5VHo9Q6ZbiiUzdcWUdV2qm5px6icPVCz7FHXYG3dG4elJu"/>
+</div>
+<div class="space-y-1">
+<h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate">Elite Performance Tee</h3>
+<p class="text-xs text-gray-500 dark:text-text-muted">SKU: RA-EPT-01</p>
+<div class="flex items-center pt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success mr-1.5"></span>
+<span class="text-[10px] font-medium text-success uppercase tracking-wider">Active</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 flex space-x-1 opacity-100 transition-opacity">
+<button class="p-1 rounded-md bg-white dark:bg-gray-800 text-gray-500 hover:text-primary shadow-sm glass-border">
+<span class="material-icons text-[14px]">edit</span>
+</button>
+</div>
+</div>
+<div class="group relative bg-white dark:bg-card-dark rounded-lg p-3 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer transition-all">
+<div class="aspect-square rounded-md bg-gray-100 dark:bg-gray-900 mb-3 overflow-hidden">
+<img alt="Aero-Mesh Runner" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity mix-blend-multiply dark:mix-blend-normal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlw8uk0XCMrFpGdksPn0C8l8UAu2DtWT8KUIsLCEPZp9CqYdQZj_vKtp9JQ6PfBNvxp2903CWYpLsTWnTYWnHiSyGuxnWnjwgmVdO0b2p4Zyo7QtvRd0-6w_fZgykeh-se5uudAi5Th6hdluZIDKkLzDEJ357eOmwod0Jp8MhSgewRvINxJ1wq9KQGex-JSwj7QuzxrCON5Ko6jMmqzV96uCSbEesCCF5lKC8nsoDH88-Z-8-NGgJwk7riOp7plJp0aLD02rPrYV5Z"/>
+</div>
+<div class="space-y-1">
+<h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">Aero-Mesh Runner</h3>
+<p class="text-xs text-gray-500 dark:text-text-muted">SKU: RA-AMR-04</p>
+<div class="flex items-center pt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success mr-1.5"></span>
+<span class="text-[10px] font-medium text-success uppercase tracking-wider">Active</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded-md bg-white dark:bg-gray-800 text-gray-500 hover:text-primary shadow-sm glass-border">
+<span class="material-icons text-[14px]">edit</span>
+</button>
+<button class="p-1 rounded-md bg-white dark:bg-gray-800 text-gray-500 hover:text-red-500 shadow-sm glass-border">
+<span class="material-icons text-[14px]">delete</span>
+</button>
+</div>
+</div>
+<div class="group relative bg-white dark:bg-card-dark rounded-lg p-3 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer transition-all">
+<div class="aspect-square rounded-md bg-gray-100 dark:bg-gray-900 mb-3 overflow-hidden">
+<div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-700">
+<span class="material-icons text-4xl">image</span>
+</div>
+</div>
+<div class="space-y-1">
+<h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">Ultra-Light Windbreaker</h3>
+<p class="text-xs text-gray-500 dark:text-text-muted">SKU: RA-ULW-02</p>
+<div class="flex items-center pt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-1.5"></span>
+<span class="text-[10px] font-medium text-yellow-600 dark:text-yellow-500 uppercase tracking-wider">Draft</span>
+</div>
+</div>
+</div>
+<div class="group relative bg-white dark:bg-card-dark rounded-lg p-3 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer transition-all">
+<div class="aspect-square rounded-md bg-gray-100 dark:bg-gray-900 mb-3 overflow-hidden">
+<div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-700">
+<span class="material-icons text-4xl">image</span>
+</div>
+</div>
+<div class="space-y-1">
+<h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">Compression Tights</h3>
+<p class="text-xs text-gray-500 dark:text-text-muted">SKU: RA-CPT-09</p>
+<div class="flex items-center pt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>
+<span class="text-[10px] font-medium text-gray-500 uppercase tracking-wider">Archived</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between text-sm text-gray-500 dark:text-text-muted">
+<span>Showing 1-20 of 127</span>
+<div class="flex space-x-1">
+<button class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"><span class="material-icons text-[18px]">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><span class="material-icons text-[18px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+<div class="w-3/5 flex flex-col bg-gray-50 dark:bg-background-dark/50">
+<div class="flex-1 overflow-y-auto p-8">
+<div class="flex justify-between items-start mb-8">
+<div>
+<div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-text-muted mb-2">
+<span>Catalog</span>
+<span>›</span>
+<span>Products</span>
+<span>›</span>
+<span class="text-gray-900 dark:text-gray-300">Tops</span>
+</div>
+<h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">Elite Performance Tee</h2>
+<div class="flex items-center space-x-4">
+<span class="text-sm text-gray-500 dark:text-text-muted font-mono">SKU: RA-EPT-01</span>
+<span class="flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-success/10 dark:text-success border border-green-200 dark:border-success/20">
+<span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                                    Active
+                                </span>
+</div>
+</div>
+<div class="flex space-x-2">
+<button class="p-2 rounded-md bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-800 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+<span class="material-icons text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+<div class="mb-10">
+<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Media</h4>
+<div class="flex space-x-4 overflow-x-auto hide-scrollbar pb-2">
+<div class="w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden border-2 border-primary bg-white dark:bg-card-dark relative group cursor-pointer">
+<img alt="Primary Image" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC34ZroS5iUc3MdPMoUn5q4UGcF98dE5W174iGsbnrHTfExMsnfcNrIE74MZGcFAsZtUATx7XjVTJNhWJHup373G-stnVgN8j5NBX9GvuWY_k4sGiZkZFsQaU5d04cSqDNmK6dMrkbILOHrc9bJmbKSKaJ7EXr8oOVPZDXOxBmdrrgXgAg15zqUtwttikjjqK4E1gLNz89geo3aHIwND9zeet8nPmitjRdrqbMCxg8wIYQEGQ2FJ6pETx1b5nnMM79VJ0VzBd80K-Pt"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-icons text-white">zoom_in</span>
+</div>
+</div>
+<div class="w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 glass-border bg-gray-100 dark:bg-card-dark relative group cursor-pointer">
+<img alt="Secondary Image" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUyb65agb5YoEOr4d4P0ja7N5UvQBpT6LFLmT8fEPWSh98F3ejVixPoNuj_goMTGyUsr8DDaIlBdcUhp18QD1EGHR9VmTvnfNZtNTfQMkmSVKbuZN16UhEtZKHHyZl-6rIQTkFMzDbA_epPmKnzo7HTcK7xBEqjbW9QQYauJQukjhWh3UoL8OrJ6EW4KEzQzuyQAeUYsHhX3HYGf7JUavJkDU2__QBh4tsb7mexe1zCKc1K-TD7Mq_mtsp-9SKPvXlS-eqPadC2XCk"/>
+</div>
+<div class="w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 glass-border bg-gray-100 dark:bg-card-dark relative group cursor-pointer">
+<div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
+<span class="material-icons text-3xl">image</span>
+</div>
+</div>
+<button class="w-32 h-32 flex-shrink-0 rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-transparent flex flex-col items-center justify-center text-gray-500 hover:text-primary hover:border-primary hover:bg-blue-50 dark:hover:bg-primary/5 transition-colors">
+<span class="material-icons mb-1">add_photo_alternate</span>
+<span class="text-xs font-medium">Add Media</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-8 gap-y-6">
+<div class="col-span-2 md:col-span-1 space-y-6">
+<div>
+<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Basic Information</h4>
+<dl class="space-y-3 text-sm">
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Category</dt>
+<dd class="col-span-2 text-gray-900 dark:text-gray-300 font-medium">Performance Wear &gt; Tops</dd>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Season</dt>
+<dd class="col-span-2 text-gray-900 dark:text-gray-300">SS24</dd>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Gender</dt>
+<dd class="col-span-2 text-gray-900 dark:text-gray-300">Unisex</dd>
+</div>
+</dl>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Manufacturing</h4>
+<dl class="space-y-3 text-sm">
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Factory</dt>
+<dd class="col-span-2 flex items-center text-gray-900 dark:text-gray-300">
+                                            Vietnam Facility A
+                                            <span class="material-icons text-[14px] ml-1 text-gray-400">open_in_new</span>
+</dd>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Lead Time</dt>
+<dd class="col-span-2 text-gray-900 dark:text-gray-300">45 Days</dd>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<dt class="text-gray-500 dark:text-text-muted">Cost (FOB)</dt>
+<dd class="col-span-2 text-gray-900 dark:text-gray-300">$12.50</dd>
+</div>
+</dl>
+</div>
+</div>
+<div class="col-span-2 md:col-span-1 space-y-6">
+<div>
+<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Materials</h4>
+<div class="bg-white dark:bg-card-dark rounded-md border border-gray-200 dark:border-gray-800 p-3 space-y-2">
+<div class="flex justify-between items-center text-sm">
+<span class="text-gray-900 dark:text-gray-300 font-medium flex items-center">
+<span class="w-2 h-2 rounded-full bg-blue-400 mr-2"></span>
+                                            Recycled Polyester
+                                        </span>
+<span class="text-gray-500">85%</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-gray-900 dark:text-gray-300 font-medium flex items-center">
+<span class="w-2 h-2 rounded-full bg-indigo-400 mr-2"></span>
+                                            Elastane
+                                        </span>
+<span class="text-gray-500">15%</span>
+</div>
+</div>
+<div class="mt-2 text-xs text-gray-500 dark:text-text-muted flex items-center">
+<span class="material-icons text-[14px] mr-1 text-success">eco</span>
+                                    GRS Certified Materials
+                                </div>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Variants</h4>
+<div class="space-y-3">
+<div>
+<span class="text-xs text-gray-500 dark:text-text-muted block mb-1">Colors (3)</span>
+<div class="flex space-x-2">
+<div class="w-6 h-6 rounded-full bg-black ring-2 ring-offset-1 ring-gray-300 dark:ring-gray-700 dark:ring-offset-background-dark cursor-pointer" title="Onyx Black"></div>
+<div class="w-6 h-6 rounded-full bg-[#3B82F6] ring-1 ring-gray-200 dark:ring-gray-800 cursor-pointer" title="Cobalt Blue"></div>
+<div class="w-6 h-6 rounded-full bg-[#E5E7EB] ring-1 ring-gray-200 dark:ring-gray-800 cursor-pointer" title="Cloud White"></div>
+</div>
+</div>
+<div>
+<span class="text-xs text-gray-500 dark:text-text-muted block mb-1">Sizes</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded text-xs border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-card-dark">XS</span>
+<span class="px-2 py-0.5 rounded text-xs border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-card-dark">S</span>
+<span class="px-2 py-0.5 rounded text-xs border border-primary text-primary bg-blue-50 dark:bg-primary/10 font-medium">M</span>
+<span class="px-2 py-0.5 rounded text-xs border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-card-dark">L</span>
+<span class="px-2 py-0.5 rounded text-xs border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-white dark:bg-card-dark">XL</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/80 backdrop-blur-sm flex justify-end space-x-3">
+<button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-transparent border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        Close
+                    </button>
+<button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-blue-600 shadow-sm transition-colors flex items-center">
+<span class="material-icons text-[18px] mr-1.5">edit</span>
+                        Edit Product
+                    </button>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

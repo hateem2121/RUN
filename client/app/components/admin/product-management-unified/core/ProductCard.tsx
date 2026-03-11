@@ -14,9 +14,9 @@ import {
 } from "lucide-react";
 import { memo, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +50,6 @@ export const ProductCard = memo(function ProductCard({
   onEdit,
   onDelete,
 }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [show3DPreview, setShow3DPreview] = useState(false);
   const { toast } = useToast();
@@ -144,18 +143,14 @@ export const ProductCard = memo(function ProductCard({
   if (viewMode === "list") {
     return (
       <>
-        <Card
-          className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-            isHovered ? "border-blue-300 shadow-lg" : ""
-          }`}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+        <GlassCard
+          className={`group cursor-pointer transition-all duration-200 border border-white/5 bg-white/[0.04] hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 hover:bg-white/[0.06]`}
           onClick={onSelect}
         >
-          <CardContent className="p-4">
+          <div className="p-4">
             <div className="flex items-center gap-4">
               {/* Media Preview */}
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black/40 border border-white/10 relative">
                 {show3DPreview && model3D ? (
                   <LazyUnifiedModelViewer
                     asset={model3D}
@@ -176,7 +171,7 @@ export const ProductCard = memo(function ProductCard({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Package className="h-8 w-8 text-muted-foreground/70" />
+                  <Package className="h-8 w-8 text-[#68869A]/70" />
                 )}
                 {/* 3D Model Toggle for List View */}
                 {model3D && (
@@ -204,22 +199,25 @@ export const ProductCard = memo(function ProductCard({
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="truncate font-semibold text-foreground">{product.name}</h3>
-                    <p className="text-muted-foreground text-sm">SKU: {product.sku}</p>
+                    <h3 className="truncate font-bold text-white tracking-tight">{product.name}</h3>
+                    <p className="text-[#68869A] text-sm tracking-wider">SKU: {product.sku}</p>
                     {category && (
-                      <Badge variant="outline" className="mt-1 text-xs">
+                      <Badge
+                        variant="outline"
+                        className="mt-1 text-[10px] bg-white/5 border-white/10 text-[#E3DFD6] tracking-wider uppercase"
+                      >
                         {category.name}
                       </Badge>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Badge
-                      variant={product.isActive ? "default" : "secondary"}
+                      variant="outline"
                       className={
                         product.isActive
-                          ? "bg-green-100 text-green-800"
-                          : "bg-muted text-muted-foreground"
+                          ? "bg-green-500/10 border-green-500/30 text-green-400 font-bold uppercase tracking-wider text-[10px]"
+                          : "bg-white/5 border-white/10 text-[#68869A] font-bold uppercase tracking-wider text-[10px]"
                       }
                     >
                       {product.isActive ? "Active" : "Inactive"}
@@ -231,19 +229,24 @@ export const ProductCard = memo(function ProductCard({
                           data-testid={`product-actions-menu-${product.id}`}
                           variant="ghost"
                           size="sm"
+                          className="h-8 w-8 p-0 text-[#68869A] hover:bg-white/10 hover:text-white rounded-lg"
                         >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-[#0A0A0A] border-white/10 text-white rounded-xl"
+                      >
                         <DropdownMenuItem
                           data-testid={`view-product-${product.id}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             onSelect?.();
                           }}
+                          className="focus:bg-white/10 cursor-pointer rounded-lg"
                         >
-                          <Eye className="mr-2 h-4 w-4" />
+                          <Eye className="mr-2 h-4 w-4 text-[#68869A]" />
                           View Details
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -252,18 +255,19 @@ export const ProductCard = memo(function ProductCard({
                             e.stopPropagation();
                             onEdit?.();
                           }}
+                          className="focus:bg-white/10 cursor-pointer rounded-lg"
                         >
-                          <Edit className="mr-2 h-4 w-4" />
+                          <Edit className="mr-2 h-4 w-4 text-[#68869A]" />
                           Edit Product
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator className="bg-white/10" />
                         <DropdownMenuItem
                           data-testid={`delete-product-${product.id}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete();
                           }}
-                          className="text-red-600 focus:text-red-600"
+                          className="focus:bg-red-500/10 text-red-500 focus:text-red-400 cursor-pointer rounded-lg"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete Product
@@ -283,8 +287,8 @@ export const ProductCard = memo(function ProductCard({
                 compact={true}
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </GlassCard>
 
         {/* Delete Confirmation Dialog */}
         <DeleteConfirmationDialog
@@ -302,16 +306,12 @@ export const ProductCard = memo(function ProductCard({
   // Grid View
   return (
     <>
-      <Card
-        className={`relative cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-lg ${
-          isHovered ? "scale-[1.02] border-blue-300 shadow-xl" : ""
-        }`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+      <GlassCard
+        className="group relative cursor-pointer overflow-hidden transition-all duration-300 border-white/5 bg-white/[0.04] hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white/[0.08]"
         onClick={onSelect}
       >
         {/* Media Display */}
-        <div className="relative aspect-4/3 overflow-hidden bg-muted">
+        <div className="relative aspect-auto h-48 overflow-hidden bg-black/40 border-b border-white/5">
           {show3DPreview && model3D ? (
             <LazyUnifiedModelViewer
               asset={model3D}
@@ -342,7 +342,7 @@ export const ProductCard = memo(function ProductCard({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Package className="h-12 w-12 text-muted-foreground/70" />
+              <Package className="h-12 w-12 text-[#68869A]/30" />
             </div>
           )}
 
@@ -375,11 +375,13 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           {/* Status Badge */}
-          <div className="absolute top-1.5 left-1.5">
+          <div className="absolute top-2 left-2">
             <Badge
-              variant={product.isActive ? "default" : "secondary"}
-              className={`text-xs ${
-                product.isActive ? "bg-green-500/90 text-white" : "bg-muted/50/90 text-white"
+              variant="outline"
+              className={`text-[10px] font-bold uppercase tracking-wider ${
+                product.isActive
+                  ? "bg-green-500/20 border-green-500/30 text-green-400"
+                  : "bg-black/60 border-white/10 text-[#68869A]"
               }`}
             >
               {product.isActive ? "Active" : "Inactive"}
@@ -387,75 +389,78 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           {/* Hover Actions */}
-          {isHovered && (
-            <div className="center-flex absolute inset-0 bg-black/20">
-              <div className="flex gap-2">
-                <Button
-                  data-testid={`view-product-grid-${product.id}`}
-                  size="sm"
-                  variant="secondary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelect?.();
-                  }}
-                  className="bg-white/90 hover:bg-white"
-                >
-                  <Eye className="mr-1 h-4 w-4" />
-                  View
-                </Button>
-                <Button
-                  data-testid={`edit-product-grid-${product.id}`}
-                  size="sm"
-                  variant="secondary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit?.();
-                  }}
-                  className="bg-white/90 hover:bg-white"
-                >
-                  <Edit className="mr-1 h-4 w-4" />
-                  Edit
-                </Button>
-                <Button
-                  data-testid={`delete-product-grid-${product.id}`}
-                  size="sm"
-                  variant="destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete();
-                  }}
-                  className="bg-red-600/90 hover:bg-red-600"
-                >
-                  <Trash2 className="mr-1 h-4 w-4" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <CardHeader className="px-4 pt-3 pb-1.5">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <h3 className="truncate font-semibold text-foreground text-sm">{product.name}</h3>
-              <p className="text-muted-foreground text-xs">SKU: {product.sku}</p>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100">
+            <div className="flex gap-2">
+              <Button
+                data-testid={`view-product-grid-${product.id}`}
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect?.();
+                }}
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white rounded-xl h-10 w-10 p-0"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+              <Button
+                data-testid={`edit-product-grid-${product.id}`}
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.();
+                }}
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white rounded-xl h-10 w-10 p-0"
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                data-testid={`delete-product-grid-${product.id}`}
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+                className="bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30 hover:text-red-300 rounded-xl h-10 w-10 p-0"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent className="px-4 pt-0 pb-3">
-          <div className="space-y-2">
+        <div className="px-5 pt-4 pb-2">
+          <div className="flex items-start justify-between">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate font-bold text-white text-base tracking-tight">
+                {product.name}
+              </h3>
+              <p className="text-[#68869A] text-xs font-mono mt-1 opacity-70">SKU: {product.sku}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-5 pt-0 pb-5">
+          <div className="space-y-3">
             {/* Category & Fabric */}
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2 mt-2">
               {category && (
-                <Badge variant="outline" className="text-xs">
-                  <Tag className="mr-1 h-3 w-3" />
+                <Badge
+                  variant="outline"
+                  className="text-[10px] bg-white/5 border-white/10 text-[#E3DFD6] tracking-wider uppercase"
+                >
+                  <Tag className="mr-1.5 h-3 w-3 text-[#68869A]" />
                   {category.name}
                 </Badge>
               )}
               {fabric && (
-                <Badge variant="outline" className="border-purple-200 text-purple-700 text-xs">
-                  <Layers className="mr-1 h-3 w-3" />
+                <Badge
+                  variant="outline"
+                  className="text-[10px] bg-blue-500/10 border-blue-500/20 text-blue-400 tracking-wider uppercase"
+                >
+                  <Layers className="mr-1.5 h-3 w-3 text-blue-500" />
                   {fabric.name}
                 </Badge>
               )}
@@ -463,20 +468,23 @@ export const ProductCard = memo(function ProductCard({
 
             {/* Description */}
             {product.description && (
-              <p className="line-clamp-2 text-muted-foreground text-xs">{product.description}</p>
+              <p className="line-clamp-2 text-[#68869A] text-xs leading-relaxed mt-2">
+                {product.description}
+              </p>
             )}
 
-            {/* Relationship Summary */}
-            <RelationshipIndicators
-              counts={relationshipCounts}
-              hasCategory={!!category}
-              hasFabric={!!fabric}
-              has3DModel={!!model3D}
-              compact={false}
-            />
+            <div className="pt-2">
+              <RelationshipIndicators
+                counts={relationshipCounts}
+                hasCategory={!!category}
+                hasFabric={!!fabric}
+                has3DModel={!!model3D}
+                compact={false}
+              />
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </GlassCard>
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog

@@ -1,8 +1,7 @@
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { inquiries } from "../shared/schemas/content/common.js";
 import { db } from "./db.js";
 import { decrypt } from "./lib/encryption.js";
-import { logger } from "./lib/monitoring/logger.js";
 
 async function runForensics() {
   console.log("--- Starting Database Forensics for Inquiries ---");
@@ -20,7 +19,7 @@ async function runForensics() {
       console.log(`Email Index: ${inq.emailIndex}`);
 
       try {
-        if (inq.email && inq.email.includes(":")) {
+        if (inq.email?.includes(":")) {
           const decryptedEmail = decrypt(inq.email);
           console.log(`Email (Decrypted): ${decryptedEmail}`);
         } else {
@@ -32,11 +31,11 @@ async function runForensics() {
       }
 
       try {
-        if (inq.name && inq.name.includes(":")) {
+        if (inq.name?.includes(":")) {
           const decryptedName = decrypt(inq.name);
           console.log(`Name (Decrypted): ${decryptedName}`);
         }
-      } catch (err) {}
+      } catch (_err) {}
     }
   } catch (error) {
     console.error("Forensics failed:", error);

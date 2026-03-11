@@ -49,14 +49,16 @@ export function PublicCaseStudySection({
 
   const displayProjects =
     caseStudies.length > 0
-      ? (caseStudies as Array<{
-        title: string;
-        category?: string;
-        excerpt?: string;
-        featuredImageId?: string | number;
-        clientName?: string;
-        year?: string;
-      }>).map((cs: any) => ({
+      ? (
+          caseStudies as Array<{
+            title: string;
+            category?: string;
+            excerpt?: string;
+            featuredImageId?: string | number;
+            clientName?: string;
+            year?: string;
+          }>
+        ).map((cs: any) => ({
           title: cs.title,
           tag: cs.type || "Case Study",
           desc: cs.description || "High performance apparel manufacturing.",

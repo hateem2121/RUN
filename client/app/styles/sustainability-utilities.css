@@ -13,9 +13,15 @@
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* ── Hexagon Utilities ── */
@@ -71,7 +77,8 @@
   }
   .hex-details {
     position: absolute;
-    left: 85%; top: 50%;
+    left: 85%;
+    top: 50%;
     transform: translateY(-50%) translateX(-20px);
     width: 220px;
     background: #ffffff;
@@ -141,7 +148,8 @@
   .group:hover .card-inner {
     transform: rotateY(180deg);
   }
-  .card-front, .card-back {
+  .card-front,
+  .card-back {
     backface-visibility: hidden;
     position: absolute;
     top: 0;
@@ -156,12 +164,23 @@
 
 /* ── Animations ── */
 @keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @utility animate-fade-in-up {

@@ -139,7 +139,7 @@ export function useResourceSearch(
     });
 
     return results;
-  }, [debouncedSearchTerm, data]);
+  }, [debouncedSearchTerm, data, searchTerm.toLowerCase]);
 
   return {
     searchResults,

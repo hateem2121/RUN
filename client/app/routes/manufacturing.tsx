@@ -1,19 +1,3 @@
-import {
-  ManufacturingErrorBoundary,
-  ManufacturingLoadingSkeleton,
-} from "@/components/error-boundaries/manufacturing-error-boundary";
-import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
-import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
-import { ProductionBlueprint } from "@/components/public/manufacturing/ProductionBlueprint";
-import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
-import { FactoryGallery } from "@/components/public/manufacturing/FactoryGallery";
-import { PublicCaseStudySection } from "@/components/public/manufacturing/PublicCaseStudySection";
-import { PublicCTASection } from "@/components/public/manufacturing/PublicCTASection";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
-import { MarqueeStrip } from "@/components/ui/marquee-strip";
-import type { Route } from "./+types/manufacturing";
-
-
 import type {
   ManufacturingCapability,
   ManufacturingHero,
@@ -22,26 +6,56 @@ import type {
 } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
+import {
+  ManufacturingErrorBoundary,
+  ManufacturingLoadingSkeleton,
+} from "@/components/error-boundaries/manufacturing-error-boundary";
+import { FactoryGallery } from "@/components/public/manufacturing/FactoryGallery";
+import { ProductionBlueprint } from "@/components/public/manufacturing/ProductionBlueprint";
+import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
+import { PublicCaseStudySection } from "@/components/public/manufacturing/PublicCaseStudySection";
+import { PublicCTASection } from "@/components/public/manufacturing/PublicCTASection";
+import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
+import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
+import { MarqueeStrip } from "@/components/ui/marquee-strip";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import type { Route } from "./+types/manufacturing";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Manufacturing | RUN APPAREL - Premium B2B Sportswear Production" },
     {
       name: "description",
-      content: "World-class sportswear manufacturing facilities in Sialkot, Pakistan. 135+ years of heritage craftsmanship with 1.2M+ annual capacity, end-to-end quality control, sustainable production, and B2B custom apparel solutions for global brands.",
+      content:
+        "World-class sportswear manufacturing facilities in Sialkot, Pakistan. 135+ years of heritage craftsmanship with 1.2M+ annual capacity, end-to-end quality control, sustainable production, and B2B custom apparel solutions for global brands.",
     },
     {
       name: "keywords",
-      content: "sportswear manufacturing, B2B apparel production, custom sportswear, sustainable manufacturing, Pakistan textile, quality control, teamwear production, activewear manufacturer",
+      content:
+        "sportswear manufacturing, B2B apparel production, custom sportswear, sustainable manufacturing, Pakistan textile, quality control, teamwear production, activewear manufacturer",
     },
-    { property: "og:title", content: "Manufacturing | RUN APPAREL - Premium B2B Sportswear Production" },
-    { property: "og:description", content: "World-class sportswear manufacturing with 135+ years of heritage. 1.2M+ annual capacity, sustainable production, and custom B2B solutions for global brands." },
+    {
+      property: "og:title",
+      content: "Manufacturing | RUN APPAREL - Premium B2B Sportswear Production",
+    },
+    {
+      property: "og:description",
+      content:
+        "World-class sportswear manufacturing with 135+ years of heritage. 1.2M+ annual capacity, sustainable production, and custom B2B solutions for global brands.",
+    },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://wear-run.com/manufacturing" },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: "Manufacturing | RUN APPAREL - Premium B2B Sportswear Production" },
-    { name: "twitter:description", content: "World-class sportswear manufacturing with 135+ years of heritage. 1.2M+ annual capacity, sustainable production, and custom B2B solutions." },
+    {
+      name: "twitter:title",
+      content: "Manufacturing | RUN APPAREL - Premium B2B Sportswear Production",
+    },
+    {
+      name: "twitter:description",
+      content:
+        "World-class sportswear manufacturing with 135+ years of heritage. 1.2M+ annual capacity, sustainable production, and custom B2B solutions.",
+    },
   ];
 }
 
@@ -62,7 +76,8 @@ function generateStructuredData(): string {
           "@type": "ImageObject",
           url: "https://wear-run.com/logo.png",
         },
-        description: "Premium B2B sportswear manufacturing company with 135+ years of heritage craftsmanship in Sialkot, Pakistan.",
+        description:
+          "Premium B2B sportswear manufacturing company with 135+ years of heritage craftsmanship in Sialkot, Pakistan.",
         foundingDate: "1889",
         address: {
           "@type": "PostalAddress",
@@ -75,15 +90,14 @@ function generateStructuredData(): string {
           contactType: "sales",
           email: "team@wear-run.com",
         },
-        sameAs: [
-          "https://www.linkedin.com/company/run-apparel",
-        ],
+        sameAs: ["https://www.linkedin.com/company/run-apparel"],
       },
       {
         "@type": "ManufacturingBusiness",
         "@id": "https://wear-run.com/manufacturing#business",
         name: "RUN APPAREL Manufacturing",
-        description: "World-class sportswear manufacturing facilities with end-to-end quality control, sustainable production practices, and B2B custom apparel solutions.",
+        description:
+          "World-class sportswear manufacturing facilities with end-to-end quality control, sustainable production practices, and B2B custom apparel solutions.",
         url: "https://wear-run.com/manufacturing",
         isPartOf: { "@id": "https://wear-run.com/#organization" },
         address: {
@@ -113,7 +127,8 @@ function generateStructuredData(): string {
               itemOffered: {
                 "@type": "Service",
                 name: "Custom Teamwear Production",
-                description: "Bespoke teamwear and activewear manufacturing for sports teams and corporate clients.",
+                description:
+                  "Bespoke teamwear and activewear manufacturing for sports teams and corporate clients.",
               },
             },
             {
@@ -121,7 +136,8 @@ function generateStructuredData(): string {
               itemOffered: {
                 "@type": "Service",
                 name: "Sustainable Apparel Manufacturing",
-                description: "Eco-friendly sportswear production using recycled materials and ethical practices.",
+                description:
+                  "Eco-friendly sportswear production using recycled materials and ethical practices.",
               },
             },
             {
@@ -129,7 +145,8 @@ function generateStructuredData(): string {
               itemOffered: {
                 "@type": "Service",
                 name: "Private Label Sportswear",
-                description: "Full-service private label manufacturing for global sportswear brands.",
+                description:
+                  "Full-service private label manufacturing for global sportswear brands.",
               },
             },
           ],
@@ -235,7 +252,11 @@ function ManufacturingInner() {
   });
 
   const isPending =
-    isHeroLoading || isProcessesLoading || isCapabilitiesLoading || isQualitiesLoading || isMediaLoading;
+    isHeroLoading ||
+    isProcessesLoading ||
+    isCapabilitiesLoading ||
+    isQualitiesLoading ||
+    isMediaLoading;
 
   // Global loading state for initial content
   if (isPending) {
@@ -251,15 +272,25 @@ function ManufacturingInner() {
 
   // Calculate real manufacturing stats from database data
   const annualCapacity = capabilities
-    .filter(c => c.unit?.toLowerCase().includes('pcs') || c.unit?.toLowerCase().includes('units'))
-    .reduce((sum, c) => sum + (parseFloat(c.capacity || '0') || 0), 0);
-  
+    .filter((c) => c.unit?.toLowerCase().includes("pcs") || c.unit?.toLowerCase().includes("units"))
+    .reduce((sum, c) => sum + (parseFloat(c.capacity || "0") || 0), 0);
+
   const activeLines = processes.length;
 
   const derivedStats = [
-    { label: "Annual Capacity", value: annualCapacity > 0 ? annualCapacity / 1000000 : 1.2, suffix: "M+", icon: "TrendingUp" },
+    {
+      label: "Annual Capacity",
+      value: annualCapacity > 0 ? annualCapacity / 1000000 : 1.2,
+      suffix: "M+",
+      icon: "TrendingUp",
+    },
     { label: "Active Lines", value: activeLines || 24, suffix: "", icon: "Cpu" },
-    { label: "QA Checkpoints", value: qualityItems.length * 5 || 100, suffix: "+", icon: "ShieldCheck" },
+    {
+      label: "QA Checkpoints",
+      value: qualityItems.length * 5 || 100,
+      suffix: "+",
+      icon: "ShieldCheck",
+    },
     { label: "Lead Time", value: 15, suffix: " Days", icon: "Zap" },
   ];
 
@@ -272,15 +303,11 @@ function ManufacturingInner() {
       <div className="dark min-h-screen bg-[#0A0A0A] text-white font-helvetica selection:bg-amber-500/30">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
-          <PublicHeroSection
-            mediaAssets={mediaAssets}
-            hero={hero}
-            stats={derivedStats}
-          />
+          <PublicHeroSection mediaAssets={mediaAssets} hero={hero} stats={derivedStats} />
         </ManufacturingErrorBoundary>
 
         {/* Brand Marquee */}
-        <MarqueeStrip 
+        <MarqueeStrip
           text="CUTTING • ASSEMBLY • FINISHING • QUALITY • INNOVATION •"
           accentColor="#FF4D00"
           speed={40}

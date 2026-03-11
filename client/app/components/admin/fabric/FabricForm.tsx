@@ -97,7 +97,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                   }
                   placeholder="e.g., 200 or 180-220"
                 />
-                <div className="text-muted-foreground text-xs">
+                <div className="text-[#68869A] text-xs">
                   Enter single value (e.g., 200) or range (e.g., 180-220)
                 </div>
               </div>
@@ -320,7 +320,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                           <SelectItem
                             value="no-fibers"
                             disabled
-                            className="text-muted-foreground/70 h-12 px-4 text-sm"
+                            className="text-[#68869A]/70 h-12 px-4 text-sm"
                           >
                             No fibers available
                           </SelectItem>
@@ -349,7 +349,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                       placeholder="e.g., 60 %"
                       className="w-32"
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
+                    <span className="text-[#68869A] text-sm">%</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -424,7 +424,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
       >
         <Card>
           <CollapsibleTrigger asChild>
-            <CardHeader className="hover:bg-muted/50 cursor-pointer">
+            <CardHeader className="hover:bg-white/[0.03] cursor-pointer">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Shirt className="h-5 w-5 text-blue-500" />
@@ -544,7 +544,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
       >
         <Card>
           <CollapsibleTrigger asChild>
-            <CardHeader className="hover:bg-muted/50 cursor-pointer">
+            <CardHeader className="hover:bg-white/[0.03] cursor-pointer">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Activity className="h-5 w-5 text-green-500" />
@@ -692,7 +692,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
       >
         <Card>
           <CollapsibleTrigger asChild>
-            <CardHeader className="hover:bg-muted/50 cursor-pointer">
+            <CardHeader className="hover:bg-white/[0.03] cursor-pointer">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Droplets className="h-5 w-5 text-purple-500" />
@@ -742,7 +742,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
       >
         <Card>
           <CollapsibleTrigger asChild>
-            <CardHeader className="hover:bg-muted/50 cursor-pointer">
+            <CardHeader className="hover:bg-white/[0.03] cursor-pointer">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Globe className="h-5 w-5 text-emerald-500" />

@@ -1,8 +1,8 @@
 import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/index";
-import { Edit, GripVertical, Plus, Trash2 } from "lucide-react";
+import { Edit, GripVertical, MessageSquareText, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,15 +38,15 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   // Create Form State
   const [newSlogan, setNewSlogan] = useState<InsertHomepageSlogan>({
     text: "",
-    position: "top",
+    position: 0,
     isActive: true,
-  });
+  } as any);
 
   const handleCreate = () => {
     createSlogan.mutate(newSlogan, {
       onSuccess: () => {
         setIsCreateOpen(false);
-        setNewSlogan({ text: "", position: "top", isActive: true });
+        setNewSlogan({ text: "", position: 0, isActive: true } as any);
       },
     });
   };
@@ -71,148 +70,203 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   };
 
   return (
-    <TabsContent value="slogans" className="space-y-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Homepage Slogans</CardTitle>
-            <CardDescription>
-              Manage the animated slogans on the homepage. Drag to reorder.
-            </CardDescription>
-          </div>
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" /> Add Slogan
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Slogan</DialogTitle>
-                <DialogDescription>
-                  Create a new slogan to display on the homepage.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="text">Text</Label>
-                  <Input
-                    id="text"
-                    value={newSlogan.text}
-                    onChange={(e) => setNewSlogan({ ...newSlogan, text: e.target.value })}
-                  />
-                </div>
-                {/* Add other fields as needed */}
+    <TabsContent value="slogans" className="mt-0 focus-visible:outline-none outline-none">
+      <div className="space-y-6">
+        <GlassCard className="p-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="size-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                <MessageSquareText className="h-5 w-5 text-blue-400" />
               </div>
-              <DialogFooter>
-                <Button onClick={handleCreate} disabled={createSlogan.isPending}>
-                  {createSlogan.isPending ? "Creating..." : "Create Slogan"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardHeader>
-        <CardContent>
+              <div>
+                <h2 className="text-xl font-bold text-white tracking-tight">Kinetic Slogans</h2>
+                <p className="text-sm text-[#68869A]">
+                  Manage animated text sequences. Drag to reorder.
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={() => setIsCreateOpen(true)}
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all border-0"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add Sequence
+            </Button>
+          </div>
+
           <div className="space-y-4">
             <Sortable
               value={orderedSlogans}
               onValueChange={handleReorder}
               getItemValue={(item) => item.id}
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {orderedSlogans.map((slogan) => (
                   <SortableItem key={slogan.id} value={slogan.id} asChild>
-                    <div className="flex items-center justify-between rounded-lg border p-4 bg-card">
+                    <div className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4 hover:bg-white/[0.04] transition-colors">
                       <div className="flex items-center gap-4">
                         <SortableItemHandle asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="cursor-grab"
+                            className="cursor-grab text-white/40 hover:text-white"
                             aria-label={`Drag to reorder slogan: ${slogan.text}`}
                           >
-                            <GripVertical className="h-5 w-5 text-muted-foreground" />
+                            <GripVertical className="h-5 w-5" />
                           </Button>
                         </SortableItemHandle>
                         <div>
-                          <div className="font-medium">{slogan.text}</div>
-                          <div className="text-muted-foreground text-sm">
+                          <div className="font-bold text-white tracking-tight">{slogan.text}</div>
+                          <div className="text-xs uppercase tracking-widest mt-1">
                             {slogan.isActive ? (
-                              <span className="text-green-600 dark:text-green-400">Active</span>
+                              <span className="text-blue-400">Active Broadcast</span>
                             ) : (
-                              <span className="text-muted-foreground">Inactive</span>
+                              <span className="text-[#68869A]">Inactive</span>
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingSlogan(slogan)}
                           aria-label={`Edit slogan: ${slogan.text}`}
+                          className="h-9 px-3 text-[#68869A] hover:text-white hover:bg-white/10"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-4 w-4 mr-2" /> Edit
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(slogan.id)}
                           aria-label={`Delete slogan: ${slogan.text}`}
+                          className="h-9 px-3 text-red-400 hover:text-red-300 hover:bg-red-500/20"
                         >
-                          <Trash2 className="text-destructive h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
                   </SortableItem>
                 ))}
+                {orderedSlogans.length === 0 && (
+                  <div className="text-center py-12 rounded-2xl border border-dashed border-white/10">
+                    <MessageSquareText className="h-8 w-8 text-[#68869A] mx-auto mb-3 opacity-50" />
+                    <p className="text-sm font-medium text-white mb-1">No sequences active</p>
+                    <p className="text-xs text-[#68869A] max-w-sm mx-auto">
+                      Add kinetic slogans to engage users during initial page load and idle states.
+                    </p>
+                  </div>
+                )}
               </div>
             </Sortable>
           </div>
-        </CardContent>
-      </Card>
+        </GlassCard>
 
-      {/* Edit Dialog */}
-      {editingSlogan && (
-        <Dialog open={!!editingSlogan} onOpenChange={(open) => !open && setEditingSlogan(null)}>
-          <DialogContent>
+        {/* Create Dialog */}
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogContent className="bg-[#0A0A0A] border-white/10 text-white">
             <DialogHeader>
-              <DialogTitle>Edit Slogan</DialogTitle>
+              <DialogTitle className="text-xl font-bold tracking-tight">
+                Deploy New Sequence
+              </DialogTitle>
+              <DialogDescription className="text-[#68869A]">
+                Configure a new kinetic text sequence for the hero section.
+              </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-6 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-text">Text</Label>
+                <Label
+                  htmlFor="text"
+                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                >
+                  Sequence Text
+                </Label>
                 <Input
-                  id="edit-text"
-                  value={editingSlogan.text}
-                  onChange={(e) => setEditingSlogan({ ...editingSlogan, text: e.target.value })}
+                  id="text"
+                  value={newSlogan.text}
+                  onChange={(e) => setNewSlogan({ ...newSlogan, text: e.target.value })}
+                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 h-12"
+                  placeholder="e.g., Engineer the Perfect Run"
                 />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="edit-isActive"
-                  checked={editingSlogan.isActive ?? true}
-                  onCheckedChange={(checked) =>
-                    setEditingSlogan({ ...editingSlogan, isActive: checked })
-                  }
-                />
-                <Label htmlFor="edit-isActive">Active</Label>
               </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="border-t border-white/10 pt-4 mt-2">
               <Button
-                onClick={() => {
-                  updateSlogan.mutate({ id: editingSlogan.id, data: editingSlogan });
-                  setEditingSlogan(null);
-                }}
-                disabled={updateSlogan.isPending}
+                onClick={handleCreate}
+                disabled={createSlogan.isPending}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6"
               >
-                Save Changes
+                {createSlogan.isPending ? "Deploying..." : "Deploy Sequence"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
+
+        {/* Edit Dialog */}
+        {editingSlogan && (
+          <Dialog open={!!editingSlogan} onOpenChange={(open) => !open && setEditingSlogan(null)}>
+            <DialogContent className="bg-[#0A0A0A] border-white/10 text-white">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold tracking-tight">
+                  Modify Sequence
+                </DialogTitle>
+                <DialogDescription className="text-[#68869A]">
+                  Update sequence text and broadcast status.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-6 py-4">
+                <div className="grid gap-2">
+                  <Label
+                    htmlFor="edit-text"
+                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  >
+                    Sequence Text
+                  </Label>
+                  <Input
+                    id="edit-text"
+                    value={editingSlogan.text}
+                    onChange={(e) => setEditingSlogan({ ...editingSlogan, text: e.target.value })}
+                    className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 h-12"
+                  />
+                </div>
+                <div className="flex items-center space-x-3 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                  <Switch
+                    id="edit-isActive"
+                    checked={editingSlogan.isActive ?? true}
+                    onCheckedChange={(checked) =>
+                      setEditingSlogan({ ...editingSlogan, isActive: checked })
+                    }
+                    className="data-[state=checked]:bg-blue-500"
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <Label
+                      htmlFor="edit-isActive"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
+                    >
+                      Broadcast Status
+                    </Label>
+                    <p className="text-xs text-[#68869A]">
+                      Activate this sequence on the global storefront
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="border-t border-white/10 pt-4 mt-2">
+                <Button
+                  onClick={() => {
+                    updateSlogan.mutate({ id: editingSlogan.id, data: editingSlogan });
+                    setEditingSlogan(null);
+                  }}
+                  disabled={updateSlogan.isPending}
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6"
+                >
+                  Confirm Modification
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </TabsContent>
   );
 }

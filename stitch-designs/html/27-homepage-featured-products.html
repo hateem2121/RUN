@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Homepage Management - Featured Products</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">package_2</span>
+</div>
+<div>
+<h1 class="text-slate-900 dark:text-slate-100 text-base font-bold leading-tight">Run Apparel</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Admin Control</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-sm font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">home</span>
+<span class="text-sm font-medium">Homepage Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-sm font-medium">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Customers</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 px-3 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-xl">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">JD</div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold truncate">John Doe</p>
+<p class="text-[10px] text-slate-500">Super Admin</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- Top Navbar -->
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 bg-background-light/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary transition-all" placeholder="Search orders, products, customers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full border-2 border-background-light dark:border-background-dark"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</header>
+<!-- Page Header & Tabs -->
+<div class="p-8 pb-0">
+<div class="flex items-end justify-between mb-6">
+<div>
+<h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">Homepage Management</h2>
+<p class="text-slate-500 dark:text-slate-400 font-medium">Configure your store's landing page experience</p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">save</span>
+                        Publish Changes
+                    </button>
+</div>
+<div class="flex border-b border-slate-200 dark:border-slate-800 gap-8">
+<button class="pb-4 px-1 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-primary transition-colors border-b-2 border-transparent">
+                        Hero Banner
+                    </button>
+<button class="pb-4 px-1 text-sm font-bold text-primary border-b-2 border-primary">
+                        Featured Products
+                    </button>
+<button class="pb-4 px-1 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-primary transition-colors border-b-2 border-transparent">
+                        Collections Grid
+                    </button>
+<button class="pb-4 px-1 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-primary transition-colors border-b-2 border-transparent">
+                        Announcement Bar
+                    </button>
+</div>
+</div>
+<!-- Content Split Panel -->
+<div class="flex-1 p-8 overflow-hidden">
+<div class="grid grid-cols-12 gap-6 h-full">
+<!-- Left: Inventory Search -->
+<div class="col-span-5 flex flex-col bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-800/30">
+<h3 class="text-sm font-bold mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">inventory</span>
+                                Product Inventory
+                            </h3>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary transition-all" placeholder="Filter products to add..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-2 scrollbar-hide">
+<div class="space-y-1">
+<!-- Product Item -->
+<div class="group p-2 flex items-center gap-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="size-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="Red Nike running shoe on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBycBIhxnEgXfF-m3Ev9chjaqUNmpnNb-Hl0srhrZ0bE0VRdEclMPi4NTLkLetZPf3kLAXmmIctuRKICmtevt4i3EeDISbNsG-5-WMqNb8HoxLAe7CGKlSX15Sbf2CS-O2TIBcfPCtQx4-4y_0KDUKKf7wIluBnh5mPwnE6-NBAdfHCQo2FiKHRQS_5BxfXFTiRva-45PHWFrf77eSMDG6tUexLd1HV3ZoMmkZMA2JG5d7QEl3SZBccLYIAfOtWOM-bvJyKxJFgWQw"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">AeroGlide Pro Runner</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">$129.99 • 42 in stock</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-primary p-1 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+<!-- Repeat Product Item -->
+<div class="group p-2 flex items-center gap-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="size-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="Modern minimalist watch on stone surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAEamDA9__RCQ5oSytZgoeRVTfdVDMsj3oKzYGX6ePEeL0zLLb6_bD3rJbuDx6LUioG0mQgJMwm9KnnVFEiR2twsFvTs6z0kR3Ggz9R0PumqL0f7UHxvthCfGQAszPcRblfI5OUXLBJ0hQU1xmMeOTfJWqLsSsNSM6hQ1YO9CRZm4_vpF2eL-RUNTP0pVVYx9voz1ncRoDft1h4pc-ZemRwklFUA9Zi3W9VozHw_UAsdkKVywEWq7-kP9wAeHWgO1BnvqgAFtf4Mw"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">Stealth Tech Chrono</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">$249.00 • 12 in stock</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-primary p-1 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+<div class="group p-2 flex items-center gap-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="size-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="Pair of designer running shoes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIkeRSmFS6QSmrMkepelxSdGHEOWSUXDFmy1Sfm6r1U5WQyTaZCEitrzI11KuH5dUBWp0uf2G1RMZXyTQg87eizAVETYJOeajSbY8iB6PXB7ErTtY0XPuPH-7-4G8DzMBCtCuolQugKPRv-JpARYAVt5IvQmU9B4rXaax0IHefmKq5ux4xogPjysIh9Q4SIHW5qLuQnrkurJ9tb8x70V37xTLV6VNWHkjp8KvjG1ebmXD9_XS0kzbtNFidPubfq0pwa8vs2wnTJOM"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">Velocity V2 Mid-Top</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">$185.00 • 8 in stock</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-primary p-1 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+<div class="group p-2 flex items-center gap-3 rounded-lg bg-primary/5 border-primary/20 border transition-all cursor-default">
+<div class="size-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden opacity-50">
+<img alt="" class="w-full h-full object-cover" data-alt="Blue tinted sunglasses on table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_l6xtXJvHPqtCghiaPzZQOH7i2vpRrWfXFJJPhMCnTwn9qJPB6cv-ot-vTxixQGiD8cMcpjqXKT1ERg9Z6vhjBpsN9EcJP3EPD0AP93XZSDPsC3c1XsN2NJXC2HL6Uj9qQ7cWsEnY4srAv1e9mxK3x9z-vBkkXskrKhC7pYCpMbKs04D8psmhwXfKEi05QAVzbu1iYODZyTR0NMPj5XV_BGvsrs2CcDlu4YvmyMpvisStZGHed8NKRvvbaksltVolnqLmrBzomnk"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">Eclipse Polarized Lenses</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">$89.00 • 24 in stock</p>
+</div>
+<span class="text-primary p-1">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1">check_circle</span>
+</span>
+</div>
+<div class="group p-2 flex items-center gap-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="size-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="White athletic shoes profile view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFYtpQW3eVn0hDdGQz9vlUC4hdlTuIPOGMOuLH5-XsSWk8Wr8e246J9NXMCBM1WvnoYKZ2v_4vLvriMMbjP8Tqlyd_BZrEj62D3tQgCKpJ8k3rwuCwUD6kfPsZfwjWfj6W0xy2RrUYwpncds4S8bnKeIRn0pxVHdVTHhmSiG_Kjf-9Zm5hfAjptI_Vk-sNU5VTwLlIULKmc15jzDX0reY-TlTFjvHD0oxvEa9TwHweIhOGk5ZwFyXkU4X634ttNpgXYV3xbroMMIQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">CloudWalker Everyday</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">$110.00 • 56 in stock</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-primary p-1 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Selected Featured Products -->
+<div class="col-span-7 flex flex-col bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden relative">
+<div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-800/30 flex justify-between items-center">
+<div>
+<h3 class="text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1">stars</span>
+                                    Featured Selection
+                                </h3>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Drag to reorder products on the homepage</p>
+</div>
+<div class="px-3 py-1 bg-primary/20 border border-primary/30 rounded-full">
+<span class="text-[10px] font-bold text-primary uppercase tracking-wider">Max 6 products</span>
+</div>
+</div>
+<div class="flex-1 p-6 overflow-y-auto scrollbar-hide">
+<div class="space-y-3">
+<!-- Sortable Card -->
+<div class="glass flex items-center gap-4 p-4 rounded-xl group hover:border-primary/50 transition-all cursor-move">
+<div class="text-slate-500 dark:text-slate-600">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="size-16 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="Red Nike running shoe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALJdPE0nDML13BxZW_WWGQt4IwlvXvzVrUQzkmO8gbBr_rZC7yqsBZNvmtMAULWl5uAy751eAjGdfZ0v9CKP25vezrUYHgPws7Op04wSr0MmOMwKOeKWHJuc2PBCQE8XGcoPr0AFgfUlwiVnAXhzz0Z5flg1vXLKbFNfQogC4gGeoxt8M3T8XzEGlHtT1ea_7OYuVCRwUq6nt2LIir8gflCcwxrQUMFHukdauwE8H21nWqLQ7fTrQOe9wFhnPhJ9F-g6Cu8VlHT7s"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-primary px-1.5 py-0.5 bg-primary/10 rounded">#1</span>
+<p class="text-sm font-bold truncate">AeroGlide Pro Runner</p>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Featured as main seasonal hero product</p>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Sortable Card 2 -->
+<div class="glass flex items-center gap-4 p-4 rounded-xl group hover:border-primary/50 transition-all cursor-move">
+<div class="text-slate-500 dark:text-slate-600">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="size-16 rounded-lg bg-slate-200 dark:bg-slate-800 flex-shrink-0 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="Blue sunglasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ-kA6tg24MB13lBupg3FI02G4miwqz6-GJ_3E5sgknbfAhiVMTygOAmvNf0Jf2tq0nSePP4n5ExzTpYJBitafV-WQjdUWQfbFGFBzQSML9WWmNlvODAAZMgaPmYCx9mn6CtwsQ6lo0BLF9jysqWkvaPSqphHB0gU10iVkCw1SH4SBPEjk8fCGXdrEA0QH_w73e4Y0ULYC8wcIe6_onHasYFnFE1T7GO53ltsNHqcYBsHJWddq8zx_oB_ZiCsjpA88vI1Rdjwp9IA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-primary px-1.5 py-0.5 bg-primary/10 rounded">#2</span>
+<p class="text-sm font-bold truncate">Eclipse Polarized Lenses</p>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Accessory upsell section</p>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Empty Slot Hint -->
+<div class="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center text-slate-400 hover:border-primary/50 hover:bg-primary/5 transition-all cursor-default">
+<span class="material-symbols-outlined text-3xl mb-2">add_to_photos</span>
+<p class="text-xs font-medium">Add up to 4 more products</p>
+</div>
+</div>
+</div>
+<!-- Panel Footer Stats -->
+<div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-100/30 dark:bg-slate-800/20 text-xs flex justify-between items-center">
+<span class="text-slate-500">Selection: <strong class="text-slate-900 dark:text-slate-200">2/6 items</strong></span>
+<div class="flex gap-4">
+<button class="text-slate-500 hover:text-primary transition-colors font-bold uppercase tracking-tight">Clear All</button>
+<button class="text-primary font-bold uppercase tracking-tight">Preview Layout</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,67 +1,14 @@
-import type {
-  Accessory,
-  Category,
-  Certificate,
-  Fabric,
-  Fiber,
-  MediaAsset,
-  NavigationItem,
-  Product,
-  SizeChart,
-} from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
-import { MediaQueryKeys } from "@/lib/media-query-keys";
+import { CrossPageDashboard } from "./cross-page-dashboard";
 
 export default function AdminCMS() {
-  // Enhanced data fetching with proper typing and error handling
-  const { data: products } = useQuery<Product[]>({
-    queryKey: ["/api/products"],
-  });
-
-  const { data: categories } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-  });
-
-  const { data: mediaResponse } = useQuery<{
-    success: boolean;
-    data: { data: MediaAsset[]; pagination: unknown };
-  }>({
-    queryKey: MediaQueryKeys.list,
-  });
-  const media = mediaResponse?.data?.data || [];
-
-  const { data: fabrics } = useQuery<Fabric[]>({
-    queryKey: ["/api/fabrics"],
-  });
-
-  const { data: fibers } = useQuery<Fiber[]>({
-    queryKey: ["/api/fibers"],
-  });
-
-  const { data: certificates } = useQuery<Certificate[]>({
-    queryKey: ["/api/certificates"],
-  });
-
-  const { data: sizeCharts } = useQuery<SizeChart[]>({
-    queryKey: ["/api/size-charts"],
-  });
-
-  const { data: accessories } = useQuery<Accessory[]>({
-    queryKey: ["/api/accessories"],
-  });
-
-  const { data: navigationItems } = useQuery<NavigationItem[]>({
-    queryKey: ["/api/navigation-items"],
-  });
-
-  const { data: inquiryStats } = useQuery<{
-    byStatus: Record<string, number>;
-    bySource: Record<string, number>;
-    recentCount: number;
-  }>({
-    queryKey: ["/api/admin/inquiries/stats"],
+  // Single query for all module counts
+  const { data: stats } = useQuery<Record<string, number>>({
+    queryKey: ["/api/v1/admin/dashboard/stats"],
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   const modules = [
@@ -71,7 +18,7 @@ export default function AdminCMS() {
       description: "Create, update, categorize products with images and 3D files",
       icon: "fas fa-box",
       color: "bg-primary-100 text-primary-600",
-      count: products?.length || 0,
+      count: stats?.products || 0,
     },
     {
       id: "categories",
@@ -79,7 +26,7 @@ export default function AdminCMS() {
       description: "Hierarchical structuring of products",
       icon: "fas fa-sitemap",
       color: "bg-orange-100 text-orange-600",
-      count: categories?.length || 0,
+      count: stats?.categories || 0,
     },
     {
       id: "media",
@@ -87,7 +34,7 @@ export default function AdminCMS() {
       description: "Centralized repository with tagging and search",
       icon: "fas fa-images",
       color: "bg-green-100 text-green-600",
-      count: media?.length || 0,
+      count: stats?.media || 0,
     },
     {
       id: "fabrics",
@@ -95,7 +42,7 @@ export default function AdminCMS() {
       description: "Define fabric types, compositions, and properties",
       icon: "fas fa-tshirt",
       color: "bg-purple-100 text-purple-600",
-      count: fabrics?.length || 0,
+      count: stats?.fabrics || 0,
     },
     {
       id: "fibers",
@@ -103,7 +50,7 @@ export default function AdminCMS() {
       description: "Material traceability within fabrics",
       icon: "fas fa-dna",
       color: "bg-blue-100 text-blue-600",
-      count: fibers?.length || 0,
+      count: stats?.fibers || 0,
     },
     {
       id: "certificates",
@@ -111,7 +58,7 @@ export default function AdminCMS() {
       description: "Compliance and sustainability certifications",
       icon: "fas fa-certificate",
       color: "bg-yellow-100 text-yellow-600",
-      count: certificates?.length || 0,
+      count: stats?.certificates || 0,
     },
     {
       id: "sizeCharts",
@@ -119,7 +66,7 @@ export default function AdminCMS() {
       description: "Create and assign size charts per category/region",
       icon: "fas fa-ruler-combined",
       color: "bg-indigo-100 text-indigo-600",
-      count: sizeCharts?.length || 0,
+      count: stats?.sizeCharts || 0,
     },
     {
       id: "accessories",
@@ -127,7 +74,7 @@ export default function AdminCMS() {
       description: "Manage customization options and embellishments",
       icon: "fas fa-palette",
       color: "bg-pink-100 text-pink-600",
-      count: accessories?.length || 0,
+      count: stats?.accessories || 0,
     },
     {
       id: "navigation",
@@ -135,7 +82,7 @@ export default function AdminCMS() {
       description: "Manage floating dock navigation menu items",
       icon: "fas fa-compass",
       color: "bg-cyan-100 text-cyan-600",
-      count: navigationItems?.length || 0,
+      count: stats?.navigationItems || 0,
     },
     {
       id: "contact",
@@ -143,7 +90,7 @@ export default function AdminCMS() {
       description: "Manage contact page configuration and settings",
       icon: "fas fa-envelope",
       color: "bg-teal-100 text-teal-600",
-      count: 1, // Contact Page Settings
+      count: stats?.contactPages || 1, // Contact Page Settings
     },
     {
       id: "inquiries",
@@ -151,7 +98,7 @@ export default function AdminCMS() {
       description: "View, manage, and respond to customer inquiries and submissions",
       icon: "fas fa-inbox",
       color: "bg-sky-100 text-sky-600",
-      count: Object.values(inquiryStats?.byStatus || {}).reduce((sum, count) => sum + count, 0),
+      count: stats?.inquiries || 0,
     },
     {
       id: "homepage",
@@ -207,7 +154,7 @@ export default function AdminCMS() {
       description: "Analyze and optimize media storage, clean orphaned files",
       icon: "fas fa-database",
       color: "bg-slate-100 text-slate-600",
-      count: 0, // Will be populated by storage stats
+      count: stats?.storage || 0, // Will be populated by storage stats
     },
   ];
 
@@ -222,32 +169,43 @@ export default function AdminCMS() {
         </p>
       </div>
 
+      <div className="mb-12">
+        <CrossPageDashboard />
+      </div>
+
       {/* CMS Module Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {modules.map((module) => (
-          <Link
+        {modules.map((module, index) => (
+          <motion.div
             key={module.id}
-            to={module.id === "sizeCharts" ? "/admin/size-charts" : `/admin/${module.id}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
           >
-            <Card className="admin-card h-full cursor-pointer">
-              <CardContent className="p-6">
-                <div
-                  className={`h-12 w-12 ${module.color.split(" ")[0]} center-flex mb-4 rounded-lg`}
-                >
-                  <i className={`${module.icon} ${module.color.split(" ")[1]} text-xl`}></i>
-                </div>
-                <h3 className="mb-2 font-neue-stance font-semibold text-lg text-neutral-900">
-                  {module.name}
-                </h3>
-                <p className="mb-4 text-neutral-600 text-sm">{module.description}</p>
-                <div className="text-neutral-500 text-xs">
-                  <span className="rounded bg-neutral-100 px-2 py-1">
-                    {module.count} {module.count === 1 ? "Item" : "Items"}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+            <Link
+              to={module.id === "sizeCharts" ? "/admin/size-charts" : `/admin/${module.id}`}
+              className="block h-full"
+            >
+              <Card className="admin-card h-full cursor-pointer hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div
+                    className={`h-12 w-12 ${module.color.split(" ")[0]} center-flex mb-4 rounded-lg`}
+                  >
+                    <i className={`${module.icon} ${module.color.split(" ")[1]} text-xl`}></i>
+                  </div>
+                  <h3 className="mb-2 font-neue-stance font-semibold text-lg text-neutral-900">
+                    {module.name}
+                  </h3>
+                  <p className="mb-4 text-neutral-600 text-sm">{module.description}</p>
+                  <div className="text-neutral-500 text-xs">
+                    <span className="rounded bg-neutral-100 px-2 py-1">
+                      {module.count} {module.count === 1 ? "Item" : "Items"}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
         ))}
       </div>
     </div>

@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { BlogCategory, BlogPost } from "@shared/index";
+import { insertBlogPostSchema } from "@shared/index";
 import {
   IconEdit,
   IconLoader2,
@@ -10,11 +12,9 @@ import {
   IconShare,
   IconTrash,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { BlogCategory, BlogPost } from "@shared/index";
-import { insertBlogPostSchema } from "@shared/index";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,6 +52,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { SEOPreview } from "./blog/SEOPreview";
+import { RichTextEditor } from "./shared/RichTextEditor";
+import "../../styles/editor.css";
 
 export function BlogManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,6 +62,39 @@ export function BlogManagement() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+
+  const fetchPosts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const queryParams = new URLSearchParams({
+        limit: "50",
+        offset: "0",
+        ...(searchTerm && { search: searchTerm }),
+      });
+
+      const response = await fetch(`/api/admin/blog/posts?${queryParams}`);
+      if (!response.ok) throw new Error("Failed to fetch posts");
+
+      const data = await response.json();
+      setPosts(data.posts || []);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      toast.error("Failed to load blog posts");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchTerm]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await fetch("/api/admin/blog/categories");
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      const data = await response.json();
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  }, []);
 
   const form = useForm({
     resolver: zodResolver(insertBlogPostSchema),
@@ -82,40 +117,7 @@ export function BlogManagement() {
   useEffect(() => {
     fetchPosts();
     fetchCategories();
-  }, [searchTerm]);
-
-  const fetchPosts = async () => {
-    try {
-      setIsLoading(true);
-      const queryParams = new URLSearchParams({
-        limit: "50",
-        offset: "0",
-        ...(searchTerm && { search: searchTerm }),
-      });
-
-      const response = await fetch(`/api/admin/blog/posts?${queryParams}`);
-      if (!response.ok) throw new Error("Failed to fetch posts");
-
-      const data = await response.json();
-      setPosts(data.posts || []);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      toast.error("Failed to load blog posts");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("/api/admin/blog/categories");
-      if (!response.ok) throw new Error("Failed to fetch categories");
-      const data = await response.json();
-      setCategories(data || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
+  }, [fetchCategories, fetchPosts]);
 
   const onSubmit = async (values: any) => {
     try {
@@ -184,7 +186,7 @@ export function BlogManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Blog Management</h1>
-          <p className="text-muted-foreground mt-1">Manage global content and storytelling.</p>
+          <p className="text-[#68869A] mt-1">Manage global content and storytelling.</p>
         </div>
         <Button
           className="gap-2"
@@ -216,7 +218,7 @@ export function BlogManagement() {
         <CardHeader>
           <CardTitle>Content Pipeline</CardTitle>
           <div className="relative mt-2">
-            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-[#68869A]" />
             <Input
               placeholder="Search posts..."
               className="pl-8"
@@ -227,7 +229,7 @@ export function BlogManagement() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-10 text-[#68869A]">
               <IconLoader2 className="h-10 w-10 animate-spin mb-4" />
               <p>Syncing blog content...</p>
             </div>
@@ -245,7 +247,10 @@ export function BlogManagement() {
               <TableBody>
                 {posts.length > 0 ? (
                   posts.map((post) => (
-                    <TableRow key={post.id} className="group hover:bg-muted/50 transition-colors">
+                    <TableRow
+                      key={post.id}
+                      className="group hover:bg-white/[0.03] transition-colors"
+                    >
                       <TableCell className="font-medium max-w-[300px] truncate">
                         {post.title}
                       </TableCell>
@@ -264,7 +269,7 @@ export function BlogManagement() {
                       <TableCell className="text-sm">
                         {categories.find((c) => c.id === post.categoryId)?.name || "Uncategorized"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-[#68869A]">
                         {new Date(post.updatedAt || post.createdAt).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
@@ -291,7 +296,7 @@ export function BlogManagement() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                    <TableCell colSpan={5} className="h-24 text-center text-[#68869A]">
                       No blog posts found. Capture the narrative by creating one.
                     </TableCell>
                   </TableRow>
@@ -353,7 +358,7 @@ export function BlogManagement() {
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <Select
-                            onValueChange={(v) => field.onChange(parseInt(v))}
+                            onValueChange={(v) => field.onChange(parseInt(v, 10))}
                             value={field.value?.toString() || ""}
                           >
                             <FormControl>
@@ -409,7 +414,7 @@ export function BlogManagement() {
                               value={field.value || ""}
                               onChange={(e) =>
                                 field.onChange(
-                                  e.target.value ? parseInt(e.target.value) : undefined,
+                                  e.target.value ? parseInt(e.target.value, 10) : undefined,
                                 )
                               }
                             />
@@ -443,12 +448,12 @@ export function BlogManagement() {
                       name="content"
                       render={({ field }) => (
                         <FormItem className="col-span-2">
-                          <FormLabel>Content (Markdown support planned)</FormLabel>
+                          <FormLabel>Content (Rich Text Editor)</FormLabel>
                           <FormControl>
-                            <Textarea
+                            <RichTextEditor
+                              value={field.value || ""}
+                              onChange={field.onChange}
                               placeholder="Write your story here..."
-                              className="min-h-[200px]"
-                              {...field}
                             />
                           </FormControl>
                           <FormMessage />

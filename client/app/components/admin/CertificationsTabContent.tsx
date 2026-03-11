@@ -1,8 +1,9 @@
 import type { Certificate, UnifiedSustainability } from "@shared/index";
+import { Award, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 interface CertificationsTabContentProps {
   localForm: Partial<UnifiedSustainability>;
@@ -12,6 +13,7 @@ interface CertificationsTabContentProps {
   onLocalUpdate: (updates: Partial<UnifiedSustainability>) => void;
   onSave: () => void;
 }
+
 export function CertificationsTabContent({
   localForm,
   hasUnsavedChanges,
@@ -20,113 +22,139 @@ export function CertificationsTabContent({
   onLocalUpdate,
   onSave,
 }: CertificationsTabContentProps) {
-  return (
-    <TabsContent value="certifications" className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Certifications Section</CardTitle>
-          <CardDescription>
-            Configure the certifications section and select which certificates to showcase
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label className="font-medium text-base">Select Certificates to Showcase</Label>
-            <p className="mb-4 text-muted-foreground text-sm">
-              Choose which certificates will be displayed on the public sustainability page
-            </p>
+  const selectedIds = localForm.data?.certificationIds || [];
 
-            {availableCertificates.length > 0 ? (
-              <div className="grid max-h-64 grid-cols-1 gap-4 overflow-y-auto rounded-lg border p-4 md:grid-cols-2 lg:grid-cols-3">
-                {availableCertificates.map((certificate) => (
-                  <div
-                    key={certificate.id}
-                    className={`flex cursor-pointer items-center space-x-3 rounded-lg border p-3 transition-colors ${
-                      (localForm.data?.certificationIds || []).includes(certificate.id!)
-                        ? "border-green-200 bg-green-50"
-                        : "border-border bg-background hover:bg-muted"
-                    }`}
-                    onClick={() => {
-                      const currentIds = localForm.data?.certificationIds || [];
-                      const newIds = currentIds.includes(certificate.id!)
-                        ? currentIds.filter((id: number) => id !== certificate.id!)
-                        : [...currentIds, certificate.id!];
-                      onLocalUpdate({
-                        data: {
-                          ...localForm.data,
-                          certificationIds: newIds,
-                        },
-                      });
-                    }}
-                  >
+  const toggleCertificate = (id: number) => {
+    const currentIds = [...selectedIds];
+    const newIds = currentIds.includes(id)
+      ? currentIds.filter((cid) => cid !== id)
+      : [...currentIds, id];
+
+    onLocalUpdate({
+      data: {
+        ...localForm.data,
+        certificationIds: newIds,
+      },
+    });
+  };
+
+  return (
+    <TabsContent value="certifications" className="outline-none">
+      <Card className="glass-premium p-8">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-white tracking-tight">
+              Sovereign Certifications
+            </h2>
+            <p className="text-sm text-[#68869A]">
+              Select validated compliance protocols to showcase on the global ecosystem overview
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {selectedIds.length > 0 && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                  {selectedIds.length} Initialised
+                </span>
+              </div>
+            )}
+            <Button
+              onClick={onSave}
+              disabled={!hasUnsavedChanges || isPending}
+              className={cn(
+                "font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
+                hasUnsavedChanges
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20"
+                  : "bg-white/5 text-[#68869A] border border-white/10 cursor-not-allowed",
+              )}
+            >
+              {isPending ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />
+              ) : null}
+              Sync Protocol
+            </Button>
+          </div>
+        </div>
+
+        {availableCertificates.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {availableCertificates.map((certificate) => {
+              const isSelected = selectedIds.includes(certificate.id!);
+              return (
+                <div
+                  key={certificate.id}
+                  onClick={() => toggleCertificate(certificate.id!)}
+                  className={cn(
+                    "group relative cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300",
+                    isSelected
+                      ? "bg-emerald-500/10 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.1)] py-6 px-5"
+                      : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10 py-6 px-5",
+                  )}
+                >
+                  <div className="flex items-start justify-between mb-4">
                     <div
-                      className={`flex h-4 w-4 items-center justify-center rounded border-2 ${
-                        (localForm.data?.certificationIds || []).includes(certificate.id!)
-                          ? "border-green-600 bg-green-600"
-                          : "border-border/50"
-                      }`}
-                    >
-                      {(localForm.data?.certificationIds || []).includes(certificate.id!) && (
-                        <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                      className={cn(
+                        "size-12 rounded-xl flex items-center justify-center transition-colors shadow-sm",
+                        isSelected
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : "bg-white/5 text-[#68869A] group-hover:text-white",
                       )}
+                    >
+                      <ShieldCheck className="h-6 w-6" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate font-medium text-foreground text-sm">
-                        {certificate.name}
+                    {isSelected && (
+                      <div className="size-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/40 animate-in zoom-in duration-300">
+                        <Check className="h-3.5 w-3.5 stroke-[3]" />
                       </div>
-                      <div className="truncate text-muted-foreground text-xs">
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3
+                      className={cn(
+                        "font-bold tracking-tight transition-colors",
+                        isSelected ? "text-white" : "text-[#E3DFD6]",
+                      )}
+                    >
+                      {certificate.name}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
                         {certificate.issueDate
                           ? new Date(certificate.issueDate).getFullYear()
                           : "N/A"}
-                      </div>
-                      {certificate.expiryDate && (
-                        <div className="truncate text-muted-foreground/70 text-xs">
-                          Valid until: {new Date(certificate.expiryDate).getFullYear()}
-                        </div>
-                      )}
+                      </span>
+                      <span className="size-1 rounded-full bg-[#68869A]/30" />
+                      <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                        Valid until{" "}
+                        {certificate.expiryDate
+                          ? new Date(certificate.expiryDate).getFullYear()
+                          : "Permanent"}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-lg border py-8 text-center text-muted-foreground">
-                No certificates available. Add certificates in the Certificates management section
-                first.
-              </div>
-            )}
 
-            {(localForm.data?.certificationIds || []).length > 0 && (
-              <div className="mt-4 rounded-lg bg-green-50 p-3">
-                <div className="flex items-center text-green-800 text-sm">
-                  <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {(localForm.data?.certificationIds || []).length} certificate(s) selected for
-                  display
+                  {isSelected && (
+                    <div className="absolute -right-6 -bottom-6 opacity-10 rotate-12 transition-transform group-hover:scale-110">
+                      <Award className="size-24 text-emerald-400" />
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              );
+            })}
           </div>
-        </CardContent>
-        <div className="flex justify-end border-t p-4">
-          <Button
-            onClick={onSave}
-            disabled={!hasUnsavedChanges || isPending}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            {isPending ? "Saving..." : "Save Certifications"}
-          </Button>
-        </div>
+        ) : (
+          <div className="py-20 flex flex-col items-center justify-center text-center bg-white/[0.02] border border-dashed border-white/10 rounded-2xl">
+            <div className="size-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+              <Award className="h-8 w-8 text-[#68869A]/40" />
+            </div>
+            <h3 className="text-white font-bold mb-1">No Compliance Records Found</h3>
+            <p className="text-[#68869A] text-sm max-w-[280px]">
+              Validation certificates must be initialised in the central Registry first.
+            </p>
+          </div>
+        )}
       </Card>
     </TabsContent>
   );

@@ -43,6 +43,7 @@ import {
   insertHomepageSloganSchema,
 } from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -67,6 +68,8 @@ function shouldBypassCache(req: Request): boolean {
 const invalidateHomepageCache = async () => {
   try {
     await CacheOperations.invalidateHomepage();
+    await twoTierBatchCache.invalidate("homepage:batch");
+    await twoTierBatchCache.invalidate("homepage:process-cards");
     logger.info("[Homepage Management] ✅ Cache invalidated via CacheOperations");
   } catch (err) {
     logger.error("[Homepage Management] ❌ Cache invalidation failed:", err);

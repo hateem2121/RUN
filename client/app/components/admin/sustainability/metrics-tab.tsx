@@ -292,16 +292,16 @@ export function MetricsTabContent({
 
   return (
     <TabsContent value="metrics" className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+      <Card className="glass-premium">
+        <CardHeader className="border-b border-white/5 mb-6 pb-6">
+          <CardTitle className="flex items-center justify-between text-xl font-bold text-white tracking-tight">
             Sustainability Metrics
             <Button onClick={() => openMetricSheet()}>
               <Plus className="mr-2 h-4 w-4" />
               Add Metric
             </Button>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm text-[#68869A]">
             Manage sustainability metrics with drag-and-drop reordering
           </CardDescription>
         </CardHeader>

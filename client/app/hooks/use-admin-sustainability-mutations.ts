@@ -15,11 +15,14 @@ export function useAdminSustainabilityMutations() {
 
   const updateConfig = useMutation({
     mutationFn: async (data: Partial<InsertUnifiedSustainability>) => {
-      // Mock implementation
-      return data;
+      return apiRequest("/api/sustainability", {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sustainability"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/sustainability/batch"] });
     },
   });
 

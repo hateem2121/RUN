@@ -11,11 +11,14 @@ import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
-import type { SessionUser } from "../../types/session.js";
 import { getAuditContext } from "../../utils/request-context.js";
 import { validateIdParam } from "../../utils.js";
+import blogRouter from "./blog.routes.js";
 
 const router = Router();
+
+// Mount Blog Router under /api/admin/blog
+router.use("/admin/blog", blogRouter);
 
 // GET /api/media-assets - List all media assets (admin only)
 router.get("/media-assets", authService.requireAdmin, async (_req, res) => {
@@ -45,9 +48,102 @@ router.get("/products/initial-data", authService.requireAdmin, async (_req, res)
   return res.json(data);
 });
 
+// GET /products - List products (admin only, includes unapproved/inactive)
+router.get("/products", authService.requireAdmin, async (req, res) => {
+  const { page, limit, search, categoryId, status } = req.query;
+
+  // We could call a dedicated productService method here, but for now we'll
+  // utilize the adminService which might have fetching logic or use a temporary implementation
+  // A proper implementation would use a dedicated method in products.service.ts
+
+  // NOTE: This relies on the new function being added to adminService or productService
+  // For the moment, we'll try to fetch all products and manually filter/paginate
+  // as a fallback if the specific method doesn't exist yet
+  const result = await adminService.getProductsList({
+    page: parseInt(page as string, 10) || 1,
+    limit: parseInt(limit as string, 10) || 50,
+    search: search as string,
+    categoryId: categoryId as string,
+    status: status as string,
+  });
+
+  return res.json(result);
+});
+
+// POST /products - Create product (admin only)
+router.post("/products", authService.requireAdmin, async (req, res) => {
+  const auditContext = getAuditContext(req);
+  const result = await adminService.createProduct(auditContext, req.body);
+  return res.status(201).json(result);
+});
+
+// PATCH /products/:id - Update product (admin only)
+router.patch("/products/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "product");
+  if (id === null) return;
+
+  const auditContext = getAuditContext(req);
+  const result = await adminService.updateProduct(auditContext, id, req.body);
+  return res.json(result);
+});
+
+// GET /products/check-slug - Check slug availability
+// IMPORTANT: This route MUST be before /products/:id to avoid catching "check-slug" as an :id param
+router.get("/products/check-slug", authService.requireAdmin, async (req, res) => {
+  const slug = req.query.slug as string;
+  if (!slug) {
+    return res.status(400).json({ error: "slug query parameter is required" });
+  }
+  const excludeId = req.query.excludeId ? parseInt(req.query.excludeId as string, 10) : undefined;
+  const result = await adminService.checkSlugAvailability(slug, excludeId);
+  return res.json(result);
+});
+
+// GET /products/:id - Single product with all relations
+router.get("/products/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "product");
+  if (id === null) return;
+  const product = await adminService.getProductById(id);
+  return res.json(product);
+});
+
+// PUT /products/:id - Full update
+router.put("/products/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "product");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.updateProduct(auditContext, id, req.body);
+  return res.json(result);
+});
+
+// DELETE /products/:id - Soft delete (sets deletedAt)
+router.delete("/products/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "product");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.softDeleteProduct(auditContext, id);
+  return res.json({ success: result });
+});
+
+// DELETE /products/:id/hard - Permanent delete (requires { confirm: 'DELETE' })
+router.delete("/products/:id/hard", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "product");
+  if (id === null) return;
+  const confirm = req.body?.confirm as string;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.hardDeleteProduct(auditContext, id, confirm);
+  return res.json({ success: result });
+});
+
 // GET /test - API routing test endpoint
 router.get("/test", authService.requireAdmin, (_req, res) => {
   return res.json({ message: "API routing works", timestamp: new Date() });
+});
+
+// GET /dashboard/stats - Admin Dashboard aggregate metrics
+router.get("/dashboard/stats", authService.requireAdmin, async (_req, res) => {
+  const stats = await adminService.getDashboardStats();
+  return res.json(stats);
 });
 
 // POST /fix-corrupted-media - Fix corrupted media URLs

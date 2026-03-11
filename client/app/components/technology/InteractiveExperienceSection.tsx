@@ -1,4 +1,6 @@
 import type { MediaAsset } from "@shared/index";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Box, Loader2 } from "lucide-react";
 import React from "react";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
@@ -7,8 +9,6 @@ import { Typography } from "@/components/ui/typography";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 import { cn } from "@/lib/utils";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Lazy load UnifiedModelViewer
 const UnifiedModelViewer = React.lazy(() =>
@@ -108,7 +108,9 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
         <div className="bg-white/90 dark:bg-black/80 backdrop-blur p-3 border border-[#0047AB] dark:border-[#00D4FF] shadow-lg dark:shadow-[0_0_15px_rgba(0,212,255,0.3)] rounded-sm animate-pulse">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-1.5 h-1.5 bg-red-500 rounded-full dark:shadow-[0_0_5px_red]"></div>
-            <span className="text-[9px] text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono uppercase tracking-tighter">High Tension</span>
+            <span className="text-[9px] text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono uppercase tracking-tighter">
+              High Tension
+            </span>
           </div>
           <span className="text-[9px] text-black dark:text-white font-mono block">PSI: 14.2</span>
         </div>
@@ -223,13 +225,22 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
       {/* Bottom toolbar — rotate/zoom/fullscreen */}
       <div className="absolute bottom-6 left-0 right-0 flex justify-center z-30">
         <div className="flex items-center gap-1 bg-white dark:bg-black/80 border border-slate-200 dark:border-white/20 shadow-xl rounded-sm p-1 dark:backdrop-blur-md">
-          <button className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10" aria-label="Rotate model">
+          <button
+            className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10"
+            aria-label="Rotate model"
+          >
             <span className="material-symbols-outlined text-lg">rotate_right</span>
           </button>
-          <button className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10" aria-label="Zoom in">
+          <button
+            className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10"
+            aria-label="Zoom in"
+          >
             <span className="material-symbols-outlined text-lg">zoom_in</span>
           </button>
-          <button className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors" aria-label="Fullscreen">
+          <button
+            className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors"
+            aria-label="Fullscreen"
+          >
             <span className="material-symbols-outlined text-lg">fullscreen</span>
           </button>
         </div>
@@ -267,7 +278,7 @@ export function InteractiveExperienceSection({
         const suffix = el.getAttribute("data-suffix") || "";
         const prefix = el.getAttribute("data-prefix") || "";
         const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
-        
+
         if (Number.isNaN(numericValue)) return;
 
         gsap.from(el, {
@@ -280,7 +291,7 @@ export function InteractiveExperienceSection({
           duration: 1.5,
           ease: "power2.out",
           snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
-          onUpdate: function () {
+          onUpdate: () => {
             const current = parseFloat(el.textContent || "0");
             el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
           },
@@ -308,11 +319,17 @@ export function InteractiveExperienceSection({
           <div className="flex flex-col justify-center items-center border-b border-slate-100 dark:border-white/10 pb-8 w-full text-center">
             <div className="flex justify-center items-center gap-3 mb-4">
               <span className="tech-badge">Live View</span>
-              <span className="micro-copy text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_5px_rgba(0,212,255,0.8)]">SYS.STATUS: ONLINE</span>
+              <span className="micro-copy text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_5px_rgba(0,212,255,0.8)]">
+                SYS.STATUS: ONLINE
+              </span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase tracking-tight mb-2">Technical Analysis</h2>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase tracking-tight mb-2">
+              Technical Analysis
+            </h2>
             <div className="w-16 h-1 bg-[#0047AB] dark:bg-[#00D4FF] mx-auto shadow-sm dark:shadow-[0_0_10px_rgba(0,212,255,0.5)] mt-4"></div>
-            <p className="text-[10px] text-slate-400 font-mono tracking-widest mt-6">MODULE: 3D-RENDER_{version}</p>
+            <p className="text-[10px] text-slate-400 font-mono tracking-widest mt-6">
+              MODULE: 3D-RENDER_{version}
+            </p>
           </div>
 
           {/* Main Content — Sidebar + Viewer */}
@@ -322,13 +339,17 @@ export function InteractiveExperienceSection({
               {/* Configurator Panel */}
               <div className="dashboard-panel p-6 border-l-2 border-l-[#0047AB] dark:border-l-[#00D4FF] dark:bg-black/40">
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm text-[#0047AB] dark:text-[#00D4FF]">tune</span>
+                  <span className="material-symbols-outlined text-sm text-[#0047AB] dark:text-[#00D4FF]">
+                    tune
+                  </span>
                   Configurator
                 </h3>
                 <div className="space-y-3">
                   {/* Heat Map Toggle */}
                   <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-sm dark:hover:border-[#00D4FF]/30 transition-colors">
-                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Heat Map Overlay</span>
+                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">
+                      Heat Map Overlay
+                    </span>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -341,7 +362,9 @@ export function InteractiveExperienceSection({
                   </div>
                   {/* Wireframe Toggle */}
                   <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-sm dark:hover:border-[#00D4FF]/30 transition-colors">
-                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Wireframe Mode</span>
+                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">
+                      Wireframe Mode
+                    </span>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -358,7 +381,9 @@ export function InteractiveExperienceSection({
               {/* Layer Selection Panel */}
               <div className="dashboard-panel p-6 flex-1 flex flex-col dark:bg-black/40">
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm text-[#0047AB] dark:text-[#00D4FF]">layers</span>
+                  <span className="material-symbols-outlined text-sm text-[#0047AB] dark:text-[#00D4FF]">
+                    layers
+                  </span>
                   Layer Selection
                 </h3>
                 <div className="flex flex-col gap-3 h-full overflow-y-auto pr-2">
@@ -381,22 +406,38 @@ export function InteractiveExperienceSection({
               {/* Biometric Analysis Panel */}
               <div className="dashboard-panel p-6 bg-slate-50 dark:bg-white/[0.02] border border-transparent dark:border-white/[0.08] border-t-2 border-t-[#0047AB] dark:!border-t-[#00D4FF] rounded-xl">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white">Biometric Analysis</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white">
+                    Biometric Analysis
+                  </h3>
                   <span className="w-2 h-2 rounded-full bg-green-500 dark:bg-[#00D4FF] dark:shadow-[0_0_8px_#00D4FF] animate-pulse"></span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <span className="micro-copy block mb-1">Skin Temp</span>
-                    <span className="text-xl font-mono font-bold text-black dark:text-white stat-countup" data-target="36.8" data-suffix="°C">36.8°C</span>
+                    <span
+                      className="text-xl font-mono font-bold text-black dark:text-white stat-countup"
+                      data-target="36.8"
+                      data-suffix="°C"
+                    >
+                      36.8°C
+                    </span>
                   </div>
                   <div>
                     <span className="micro-copy block mb-1">Moisture</span>
-                    <span className="text-xl font-mono font-bold text-black dark:text-white stat-countup" data-target="42" data-suffix="%">42%</span>
+                    <span
+                      className="text-xl font-mono font-bold text-black dark:text-white stat-countup"
+                      data-target="42"
+                      data-suffix="%"
+                    >
+                      42%
+                    </span>
                   </div>
                   <div className="col-span-2 border-t border-slate-200 dark:border-white/10 pt-3 mt-1">
                     <div className="flex justify-between items-end">
                       <span className="micro-copy">Stress Load</span>
-                      <span className="text-xs font-mono font-bold text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_3px_rgba(0,212,255,0.8)]">CRITICAL ZONE DETECTED</span>
+                      <span className="text-xs font-mono font-bold text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_3px_rgba(0,212,255,0.8)]">
+                        CRITICAL ZONE DETECTED
+                      </span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-800 h-1 mt-2 rounded-full overflow-hidden">
                       <div className="bg-[#0047AB] dark:bg-[#00D4FF] h-full w-[76%] dark:shadow-[0_0_8px_#00D4FF]"></div>

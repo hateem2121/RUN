@@ -13,7 +13,6 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import {
-  type InsertTechnologyGradientSettings,
   insertTechnologyGradientSettingsSchema,
   technologyGradientFrontendSchema,
 } from "../../../shared/index.js";

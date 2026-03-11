@@ -14,6 +14,7 @@ import { removeUndefined } from "../../utils.js";
 import { type Request, Router } from "express";
 import { z } from "zod";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
+import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { pageContentRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -314,6 +315,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     // Invalidate cache
     const cacheKey = CacheKeys.sustainability.unified();
     await unifiedCache.delete(cacheKey);
+    await twoTierBatchCache.invalidate("sustainability:batch");
     logger.info(`[Sustainability] ✅ Cache invalidated after update [${reqId}]`);
 
     return res.json({

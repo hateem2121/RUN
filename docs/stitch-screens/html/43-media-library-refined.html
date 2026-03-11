@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel - Media Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#3B82F6",
+            "background-light": "#F9FAFB",
+            "background-dark": "#0A0A0A",
+            "surface-light": "#FFFFFF",
+            "surface-dark": "#171717",
+            "border-light": "#E5E7EB",
+            "border-dark": "#262626",
+            "text-muted-light": "#6B7280",
+            "text-muted-dark": "#A3A3A3",
+          },
+          fontFamily: {
+            display: ["Inter", "sans-serif"],
+            sans: ["Inter", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 min-h-screen flex">
+<aside class="w-64 border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex-shrink-0 flex flex-col h-screen sticky top-0">
+<div class="p-6">
+<h1 class="text-xl font-bold tracking-wider text-gray-900 dark:text-white">RUN APPAREL</h1>
+</div>
+<div class="flex-1 overflow-y-auto px-4 space-y-8">
+<div>
+<p class="px-3 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider mb-2">Content</p>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">dashboard</span>
+            Dashboard
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">home</span>
+            Homepage
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">info</span>
+            About Us
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">eco</span>
+            Sustainability
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">precision_manufacturing</span>
+            Manufacturing
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">memory</span>
+            Technology
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">article</span>
+            Blog
+          </a>
+</nav>
+</div>
+<div>
+<p class="px-3 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider mb-2">Catalog</p>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">category</span>
+            Categories
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">inventory_2</span>
+            Products
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">texture</span>
+            Fabrics
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">waves</span>
+            Fibers
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">workspace_premium</span>
+            Certificates
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">straighten</span>
+            Size Charts
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">watch</span>
+            Accessories
+          </a>
+</nav>
+</div>
+<div>
+<p class="px-3 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider mb-2">System</p>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded bg-primary/10 text-primary dark:bg-primary/20 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">perm_media</span>
+            Media Library
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">sd_storage</span>
+            Storage
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">menu</span>
+            Navigation
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-icons-outlined text-[20px]">contact_page</span>
+            Contact
+          </a>
+</nav>
+</div>
+</div>
+<div class="p-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-sm font-medium">
+          AR
+        </div>
+<div>
+<p class="text-sm font-medium">Alex Rivera</p>
+<p class="text-xs text-text-muted-light dark:text-text-muted-dark">Admin</p>
+</div>
+</div>
+<button class="text-text-muted-light dark:text-text-muted-dark hover:text-gray-900 dark:hover:text-white transition-colors">
+<span class="material-icons-outlined text-[20px]">logout</span>
+</button>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+<header class="h-16 flex items-center justify-between px-8 border-b border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur z-10 sticky top-0">
+<div class="flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark">
+<span class="material-icons-outlined text-[18px]">home</span>
+<span class="material-icons-outlined text-[16px]">chevron_right</span>
+<span>Dashboard</span>
+<span class="material-icons-outlined text-[16px]">chevron_right</span>
+<span class="text-gray-900 dark:text-gray-100 font-medium">Media Library</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative w-64">
+<span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark text-[18px]">search</span>
+<input class="w-full bg-gray-100 dark:bg-white/5 border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-md pl-10 pr-10 py-1.5 text-sm placeholder-text-muted-light dark:placeholder-text-muted-dark text-gray-900 dark:text-white" placeholder="Search modules..." type="text"/>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[10px] text-text-muted-light dark:text-text-muted-dark bg-white dark:bg-[#1A1A1A] px-1.5 py-0.5 rounded border border-border-light dark:border-white/10">
+<span>⌘</span>
+<span>K</span>
+</div>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 text-sm font-medium border border-yellow-500/20">
+<span class="material-icons-outlined text-[16px]">warning</span>
+          Unsaved changes
+        </div>
+<button class="relative text-text-muted-light dark:text-text-muted-dark hover:text-gray-900 dark:hover:text-white transition-colors">
+<span class="material-icons-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-primary border-2 border-surface-light dark:border-surface-dark"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-sm font-medium text-gray-900 dark:text-white ml-2">
+          AR
+        </div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8 relative">
+<div class="sticky top-0 z-20 mb-8 mx-auto max-w-2xl bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-md border border-border-light dark:border-border-dark shadow-sm rounded-full px-4 py-3 flex items-center justify-between transition-all transform translate-y-0 opacity-100">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 border-2 border-surface-light dark:border-surface-dark overflow-hidden flex items-center justify-center text-[10px] text-text-muted-light dark:text-text-muted-dark font-medium">IMG</div>
+<div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 border-2 border-surface-light dark:border-surface-dark overflow-hidden flex items-center justify-center text-[10px] text-text-muted-light dark:text-text-muted-dark font-medium">VID</div>
+<div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 border-2 border-surface-light dark:border-surface-dark overflow-hidden flex items-center justify-center text-[10px] text-text-muted-light dark:text-text-muted-dark font-medium">+3</div>
+</div>
+<span class="text-sm font-medium text-gray-900 dark:text-white">5 items selected</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors">
+            Deselect All
+          </button>
+<button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors border border-border-light dark:border-border-dark">
+<span class="material-icons-outlined text-[16px]">download</span>
+            Download
+          </button>
+<button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-md transition-colors">
+<span class="material-icons-outlined text-[16px]">delete</span>
+            Delete Selected
+          </button>
+</div>
+</div>
+<div class="flex items-end justify-between mb-8">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Media Library</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-sm font-medium text-text-muted-light dark:text-text-muted-dark">423</span>
+</div>
+<p class="text-text-muted-light dark:text-text-muted-dark text-sm">Manage and organize all your digital assets.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark rounded-md hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center gap-2">
+<span class="material-icons-outlined text-[18px]">cleaning_services</span>
+            Cleanup Orphans
+          </button>
+<button class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-600 rounded-md transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-icons-outlined text-[18px]">add</span>
+            Upload Files
+          </button>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-white/10 text-gray-900 dark:text-white border border-transparent">All</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-white/10 backdrop-blur-sm transition-colors">Images</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-white/10 backdrop-blur-sm transition-colors">Videos</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-white/10 backdrop-blur-sm transition-colors">3D Models</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-white/10 backdrop-blur-sm transition-colors">Documents</button>
+<div class="w-px h-6 bg-border-light dark:bg-border-dark mx-2"></div>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-white/10 backdrop-blur-sm transition-colors flex items-center gap-1.5">
+            Status
+            <span class="material-icons-outlined text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="relative w-full sm:w-72">
+<span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark text-[18px]">search</span>
+<input class="w-full bg-white/50 dark:bg-white/5 border border-border-light dark:border-white/10 focus:border-primary focus:ring-1 focus:ring-primary rounded-full pl-10 pr-4 py-1.5 text-sm placeholder-text-muted-light dark:placeholder-text-muted-dark text-gray-900 dark:text-white backdrop-blur-sm" placeholder="Search files..." type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+<div class="group relative bg-surface-light dark:bg-surface-dark/50 border border-primary dark:border-primary rounded-lg overflow-hidden flex flex-col hover:border-primary/80 transition-colors cursor-pointer shadow-sm ring-1 ring-primary/20 backdrop-blur-sm">
+<div class="absolute top-2 left-2 z-10 w-5 h-5 rounded flex items-center justify-center bg-primary text-white border border-primary">
+<span class="material-icons-outlined text-[14px]">check</span>
+</div>
+<div class="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wide">IMG</div>
+<div class="aspect-square bg-gray-100 dark:bg-[#111111] relative overflow-hidden flex items-center justify-center">
+<span class="material-icons-outlined text-gray-300 dark:text-gray-700 text-5xl">image</span>
+</div>
+<div class="p-3 border-t border-border-light dark:border-white/5">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate" title="fw24_hero_campaign_v2.jpg">fw24_hero_campaign_v2.jpg</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-xs text-[#68869A]">4.2 MB</p>
+<button class="text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 dark:hover:text-white">
+<span class="material-icons-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-surface-light dark:bg-surface-dark/50 border border-border-light dark:border-white/10 rounded-lg overflow-hidden flex flex-col hover:border-gray-300 dark:hover:border-white/20 transition-colors cursor-pointer shadow-sm backdrop-blur-sm">
+<div class="absolute top-2 left-2 z-10 w-5 h-5 rounded border border-white/30 bg-black/20 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wide">VID</div>
+<div class="absolute inset-0 bg-black/40 z-0 flex items-center justify-center backdrop-blur-[2px]">
+<div class="flex flex-col items-center gap-2">
+<span class="material-icons-outlined text-amber-500 animate-pulse">sync</span>
+<span class="text-xs font-medium text-white shadow-sm">Processing...</span>
+</div>
+</div>
+<div class="aspect-square bg-gray-100 dark:bg-[#111111] relative overflow-hidden flex items-center justify-center">
+<span class="material-icons-outlined text-gray-300 dark:text-gray-700 text-5xl">videocam</span>
+</div>
+<div class="p-3 border-t border-border-light dark:border-white/5 relative z-10 bg-surface-light dark:bg-surface-dark">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate" title="sustainable_process_bts.mp4">sustainable_process_bts.mp4</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-xs text-[#68869A]">128 MB</p>
+<button class="text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 dark:hover:text-white">
+<span class="material-icons-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-surface-light dark:bg-surface-dark/50 border border-border-light dark:border-white/10 rounded-lg overflow-hidden flex flex-col hover:border-gray-300 dark:hover:border-white/20 transition-colors cursor-pointer shadow-sm backdrop-blur-sm">
+<div class="absolute top-2 left-2 z-10 w-5 h-5 rounded border border-white/30 bg-black/20 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wide">3D</div>
+<div class="aspect-square bg-gray-100 dark:bg-[#111111] relative overflow-hidden flex items-center justify-center">
+<span class="material-icons-outlined text-gray-300 dark:text-gray-700 text-5xl">view_in_ar</span>
+</div>
+<div class="p-3 border-t border-border-light dark:border-white/5">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate" title="tech_jacket_render.obj">tech_jacket_render.obj</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-xs text-[#68869A]">15.4 MB</p>
+<button class="text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 dark:hover:text-white">
+<span class="material-icons-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-surface-light dark:bg-surface-dark/50 border border-primary dark:border-primary rounded-lg overflow-hidden flex flex-col hover:border-primary/80 transition-colors cursor-pointer shadow-sm ring-1 ring-primary/20 backdrop-blur-sm">
+<div class="absolute top-2 left-2 z-10 w-5 h-5 rounded flex items-center justify-center bg-primary text-white border border-primary">
+<span class="material-icons-outlined text-[14px]">check</span>
+</div>
+<div class="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wide">IMG</div>
+<div class="aspect-square bg-gray-100 dark:bg-[#111111] relative overflow-hidden flex items-center justify-center">
+<span class="material-icons-outlined text-gray-300 dark:text-gray-700 text-5xl">image</span>
+</div>
+<div class="p-3 border-t border-border-light dark:border-white/5">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate" title="fabric_texture_zoom.png">fabric_texture_zoom.png</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-xs text-[#68869A]">8.1 MB</p>
+<button class="text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 dark:hover:text-white">
+<span class="material-icons-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-surface-light dark:bg-surface-dark/50 border border-border-light dark:border-white/10 rounded-lg overflow-hidden flex flex-col hover:border-gray-300 dark:hover:border-white/20 transition-colors cursor-pointer shadow-sm backdrop-blur-sm">
+<div class="absolute top-2 left-2 z-10 w-5 h-5 rounded border border-white/30 bg-black/20 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wide">DOC</div>
+<div class="aspect-square bg-gray-100 dark:bg-[#111111] relative overflow-hidden flex items-center justify-center">
+<span class="material-icons-outlined text-gray-300 dark:text-gray-700 text-5xl">description</span>
+</div>
+<div class="p-3 border-t border-border-light dark:border-white/5">
+<p class="text-sm font-medium text-gray-900 dark:text-white truncate" title="eco_cert_2024.pdf">eco_cert_2024.pdf</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-xs text-[#68869A]">1.2 MB</p>
+<button class="text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 dark:hover:text-white">
+<span class="material-icons-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

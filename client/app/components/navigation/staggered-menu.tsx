@@ -122,7 +122,7 @@ export const StaggeredMenu = ({
       }
     });
     return () => ctx.revert();
-  }, [menuButtonColor, position, panelRef.current]);
+  }, [menuButtonColor, position, panelRef.current, mounted]);
 
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;

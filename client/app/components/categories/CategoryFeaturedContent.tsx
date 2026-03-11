@@ -1,7 +1,7 @@
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Component, lazy, type ReactNode, useRef, Suspense } from "react";
+import { Component, lazy, type ReactNode, Suspense, useRef } from "react";
 import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import ExpandableCard from "@/components/ui/bento-cards/expandable-card";
 import FlipCard from "@/components/ui/bento-cards/flip-card";

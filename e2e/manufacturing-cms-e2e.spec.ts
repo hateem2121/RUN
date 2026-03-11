@@ -9,7 +9,7 @@
  * @see client/app/components/admin/manufacturing/* - CMS components
  */
 
-import { test, expect, describe, beforeAll, afterAll } from "@playwright/test";
+import { describe, expect, test } from "@playwright/test";
 
 /**
  * E2E TEST SUITE: Manufacturing CMS-to-Page Integration
@@ -24,7 +24,7 @@ import { test, expect, describe, beforeAll, afterAll } from "@playwright/test";
  */
 describe("Manufacturing Page - CMS Integration E2E Tests", () => {
   const MANUFACTURING_PAGE_URL = "/manufacturing";
-  const ADMIN_MANUFACTURING_URL = "/admin/manufacturing";
+  const _ADMIN_MANUFACTURING_URL = "/admin/manufacturing";
 
   // Test timeout for slow connections
   test.setTimeout(60000);
@@ -57,7 +57,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await expect(heroTitle).toBeVisible();
 
       // Check for CTA button if present
-      const ctaButton = page.locator("a:has-text('Explore'), a:has-text('Contact'), button:has-text('Learn')");
+      const ctaButton = page.locator(
+        "a:has-text('Explore'), a:has-text('Contact'), button:has-text('Learn')",
+      );
       const ctaCount = await ctaButton.count();
       expect(ctaCount).toBeGreaterThanOrEqual(0);
     });
@@ -67,7 +69,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.waitForLoadState("networkidle");
 
       // Look for process-related content
-      const processSection = page.locator("section:has-text('Process'), section:has-text('Cutting'), section:has-text('Assembly')");
+      const processSection = page.locator(
+        "section:has-text('Process'), section:has-text('Cutting'), section:has-text('Assembly')",
+      );
       const processCount = await processSection.count();
 
       // Either processes are displayed or section exists
@@ -91,7 +95,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.waitForLoadState("networkidle");
 
       // Look for quality/certification content
-      const qualitySection = page.locator("section:has-text('Quality'), section:has-text('ISO'), section:has-text('Certification')");
+      const qualitySection = page.locator(
+        "section:has-text('Quality'), section:has-text('ISO'), section:has-text('Certification')",
+      );
       const qualityCount = await qualitySection.count();
 
       expect(qualityCount).toBeGreaterThanOrEqual(0);
@@ -102,7 +108,8 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
     test("Hero API data is fetched and displayed", async ({ page }) => {
       // Intercept API calls
       const heroResponse = page.waitForResponse(
-        (response) => response.url().includes("/api/manufacturing-hero") && response.status() === 200
+        (response) =>
+          response.url().includes("/api/manufacturing-hero") && response.status() === 200,
       );
 
       await page.goto(MANUFACTURING_PAGE_URL);
@@ -113,7 +120,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       // If API returned data, verify it's displayed
       if (response) {
         const heroData = await response.json();
-        if (heroData && heroData.title) {
+        if (heroData?.title) {
           await expect(page.locator(`text=${heroData.title}`)).toBeVisible({ timeout: 10000 });
         }
       }
@@ -121,7 +128,8 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
 
     test("Processes API data is fetched and displayed", async ({ page }) => {
       const processesResponse = page.waitForResponse(
-        (response) => response.url().includes("/api/manufacturing-processes") && response.status() === 200
+        (response) =>
+          response.url().includes("/api/manufacturing-processes") && response.status() === 200,
       );
 
       await page.goto(MANUFACTURING_PAGE_URL);
@@ -134,7 +142,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
           // At least one process title should be visible
           const firstProcess = processesData[0];
           if (firstProcess.title) {
-            await expect(page.locator(`text=${firstProcess.title}`)).toBeVisible({ timeout: 10000 });
+            await expect(page.locator(`text=${firstProcess.title}`)).toBeVisible({
+              timeout: 10000,
+            });
           }
         }
       }
@@ -142,7 +152,8 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
 
     test("Capabilities API data is fetched", async ({ page }) => {
       const capabilitiesResponse = page.waitForResponse(
-        (response) => response.url().includes("/api/manufacturing-capabilities") && response.status() === 200
+        (response) =>
+          response.url().includes("/api/manufacturing-capabilities") && response.status() === 200,
       );
 
       await page.goto(MANUFACTURING_PAGE_URL);
@@ -157,7 +168,8 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
 
     test("Qualities API data is fetched", async ({ page }) => {
       const qualitiesResponse = page.waitForResponse(
-        (response) => response.url().includes("/api/manufacturing-qualities") && response.status() === 200
+        (response) =>
+          response.url().includes("/api/manufacturing-qualities") && response.status() === 200,
       );
 
       await page.goto(MANUFACTURING_PAGE_URL);
@@ -182,7 +194,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.goto(MANUFACTURING_PAGE_URL);
 
       // Check for loading skeleton or spinner
-      const loadingElement = page.locator("[class*='skeleton'], [class*='loading'], [class*='spinner']");
+      const loadingElement = page.locator(
+        "[class*='skeleton'], [class*='loading'], [class*='spinner']",
+      );
       const loadingCount = await loadingElement.count();
 
       // Loading state should appear at some point
@@ -304,7 +318,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
         fetch("/api/manufacturing-processes").then((r) => ({
           status: r.status,
           cacheHit: r.headers.get("x-cache-hit"),
-        }))
+        })),
       );
 
       // Second load should potentially hit cache
@@ -312,7 +326,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
         fetch("/api/manufacturing-processes").then((r) => ({
           status: r.status,
           cacheHit: r.headers.get("x-cache-hit"),
-        }))
+        })),
       );
 
       // Both should succeed
@@ -326,7 +340,9 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
 
-      const metaDescription = await page.locator('meta[name="description"]').getAttribute("content");
+      const metaDescription = await page
+        .locator('meta[name="description"]')
+        .getAttribute("content");
       expect(metaDescription).toBeTruthy();
       expect(metaDescription?.toLowerCase()).toContain("manufacturing");
     });
@@ -409,7 +425,9 @@ describe("Cache Invalidation Tests", () => {
   test("Cache headers are present on API responses", async ({ page }) => {
     await page.goto(MANUFACTURING_PAGE_URL);
 
-    const response = await page.evaluate(() => fetch("/api/manufacturing-processes").then((r) => r.headers.get("x-cache-hit")));
+    const response = await page.evaluate(() =>
+      fetch("/api/manufacturing-processes").then((r) => r.headers.get("x-cache-hit")),
+    );
 
     // Cache header should be present (L1, L2, or MISS)
     expect(["L1", "L2", "MISS", null]).toContain(response);

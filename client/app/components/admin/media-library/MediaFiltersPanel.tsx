@@ -38,11 +38,11 @@ export function MediaFiltersPanel() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b p-4">
-        <h2 className="font-semibold">Filters</h2>
+      <div className="flex items-center justify-between border-b border-white/5 p-4">
+        <h2 className="font-semibold text-white">Filters</h2>
         <button
           type="button"
-          className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm text-[#68869A] transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 disabled:pointer-events-none disabled:opacity-50"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -59,22 +59,32 @@ export function MediaFiltersPanel() {
       {/* Search */}
       <div className="space-y-4 p-4">
         <div className="space-y-2">
-          <Label htmlFor="filters-search">Search</Label>
+          <Label
+            htmlFor="filters-search"
+            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+          >
+            Search
+          </Label>
           <div className="relative">
-            <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute top-3 left-3 h-4 w-4 text-[#68869A]" />
             <Input
               id="filters-search"
               placeholder="Search media..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              className="pl-10"
+              className="pl-10 bg-white/[0.03] border-white/10 text-white placeholder:text-[#68869A]/50 focus:border-white/20 focus:ring-1 focus:ring-white/20"
             />
           </div>
         </div>
 
         {/* Media type filter */}
         <div className="space-y-2">
-          <Label htmlFor="filters-type">Type</Label>
+          <Label
+            htmlFor="filters-type"
+            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+          >
+            Type
+          </Label>
           <Select
             value={state.selectedType}
             onValueChange={(value) => updateState("selectedType", value)}
@@ -94,7 +104,12 @@ export function MediaFiltersPanel() {
 
         {/* Sort options */}
         <div className="space-y-2">
-          <Label htmlFor="filters-sort-by">Sort by</Label>
+          <Label
+            htmlFor="filters-sort-by"
+            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+          >
+            Sort by
+          </Label>
           <Select
             value={state.sortBy}
             onValueChange={(value) =>
@@ -115,13 +130,18 @@ export function MediaFiltersPanel() {
 
         {/* Sort order */}
         <div className="space-y-2">
-          <Label id="filters-sort-order">Sort order</Label>
+          <Label
+            id="filters-sort-order"
+            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+          >
+            Sort order
+          </Label>
           <fieldset className="flex gap-2" aria-labelledby="filters-sort-order">
             <Button
               variant={state.sortOrder === "asc" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("sortOrder", "asc")}
-              className="flex-1"
+              className={`flex-1 ${state.sortOrder === "asc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
             >
               <ArrowUp className="mr-2 h-4 w-4" />
               Ascending
@@ -130,7 +150,7 @@ export function MediaFiltersPanel() {
               variant={state.sortOrder === "desc" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("sortOrder", "desc")}
-              className="flex-1"
+              className={`flex-1 ${state.sortOrder === "desc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
             >
               <ArrowDown className="mr-2 h-4 w-4" />
               Descending
@@ -140,30 +160,34 @@ export function MediaFiltersPanel() {
       </div>
 
       {/* Folder tree navigation - simplified */}
-      <div className="flex-1 border-t p-4">
+      <div className="flex-1 border-t border-white/5 p-4">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-medium text-sm">Folders</h3>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+          <h3 className="font-medium text-sm text-[#E3DFD6]">Folders</h3>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6 p-0 text-[#68869A] hover:text-white hover:bg-white/5"
+          >
             <Plus className="h-3 w-3" />
           </Button>
         </div>
         <div className="space-y-1">
           {/* Root folder */}
-          <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
-            <Folder className="h-4 w-4" />
+          <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#E3DFD6] hover:bg-white/5">
+            <Folder className="h-4 w-4 text-blue-400" />
             <span>All Media</span>
           </div>
           {/* Sample folders - replace with dynamic data */}
           <div className="ml-4">
-            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
               <Folder className="h-4 w-4" />
               <span>Products</span>
             </div>
-            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
               <Folder className="h-4 w-4" />
               <span>Banners</span>
             </div>
-            <div className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
               <Folder className="h-4 w-4" />
               <span>3D Models</span>
             </div>

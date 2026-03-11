@@ -35,25 +35,25 @@ function sanitizeObject<T>(obj: T): T {
   return obj;
 }
 
-export function xssSanitizer(req: Request, res: Response, next: NextFunction) {
+export function xssSanitizer(req: Request, _res: Response, next: NextFunction) {
   if (req.body) {
     try {
       req.body = sanitizeObject(req.body);
-    } catch (e) {
+    } catch (_e) {
       // Ignore if read-only
     }
   }
   if (req.query) {
     try {
       req.query = sanitizeObject(req.query);
-    } catch (e) {
+    } catch (_e) {
       // Ignore if read-only
     }
   }
   if (req.params) {
     try {
       req.params = sanitizeObject(req.params);
-    } catch (e) {
+    } catch (_e) {
       // Ignore if read-only
     }
   }
@@ -70,14 +70,14 @@ export function requestSanitization(req: Request, res: Response, next: NextFunct
     if (req.params) {
       try {
         req.params = mongoSanitize.sanitize(req.params);
-      } catch (e) {
+      } catch (_e) {
         // Ignore read-only
       }
     }
     if (req.query) {
       try {
         req.query = mongoSanitize.sanitize(req.query);
-      } catch (e) {
+      } catch (_e) {
         // Ignore read-only
       }
     }

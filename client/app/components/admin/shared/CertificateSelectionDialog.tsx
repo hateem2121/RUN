@@ -120,11 +120,11 @@ export function CertificateSelectionDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
       <DialogContent contentType="media-library" preferredSize="4xl" className="flex flex-col">
-        <DialogHeader className="shrink-0 border-border border-b pb-4">
+        <DialogHeader className="shrink-0 border-white/5 border-b pb-4">
           <DialogTitle>{title}</DialogTitle>
           <div className="mt-4">
             <div className="relative">
-              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#68869A]" />
               <Input
                 placeholder="Search by name, type, or organization..."
                 value={searchQuery}
@@ -140,12 +140,12 @@ export function CertificateSelectionDialog({
           <ScrollArea className="h-full">
             {isLoading ? (
               <div className="flex h-64 items-center justify-center">
-                <div className="text-muted-foreground">Loading certificates...</div>
+                <div className="text-[#68869A]">Loading certificates...</div>
               </div>
             ) : filteredCertificates.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center text-center">
-                <Award className="mb-4 h-12 w-12 text-muted-foreground/50" />
-                <div className="text-muted-foreground">
+                <Award className="mb-4 h-12 w-12 text-[#68869A]/50" />
+                <div className="text-[#68869A]">
                   {searchQuery
                     ? "No certificates found matching your search"
                     : "No certificates available"}
@@ -163,7 +163,7 @@ export function CertificateSelectionDialog({
                       className={`relative cursor-pointer rounded-lg border p-4 transition-all ${
                         isSelected
                           ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                          : "border-border hover:border-primary/50 hover:bg-accent/50"
+                          : "border-white/10 hover:border-blue-500/50 hover:bg-white/[0.03]"
                       }
                       `}
                       data-testid={`certificate-item-${cert.id}`}
@@ -186,7 +186,7 @@ export function CertificateSelectionDialog({
 
                       <div className="flex items-start gap-4">
                         {/* Certificate Image/Icon */}
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-muted">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-white/[0.03]">
                           {cert.imageId ? (
                             <img
                               src={`/api/media/${cert.imageId}/content`}
@@ -195,7 +195,7 @@ export function CertificateSelectionDialog({
                               data-testid={`img-certificate-${cert.id}`}
                             />
                           ) : (
-                            <Award className="h-8 w-8 text-muted-foreground" />
+                            <Award className="h-8 w-8 text-[#68869A]" />
                           )}
                         </div>
 
@@ -215,7 +215,7 @@ export function CertificateSelectionDialog({
                             )}
 
                             {cert.issuingOrganization && (
-                              <p className="truncate text-muted-foreground text-xs">
+                              <p className="truncate text-[#68869A] text-xs">
                                 {cert.issuingOrganization}
                               </p>
                             )}
@@ -230,9 +230,9 @@ export function CertificateSelectionDialog({
           </ScrollArea>
         </DialogBody>
 
-        <DialogFooter className="shrink-0 border-border border-t pt-4">
+        <DialogFooter className="shrink-0 border-white/5 border-t pt-4">
           <div className="flex w-full items-center justify-between">
-            <div className="text-muted-foreground text-sm">
+            <div className="text-[#68869A] text-sm">
               {selectedIds.length > 0 && (
                 <span>
                   {selectedIds.length} {selectionMode === "single" ? "certificate" : "certificates"}{" "}

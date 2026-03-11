@@ -11,7 +11,7 @@
 
 import express from "express";
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, test, vi, beforeEach } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 
 // Mock App Storage Service (GCP/R2) - must be before imports
 vi.mock("../../../server/lib/storage/app-service.js", () => ({
@@ -132,9 +132,11 @@ vi.mock("../../../server/lib/storage-singleton.js", () => {
 
       // Manufacturing Processes
       getManufacturingProcesses: vi.fn().mockResolvedValue(mockManufacturingProcesses),
-      getManufacturingProcess: vi.fn().mockImplementation((id: number) => 
-        mockManufacturingProcesses.find((p) => p.id === id) || null
-      ),
+      getManufacturingProcess: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingProcesses.find((p) => p.id === id) || null,
+        ),
       createManufacturingProcess: vi.fn().mockImplementation((data) => ({
         id: 4,
         ...data,
@@ -150,9 +152,11 @@ vi.mock("../../../server/lib/storage-singleton.js", () => {
 
       // Manufacturing Capabilities
       getManufacturingCapabilities: vi.fn().mockResolvedValue(mockManufacturingCapabilities),
-      getManufacturingCapability: vi.fn().mockImplementation((id: number) =>
-        mockManufacturingCapabilities.find((c) => c.id === id) || null
-      ),
+      getManufacturingCapability: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingCapabilities.find((c) => c.id === id) || null,
+        ),
       createManufacturingCapability: vi.fn().mockImplementation((data) => ({
         id: 3,
         ...data,
@@ -168,9 +172,11 @@ vi.mock("../../../server/lib/storage-singleton.js", () => {
 
       // Manufacturing Qualities
       getManufacturingQualities: vi.fn().mockResolvedValue(mockManufacturingQualities),
-      getManufacturingQuality: vi.fn().mockImplementation((id: number) =>
-        mockManufacturingQualities.find((q) => q.id === id) || null
-      ),
+      getManufacturingQuality: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingQualities.find((q) => q.id === id) || null,
+        ),
       createManufacturingQuality: vi.fn().mockImplementation((data) => ({
         id: 3,
         ...data,
@@ -185,9 +191,11 @@ vi.mock("../../../server/lib/storage-singleton.js", () => {
       }),
 
       // Media
-      getMediaAssets: vi.fn().mockResolvedValue([
-        { id: 1, filename: "factory.jpg", url: "/media/factory.jpg", mimeType: "image/jpeg" },
-      ]),
+      getMediaAssets: vi
+        .fn()
+        .mockResolvedValue([
+          { id: 1, filename: "factory.jpg", url: "/media/factory.jpg", mimeType: "image/jpeg" },
+        ]),
       getMediaAssetsWithCount: vi.fn().mockResolvedValue({
         assets: [{ id: 1, filename: "factory.jpg", url: "/media/factory.jpg" }],
         total: 1,
@@ -204,7 +212,7 @@ import { registerRoutes } from "../../../server/routes/index.js";
 
 /**
  * MANUFACTURING API TEST SUITE
- * 
+ *
  * Tests cover:
  * 1. Hero endpoint (GET/PATCH)
  * 2. Processes endpoint (CRUD + reorder)
@@ -259,7 +267,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
 
       if (response.status === 200) {
         expect(response.headers["cache-control"]).toContain("max-age=1800");
-        expect(response.headers["vary"]).toBe("Accept-Encoding");
+        expect(response.headers.vary).toBe("Accept-Encoding");
       }
 
       process.env.NODE_ENV = originalEnv;
@@ -287,9 +295,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
         title: "", // Empty title should fail validation
       };
 
-      const response = await request(app)
-        .patch("/api/manufacturing-hero")
-        .send(invalidData);
+      const response = await request(app).patch("/api/manufacturing-hero").send(invalidData);
 
       // Without auth, we expect 401/403, but validation would be 400
       expect([400, 401, 403]).toContain(response.status);
@@ -357,9 +363,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
         sortOrder: 4,
       };
 
-      const response = await request(app)
-        .post("/api/manufacturing-processes")
-        .send(newProcess);
+      const response = await request(app).post("/api/manufacturing-processes").send(newProcess);
 
       expect([401, 403]).toContain(response.status);
     });
@@ -369,9 +373,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
         title: "Updated Process",
       };
 
-      const response = await request(app)
-        .patch("/api/manufacturing-processes/1")
-        .send(updateData);
+      const response = await request(app).patch("/api/manufacturing-processes/1").send(updateData);
 
       expect([401, 403]).toContain(response.status);
     });
@@ -508,9 +510,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
         sortOrder: 3,
       };
 
-      const response = await request(app)
-        .post("/api/manufacturing-qualities")
-        .send(newQuality);
+      const response = await request(app).post("/api/manufacturing-qualities").send(newQuality);
 
       expect([401, 403]).toContain(response.status);
     });

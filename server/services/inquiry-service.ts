@@ -190,11 +190,13 @@ export class InquiryService {
     });
 
     return {
-      inquiries: result.inquiries,
-      total: result.total,
-      page,
-      limit,
-      totalPages: Math.ceil(result.total / limit),
+      data: result.inquiries,
+      pagination: {
+        total: result.total,
+        page,
+        limit,
+        totalPages: Math.ceil(result.total / limit),
+      },
     };
   }
 
@@ -263,18 +265,32 @@ export class InquiryService {
   /**
    * Updates an inquiry's status and notes, invalidating relevant caches.
    */
-  async updateStatus(
-    id: number,
-    status: "new" | "read" | "responded" | "archived",
-    adminNotes?: string,
-  ) {
-    const updated = await miscRepository.updateInquiryStatus(id, status, adminNotes);
+  /**
+   * Updates an inquiry, invalidating relevant caches.
+   */
+  async updateInquiry(id: number, data: Partial<InsertInquiry>) {
+    const updated = await miscRepository.updateInquiry(id, data);
     if (!updated) {
       return null;
     }
 
     await this.invalidateInquiryCaches(id);
-    logger.info(`[InquiryService] Inquiry #${id} status updated to ${status}`);
+    logger.info(`[InquiryService] Inquiry #${id} updated`);
+
+    return updated;
+  }
+
+  /**
+   * Adds a CRM interaction log to an inquiry.
+   */
+  async addCrmLog(id: number, log: { action: string; note: string; user?: string }) {
+    const updated = await miscRepository.addCrmLog(id, log);
+    if (!updated) {
+      return null;
+    }
+
+    await this.invalidateInquiryCaches(id);
+    logger.info(`[InquiryService] CRM log added to inquiry #${id}`);
 
     return updated;
   }

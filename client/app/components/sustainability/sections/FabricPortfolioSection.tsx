@@ -1,10 +1,10 @@
+import { useGSAP } from "@gsap/react";
 import type { Fabric, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Leaf, RotateCw } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
@@ -20,13 +20,18 @@ interface FabricPortfolioSectionProps {
 
 function SustainabilityScore({ score }: { score: number }) {
   return (
-    <div className="flex items-center gap-0.5" aria-label={`Sustainability score: ${score} out of 5`}>
+    <div
+      className="flex items-center gap-0.5"
+      aria-label={`Sustainability score: ${score} out of 5`}
+    >
       {[1, 2, 3, 4, 5].map((i) => (
         <Leaf
           key={i}
           className={cn(
             "h-3.5 w-3.5 transition-colors",
-            i <= score ? "text-[color:var(--s-primary)] fill-[color:var(--s-primary)]" : "text-white/20"
+            i <= score
+              ? "text-[color:var(--s-primary)] fill-[color:var(--s-primary)]"
+              : "text-white/20",
           )}
         />
       ))}
@@ -86,7 +91,9 @@ function FabricCard({
           {/* Bottom content */}
           <div className="absolute bottom-0 left-0 w-full p-8 backdrop-blur-[2px]">
             <div className="flex flex-col gap-1 mb-4">
-              <h3 className="text-3xl font-bold text-white leading-tight drop-shadow-lg">{fabric.name}</h3>
+              <h3 className="text-3xl font-bold text-white leading-tight drop-shadow-lg">
+                {fabric.name}
+              </h3>
               {fabric.properties?.composition && (
                 <p className="text-[color:var(--s-primary)] font-medium text-sm tracking-wide opacity-90 drop-shadow-md">
                   {fabric.properties.composition}
@@ -115,23 +122,29 @@ function FabricCard({
               {fabric.fabricType && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
                   <span className="text-sm text-[color:var(--s-text-muted)]">Type</span>
-                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">{fabric.fabricType}</span>
+                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">
+                    {fabric.fabricType}
+                  </span>
                 </div>
               )}
               {fabric.weight && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
                   <span className="text-sm text-[color:var(--s-text-muted)]">Weight</span>
-                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">{fabric.weight}</span>
-                </div>
-              )}
-              {fabric.certifications && Array.isArray(fabric.certifications) && fabric.certifications.length > 0 && (
-                <div className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-sm text-[#68869A]">Certification</span>
-                  <span className="text-sm text-[color:var(--s-primary)] font-mono">
-                    {(fabric.certifications as string[]).slice(0, 2).join(", ")}
+                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">
+                    {fabric.weight}
                   </span>
                 </div>
               )}
+              {fabric.certifications &&
+                Array.isArray(fabric.certifications) &&
+                fabric.certifications.length > 0 && (
+                  <div className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-sm text-[#68869A]">Certification</span>
+                    <span className="text-sm text-[color:var(--s-primary)] font-mono">
+                      {(fabric.certifications as string[]).slice(0, 2).join(", ")}
+                    </span>
+                  </div>
+                )}
               {fabric.keyApplications && fabric.keyApplications.length > 0 && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
                   <span className="text-sm text-[color:var(--s-text-muted)]">Applications</span>
@@ -158,7 +171,15 @@ function FabricCard({
   );
 }
 
-function FilterBtn({ label, isActive, onClick }: { label: string; isActive: boolean; onClick: () => void }) {
+function FilterBtn({
+  label,
+  isActive,
+  onClick,
+}: {
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
   // Simple deterministic pattern for alternating leaf border radius mapping to Stitch design
   const isAlt = label.length % 2 === 0;
 
@@ -170,7 +191,7 @@ function FilterBtn({ label, isActive, onClick }: { label: string; isActive: bool
         "px-5 py-2 text-sm font-medium transition-all duration-300",
         isActive
           ? "bg-[color:var(--s-primary)] text-black font-bold shadow-[0_0_15px_rgba(0,199,123,0.3)] border-transparent"
-          : "bg-white/5 text-[color:var(--s-text-muted)] hover:bg-white/10 hover:text-white border border-white/5"
+          : "bg-white/5 text-[color:var(--s-text-muted)] hover:bg-white/10 hover:text-white border border-white/5",
       )}
       style={{ borderRadius: isAlt ? "0.5rem 2rem 0.5rem 2rem" : "2rem 0.5rem 2rem 0.5rem" }}
     >
@@ -220,19 +241,22 @@ export function FabricPortfolioSection({
     return sustainableFabrics.filter((f) => f.fabricType === activeFilter);
   }, [sustainableFabrics, activeFilter]);
 
-  useGSAP(() => {
-    gsap.from(".fabric-card", {
-      scrollTrigger: {
-        trigger: ".fabric-scroll-container",
-        start: "top 80%",
-      },
-      opacity: 0,
-      x: 30,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "power2.out",
-    });
-  }, { scope: containerRef, dependencies: [filteredFabrics] });
+  useGSAP(
+    () => {
+      gsap.from(".fabric-card", {
+        scrollTrigger: {
+          trigger: ".fabric-scroll-container",
+          start: "top 80%",
+        },
+        opacity: 0,
+        x: 30,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power2.out",
+      });
+    },
+    { scope: containerRef, dependencies: [filteredFabrics] },
+  );
 
   if (sustainableFabrics.length === 0) {
     return (
@@ -265,9 +289,7 @@ export function FabricPortfolioSection({
       >
         {filteredFabrics.map((fabric) => {
           const fabricImage = mediaAssets.find((asset) => asset.id === fabric.visualSwatchId);
-          return (
-            <FabricCard key={fabric.id} fabric={fabric} fabricImage={fabricImage} />
-          );
+          return <FabricCard key={fabric.id} fabric={fabric} fabricImage={fabricImage} />;
         })}
       </div>
     </div>

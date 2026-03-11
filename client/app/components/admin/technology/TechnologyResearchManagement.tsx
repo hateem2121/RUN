@@ -8,11 +8,10 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, X } from "lucide-react";
+import { Clock, FlaskConical, Layout, Plus, Save, Search, Settings2, X } from "lucide-react";
 import type React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogBody,
@@ -24,7 +23,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -36,6 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 import { SortableResearchItem } from "./SortableResearchItem";
 
 // Types
@@ -66,25 +65,25 @@ interface ResearchFormData {
 interface TechnologyResearch {
   id: number;
   title: string;
-  description?: string | undefined;
-  researchArea?: string | undefined;
+  description?: string;
+  researchArea?: string;
   status?: "Planning" | "In Progress" | "Testing" | "Completed" | "Ongoing";
   startDate?: Date | null;
   expectedCompletion?: Date | null;
-  funding?: number | undefined;
+  funding?: number;
   teamMembers?: string[];
   objectives?: string[];
   currentProjects?: ResearchProject[];
   publications?: string[];
   partners?: string[];
   outcomes?: string[];
-  icon?: string | undefined;
-  isActive?: boolean | undefined;
-  position?: number | undefined;
+  icon?: string;
+  isActive?: boolean;
+  position?: number;
 }
 
 interface TechnologyResearchManagementProps {
-  isLoading?: boolean | undefined;
+  isLoading?: boolean;
 }
 
 export function TechnologyResearchManagement({
@@ -105,6 +104,7 @@ export function TechnologyResearchManagement({
   // State
   const [showResearchDialog, setShowResearchDialog] = useState(false);
   const [editingResearch, setEditingResearch] = useState<TechnologyResearch | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [researchForm, setResearchForm] = useState<ResearchFormData>({
     title: "",
@@ -125,15 +125,7 @@ export function TechnologyResearchManagement({
   });
 
   // Dynamic form fields state
-  const [newProject, setNewProject] = useState<ResearchProject>({
-    name: "",
-    status: "Planning",
-    progress: 0,
-  });
-  const [newPublication, setNewPublication] = useState("");
-  const [newPartner, setNewPartner] = useState("");
   const [newOutcome, setNewOutcome] = useState("");
-  const [newTeamMember, setNewTeamMember] = useState("");
   const [newObjective, setNewObjective] = useState("");
 
   // Queries and Mutations
@@ -154,29 +146,7 @@ export function TechnologyResearchManagement({
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });
       setShowResearchDialog(false);
       setEditingResearch(null);
-      setResearchForm({
-        title: "",
-        description: "",
-        researchArea: "",
-        status: "Ongoing",
-        startDate: null,
-        expectedCompletion: null,
-        funding: 0,
-        teamMembers: [],
-        objectives: [],
-        currentProjects: [],
-        publications: [],
-        partners: [],
-        outcomes: [],
-        icon: "Microscope",
-        isActive: true,
-      });
-      setNewProject({ name: "", status: "Planning", progress: 0 });
-      setNewPublication("");
-      setNewPartner("");
-      setNewOutcome("");
-      setNewTeamMember("");
-      setNewObjective("");
+      resetForm();
       toast({
         title: "Success",
         description: "Research item created successfully",
@@ -223,6 +193,28 @@ export function TechnologyResearchManagement({
     },
   });
 
+  const resetForm = () => {
+    setResearchForm({
+      title: "",
+      description: "",
+      researchArea: "",
+      status: "Ongoing",
+      startDate: null,
+      expectedCompletion: null,
+      funding: 0,
+      teamMembers: [],
+      objectives: [],
+      currentProjects: [],
+      publications: [],
+      partners: [],
+      outcomes: [],
+      icon: "Microscope",
+      isActive: true,
+    });
+    setNewOutcome("");
+    setNewObjective("");
+  };
+
   // Event Handlers
   const handleResearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -252,7 +244,7 @@ export function TechnologyResearchManagement({
       publications: research.publications || [],
       partners: research.partners || [],
       outcomes: research.outcomes || [],
-      icon: research.icon || "Microscope", // Default as it's not in schema but used in UI
+      icon: research.icon || "Microscope",
       isActive: research.isActive ?? true,
     });
     setShowResearchDialog(true);
@@ -272,162 +264,109 @@ export function TechnologyResearchManagement({
     }
   };
 
-  const handleAddProject = () => {
-    if (newProject.name) {
-      setResearchForm({
-        ...researchForm,
-        currentProjects: [...researchForm.currentProjects, newProject],
-      });
-      setNewProject({
-        name: "",
-        status: "Planning",
-        progress: 0,
-      });
-    }
-  };
+  const filteredResearch = useMemo(() => {
+    return research.filter(
+      (r) =>
+        r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.researchArea?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [research, searchQuery]);
 
-  const handleRemoveProject = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      currentProjects: researchForm.currentProjects.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAddPublication = () => {
-    if (newPublication) {
-      setResearchForm({
-        ...researchForm,
-        publications: [...researchForm.publications, newPublication],
-      });
-      setNewPublication("");
-    }
-  };
-
-  const handleRemovePublication = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      publications: researchForm.publications.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAddPartner = () => {
-    if (newPartner) {
-      setResearchForm({
-        ...researchForm,
-        partners: [...researchForm.partners, newPartner],
-      });
-      setNewPartner("");
-    }
-  };
-
-  const handleRemovePartner = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      partners: researchForm.partners.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAddOutcome = () => {
-    if (newOutcome) {
-      setResearchForm({
-        ...researchForm,
-        outcomes: [...researchForm.outcomes, newOutcome],
-      });
-      setNewOutcome("");
-    }
-  };
-
-  const handleRemoveOutcome = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      outcomes: researchForm.outcomes.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAddTeamMember = () => {
-    if (newTeamMember) {
-      setResearchForm({
-        ...researchForm,
-        teamMembers: [...researchForm.teamMembers, newTeamMember],
-      });
-      setNewTeamMember("");
-    }
-  };
-
-  const handleRemoveTeamMember = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      teamMembers: researchForm.teamMembers.filter((_, i) => i !== index),
-    });
-  };
+  const loading = externalLoading || researchLoading;
 
   const handleAddObjective = () => {
-    if (newObjective) {
+    if (newObjective.trim()) {
       setResearchForm({
         ...researchForm,
-        objectives: [...researchForm.objectives, newObjective],
+        objectives: [...researchForm.objectives, newObjective.trim()],
       });
       setNewObjective("");
     }
   };
 
-  const handleRemoveObjective = (index: number) => {
-    setResearchForm({
-      ...researchForm,
-      objectives: researchForm.objectives.filter((_, i) => i !== index),
-    });
+  const handleAddOutcome = () => {
+    if (newOutcome.trim()) {
+      setResearchForm({ ...researchForm, outcomes: [...researchForm.outcomes, newOutcome.trim()] });
+      setNewOutcome("");
+    }
   };
 
-  const loading = externalLoading || researchLoading;
-
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Research & Development</CardTitle>
-            <CardDescription>Manage your R&D projects and initiatives</CardDescription>
+    <div className="space-y-12">
+      {/* Header & Controls Overlay */}
+      <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between font-display">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00D4FF]/10 text-[#00D4FF] shadow-[0_0_20px_rgba(0,212,255,0.15)]">
+              <FlaskConical className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
+                Research <span className="text-[#00D4FF]">&</span> Development
+              </h2>
+              <p className="text-sm font-medium tracking-wide text-[#E3DFD6]/40">
+                Manage core scientific initiatives and material innovation streams.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#E3DFD6]/20 transition-colors group-focus-within:text-[#00D4FF]" />
+            <Input
+              placeholder="Filter by title or focus area..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full border-white/[0.08] bg-white/[0.03] pl-10 text-xs font-medium tracking-wider text-white transition-all focus:border-[#00D4FF]/50 focus:ring-[#00D4FF]/20 sm:w-80"
+            />
           </div>
           <Button
             onClick={() => {
               setEditingResearch(null);
-              setResearchForm({
-                title: "",
-                description: "",
-                researchArea: "",
-                status: "Ongoing",
-                startDate: null,
-                expectedCompletion: null,
-                funding: 0,
-                teamMembers: [],
-                objectives: [],
-                currentProjects: [],
-                publications: [],
-                partners: [],
-                outcomes: [],
-                icon: "Microscope",
-                isActive: true,
-              });
-              setNewProject({ name: "", status: "Planning", progress: 0 });
-              setNewPublication("");
-              setNewPartner("");
-              setNewOutcome("");
-              setNewTeamMember("");
-              setNewObjective("");
+              resetForm();
               setShowResearchDialog(true);
             }}
+            className="group relative overflow-hidden bg-[#00D4FF] px-6 py-6 font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90 transition-all active:scale-95"
           >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Research Item
+            <div className="relative z-10 flex items-center gap-2 uppercase tracking-widest">
+              <Plus className="h-5 w-5" />
+              Initialize Research
+            </div>
+            <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#00D4FF] via-white/20 to-[#00D4FF] opacity-0 transition-opacity group-hover:opacity-10" />
           </Button>
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+          <h3 className="text-sm font-black tracking-[0.2em] text-[#00D4FF] uppercase">
+            Active Research Streams
+          </h3>
+          <span className="text-[10px] font-mono font-bold text-[#E3DFD6]/40 uppercase tracking-widest">
+            {filteredResearch.length} INITIATIVES IDENTIFIED
+          </span>
+        </div>
+
         {loading ? (
-          <div>Loading...</div>
-        ) : research.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
-            No research items added yet. Click "Add Research Item" to showcase your R&D efforts.
+          <div className="flex h-64 items-center justify-center rounded-2xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00D4FF] border-t-transparent" />
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#00D4FF]">
+                Syncing Ecosystem Data...
+              </p>
+            </div>
+          </div>
+        ) : filteredResearch.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] p-12 text-center backdrop-blur-xl">
+            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-[#E3DFD6]/20">
+              <FlaskConical className="h-12 w-12" />
+            </div>
+            <p className="max-w-xs text-sm font-medium text-[#E3DFD6]/40">
+              No research initiatives matching your search filters. Adjust parameters or initialize
+              a new asset.
+            </p>
           </div>
         ) : (
           <DndContext
@@ -436,449 +375,344 @@ export function TechnologyResearchManagement({
             onDragEnd={handleResearchDragEnd}
           >
             <SortableContext
-              items={research.map((r) => r.id)}
+              items={filteredResearch.map((r: TechnologyResearch) => r.id)}
               strategy={verticalListSortingStrategy}
             >
-              {research.map((res) => (
-                <SortableResearchItem
-                  key={res.id}
-                  research={res}
-                  onEdit={handleEditResearch}
-                  onDelete={(id: number) => deleteResearchMutation.mutate(id)}
-                />
-              ))}
+              <div className="flex flex-col gap-4">
+                {filteredResearch.map((res: TechnologyResearch) => (
+                  <SortableResearchItem
+                    key={res.id}
+                    research={res}
+                    onEdit={handleEditResearch}
+                    onDelete={(id: number) => deleteResearchMutation.mutate(id)}
+                  />
+                ))}
+              </div>
             </SortableContext>
           </DndContext>
         )}
-      </CardContent>
+      </div>
+
+      {/* Footer Ecosystem Stats (from Screen #22) */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 font-display pt-8 border-t border-white/[0.08]">
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+            R&D Budget Allocation
+          </p>
+          <div className="text-3xl font-black text-white">64.2%</div>
+          <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.05]">
+            <div className="h-full w-[64.2%] rounded-full bg-gradient-to-r from-[#00D4FF] to-[#00D4FF]/50 shadow-[0_0_15px_#00D4FF]" />
+          </div>
+        </div>
+
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+            Active Researchers
+          </p>
+          <div className="text-3xl font-black text-white">24</div>
+          <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-[#00D4FF]">
+            +3 since last cycle
+          </p>
+        </div>
+
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+            Pending IP/Patents
+          </p>
+          <div className="text-3xl font-black text-white">09</div>
+          <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+            2 Approved this month
+          </p>
+        </div>
+      </div>
 
       {/* Research Form Dialog */}
       <Dialog open={showResearchDialog} onOpenChange={setShowResearchDialog}>
-        <DialogContent contentType="form">
-          <DialogHeader>
-            <DialogTitle>
-              {editingResearch ? "Edit Research Item" : "Add New Research Item"}
-            </DialogTitle>
-            <DialogDescription>
-              {editingResearch ? "Update the research item details" : "Create a new research item"}
-            </DialogDescription>
+        <DialogContent
+          contentType="form"
+          preferredSize="4xl"
+          className="overflow-hidden bg-[#0A0A0A] border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+        >
+          <DialogHeader className="border-b border-white/[0.08] bg-white/[0.02] px-8 py-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#00D4FF]/10 text-[#00D4FF]">
+                {editingResearch ? <Settings2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-black tracking-tight text-white uppercase font-display">
+                  {editingResearch ? "Reconfigure" : "Initialize"}{" "}
+                  <span className="text-[#00D4FF]">Research</span>
+                </DialogTitle>
+                <DialogDescription className="text-[10px] uppercase font-bold tracking-widest text-[#E3DFD6]/40">
+                  Document and track high-impact scientific initiatives.
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <form onSubmit={handleResearchSubmit} className="flex min-h-0 flex-1 flex-col">
-            <DialogBody className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={researchForm.title}
-                  onChange={(e) => setResearchForm({ ...researchForm, title: e.target.value })}
-                  placeholder="e.g., Smart Fabric Research Lab"
-                  required
-                />
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="researchArea">Research Area</Label>
-                  <Input
-                    id="researchArea"
-                    value={researchForm.researchArea}
-                    onChange={(e) =>
-                      setResearchForm({
-                        ...researchForm,
-                        researchArea: e.target.value,
-                      })
-                    }
-                    placeholder="e.g., Sustainable Materials"
-                  />
+          <form
+            onSubmit={handleResearchSubmit}
+            className="flex min-h-0 flex-1 flex-col overflow-hidden font-display"
+          >
+            <DialogBody className="custom-scrollbar space-y-8 px-8 py-8">
+              {/* Primary Configuration */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                    Primary Stream
+                  </h4>
                 </div>
-                <div>
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    value={researchForm.status}
-                    onValueChange={(value: "Ongoing" | "Completed" | "Planned") =>
-                      setResearchForm({ ...researchForm, status: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Ongoing">Ongoing</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                      <SelectItem value="Planned">Planned</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="startDate">Start Date</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={
-                      researchForm.startDate
-                        ? new Date(researchForm.startDate).toISOString().split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      setResearchForm({
-                        ...researchForm,
-                        startDate: e.target.value ? new Date(e.target.value) : null,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="expectedCompletion">Expected Completion</Label>
-                  <Input
-                    id="expectedCompletion"
-                    type="date"
-                    value={
-                      researchForm.expectedCompletion
-                        ? new Date(researchForm.expectedCompletion).toISOString().split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      setResearchForm({
-                        ...researchForm,
-                        expectedCompletion: e.target.value ? new Date(e.target.value) : null,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="funding">Funding Amount</Label>
-                <Input
-                  id="funding"
-                  type="number"
-                  value={researchForm.funding}
-                  onChange={(e) =>
-                    setResearchForm({
-                      ...researchForm,
-                      funding: parseFloat(e.target.value) || 0,
-                    })
-                  }
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={researchForm.description}
-                  onChange={(e) =>
-                    setResearchForm({
-                      ...researchForm,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="Describe the research initiative"
-                  rows={3}
-                />
-              </div>
-
-              {/* Objectives Section */}
-              <div>
-                <Label>Objectives</Label>
-                <div className="mt-2 flex gap-2">
-                  <Input
-                    value={newObjective}
-                    onChange={(e) => setNewObjective(e.target.value)}
-                    placeholder="Enter objective"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddObjective();
-                      }
-                    }}
-                  />
-                  <Button type="button" onClick={handleAddObjective}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {researchForm.objectives.length > 0 && (
-                  <div className="mt-2 space-y-2">
-                    {researchForm.objectives.map((objective, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between rounded bg-background p-2"
-                      >
-                        <span className="text-sm">{objective}</span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRemoveObjective(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Team Members Section */}
-              <div>
-                <Label>Team Members</Label>
-                <div className="mt-2 flex gap-2">
-                  <Input
-                    value={newTeamMember}
-                    onChange={(e) => setNewTeamMember(e.target.value)}
-                    placeholder="Enter team member name"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddTeamMember();
-                      }
-                    }}
-                  />
-                  <Button type="button" onClick={handleAddTeamMember}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {researchForm.teamMembers.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {researchForm.teamMembers.map((member, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-1 rounded bg-purple-100 px-2 py-1 text-purple-700 text-sm"
-                      >
-                        {member}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          className="h-4 w-4 p-0 hover:bg-purple-200"
-                          onClick={() => handleRemoveTeamMember(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Label>Current Projects</Label>
-                <div className="mb-3 space-y-2">
-                  {researchForm.currentProjects.map((project, index) => (
-                    <div key={index} className="rounded-md bg-background p-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="font-medium">{project.name}</p>
-                          <div className="mt-1 flex items-center gap-2">
-                            <span
-                              className={`rounded px-2 py-0.5 text-xs ${
-                                project.status === "Completed"
-                                  ? "bg-green-100 text-green-700"
-                                  : project.status === "In Progress"
-                                    ? "bg-blue-100 text-blue-700"
-                                    : project.status === "Testing"
-                                      ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-muted text-foreground/80"
-                              }`}
-                            >
-                              {project.status}
-                            </span>
-                          </div>
-                          <div className="mt-2">
-                            <Progress value={project.progress} className="h-1.5" />
-                            <span className="text-muted-foreground text-xs">
-                              {project.progress}% complete
-                            </span>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveProject(index)}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <Input
-                    placeholder="Project name"
-                    value={newProject.name}
-                    onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                  />
-                  <Select
-                    value={newProject.status}
-                    onValueChange={(value: "Planning" | "In Progress" | "Testing" | "Completed") =>
-                      setNewProject({ ...newProject, status: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Planning">Planning</SelectItem>
-                      <SelectItem value="In Progress">In Progress</SelectItem>
-                      <SelectItem value="Testing">Testing</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div className="flex gap-2">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <div className="space-y-2 col-span-2">
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                      Initiative Title *
+                    </Label>
                     <Input
-                      type="number"
-                      placeholder="Progress %"
-                      min="0"
-                      max="100"
-                      value={newProject.progress}
-                      onChange={(e) =>
-                        setNewProject({
-                          ...newProject,
-                          progress: parseInt(e.target.value, 10) || 0,
-                        })
-                      }
+                      value={researchForm.title}
+                      onChange={(e) => setResearchForm({ ...researchForm, title: e.target.value })}
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      placeholder="e.g., Biomechanical Mesh Optimization phase II"
+                      required
                     />
-                    <Button type="button" onClick={handleAddProject}>
-                      Add
-                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                      Research Focus
+                    </Label>
+                    <Input
+                      value={researchForm.researchArea}
+                      onChange={(e) =>
+                        setResearchForm({ ...researchForm, researchArea: e.target.value })
+                      }
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      placeholder="e.g., Sustainable Polymers, Ergonomics"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                      Current Status
+                    </Label>
+                    <Select
+                      value={researchForm.status}
+                      onValueChange={(value) => setResearchForm({ ...researchForm, status: value })}
+                    >
+                      <SelectTrigger className="border-white/[0.08] bg-white/[0.03] text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#0A0A0A] border-white/[0.1]">
+                        <SelectItem value="Planning">Planned / Theoretical</SelectItem>
+                        <SelectItem value="In Progress">Active Benchwork</SelectItem>
+                        <SelectItem value="Testing" className="text-amber-400">
+                          Beta Testing / QA
+                        </SelectItem>
+                        <SelectItem value="Completed" className="text-emerald-400">
+                          Concluded / Published
+                        </SelectItem>
+                        <SelectItem value="Ongoing">Standard Initiative</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    Research Abstract
+                  </Label>
+                  <Textarea
+                    value={researchForm.description}
+                    onChange={(e) =>
+                      setResearchForm({ ...researchForm, description: e.target.value })
+                    }
+                    className="min-h-[100px] border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                    placeholder="Provide a comprehensive technical summary of the research goals and methodology..."
+                  />
+                </div>
+              </div>
+
+              {/* Dynamic Sections Grid */}
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                {/* Objectives Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                      Key Objectives
+                    </h4>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Input
+                        value={newObjective}
+                        onChange={(e) => setNewObjective(e.target.value)}
+                        placeholder="Identify specific milestone..."
+                        className="h-10 border-white/[0.08] bg-white/[0.03] text-xs"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddObjective();
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleAddObjective}
+                        className="bg-white/[0.05] hover:bg-white/[0.1] text-[#00D4FF]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {researchForm.objectives.map((obj, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
+                        >
+                          <span className="text-xs text-[#E3DFD6]/60 line-clamp-1">{obj}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 hover:text-rose-500"
+                            onClick={() =>
+                              setResearchForm({
+                                ...researchForm,
+                                objectives: researchForm.objectives.filter((_, idx) => idx !== i),
+                              })
+                            }
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Outcomes Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 border-l-2 border-emerald-500 pl-4">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">
+                      Targeted Outcomes
+                    </h4>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Input
+                        value={newOutcome}
+                        onChange={(e) => setNewOutcome(e.target.value)}
+                        placeholder="Specific yield or result..."
+                        className="h-10 border-white/[0.08] bg-white/[0.03] text-xs"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddOutcome();
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleAddOutcome}
+                        className="bg-white/[0.05] hover:bg-white/[0.1] text-emerald-500"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {researchForm.outcomes.map((out, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
+                        >
+                          <span className="text-xs text-[#E3DFD6]/60 line-clamp-1">{out}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 hover:text-rose-500"
+                            onClick={() =>
+                              setResearchForm({
+                                ...researchForm,
+                                outcomes: researchForm.outcomes.filter((_, idx) => idx !== i),
+                              })
+                            }
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div>
-                <Label>Publications</Label>
-                <div className="mb-3 space-y-2">
-                  {researchForm.publications.map((publication, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between rounded bg-background p-2"
-                    >
-                      <span className="text-sm">{publication}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemovePublication(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
+
+              {/* Status Toggles */}
+              <div className="flex items-center justify-between rounded-xl border border-white/[0.05] bg-white/[0.02] p-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.05]">
+                    <Layout className="h-5 w-5 text-[#E3DFD6]/40" />
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-bold text-white uppercase tracking-wider">
+                      Ecosystem Visibility
+                    </h5>
+                    <p className="text-[10px] font-medium text-[#E3DFD6]/40">
+                      Toggle public indexing for this research stream.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Publication title or link"
-                    value={newPublication}
-                    onChange={(e) => setNewPublication(e.target.value)}
+                <div className="flex items-center gap-4">
+                  <span
+                    className={cn(
+                      "text-[10px] font-black tracking-widest uppercase transition-colors",
+                      researchForm.isActive ? "text-[#00D4FF]" : "text-[#E3DFD6]/20",
+                    )}
+                  >
+                    {researchForm.isActive ? "Indexed" : "Hidden"}
+                  </span>
+                  <Switch
+                    checked={researchForm.isActive}
+                    onCheckedChange={(checked) =>
+                      setResearchForm({ ...researchForm, isActive: checked })
+                    }
+                    className="data-[state=checked]:bg-[#00D4FF]"
                   />
-                  <Button type="button" onClick={handleAddPublication}>
-                    Add
-                  </Button>
                 </div>
-              </div>
-              <div>
-                <Label>Research Partners</Label>
-                <div className="mb-3 space-y-2">
-                  {researchForm.partners.map((partner, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between rounded bg-background p-2"
-                    >
-                      <span className="text-sm">{partner}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemovePartner(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Partner name"
-                    value={newPartner}
-                    onChange={(e) => setNewPartner(e.target.value)}
-                  />
-                  <Button type="button" onClick={handleAddPartner}>
-                    Add
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <Label>Research Outcomes</Label>
-                <div className="mb-3 space-y-2">
-                  {researchForm.outcomes.map((outcome, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between rounded bg-background p-2"
-                    >
-                      <span className="text-sm">{outcome}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveOutcome(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Research outcome"
-                    value={newOutcome}
-                    onChange={(e) => setNewOutcome(e.target.value)}
-                  />
-                  <Button type="button" onClick={handleAddOutcome}>
-                    Add
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <Label>Icon</Label>
-                <Select
-                  value={researchForm.icon}
-                  onValueChange={(value) => setResearchForm({ ...researchForm, icon: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Microscope">Microscope</SelectItem>
-                    <SelectItem value="Flask">Flask</SelectItem>
-                    <SelectItem value="Atom">Atom</SelectItem>
-                    <SelectItem value="Dna">DNA</SelectItem>
-                    <SelectItem value="Lightbulb">Lightbulb</SelectItem>
-                    <SelectItem value="Cpu">CPU</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="isActive"
-                  checked={researchForm.isActive}
-                  onCheckedChange={(checked) =>
-                    setResearchForm({ ...researchForm, isActive: checked })
-                  }
-                />
-                <Label htmlFor="isActive">Active</Label>
               </div>
             </DialogBody>
-            <DialogFooter>
-              <Button type="submit">
-                {editingResearch ? "Update Research" : "Create Research"}
+
+            <DialogFooter className="border-t border-white/[0.08] bg-white/[0.02] px-8 py-6">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setShowResearchDialog(false)}
+                className="text-[#E3DFD6]/60 hover:text-white"
+              >
+                DISCARD CHANGES
+              </Button>
+              <Button
+                type="submit"
+                disabled={createResearchMutation.isPending || updateResearchMutation.isPending}
+                className="bg-[#00D4FF] px-8 font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)] transition-all"
+              >
+                {createResearchMutation.isPending || updateResearchMutation.isPending ? (
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 animate-spin" />
+                    SYNCING...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 uppercase tracking-widest">
+                    <Save className="h-4 w-4" />
+                    {editingResearch ? "Push Config" : "Initialize Stream"}
+                  </div>
+                )}
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   );
 }

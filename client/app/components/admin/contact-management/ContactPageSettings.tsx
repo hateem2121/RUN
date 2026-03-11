@@ -215,8 +215,13 @@ export function ContactPageSettings() {
 
   if (isLoading) {
     return (
-      <div className="center-flex py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
+        <div className="flex flex-col items-center gap-4">
+          <div className="size-8 animate-spin rounded-full border-4 border-white/10 border-t-blue-500" />
+          <p className="text-[#68869A] text-sm font-bold tracking-wider uppercase">
+            Loading contact settings...
+          </p>
+        </div>
       </div>
     );
   }
@@ -226,21 +231,24 @@ export function ContactPageSettings() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="mb-2 font-bold text-2xl text-neutral-900 dark:text-neutral-100">
-            Contact Page Content
-          </h2>
-          <p className="text-neutral-600 dark:text-neutral-400">
-            Manage all content displayed on the contact page
-          </p>
+      <div className="flex items-start justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+            <Mail className="h-6 w-6 text-blue-400" />
+          </div>
+          <div>
+            <h1 className="font-bold text-xl text-white tracking-tight">Contact Configuration</h1>
+            <p className="text-[#68869A] text-sm">
+              Manage all content displayed on the global contact page
+            </p>
+          </div>
         </div>
 
         <div className="flex gap-3">
           {saveMutation.isSuccess && (
-            <div className="flex items-center gap-2 text-green-600">
+            <div className="flex items-center gap-2 text-green-400 bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/20">
               <CheckCircle2 className="h-4 w-4" />
-              <span className="font-medium text-sm">Saved</span>
+              <span className="font-bold uppercase tracking-widest text-[10px]">Saved</span>
             </div>
           )}
           <Button
@@ -248,6 +256,7 @@ export function ContactPageSettings() {
             size="sm"
             onClick={() => window.open("/contact", "_blank")}
             data-testid="button-preview"
+            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl px-4 transition-colors"
           >
             <Eye className="mr-2 h-4 w-4" />
             Preview
@@ -257,6 +266,7 @@ export function ContactPageSettings() {
             onClick={() => form.reset()}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-reset"
+            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl px-4 transition-colors"
           >
             <RotateCcw className="mr-2 h-4 w-4" />
             Reset
@@ -265,6 +275,7 @@ export function ContactPageSettings() {
             onClick={form.handleSubmit(onSubmit, onInvalid)}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-save"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-[10px] outline-none border-0 transition-all active:scale-95"
           >
             {saveMutation.isPending ? (
               <>
@@ -289,27 +300,32 @@ export function ContactPageSettings() {
           className="space-y-4"
         >
           {/* Hero Section */}
-          <AccordionItem value="hero">
-            <AccordionTrigger className="font-semibold text-lg">Hero Section</AccordionTrigger>
+          <AccordionItem value="hero" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
+              Hero Section
+            </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="heroTitle">Hero Heading</Label>
+                      <Label htmlFor="heroTitle" className="text-white/90">
+                        Hero Heading
+                      </Label>
                       <Input
                         id="heroTitle"
                         {...form.register("heroTitle")}
                         placeholder="DROP US A LINE"
                         maxLength={100}
                         data-testid="input-hero-title"
+                        className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                       />
                       {form.formState.errors.heroTitle && (
                         <p className="mt-1 text-red-500 text-sm">
                           {form.formState.errors.heroTitle.message}
                         </p>
                       )}
-                      <p className="mt-1 text-muted-foreground text-sm">
+                      <p className="mt-1 text-[#68869A] text-sm">
                         Large heading displayed at the top of the contact page
                       </p>
                     </div>
@@ -320,41 +336,50 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Location Information */}
-          <AccordionItem value="location">
-            <AccordionTrigger className="font-semibold text-lg">
+          <AccordionItem value="location" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
               <span className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+                <MapPin className="h-5 w-5 text-blue-400" />
                 Location Information
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   <div>
-                    <Label htmlFor="locationLine1">Address Line 1</Label>
+                    <Label htmlFor="locationLine1" className="text-white/90">
+                      Address Line 1
+                    </Label>
                     <Input
                       id="locationLine1"
                       {...form.register("locationLine1")}
                       placeholder="123 Main Street"
                       data-testid="input-location-line1"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="locationLine2">Address Line 2</Label>
+                    <Label htmlFor="locationLine2" className="text-white/90">
+                      Address Line 2
+                    </Label>
                     <Input
                       id="locationLine2"
                       {...form.register("locationLine2")}
                       placeholder="Anytown, USA 12345"
                       data-testid="input-location-line2"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="locationButtonText">Directions Button Text</Label>
+                    <Label htmlFor="locationButtonText" className="text-white/90">
+                      Directions Button Text
+                    </Label>
                     <Input
                       id="locationButtonText"
                       {...form.register("locationButtonText")}
                       placeholder="GET DIRECTIONS"
                       data-testid="input-location-button-text"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                     {form.formState.errors.locationButtonText && (
                       <p className="mt-1 text-red-500 text-sm">
@@ -368,24 +393,27 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Contact Details */}
-          <AccordionItem value="contact">
-            <AccordionTrigger className="font-semibold text-lg">
+          <AccordionItem value="contact" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
               <span className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
+                <Mail className="h-5 w-5 text-blue-400" />
                 Contact Details
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   <div>
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email" className="text-white/90">
+                      Email Address
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       {...form.register("email")}
                       placeholder="info@example.com"
                       data-testid="input-email"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                     {form.formState.errors.email && (
                       <p className="mt-1 text-red-500 text-sm">
@@ -394,13 +422,16 @@ export function ContactPageSettings() {
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone" className="text-white/90">
+                      Phone Number
+                    </Label>
                     <Input
                       id="phone"
                       type="tel"
                       {...form.register("phone")}
                       placeholder="(123) 456-7890"
                       data-testid="input-phone"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                   </div>
                 </CardContent>
@@ -409,27 +440,28 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Trading Hours */}
-          <AccordionItem value="hours">
-            <AccordionTrigger className="font-semibold text-lg">
+          <AccordionItem value="hours" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
               <span className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
+                <Clock className="h-5 w-5 text-blue-400" />
                 Trading Hours
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   {hoursFields.map((field, index) => (
                     <div
                       key={field.id}
-                      className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2"
+                      className="grid grid-cols-1 gap-4 rounded-xl border border-white/10 bg-black/20 p-4 md:grid-cols-2"
                     >
                       <div>
-                        <Label>Day(s)</Label>
+                        <Label className="text-white/90">Day(s)</Label>
                         <Input
                           {...form.register(`tradingHours.${index}.label`)}
                           placeholder="e.g., Monday - Friday"
                           data-testid={`input-hours-label-${index}`}
+                          className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                         />
                         {form.formState.errors.tradingHours?.[index]?.label && (
                           <p className="mt-1 text-red-500 text-sm">
@@ -439,11 +471,12 @@ export function ContactPageSettings() {
                       </div>
                       <div className="flex gap-2">
                         <div className="flex-1">
-                          <Label>Hours</Label>
+                          <Label className="text-white/90">Hours</Label>
                           <Input
                             {...form.register(`tradingHours.${index}.value`)}
                             placeholder="e.g., 9:00 AM to 5:00 PM"
                             data-testid={`input-hours-value-${index}`}
+                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                           />
                           {form.formState.errors.tradingHours?.[index]?.value && (
                             <p className="mt-1 text-red-500 text-sm">
@@ -456,7 +489,7 @@ export function ContactPageSettings() {
                           variant="destructive"
                           size="icon"
                           onClick={() => removeHours(index)}
-                          className="mt-6"
+                          className="mt-8 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-400 border border-red-500/20 rounded-xl transition-colors h-11 w-11"
                           data-testid={`button-remove-hours-${index}`}
                           aria-label="Remove trading hours"
                         >
@@ -470,6 +503,7 @@ export function ContactPageSettings() {
                     variant="outline"
                     onClick={() => appendHours({ label: "", value: "" })}
                     data-testid="button-add-hours"
+                    className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl px-4 transition-colors"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Trading Hours
@@ -480,19 +514,19 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Social Links */}
-          <AccordionItem value="social">
-            <AccordionTrigger className="font-semibold text-lg">
+          <AccordionItem value="social" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
               <span className="flex items-center gap-2">
-                <Share2 className="h-5 w-5" />
+                <Share2 className="h-5 w-5 text-blue-400" />
                 Social Media Links
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   {["facebook", "instagram", "twitter", "linkedin"].map((platform) => (
                     <div key={platform}>
-                      <Label htmlFor={platform} className="capitalize">
+                      <Label htmlFor={platform} className="capitalize text-white/90">
                         {platform}
                       </Label>
                       <Input
@@ -501,6 +535,7 @@ export function ContactPageSettings() {
                         {...form.register(`socialLinks.${platform}`)}
                         placeholder={`https://${platform}.com/...`}
                         data-testid={`input-social-${platform}`}
+                        className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                       />
                       {form.formState.errors.socialLinks?.[platform] && (
                         <p className="mt-1 text-red-500 text-sm">
@@ -515,14 +550,16 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Platform Options */}
-          <AccordionItem value="platforms">
-            <AccordionTrigger className="font-semibold text-lg">Platform Options</AccordionTrigger>
+          <AccordionItem value="platforms" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
+              Platform Options
+            </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="pt-6">
                   <div>
-                    <Label>Available Communication Platforms</Label>
-                    <p className="mb-3 text-muted-foreground text-sm">
+                    <Label className="text-white/90">Available Communication Platforms</Label>
+                    <p className="mb-3 text-[#68869A] text-sm mt-1">
                       Comma-separated list of platform options for the contact form dropdown
                     </p>
                     <Input
@@ -538,6 +575,7 @@ export function ContactPageSettings() {
                       }}
                       placeholder="Phone Call, WhatsApp, WeChat, Telegram, Other"
                       data-testid="input-platform-options"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50"
                     />
                     {form.formState.errors.platformOptions && (
                       <p className="mt-1 text-red-500 text-sm">
@@ -551,41 +589,37 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Form Configuration */}
-          <AccordionItem value="form">
-            <AccordionTrigger className="font-semibold text-lg">
+          <AccordionItem value="form" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
               Form Configuration
             </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   <div>
-                    <Label htmlFor="formButtonText">Submit Button Text</Label>
+                    <Label htmlFor="formButtonText" className="text-white/90">
+                      Submit Button Text
+                    </Label>
                     <Input
                       id="formButtonText"
                       {...form.register("formButtonText")}
                       placeholder="Get a Response Within 24 Hours"
                       data-testid="input-form-button-text"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
-                    {form.formState.errors.formButtonText && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.formButtonText.message}
-                      </p>
-                    )}
                   </div>
                   <div>
-                    <Label htmlFor="formPrivacyText">Privacy Notice</Label>
+                    <Label htmlFor="formPrivacyText" className="text-white/90">
+                      Privacy Notice
+                    </Label>
                     <Textarea
                       id="formPrivacyText"
                       {...form.register("formPrivacyText")}
                       rows={3}
                       placeholder="We value your privacy and will never share your information."
                       data-testid="textarea-form-privacy-text"
+                      className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 mt-2"
                     />
-                    {form.formState.errors.formPrivacyText && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.formPrivacyText.message}
-                      </p>
-                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -593,18 +627,23 @@ export function ContactPageSettings() {
           </AccordionItem>
 
           {/* Success Message */}
-          <AccordionItem value="success">
-            <AccordionTrigger className="font-semibold text-lg">Success Message</AccordionTrigger>
+          <AccordionItem value="success" className="border-white/10">
+            <AccordionTrigger className="font-semibold text-lg text-white hover:text-blue-400 transition-colors">
+              Success Message
+            </AccordionTrigger>
             <AccordionContent>
-              <Card>
+              <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-inner mt-4">
                 <CardContent className="space-y-4 pt-6">
                   <div>
-                    <Label htmlFor="successHeading">Success Heading</Label>
+                    <Label htmlFor="successHeading" className="text-white/90">
+                      Success Heading
+                    </Label>
                     <Input
                       id="successHeading"
                       {...form.register("successHeading")}
                       placeholder="Thank you!"
                       data-testid="input-success-heading"
+                      className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 mt-2"
                     />
                     {form.formState.errors.successHeading && (
                       <p className="mt-1 text-red-500 text-sm">
@@ -613,13 +652,16 @@ export function ContactPageSettings() {
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="successMessage">Success Message</Label>
+                    <Label htmlFor="successMessage" className="text-white/90">
+                      Success Message
+                    </Label>
                     <Textarea
                       id="successMessage"
                       {...form.register("successMessage")}
                       rows={4}
                       placeholder="We've received your message and will be in touch shortly."
                       data-testid="textarea-success-message"
+                      className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 mt-2"
                     />
                     {form.formState.errors.successMessage && (
                       <p className="mt-1 text-red-500 text-sm">
@@ -635,9 +677,9 @@ export function ContactPageSettings() {
       </form>
 
       {/* Fixed Bottom Actions */}
-      <div className="sticky bottom-6 rounded-lg border-neutral-200 border-t bg-white p-4 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="sticky bottom-6 rounded-2xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-20">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <div className="text-neutral-600 text-sm dark:text-neutral-400">
+          <div className="text-[#68869A] text-sm font-medium">
             {isDirty ? "You have unsaved changes" : "All changes saved"}
           </div>
           <div className="flex gap-3">
@@ -645,12 +687,14 @@ export function ContactPageSettings() {
               variant="outline"
               onClick={() => form.reset()}
               disabled={!isDirty || saveMutation.isPending}
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl px-4 transition-colors"
             >
               Cancel
             </Button>
             <Button
               onClick={form.handleSubmit(onSubmit, onInvalid)}
               disabled={!isDirty || saveMutation.isPending}
+              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-[10px] outline-none border-0 transition-all active:scale-95"
             >
               {saveMutation.isPending ? "Saving..." : "Save All Changes"}
             </Button>

@@ -216,8 +216,8 @@ export function FiberManagement() {
     <div className="mx-auto max-w-7xl p-6">
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Fiber Management</h1>
-          <p className="text-neutral-500">
+          <h1 className="text-3xl font-bold tracking-tight text-white">Fiber Management</h1>
+          <p className="text-[#68869A]">
             Manage raw material fibers, their properties and sustainability impact.
           </p>
         </div>
@@ -240,7 +240,7 @@ export function FiberManagement() {
 
       {showStats && (
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Card>
+          <Card className="glass-premium">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-neutral-500">Total Fibers</CardTitle>
             </CardHeader>
@@ -248,7 +248,7 @@ export function FiberManagement() {
               <div className="text-2xl font-bold">{stats.total}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="glass-premium">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-neutral-500">Active Fibers</CardTitle>
             </CardHeader>
@@ -256,7 +256,7 @@ export function FiberManagement() {
               <div className="text-2xl font-bold text-green-600">{stats.active}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="glass-premium">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-neutral-500">Unique Types</CardTitle>
             </CardHeader>
@@ -267,11 +267,11 @@ export function FiberManagement() {
         </div>
       )}
 
-      <Card className="mb-6">
+      <Card className="glass-premium mb-6">
         <CardContent className="p-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#68869A]" />
               <Input
                 placeholder="Search fibers..."
                 className="pl-10"
@@ -301,7 +301,7 @@ export function FiberManagement() {
                   <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex items-center rounded-md border border-neutral-200 bg-neutral-50 p-1">
+              <div className="flex items-center rounded-md border border-white/10 bg-white/5 p-1">
                 <Button
                   variant={viewMode === "list" ? "secondary" : "ghost"}
                   size="sm"

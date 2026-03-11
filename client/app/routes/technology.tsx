@@ -1,9 +1,4 @@
-import React, { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import LocomotiveScroll from "locomotive-scroll";
-
 import type {
   MediaAsset,
   TechnologyCta as TechnologyCtaType,
@@ -13,23 +8,27 @@ import type {
   TechnologyResearch,
   TechnologyRoadmap,
 } from "@shared/index";
-
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import LocomotiveScroll from "locomotive-scroll";
+import React, { useRef } from "react";
 import { useLoaderData } from "react-router";
+// Import NEW unified sections
+import { InteractiveExperienceSection } from "@/components/technology/InteractiveExperienceSection";
+import { RoadAheadTimeline } from "@/components/technology/RoadAheadTimeline";
+import { TechnologyStackSection } from "@/components/technology/TechnologyStackSection";
+import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
 import { Typography } from "@/components/ui/typography";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
 
-// Import NEW unified sections
-import { InteractiveExperienceSection } from "@/components/technology/InteractiveExperienceSection";
-import { TechnologyStackSection } from "@/components/technology/TechnologyStackSection";
-import { RoadAheadTimeline } from "@/components/technology/RoadAheadTimeline";
-import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
 // Import shared ViewModels
 import type {
   CtaVM,
@@ -110,13 +109,25 @@ function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
   if (!h) return null;
   const heroData = h as Record<string, unknown>;
   return {
-    title: (typeof heroData.headline === "string" ? heroData.headline : undefined) || h.title || "Technology",
-    subtitle: (typeof heroData.subheadline === "string" ? heroData.subheadline : undefined) || h.subtitle || "",
-    primaryCtaText: (typeof heroData.primaryCtaText === "string" ? heroData.primaryCtaText : undefined) ||
-      (typeof heroData.ctaText === "string" ? heroData.ctaText : undefined) || "Learn more",
-    secondaryCtaText: (typeof heroData.secondaryCtaText === "string" ? heroData.secondaryCtaText : undefined) || "",
-    primaryCtaLink: (typeof heroData.primaryCtaLink === "string" ? heroData.primaryCtaLink : undefined) || "#",
-    secondaryCtaLink: (typeof heroData.secondaryCtaLink === "string" ? heroData.secondaryCtaLink : undefined) || "#",
+    title:
+      (typeof heroData.headline === "string" ? heroData.headline : undefined) ||
+      h.title ||
+      "Technology",
+    subtitle:
+      (typeof heroData.subheadline === "string" ? heroData.subheadline : undefined) ||
+      h.subtitle ||
+      "",
+    primaryCtaText:
+      (typeof heroData.primaryCtaText === "string" ? heroData.primaryCtaText : undefined) ||
+      (typeof heroData.ctaText === "string" ? heroData.ctaText : undefined) ||
+      "Learn more",
+    secondaryCtaText:
+      (typeof heroData.secondaryCtaText === "string" ? heroData.secondaryCtaText : undefined) || "",
+    primaryCtaLink:
+      (typeof heroData.primaryCtaLink === "string" ? heroData.primaryCtaLink : undefined) || "#",
+    secondaryCtaLink:
+      (typeof heroData.secondaryCtaLink === "string" ? heroData.secondaryCtaLink : undefined) ||
+      "#",
     backgroundImageId: resolveHeroBackgroundId(h),
   };
 }
@@ -221,7 +232,7 @@ function normalizeTechnologyData(
 
 export default function Technology() {
   const loaderData = useLoaderData<typeof loader>();
-  
+
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <TechnologyInner />
@@ -278,7 +289,7 @@ function TechnologyInner() {
           smoothWheel: true,
           wheelMultiplier: 1,
           touchMultiplier: 2,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
         },
       });
     }
@@ -293,34 +304,37 @@ function TechnologyInner() {
   }, []);
 
   // GSAP Animations
-  useGSAP(() => {
-    // Hero Animations
-    const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1.2 } });
-    
-    tl.from(".hero-badge", { y: 20, opacity: 0, delay: 0.2 })
-      .from(".hero-title span", { y: 60, opacity: 0, stagger: 0.2 }, "-=0.8")
-      .from(".hero-accent", { scaleX: 0, transformOrigin: "left", opacity: 0 }, "-=0.6")
-      .from(".hero-desc", { y: 20, opacity: 0 }, "-=0.8")
-      .from(".hero-cta", { y: 20, opacity: 0 }, "-=0.8")
-      .from(".hero-hud", { opacity: 0, stagger: 0.2 }, "-=1");
+  useGSAP(
+    () => {
+      // Hero Animations
+      const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1.2 } });
 
-    // Scroll Reveals
-    const sections = [".tech-dashboard", ".tech-stack", ".tech-roadmap", ".tech-cta"];
-    
-    sections.forEach((section) => {
-      gsap.from(section, {
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out",
+      tl.from(".hero-badge", { y: 20, opacity: 0, delay: 0.2 })
+        .from(".hero-title span", { y: 60, opacity: 0, stagger: 0.2 }, "-=0.8")
+        .from(".hero-accent", { scaleX: 0, transformOrigin: "left", opacity: 0 }, "-=0.6")
+        .from(".hero-desc", { y: 20, opacity: 0 }, "-=0.8")
+        .from(".hero-cta", { y: 20, opacity: 0 }, "-=0.8")
+        .from(".hero-hud", { opacity: 0, stagger: 0.2 }, "-=1");
+
+      // Scroll Reveals
+      const sections = [".tech-dashboard", ".tech-stack", ".tech-roadmap", ".tech-cta"];
+
+      sections.forEach((section) => {
+        gsap.from(section, {
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+        });
       });
-    });
-  }, { scope: containerRef });
+    },
+    { scope: containerRef },
+  );
 
   const mainHeroMediaId = resolveHeroBackgroundId(hero ?? undefined);
   const mediaAssetsMap = new Map<number, MediaAsset>();
@@ -356,7 +370,10 @@ function TechnologyInner() {
           </div>
         </div>
       ) : (
-        <div ref={containerRef} className="technology-page-root relative isolate min-h-screen bg-white dark:bg-[#0A0A0A]">
+        <div
+          ref={containerRef}
+          className="technology-page-root relative isolate min-h-screen bg-white dark:bg-[#0A0A0A]"
+        >
           {/* Grid Pattern */}
           <div className="fixed inset-0 pointer-events-none z-0 bg-grid-arctic dark:bg-grid-tech opacity-30"></div>
 
@@ -382,7 +399,11 @@ function TechnologyInner() {
               {/* Title Block */}
               <div className="hero-title flex flex-col items-center mb-12 space-y-4">
                 <Typography.H1 className="text-7xl md:text-[9rem] lg:text-[11rem] font-neue-stance font-bold text-black dark:text-white leading-[0.8] tracking-tight uppercase flex flex-col items-center">
-                  {firstWord && <span className="block text-slate-900 dark:text-white opacity-90">{firstWord}</span>}
+                  {firstWord && (
+                    <span className="block text-slate-900 dark:text-white opacity-90">
+                      {firstWord}
+                    </span>
+                  )}
                   {gradientWord && (
                     <span className="bg-clip-text text-transparent py-2 bg-gradient-to-br from-[#0047AB] to-[#002F75] dark:from-[#00D4FF] dark:to-[#00D4FF]/70">
                       {gradientWord}
@@ -401,7 +422,8 @@ function TechnologyInner() {
 
               {/* Subtitle */}
               <Typography.P className="hero-desc text-base md:text-xl text-slate-500 dark:text-[#E3DFD6] font-normal leading-relaxed max-w-2xl mb-16 tracking-wide font-helvetica">
-                {vm.hero?.subtitle || "Engineering the next generation of athletic skin. We go beyond textiles, diving deep into biotechnology to enhance human performance through reactive materials."}
+                {vm.hero?.subtitle ||
+                  "Engineering the next generation of athletic skin. We go beyond textiles, diving deep into biotechnology to enhance human performance through reactive materials."}
               </Typography.P>
 
               {/* CTA Button */}
@@ -411,7 +433,9 @@ function TechnologyInner() {
                   className="px-12 py-5 bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black font-bold uppercase tracking-[0.25em] text-[10px] shadow-[0_10px_30px_-10px_rgba(0,71,171,0.5)] dark:shadow-[0_0_30px_-5px_rgba(0,212,255,0.4)] hover:shadow-[0_15px_40px_-10px_rgba(0,71,171,0.6)] dark:hover:shadow-[0_0_50px_-5px_rgba(0,212,255,0.6)] dark:hover:bg-white transition-all duration-500 flex items-center gap-4"
                 >
                   {vm.hero?.primaryCtaText || "Explore Our Innovations"}
-                  <span className="material-symbols-outlined text-base group-hover:translate-y-1 transition-transform">arrow_downward</span>
+                  <span className="material-symbols-outlined text-base group-hover:translate-y-1 transition-transform">
+                    arrow_downward
+                  </span>
                 </a>
               </div>
             </div>
@@ -427,7 +451,10 @@ function TechnologyInner() {
                 {[0, 1].map((set) => (
                   <div key={set} className="flex items-center gap-24 mx-12 animate-marquee">
                     {TECH_PARTNERS.map((partner) => (
-                      <span key={`${set}-${partner}`} className="text-xl md:text-2xl font-neue-stance text-black dark:text-[#E3DFD6] font-bold tracking-tighter dark:opacity-70">
+                      <span
+                        key={`${set}-${partner}`}
+                        className="text-xl md:text-2xl font-neue-stance text-black dark:text-[#E3DFD6] font-bold tracking-tighter dark:opacity-70"
+                      >
                         {partner}
                       </span>
                     ))}
@@ -438,8 +465,15 @@ function TechnologyInner() {
           </header>
 
           {/* Cyan Scrolling Marquee Strip */}
-          <MarqueeStrip 
-            items={["INNOVATION", "3D DESIGN", "SMART TEXTILES", "R&D", "BIOMECHANICS", "COMPUTATIONAL ANALYSIS"]} 
+          <MarqueeStrip
+            items={[
+              "INNOVATION",
+              "3D DESIGN",
+              "SMART TEXTILES",
+              "R&D",
+              "BIOMECHANICS",
+              "COMPUTATIONAL ANALYSIS",
+            ]}
             accentColor="#00D4FF"
           />
 
@@ -450,7 +484,11 @@ function TechnologyInner() {
 
           {/* Technology Stack */}
           <div className="tech-stack">
-            <TechnologyStackSection innovations={vm.innovations} equipment={vm.equipment} mediaAssets={mediaAssetsMap} />
+            <TechnologyStackSection
+              innovations={vm.innovations}
+              equipment={vm.equipment}
+              mediaAssets={mediaAssetsMap}
+            />
           </div>
 
           {/* Road Ahead Timeline */}
@@ -464,26 +502,35 @@ function TechnologyInner() {
           {vm.cta && (
             <section className="tech-cta py-48 px-6 relative overflow-hidden flex items-center justify-center border-t border-slate-100 dark:border-white/[0.08] bg-[#FAFBFC] dark:bg-[#0A0A0A]">
               <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-30 dark:opacity-20 z-0"></div>
-              
+
               {/* HUD micro-copy */}
               <div className="absolute bottom-8 left-8 hidden md:block">
-                <span className="micro-copy dark:text-[#00D4FF]">LIVE FEED: ENCRYPTED_TUNNEL_CONNECTED</span>
+                <span className="micro-copy dark:text-[#00D4FF]">
+                  LIVE FEED: ENCRYPTED_TUNNEL_CONNECTED
+                </span>
               </div>
               <div className="absolute top-8 right-8 hidden md:block">
                 <span className="micro-copy dark:text-[#68869A]">ID: RUN_APP_LAB_849</span>
               </div>
-              
+
               <div className="relative z-10 text-center max-w-4xl mx-auto">
                 <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-[0.85] dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                  {vm.cta.headline.replace("?", "")} <br/><span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_15px_rgba(0,212,255,0.6)]">Together?</span>
+                  {vm.cta.headline.replace("?", "")} <br />
+                  <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_15px_rgba(0,212,255,0.6)]">
+                    Together?
+                  </span>
                 </Typography.H2>
-                
+
                 <Typography.P className="text-lg md:text-2xl text-slate-500 dark:text-[#E3DFD6] mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide font-helvetica">
-                  {vm.cta.subheadline || "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
+                  {vm.cta.subheadline ||
+                    "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
                 </Typography.P>
-                
+
                 <div className="flex flex-col sm:flex-row gap-8 justify-center">
-                  <a href="/contact" className="px-14 py-6 bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:bg-[#002F75] dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs">
+                  <a
+                    href="/contact"
+                    className="px-14 py-6 bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:bg-[#002F75] dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
+                  >
                     {vm.cta.primaryText || "Book a Tech Demo"}
                   </a>
                   <button className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-[#0047AB] dark:hover:border-[#00D4FF] hover:text-[#0047AB] dark:hover:text-[#00D4FF] dark:hover:shadow-[0_0_20px_rgba(0,212,255,0.2)] transition-all text-xs dark:backdrop-blur-xl">

@@ -12,7 +12,7 @@ export function AboutManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">About page Management</h1>
-          <p className="text-muted-foreground">
+          <p className="text-[#68869A]">
             Manage the content, locations, and statistics displayed on the About page.
           </p>
         </div>

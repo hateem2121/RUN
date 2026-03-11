@@ -1,24 +1,34 @@
-import type { MediaAsset } from "@shared/index";
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Calendar,
-  Edit,
-  Image as ImageIcon,
+  Clock,
+  FastForward,
+  LayoutGrid,
+  List,
+  Milestone,
   Plus,
+  Save,
+  Search,
+  Settings2,
   Target,
-  Trash2,
-  Video as VideoIcon,
   X,
+  Zap,
 } from "lucide-react";
 import type React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
-  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -31,6 +41,9 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
+import { RoadmapKanbanBoard } from "./RoadmapKanbanBoard";
+import { SortableRoadmapItem } from "./SortableRoadmapItem";
 
 // Types
 interface RoadmapFormData {
@@ -40,34 +53,34 @@ interface RoadmapFormData {
   impact: string[];
   imageId: number | null;
   videoId: number | null;
+  status: string;
+  priority: string;
   isActive: boolean;
 }
 
-interface TechnologyRoadmap {
+export interface TechnologyRoadmap {
   id: number;
   title: string;
   timeline: string;
-  description?: string | undefined;
+  description?: string;
   impact?: string[];
   imageId?: number | null;
   videoId?: number | null;
-  isActive?: boolean | undefined;
-  position?: number | undefined;
+  status?: string;
+  priority?: string;
+  isActive?: boolean;
+  position?: number;
 }
 
-interface TechnologyRoadmapManagementProps {
-  isLoading?: boolean | undefined;
-}
-
-export function TechnologyRoadmapManagement({
-  isLoading: externalLoading,
-}: TechnologyRoadmapManagementProps = {}) {
+export function TechnologyRoadmapManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // State
   const [showRoadmapDialog, setShowRoadmapDialog] = useState(false);
   const [editingRoadmap, setEditingRoadmap] = useState<TechnologyRoadmap | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [view, setView] = useState<"list" | "kanban">("kanban");
 
   const [roadmapForm, setRoadmapForm] = useState<RoadmapFormData>({
     title: "",
@@ -76,6 +89,8 @@ export function TechnologyRoadmapManagement({
     impact: [],
     imageId: null,
     videoId: null,
+    status: "planned",
+    priority: "medium",
     isActive: true,
   });
 
@@ -83,8 +98,17 @@ export function TechnologyRoadmapManagement({
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [showVideoPicker, setShowVideoPicker] = useState(false);
 
+  // DnD Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+
   // Queries and Mutations
-  const { data: roadmap = [], isPending: roadmapLoading } = useQuery<TechnologyRoadmap[]>({
+  const { data: roadmap = [], isLoading } = useQuery<TechnologyRoadmap[]>({
     queryKey: ["/api/technology-roadmap"],
   });
 
@@ -100,20 +124,8 @@ export function TechnologyRoadmapManagement({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
       setShowRoadmapDialog(false);
-      setEditingRoadmap(null);
-      setRoadmapForm({
-        title: "",
-        timeline: "",
-        description: "",
-        impact: [],
-        imageId: null,
-        videoId: null,
-        isActive: true,
-      });
-      toast({
-        title: "Success",
-        description: "Roadmap milestone created successfully",
-      });
+      resetForm();
+      toast({ title: "Success", description: "Milestone created" });
     },
   });
 
@@ -127,10 +139,7 @@ export function TechnologyRoadmapManagement({
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
       setShowRoadmapDialog(false);
       setEditingRoadmap(null);
-      toast({
-        title: "Success",
-        description: "Roadmap milestone updated successfully",
-      });
+      toast({ title: "Success", description: "Milestone updated" });
     },
   });
 
@@ -138,377 +147,471 @@ export function TechnologyRoadmapManagement({
     mutationFn: (id: number) => apiRequest(`/api/technology-roadmap/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
-      toast({
-        title: "Success",
-        description: "Roadmap milestone deleted successfully",
-      });
+      toast({ title: "Success", description: "Milestone deleted" });
     },
   });
 
-  // Event Handlers
+  const reorderMutation = useMutation({
+    mutationFn: (items: TechnologyRoadmap[]) =>
+      apiRequest("/api/technology-roadmap/reorder", {
+        method: "POST",
+        body: JSON.stringify({ items }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
+    },
+  });
+
+  // Filtered Roadmap
+  const filteredRoadmap = useMemo(() => {
+    return roadmap
+      .filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+      .sort((a, b) => (a.position || 0) - (b.position || 0));
+  }, [roadmap, searchQuery]);
+
+  // Handlers
   const handleRoadmapSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingRoadmap) {
-      updateRoadmapMutation.mutate({
-        id: editingRoadmap.id,
-        data: roadmapForm,
-      });
+      updateRoadmapMutation.mutate({ id: editingRoadmap.id, data: roadmapForm });
     } else {
       createRoadmapMutation.mutate(roadmapForm);
     }
   };
 
-  const handleEditRoadmap = (roadmap: TechnologyRoadmap) => {
-    setEditingRoadmap(roadmap);
+  const handleEditRoadmap = (item: TechnologyRoadmap) => {
+    setEditingRoadmap(item);
     setRoadmapForm({
-      title: roadmap.title,
-      timeline: roadmap.timeline,
-      description: roadmap.description || "",
-      impact: roadmap.impact || [],
-      imageId: roadmap.imageId || null,
-      videoId: roadmap.videoId || null,
-      isActive: roadmap.isActive ?? true,
+      title: item.title,
+      timeline: item.timeline,
+      description: item.description || "",
+      impact: item.impact || [],
+      imageId: item.imageId || null,
+      videoId: item.videoId || null,
+      status: item.status || "planned",
+      priority: item.priority || "medium",
+      isActive: item.isActive ?? true,
     });
     setShowRoadmapDialog(true);
   };
 
-  const handleAddImpact = () => {
-    if (newImpact) {
-      setRoadmapForm({
-        ...roadmapForm,
-        impact: [...roadmapForm.impact, newImpact],
-      });
-      setNewImpact("");
+  const handleRoadmapDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = roadmap.findIndex((r) => r.id === active.id);
+      const newIndex = roadmap.findIndex((r) => r.id === over.id);
+      const newItems = arrayMove(roadmap, oldIndex, newIndex).map((item, idx) => ({
+        ...item,
+        position: idx,
+      }));
+      reorderMutation.mutate(newItems);
     }
   };
 
-  const handleRemoveImpact = (index: number) => {
+  const resetForm = () => {
+    setEditingRoadmap(null);
     setRoadmapForm({
-      ...roadmapForm,
-      impact: roadmapForm.impact.filter((_, i) => i !== index),
+      title: "",
+      timeline: "",
+      description: "",
+      impact: [],
+      imageId: null,
+      videoId: null,
+      status: "planned",
+      priority: "medium",
+      isActive: true,
     });
   };
 
-  const loading = externalLoading || roadmapLoading;
+  const activeCount = roadmap.filter((r) => r.isActive).length;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Technology Roadmap</CardTitle>
-            <CardDescription>
-              Plan and showcase future technology developments and milestones
-            </CardDescription>
+    <div className="flex flex-col gap-8">
+      {/* Header Panel */}
+      <div className="sticky top-0 z-30 -mx-4 mb-4 flex flex-col gap-6 border-b border-white/10 bg-[#0A0A0A]/80 p-6 backdrop-blur-xl sm:-mx-8 sm:px-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
+              Technology <span className="text-[#00D4FF]">Roadmap</span>
+            </h2>
+            <p className="text-[#E3DFD6]/60 text-sm font-medium tracking-wide italic">
+              Future pipeline and strategic milestones
+            </p>
           </div>
-          <Button
-            onClick={() => {
-              setEditingRoadmap(null);
-              setRoadmapForm({
-                title: "",
-                timeline: "",
-                description: "",
-                impact: [],
-                imageId: null,
-                videoId: null,
-                isActive: true,
-              });
-              setShowRoadmapDialog(true);
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Roadmap Milestone
-          </Button>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#E3DFD6]/30 transition-colors group-focus-within:text-[#00D4FF]" />
+              <Input
+                placeholder="Search milestones..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-11 w-[240px] border-white/5 bg-white/[0.03] pl-10 text-[#E3DFD6] transition-all focus:border-[#00D4FF]/40 focus:bg-white/[0.06] focus:ring-0"
+              />
+            </div>
+
+            <Button
+              onClick={() => {
+                resetForm();
+                setShowRoadmapDialog(true);
+              }}
+              className="group h-11 border-none bg-[#00D4FF] px-6 font-bold text-[#0A0A0A] transition-all hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.4)] active:scale-95"
+            >
+              <Plus className="mr-2 h-5 w-5 transition-transform group-hover:rotate-90" />
+              INITIALIZE MILESTONE
+            </Button>
+
+            <div className="flex bg-white/5 rounded-lg p-1 mr-2 border border-white/10">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setView("list")}
+                className={cn(
+                  "h-8 px-2 rounded-md transition-all",
+                  view === "list"
+                    ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
+                    : "text-[#68869A] hover:text-white",
+                )}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setView("kanban")}
+                className={cn(
+                  "h-8 px-2 rounded-md transition-all",
+                  view === "kanban"
+                    ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
+                    : "text-[#68869A] hover:text-white",
+                )}
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <Button
+              variant="outline"
+              className="h-11 border-white/10 bg-white/5 px-4 text-[#E3DFD6] hover:bg-white/10"
+            >
+              <Settings2 className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-20 animate-pulse rounded bg-muted" />
+      </div>
+
+      {/* Roadmap List */}
+      <div className="relative min-h-[400px]">
+        {isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-1">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-32 w-full animate-pulse rounded-2xl bg-white/[0.02]" />
             ))}
           </div>
-        ) : roadmap.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
-            No roadmap milestones added yet. Click "Add Roadmap Milestone" to showcase your
-            technology development plans.
+        ) : filteredRoadmap.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] p-12 text-center backdrop-blur-xl">
+            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-[#E3DFD6]/20">
+              <Milestone className="h-12 w-12" />
+            </div>
+            <p className="max-w-xs text-sm font-medium text-[#E3DFD6]/40">
+              No strategic milestones matching your search. Add a new roadmap target to visualize
+              the future.
+            </p>
           </div>
+        ) : view === "kanban" ? (
+          <RoadmapKanbanBoard
+            items={filteredRoadmap}
+            onEdit={handleEditRoadmap}
+            onDelete={(id) => deleteRoadmapMutation.mutate(id)}
+            onReorder={(items) => reorderMutation.mutate(items)}
+            onStatusChange={(id, status) => updateRoadmapMutation.mutate({ id, data: { status } })}
+          />
         ) : (
-          <div className="space-y-4">
-            {roadmap.map((item) => (
-              <div key={item.id} className="rounded-lg border bg-white p-4 shadow-sm-xs">
-                <div className="flex items-start justify-between">
-                  <div className="flex flex-1 items-start gap-4">
-                    <div className="rounded-lg bg-purple-100 p-2">
-                      <Calendar className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground">{item.title}</h4>
-                          <div className="mt-1 flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {item.timeline}
-                            </Badge>
-                          </div>
-                          {item.description && (
-                            <p className="mt-2 text-muted-foreground text-sm">{item.description}</p>
-                          )}
-                          {item.impact && item.impact.length > 0 && (
-                            <div className="mt-2">
-                              <p className="mb-1 font-medium text-muted-foreground text-xs">
-                                Expected Impact:
-                              </p>
-                              <div className="flex flex-wrap gap-1">
-                                {item.impact.slice(0, 3).map((impact, index) => (
-                                  <span
-                                    key={index}
-                                    className="rounded bg-green-100 px-2 py-0.5 text-green-700 text-xs"
-                                  >
-                                    <Target className="mr-1 inline h-3 w-3" />
-                                    {impact}
-                                  </span>
-                                ))}
-                                {item.impact.length > 3 && (
-                                  <span className="text-muted-foreground text-xs">
-                                    +{item.impact.length - 3} more
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                          {(item.imageId || item.videoId) && (
-                            <div className="mt-2 flex gap-2">
-                              {item.imageId && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <ImageIcon className="mr-1 h-3 w-3" /> Image
-                                </Badge>
-                              )}
-                              {item.videoId && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <VideoIcon className="mr-1 h-3 w-3" /> Video
-                                </Badge>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-4 flex items-start gap-2">
-                    <Badge variant={item.isActive ? "default" : "secondary"}>
-                      {item.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                    <Button size="sm" variant="ghost" onClick={() => handleEditRoadmap(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-red-600 hover:text-red-700"
-                      onClick={() => deleteRoadmapMutation.mutate(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleRoadmapDragEnd}
+          >
+            <SortableContext
+              items={filteredRoadmap.map((r) => r.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col gap-4">
+                {filteredRoadmap.map((item) => (
+                  <SortableRoadmapItem
+                    key={item.id}
+                    item={item}
+                    onEdit={handleEditRoadmap}
+                    onDelete={(id) => deleteRoadmapMutation.mutate(id)}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
         )}
-      </CardContent>
+      </div>
+
+      {/* Footer Stats - Pipeline Growth */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#00D4FF]/10 text-[#00D4FF]">
+            <Zap className="h-5 w-5" />
+          </div>
+          <div className="text-2xl font-black text-white">{activeCount}</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+            Active Milestones
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-[#E3DFD6]/40">
+            <FastForward className="h-5 w-5" />
+          </div>
+          <div className="text-2xl font-black text-white">{roadmap.length - activeCount}</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+            Future Pipeline
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
+            <Target className="h-5 w-5" />
+          </div>
+          <div className="text-2xl font-black text-white">94%</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+            Impact Accuracy
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
+            <Clock className="h-5 w-5" />
+          </div>
+          <div className="text-2xl font-black text-white">18M</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+            Avg. Roadmap Horizon
+          </div>
+        </div>
+      </div>
 
       {/* Roadmap Form Dialog */}
       <Dialog open={showRoadmapDialog} onOpenChange={setShowRoadmapDialog}>
-        <DialogContent contentType="form">
-          <DialogHeader>
-            <DialogTitle>
-              {editingRoadmap ? "Edit Roadmap Milestone" : "Add New Roadmap Milestone"}
+        <DialogContent className="max-w-2xl border-white/10 bg-[#0A0A0A]/95 text-[#E3DFD6] backdrop-blur-2xl">
+          <DialogHeader className="border-b border-white/10 pb-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00D4FF]/10 text-[#00D4FF] mb-4">
+              <Zap className="h-6 w-6" />
+            </div>
+            <DialogTitle className="text-2xl font-black text-white uppercase italic">
+              {editingRoadmap ? "Update" : "Initialize"}{" "}
+              <span className="text-[#00D4FF]">Milestone</span>
             </DialogTitle>
-            <DialogDescription>
-              {editingRoadmap
-                ? "Update the roadmap milestone details"
-                : "Create a new roadmap milestone"}
+            <DialogDescription className="text-[#68869A] font-medium tracking-wide">
+              Define the strategic objectives and expected impact for this roadmap target.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleRoadmapSubmit} className="flex min-h-0 flex-1 flex-col">
-            <DialogBody className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={roadmapForm.title}
-                  onChange={(e) => setRoadmapForm({ ...roadmapForm, title: e.target.value })}
-                  placeholder="e.g., Smart Sensor Integration"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="timeline">Timeline</Label>
-                <Input
-                  id="timeline"
-                  value={roadmapForm.timeline}
-                  onChange={(e) => setRoadmapForm({ ...roadmapForm, timeline: e.target.value })}
-                  placeholder="e.g., Q2 2024, 6 months, 2024-2025"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={roadmapForm.description}
-                  onChange={(e) =>
-                    setRoadmapForm({
-                      ...roadmapForm,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="Describe the milestone and its objectives"
-                  rows={3}
-                />
-              </div>
 
-              {/* Media Selection */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Milestone Image</Label>
-                  <div className="mt-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowImagePicker(true)}
-                    >
-                      <ImageIcon className="mr-2 h-4 w-4" />
-                      Select Image
-                    </Button>
-                    {roadmapForm.imageId && (
-                      <div className="mt-2 flex items-center justify-between rounded bg-background p-2 text-muted-foreground text-sm">
-                        <span>Image ID: {roadmapForm.imageId}</span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 w-6 p-0 text-red-600"
-                          onClick={() => setRoadmapForm({ ...roadmapForm, imageId: null })}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <Label>Milestone Video</Label>
-                  <div className="mt-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowVideoPicker(true)}
-                    >
-                      <VideoIcon className="mr-2 h-4 w-4" />
-                      Select Video
-                    </Button>
-                    {roadmapForm.videoId && (
-                      <div className="mt-2 flex items-center justify-between rounded bg-background p-2 text-muted-foreground text-sm">
-                        <span>Video ID: {roadmapForm.videoId}</span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 w-6 p-0 text-red-600"
-                          onClick={() => setRoadmapForm({ ...roadmapForm, videoId: null })}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <Label>Expected Impact</Label>
-                <div className="mb-3 space-y-2">
-                  {roadmapForm.impact.map((impact, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between rounded bg-background p-2"
-                    >
-                      <span className="flex items-center text-sm">
-                        <Target className="mr-2 h-3 w-3 text-green-600" />
-                        {impact}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveImpact(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
+          <form onSubmit={handleRoadmapSubmit} className="space-y-8 py-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                    Milestone Title
+                  </Label>
                   <Input
-                    placeholder="Expected impact or benefit"
-                    value={newImpact}
-                    onChange={(e) => setNewImpact(e.target.value)}
+                    value={roadmapForm.title}
+                    onChange={(e) => setRoadmapForm({ ...roadmapForm, title: e.target.value })}
+                    className="border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                    placeholder="Enter milestone title..."
+                    required
                   />
-                  <Button type="button" onClick={handleAddImpact}>
-                    Add
-                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                    Timeline Horizon
+                  </Label>
+                  <Input
+                    value={roadmapForm.timeline}
+                    onChange={(e) => setRoadmapForm({ ...roadmapForm, timeline: e.target.value })}
+                    className="border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                    placeholder="e.g., Q3 2025"
+                    required
+                  />
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="isActive"
-                  checked={roadmapForm.isActive}
-                  onCheckedChange={(checked) =>
-                    setRoadmapForm({ ...roadmapForm, isActive: checked })
-                  }
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                      Current Status
+                    </Label>
+                    <select
+                      title="Milestone Status"
+                      value={roadmapForm.status}
+                      onChange={(e) => setRoadmapForm({ ...roadmapForm, status: e.target.value })}
+                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40 outline-none px-3 text-sm"
+                    >
+                      <option value="planned">Planned</option>
+                      <option value="active">Active</option>
+                      <option value="validated">Validated</option>
+                      <option value="complete">Complete</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                      Priority Level
+                    </Label>
+                    <select
+                      title="Priority Level"
+                      value={roadmapForm.priority}
+                      onChange={(e) => setRoadmapForm({ ...roadmapForm, priority: e.target.value })}
+                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40 outline-none px-3 text-sm"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                </div>
+
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  Executive Summary
+                </Label>
+                <Textarea
+                  value={roadmapForm.description}
+                  onChange={(e) => setRoadmapForm({ ...roadmapForm, description: e.target.value })}
+                  className="h-[120px] resize-none border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                  placeholder="Strategic overview..."
                 />
-                <Label htmlFor="isActive">Active</Label>
               </div>
-            </DialogBody>
-            <DialogFooter>
-              <Button type="submit">
-                {editingRoadmap ? "Update Milestone" : "Create Milestone"}
+            </div>
+
+            {/* Impact Section */}
+            <div className="space-y-4 rounded-2xl bg-white/[0.02] p-6 ring-1 ring-white/5">
+              <div className="flex items-center justify-between">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  Strategic Impact
+                </Label>
+                <Badge variant="outline" className="border-[#00D4FF]/20 text-[#00D4FF] text-[10px]">
+                  {roadmapForm.impact.length} Targets Defined
+                </Badge>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {roadmapForm.impact.map((impact, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 rounded-lg bg-[#00D4FF]/5 px-3 py-1.5 ring-1 ring-[#00D4FF]/20"
+                  >
+                    <span className="text-sm font-medium text-[#E3DFD6]">{impact}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRoadmapForm({
+                          ...roadmapForm,
+                          impact: roadmapForm.impact.filter((_, i) => i !== index),
+                        })
+                      }
+                      title="Remove Target"
+                      aria-label="Remove Target"
+                    >
+                      <X className="h-3 w-3 text-[#68869A] hover:text-red-400" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <Input
+                  value={newImpact}
+                  onChange={(e) => setNewImpact(e.target.value)}
+                  className="border-white/5 bg-white/[0.03]"
+                  placeholder="Add target impact..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (newImpact) {
+                        setRoadmapForm({
+                          ...roadmapForm,
+                          impact: [...roadmapForm.impact, newImpact],
+                        });
+                        setNewImpact("");
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    if (newImpact) {
+                      setRoadmapForm({
+                        ...roadmapForm,
+                        impact: [...roadmapForm.impact, newImpact],
+                      });
+                      setNewImpact("");
+                    }
+                  }}
+                  className="border-white/10"
+                >
+                  ADD
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] p-4">
+              <div className="space-y-0.5">
+                <Label className="text-sm font-bold text-white uppercase italic">
+                  Active Phase
+                </Label>
+                <p className="text-xs text-[#68869A]">Toggle visibility in public roadmap</p>
+              </div>
+              <Switch
+                checked={roadmapForm.isActive}
+                onCheckedChange={(checked) => setRoadmapForm({ ...roadmapForm, isActive: checked })}
+                className="data-[state=checked]:bg-[#00D4FF]"
+              />
+            </div>
+
+            <DialogFooter className="border-t border-white/10 pt-6">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setShowRoadmapDialog(false)}
+                className="text-[#68869A]"
+              >
+                CANCEL
+              </Button>
+              <Button
+                type="submit"
+                className="bg-[#00D4FF] font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                {editingRoadmap ? "UPDATE MILESTONE" : "SAVE MILESTONE"}
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-      {/* Media Selection Dialogs */}
+      {/* Media Pickers */}
       <StandardMediaSelectionDialog
         isOpen={showImagePicker}
         onClose={() => setShowImagePicker(false)}
-        onSelect={(assets: MediaAsset | MediaAsset[]) => {
+        onSelect={(assets) => {
           const asset = Array.isArray(assets) ? assets[0] : assets;
-          if (asset) {
-            setRoadmapForm({ ...roadmapForm, imageId: asset.id });
-          }
+          if (asset) setRoadmapForm({ ...roadmapForm, imageId: asset.id });
         }}
         title="Select Milestone Image"
         mediaPickerTarget="roadmap-image"
-        selectionMode="single"
       />
-
       <StandardMediaSelectionDialog
         isOpen={showVideoPicker}
         onClose={() => setShowVideoPicker(false)}
-        onSelect={(assets: MediaAsset | MediaAsset[]) => {
+        onSelect={(assets) => {
           const asset = Array.isArray(assets) ? assets[0] : assets;
-          if (asset) {
-            setRoadmapForm({ ...roadmapForm, videoId: asset.id });
-          }
+          if (asset) setRoadmapForm({ ...roadmapForm, videoId: asset.id });
         }}
         title="Select Milestone Video"
         mediaPickerTarget="roadmap-video"
-        selectionMode="single"
       />
-    </Card>
+    </div>
   );
 }

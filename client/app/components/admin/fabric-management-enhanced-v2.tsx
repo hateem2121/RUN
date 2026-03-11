@@ -367,8 +367,10 @@ export function FabricManagementEnhancedV2() {
     <div className="mx-auto space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Enhanced Fabric Management</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold text-white tracking-tight">
+            Enhanced Fabric Management
+          </h1>
+          <p className="text-[#68869A]">
             Comprehensive fabric management with structured properties
           </p>
         </div>
@@ -393,13 +395,13 @@ export function FabricManagementEnhancedV2() {
       />
 
       {isLoading ? (
-        <Card>
+        <Card className="glass-premium">
           <CardContent className="p-12 text-center">Loading...</CardContent>
         </Card>
       ) : fabrics.length === 0 ? (
-        <Card>
+        <Card className="glass-premium">
           <CardContent className="p-12 text-center">
-            <Shirt className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <Shirt className="mx-auto mb-4 h-12 w-12 text-[#68869A]" />
             <h3 className="text-xl font-semibold">No Fabrics Found</h3>
             <Button className="mt-4" onClick={() => setIsCreateModalOpen(true)}>
               Create First Fabric

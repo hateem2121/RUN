@@ -21,6 +21,7 @@ const selectChain = {
   leftJoin: vi.fn().mockReturnThis(),
   prepare: vi.fn().mockReturnThis(),
   execute: vi.fn().mockResolvedValue([]),
+  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res([])),
 };
 mockDbInstance.select.mockReturnValue(selectChain);
@@ -28,6 +29,7 @@ mockDbInstance.select.mockReturnValue(selectChain);
 const insertChain = {
   values: vi.fn().mockReturnThis(),
   returning: vi.fn().mockReturnThis(),
+  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res([])),
 };
 mockDbInstance.insert.mockReturnValue(insertChain);
@@ -36,12 +38,14 @@ const updateChain = {
   set: vi.fn().mockReturnThis(),
   where: vi.fn().mockReturnThis(),
   returning: vi.fn().mockReturnThis(),
+  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res({ rowCount: 0 })),
 };
 mockDbInstance.update.mockReturnValue(updateChain);
 
 const deleteChain = {
   where: vi.fn().mockReturnThis(),
+  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res({ rowCount: 0 })),
 };
 mockDbInstance.delete.mockReturnValue(deleteChain);

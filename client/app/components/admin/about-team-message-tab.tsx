@@ -164,7 +164,7 @@ export function AboutTeamMessageTab() {
               rows={8}
               className="resize-none"
             />
-            <p className="text-muted-foreground text-sm">
+            <p className="text-[#68869A] text-sm">
               Write a compelling message that showcases your company's values and commitment
             </p>
           </div>
@@ -206,15 +206,15 @@ export function AboutTeamMessageTab() {
                   </Button>
                 </div>
               ) : (
-                <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-muted dark:bg-muted/80">
-                  <Upload className="h-6 w-6 text-muted-foreground/70" />
+                <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-white/[0.03]">
+                  <Upload className="h-6 w-6 text-[#68869A]/70" />
                 </div>
               )}
               <Button onClick={() => setIsPickerOpen(true)} variant="outline">
                 Select Image
               </Button>
             </div>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-[#68869A] text-sm">
               Add a photo of your team, CEO, or company leadership
             </p>
           </div>
@@ -246,19 +246,15 @@ export function AboutTeamMessageTab() {
 
                 <div className="flex-1">
                   {formData.message ? (
-                    <p className="mb-4 whitespace-pre-wrap text-muted-foreground dark:text-muted-foreground/70">
-                      {formData.message}
-                    </p>
+                    <p className="mb-4 whitespace-pre-wrap text-[#68869A]">{formData.message}</p>
                   ) : (
-                    <p className="mb-4 text-muted-foreground/70 italic">
+                    <p className="mb-4 text-[#68869A]/70 italic">
                       Your message will appear here...
                     </p>
                   )}
 
                   {formData.signature && (
-                    <p className="font-semibold text-foreground dark:text-foreground">
-                      — {formData.signature}
-                    </p>
+                    <p className="font-semibold text-white">— {formData.signature}</p>
                   )}
                 </div>
               </div>

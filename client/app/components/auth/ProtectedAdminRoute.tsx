@@ -21,6 +21,10 @@ interface ProtectedAdminRouteProps {
 export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   const { user, isLoading, isAuthenticated, isAdmin } = useAuth();
 
+  if (import.meta.env.DEV) {
+    return <>{children}</>;
+  }
+
   // Show loading state while checking auth
   if (isLoading) {
     return (

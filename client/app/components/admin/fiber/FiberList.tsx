@@ -54,8 +54,8 @@ export const FiberList: React.FC<FiberListProps> = ({
             key={`skeleton-${i}`}
             className={
               viewMode === "grid"
-                ? "h-32 animate-pulse rounded bg-neutral-100"
-                : "h-20 animate-pulse rounded bg-neutral-100"
+                ? "h-32 animate-pulse rounded bg-white/10"
+                : "h-20 animate-pulse rounded bg-white/10"
             }
           />
         ))}
@@ -65,7 +65,7 @@ export const FiberList: React.FC<FiberListProps> = ({
 
   if (fibers.length === 0) {
     return (
-      <div className="py-8 text-center text-neutral-500">
+      <div className="py-8 text-center text-[#68869A]">
         <div className="mb-2 text-2xl">🧬</div>
         <p>
           {searchTerm || filterType !== "all" || filterStatus !== "all"
@@ -121,10 +121,10 @@ export const FiberList: React.FC<FiberListProps> = ({
         {fibers.map((fiber) => (
           <div
             key={fiber.id}
-            className={`rounded-lg border p-4 transition-colors ${
+            className={`rounded-lg border p-4 transition-colors glass-premium ${
               selectedFibers.has(fiber.id)
-                ? "border-blue-300 bg-blue-50"
-                : "border-neutral-200 hover:bg-neutral-50"
+                ? "border-white/30 bg-white/10"
+                : "border-white/10 bg-white/[0.02] hover:bg-white/5"
             }`}
           >
             <div className="mb-3 flex items-start justify-between">
@@ -135,7 +135,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                 className="h-auto p-1"
               >
                 {selectedFibers.has(fiber.id) ? (
-                  <CheckSquare className="h-4 w-4 text-blue-600" />
+                  <CheckSquare className="h-4 w-4 text-white" />
                 ) : (
                   <Square className="h-4 w-4" />
                 )}
@@ -143,17 +143,17 @@ export const FiberList: React.FC<FiberListProps> = ({
               {renderFiberActions(fiber)}
             </div>
             <div className="text-center">
-              <h4 className="mb-2 font-medium text-neutral-900">{fiber.name}</h4>
+              <h4 className="mb-2 font-medium text-white">{fiber.name}</h4>
               <div className="mb-3 flex flex-wrap justify-center gap-2">
                 <Badge variant="outline" className={`text-xs ${getFiberTypeColor(fiber.type)}`}>
                   {fiber.type.charAt(0).toUpperCase() + fiber.type.slice(1)}
                 </Badge>
                 {fiber.isActive ? (
-                  <Badge className="border border-green-200 bg-green-100 text-xs text-green-700">
+                  <Badge className="border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                     Active
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="bg-muted text-muted-foreground text-xs">
+                  <Badge variant="secondary" className="bg-white/[0.05] text-[#68869A] text-xs">
                     Inactive
                   </Badge>
                 )}
@@ -168,7 +168,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                 )}
               </div>
               {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs text-[#68869A]">
                   {getPropertiesArray(fiber.properties).length} propert
                   {getPropertiesArray(fiber.properties).length === 1 ? "y" : "ies"}
                 </div>
@@ -186,10 +186,10 @@ export const FiberList: React.FC<FiberListProps> = ({
         {fibers.map((fiber) => (
           <div
             key={fiber.id}
-            className={`rounded-lg border p-4 transition-colors ${
+            className={`rounded-lg border p-4 transition-colors glass-premium ${
               selectedFibers.has(fiber.id)
-                ? "border-blue-300 bg-blue-50"
-                : "border-neutral-200 hover:bg-neutral-50"
+                ? "border-white/30 bg-white/10"
+                : "border-white/10 bg-white/[0.02] hover:bg-white/5"
             }`}
           >
             <div className="mb-3 flex items-start justify-between">
@@ -201,16 +201,16 @@ export const FiberList: React.FC<FiberListProps> = ({
                   className="mt-0.5 h-auto p-1"
                 >
                   {selectedFibers.has(fiber.id) ? (
-                    <CheckSquare className="h-4 w-4 text-blue-600" />
+                    <CheckSquare className="h-4 w-4 text-white" />
                   ) : (
                     <Square className="h-4 w-4" />
                   )}
                 </Button>
                 <div className="flex-1">
-                  <h4 className="mb-2 text-lg font-medium text-neutral-900">{fiber.name}</h4>
+                  <h4 className="mb-2 text-lg font-medium text-white">{fiber.name}</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-neutral-500">Type:</span>
+                      <span className="text-[#68869A]">Type:</span>
                       <Badge
                         variant="outline"
                         className={`ml-2 text-xs ${getFiberTypeColor(fiber.type)}`}
@@ -219,15 +219,15 @@ export const FiberList: React.FC<FiberListProps> = ({
                       </Badge>
                     </div>
                     <div>
-                      <span className="text-neutral-500">Status:</span>
+                      <span className="text-[#68869A]">Status:</span>
                       {fiber.isActive ? (
-                        <Badge className="ml-2 border border-green-200 bg-green-100 text-xs text-green-700">
+                        <Badge className="ml-2 border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                           Active
                         </Badge>
                       ) : (
                         <Badge
                           variant="secondary"
-                          className="bg-muted text-muted-foreground ml-2 text-xs"
+                          className="bg-white/[0.05] text-[#68869A] ml-2 text-xs"
                         >
                           Inactive
                         </Badge>
@@ -235,19 +235,19 @@ export const FiberList: React.FC<FiberListProps> = ({
                     </div>
                     {fiber.createdAt && (
                       <div>
-                        <span className="text-neutral-500">Created:</span>
+                        <span className="text-[#68869A]">Created:</span>
                         <span className="ml-2">
                           {new Date(fiber.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                     )}
                     <div>
-                      <span className="text-neutral-500">Properties:</span>
+                      <span className="text-[#68869A]">Properties:</span>
                       <span className="ml-2">{getPropertiesArray(fiber.properties).length}</span>
                     </div>
                     {fiber.sustainabilityScore && (
                       <div>
-                        <span className="text-neutral-500">Sustainability:</span>
+                        <span className="text-[#68869A]">Sustainability:</span>
                         <Badge
                           variant="outline"
                           className={`ml-2 flex w-fit items-center gap-1 text-xs ${getSustainabilityColor(fiber.sustainabilityScore)}`}
@@ -264,12 +264,12 @@ export const FiberList: React.FC<FiberListProps> = ({
             </div>
             {fiber.description && (
               <div className="mt-3 border-t pt-3">
-                <p className="text-sm text-neutral-600">{fiber.description}</p>
+                <p className="text-sm text-[#68869A]">{fiber.description}</p>
               </div>
             )}
             {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
               <div className="mt-3 border-t pt-3">
-                <p className="mb-2 text-xs text-neutral-500">Properties:</p>
+                <p className="mb-2 text-xs text-[#68869A]">Properties:</p>
                 <div className="flex flex-wrap gap-1">
                   {getPropertiesArray(fiber.properties).map((prop: string) => (
                     <Badge key={prop} variant="secondary" className="text-xs">
@@ -290,10 +290,10 @@ export const FiberList: React.FC<FiberListProps> = ({
       {fibers.map((fiber) => (
         <div
           key={fiber.id}
-          className={`rounded-lg border p-3 transition-colors ${
+          className={`rounded-lg border p-3 transition-colors glass-premium ${
             selectedFibers.has(fiber.id)
-              ? "border-blue-300 bg-blue-50"
-              : "border-neutral-200 hover:bg-neutral-50"
+              ? "border-white/30 bg-white/10"
+              : "border-white/10 bg-white/[0.02] hover:bg-white/5"
           }`}
         >
           <div className="mb-2 flex items-start justify-between">
@@ -305,23 +305,23 @@ export const FiberList: React.FC<FiberListProps> = ({
                 className="mt-0.5 h-auto p-1"
               >
                 {selectedFibers.has(fiber.id) ? (
-                  <CheckSquare className="h-4 w-4 text-blue-600" />
+                  <CheckSquare className="h-4 w-4 text-white" />
                 ) : (
                   <Square className="h-4 w-4" />
                 )}
               </Button>
               <div className="flex-1">
-                <h4 className="font-medium text-neutral-900">{fiber.name}</h4>
+                <h4 className="font-medium text-white">{fiber.name}</h4>
                 <div className="mt-1 flex items-center gap-2">
                   <Badge variant="outline" className={`text-xs ${getFiberTypeColor(fiber.type)}`}>
                     {fiber.type.charAt(0).toUpperCase() + fiber.type.slice(1)}
                   </Badge>
                   {fiber.isActive ? (
-                    <Badge className="border border-green-200 bg-green-100 text-xs text-green-700">
+                    <Badge className="border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                       Active
                     </Badge>
                   ) : (
-                    <Badge variant="secondary" className="bg-muted text-muted-foreground text-xs">
+                    <Badge variant="secondary" className="bg-white/[0.05] text-[#68869A] text-xs">
                       Inactive
                     </Badge>
                   )}
@@ -339,12 +339,10 @@ export const FiberList: React.FC<FiberListProps> = ({
             </div>
             {renderFiberActions(fiber)}
           </div>
-          {fiber.description && (
-            <p className="mb-2 text-sm text-neutral-600">{fiber.description}</p>
-          )}
+          {fiber.description && <p className="mb-2 text-sm text-[#68869A]">{fiber.description}</p>}
           {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
             <div className="mb-2">
-              <p className="mb-1 text-xs text-neutral-500">Properties:</p>
+              <p className="mb-1 text-xs text-[#68869A]">Properties:</p>
               <div className="flex flex-wrap gap-1">
                 {getPropertiesArray(fiber.properties)
                   .slice(0, 3)

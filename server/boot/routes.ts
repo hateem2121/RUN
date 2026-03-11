@@ -6,6 +6,7 @@ import { generateOpenApiSpec } from "../lib/api/openapi-generator.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { createSsrHandler } from "../lib/ssr/ssr-handler.js";
 import { registerRoutes } from "../routes/index.js";
+
 // import openapiRouter from "../routes/v1/openapi.js"; // REMOVED: Missing module
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

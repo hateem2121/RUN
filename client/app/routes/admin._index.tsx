@@ -3,8 +3,12 @@ import { ProductsErrorFallback } from "@/components/admin/ProductsErrorFallback"
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Typography } from "@/components/ui/typography";
 
-// Lazy load AdminCMS
-const AdminCMS = lazy(() => import("@/components/admin/admin-cms"));
+// Lazy load Content Dashboard (Stitch Design)
+const ContentDashboard = lazy(() =>
+  import("@/components/admin/dashboard/ContentDashboard").then((m) => ({
+    default: m.ContentDashboard,
+  })),
+);
 
 // Loading component
 function ModuleLoader() {
@@ -22,7 +26,7 @@ export default function AdminIndex() {
   return (
     <ErrorBoundary fallback={<ProductsErrorFallback />}>
       <Suspense fallback={<ModuleLoader />}>
-        <AdminCMS />
+        <ContentDashboard />
       </Suspense>
     </ErrorBoundary>
   );

@@ -1,9 +1,9 @@
+import { useGSAP } from "@gsap/react";
 import type { Certificate } from "@shared/index";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CheckCircle } from "lucide-react";
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -54,9 +54,7 @@ function HexNode({ certificate }: { certificate: Certificate }) {
           <p className="text-xs font-semibold mb-1 text-white/80">{certificate.issuingBody}</p>
         )}
         {certificate.description && (
-          <p className="text-xs leading-relaxed mb-3 text-white/60">
-            {certificate.description}
-          </p>
+          <p className="text-xs leading-relaxed mb-3 text-white/60">{certificate.description}</p>
         )}
         <div className="flex justify-between items-center border-t border-[color:var(--s-primary)]/30 pt-2">
           <span className="text-[10px] uppercase text-[color:var(--s-primary)]/80">
@@ -79,50 +77,56 @@ export function CertificatesSection({
 }: CertificatesSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    // Header text reveal
-    gsap.from(".cert-header-content", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.8,
-      ease: "power3.out",
-    });
-
-    // Hexagons staggered reveal
-    gsap.from(".hex-container", {
-      scrollTrigger: {
-        trigger: ".hex-grid",
-        start: "top 85%",
-      },
-      opacity: 0,
-      scale: 0.8,
-      y: 50,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.7)",
-    });
-
-    // Footer note reveal
-    if (footerNote) {
-      gsap.from(".cert-footer-note", {
+  useGSAP(
+    () => {
+      // Header text reveal
+      gsap.from(".cert-header-content", {
         scrollTrigger: {
-          trigger: ".cert-footer-note",
-          start: "top 90%",
+          trigger: sectionRef.current,
+          start: "top 80%",
         },
         opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: "power2.out",
+        y: 30,
+        duration: 0.8,
+        ease: "power3.out",
       });
-    }
-  }, { scope: sectionRef });
+
+      // Hexagons staggered reveal
+      gsap.from(".hex-container", {
+        scrollTrigger: {
+          trigger: ".hex-grid",
+          start: "top 85%",
+        },
+        opacity: 0,
+        scale: 0.8,
+        y: 50,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "back.out(1.7)",
+      });
+
+      // Footer note reveal
+      if (footerNote) {
+        gsap.from(".cert-footer-note", {
+          scrollTrigger: {
+            trigger: ".cert-footer-note",
+            start: "top 90%",
+          },
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      }
+    },
+    { scope: sectionRef },
+  );
 
   return (
-    <section ref={sectionRef} className="relative py-24 bg-[color:var(--s-bg-card)] border-t border-[color:var(--s-border-card)] z-10 overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative py-24 bg-[color:var(--s-bg-card)] border-t border-[color:var(--s-border-card)] z-10 overflow-hidden"
+    >
       {/* Hex pattern SVG background */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <svg className="absolute w-full h-full opacity-[0.05]" height="100%" width="100%">
@@ -145,7 +149,9 @@ export function CertificatesSection({
           <p className="text-sm font-bold uppercase tracking-widest text-[color:var(--s-primary)] mb-2">
             Verified Impact
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[color:var(--s-text-head)]">{title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-[color:var(--s-text-head)]">
+            {title}
+          </h2>
           {description && (
             <p className="mt-4 mx-auto max-w-2xl text-[color:var(--s-text-muted)]">{description}</p>
           )}

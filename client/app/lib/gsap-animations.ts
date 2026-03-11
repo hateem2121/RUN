@@ -1,5 +1,5 @@
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,18 +9,18 @@ gsap.registerPlugin(ScrollTrigger);
 export const countUpAnimation = (
   element: HTMLElement | null,
   target: number,
-  duration: number = 2
+  duration: number = 2,
 ) => {
   if (!element) return;
-  
+
   const obj = { value: 0 };
   gsap.to(obj, {
     value: target,
     duration: duration,
-    ease: 'power2.out',
+    ease: "power2.out",
     scrollTrigger: {
       trigger: element,
-      start: 'top 80%',
+      start: "top 80%",
     },
     onUpdate: () => {
       element.innerHTML = Math.floor(obj.value).toLocaleString();
@@ -34,18 +34,18 @@ export const countUpAnimation = (
 export const marqueeAnimation = (
   element: HTMLElement | null,
   speed: number = 100,
-  direction: 'left' | 'right' = 'left'
+  direction: "left" | "right" = "left",
 ) => {
   if (!element) return;
 
   const width = element.offsetWidth;
-  const xVal = direction === 'left' ? -width / 2 : width / 2;
+  const xVal = direction === "left" ? -width / 2 : width / 2;
 
   const tl = gsap.timeline({ repeat: -1 });
   tl.to(element, {
     x: xVal,
     duration: speed,
-    ease: 'none',
+    ease: "none",
   });
 
   return tl;
@@ -57,7 +57,7 @@ export const marqueeAnimation = (
 export const staggerReveal = (
   elements: HTMLElement[] | NodeListOf<HTMLElement>,
   stagger: number = 0.1,
-  y: number = 50
+  y: number = 50,
 ) => {
   if (!elements.length) return;
 
@@ -66,10 +66,10 @@ export const staggerReveal = (
     opacity: 0,
     duration: 1,
     stagger: stagger,
-    ease: 'power3.out',
+    ease: "power3.out",
     scrollTrigger: {
       trigger: elements[0] as HTMLElement,
-      start: 'top 85%',
+      start: "top 85%",
     },
   });
 };
@@ -79,15 +79,15 @@ export const staggerReveal = (
  */
 export const horizontalScrollLock = (
   container: HTMLElement | null,
-  sections: HTMLElement[] | NodeListOf<HTMLElement>
+  sections: HTMLElement[] | NodeListOf<HTMLElement>,
 ) => {
   if (!container || !sections.length) return;
 
   const totalWidth = Array.from(sections).reduce((acc, sec) => acc + sec.offsetWidth, 0);
-  
+
   gsap.to(sections, {
     x: () => -(totalWidth - window.innerWidth),
-    ease: 'none',
+    ease: "none",
     scrollTrigger: {
       trigger: container,
       pin: true,

@@ -1,7 +1,7 @@
+import { useGSAP } from "@gsap/react";
 import type { SustainabilityGoal } from "@shared/index";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { useMemo, useRef } from "react";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
@@ -32,57 +32,63 @@ function RoadmapItem({
   const isDone = progress >= 100;
   const isInProgress = progress > 0 && progress < 100;
 
-  useGSAP(() => {
-    // Fade up the whole item
-    gsap.from(containerRef.current, {
-      opacity: 0,
-      y: 40,
-      duration: 0.8,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 85%",
-      }
-    });
+  useGSAP(
+    () => {
+      // Fade up the whole item
+      gsap.from(containerRef.current, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 85%",
+        },
+      });
 
-    // Animate the progress bar width
-    if (barRef.current) {
-      gsap.fromTo(
-        barRef.current,
-        { width: "0%" },
-        {
-          width: `${Math.min(progress, 100)}%`,
+      // Animate the progress bar width
+      if (barRef.current) {
+        gsap.fromTo(
+          barRef.current,
+          { width: "0%" },
+          {
+            width: `${Math.min(progress, 100)}%`,
+            duration: 1.5,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 85%",
+            },
+          },
+        );
+      }
+
+      // Count-up on percentage text
+      const percentEl = containerRef.current?.querySelector(".goal-percent") as HTMLElement | null;
+      if (percentEl && progress > 0 && progress < 100) {
+        const pObj = { val: 0 };
+        gsap.to(pObj, {
+          val: progress,
           duration: 1.5,
           ease: "power2.out",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 85%",
           },
-        }
-      );
-    }
-
-    // Count-up on percentage text
-    const percentEl = containerRef.current?.querySelector(".goal-percent") as HTMLElement | null;
-    if (percentEl && progress > 0 && progress < 100) {
-      const pObj = { val: 0 };
-      gsap.to(pObj, {
-        val: progress,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 85%",
-        },
-        onUpdate: () => {
-          percentEl.textContent = `${Math.floor(pObj.val)}% Complete`;
-        },
-      });
-    }
-  }, { scope: containerRef, dependencies: [progress] });
+          onUpdate: () => {
+            percentEl.textContent = `${Math.floor(pObj.val)}% Complete`;
+          },
+        });
+      }
+    },
+    { scope: containerRef, dependencies: [progress] },
+  );
 
   return (
-    <div ref={containerRef} className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 group">
+    <div
+      ref={containerRef}
+      className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 group"
+    >
       {/* Vertical center connecting line */}
       <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2 group-last:bottom-auto group-last:h-full" />
 
@@ -91,7 +97,7 @@ function RoadmapItem({
         <span
           className={cn(
             "text-5xl font-bold font-neue-stance",
-            isDone ? "text-[color:var(--s-primary)] opacity-40" : "text-white opacity-20"
+            isDone ? "text-[color:var(--s-primary)] opacity-40" : "text-white opacity-20",
           )}
         >
           {goal.targetYear || `${2025 + index * 3}`}
@@ -112,27 +118,44 @@ function RoadmapItem({
       {/* Right-side visually (Content for even, Year for odd) */}
       <div className={cn("pl-8 md:pl-0 md:w-[45%]", !isEven && "md:text-right")}>
         <h3 className="text-xl font-bold text-white mb-2">{goal.title}</h3>
-        {goal.description && (
-          <p className="text-sm mb-3 text-white/60">{goal.description}</p>
-        )}
-        
-        <div className={cn("w-full h-1.5 bg-white/10 rounded-full overflow-hidden", !isEven && "md:ml-auto")}>
+        {goal.description && <p className="text-sm mb-3 text-white/60">{goal.description}</p>}
+
+        <div
+          className={cn(
+            "w-full h-1.5 bg-white/10 rounded-full overflow-hidden",
+            !isEven && "md:ml-auto",
+          )}
+        >
           <div
             ref={barRef}
             className={cn(
               "h-full rounded-full w-0",
-              isDone ? "bg-[color:var(--s-primary)]" : isInProgress ? "bg-[color:var(--s-primary)]" : "bg-gray-600"
+              isDone
+                ? "bg-[color:var(--s-primary)]"
+                : isInProgress
+                  ? "bg-[color:var(--s-primary)]"
+                  : "bg-gray-600",
             )}
           />
         </div>
-        
+
         <span
           className={cn(
             "text-xs mt-1 block font-mono",
-            isDone ? "text-[color:var(--s-primary)]" : isInProgress ? "text-white/60" : "text-gray-500"
+            isDone
+              ? "text-[color:var(--s-primary)]"
+              : isInProgress
+                ? "text-white/60"
+                : "text-gray-500",
           )}
         >
-          {isDone ? "Complete" : isInProgress ? <span className="goal-percent">0% Complete</span> : "Initiation Phase"}
+          {isDone ? (
+            "Complete"
+          ) : isInProgress ? (
+            <span className="goal-percent">0% Complete</span>
+          ) : (
+            "Initiation Phase"
+          )}
         </span>
       </div>
     </div>
@@ -152,7 +175,7 @@ export function GoalsSection({
         ...goal,
         progress: calculateGoalProgress(goal.currentValue, goal.targetValue),
       })),
-    [goals]
+    [goals],
   );
 
   return (

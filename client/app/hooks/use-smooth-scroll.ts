@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import LocomotiveScroll from 'locomotive-scroll';
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import LocomotiveScroll from "locomotive-scroll";
+import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface SmoothScrollOptions {
   lerp?: number;
   duration?: number;
-  orientation?: 'vertical' | 'horizontal';
-  gestureOrientation?: 'vertical' | 'horizontal';
+  orientation?: "vertical" | "horizontal";
+  gestureOrientation?: "vertical" | "horizontal";
   smoothWheel?: boolean;
   wheelMultiplier?: number;
   touchMultiplier?: number;
@@ -20,22 +20,20 @@ interface SmoothScrollOptions {
  * Hook to initialize Locomotive Scroll v5 (which uses Lenis)
  * and integrate it with GSAP ScrollTrigger.
  */
-export function useSmoothScroll(
-  options: SmoothScrollOptions = {}
-): void {
+export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
   const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   useEffect(() => {
     // Locomotive Scroll v5 initializes on the window/body by default
     // and doesn't require a specific container el in the same way v4 did.
     // It's much simpler now.
-    
+
     scrollRef.current = new LocomotiveScroll({
       lenisOptions: {
         lerp: options.lerp ?? 0.1,
         duration: options.duration ?? 1.2,
-        orientation: options.orientation ?? 'vertical',
-        gestureOrientation: options.gestureOrientation ?? 'vertical',
+        orientation: options.orientation ?? "vertical",
+        gestureOrientation: options.gestureOrientation ?? "vertical",
         smoothWheel: options.smoothWheel ?? true,
         wheelMultiplier: options.wheelMultiplier ?? 1,
         touchMultiplier: options.touchMultiplier ?? 2,
@@ -53,5 +51,14 @@ export function useSmoothScroll(
         scrollRef.current = null;
       }
     };
-  }, [options.lerp, options.duration, options.orientation, options.gestureOrientation, options.smoothWheel, options.wheelMultiplier, options.touchMultiplier, options.infinite]);
+  }, [
+    options.lerp,
+    options.duration,
+    options.orientation,
+    options.gestureOrientation,
+    options.smoothWheel,
+    options.wheelMultiplier,
+    options.touchMultiplier,
+    options.infinite,
+  ]);
 }

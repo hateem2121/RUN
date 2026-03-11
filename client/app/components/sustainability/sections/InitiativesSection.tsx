@@ -1,7 +1,7 @@
+import { useGSAP } from "@gsap/react";
 import type { MediaAsset, SustainabilityInitiative } from "@shared/index";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
@@ -31,37 +31,40 @@ function InitiativeRow({
       ? `/api/media/${initiativeImage.id}/content`
       : undefined);
 
-  useGSAP(() => {
-    // Content slide-in from left or right
-    const contentEl = rowRef.current?.querySelector(".initiative-content");
-    if (contentEl) {
-      gsap.from(contentEl, {
-        scrollTrigger: {
-          trigger: rowRef.current,
-          start: "top 80%",
-        },
-        opacity: 0,
-        x: isEven ? 40 : -40,
-        duration: 0.8,
-        ease: "power3.out",
-      });
-    }
+  useGSAP(
+    () => {
+      // Content slide-in from left or right
+      const contentEl = rowRef.current?.querySelector(".initiative-content");
+      if (contentEl) {
+        gsap.from(contentEl, {
+          scrollTrigger: {
+            trigger: rowRef.current,
+            start: "top 80%",
+          },
+          opacity: 0,
+          x: isEven ? 40 : -40,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      }
 
-    // Image parallax effect
-    const imageEl = rowRef.current?.querySelector(".initiative-image");
-    if (imageEl) {
-      gsap.from(imageEl, {
-        scrollTrigger: {
-          trigger: rowRef.current,
-          start: "top 85%",
-        },
-        opacity: 0,
-        scale: 1.05,
-        duration: 1,
-        ease: "power2.out",
-      });
-    }
-  }, { scope: rowRef });
+      // Image parallax effect
+      const imageEl = rowRef.current?.querySelector(".initiative-image");
+      if (imageEl) {
+        gsap.from(imageEl, {
+          scrollTrigger: {
+            trigger: rowRef.current,
+            start: "top 85%",
+          },
+          opacity: 0,
+          scale: 1.05,
+          duration: 1,
+          ease: "power2.out",
+        });
+      }
+    },
+    { scope: rowRef },
+  );
 
   // Split title: last word gets emerald accent
   const titleWords = initiative.title.split(" ");
@@ -73,7 +76,7 @@ function InitiativeRow({
       ref={rowRef}
       className={cn(
         "flex flex-col items-center gap-12 lg:flex-row",
-        !isEven && "lg:flex-row-reverse"
+        !isEven && "lg:flex-row-reverse",
       )}
     >
       {/* Image side */}
@@ -99,25 +102,22 @@ function InitiativeRow({
       </div>
 
       {/* Content side */}
-      <div
-        className={cn("initiative-content flex flex-col gap-6 lg:w-1/2 lg:p-16")}
-      >
+      <div className={cn("initiative-content flex flex-col gap-6 lg:w-1/2 lg:p-16")}>
         {initiative.impact && (
           <span className="text-sm font-bold uppercase tracking-widest text-[color:var(--s-primary)]">
             {initiative.impact}
           </span>
         )}
         <h3 className="text-4xl lg:text-5xl font-light text-[color:var(--s-text-head)]">
-          {titleMain}{" "}
-          <span className="font-bold text-[color:var(--s-primary)]">
-            {titleAccent}
-          </span>
+          {titleMain} <span className="font-bold text-[color:var(--s-primary)]">{titleAccent}</span>
         </h3>
         {initiative.description && (
-          <p className="text-lg leading-relaxed text-[color:var(--s-text-muted)]">{initiative.description}</p>
+          <p className="text-lg leading-relaxed text-[color:var(--s-text-muted)]">
+            {initiative.description}
+          </p>
         )}
-        {initiative.status && initiative.status !== 'inactive' && (
-            <a
+        {initiative.status && initiative.status !== "inactive" && (
+          <a
             href="/sustainability"
             className="group inline-flex items-center text-[color:var(--s-primary)] hover:text-[color:var(--s-text-head)] transition-colors"
           >
@@ -146,22 +146,29 @@ export function InitiativesSection({
 }) {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    // Header reveal
-    gsap.from(".initiatives-header", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.6,
-      ease: "power3.out",
-    });
-  }, { scope: sectionRef });
+  useGSAP(
+    () => {
+      // Header reveal
+      gsap.from(".initiatives-header", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 0.6,
+        ease: "power3.out",
+      });
+    },
+    { scope: sectionRef },
+  );
 
   return (
-    <section ref={sectionRef} className="relative bg-[color:var(--s-bg)] py-24" aria-label="Sustainability initiatives">
+    <section
+      ref={sectionRef}
+      className="relative bg-[color:var(--s-bg)] py-24"
+      aria-label="Sustainability initiatives"
+    >
       <div className="container mx-auto px-6 lg:px-10">
         <div className="initiatives-header mb-20 max-w-2xl">
           <h2 className="font-neue-stance text-3xl font-bold text-[color:var(--s-text-head)] md:text-5xl mb-4">

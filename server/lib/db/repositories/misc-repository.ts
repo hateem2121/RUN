@@ -1237,23 +1237,16 @@ export class MiscRepository {
     };
   }
 
-  async updateInquiryStatus(
-    id: number,
-    status: string,
-    adminNotes?: string,
-  ): Promise<Inquiry | undefined> {
-    const updateData: Partial<InsertInquiry> = {
-      status,
-      ...(adminNotes !== undefined && { adminNotes }),
-    };
+  async updateInquiry(id: number, data: Partial<InsertInquiry>): Promise<Inquiry | undefined> {
+    const updateData: Partial<InsertInquiry> = { ...data };
 
-    if (status === "read" || status === "responded") {
+    if (data.status === "read" || data.status === "responded") {
       updateData.respondedAt = sql`NOW()` as any;
     }
 
     const [updated] = await db
       .update(inquiries)
-      .set(updateData)
+      .set({ ...updateData, updatedAt: sql`NOW()` as any } as any)
       .where(eq(inquiries.id, id))
       .returning();
 
@@ -1269,7 +1262,23 @@ export class MiscRepository {
       logger.debug("[Cache] Failed to emit invalidation event:", error);
     }
 
-    return updated;
+    return updated ? this.decryptInquiry(updated as any as Inquiry) : undefined;
+  }
+
+  async addCrmLog(
+    id: number,
+    log: { action: string; note: string; user?: string },
+  ): Promise<Inquiry | undefined> {
+    const inquiry = await this.getInquiryById(id);
+    if (!inquiry) return undefined;
+
+    const logs = [...((inquiry.crmLogs as any) || [])];
+    logs.unshift({
+      date: new Date().toISOString(),
+      ...log,
+    });
+
+    return await this.updateInquiry(id, { crmLogs: logs } as any);
   }
 
   async deleteInquiry(id: number): Promise<boolean> {

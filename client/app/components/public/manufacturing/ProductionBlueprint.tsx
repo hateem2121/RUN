@@ -122,7 +122,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
           title: p.title,
           id: `PHS-0${i + 1}`,
           icon: defaultPhases[i]?.icon,
-          fallbackImg: getAssetUrl((p as ManufacturingProcess).imageId) || defaultPhases[i]?.fallbackImg || "",
+          fallbackImg:
+            getAssetUrl((p as ManufacturingProcess).imageId) || defaultPhases[i]?.fallbackImg || "",
           subtitle: defaultPhases[i]?.subtitle || "",
           desc: p.description || "",
         }))

@@ -1,12 +1,6 @@
-import type {
-  BlogCategory,
-  BlogPost,
-  InsertBlogCategory,
-  InsertBlogPost,
-} from "../../../shared/index.js";
+import type { InsertBlogCategory, InsertBlogPost } from "../../../shared/index.js";
 import { insertBlogCategorySchema, insertBlogPostSchema } from "../../../shared/index.js";
 import { blogRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
 import { type AuditContext, adminService } from "./admin.service.js";
 
 export class BlogService {

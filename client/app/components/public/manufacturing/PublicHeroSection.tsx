@@ -132,12 +132,14 @@ export function PublicHeroSection({
                   "absolute bg-[#FF4D00] shadow-[0_0_8px_#FF4D00] opacity-40 pointer-events-none spark",
                   i % 3 === 0 ? "w-1 h-1" : i % 2 === 0 ? "w-1.5 h-1.5" : "w-0.5 h-0.5",
                 )}
-                style={{
-                  "--spark-left": `${10 + i * 10}%`,
-                  "--spark-bottom": i % 2 === 0 ? "0" : `-${10 + i * 5}%`,
-                  "--spark-duration": `${6 + (i % 5)}s`,
-                  "--spark-delay": `${i * 0.5}s`,
-                } as React.CSSProperties}
+                style={
+                  {
+                    "--spark-left": `${10 + i * 10}%`,
+                    "--spark-bottom": i % 2 === 0 ? "0" : `-${10 + i * 5}%`,
+                    "--spark-duration": `${6 + (i % 5)}s`,
+                    "--spark-delay": `${i * 0.5}s`,
+                  } as React.CSSProperties
+                }
               />
             ))}
           </div>

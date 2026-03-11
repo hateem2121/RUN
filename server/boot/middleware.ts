@@ -1,240 +1,117 @@
-import compression from "compression";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import cookieParser from "cookie-parser";
-import type { Express } from "express";
-import express from "express";
-import { getConfig } from "../config/production.js";
-import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
-import {
-  sentryErrorHandler,
-  sentryRequestHandler,
-  sentryTracingHandler,
-} from "../lib/monitoring/sentry.js";
-import { apiVersioningMiddleware, canonicalMiddleware } from "../middleware/canonical.js";
-import { correlationIdMiddleware } from "../middleware/correlation-id.js";
-import { createCorsMiddleware } from "../middleware/cors-config.js";
+import express, {
+  type Express,
+  type NextFunction,
+  type Request,
+  type RequestHandler,
+  type Response,
+} from "express";
+import helmet from "helmet";
+import { logger } from "../lib/monitoring/logger.js";
 import { csrfProtection } from "../middleware/csrf.js";
-import { healthCheckHandler, quickHealthHandler } from "../middleware/enhanced-health.js";
-import { nonceMiddleware } from "../middleware/nonce.js";
-import { performanceTrackingMiddleware } from "../middleware/performance-tracking.js";
-import {
-  notFoundHandler,
-  setupGlobalErrorHandlers,
-} from "../middleware/production-error-handler.js";
-import {
-  productionLogging,
-  requestTimeout,
-  requestValidation,
-  securityHeaders,
-} from "../middleware/production-security.js";
-import { apiLimiter, authLimiter, uploadLimiter } from "../middleware/rate-limits.js";
-import { responseTracker } from "../middleware/response-tracker.js";
 import { requestSanitization } from "../middleware/sanitization.js";
 import { authService } from "../services/auth-service.js";
 
-const config = getConfig();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Global Middleware Configuration
+ */
 export async function setupMiddleware(app: Express) {
-  // Trust Proxy - use hop count of 1 for Cloud Run (single load balancer)
-  // This is more secure than `true` which trusts all X-Forwarded-* headers
-  // Cloud Run uses a single load balancer, so we only trust 1 proxy hop
-  app.set("trust proxy", 1);
+  // 1. Core Security Headers (Helmet)
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          "script-src": ["'self'", "'unsafe-inline'", "*.google.com", "*.gstatic.com"],
+          "frame-src": ["'self'", "*.google.com"],
+          "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
+          "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
+        },
+      },
+      crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
+    }),
+  );
 
-  // Sentry Request Handler (Must be first middleware)
-  // Only enable if SENTRY_DSN is configured
-  if (process.env.SENTRY_DSN) {
-    app.use(sentryRequestHandler);
-    app.use(sentryTracingHandler);
-  }
-
-  // Phase 7: Express 5 Stability Fix
-  // Track response state to prevent 404 fall-through race conditions
-  app.use(responseTracker);
-
-  // Global Error Handlers Setup
-  setupGlobalErrorHandlers();
-
-  // Cookie Parser (Required for CSRF and sessions)
+  // 2. Cookie Parser (Required for CSRF and sessions)
   app.use(cookieParser());
 
-  // Initialize Passport + Google OAuth strategy (requires cookie parser first)
+  // 3. Initialize Passport + Google OAuth strategy (requires cookie parser first)
   await authService.setup(app);
 
-  // Basic Security & Identity
+  // 4. Basic Security & Identity
   app.use(createCorsMiddleware());
   app.use(nonceMiddleware);
 
-  // CSRF Protection (Double-Submit Cookie pattern)
+  // 5. CSRF Protection (Double-Submit Cookie pattern)
   app.use(csrfProtection);
 
-  // Security headers - enabled in all environments
-  app.use(securityHeaders);
-  app.use(requestValidation);
-
-  const isProd = config.app.environment === "production" || process.env.NODE_ENV === "production";
-
-  // Request timeout and production logging only in production
-  if (isProd) {
-    app.use(requestTimeout);
-    app.use(productionLogging);
-  }
-
-  // Request Tracing & Canonicalization
-  app.use(correlationIdMiddleware);
-  app.use(canonicalMiddleware);
-  app.use(apiVersioningMiddleware);
-
-  // Metrics & Observability
-  app.use(httpMetricsTracker.middleware());
-  app.use(performanceTrackingMiddleware);
-
-  // Granular Rate Limiting
-  app.use("/api/auth", authLimiter);
-  app.use("/api/login", authLimiter); // Protect login route
-  app.use("/api/media", uploadLimiter);
-  app.use("/api", apiLimiter);
-
-  // Compression
-  configureCompression(app);
-
-  // API Caching
-  configureApiCaching(app);
-
-  // Static Assets Cache Control (Production)
-  if (config.app.environment === "production") {
-    configureStaticCache(app);
-  }
-
-  // Request Body Parsers
+  // 6. Request Body Parsers - RESTRICTED TO /api
   configureBodyParsers(app);
 
-  // Sanitization (Must be after body parsers)
+  // 7. Sanitization (Must be after body parsers)
   app.use(requestSanitization);
 
-  // PHASE 3: Audit Logging for Admin Mutations
-  // Log all state-changing operations in the admin panel
+  // 8. Audit Logging for Admin Mutations
   app.use("/api/admin", (req, _res, next) => {
-    // Only log mutations
     if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
-      import("../services/audit-log.js")
-        .then(({ logAuditAction }) => {
-          logAuditAction({
-            actor: (req.user as { id: string; email?: string } | undefined) || {
-              id: "anonymous",
-              email: "unknown",
-            },
-            action: req.method,
-            target: { type: "API_ROUTE", id: req.path },
-            metadata: { body_keys: Object.keys(req.body || {}) },
-          });
-        })
-        .catch((err) => console.error("Audit log failed", err));
+      const user = (req as any).user;
+      logger.info("[Audit] Admin mutation", {
+        method: req.method,
+        path: req.path,
+        userId: user?.id || "anonymous",
+        email: user?.email || "anonymous",
+        ip: req.ip,
+      });
     }
     next();
   });
+
+  logger.info("[Middleware] ✅ Global pipeline configured");
 }
 
-export function setupErrorHandling(app: Express) {
-  // 404 Handler
-  app.use(notFoundHandler);
+/**
+ * Helper: CORS Configuration
+ */
+function createCorsMiddleware(): RequestHandler {
+  return (req, res, next) => {
+    const origin = req.headers.origin;
+    if (process.env.NODE_ENV === "production") {
+      // res.setHeader('Access-Control-Allow-Origin', 'https://wear-run.com');
+    } else {
+      res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    }
 
-  // Sentry Error Handler (Must be before other error middleware)
-  if (process.env.SENTRY_DSN) {
-    app.use(sentryErrorHandler);
-  }
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-csrf-token");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  // Final Global Error Handler (Project Rule #3)
-  app.use(
-    async (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      // Dynamic import to avoid circular dependencies during boot
-      const { errorHandler } = await import("../middleware/errorHandler.js");
-      errorHandler(err, req, res, next);
-    },
-  );
-}
-
-export function setupHealthChecks(app: Express) {
-  app.get("/health", quickHealthHandler);
-  // Protected health check configuration should be handled inside enhanced-health.ts
-  app.get("/health/detailed", healthCheckHandler);
-}
-
-function configureCompression(app: Express) {
-  app.use(
-    compression({
-      level: 9,
-      threshold: 512,
-      filter: (req, res) => {
-        if (req.headers["x-no-compression"]) {
-          return false;
-        }
-
-        // Optimize: explicitly skip heavy binary formats that are already compressed
-        // This saves CPU cycles on the server
-        if (/\.(jpg|jpeg|png|webp|gif|mp4|webm|glb|gltf|woff|woff2|ttf|eot|otf)$/i.test(req.path)) {
-          return false;
-        }
-
-        // Always compress text-based assets
-        if (/\.(css|js|json|xml|svg)$/i.test(req.path)) {
-          return true;
-        }
-
-        // Fallback to standard filter (checks Content-Type)
-        return compression.filter(req, res);
-      },
-    }),
-  );
-}
-
-// Phase 3: SWR Caching for Read-Heavy APIs
-function configureApiCaching(app: Express) {
-  const cacheMiddleware = (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
-    if (req.method === "GET") {
-      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    if (req.method === "OPTIONS") {
+      res.sendStatus(200);
+      return;
     }
     next();
   };
-
-  app.use("/api/categories", cacheMiddleware);
-  app.use("/api/products", cacheMiddleware);
-  app.use("/api/homepage-hero", cacheMiddleware);
 }
 
-function configureStaticCache(app: Express) {
-  app.use("/src", (req, res, next) => {
-    const ext = req.path.substring(req.path.lastIndexOf("."));
-    const immutableAssets = [
-      ".css",
-      ".js",
-      ".woff",
-      ".woff2",
-      ".ttf",
-      ".otf",
-      ".eot",
-      ".glb",
-      ".gltf",
-    ];
-    const imageAssets = [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico"];
-
-    if (immutableAssets.includes(ext)) {
-      res.setHeader(
-        "Cache-Control",
-        "public, max-age=31536000, immutable, stale-while-revalidate=86400",
-      );
-      res.setHeader("ETag", `"static-${Date.now()}"`);
-    } else if (imageAssets.includes(ext)) {
-      res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=604800");
-    }
+/**
+ * Helper: CSP Nonce Middleware
+ */
+function nonceMiddleware(_req: Request, res: Response, next: NextFunction) {
+  import("node:crypto").then((crypto) => {
+    const nonce = crypto.randomBytes(16).toString("hex");
+    res.locals.cspNonce = nonce;
     next();
   });
 }
 
+/**
+ * Helper: Body-Parsers
+ */
 function configureBodyParsers(app: Express) {
-  // Binary parser for chunks
   app.use(
     "/api/media/upload/chunk-raw",
     express.raw({
@@ -243,7 +120,48 @@ function configureBodyParsers(app: Express) {
     }),
   );
 
-  // Standard parsers with limits
-  app.use(express.json({ limit: "10mb" }));
-  app.use(express.urlencoded({ extended: false, limit: "10mb" }));
+  // Standard parsers ONLY for /api routes to avoid consuming the stream for React Router
+  app.use("/api", express.json({ limit: "10mb" }));
+  app.use("/api", express.urlencoded({ extended: false, limit: "10mb" }));
+}
+
+/**
+ * Global Error Handling Middleware
+ */
+export function setupErrorHandling(app: Express) {
+  // Catch-all Error Handler
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+
+    logger.error("[Error] Request failure", {
+      status,
+      message,
+      path: _req.path,
+      method: _req.method,
+      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
+
+    if (res.headersSent) {
+      return _next(err);
+    }
+
+    res.status(status).json({
+      error: err.code || "INTERNAL_SERVER_ERROR",
+      message: process.env.NODE_ENV === "production" ? "An unexpected error occurred" : message,
+    });
+  });
+}
+
+/**
+ * Health Check Endpoints
+ */
+export function setupHealthChecks(app: Express) {
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      status: "UP",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    });
+  });
 }

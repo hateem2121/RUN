@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel - Accessory Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0A0A0A",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sidebar-item-active {
+            background: rgba(60, 131, 246, 0.1);
+            border-right: 3px solid #3c83f6;
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-slate-100 antialiased overflow-x-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex flex-col border-r border-white/10 bg-[#111418] shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white">apparel</span>
+</div>
+<div>
+<h1 class="text-white text-sm font-bold leading-none">Run Apparel</h1>
+<p class="text-slate-500 text-xs mt-1">Admin CMS</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">apparel</span>
+<span class="text-sm font-medium">Apparel</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-primary bg-primary/10 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">diamond</span>
+<span class="text-sm font-medium">Accessories</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-sm font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+<span class="text-sm font-medium">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10">
+<button class="w-full py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-all">
+                    Support
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<!-- Header -->
+<header class="h-16 border-b border-white/10 flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md sticky top-0 z-20">
+<div class="flex items-center gap-4">
+<h2 class="text-lg font-bold text-white">Accessories &amp; Customization</h2>
+<span class="px-2 py-0.5 bg-white/10 rounded-full text-[10px] font-bold text-slate-400">42 ITEMS</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-1.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary" placeholder="Search accessories..." type="text"/>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90">
+<span class="material-symbols-outlined text-sm">add</span>
+                        New Accessory
+                    </button>
+<div class="flex gap-2 border-l border-white/10 pl-4 ml-2">
+<button class="p-2 text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-8 rounded-full bg-slate-700 overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up of administrative user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR1KRgfIuyBoOwzl7Dhnv__I0LiFt-IfpfMyCO41wG8Kw1gtdkV7yjPX3qCrl30OXbJjWF8sZmnTaiVmJjMg88tOMvkC-EzFpM9IC717j2svyTzJ-GYyP6FDpRdZQs_Y4E4h3l9zdSiXO_khAWSBlthKsrxWy2kNV5n6qVCJTZEpVLYyLX3jFQak01TpINVUADPEJQAPRF9j8ITnIGWhtA6JZP7kOxYUMqpna3EgSBn6VJgyA_g-jNyh3n0k04NLCirHuoGvhJim4"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Filters -->
+<div class="px-8 border-b border-white/10 bg-background-dark">
+<div class="flex gap-8 overflow-x-auto no-scrollbar">
+<button class="py-4 text-sm font-bold text-primary border-b-2 border-primary">All</button>
+<button class="py-4 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">Printing Services</button>
+<button class="py-4 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">Hardware</button>
+<button class="py-4 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">Labels &amp; Tags</button>
+<button class="py-4 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">Packaging</button>
+<button class="py-4 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">Finishing</button>
+</div>
+</div>
+<!-- Grid Content -->
+<div class="flex-1 overflow-y-auto p-8 bg-background-dark">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+<!-- Card 1 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Sublimation" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up view of bright sublimation printing on fabric" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC1-LmpSRC-9ySn65CVAhGxqeH08_D5SgcsxouM_eNqz-m1r0ts-M6CvRzrY8EdBuxltjkcdQJF59drLgoLcxSTeFmJ0jimbonCJtmZcrggJtQRDFCqdgpRMRaWbJNyE4NcdkCXgHVQlmGYDqP95r8DwOQ-AWK9KDqHj_rMm8BTmKeFeOXnTWR00SCZ17pVVjUgkyzVKTo4KYYS7gVNza7FsuEcVKKi795SwNQfK0ESrbBuINXEGFBgap44DuUz0a5hYqvmOJSVLc"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Sublimation Printing</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Printing</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                Full-color high-definition heat transfer printing suitable for synthetic fabrics and technical sportswear.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Full-color</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Fast turnaround</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">MOQ: 50pcs</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Buttons" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Luxury engraved metallic and wooden clothing buttons" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiNB9rwbDDtOZun3L5mblTd22zqdLakrXeupEgttgZdEuLJ9lGPk_kKXIJgJg9EoPNw-xrz3CdyRkFsPF4XZCzUsxUuotzAIHjugsWIC1-xNt23Wyz4DKzX_eaHZv4ZX858qKnb4-B5JfDl7CUqLhRbzFPCpGn1bXfgrQJ23FTUBm7UX_oQcsZXvqouMthOaVc54G--_U6MaWfG_DMq8WdpSWmnyWHr6EBWA3Aq_ArxJR2w3z45SeYXLcK9UP5uGd3jZ5uGAO2U8M"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Engraved Buttons</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Hardware</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                Premium laser-engraved metallic or wooden buttons for a high-end luxury garment finish.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Custom Logo</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Eco-friendly</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Metal/Wood</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Hangtags" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Textured recycled paper hangtags with cotton string" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWdLr5FZlr0wlDuQjjN9tGWvWMwTZoRTpFwnTlkFL07itL7HBCQSOT2oc-YeDw-vJJGj6YFfuiWW0G9yRO0CG7ApXSFMnAcnBR6teCTWMjzhI4YDco0dp-I8jQ5pvVT09LzjrqOeuuWC_PoL2eHCPhwnis_XDc16MB7yWJsdz7ofg_SV2YO4ovkO-iKklR4Q21YW2b8ZzzIx9TciVIvEVfS6JAwWxEjKXaZtPY4SxvGqAUTu91SQkIN0rZKUTI5LpNS9v8crHuVBk"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Recycled Hangtags</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Labels</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                FSC-certified recycled paper hangtags printed with sustainable soy-based inks.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">FSC-Certified</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Soy Ink</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">MOQ: 100pcs</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Zippers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High quality custom metal zippers for outerwear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm_40mMXFLoIgoojqfACCrMRZZMu7Gch1uGXSsdluAer-neUCLx9C1qPjmkZMw7RwNg3FEyEt-3xvSRbYjPMrQOwuDS96CZtTxzjmxeXdYOWw9BUVb-uI9LgrGcw2nvXkrx3MLV_DyPtYaWQXKAHVu0K3Zjn_ohCXguMeizr683DcSx8LOpDmccxGZq6pqCTWgsoBc1HixudexwqELddkpvDHUYYj6oQUN3REprIKDpPQAty8m3v2wQ9ooJohEyn7N4Cuq_Rbh1tY"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Custom Zippers</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Hardware</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                Durable YKK-standard zippers with custom branded pulls in various metallic finishes.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Waterproof</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Branded Pulls</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">YKK Base</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Packaging" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Compostable eco-friendly polybags for clothing delivery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO_2a-nUSCJp6gBYCg-ybv9KwV5uXHLbgQIrXD23fZG1aBOa8Ay9Oj6htW28c_kzr18jZ6Q8Aee6D0QLaXtI47y-L_vLA0PgecoWxv3yZmuKjfZ62v4Bkoi8nTo8lWJbDr6qCYoJlPDQZFFHHtY8eXJS8tacdyJNovO4Hq9dGEcx7uGlCGz5sM3K_kg2FMtTqfCqILqur3syui7U_4GMCDKvKbTLkIql4lld17xD4aTsISBYiauExck06hbxnKHPy5CYwTL1OrQXo"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Eco-friendly Polybags</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Packaging</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                100% compostable and biodegradable clear polybags for protective shipping.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Biodegradable</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Compostable</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">MOQ: 500pcs</span>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="glass-card group relative rounded-xl overflow-hidden transition-all hover:border-primary/50 flex flex-col h-full">
+<div class="aspect-video relative overflow-hidden bg-slate-800">
+<img alt="Labels" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Intricately woven fabric neck labels for clothing brand" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnJt_ONTk-fF7MQCCGM8mC8qUZvkdLUbVg7cMTPvpy5DkrK-y3j2Qn1_V5O_S69nWchmDpEM1zUmwm6PI7oG6hlP1AuqUT2J6XK320syOY_A3jWc6eXNmUPbpUlwQz7PhKcqvuajBUW2As7FD3bNXtfxsvNDWroEM0ilepSfC5I7K9TDRtAJ6LYC-S2XtwvPYbYqOJJ5jZCJIw9KCC1uscfOFTus2ZGK5u4nvuDkES-ZsDeZ5lpqHMyDajp_7lYwOGfnokilV8V3g"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="size-9 bg-white text-background-dark rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-white font-bold text-base">Woven Neck Labels</h3>
+<span class="text-[10px] uppercase font-bold tracking-wider text-primary px-2 py-0.5 bg-primary/10 rounded">Labels</span>
+</div>
+<p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-4">
+                                High-density damask woven labels for neck or exterior placement with heat-cut edges.
+                            </p>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Damask</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">Non-itch</span>
+<span class="bg-white/5 border border-white/5 rounded-full px-2 py-1 text-[10px] text-slate-300">MOQ: 200pcs</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Slide-out Drawer -->
+<div class="absolute right-0 top-0 h-full w-[450px] bg-[#111418] border-l border-white/10 shadow-2xl z-30 flex flex-col">
+<div class="p-6 border-b border-white/10 flex items-center justify-between">
+<div>
+<h3 class="text-lg font-bold text-white">Add Accessory</h3>
+<p class="text-xs text-slate-500">Configure a new customization option</p>
+</div>
+<button class="p-2 text-slate-400 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+<!-- General Info -->
+<div class="space-y-4">
+<label class="block">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Accessory Name</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-slate-100 focus:ring-1 focus:ring-primary focus:border-primary" placeholder="e.g. Premium Silk Screen" type="text"/>
+</label>
+<label class="block">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Category</span>
+<select class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-slate-400 focus:ring-1 focus:ring-primary focus:border-primary appearance-none">
+<option>Select Category</option>
+<option>Printing Services</option>
+<option>Hardware</option>
+<option>Labels &amp; Tags</option>
+<option>Packaging</option>
+<option>Finishing</option>
+</select>
+</label>
+<label class="block">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">Description</span>
+<textarea class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-slate-100 focus:ring-1 focus:ring-primary focus:border-primary" placeholder="Enter accessory details..." rows="3"></textarea>
+</label>
+</div>
+<!-- Image Preview -->
+<div>
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block">Preview Image</span>
+<div class="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-3 bg-white/5 hover:bg-white/[0.08] transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-slate-500">add_photo_alternate</span>
+<p class="text-xs text-slate-400 text-center">Click to upload or drag &amp; drop<br/><span class="text-[10px] opacity-50">Recommended size: 800x450px</span></p>
+</div>
+</div>
+<!-- Specifications -->
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest block">Specifications</span>
+<button class="text-xs font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Add Row
+                            </button>
+</div>
+<div class="space-y-2">
+<div class="flex gap-2">
+<input class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-100 focus:ring-primary" placeholder="Key (e.g. MOQ)" type="text"/>
+<input class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-100 focus:ring-primary" placeholder="Value (e.g. 100)" type="text"/>
+<button class="p-2 text-slate-600 hover:text-red-400">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-100 focus:ring-primary" placeholder="Key" type="text"/>
+<input class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-100 focus:ring-primary" placeholder="Value" type="text"/>
+<button class="p-2 text-slate-600 hover:text-red-400">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Price Type & Active -->
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block">Pricing Type</span>
+<div class="space-y-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="text-primary focus:ring-0 bg-white/10 border-white/20" name="price" type="radio"/>
+<span class="text-xs text-slate-200">Fixed Rate</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-0 bg-white/10 border-white/20" name="price" type="radio"/>
+<span class="text-xs text-slate-200">Per Unit</span>
+</label>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block">Status</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+<span class="ml-3 text-xs font-medium text-slate-300">Active</span>
+</label>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-white/10 bg-white/[0.02] flex gap-3">
+<button class="flex-1 py-2.5 rounded-lg border border-white/10 text-slate-300 text-sm font-bold hover:bg-white/5 transition-colors">Cancel</button>
+<button class="flex-1 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-all">Save Changes</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

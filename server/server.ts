@@ -21,9 +21,7 @@ validateEnv();
 export const app = express();
 const config = getConfig();
 
-export let serverReady: Promise<void>;
-
-serverReady = (async () => {
+export const serverReady: Promise<void> = (async () => {
   try {
     // 2. Create HTTP Server (Required for Vite HMR / SSR)
     const httpServer = createServer(app);

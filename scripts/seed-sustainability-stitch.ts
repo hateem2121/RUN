@@ -3,7 +3,7 @@
  * Uses the project's own Pool-based database connection.
  * Run: npx tsx scripts/seed-sustainability-stitch.ts
  */
-import { pool, closeDatabaseConnection } from "../server/db.js";
+import { closeDatabaseConnection, pool } from "../server/db.js";
 
 async function seed() {
   console.log("🌱 Seeding sustainability data for 100/100 Stitch fidelity...\n");
@@ -58,12 +58,36 @@ async function seed() {
   // 4. Insert certificates
   console.log("4️⃣  Inserting certificates...");
   const certData = [
-    { name: "BCI", body: "Better Cotton Initiative", desc: "Certified sustainable cotton sourcing through the Better Cotton Initiative standard." },
-    { name: "GRS", body: "Global Recycled Standard", desc: "Verified recycled content and responsible production practices." },
-    { name: "OEKO-TEX", body: "OEKO-TEX Association", desc: "Tested for harmful substances, ensuring product safety for consumers." },
-    { name: "GOTS", body: "Global Organic Textile Standard", desc: "Certified organic fiber processing with strict environmental and social criteria." },
-    { name: "ISO 14001", body: "International Organization for Standardization", desc: "Environmental management system certification." },
-    { name: "bluesign", body: "bluesign Technologies", desc: "System partner certification for sustainable textile production." },
+    {
+      name: "BCI",
+      body: "Better Cotton Initiative",
+      desc: "Certified sustainable cotton sourcing through the Better Cotton Initiative standard.",
+    },
+    {
+      name: "GRS",
+      body: "Global Recycled Standard",
+      desc: "Verified recycled content and responsible production practices.",
+    },
+    {
+      name: "OEKO-TEX",
+      body: "OEKO-TEX Association",
+      desc: "Tested for harmful substances, ensuring product safety for consumers.",
+    },
+    {
+      name: "GOTS",
+      body: "Global Organic Textile Standard",
+      desc: "Certified organic fiber processing with strict environmental and social criteria.",
+    },
+    {
+      name: "ISO 14001",
+      body: "International Organization for Standardization",
+      desc: "Environmental management system certification.",
+    },
+    {
+      name: "bluesign",
+      body: "bluesign Technologies",
+      desc: "System partner certification for sustainable textile production.",
+    },
   ];
 
   for (let i = 0; i < certData.length; i++) {
@@ -72,12 +96,12 @@ async function seed() {
     if (existing.rows.length === 0) {
       await pool.query(
         `INSERT INTO certificates (name, issuing_body, description, is_active, show_on_sustainability_page) VALUES ($1, $2, $3, true, true)`,
-        [c.name, c.body, c.desc]
+        [c.name, c.body, c.desc],
       );
     } else {
       await pool.query(
         `UPDATE certificates SET show_on_sustainability_page = true, is_active = true WHERE name = $1`,
-        [c.name]
+        [c.name],
       );
     }
   }
@@ -85,13 +109,12 @@ async function seed() {
   // 5. Link certs
   console.log("5️⃣  Linking certificates...");
   const certIds = await pool.query(
-    `SELECT id FROM certificates WHERE show_on_sustainability_page = true AND is_active = true ORDER BY id`
+    `SELECT id FROM certificates WHERE show_on_sustainability_page = true AND is_active = true ORDER BY id`,
   );
   const idArray = certIds.rows.map((r: any) => r.id);
-  await pool.query(
-    `UPDATE unified_sustainability SET certification_ids = $1::jsonb WHERE id = 2`,
-    [JSON.stringify(idArray)]
-  );
+  await pool.query(`UPDATE unified_sustainability SET certification_ids = $1::jsonb WHERE id = 2`, [
+    JSON.stringify(idArray),
+  ]);
 
   // 6. Insert features
   console.log("6️⃣  Replacing features...");
@@ -105,9 +128,12 @@ async function seed() {
 
   // 7. Update initiatives
   console.log("7️⃣  Updating initiatives...");
-  const initiatives = await pool.query(`SELECT id FROM sustainability_initiatives ORDER BY sort_order, id`);
+  const initiatives = await pool.query(
+    `SELECT id FROM sustainability_initiatives ORDER BY sort_order, id`,
+  );
   if (initiatives.rows.length >= 1) {
-    await pool.query(`
+    await pool.query(
+      `
       UPDATE sustainability_initiatives SET
         title = 'Reclaiming Our Oceans',
         description = 'Partnering with global ocean cleanup initiatives to transform recovered ocean plastic into high-performance sportswear fibers.',
@@ -115,10 +141,13 @@ async function seed() {
         impact = 'Environmental Impact',
         updated_at = NOW()
       WHERE id = $1
-    `, [initiatives.rows[0].id]);
+    `,
+      [initiatives.rows[0].id],
+    );
   }
   if (initiatives.rows.length >= 2) {
-    await pool.query(`
+    await pool.query(
+      `
       UPDATE sustainability_initiatives SET
         title = 'Powering The Future',
         description = 'Our state-of-the-art solar farm generates 100% of our manufacturing energy needs, making every garment powered by the sun.',
@@ -126,7 +155,9 @@ async function seed() {
         impact = 'Clean Energy',
         updated_at = NOW()
       WHERE id = $1
-    `, [initiatives.rows[1].id]);
+    `,
+      [initiatives.rows[1].id],
+    );
   }
 
   console.log("\n✅ Sustainability data seeded successfully for 100/100 Stitch fidelity!");

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden">
+<!-- Background Layer: Main Page UI -->
+<div class="fixed inset-0 flex h-full w-full pointer-events-none opacity-40">
+<!-- Sidebar Component -->
+<aside class="w-64 border-r border-slate-200 dark:border-white/5 h-full flex flex-col p-6 gap-8">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Alex Rivera professional headshot portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbeFcaCNffM5WHzxopHq62fB8FWFV_v1sqHfhFjERSsrjSyAAhtW7WHNdHrOXFYdiAlUnNLU_q9n9FPGelujrozKnaTdXPymwBRHOxDuOzjZgeszy4KJ2cNDn2rjLPOyFQHwkUFVPRMXRhTfA0D9ArLsiTHqDsuPkNdS1s-wNJWMfzklgzrzke6BEe35l_pwgu53cPA2zMAlj99NOFhMjLqH3hxWV3FkLE88mZsQB7PbFiQQng22FVZ193Ewz3qkGJNAOZhJ-zxo8"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Alex Rivera</span>
+<span class="text-xs text-slate-500">Admin</span>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-sm font-medium">Content</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-500">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span class="text-sm font-medium">Catalog</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-500">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">System</span>
+</div>
+</nav>
+</aside>
+<main class="flex-1 p-8">
+<h1 class="text-3xl font-bold mb-2">Media Library</h1>
+<p class="text-slate-500">Manage your assets</p>
+</main>
+</div>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+<!-- Modal Content (1100px wide, 80% height) -->
+<div class="glass-panel w-full max-w-[1100px] h-[80vh] rounded-xl flex flex-col overflow-hidden shadow-2xl">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+<div>
+<h2 class="text-xl font-bold text-white">Select Primary Image</h2>
+<p class="text-sm text-slate-400">Showing: Images only</p>
+</div>
+<button class="p-2 hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-white">close</span>
+</button>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar (Left, 220px) -->
+<aside class="w-[220px] border-r border-white/5 p-5 flex flex-col gap-6 overflow-y-auto scrollbar-hide">
+<!-- Search -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px]">search</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate-600" placeholder="Search assets..." type="text"/>
+</div>
+<!-- Filter Groups -->
+<div class="space-y-4">
+<p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Type Filter</p>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-white/10 bg-white/5 text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-slate-300 group-hover:text-white transition-colors">All Types</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-white/10 bg-white/5 text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-white transition-colors">Images</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-white/10 bg-white/5 text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-slate-300 group-hover:text-white transition-colors">Videos</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-white/10 bg-white/5 text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-slate-300 group-hover:text-white transition-colors">3D Models</span>
+</label>
+</div>
+</div>
+<div class="pt-4 border-t border-white/5">
+<div class="flex items-center justify-between">
+<span class="text-sm text-slate-300">Recent uploads</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-white"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content (4-column grid) -->
+<main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
+<div class="grid grid-cols-4 gap-4">
+<!-- Card: Selected -->
+<div class="group relative flex flex-col gap-2">
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-primary bg-white/5 relative">
+<img class="w-full h-full object-cover" data-alt="Minimalist high quality white tshirt flat lay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBAh13aEbmWW_uV1KAfqy-iinQcvqUx5nC_F1yRyzoh-Ti2QyN8CodSjcfuKroYC9dRVLKhnH-jtzYu84vAg4AgCbcLiuyJZGIH-Qna42WcR8sULXnUB_szv2Xz0kIximqIVvvvFwJUaQiwam7QXgJF1rpw9_J9oZvCrj1Cj4bRVRGU0sTjbYq6t_7RmKa9g3lJCSDIAM2NxM1cZ_84iluhla-J8BeaLVNyAa98D42KSEYj6Y632mY2TEf2QqdifONrxfjXc56KXM"/>
+<div class="absolute inset-0 bg-primary/20 flex items-center justify-center">
+<div class="bg-primary text-white rounded-full p-1 shadow-lg">
+<span class="material-symbols-outlined text-[18px] font-bold">check</span>
+</div>
+</div>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-white truncate">tshirt_white_v1.jpg</p>
+<p class="text-[10px] text-slate-500">1.2 MB</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Blue denim jeans fabric texture close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6gJCbjHCfall3HfsCOjcSjfodPobf91WN5PkdxurYC0uNhkZvg_x38V_SCg6palSGtG_z12erKfDF3MnwGy6s4aGb5jgijZSz3h-doOKoySvgMBpFiGwHci2RNlQyz_brFupNymbec7X7AGf_AqiaPPL908XnLaZJw9BzfqI7Hv55HwooQm6Pug8l7H53QMw8zFLodTDmAK83-XvpSKYoxJpICNwmJzVemg1ySRHqpSSS-kssRELTE5nW9Hyth9P3B96nbxaoiY8"/>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">denim_wash_04.png</p>
+<p class="text-[10px] text-slate-500">845 KB</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Red athletic running shoe on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpLzLNyRCsyJNb_sXEI5zCSLI9BBMDZGI8gLlC4-uwvRihlAfF3ocmi8N6UdIO-V7T6UsIunsBTTtnUJVpHN3O8iNZPkl94Qs3eO2L-w3ykl4mv9D8IILzXl7l1RQSPUUADUKsnOrUKGP28i_N2yXfhtjIn6i6-1a2WPP8ce3zjjMwQRXzNIwNfWPNbFqSwnbMMHoytsTj4z6YN_eraox65DN2IQukd_vHCnvaMf6w8sfU7rChAS9Gby3ZBePAS0auNViy01znmHI"/>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">sport_sneaker_red.jpg</p>
+<p class="text-[10px] text-slate-500">2.4 MB</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Black premium cotton hoodie folded" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnC72aFVdgWzj5bmegi1hxJQ7xP577GrR0eKrodgGM3Cf_s5OzTW8bGbLBx_7aVkqARkcmdBjG0iQwg66NkV5lPW9EscsB3GQPKQnggdJgJKICAAPecg6FCNhrtq9Depu_35sL7NzYq18Dtb31xWMV4BZOTYPxdFoqHOVe9t2VqTU-hSAbhdYLEDnXoEYUNk4sXEFr1ctN1u_Or_wZVsiiT9o3QrP5HWZtcwyqbLbjfIXgPqsWx49sC6cMh84AAeyK5H2Jj9hU3kM"/>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">hoodie_black_final.webp</p>
+<p class="text-[10px] text-slate-500">1.1 MB</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-600 text-[48px]">videocam</span>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">promo_teaser.mp4</p>
+<p class="text-[10px] text-slate-500">45.0 MB</p>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Grey wool sweater close up knit texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD93eTiG4qyegowcr90xUQ1GjZ7e1p3AxX_SYoGMpsZ1wyG73eWIBNxGrQlQOsJw4eDvBx6j4mQb0-wgbK5LIrNdCCthlaeqpSkVcnIaRb0FkdUe0u5knJNqUqIZKWzhr8vd0kNPDNoaHDsldyqkFVsl51kYQ_TbFtYYLLBhAcUAOAgODC-lfKjoODKblqsy3aXUgpAXGnroOOpCPMpvq22jAIIIovUs7lR0Jc0MAelZxNH5SGFUkWlsP6X-eLMwKx4Ka2PzZMWfS0"/>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">wool_knit_grey.png</p>
+<p class="text-[10px] text-slate-500">3.8 MB</p>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Classic leather belt with silver buckle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkSHQdZmsY8edJJsobtC_qrPFiXWXwIXF6PLWxYyu0f_lKU8g52ki37i16G3rqkinf5n05bY8OytSXm7VY6ayVb3m_8XPMuWe54e8ioivzluASI-0fTiGXYD1ZYZVskYdwDTc1vYfCr_HD5WD6HlTgBxBcBFEl1HlRe-LqJRjKvM0AA_RBt1bnVNN7JqspfYIEvxW6Pl-Ds3DqJN7aLLesiBg-CD_RRUf3tEnVadQljsUjk2e9OjzQNkX46RdnCJeXUoAAH2rjkBk"/>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">belt_leather_tan.jpg</p>
+<p class="text-[10px] text-slate-500">1.6 MB</p>
+</div>
+</div>
+<!-- Card 8 -->
+<div class="group relative flex flex-col gap-2 cursor-pointer">
+<div class="aspect-square rounded-lg overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-600 text-[48px]">view_in_ar</span>
+</div>
+<div class="px-1">
+<p class="text-xs font-medium text-slate-300 truncate">sneaker_mesh_rig.glb</p>
+<p class="text-[10px] text-slate-500">12.4 MB</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Sticky Footer -->
+<footer class="flex items-center justify-between px-6 py-4 border-t border-white/5 bg-white/[0.02]">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-sm font-medium text-slate-300">1 item selected</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-5 py-2 rounded-lg border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/5 transition-colors">
+                        Cancel
+                    </button>
+<button class="px-5 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-shadow shadow-lg shadow-primary/20">
+                        Confirm Selection
+                    </button>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

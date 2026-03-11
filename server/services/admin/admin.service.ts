@@ -5,6 +5,20 @@
  */
 
 import type { MediaAsset, Product } from "@run-remix/shared";
+import { count } from "drizzle-orm";
+import {
+  accessories,
+  categories,
+  certificates,
+  fabrics,
+  fibers,
+  inquiries,
+  mediaAssets,
+  navigationItems,
+  products,
+  sizeCharts,
+} from "../../../shared/index.js";
+import { db } from "../../db.js";
 import {
   mediaRepository,
   miscRepository,
@@ -173,6 +187,140 @@ export class AdminService {
         totalPages: Math.ceil(totalProductsCount / limit),
       },
     };
+  }
+
+  /**
+   * Fetches paginated list of products for the admin panel with filtering
+   */
+  async getProductsList(options: {
+    page: number;
+    limit: number;
+    search?: string;
+    categoryId?: string;
+    status?: string;
+  }) {
+    const { page = 1, limit = 50, search, categoryId, status } = options;
+    const offset = (page - 1) * limit;
+
+    // We can fetch initially to ensure we get some data and filter in-memory if needed
+    // In a fully optimized system, the repo would handle all filtering
+    const [allProductsData, totalProductsCount, categories, fabrics, media] = await Promise.all([
+      this.productRepo.getProductsIncludingDeleted(limit, offset),
+      this.productRepo.getProductsCount(),
+      this.productRepo.getCategories(),
+      this.miscRepo.getFabrics(),
+      this.mediaRepo.getMediaAssets(100, 0), // get recent media
+    ]);
+
+    const safeAllProducts = Array.isArray(allProductsData) ? allProductsData : [];
+    let products = safeAllProducts;
+
+    // Apply in-memory filtering since Drizzle queries might be complex to modify here dynamically without repo access
+    if (search) {
+      const s = search.toLowerCase();
+      products = products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(s) ||
+          p.sku.toLowerCase().includes(s) ||
+          p.description?.toLowerCase().includes(s),
+      );
+    }
+
+    if (categoryId && categoryId !== "all") {
+      const catId = parseInt(categoryId, 10);
+      products = products.filter((p) => p.categoryId === catId);
+    }
+
+    if (status && status !== "all") {
+      if (status === "active") {
+        products = products.filter((p) => p.isActive && !p.deletedAt);
+      } else if (status === "featured") {
+        products = products.filter((p) => p.isFeatured && !p.deletedAt);
+      } else if (status === "deleted") {
+        products = products.filter((p) => !!p.deletedAt);
+      } else if (status === "draft") {
+        products = products.filter((p) => !p.isActive && !p.deletedAt);
+      }
+    }
+
+    // Convert media to expected format
+    const formattedMedia = (Array.isArray(media) ? media : []).map((asset) => ({
+      id: asset.id,
+      filename: asset.filename || "",
+      type: asset.type || "image",
+      url: asset.url || `/api/media/${asset.id}/content`,
+      originalName: asset.originalName || "",
+    }));
+
+    // Enhance products with extra fields needed by UI
+    const enhancedProducts = products.map((product) => ({
+      ...product,
+      urlPath: product.urlPath || product.slug,
+      canonicalUrl: product.urlPath
+        ? `/categories/${product.urlPath}`
+        : `/products/${product.slug}`,
+      primaryModelId: product.modelFileId || null,
+    }));
+
+    return {
+      products: enhancedProducts,
+      categories: Array.isArray(categories) ? categories : [],
+      fabrics: Array.isArray(fabrics) ? fabrics : [],
+      mediaAssets: formattedMedia,
+      meta: {
+        page,
+        limit,
+        totalProducts: products.length < limit ? products.length : totalProductsCount,
+        totalPages: Math.ceil(
+          (products.length < limit ? products.length : totalProductsCount) / limit,
+        ),
+        hasMore: offset + products.length < totalProductsCount,
+      },
+    };
+  }
+
+  /**
+   * Creates a new product and logs the action
+   */
+  async createProduct(audit: AuditContext, data: any) {
+    const newProduct = await this.productRepo.createProduct(data);
+
+    // Log the creation
+    await this.logAudit({
+      action: "INSERT",
+      tableName: "products",
+      recordId: newProduct.id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      newValues: newProduct as Record<string, any>,
+    });
+
+    return newProduct;
+  }
+
+  /**
+   * Updates an existing product and logs the action
+   */
+  async updateProduct(audit: AuditContext, id: number, data: any) {
+    // Get original for audit log
+    const original = await this.productRepo.getProduct(id);
+
+    const updatedProduct = await this.productRepo.updateProduct(id, data);
+
+    // Log the update
+    await this.logAudit({
+      action: "UPDATE",
+      tableName: "products",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      oldValues: original as Record<string, any>,
+      newValues: updatedProduct as Record<string, any>,
+    });
+
+    return updatedProduct;
   }
 
   /**
@@ -409,6 +557,148 @@ export class AdminService {
     }
 
     return result;
+  }
+
+  /**
+   * Retrieves aggregated statistics for the Admin CMS Dashboard
+   */
+  async getDashboardStats() {
+    try {
+      const [
+        productsCount,
+        categoriesCount,
+        mediaCount,
+        fabricsCount,
+        fibersCount,
+        certificatesCount,
+        sizeChartsCount,
+        accessoriesCount,
+        navigationItemsCount,
+        inquiriesCount,
+      ] = await Promise.all([
+        db.select({ count: count() }).from(products),
+        db.select({ count: count() }).from(categories),
+        db.select({ count: count() }).from(mediaAssets),
+        db.select({ count: count() }).from(fabrics),
+        db.select({ count: count() }).from(fibers),
+        db.select({ count: count() }).from(certificates),
+        db.select({ count: count() }).from(sizeCharts),
+        db.select({ count: count() }).from(accessories),
+        db.select({ count: count() }).from(navigationItems),
+        db.select({ count: count() }).from(inquiries),
+      ]);
+
+      return {
+        products: productsCount[0]?.count || 0,
+        categories: categoriesCount[0]?.count || 0,
+        media: mediaCount[0]?.count || 0,
+        fabrics: fabricsCount[0]?.count || 0,
+        fibers: fibersCount[0]?.count || 0,
+        certificates: certificatesCount[0]?.count || 0,
+        sizeCharts: sizeChartsCount[0]?.count || 0,
+        accessories: accessoriesCount[0]?.count || 0,
+        navigationItems: navigationItemsCount[0]?.count || 0,
+        inquiries: inquiriesCount[0]?.count || 0,
+        storage: 0, // Implement proper storage metrics later
+      };
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch dashboard stats", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves a single product by ID with full detail columns.
+   */
+  async getProductById(id: number) {
+    const product = await withTimeout(this.productRepo.getProduct(id), 5000, "Get product by ID");
+    if (!product) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    return product;
+  }
+
+  /**
+   * Soft-deletes a product (sets deletedAt) and logs the action.
+   */
+  async softDeleteProduct(audit: AuditContext, id: number) {
+    // Fetch original to log old values
+    const original = await this.productRepo.getProduct(id);
+    if (!original) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+
+    const result = await withTimeout(
+      this.productRepo.deleteProduct(id),
+      5000,
+      "Soft delete product",
+    );
+
+    if (result) {
+      await this.logAudit({
+        action: "SOFT_DELETE",
+        tableName: "products",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: { name: original.name, isActive: original.isActive } as Record<string, any>,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Hard-deletes a product permanently and logs the action.
+   * Requires `confirm === 'DELETE'` from the caller for safety.
+   */
+  async hardDeleteProduct(audit: AuditContext, id: number, confirm: string) {
+    if (confirm !== "DELETE") {
+      throw new Error("Hard delete requires { confirm: 'DELETE' } in request body");
+    }
+
+    // Fetch original to log old values
+    const original = await this.productRepo.getProduct(id);
+    if (!original) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+
+    const result = await withTimeout(
+      this.productRepo.permanentlyDeleteProduct(id),
+      10000,
+      "Hard delete product",
+    );
+
+    if (result) {
+      await this.logAudit({
+        action: "HARD_DELETE",
+        tableName: "products",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: { name: original.name, sku: original.sku } as Record<string, any>,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Checks whether a slug is available (not taken by another product).
+   * Optionally excludes a product ID (for edit mode).
+   */
+  async checkSlugAvailability(slug: string, excludeId?: number): Promise<{ available: boolean }> {
+    const existing = await this.productRepo.getProductBySlug(slug);
+    if (!existing) {
+      return { available: true };
+    }
+    // If the slug belongs to the product being edited, consider it available
+    if (excludeId && existing.id === excludeId) {
+      return { available: true };
+    }
+    return { available: false };
   }
 }
 

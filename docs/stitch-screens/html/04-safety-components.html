@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Precision Components - Unsaved Changes</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-dark': '#0A0A0A',
+            'amber-surface': '#1A1610',
+            'amber-border': '#D4A853',
+            'brand-blue': '#3B82F6',
+            'brand-red': '#EF4444',
+            'glass-border': 'rgba(255, 255, 255, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-glassmorphism">
+    .glass-effect {
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-slate-300 font-sans min-h-screen">
+<!-- BEGIN: Sticky Unsaved Changes Bar -->
+<header class="sticky top-0 z-50 w-full bg-amber-surface border-b border-amber-border/30 px-6 py-3 flex items-center justify-between shadow-lg" data-purpose="unsaved-changes-banner">
+<div class="flex items-center gap-3">
+<!-- Amber Warning Icon -->
+<svg class="w-5 h-5 text-amber-border" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-sm font-medium text-amber-100/90 tracking-tight">You have unsaved changes</span>
+</div>
+<div class="flex items-center gap-4">
+<!-- Discard Button -->
+<button class="px-4 py-1.5 text-sm font-medium text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 rounded-md transition-all duration-200">
+        Discard Changes
+      </button>
+<!-- Save Button -->
+<button class="px-4 py-1.5 text-sm font-medium bg-brand-blue hover:bg-blue-600 text-white rounded-md transition-all duration-200 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+        Save Changes
+      </button>
+</div>
+</header>
+<!-- END: Sticky Unsaved Changes Bar -->
+<main class="max-w-4xl mx-auto py-20 px-6">
+<!-- BEGIN: Reference Status Icons Section -->
+<section class="mb-20 grid grid-cols-3 gap-8" data-purpose="status-reference-display">
+<!-- Not Started -->
+<div class="flex flex-col items-center gap-3 p-6 bg-white/5 rounded-xl border border-glass-border">
+<svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="9"></circle>
+</svg>
+<span class="text-xs font-semibold uppercase tracking-widest text-slate-500">Not started</span>
+</div>
+<!-- Partially Complete -->
+<div class="flex flex-col items-center gap-3 p-6 bg-white/5 rounded-xl border border-glass-border">
+<svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 21a9 9 0 0 1-9-9"></path>
+<path d="M12 3a9 9 0 0 1 9 9"></path>
+<circle cx="12" cy="12" r="9" stroke-opacity="0.2"></circle>
+</svg>
+<span class="text-xs font-semibold uppercase tracking-widest text-amber-500">Partially complete</span>
+</div>
+<!-- Complete -->
+<div class="flex flex-col items-center gap-3 p-6 bg-white/5 rounded-xl border border-glass-border">
+<svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-xs font-semibold uppercase tracking-widest text-emerald-500">Complete</span>
+</div>
+</section>
+<!-- END: Reference Status Icons Section -->
+<!-- BEGIN: Navigation Guard Modal Overlay -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" data-purpose="modal-container">
+<!-- Modal Content -->
+<div class="w-full max-w-[440px] glass-effect border border-glass-border rounded-2xl p-8 shadow-2xl flex flex-col items-center text-center">
+<!-- Warning Icon -->
+<div class="mb-6 w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center">
+<svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Typography -->
+<h2 class="text-xl font-semibold text-white mb-2 tracking-tight">Unsaved Changes</h2>
+<p class="text-slate-400 text-sm leading-relaxed mb-8">
+          You have unsaved changes that will be lost. Are you sure you want to navigate away from this page?
+        </p>
+<!-- Button Group (Vertical for Linear style) -->
+<div class="w-full space-y-3">
+<!-- Stay on Page -->
+<button class="w-full py-2.5 text-sm font-medium bg-brand-blue hover:bg-blue-600 text-white rounded-lg transition-all shadow-[0_4px_12px_rgba(59,130,246,0.15)]">
+            Stay on Page
+          </button>
+<!-- Discard & Leave -->
+<button class="w-full py-2.5 text-sm font-medium text-brand-red border border-brand-red/30 hover:bg-brand-red/10 rounded-lg transition-all">
+            Discard &amp; Leave
+          </button>
+<!-- Save & Continue -->
+<button class="w-full py-2.5 text-sm font-medium text-slate-400 hover:text-white transition-all">
+            Save &amp; Continue
+          </button>
+</div>
+</div>
+</div>
+<!-- END: Navigation Guard Modal Overlay -->
+<!-- Placeholder Content to show backdrop contrast -->
+<div class="space-y-6 opacity-30">
+<div class="h-8 w-1/3 bg-slate-800 rounded"></div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-32 bg-slate-800 rounded-xl"></div>
+<div class="h-32 bg-slate-800 rounded-xl"></div>
+</div>
+<div class="h-64 bg-slate-800 rounded-xl"></div>
+</div>
+</main>
+</body></html>

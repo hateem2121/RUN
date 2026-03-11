@@ -49,7 +49,7 @@ const getCategoryColor = (category: string) => {
     hardware: "bg-blue-100 text-blue-700 border-blue-200",
     finishing: "bg-green-100 text-green-700 border-green-200",
     trim: "bg-orange-100 text-orange-700 border-orange-200",
-    packaging: "bg-muted text-foreground/80 border-border",
+    packaging: "bg-white/[0.05] text-white/80 border-white/10",
   };
   return colors[category] || "bg-neutral-100 text-neutral-700 border-neutral-200";
 };
@@ -100,12 +100,12 @@ const AccessoryList = ({
       {activeAccessories.map((accessory) => (
         <div
           key={accessory.id}
-          className="group rounded-lg border border-neutral-200 p-4 transition-all duration-200 hover:border-purple-300 hover:shadow-md"
+          className="glass-premium group rounded-lg border border-white/10 p-4 transition-all duration-200 hover:border-purple-400/50"
         >
           <div className="mb-3 flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <div className="mb-2 flex items-center gap-2">
-                <h4 className="truncate font-medium text-neutral-900">{accessory.name}</h4>
+                <h4 className="truncate font-medium text-white">{accessory.name}</h4>
                 {!accessory.isActive && (
                   <Badge variant="secondary" className="text-xs">
                     Inactive
@@ -125,9 +125,7 @@ const AccessoryList = ({
               </div>
 
               {accessory.description && (
-                <p className="mb-2 line-clamp-2 text-neutral-600 text-sm">
-                  {accessory.description}
-                </p>
+                <p className="mb-2 line-clamp-2 text-sm text-[#68869A]">{accessory.description}</p>
               )}
 
               {/* Media Preview */}
@@ -467,10 +465,10 @@ export function AccessoryManagementEnhanced() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-bold font-neue-stance text-3xl text-neutral-900">
+          <h1 className="font-bold font-neue-stance text-3xl text-white">
             Accessory & Customization Management
           </h1>
-          <p className="mt-2 text-neutral-600">
+          <p className="mt-2 text-[#68869A]">
             Manage printing services, hardware, finishing touches, and packaging options
           </p>
         </div>
@@ -479,10 +477,10 @@ export function AccessoryManagementEnhanced() {
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
         {/* Accessory Form */}
         <div className="xl:col-span-2">
-          <Card className="border-2">
-            <CardHeader className="border-b bg-linear-to-r from-purple-50 to-pink-50">
-              <CardTitle className="flex items-center gap-2 font-neue-stance">
-                <Settings className="h-5 w-5 text-purple-600" />
+          <Card className="glass-premium border-white/10">
+            <CardHeader className="border-b border-white/10 bg-white/[0.02]">
+              <CardTitle className="flex items-center gap-2 font-neue-stance text-white">
+                <Settings className="h-5 w-5 text-purple-400" />
                 {editingAccessory ? "Edit Accessory" : "Create New Accessory"}
               </CardTitle>
             </CardHeader>
@@ -690,10 +688,10 @@ export function AccessoryManagementEnhanced() {
 
         {/* Accessories List */}
         <div>
-          <Card className="border-2">
-            <CardHeader className="border-b bg-linear-to-r from-orange-50 to-red-50">
-              <CardTitle className="flex items-center gap-2 font-neue-stance">
-                <Package className="h-5 w-5 text-orange-600" />
+          <Card className="glass-premium border-white/10">
+            <CardHeader className="border-b border-white/10 bg-white/[0.02]">
+              <CardTitle className="flex items-center gap-2 font-neue-stance text-white">
+                <Package className="h-5 w-5 text-orange-400" />
                 Accessories ({activeAccessories?.length || 0})
               </CardTitle>
             </CardHeader>

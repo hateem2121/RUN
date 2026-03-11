@@ -155,21 +155,35 @@ export function NavigationManagement() {
   };
 
   if (isLoading) {
-    return <div className="p-6">Loading navigation items...</div>;
+    return (
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
+        <div className="flex flex-col items-center gap-4">
+          <div className="size-8 animate-spin rounded-full border-4 border-white/10 border-t-blue-500" />
+          <p className="text-[#68869A] text-sm font-bold tracking-wider uppercase">
+            Loading navigation items...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="font-bold text-2xl">Navigation Management</h1>
-          <p className="text-muted-foreground">
-            Manage your floating dock navigation items and appearance
-          </p>
+    <div className="space-y-6">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-4">
+          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+            <Navigation className="h-6 w-6 text-blue-400" />
+          </div>
+          <div>
+            <h1 className="font-bold text-xl text-white tracking-tight">Navigation Ecosystem</h1>
+            <p className="text-[#68869A] text-sm">
+              Manage your floating dock navigation items and appearance
+            </p>
+          </div>
         </div>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-[0_0_20px_rgba(37,99,235,0.2)] active:scale-95 transition-all outline-none border-0">
               <Plus className="mr-2 h-4 w-4" />
               Add Navigation Item
             </Button>
@@ -190,13 +204,13 @@ export function NavigationManagement() {
 
       <div className="space-y-4">
         <div className="mb-4">
-          <Card>
+          <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Navigation className="h-5 w-5" />
-                Navigation Items ({itemsWithMedia.length})
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Navigation className="h-5 w-5 text-blue-400" />
+                Active Items ({itemsWithMedia.length})
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-[#68869A]">
                 Drag and drop to reorder items. Active items appear in the floating dock navigation.
               </CardDescription>
             </CardHeader>
@@ -211,13 +225,20 @@ export function NavigationManagement() {
         />
 
         {itemsWithMedia.length === 0 && (
-          <Card className="p-8 text-center">
-            <Navigation className="mx-auto mb-4 h-12 w-12 text-muted-foreground/70" />
-            <h3 className="mb-2 font-medium text-foreground text-lg">No navigation items</h3>
-            <p className="mb-4 text-muted-foreground">
-              Get started by creating your first navigation item.
+          <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl p-12 text-center flex flex-col items-center justify-center border-dashed">
+            <div className="size-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6">
+              <Navigation className="h-8 w-8 text-blue-400" />
+            </div>
+            <h3 className="mb-2 font-bold text-white text-xl tracking-tight">
+              No navigation items
+            </h3>
+            <p className="mb-8 text-[#68869A] max-w-md">
+              Get started by creating your first navigation item to shape the user journey.
             </p>
-            <Button onClick={() => setShowCreateDialog(true)}>
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-[0_0_20px_rgba(37,99,235,0.2)] active:scale-95 transition-all outline-none border-0"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Navigation Item
             </Button>

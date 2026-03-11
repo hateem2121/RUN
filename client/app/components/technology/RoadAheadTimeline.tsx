@@ -1,8 +1,8 @@
-import React from "react";
+import type { ResearchVM, RoadmapVM } from "@shared/viewmodels";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React from "react";
 import { cn } from "@/lib/utils";
-import type { RoadmapVM, ResearchVM } from "@shared/viewmodels";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -69,13 +69,15 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [nodes]);
+  }, []);
 
   if (nodes.length === 0) return null;
 
-
   return (
-    <section ref={sectionRef} className={cn("py-32 px-6 max-w-7xl mx-auto relative overflow-hidden", className)}>
+    <section
+      ref={sectionRef}
+      className={cn("py-32 px-6 max-w-7xl mx-auto relative overflow-hidden", className)}
+    >
       {/* Vertical HUD text — left side */}
       <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden md:block">
         <span className="micro-copy opacity-20 dark:text-[#00D4FF] -rotate-90 origin-left whitespace-nowrap block">
@@ -85,7 +87,10 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
 
       {/* Centered Section Header — Stitch style */}
       <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase mb-24 text-center tracking-tight">
-        The Road <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]">Ahead</span>
+        The Road{" "}
+        <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]">
+          Ahead
+        </span>
       </h2>
 
       {/* 4-column grid with connecting line */}
@@ -154,11 +159,15 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                 {/* Status indicator for research */}
                 {node.type === "research" && node.status && (
                   <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center gap-2">
-                    <div className={cn(
-                      "w-1.5 h-1.5 rounded-full",
-                      node.status === "Ongoing" ? "bg-amber-400" : "bg-green-500"
-                    )}></div>
-                    <span className="text-[9px] font-mono text-slate-400 uppercase">{node.status}</span>
+                    <div
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full",
+                        node.status === "Ongoing" ? "bg-amber-400" : "bg-green-500",
+                      )}
+                    ></div>
+                    <span className="text-[9px] font-mono text-slate-400 uppercase">
+                      {node.status}
+                    </span>
                   </div>
                 )}
               </div>

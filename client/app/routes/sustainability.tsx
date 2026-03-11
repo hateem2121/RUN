@@ -1,8 +1,8 @@
+import { useGSAP } from "@gsap/react";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import LocomotiveScroll from "locomotive-scroll";
 import { ArrowRight, Download } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
@@ -20,8 +20,8 @@ import { Button } from "@/components/ui/button";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
-import { cn } from "@/lib/utils";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
+import { cn } from "@/lib/utils";
 import type { Route } from "./+types/sustainability";
 
 if (typeof window !== "undefined") {
@@ -62,31 +62,31 @@ function HeroHeadline({ text }: { text: string }) {
   const line3 = words.slice(3).join(" ") || "Every Thread";
   const containerRef = useRef<HTMLHeadingElement>(null);
 
-  useGSAP(() => {
-    gsap.from(".hero-line", {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: "power3.out",
-      delay: 0.2
-    });
-  }, { scope: containerRef });
+  useGSAP(
+    () => {
+      gsap.from(".hero-line", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: "power3.out",
+        delay: 0.2,
+      });
+    },
+    { scope: containerRef },
+  );
 
   return (
-    <h1 ref={containerRef} className="flex flex-col gap-1 font-display text-5xl font-medium tracking-tight md:text-7xl lg:text-8xl">
-      <span
-        className="hero-line self-start text-[color:var(--s-text-head)]"
-      >
-        {line1}
-      </span>
+    <h1
+      ref={containerRef}
+      className="flex flex-col gap-1 font-display text-5xl font-medium tracking-tight md:text-7xl lg:text-8xl"
+    >
+      <span className="hero-line self-start text-[color:var(--s-text-head)]">{line1}</span>
       <span className="hero-line self-start pl-4 md:pl-8">
         <span className="italic text-[color:var(--s-primary)]">{wovenWord}</span>{" "}
         <span className="text-[color:var(--s-text-head)]">{intoWord}</span>
       </span>
-      <span
-        className="hero-line self-start pl-8 md:pl-16 text-[color:var(--s-text-head)]"
-      >
+      <span className="hero-line self-start pl-8 md:pl-16 text-[color:var(--s-text-head)]">
         {line3}
       </span>
     </h1>
@@ -112,26 +112,29 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Count-up fires only when card enters viewport via ScrollTrigger
-  useGSAP(() => {
-    const numericValue = parseFloat(value);
-    if (!Number.isNaN(numericValue) && valueRef.current) {
-      const obj = { val: 0 };
-      gsap.to(obj, {
-        val: numericValue,
-        duration: 2.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 85%",
-        },
-        onUpdate: () => {
-          if (valueRef.current) {
-            valueRef.current.textContent = Math.floor(obj.val).toLocaleString();
-          }
-        },
-      });
-    }
-  }, { scope: cardRef, dependencies: [value] });
+  useGSAP(
+    () => {
+      const numericValue = parseFloat(value);
+      if (!Number.isNaN(numericValue) && valueRef.current) {
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: numericValue,
+          duration: 2.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 85%",
+          },
+          onUpdate: () => {
+            if (valueRef.current) {
+              valueRef.current.textContent = Math.floor(obj.val).toLocaleString();
+            }
+          },
+        });
+      }
+    },
+    { scope: cardRef, dependencies: [value] },
+  );
 
   const numericValue = parseFloat(value);
   const isNumeric = !Number.isNaN(numericValue);
@@ -150,7 +153,7 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
         mtOffset,
         isAccented
           ? "border border-[color:var(--s-primary)]/30 bg-[color:var(--s-primary)]/5"
-          : "border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]"
+          : "border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]",
       )}
       style={{ boxShadow: "var(--s-card-shadow)" }}
     >
@@ -182,26 +185,29 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Scroll-triggered count-up
-  useGSAP(() => {
-    const numericValue = parseFloat(value);
-    if (!Number.isNaN(numericValue) && valueRef.current) {
-      const obj = { val: 0 };
-      gsap.to(obj, {
-        val: numericValue,
-        duration: 2.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 85%",
-        },
-        onUpdate: () => {
-          if (valueRef.current) {
-            valueRef.current.textContent = Math.floor(obj.val).toLocaleString();
-          }
-        },
-      });
-    }
-  }, { scope: cardRef, dependencies: [value] });
+  useGSAP(
+    () => {
+      const numericValue = parseFloat(value);
+      if (!Number.isNaN(numericValue) && valueRef.current) {
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: numericValue,
+          duration: 2.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 85%",
+          },
+          onUpdate: () => {
+            if (valueRef.current) {
+              valueRef.current.textContent = Math.floor(obj.val).toLocaleString();
+            }
+          },
+        });
+      }
+    },
+    { scope: cardRef, dependencies: [value] },
+  );
 
   const numericValue = parseFloat(value);
   const isNumeric = !Number.isNaN(numericValue);
@@ -218,9 +224,13 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
         {isNumeric ? <span ref={valueRef}>0</span> : value}
         {unit && <span className="text-xl ml-1 text-[color:var(--s-primary)]">{unit}</span>}
       </div>
-      <p className="text-xs uppercase tracking-wider text-[color:var(--s-primary)] font-medium">{name}</p>
+      <p className="text-xs uppercase tracking-wider text-[color:var(--s-primary)] font-medium">
+        {name}
+      </p>
       {description && (
-        <p className="text-sm text-[color:var(--s-text-muted)] leading-relaxed mt-2">{description}</p>
+        <p className="text-sm text-[color:var(--s-text-muted)] leading-relaxed mt-2">
+          {description}
+        </p>
       )}
     </div>
   );
@@ -231,7 +241,7 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
    ═════════════════════════════════════════════ */
 export default function Sustainability() {
   const loaderData = useLoaderData<typeof loader>();
-  
+
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <SustainabilityInner />
@@ -244,7 +254,7 @@ function SustainabilityInner() {
 
   useEffect(() => {
     let locoScroll: LocomotiveScroll;
-    
+
     // Slight delay to ensure DOM is ready for Locomotive
     const initTimer = setTimeout(() => {
       locoScroll = new LocomotiveScroll();
@@ -256,66 +266,68 @@ function SustainabilityInner() {
     };
   }, []);
 
-  useGSAP(() => {
-    // Initial Stat Cards Reveal
-    gsap.from(".stat-card", {
-      opacity: 0,
-      y: 30,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "power3.out",
-      delay: 0.8
-    });
-
-    // Reveal Impact Cards on scroll using ScrollTrigger
-    gsap.utils.toArray<HTMLElement>('.impact-card').forEach((card) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-        },
-        opacity: 0,
-        y: 30,
-        duration: 0.6,
-        ease: "power2.out"
-      });
-    });
-
-    // Reveal Highlighted Features with back.out easing
-    gsap.utils.toArray<HTMLElement>('.feature-card').forEach((card, i) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-        },
-        opacity: 0,
-        y: 30,
-        scale: 0.95,
-        duration: 0.6,
-        delay: i * 0.1,
-        ease: "back.out(1.7)"
-      });
-    });
-
-    // General fade-ups mapped from previous logic
-    gsap.utils.toArray<HTMLElement>('.fade-up-scroll').forEach((el) => {
-      gsap.from(el, {
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-        },
+  useGSAP(
+    () => {
+      // Initial Stat Cards Reveal
+      gsap.from(".stat-card", {
         opacity: 0,
         y: 30,
         duration: 0.8,
-        ease: "power3.out"
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.8,
       });
-    });
-    
-    gsap.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8, ease: "power3.out", delay: 0.2 });
-    gsap.from(".hero-sub", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.6 });
-    gsap.from(".hero-btns", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.8 });
 
-  }, { scope: containerRef });
+      // Reveal Impact Cards on scroll using ScrollTrigger
+      gsap.utils.toArray<HTMLElement>(".impact-card").forEach((card) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      });
+
+      // Reveal Highlighted Features with back.out easing
+      gsap.utils.toArray<HTMLElement>(".feature-card").forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+          },
+          opacity: 0,
+          y: 30,
+          scale: 0.95,
+          duration: 0.6,
+          delay: i * 0.1,
+          ease: "back.out(1.7)",
+        });
+      });
+
+      // General fade-ups mapped from previous logic
+      gsap.utils.toArray<HTMLElement>(".fade-up-scroll").forEach((el) => {
+        gsap.from(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      });
+
+      gsap.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8, ease: "power3.out", delay: 0.2 });
+      gsap.from(".hero-sub", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.6 });
+      gsap.from(".hero-btns", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.8 });
+    },
+    { scope: containerRef },
+  );
 
   // Queries for unified sustainability data (Batch Request)
   const { data: batchData } = useQuery<SustainabilityBatchResponse>({
@@ -457,7 +469,11 @@ function SustainabilityInner() {
     : [];
 
   return (
-    <div ref={containerRef} className="sustainability-page relative min-h-screen overflow-hidden" style={{ backgroundColor: "var(--s-bg)" }}>
+    <div
+      ref={containerRef}
+      className="sustainability-page relative min-h-screen overflow-hidden"
+      style={{ backgroundColor: "var(--s-bg)" }}
+    >
       <SEOMeta
         title="Sustainability & Environmental Responsibility"
         description="Discover our commitment to sustainable manufacturing, eco-friendly materials, and environmental initiatives. Leading the future of responsible sportswear production."
@@ -469,9 +485,9 @@ function SustainabilityInner() {
         role="banner"
         aria-label="Sustainability hero section"
       >
-        <div 
+        <div
           className="absolute inset-0 z-0 opacity-40 will-change-transform"
-          data-scroll 
+          data-scroll
           data-scroll-speed="-0.3"
         >
           {/* Emerald radial gradient background */}
@@ -498,13 +514,25 @@ function SustainabilityInner() {
           {/* ESG badge */}
           <div
             className="hero-esg mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 backdrop-blur-sm"
-            style={{ borderColor: "color-mix(in srgb, var(--s-primary) 30%, transparent)", backgroundColor: "color-mix(in srgb, var(--s-primary) 10%, transparent)" }}
+            style={{
+              borderColor: "color-mix(in srgb, var(--s-primary) 30%, transparent)",
+              backgroundColor: "color-mix(in srgb, var(--s-primary) 10%, transparent)",
+            }}
           >
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ backgroundColor: "var(--s-primary)" }} />
-              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: "var(--s-primary)" }} />
+              <span
+                className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                style={{ backgroundColor: "var(--s-primary)" }}
+              />
+              <span
+                className="relative inline-flex h-2 w-2 rounded-full"
+                style={{ backgroundColor: "var(--s-primary)" }}
+              />
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--s-primary)" }}>
+            <span
+              className="text-xs font-semibold uppercase tracking-wider"
+              style={{ color: "var(--s-primary)" }}
+            >
               2024 ESG Report Live
             </span>
           </div>
@@ -513,7 +541,10 @@ function SustainabilityInner() {
             <HeroHeadline text={hero?.headline || "Sustainability Woven Into Every Thread"} />
           </div>
 
-          <p className="hero-sub mb-10 max-w-2xl text-lg font-light leading-relaxed md:text-xl" style={{ color: "var(--s-text-muted)" }}>
+          <p
+            className="hero-sub mb-10 max-w-2xl text-lg font-light leading-relaxed md:text-xl"
+            style={{ color: "var(--s-text-muted)" }}
+          >
             {hero?.subheadline ||
               "Leading the revolution in eco-conscious performance wear. We engineer fabrics that perform for the athlete and protect the planet."}
           </p>
@@ -582,7 +613,10 @@ function SustainabilityInner() {
       >
         <div className="container mx-auto px-6 lg:px-10">
           <div className="fade-up-scroll mb-12 flex flex-col gap-4">
-            <Typography.H2 className="font-neue-stance text-3xl font-bold md:text-5xl" style={{ color: "var(--s-text-head)" }}>
+            <Typography.H2
+              className="font-neue-stance text-3xl font-bold md:text-5xl"
+              style={{ color: "var(--s-text-head)" }}
+            >
               Engineered for <span style={{ color: "var(--s-primary)" }}>Impact</span>
             </Typography.H2>
             <Typography.P className="max-w-2xl" style={{ color: "var(--s-text-muted)" }}>
@@ -706,7 +740,8 @@ function SustainabilityInner() {
         <div
           className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
-            background: "radial-gradient(circle at 50% 100%, #00c97b 0%, #003366 50%, transparent 100%)",
+            background:
+              "radial-gradient(circle at 50% 100%, #00c97b 0%, #003366 50%, transparent 100%)",
           }}
         />
 
@@ -716,10 +751,16 @@ function SustainabilityInner() {
             <h2 className="mb-6 font-display text-5xl font-bold tracking-tight text-[color:var(--s-text-head)] md:text-7xl">
               {(callToActionTitle || "Join Our Sustainable Journey").split(" ").length > 2 ? (
                 <>
-                  {(callToActionTitle || "Join Our Sustainable Journey").split(" ").slice(0, 2).join(" ")}
+                  {(callToActionTitle || "Join Our Sustainable Journey")
+                    .split(" ")
+                    .slice(0, 2)
+                    .join(" ")}
                   <br />
                   <span className="italic text-[color:var(--s-primary)]">
-                    {(callToActionTitle || "Join Our Sustainable Journey").split(" ").slice(2).join(" ")}
+                    {(callToActionTitle || "Join Our Sustainable Journey")
+                      .split(" ")
+                      .slice(2)
+                      .join(" ")}
                   </span>
                 </>
               ) : (
@@ -755,9 +796,15 @@ function SustainabilityInner() {
           <div className="flex flex-col justify-between border-t border-white/10 pt-8 text-sm text-[color:var(--s-text-muted)] md:flex-row">
             <p>© {new Date().getFullYear()} RUN APPAREL (PVT) LTD. All rights reserved.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <Link to="/privacy" className="hover:text-[color:var(--s-primary)] transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-[color:var(--s-primary)] transition-colors">Terms of Service</Link>
-              <Link to="/sitemap" className="hover:text-[color:var(--s-primary)] transition-colors">Sitemap</Link>
+              <Link to="/privacy" className="hover:text-[color:var(--s-primary)] transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="hover:text-[color:var(--s-primary)] transition-colors">
+                Terms of Service
+              </Link>
+              <Link to="/sitemap" className="hover:text-[color:var(--s-primary)] transition-colors">
+                Sitemap
+              </Link>
             </div>
           </div>
         </div>

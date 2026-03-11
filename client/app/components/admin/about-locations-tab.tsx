@@ -232,27 +232,24 @@ export function AboutLocationsTab() {
 
             <TabsContent value="facility" className="mt-4">
               {facilityLocations.length === 0 ? (
-                <div className="py-12 text-center text-muted-foreground">
+                <div className="py-12 text-center text-[#68869A]">
                   No manufacturing facilities added yet.
                 </div>
               ) : (
                 <div className="grid gap-4">
                   {facilityLocations.map((location) => (
-                    <div
-                      key={location.id}
-                      className="rounded-lg border bg-white p-4 dark:bg-background"
-                    >
+                    <div key={location.id} className="rounded-lg border bg-white/[0.03] p-4">
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                          <p className="text-[#68869A] text-sm">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-muted-foreground text-sm">{location.details}</p>
+                            <p className="mt-1 text-[#68869A] text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-muted-foreground/70 text-xs">
+                          <p className="mt-2 text-[#68869A]/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>
@@ -277,27 +274,24 @@ export function AboutLocationsTab() {
 
             <TabsContent value="client" className="mt-4">
               {clientLocations.length === 0 ? (
-                <div className="py-12 text-center text-muted-foreground">
+                <div className="py-12 text-center text-[#68869A]">
                   No client locations added yet.
                 </div>
               ) : (
                 <div className="grid gap-4">
                   {clientLocations.map((location) => (
-                    <div
-                      key={location.id}
-                      className="rounded-lg border bg-white p-4 dark:bg-background"
-                    >
+                    <div key={location.id} className="rounded-lg border bg-white/[0.03] p-4">
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-muted-foreground text-sm dark:text-muted-foreground/70">
+                          <p className="text-[#68869A] text-sm">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-muted-foreground text-sm">{location.details}</p>
+                            <p className="mt-1 text-[#68869A] text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-muted-foreground/70 text-xs">
+                          <p className="mt-2 text-[#68869A]/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>

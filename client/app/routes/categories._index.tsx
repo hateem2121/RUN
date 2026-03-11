@@ -1,6 +1,6 @@
+import { useGSAP } from "@gsap/react";
 import type { Category } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { AlertCircle, Eye, Loader2 } from "lucide-react";
 // CHUNK 6: Lazy-load FluidGlass to defer three.js (565KB) from main bundle
@@ -310,9 +310,7 @@ export default function CategoriesPage() {
                   <div key={category.id} className="w-full">
                     {!hasAnyContent ? (
                       // Enhanced error handling for categories without featured content
-                      <div
-                        className="border-border shadow-luxury-md mb-20 overflow-hidden rounded-2xl border bg-card/60 p-8 backdrop-blur-md dark:bg-card/40"
-                      >
+                      <div className="border-border shadow-luxury-md mb-20 overflow-hidden rounded-2xl border bg-card/60 p-8 backdrop-blur-md dark:bg-card/40">
                         <div className="mb-6 text-center">
                           <Typography.H2 className="font-neue-stance text-foreground mb-4 text-2xl font-bold">
                             {category.name}

@@ -49,4 +49,3 @@ export function MarqueeStrip({
     </div>
   );
 }
-

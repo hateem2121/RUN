@@ -46,7 +46,8 @@ function isExcludedRoute(path: string): boolean {
 export function csrfTokenGenerator(req: Request, res: Response, next: NextFunction): void {
   // Bypassed for tests
   if ((req as any)._skipCsrf || res.headersSent) {
-    return next();
+    next();
+    return;
   }
 
   // Check if token already exists in cookies
@@ -76,7 +77,8 @@ export function csrfTokenGenerator(req: Request, res: Response, next: NextFuncti
 export function csrfValidator(req: Request, res: Response, next: NextFunction): void {
   // Bypassed for tests
   if ((req as any)._skipCsrf || res.headersSent) {
-    return next();
+    next();
+    return;
   }
 
   // Skip for safe methods
@@ -112,11 +114,31 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
   }
 
   // Constant-time comparison to prevent timing attacks
-  if (!crypto.timingSafeEqual(Buffer.from(cookieToken), Buffer.from(tokenToValidate))) {
-    logger.warn("[CSRF] Token mismatch", { path: req.path });
+  // SEC-003: Verify buffer lengths before comparison to prevent RangeError
+  try {
+    const cookieBuffer = Buffer.from(cookieToken);
+    const tokenBuffer = Buffer.from(tokenToValidate);
+
+    if (
+      cookieBuffer.length !== tokenBuffer.length ||
+      !crypto.timingSafeEqual(cookieBuffer, tokenBuffer)
+    ) {
+      logger.warn("[CSRF] Token mismatch or invalid length", {
+        path: req.path,
+        cookieLength: cookieBuffer.length,
+        tokenLength: tokenBuffer.length,
+      });
+      res.status(403).json({
+        error: "CSRF_TOKEN_INVALID",
+        message: "CSRF token validation failed",
+      });
+      return;
+    }
+  } catch (error) {
+    logger.error("[CSRF] Validation crash", { error, path: req.path });
     res.status(403).json({
-      error: "CSRF_TOKEN_INVALID",
-      message: "CSRF token validation failed",
+      error: "CSRF_VALIDATION_ERROR",
+      message: "An error occurred during CSRF validation",
     });
     return;
   }

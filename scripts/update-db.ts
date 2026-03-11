@@ -11,7 +11,7 @@ async function run() {
     return;
   }
 
-  const newBrandText = "RUN APPAREL AUDIT TEST " + new Date().toISOString();
+  const newBrandText = `RUN APPAREL AUDIT TEST ${new Date().toISOString()}`;
   console.log(`Updating brandText to: ${newBrandText}`);
 
   const [updated] = await db
