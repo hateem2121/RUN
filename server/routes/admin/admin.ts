@@ -293,4 +293,74 @@ router.post(
   },
 );
 
+// =============================================================================
+// CERTIFICATE MANAGEMENT
+// =============================================================================
+
+// GET /certificates - List all certificates
+router.get("/certificates", authService.requireAdmin, async (_req, res) => {
+  const result = await adminService.getCertificatesList();
+  return res.json(result);
+});
+
+// POST /certificates - Create certificate
+router.post("/certificates", authService.requireAdmin, async (req, res) => {
+  const auditContext = getAuditContext(req);
+  const result = await adminService.createCertificate(auditContext, req.body);
+  return res.status(201).json(result);
+});
+
+// PATCH /certificates/:id - Update certificate
+router.patch("/certificates/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "certificate");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.updateCertificate(auditContext, id, req.body);
+  return res.json(result);
+});
+
+// DELETE /certificates/:id - Delete certificate
+router.delete("/certificates/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "certificate");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.deleteCertificate(auditContext, id);
+  return res.json({ success: result });
+});
+
+// =============================================================================
+// FIBER MANAGEMENT
+// =============================================================================
+
+// GET /fibers - List all fibers
+router.get("/fibers", authService.requireAdmin, async (_req, res) => {
+  const result = await adminService.getFibersList();
+  return res.json(result);
+});
+
+// POST /fibers - Create fiber
+router.post("/fibers", authService.requireAdmin, async (req, res) => {
+  const auditContext = getAuditContext(req);
+  const result = await adminService.createFiber(auditContext, req.body);
+  return res.status(201).json(result);
+});
+
+// PATCH /fibers/:id - Update fiber
+router.patch("/fibers/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "fiber");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.updateFiber(auditContext, id, req.body);
+  return res.json(result);
+});
+
+// DELETE /fibers/:id - Delete fiber
+router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "fiber");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.deleteFiber(auditContext, id);
+  return res.json({ success: result });
+});
+
 export default router;

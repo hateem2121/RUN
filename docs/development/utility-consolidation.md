@@ -206,6 +206,6 @@ If issues arise:
 
 ## References
 
-- [AGENTS.md](../../AGENTS.md) - Server directory structure
+- [AGENTS.md](../../audit-reports/AGENTS.md) - Server directory structure
 - [Architecture Documentation](../core/architecture.md) - Overall system architecture
 - [Developer Workflow](../guides/developer-workflow.md) - Development standards

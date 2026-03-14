@@ -84,7 +84,6 @@ function SortableProcessItem({
   };
 
   return (
-    // biome-ignore lint: Dynamic inline style required for dnd-kit
     <div ref={setNodeRef} style={style} className="group relative">
       <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
         <div

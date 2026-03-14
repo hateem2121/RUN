@@ -13,6 +13,8 @@ import {
   fabrics,
   fibers,
   inquiries,
+  insertCertificateSchema,
+  insertFiberSchema,
   mediaAssets,
   navigationItems,
   products,
@@ -699,6 +701,130 @@ export class AdminService {
       return { available: true };
     }
     return { available: false };
+  }
+
+  // =============================================================================
+  // CERTIFICATE MANAGEMENT
+  // =============================================================================
+
+  async getCertificatesList() {
+    return this.miscRepo.getCertificates();
+  }
+
+  async createCertificate(audit: AuditContext, data: any) {
+    const validated = insertCertificateSchema.parse(data);
+    const result = await this.miscRepo.createCertificate(validated);
+
+    await this.logAudit({
+      action: "INSERT",
+      tableName: "certificates",
+      recordId: result.id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      newValues: result as Record<string, any>,
+    });
+
+    return result;
+  }
+
+  async updateCertificate(audit: AuditContext, id: number, data: any) {
+    const original = await this.miscRepo.getCertificate(id);
+    const result = await this.miscRepo.updateCertificate(id, data);
+
+    await this.logAudit({
+      action: "UPDATE",
+      tableName: "certificates",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      oldValues: original as Record<string, any>,
+      newValues: result as Record<string, any>,
+    });
+
+    return result;
+  }
+
+  async deleteCertificate(audit: AuditContext, id: number) {
+    const original = await this.miscRepo.getCertificate(id);
+    const result = await this.miscRepo.deleteCertificate(id);
+
+    if (result) {
+      await this.logAudit({
+        action: "DELETE",
+        tableName: "certificates",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: { name: original?.name } as Record<string, any>,
+      });
+    }
+
+    return result;
+  }
+
+  // =============================================================================
+  // FIBER MANAGEMENT
+  // =============================================================================
+
+  async getFibersList() {
+    return this.miscRepo.getFibers();
+  }
+
+  async createFiber(audit: AuditContext, data: any) {
+    const validated = insertFiberSchema.parse(data);
+    const result = await this.miscRepo.createFiber(validated);
+
+    await this.logAudit({
+      action: "INSERT",
+      tableName: "fibers",
+      recordId: result.id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      newValues: result as Record<string, any>,
+    });
+
+    return result;
+  }
+
+  async updateFiber(audit: AuditContext, id: number, data: any) {
+    const original = await this.miscRepo.getFiber(id);
+    const result = await this.miscRepo.updateFiber(id, data);
+
+    await this.logAudit({
+      action: "UPDATE",
+      tableName: "fibers",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      oldValues: original as Record<string, any>,
+      newValues: result as Record<string, any>,
+    });
+
+    return result;
+  }
+
+  async deleteFiber(audit: AuditContext, id: number) {
+    const original = await this.miscRepo.getFiber(id);
+    const result = await this.miscRepo.deleteFiber(id);
+
+    if (result) {
+      await this.logAudit({
+        action: "DELETE",
+        tableName: "fibers",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: { name: original?.name } as Record<string, any>,
+      });
+    }
+
+    return result;
   }
 }
 

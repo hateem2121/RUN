@@ -152,8 +152,8 @@ export type InsertAccessory = typeof accessories.$inferInsert;
 export const selectCertificateSchema = createSelectSchema(certificates);
 export const insertCertificateSchema = createInsertSchema(certificates, {
   name: (s) => s.min(1),
-  issueDate: z.date().or(z.string()).nullable().optional(),
-  expiryDate: z.date().or(z.string()).nullable().optional(),
+  issueDate: z.coerce.date().nullable().optional(),
+  expiryDate: z.coerce.date().nullable().optional(),
 });
 
 export const selectSizeChartSchema = createSelectSchema(sizeCharts);

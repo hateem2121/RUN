@@ -5,26 +5,26 @@ import type { IStorage } from "../repositories/storage-interfaces.js";
  * Manages the single instance of the storage provider (Memory, Postgres, etc.)
  * Used primarily for testing and legacy access patterns.
  */
-export class StorageSingleton {
-  private static instance: IStorage | null = null;
+let storageInstance: IStorage | null = null;
 
-  static setInstance(storage: IStorage) {
-    StorageSingleton.instance = storage;
-  }
+export const StorageSingleton = {
+  setInstance: (storage: IStorage) => {
+    storageInstance = storage;
+  },
 
-  static getInstance(): IStorage {
-    if (!StorageSingleton.instance) {
+  getInstance: (): IStorage => {
+    if (!storageInstance) {
       throw new Error(
         "Storage instance not initialized. Call StorageSingleton.setInstance() first.",
       );
     }
-    return StorageSingleton.instance;
-  }
+    return storageInstance;
+  },
 
-  static hasInstance(): boolean {
-    return !!StorageSingleton.instance;
-  }
-}
+  hasInstance: (): boolean => {
+    return !!storageInstance;
+  },
+};
 
 export function getStorage(): IStorage {
   return StorageSingleton.getInstance();

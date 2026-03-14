@@ -10,7 +10,6 @@ This directory contains the frontend application code for the RUN Apparel B2B Pl
 -   [Development Scripts](../README.md#development-scripts)
 -   [Architecture Guides](../docs/overview.md)
 -   [Styling Standards](../docs/development/styling.md)
--   [Contribution Guidelines](../CONTRIBUTING.md)
 
 This project is a monorepo managed by TurboRepo. All operational commands should be run from the **root directory**.
 

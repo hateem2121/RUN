@@ -1,4 +1,15 @@
 steps:
+  # Verify Technical Integrity
+  - name: "node:24"
+    id: "tech-integrity"
+    entrypoint: npm
+    args: ["run", "verify:tech-integrity"]
+
+  # Check Documentation Alignment
+  - name: "node:24"
+    id: "docs-alignment"
+    entrypoint: npm
+    args: ["run", "check:docs"]
   # Build the container image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA", "."]

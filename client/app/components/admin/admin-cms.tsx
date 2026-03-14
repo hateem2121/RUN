@@ -53,7 +53,7 @@ export default function AdminCMS() {
       count: stats?.fibers || 0,
     },
     {
-      id: "certificates",
+      id: "certifications",
       name: "Certificate Management",
       description: "Compliance and sustainability certifications",
       icon: "fas fa-certificate",

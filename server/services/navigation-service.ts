@@ -16,23 +16,25 @@ import { removeUndefined } from "../utils.js";
 const CACHE_TTL_NAVIGATION = 7200; // 2 hours
 const CACHE_TTL_STATIC = 10800; // 3 hours
 
-export class NavigationService {
-  /**
-   * Normalize navigation items for frontend consumption
-   */
-  private static normalizeItems(items: NavigationItem[]): NavigationItem[] {
-    return items.map((item) => ({
-      ...item,
-      title: item.title || "",
-      label: item.label || "",
-      href: item.href || "#",
-    }));
-  }
+/**
+ * Normalize navigation items for frontend consumption
+ */
+const normalizeItems = (items: NavigationItem[]): NavigationItem[] => {
+  return items.map((item) => ({
+    ...item,
+    title: item.title || "",
+    label: item.label || "",
+    href: item.href || "#",
+  }));
+};
 
+export const NavigationService = {
   /**
    * Get all navigation items with caching strategy
    */
-  static async getItems(bypassCache = false): Promise<
+  getItems: async (
+    bypassCache = false,
+  ): Promise<
     Result<
       {
         data: NavigationItem[];
@@ -40,7 +42,7 @@ export class NavigationService {
       },
       AppError
     >
-  > {
+  > => {
     const startTime = performance.now();
     const storage = miscRepository;
 
@@ -56,7 +58,7 @@ export class NavigationService {
       }
 
       return ok({
-        data: NavigationService.normalizeItems(result.value),
+        data: normalizeItems(result.value),
         metadata: {
           cacheHit: false,
           responseTime: performance.now() - startTime,
@@ -72,7 +74,7 @@ export class NavigationService {
     if (cached) {
       const items = Array.isArray(cached) ? cached : [cached];
       return ok({
-        data: NavigationService.normalizeItems(items),
+        data: normalizeItems(items),
         metadata: {
           cacheHit: true,
           responseTime: performance.now() - startTime,
@@ -90,7 +92,7 @@ export class NavigationService {
       return err(result.error);
     }
 
-    const normalized = NavigationService.normalizeItems(result.value);
+    const normalized = normalizeItems(result.value);
     await unifiedCache.set(cacheKey, normalized, CACHE_TTL_NAVIGATION * 1000);
 
     return ok({
@@ -101,9 +103,9 @@ export class NavigationService {
         ttl: CACHE_TTL_NAVIGATION,
       },
     });
-  }
+  },
 
-  static async getItem(id: number): Promise<Result<NavigationItem, AppError>> {
+  getItem: async (id: number): Promise<Result<NavigationItem, AppError>> => {
     const result = await safeQuery(
       withTimeout(miscRepository.getNavigationItem(id), 5000, "Get navigation item"),
     );
@@ -116,11 +118,11 @@ export class NavigationService {
     }
 
     return ok(result.value);
-  }
+  },
 
-  static async createItem(
+  createItem: async (
     data: Partial<InsertNavigationItem>,
-  ): Promise<Result<NavigationItem, AppError>> {
+  ): Promise<Result<NavigationItem, AppError>> => {
     // Transform logic
     const itemData = {
       title: data.title || data.label || "Untitled",
@@ -151,12 +153,12 @@ export class NavigationService {
     );
 
     return ok(result.value);
-  }
+  },
 
-  static async updateItem(
+  updateItem: async (
     id: number,
     data: Partial<InsertNavigationItem>,
-  ): Promise<Result<NavigationItem, AppError>> {
+  ): Promise<Result<NavigationItem, AppError>> => {
     const updateData = removeUndefined({
       ...data,
       ...(data.isActive !== undefined && { isActive: data.isActive }),
@@ -184,9 +186,9 @@ export class NavigationService {
     );
 
     return ok(result.value);
-  }
+  },
 
-  static async deleteItem(id: number): Promise<Result<void, AppError>> {
+  deleteItem: async (id: number): Promise<Result<void, AppError>> => {
     const result = await safeQuery(
       withTimeout(miscRepository.deleteNavigationItem(id), 5000, "Delete navigation item"),
     );
@@ -203,11 +205,11 @@ export class NavigationService {
     );
 
     return ok(undefined);
-  }
+  },
 
-  static async reorderItems(
+  reorderItems: async (
     items: { id: number; sortOrder: number }[],
-  ): Promise<Result<NavigationItem[], AppError>> {
+  ): Promise<Result<NavigationItem[], AppError>> => {
     const storage = miscRepository;
 
     const result = await safeQuery(
@@ -229,11 +231,11 @@ export class NavigationService {
     }
 
     return ok(getResult.value.data);
-  }
+  },
 
-  static async getGlassmorphismSettings(): Promise<
+  getGlassmorphismSettings: async (): Promise<
     Result<NavigationGlassmorphismSettings | Partial<NavigationGlassmorphismSettings>, AppError>
-  > {
+  > => {
     const cacheKey = "navigation-glassmorphism-settings";
     const cached = await unifiedCache.get(cacheKey);
     if (cached) {
@@ -266,11 +268,11 @@ export class NavigationService {
 
     await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC * 1000);
     return ok(settings);
-  }
+  },
 
-  static async updateGlassmorphismSettings(
+  updateGlassmorphismSettings: async (
     data: Partial<NavigationGlassmorphismSettings>,
-  ): Promise<Result<NavigationGlassmorphismSettings | Record<string, unknown>, AppError>> {
+  ): Promise<Result<NavigationGlassmorphismSettings | Record<string, unknown>, AppError>> => {
     const settingsData = {
       ...data,
       opacity: data.opacity !== undefined ? String(data.opacity) : undefined,
@@ -290,5 +292,5 @@ export class NavigationService {
 
     await unifiedCache.delete("navigation-glassmorphism-settings");
     return ok(result.value);
-  }
-}
+  },
+};

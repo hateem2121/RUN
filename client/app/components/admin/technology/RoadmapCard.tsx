@@ -24,7 +24,6 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
   return (
     <div
       ref={setNodeRef}
-      // biome-ignore lint: Required for dnd-kit
       style={style}
       className={cn(
         "group relative overflow-hidden rounded-xl border transition-all duration-300 backdrop-blur-md",

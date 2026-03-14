@@ -86,7 +86,7 @@ router.get(
   "/homepage-hero",
   asyncHandler(async (req, res) => {
     const cacheKey = CacheKeys.homepage.hero();
-    const cached = await unifiedCache.get<HomepageHero | {}>(cacheKey);
+    const cached = await unifiedCache.get<HomepageHero | Record<string, never>>(cacheKey);
 
     // CHUNK 7: Check cache bypass
     if (cached && !shouldBypassCache(req)) {
@@ -478,7 +478,9 @@ router.get(
   "/homepage-featured-products-settings",
   asyncHandler(async (req, res) => {
     const cacheKey = CacheKeys.homepage.featuredProducts();
-    const cached = await unifiedCache.get<HomepageFeaturedProductsSettings | {}>(cacheKey);
+    const cached = await unifiedCache.get<HomepageFeaturedProductsSettings | Record<string, never>>(
+      cacheKey,
+    );
 
     // CHUNK 7: Check cache bypass
     if (cached && !shouldBypassCache(req)) {

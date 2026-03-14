@@ -64,7 +64,7 @@ import { PerformanceQuerySchema } from "./schemas.js";
 
 export async function getEndpointPerformance(req: Request, res: Response) {
   try {
-    const { path } = PerformanceQuerySchema.parse(req.query);
+    const { path: _path } = PerformanceQuerySchema.parse(req.query);
 
     // Validation handled by Zod above
 

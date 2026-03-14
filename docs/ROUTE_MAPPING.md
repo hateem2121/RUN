@@ -4,6 +4,7 @@ This document defines the 1:1 relationship between public frontend pages and adm
 
 > [!IMPORTANT]
 > **Source of Truth**: The actual route configuration is defined in `client/app/routes.ts` (React Router 7 Config).
+> **Local Development**: All services operate on port **5002** by default (e.g., `http://localhost:5002`).
 > The files in `client/app/routes/` are the route *modules* referenced by that configuration.
 
 ## Mapping Table

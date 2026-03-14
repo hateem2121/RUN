@@ -119,7 +119,6 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
   const status = getStatusConfig(equipment.isActive ?? true);
 
   return (
-    // biome-ignore lint: Dynamic inline style required for dnd-kit
     <div
       ref={setNodeRef}
       style={style}

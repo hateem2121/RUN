@@ -25,7 +25,7 @@ Navigate to [http://localhost:5002](http://localhost:5002).
 
 ## 3. Core Architecture
 - **Monorepo**: Powered by npm workspaces (`client/`, `server/`, `shared/`).
-- **SSOT**: `docs/overview.md` for versions and `docs/core/tech-stack.md` for architecture.
+- **SSOT**: `overview.md` for versions and `core/tech-stack.md` for architecture.
 - **Frontend**: React 19 (no `forwardRef`), Vite 7, Tailwind V4.
 - **Backend**: Express 5 (async handlers), Drizzle ORM.
 - **3D**: `@google/model-viewer` ONLY. No R3F/Drei.
@@ -37,10 +37,10 @@ Navigate to [http://localhost:5002](http://localhost:5002).
 - **Coding Standards**: See `.agent/rules/code-standards-patterns.md`.
 
 ## 5. Documentation Map
-- **[System Overview](docs/overview.md)**: Versions, scripts, and environment.
-- **[Tech Stack](docs/core/tech-stack.md)**: Detailed architectural constraints.
-- **[Development Workflow](docs/DEVELOPMENT_WORKFLOW.md)**: Day-to-day coding protocols.
-- **[Agent Instructions](docs/AGENT_INSTRUCTIONS.md)**: Working alongside AI agents.
+- **[System Overview](overview.md)**: Versions, scripts, and environment.
+- **[Tech Stack](core/tech-stack.md)**: Detailed architectural constraints.
+- **[Development Workflow](DEVELOPMENT_WORKFLOW.md)**: Day-to-day coding protocols.
+- **[Agent Instructions](AGENT_INSTRUCTIONS.md)**: Working alongside AI agents.
 
 ---
 **Standard**: RUN Remix 2026 | **Governance**: M. Hateem Jamshaid

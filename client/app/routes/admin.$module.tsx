@@ -163,6 +163,10 @@ export default function AdminModule() {
         return <FiberManagement />;
       case "fiber":
         return <FiberManagement />;
+      case "certifications":
+        return <CertificateManagement />;
+      case "certification":
+        return <CertificateManagement />;
       case "certificates":
         return <CertificateManagement />;
       case "certificate":

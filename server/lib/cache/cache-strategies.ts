@@ -116,9 +116,9 @@ export const CacheStrategies = {
 export { CacheKeys, InvalidationPatterns } from "./cache-keys.js";
 
 // High-level cache operations with built-in strategies
-export class CacheOperations {
+export const CacheOperations = {
   // Homepage data caching
-  static async getHomepageData(key: keyof typeof CacheKeys.homepage, loader: () => Promise<any>) {
+  getHomepageData: async (key: keyof typeof CacheKeys.homepage, loader: () => Promise<any>) => {
     const cacheKey = CacheKeys.homepage[key]();
 
     let data = await getCache().get(cacheKey);
@@ -130,10 +130,10 @@ export class CacheOperations {
     }
 
     return data;
-  }
+  },
 
   // Media caching with variants
-  static async getMediaAsset(id: number, loader: () => Promise<any>) {
+  getMediaAsset: async (id: number, loader: () => Promise<any>) => {
     const cacheKey = CacheKeys.media.asset(id);
 
     let data = await getCache().get(cacheKey);
@@ -145,10 +145,10 @@ export class CacheOperations {
     }
 
     return data;
-  }
+  },
 
   // Batch media caching
-  static async getMediaBatch(ids: number[], loader: () => Promise<any>) {
+  getMediaBatch: async (ids: number[], loader: () => Promise<any>) => {
     const cacheKey = CacheKeys.media.batch(ids);
 
     let data = await getCache().get(cacheKey);
@@ -160,14 +160,14 @@ export class CacheOperations {
     }
 
     return data;
-  }
+  },
 
   // Product caching
-  static async getProductData(
+  getProductData: async (
     type: keyof typeof CacheKeys.products,
     idOrFilters?: number | string,
     loader?: () => Promise<any>,
-  ) {
+  ) => {
     let cacheKey: string;
 
     if (type === "list" && typeof idOrFilters === "string") {
@@ -189,10 +189,10 @@ export class CacheOperations {
     }
 
     return data;
-  }
+  },
 
   // Computed data caching (for expensive operations)
-  static async getComputedData(operation: string, hash: string, loader: () => Promise<any>) {
+  getComputedData: async (operation: string, hash: string, loader: () => Promise<any>) => {
     const cacheKey = CacheKeys.computed.query(hash);
 
     let data = await getCache().get(cacheKey);
@@ -216,15 +216,15 @@ export class CacheOperations {
     }
 
     return data;
-  }
+  },
 
   // Cache invalidation helpers
-  static async invalidateHomepage() {
+  invalidateHomepage: async () => {
     await getCache().invalidate(InvalidationPatterns.homepage);
     logger.info("[Cache] Invalidated all homepage cache entries");
-  }
+  },
 
-  static async invalidateMedia(id?: number) {
+  invalidateMedia: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.media.asset(id));
       await getCache().invalidate(`^media:.*:${id}(?:$|:.*)`);
@@ -233,9 +233,9 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.media);
       logger.info("[Cache] Invalidated all media cache entries");
     }
-  }
+  },
 
-  static async invalidateProducts(id?: number) {
+  invalidateProducts: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.products.item(id));
       await getCache().invalidate(`^products:.*:${id}(?:$|:.*)`);
@@ -244,41 +244,41 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.products);
       logger.info("[Cache] Invalidated all product cache entries");
     }
-  }
+  },
 
   // CHUNK 1: Page-specific cache invalidation methods
-  static async invalidateAbout() {
+  invalidateAbout: async () => {
     await getCache().invalidate(InvalidationPatterns.about);
     logger.info("[Cache] Invalidated all about page cache entries");
-  }
+  },
 
-  static async invalidateSustainability() {
+  invalidateSustainability: async () => {
     await getCache().invalidate(InvalidationPatterns.sustainability);
     logger.info("[Cache] Invalidated all sustainability page cache entries");
-  }
+  },
 
-  static async invalidateManufacturing() {
+  invalidateManufacturing: async () => {
     await getCache().invalidate(InvalidationPatterns.manufacturing);
     logger.info("[Cache] Invalidated all manufacturing page cache entries");
-  }
+  },
 
-  static async invalidateTechnology() {
+  invalidateTechnology: async () => {
     await getCache().invalidate(InvalidationPatterns.technology);
     logger.info("[Cache] Invalidated all technology page cache entries");
-  }
+  },
 
-  static async invalidateContact() {
+  invalidateContact: async () => {
     await getCache().invalidate(InvalidationPatterns.contact);
     logger.info("[Cache] Invalidated all contact page cache entries");
-  }
+  },
 
-  static async invalidateNavigation() {
+  invalidateNavigation: async () => {
     await getCache().invalidate(InvalidationPatterns.navigation);
     logger.info("[Cache] Invalidated all navigation cache entries");
-  }
+  },
 
   // CHUNK 1: Shared content cache invalidation methods
-  static async invalidateFabrics(id?: number) {
+  invalidateFabrics: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.fabrics.item(id));
       await getCache().invalidate(`^fabrics:.*:${id}(?:$|:.*)`);
@@ -287,9 +287,9 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.fabrics);
       logger.info("[Cache] Invalidated all fabric cache entries");
     }
-  }
+  },
 
-  static async invalidateFibers(id?: number) {
+  invalidateFibers: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.fibers.item(id));
       await getCache().invalidate(`^fibers:.*:${id}(?:$|:.*)`);
@@ -298,9 +298,9 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.fibers);
       logger.info("[Cache] Invalidated all fiber cache entries");
     }
-  }
+  },
 
-  static async invalidateCertificates(id?: number) {
+  invalidateCertificates: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.certificates.item(id));
       await getCache().invalidate(`^certificates:.*:${id}(?:$|:.*)`);
@@ -309,9 +309,9 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.certificates);
       logger.info("[Cache] Invalidated all certificate cache entries");
     }
-  }
+  },
 
-  static async invalidateSizeCharts(id?: number) {
+  invalidateSizeCharts: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.sizeCharts.item(id));
       await getCache().invalidate(`^size_charts:.*:${id}(?:$|:.*)`);
@@ -320,9 +320,9 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.sizeCharts);
       logger.info("[Cache] Invalidated all size chart cache entries");
     }
-  }
+  },
 
-  static async invalidateAccessories(id?: number) {
+  invalidateAccessories: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.accessories.item(id));
       await getCache().invalidate(`^accessories:.*:${id}(?:$|:.*)`);
@@ -331,10 +331,10 @@ export class CacheOperations {
       await getCache().invalidate(InvalidationPatterns.accessories);
       logger.info("[Cache] Invalidated all accessory cache entries");
     }
-  }
+  },
 
   // CHUNK 10: Categories cache invalidation
-  static async invalidateCategories(id?: number) {
+  invalidateCategories: async (id?: number) => {
     if (id) {
       await getCache().invalidate(`^products:.*:${id}(?:$|:.*)|^categories:.*:${id}(?:$|:.*)`);
       logger.info(`[Cache] Invalidated category cache for item ${id}`);
@@ -345,10 +345,10 @@ export class CacheOperations {
       await getCache().invalidate("^products:list(?:$|:.*)");
       logger.info("[Cache] Invalidated all categories and related product list cache entries");
     }
-  }
+  },
 
   // Cache warming for critical application data
-  static async warmCriticalCache(storage: IStorage) {
+  warmCriticalCache: async (storage: IStorage) => {
     logger.info("[Cache] Starting critical cache warming...");
 
     const warmingTasks = [
@@ -376,5 +376,5 @@ export class CacheOperations {
 
     await getCache().warm(warmingTasks);
     logger.info("[Cache] Critical cache warming completed");
-  }
-}
+  },
+};

@@ -73,7 +73,6 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
   };
 
   return (
-    // biome-ignore lint: Dynamic inline style required for dnd-kit
     <div
       ref={setNodeRef}
       style={style}

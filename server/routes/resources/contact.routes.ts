@@ -26,15 +26,6 @@ import { authService } from "../../services/auth-service.js";
 const _tasksClient = new CloudTasksClient();
 const _bigquery = new BigQuery();
 
-interface RecaptchaResponse {
-  success: boolean;
-  score: number;
-  action?: string;
-  challenge_ts?: string;
-  hostname?: string;
-  "error-codes"?: string[];
-}
-
 const _GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const _GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 const _EMAIL_QUEUE = "email-queue";

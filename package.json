@@ -53,6 +53,7 @@
     "verify-port": "node scripts/verify-port-5002.js",
     "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
     "lhci": "lhci autorun",
+    "verify:connect": "npm run verify-port && tsx scripts/verify-neon.ts && tsx scripts/verify-upstash.ts && tsx scripts/verify-email.ts",
     "prepare": "husky"
   },
   "bundlesize": [

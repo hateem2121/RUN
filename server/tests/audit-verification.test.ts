@@ -102,8 +102,8 @@ describe("Forensic Audit Verification", () => {
         database: { directUrl: "postgres://mock:5432/db" },
       }));
 
-      const { db } = await import("../../server/db.js");
-      const { Client } = await import("pg");
+      const { db: _db } = await import("../../server/db.js");
+      const { Client: _Client } = await import("pg");
 
       // Import the router - in a functional test we'd use supertest,
       // but here we want to verify implementation details (mock calls)
