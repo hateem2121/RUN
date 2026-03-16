@@ -6,10 +6,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { ClippedElement } from "@/components/ui/ClippedElement";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
-import { ClippedElement } from "./PremiumProductComponents";
 
 interface InquiryModalProps {
   isOpen: boolean;

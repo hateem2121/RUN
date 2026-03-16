@@ -6,7 +6,7 @@
 import type { Product } from "@shared/index";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import { ClippedElement } from "./PremiumProductComponents";
+import { ClippedElement } from "@/components/ui/ClippedElement";
 
 interface EnhancedRecommendationsProps {
   products: Product[];

@@ -774,35 +774,31 @@ export async function batchOperations(req: Request, res: Response, next: NextFun
   );
 }
 
-export async function batchCreateAssets(req: Request, res: Response, next: NextFunction) {
+export async function batchCreateAssets(req: Request, res: Response, _next: NextFunction) {
   const files = req.files as Express.Multer.File[];
 
   if (!files || files.length === 0) {
     throw new BadRequestError("No files provided");
   }
 
-  try {
-    const results = await Promise.all(files.map((file) => processUploadedFile(file)));
+  const results = await Promise.all(files.map((file) => processUploadedFile(file)));
 
-    // Invalidate cache after successful batch upload
-    // Clear media listings, counts, search results, and all media content caches
-    await Promise.allSettled([
-      unifiedCache.clearPattern("data:/api/media.*"),
-      unifiedCache.clearPattern("media:.*"),
-      unifiedCache.delete("media-count"),
-      unifiedCache.delete("search"),
-    ]);
-    logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
+  // Invalidate cache after successful batch upload
+  // Clear media listings, counts, search results, and all media content caches
+  await Promise.allSettled([
+    unifiedCache.clearPattern("data:/api/media.*"),
+    unifiedCache.clearPattern("media:.*"),
+    unifiedCache.delete("media-count"),
+    unifiedCache.delete("search"),
+  ]);
+  logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
 
-    // Trigger Webhooks for batch uploads
-    results.forEach((asset) => {
-      webhookService.trigger("media.uploaded", asset);
-    });
+  // Trigger Webhooks for batch uploads
+  results.forEach((asset) => {
+    webhookService.trigger("media.uploaded", asset);
+  });
 
-    return res.status(201).json(createSuccessResponse(results));
-  } catch (error) {
-    return next(error);
-  }
+  return res.status(201).json(createSuccessResponse(results));
 }
 
 export async function batchDeleteAssets(req: Request, res: Response, _next: NextFunction) {

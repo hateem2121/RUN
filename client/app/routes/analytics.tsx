@@ -4,6 +4,7 @@ import {
   Activity,
   ArrowUpRight,
   DollarSign,
+  type LucideIcon,
   Package,
   ShoppingCart,
   TrendingUp,
@@ -65,7 +66,7 @@ const StatCard = ({
   title: string;
   value: string;
   trend: string;
-  icon: any;
+  icon: LucideIcon;
   trendUp: boolean;
 }) => (
   <Card>

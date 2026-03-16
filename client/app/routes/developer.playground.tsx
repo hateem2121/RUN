@@ -10,19 +10,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
+interface OpenApiEndpoint {
+  summary?: string;
+  requestBody?: {
+    content?: Record<
+      string,
+      {
+        schema?: Record<string, unknown>;
+      }
+    >;
+  };
+  parameters?: Array<{
+    name: string;
+    in: string;
+    required?: boolean;
+    schema?: Record<string, unknown>;
+  }>;
+}
+
 interface OpenApiSpec {
-  paths: Record<string, any>;
-  components: any;
+  paths: Record<string, Record<string, OpenApiEndpoint>>;
+  components?: Record<string, unknown>;
 }
 
 interface Endpoint {
   path: string;
   method: string;
-  details: {
-    summary?: string;
-    requestBody?: any;
-    parameters?: any[];
-  };
+  details: OpenApiEndpoint;
 }
 
 export default function ApiPlayground() {
@@ -34,7 +48,7 @@ export default function ApiPlayground() {
   const [requestParams, setRequestParams] = useState<Record<string, string>>({});
   const [requestBody, setRequestBody] = useState("");
   const [authHeader, setAuthHeader] = useState("");
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<unknown>(null);
   const [responseStatus, setResponseStatus] = useState<number | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
 
@@ -45,8 +59,8 @@ export default function ApiPlayground() {
         if (!res.ok) throw new Error("Failed to fetch API specification");
         const data = await res.json();
         setSpec(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
       } finally {
         setLoading(false);
       }
@@ -55,8 +69,12 @@ export default function ApiPlayground() {
   }, []);
 
   const endpoints: Endpoint[] = spec
-    ? Object.entries(spec.paths).flatMap(([path, methods]: [string, any]) =>
-        Object.keys(methods).map((method) => ({ path, method, details: methods[method] })),
+    ? Object.entries(spec.paths).flatMap(([path, methods]) =>
+        Object.entries(methods).map(([method, details]) => ({
+          path,
+          method,
+          details,
+        })),
       )
     : [];
 
@@ -101,8 +119,8 @@ export default function ApiPlayground() {
       setResponseStatus(res.status);
       const data = await res.json();
       setResponse(data);
-    } catch (err: any) {
-      setResponse({ error: err.message });
+    } catch (err: unknown) {
+      setResponse({ error: err instanceof Error ? err.message : "An unknown error occurred" });
       setResponseStatus(500);
     } finally {
       setIsExecuting(false);
@@ -306,7 +324,7 @@ export default function ApiPlayground() {
             </Tabs>
 
             <AnimatePresence>
-              {response && (
+              {!!response && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}

@@ -1,5 +1,4 @@
 import type { Certificate, Fabric, Product, SizeChart } from "@shared/index";
-import type { MediaItem } from "./PremiumProductComponents";
 
 // ============================================================================
 // Hydrated Interfaces (Frontend-specific)
@@ -54,8 +53,23 @@ export interface HydratedSizeChart extends Omit<SizeChart, "measurements"> {
   measurements?: Record<string, Record<string, string>>;
 }
 
-// Media Types (re-exporting or refining if needed)
-export type { MediaItem };
+// Media Types
+export const MediaType = {
+  Image: "image",
+  Video: "video",
+  Model3D: "3d_model",
+} as const;
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType];
+
+export interface MediaItem {
+  id: number;
+  type: MediaType;
+  src: string;
+  thumbnail: string;
+  filename?: string | undefined;
+  mimeType?: string | undefined;
+}
 
 // Component Props Interfaces
 export interface TabbedDetailsProps {

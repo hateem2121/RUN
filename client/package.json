@@ -106,6 +106,7 @@
     "build": "tsc -b && vite build && vite build --ssr",
     "build:analyze": "VITE_ANALYZE=true tsc -b && vite build",
     "preview": "vite preview",
+    "lint": "biome check .",
     "lint:html": "html-validate \"index.html\" \"public/**/*.html\" \"src/**/*.html\""
   },
   "devDependencies": {

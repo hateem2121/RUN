@@ -14,6 +14,23 @@
   --color-theme-moon: var(--color-blue-400);
 }
 
+@utility tabs-scroll-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+}
+
 /* =========================
     Performance Utilities
    ========================= */
