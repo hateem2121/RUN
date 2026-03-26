@@ -37,7 +37,7 @@
     "check": "npm run typecheck && npm run lint",
     "check:apply": "biome check --write .",
     "check:audit": "audit-ci --config .audit-ci.json",
-    "check:bundle": "bundlesize",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
     "check:links": "tsx scripts/verify-routes.ts",
     "check:secrets": "./scripts/security/check-secrets.sh",
     "check:docs": "find . -name '*.md' -not -path '*/node_modules/*' -not -path '*/.gemini/*' -print0 | xargs -0 markdown-link-check -c .markdown-link-check.json",
@@ -56,16 +56,6 @@
     "verify:connect": "npm run verify-port && tsx scripts/verify-neon.ts && tsx scripts/verify-upstash.ts && tsx scripts/verify-email.ts",
     "prepare": "husky"
   },
-  "bundlesize": [
-    {
-      "path": "./client/build/client/assets/client-*.js",
-      "maxSize": "350 kB"
-    },
-    {
-      "path": "./client/build/client/assets/root-*.css",
-      "maxSize": "300 kB"
-    }
-  ],
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@biomejs/biome": "2.3.10",
@@ -81,7 +71,6 @@
     "@types/yargs": "^17.0.35",
     "@vitest/coverage-v8": "^4.0.6",
     "audit-ci": "^7.1.0",
-    "bundlesize": "^0.18.2",
     "cheerio": "^1.1.2",
     "depcheck": "^1.4.7",
     "drizzle-kit": "^0.31.4",
@@ -91,7 +80,6 @@
     "markdown-link-check": "^3.14.2",
     "node-fetch": "^3.3.2",
     "playwright-core": "^1.57.0",
-    "sharp": "^0.34.5",
     "svgo": "^4.0.0",
     "turbo": "^2.7.2",
     "typescript": "^5.9.3",

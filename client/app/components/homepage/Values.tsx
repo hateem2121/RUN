@@ -46,6 +46,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
         <ImageWithSkeleton
           src={image}
           alt={title}
+          crossOrigin="anonymous"
           decoding="async"
           className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
           containerClassName="h-full w-full"

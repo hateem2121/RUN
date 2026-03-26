@@ -21,7 +21,7 @@ on:
         default: false
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "24"
 
 jobs:
   guardrails:
@@ -60,7 +60,7 @@ jobs:
     services:
       # The app server - started manually via npm run start in steps
       app:
-        image: node:20
+        image: node:24
         options: --network=host
 
     steps:

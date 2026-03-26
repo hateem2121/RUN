@@ -66,7 +66,7 @@
     "qs": "^6.15.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "^0.33.5",
+    "sharp": "^0.34.5",
     "shrink-ray-current": "^4.1.3",
     "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1",
@@ -104,13 +104,16 @@
     "test": "vitest run",
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "npx kill-port 5002 2>/dev/null; pkill -f 'tsx watch.*index.ts' 2>/dev/null; echo '✓ Clean dev environment ready'",
-    "dev": "PORT=5002 tsx watch --ignore '**/node_modules' --ignore '../client' --ignore '../client/src' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
-    "dev:mock": "MOCK_DB=true PORT=5002 tsx watch --ignore '**/node_modules' --ignore '../client' --ignore '../client/src' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
+    "dev": "PORT=5002 NODE_OPTIONS='--expose-gc' tsx watch --ignore '**/node_modules' --ignore '../client' --ignore '../client/src' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
+    "dev:mock": "MOCK_DB=true PORT=5002 NODE_OPTIONS='--expose-gc' tsx watch --ignore '**/node_modules' --ignore '../client' --ignore '../client/src' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",
     "dev:server": "PORT=5002 tsx watch src/index.ts",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "build:ssr": "npm run build",
     "start": "node --import tsx ../dist/index.js"
+  },
+  "optionalDependencies": {
+    "node-zopfli-es": "^1.0.3"
   }
 }

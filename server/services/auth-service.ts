@@ -80,9 +80,15 @@ export class AuthService {
           "Redis is required for session storage in production (NEON/Serverless). Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );
       }
-      logger.warn(
-        "[Auth] Redis not configured - falling back to MemoryStore (Development Only). THIS IS NOT SAFE FOR PRODUCTION (Serverless).",
-      );
+      if (process.env.NODE_ENV === "development") {
+        logger.debug(
+          "[Auth] Redis not configured - using MemoryStore for local dev (expected, not a bug).",
+        );
+      } else {
+        logger.warn(
+          "[Auth] Redis not configured - falling back to MemoryStore (Development Only). THIS IS NOT SAFE FOR PRODUCTION (Serverless).",
+        );
+      }
       // session() uses MemoryStore by default if store is undefined
       sessionStore = undefined;
     }

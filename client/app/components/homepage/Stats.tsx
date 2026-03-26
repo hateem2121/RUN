@@ -147,6 +147,7 @@ export const Stats: React.FC = () => {
           <img
             src="https://images.unsplash.com/photo-1590644365607-1c5a29d250c4?q=80&w=2070&auto=format&fit=crop"
             alt="Factory Background"
+            crossOrigin="anonymous"
             decoding="async"
             className="h-full w-full object-cover opacity-30 contrast-125 grayscale filter"
           />

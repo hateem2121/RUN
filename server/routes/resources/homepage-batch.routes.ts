@@ -98,6 +98,10 @@ router.get(
       fetchHomepageData,
       {
         bypassCache,
+        swrConfig: {
+          ttl: 60 * 60 * 1000, // 1 hour fresh TTL
+          staleWhileRevalidate: 6 * 60 * 60 * 1000, // serve stale for 6h while revalidating in background
+        },
       },
     );
 

@@ -401,7 +401,7 @@ services:
 ### Pattern 8: Dockerfile
 
 ```dockerfile
-FROM node:20-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 

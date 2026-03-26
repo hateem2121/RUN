@@ -40,7 +40,7 @@ class EmailService {
     const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
     if (!gmailUser || !gmailAppPassword) {
-      logger.warn("[Email] Gmail credentials not configured - email notifications disabled");
+      logger.debug("[Email] Gmail credentials not configured - email notifications disabled");
       this.isConfigured = false;
       return;
     }
