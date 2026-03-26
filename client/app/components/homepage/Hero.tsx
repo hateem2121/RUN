@@ -1,25 +1,24 @@
 import gsap from "gsap";
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
 
 // Shader definitions moved outside component for performance
-const Hero: React.FC = () => {
+export const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
 
   const { data: homepageData } = useHomepageData();
   const heroData = homepageData?.hero?.result;
 
   // Split title by | or use fallback
-  const heroLines = useMemo(() => {
-    if (heroData?.title) {
-      return heroData.title.split("|").map((t: string) => t.trim());
-    }
-    return FALLBACK_HERO_TEXT;
-  }, [heroData]);
+  const heroLines = heroData?.title
+    ? heroData.title.split("|").map((t: string) => t.trim())
+    : FALLBACK_HERO_TEXT;
 
   // Performance: Detect if Hero is in view
   useEffect(() => {
@@ -52,6 +51,11 @@ const Hero: React.FC = () => {
       const titles = scope.querySelectorAll(".hero-line");
 
       if (titles.length > 0) {
+        if (prefersReducedMotion) {
+          gsap.set(titles, { y: 0, opacity: 1, scale: 1 });
+          return;
+        }
+
         gsap.fromTo(
           titles,
           {
@@ -127,38 +131,45 @@ const Hero: React.FC = () => {
         Uses a mesh-like gradient effect.
       */}
       <div className="absolute inset-0 z-base overflow-hidden bg-black">
-        <div
-          className="absolute inset-[-50%] opacity-40 blur-[100px] animate-[spin_20s_linear_infinite]"
-          style={{
-            background:
-              "conic-gradient(from 0deg at 50% 50%, #000000 0deg, #1a1a1a 120deg, #333333 240deg, #000000 360deg)",
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
+        <div className="bg-hero-conic absolute inset-[-50%] opacity-40 blur-[100px] animate-[spin_20s_linear_infinite]" />
+        <div className="bg-hero-dots absolute inset-0 opacity-30" />
       </div>
 
       {/* Hero Content */}
       <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center md:pt-0 pt-24">
-        <h1
-          ref={textContainerRef}
-          className="flex flex-col items-center justify-center px-4 text-center perspective-[1000px] mb-20 md:mb-0"
-        >
-          {heroLines.map((line: string, i: number) => (
-            <span
-              key={i}
-              className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+        <div className="flex flex-col items-center justify-center px-4 text-center mb-20 md:mb-0">
+          <h1
+            ref={textContainerRef}
+            className="flex flex-col items-center justify-center perspective-[1000px]"
+          >
+            {heroLines.map((line: string, i: number) => (
+              <span
+                key={i}
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+              >
+                {line}
+              </span>
+            ))}
+          </h1>
+
+          {/* CMS Subtitle */}
+          {heroData?.subtitle && (
+            <p className="hero-subtitle mt-6 max-w-xl text-white/70 text-base md:text-lg leading-relaxed tracking-wide">
+              {heroData.subtitle}
+            </p>
+          )}
+
+          {/* CMS CTA Button */}
+          {heroData?.ctaText && heroData?.ctaLink && (
+            <a
+              href={heroData.ctaLink}
+              className="pointer-events-auto hero-cta mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-bold tracking-widest text-white uppercase backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40"
             >
-              {line}
-            </span>
-          ))}
-        </h1>
+              {heroData.ctaText}
+              <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Scroll Indicator */}
@@ -185,5 +196,3 @@ const Hero: React.FC = () => {
     </section>
   );
 };
-
-export default Hero;

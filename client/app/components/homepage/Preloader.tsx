@@ -1,12 +1,13 @@
 import gsap from "gsap";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const LOADING_TEXTS = [
   "INITIALIZING KINETIC FRAMEWORK",
-  "LOADING WEBGL SHADERS",
-  "CALIBRATING PHYSICS ENGINE",
-  "OPTIMIZING ASSETS",
+  "SYNCHRONIZING CMS ASSETS",
+  "CALIBRATING SYSTEM INTERFACE",
+  "OPTIMIZING DATA STREAMS",
   "ESTABLISHING SECURE CONNECTION",
 ];
 
@@ -14,12 +15,13 @@ interface PreloaderProps {
   onComplete: () => void;
 }
 
-const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
+export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState(LOADING_TEXTS[0]);
   const containerRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -31,7 +33,8 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
-      const duration = 0.7; // Optimized loading time (reduced from 1.2s)
+      // If prefers reduced motion, make it instant
+      const duration = prefersReducedMotion ? 0.01 : 0.7; // Optimized loading time
 
       // Animate progress value
       const progressObj = { value: 0 };
@@ -87,9 +90,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       // Exit Sequence
       tl.to(scope, {
         yPercent: -100,
-        duration: 0.8, // Faster exit
+        duration: prefersReducedMotion ? 0.3 : 0.8, // Faster exit
         ease: "power4.inOut",
-        delay: 0.1,
+        delay: prefersReducedMotion ? 0 : 0.1,
         onComplete: () => {
           onComplete();
         },
@@ -142,16 +145,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       </div>
 
       {/* Background Grid */}
-      <div
-        className="pointer-events-none absolute inset-0 z-base opacity-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      ></div>
+      <div className="pointer-events-none absolute inset-0 z-base opacity-10 bg-grid-muted" />
     </div>
   );
 };
-
-export default Preloader;

@@ -4,13 +4,15 @@ import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
 
-const Process: React.FC = () => {
+export const Process: React.FC = () => {
   const { data: batchData, isLoading } = useHomepageData();
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   // Use CMS data if available, otherwise fallback to constants
   const steps = batchData?.processCards?.result || FALLBACK_STEPS;
@@ -37,6 +39,12 @@ const Process: React.FC = () => {
 
       // Prevent GSAP target null warning if empty
       if (sections.length === 0) return;
+
+      // Handle Reduced Motion: Force vertical stack (mobile layout)
+      if (prefersReducedMotion) {
+        gsap.set(sections, { xPercent: 0 });
+        return;
+      }
 
       // Initial set for SVG line
       if (pathEl) {
@@ -210,5 +218,3 @@ const Process: React.FC = () => {
     </section>
   );
 };
-
-export default Process;

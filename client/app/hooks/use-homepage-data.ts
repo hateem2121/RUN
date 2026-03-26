@@ -1,5 +1,5 @@
+import type { HomepageBatchResponse } from "@shared/types/homepage";
 import { useQuery } from "@tanstack/react-query";
-import type { HomepageBatchResponse } from "../components/homepage/types";
 
 const FETCH_STALE_TIME = 1000 * 60 * 5; // 5 minutes (L1 cache on server is 3min)
 

@@ -88,6 +88,11 @@ router.get(
     };
 
     // PHASE 2A TASK 7: Get data with SWR-enabled two-tier cache
+    // Set Cache-Control for visitors (stale-while-revalidate)
+    // s-maxage=60: Shared cache (content delivery networks) should consider it fresh for 60 seconds
+    // stale-while-revalidate=3600: Cache can serve stale content for up to 1 hour while fetching a fresh version
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=3600");
+
     const { data: batchData, benchmark } = await twoTierBatchCache.get(
       "homepage:batch",
       fetchHomepageData,

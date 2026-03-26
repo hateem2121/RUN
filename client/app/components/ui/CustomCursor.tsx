@@ -97,17 +97,17 @@ const CustomCursor: React.FC = () => {
         width: 16,
         height: 16,
         opacity: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "var(--color-white)",
         mixBlendMode: "difference",
         borderWidth: 1,
-        borderColor: "#fff",
+        borderColor: "var(--color-white)",
         duration: 0.3,
         ease: "power2.out",
       });
       gsap.to(cursor, {
         opacity: 1,
         scale: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "var(--color-white)",
         mixBlendMode: "difference",
       });
     }

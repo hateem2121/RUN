@@ -2,17 +2,22 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { KEY_STATS } from "./constants";
 
 // Scramble Component
 const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
-  const [displayValue, setDisplayValue] = useState("000");
+  const prefersReducedMotion = useReducedMotion();
+  const [displayValue, setDisplayValue] = useState(prefersReducedMotion ? value : "000");
   const elementRef = useRef<HTMLSpanElement>(null);
   // Use only digits for clean number animation (removed !@#$%^&*)
   const chars = "0123456789";
 
   useEffect(() => {
-    if (!elementRef.current) return;
+    if (!elementRef.current || prefersReducedMotion) {
+      if (prefersReducedMotion) setDisplayValue(value);
+      return;
+    }
 
     let intervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -63,7 +68,7 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   );
 };
 
-const Stats: React.FC = () => {
+export const Stats: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -193,5 +198,3 @@ const Stats: React.FC = () => {
     </section>
   );
 };
-
-export default Stats;

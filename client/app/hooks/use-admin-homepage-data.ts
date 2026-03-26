@@ -1,22 +1,6 @@
-import type {
-  HomepageFeaturedProductsSettings,
-  HomepageHero,
-  HomepageProcessCard,
-  HomepageSection,
-  HomepageSlogan,
-} from "@shared/index";
+import type { HomepageProcessCard } from "@shared/index";
+import type { HomepageBatchResponse } from "@shared/types/homepage";
 import { useQuery } from "@tanstack/react-query";
-
-interface HomepageBatchResponse {
-  hero: { result: HomepageHero | undefined; timestamp: string };
-  slogans: { result: HomepageSlogan[]; timestamp: string };
-  sections: { result: HomepageSection[]; timestamp: string };
-  featuredProductsSettings: {
-    result: HomepageFeaturedProductsSettings | undefined;
-    timestamp: string;
-  };
-  // Products and Categories are also returned but might not be needed for Admin editing unless implemented later
-}
 
 export function useAdminHomepageData() {
   const {

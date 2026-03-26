@@ -2,16 +2,16 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
+import { useCursorStore } from "@/stores/useCursorStore";
 import { CATEGORIES } from "./constants";
-import { useStore } from "./store";
-import { type CategoryItem, CursorVariant } from "./types";
+import type { CategoryItem } from "./types";
 
 interface CategoriesProps {
   data: CategoryItem[] | undefined;
 }
 
-const Categories: React.FC<CategoriesProps> = ({ data }) => {
-  const setCursor = useStore((state) => state.setCursor);
+export const Categories: React.FC<CategoriesProps> = ({ data }) => {
+  const { setCursor, resetCursor } = useCursorStore();
   const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
@@ -40,7 +40,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
         {/* Optimized Forward Marquee */}
         <div
           className={cn(
-            "animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused]",
+            "animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
             !isIntersecting && "[animation-play-state:paused]",
           )}
         >
@@ -48,12 +48,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
           {[1, 2, 3, 4].map((loop) => {
             const isLoopHidden = loop > 1;
             return (
-              <div
-                key={`loop-${loop}`}
-                aria-hidden={isLoopHidden}
-                className="flex"
-                role={isLoopHidden ? "presentation" : "list"}
-              >
+              <div key={`loop-${loop}`} aria-hidden={isLoopHidden} className="flex" role="list">
                 {(data || CATEGORIES).map((cat, index) => {
                   const uniqueIndex = `${loop}-${index}`;
                   const isHovered = hoveredIndex === uniqueIndex;
@@ -63,7 +58,7 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
                   return (
                     <div
                       key={`${cat.id}-${uniqueIndex}`}
-                      role={isLoopHidden ? "presentation" : "listitem"}
+                      role="listitem"
                       className={cn(
                         "group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16",
                         isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100",
@@ -71,11 +66,11 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
                       onMouseEnter={() => {
                         setHoveredIndex(uniqueIndex);
                         if (!isMobile) {
-                          setCursor(CursorVariant.VIEW, "", cat.image);
+                          setCursor("view", cat.image);
                         }
                       }}
                       onMouseLeave={() => {
-                        setCursor(CursorVariant.DEFAULT);
+                        resetCursor();
                       }}
                     >
                       <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
@@ -93,5 +88,3 @@ const Categories: React.FC<CategoriesProps> = ({ data }) => {
     </section>
   );
 };
-
-export default Categories;

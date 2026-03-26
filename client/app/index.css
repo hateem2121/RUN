@@ -1128,3 +1128,36 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* =========================================
+   RUN Remix: Branding & Layout Utilities
+   ========================================= */
+
+@utility bg-hero-conic {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    #000000 0deg,
+    #1a1a1a 120deg,
+    #333333 240deg,
+    #000000 360deg
+  );
+}
+
+@utility bg-hero-dots {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 40px 40px;
+}
+
+@utility bg-grid-muted {
+  background-image: linear-gradient(
+      to right,
+      theme("colors.slate.700") 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, theme("colors.slate.700") 1px, transparent 1px);
+  background-size: 40px 40px;
+}

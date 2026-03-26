@@ -22,7 +22,8 @@
       "!client/.react-router",
       "!**/playwright-report",
       "!**/test-results",
-      "!**/openapi-spec.json"
+      "!**/openapi-spec.json",
+      "!audit"
     ]
   },
   "formatter": {

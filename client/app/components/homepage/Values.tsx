@@ -4,8 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
-import { useStore } from "./store";
-import { CursorVariant } from "./types";
+import { type CursorVariant, useCursorStore } from "@/stores/useCursorStore";
 
 interface ValuesCardProps {
   title: string;
@@ -14,7 +13,8 @@ interface ValuesCardProps {
   colSpan?: string | undefined;
   withRipple?: boolean | undefined;
   isMobile: boolean;
-  setCursor: (variant: CursorVariant) => void;
+  setCursor: (variant: CursorVariant, image?: string | null) => void;
+  resetCursor: () => void;
   image: string;
 }
 
@@ -26,6 +26,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
   withRipple = false, // Kept in prop interface but unused
   isMobile,
   setCursor,
+  resetCursor,
   image,
 }) => {
   const IconComponent = Icon;
@@ -34,11 +35,11 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
     <Card
       className={cn(
         colSpan,
-        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl",
+        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
       )}
       variant="glass-premium"
-      onMouseEnter={() => !isMobile && setCursor(CursorVariant.BUTTON)}
-      onMouseLeave={() => setCursor(CursorVariant.DEFAULT)}
+      onMouseEnter={() => !isMobile && setCursor("button")}
+      onMouseLeave={() => resetCursor()}
     >
       {/* Background Image Layer */}
       <div className="absolute inset-0 z-base">
@@ -84,8 +85,8 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
   );
 };
 
-const Values: React.FC = () => {
-  const setCursor = useStore((state) => state.setCursor);
+export const Values: React.FC = () => {
+  const { setCursor, resetCursor } = useCursorStore();
   const isMobile = useIsMobile();
 
   return (
@@ -110,6 +111,7 @@ const Values: React.FC = () => {
             colSpan="md:col-span-2"
             isMobile={!!isMobile}
             setCursor={setCursor}
+            resetCursor={resetCursor}
             image="https://images.unsplash.com/photo-1598967990158-b12e3e9d8995?q=80&w=2070&auto=format&fit=crop"
           />
           <ValuesCard
@@ -119,6 +121,7 @@ const Values: React.FC = () => {
             withRipple={true}
             isMobile={!!isMobile}
             setCursor={setCursor}
+            resetCursor={resetCursor}
             image="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1976&auto=format&fit=crop"
           />
           <ValuesCard
@@ -127,6 +130,7 @@ const Values: React.FC = () => {
             icon={Globe}
             isMobile={!!isMobile}
             setCursor={setCursor}
+            resetCursor={resetCursor}
             image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
           />
           <ValuesCard
@@ -136,6 +140,7 @@ const Values: React.FC = () => {
             colSpan="md:col-span-2"
             isMobile={!!isMobile}
             setCursor={setCursor}
+            resetCursor={resetCursor}
             image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
           />
         </div>
@@ -145,7 +150,7 @@ const Values: React.FC = () => {
           className="mt-24 w-full overflow-hidden border-foreground border-y py-6"
           aria-hidden="true"
         >
-          <div className="flex animate-marquee whitespace-nowrap">
+          <div className="flex animate-marquee whitespace-nowrap motion-reduce:animate-none">
             {Array(10)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
               .map((text, i) => (
@@ -159,5 +164,3 @@ const Values: React.FC = () => {
     </section>
   );
 };
-
-export default Values;

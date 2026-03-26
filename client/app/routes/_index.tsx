@@ -2,34 +2,63 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import Hero from "@/components/homepage/Hero";
-import Preloader from "@/components/homepage/Preloader";
+import { Hero } from "@/components/homepage/Hero";
+import { Preloader } from "@/components/homepage/Preloader";
 import CustomCursor from "@/components/ui/CustomCursor";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 // Lazy Load Heavy Components (Below Fold)
-const Categories = lazy(() => import("@/components/homepage/Categories"));
-const FeaturedProducts = lazy(() => import("@/components/homepage/FeaturedProducts"));
+const Categories = lazy(() =>
+  import("@/components/homepage/Categories").then((m) => ({ default: m.Categories })),
+);
+const FeaturedProducts = lazy(() =>
+  import("@/components/homepage/FeaturedProducts").then((m) => ({ default: m.FeaturedProducts })),
+);
 // Hero moved to static import
-const Process = lazy(() => import("@/components/homepage/Process"));
-const Stats = lazy(() => import("@/components/homepage/Stats"));
-const Values = lazy(() => import("@/components/homepage/Values"));
+const Process = lazy(() =>
+  import("@/components/homepage/Process").then((m) => ({ default: m.Process })),
+);
+const Sections = lazy(() =>
+  import("@/components/homepage/Sections").then((m) => ({ default: m.Sections })),
+);
+const Slogans = lazy(() =>
+  import("@/components/homepage/Slogans").then((m) => ({ default: m.Slogans })),
+);
+const Stats = lazy(() => import("@/components/homepage/Stats").then((m) => ({ default: m.Stats })));
+const Values = lazy(() =>
+  import("@/components/homepage/Values").then((m) => ({ default: m.Values })),
+);
 
 // Register Plugin Globally
 gsap.registerPlugin(ScrollTrigger);
 
-export function meta() {
-  return [
-    { title: "Run Apparel | Premium Activewear" },
-    {
-      name: "description",
-      content: "Experience the next level of performance with Run Apparel.",
-    },
-  ];
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { useLoaderData } from "react-router";
+import { apiRequest, getQueryClient, queryKeys } from "@/lib/queryClient";
+
+export async function loader() {
+  const queryClient = getQueryClient();
+
+  // Prefetch the homepage batch data to eliminate hydration waterfalls
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.homepage.batch(),
+    queryFn: () => apiRequest(queryKeys.homepage.batch()[0]),
+  });
+
+  return {
+    dehydratedState: dehydrate(queryClient),
+  };
+}
+
+export function headers() {
+  return {
+    "Cache-Control": "public, max-age=3600, s-maxage=3600",
+  };
 }
 
 export default function Index() {
+  const loaderData = useLoaderData<typeof loader>();
   const [preloaderFinished, setPreloaderFinished] = useState(false);
   const { data: homepageData } = useHomepageData();
   const isMobile = useIsMobile();
@@ -102,22 +131,23 @@ export default function Index() {
 
     gsap.ticker.add(handleTicker);
 
-    // Sync Lenis RAF
-    gsap.ticker.add((time) => {
+    // Sync Lenis RAF — store reference for proper cleanup
+    const lenisRaf = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(lenisRaf);
 
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(lenisRaf);
       gsap.ticker.remove(handleTicker);
     };
   }, [isMobile]);
 
   return (
-    <>
+    <HydrationBoundary state={loaderData?.dehydratedState}>
       {!preloaderFinished && <Preloader onComplete={() => setPreloaderFinished(true)} />}
       <CustomCursor />
 
@@ -132,6 +162,11 @@ export default function Index() {
             Prevents "Waterfall Pop-in" and cumulative layout shift (CLS).
         */}
 
+        {/* Slogans Ticker: CMS-driven scrolling slogans */}
+        <Suspense fallback={null}>
+          <Slogans data={homepageData?.slogans?.result} />
+        </Suspense>
+
         {/* Stats Section: High height impact (150vh) */}
         <Suspense fallback={<div className="min-h-[150vh] bg-background animate-pulse" />}>
           <Stats />
@@ -144,7 +179,10 @@ export default function Index() {
           </Suspense>
 
           <Suspense fallback={<div className="min-h-[100vh] bg-background-alt animate-pulse" />}>
-            <FeaturedProducts products={homepageData?.products?.result} />
+            <FeaturedProducts
+              products={homepageData?.products?.result}
+              settings={homepageData?.featuredProductsSettings?.result}
+            />
           </Suspense>
 
           <Suspense fallback={<div className="min-h-[60vh] bg-background-alt animate-pulse" />}>
@@ -152,11 +190,16 @@ export default function Index() {
           </Suspense>
         </div>
 
+        {/* CMS Narrative Sections */}
+        <Suspense fallback={null}>
+          <Sections data={homepageData?.sections?.result} />
+        </Suspense>
+
         {/* Process Section: Viewport pinning needs static context */}
         <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
           <Process />
         </Suspense>
       </main>
-    </>
+    </HydrationBoundary>
   );
 }

@@ -1,3 +1,15 @@
+import type {
+  CategoryItem,
+  DataWithTimestamp,
+  HeroData,
+  HomepageBatchResponse,
+  HomepageFeaturedSettings,
+  HomepageSectionItem,
+  HomepageSloganItem,
+  ProcessStep,
+  ProductItem,
+} from "@shared/types/homepage";
+
 export const CursorVariant = {
   DEFAULT: "DEFAULT",
   TEXT: "TEXT",
@@ -18,83 +30,20 @@ export interface StatItem {
   description: string;
 }
 
-export interface CategoryItem {
-  id: string;
-  name: string;
-  image: string;
-}
-
-export interface ProcessStep {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-}
-
 export interface Partner {
   name: string;
   tag: string;
 }
 
-export interface ProductItem {
-  id: string;
-  name: string;
-  category: string;
-  price: string;
-  image: string;
-}
-
-// Batch API Data Wrappers
-export interface DataWithTimestamp<T> {
-  result: T;
-  timestamp: string;
-}
-
-export interface HeroData {
-  title: string;
-  subtitle: string;
-  ctaText: string;
-  ctaLink: string;
-}
-
-export interface HomepageBatchResponse {
-  hero: DataWithTimestamp<HeroData>;
-  slogans: DataWithTimestamp<string[]>;
-  sections: DataWithTimestamp<unknown[]>;
-  featuredProductsSettings: DataWithTimestamp<unknown>;
-  products: DataWithTimestamp<ProductItem[]>;
-  categories: DataWithTimestamp<CategoryItem[]>;
-  processCards: DataWithTimestamp<ProcessStep[]>;
-}
-
-// Global augmentation for React Three Fiber elements
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      mesh: unknown;
-      planeGeometry: unknown;
-      shaderMaterial: unknown;
-      group: unknown;
-      directionalLight: unknown;
-      ambientLight: unknown;
-      pointLight: unknown;
-      primitive: unknown;
-    }
-  }
-}
-
-// Augmentation for React 19+ JSX namespace
-declare module "react" {
-  namespace JSX {
-    interface IntrinsicElements {
-      mesh: unknown;
-      planeGeometry: unknown;
-      shaderMaterial: unknown;
-      group: unknown;
-      directionalLight: unknown;
-      ambientLight: unknown;
-      pointLight: unknown;
-      primitive: unknown;
-    }
-  }
-}
+// Re-export common types from shared for convenience in existing components
+export type {
+  HomepageBatchResponse,
+  ProductItem,
+  CategoryItem,
+  ProcessStep,
+  HeroData,
+  HomepageSloganItem,
+  HomepageSectionItem,
+  HomepageFeaturedSettings,
+  DataWithTimestamp,
+};
