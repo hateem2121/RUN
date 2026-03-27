@@ -201,9 +201,6 @@ When unsure about file locations, architecture, or business logic:
 | `playwright` | E2E test authoring and visual regression debugging |
 | `sentry` | Error and trace queries |
 | `github` | PR/issue management, CI workflow triggers |
-| `grafana` | Prometheus metrics, Loki logs, Tempo traces |
-| `gcloud` | Cloud Run deployments, GCS, Secret Manager |
-| `argocd` | GitOps deployment visibility and rollbacks |
 | `memory` | Persistent knowledge graph across sessions |
 
 ---
