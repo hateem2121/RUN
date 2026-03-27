@@ -15,26 +15,11 @@
       "args": ["-y", "@playwright/mcp@latest"],
       "env": {}
     },
-    "upstash": {
-      "command": "npx",
-      "args": ["-y", "@upstash/mcp-server@latest"],
-      "env": {
-        "UPSTASH_EMAIL": "${UPSTASH_EMAIL}",
-        "UPSTASH_API_KEY": "${UPSTASH_API_KEY}"
-      }
-    },
     "sentry": {
       "command": "npx",
       "args": ["-y", "@sentry/mcp-server@latest"],
       "env": {
         "SENTRY_ACCESS_TOKEN": "${SENTRY_ACCESS_TOKEN}"
-      }
-    },
-    "bullmq": {
-      "command": "npx",
-      "args": ["-y", "bullmq-mcp@latest"],
-      "env": {
-        "REDIS_URLS": "${UPSTASH_REDIS_REST_URL}"
       }
     },
     "github": {

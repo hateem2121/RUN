@@ -199,9 +199,7 @@ When unsure about file locations, architecture, or business logic:
 | `neon` | DB branching, migrations, slow query analysis |
 | `context7` | Version-exact docs for React 19, Express 5, Drizzle, Tailwind V4 |
 | `playwright` | E2E test authoring and visual regression debugging |
-| `upstash` | Redis/cache inspection, BullMQ queue debugging |
 | `sentry` | Error and trace queries |
-| `bullmq` | Job queue monitoring and DLQ inspection |
 | `github` | PR/issue management, CI workflow triggers |
 | `grafana` | Prometheus metrics, Loki logs, Tempo traces |
 | `gcloud` | Cloud Run deployments, GCS, Secret Manager |
