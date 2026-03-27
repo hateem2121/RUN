@@ -15,13 +15,6 @@
       "args": ["-y", "@playwright/mcp@latest"],
       "env": {}
     },
-    "sentry": {
-      "command": "npx",
-      "args": ["-y", "@sentry/mcp-server@latest"],
-      "env": {
-        "SENTRY_ACCESS_TOKEN": "${SENTRY_ACCESS_TOKEN}"
-      }
-    },
     "github": {
       "command": "docker",
       "args": [

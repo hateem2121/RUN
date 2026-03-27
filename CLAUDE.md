@@ -199,7 +199,6 @@ When unsure about file locations, architecture, or business logic:
 | `neon` | DB branching, migrations, slow query analysis |
 | `context7` | Version-exact docs for React 19, Express 5, Drizzle, Tailwind V4 |
 | `playwright` | E2E test authoring and visual regression debugging |
-| `sentry` | Error and trace queries |
 | `github` | PR/issue management, CI workflow triggers |
 | `memory` | Persistent knowledge graph across sessions |
 
