@@ -1,5 +1,49 @@
 # Task Plan
 
+## Active Tasks
+
+### ✅ [AUDIT] Full System Architecture & Organisation Review — April 2026 (Second Pass)
+**Status:** COMPLETE
+**Completed:** 2026-03-29
+**Scope:** Full 23-domain re-audit against updated codebase (post-remediation state)
+**Output:** `findings.md` § Architecture Audit — April 2026 (Second Pass)
+**Agent:** Claude Code (Sonnet 4.6)
+
+**Results:**
+- 4 Critical issues found (C1: TypeScript regression 35 errors, C2: /resources runtime crash, C3: 31 try/catch in routes, C4: 58/93 test files failing)
+- 6 High issues (npm audit 25 vulns, CORS disabled in prod, cloudbuild health URL wrong, packages/sdk missing, health probe not split, lru-cache types)
+- 10 Medium issues (dead vite chunks, debug scripts in server root, CI lint gate, K8s PDB missing, image tag latest, unused import, turbo missing tasks)
+- 5 Low issues (auth console.error, react-router pin, docs gate, biome warnings, package overrides)
+- 24 Strengths identified
+
+**Verification Results:**
+- ✅ `npm run verify-port` → PASS (zero warnings — improved)
+- 🔴 `npm run verify:tech-integrity` → FAIL (35 typecheck errors — regression)
+- 🔴 `npm run test` → FAIL (58/93 test files failing)
+- ✅ `npm run lint` → PASS (0 errors, 6 warnings)
+- 🔴 `npm run typecheck` → FAIL (35 errors)
+- ⚠️ `npm audit` → 25 vulnerabilities (2 critical, 10 high)
+- ⛔ `npm run build` → NOT RUN (typecheck must pass first)
+
+---
+
+## Immediate Remediation Backlog (from April 2026 Second Pass Audit)
+
+| Priority | ID | Task | Complexity | B.L.A.S.T. |
+|---|---|---|---|---|
+| 1 | C2 | Fix /resources runtime crash — replace `<motion.div>` with `<div>` or GSAP | Simple | Stylize |
+| 2 | H2 | Restore production CORS origin header in `server/boot/middleware.ts` | Simple | Link |
+| 3 | H3 | Fix `cloudbuild.yaml:74` health URL `/health` → `/api/health` | Simple | Trigger |
+| 4 | H4 | Remove or scaffold `packages/sdk` workspace entry | Simple | Blueprint |
+| 5 | H6 | Resolve `lru-cache` v11 TypeScript declaration in `server/tsconfig.json` | Simple | Blueprint |
+| 6 | C1 | Fix all 35 TypeScript errors — restore typecheck EXIT 0 | Complex | Blueprint |
+| 7 | C3 | Remove 31 remaining try/catch blocks from server/routes/ | Complex | Architect |
+| 8 | C4 | Fix Vitest LRUCache constructor, error message assertions, integration timeout | Complex | Trigger |
+| 9 | H1 | `npm audit fix` — upgrade express-rate-limit, multer, fast-xml-parser, undici | Complex | Link |
+| 10 | H5 | Add /healthz + /readyz endpoints; update K8s probes | Simple | Architect |
+
+---
+
 ## Completed Tasks
 
 ### ✅ [AUDIT] System Architecture & Organisation Review — April 2026

@@ -13,6 +13,7 @@ export default defineConfig({
       "**/dist/**",
       "**/build/**",
       "**/.{idea,git,cache,output,temp}/**",
+      ".claude/**",
     ],
     testTimeout: 60000,
     coverage: {

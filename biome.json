@@ -23,7 +23,8 @@
       "!**/playwright-report",
       "!**/test-results",
       "!**/openapi-spec.json",
-      "!audit"
+      "!audit",
+      "!.claude"
     ]
   },
   "formatter": {

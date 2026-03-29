@@ -1,9 +1,31 @@
 # SOP: Architecture Audit
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Created:** 2026-03-27
+**Last Audit:** 2026-03-29 (Second Pass — Overall Score: 6.7/10)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD
 **Trigger:** Quarterly, before major releases, or after significant architectural changes
+
+---
+
+## Audit History
+
+| Date | Pass | Overall Score | Critical | High | Agent |
+|---|---|---|---|---|---|
+| 2026-03-27 | First Pass | ~6.0/10 | 3 | 5 | Claude Code Sonnet 4.6 |
+| 2026-03-29 | Second Pass (post-remediation) | 6.7/10 | 4 | 6 | Claude Code Sonnet 4.6 |
+
+### Second Pass Top 3 Findings (2026-03-29)
+1. 🔴 **TypeScript regression** — 35 typecheck errors (was EXIT 0 on 2026-03-28). Root cause: framer-motion migration incomplete in `resources.tsx`, lru-cache v11 resolution, admin component type drift.
+2. 🔴 **Test suite collapse** — 58/93 test files failing. `LRUCache is not a constructor` takes down entire unified-cache test suite.
+3. 🔴 **Runtime crash on /resources** — `<motion.div>` used without import after incomplete Phase E migration.
+
+### New Checklist Items (from Second Pass)
+- [ ] After each migration sprint: grep for removed library's JSX elements (not just imports) — catches `motion.div`, `AnimatePresence`, etc.
+- [ ] Run `npm run test` before marking any remediation task COMPLETE — do not rely on typecheck alone
+- [ ] Verify `lru-cache` + other ESM-only packages resolve correctly in Vitest SSR mode after any tsconfig change
+- [ ] Audit `vite.config.ts` manualChunks after dependency removals to remove dead entries
+- [ ] Check `cloudbuild.yaml` health endpoint URL matches actual server route registration after any health endpoint change
 
 ---
 
